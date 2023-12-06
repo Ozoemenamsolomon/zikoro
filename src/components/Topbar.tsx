@@ -46,7 +46,7 @@ const links = [
 const Topbar = () => {
   const pathname = usePathname();
   return (
-    <div className="bg-white w-full flex gap-12 text-gray-500">
+    <div className="bg-white w-full flex gap-12 text-gray-500 sticky top-0">
       {links.map(({ name, href }) => {
         return (
           <Link

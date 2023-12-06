@@ -18,6 +18,7 @@ const config: Config = {
 				current: 'currentColor',
 				white: '#ffffff',
 				basebody: '#E5E5E5',
+				orangebg: '#FEF9F5',
 			},
 		},
 	},

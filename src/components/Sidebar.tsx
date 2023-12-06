@@ -1,15 +1,16 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { Home } from "@styled-icons/typicons/Home";
 import { MoneyDollarBox } from "styled-icons/remix-fill";
 import { MegaphoneLoud } from "@styled-icons/fluentui-system-filled/MegaphoneLoud";
 import { PaperPlane } from "styled-icons/fa-regular";
 import { Cog } from "styled-icons/heroicons-outline";
+import { NavLinks } from "./NavLinks";
+import { UserActions } from "./UserActions";
 
-const links = [
+export const links = [
   {
     name: "Home",
     icon: Home,
@@ -18,29 +19,35 @@ const links = [
   {
     name: "Billing",
     icon: MoneyDollarBox,
-    href: "/projects",
+    href: "/billing",
   },
   {
     name: "Marketing",
     icon: MegaphoneLoud,
-    href: "/about",
+    href: "/marketing",
   },
   {
     name: "Published Events",
     icon: PaperPlane,
-    href: "/contact",
+    href: "/events",
   },
   {
     name: "Settings",
     icon: Cog,
-    href: "/contact",
+    href: "/settings",
   },
 ];
 const Sidebar = () => {
   return (
-    <div className="h-full w-[300px] bg-white flex-col flex justify-between">
-      <div>
-        <Image className="p-4" src={""} alt={""}></Image>
+    <div className="h-full w-[300px] bg-white flex-col flex justify-between sticky top-0">
+      <div className="flex flex-col gap-8">
+        <Image
+          className="p-4"
+          src={"/logo.svg"}
+          alt={"zikoro logo"}
+          width={150}
+          height={100}
+        ></Image>
         <NavLinks></NavLinks>
       </div>
       <UserActions></UserActions>
@@ -49,26 +56,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-const NavLinks = () => {
-  return (
-    <div className="flex flex-col">
-      {links.map(({ href, name, icon: Icon }) => {
-        return (
-          <Link href={href} className="p-4">
-            {Icon && <Icon className="w-6 h-6 mr-2" />}
-            {name}
-          </Link>
-        );
-      })}
-    </div>
-  );
-};
-
-const UserActions = () => {
-  return (
-    <div className="flex flex-col">
-      <div className="p-4">UserActions</div>
-    </div>
-  );
-};
