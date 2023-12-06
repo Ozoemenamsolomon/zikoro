@@ -39,7 +39,7 @@ export const links = [
 ];
 const Sidebar = () => {
   return (
-    <div className="h-full w-[300px] bg-white flex-col flex justify-between sticky top-0">
+    <div className="h-full w-[250px] bg-white flex-col flex justify-between sticky top-0">
       <div className="flex flex-col gap-8">
         <Image
           className="p-4"
