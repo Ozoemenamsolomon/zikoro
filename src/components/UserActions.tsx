@@ -3,8 +3,17 @@ import React from "react";
 import Image from "next/image";
 import { LogOut } from "styled-icons/ionicons-outline";
 import { PersonFeedback } from "styled-icons/fluentui-system-filled";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import Link from "next/link";
 
 export const UserActions = () => {
+  const { user, error, isLoading } = useUser();
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
+  if (!user) return <Link href="/api/auth/login">Login</Link>;
+
+  console.log({ user });
+
   const {
     user: { name: userName, avatar },
   } = {
