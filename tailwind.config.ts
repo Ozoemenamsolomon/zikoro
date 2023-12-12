@@ -19,7 +19,13 @@ const config: Config = {
 				white: '#ffffff',
 				basebody: '#E5E5E5',
 				orangebg: '#FEF9F5',
+				ticketColor:'#CFCFCF',
+				greyBlack:'#0A0E2E',
+				earlyBirdColor:'#001FCC',
 			},
+			fontSize: {
+				'small': '12px',
+			  },
 		},
 	},
 	plugins: [],

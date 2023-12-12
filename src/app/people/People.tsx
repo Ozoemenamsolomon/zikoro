@@ -1,9 +1,10 @@
-
-//import Attendee from '@/app/(shared)/Attendee'
-
+import Attendee from '../../shared/Attendee';
+import AttendeesData from '../../data/AttendeesData';
 
 const People=()=>{
-    
+
+    const mappedData= AttendeesData.map(data=>(<Attendee key={data.id} name={data.fullName} job={data.job} time={data?.time} date={data?.date} role1={data.role1} role2={data?.role2}  />))
+
     return (
         <section>
             <section>
@@ -63,7 +64,9 @@ const People=()=>{
 <p className=" text-small">A - Z</p>
                     </div>
                 </div>
-                <Attendee />
+                <div>
+                    {mappedData}
+                </div>
             </section>
         </section>
     )
