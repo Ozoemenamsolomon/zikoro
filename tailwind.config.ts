@@ -22,6 +22,7 @@ const config: Config = {
 				ticketColor:'#CFCFCF',
 				greyBlack:'#0A0E2E',
 				earlyBirdColor:'#001FCC',
+				ash:'#717171',
 			},
 			fontSize: {
 				'small': '12px',

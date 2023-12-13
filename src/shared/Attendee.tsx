@@ -16,7 +16,7 @@ const Attendee: React.FC<AttendeeProps>  = ({name,job,role1,role2,date,time}) =>
   </svg>
   <div className=" flex flex-col space-y-2">
       <h4 className=" text-greyBlack">{name}</h4>
-      <span className=" text-[10px] text-[#717171]">{job}</span>
+      <span className=" text-[10px] text-ash">{job}</span>
       <div className=" flex space-x-1 text-[10px] text-[#717171]">
           <span className="">{date}</span>
           <span className="">{time}</span>
