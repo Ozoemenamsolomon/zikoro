@@ -1,8 +1,8 @@
-This is a [Next.js](https://nextjs.org/) project and uses `npm` as it's package manager.
+This is a [Next.js](https://nextjs.org/) and [Tailwindcss](https://tailwindcss.com) project and uses `npm` as its package manager. For icons check out [Styled icons](https://styled-icons.dev/).
 
 ## Getting Started
 
-First, make sure you have [node](https://nodejs.org/en/download/) installed to install the project's depndencies:
+First, make sure you have [node](https://nodejs.org/en/download/) installed to install the project's dependencies:
 
 ```bash
 npm install
@@ -48,6 +48,8 @@ To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Tailwindcss Docs](https://tailwindcss.com/docs/)
+- [Styled icons docs](https://github.com/styled-icons/styled-icons#-styled-icons)
 
 
 
