@@ -1,8 +1,8 @@
-This is a [Next.js](https://nextjs.org/) project and uses `npm` as it's package manager.
+This is a [Next.js](https://nextjs.org/) and [Tailwindcss](https://tailwindcss.com/docs/installation) project and uses `npm` as its package manager. For icons check out [Styled icons](https://styled-icons.dev/).
 
 ## Getting Started
 
-First, make sure you have [node](https://nodejs.org/en/download/) installed to install the project's depndencies:
+First, make sure you have [node](https://nodejs.org/en/download/) installed to install the project's dependencies:
 
 ```bash
 npm install
