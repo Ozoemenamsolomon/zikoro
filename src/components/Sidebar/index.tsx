@@ -8,9 +8,10 @@ import { MegaphoneLoud } from "@styled-icons/fluentui-system-filled/MegaphoneLou
 import { PaperPlane } from "styled-icons/fa-regular";
 import { Cog } from "styled-icons/heroicons-outline";
 import { NavLinks } from "./NavLinks";
-import { UserActions } from "./UserActions";
+import { UserActions } from "@/components/UserActions";
+import { TLink } from "@/types/links";
 
-export const links = [
+export const links: TLink[] = [
   {
     name: "Home",
     icon: Home,
@@ -48,9 +49,9 @@ const Sidebar = () => {
           width={150}
           height={100}
         ></Image>
-        <NavLinks></NavLinks>
+        <NavLinks />
       </div>
-      <UserActions></UserActions>
+      <UserActions />
     </div>
   );
 };
