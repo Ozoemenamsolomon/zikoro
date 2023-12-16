@@ -1,18 +1,25 @@
+interface PointsData {
+  imgSrc: string;
+  text: string;
+  points: Number;
+  id:Number;
+}
 interface RewardData {
   imgSrc: string;
   text: string;
   heading: string;
+  id:Number;
 }
 
 import Link from 'next/link'
-import AttendeesData from '../../data/AttendeesData'
-import RewardCard from '../../components/RewardCard'
-import PointsCard from '../../components/PointsCard'
-import Attendee from '../../components/Attendee'
+import AttendeesData from '../../../data/AttendeesData'
+import RewardCard from '../../../components/RewardCard'
+import PointsCard from '../../../components/PointsCard'
+import Attendee from '../../../components/Attendee'
 
 const People=()=>{
 
-  const data:RewardData=[
+  const data: PointsData[]=[
     {id:1,
       points:1000,
     imgSrc:"/images/unknown 1.png",
@@ -44,7 +51,7 @@ const People=()=>{
     text:"Update profile"
     },
   ]
-  const data1:RewardData=[
+  const data1:RewardData[]=[
     {id:1,
     imgSrc:"/images/unknown 1.png",
     text:"Earn points by asking questions. You'll receive more points when your questions are upvoted.",
