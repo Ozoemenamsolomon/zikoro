@@ -1,6 +1,12 @@
+interface RewardCardProps {
+    imgSrc: string;
+    text: string;
+    heading: string;
+  }
+
 import Image from 'next/image';
 
-const RewardCard=({text,imgSrc,points})=>{
+const RewardCard: React.FC<RewardCardProps>=({text,imgSrc,points})=>{
     return (
         <section  className="w-[92px] h-[110px] rounded-md flex flex-col gap-4 bg-[#FAFAFA] justify-center items-center">
             <div className=" flex items-center gap-2">
