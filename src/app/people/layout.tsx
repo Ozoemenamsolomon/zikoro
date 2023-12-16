@@ -15,8 +15,7 @@ export const PeopleLinks: TLink[] = [
 ];
 
 const People = ({ children }: { children: React.ReactNode }) => {
-  const pathnameArr = usePathname().split("/");
-  const currentLink = pathnameArr[pathnameArr.length - 1];
+  const currentLink = usePathname().split("/").pop();
 
   const mappedData = AttendeesData.map((data) => (
     <Attendee
@@ -192,12 +191,12 @@ const People = ({ children }: { children: React.ReactNode }) => {
   return (
     <section className="bg-white px-1 py-2 space-y-8">
       <nav>
-        <ul className="flex gap-4 px-4">
+        <ul className="flex gap-8 px-4">
           {PeopleLinks.map(({ href, name }) => (
             <li
               key={name}
-              className={`text-sm capitalize ${
-                currentLink === href ? "text-primary" : ""
+              className={`text-sm capitalize font-medium ${
+                currentLink === href ? "text-basePrimary" : "text-slate-700"
               }`}
             >
               <Link href={href}>{name}</Link>
