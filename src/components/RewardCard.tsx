@@ -1,7 +1,7 @@
 interface RewardCardProps {
     imgSrc: string;
     text: string;
-    heading: string;
+    points: Number;
   }
 
 import Image from 'next/image';

@@ -1,4 +1,4 @@
-interface RewardCardProps {
+interface PointCardProps {
     imgSrc: string;
     text: string;
     heading: string;
@@ -6,7 +6,7 @@ interface RewardCardProps {
 
 import Image from 'next/image';
 
-const PointsCard: React.FC<RewardCardProps>=({imgSrc,heading,text})=>{
+const PointsCard: React.FC<PointCardProps>=({imgSrc,heading,text})=>{
     return (
         <section className=" py-[22px] bg-white rounded-lg px-[18px] flex items-center gap-2">
             <Image src={imgSrc} width={32} height={32} alt="" />
