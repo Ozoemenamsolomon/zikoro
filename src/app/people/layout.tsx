@@ -1,5 +1,5 @@
 "use client";
-import Attendee from "../../shared/Attendee";
+import Attendee from "../../components/shared/Attendee";
 import AttendeesData from "../../data/AttendeesData";
 import { TLink } from "@/types/links";
 import Link from "next/link";
