@@ -44,7 +44,7 @@ const Sidebar = () => {
       <div className="flex flex-col gap-8">
         <Image
           className="p-4"
-          src={"/logo.svg"}
+          src={"/logo.png"}
           alt={"zikoro logo"}
           width={150}
           height={100}

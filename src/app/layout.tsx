@@ -17,12 +17,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="bg-basebody ">
+    <html lang="en" className="bg-basebody">
       <body className={`${inter.className} h-screen flex`}>
         <Sidebar />
         <div className="flex-1">
           <Topbar />
-          <div className="pt-4 pl-4">{children}</div>
+          <div className="p-2">{children}</div>
         </div>
       </body>
     </html>
