@@ -1,5 +1,14 @@
+interface AttendeeProp {
+    name: string;
+    job: string;
+    date: string | null; 
+    time: string | null; 
+    role1: string;
+    role2: string | null; 
+  }
 
-const Attendee = ({name,job,role1,role2,date,time}) => {
+
+const Attendee: React.FC<AttendeeProp> = ({name,job,role1,role2,date,time}) => {
     
     return (
       <section className=" flex justify-between p-4">

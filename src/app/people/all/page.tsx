@@ -1,5 +1,4 @@
 interface RewardData {
-  id: number;
   imgSrc: string;
   text: string;
   heading: string;
