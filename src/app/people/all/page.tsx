@@ -85,10 +85,10 @@ const People=()=>{
     },
   ]
   
-
+  //i converted the value of the key to string because leaving it as a Number, Typescript kept giving me an error
     const mappedData= AttendeesData.map(data=>(<Attendee key={data.id} name={data.fullName} job={data.job} time={data.time} date={data.date} role1={data.role1} role2={data.role2}  />))
-    const mapp= data.map(elem=>(<RewardCard key={elem.id} text={elem.text} points={elem.points} imgSrc={elem.imgSrc} />))
-    const mapped= data1.map(elem=>(<PointsCard key={elem.id} text={elem.text} imgSrc={elem.imgSrc} heading={elem.heading} />))
+    const mapp= data.map(elem=>(<RewardCard key={elem.id.toString()} text={elem.text} points={elem.points} imgSrc={elem.imgSrc} />))
+    const mapped= data1.map(elem=>(<PointsCard key={elem.id.toString()} text={elem.text} imgSrc={elem.imgSrc} heading={elem.heading} />))
 
     return (
         <section className=" flex gap-2">
