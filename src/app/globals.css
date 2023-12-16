@@ -65,3 +65,13 @@
         --ring: 212.7 26.8% 83.9%;
     }
 }
+
+#search-input{
+    background: url('/images/tabler_search.svg');
+    background-repeat:no-repeat;
+    background-position: center left 10px;
+  }
+  #search-div{
+    width:fit-content;
+  
+  }

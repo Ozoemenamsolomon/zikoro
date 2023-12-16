@@ -20,6 +20,11 @@ const config: Config = {
       colors: {
         basebody: "#f3f3f3",
         basePrimary: "#001fcc",
+        ticketColor:'#CFCFCF',
+        greyBlack:'#0A0E2E',
+        earlyBirdColor:'#001FCC',
+        ash:'#717171',
+        lightOrange:'rgba(230, 129, 17, 0.05)'
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -53,6 +58,9 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+      },
+      fontSize: {
+        'small': '12px',
       },
       borderRadius: {
         lg: "var(--radius)",
