@@ -88,7 +88,7 @@ export default function Page() {
                       name="email"
                       render={({ field }) => (
                         <FormItem className="relative">
-                          <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-white text-slate-600 text-sm capitalize p-1.5">
+                          <FormLabel className="absolute -top-2 right-4 bg-white text-slate-600 text-sm capitalize p-1.5">
                             email
                           </FormLabel>
                           <FormControl>
