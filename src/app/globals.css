@@ -66,12 +66,22 @@
     }
 }
 
-#search-input{
+#search-input {
     background: url('/images/tabler_search.svg');
-    background-repeat:no-repeat;
+    background-repeat: no-repeat;
     background-position: center left 10px;
+}
+
+#search-div {
+    width: fit-content;
+
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-  #search-div{
-    width:fit-content;
   
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
