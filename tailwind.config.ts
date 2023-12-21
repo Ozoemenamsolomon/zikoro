@@ -24,7 +24,7 @@ const config: Config = {
         greyBlack:'#0A0E2E',
         earlyBirdColor:'#001FCC',
         ash:'#717171',
-        lightOrange:'rgba(230, 129, 17, 0.05)'
+        lightOrange:'rgba(230, 129, 17, 0.05)',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
