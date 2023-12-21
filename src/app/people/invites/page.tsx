@@ -17,8 +17,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy } from "@styled-icons/boxicons-regular/Copy";
+import { Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
+import { Users } from "styled-icons/heroicons-outline";
+import { Calendar } from "styled-icons/boxicons-regular";
 
 const InviteSchema = z.object({
   email: z.string().min(2, {
@@ -59,8 +61,8 @@ export default function Page() {
     <section className="px-8 pt-2 pb-8">
       <div className="border-[1px] p-2 space-y-6">
         <h1 className="text-slate-900 text-lg font-medium">Invite</h1>
-        <div className="grid grid-cols-4 gap-4">
-          <div className="col-span-3 space-y-6">
+        <div className="grid grid-cols-3 gap-4">
+          <div className="col-span-2 space-y-6">
             <div className="space-y-4 text-slate-700">
               <div className="flex justify-between p-2 border-[1px]">
                 <span>www.zikoro.com/orthoex/event3502/invite.com</span>
@@ -86,7 +88,7 @@ export default function Page() {
                       name="email"
                       render={({ field }) => (
                         <FormItem className="relative">
-                          <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-basebody text-slate-600 text-sm capitalize p-1.5">
+                          <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-white text-slate-600 text-sm capitalize p-1.5">
                             email
                           </FormLabel>
                           <FormControl>
@@ -101,7 +103,7 @@ export default function Page() {
                       name="attendeeType"
                       render={({ field }) => (
                         <FormItem className="relative">
-                          <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-basebody text-slate-600 text-sm capitalize p-1.5">
+                          <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-white text-slate-600 text-sm capitalize p-1.5">
                             Attendee type
                           </FormLabel>
                           <FormControl>
@@ -125,7 +127,7 @@ export default function Page() {
                   name="email"
                   render={({ field }) => (
                     <FormItem className="relative">
-                      <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-basebody text-slate-600 text-sm capitalize p-1.5">
+                      <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-white text-slate-600 text-sm capitalize p-1.5">
                         Message
                       </FormLabel>
                       <FormControl>
@@ -144,8 +146,100 @@ export default function Page() {
               </form>
             </Form>
           </div>
-          <div className="bg-basebody p-2 rounded-sm">
-            
+          <div className="bg-basebody rounded-sm">
+            <div className="space-y-2 border-b-2 p-2">
+              <h2 className="text-slate-700 font-medium">Email Invites</h2>
+              <div className="flex gap-4 items-center text-slate-500 text-sm">
+                <Users className="w-5 h-5" />
+                <span>20/450 Invites pending</span>
+              </div>
+              <div className="text-gray-300 flex justify-between text-sm">
+                <div className="flex gap-2 items-center">
+                  <div className="flex gap-0.5 items-center">
+                    <Calendar className="w-5 h-5" />
+                    <span>Date</span>
+                  </div>
+                  <div className="h-5 w-[3px] bg-gray-300" />
+                  <div className="flex gap-0.5 items-center border-r-1 border-gray-400 pr-2">
+                    <Users className="w-5 h-5" />
+                    <span>Attendees</span>
+                  </div>
+                </div>
+                <div>
+                  <Input
+                    type="text"
+                    placeholder="Search"
+                    className="bg-transparent border-none focus-visible:ring-0"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="p-2 flex flex-col gap-6">
+              <div className="flex items-center gap-4">
+                <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
+                  YB
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-medium">
+                    ubahyusuf484@gmail.com
+                  </span>
+                  <div className="flex gap-4 text-xs items-center">
+                    <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
+                      Speaker
+                    </span>
+                    <span className="text-yellow-500">Pending</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
+                  YB
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-medium">
+                    cyrilugoh2121@gmail.com
+                  </span>
+                  <div className="flex gap-4 text-xs items-center">
+                    <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
+                      Speaker
+                    </span>
+                    <span className="text-yellow-500">Pending</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
+                  YB
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-medium">
+                    davidudem64@gmail.com
+                  </span>
+                  <div className="flex gap-4 text-xs items-center">
+                    <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
+                      Attendee
+                    </span>
+                    <span className="text-green-500">Registered</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
+                  YB
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-medium">
+                    bilalyusufubah@gmail.com
+                  </span>
+                  <div className="flex gap-4 text-xs items-center">
+                    <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
+                      Speaker
+                    </span>
+                    <span className="text-yellow-500">Registered</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
