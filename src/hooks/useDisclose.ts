@@ -1,9 +1,13 @@
 import { useState } from "react";
 
 const useDisclose = () => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [isOpen, setOpen] = useState<boolean>(false);
 
-  const toggleOpen = () => setOpen((prevOpen) => !prevOpen);
+  const onOpen = () => setOpen(true);
 
-  return { open, toggleOpen };
+  const onClose = () => setOpen(false);
+
+  return { isOpen, onOpen, onClose };
 };
+
+export default useDisclose;
