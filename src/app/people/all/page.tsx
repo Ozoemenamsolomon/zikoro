@@ -9,6 +9,7 @@ interface RewardData {
   imgSrc: string;
   text: string;
   heading: string;
+  id:Number;
 }
 
 const People = () => {

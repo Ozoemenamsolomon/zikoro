@@ -28,7 +28,7 @@ const RewardCard: React.FC<RewardCardProps>=({text,imgSrc,points})=>{
     </clipPath>
   </defs>
 </svg>
-<span className=" text-[7px] font-medium text-[#3F845F]">{points} pts</span>
+<span className=" text-[7px] font-medium text-[#3F845F]">{`${points} pts`}</span>
             </div>
             <Image src={imgSrc} width={32} height={32} alt="Reward point picture" />
             <span className=" text-greyBlack text-[10px] font-medium">{text}</span>
