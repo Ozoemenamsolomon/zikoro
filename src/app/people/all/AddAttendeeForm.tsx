@@ -7,7 +7,6 @@ import { toast } from "@/components/ui/use-toast";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Camera, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 const AttendeeSchema = z.object({
   registrationDate: z.string(),
@@ -46,22 +46,81 @@ const AttendeeSchema = z.object({
   amount: z.number(),
   certificate: z.boolean(),
   profilePicture: z.string().optional(),
+  attendeeType: z.array(z.string()),
 });
 
 export type AttendeeSchema = z.infer<typeof AttendeeSchema>;
 
-export default function AddAttendeeForm({ isOpen, onClose }) {
+type TAttendeeType = {
+  label: string;
+  value: string;
+};
+
+const attendeeTypeOptions: TAttendeeType[] = [
+  {
+    label: "Attendee",
+    value: "attendee",
+  },
+  {
+    label: "Speaker",
+    value: "speaker",
+  },
+  {
+    label: "Sponsor",
+    value: "sponsor",
+  },
+  {
+    label: "Exhibitor",
+    value: "exhibitor",
+  },
+  {
+    label: "Moderator",
+    value: "moderator",
+  },
+  {
+    label: "Organizer",
+    value: "organizer",
+  },
+];
+
+export default function AddAttendeeForm({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) {
   const defaultValues: Partial<AttendeeSchema> = {
     registrationDate: new Date().toISOString(),
     amount: 5000,
     certificate: true,
-    userEmail: "ubahyusuf484@gmail.com"
+    userEmail: "ubahyusuf484@gmail.com",
+    attendeeType: ["attendee"],
   };
 
   const form = useForm<AttendeeSchema>({
     resolver: zodResolver(AttendeeSchema),
     defaultValues,
   });
+
+  const { watch, setValue } = form;
+
+  const attendeeType = watch("attendeeType");
+  console.log(attendeeType);
+
+  const toggleAttendeeType = (value: string) => {
+    const newAttendeeType = () => {
+      if (attendeeType.includes(value)) {
+        // If value is already in the array, remove it
+        return attendeeType.filter((item: string) => item !== value);
+      } else {
+        // If value is not in the array, add it
+        return [...attendeeType, value];
+      }
+    };
+
+    setValue("attendeeType", newAttendeeType());
+  };
 
   function onSubmit(data: z.infer<typeof AttendeeSchema>) {
     onClose();
@@ -79,35 +138,31 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
     <Overlay isOpen={isOpen} onClose={onClose} title="Attendee">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 h-fit">
             <FormField
               control={form.control}
               name="firstName"
               render={({ field }) => (
-                <FormItem className="relative">
-                  <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
-                    First name
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter first name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label="First name">
+                  <Input
+                    placeholder="Enter first name"
+                    {...field}
+                    className="placeholder:text-sm mt-0"
+                  />
+                </InputOffsetLabel>
               )}
             />
             <FormField
               control={form.control}
               name="lastName"
               render={({ field }) => (
-                <FormItem className="relative">
-                  <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
-                    Last name
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter last name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label={"Last name"}>
+                  <Input
+                    placeholder={"Enter last name"}
+                    {...field}
+                    className="placeholder:text-sm"
+                  />
+                </InputOffsetLabel>
               )}
             />
           </div>
@@ -115,15 +170,13 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="relative">
-                <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
-                  Email
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+              <InputOffsetLabel label={"Email"}>
+                <Input
+                  placeholder="Enter email"
+                  {...field}
+                  className="placeholder:text-sm"
+                />
+              </InputOffsetLabel>
             )}
           />
           <div className="grid grid-cols-2 gap-4">
@@ -131,30 +184,26 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
               control={form.control}
               name="jobTitle"
               render={({ field }) => (
-                <FormItem className="relative">
-                  <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
-                    Job title
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter job title" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label={"Job title"}>
+                  <Input
+                    placeholder="Enter job title"
+                    {...field}
+                    className="placeholder:text-sm"
+                  />
+                </InputOffsetLabel>
               )}
             />
             <FormField
               control={form.control}
-              name="companyName"
+              name="organization"
               render={({ field }) => (
-                <FormItem className="relative">
-                  <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
-                    Company name
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter company name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label={"Company name"}>
+                  <Input
+                    placeholder="Enter company name"
+                    {...field}
+                    className="placeholder:text-sm"
+                  />
+                </InputOffsetLabel>
               )}
             />
           </div>
@@ -163,30 +212,26 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
               control={form.control}
               name="city"
               render={({ field }) => (
-                <FormItem className="relative">
-                  <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
-                    City
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter city" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label={"Last name"}>
+                  <Input
+                    placeholder="Enter city"
+                    {...field}
+                    className="placeholder:text-sm"
+                  />
+                </InputOffsetLabel>
               )}
             />
             <FormField
               control={form.control}
               name="country"
               render={({ field }) => (
-                <FormItem className="relative">
-                  <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
-                    Country
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter country" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label={"Country"}>
+                  <Input
+                    placeholder="Enter country"
+                    {...field}
+                    className="placeholder:text-sm"
+                  />
+                </InputOffsetLabel>
               )}
             />
           </div>
@@ -196,7 +241,7 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem className="relative">
-                  <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
+                  <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                     Phone number
                   </FormLabel>
                   <span className="text-sm absolute translate-y-1/2 left-2 text-slate-700 z-10 font-medium">
@@ -218,7 +263,7 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
               name="whatsappNumber"
               render={({ field }) => (
                 <FormItem className="relative">
-                  <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
+                  <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                     WhatsApp number
                   </FormLabel>
                   <span className="text-sm absolute translate-y-1/2 left-2 text-slate-700 z-10 font-medium">
@@ -241,7 +286,7 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
             name="profilePicture"
             render={({ field }) => (
               <FormItem className="relative">
-                <div className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
+                <div className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                   Profile picture
                 </div>
                 <FormLabel className="hover:cursor-pointer flex items-center gap-6 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
@@ -254,19 +299,42 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
               </FormItem>
             )}
           />
+          <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
+            <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
+              Attendee Type
+            </span>
+            <div className="flex gap-2 flex-wrap justify-start">
+              {attendeeTypeOptions.map(({ label, value }) => (
+                <button
+                  className={`text-sm p-1.5 mx-auto border-2 rounded font-medium",
+                    ${
+                      attendeeType.includes(value)
+                        ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
+                        : "border-slate-600 text-slate-600 bg-white"
+                    }
+                  `}
+                  type="button"
+                  onClick={() => toggleAttendeeType(value)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <span className="text-xs font-mediu text-slate-500">
+              You can select multiple tags
+            </span>
+          </div>
           <FormField
             control={form.control}
             name="bio"
             render={({ field }) => (
-              <FormItem className="relative">
-                <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
-                  Bio
-                </FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Write a text" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+              <InputOffsetLabel label="bio">
+                <Textarea
+                  placeholder="Write a text"
+                  {...field}
+                  className="placeholder:text-sm"
+                />
+              </InputOffsetLabel>
             )}
           />
           <FormField
@@ -274,7 +342,7 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
             name="x"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                   Twitter
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-slate-700 z-10 font-medium">
@@ -282,7 +350,7 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
                 </span>
                 <FormControl>
                   <Input
-                    className="pr-12"
+                    className="placeholder:text-sm pr-12"
                     placeholder="https://www.x.com/"
                     {...field}
                   />
@@ -296,7 +364,7 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
             name="linkedin"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                   LinkedIn
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-slate-700 z-10 font-medium">
@@ -304,7 +372,7 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
                 </span>
                 <FormControl>
                   <Input
-                    className="pr-12"
+                    className="placeholder:text-sm pr-12"
                     placeholder="https://www.linkedin.com/"
                     {...field}
                   />
@@ -318,7 +386,7 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
             name="instagram"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                   Instagram
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-slate-700 z-10 font-medium">
@@ -326,7 +394,7 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
                 </span>
                 <FormControl>
                   <Input
-                    className="pr-12"
+                    className="placeholder:text-sm pr-12"
                     placeholder="https://www.instagram.com/"
                     {...field}
                   />
@@ -340,7 +408,7 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
             name="facebook"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute -top-1 right-4 bg-white text-slate-600 text-sm px-1.5">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                   Facebook
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-slate-700 z-10 font-medium">
@@ -348,7 +416,7 @@ export default function AddAttendeeForm({ isOpen, onClose }) {
                 </span>
                 <FormControl>
                   <Input
-                    className="pr-12"
+                    className="placeholder:text-sm pr-12"
                     placeholder="https://www.facebook.com/"
                     {...field}
                   />
