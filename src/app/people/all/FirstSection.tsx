@@ -18,7 +18,7 @@ export default function FirstSection({ onOpen }) {
 
   return (
     <section className="border-r-[1px] border-[#F3F3F3] pr-0.5 col-span-3">
-      <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-2">
+      <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-2 px-2">
         <h1 className="font-semibold leading-normal text-greyBlack ">People</h1>
         <div className=" flex gap-4 items-center">
           <button onClick={onOpen}>
