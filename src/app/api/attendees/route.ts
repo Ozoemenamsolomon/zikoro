@@ -1,9 +1,14 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     try {
+      const supabase = createRouteHandlerClient({ cookies });
+
+      const {} = supabase.from("");
       return NextResponse.json({
         data: { msg: "hello world" },
         status: 200,
