@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Camera, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
+import { useCreateAttendee } from "@/hooks/attendees";
 
 const AttendeeSchema = z.object({
   registrationDate: z.string(),
@@ -98,6 +99,8 @@ export default function AddAttendeeForm({
     attendeeType: ["attendee"],
   };
 
+  const { createAttendee, isLoading, error } = useCreateAttendee();
+
   const form = useForm<AttendeeSchema>({
     resolver: zodResolver(AttendeeSchema),
     defaultValues,
@@ -122,13 +125,18 @@ export default function AddAttendeeForm({
     setValue("attendeeType", newAttendeeType());
   };
 
-  function onSubmit(data: z.infer<typeof AttendeeSchema>) {
+  async function onSubmit(data: z.infer<typeof AttendeeSchema>) {
     onClose();
+    console.log("here");
+    const response = await createAttendee();
+    console.log(response);
+
     toast({
       title: "You submitted the following values:",
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          <code className="text-white">{response}</code>
         </pre>
       ),
     });

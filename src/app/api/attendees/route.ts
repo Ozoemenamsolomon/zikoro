@@ -1,8 +1,7 @@
 import axios from "axios";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextApiRequest) {
+export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     try {
       return NextResponse.json({

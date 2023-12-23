@@ -1,27 +1,24 @@
 import { postRequest } from "@/utils/api";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export const usePostAttendees = () => {
-  const [data, setData] = useState();
+export const useCreateAttendee = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
+  const createAttendee = async () => {
+    setLoading(true);
 
-      const { data, status } = await postRequest({
-        endpoint: "/attendees",
-        payload: {},
-      });
+    const { data, status } = await postRequest({
+      endpoint: "/attendees",
+      payload: {},
+    });
 
-      setLoading(false);
+    setLoading(false);
 
-      if (status !== 200) return setError(true);
+    if (status !== 200) return setError(true);
 
-      return setData(data);
-    })();
-  }, []);
+    return data;
+  };
 
-  return { data, isLoading, error };
+  return { createAttendee, isLoading, error };
 };

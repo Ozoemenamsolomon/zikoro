@@ -5,7 +5,7 @@ interface InternalAxiosRequestConfig {
 }
 
 const Api = axios.create({
-  baseURL: "",
+  baseURL: "/api",
 });
 
 Api.interceptors.response.use(
