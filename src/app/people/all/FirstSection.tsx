@@ -3,7 +3,7 @@ import Attendee from "@/components/Attendee";
 import { Input } from "@/components/ui/input";
 import AttendeesData from "@/data/AttendeesData";
 
-export default function FirstSection({ onOpen }) {
+export default function FirstSection({ onOpen }: { onOpen: () => void }) {
   const mappedData = AttendeesData.map((data) => (
     <Attendee
       key={data.id}
