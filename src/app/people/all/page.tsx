@@ -9,8 +9,9 @@ import AddAttendeeForm from "./AddAttendeeForm";
 interface RewardData {
   imgSrc: string;
   text: string;
-  heading: string;
-  id: Number;
+  points?: number;
+  heading?: string;
+  id: number;
 }
 
 const People = () => {
