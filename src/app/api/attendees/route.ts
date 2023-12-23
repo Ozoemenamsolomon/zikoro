@@ -6,9 +6,11 @@ import { cookies } from "next/headers";
 export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     try {
+      const params = await req.json();
       const supabase = createRouteHandlerClient({ cookies });
 
-      const {} = supabase.from("");
+      const { error } = await supabase.from("profiles").upsert(params);
+      if (error) throw error;
       return NextResponse.json({
         data: { msg: "hello world" },
         status: 200,
