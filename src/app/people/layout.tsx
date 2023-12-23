@@ -189,13 +189,13 @@ const People = ({ children }: { children: React.ReactNode }) => {
   //     )
 
   return (
-    <section className="bg-white px-1 py-2 space-y-8">
+    <section className="bg-white px-1 py-8 space-y-8">
       <nav>
         <ul className="flex gap-8 px-4">
           {PeopleLinks.map(({ href, name }) => (
             <li
               key={name}
-              className={`text-sm capitalize font-medium ${
+              className={`text-sm capitalize ${
                 currentLink === href ? "text-basePrimary" : "text-slate-700"
               }`}
             >
