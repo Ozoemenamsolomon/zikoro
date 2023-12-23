@@ -3,8 +3,8 @@
 import { Eye } from "styled-icons/evil";
 import { UploadOutline } from "styled-icons/evaicons-outline";
 import { Check } from "styled-icons/material";
-import { AddToQueue } from "@styled-icons/boxicons-regular/AddToQueue";
-import { Trash } from "@styled-icons/boxicons-regular/Trash";
+import { AddToQueue } from "styled-icons/boxicons-regular";
+import { Trash } from "styled-icons/boxicons-regular";
 import Link from "next/link";
 // import { useState } from "react";
 
@@ -135,10 +135,8 @@ export default function Content() {
                     Event category
                   </p>
                   <div className=" p-4 rounded-md border-2 border-[#f3f3f3] shadow-sm ">
-                    <select
-                      className="w-full bg-white border-0 sm:text-sm focus:border-0 outline-0"
-                      placeholder="Please select"
-                    >
+                    <select className="w-full bg-white border-0 sm:text-sm focus:border-0 outline-0">
+                      <option value="">Please select</option>
                       <option value="onsite">Onsite</option>
                       <option value="online">Online</option>
                       <option value="hybrid">Hybrid</option>
