@@ -11,6 +11,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { AngleDown } from "styled-icons/fa-solid";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 type TOptions = {
   label: string;
@@ -285,8 +294,8 @@ const billing = [
     attendees: 5,
     currency: "NGN",
     amount: 120.0,
-    payoutDate: "Requested",
-    status: "",
+    payoutDate: "",
+    status: "Requested",
   },
   {
     event: "Epoxy art resin",
@@ -307,8 +316,8 @@ const billing = [
     attendees: 2,
     currency: "NGN",
     amount: "60,000",
-    payoutDate: "Requested",
-    status: "",
+    payoutDate: "",
+    status: "Requested",
   },
   {
     event: "Epoxy art resin",
@@ -318,8 +327,8 @@ const billing = [
     attendees: 5,
     currency: "NGN",
     amount: "70,000",
-    payoutDate: "Now",
-    status: "",
+    payoutDate: "",
+    status: "Now",
   },
   {
     event: "Epoxy art resin",
@@ -329,8 +338,8 @@ const billing = [
     attendees: 7,
     currency: "NGN",
     amount: "45.000",
-    payoutDate: "Requested",
-    status: "",
+    payoutDate: "",
+    status: "Requested",
   },
   {
     event: "Epoxy art resin",
@@ -351,14 +360,14 @@ const billing = [
     attendees: 3,
     currency: "NGN",
     amount: "90,000",
-    payoutDate: "Requested",
-    status: "",
+    payoutDate: "",
+    status: "Requested",
   },
 ];
 
 export default function page() {
   return (
-    <section className="bg-white p-4 space-y-4">
+    <section className="bg-white p-4 space-y-4 max-w-full">
       <div className="flex justify-between items-end">
         <span className="text-slate-800 font-medium">
           2/10 Transactions selected
@@ -388,7 +397,7 @@ export default function page() {
           </DropdownMenu>
         </div>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between max-w-full">
         {options
           .filter((option) => option.icon)
           .map(({ label, value, icon }) => (
@@ -399,8 +408,24 @@ export default function page() {
           ))}
       </div>
 
-      <div className="container mx-auto py-4">
+      <div className="py-4 space-y-2">
         <DataTable columns={columns} data={billing} />
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </section>
   );
