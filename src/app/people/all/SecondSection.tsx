@@ -4,8 +4,8 @@ import Link from "next/link";
 
 export default function SecondSection() {
   return (
-    <section className="col-span-4">
-      <div className=" flex justify-end p-4 space-x-1 items-center">
+    <section className="col-span-4 pt-2">
+      <div className="flex justify-end p-4 space-x-1 items-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"
@@ -243,7 +243,7 @@ export default function SecondSection() {
       <div className="py-[18px] px-[24px] border-t-[1px] border-b-[1px] border-[#F3F3F3]">
         <h3 className="  text-xl text-greyBlack leading-[145%]">Profile</h3>
       </div>
-      <section className=" px-6 py-3 space-y-6 ">
+      <section className="py-3 space-y-6 ">
         <div className=" flex flex-col">
           <h4 className=" text-[#222] leading-normal font-medium">
             Data Analyst
@@ -347,7 +347,7 @@ export default function SecondSection() {
             </svg>
           </div>
         </div>
-        <div className=" flex justify-between items-center py-4 px-5 border-t-[1px] border-b-[1px] border-[#F3F3F3]">
+        <div className=" flex justify-between items-center py-4 border-t-[1px] border-b-[1px] border-[#F3F3F3]">
           <h4 className=" text-xl font-medium text-greyBlack">Tags</h4>
           <div className=" flex space-x-1">
             <span className=" text-sm text-[#15161B] font-medium">Tag</span>

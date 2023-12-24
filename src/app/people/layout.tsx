@@ -189,8 +189,8 @@ const People = ({ children }: { children: React.ReactNode }) => {
   //     )
 
   return (
-    <section className="bg-white px-1 py-8 space-y-8">
-      <nav>
+    <section className="bg-white py-8 space-y-8">
+      <nav className="px-1">
         <ul className="flex gap-8 px-4">
           {PeopleLinks.map(({ href, name }) => (
             <li

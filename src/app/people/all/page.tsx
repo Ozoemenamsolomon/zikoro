@@ -111,10 +111,10 @@ const People = () => {
   ));
 
   return (
-    <section className="grid grid-cols-10 gap-2">
+    <section className="grid grid-cols-10 border-t-[1px] border-[#F3F3F3]">
       <FirstSection onOpen={onOpen} />
       <SecondSection />
-      <section className="col-span-3">
+      <section className="col-span-3 pt-2">
         <div className="flex justify-between items-end px-2 mb-2">
           <h4 className=" font-semibold text-greyBlack">Reward Points</h4>
           <button className="px-3 py-2 rounded-md flex gap-3 bg-[#3F845F] text-white items-center">
