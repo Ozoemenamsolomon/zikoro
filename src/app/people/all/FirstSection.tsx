@@ -1,8 +1,16 @@
 "use client";
 import Attendee from "@/components/Attendee";
 import { Input } from "@/components/ui/input";
-import AttendeesData from "@/data/AttendeesData";
-import { useState } from "react";
+import { useGetAttendees } from "@/hooks/attendees";
+import { useState, useEffect } from "react";
+import { extractUniqueTypes } from "@/utils/helpers";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -10,6 +18,20 @@ export default function FirstSection({ onOpen }: { onOen: () => void }) {
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<TSortorder>("none");
+  const [ticketTypes, setTicketTypes] = useState<Array<T>>([]);
+  const [selectedTicketTypes, setSelectedTicketTypes] = useState<Array<T>>([]);
+  const [selectedAttendee, setSelectedAttendee] = useState<number | null>(null);
+
+  const selectAttendee = (id) => setSelectedAttendee(id)
+
+  const { attendees, isLoading, error } = useGetAttendees();
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    setTicketTypes(extractUniqueTypes(attendees, "ticketType"));
+    console.log(attendees);
+  }, [isLoading]);
 
   const toggleSort = () => {
     let newOrder: TSortorder;
@@ -29,7 +51,7 @@ export default function FirstSection({ onOpen }: { onOen: () => void }) {
         break;
     }
 
-    console.log(newOrder)
+    console.log(newOrder);
 
     setSortOrder(newOrder);
   };
@@ -37,22 +59,35 @@ export default function FirstSection({ onOpen }: { onOen: () => void }) {
   const toggleShowFilter = () =>
     setShowFilter((prevShowFilter) => !prevShowFilter);
 
-  const mappedData = AttendeesData.sort((a, b) => {
-    if (sortOrder === "none") return;
-    return sortOrder === "asc"
-      ? a.fullName.localeCompare(b.fullName)
-      : b.fullName.localeCompare(a.fullName);
-  })
-    .filter(({ fullName }) => fullName.toLowerCase().includes(searchTerm))
-    .map((data) => (
+  const mappedData = attendees
+    .sort((a, b) => {
+      if (sortOrder === "none") return;
+      return sortOrder === "asc"
+        ? a.firstName.localeCompare(b.firstName)
+        : b.firstName.localeCompare(a.firstName);
+    })
+    .filter(
+      ({ firstName, lastName }) =>
+        firstName.toLowerCase().includes(searchTerm) ||
+        lastName.toLowerCase().includes(searchTerm)
+    )
+    .filter(
+      ({ ticketType }) =>
+        selectedTicketTypes.length < 1 ||
+        selectedTicketTypes.includes(ticketType)
+    )
+    .map((attendee) => (
       <Attendee
-        key={data.id}
-        name={data.fullName}
-        job={data.job}
-        time={data.time}
-        date={data.date}
-        role1={data.role1}
-        role2={data.role2}
+        key={attendee.id}
+        id={attendee.id}
+        firstName={attendee.firstName}
+        lastName={attendee.lastName}
+        jobTitle={attendee.jobTitle}
+        organization={attendee.organization}
+        registrationDate={attendee.registrationDate}
+        attendeeType={attendee.attendeeType}
+        isSelected={attendee.id === selectedAttendee}
+        selectAttendee={selectAttendee}
       />
     ));
 
@@ -101,7 +136,7 @@ export default function FirstSection({ onOpen }: { onOen: () => void }) {
           </svg>
         </div>
       </div>
-      <div className="flex justify-between my-2 px-2 items-center gap-2">
+      <div className="flex justify-between my-2 px-2 items-center gap-1">
         <div className="relative">
           <svg
             className="absolute left-2 top-[25%]"
@@ -123,7 +158,7 @@ export default function FirstSection({ onOpen }: { onOen: () => void }) {
             type="email"
             placeholder="Search attendees"
             onInput={(event) => setSearchTerm(event.target.value)}
-            className="bg-gray-50 rounded-2xl pl-8"
+            className="placeholder:text-sm placeholder:text-slate-200 text-slate-700 bg-gray-50 rounded-2xl pl-8"
           />
           <svg
             className="absolute right-2 top-[25%]"
@@ -166,24 +201,48 @@ export default function FirstSection({ onOpen }: { onOen: () => void }) {
         }`}
       >
         <div className="flex justify-between my-4 px-1">
-          <div className="flex gap-0.5 items-center flex-1 justify-center px-0.5">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M14.5 7C14.6326 7 14.7598 6.94732 14.8536 6.85355C14.9473 6.75979 15 6.63261 15 6.5V4C15 3.73478 14.8946 3.48043 14.7071 3.29289C14.5196 3.10536 14.2652 3 14 3H2C1.73478 3 1.48043 3.10536 1.29289 3.29289C1.10536 3.48043 1 3.73478 1 4V6.5C1 6.63261 1.05268 6.75979 1.14645 6.85355C1.24021 6.94732 1.36739 7 1.5 7C1.76522 7 2.01957 7.10536 2.20711 7.29289C2.39464 7.48043 2.5 7.73478 2.5 8C2.5 8.26522 2.39464 8.51957 2.20711 8.70711C2.01957 8.89464 1.76522 9 1.5 9C1.36739 9 1.24021 9.05268 1.14645 9.14645C1.05268 9.24021 1 9.36739 1 9.5V12C1 12.2652 1.10536 12.5196 1.29289 12.7071C1.48043 12.8946 1.73478 13 2 13H14C14.2652 13 14.5196 12.8946 14.7071 12.7071C14.8946 12.5196 15 12.2652 15 12V9.5C15 9.36739 14.9473 9.24021 14.8536 9.14645C14.7598 9.05268 14.6326 9 14.5 9C14.2348 9 13.9804 8.89464 13.7929 8.70711C13.6054 8.51957 13.5 8.26522 13.5 8C13.5 7.73478 13.6054 7.48043 13.7929 7.29289C13.9804 7.10536 14.2348 7 14.5 7ZM14 9.935V12H10.5V10.5H9.5V12H2V9.935C2.428 9.82314 2.80683 9.57253 3.07721 9.2224C3.34759 8.87227 3.49426 8.44238 3.49426 8C3.49426 7.55762 3.34759 7.12773 3.07721 6.7776C2.80683 6.42747 2.428 6.17686 2 6.065V4H9.5V5.5H10.5V4H14V6.065C13.572 6.17686 13.1932 6.42747 12.9228 6.7776C12.6524 7.12773 12.5057 7.55762 12.5057 8C12.5057 8.44238 12.6524 8.87227 12.9228 9.2224C13.1932 9.57253 13.572 9.82314 14 9.935Z"
-                fill="#CFCFCF"
-              />
-              <path d="M9.5 6.5H10.5V9.5H9.5V6.5Z" fill="#CFCFCF" />
-            </svg>
-            <span className="text-xs font-medium text-ticketColor">
-              Ticket type
-            </span>
-          </div>
+          <HoverCard>
+            <HoverCardTrigger className="flex gap-0.5 items-center flex-1 justify-center px-0.5">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.5 7C14.6326 7 14.7598 6.94732 14.8536 6.85355C14.9473 6.75979 15 6.63261 15 6.5V4C15 3.73478 14.8946 3.48043 14.7071 3.29289C14.5196 3.10536 14.2652 3 14 3H2C1.73478 3 1.48043 3.10536 1.29289 3.29289C1.10536 3.48043 1 3.73478 1 4V6.5C1 6.63261 1.05268 6.75979 1.14645 6.85355C1.24021 6.94732 1.36739 7 1.5 7C1.76522 7 2.01957 7.10536 2.20711 7.29289C2.39464 7.48043 2.5 7.73478 2.5 8C2.5 8.26522 2.39464 8.51957 2.20711 8.70711C2.01957 8.89464 1.76522 9 1.5 9C1.36739 9 1.24021 9.05268 1.14645 9.14645C1.05268 9.24021 1 9.36739 1 9.5V12C1 12.2652 1.10536 12.5196 1.29289 12.7071C1.48043 12.8946 1.73478 13 2 13H14C14.2652 13 14.5196 12.8946 14.7071 12.7071C14.8946 12.5196 15 12.2652 15 12V9.5C15 9.36739 14.9473 9.24021 14.8536 9.14645C14.7598 9.05268 14.6326 9 14.5 9C14.2348 9 13.9804 8.89464 13.7929 8.70711C13.6054 8.51957 13.5 8.26522 13.5 8C13.5 7.73478 13.6054 7.48043 13.7929 7.29289C13.9804 7.10536 14.2348 7 14.5 7ZM14 9.935V12H10.5V10.5H9.5V12H2V9.935C2.428 9.82314 2.80683 9.57253 3.07721 9.2224C3.34759 8.87227 3.49426 8.44238 3.49426 8C3.49426 7.55762 3.34759 7.12773 3.07721 6.7776C2.80683 6.42747 2.428 6.17686 2 6.065V4H9.5V5.5H10.5V4H14V6.065C13.572 6.17686 13.1932 6.42747 12.9228 6.7776C12.6524 7.12773 12.5057 7.55762 12.5057 8C12.5057 8.44238 12.6524 8.87227 12.9228 9.2224C13.1932 9.57253 13.572 9.82314 14 9.935Z"
+                  fill="#CFCFCF"
+                />
+                <path d="M9.5 6.5H10.5V9.5H9.5V6.5Z" fill="#CFCFCF" />
+              </svg>
+              <span className="text-xs font-medium text-ticketColor">
+                Ticket type
+              </span>
+            </HoverCardTrigger>
+            <HoverCardContent className="space-y-2 w-fit">
+              {ticketTypes.map((type) => (
+                <div className="flex text-slate-700 items-center gap-2 capitalize font-medium">
+                  <Checkbox
+                    id={type}
+                    onCheckedChange={(checked) =>
+                      setSelectedTicketTypes((prevSelected) =>
+                        checked
+                          ? [...prevSelected, type]
+                          : prevSelected.filter((selected) => selected !== type)
+                      )
+                    }
+                  />
+                  <Label
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    htmlFor={type}
+                  >
+                    {type}
+                  </Label>
+                </div>
+              ))}
+            </HoverCardContent>
+          </HoverCard>
           <div className=" border-x-[1px] border-ticketColor flex gap-0.5 items-center justify-center flex-1 px-0.5">
             <svg
               width="16"
@@ -222,12 +281,12 @@ export default function FirstSection({ onOpen }: { onOen: () => void }) {
             </span>
           </div>
         </div>
-        <button className="text-sm text-earlyBirdColor flex items-center gap-2.5 p-1.5 rounded-[1px] bg-[#EEF0FF] mx-auto">
-          <span className="">Early Bird</span>
+        <div className="text-[10px] text-earlyBirdColor flex items-center gap-1.5 p-1 rounded bg-[#EEF0FF] mx-auto w-fit">
+          <span className="font-medium">Ticket Type</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="17"
-            height="16"
+            width="1.5em"
+            height="1.5em"
             viewBox="0 0 17 16"
             fill="none"
           >
@@ -236,7 +295,7 @@ export default function FirstSection({ onOpen }: { onOen: () => void }) {
               fill="#001FCC"
             />
           </svg>
-        </button>
+        </div>
       </div>
       <div className="flex justify-between px-2 mt-6 mb-2">
         <div className="flex items-center">

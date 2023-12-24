@@ -1,47 +1,64 @@
-interface AttendeeProp {
-  name: string;
-  job: string;
-  date: string | null;
-  time: string | null;
-  role1: string;
-  role2: string | null;
-}
+import { TAttendee } from "@/types/attendee";
+import { formatDateToHumanReadable, getTimeFromDate } from "@/utils/date";
 
-const Attendee: React.FC<AttendeeProp> = ({
-  name,
-  job,
-  role1,
-  role2,
-  date,
-  time,
+const Attendee: React.FC<Partial<TAttendee>> = ({
+  id,
+  firstName,
+  lastName,
+  jobTitle,
+  organization,
+  registrationDate,
+  attendeeType,
+  isSelected,
+  selectAttendee,
 }) => {
   return (
-    <div className="flex gap-4 p-2">
-      <div className="w-12 h-12 flex-[20%] rounded-[50%] text-white bg-[#D9D9D9] flex justify-center items-center">
-        {" "}
-        <span className="">AI</span>
-      </div>
-      <div className="flex flex-col gap-1 flex-[60%]">
-        <h4 className="text-slate-900 font-semibold text-sm">{name}</h4>
-        <span className="text-xs text-slate-700">{job}</span>
-        <div className=" flex space-x-1 text-[10px] text-[#717171]">
-          <span className="">{date}</span>
-          <span className="">{time}</span>
+    <button
+      className={`grid grid-cols-10 gap-2 p-2 border-b-2 border-gray-100 ${
+        isSelected ? "bg-gray-100" : ""
+      }`}
+      onClick={() => selectAttendee(id)}
+    >
+      <div className="col-span-2">
+        <div className="w-12 h-12 rounded-[50%] text-white bg-[#D9D9D9] flex justify-center items-center">
+          {" "}
+          <span className="text-sm uppercase">
+            {firstName[0] + lastName[0]}
+          </span>
         </div>
-        <div className=" flex space-x-1.5">
-          <div className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-[10px] ">
-            {role1}
-          </div>
-          <div
+      </div>
+      <div className="flex flex-col gap-1 col-span-6">
+        <h4 className="text-slate-900 font-semibold text-sm capitalize">
+          {firstName + " " + lastName}
+        </h4>
+        <span className="text-[10px] font-medium text-slate-700 truncate max-w-full">
+          {jobTitle + ", " + organization}
+        </span>
+        {/* <div className=" flex space-x-1 text-[10px] text-[#717171]">
+          <span className="">{getTimeFromDate(registrationDate)}</span>
+          <span className="">
+            {formatDateToHumanReadable(registrationDate)}
+          </span>
+        </div> */}
+        <div className="flex gap-1.5 flex-wrap">
+          {attendeeType.map((type) => (
+            <div
+              key={type}
+              className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-[10px] "
+            >
+              {type}
+            </div>
+          ))}
+          {/* <div
             className={`py-0.5 w-[55px] px-1.5 rounded-sm ${
               role2 ? "bg-[#EEFAFF]" : ""
             }  text-[#2685CA] text-[10px] `}
           >
             {role2}
-          </div>
+          </div> */}
         </div>
       </div>
-      <div className="flex flex-col justify-between flex-[20%]">
+      <div className="flex flex-col justify-between col-span-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="17"
@@ -85,7 +102,7 @@ const Attendee: React.FC<AttendeeProp> = ({
           <span className=" text-[10px] text-[#3E404B] ">Check-in</span>
         </div>
       </div>
-    </div>
+    </button>
   );
 };
 

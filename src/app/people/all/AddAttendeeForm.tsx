@@ -3,7 +3,7 @@ import Overlay from "@/components/Overlay";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Form,
   FormControl,
@@ -18,39 +18,8 @@ import { Camera, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useCreateAttendee } from "@/hooks/attendees";
-
-const AttendeeSchema = z.object({
-  registrationDate: z.string(),
-  userEmail: z.string().refine((email) => /\S+@\S+\.\S+/.test(email), {
-    message: "Invalid email address",
-  }),
-  firstName: z.string().min(2, {
-    message: "email must be at least 2 characters.",
-  }),
-  lastName: z.string().min(2, {
-    message: "email must be at least 2 characters.",
-  }),
-  email: z.string().refine((email) => /\S+@\S+\.\S+/.test(email), {
-    message: "Invalid email address",
-  }),
-  jobTitle: z.string().optional(),
-  organization: z.string().optional(),
-  city: z.string().optional(),
-  country: z.string().optional(),
-  phoneNumber: z.string().optional(),
-  whatsappNumber: z.string().optional(),
-  bio: z.string().optional(),
-  x: z.string().optional(),
-  linkedin: z.string().optional(),
-  instagram: z.string().optional(),
-  facebook: z.string().optional(),
-  amount: z.number(),
-  certificate: z.boolean(),
-  profilePicture: z.string().optional(),
-  attendeeType: z.array(z.string()),
-});
-
-export type AttendeeSchema = z.infer<typeof AttendeeSchema>;
+import { AttendeeSchema } from "@/schemas/attendee";
+import { TAttendee } from "@/types/attendee";
 
 type TAttendeeType = {
   label: string;
@@ -91,17 +60,18 @@ export default function AddAttendeeForm({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const defaultValues: Partial<AttendeeSchema> = {
+  const { toast } = useToast();
+  const defaultValues: Partial<TAttendee> = {
     registrationDate: new Date().toISOString(),
-    amount: 5000,
     certificate: true,
     userEmail: "ubahyusuf484@gmail.com",
     attendeeType: ["attendee"],
+    eventId: "1234567890",
   };
 
   const { createAttendee, isLoading, error } = useCreateAttendee();
 
-  const form = useForm<AttendeeSchema>({
+  const form = useForm<TAttendee>({
     resolver: zodResolver(AttendeeSchema),
     defaultValues,
   });
@@ -127,9 +97,11 @@ export default function AddAttendeeForm({
 
   async function onSubmit(data: z.infer<typeof AttendeeSchema>) {
     onClose();
-    console.log("here");
-    const response = await createAttendee();
-    console.log(response);
+    console.log("submitting the attendee");
+    const response = await createAttendee({ payload: data });
+    console.log(response, data);
+
+    // alert(response.message)
 
     toast({
       title: "You submitted the following values:",
