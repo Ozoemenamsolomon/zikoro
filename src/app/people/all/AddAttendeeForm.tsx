@@ -146,33 +146,37 @@ export default function AddAttendeeForm({
     <Overlay isOpen={isOpen} onClose={onClose} title="Attendee">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-2 gap-4 h-fit">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <InputOffsetLabel label="First name">
-                  <Input
-                    placeholder="Enter first name"
-                    {...field}
-                    className="placeholder:text-sm mt-0"
-                  />
-                </InputOffsetLabel>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <InputOffsetLabel label={"Last name"}>
-                  <Input
-                    placeholder={"Enter last name"}
-                    {...field}
-                    className="placeholder:text-sm"
-                  />
-                </InputOffsetLabel>
-              )}
-            />
+          <div className="flex gap-4 h-fit">
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <InputOffsetLabel label="First name">
+                    <Input
+                      placeholder="Enter first name"
+                      {...field}
+                      className="placeholder:text-sm placeholder:text-slate-500 mt-0"
+                    />
+                  </InputOffsetLabel>
+                )}
+              />
+            </div>
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <InputOffsetLabel label={"Last name"}>
+                    <Input
+                      placeholder={"Enter last name"}
+                      {...field}
+                      className="placeholder:text-sm placeholder:text-slate-500"
+                    />
+                  </InputOffsetLabel>
+                )}
+              />
+            </div>
           </div>
           <FormField
             control={form.control}
@@ -182,90 +186,101 @@ export default function AddAttendeeForm({
                 <Input
                   placeholder="Enter email"
                   {...field}
-                  className="placeholder:text-sm"
+                  className="placeholder:text-sm placeholder:text-slate-500"
                 />
               </InputOffsetLabel>
             )}
           />
-          <div className="grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="jobTitle"
-              render={({ field }) => (
-                <InputOffsetLabel label={"Job title"}>
-                  <Input
-                    placeholder="Enter job title"
-                    {...field}
-                    className="placeholder:text-sm"
-                  />
-                </InputOffsetLabel>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="organization"
-              render={({ field }) => (
-                <InputOffsetLabel label={"Company name"}>
-                  <Input
-                    placeholder="Enter company name"
-                    {...field}
-                    className="placeholder:text-sm"
-                  />
-                </InputOffsetLabel>
-              )}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <InputOffsetLabel label={"Last name"}>
-                  <Input
-                    placeholder="Enter city"
-                    {...field}
-                    className="placeholder:text-sm"
-                  />
-                </InputOffsetLabel>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="country"
-              render={({ field }) => (
-                <InputOffsetLabel label={"Country"}>
-                  <Input
-                    placeholder="Enter country"
-                    {...field}
-                    className="placeholder:text-sm"
-                  />
-                </InputOffsetLabel>
-              )}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem className="relative">
-                  <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
-                    Phone number
-                  </FormLabel>
-                  <span className="text-sm absolute translate-y-1/2 left-2 text-slate-700 z-10 font-medium">
-                    +234
-                  </span>
-                  <FormControl>
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="jobTitle"
+                render={({ field }) => (
+                  <InputOffsetLabel label={"Job title"}>
                     <Input
-                      className="pl-12"
-                      placeholder="Enter phone number"
+                      placeholder="Enter job title"
                       {...field}
+                      className="placeholder:text-sm placeholder:text-slate-500"
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  </InputOffsetLabel>
+                )}
+              />
+            </div>
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="organization"
+                render={({ field }) => (
+                  <InputOffsetLabel label={"Company name"}>
+                    <Input
+                      placeholder="Enter company name"
+                      {...field}
+                      className="placeholder:text-sm placeholder:text-slate-500"
+                    />
+                  </InputOffsetLabel>
+                )}
+              />
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <InputOffsetLabel label={"Last name"}>
+                    <Input
+                      placeholder="Enter city"
+                      {...field}
+                      className="placeholder:text-sm placeholder:text-slate-500"
+                    />
+                  </InputOffsetLabel>
+                )}
+              />
+            </div>
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <InputOffsetLabel label={"Country"}>
+                    <Input
+                      placeholder="Enter country"
+                      {...field}
+                      className="placeholder:text-sm placeholder:text-slate-500"
+                    />
+                  </InputOffsetLabel>
+                )}
+              />
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
+                      Phone number
+                    </FormLabel>
+                    <span className="text-sm absolute top-1/2 left-2 text-slate-700 z-10 font-medium">
+                      +234
+                    </span>
+                    <FormControl>
+                      <Input
+                        className="pl-12"
+                        placeholder="Enter phone number"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex-1">  
             <FormField
               control={form.control}
               name="whatsappNumber"
@@ -274,7 +289,7 @@ export default function AddAttendeeForm({
                   <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                     WhatsApp number
                   </FormLabel>
-                  <span className="text-sm absolute translate-y-1/2 left-2 text-slate-700 z-10 font-medium">
+                  <span className="text-sm absolute top-1/2 left-2 text-slate-700 z-10 font-medium">
                     +234
                   </span>
                   <FormControl>
@@ -288,6 +303,7 @@ export default function AddAttendeeForm({
                 </FormItem>
               )}
             />
+            </div>
           </div>
           <FormField
             control={form.control}
@@ -311,7 +327,7 @@ export default function AddAttendeeForm({
             <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
               Attendee Type
             </span>
-            <div className="flex gap-2 flex-wrap justify-start">
+            <div className="flex gap-2 flex-wrap justify-between">
               {attendeeTypeOptions.map(({ label, value }) => (
                 <button
                   className={`text-sm p-1.5 mx-auto border-2 rounded font-medium",
@@ -328,8 +344,8 @@ export default function AddAttendeeForm({
                 </button>
               ))}
             </div>
-            <span className="text-xs font-mediu text-slate-500">
-              You can select multiple tags
+            <span className="text-[10px] font-medium text-slate-500">
+              You can assign multiple roles to the attendee
             </span>
           </div>
           <FormField
@@ -340,7 +356,7 @@ export default function AddAttendeeForm({
                 <Textarea
                   placeholder="Write a text"
                   {...field}
-                  className="placeholder:text-sm"
+                  className="placeholder:text-sm placeholder:text-slate-500"
                 />
               </InputOffsetLabel>
             )}
@@ -358,7 +374,7 @@ export default function AddAttendeeForm({
                 </span>
                 <FormControl>
                   <Input
-                    className="placeholder:text-sm pr-12"
+                    className="placeholder:text-sm placeholder:text-slate-500 pr-12"
                     placeholder="https://www.x.com/"
                     {...field}
                   />
@@ -380,7 +396,7 @@ export default function AddAttendeeForm({
                 </span>
                 <FormControl>
                   <Input
-                    className="placeholder:text-sm pr-12"
+                    className="placeholder:text-sm placeholder:text-slate-500 pr-12"
                     placeholder="https://www.linkedin.com/"
                     {...field}
                   />
@@ -402,7 +418,7 @@ export default function AddAttendeeForm({
                 </span>
                 <FormControl>
                   <Input
-                    className="placeholder:text-sm pr-12"
+                    className="placeholder:text-sm placeholder:text-slate-500 pr-12"
                     placeholder="https://www.instagram.com/"
                     {...field}
                   />
@@ -424,7 +440,7 @@ export default function AddAttendeeForm({
                 </span>
                 <FormControl>
                   <Input
-                    className="placeholder:text-sm pr-12"
+                    className="placeholder:text-sm placeholder:text-slate-500 pr-12"
                     placeholder="https://www.facebook.com/"
                     {...field}
                   />
