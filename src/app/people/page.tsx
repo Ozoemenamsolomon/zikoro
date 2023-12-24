@@ -1,8 +1,14 @@
-"use client"
-import { useRouter } from 'next/navigation'
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-export default function page() {
-    const router = useRouter()
+export default function Page() {
+  const router = useRouter();
 
-    return router.push("/people/all")
+  useEffect(() => {
+    // Redirect to "/people/all" after the component mounts
+    router.push('/people/all');
+  }, []); // The empty dependency array ensures that this effect runs only once
+
+  // You can render something here if needed
+  return <div>Redirecting...</div>;
 }
