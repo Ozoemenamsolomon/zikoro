@@ -27,8 +27,8 @@ const Attendee: React.FC<Partial<TAttendee>> = ({
           </span>
         </div>
       </div>
-      <div className="flex flex-col gap-1 col-span-6">
-        <h4 className="text-slate-900 font-semibold text-sm capitalize">
+      <div className="flex flex-col gap-1 col-span-6 justify-start items-start">
+        <h4 className="text-slate-900 font-semibold text-sm capitalize w-fit">
           {firstName + " " + lastName}
         </h4>
         <span className="text-[10px] font-medium text-slate-700 truncate max-w-full">
@@ -40,7 +40,7 @@ const Attendee: React.FC<Partial<TAttendee>> = ({
             {formatDateToHumanReadable(registrationDate)}
           </span>
         </div> */}
-        <div className="flex gap-1.5 flex-wrap">
+        <div className="flex gap-1.5 flex-wrap w-fit">
           {attendeeType.map((type) => (
             <div
               key={type}
