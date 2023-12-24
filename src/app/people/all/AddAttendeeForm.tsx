@@ -265,7 +265,7 @@ export default function AddAttendeeForm({
                     <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                       Phone number
                     </FormLabel>
-                    <span className="text-sm absolute top-1/2 left-2 text-slate-700 z-10 font-medium">
+                    <span className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-slate-700 z-10 font-medium">
                       +234
                     </span>
                     <FormControl>
@@ -289,7 +289,7 @@ export default function AddAttendeeForm({
                   <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                     WhatsApp number
                   </FormLabel>
-                  <span className="text-sm absolute top-1/2 left-2 text-slate-700 z-10 font-medium">
+                  <span className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-slate-700 z-10 font-medium">
                     +234
                   </span>
                   <FormControl>
