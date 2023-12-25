@@ -1,35 +1,110 @@
 "use client";
 import Attendee from "@/components/Attendee";
 import { Input } from "@/components/ui/input";
-import { useGetAttendees } from "@/hooks/attendees";
+import { useGetAttendees } from "@/hooks/attendee";
 import { useState, useEffect } from "react";
 import { extractUniqueTypes } from "@/utils/helpers";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import Filter, { TFilterType, TSelectedFilter } from "@/components/Filter";
 
 type TSortorder = "asc" | "desc" | "none";
 
-export default function FirstSection({ onOpen }: { onOen: () => void }) {
+const attendeeFilter: TFilterType[] = [
+  {
+    label: "ticket type",
+    accessor: "ticketType",
+    icon: (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M14.5 7C14.6326 7 14.7598 6.94732 14.8536 6.85355C14.9473 6.75979 15 6.63261 15 6.5V4C15 3.73478 14.8946 3.48043 14.7071 3.29289C14.5196 3.10536 14.2652 3 14 3H2C1.73478 3 1.48043 3.10536 1.29289 3.29289C1.10536 3.48043 1 3.73478 1 4V6.5C1 6.63261 1.05268 6.75979 1.14645 6.85355C1.24021 6.94732 1.36739 7 1.5 7C1.76522 7 2.01957 7.10536 2.20711 7.29289C2.39464 7.48043 2.5 7.73478 2.5 8C2.5 8.26522 2.39464 8.51957 2.20711 8.70711C2.01957 8.89464 1.76522 9 1.5 9C1.36739 9 1.24021 9.05268 1.14645 9.14645C1.05268 9.24021 1 9.36739 1 9.5V12C1 12.2652 1.10536 12.5196 1.29289 12.7071C1.48043 12.8946 1.73478 13 2 13H14C14.2652 13 14.5196 12.8946 14.7071 12.7071C14.8946 12.5196 15 12.2652 15 12V9.5C15 9.36739 14.9473 9.24021 14.8536 9.14645C14.7598 9.05268 14.6326 9 14.5 9C14.2348 9 13.9804 8.89464 13.7929 8.70711C13.6054 8.51957 13.5 8.26522 13.5 8C13.5 7.73478 13.6054 7.48043 13.7929 7.29289C13.9804 7.10536 14.2348 7 14.5 7ZM14 9.935V12H10.5V10.5H9.5V12H2V9.935C2.428 9.82314 2.80683 9.57253 3.07721 9.2224C3.34759 8.87227 3.49426 8.44238 3.49426 8C3.49426 7.55762 3.34759 7.12773 3.07721 6.7776C2.80683 6.42747 2.428 6.17686 2 6.065V4H9.5V5.5H10.5V4H14V6.065C13.572 6.17686 13.1932 6.42747 12.9228 6.7776C12.6524 7.12773 12.5057 7.55762 12.5057 8C12.5057 8.44238 12.6524 8.87227 12.9228 9.2224C13.1932 9.57253 13.572 9.82314 14 9.935Z"
+          fill="#CFCFCF"
+        />
+        <path d="M9.5 6.5H10.5V9.5H9.5V6.5Z" fill="#CFCFCF" />
+      </svg>
+    ),
+    options: [],
+  },
+  {
+    label: "attendee",
+    accessor: "attendeeType",
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="13"
+        viewBox="0 0 14 13"
+        fill="none"
+      >
+        <path
+          d="M13.3245 12.3128C12.3363 10.6053 10.7851 9.40719 8.98259 8.89907C9.85894 8.4536 10.5597 7.72596 10.9719 6.83349C11.3841 5.94102 11.4837 4.93573 11.2547 3.97972C11.0257 3.02371 10.4813 2.1727 9.70945 1.56391C8.93757 0.955113 7.98316 0.624023 7.00009 0.624023C6.01703 0.624023 5.06261 0.955113 4.29074 1.56391C3.51887 2.1727 2.97453 3.02371 2.74549 3.97972C2.51645 4.93573 2.61607 5.94102 3.02828 6.83349C3.44048 7.72596 4.14125 8.4536 5.01759 8.89907C3.21509 9.40656 1.66384 10.6047 0.675719 12.3128C0.648586 12.3555 0.630368 12.4032 0.622159 12.4531C0.613951 12.503 0.615922 12.5541 0.627955 12.6032C0.639988 12.6523 0.661832 12.6985 0.692176 12.739C0.722519 12.7794 0.760734 12.8133 0.804521 12.8387C0.848308 12.864 0.896762 12.8802 0.946969 12.8863C0.997176 12.8924 1.0481 12.8882 1.09667 12.8741C1.14524 12.8601 1.19046 12.8363 1.22961 12.8043C1.26876 12.7722 1.30103 12.7326 1.32447 12.6878C2.52509 10.6134 4.64634 9.37531 7.00009 9.37531C9.35384 9.37531 11.4751 10.6134 12.6757 12.6878C12.6992 12.7326 12.7314 12.7722 12.7706 12.8043C12.8097 12.8363 12.8549 12.8601 12.9035 12.8741C12.9521 12.8882 13.003 12.8924 13.0532 12.8863C13.1034 12.8802 13.1519 12.864 13.1957 12.8387C13.2395 12.8133 13.2777 12.7794 13.308 12.739C13.3384 12.6985 13.3602 12.6523 13.3722 12.6032C13.3843 12.5541 13.3862 12.503 13.378 12.4531C13.3698 12.4032 13.3516 12.3555 13.3245 12.3128ZM3.37509 5.00031C3.37509 4.28336 3.5877 3.5825 3.98602 2.98637C4.38434 2.39024 4.95048 1.92562 5.61287 1.65125C6.27525 1.37688 7.00411 1.3051 7.7073 1.44497C8.41048 1.58484 9.05639 1.93009 9.56336 2.43705C10.0703 2.94402 10.4156 3.58993 10.5554 4.29311C10.6953 4.99629 10.6235 5.72516 10.3492 6.38754C10.0748 7.04992 9.61016 7.61607 9.01404 8.01439C8.41791 8.41271 7.71705 8.62531 7.00009 8.62531C6.03904 8.62416 5.11768 8.24187 4.43811 7.5623C3.75854 6.88273 3.37625 5.96137 3.37509 5.00031Z"
+          fill="#CFCFCF"
+        />
+      </svg>
+    ),
+    options: [],
+  },
+  {
+    label: "checked-in",
+    accessor: "checkin",
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+      >
+        <path
+          d="M5.33333 8.32312L8.162 11.1518L13.818 5.49512M2 8.32312L4.82867 11.1518M10.4853 5.49512L8.33333 7.66645"
+          stroke="#CFCFCF"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    ),
+    options: [],
+  },
+];
+
+export default function FirstSection({ onOpen }: { onOpen: () => void }) {
+  const [filters, setFilters] = useState<TFilterType[]>(attendeeFilter);
+  const [selectedFilters, setSelectedFilters] = useState<TSelectedFilter[]>([]);
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<TSortorder>("none");
-  const [ticketTypes, setTicketTypes] = useState<Array<T>>([]);
-  const [selectedTicketTypes, setSelectedTicketTypes] = useState<Array<T>>([]);
   const [selectedAttendee, setSelectedAttendee] = useState<number | null>(null);
 
-  const selectAttendee = (id) => setSelectedAttendee(id)
-
   const { attendees, isLoading, error } = useGetAttendees();
+
+  const setFilter = (key: string, label: string, value: any[]) => {
+    console.log(key, value);
+    const newFilters = selectedFilters.filter((filter) => filter.key !== key);
+
+    if (value.length > 0) {
+      newFilters.push({ key, value, label });
+    }
+
+    setSelectedFilters(newFilters);
+  };
+
+  const selectAttendee = (id) => setSelectedAttendee(id);
 
   useEffect(() => {
     if (isLoading) return;
 
-    setTicketTypes(extractUniqueTypes(attendees, "ticketType"));
+    setFilters((prevFilters) =>
+      prevFilters.map((filter) => ({
+        ...filter,
+        options: extractUniqueTypes(attendees, filter.accessor),
+      }))
+    );
+
     console.log(attendees);
   }, [isLoading]);
 
@@ -60,21 +135,30 @@ export default function FirstSection({ onOpen }: { onOen: () => void }) {
     setShowFilter((prevShowFilter) => !prevShowFilter);
 
   const mappedData = attendees
-    .sort((a, b) => {
-      if (sortOrder === "none") return;
-      return sortOrder === "asc"
-        ? a.firstName.localeCompare(b.firstName)
-        : b.firstName.localeCompare(a.firstName);
-    })
     .filter(
       ({ firstName, lastName }) =>
         firstName.toLowerCase().includes(searchTerm) ||
         lastName.toLowerCase().includes(searchTerm)
     )
-    .filter(
-      ({ ticketType }) =>
-        selectedTicketTypes.length < 1 ||
-        selectedTicketTypes.includes(ticketType)
+    .filter((attendee) => {
+      return selectedFilters.every(({ key, value }) => {
+        const attendeePropertyValue = attendee[key];
+
+        if (value.length === 0 || attendeePropertyValue == null) {
+          return true;
+        }
+
+        if (Array.isArray(attendeePropertyValue)) {
+          return value.some((elm) => attendeePropertyValue.includes(elm));
+        }
+
+        return value.includes(attendeePropertyValue);
+      });
+    })
+    .sort((a, b) =>
+      sortOrder === "asc"
+        ? a.firstName.localeCompare(b.firstName)
+        : b.firstName.localeCompare(a.firstName)
     )
     .map((attendee) => (
       <Attendee
@@ -195,109 +279,15 @@ export default function FirstSection({ onOpen }: { onOen: () => void }) {
           </span>
         </button>
       </div>
-      <div
-        className={`transition-all duration-150 ${
+      <Filter
+        className={`transition-all duration-150 my-4 space-y-4 ${
           showFilter ? "h-fit" : "h-0 overflow-hidden"
         }`}
-      >
-        <div className="flex justify-between my-4 px-1">
-          <HoverCard>
-            <HoverCardTrigger className="flex gap-0.5 items-center flex-1 justify-center px-0.5">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M14.5 7C14.6326 7 14.7598 6.94732 14.8536 6.85355C14.9473 6.75979 15 6.63261 15 6.5V4C15 3.73478 14.8946 3.48043 14.7071 3.29289C14.5196 3.10536 14.2652 3 14 3H2C1.73478 3 1.48043 3.10536 1.29289 3.29289C1.10536 3.48043 1 3.73478 1 4V6.5C1 6.63261 1.05268 6.75979 1.14645 6.85355C1.24021 6.94732 1.36739 7 1.5 7C1.76522 7 2.01957 7.10536 2.20711 7.29289C2.39464 7.48043 2.5 7.73478 2.5 8C2.5 8.26522 2.39464 8.51957 2.20711 8.70711C2.01957 8.89464 1.76522 9 1.5 9C1.36739 9 1.24021 9.05268 1.14645 9.14645C1.05268 9.24021 1 9.36739 1 9.5V12C1 12.2652 1.10536 12.5196 1.29289 12.7071C1.48043 12.8946 1.73478 13 2 13H14C14.2652 13 14.5196 12.8946 14.7071 12.7071C14.8946 12.5196 15 12.2652 15 12V9.5C15 9.36739 14.9473 9.24021 14.8536 9.14645C14.7598 9.05268 14.6326 9 14.5 9C14.2348 9 13.9804 8.89464 13.7929 8.70711C13.6054 8.51957 13.5 8.26522 13.5 8C13.5 7.73478 13.6054 7.48043 13.7929 7.29289C13.9804 7.10536 14.2348 7 14.5 7ZM14 9.935V12H10.5V10.5H9.5V12H2V9.935C2.428 9.82314 2.80683 9.57253 3.07721 9.2224C3.34759 8.87227 3.49426 8.44238 3.49426 8C3.49426 7.55762 3.34759 7.12773 3.07721 6.7776C2.80683 6.42747 2.428 6.17686 2 6.065V4H9.5V5.5H10.5V4H14V6.065C13.572 6.17686 13.1932 6.42747 12.9228 6.7776C12.6524 7.12773 12.5057 7.55762 12.5057 8C12.5057 8.44238 12.6524 8.87227 12.9228 9.2224C13.1932 9.57253 13.572 9.82314 14 9.935Z"
-                  fill="#CFCFCF"
-                />
-                <path d="M9.5 6.5H10.5V9.5H9.5V6.5Z" fill="#CFCFCF" />
-              </svg>
-              <span className="text-xs font-medium text-ticketColor">
-                Ticket type
-              </span>
-            </HoverCardTrigger>
-            <HoverCardContent className="space-y-2 w-fit">
-              {ticketTypes.map((type) => (
-                <div className="flex text-slate-700 items-center gap-2 capitalize font-medium">
-                  <Checkbox
-                    id={type}
-                    onCheckedChange={(checked) =>
-                      setSelectedTicketTypes((prevSelected) =>
-                        checked
-                          ? [...prevSelected, type]
-                          : prevSelected.filter((selected) => selected !== type)
-                      )
-                    }
-                  />
-                  <Label
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    htmlFor={type}
-                  >
-                    {type}
-                  </Label>
-                </div>
-              ))}
-            </HoverCardContent>
-          </HoverCard>
-          <div className=" border-x-[1px] border-ticketColor flex gap-0.5 items-center justify-center flex-1 px-0.5">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M14.3245 13.3128C13.3363 11.6053 11.7851 10.4072 9.98259 9.89907C10.8589 9.4536 11.5597 8.72596 11.9719 7.83349C12.3841 6.94102 12.4837 5.93573 12.2547 4.97972C12.0257 4.02371 11.4813 3.1727 10.7094 2.56391C9.93757 1.95511 8.98316 1.62402 8.00009 1.62402C7.01703 1.62402 6.06261 1.95511 5.29074 2.56391C4.51887 3.1727 3.97453 4.02371 3.74549 4.97972C3.51645 5.93573 3.61607 6.94102 4.02828 7.83349C4.44048 8.72596 5.14125 9.4536 6.01759 9.89907C4.21509 10.4066 2.66384 11.6047 1.67572 13.3128C1.64859 13.3555 1.63037 13.4032 1.62216 13.4531C1.61395 13.503 1.61592 13.5541 1.62795 13.6032C1.63999 13.6523 1.66183 13.6985 1.69218 13.739C1.72252 13.7794 1.76073 13.8133 1.80452 13.8387C1.84831 13.864 1.89676 13.8802 1.94697 13.8863C1.99718 13.8924 2.0481 13.8882 2.09667 13.8741C2.14524 13.8601 2.19046 13.8363 2.22961 13.8043C2.26876 13.7722 2.30103 13.7326 2.32447 13.6878C3.52509 11.6134 5.64634 10.3753 8.00009 10.3753C10.3538 10.3753 12.4751 11.6134 13.6757 13.6878C13.6992 13.7326 13.7314 13.7722 13.7706 13.8043C13.8097 13.8363 13.8549 13.8601 13.9035 13.8741C13.9521 13.8882 14.003 13.8924 14.0532 13.8863C14.1034 13.8802 14.1519 13.864 14.1957 13.8387C14.2395 13.8133 14.2777 13.7794 14.308 13.739C14.3384 13.6985 14.3602 13.6523 14.3722 13.6032C14.3843 13.5541 14.3862 13.503 14.378 13.4531C14.3698 13.4032 14.3516 13.3555 14.3245 13.3128ZM4.37509 6.00031C4.37509 5.28336 4.5877 4.5825 4.98602 3.98637C5.38434 3.39024 5.95048 2.92562 6.61287 2.65125C7.27525 2.37688 8.00411 2.3051 8.7073 2.44497C9.41048 2.58484 10.0564 2.93009 10.5634 3.43705C11.0703 3.94402 11.4156 4.58993 11.5554 5.29311C11.6953 5.99629 11.6235 6.72516 11.3492 7.38754C11.0748 8.04992 10.6102 8.61607 10.014 9.01439C9.41791 9.41271 8.71705 9.62531 8.00009 9.62531C7.03904 9.62416 6.11768 9.24187 5.43811 8.5623C4.75854 7.88273 4.37625 6.96137 4.37509 6.00031Z"
-                fill="#CFCFCF"
-              />
-            </svg>
-            <span className="text-xs font-medium text-ticketColor">
-              Attendees
-            </span>
-          </div>
-          <div className="flex gap-0.5 items-center flex-1 px-0.5">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5.33333 8.32312L8.162 11.1518L13.818 5.49512M2 8.32312L4.82867 11.1518M10.4853 5.49512L8.33333 7.66645"
-                stroke="#CFCFCF"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            <span className="text-xs font-medium text-ticketColor">
-              Checked-in
-            </span>
-          </div>
-        </div>
-        <div className="text-[10px] text-earlyBirdColor flex items-center gap-1.5 p-1 rounded bg-[#EEF0FF] mx-auto w-fit">
-          <span className="font-medium">Ticket Type</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="1.5em"
-            height="1.5em"
-            viewBox="0 0 17 16"
-            fill="none"
-          >
-            <path
-              d="M12.6999 3.80682C12.6382 3.74501 12.565 3.69598 12.4843 3.66253C12.4037 3.62907 12.3172 3.61185 12.2299 3.61185C12.1426 3.61185 12.0561 3.62907 11.9755 3.66253C11.8948 3.69598 11.8216 3.74501 11.7599 3.80682L8.49991 7.06015L5.23991 3.80015C5.17818 3.73843 5.10491 3.68947 5.02427 3.65606C4.94362 3.62266 4.85719 3.60547 4.76991 3.60547C4.68262 3.60547 4.59619 3.62266 4.51554 3.65606C4.4349 3.68947 4.36163 3.73843 4.2999 3.80015C4.23818 3.86187 4.18922 3.93514 4.15582 4.01579C4.12242 4.09643 4.10522 4.18286 4.10522 4.27015C4.10522 4.35744 4.12242 4.44387 4.15582 4.52451C4.18922 4.60515 4.23818 4.67843 4.2999 4.74015L7.55991 8.00015L4.2999 11.2601C4.23818 11.3219 4.18922 11.3951 4.15582 11.4758C4.12242 11.5564 4.10522 11.6429 4.10522 11.7301C4.10522 11.8174 4.12242 11.9039 4.15582 11.9845C4.18922 12.0652 4.23818 12.1384 4.2999 12.2001C4.36163 12.2619 4.4349 12.3108 4.51554 12.3442C4.59619 12.3776 4.68262 12.3948 4.76991 12.3948C4.85719 12.3948 4.94362 12.3776 5.02427 12.3442C5.10491 12.3108 5.17818 12.2619 5.23991 12.2001L8.49991 8.94015L11.7599 12.2001C11.8216 12.2619 11.8949 12.3108 11.9755 12.3442C12.0562 12.3776 12.1426 12.3948 12.2299 12.3948C12.3172 12.3948 12.4036 12.3776 12.4843 12.3442C12.5649 12.3108 12.6382 12.2619 12.6999 12.2001C12.7616 12.1384 12.8106 12.0652 12.844 11.9845C12.8774 11.9039 12.8946 11.8174 12.8946 11.7301C12.8946 11.6429 12.8774 11.5564 12.844 11.4758C12.8106 11.3951 12.7616 11.3219 12.6999 11.2601L9.4399 8.00015L12.6999 4.74015C12.9532 4.48682 12.9532 4.06015 12.6999 3.80682Z"
-              fill="#001FCC"
-            />
-          </svg>
-        </div>
-      </div>
-      <div className="flex justify-between px-2 mt-6 mb-2">
+        filters={filters}
+        onFilter={setFilter}
+        selectedFilters={selectedFilters}
+      />
+      <div className="flex justify-between px-2 mt-4 mb-2">
         <div className="flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"

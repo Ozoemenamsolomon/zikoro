@@ -1,13 +1,10 @@
-export function extractUniqueTypes<T>(arr: T[], ppty: keyof T): Array<T[keyof T]> {
-    const uniqueTypes: Array<T[keyof T]> = []
-
-    arr.forEach((obj) => {
-        const value = obj[ppty]
-
-        if(!uniqueTypes.includes(value)) {
-            uniqueTypes.push(value)
-        }
+export function extractUniqueTypes<T>(arr: T[], ppty: keyof T): T[keyof T][] {
+  const uniqueTypesSet = new Set<T[keyof T]>(
+    arr.flatMap((obj) => {
+      const value = obj[ppty];
+      return value != null ? (Array.isArray(value) ? value : [value]) : [];
     })
+  );
 
-    return uniqueTypes;
+  return Array.from(uniqueTypesSet);
 }

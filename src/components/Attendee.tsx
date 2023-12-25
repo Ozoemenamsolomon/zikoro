@@ -28,7 +28,7 @@ const Attendee: React.FC<Partial<TAttendee>> = ({
         </div>
       </div>
       <div className="flex flex-col gap-1 col-span-6 justify-start items-start">
-        <h4 className="text-slate-900 font-semibold text-sm capitalize w-fit">
+        <h4 className="text-slate-900 font-semibold text-sm capitalize w-fit text-left">
           {firstName + " " + lastName}
         </h4>
         <span className="text-[10px] font-medium text-slate-700 truncate max-w-full">
