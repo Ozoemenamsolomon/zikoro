@@ -46,14 +46,15 @@ const links = [
 const Topbar = () => {
   const pathname = usePathname();
   return (
-    <div className="bg-white w-full flex gap-12 text-gray-500 sticky top-0">
-      {links.map(({ name, href }) => {
+    <div className="bg-white w-full flex gap-12 text-gray-500 sticky top-0 text-[16px] z-50">
+      {links.map(({ name, href }, index) => {
         return (
           <Link
             href={href}
+            key={index}
             className={` ${
               pathname === href
-                ? "text-orange-500 border-b-2 border-orange-500"
+                ? "text-purplebg border-b-2 border-purplebg"
                 : ""
             }`}
           >
