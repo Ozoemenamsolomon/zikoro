@@ -196,15 +196,17 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
               </span>
             </div>
           </section>
-          <section className="my-2 flex justify-between pt-4 pb-[15px] pl-[22px] pr-[20px] border-t-[1px] border-b-[1px] border-[#F3F3F3]">
-            <h3 className="leading-[145%] text-greyBlack text-xl">
-              Credentials
-            </h3>
-            <Link href="/" className="  text-sm text-[#001FCC] ">
-              Recall certificate
-            </Link>
-          </section>
-          <section className="flex justify-between items-center px-6 py-4">
+          {attendee.certificate && (
+            <section className="flex justify-between items-center border-t-[1px] border-slate-200 px-4 pt-4">
+              <h3 className="leading-[145%] text-greyBlack text-xl">
+                Credentials
+              </h3>
+              <Link href="/" className="  text-sm text-[#001FCC] ">
+                Recall certificate
+              </Link>
+            </section>
+          )}
+          <section className="flex justify-evenly items-center px-2 border-t-[1px] border-slate-200 pt-4">
             <div className=" flex flex-col items-center gap-2 w-fit">
               <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
                 <svg
@@ -269,8 +271,8 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
               </span>
             </div>
           </section>
-          <section className="py-3 space-y-6">
-            <h3 className="p-2 border-y-[1px] border-[#F3F3F3] text-xl text-greyBlack font-semibold">
+          <section className="space-y-4 border-t-[1px] border-slate-200 pt-4">
+            <h3 className="p-2 pb-4 border-b-[1px] border-slate-200 text-xl text-greyBlack font-semibold">
               Profile
             </h3>
             <div className="space-y-4 px-2">
@@ -392,11 +394,11 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
               </div>
             </div>
           </section>
-          <section>
-            <div className=" flex justify-between items-center py-4 border-t-[1px] border-b-[1px] border-[#F3F3F3]">
-              <h4 className=" text-xl font-medium text-greyBlack">Tags</h4>
-              <div className=" flex space-x-1">
-                <span className=" text-sm text-[#15161B] font-medium">Tag</span>
+          <section className="border-t-[1px] border-slate-200 px-2 pt-4 space-y-4">
+            <div className="flex justify-between items-center">
+              <h4 className="text-xl font-medium text-greyBlack">Tags</h4>
+              <div className="flex gap-1">
+                <span className="text-sm text-[#15161B] font-medium">Tag</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -411,92 +413,90 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
                 </svg>
               </div>
             </div>
-            <div className="py-4">
-              <div className=" w-[102px] h-10 bg-lightOrange rounded-sm flex justify-center items-center">
-                <span className=" text-small text-[#E68111]">
-                  Old attendees
-                </span>
+            {attendee.tag && (
+              <div className="">
+                <div className=" w-[102px] h-10 bg-lightOrange rounded-sm flex justify-center items-center">
+                  <span className=" text-small text-[#E68111]">
+                    Old attendees
+                  </span>
+                </div>
+              </div>
+            )}
+          </section>
+          <section className="px-2 pt-4 border-t-[1px] border-slate-200 space-y-4">
+            <h4 className="text-xl text-greyBlack font-medium">Speaking at</h4>
+            <div className="space-y-2">
+              <div className="flex justify-between bg-[#FAFAFA] p-2 rounded">
+                <div className="flex-[75%] flex gap-1 items-center">
+                  <span className="text-sm font-medium text-greyBlack">
+                    Reisin mould
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M13.3333 7.33333C13.1565 7.33333 12.987 7.40357 12.8619 7.5286C12.7369 7.65362 12.6667 7.82319 12.6667 8V12C12.6667 12.1768 12.5964 12.3464 12.4714 12.4714C12.3464 12.5964 12.1768 12.6667 12 12.6667H4C3.82319 12.6667 3.65362 12.5964 3.5286 12.4714C3.40357 12.3464 3.33333 12.1768 3.33333 12V4C3.33333 3.82319 3.40357 3.65362 3.5286 3.5286C3.65362 3.40357 3.82319 3.33333 4 3.33333H8C8.17681 3.33333 8.34638 3.2631 8.4714 3.13807C8.59643 3.01305 8.66667 2.84348 8.66667 2.66667C8.66667 2.48986 8.59643 2.32029 8.4714 2.19526C8.34638 2.07024 8.17681 2 8 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H12C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12V8C14 7.82319 13.9298 7.65362 13.8047 7.5286C13.6797 7.40357 13.5101 7.33333 13.3333 7.33333Z"
+                      fill="black"
+                    />
+                    <path
+                      d="M10.6668 3.33333H11.7201L7.52679 7.52C7.4643 7.58198 7.41471 7.65571 7.38086 7.73695C7.34702 7.81819 7.32959 7.90533 7.32959 7.99333C7.32959 8.08134 7.34702 8.16848 7.38086 8.24972C7.41471 8.33096 7.4643 8.40469 7.52679 8.46667C7.58876 8.52915 7.6625 8.57875 7.74374 8.61259C7.82498 8.64644 7.91211 8.66387 8.00012 8.66387C8.08813 8.66387 8.17527 8.64644 8.25651 8.61259C8.33775 8.57875 8.41148 8.52915 8.47346 8.46667L12.6668 4.28V5.33333C12.6668 5.51014 12.737 5.67971 12.8621 5.80474C12.9871 5.92976 13.1566 6 13.3335 6C13.5103 6 13.6798 5.92976 13.8049 5.80474C13.9299 5.67971 14.0001 5.51014 14.0001 5.33333V2.66667C14.0001 2.48986 13.9299 2.32029 13.8049 2.19526C13.6798 2.07024 13.5103 2 13.3335 2H10.6668C10.49 2 10.3204 2.07024 10.1954 2.19526C10.0704 2.32029 10.0001 2.48986 10.0001 2.66667C10.0001 2.84348 10.0704 3.01305 10.1954 3.13807C10.3204 3.2631 10.49 3.33333 10.6668 3.33333Z"
+                      fill="black"
+                    />
+                  </svg>
+                </div>
+                <div className="flex-[25%] flex flex-col text-xs">
+                  <span className="text-slate-500 font-medium">
+                    20 Nov 2023
+                  </span>
+                  <span className="text-slate-500 font-normal">
+                    2:00-3:00PM
+                  </span>
+                </div>
+              </div>
+              <div className="flex gap-2 items-center bg-[#FAFAFA] p-2 rounded">
+                <div className="flex-[75%] flex gap-1 items-center">
+                  <p className="text-sm font-medium text-slate-700">
+                    Analysis and optimization of human performance at work,
+                    during sports and activity of daily living
+                  </p>
+                  <div className="flex-1">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                    >
+                      <path
+                        d="M13.3333 7.33333C13.1565 7.33333 12.987 7.40357 12.8619 7.5286C12.7369 7.65362 12.6667 7.82319 12.6667 8V12C12.6667 12.1768 12.5964 12.3464 12.4714 12.4714C12.3464 12.5964 12.1768 12.6667 12 12.6667H4C3.82319 12.6667 3.65362 12.5964 3.5286 12.4714C3.40357 12.3464 3.33333 12.1768 3.33333 12V4C3.33333 3.82319 3.40357 3.65362 3.5286 3.5286C3.65362 3.40357 3.82319 3.33333 4 3.33333H8C8.17681 3.33333 8.34638 3.2631 8.4714 3.13807C8.59643 3.01305 8.66667 2.84348 8.66667 2.66667C8.66667 2.48986 8.59643 2.32029 8.4714 2.19526C8.34638 2.07024 8.17681 2 8 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H12C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12V8C14 7.82319 13.9298 7.65362 13.8047 7.5286C13.6797 7.40357 13.5101 7.33333 13.3333 7.33333Z"
+                        fill="black"
+                      />
+                      <path
+                        d="M10.6668 3.33333H11.7201L7.52679 7.52C7.4643 7.58198 7.41471 7.65571 7.38086 7.73695C7.34702 7.81819 7.32959 7.90533 7.32959 7.99333C7.32959 8.08134 7.34702 8.16848 7.38086 8.24972C7.41471 8.33096 7.4643 8.40469 7.52679 8.46667C7.58876 8.52915 7.6625 8.57875 7.74374 8.61259C7.82498 8.64644 7.91211 8.66387 8.00012 8.66387C8.08813 8.66387 8.17527 8.64644 8.25651 8.61259C8.33775 8.57875 8.41148 8.52915 8.47346 8.46667L12.6668 4.28V5.33333C12.6668 5.51014 12.737 5.67971 12.8621 5.80474C12.9871 5.92976 13.1566 6 13.3335 6C13.5103 6 13.6798 5.92976 13.8049 5.80474C13.9299 5.67971 14.0001 5.51014 14.0001 5.33333V2.66667C14.0001 2.48986 13.9299 2.32029 13.8049 2.19526C13.6798 2.07024 13.5103 2 13.3335 2H10.6668C10.49 2 10.3204 2.07024 10.1954 2.19526C10.0704 2.32029 10.0001 2.48986 10.0001 2.66667C10.0001 2.84348 10.0704 3.01305 10.1954 3.13807C10.3204 3.2631 10.49 3.33333 10.6668 3.33333Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex-[25%] flex flex-col">
+                  <span className="text-slate-500 text-small font-medium">
+                    20 Nov 2023
+                  </span>
+                  <span className="text-slate-500 text-small font-normal">
+                    2:00-3:00PM
+                  </span>
+                </div>
               </div>
             </div>
           </section>
-          <section>
-            <div className=" py-4 border-t-[1px] border-b-[1px] border-[#F3F3F3]">
-              <h4 className=" text-xl text-greyBlack font-medium">
-                Speaking at
-              </h4>
-            </div>
-            <div className=" flex justify-between bg-[#FAFAFA] p-2 rounded-[4px]">
-              <div className=" flex gap-2 items-center">
-                <span className=" font-medium text-greyBlack">
-                  Reisin mould
-                </span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                >
-                  <path
-                    d="M13.3333 7.33333C13.1565 7.33333 12.987 7.40357 12.8619 7.5286C12.7369 7.65362 12.6667 7.82319 12.6667 8V12C12.6667 12.1768 12.5964 12.3464 12.4714 12.4714C12.3464 12.5964 12.1768 12.6667 12 12.6667H4C3.82319 12.6667 3.65362 12.5964 3.5286 12.4714C3.40357 12.3464 3.33333 12.1768 3.33333 12V4C3.33333 3.82319 3.40357 3.65362 3.5286 3.5286C3.65362 3.40357 3.82319 3.33333 4 3.33333H8C8.17681 3.33333 8.34638 3.2631 8.4714 3.13807C8.59643 3.01305 8.66667 2.84348 8.66667 2.66667C8.66667 2.48986 8.59643 2.32029 8.4714 2.19526C8.34638 2.07024 8.17681 2 8 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H12C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12V8C14 7.82319 13.9298 7.65362 13.8047 7.5286C13.6797 7.40357 13.5101 7.33333 13.3333 7.33333Z"
-                    fill="black"
-                  />
-                  <path
-                    d="M10.6668 3.33333H11.7201L7.52679 7.52C7.4643 7.58198 7.41471 7.65571 7.38086 7.73695C7.34702 7.81819 7.32959 7.90533 7.32959 7.99333C7.32959 8.08134 7.34702 8.16848 7.38086 8.24972C7.41471 8.33096 7.4643 8.40469 7.52679 8.46667C7.58876 8.52915 7.6625 8.57875 7.74374 8.61259C7.82498 8.64644 7.91211 8.66387 8.00012 8.66387C8.08813 8.66387 8.17527 8.64644 8.25651 8.61259C8.33775 8.57875 8.41148 8.52915 8.47346 8.46667L12.6668 4.28V5.33333C12.6668 5.51014 12.737 5.67971 12.8621 5.80474C12.9871 5.92976 13.1566 6 13.3335 6C13.5103 6 13.6798 5.92976 13.8049 5.80474C13.9299 5.67971 14.0001 5.51014 14.0001 5.33333V2.66667C14.0001 2.48986 13.9299 2.32029 13.8049 2.19526C13.6798 2.07024 13.5103 2 13.3335 2H10.6668C10.49 2 10.3204 2.07024 10.1954 2.19526C10.0704 2.32029 10.0001 2.48986 10.0001 2.66667C10.0001 2.84348 10.0704 3.01305 10.1954 3.13807C10.3204 3.2631 10.49 3.33333 10.6668 3.33333Z"
-                    fill="black"
-                  />
-                </svg>
-              </div>
-              <div className=" flex flex-col">
-                <span className=" text-ash text-small font-medium">
-                  20 Nov 2023
-                </span>
-                <span className="text-ash text-small font-normal">
-                  2:00-3:00PM
-                </span>
-              </div>
-            </div>
-          </section>
-          <section>
-            <div className=" flex justify-between bg-[#FAFAFA] p-2 rounded-[4px]">
-              <div className=" flex gap-2 items-center">
-                <p className=" font-medium text-greyBlack">
-                  Analysis and optimization of human performance at work, during
-                  sports and activity of daily living
-                </p>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                >
-                  <path
-                    d="M13.3333 7.33333C13.1565 7.33333 12.987 7.40357 12.8619 7.5286C12.7369 7.65362 12.6667 7.82319 12.6667 8V12C12.6667 12.1768 12.5964 12.3464 12.4714 12.4714C12.3464 12.5964 12.1768 12.6667 12 12.6667H4C3.82319 12.6667 3.65362 12.5964 3.5286 12.4714C3.40357 12.3464 3.33333 12.1768 3.33333 12V4C3.33333 3.82319 3.40357 3.65362 3.5286 3.5286C3.65362 3.40357 3.82319 3.33333 4 3.33333H8C8.17681 3.33333 8.34638 3.2631 8.4714 3.13807C8.59643 3.01305 8.66667 2.84348 8.66667 2.66667C8.66667 2.48986 8.59643 2.32029 8.4714 2.19526C8.34638 2.07024 8.17681 2 8 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H12C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12V8C14 7.82319 13.9298 7.65362 13.8047 7.5286C13.6797 7.40357 13.5101 7.33333 13.3333 7.33333Z"
-                    fill="black"
-                  />
-                  <path
-                    d="M10.6668 3.33333H11.7201L7.52679 7.52C7.4643 7.58198 7.41471 7.65571 7.38086 7.73695C7.34702 7.81819 7.32959 7.90533 7.32959 7.99333C7.32959 8.08134 7.34702 8.16848 7.38086 8.24972C7.41471 8.33096 7.4643 8.40469 7.52679 8.46667C7.58876 8.52915 7.6625 8.57875 7.74374 8.61259C7.82498 8.64644 7.91211 8.66387 8.00012 8.66387C8.08813 8.66387 8.17527 8.64644 8.25651 8.61259C8.33775 8.57875 8.41148 8.52915 8.47346 8.46667L12.6668 4.28V5.33333C12.6668 5.51014 12.737 5.67971 12.8621 5.80474C12.9871 5.92976 13.1566 6 13.3335 6C13.5103 6 13.6798 5.92976 13.8049 5.80474C13.9299 5.67971 14.0001 5.51014 14.0001 5.33333V2.66667C14.0001 2.48986 13.9299 2.32029 13.8049 2.19526C13.6798 2.07024 13.5103 2 13.3335 2H10.6668C10.49 2 10.3204 2.07024 10.1954 2.19526C10.0704 2.32029 10.0001 2.48986 10.0001 2.66667C10.0001 2.84348 10.0704 3.01305 10.1954 3.13807C10.3204 3.2631 10.49 3.33333 10.6668 3.33333Z"
-                    fill="black"
-                  />
-                </svg>
-              </div>
-              <div className=" flex flex-col">
-                <span className=" text-ash text-small font-medium">
-                  20 Nov 2023
-                </span>
-                <span className="text-ash text-small font-normal">
-                  2:00-3:00PM
-                </span>
-              </div>
-            </div>
-            <div className=" py-4 border-t-[1px] border-b-[1px] border-[#F3F3F3]">
-              <h4 className=" text-xl text-greyBlack font-medium">
-                Moderating at
-              </h4>
-            </div>
-          </section>
-          <section>
+          <section className="border-t-[1px] border-slate-200 px-2 pt-4 space-y-4">
+            <h4 className=" text-xl text-greyBlack font-medium">
+              Moderating at
+            </h4>
             <div className=" flex justify-between bg-[#FAFAFA] p-2 rounded-[4px]">
               <div className=" flex gap-2 items-center">
                 <span className=" font-medium text-greyBlack">
@@ -528,7 +528,9 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
                 </span>
               </div>
             </div>
-            <div className=" flex justify-between items-center py-4 px-5 border-t-[1px] border-b-[1px] border-[#F3F3F3]">
+          </section>
+          <section className="border-t-[1px] border-slate-200 space-y-4 pt-4">
+            <div className="flex justify-between items-center border-b-[1px] border-slate-200 pb-2 px-2">
               <h4 className=" text-xl font-medium text-greyBlack">Notes</h4>
               <div className=" flex space-x-1">
                 <span className=" text-sm text-[#15161B] font-medium">
@@ -548,15 +550,15 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
                 </svg>
               </div>
             </div>
+            <div className="px-2">
+              <p className="text-sm font-normal text-[#15161B] leading-normal border-[1px] border-[#EBEBEB] rounded-lg py-4 px-2">
+                Lorem ipsum dolor sit amet consectetur. Egestas facilisis eu leo
+                posuere in sed. Vitae volutpat sed magnis ullamcorper lobortis
+                in. Commodo erat sit lectus nibh. Arcu parturient duis tincidunt
+                ut et et consequat.
+              </p>
+            </div>
           </section>
-          <div className=" pl-[13px] pt-4 pb-10 border-[1px] border-[#EBEBEB] rounded-lg">
-            <p className=" text-sm font-normal text-[#15161B] leading-normal ">
-              Lorem ipsum dolor sit amet consectetur. Egestas facilisis eu leo
-              posuere in sed. Vitae volutpat sed magnis ullamcorper lobortis in.
-              Commodo erat sit lectus nibh. Arcu parturient duis tincidunt ut et
-              et consequat.
-            </p>
-          </div>
         </>
       ) : (
         <p className="px-2 text-lg font-medium text-slate-700">

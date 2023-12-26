@@ -79,6 +79,10 @@ export default function AddAttendeeForm({
   const { watch, setValue } = form;
 
   const attendeeType = watch("attendeeType");
+  const country = watch("country");
+  const phoneNumber = watch("phoneNumber");
+  const whatsappNumber = watch("whatsappNumber");
+
   console.log(attendeeType);
 
   const toggleAttendeeType = (value: string) => {
