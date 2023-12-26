@@ -1,23 +1,33 @@
 import { TAttendee } from "@/types/attendee";
 import { formatDateToHumanReadable, getTimeFromDate } from "@/utils/date";
 
-const Attendee: React.FC<Partial<TAttendee>> = ({
-  id,
-  firstName,
-  lastName,
-  jobTitle,
-  organization,
-  registrationDate,
-  attendeeType,
+type AttendeeProps = {
+  attendee: Partial<TAttendee>;
+  isSelected: boolean;
+  selectAttendee: (attendee: TAttendee) => void;
+};
+
+const Attendee: React.FC<AttendeeProps> = ({
+  attendee,
   isSelected,
   selectAttendee,
 }) => {
+  const {
+    id,
+    firstName,
+    lastName,
+    jobTitle,
+    organization,
+    registrationDate,
+    attendeeType,
+  } = attendee;
+  
   return (
     <button
       className={`grid grid-cols-10 gap-2 p-2 border-b-2 border-gray-100 ${
         isSelected ? "bg-gray-100" : ""
       }`}
-      onClick={() => selectAttendee(id)}
+      onClick={() => selectAttendee(attendee)}
     >
       <div className="col-span-2">
         <div className="w-12 h-12 rounded-[50%] text-white bg-[#D9D9D9] flex justify-center items-center">

@@ -5,6 +5,7 @@ import { useGetAttendees } from "@/hooks/attendee";
 import { useState, useEffect } from "react";
 import { extractUniqueTypes } from "@/utils/helpers";
 import Filter, { TFilterType, TSelectedFilter } from "@/components/Filter";
+import { TAttendee } from "@/types/attendee";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -72,13 +73,20 @@ const attendeeFilter: TFilterType[] = [
   },
 ];
 
-export default function FirstSection({ onOpen }: { onOpen: () => void }) {
+export default function FirstSection({
+  onOpen,
+  onSelectAttendee,
+  selectedAttendee,
+}: {
+  onOpen: () => void;
+  onSelectAttendee: (attendee: TAttendee) => void;
+  selectedAttendee: TAttendee;
+}) {
   const [filters, setFilters] = useState<TFilterType[]>(attendeeFilter);
   const [selectedFilters, setSelectedFilters] = useState<TSelectedFilter[]>([]);
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<TSortorder>("none");
-  const [selectedAttendee, setSelectedAttendee] = useState<number | null>(null);
 
   const { attendees, isLoading, error } = useGetAttendees();
 
@@ -92,8 +100,6 @@ export default function FirstSection({ onOpen }: { onOpen: () => void }) {
 
     setSelectedFilters(newFilters);
   };
-
-  const selectAttendee = (id) => setSelectedAttendee(id);
 
   useEffect(() => {
     if (isLoading) return;
@@ -163,15 +169,9 @@ export default function FirstSection({ onOpen }: { onOpen: () => void }) {
     .map((attendee) => (
       <Attendee
         key={attendee.id}
-        id={attendee.id}
-        firstName={attendee.firstName}
-        lastName={attendee.lastName}
-        jobTitle={attendee.jobTitle}
-        organization={attendee.organization}
-        registrationDate={attendee.registrationDate}
-        attendeeType={attendee.attendeeType}
-        isSelected={attendee.id === selectedAttendee}
-        selectAttendee={selectAttendee}
+        attendee={attendee}
+        isSelected={attendee.id === selectedAttendee?.id}
+        selectAttendee={onSelectAttendee}
       />
     ));
 
