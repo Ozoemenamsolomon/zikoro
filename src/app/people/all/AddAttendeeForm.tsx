@@ -20,6 +20,17 @@ import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useCreateAttendee } from "@/hooks/attendee";
 import { AttendeeSchema } from "@/schemas/attendee";
 import { TAttendee } from "@/types/attendee";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useEffect, useState } from "react";
+import COUNTRY_CODE from "@/utils/countryCode";
 
 type TAttendeeType = {
   label: string;
@@ -61,12 +72,16 @@ export default function AddAttendeeForm({
   onClose: () => void;
 }) {
   const { toast } = useToast();
+  const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
+  const [whatsappCountryCode, setWhatsAppCountryCode] =
+    useState<string>("+234");
   const defaultValues: Partial<TAttendee> = {
     registrationDate: new Date().toISOString(),
     certificate: true,
     userEmail: "ubahyusuf484@gmail.com",
     attendeeType: ["attendee"],
     eventId: "1234567890",
+    country: "Nigeria",
   };
 
   const { createAttendee, isLoading, error } = useCreateAttendee();
@@ -80,11 +95,17 @@ export default function AddAttendeeForm({
 
   const attendeeType = watch("attendeeType");
   const country = watch("country");
-  const phoneNumber = watch("phoneNumber");
-  const whatsappNumber = watch("whatsappNumber");
+
+  useEffect(() => {
+    const newCountry = COUNTRY_CODE.find(({ name }) => country === name);
+
+    if (newCountry) {
+      setPhoneCountryCode(newCountry.dial_code);
+      setWhatsAppCountryCode(newCountry.dial_code);
+    }
+  }, [country]);
 
   console.log(attendeeType);
-
   const toggleAttendeeType = (value: string) => {
     const newAttendeeType = () => {
       if (attendeeType.includes(value)) {
@@ -102,19 +123,22 @@ export default function AddAttendeeForm({
   async function onSubmit(data: z.infer<typeof AttendeeSchema>) {
     onClose();
     console.log("submitting the attendee");
-    const response = await createAttendee({ payload: data });
-    console.log(response, data);
+    const payload = {
+      ...data,
+      phoneNumber: data.phoneNumber
+        ? phoneCountryCode + data.phoneNumber
+        : "N/A",
+      whatsappNumber: data.whatsappNumber
+        ? whatsappCountryCode + data.whatsappNumber
+        : "N/A",
+    };
 
-    // alert(response.message)
+    console.log(payload);
+    const response = await createAttendee({ payload });
+    console.log(response, payload);
 
     toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-          {/* <code className="text-white">{response}</code> */}
-        </pre>
-      ),
+      description: "Attendee created successfully",
     });
   }
 
@@ -221,11 +245,24 @@ export default function AddAttendeeForm({
                 name="country"
                 render={({ field }) => (
                   <InputOffsetLabel label={"Country"}>
-                    <Input
-                      placeholder="Enter country"
-                      {...field}
-                      className="placeholder:text-sm placeholder:text-slate-200 text-slate-700"
-                    />
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder="Enter country"
+                            className="placeholder:text-sm placeholder:text-slate-200 text-slate-700"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {COUNTRY_CODE.map(({ name }) => (
+                          <SelectItem value={name}>{name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </InputOffsetLabel>
                 )}
               />
@@ -237,18 +274,23 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="phoneNumber"
                 render={({ field }) => (
-                  <FormItem className="relative">
+                  <FormItem className="relative h-fit">
                     <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                       Phone number
                     </FormLabel>
-                    <span className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-slate-700 z-10 font-medium">
-                      +234
-                    </span>
+                    <input
+                      type="text"
+                      className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-slate-700 z-10 font-medium h-full w-fit max-w-[36px] border-y-[1px]"
+                      value={phoneCountryCode}
+                      onInput={(e) => setPhoneCountryCode(e.target.value)}
+                    />
                     <FormControl>
                       <Input
                         className="placeholder:text-sm placeholder:text-slate-200 text-slate-700 pl-12"
                         placeholder="Enter phone number"
                         {...field}
+                        type="number"
+                        maxLength={10}
                       />
                     </FormControl>
                     <FormMessage />
@@ -265,14 +307,19 @@ export default function AddAttendeeForm({
                     <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
                       WhatsApp number
                     </FormLabel>
-                    <span className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-slate-700 z-10 font-medium">
-                      +234
-                    </span>
+                    <input
+                      type="text"
+                      className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-slate-700 z-10 font-medium h-10 w-fit max-w-[36px] border-y-[1px]"
+                      value={whatsappCountryCode}
+                      onInput={(e) => setWhatsAppCountryCode(e.target.value)}
+                    />
                     <FormControl>
                       <Input
                         className="placeholder:text-sm placeholder:text-slate-200 text-slate-700 pl-12"
                         placeholder="Enter whatsapp number"
                         {...field}
+                        type="number"
+                        maxLength={10}
                       />
                     </FormControl>
                     <FormMessage />
