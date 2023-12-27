@@ -2,7 +2,7 @@ import { TAttendee } from "@/types/attendee";
 import { formatDateToHumanReadable, getTimeFromDate } from "@/utils/date";
 
 type AttendeeProps = {
-  attendee: Partial<TAttendee>;
+  attendee: TAttendee;
   isSelected: boolean;
   selectAttendee: (attendee: TAttendee) => void;
 };
@@ -51,14 +51,17 @@ const Attendee: React.FC<AttendeeProps> = ({
           </span>
         </div> */}
         <div className="flex gap-1.5 flex-wrap w-fit">
-          {attendeeType.map((type) => (
-            <div
-              key={type}
-              className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-[10px] "
-            >
-              {type}
-            </div>
-          ))}
+          {attendeeType.map((type) => {
+            if (type === "attendee" && attendeeType.length > 1) return;
+            return (
+              <div
+                key={type}
+                className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-[10px] "
+              >
+                {type}
+              </div>
+            );
+          })}
           {/* <div
             className={`py-0.5 w-[55px] px-1.5 rounded-sm ${
               role2 ? "bg-[#EEFAFF]" : ""
