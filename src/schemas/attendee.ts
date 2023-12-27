@@ -30,3 +30,30 @@ export const AttendeeSchema = z.object({
   attendeeType: z.array(z.string()),
   eventId: z.string(),
 });
+
+export const noteSchema = z.object({
+  id: z.number().optional(),
+  attendeeId: z.number(),
+  contactAttendeeId: z.number(),
+  created_at: z.date().optional(),
+  eventId: z.string(),
+  attendeeEmail: z.string().email(),
+  contactAttendeeEmail: z.string().email(),
+  notes: z.string(),
+});
+
+const tagSchema = z.object({
+  id: z.number().optional(),
+  created_at: z.date().optional(),
+  eventId: z.string().nullable(),
+  email: z.string().nullable(),
+  contactAttendeeEmail: z.string(),
+  contactAttendeeTags: z.object({}).nullable().refine((value) => typeof value === 'object', {
+    message: 'Invalid JSON object',
+  }),
+  attendeeId: z.bigint().nullable(),
+  contactAttendeeId: z.bigint().nullable(),
+});
+
+export type TAttendeeTags = z.infer<typeof tagSchema>;
+

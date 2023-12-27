@@ -4,10 +4,11 @@ import RewardCard from "@/components/RewardCard";
 import PointsCard from "@/components/PointsCard";
 import useDisclose from "@/hooks/useDisclose";
 import FirstSection from "./FirstSection";
-import AddAttendeeForm from "./AddAttendeeForm";
+import AddAttendeeForm from "@/components/AddAttendeeForm";
 import SecondSection from "./SecondSection";
 import { useState } from "react";
 import { TAttendee } from "@/types/attendee";
+import AddNotesForm from "@/components/AddNotesForm";
 
 interface RewardData {
   imgSrc: string;
@@ -18,7 +19,16 @@ interface RewardData {
 }
 
 const People = () => {
-  const { isOpen, onOpen, onClose } = useDisclose();
+  const {
+    isOpen: attendeeFormIsOpen,
+    onOpen: onOpenAttendeeForm,
+    onClose: onCloseAttendeeForm,
+  } = useDisclose();
+  const {
+    isOpen: notesFormIsOpen,
+    onOpen: onOpenNotesForm,
+    onClose: onCloseNotesForm,
+  } = useDisclose();
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee>(null);
 
   const selectAttendee = (attendee: TAttendee) => setSelectedAttendee(attendee);
@@ -117,8 +127,15 @@ const People = () => {
 
   return (
     <section className="grid grid-cols-10 border-t-[1px] border-[#F3F3F3]">
-      <FirstSection onOpen={onOpen} onSelectAttendee={selectAttendee} selectedAttendee={selectedAttendee} />
-      <SecondSection attendee={selectedAttendee} />
+      <FirstSection
+        onOpen={onOpenAttendeeForm}
+        onSelectAttendee={selectAttendee}
+        selectedAttendee={selectedAttendee}
+      />
+      <SecondSection
+        attendee={selectedAttendee}
+        onOpenNotesForm={onOpenNotesForm}
+      />
       <section className="col-span-3 pt-2">
         <div className="flex justify-between items-end px-2 mb-2">
           <h4 className=" font-semibold text-greyBlack">Reward Points</h4>
@@ -193,7 +210,16 @@ const People = () => {
           <div className="space-y-2">{mapped}</div>
         </section>
       </section>
-      <AddAttendeeForm isOpen={isOpen} onClose={onClose} />
+      <AddAttendeeForm
+        isOpen={attendeeFormIsOpen}
+        onClose={onCloseAttendeeForm}
+      />
+      <AddNotesForm
+        attendeeEmail={selectedAttendee?.email || ""}
+        attendeeId={selectedAttendee?.id || ""}
+        isOpen={notesFormIsOpen}
+        onClose={onCloseNotesForm}
+      />
     </section>
   );
 };
