@@ -25,7 +25,16 @@ export const useCreateNote = () => {
   return { createNote, isLoading, error };
 };
 
-export const useGetNotes = () => {
+type UseGetNotesResult = {
+  notes: TNote[];
+  getNotes: () => Promise<void>;
+} & RequestStatus;
+
+export const useGetNotes = ({
+  attendeeId,
+}: {
+  attendeeId: number;
+}): UseGetNotesResult => {
   const [notes, setNotes] = useState<TNote[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -33,21 +42,26 @@ export const useGetNotes = () => {
   const getNotes = async () => {
     setLoading(true);
 
-    const { data, status } = await getRequest<TNote[]>({
-      endpoint: "/attendees/notes",
-    });
+    try {
+      const { data, status } = await getRequest<TNote[]>({
+        endpoint: `/attendees/${attendeeId}/notes`,
+      });
 
-    setLoading(false);
-
-    if (status !== 200) return setError(true);
-
-    console.log(data.data);
-    return setNotes(data.data);
+      if (status !== 200) {
+        throw data;
+      } else {
+        setNotes(data.data);
+      }
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     getNotes();
-  }, []);
+  }, [attendeeId]);
 
   return { notes, isLoading, error, getNotes };
 };
