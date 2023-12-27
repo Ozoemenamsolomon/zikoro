@@ -32,13 +32,14 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { attendeeId: string } }
+) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      const { data, error, status } = await supabase
-        .from("notes")
-        .select("*");
+      const { data, error, status } = await supabase.from("notes").select("*");
 
       if (error) throw error;
 
