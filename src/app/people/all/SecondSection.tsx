@@ -57,7 +57,7 @@ export default function SecondSection() {
         </div>
       </section>
       <div className=" flex justify-between my-4">
-        <div className=" flex flex-col gap-2 items-center">
+        <div className=" flex flex-col gap-2 items-center flex-1 text-center">
           <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex  justify-center items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +82,7 @@ export default function SecondSection() {
             Add contact
           </span>
         </div>
-        <div className=" flex flex-col gap-2 items-center">
+        <div className=" flex flex-col gap-2 items-center flex-1 text-center">
           <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +100,7 @@ export default function SecondSection() {
             Whatsapp
           </span>
         </div>
-        <div className=" flex flex-col gap-2 items-center">
+        <div className=" flex flex-col gap-2 items-center flex-1 text-center">
           {" "}
           <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
             <svg
@@ -121,7 +121,7 @@ export default function SecondSection() {
             Email
           </span>
         </div>
-        <div className=" flex flex-col gap-2 items-center">
+        <div className=" flex flex-col gap-2 items-center flex-1 text-center">
           <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -156,7 +156,7 @@ export default function SecondSection() {
             Schedule Appointment
           </span>
         </div>
-        <div className=" flex flex-col gap-2 items-center">
+        <div className=" flex flex-col gap-2 items-center flex-1 text-center">
           <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
