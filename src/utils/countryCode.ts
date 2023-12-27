@@ -4,7 +4,7 @@ type TCountryCode = {
   code: string;
 };
 
-const countryCode: TCountryCode[] = [
+const COUNTRY_CODE: TCountryCode[] = [
   {
     name: "Afghanistan",
     dial_code: "+93",
@@ -1217,4 +1217,4 @@ const countryCode: TCountryCode[] = [
   },
 ];
 
-export default countryCode;
+export default COUNTRY_CODE;

@@ -1,3 +1,4 @@
+import { TAttendee } from "@/types/attendee";
 import { postRequest, getRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
 
@@ -17,7 +18,7 @@ export const useCreateAttendee = () => {
 
     if (status !== 201) return setError(true);
 
-    console.log(data)
+    console.log(data);
     return data;
   };
 
@@ -25,14 +26,14 @@ export const useCreateAttendee = () => {
 };
 
 export const useGetAttendees = () => {
-  const [attendees, setAttendees] = useState([]);
+  const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
   const getAttendees = async () => {
     setLoading(true);
 
-    const { data, status } = await getRequest({
+    const { data, status } = await getRequest<TAttendee[]>({
       endpoint: "/attendees",
     });
 
@@ -40,6 +41,7 @@ export const useGetAttendees = () => {
 
     if (status !== 200) return setError(true);
 
+    console.log(data.data);
     return setAttendees(data.data);
   };
 

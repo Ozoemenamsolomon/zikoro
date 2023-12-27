@@ -6,6 +6,8 @@ import useDisclose from "@/hooks/useDisclose";
 import FirstSection from "./FirstSection";
 import AddAttendeeForm from "./AddAttendeeForm";
 import SecondSection from "./SecondSection";
+import { useState } from "react";
+import { TAttendee } from "@/types/attendee";
 
 interface RewardData {
   imgSrc: string;
@@ -17,6 +19,9 @@ interface RewardData {
 
 const People = () => {
   const { isOpen, onOpen, onClose } = useDisclose();
+  const [selectedAttendee, setSelectedAttendee] = useState<TAttendee>(null);
+
+  const selectAttendee = (attendee: TAttendee) => setSelectedAttendee(attendee);
 
   const data: RewardData[] = [
     { id: 1, points: 1000, imgSrc: "/images/unknown 1.png", text: "Questions" },
@@ -112,8 +117,8 @@ const People = () => {
 
   return (
     <section className="grid grid-cols-10 border-t-[1px] border-[#F3F3F3]">
-      <FirstSection onOpen={onOpen} />
-      <SecondSection />
+      <FirstSection onOpen={onOpen} onSelectAttendee={selectAttendee} selectedAttendee={selectedAttendee} />
+      <SecondSection attendee={selectedAttendee} />
       <section className="col-span-3 pt-2">
         <div className="flex justify-between items-end px-2 mb-2">
           <h4 className=" font-semibold text-greyBlack">Reward Points</h4>
