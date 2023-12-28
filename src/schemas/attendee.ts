@@ -31,7 +31,7 @@ export const AttendeeSchema = z.object({
   eventId: z.string(),
 });
 
-export const noteSchema = z.object({
+export const attendeeNoteSchema = z.object({
   id: z.number().optional(),
   attendeeId: z.number(),
   contactAttendeeId: z.number(),
@@ -43,17 +43,17 @@ export const noteSchema = z.object({
 });
 
 const tagSchema = z.object({
-  id: z.number().optional(),
-  created_at: z.date().optional(),
-  eventId: z.string().nullable(),
-  email: z.string().nullable(),
-  contactAttendeeEmail: z.string(),
-  contactAttendeeTags: z.object({}).nullable().refine((value) => typeof value === 'object', {
-    message: 'Invalid JSON object',
-  }),
-  attendeeId: z.bigint().nullable(),
-  contactAttendeeId: z.bigint().nullable(),
+  label: z.string(),
+  color: z.string(),
 });
 
-export type TAttendeeTags = z.infer<typeof tagSchema>;
-
+export const attendeeTagsSchema = z.object({
+  id: z.number().optional(),
+  created_at: z.date().optional(),
+  eventId: z.string(),
+  email: z.string().email(),
+  contactAttendeeEmail: z.string(),
+  contactAttendeeTags: z.array(tagSchema),
+  attendeeId: z.number(),
+  contactAttendeeId: z.number(),
+});

@@ -24,7 +24,7 @@ const Attendee: React.FC<AttendeeProps> = ({
 
   return (
     <button
-      className={`grid grid-cols-10 items-center gap-0.5 p-2 border-b-2 border-gray-100 ${
+      className={`w-full grid grid-cols-10 items-center gap-1.5 p-1.5 border-b-2 border-gray-100 ${
         isSelected ? "bg-gray-100" : ""
       }`}
       onClick={() => selectAttendee(attendee)}
@@ -37,38 +37,40 @@ const Attendee: React.FC<AttendeeProps> = ({
           </span>
         </div>
       </div>
-      <div className="flex flex-col gap-1 col-span-6 justify-start items-start">
-        <h4 className="text-slate-900 font-semibold text-sm capitalize w-fit text-left">
-          {firstName + " " + lastName}
-        </h4>
-        <span className="text-[10px] font-medium text-slate-700 truncate max-w-full">
-          {jobTitle + ", " + organization}
-        </span>
-        {/* <div className=" flex space-x-1 text-[10px] text-[#717171]">
+      <div className="col-span-6">
+        <div className="justify-start items-start flex flex-col gap-1 min-w-full">
+          <h4 className="text-gray-900 font-semibold text-sm capitalize w-full text-left">
+            {firstName + " " + lastName}
+          </h4>
+          <span className="text-[10px] font-medium text-gray-700 truncate w-full text-left">
+            {jobTitle + ", " + organization}
+          </span>
+          {/* <div className=" flex space-x-1 text-[10px] text-[#717171]">
           <span className="">{getTimeFromDate(registrationDate)}</span>
           <span className="">
             {formatDateToHumanReadable(registrationDate)}
           </span>
         </div> */}
-        <div className="flex gap-1.5 flex-wrap w-fit">
-          {attendeeType.map((type) => {
-            if (type === "attendee" && attendeeType.length > 1) return;
-            return (
-              <div
-                key={type}
-                className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-[10px] "
-              >
-                {type}
-              </div>
-            );
-          })}
-          {/* <div
+          <div className="flex gap-1.5 flex-wrap w-fit">
+            {attendeeType.map((type) => {
+              if (type === "attendee" && attendeeType.length > 1) return;
+              return (
+                <div
+                  key={type}
+                  className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-[10px] "
+                >
+                  {type}
+                </div>
+              );
+            })}
+            {/* <div
             className={`py-0.5 w-[55px] px-1.5 rounded-sm ${
               role2 ? "bg-[#EEFAFF]" : ""
             }  text-[#2685CA] text-[10px] `}
           >
             {role2}
           </div> */}
+          </div>
         </div>
       </div>
       <div className="flex flex-col gap-4 items-center col-span-2">
@@ -114,7 +116,7 @@ const Attendee: React.FC<AttendeeProps> = ({
               />
             </svg>
           </div>
-          <span className="text-slate-700 ">Check-in</span>
+          <span className="text-gray-700 ">Check-in</span>
         </div>
       </div>
     </button>

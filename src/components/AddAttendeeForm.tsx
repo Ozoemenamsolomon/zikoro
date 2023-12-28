@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useCreateAttendee } from "@/hooks/attendee";
 import { AttendeeSchema } from "@/schemas/attendee";
-import { TAttendee } from "@/types/attendee";
+import { TAttendee, TAttendeeType } from "@/types/attendee";
 import {
   Select,
   SelectContent,
@@ -31,38 +31,7 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import COUNTRY_CODE from "@/utils/countryCode";
-
-type TAttendeeType = {
-  label: string;
-  value: string;
-};
-
-const attendeeTypeOptions: TAttendeeType[] = [
-  {
-    label: "Attendee",
-    value: "attendee",
-  },
-  {
-    label: "Speaker",
-    value: "speaker",
-  },
-  {
-    label: "Sponsor",
-    value: "sponsor",
-  },
-  {
-    label: "Exhibitor",
-    value: "exhibitor",
-  },
-  {
-    label: "Moderator",
-    value: "moderator",
-  },
-  {
-    label: "Organizer",
-    value: "organizer",
-  },
-];
+import { attendeeTypeOptions } from "@/data/attendee";
 
 export default function AddAttendeeForm({
   isOpen,
@@ -156,7 +125,7 @@ export default function AddAttendeeForm({
                     <Input
                       placeholder="Enter first name"
                       {...field}
-                      className="placeholder:text-sm placeholder:text-slate-200 text-slate-700 mt-0"
+                      className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 mt-0"
                     />
                   </InputOffsetLabel>
                 )}
@@ -171,7 +140,7 @@ export default function AddAttendeeForm({
                     <Input
                       placeholder={"Enter last name"}
                       {...field}
-                      className="placeholder:text-sm placeholder:text-slate-200 text-slate-700"
+                      className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -186,7 +155,7 @@ export default function AddAttendeeForm({
                 <Input
                   placeholder="Enter email"
                   {...field}
-                  className="placeholder:text-sm placeholder:text-slate-200 text-slate-700"
+                  className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                 />
               </InputOffsetLabel>
             )}
@@ -201,7 +170,7 @@ export default function AddAttendeeForm({
                     <Input
                       placeholder="Enter job title"
                       {...field}
-                      className="placeholder:text-sm placeholder:text-slate-200 text-slate-700"
+                      className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -216,7 +185,7 @@ export default function AddAttendeeForm({
                     <Input
                       placeholder="Enter company name"
                       {...field}
-                      className="placeholder:text-sm placeholder:text-slate-200 text-slate-700"
+                      className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -233,7 +202,7 @@ export default function AddAttendeeForm({
                     <Input
                       placeholder="Enter city"
                       {...field}
-                      className="placeholder:text-sm placeholder:text-slate-200 text-slate-700"
+                      className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -253,7 +222,7 @@ export default function AddAttendeeForm({
                         <SelectTrigger>
                           <SelectValue
                             placeholder="Enter country"
-                            className="placeholder:text-sm placeholder:text-slate-200 text-slate-700"
+                            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                           />
                         </SelectTrigger>
                       </FormControl>
@@ -275,18 +244,18 @@ export default function AddAttendeeForm({
                 name="phoneNumber"
                 render={({ field }) => (
                   <FormItem className="relative h-fit">
-                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
+                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
                       Phone number
                     </FormLabel>
                     <input
                       type="text"
-                      className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-slate-700 z-10 font-medium h-full w-fit max-w-[36px] border-y-[1px]"
+                      className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-gray-700 z-10 font-medium h-full w-fit max-w-[36px] border-y-[1px]"
                       value={phoneCountryCode}
                       onInput={(e) => setPhoneCountryCode(e.target.value)}
                     />
                     <FormControl>
                       <Input
-                        className="placeholder:text-sm placeholder:text-slate-200 text-slate-700 pl-12"
+                        className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-12"
                         placeholder="Enter phone number"
                         {...field}
                         type="number"
@@ -304,18 +273,18 @@ export default function AddAttendeeForm({
                 name="whatsappNumber"
                 render={({ field }) => (
                   <FormItem className="relative">
-                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
+                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
                       WhatsApp number
                     </FormLabel>
                     <input
                       type="text"
-                      className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-slate-700 z-10 font-medium h-10 w-fit max-w-[36px] border-y-[1px]"
+                      className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-gray-700 z-10 font-medium h-10 w-fit max-w-[36px] border-y-[1px]"
                       value={whatsappCountryCode}
                       onInput={(e) => setWhatsAppCountryCode(e.target.value)}
                     />
                     <FormControl>
                       <Input
-                        className="placeholder:text-sm placeholder:text-slate-200 text-slate-700 pl-12"
+                        className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-12"
                         placeholder="Enter whatsapp number"
                         {...field}
                         type="number"
@@ -333,12 +302,12 @@ export default function AddAttendeeForm({
             name="profilePicture"
             render={({ field }) => (
               <FormItem className="relative">
-                <div className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
+                <div className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
                   Profile picture
                 </div>
                 <FormLabel className="hover:cursor-pointer flex items-center gap-6 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
                   <Camera className="w-6 h-6" />
-                  <span className="text-slate-200">Select Image</span>
+                  <span className="text-gray-200">Select Image</span>
                 </FormLabel>
                 <FormControl>
                   <Input type="file" className="hidden" {...field} />
@@ -347,7 +316,7 @@ export default function AddAttendeeForm({
             )}
           />
           <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
-            <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
+            <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
               Attendee Type
             </span>
             <div className="flex gap-2 flex-wrap justify-between">
@@ -357,7 +326,7 @@ export default function AddAttendeeForm({
                     ${
                       attendeeType.includes(value)
                         ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
-                        : "border-slate-600 text-slate-600 bg-white"
+                        : "border-gray-600 text-gray-600 bg-white"
                     }
                   `}
                   type="button"
@@ -367,7 +336,7 @@ export default function AddAttendeeForm({
                 </button>
               ))}
             </div>
-            <span className="text-[10px] font-medium text-slate-500">
+            <span className="text-[10px] font-medium text-gray-500">
               You can assign multiple roles to the attendee
             </span>
           </div>
@@ -379,7 +348,7 @@ export default function AddAttendeeForm({
                 <Textarea
                   placeholder="Write a text"
                   {...field}
-                  className="placeholder:text-sm placeholder:text-slate-200 text-slate-700"
+                  className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                 />
               </InputOffsetLabel>
             )}
@@ -389,15 +358,15 @@ export default function AddAttendeeForm({
             name="x"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
                   Twitter
                 </FormLabel>
-                <span className="text-sm absolute translate-y-1/2 right-4 text-slate-700 z-10 font-medium">
+                <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">
                   <Twitter className="w-4 h-4" />
                 </span>
                 <FormControl>
                   <Input
-                    className="placeholder:text-sm placeholder:text-slate-200 text-slate-700 pr-12"
+                    className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pr-12"
                     placeholder="https://www.x.com/"
                     {...field}
                   />
@@ -411,15 +380,15 @@ export default function AddAttendeeForm({
             name="linkedin"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
                   LinkedIn
                 </FormLabel>
-                <span className="text-sm absolute translate-y-1/2 right-4 text-slate-700 z-10 font-medium">
+                <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">
                   <Linkedin className="w-4 h-4" />
                 </span>
                 <FormControl>
                   <Input
-                    className="placeholder:text-sm placeholder:text-slate-200 text-slate-700 pr-12"
+                    className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pr-12"
                     placeholder="https://www.linkedin.com/"
                     {...field}
                   />
@@ -433,15 +402,15 @@ export default function AddAttendeeForm({
             name="instagram"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
                   Instagram
                 </FormLabel>
-                <span className="text-sm absolute translate-y-1/2 right-4 text-slate-700 z-10 font-medium">
+                <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">
                   <Instagram className="w-4 h-4" />
                 </span>
                 <FormControl>
                   <Input
-                    className="placeholder:text-sm placeholder:text-slate-200 text-slate-700 pr-12"
+                    className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pr-12"
                     placeholder="https://www.instagram.com/"
                     {...field}
                   />
@@ -455,15 +424,15 @@ export default function AddAttendeeForm({
             name="facebook"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
                   Facebook
                 </FormLabel>
-                <span className="text-sm absolute translate-y-1/2 right-4 text-slate-700 z-10 font-medium">
+                <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">
                   <Facebook className="w-4 h-4" />
                 </span>
                 <FormControl>
                   <Input
-                    className="placeholder:text-sm placeholder:text-slate-200 text-slate-700 pr-12"
+                    className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pr-12"
                     placeholder="https://www.facebook.com/"
                     {...field}
                   />

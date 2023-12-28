@@ -41,7 +41,7 @@ export default function Filter({
         {filters.map(({ label, accessor, options, icon }, index) => (
           <HoverCard>
             <HoverCardTrigger
-              className={`flex gap-0.5 items-center flex-1 justify-center px-0.5 ${
+              className={`flex gap-0.5 items-center w-full min-w-fit justify-center px-0.5 ${
                 index > 0 ? "border-l-[1px]" : ""
               }`}
             >
@@ -52,7 +52,7 @@ export default function Filter({
             </HoverCardTrigger>
             <HoverCardContent className="space-y-2 w-fit">
               {options.map((option) => (
-                <div className="flex text-slate-700 items-center gap-2 capitalize font-medium">
+                <div className="flex text-gray-700 items-center gap-2 capitalize font-medium">
                   <Checkbox
                     id={option}
                     checked={

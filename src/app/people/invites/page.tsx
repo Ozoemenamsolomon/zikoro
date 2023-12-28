@@ -50,7 +50,7 @@ export default function Page() {
     toast({
       title: "You submitted the following values:",
       description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+        <pre className="mt-2 w-[340px] rounded-md bg-gray-950 p-4">
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
@@ -60,13 +60,13 @@ export default function Page() {
   return (
     <section className="px-8 pt-2 pb-8">
       <div className="border-[1px] p-2 space-y-6">
-        <h1 className="text-slate-900 text-lg font-medium">Invite</h1>
+        <h1 className="text-gray-900 text-lg font-medium">Invite</h1>
         <div className="grid grid-cols-3 gap-4">
           <div className="col-span-2 space-y-6">
-            <div className="space-y-4 text-slate-700">
+            <div className="space-y-4 text-gray-700">
               <div className="flex justify-between p-2 border-[1px]">
                 <span>www.zikoro.com/orthoex/event3502/invite.com</span>
-                <Copy className="w-5 h-5 text-slate-700" />
+                <Copy className="w-5 h-5 text-gray-700" />
               </div>
               <span className="text-sm">
                 Share your link with as many people as you want to invite to
@@ -78,7 +78,7 @@ export default function Page() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-3"
               >
-                <h1 className="text-slate-900 text-lg font-medium">
+                <h1 className="text-gray-900 text-lg font-medium">
                   Invite by email
                 </h1>
                 <div className="space-y-2">
@@ -88,7 +88,7 @@ export default function Page() {
                       name="email"
                       render={({ field }) => (
                         <FormItem className="relative">
-                          <FormLabel className="absolute -top-2 right-4 bg-white text-slate-600 text-sm capitalize p-1.5">
+                          <FormLabel className="absolute -top-2 right-4 bg-white text-gray-600 text-sm capitalize p-1.5">
                             email
                           </FormLabel>
                           <FormControl>
@@ -103,7 +103,7 @@ export default function Page() {
                       name="attendeeType"
                       render={({ field }) => (
                         <FormItem className="relative">
-                          <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-white text-slate-600 text-sm capitalize p-1.5">
+                          <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-white text-gray-600 text-sm capitalize p-1.5">
                             Attendee type
                           </FormLabel>
                           <FormControl>
@@ -127,7 +127,7 @@ export default function Page() {
                   name="email"
                   render={({ field }) => (
                     <FormItem className="relative">
-                      <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-white text-slate-600 text-sm capitalize p-1.5">
+                      <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-white text-gray-600 text-sm capitalize p-1.5">
                         Message
                       </FormLabel>
                       <FormControl>
@@ -148,8 +148,8 @@ export default function Page() {
           </div>
           <div className="bg-basebody rounded-sm">
             <div className="space-y-2 border-b-2 p-2">
-              <h2 className="text-slate-700 font-medium">Email Invites</h2>
-              <div className="flex gap-4 items-center text-slate-500 text-sm">
+              <h2 className="text-gray-700 font-medium">Email Invites</h2>
+              <div className="flex gap-4 items-center text-gray-500 text-sm">
                 <Users className="w-5 h-5" />
                 <span>20/450 Invites pending</span>
               </div>

@@ -2,13 +2,12 @@ import React, { useEffect } from "react";
 import Overlay from "@/components/Overlay";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { noteSchema } from "@/schemas/attendee";
-import { TNote } from "@/types/attendee";
+import { attendeeNoteSchema } from "@/schemas/attendee";
+import { TAttendeeNote } from "@/types/attendee";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -30,16 +29,18 @@ export default function AddNotesForm({
   attendeeId: number;
 }) {
   console.log(attendeeEmail);
-  const defaultValues: Partial<TNote> = {
+  const defaultValues: Partial<TAttendeeNote> = {
     eventId: "1234567890",
     contactAttendeeEmail: "ubahyusuf484@gmail.com",
     contactAttendeeId: 10,
   };
 
-  const { createNote, isLoading, error } = useCreateNote();
+  const { createNote, isLoading, error } = useCreateNote({
+    attendeeId,
+  });
 
-  const form = useForm<TNote>({
-    resolver: zodResolver(noteSchema),
+  const form = useForm<TAttendeeNote>({
+    resolver: zodResolver(attendeeNoteSchema),
     defaultValues,
   });
 
@@ -50,7 +51,7 @@ export default function AddNotesForm({
     setValue("attendeeId", attendeeId);
   }, [attendeeEmail, attendeeId]);
 
-  async function onSubmit(data: TNote) {
+  async function onSubmit(data: TAttendeeNote) {
     onClose();
 
     toast({

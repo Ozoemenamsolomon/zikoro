@@ -39,7 +39,11 @@ export async function GET(
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      const { data, error, status } = await supabase.from("notes").select("*");
+      const { attendeeId } = params;
+      const { data, error, status } = await supabase
+        .from("notes")
+        .select("*")
+        .eq("attendeeId", attendeeId);
 
       if (error) throw error;
 

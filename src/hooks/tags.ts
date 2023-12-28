@@ -1,25 +1,25 @@
-import { TAttendeeNote } from "@/types/attendee";
+import { TAttendeeTags } from "@/types/attendee";
 import { postRequest, getRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
 
-type useCreateNoteResult = {
-  createNote: ({ payload }: { payload: TAttendeeNote }) => void;
+type useUpdateTagsResult = {
+  updateTags: ({ payload }: { payload: TAttendeeTags }) => void;
 } & RequestStatus;
 
-export const useCreateNote = ({
+export const useUpdateTags = ({
   attendeeId,
 }: {
   attendeeId: number;
-}): useCreateNoteResult => {
+}): useUpdateTagsResult => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const createNote = async ({ payload }: { payload: TAttendeeNote }) => {
+  const updateTags = async ({ payload }: { payload: TAttendeeTags }) => {
     console.log(attendeeId, "attendeeId");
     setLoading(true);
 
     const { data, status } = await postRequest({
-      endpoint: `/attendees/${attendeeId}/notes`,
+      endpoint: `/attendees/${attendeeId}/tags`,
       payload,
     });
 
@@ -30,35 +30,35 @@ export const useCreateNote = ({
     console.log(data);
   };
 
-  return { createNote, isLoading, error };
+  return { updateTags, isLoading, error };
 };
 
-type UseGetNotesResult = {
-  notes: TAttendeeNote[];
-  getNotes: () => Promise<void>;
+type UseGetTagsResult = {
+  tags: TAttendeeTags[];
+  getTags: () => Promise<void>;
 } & RequestStatus;
 
-export const useGetNotes = ({
+export const useGetTags = ({
   attendeeId,
 }: {
   attendeeId: number;
-}): UseGetNotesResult => {
-  const [notes, setNotes] = useState<TAttendeeNote[]>([]);
+}): UseGetTagsResult => {
+  const [tags, setTags] = useState<TAttendeeTags[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const getNotes = async () => {
+  const getTags = async () => {
     setLoading(true);
 
     try {
-      const { data, status } = await getRequest<TAttendeeNote[]>({
-        endpoint: `/attendees/${attendeeId}/notes`,
+      const { data, status } = await getRequest<TAttendeeTags[]>({
+        endpoint: `/attendees/${attendeeId}/tags`,
       });
 
       if (status !== 200) {
         throw data;
       } else {
-        setNotes(data.data);
+        setTags(data.data);
       }
     } catch (error) {
       setError(true);
@@ -68,8 +68,8 @@ export const useGetNotes = ({
   };
 
   useEffect(() => {
-    getNotes();
+    getTags();
   }, [attendeeId]);
 
-  return { notes, isLoading, error, getNotes };
+  return { tags, isLoading, error, getTags };
 };

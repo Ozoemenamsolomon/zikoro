@@ -6,7 +6,23 @@ import { useState, useEffect } from "react";
 import { convertCamelToNormal, extractUniqueTypes } from "@/utils/helpers";
 import Filter, { TFilterType, TSelectedFilter } from "@/components/Filter";
 import { TAttendee } from "@/types/attendee";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  Dialog,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import * as XLSX from "xlsx";
+import ChangeAttendeeType from "@/components/moreOptionDialog/changeAttendeeType";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -74,6 +90,38 @@ const attendeeFilter: TFilterType[] = [
   },
 ];
 
+export interface MoreOptionsProps {
+  attendees: TAttendee[];
+}
+
+type TMoreOptions = {
+  label: string;
+  Component: React.FC<MoreOptionsProps>;
+};
+
+const moreOptions: TMoreOptions[] = [
+  {
+    label: "check-in",
+    Component: ChangeAttendeeType,
+  },
+  {
+    label: "Change Attendee Type",
+    Component: ChangeAttendeeType,
+  },
+  {
+    label: "Print Badges",
+    Component: ChangeAttendeeType,
+  },
+  {
+    label: "Certificates",
+    Component: ChangeAttendeeType,
+  },
+  {
+    label: "Import Attendees",
+    Component: ChangeAttendeeType,
+  },
+];
+
 export default function FirstSection({
   onOpen,
   onSelectAttendee,
@@ -89,6 +137,8 @@ export default function FirstSection({
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<TSortorder>("none");
+  const [CurrentSelectedModal, setCurrentSelectedModal] =
+    useState<TMoreOptions | null>(null);
 
   const { attendees, isLoading, error } = useGetAttendees();
 
@@ -106,9 +156,9 @@ export default function FirstSection({
           return selectedFilters.every(({ key, value }) => {
             const attendeePropertyValue = attendee[key];
 
-            if (value.length === 0 || attendeePropertyValue == null) {
-              return true;
-            }
+            if (attendeePropertyValue === null) return false;
+
+            if (value.length === 0) return true;
 
             if (Array.isArray(attendeePropertyValue)) {
               return value.some((elm) => attendeePropertyValue.includes(elm));
@@ -142,7 +192,7 @@ export default function FirstSection({
     setFilters((prevFilters) =>
       prevFilters.map((filter) => ({
         ...filter,
-        options: extractUniqueTypes(attendees, filter.accessor),
+        options: extractUniqueTypes<TAttendee>(attendees, filter.accessor),
       }))
     );
 
@@ -219,18 +269,46 @@ export default function FirstSection({
               />
             </svg>
           </button>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 3C10.9 3 10 3.9 10 5C10 6.1 10.9 7 12 7C13.1 7 14 6.1 14 5C14 3.9 13.1 3 12 3ZM12 17C10.9 17 10 17.9 10 19C10 20.1 10.9 21 12 21C13.1 21 14 20.1 14 19C14 17.9 13.1 17 12 17ZM12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10Z"
-              fill="black"
-            />
-          </svg>
+          <Dialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 3C10.9 3 10 3.9 10 5C10 6.1 10.9 7 12 7C13.1 7 14 6.1 14 5C14 3.9 13.1 3 12 3ZM12 17C10.9 17 10 17.9 10 19C10 20.1 10.9 21 12 21C13.1 21 14 20.1 14 19C14 17.9 13.1 17 12 17ZM12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10Z"
+                    fill="black"
+                  />
+                </svg>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {moreOptions.map((option) => (
+                  <DialogTrigger
+                    asChild
+                    onClick={() => setCurrentSelectedModal(option)}
+                  >
+                    <DropdownMenuItem>{option.label}</DropdownMenuItem>
+                  </DialogTrigger>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <DialogContent className="px-3">
+              <DialogHeader>
+                <DialogTitle>
+                  <span className="capitalize">
+                    {CurrentSelectedModal?.label}
+                  </span>
+                </DialogTitle>
+              </DialogHeader>
+              {CurrentSelectedModal && (
+                <CurrentSelectedModal.Component attendees={mappedAttendees} />
+              )}
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
       <div className="flex justify-between my-2 px-2 items-center gap-1">
@@ -255,7 +333,7 @@ export default function FirstSection({
             type="email"
             placeholder="Search attendees"
             onInput={(event) => setSearchTerm(event.target.value)}
-            className="placeholder:text-sm placeholder:text-slate-200 text-slate-700 bg-gray-50 rounded-2xl pl-8"
+            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8"
           />
           <svg
             className="absolute right-2 top-[25%]"
@@ -314,7 +392,7 @@ export default function FirstSection({
               fill="#717171"
             />
           </svg>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-gray-500">
             {mappedAttendees.length} attendees listed in your view
           </p>
         </div>

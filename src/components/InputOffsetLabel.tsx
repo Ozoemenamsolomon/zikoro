@@ -17,7 +17,7 @@ export default function InputOffsetLabel({
 }) {
   return (
     <FormItem className="relative">
-      <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-slate-600 text-[10px] px-1">
+      <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
         {label}
       </FormLabel>
       <FormControl>{children}</FormControl>

@@ -1,6 +1,6 @@
 "use client";
-import Attendee from "../../components/Attendee";
-import AttendeesData from "../../data/AttendeesData";
+import Attendee from "@/components/Attendee";
+import AttendeesData from "@/data/AttendeesData";
 import { TLink } from "@/types/links";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -39,7 +39,7 @@ const People = ({ children }: { children: React.ReactNode }) => {
               <li
                 key={name}
                 className={`text-sm capitalize ${
-                  currentLink === href ? "text-basePrimary" : "text-slate-700"
+                  currentLink === href ? "text-basePrimary" : "text-gray-700"
                 }`}
               >
                 <Link href={href}>{name}</Link>

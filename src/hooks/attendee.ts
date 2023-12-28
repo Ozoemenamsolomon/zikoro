@@ -6,7 +6,7 @@ export const useCreateAttendee = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const createAttendee = async ({ payload }) => {
+  const createAttendee = async ({ payload }: { payload: TAttendee }) => {
     setLoading(true);
 
     const { data, status } = await postRequest({

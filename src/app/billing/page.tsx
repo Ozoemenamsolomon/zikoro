@@ -369,7 +369,7 @@ export default function page() {
   return (
     <section className="bg-white p-4 space-y-4 max-w-full">
       <div className="flex justify-between items-end">
-        <span className="text-slate-800 font-medium">
+        <span className="text-gray-800 font-medium">
           2/10 Transactions selected
         </span>
         <div className="flex gap-4">
@@ -387,7 +387,7 @@ export default function page() {
                   <Checkbox className="text-basePrimary" id="terms" />
                   <label
                     htmlFor="terms"
-                    className="text-sm font-medium text-slate-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className="text-sm font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     {label}
                   </label>
@@ -401,7 +401,7 @@ export default function page() {
         {options
           .filter((option) => option.icon)
           .map(({ label, value, icon }) => (
-            <div className="text-slate-500 text-sm flex gap-1 items-center">
+            <div className="text-gray-500 text-sm flex gap-1 items-center">
               {icon}
               <span className="font-medium">{label}</span>
             </div>
