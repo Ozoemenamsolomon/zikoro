@@ -36,20 +36,24 @@ const People = () => {
         onSelectAttendee={selectAttendee}
         selectedAttendee={selectedAttendee}
       />
-      <section className="col-span-4 pt-4 space-y-4">
-        {selectedAttendee ? (
-          <SecondSection
-            attendee={selectedAttendee}
-            onOpenNotesForm={onOpenNotesForm}
-            onOpenTagForm={onOpenTagForm}
-          />
-        ) : (
-          <p className="px-2 text-lg font-medium text-gray-700">
-            Select an attendee to view
-          </p>
-        )}
-      </section>
-      <ThirdSection />
+      {selectedAttendee ? (
+        <>
+          <section className="col-span-4 pt-4 space-y-4 max-h-[400px] overflow-auto">
+            <SecondSection
+              attendee={selectedAttendee}
+              onOpenNotesForm={onOpenNotesForm}
+              onOpenTagForm={onOpenTagForm}
+            />
+          </section>
+          <section className="col-span-3 pt-2">
+            <ThirdSection />
+          </section>
+        </>
+      ) : (
+        <p className="px-2 text-lg font-medium text-gray-700 col-span-6 text-center h-96 flex items-center justify-center">
+          Select an attendee to view
+        </p>
+      )}
       <AddAttendeeForm
         isOpen={attendeeFormIsOpen}
         onClose={onCloseAttendeeForm}

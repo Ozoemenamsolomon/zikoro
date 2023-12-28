@@ -105,7 +105,7 @@ export default function ThirdSection() {
   ));
 
   return (
-    <section className="col-span-3 pt-2">
+    <>
       <div className="flex items-center px-2 mb-2">
         <h4 className="font-semibold text-greyBlack">Reward Points</h4>
         <button className="px-3 py-2 rounded-md flex gap-3 bg-[#3F845F] text-white items-center">
@@ -178,6 +178,6 @@ export default function ThirdSection() {
         </h3>
         <div className="space-y-2">{mapped}</div>
       </section>
-    </section>
+    </>
   );
 }

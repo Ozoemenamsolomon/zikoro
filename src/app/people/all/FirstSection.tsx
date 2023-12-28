@@ -414,7 +414,7 @@ export default function FirstSection({
           </button>
         </div>
       </div>
-      <div>
+      <div className="max-h-96 overflow-auto">
         {mappedAttendees.map((attendee) => (
           <Attendee
             key={attendee.id}

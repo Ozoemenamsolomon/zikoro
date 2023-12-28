@@ -17,12 +17,12 @@ export default function SecondSection({
     notes,
     isLoading: notesIsLoading,
     error,
-    getNotes
+    getNotes,
   } = useGetNotes({ attendeeId: attendee.id });
 
   useEffect(() => {
-    getNotes()
-  }, [attendee])
+    getNotes();
+  }, [attendee]);
 
   console.log(notes, "notes");
   return (
@@ -87,52 +87,56 @@ export default function SecondSection({
         </div>
       </section>
       <section className="flex justify-between px-2 gap-2 items-start">
-        <div className="flex flex-col gap-2 items-center justify-center">
-          <div className="w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex  justify-center items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <g clip-path="url(#clip0_11643_35877)">
+        {attendee.phoneNumber && (
+          <div className="flex-1 flex flex-col gap-2 items-center justify-center">
+            <div className="w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex  justify-center items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <g clip-path="url(#clip0_11643_35877)">
+                  <path
+                    d="M16 14C17.3261 14 18.5979 14.5268 19.5355 15.4645C20.4732 16.4021 21 17.6739 21 19V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V19C3 17.6739 3.52678 16.4021 4.46447 15.4645C5.40215 14.5268 6.67392 14 8 14H16ZM20 8C20.2652 8 20.5196 8.10536 20.7071 8.29289C20.8946 8.48043 21 8.73478 21 9V10H22C22.2652 10 22.5196 10.1054 22.7071 10.2929C22.8946 10.4804 23 10.7348 23 11C23 11.2652 22.8946 11.5196 22.7071 11.7071C22.5196 11.8946 22.2652 12 22 12H21V13C21 13.2652 20.8946 13.5196 20.7071 13.7071C20.5196 13.8946 20.2652 14 20 14C19.7348 14 19.4804 13.8946 19.2929 13.7071C19.1054 13.5196 19 13.2652 19 13V12H18C17.7348 12 17.4804 11.8946 17.2929 11.7071C17.1054 11.5196 17 11.2652 17 11C17 10.7348 17.1054 10.4804 17.2929 10.2929C17.4804 10.1054 17.7348 10 18 10H19V9C19 8.73478 19.1054 8.48043 19.2929 8.29289C19.4804 8.10536 19.7348 8 20 8ZM12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7C17 8.32608 16.4732 9.59785 15.5355 10.5355C14.5979 11.4732 13.3261 12 12 12C10.6739 12 9.40215 11.4732 8.46447 10.5355C7.52678 9.59785 7 8.32608 7 7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2Z"
+                    fill="#15161B"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_11643_35877">
+                    <rect width="24" height="24" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
+            </div>
+            <span className="text-xs text-[#3E404B] font-semibold text-center">
+              Add contact
+            </span>
+          </div>
+        )}
+        {attendee.whatsappNumber && (
+          <div className="flex-1  flex flex-col gap-2 items-center justify-center">
+            <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="25"
+                height="24"
+                viewBox="0 0 25 24"
+                fill="none"
+              >
                 <path
-                  d="M16 14C17.3261 14 18.5979 14.5268 19.5355 15.4645C20.4732 16.4021 21 17.6739 21 19V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V19C3 17.6739 3.52678 16.4021 4.46447 15.4645C5.40215 14.5268 6.67392 14 8 14H16ZM20 8C20.2652 8 20.5196 8.10536 20.7071 8.29289C20.8946 8.48043 21 8.73478 21 9V10H22C22.2652 10 22.5196 10.1054 22.7071 10.2929C22.8946 10.4804 23 10.7348 23 11C23 11.2652 22.8946 11.5196 22.7071 11.7071C22.5196 11.8946 22.2652 12 22 12H21V13C21 13.2652 20.8946 13.5196 20.7071 13.7071C20.5196 13.8946 20.2652 14 20 14C19.7348 14 19.4804 13.8946 19.2929 13.7071C19.1054 13.5196 19 13.2652 19 13V12H18C17.7348 12 17.4804 11.8946 17.2929 11.7071C17.1054 11.5196 17 11.2652 17 11C17 10.7348 17.1054 10.4804 17.2929 10.2929C17.4804 10.1054 17.7348 10 18 10H19V9C19 8.73478 19.1054 8.48043 19.2929 8.29289C19.4804 8.10536 19.7348 8 20 8ZM12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7C17 8.32608 16.4732 9.59785 15.5355 10.5355C14.5979 11.4732 13.3261 12 12 12C10.6739 12 9.40215 11.4732 8.46447 10.5355C7.52678 9.59785 7 8.32608 7 7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2Z"
+                  d="M12.501 2C18.024 2 22.501 6.477 22.501 12C22.501 17.523 18.024 22 12.501 22C10.7338 22.0029 8.99765 21.5352 7.47099 20.645L2.50499 22L3.85699 17.032C2.96608 15.5049 2.49804 13.768 2.50099 12C2.50099 6.477 6.97799 2 12.501 2ZM9.09299 7.3L8.89299 7.308C8.76351 7.31589 8.63697 7.3499 8.52099 7.408C8.41251 7.46943 8.31349 7.54622 8.22699 7.636C8.10699 7.749 8.03899 7.847 7.96599 7.942C7.59611 8.4229 7.39696 9.01331 7.39999 9.62C7.40199 10.11 7.52999 10.587 7.72999 11.033C8.13899 11.935 8.81199 12.89 9.69999 13.775C9.91399 13.988 10.124 14.202 10.35 14.401C11.4534 15.3725 12.7682 16.073 14.19 16.447L14.758 16.534C14.943 16.544 15.128 16.53 15.314 16.521C15.6052 16.506 15.8896 16.4271 16.147 16.29C16.2779 16.2225 16.4057 16.1491 16.53 16.07C16.53 16.07 16.573 16.042 16.655 15.98C16.79 15.88 16.873 15.809 16.985 15.692C17.068 15.606 17.14 15.505 17.195 15.39C17.273 15.227 17.351 14.916 17.383 14.657C17.407 14.459 17.4 14.351 17.397 14.284C17.393 14.177 17.304 14.066 17.207 14.019L16.625 13.758C16.625 13.758 15.755 13.379 15.223 13.137C15.1673 13.1127 15.1077 13.0988 15.047 13.096C14.9786 13.089 14.9094 13.0967 14.8442 13.1186C14.779 13.1405 14.7193 13.1761 14.669 13.223C14.664 13.221 14.597 13.278 13.874 14.154C13.8325 14.2098 13.7753 14.2519 13.7098 14.2751C13.6443 14.2982 13.5733 14.3013 13.506 14.284C13.4408 14.2665 13.377 14.2445 13.315 14.218C13.191 14.166 13.148 14.146 13.063 14.11C12.4891 13.8595 11.9577 13.5211 11.488 13.107C11.362 12.997 11.245 12.877 11.125 12.761C10.7316 12.3842 10.3887 11.958 10.105 11.493L10.046 11.398C10.0036 11.3342 9.96935 11.2653 9.94399 11.193C9.90599 11.046 10.005 10.928 10.005 10.928C10.005 10.928 10.248 10.662 10.361 10.518C10.471 10.378 10.564 10.242 10.624 10.145C10.742 9.955 10.779 9.76 10.717 9.609C10.437 8.925 10.147 8.244 9.84899 7.568C9.78999 7.434 9.61499 7.338 9.45599 7.319C9.40199 7.313 9.34799 7.307 9.29399 7.303C9.1597 7.29633 9.02513 7.29766 8.89099 7.307L9.09199 7.299L9.09299 7.3Z"
                   fill="#15161B"
                 />
-              </g>
-              <defs>
-                <clipPath id="clip0_11643_35877">
-                  <rect width="24" height="24" fill="white" />
-                </clipPath>
-              </defs>
-            </svg>
+              </svg>
+            </div>
+            <span className="text-xs text-[#3E404B] font-semibold text-center">
+              Whatsapp
+            </span>
           </div>
-          <span className="text-xs text-[#3E404B] font-semibold text-center">
-            Add contact
-          </span>
-        </div>
-        <div className="flex flex-col gap-2 items-center justify-center">
-          <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="25"
-              height="24"
-              viewBox="0 0 25 24"
-              fill="none"
-            >
-              <path
-                d="M12.501 2C18.024 2 22.501 6.477 22.501 12C22.501 17.523 18.024 22 12.501 22C10.7338 22.0029 8.99765 21.5352 7.47099 20.645L2.50499 22L3.85699 17.032C2.96608 15.5049 2.49804 13.768 2.50099 12C2.50099 6.477 6.97799 2 12.501 2ZM9.09299 7.3L8.89299 7.308C8.76351 7.31589 8.63697 7.3499 8.52099 7.408C8.41251 7.46943 8.31349 7.54622 8.22699 7.636C8.10699 7.749 8.03899 7.847 7.96599 7.942C7.59611 8.4229 7.39696 9.01331 7.39999 9.62C7.40199 10.11 7.52999 10.587 7.72999 11.033C8.13899 11.935 8.81199 12.89 9.69999 13.775C9.91399 13.988 10.124 14.202 10.35 14.401C11.4534 15.3725 12.7682 16.073 14.19 16.447L14.758 16.534C14.943 16.544 15.128 16.53 15.314 16.521C15.6052 16.506 15.8896 16.4271 16.147 16.29C16.2779 16.2225 16.4057 16.1491 16.53 16.07C16.53 16.07 16.573 16.042 16.655 15.98C16.79 15.88 16.873 15.809 16.985 15.692C17.068 15.606 17.14 15.505 17.195 15.39C17.273 15.227 17.351 14.916 17.383 14.657C17.407 14.459 17.4 14.351 17.397 14.284C17.393 14.177 17.304 14.066 17.207 14.019L16.625 13.758C16.625 13.758 15.755 13.379 15.223 13.137C15.1673 13.1127 15.1077 13.0988 15.047 13.096C14.9786 13.089 14.9094 13.0967 14.8442 13.1186C14.779 13.1405 14.7193 13.1761 14.669 13.223C14.664 13.221 14.597 13.278 13.874 14.154C13.8325 14.2098 13.7753 14.2519 13.7098 14.2751C13.6443 14.2982 13.5733 14.3013 13.506 14.284C13.4408 14.2665 13.377 14.2445 13.315 14.218C13.191 14.166 13.148 14.146 13.063 14.11C12.4891 13.8595 11.9577 13.5211 11.488 13.107C11.362 12.997 11.245 12.877 11.125 12.761C10.7316 12.3842 10.3887 11.958 10.105 11.493L10.046 11.398C10.0036 11.3342 9.96935 11.2653 9.94399 11.193C9.90599 11.046 10.005 10.928 10.005 10.928C10.005 10.928 10.248 10.662 10.361 10.518C10.471 10.378 10.564 10.242 10.624 10.145C10.742 9.955 10.779 9.76 10.717 9.609C10.437 8.925 10.147 8.244 9.84899 7.568C9.78999 7.434 9.61499 7.338 9.45599 7.319C9.40199 7.313 9.34799 7.307 9.29399 7.303C9.1597 7.29633 9.02513 7.29766 8.89099 7.307L9.09199 7.299L9.09299 7.3Z"
-                fill="#15161B"
-              />
-            </svg>
-          </div>
-          <span className="text-xs text-[#3E404B] font-semibold text-center">
-            Whatsapp
-          </span>
-        </div>
-        <div className=" flex flex-col gap-2 items-center justify-center">
+        )}
+        <div className="flex-1 flex flex-col gap-2 items-center justify-center">
           {" "}
           <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
             <svg
@@ -154,7 +158,7 @@ export default function SecondSection({
             Email
           </span>
         </div>
-        <div className=" flex flex-col gap-2 items-center justify-center">
+        <div className="flex-1 flex flex-col gap-2 items-center justify-center">
           <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -193,35 +197,16 @@ export default function SecondSection({
             Schedule Appointment
           </span>
         </div>
-        <div className=" flex flex-col gap-2 items-center justify-center">
-          <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                d="M5.5 7C5.10218 7 4.72064 6.84196 4.43934 6.56066C4.15804 6.27936 4 5.89782 4 5.5C4 5.10218 4.15804 4.72064 4.43934 4.43934C4.72064 4.15804 5.10218 4 5.5 4C5.89782 4 6.27936 4.15804 6.56066 4.43934C6.84196 4.72064 7 5.10218 7 5.5C7 5.89782 6.84196 6.27936 6.56066 6.56066C6.27936 6.84196 5.89782 7 5.5 7ZM21.41 11.58L12.41 2.58C12.05 2.22 11.55 2 11 2H4C2.89 2 2 2.89 2 4V11C2 11.55 2.22 12.05 2.59 12.41L11.58 21.41C11.95 21.77 12.45 22 13 22C13.55 22 14.05 21.77 14.41 21.41L21.41 14.41C21.78 14.05 22 13.55 22 13C22 12.44 21.77 11.94 21.41 11.58Z"
-                fill="black"
-              />
-            </svg>
-          </div>
-          <span className=" text-xs text-[#3E404B] font-semibold text-center">
-            Tag
-          </span>
-        </div>
       </section>
       {attendee.certificate && (
-        <section className="flex justify-between items-center border-t-[1px] border-gray-200 px-4 pt-4">
-          <h3 className="leading-[145%] text-greyBlack text-xl">Credentials</h3>
+        <section className="flex justify-between items-center border-t-[1px] border-gray-200 px-2 pt-4">
+          <h3 className="text-xl text-greyBlack font-semibold">Credentials</h3>
           <Link href="/" className="  text-sm text-[#001FCC] ">
             Recall certificate
           </Link>
         </section>
       )}
-      <section className="flex justify-evenly items-center px-2 border-t-[1px] border-gray-200 pt-4">
+      <section className="flex justify-between items-center px-2 border-t-[1px] border-gray-200 pt-4">
         <div className=" flex flex-col items-center gap-2 w-fit">
           <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
             <svg
@@ -338,30 +323,32 @@ export default function SecondSection({
                 </svg>
               )}
               {attendee.linkedin && (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="25"
-                  height="24"
-                  viewBox="0 0 25 24"
-                  fill="none"
-                >
-                  <g clip-path="url(#clip0_11643_35953)">
-                    <path
-                      d="M0.946777 1.719C0.946777 0.7695 1.73578 0 2.70928 0H23.1843C24.1578 0 24.9468 0.7695 24.9468 1.719V22.281C24.9468 23.2305 24.1578 24 23.1843 24H2.70928C1.73578 24 0.946777 23.2305 0.946777 22.281V1.719ZM8.36128 20.091V9.2535H4.75978V20.091H8.36128ZM6.56128 7.773C7.81678 7.773 8.59828 6.942 8.59828 5.901C8.57578 4.8375 7.81828 4.029 6.58528 4.029C5.35228 4.029 4.54678 4.839 4.54678 5.901C4.54678 6.942 5.32828 7.773 6.53728 7.773H6.56128ZM13.9233 20.091V14.0385C13.9233 13.7145 13.9473 13.3905 14.0433 13.1595C14.3028 12.513 14.8953 11.8425 15.8913 11.8425C17.1948 11.8425 17.7153 12.8355 17.7153 14.2935V20.091H21.3168V13.875C21.3168 10.545 19.5408 8.997 17.1708 8.997C15.2598 8.997 14.4033 10.047 13.9233 10.7865V10.824H13.8993C13.9072 10.8115 13.9152 10.799 13.9233 10.7865V9.2535H10.3233C10.3683 10.2705 10.3233 20.091 10.3233 20.091H13.9233Z"
-                      fill="#15161B"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_11643_35953">
-                      <rect
-                        width="24"
-                        height="24"
-                        fill="white"
-                        transform="translate(0.946777)"
+                <a href={attendee.linkedin}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="25"
+                    height="24"
+                    viewBox="0 0 25 24"
+                    fill="none"
+                  >
+                    <g clip-path="url(#clip0_11643_35953)">
+                      <path
+                        d="M0.946777 1.719C0.946777 0.7695 1.73578 0 2.70928 0H23.1843C24.1578 0 24.9468 0.7695 24.9468 1.719V22.281C24.9468 23.2305 24.1578 24 23.1843 24H2.70928C1.73578 24 0.946777 23.2305 0.946777 22.281V1.719ZM8.36128 20.091V9.2535H4.75978V20.091H8.36128ZM6.56128 7.773C7.81678 7.773 8.59828 6.942 8.59828 5.901C8.57578 4.8375 7.81828 4.029 6.58528 4.029C5.35228 4.029 4.54678 4.839 4.54678 5.901C4.54678 6.942 5.32828 7.773 6.53728 7.773H6.56128ZM13.9233 20.091V14.0385C13.9233 13.7145 13.9473 13.3905 14.0433 13.1595C14.3028 12.513 14.8953 11.8425 15.8913 11.8425C17.1948 11.8425 17.7153 12.8355 17.7153 14.2935V20.091H21.3168V13.875C21.3168 10.545 19.5408 8.997 17.1708 8.997C15.2598 8.997 14.4033 10.047 13.9233 10.7865V10.824H13.8993C13.9072 10.8115 13.9152 10.799 13.9233 10.7865V9.2535H10.3233C10.3683 10.2705 10.3233 20.091 10.3233 20.091H13.9233Z"
+                        fill="#15161B"
                       />
-                    </clipPath>
-                  </defs>
-                </svg>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_11643_35953">
+                        <rect
+                          width="24"
+                          height="24"
+                          fill="white"
+                          transform="translate(0.946777)"
+                        />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </a>
               )}
               {attendee.facebook && (
                 <svg
@@ -407,9 +394,9 @@ export default function SecondSection({
           </div>
         </div>
       </section>
-      <section className="border-t-[1px] border-gray-200 px-2 pt-4 space-y-4">
-        <div className="flex justify-between items-center">
-          <h4 className="text-xl font-medium text-greyBlack">Tags</h4>
+      <section className="border-t-[1px] border-gray-200 pt-4 space-y-4">
+        <div className="flex justify-between items-center border-b-[1px] border-gray-200 pb-2 px-2">
+          <h4 className="text-xl font-medium text-greyBlack ">Tags</h4>
           <button onClick={onOpenTagForm} className="flex gap-1">
             <span className="text-sm text-[#15161B] font-medium">Tag</span>
             <svg
@@ -435,9 +422,11 @@ export default function SecondSection({
         )}
       </section>
       <section className="px-2 pt-4 border-t-[1px] border-gray-200 space-y-4">
-        <h4 className="text-xl text-greyBlack font-medium">Speaking at</h4>
-        <div className="space-y-2">
-          <div className="flex justify-between bg-[#FAFAFA] p-2 rounded">
+        <h4 className="text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 ">
+          Speaking at
+        </h4>
+        <div className="space-y-2 bg-[#FAFAFA] p-2 rounded divide-y-[1px]">
+          <div className="flex justify-between">
             <div className="flex-[75%] flex gap-1 items-center">
               <span className="text-sm font-medium text-greyBlack">
                 Reisin mould
@@ -464,7 +453,7 @@ export default function SecondSection({
               <span className="text-gray-500 font-normal">2:00-3:00PM</span>
             </div>
           </div>
-          <div className="flex gap-2 items-center bg-[#FAFAFA] p-2 rounded">
+          <div className="flex justify-between items-center gap-2 py-2">
             <div className="flex-[75%] flex gap-1 items-center">
               <p className="text-sm font-medium text-gray-700">
                 Analysis and optimization of human performance at work, during
@@ -500,35 +489,41 @@ export default function SecondSection({
           </div>
         </div>
       </section>
-      <section className="border-t-[1px] border-gray-200 px-2 pt-4 space-y-4">
-        <h4 className=" text-xl text-greyBlack font-medium">Moderating at</h4>
-        <div className=" flex justify-between bg-[#FAFAFA] p-2 rounded-[4px]">
-          <div className=" flex gap-2 items-center">
-            <span className=" font-medium text-greyBlack">
-              Epoxy resin art workshop
-            </span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-            >
-              <path
-                d="M13.3333 7.33333C13.1565 7.33333 12.987 7.40357 12.8619 7.5286C12.7369 7.65362 12.6667 7.82319 12.6667 8V12C12.6667 12.1768 12.5964 12.3464 12.4714 12.4714C12.3464 12.5964 12.1768 12.6667 12 12.6667H4C3.82319 12.6667 3.65362 12.5964 3.5286 12.4714C3.40357 12.3464 3.33333 12.1768 3.33333 12V4C3.33333 3.82319 3.40357 3.65362 3.5286 3.5286C3.65362 3.40357 3.82319 3.33333 4 3.33333H8C8.17681 3.33333 8.34638 3.2631 8.4714 3.13807C8.59643 3.01305 8.66667 2.84348 8.66667 2.66667C8.66667 2.48986 8.59643 2.32029 8.4714 2.19526C8.34638 2.07024 8.17681 2 8 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H12C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12V8C14 7.82319 13.9298 7.65362 13.8047 7.5286C13.6797 7.40357 13.5101 7.33333 13.3333 7.33333Z"
-                fill="black"
-              />
-              <path
-                d="M10.6668 3.33333H11.7201L7.52679 7.52C7.4643 7.58198 7.41471 7.65571 7.38086 7.73695C7.34702 7.81819 7.32959 7.90533 7.32959 7.99333C7.32959 8.08134 7.34702 8.16848 7.38086 8.24972C7.41471 8.33096 7.4643 8.40469 7.52679 8.46667C7.58876 8.52915 7.6625 8.57875 7.74374 8.61259C7.82498 8.64644 7.91211 8.66387 8.00012 8.66387C8.08813 8.66387 8.17527 8.64644 8.25651 8.61259C8.33775 8.57875 8.41148 8.52915 8.47346 8.46667L12.6668 4.28V5.33333C12.6668 5.51014 12.737 5.67971 12.8621 5.80474C12.9871 5.92976 13.1566 6 13.3335 6C13.5103 6 13.6798 5.92976 13.8049 5.80474C13.9299 5.67971 14.0001 5.51014 14.0001 5.33333V2.66667C14.0001 2.48986 13.9299 2.32029 13.8049 2.19526C13.6798 2.07024 13.5103 2 13.3335 2H10.6668C10.49 2 10.3204 2.07024 10.1954 2.19526C10.0704 2.32029 10.0001 2.48986 10.0001 2.66667C10.0001 2.84348 10.0704 3.01305 10.1954 3.13807C10.3204 3.2631 10.49 3.33333 10.6668 3.33333Z"
-                fill="black"
-              />
-            </svg>
-          </div>
-          <div className=" flex flex-col">
-            <span className=" text-ash text-small font-medium">
-              20 Nov 2023
-            </span>
-            <span className="text-ash text-small font-normal">2:00-3:00PM</span>
+      <section className="border-t-[1px] border-gray-200 pt-4 space-y-4">
+        <h4 className=" text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
+          Moderating at
+        </h4>
+        <div className="p-2 bg-[#FAFAFA] rounded mx-2">
+          <div className="flex justify-between">
+            <div className=" flex gap-2 items-center">
+              <span className=" font-medium text-greyBlack">
+                Epoxy resin art workshop
+              </span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <path
+                  d="M13.3333 7.33333C13.1565 7.33333 12.987 7.40357 12.8619 7.5286C12.7369 7.65362 12.6667 7.82319 12.6667 8V12C12.6667 12.1768 12.5964 12.3464 12.4714 12.4714C12.3464 12.5964 12.1768 12.6667 12 12.6667H4C3.82319 12.6667 3.65362 12.5964 3.5286 12.4714C3.40357 12.3464 3.33333 12.1768 3.33333 12V4C3.33333 3.82319 3.40357 3.65362 3.5286 3.5286C3.65362 3.40357 3.82319 3.33333 4 3.33333H8C8.17681 3.33333 8.34638 3.2631 8.4714 3.13807C8.59643 3.01305 8.66667 2.84348 8.66667 2.66667C8.66667 2.48986 8.59643 2.32029 8.4714 2.19526C8.34638 2.07024 8.17681 2 8 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H12C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12V8C14 7.82319 13.9298 7.65362 13.8047 7.5286C13.6797 7.40357 13.5101 7.33333 13.3333 7.33333Z"
+                  fill="black"
+                />
+                <path
+                  d="M10.6668 3.33333H11.7201L7.52679 7.52C7.4643 7.58198 7.41471 7.65571 7.38086 7.73695C7.34702 7.81819 7.32959 7.90533 7.32959 7.99333C7.32959 8.08134 7.34702 8.16848 7.38086 8.24972C7.41471 8.33096 7.4643 8.40469 7.52679 8.46667C7.58876 8.52915 7.6625 8.57875 7.74374 8.61259C7.82498 8.64644 7.91211 8.66387 8.00012 8.66387C8.08813 8.66387 8.17527 8.64644 8.25651 8.61259C8.33775 8.57875 8.41148 8.52915 8.47346 8.46667L12.6668 4.28V5.33333C12.6668 5.51014 12.737 5.67971 12.8621 5.80474C12.9871 5.92976 13.1566 6 13.3335 6C13.5103 6 13.6798 5.92976 13.8049 5.80474C13.9299 5.67971 14.0001 5.51014 14.0001 5.33333V2.66667C14.0001 2.48986 13.9299 2.32029 13.8049 2.19526C13.6798 2.07024 13.5103 2 13.3335 2H10.6668C10.49 2 10.3204 2.07024 10.1954 2.19526C10.0704 2.32029 10.0001 2.48986 10.0001 2.66667C10.0001 2.84348 10.0704 3.01305 10.1954 3.13807C10.3204 3.2631 10.49 3.33333 10.6668 3.33333Z"
+                  fill="black"
+                />
+              </svg>
+            </div>
+            <div className=" flex flex-col">
+              <span className=" text-ash text-small font-medium">
+                20 Nov 2023
+              </span>
+              <span className="text-ash text-small font-normal">
+                2:00-3:00PM
+              </span>
+            </div>
           </div>
         </div>
       </section>
@@ -572,9 +567,7 @@ export default function SecondSection({
               )}
             </>
           ) : (
-            <p className="px-2 text-sm font-medium text-gray-700">
-              Loading...
-            </p>
+            <p className="px-2 text-sm font-medium text-gray-700">Loading...</p>
           )}
         </div>
       </section>
