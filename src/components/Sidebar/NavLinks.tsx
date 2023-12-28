@@ -10,13 +10,14 @@ export const NavLinks = () => {
 
   return (
     <div className="flex flex-col gap gap-4">
-      {links.map(({ href, name, icon: Icon }) => {
+      {links.map(({ href, name, icon: Icon }, index) => {
         return (
           <Link
+            key={`navlink-${index}`}
             href={href}
             className={`p-4 flex gap-2 items-center ${
               pathname === href
-                ? "text-orange-500 border-l-2 border-orange-500 bg-orangebg "
+                ? "text-orange-500 border-l-2 border-orange-500"
                 : ""
             }`}
           >

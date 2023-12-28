@@ -11,7 +11,7 @@ const links = [
   },
   {
     name: "People",
-    href: "people",
+    href: "people/all",
   },
   {
     name: "Agenda",
@@ -44,8 +44,8 @@ const links = [
 ];
 
 const Topbar = () => {
-  const pathnameArr = usePathname().split("/");
-  const currentLink = pathnameArr[pathnameArr.length - 2];
+  const pathnames = usePathname().split("/");
+  const currentLink = pathnames[pathnames.length - 2];
 
   return (
     <nav className="bg-white w-full sticky top-0 px-4 pt-4 h-max">
