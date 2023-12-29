@@ -8,7 +8,9 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      const { error } = await supabase.from("notes").insert(params);
+      const { error } = await supabase
+        .from("notes")
+        .upsert(params, { onConflict: "id" });
       if (error) throw error;
       return NextResponse.json(
         { msg: "note created successfully" },
@@ -43,7 +45,8 @@ export async function GET(
       const { data, error, status } = await supabase
         .from("notes")
         .select("*")
-        .eq("attendeeId", attendeeId);
+        .eq("attendeeId", attendeeId)
+        .maybeSingle();
 
       if (error) throw error;
 

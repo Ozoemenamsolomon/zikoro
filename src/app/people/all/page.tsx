@@ -4,9 +4,9 @@ import useDisclose from "@/hooks/useDisclose";
 import FirstSection from "./FirstSection";
 import AddAttendeeForm from "@/components/AddAttendeeForm";
 import SecondSection from "./SecondSection";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TAttendee } from "@/types/attendee";
-import AddNotesForm from "@/components/AddNotesForm";
+import AddNotesForm from "@/components/AddNoteForm";
 import AddTagForm from "@/components/AddTagForm";
 import ThirdSection from "./ThirdSection";
 
@@ -16,16 +16,7 @@ const People = () => {
     onOpen: onOpenAttendeeForm,
     onClose: onCloseAttendeeForm,
   } = useDisclose();
-  const {
-    isOpen: notesFormIsOpen,
-    onOpen: onOpenNotesForm,
-    onClose: onCloseNotesForm,
-  } = useDisclose();
-  const {
-    isOpen: tagFormIsOpen,
-    onOpen: onOpenTagForm,
-    onClose: onCloseTagForm,
-  } = useDisclose();
+
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee>(null);
 
   const selectAttendee = (attendee: TAttendee) => setSelectedAttendee(attendee);
@@ -38,11 +29,9 @@ const People = () => {
       />
       {selectedAttendee ? (
         <>
-          <section className="col-span-4 pt-4 space-y-4 max-h-[400px] overflow-auto">
+          <section className="col-span-4 pt-4 space-y-4">
             <SecondSection
               attendee={selectedAttendee}
-              onOpenNotesForm={onOpenNotesForm}
-              onOpenTagForm={onOpenTagForm}
             />
           </section>
           <section className="col-span-3 pt-2">
@@ -57,18 +46,6 @@ const People = () => {
       <AddAttendeeForm
         isOpen={attendeeFormIsOpen}
         onClose={onCloseAttendeeForm}
-      />
-      <AddNotesForm
-        attendeeEmail={selectedAttendee?.email || ""}
-        attendeeId={selectedAttendee?.id || ""}
-        isOpen={notesFormIsOpen}
-        onClose={onCloseNotesForm}
-      />
-      <AddTagForm
-        attendeeEmail={selectedAttendee?.email || ""}
-        attendeeId={selectedAttendee?.id || ""}
-        isOpen={tagFormIsOpen}
-        onClose={onCloseTagForm}
       />
     </section>
   );

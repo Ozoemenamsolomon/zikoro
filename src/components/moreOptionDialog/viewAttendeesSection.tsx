@@ -152,10 +152,12 @@ export default function ViewAttendeesSection({
   attendees,
   toggleValue,
   selectedAttendees,
+  selectedAttendeeType,
 }: {
   attendees: TAttendee[];
-  selectedAttendees: number[];
-  toggleValue: (selectedKey: string, value: string) => void;
+  selectedAttendees: TAttendee[];
+  selectedAttendeeType: string;
+  toggleValue: (value: TAttendee | TAttendee[]) => void;
 }) {
   const [mappedAttendees, setMappedAttendees] = useState<TAttendee[]>([]);
   const [filters, setFilters] = useState<TFilterType[]>(attendeeFilter);
@@ -204,8 +206,11 @@ export default function ViewAttendeesSection({
             return value.includes(attendeePropertyValue);
           });
         })
+        .filter(({ attendeeType }) =>
+          selectedAttendeeType === "" || !attendeeType.includes(selectedAttendeeType)
+        )
     );
-  }, [attendees, selectedFilters, searchTerm]);
+  }, [attendees, selectedFilters, searchTerm, selectedAttendeeType]);
 
   return (
     <>
@@ -260,20 +265,19 @@ export default function ViewAttendeesSection({
             id="terms2"
             onCheckedChange={() =>
               toggleValue(
-                "attendees",
                 selectedAttendees.length === 0 ||
-                  (mappedAttendees.some(({ id }) =>
-                    selectedAttendees.includes(id)
+                  (mappedAttendees.some((attendee) =>
+                    selectedAttendees.includes(attendee)
                   ) &&
-                    !mappedAttendees.every(({ id }) =>
-                      selectedAttendees.includes(id)
+                    !mappedAttendees.every((attendee) =>
+                      selectedAttendees.includes(attendee)
                     ))
-                  ? mappedAttendees.map(({ id }) => id)
+                  ? mappedAttendees.map((attendee) => attendee)
                   : []
               )
             }
-            checked={mappedAttendees.every(({ id }) =>
-              selectedAttendees.includes(id)
+            checked={mappedAttendees.every((attendee) =>
+              selectedAttendees.includes(attendee)
             )}
           />
           <label
@@ -286,18 +290,18 @@ export default function ViewAttendeesSection({
           </label>
         </div>
         <div className="space-y-4 max-h-32 overflow-auto">
-          {mappedAttendees.map(({ firstName, lastName, id }) => (
+          {mappedAttendees.map((attendee) => (
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="terms2"
-                onCheckedChange={() => toggleValue("attendees", id)}
-                checked={selectedAttendees.includes(id)}
+                onCheckedChange={() => toggleValue(attendee)}
+                checked={selectedAttendees.includes(attendee)}
               />
               <label
                 htmlFor="terms2"
                 className="capitalize text-gray-500 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                {firstName + " " + lastName}
+                {attendee.firstName + " " + attendee.lastName}
               </label>
             </div>
           ))}

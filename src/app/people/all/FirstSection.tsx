@@ -2,7 +2,7 @@
 import Attendee from "@/components/Attendee";
 import { Input } from "@/components/ui/input";
 import { useGetAttendees } from "@/hooks/attendee";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { convertCamelToNormal, extractUniqueTypes } from "@/utils/helpers";
 import Filter, { TFilterType, TSelectedFilter } from "@/components/Filter";
 import { TAttendee } from "@/types/attendee";
@@ -20,6 +20,7 @@ import {
   Dialog,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { calculateAndSetMaxHeight } from "@/utils/helpers";
 
 import * as XLSX from "xlsx";
 import ChangeAttendeeType from "@/components/moreOptionDialog/changeAttendeeType";
@@ -131,6 +132,7 @@ export default function FirstSection({
   onSelectAttendee: (attendee: TAttendee) => void;
   selectedAttendee: TAttendee;
 }) {
+  const divRef = useRef<HTMLDivElement>();
   const [mappedAttendees, setMappedAttendees] = useState<TAttendee[]>([]);
   const [filters, setFilters] = useState<TFilterType[]>(attendeeFilter);
   const [selectedFilters, setSelectedFilters] = useState<TSelectedFilter[]>([]);
@@ -139,6 +141,10 @@ export default function FirstSection({
   const [sortOrder, setSortOrder] = useState<TSortorder>("none");
   const [CurrentSelectedModal, setCurrentSelectedModal] =
     useState<TMoreOptions | null>(null);
+
+  useEffect(() => {
+    calculateAndSetMaxHeight(divRef);
+  }, [mappedAttendees]);
 
   const { attendees, isLoading, error } = useGetAttendees();
 
@@ -414,7 +420,7 @@ export default function FirstSection({
           </button>
         </div>
       </div>
-      <div className="max-h-96 overflow-auto">
+      <div className="overflow-auto hide-scrollbar" ref={divRef}>
         {mappedAttendees.map((attendee) => (
           <Attendee
             key={attendee.id}

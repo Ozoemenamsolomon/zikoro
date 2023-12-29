@@ -1,38 +1,39 @@
 import React, { useState } from "react";
 import ViewAttendeesSection from "./viewAttendeesSection";
-import { ChangeAttendeeTypeProps } from "@/app/people/all/FirstSection";
 import { Button } from "@/components/ui/button";
-
 import { attendeeTypeOptions } from "@/data/attendee";
+import { MoreOptionsProps } from "@/app/people/all/FirstSection";
+import { useUpdateAttendees } from "@/hooks/attendee";
+import { DialogClose } from "../ui/dialog";
+import { TAttendee } from "@/types/attendee";
 
-const ChangeAttendeeType: React.FC<ChangeAttendeeTypeProps> = ({
-  attendees,
-}) => {
-  const [selectedAttendees, setSelectedAttendees] = useState<number[]>([]);
-  const [selectedAttendeeType, setSelectedAttendeeType] = useState<string[]>(
-    []
-  );
+const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
+  const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
+  const [selectedAttendeeType, setSelectedAttendeeType] = useState<string>("");
 
-  type ValueType = string | number | (string | number)[];
+  const { updateAttendees } = useUpdateAttendees();
 
-  const toggleValue = (
-    selectedKey: "attendees" | "attendeeType",
-    value: ValueType
-  ) => {
-    const key =
-      selectedKey === "attendees" ? selectedAttendees : selectedAttendeeType;
+  type ValueType = TAttendee | TAttendee[];
 
+  const toggleValue = (value: ValueType) => {
     const updatedValue = Array.isArray(value)
       ? value
-      : value && key.includes(value)
-      ? key.filter((item: string | number) => item !== value)
-      : [...key, value];
+      : value && selectedAttendees.includes(value)
+      ? selectedAttendees.filter((item) => item !== value)
+      : [...selectedAttendees, value];
 
     console.log(updatedValue);
 
-    selectedKey === "attendees"
-      ? setSelectedAttendees(updatedValue)
-      : setSelectedAttendeeType(updatedValue);
+    setSelectedAttendees(updatedValue);
+  };
+
+  const onSubmit = () => {
+    const payload = selectedAttendees.map((attendee) => ({
+      ...attendee,
+      attendeeType: [...attendee.attendeeType, selectedAttendeeType],
+    }));
+
+    updateAttendees({ payload });
   };
 
   return (
@@ -46,13 +47,17 @@ const ChangeAttendeeType: React.FC<ChangeAttendeeTypeProps> = ({
             <button
               className={`text-sm p-1.5 border-2 rounded font-medium",
                     ${
-                      selectedAttendeeType.includes(value)
+                      selectedAttendeeType === value
                         ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
                         : "border-gray-600 text-gray-600 bg-white"
                     }
                   `}
               type="button"
-              onClick={() => toggleValue("attendeeType", value)}
+              onClick={() =>
+                setSelectedAttendeeType((prevVal) =>
+                  prevVal === value ? "" : value
+                )
+              }
             >
               {label}
             </button>
@@ -65,16 +70,20 @@ const ChangeAttendeeType: React.FC<ChangeAttendeeTypeProps> = ({
       <ViewAttendeesSection
         attendees={attendees}
         selectedAttendees={selectedAttendees}
+        selectedAttendeeType={selectedAttendeeType}
         toggleValue={toggleValue}
       />
-      <Button
-        disabled={
-          selectedAttendees.length === 0 || selectedAttendeeType.length === 0
-        }
-        className="bg-basePrimary w-full"
-      >
-        Save
-      </Button>
+      <DialogClose asChild>
+        <Button
+          disabled={
+            selectedAttendees.length === 0 || selectedAttendeeType.length === 0
+          }
+          className="bg-basePrimary w-full"
+          onClick={onSubmit}
+        >
+          Save
+        </Button>
+      </DialogClose>
     </div>
   );
 };

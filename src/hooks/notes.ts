@@ -2,19 +2,19 @@ import { TAttendeeNote } from "@/types/attendee";
 import { postRequest, getRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
 
-type useCreateNoteResult = {
-  createNote: ({ payload }: { payload: TAttendeeNote }) => void;
+type useUpdatenoteResult = {
+  updatenote: ({ payload }: { payload: TAttendeeNote }) => void;
 } & RequestStatus;
 
-export const useCreateNote = ({
+export const useUpdatenote = ({
   attendeeId,
 }: {
   attendeeId: number;
-}): useCreateNoteResult => {
+}): useUpdatenoteResult => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const createNote = async ({ payload }: { payload: TAttendeeNote }) => {
+  const updatenote = async ({ payload }: { payload: TAttendeeNote }) => {
     console.log(attendeeId, "attendeeId");
     setLoading(true);
 
@@ -30,35 +30,35 @@ export const useCreateNote = ({
     console.log(data);
   };
 
-  return { createNote, isLoading, error };
+  return { updatenote, isLoading, error };
 };
 
-type UseGetNotesResult = {
+type UseGetnoteResult = {
   notes: TAttendeeNote[];
-  getNotes: () => Promise<void>;
+  getnote: () => Promise<void>;
 } & RequestStatus;
 
-export const useGetNotes = ({
+export const useGetnote = ({
   attendeeId,
 }: {
   attendeeId: number;
-}): UseGetNotesResult => {
-  const [notes, setNotes] = useState<TAttendeeNote[]>([]);
+}): UseGetnoteResult => {
+  const [note, setNote] = useState<TAttendeeNote | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const getNotes = async () => {
+  const getnote = async () => {
     setLoading(true);
 
     try {
-      const { data, status } = await getRequest<TAttendeeNote[]>({
+      const { data, status } = await getRequest<TAttendeeNote>({
         endpoint: `/attendees/${attendeeId}/notes`,
       });
 
       if (status !== 200) {
         throw data;
       } else {
-        setNotes(data.data);
+        setNote(data.data);
       }
     } catch (error) {
       setError(true);
@@ -68,8 +68,8 @@ export const useGetNotes = ({
   };
 
   useEffect(() => {
-    getNotes();
+    getnote();
   }, [attendeeId]);
 
-  return { notes, isLoading, error, getNotes };
+  return { note, isLoading, error, getnote };
 };

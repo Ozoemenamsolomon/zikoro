@@ -31,3 +31,15 @@ export function convertCamelToNormal<T extends CamelCaseObject>(
     return convertedItem as T;
   });
 }
+
+export function calculateAndSetMaxHeight(divRef: React.RefObject<HTMLDivElement>) {
+  const div = divRef.current;
+
+  if (div) {
+    // Get the distance from the top of the div to the bottom of the screen
+    const distanceToBottom = window.innerHeight - div.offsetTop;
+
+    // Set the maximum height of the div
+    div.style.maxHeight = `${distanceToBottom}px`;
+  }
+}

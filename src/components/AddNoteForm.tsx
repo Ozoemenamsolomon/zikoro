@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import Overlay from "@/components/Overlay";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { attendeeNoteSchema } from "@/schemas/attendee";
@@ -15,27 +14,28 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
-import { useCreateNote } from "@/hooks/notes";
+import { useUpdatenote } from "@/hooks/notes";
+import { DialogClose } from "./ui/dialog";
 
 export default function AddNotesForm({
-  isOpen,
-  onClose,
   attendeeEmail,
   attendeeId,
+  note,
 }: {
-  isOpen: boolean;
-  onClose: () => void;
   attendeeEmail: string;
   attendeeId: number;
+  note: TAttendeeNote;
 }) {
   console.log(attendeeEmail);
-  const defaultValues: Partial<TAttendeeNote> = {
-    eventId: "1234567890",
-    contactAttendeeEmail: "ubahyusuf484@gmail.com",
-    contactAttendeeId: 10,
-  };
+  const defaultValues: Partial<TAttendeeNote> = note
+    ? note
+    : {
+        eventId: "1234567890",
+        contactAttendeeEmail: "ubahyusuf484@gmail.com",
+        contactAttendeeId: 10,
+      };
 
-  const { createNote, isLoading, error } = useCreateNote({
+  const { updatenote, isLoading, error } = useUpdatenote({
     attendeeId,
   });
 
@@ -44,7 +44,7 @@ export default function AddNotesForm({
     defaultValues,
   });
 
-  const { setValue } = form;
+  const { setValue, getFieldState } = form;
 
   useEffect(() => {
     setValue("attendeeEmail", attendeeEmail);
@@ -52,12 +52,10 @@ export default function AddNotesForm({
   }, [attendeeEmail, attendeeId]);
 
   async function onSubmit(data: TAttendeeNote) {
-    onClose();
-
     toast({
       description: "adding note...",
     });
-    const response = await createNote({ payload: data });
+    const response = await updatenote({ payload: data });
 
     toast({
       description: "note added successfully",
@@ -65,31 +63,31 @@ export default function AddNotesForm({
   }
 
   return (
-    <Overlay isOpen={isOpen} onClose={onClose} title="Add Notes">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="notes"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Notes</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Write something"
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Write something"
+                  className="resize-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <DialogClose asChild>
           <Button type="submit" className="bg-basePrimary w-full">
             Add Notes
           </Button>
-        </form>
-      </Form>
-    </Overlay>
+        </DialogClose>
+      </form>
+    </Form>
   );
 }

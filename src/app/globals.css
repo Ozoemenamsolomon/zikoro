@@ -80,8 +80,30 @@
 .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
-  }
-  
-  .no-scrollbar::-webkit-scrollbar {
+}
+
+.no-scrollbar::-webkit-scrollbar {
     display: none;
-  }
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    /* Adjust the width as needed */
+    width: 8px;
+    background-color: transparent;
+    transition: width 0.3s ease-in-out;
+    /* Added transition for smoother animation */
+}
+
+.hide-scrollbar:hover::-webkit-scrollbar {
+    width: 8px;
+    background-color: #eee;
+    /* Adjust the width as needed */
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.hide-scrollbar:hover::-webkit-scrollbar-thumb {
+    background-color: #888;
+}

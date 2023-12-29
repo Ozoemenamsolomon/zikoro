@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { tagSchema } from "./tags";
 
 export const AttendeeSchema = z.object({
   registrationDate: z.string(),
@@ -40,11 +41,6 @@ export const attendeeNoteSchema = z.object({
   attendeeEmail: z.string().email(),
   contactAttendeeEmail: z.string().email(),
   notes: z.string(),
-});
-
-const tagSchema = z.object({
-  label: z.string(),
-  color: z.string(),
 });
 
 export const attendeeTagsSchema = z.object({
