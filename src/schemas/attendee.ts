@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { tagSchema } from "./tags";
+
+export const checkinSchema = z.object({
+  date: z.string(),
+  checkin: z.boolean(),
+});
 
 export const AttendeeSchema = z.object({
   registrationDate: z.string(),
@@ -30,26 +34,16 @@ export const AttendeeSchema = z.object({
   profilePicture: z.string().optional(),
   attendeeType: z.array(z.string()),
   eventId: z.string(),
+  checkin: z.array(checkinSchema).optional(),
 });
 
 export const attendeeNoteSchema = z.object({
   id: z.number().optional(),
   attendeeId: z.number(),
   contactAttendeeId: z.number(),
-  created_at: z.date().optional(),
+  created_at: z.string().optional(),
   eventId: z.string(),
   attendeeEmail: z.string().email(),
   contactAttendeeEmail: z.string().email(),
   notes: z.string(),
-});
-
-export const attendeeTagsSchema = z.object({
-  id: z.number().optional(),
-  created_at: z.date().optional(),
-  eventId: z.string(),
-  email: z.string().email(),
-  contactAttendeeEmail: z.string(),
-  contactAttendeeTags: z.array(tagSchema),
-  attendeeId: z.number(),
-  contactAttendeeId: z.number(),
 });

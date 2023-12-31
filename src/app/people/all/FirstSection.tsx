@@ -146,7 +146,7 @@ export default function FirstSection({
     calculateAndSetMaxHeight(divRef);
   }, [mappedAttendees]);
 
-  const { attendees, isLoading, error } = useGetAttendees();
+  const { attendees, isLoading, error, getAttendees } = useGetAttendees();
 
   useEffect(() => {
     if (isLoading) return;
@@ -427,6 +427,7 @@ export default function FirstSection({
             attendee={attendee}
             isSelected={attendee.id === selectedAttendee?.id}
             selectAttendee={onSelectAttendee}
+            getAttendees={getAttendees}
           />
         ))}
       </div>

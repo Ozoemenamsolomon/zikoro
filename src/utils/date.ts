@@ -27,3 +27,22 @@ export function formatDateToHumanReadable(date: Date | undefined): string {
 export function padZero(number: number): string {
   return number < 10 ? `0${number}` : number.toString();
 }
+
+export function formatDate(inputDateString) {
+  const inputDate = new Date(inputDateString);
+
+  const options = {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  };
+
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+  const parts = formatter.formatToParts(inputDate);
+
+  const day = parts.find((part) => part.type === "day").value;
+  const month = parts.find((part) => part.type === "month").value;
+  const year = parts.find((part) => part.type === "year").value;
+
+  return { day, month, year };
+}

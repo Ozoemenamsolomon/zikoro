@@ -1,49 +1,52 @@
-import { TAttendeeTags } from "@/types/attendee";
-import { postRequest, getRequest } from "@/utils/api";
-import { useState, useEffect } from "react";
+import { toast } from "@/components/ui/use-toast";
+import { TAttendeeTags, TTags } from "@/types/tags";
+import { getRequest, postRequest } from "@/utils/api";
+import { useEffect, useState } from "react";
 
 type useUpdateTagsResult = {
-  updateTags: ({ payload }: { payload: TAttendeeTags }) => void;
+  updateTags: ({ payload }: { payload: TTags }) => void;
 } & RequestStatus;
 
 export const useUpdateTags = ({
-  attendeeId,
+  email,
 }: {
-  attendeeId: number;
+  email: string;
 }): useUpdateTagsResult => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const updateTags = async ({ payload }: { payload: TAttendeeTags }) => {
-    console.log(attendeeId, "attendeeId");
+  const updateTags = async ({ payload }: { payload: TTags }) => {
     setLoading(true);
-
-    const { data, status } = await postRequest({
-      endpoint: `/attendees/${attendeeId}/tags`,
-      payload,
+    toast({
+      description: "updating tag...",
     });
+    try {
+      const { data, status } = await postRequest({
+        endpoint: `/tags/${email}`,
+        payload,
+      });
 
-    setLoading(false);
-
-    if (status !== 201) return setError(true);
-
-    console.log(data);
+      if (status !== 201) throw data.data;
+      toast({
+        description: "tags updated successfully",
+      });
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return { updateTags, isLoading, error };
 };
 
 type UseGetTagsResult = {
-  tags: TAttendeeTags[];
+  tags: TTags;
   getTags: () => Promise<void>;
 } & RequestStatus;
 
-export const useGetTags = ({
-  attendeeId,
-}: {
-  attendeeId: number;
-}): UseGetTagsResult => {
-  const [tags, setTags] = useState<TAttendeeTags[]>([]);
+export const useGetTags = ({ email }: { email: string }): UseGetTagsResult => {
+  const [tags, setTags] = useState<TTags | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -51,15 +54,14 @@ export const useGetTags = ({
     setLoading(true);
 
     try {
-      const { data, status } = await getRequest<TAttendeeTags[]>({
-        endpoint: `/attendees/${attendeeId}/tags`,
+      const { data, status } = await getRequest<TTags>({
+        endpoint: `/tags/${email}`,
       });
 
       if (status !== 200) {
         throw data;
-      } else {
-        setTags(data.data);
       }
+      setTags(data.data);
     } catch (error) {
       setError(true);
     } finally {
@@ -69,7 +71,96 @@ export const useGetTags = ({
 
   useEffect(() => {
     getTags();
-  }, [attendeeId]);
+  }, [email]);
 
   return { tags, isLoading, error, getTags };
+};
+
+type useUpdateAttendeetagsResult = {
+  updateAttendeetags: ({
+    payload,
+  }: {
+    payload: TAttendeeTags;
+  }) => Promise<void>;
+} & RequestStatus;
+
+export const useUpdateAttendeetags = ({
+  attendeeId,
+}: {
+  attendeeId: number;
+}): useUpdateAttendeetagsResult => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const updateAttendeetags = async ({
+    payload,
+  }: {
+    payload: TAttendeeTags;
+  }) => {
+    setLoading(true);
+
+    toast({
+      description: "updating attendee tags...",
+    });
+        
+    try {
+      console.log("starting update attendee tag");
+      const { data, status } = await postRequest({
+        endpoint: `/attendees/${attendeeId}/tags`,
+        payload,
+      });
+
+      console.log("finish update attendee tag");
+      if (status !== 201) throw data;
+      toast({
+        description: "Attendee tags updated successfully",
+      });
+    } catch (error) {
+      setError(true);
+    } finally {
+      console.log("done");
+      setLoading(false);
+    }
+  };
+
+  return { updateAttendeetags, isLoading, error };
+};
+
+type UseGetAttendeetagsResult = {
+  attendeeTags: TAttendeeTags[];
+  getAttendeetags: () => Promise<void>;
+} & RequestStatus;
+
+export const useGetAttendeetags = ({
+  attendeeId,
+}: {
+  attendeeId: number;
+}): UseGetAttendeetagsResult => {
+  const [attendeeTags, setTags] = useState<TAttendeeTags[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendeetags = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TAttendeeTags[]>({
+        endpoint: `/attendees/${attendeeId}/tags`,
+      });
+
+      if (status !== 200) throw data;
+
+      setTags(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendeetags();
+  }, [attendeeId]);
+
+  return { attendeeTags, isLoading, error, getAttendeetags };
 };

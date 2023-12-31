@@ -4,22 +4,17 @@ import { cookies } from "next/headers";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { attendeeId: string } }
+  { params }: { params: { email: string } }
 ) {
-  console.log(params);
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
     try {
-      //   const { attendeeId } = params;
+      const { email } = params;
       const payload = await req.json();
 
-      console.log(payload, "payload");
-
       const { error } = await supabase
-        .from("attendeeTags")
+        .from("tags")
         .upsert(payload, { onConflict: "id" });
-
-      console.log(error, "error");
       if (error) throw error;
       return NextResponse.json(
         { msg: "tags updated successfully" },
@@ -28,7 +23,7 @@ export async function POST(
         }
       );
     } catch (error) {
-      console.error(error, "error");
+      console.error(error);
       return NextResponse.json(
         {
           error: "An error occurred while making the request.",
@@ -45,22 +40,21 @@ export async function POST(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { attendeeId: string } }
+  { params }: { params: { email: string } }
 ) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      const { attendeeId } = params;
+      const { email } = params;
 
       const { data, error, status } = await supabase
-        .from("attendeeTags")
+        .from("tags")
         .select("*")
-        .eq("attendeeId", attendeeId)
+        .eq("email", email)
         .maybeSingle();
 
       if (error) throw error;
 
-      console.log(data);
 
       return NextResponse.json(
         { data },

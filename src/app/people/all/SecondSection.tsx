@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
-import AddNoteForm from "@/components/AddNoteForm";
-import AddTagForm from "@/components/AddTagForm";
+import AddAttendeeTagForm from "@/components/forms/AddAttendeeTagForm";
+import AddNoteForm from "@/components/forms/AddNoteForm";
 import {
   Dialog,
   DialogContent,
@@ -10,16 +10,49 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useGetnote } from "@/hooks/notes";
+import { useGetAttendeetags } from "@/hooks/tags";
 import Link from "next/link";
 import { useEffect } from "react";
 
 export default function SecondSection({ attendee }: { attendee: TAttendee }) {
   const {
+    registrationDate,
+    userEmail,
+    firstName,
+    lastName,
+    email,
+    jobTitle,
+    organization,
+    city,
+    country,
+    phoneNumber,
+    whatsappNumber,
+    bio,
+    x,
+    linkedin,
+    instagram,
+    facebook,
+    certificate,
+    profilePicture,
+    attendeeType,
+    eventId,
+    checkin,
+    id,
+    ticketType,
+  } = attendee;
+
+  const {
     note,
     isLoading: noteIsLoading,
     error,
     getnote,
-  } = useGetnote({ attendeeId: attendee.id });
+  } = useGetnote({ attendeeId: id });
+
+  const {
+    attendeeTags,
+    isLoading: attendeeTagsisLoading,
+    // error,
+  } = useGetAttendeetags({ attendeeId: id });
 
   useEffect(() => {
     getnote();
@@ -28,27 +61,35 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
   console.log(note, "note");
   return (
     <>
-      <section className="flex justify-end px-4 space-x-1 items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-        >
-          <path
-            d="M18.125 8.75C18.2908 8.75 18.4497 8.68415 18.5669 8.56694C18.6842 8.44973 18.75 8.29076 18.75 8.125V5C18.75 4.66848 18.6183 4.35054 18.3839 4.11612C18.1495 3.8817 17.8315 3.75 17.5 3.75H2.5C2.16848 3.75 1.85054 3.8817 1.61612 4.11612C1.3817 4.35054 1.25 4.66848 1.25 5V8.125C1.25 8.29076 1.31585 8.44973 1.43306 8.56694C1.55027 8.68415 1.70924 8.75 1.875 8.75C2.20652 8.75 2.52446 8.8817 2.75888 9.11612C2.9933 9.35054 3.125 9.66848 3.125 10C3.125 10.3315 2.9933 10.6495 2.75888 10.8839C2.52446 11.1183 2.20652 11.25 1.875 11.25C1.70924 11.25 1.55027 11.3158 1.43306 11.4331C1.31585 11.5503 1.25 11.7092 1.25 11.875V15C1.25 15.3315 1.3817 15.6495 1.61612 15.8839C1.85054 16.1183 2.16848 16.25 2.5 16.25H17.5C17.8315 16.25 18.1495 16.1183 18.3839 15.8839C18.6183 15.6495 18.75 15.3315 18.75 15V11.875C18.75 11.7092 18.6842 11.5503 18.5669 11.4331C18.4497 11.3158 18.2908 11.25 18.125 11.25C17.7935 11.25 17.4755 11.1183 17.2411 10.8839C17.0067 10.6495 16.875 10.3315 16.875 10C16.875 9.66848 17.0067 9.35054 17.2411 9.11612C17.4755 8.8817 17.7935 8.75 18.125 8.75ZM17.5 12.4188V15H13.125V13.125H11.875V15H2.5V12.4188C3.035 12.2789 3.50854 11.9657 3.84651 11.528C4.18449 11.0903 4.36782 10.553 4.36782 10C4.36782 9.44703 4.18449 8.90966 3.84651 8.472C3.50854 8.03434 3.035 7.72108 2.5 7.58125V5H11.875V6.875H13.125V5H17.5V7.58125C16.965 7.72108 16.4915 8.03434 16.1535 8.472C15.8155 8.90966 15.6322 9.44703 15.6322 10C15.6322 10.553 15.8155 11.0903 16.1535 11.528C16.4915 11.9657 16.965 12.2789 17.5 12.4188Z"
-            fill="#15161B"
-          />
-          <path d="M11.875 8.125H13.125V11.875H11.875V8.125Z" fill="#15161B" />
-        </svg>
-        <span className=" text-sm text-ash">{attendee.ticketType}</span>
+      <section className="flex justify-between px-4 items-center">
+        <span className="text-[10px] text-gray-700 font-medium">
+          {checkin && checkin.length > 0
+            ? checkin.filter((elm) => elm.checkin).length + "x check-ins"
+            : "Not checked in on any date"}
+        </span>
+        <div className="flex gap-1 items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M18.125 8.75C18.2908 8.75 18.4497 8.68415 18.5669 8.56694C18.6842 8.44973 18.75 8.29076 18.75 8.125V5C18.75 4.66848 18.6183 4.35054 18.3839 4.11612C18.1495 3.8817 17.8315 3.75 17.5 3.75H2.5C2.16848 3.75 1.85054 3.8817 1.61612 4.11612C1.3817 4.35054 1.25 4.66848 1.25 5V8.125C1.25 8.29076 1.31585 8.44973 1.43306 8.56694C1.55027 8.68415 1.70924 8.75 1.875 8.75C2.20652 8.75 2.52446 8.8817 2.75888 9.11612C2.9933 9.35054 3.125 9.66848 3.125 10C3.125 10.3315 2.9933 10.6495 2.75888 10.8839C2.52446 11.1183 2.20652 11.25 1.875 11.25C1.70924 11.25 1.55027 11.3158 1.43306 11.4331C1.31585 11.5503 1.25 11.7092 1.25 11.875V15C1.25 15.3315 1.3817 15.6495 1.61612 15.8839C1.85054 16.1183 2.16848 16.25 2.5 16.25H17.5C17.8315 16.25 18.1495 16.1183 18.3839 15.8839C18.6183 15.6495 18.75 15.3315 18.75 15V11.875C18.75 11.7092 18.6842 11.5503 18.5669 11.4331C18.4497 11.3158 18.2908 11.25 18.125 11.25C17.7935 11.25 17.4755 11.1183 17.2411 10.8839C17.0067 10.6495 16.875 10.3315 16.875 10C16.875 9.66848 17.0067 9.35054 17.2411 9.11612C17.4755 8.8817 17.7935 8.75 18.125 8.75ZM17.5 12.4188V15H13.125V13.125H11.875V15H2.5V12.4188C3.035 12.2789 3.50854 11.9657 3.84651 11.528C4.18449 11.0903 4.36782 10.553 4.36782 10C4.36782 9.44703 4.18449 8.90966 3.84651 8.472C3.50854 8.03434 3.035 7.72108 2.5 7.58125V5H11.875V6.875H13.125V5H17.5V7.58125C16.965 7.72108 16.4915 8.03434 16.1535 8.472C15.8155 8.90966 15.6322 9.44703 15.6322 10C15.6322 10.553 15.8155 11.0903 16.1535 11.528C16.4915 11.9657 16.965 12.2789 17.5 12.4188Z"
+              fill="#15161B"
+            />
+            <path
+              d="M11.875 8.125H13.125V11.875H11.875V8.125Z"
+              fill="#15161B"
+            />
+          </svg>
+          <span className=" text-sm text-ash">{ticketType}</span>
+        </div>
       </section>
       <section className="flex flex-col items-center justify-center text-center px-4">
         <div className="text-white relative w-12 h-12 rounded-[50%] bg-[#D9D9D9] flex justify-center items-center mb-4">
-          <span className="">
-            {attendee.firstName[0] + attendee.lastName[0]}
-          </span>
+          <span className="">{firstName[0] + lastName[0]}</span>
           <svg
             className="absolute bottom-0 right-0"
             xmlns="http://www.w3.org/2000/svg"
@@ -76,19 +117,19 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
           </svg>
         </div>
         <h3 className=" text-greyBlack font-semibold">
-          {attendee.firstName + " " + attendee.lastName}
+          {firstName + " " + lastName}
         </h3>
         <div className=" flex flex-col">
           <span className=" text-small text-[#3E404B]  leading-normal">
-            {attendee.email}
+            {email}
           </span>
           <span className=" text-small text-ash leading-normal">
-            {attendee.phoneNumber}
+            {phoneNumber}
           </span>
         </div>
       </section>
       <section className="flex justify-between px-2 gap-2 items-start">
-        {attendee.phoneNumber && (
+        {phoneNumber && (
           <div className="flex-1 flex flex-col gap-2 items-center justify-center">
             <div className="w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex  justify-center items-center">
               <svg
@@ -116,7 +157,7 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
             </span>
           </div>
         )}
-        {attendee.whatsappNumber && (
+        {whatsappNumber && (
           <div className="flex-1  flex flex-col gap-2 items-center justify-center">
             <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
               <svg
@@ -133,7 +174,7 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
               </svg>
             </div>
             <span className="text-xs text-[#3E404B] font-semibold text-center">
-              Whatsapp
+              WhatsApp
             </span>
           </div>
         )}
@@ -199,7 +240,7 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
           </span>
         </div>
       </section>
-      {attendee.certificate && (
+      {certificate && (
         <section className="flex justify-between items-center border-t-[1px] border-gray-200 px-2 pt-4">
           <h3 className="text-xl text-greyBlack font-semibold">Credentials</h3>
           <Link href="/" className="  text-sm text-[#001FCC] ">
@@ -279,26 +320,24 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
         <div className="space-y-4 px-2">
           <div className="flex flex-col">
             <h4 className=" text-[#222] leading-normal font-medium">
-              {attendee.jobTitle}
+              {jobTitle}
             </h4>
-            <span className=" text-[#3E404B] text-sm ">
-              {attendee.organization}
-            </span>
+            <span className=" text-[#3E404B] text-sm ">{organization}</span>
           </div>
           <div className="">
             <h4 className="text-gray-800 font-medium">Bio</h4>
-            <p className="text-gray-700 text-sm font-normal">{attendee.bio}</p>
+            <p className="text-gray-700 text-sm font-normal">{bio}</p>
           </div>
           <div className="flex flex-col">
             <h4 className="text-gray-800 font-medium">Location</h4>
             <span className=" text-gray-700 text-sm">
-              {attendee.city + ", " + attendee.country}
+              {city + ", " + country}
             </span>
           </div>
           <div className="flex flex-col">
             <h4 className="text-gray-800 font-medium">Social Media</h4>
             <div className="flex gap-4 items-center">
-              {attendee.x && (
+              {x && (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -323,8 +362,8 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
                   </defs>
                 </svg>
               )}
-              {attendee.linkedin && (
-                <a href={attendee.linkedin}>
+              {linkedin && (
+                <a href={linkedin}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="25"
@@ -351,7 +390,7 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
                   </svg>
                 </a>
               )}
-              {attendee.facebook && (
+              {facebook && (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -377,7 +416,7 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
                   </defs>
                 </svg>
               )}
-              {attendee.instagram && (
+              {instagram && (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="28"
@@ -422,19 +461,30 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
                   <span className="capitalize">Add Tags</span>
                 </DialogTitle>
               </DialogHeader>
-              <AddTagForm
+              <AddAttendeeTagForm
                 attendeeEmail={attendee?.email}
                 attendeeId={attendee?.id}
               />
             </DialogContent>
           </Dialog>
         </div>
-        {attendee.tag && (
-          <div className="">
-            <div className=" w-[102px] h-10 bg-lightOrange rounded-sm flex justify-center items-center">
-              <span className=" text-small text-[#E68111]">Old attendees</span>
-            </div>
-          </div>
+        {!attendeeTagsisLoading ? (
+          <>
+            {attendeeTags?.contactAttendeeTags &&
+            attendeeTags?.contactAttendeeTags?.length > 0 ? (
+              <div className="">
+                <div className=" w-[102px] h-10 bg-lightOrange rounded-sm flex justify-center items-center">
+                  <span className=" text-small text-[#E68111]">
+                    Old attendees
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <p>No tags for this attendee</p>
+            )}
+          </>
+        ) : (
+          <p>Loading...</p>
         )}
       </section>
       <section className="px-2 pt-4 border-t-[1px] border-gray-200 space-y-4">

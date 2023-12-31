@@ -15,7 +15,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useUpdatenote } from "@/hooks/notes";
-import { DialogClose } from "./ui/dialog";
+import { DialogClose } from "../ui/dialog";
 
 export default function AddNotesForm({
   attendeeEmail,
@@ -44,7 +44,14 @@ export default function AddNotesForm({
     defaultValues,
   });
 
-  const { setValue, getFieldState } = form;
+  const {
+    setValue,
+    formState: { errors },
+  } = form;
+
+  useEffect(() => {
+    console.log(errors);
+  });
 
   useEffect(() => {
     setValue("attendeeEmail", attendeeEmail);
@@ -83,9 +90,9 @@ export default function AddNotesForm({
           )}
         />
         <DialogClose asChild>
-          <Button type="submit" className="bg-basePrimary w-full">
-            Add Notes
-          </Button>
+        <Button type="submit" className="bg-basePrimary w-full">
+          Add Notes
+        </Button>
         </DialogClose>
       </form>
     </Form>

@@ -38,7 +38,13 @@ export const useUpdateAttendees = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const updateAttendees = async ({ payload }: { payload: TAttendee[] }) => {
+  const updateAttendees = async ({
+    payload,
+    message,
+  }: {
+    payload: TAttendee[];
+    message?: string;
+  }) => {
     setLoading(true);
     toast({
       description: "Updating attendees",
@@ -50,11 +56,11 @@ export const useUpdateAttendees = () => {
         payload,
       });
 
-      if (status !== 200) throw data.error;
+      if (status !== 200) throw data.data;
 
       console.log(data);
       toast({
-        description: "Attendee created successfully",
+        description: message || "Attendee created successfully",
       });
       return data;
     } catch (error) {
