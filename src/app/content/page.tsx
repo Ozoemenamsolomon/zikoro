@@ -136,11 +136,11 @@ export default function Event(this: any): JSX.Element {
               type="text"
             />
             <div className="flex justify-between gap-2 relative">
-              <span className="z-10 -top-3 ml-[2rem] left-20 p-1 bg-white rounded-sm block text-[12px] text-gray-700 absolute">
+              <span className="z-10 -top-2 translate-x-12 left-20 bg-white rounded-sm block text-[12px] text-gray-700 absolute">
                 {" "}
                 Start date and time
               </span>
-              <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-3 p-1 rounded-sm z-10">
+              <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-2 rounded-sm z-10">
                 {" "}
                 End date and time
               </span>
@@ -149,8 +149,6 @@ export default function Event(this: any): JSX.Element {
                 sx={{
                   width: "100%",
                   height: "56px",
-                  borderRadius: "5px",
-                  border: "1px solid #f3f3f3",
                   color: "#717171",
                   "& .MuiInputBase-input": {
                     paddingBlock: "10px",
@@ -167,6 +165,7 @@ export default function Event(this: any): JSX.Element {
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
                       borderColor: "#f3f3f3",
+                      borderRadius: "5px",
                     },
                     "&:hover fieldset": {
                       borderColor: "#f3f3f3",
@@ -181,8 +180,6 @@ export default function Event(this: any): JSX.Element {
                 sx={{
                   width: "100%",
                   height: "56px",
-                  borderRadius: "5px",
-                  border: "1px solid #f3f3f3",
                   color: "#717171",
                   "& .MuiInputBase-input": {
                     paddingBlock: "10px",
@@ -193,12 +190,10 @@ export default function Event(this: any): JSX.Element {
                   "& .MuiInputBase-root": {
                     height: "60px",
                   },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    border: "1px solid #f3f3f3",
-                  },
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
                       borderColor: "#f3f3f3",
+                      borderRadius: "5px",
                     },
                     "&:hover fieldset": {
                       borderColor: "#f3f3f3",
@@ -295,15 +290,13 @@ export default function Event(this: any): JSX.Element {
                   containerClassName="w-1/2"
                   placeholder="Enter price"
                 />
-                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-3 p-1 rounded-sm z-10">
+                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-2 rounded-sm z-10">
                   {" "}
                   Validity
                 </span>
                 <DatePicker
                   sx={{
                     width: "50%",
-                    borderRadius: "9px",
-                    border: "1px solid #f3f3f3",
                     color: "#717171",
                     "& .MuiInputBase-input": {
                       paddingLeft: "15px",
@@ -311,18 +304,17 @@ export default function Event(this: any): JSX.Element {
                       fontSize: "12px",
                       color: "black",
                     },
-
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
                         borderColor: "#f3f3f3",
+                        borderRadius: "8px",
                       },
                       "&:hover fieldset": {
                         borderColor: "#f3f3f3",
                       },
-
                       "&.Mui-focused fieldset": {
                         borderColor: "black",
-                        borderRadius: "9px",
+                        borderRadius: "5px",
                       },
                       "& .MuiFormControl-root": {
                         padding: "0px",
@@ -346,7 +338,7 @@ export default function Event(this: any): JSX.Element {
                           containerClassName="w-1/2"
                           placeholder="Pick date"
                         /> */}
-                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-3 p-1 rounded-sm z-10">
+                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-2 rounded-sm z-10">
                   {" "}
                   Validity
                 </span>
@@ -355,8 +347,7 @@ export default function Event(this: any): JSX.Element {
                   // onChange={(newValue) => this.setState({ value: newValue })}
                   sx={{
                     width: "50%",
-                    borderRadius: "9px",
-                    border: "1px solid #f3f3f3",
+
                     color: "#717171",
                     "& .MuiInputBase-input": {
                       paddingLeft: "15px",
@@ -364,18 +355,17 @@ export default function Event(this: any): JSX.Element {
                       fontSize: "12px",
                       color: "black",
                     },
-
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
                         borderColor: "#f3f3f3",
+                        borderRadius: "5px",
                       },
                       "&:hover fieldset": {
                         borderColor: "#f3f3f3",
                       },
-
                       "&.Mui-focused fieldset": {
                         borderColor: "black",
-                        borderRadius: "9px",
+                        borderRadius: "8px",
                       },
                       "& .MuiFormControl-root": {
                         padding: "0px",
@@ -399,15 +389,13 @@ export default function Event(this: any): JSX.Element {
                           containerClassName="w-1/2"
                           placeholder="Pick date"
                         /> */}
-                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-3 p-1 rounded-sm z-10">
+                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-2 rounded-sm z-10">
                   {" "}
                   Validity
                 </span>
                 <DatePicker
                   sx={{
                     width: "50%",
-                    borderRadius: "9px",
-                    border: "1px solid #f3f3f3",
                     color: "#717171",
                     "& .MuiInputBase-input": {
                       paddingLeft: "15px",
@@ -415,10 +403,10 @@ export default function Event(this: any): JSX.Element {
                       fontSize: "12px",
                       color: "black",
                     },
-
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
                         borderColor: "#f3f3f3",
+                        borderRadius: "5px",
                       },
                       "&:hover fieldset": {
                         borderColor: "#f3f3f3",
@@ -426,7 +414,7 @@ export default function Event(this: any): JSX.Element {
 
                       "&.Mui-focused fieldset": {
                         borderColor: "black",
-                        borderRadius: "9px",
+                        borderRadius: "8px",
                       },
                       "& .MuiFormControl-root": {
                         padding: "0px",

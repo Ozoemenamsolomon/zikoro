@@ -64,7 +64,7 @@ export const CustomSelect: React.FC<{
         size={15}
         className="absolute right-0 translate-y-1 -translate-x-5 pointer-events-none text-gray-300"
       />
-      <label className="block text-[12px] bg-white text-gray-700 absolute right-2 bottom-9 p-1 rounded-sm">
+      <label className="block text-[12px] bg-white text-gray-700 absolute right-2 -top-2.5 rounded-sm">
         {label}
       </label>
       <select

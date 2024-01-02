@@ -9,7 +9,7 @@ export const CustomTextBox: React.FC<{
     <div className="relative">
       <label
         htmlFor={id}
-        className="block text-[12px]  bg-white text-gray-700 absolute right-2 -top-3 p-1 rounded-sm"
+        className="block text-[12px]  bg-white text-gray-700 absolute right-3 -top-2 rounded-sm"
       >
         {label}
       </label>
