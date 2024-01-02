@@ -468,24 +468,32 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
             </DialogContent>
           </Dialog>
         </div>
-        {!attendeeTagsisLoading ? (
-          <>
-            {attendeeTags?.contactAttendeeTags &&
-            attendeeTags?.contactAttendeeTags?.length > 0 ? (
-              <div className="">
-                <div className=" w-[102px] h-10 bg-lightOrange rounded-sm flex justify-center items-center">
-                  <span className=" text-small text-[#E68111]">
-                    Old attendees
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <p>No tags for this attendee</p>
-            )}
-          </>
-        ) : (
-          <p>Loading...</p>
-        )}
+        <div className="flex gap-2 flex-wrap px-2">
+          {!attendeeTagsisLoading ? (
+            <>
+              {attendeeTags?.contactAttendeeTags &&
+              attendeeTags?.contactAttendeeTags?.length > 0 ? (
+                <>
+                  {attendeeTags?.contactAttendeeTags.map((tag) => (
+                    <div
+                      className="text-sm flex items-center gap-1.5 p-2 rounded w-fit font-medium"
+                      style={{
+                        backgroundColor: tag.color + "33",
+                        color: tag.color,
+                      }}
+                    >
+                      {tag.label}
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <p>No tags for this attendee</p>
+              )}
+            </>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
       </section>
       <section className="px-2 pt-4 border-t-[1px] border-gray-200 space-y-4">
         <h4 className="text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 ">

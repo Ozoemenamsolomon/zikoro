@@ -102,9 +102,9 @@ export const useUpdateAttendeetags = ({
     toast({
       description: "updating attendee tags...",
     });
-        
+
     try {
-      console.log("starting update attendee tag");
+      console.log(payload, "starting update attendee tag");
       const { data, status } = await postRequest({
         endpoint: `/attendees/${attendeeId}/tags`,
         payload,
@@ -116,6 +116,7 @@ export const useUpdateAttendeetags = ({
         description: "Attendee tags updated successfully",
       });
     } catch (error) {
+      console.log(error)
       setError(true);
     } finally {
       console.log("done");
@@ -127,7 +128,7 @@ export const useUpdateAttendeetags = ({
 };
 
 type UseGetAttendeetagsResult = {
-  attendeeTags: TAttendeeTags[];
+  attendeeTags: TAttendeeTags;
   getAttendeetags: () => Promise<void>;
 } & RequestStatus;
 
@@ -136,7 +137,7 @@ export const useGetAttendeetags = ({
 }: {
   attendeeId: number;
 }): UseGetAttendeetagsResult => {
-  const [attendeeTags, setTags] = useState<TAttendeeTags[]>([]);
+  const [attendeeTags, setTags] = useState<TAttendeeTags>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -144,7 +145,7 @@ export const useGetAttendeetags = ({
     setLoading(true);
 
     try {
-      const { data, status } = await getRequest<TAttendeeTags[]>({
+      const { data, status } = await getRequest<TAttendeeTags>({
         endpoint: `/attendees/${attendeeId}/tags`,
       });
 

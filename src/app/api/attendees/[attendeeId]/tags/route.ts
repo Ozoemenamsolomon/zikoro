@@ -6,7 +6,7 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { attendeeId: string } }
 ) {
-  console.log(params);
+  console.log(params, "params");
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
     try {

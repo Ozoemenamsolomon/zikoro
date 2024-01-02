@@ -7,6 +7,7 @@ import { TAttendeeTags, TTag } from "@/types/tags";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import AddTagForm from "./AddTagForm";
+import { DialogClose } from "../ui/dialog";
 
 export default function AddAttendeeTagForm({
   attendeeEmail,
@@ -24,6 +25,7 @@ export default function AddAttendeeTagForm({
   } = useGetTags({
     email: "ubahyusuf484@gmail.com",
   });
+
   const {
     attendeeTags,
     isLoading: attendeeTagsisLoading,
@@ -35,11 +37,14 @@ export default function AddAttendeeTagForm({
       attendeeId,
     });
 
-  async function onSubmit(data: TTag[]) {
+  async function onSubmit() {
     const payload: TAttendeeTags = attendeeTags
       ? {
           ...attendeeTags,
-          contactAttendeeTags: [...attendeeTags.contactAttendeeTags, ...data],
+          contactAttendeeTags: [
+            ...attendeeTags.contactAttendeeTags,
+            ...selectedTags,
+          ],
         }
       : {
           email: "ubahyusuf484@gmail.com",
@@ -47,9 +52,10 @@ export default function AddAttendeeTagForm({
           eventId: 1234567890,
           attendeeId,
           contactAttendeeId: 10,
-          contactAttendeeTags: data,
+          contactAttendeeTags: selectedTags,
         };
 
+    console.log(payload, "on the front side");
     await updateAttendeetags({ payload });
     getTags();
   }
@@ -80,8 +86,10 @@ export default function AddAttendeeTagForm({
                   {tags.tags
                     .filter(
                       (tag) =>
-                        !attendeeTags ||
-                        !attendeeTags?.contactAttendeeTags.includes(tag)
+                        attendeeTags &&
+                        !attendeeTags?.contactAttendeeTags.find(
+                          (elm) => tag.label === elm.label
+                        )
                     )
                     .map((tag) => (
                       <button
@@ -111,13 +119,15 @@ export default function AddAttendeeTagForm({
           )}
         </div>
       </div>
-      <Button
-        disabled={selectedTags.length === 0}
-        onClick={onSubmit}
-        className="bg-basePrimary w-full"
-      >
-        Create Tag
-      </Button>
+      <DialogClose asChild>
+        <Button
+          disabled={selectedTags.length === 0}
+          onClick={onSubmit}
+          className="bg-basePrimary w-full"
+        >
+          Add Tags
+        </Button>
+      </DialogClose>
     </div>
   );
 }
