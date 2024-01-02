@@ -168,7 +168,7 @@ export default function Certificate() {
   );
 }
 
-export function DialogDemo() {
+const DialogDemo = () => {
   const [color, setColor] = useState("#D6D6D6");
 
   const initialValue = 0;
@@ -267,4 +267,4 @@ export function DialogDemo() {
       </DialogContent>
     </Dialog>
   );
-}
+};
