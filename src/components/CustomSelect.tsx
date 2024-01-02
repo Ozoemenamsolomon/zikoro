@@ -5,6 +5,7 @@ export const CustomSelect: React.FC<{
   label?: string;
   placeholder?: string;
   value?: string;
+  name?: string;
   classname?: string;
 }> = ({ label, placeholder, value, classname }) => {
   const visibilityOptions: string[] = ["Public", "Private"];
@@ -49,10 +50,15 @@ export const CustomSelect: React.FC<{
   ];
   const locationType: string[] = ["Onsite", "Virtual", "Hybrid"];
   const pricingCurrency: string[] = ["Dollar", "Naira"];
+  const certificateHeading: string[] = [
+    "Biomechanics of foot ulcer worksop",
+    "Resin art workshop",
+    "Biomechanics of lower limbs",
+  ];
 
   return (
     <div
-      className={`p-[10px] rounded-md border-2 border-[#f3f3f3] relative ${classname}`}
+      className={`p-[10px] rounded-md border border-[#f3f3f3] relative ${classname}`}
     >
       <AngleDown
         size={15}
@@ -97,6 +103,14 @@ export const CustomSelect: React.FC<{
             })
           : label === "Location type"
           ? locationType.map((optionValue, index) => {
+              return (
+                <option key={index} value={value}>
+                  {optionValue}
+                </option>
+              );
+            })
+          : label === "Certificate heading"
+          ? certificateHeading.map((optionValue, index) => {
               return (
                 <option key={index} value={value}>
                   {optionValue}

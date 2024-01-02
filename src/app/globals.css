@@ -87,5 +87,7 @@ select:required:invalid {
 }
 
 .description-text {
-  @apply text-foreground/50 text-[10px];
+  font-size: 10px;
+  font-weight: 400;
+  color: #717171;
 }

@@ -9,6 +9,9 @@ import { DataAndTimeAdapter } from "@/context/DataAndTimeAdapter";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
+import { Eye } from "styled-icons/evil";
+import { UploadOutline } from "styled-icons/evaicons-outline";
+import { Check } from "styled-icons/material";
 type ContentData = {
   title: string;
   startDateAndTime: Date | null;
@@ -58,44 +61,35 @@ export default function Event(this: any): JSX.Element {
     lateBirdValidity: "",
   });
 
-  // const handleChange = (e: Event) => {
-  //   const { name, value } = e.target;
-  //   setData((data) => ({
-  //     ...data,
-  //     [name]: value,
-  //     newDbData: {
-  //       ...data.newDbData,
-  //       [name]: value,
-  //     },
-  //   }));
-  //   if (
-  //     data.podcastId &&
-  //     podcastData.title &&
-  //     podcastData.cover &&
-  //     podcastData.category &&
-  //     podcastData.language &&
-  //     podcastData.publisherName &&
-  //     podcastData.publisherEmail
-  //   ) {
-  //     setDisableSubmit(false);
-  //   }
-  //   if (mode === "edit" && prevPodcastData !== podcastData) {
-  //     setDisableUpdate(false);
-  //   }
-  // };
-  // const onSubmit = () => {
-  //   console.log(data);
-  //   setData({
-  //   })
-  // };
-  const previewAction = (e: React.FormEvent<HTMLFormElement>): void => {
+  const previewAction = (e: React.ChangeEvent<HTMLInputElement>): void => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(e.currentTarget.form as HTMLFormElement);
+
     const values = Array.from(formData.values());
-    const isEmpty = values.every((value) => value === "");
-    const data = Object.fromEntries(formData);
+    const isEmpty = values.includes("");
+
+    if (isEmpty) {
+      return;
+    }
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      tel: formData.get("tel"),
+      date: formData.get("date"),
+      startTime: formData.get("startTime"),
+      endTime: formData.get("endTime"),
+    };
     console.log(data);
+
+    // const formData = new FormData(e.currentTarget);
+    // // const values = Array.from(formData.values());
+    // // const isEmpty = values.every((value) => value === "");
+    // // const data = Object.fromEntries(formData);
+    // Array.from(formData.entries()).forEach(([key, value]) => {
+    //   console.log(key, value);
+    // });
+    // console.log(data);
 
     // e.currentTarget.reset();
   };
@@ -121,15 +115,12 @@ export default function Event(this: any): JSX.Element {
   //   const pathname = usePathname();
   return (
     <DataAndTimeAdapter>
-      {/* main content */}
       <div className="p-4">
         <h6 className="font-medium">Event information</h6>
       </div>
       {/* form */}
       <form
         className="w-[100%]"
-        action=""
-        method="post"
         onSubmit={() => {
           publishAction;
           previewAction;
@@ -145,7 +136,7 @@ export default function Event(this: any): JSX.Element {
               type="text"
             />
             <div className="flex justify-between gap-2 relative">
-              <span className="z-10 -top-4 ml-[2rem] left-20 p-1 bg-white rounded-sm block text-[12px] text-gray-700 absolute">
+              <span className="z-10 -top-3 ml-[2rem] left-20 p-1 bg-white rounded-sm block text-[12px] text-gray-700 absolute">
                 {" "}
                 Start date and time
               </span>
@@ -185,7 +176,6 @@ export default function Event(this: any): JSX.Element {
                     },
                   },
                 }}
-                // onChange={(newValue) => setValue(newValue)}
               />
               <DateTimePicker
                 sx={{
@@ -219,17 +209,17 @@ export default function Event(this: any): JSX.Element {
                   },
                 }}
               />
-              {/* <CustomInput
-                        label="End date and time"
-                        id="endDateAndTime"
-                        type="datetime-local"
-                        containerClassName="w-1/2"
-                        placeholder="Pick date and time"
-                      /> */}
-              {/* <DatePicker /> */}
             </div>
-            <CustomSelect label="Event visibilty" placeholder="Please select" />
-            <CustomSelect label="Industry" placeholder="Please select" />
+            <CustomSelect
+              label="Event visibilty"
+              placeholder="Please select"
+              name="event_visibility"
+            />
+            <CustomSelect
+              label="Industry"
+              placeholder="Please select"
+              name="industry"
+            />
 
             <CustomSelect label="Event category" placeholder="Please select" />
             <CustomInput
@@ -305,7 +295,7 @@ export default function Event(this: any): JSX.Element {
                   containerClassName="w-1/2"
                   placeholder="Enter price"
                 />
-                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-0.5 p-1 rounded-sm z-10">
+                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-3 p-1 rounded-sm z-10">
                   {" "}
                   Validity
                 </span>
@@ -356,7 +346,7 @@ export default function Event(this: any): JSX.Element {
                           containerClassName="w-1/2"
                           placeholder="Pick date"
                         /> */}
-                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-0.5 p-1 rounded-sm z-10">
+                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-3 p-1 rounded-sm z-10">
                   {" "}
                   Validity
                 </span>
@@ -409,7 +399,7 @@ export default function Event(this: any): JSX.Element {
                           containerClassName="w-1/2"
                           placeholder="Pick date"
                         /> */}
-                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-0.5 p-1 rounded-sm z-10">
+                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-3 p-1 rounded-sm z-10">
                   {" "}
                   Validity
                 </span>

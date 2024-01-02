@@ -8,6 +8,7 @@ export const CustomInput: React.FC<{
   accept?: string;
   inputDivClassName?: string;
   inputClassName?: string;
+  disabled?: boolean;
 }> = ({
   label,
   id,
@@ -15,14 +16,13 @@ export const CustomInput: React.FC<{
   containerClassName = "",
   placeholder = "",
   accept = "",
-  inputDivClassName,
-  inputClassName,
+  disabled = false,
 }) => {
   return (
-    <div className={`${containerClassName} relative py-[10px]`}>
+    <div className={`${containerClassName} relative`}>
       <label
         htmlFor={id}
-        className="block text-[12px] bg-white text-gray-700 absolute right-3 top-0.5 rounded-sm"
+        className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-2 rounded-sm"
       >
         {label}
       </label>
@@ -31,9 +31,9 @@ export const CustomInput: React.FC<{
         name={id}
         id={id}
         accept={accept}
-        className={`p-4 w-[100%] rounded-md border-2 border-[#f3f3f3] sm:text-sm ${inputClassName}`}
+        className={`p-4 w-[100%] rounded-md border border-[#f3f3f3] sm:text-sm`}
         placeholder={placeholder}
-
+        disabled={disabled}
         // required
       />
     </div>

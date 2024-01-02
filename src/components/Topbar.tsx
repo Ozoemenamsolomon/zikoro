@@ -3,7 +3,9 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Manrope } from "next/font/google";
 
+const manrope = Manrope({ weight: "500", subsets: ["cyrillic"] });
 const links = [
   {
     name: "Content",
@@ -46,15 +48,15 @@ const links = [
 const Topbar = () => {
   const pathname = usePathname();
   return (
-    <div className="bg-white w-full flex gap-12 text-gray-500 sticky top-0 text-[16px] z-50">
+    <div className="px-4 bg-white w-full items-center flex gap-12 text-gray-500 sticky top-0 text-[16px] z-50">
       {links.map(({ name, href }, index) => {
         return (
           <Link
             href={href}
             key={index}
-            className={` ${
-              pathname === href
-                ? "text-purplebg border-b-2 border-purplebg"
+            className={`p-2 ${manrope.className} ${
+              pathname.includes(href)
+                ? "text-purplebg border-b border-purplebg"
                 : ""
             }`}
           >

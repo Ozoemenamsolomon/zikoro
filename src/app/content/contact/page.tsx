@@ -15,7 +15,7 @@ function Contact() {
             <CustomInput
               label="Organisation name"
               id="eventTitle"
-              placeholder="Enter event title"
+              placeholder="Organisation name"
               type="text"
             />
 

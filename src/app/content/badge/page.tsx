@@ -11,28 +11,33 @@ const badges = [
 ];
 export default function Badge() {
   return (
-    <>
-      <div className="flex justify-between items-center p-4">
+    <div className="p-4">
+      <div className="flex justify-between items-center">
         <h6 className="font-medium">Badge</h6>
         <div className="flex justify-between items-center space-x-6">
-          <button className="flex justify-between items-center bg-purplebg text-white px-[12px] py-[8px] rounded-[5px]">
-            <span className="pr-[8px]">Preview</span>
-            <Eye size={20} />
+          <button
+            className="w-[109px] flex justify-center items-center bg-purplebg text-white p-[10px] rounded-[4px]"
+            // type="submit"
+            // form="form"
+          >
+            <span className="mr-2 text-[16px]">Preview</span>
+            <Eye size={25} />
           </button>
-          <span>Color theme</span>
-          <span className="bg-green-900 text-white py-2 px-3  rounded-md">
-            <Check size={15} />
-          </span>
           <button className="text-center">
-            <span className="pr-[2px]">
-              Saved <Check size={15} className="text-purplebg" />
+            <span className="pr-[2px] text-[#3E404B]">
+              Save <Check size={15} className="text-purplebg" />
             </span>
           </button>
+          <span className="text-[#3E404B]">Color theme</span>
+          <span className="flex items-center justify-center bg-green-900 text-white w-[40px]  h-[40px] rounded-[8px]">
+            <Check size={15} />
+          </span>
+
           <Colorize size={20} />
           <Cog size={20} />
         </div>
       </div>
-      <div className="flex justify-between my-4">
+      <div className="flex justify-between my-6">
         {badges[0].map((badge, index) => {
           return (
             <img src={badge} key={index} width={300} height={150} alt="badge" />
@@ -72,13 +77,13 @@ export default function Badge() {
         </div>
       </div>
       <div className="flex mt-8 space-x-4 items-center">
-        <button className="w-[10rem] bg-purplebg text-white px-[12px] py-[8px] rounded-[5px]">
+        <button className="w-[132px] bg-purplebg text-white p-[10px] rounded-[4px]">
           Save
         </button>
-        <button className="border-2 border-purplebg w-[10rem] px-[12px] py-[6px] rounded-[5px] text-purplebg">
+        <button className="w-[132px] border border-purplebg p-[10px] rounded-[4px] text-purplebg">
           Preview
         </button>
       </div>
-    </>
+    </div>
   );
 }

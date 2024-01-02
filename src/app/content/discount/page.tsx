@@ -3,7 +3,6 @@ import React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
 import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
 import { DiscountList } from "@/components/Discount/DiscountList";
 
 export default function Discount() {
@@ -18,12 +17,9 @@ export default function Discount() {
       </div>
       <div className="p-3 ">
         <ul className="grid grid-cols-8 place-items-center text-center border bg-[#f3f3f3] p-3 border-b-2 text-[14px] font-bold">
-          <li>
-            <Checkbox className="mr-2 " disabled />
-            <span>Created at</span>
-          </li>
+          <li>Created at</li>
           <li>Code</li>
-          <li>Bulk</li>
+          <li>Min Qty</li>
           <li>Valid until</li>
           <li>Amount</li>
           <li>Percentage</li>
@@ -32,9 +28,9 @@ export default function Discount() {
         </ul>
 
         <DiscountList
-          createdAt="2023-12-01 00:12:36"
+          createdAt="2023-12-01"
           code="t555"
-          bulk="1"
+          minQty="1"
           validUntil="2023-12-12"
           amount="5000"
           percentage="NULL"
@@ -43,9 +39,9 @@ export default function Discount() {
         />
         <Separator />
         <DiscountList
-          createdAt="2023-12-01 00:12:36"
+          createdAt="2023-12-01"
           code="t555"
-          bulk="1"
+          minQty="1"
           validUntil="2023-12-12"
           amount="5000"
           percentage="NULL"
@@ -54,9 +50,9 @@ export default function Discount() {
         />
         <Separator />
         <DiscountList
-          createdAt="2023-12-01 00:12:36"
+          createdAt="2023-12-01"
           code="t555"
-          bulk="1"
+          minQty="1"
           validUntil="2023-12-12"
           amount="5000"
           percentage="NULL"
@@ -65,9 +61,9 @@ export default function Discount() {
         />
         <Separator />
         <DiscountList
-          createdAt="2023-12-01 00:12:36"
+          createdAt="2023-12-01"
           code="t555"
-          bulk="1"
+          minQty="1"
           validUntil="2023-12-12"
           amount="5000"
           percentage="NULL"
@@ -76,9 +72,9 @@ export default function Discount() {
         />
         <Separator />
         <DiscountList
-          createdAt="2023-12-01 00:12:36"
+          createdAt="2023-12-01"
           code="t555"
-          bulk="1"
+          minQty="1"
           validUntil="2023-12-12"
           amount="5000"
           percentage="NULL"
@@ -87,9 +83,9 @@ export default function Discount() {
         />
         <Separator />
         <DiscountList
-          createdAt="2023-12-01 00:12:36"
+          createdAt="2023-12-01"
           code="t555"
-          bulk="1"
+          minQty="1"
           validUntil="2023-12-12"
           amount="5000"
           percentage="NULL"

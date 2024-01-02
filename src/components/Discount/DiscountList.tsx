@@ -8,7 +8,7 @@ import React from "react";
 export const DiscountList: React.FC<{
   createdAt?: string;
   code?: string;
-  bulk: string;
+  minQty: string;
   validUntil?: string;
   amount?: string;
   percentage?: string;
@@ -17,7 +17,7 @@ export const DiscountList: React.FC<{
 }> = ({
   createdAt = "",
   code = "",
-  bulk = "",
+  minQty = "",
   validUntil = "",
   amount = "",
   percentage = "",
@@ -25,13 +25,10 @@ export const DiscountList: React.FC<{
   status = "",
 }) => {
   return (
-    <ul className="grid grid-cols-8 place-items-center text-center p-3 text-[12px]">
-      <li className="flex items-center">
-        <Checkbox className=" data-[state=checked]:bg-purplebg data-[state=checked]:text-white" />
-        <span>{createdAt}</span>
-      </li>
+    <ul className="grid grid-cols-8 place-items-center text-center p-3 text-[12px] border-x">
+      <li className="flex items-center">{createdAt}</li>
       <li>{code}</li>
-      <li>{bulk}</li>
+      <li>{minQty}</li>
       <li>{validUntil}</li>
       <li>{amount}</li>
       <li>{percentage}</li>
