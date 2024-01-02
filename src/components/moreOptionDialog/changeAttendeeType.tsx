@@ -5,13 +5,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { attendeeTypeOptions } from "@/data/attendee";
 import { useUpdateAttendees } from "@/hooks/attendee";
 import { TAttendee } from "@/types/attendee";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
 
 const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
   const [selectedAttendeeType, setSelectedAttendeeType] = useState<string>("");
+  const [action, setAction] = useState<"assign" | "remove">("assign");
 
   const { updateAttendees } = useUpdateAttendees();
 
@@ -30,13 +31,25 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
   };
 
   const onSubmit = () => {
-    const payload = selectedAttendees.map((attendee) => ({
-      ...attendee,
-      attendeeType: [...attendee.attendeeType, selectedAttendeeType],
-    }));
+    const payload = selectedAttendees.map((attendee) => {
+      const newAttendeeType =
+        action === "assign"
+          ? [...attendee.attendeeType, selectedAttendeeType]
+          : attendee.attendeeType.filter(
+              (type) => type !== selectedAttendeeType
+            );
+      return {
+        ...attendee,
+        attendeeType: newAttendeeType,
+      };
+    });
 
     updateAttendees({ payload });
   };
+
+  useEffect(() => {
+    toggleValue([]);
+  }, [selectedAttendeeType, action]);
 
   return (
     <div className="space-y-6 max-h-[80vh] overflow-auto no-scrollbar">
@@ -44,15 +57,29 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
         <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
           Action
         </span>
-        <RadioGroup defaultValue="option-one">
+        <RadioGroup
+          defaultValue={action}
+          value={action}
+          onValueChange={(value) => {
+            setAction(value);
+          }}
+        >
           <div className="flex gap-4">
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="option-one" id="option-one" className="text-basePrimary" />
-              <Label htmlFor="option-one">Assign</Label>
+              <RadioGroupItem
+                value={"assign"}
+                id="assign"
+                className="text-basePrimary"
+              />
+              <Label htmlFor="assign">Assign</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="option-two" id="option-two" className="text-basePrimary" />
-              <Label htmlFor="option-two">Remove</Label>
+              <RadioGroupItem
+                value="remove"
+                id="remove"
+                className="text-basePrimary"
+              />
+              <Label htmlFor="remove">Remove</Label>
             </div>
           </div>
         </RadioGroup>
@@ -90,6 +117,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
         selectedAttendees={selectedAttendees}
         selectedAttendeeType={selectedAttendeeType}
         toggleValue={toggleValue}
+        action={action}
       />
       <DialogClose asChild>
         <Button
