@@ -365,7 +365,7 @@ export default function FirstSection({
         </div>
       </div>
       <div className="flex justify-between my-2 px-2 items-center gap-1">
-        <div className="relative">
+        <div className="relative w-fit flex-1">
           <svg
             className="absolute left-2 top-[25%]"
             xmlns="http://www.w3.org/2000/svg"
@@ -386,7 +386,7 @@ export default function FirstSection({
             type="email"
             placeholder="Search attendees"
             onInput={(event) => setSearchTerm(event.target.value)}
-            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8"
+            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8 w-full"
           />
           <svg
             className="absolute right-2 top-[25%]"
