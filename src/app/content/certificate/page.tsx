@@ -29,8 +29,9 @@ import {
 const manrope = Manrope({ subsets: ["latin"], weight: "600" });
 const certifcates = [
   {
-    img: "/certificates/cert1.svg",
-    label: "/certificates/group.svg",
+    img: "/certificates/cert0.jpg",
+    label: "/certificates/zikoro_small.svg",
+    className: 230,
   },
   {
     img: "/certificates/cert2.svg",
@@ -48,6 +49,7 @@ const certifcates = [
 
 export default function Certificate() {
   const [isCPD, setIsCPD] = useState(false);
+  const [isZikoroLogo, setIsZikoroLogo] = useState(false);
   const [dataState, setDataState] = useState(false);
   return (
     <div className="p-4">
@@ -87,7 +89,7 @@ export default function Certificate() {
         <div className="flex justify-center pl-[12rem] items-center space-x-2">
           <Switch
             onClick={() => setIsCPD(!isCPD)}
-            className={`data-[state=checked]:bg-purplebg `}
+            className={`data-[state=checked]:bg-purplebg w-[32px] h-[22px]`}
           />
           <span className="text-[16px]">CPD required</span>
         </div>
@@ -133,27 +135,38 @@ export default function Certificate() {
         </div>
       </div>
       <div className="flex items-center space-x-2">
-        <Switch className={`data-[state=checked]:bg-purplebg `} />
+        <Switch
+          onClick={() => setIsZikoroLogo(!isZikoroLogo)}
+          className={`data-[state=checked]:bg-purplebg w-[32px] h-[22px]`}
+        />
         <span className="text-[16px]">Include Zikoro Logo</span>
       </div>
       <div className="mt-[3rem]">
         <h3 className="text-[18px] font-[500]">Certificate Template</h3>
         <div className="flex justify-between mt-2">
           {certifcates.map((item, index) => (
-            <div key={index} className="relative ">
-              <img src={item.img} width={200} height={200} alt="certificate" />
+            <div key={index} className="relative">
+              <img
+                src={item.img}
+                width={`${item.className}` || 200}
+                height={200}
+                alt="certificate"
+                className={`${item.label ? `border border-purplebg p-0` : ""}`}
+              />
               {item.tag ? (
                 <span className="absolute top-20 translate-y-12 left-[30%] z-10 bg-black p-1 text-[12px] text-white rounded-md">
                   {item.tag}
                 </span>
               ) : (
-                <img
-                  className="absolute top-0 mt-2 right-1 z-10"
-                  src={item.label}
-                  width={15}
-                  height={15}
-                  alt={item.label}
-                />
+                isZikoroLogo && (
+                  <img
+                    className="absolute top-6 right-4 z-10"
+                    src={item.label}
+                    width={20}
+                    height={20}
+                    alt={item.label}
+                  />
+                )
               )}
             </div>
           ))}

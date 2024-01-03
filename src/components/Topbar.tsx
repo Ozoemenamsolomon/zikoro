@@ -56,8 +56,8 @@ const Topbar = () => {
             key={index}
             className={`p-2 ${manrope.className} ${
               pathname.includes(href)
-                ? "text-purplebg border-b border-purplebg"
-                : ""
+                ? "text-purplebg font-medium border-b border-purplebg"
+                : "font-normal"
             }`}
           >
             {name}

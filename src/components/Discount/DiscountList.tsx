@@ -34,7 +34,9 @@ export const DiscountList: React.FC<{
       <li>{percentage}</li>
       <li>{quantity}</li>
       <li>
-        <Switch className={`data-[state=checked]:bg-purplebg `} />
+        <Switch
+          className={`data-[state=checked]:bg-purplebg w-[32px] h-[22px]`}
+        />
       </li>
     </ul>
   );
