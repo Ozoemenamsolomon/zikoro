@@ -198,7 +198,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="city"
                 render={({ field }) => (
-                  <InputOffsetLabel label={"Last name"}>
+                  <InputOffsetLabel label={"City"}>
                     <Input
                       placeholder="Enter city"
                       {...field}

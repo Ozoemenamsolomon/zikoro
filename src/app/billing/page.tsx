@@ -408,7 +408,7 @@ export default function page() {
           ))}
       </div>
 
-      <div className="py-4 space-y-2">
+      <div className="py-4 space-y-2 max-w-full">
         <DataTable columns={columns} data={billing} />
         <Pagination>
           <PaginationContent>

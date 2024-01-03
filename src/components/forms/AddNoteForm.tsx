@@ -21,18 +21,20 @@ export default function AddNotesForm({
   attendeeEmail,
   attendeeId,
   note,
+  getnote,
 }: {
   attendeeEmail: string;
   attendeeId: number;
   note: TAttendeeNote;
+  getnote: () => Promise<void>;
 }) {
   console.log(attendeeEmail);
-  const defaultValues: Partial<TAttendeeNote> = note
+  const defaultValues: Partial<TAttendeeNote> = !!note
     ? note
     : {
         eventId: "1234567890",
-        contactAttendeeEmail: "ubahyusuf484@gmail.com",
-        contactAttendeeId: 10,
+        attendeeEmail: "ubahyusuf484@gmail.com",
+        userId: 10,
       };
 
   const { updatenote, isLoading, error } = useUpdatenote({
@@ -58,15 +60,18 @@ export default function AddNotesForm({
     setValue("attendeeId", attendeeId);
   }, [attendeeEmail, attendeeId]);
 
-  async function onSubmit(data: TAttendeeNote) {
+  async function onSubmit(payload: TAttendeeNote) {
     toast({
       description: "adding note...",
     });
-    const response = await updatenote({ payload: data });
+
+    await updatenote({ payload });
 
     toast({
       description: "note added successfully",
     });
+
+    await getnote();
   }
 
   return (
@@ -90,9 +95,9 @@ export default function AddNotesForm({
           )}
         />
         <DialogClose asChild>
-        <Button type="submit" className="bg-basePrimary w-full">
-          Add Notes
-        </Button>
+          <Button type="submit" className="bg-basePrimary w-full">
+            Add Notes
+          </Button>
         </DialogClose>
       </form>
     </Form>

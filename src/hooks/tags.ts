@@ -4,13 +4,13 @@ import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
 type useUpdateTagsResult = {
-  updateTags: ({ payload }: { payload: TTags }) => void;
+  updateTags: ({ payload }: { payload: TTags }) => Promise<void>;
 } & RequestStatus;
 
 export const useUpdateTags = ({
-  email,
+  userId,
 }: {
-  email: string;
+  userId: number;
 }): useUpdateTagsResult => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -22,7 +22,7 @@ export const useUpdateTags = ({
     });
     try {
       const { data, status } = await postRequest({
-        endpoint: `/tags/${email}`,
+        endpoint: `/tags/${userId}`,
         payload,
       });
 
@@ -45,8 +45,12 @@ type UseGetTagsResult = {
   getTags: () => Promise<void>;
 } & RequestStatus;
 
-export const useGetTags = ({ email }: { email: string }): UseGetTagsResult => {
-  const [tags, setTags] = useState<TTags | null>(null);
+export const useGetTags = ({
+  userId,
+}: {
+  userId: number;
+}): UseGetTagsResult => {
+  const [tags, setTags] = useState<TTags>({});
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -55,7 +59,7 @@ export const useGetTags = ({ email }: { email: string }): UseGetTagsResult => {
 
     try {
       const { data, status } = await getRequest<TTags>({
-        endpoint: `/tags/${email}`,
+        endpoint: `/tags/${userId}`,
       });
 
       if (status !== 200) {
@@ -71,7 +75,7 @@ export const useGetTags = ({ email }: { email: string }): UseGetTagsResult => {
 
   useEffect(() => {
     getTags();
-  }, [email]);
+  }, [userId]);
 
   return { tags, isLoading, error, getTags };
 };
@@ -116,7 +120,7 @@ export const useUpdateAttendeetags = ({
         description: "Attendee tags updated successfully",
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       setError(true);
     } finally {
       console.log("done");

@@ -8,7 +8,7 @@ export const tagSchema = z.object({
 export const tagsSchema = z.object({
   id: z.number().optional(),
   created_at: z.date().optional(),
-  email: z.string(),
+  userEmail: z.string(),
   tags: z.array(tagSchema),
 });
 
@@ -16,9 +16,9 @@ export const attendeeTagsSchema = z.object({
   id: z.number().optional(),
   created_at: z.string().optional(),
   eventId: z.string(),
-  email: z.string().email(),
-  contactAttendeeEmail: z.string().email(),
-  contactAttendeeTags: z.array(tagSchema),
+  userEmail: z.string().email(),
+  attendeeEmail: z.string().email(),
+  attendeeTags: z.array(tagSchema),
   attendeeId: z.number(),
-  contactAttendeeId: z.number(),
+  userId: z.number(),
 });

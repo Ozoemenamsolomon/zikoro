@@ -4,12 +4,12 @@ import { cookies } from "next/headers";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { email: string } }
+  { params }: { params: { userId: string } }
 ) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
     try {
-      const { email } = params;
+      const { userId } = params;
       const payload = await req.json();
 
       const { error } = await supabase
@@ -40,17 +40,17 @@ export async function POST(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { email: string } }
+  { params }: { params: { userId: string } }
 ) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      const { email } = params;
+      const { userId } = params;
 
       const { data, error, status } = await supabase
         .from("tags")
         .select("*")
-        .eq("email", email)
+        .eq("userId", userId)
         .maybeSingle();
 
       if (error) throw error;

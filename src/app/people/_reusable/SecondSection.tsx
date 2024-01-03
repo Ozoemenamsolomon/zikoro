@@ -1,7 +1,9 @@
 // @ts-nocheck
 "use client";
-import AddAttendeeTagForm from "@/components/forms/AddAttendeeTagForm";
-import AddNoteForm from "@/components/forms/AddNoteForm";
+import { useGetnote } from "@/hooks/notes";
+import { useGetAttendeetags, useUpdateAttendeetags } from "@/hooks/tags";
+import { useEffect } from "react";
+import Link from "next/link";
 import {
   Dialog,
   DialogContent,
@@ -9,10 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useGetnote } from "@/hooks/notes";
-import { useGetAttendeetags } from "@/hooks/tags";
-import Link from "next/link";
-import { useEffect } from "react";
+import AddAttendeeTagForm from "@/components/forms/AddAttendeeTagForm";
+import AddNotesForm from "@/components/forms/AddNoteForm";
 
 export default function SecondSection({ attendee }: { attendee: TAttendee }) {
   const {
@@ -52,13 +52,31 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
     attendeeTags,
     isLoading: attendeeTagsisLoading,
     // error,
+    getAttendeetags,
   } = useGetAttendeetags({ attendeeId: id });
+
+  const { updateAttendeetags, isLoading: updatetagsIsLoading } =
+    useUpdateAttendeetags({
+      attendeeId: id,
+    });
 
   useEffect(() => {
     getnote();
   }, [attendee]);
 
-  console.log(note, "note");
+  async function removeAttendeeTag(tag: TTag) {
+    const payload: TAttendeeTags = {
+      ...attendeeTags,
+      attendeeTags: attendeeTags.attendeeTags.filter(
+        (prevTag) => prevTag !== tag
+      ),
+    };
+
+    console.log(payload, "on the front side");
+    await updateAttendeetags({ payload });
+    await getAttendeetags();
+  }
+
   return (
     <>
       <section className="flex justify-between px-4 items-center">
@@ -471,18 +489,28 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
         <div className="flex gap-2 flex-wrap px-2">
           {!attendeeTagsisLoading ? (
             <>
-              {attendeeTags?.contactAttendeeTags &&
-              attendeeTags?.contactAttendeeTags?.length > 0 ? (
+              {attendeeTags?.attendeeTags &&
+              attendeeTags?.attendeeTags?.length > 0 ? (
                 <>
-                  {attendeeTags?.contactAttendeeTags.map((tag) => (
+                  {attendeeTags?.attendeeTags.map((tag) => (
                     <div
-                      className="text-sm flex items-center gap-1.5 p-2 rounded w-fit font-medium"
+                      className="relative text-sm flex items-center gap-1.5 p-2 rounded w-fit font-medium"
                       style={{
                         backgroundColor: tag.color + "33",
                         color: tag.color,
                       }}
                     >
-                      {tag.label}
+                      <button
+                        onClick={() => removeAttendeeTag(tag)}
+                        style={{
+                          backgroundColor: tag.color + "55",
+                          color: tag.color,
+                        }}
+                        className="bg-white h-4 w-4 flex items-center justify-center text-[8px] absolute -right-2 -top-2 rounded-full"
+                      >
+                        x
+                      </button>
+                      <span>{tag.label}</span>
                     </div>
                   ))}
                 </>
@@ -495,12 +523,12 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
           )}
         </div>
       </section>
-      <section className="px-2 pt-4 border-t-[1px] border-gray-200 space-y-4">
-        <h4 className="text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 ">
+      <section className="pt-4 border-t-[1px] border-gray-200 space-y-4">
+        <h4 className="px-2 text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 ">
           Speaking at
         </h4>
-        <div className="space-y-2 bg-[#FAFAFA] p-2 rounded divide-y-[1px]">
-          <div className="flex justify-between">
+        <div className="space-y-2 bg-[#FAFAFA] mx-2 p-2 rounded divide-y-[1px]">
+          <div className="flex justify-between gap-2 items-center">
             <div className="flex-[75%] flex gap-1 items-center">
               <span className="text-sm font-medium text-greyBlack">
                 Reisin mould
@@ -522,7 +550,7 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
                 />
               </svg>
             </div>
-            <div className="flex-[25%] flex flex-col text-xs">
+            <div className="flex-[25%] flex flex-col text-xs text-right">
               <span className="text-gray-500 font-medium">20 Nov 2023</span>
               <span className="text-gray-500 font-normal">2:00-3:00PM</span>
             </div>
@@ -552,7 +580,7 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
                 </svg>
               </div>
             </div>
-            <div className="flex-[25%] flex flex-col">
+            <div className="flex-[25%] flex flex-col text-right">
               <span className="text-gray-500 text-small font-medium">
                 20 Nov 2023
               </span>
@@ -568,8 +596,8 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
           Moderating at
         </h4>
         <div className="p-2 bg-[#FAFAFA] rounded mx-2">
-          <div className="flex justify-between">
-            <div className=" flex gap-2 items-center">
+          <div className="flex justify-between items-center gap-2">
+            <div className="flex-[75%] flex gap-2 items-center">
               <span className=" font-medium text-greyBlack">
                 Epoxy resin art workshop
               </span>
@@ -590,7 +618,7 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
                 />
               </svg>
             </div>
-            <div className=" flex flex-col">
+            <div className="flex-[25%] flex flex-col text-right">
               <span className=" text-ash text-small font-medium">
                 20 Nov 2023
               </span>
@@ -630,10 +658,11 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
                   <span className="capitalize">Add Note</span>
                 </DialogTitle>
               </DialogHeader>
-              <AddNoteForm
+              <AddNotesForm
                 attendeeEmail={attendee?.email}
                 attendeeId={attendee?.id}
                 note={note}
+                getnote={getnote}
               />
             </DialogContent>
           </Dialog>

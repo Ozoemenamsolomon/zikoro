@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
 import { useUpdateTags } from "@/hooks/tags";
 import { TTag, TTags } from "@/types/tags";
 import COLORTAG from "@/utils/colorTag";
@@ -18,7 +17,7 @@ export default function AddTagForm({
   const [color, setColor] = useState<string>("");
 
   const { updateTags, isLoading, error } = useUpdateTags({
-    email: "ubahyusuf484@gmail.com",
+    userId: 10,
   });
 
   async function onSubmit(data: TTag) {
@@ -27,10 +26,10 @@ export default function AddTagForm({
           ...currentTags,
           tags: [...currentTags.tags, { label, color }],
         }
-      : { email: "ubahyusuf484@gmail.com", tags: [{ label, color }] };
+      : { id: 10, userEmail: "ubahyusuf484@gmail.com", tags: [{ label, color }] };
 
-    const response = await updateTags({ payload });
-    getTags();
+    await updateTags({ payload });
+    await getTags();
   }
 
   return (
@@ -40,7 +39,7 @@ export default function AddTagForm({
           Tag
         </label>
         <Input
-          placeholder="Enter tag"
+          placeholder="create new tag"
           value={label}
           onInput={(e) => setLabel(e.target.value)}
           className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 mt-0"
@@ -65,7 +64,7 @@ export default function AddTagForm({
         onClick={onSubmit}
         className="bg-basePrimary w-full"
       >
-        Create Tag
+        Create New Tag
       </Button>
     </div>
   );

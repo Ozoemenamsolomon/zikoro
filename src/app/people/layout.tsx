@@ -1,10 +1,8 @@
 "use client";
-import Attendee from "@/components/Attendee";
-import AttendeesData from "@/data/AttendeesData";
+import { Toaster } from "@/components/ui/toaster";
 import { TLink } from "@/types/links";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Toaster } from "@/components/ui/toaster";
 
 export const PeopleLinks: TLink[] = [
   { name: "All", href: "all" },
@@ -17,18 +15,6 @@ export const PeopleLinks: TLink[] = [
 
 const People = ({ children }: { children: React.ReactNode }) => {
   const currentLink = usePathname().split("/").pop();
-
-  const mappedData = AttendeesData.map((data) => (
-    <Attendee
-      key={data.id}
-      name={data.fullName}
-      job={data.job}
-      time={data?.time}
-      date={data?.date}
-      role1={data.role1}
-      role2={data?.role2}
-    />
-  ));
 
   return (
     <>

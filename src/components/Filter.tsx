@@ -1,11 +1,12 @@
-import React from "react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarMenu,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+import React from "react";
 
 export type TFilterOptions = string;
 
@@ -37,10 +38,10 @@ export default function Filter({
 }: FilterProps) {
   return (
     <div className={className}>
-      <div className="flex justify-between px-1">
+      <Menubar className="flex justify-between px-1 border-0">
         {filters.map(({ label, accessor, options, icon }, index) => (
-          <HoverCard>
-            <HoverCardTrigger
+          <MenubarMenu>
+            <MenubarTrigger
               className={`flex gap-0.5 items-center w-full min-w-fit justify-center px-0.5 ${
                 index > 0 ? "border-l-[1px]" : ""
               }`}
@@ -49,8 +50,8 @@ export default function Filter({
               <span className="text-xs font-medium text-ticketColor capitalize">
                 {label}
               </span>
-            </HoverCardTrigger>
-            <HoverCardContent className="space-y-2 w-fit">
+            </MenubarTrigger>
+            <MenubarContent className="space-y-2 w-fit">
               {options.map((option) => (
                 <div className="flex text-gray-700 items-center gap-2 capitalize font-medium">
                   <Checkbox
@@ -83,10 +84,10 @@ export default function Filter({
                   </Label>
                 </div>
               ))}
-            </HoverCardContent>
-          </HoverCard>
+            </MenubarContent>
+          </MenubarMenu>
         ))}
-      </div>
+      </Menubar>
       <div className="flex gap-2 flex-wrap px-2 justify-center">
         {selectedFilters.map(({ label, key }) => (
           <div className="text-[10px] text-earlyBirdColor flex items-center gap-1.5 p-1 rounded bg-[#EEF0FF] w-fit">

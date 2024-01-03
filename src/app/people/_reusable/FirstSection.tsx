@@ -1,29 +1,32 @@
 "use client";
 import Attendee from "@/components/Attendee";
-import { Input } from "@/components/ui/input";
-import { useGetAttendees } from "@/hooks/attendee";
-import { useState, useEffect, useRef } from "react";
-import { convertCamelToNormal, extractUniqueTypes } from "@/utils/helpers";
 import Filter, { TFilterType, TSelectedFilter } from "@/components/Filter";
-import { TAttendee } from "@/types/attendee";
+import ChangeAttendeeType from "@/components/moreOptionDialog/changeAttendeeType";
+import CheckinMultiple from "@/components/moreOptionDialog/checkinMultiple";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { useUpdateAttendees } from "@/hooks/attendee";
+import { useGetFavourites, useUpdateFavourites } from "@/hooks/favourites";
+import { TAttendee } from "@/types/attendee";
 import {
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  Dialog,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { calculateAndSetMaxHeight } from "@/utils/helpers";
-
+  calculateAndSetMaxHeight,
+  convertCamelToNormal,
+  extractUniqueTypes,
+} from "@/utils/helpers";
+import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
-import ChangeAttendeeType from "@/components/moreOptionDialog/changeAttendeeType";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -93,6 +96,7 @@ const attendeeFilter: TFilterType[] = [
 
 export interface MoreOptionsProps {
   attendees: TAttendee[];
+  getAttendees: () => Promise<void>;
 }
 
 type TMoreOptions = {
@@ -103,7 +107,7 @@ type TMoreOptions = {
 const moreOptions: TMoreOptions[] = [
   {
     label: "check-in",
-    Component: ChangeAttendeeType,
+    Component: CheckinMultiple,
   },
   {
     label: "Change Attendee Type",
@@ -125,10 +129,16 @@ const moreOptions: TMoreOptions[] = [
 
 export default function FirstSection({
   onOpen,
+  attendees,
+  isLoading,
+  getAttendees,
   onSelectAttendee,
   selectedAttendee,
 }: {
   onOpen: () => void;
+  attendees: TAttendee[];
+  isLoading: boolean;
+  getAttendees: () => Promise<void>;
   onSelectAttendee: (attendee: TAttendee) => void;
   selectedAttendee: TAttendee;
 }) {
@@ -142,11 +152,45 @@ export default function FirstSection({
   const [CurrentSelectedModal, setCurrentSelectedModal] =
     useState<TMoreOptions | null>(null);
 
+  const {
+    favourites,
+    getFavourites,
+    isLoading: favouriteIsLoading,
+  } = useGetFavourites({ userId: 10 });
+
+  console.log(favourites);
+
+  const { updateFavourites } = useUpdateFavourites({ userId: 10 });
+
+  const toggleFavourites = async (id: number, isFavourite: boolean) => {
+    console.log(favourites);
+    const newFavouriteAttendees = !favourites
+      ? [id]
+      : isFavourite
+      ? (favourites.attendees ?? []).filter((attendeeId) => id !== attendeeId)
+      : [...(favourites.attendees ?? []), id];
+
+    const payload = favourites
+      ? { ...favourites, attendees: newFavouriteAttendees }
+      : {
+          userId: 10,
+          userEmail: "ubahyusuf484@gmail.com",
+          eventId: "1234567890",
+          attendees: newFavouriteAttendees,
+        };
+
+    await updateFavourites({
+      payload,
+    });
+    await getFavourites();
+    await getAttendees();
+  };
+
+  const { updateAttendees } = useUpdateAttendees();
+
   useEffect(() => {
     calculateAndSetMaxHeight(divRef);
   }, [mappedAttendees]);
-
-  const { attendees, isLoading, error, getAttendees } = useGetAttendees();
 
   useEffect(() => {
     if (isLoading) return;
@@ -302,8 +346,8 @@ export default function FirstSection({
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <DialogContent className="px-3">
-              <DialogHeader>
+            <DialogContent className="px-0 py-2">
+              <DialogHeader className="px-3">
                 <DialogTitle>
                   <span className="capitalize">
                     {CurrentSelectedModal?.label}
@@ -311,7 +355,10 @@ export default function FirstSection({
                 </DialogTitle>
               </DialogHeader>
               {CurrentSelectedModal && (
-                <CurrentSelectedModal.Component attendees={mappedAttendees} />
+                <CurrentSelectedModal.Component
+                  attendees={mappedAttendees}
+                  getAttendees={getAttendees}
+                />
               )}
             </DialogContent>
           </Dialog>
@@ -428,6 +475,9 @@ export default function FirstSection({
             isSelected={attendee.id === selectedAttendee?.id}
             selectAttendee={onSelectAttendee}
             getAttendees={getAttendees}
+            favourites={favourites}
+            favouriteIsLoading={favouriteIsLoading}
+            toggleFavourites={toggleFavourites}
           />
         ))}
       </div>

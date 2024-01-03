@@ -152,14 +152,10 @@ export default function ViewAttendeesSection({
   attendees,
   toggleValue,
   selectedAttendees,
-  selectedAttendeeType,
-  action,
 }: {
   attendees: TAttendee[];
   selectedAttendees: TAttendee[];
-  selectedAttendeeType: string;
   toggleValue: (value: TAttendee | TAttendee[]) => void;
-  action: "assign" | "remove";
 }) {
   const [mappedAttendees, setMappedAttendees] = useState<TAttendee[]>([]);
   const [filters, setFilters] = useState<TFilterType[]>(attendeeFilter);
@@ -208,15 +204,8 @@ export default function ViewAttendeesSection({
             return value.includes(attendeePropertyValue);
           });
         })
-        .filter(
-          ({ attendeeType }) =>
-            selectedAttendeeType === "" ||
-            (action === "assign"
-              ? !attendeeType.includes(selectedAttendeeType)
-              : attendeeType.includes(selectedAttendeeType))
-        )
     );
-  }, [attendees, selectedFilters, searchTerm, selectedAttendeeType, action]);
+  }, [attendees, selectedFilters, searchTerm]);
 
   return (
     <>

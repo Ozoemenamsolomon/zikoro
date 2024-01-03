@@ -10,9 +10,22 @@ import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
 
 const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
+  const [mappedAttendees, setMappedAttendees] = useState<TAttendee[]>([]);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
   const [selectedAttendeeType, setSelectedAttendeeType] = useState<string>("");
   const [action, setAction] = useState<"assign" | "remove">("assign");
+
+  useEffect(() => {
+    setMappedAttendees(
+      attendees.filter(
+        ({ attendeeType }) =>
+          selectedAttendeeType === "" ||
+          (action === "assign"
+            ? !attendeeType.includes(selectedAttendeeType)
+            : attendeeType.includes(selectedAttendeeType))
+      )
+    );
+  }, [attendees, selectedAttendeeType, action]);
 
   const { updateAttendees } = useUpdateAttendees();
 
@@ -52,7 +65,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
   }, [selectedAttendeeType, action]);
 
   return (
-    <div className="space-y-6 max-h-[80vh] overflow-auto no-scrollbar">
+    <div className="space-y-6 max-h-[80vh] overflow-auto hide-scrollbar py-4 pl-4 pr-1">
       <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
         <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
           Action
@@ -113,11 +126,9 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
         </div>
       </div>
       <ViewAttendeesSection
-        attendees={attendees}
+        attendees={mappedAttendees}
         selectedAttendees={selectedAttendees}
-        selectedAttendeeType={selectedAttendeeType}
         toggleValue={toggleValue}
-        action={action}
       />
       <DialogClose asChild>
         <Button

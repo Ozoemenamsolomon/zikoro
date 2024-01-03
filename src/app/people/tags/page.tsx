@@ -1,8 +1,15 @@
+"use client";
+import { useGetAttendeesWithTags } from "@/hooks/attendee";
 import React from "react";
+import ReusablePeopleComponent from "../_reusable";
 
 export default function page() {
-  return (
-    <div className="flex flex-col h-96 w-full items-center justify-center gap-2">
+  const { attendees, isLoading, error, getAttendees } =
+    useGetAttendeesWithTags();
+
+  if (attendees.length === 0 || isLoading)
+    return (
+      <div className="flex flex-col h-96 w-full items-center justify-center gap-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width={65}
@@ -40,5 +47,14 @@ export default function page() {
         here.
       </p>
     </div>
+    );
+
+  return (
+    <ReusablePeopleComponent
+      attendees={attendees}
+      isLoading={isLoading}
+      error={error}
+      getAttendees={getAttendees}
+    />
   );
 }
