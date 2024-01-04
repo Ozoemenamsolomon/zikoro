@@ -19,7 +19,12 @@ const config: Config = {
 				white: '#ffffff',
 				basebody: '#E5E5E5',
 				orangebg: '#FEF9F5',
+				zikoro:"#001FCC"
 			},
+			fontSize: {
+				mobile: "13px",
+				desktop:"15px"
+			}
 		},
 	},
 	plugins: [],

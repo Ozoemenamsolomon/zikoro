@@ -1,3 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.modal {
+    -webkit-animation-duration: 0.7s;
+    animation-duration: 0.7s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+  }
+  
+  .swipeInLeft {
+    animation-name: swipeInLeft;
+    -webkit-animation-name: swipeInLeft;
+  }
+  
+  @keyframes swipeInLeft {
+    0% {
+      transform: translateX(-100%);
+    }
+  
+    100% {
+      transform: translateX(0px);
+    }
+  }
+  
+  @-webkit-keyframes swipeInLeft {
+    0% {
+      -webkit-transform: translateX(-100%);
+    }
+  
+    100% {
+      -webkit-transform: translateX(0px);
+    }
+  }
