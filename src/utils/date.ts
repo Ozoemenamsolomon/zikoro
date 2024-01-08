@@ -46,3 +46,20 @@ export function formatDate(inputDateString) {
 
   return { day, month, year };
 }
+
+export function convertDateFormat(inputDate: string): string {
+  const originalDate = new Date(inputDate);
+  
+  // Check if the date is valid
+  if (isNaN(originalDate.getTime())) {
+    console.error("Invalid date format");
+    return "";
+  }
+
+  // Format the date as "MM/DD/YYYY"
+  const formattedDate = `${(originalDate.getMonth() + 1).toString().padStart(2, '0')}/${
+    originalDate.getDate().toString().padStart(2, '0')
+  }/${originalDate.getFullYear()}`;
+
+  return formattedDate;
+}

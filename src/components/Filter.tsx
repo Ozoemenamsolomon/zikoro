@@ -38,11 +38,11 @@ export default function Filter({
 }: FilterProps) {
   return (
     <div className={className}>
-      <Menubar className="flex justify-between px-1 border-0">
+      <Menubar className="flex justify-between px-1 border-0 w-full">
         {filters.map(({ label, accessor, options, icon }, index) => (
           <MenubarMenu>
             <MenubarTrigger
-              className={`flex gap-0.5 items-center w-full min-w-fit justify-center px-0.5 ${
+              className={`flex flex-1 gap-0.5 items-center w-full min-w-fit justify-center px-0.5 ${
                 index > 0 ? "border-l-[1px]" : ""
               }`}
             >
@@ -51,39 +51,40 @@ export default function Filter({
                 {label}
               </span>
             </MenubarTrigger>
-            <MenubarContent className="space-y-2 w-fit">
-              {options.map((option) => (
-                <div className="flex text-gray-700 items-center gap-2 capitalize font-medium">
-                  <Checkbox
-                    id={option}
-                    checked={
-                      selectedFilters
-                        .find(({ key }) => key === accessor)
-                        ?.value.includes(option) || false
-                    }
-                    onCheckedChange={(checked: boolean) => {
-                      const index = selectedFilters.findIndex(
-                        (filter) => filter.key === accessor
-                      );
+            <MenubarContent className="space-y-2 w-fit p-2">
+              {options &&
+                options.map((option) => (
+                  <div className="flex text-gray-700 items-center gap-2 capitalize font-medium">
+                    <Checkbox
+                      id={option}
+                      checked={
+                        selectedFilters
+                          .find(({ key }) => key === accessor)
+                          ?.value.includes(option) || false
+                      }
+                      onCheckedChange={(checked: boolean) => {
+                        const index = selectedFilters.findIndex(
+                          (filter) => filter.key === accessor
+                        );
 
-                      const prevValue =
-                        index !== -1 ? selectedFilters[index].value : [];
+                        const prevValue =
+                          index !== -1 ? selectedFilters[index].value : [];
 
-                      const newValue = checked
-                        ? [...prevValue, option]
-                        : prevValue.filter((selected) => selected !== option);
+                        const newValue = checked
+                          ? [...prevValue, option]
+                          : prevValue.filter((selected) => selected !== option);
 
-                      onFilter(accessor, label, newValue);
-                    }}
-                  />
-                  <Label
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    htmlFor={option}
-                  >
-                    {option}
-                  </Label>
-                </div>
-              ))}
+                        onFilter(accessor, label, newValue);
+                      }}
+                    />
+                    <Label
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      htmlFor={option}
+                    >
+                      {option}
+                    </Label>
+                  </div>
+                ))}
             </MenubarContent>
           </MenubarMenu>
         ))}

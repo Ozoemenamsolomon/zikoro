@@ -40,7 +40,7 @@ export const links: TLink[] = [
 ];
 const Sidebar = () => {
   return (
-    <div className="h-full w-[250px] bg-white flex-col flex justify-between sticky top-0">
+    <div className="h-full w-[250px] bg-white flex-col flex justify-between sticky top-0 border-r-[1px]">
       <div className="flex flex-col gap-8">
         <Image
           className="p-4"

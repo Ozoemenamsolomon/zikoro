@@ -1,8 +1,10 @@
 "use client";
 import Attendee from "@/components/Attendee";
 import Filter, { TFilterType, TSelectedFilter } from "@/components/Filter";
+import CertificateDialog from "@/components/moreOptionDialog/certificateDialog";
 import ChangeAttendeeType from "@/components/moreOptionDialog/changeAttendeeType";
 import CheckinMultiple from "@/components/moreOptionDialog/checkinMultiple";
+import PrintBadges from "@/components/moreOptionDialog/printBadges";
 import {
   Dialog,
   DialogContent,
@@ -115,11 +117,11 @@ const moreOptions: TMoreOptions[] = [
   },
   {
     label: "Print Badges",
-    Component: ChangeAttendeeType,
+    Component: PrintBadges,
   },
   {
     label: "Certificates",
-    Component: ChangeAttendeeType,
+    Component: CertificateDialog,
   },
   {
     label: "Import Attendees",
@@ -346,7 +348,7 @@ export default function FirstSection({
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <DialogContent className="px-0 py-2">
+            <DialogContent className="px-0 pt-4 pb-2">
               <DialogHeader className="px-3">
                 <DialogTitle>
                   <span className="capitalize">

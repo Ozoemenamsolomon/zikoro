@@ -4,7 +4,6 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,11 +18,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="bg-basebody">
-      <body className={`${inter.className} h-screen flex`}>
+      <body className={`${inter.className} h-screen flex relative`}>
         <Sidebar />
         <div className="flex-1">
           <Topbar />
-          <div className="p-2">{children}</div>
+          <div className="">{children}</div>
         </div>
       </body>
     </html>

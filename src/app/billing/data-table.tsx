@@ -35,10 +35,16 @@ export function DataTable<TData, TValue>({
       <Table className="max-w-full">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="max-w-full overflow-auto">
+            <TableRow
+              key={headerGroup.id}
+              className="max-w-full grid grid-cols-[auto_1.5fr_repeat(8,_minmax(0,_1fr))] gap-2 bg-gray-100"
+            >
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id} className="">
+                  <TableHead
+                    key={header.id}
+                    className="text-gray-700 font-medium px-1 pt-2"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -51,16 +57,19 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="">
+        <TableBody className="max-w-full">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
-                className=""
+                className="max-w-full grid grid-cols-[auto_1.5fr_repeat(8,_minmax(0,_1fr))] gap-2"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="p-2">
+                  <TableCell
+                    key={cell.id}
+                    className="py-4 px-1 text-gray-600 text-sm font-medium"
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

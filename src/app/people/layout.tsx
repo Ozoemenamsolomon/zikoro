@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TLink } from "@/types/links";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export const PeopleLinks: TLink[] = [
   { name: "All", href: "all" },
@@ -18,9 +19,9 @@ const People = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <section className="bg-white py-8 space-y-8">
-        <nav className="px-1">
-          <ul className="flex gap-8 px-4">
+      <section className="bg-white py-4 space-y-4">
+        <nav className="px-1 flex justify-between items-center">
+          <ul className="flex gap-4 px-4">
             {PeopleLinks.map(({ href, name }) => (
               <li
                 key={name}
@@ -32,6 +33,13 @@ const People = ({ children }: { children: React.ReactNode }) => {
               </li>
             ))}
           </ul>
+          <Button
+            //   disabled={selectedAttendees.length === 0 || !eventDate}
+            className="bg-basePrimary w-fit"
+            //   onClick={onSubmit}
+          >
+            Add
+          </Button>
         </nav>
         {children}
       </section>
