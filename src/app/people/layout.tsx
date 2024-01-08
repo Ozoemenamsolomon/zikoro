@@ -33,13 +33,6 @@ const People = ({ children }: { children: React.ReactNode }) => {
               </li>
             ))}
           </ul>
-          <Button
-            //   disabled={selectedAttendees.length === 0 || !eventDate}
-            className="bg-basePrimary w-fit"
-            //   onClick={onSubmit}
-          >
-            Add
-          </Button>
         </nav>
         {children}
       </section>

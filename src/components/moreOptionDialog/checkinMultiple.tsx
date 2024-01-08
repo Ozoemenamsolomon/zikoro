@@ -14,6 +14,7 @@ import { TAttendee } from "@/types/attendee";
 import React, { useEffect, useState } from "react";
 import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
+import { isWithinTimeRange } from "@/utils/date";
 
 const checkinMultiple: React.FC<MoreOptionsProps> = ({
   attendees,
@@ -22,19 +23,31 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
-  const [eventDate, setEventDate] = useState<string>("02/01/2024");
+  const [eventDate, setEventDate] = useState<Date>(new Date("01/07/2024"));
   const [action, setAction] = useState<"checkin" | "undo">("checkin");
 
   useEffect(() => {
     setMappedAttendees(
-      attendees.filter(({ checkin }) =>
-        action === "checkin"
+      attendees.filter(({ checkin }) => {
+        return action === "checkin"
           ? !checkin ||
-            !checkin.some((entry) => entry.date === eventDate && entry.checkin)
+              !checkin.some((entry) => {
+                console.log(
+                  entry.date,
+                  eventDate,
+                  isWithinTimeRange(entry.date, eventDate)
+                );
+                return (
+                  isWithinTimeRange(entry.date, eventDate) &&
+                  entry.checkin
+                );
+              })
           : checkin?.some(
-              (entry) => entry.date === eventDate && entry.checkin
-            ) || false
-      )
+              (entry) =>
+                isWithinTimeRange(entry.date, eventDate) &&
+                entry.checkin
+            ) || false;
+      })
     );
   }, [attendees, eventDate, action]);
 
@@ -53,12 +66,16 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
   };
 
   const onSubmit = async () => {
+    let newDate = eventDate.setHours(12, 0, 0, 0);
+    console.log(eventDate, newDate);
     const payload = selectedAttendees.map((attendee) => {
       const newCheckin = !attendee.checkin
-        ? [{ date: eventDate, checkin: true }]
+        ? [{ date: newDate, checkin: true }]
         : action === "checkin"
-        ? [...(attendee.checkin ?? []), { date: eventDate, checkin: true }]
-        : (attendee.checkin ?? []).filter(({ date }) => date !== eventDate);
+        ? [...(attendee.checkin ?? []), { date: newDate, checkin: true }]
+        : (attendee.checkin ?? []).filter(
+            ({ date }) => !isWithinTimeRange(eventDate, date)
+          );
 
       return {
         ...attendee,
@@ -125,14 +142,17 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
             />
           </svg>
         </div>
-        <Select onValueChange={setEventDate} defaultValue={eventDate}>
+        <Select
+          onValueChange={(value) => setEventDate(new Date(value))}
+          defaultValue={"01/07/2024"}
+        >
           <SelectTrigger className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-12 w-full">
             <SelectValue placeholder="Select Event Date" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={"02/01/2024"}>02/01/2024</SelectItem>
-            <SelectItem value={"03/01/2024"}>03/01/2024</SelectItem>
-            <SelectItem value={"04/01/2024"}>04/01/2024</SelectItem>
+            <SelectItem value={"01/07/2024"}>07/01/2024</SelectItem>
+            <SelectItem value={"01/08/2024"}>08/01/2024</SelectItem>
+            <SelectItem value={"01/09/2024"}>09/01/2024</SelectItem>
           </SelectContent>
         </Select>
       </div>

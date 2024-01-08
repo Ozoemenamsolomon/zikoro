@@ -77,6 +77,33 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
     await getAttendeetags();
   }
 
+  const sendMail = () => {
+    const to = email;
+    const subject = "";
+    const body = `Hi ${firstName}`;
+
+    // Construct the mailto URL
+    const mailtoUrl = `mailto:${encodeURIComponent(
+      to
+    )}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // Open the user's default email client
+    window.location.href = mailtoUrl;
+  };
+
+  function sendWhatsAppMessage() {
+    // Replace the following values with your desired WhatsApp details
+    const baseUrl = "https://web.whatsapp.com/send";
+
+    // Construct the WhatsApp Web URL
+    const whatsappWebUrl = `${baseUrl}?phone=${encodeURIComponent(
+      whatsappNumber
+    )}&text=${encodeURIComponent(`hello ${firstName}`)}`;
+
+    // Open the URL in a new tab or window
+    window.open(whatsappWebUrl, "_blank");
+  }
+
   return (
     <>
       <section className="flex justify-between px-4 items-center">
@@ -176,7 +203,7 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
           </div>
         )}
         {whatsappNumber && (
-          <div className="flex-1  flex flex-col gap-2 items-center justify-center">
+          <button onClick={sendWhatsAppMessage}  className="flex-1  flex flex-col gap-2 items-center justify-center">
             <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -194,10 +221,12 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
             <span className="text-xs text-[#3E404B] font-semibold text-center">
               WhatsApp
             </span>
-          </div>
+          </button>
         )}
-        <div className="flex-1 flex flex-col gap-2 items-center justify-center">
-          {" "}
+        <button
+          onClick={sendMail}
+          className="flex-1 flex flex-col gap-2 items-center justify-center"
+        >
           <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -217,7 +246,7 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
           <span className=" text-xs text-[#3E404B] font-semibold text-center">
             Email
           </span>
-        </div>
+        </button>
         <div className="flex-1 flex flex-col gap-2 items-center justify-center">
           <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
             <svg

@@ -74,7 +74,6 @@ export default function AddAttendeeForm({
     }
   }, [country]);
 
-  console.log(attendeeType);
   const toggleAttendeeType = (value: string) => {
     const newAttendeeType = () => {
       if (attendeeType.includes(value)) {
@@ -91,7 +90,6 @@ export default function AddAttendeeForm({
 
   async function onSubmit(data: z.infer<typeof AttendeeSchema>) {
     onClose();
-    console.log("submitting the attendee");
     const payload = {
       ...data,
       phoneNumber: data.phoneNumber
@@ -102,9 +100,7 @@ export default function AddAttendeeForm({
         : "N/A",
     };
 
-    console.log(payload);
     const response = await createAttendee({ payload });
-    console.log(response, payload);
 
     toast({
       description: "Attendee created successfully",

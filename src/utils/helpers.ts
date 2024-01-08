@@ -32,7 +32,9 @@ export function convertCamelToNormal<T extends CamelCaseObject>(
   });
 }
 
-export function calculateAndSetMaxHeight(divRef: React.RefObject<HTMLDivElement>) {
+export function calculateAndSetMaxHeight(
+  divRef: React.RefObject<HTMLDivElement>
+) {
   const div = divRef.current;
 
   if (div) {
@@ -42,4 +44,18 @@ export function calculateAndSetMaxHeight(divRef: React.RefObject<HTMLDivElement>
     // Set the maximum height of the div
     div.style.maxHeight = `${distanceToBottom}px`;
   }
+}
+
+export function generateAlphanumericHash(): string {
+  const characters =
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  const hashLength = 18;
+  let hash = "";
+
+  for (let i = 0; i < hashLength; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    hash += characters.charAt(randomIndex);
+  }
+
+  return hash;
 }

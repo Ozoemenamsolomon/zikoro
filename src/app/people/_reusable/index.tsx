@@ -42,7 +42,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
       />
       {selectedAttendee ? (
         <>
-          <section className="col-span-4 pt-4 space-y-4">
+          <section className="col-span-4 pt-4 space-y-4 border-r-[1px]">
             <SecondSection attendee={selectedAttendee} />
           </section>
           <section className="col-span-3 pt-2">

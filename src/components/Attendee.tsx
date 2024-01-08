@@ -1,7 +1,7 @@
 import { useUpdateAttendees } from "@/hooks/attendee";
 import { TAttendee } from "@/types/attendee";
 import { TFavouriteContact } from "@/types/favourites";
-import { formatDate } from "@/utils/date";
+import { formatDate, isWithinTimeRange } from "@/utils/date";
 
 type AttendeeProps = {
   attendee: TAttendee;
@@ -42,8 +42,7 @@ const Attendee: React.FC<AttendeeProps> = ({
   const { updateAttendees } = useUpdateAttendees();
 
   const currentCheckin =
-    checkin &&
-    checkin.find(({ date }) => date === new Date().toLocaleDateString("en-DE"));
+    checkin && checkin.find(({ date }) => isWithinTimeRange(date));
 
   const toggleCheckin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -55,20 +54,20 @@ const Attendee: React.FC<AttendeeProps> = ({
         ? [
             ...checkin.filter((elm) => elm !== currentCheckin),
             {
-              date: new Date().toLocaleDateString("en-DE"),
+              date: new Date(),
               checkin: updatedCheckinValue,
             },
           ]
         : [
             ...checkin,
             {
-              date: new Date().toLocaleDateString("en-DE"),
+              date: new Date(),
               checkin: updatedCheckinValue,
             },
           ]
       : [
           {
-            date: new Date().toLocaleDateString("en-DE"),
+            date: new Date(),
             checkin: updatedCheckinValue,
           },
         ];
@@ -85,7 +84,12 @@ const Attendee: React.FC<AttendeeProps> = ({
     await getAttendees();
   };
 
-  const { day, month, year } = formatDate(registrationDate);
+  const CheckInDate = () => {
+    const { day, month, year } =
+      currentCheckin && formatDate(currentCheckin.date);
+
+    return <span>{day + "." + month + "." + year}</span>;
+  };
 
   return (
     <button
@@ -127,7 +131,7 @@ const Attendee: React.FC<AttendeeProps> = ({
                   strokeLinejoin="round"
                 />
               </svg>
-              <span>{day + "." + month + "." + year}</span>
+              <CheckInDate />
             </div>
           )}
           <div className="flex gap-1.5 flex-wrap w-fit">

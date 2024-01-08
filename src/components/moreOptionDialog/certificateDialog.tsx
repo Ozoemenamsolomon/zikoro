@@ -12,7 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetEventCertificates } from "@/hooks/certificate";
+import {
+  useGetAttendeesCertificates,
+  useGetEventCertificates,
+  useUpdateAttendeeCertificates,
+} from "@/hooks/certificate";
 import { TCertificate } from "@/types/certificates";
 import { DialogClose } from "../ui/dialog";
 
@@ -28,21 +32,47 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
     useState<TCertificate>();
 
   const {
+    attendeesCertificates,
+    isLoading: attendeesCertificateisLoading,
+    getAttendeesCertificates,
+  } = useGetAttendeesCertificates({ eventId: 1234567890 });
+
+  const {
     eventCertificates,
     isLoading: eventCertificateisLoading,
     getEventCertificates,
   } = useGetEventCertificates({ eventId: 1234567890 });
 
+  const { updateAttendeeCertificates } = useUpdateAttendeeCertificates({
+    eventId: 1234567890,
+  });
+
   useEffect(() => {
     console.log(selectedCertificate);
-    if (!selectedCertificate) return;
+    if (!selectedCertificate || attendeesCertificateisLoading) return;
 
-    const attendanceSet = new Set(selectedCertificate.attendance);
-    console.log(attendanceSet);
+    const attendeesId = attendeesCertificates
+      .filter(({ CertificateGroupId }) => {
+        console.log(
+          CertificateGroupId === selectedCertificate.id,
+          CertificateGroupId,
+          selectedCertificate.id
+        );
+        return CertificateGroupId === selectedCertificate.id;
+      })
+      .map(({ attendeeId }) => attendeeId);
+    console.log(
+      attendeesId,
+      selectedCertificate.id,
+      attendeesCertificates,
+      "set"
+    );
 
     setMappedAttendees(
       attendees.filter(({ id }) =>
-        action === "release" ? !attendanceSet.has(id) : attendanceSet.has(id)
+        action === "release"
+          ? !attendeesId.includes(id)
+          : attendeesId.includes(id)
       )
     );
   }, [action, selectedCertificate]);
@@ -59,8 +89,24 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
     setSelectedAttendees(updatedValue);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     console.log(selectedAttendees, selectedCertificate);
+    if (!selectedCertificate) return;
+
+    await updateAttendeeCertificates({
+      payload: {
+        action,
+        attendeeInfo: selectedAttendees.map(({ id, email }) => ({
+          attendeeId: id,
+          attendeeEmail: email,
+        })),
+        certificateInfo: {
+          eventId: 1234567890,
+          CertificateGroupId: selectedCertificate.id,
+          CertificateName: selectedCertificate.certificateName,
+        },
+      },
+    });
   };
 
   return (

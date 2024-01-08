@@ -1,10 +1,12 @@
 export type TAttendeeCertificate = {
   id?: number;
   created_at: string;
-  eventId: string;
+  eventId: number;
   attendeeEmail: string;
   certificateId: string;
+  CertificateGroupId: number;
   certificateURL: string;
+  CertificateName: string;
   attendeeId: number;
 };
 

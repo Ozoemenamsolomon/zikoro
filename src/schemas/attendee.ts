@@ -43,6 +43,6 @@ export const attendeeNoteSchema = z.object({
   userId: z.number(),
   created_at: z.string().optional(),
   eventId: z.string(),
-  attendeeEmail: z.string().email(),  
+  attendeeEmail: z.string().email(),
   notes: z.string(),
 });
