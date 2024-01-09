@@ -48,26 +48,27 @@ const Attendee: React.FC<AttendeeProps> = ({
     e.stopPropagation();
 
     const updatedCheckinValue = !currentCheckin || !currentCheckin.checkin;
-
+    const newDate = new Date();
+    newDate.setHours(12, 0, 0, 0);
     const updatedCheckin = checkin
       ? currentCheckin
         ? [
             ...checkin.filter((elm) => elm !== currentCheckin),
             {
-              date: new Date(),
+              date: newDate,
               checkin: updatedCheckinValue,
             },
           ]
         : [
             ...checkin,
             {
-              date: new Date(),
+              date: newDate,
               checkin: updatedCheckinValue,
             },
           ]
       : [
           {
-            date: new Date(),
+            date: newDate,
             checkin: updatedCheckinValue,
           },
         ];

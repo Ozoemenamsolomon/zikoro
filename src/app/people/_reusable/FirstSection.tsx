@@ -160,12 +160,10 @@ export default function FirstSection({
     isLoading: favouriteIsLoading,
   } = useGetFavourites({ userId: 10 });
 
-  console.log(favourites);
 
   const { updateFavourites } = useUpdateFavourites({ userId: 10 });
 
   const toggleFavourites = async (id: number, isFavourite: boolean) => {
-    console.log(favourites);
     const newFavouriteAttendees = !favourites
       ? [id]
       : isFavourite
@@ -228,7 +226,6 @@ export default function FirstSection({
   }, [attendees, selectedFilters, sortOrder, searchTerm]);
 
   const setFilter = (key: string, label: string, value: any[]) => {
-    console.log(key, value);
     const newFilters = selectedFilters.filter((filter) => filter.key !== key);
 
     if (value.length > 0) {
@@ -248,7 +245,6 @@ export default function FirstSection({
       }))
     );
 
-    console.log(attendees);
   }, [isLoading]);
 
   const toggleSort = () => {
@@ -269,7 +265,6 @@ export default function FirstSection({
         break;
     }
 
-    console.log(newOrder);
 
     setSortOrder(newOrder);
   };

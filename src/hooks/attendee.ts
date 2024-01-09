@@ -194,7 +194,7 @@ export const useGetAttendeesWithCertificate = () => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAttendee[]>({
-      endpoint: "/certificate/1234567890/attendees",
+      endpoint: "/certificates/1234567890/attendees",
     });
 
     setLoading(false);
