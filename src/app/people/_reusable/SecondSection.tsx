@@ -17,6 +17,8 @@ import AddNotesForm from "@/components/forms/AddNoteForm";
 import AttendeeBadge from "@/components/AttendeeBadge";
 import { usePDF } from "react-to-pdf";
 import { Button } from "@/components/ui/button";
+import { useGetAttendeeCertificates } from "@/hooks/certificate";
+import SelectCertificateModal from "@/components/selectCertificateModal";
 
 export default function SecondSection({ attendee }: { attendee: TAttendee }) {
   const {
@@ -63,6 +65,14 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
     useUpdateAttendeetags({
       attendeeId: id,
     });
+
+  const { attendeeCertificates, isLoading: attendeeCertificatesIsLoading, getAttendeeCertificates } =
+    useGetAttendeeCertificates({
+      eventId: 1234567890,
+      attendeeId: id,
+    });
+
+  console.log(attendeeCertificates);
 
   useEffect(() => {
     getnote();
@@ -298,14 +308,31 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
           </span>
         </div>
       </section>
-      {certificate && (
-        <section className="flex justify-between items-center border-t-[1px] border-gray-200 px-2 pt-4">
-          <h3 className="text-xl text-greyBlack font-semibold">Credentials</h3>
-          <Link href="/" className="  text-sm text-[#001FCC] ">
-            Recall certificate
-          </Link>
-        </section>
-      )}
+      <section className="flex justify-between items-center border-t-[1px] border-gray-200 px-2 pt-4">
+        <h3 className="text-xl text-greyBlack font-semibold">Credentials</h3>
+        {!attendeeCertificatesIsLoading && attendeeCertificates && (
+          <Dialog>
+            <DialogTrigger>
+              <span className="  text-sm text-[#001FCC] ">
+                Recall certificate
+              </span>
+            </DialogTrigger>
+            <DialogContent className="px-3">
+              <DialogHeader>
+                <DialogTitle>
+                  <span className="capitalize">Select Certificate</span>
+                </DialogTitle>
+              </DialogHeader>
+              <SelectCertificateModal
+                certificates={attendeeCertificates}
+                action={"recall"}
+                attendeeId={id}
+                getAttendeeCertificates={getAttendeeCertificates}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
+      </section>
       <section className="flex justify-between items-center px-2 border-t-[1px] border-gray-200 pt-4">
         <Dialog>
           <DialogTrigger>

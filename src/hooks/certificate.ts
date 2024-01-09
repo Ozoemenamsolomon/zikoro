@@ -1,7 +1,7 @@
 import { toast } from "@/components/ui/use-toast";
 import { TAttendee } from "@/types/attendee";
 import { TAttendeeCertificate, TCertificate } from "@/types/certificates";
-import { getRequest, postRequest } from "@/utils/api";
+import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
 type UseGetEventCertificatesResult = {
@@ -146,4 +146,105 @@ export const useUpdateAttendeeCertificates = ({
   };
 
   return { updateAttendeeCertificates, isLoading, error };
+};
+
+type UseGetAttendeeCertificatesResult = {
+  attendeeCertificates: TAttendeeCertificate[];
+  getAttendeeCertificates: () => Promise<void>;
+} & RequestStatus;
+
+export const useGetAttendeeCertificates = ({
+  eventId,
+  attendeeId,
+}: {
+  eventId: number;
+  attendeeId: number;
+}): UseGetAttendeeCertificatesResult => {
+  const [attendeeCertificates, setAttendeeCertificates] = useState<
+    TAttendeeCertificate[]
+  >([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendeeCertificates = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TAttendeeCertificate[]>({
+        endpoint: `/certificates/${eventId}/attendees/${attendeeId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      console.log(data.data);
+      setAttendeeCertificates(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendeeCertificates();
+  }, [eventId, attendeeId]);
+
+  return { attendeeCertificates, isLoading, error, getAttendeeCertificates };
+};
+
+type useRecallAttendeeCertificatesResult = {
+  recallAttendeeCertificates: ({
+    payload,
+  }: {
+    payload: {
+      certificateIds: number[];
+    };
+  }) => Promise<void>;
+} & RequestStatus;
+
+export const useRecallAttendeeCertificates = ({
+  eventId,
+  attendeeId,
+}: {
+  eventId: number;
+  attendeeId: number;
+}): useRecallAttendeeCertificatesResult => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const recallAttendeeCertificates = async ({
+    payload,
+  }: {
+    payload: {
+      certificateIds: number[];
+    };
+  }) => {
+    setLoading(true);
+    toast({
+      description: "recalling certificates...",
+    });
+    try {
+      const { data, status } = await postRequest({
+        endpoint: `/certificates/${eventId}/attendees/${attendeeId}`,
+        payload,
+      });
+
+      if (status !== 201) throw data.data;
+
+      toast({
+        description: data.data?.msg,
+      });
+    } catch (error) {
+      console.log(error);
+      setError(true);
+      toast({
+        description: "an error has occurred",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { recallAttendeeCertificates, isLoading, error };
 };
