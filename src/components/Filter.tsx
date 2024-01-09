@@ -52,38 +52,39 @@ export default function Filter({
               </span>
             </MenubarTrigger>
             <MenubarContent className="space-y-2 w-fit">
-              {options.map((option) => (
-                <div className="flex text-gray-700 items-center gap-2 capitalize font-medium">
-                  <Checkbox
-                    id={option}
-                    checked={
-                      selectedFilters
-                        .find(({ key }) => key === accessor)
-                        ?.value.includes(option) || false
-                    }
-                    onCheckedChange={(checked: boolean) => {
-                      const index = selectedFilters.findIndex(
-                        (filter) => filter.key === accessor
-                      );
+              {options &&
+                options.map((option) => (
+                  <div className="flex text-gray-700 items-center gap-2 capitalize font-medium">
+                    <Checkbox
+                      id={option}
+                      checked={
+                        selectedFilters
+                          .find(({ key }) => key === accessor)
+                          ?.value.includes(option) || false
+                      }
+                      onCheckedChange={(checked: boolean) => {
+                        const index = selectedFilters.findIndex(
+                          (filter) => filter.key === accessor
+                        );
 
-                      const prevValue =
-                        index !== -1 ? selectedFilters[index].value : [];
+                        const prevValue =
+                          index !== -1 ? selectedFilters[index].value : [];
 
-                      const newValue = checked
-                        ? [...prevValue, option]
-                        : prevValue.filter((selected) => selected !== option);
+                        const newValue = checked
+                          ? [...prevValue, option]
+                          : prevValue.filter((selected) => selected !== option);
 
-                      onFilter(accessor, label, newValue);
-                    }}
-                  />
-                  <Label
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    htmlFor={option}
-                  >
-                    {option}
-                  </Label>
-                </div>
-              ))}
+                        onFilter(accessor, label, newValue);
+                      }}
+                    />
+                    <Label
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      htmlFor={option}
+                    >
+                      {option}
+                    </Label>
+                  </div>
+                ))}
             </MenubarContent>
           </MenubarMenu>
         ))}
