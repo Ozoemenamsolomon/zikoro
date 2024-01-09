@@ -160,7 +160,6 @@ export default function FirstSection({
     isLoading: favouriteIsLoading,
   } = useGetFavourites({ userId: 10 });
 
-
   const { updateFavourites } = useUpdateFavourites({ userId: 10 });
 
   const toggleFavourites = async (id: number, isFavourite: boolean) => {
@@ -198,9 +197,11 @@ export default function FirstSection({
     setMappedAttendees(
       attendees
         .filter(
-          ({ firstName, lastName }) =>
+          ({ firstName, lastName, organization, jobTitle }) =>
             firstName.toLowerCase().includes(searchTerm) ||
-            lastName.toLowerCase().includes(searchTerm)
+            lastName.toLowerCase().includes(searchTerm) ||
+            jobTitle.toLowerCase().includes(searchTerm) ||
+            organization.toLowerCase().includes(searchTerm)
         )
         .filter((attendee) => {
           return selectedFilters.every(({ key, value }) => {
@@ -244,7 +245,6 @@ export default function FirstSection({
         options: extractUniqueTypes<TAttendee>(attendees, filter.accessor),
       }))
     );
-
   }, [isLoading]);
 
   const toggleSort = () => {
@@ -264,7 +264,6 @@ export default function FirstSection({
         newOrder = "none";
         break;
     }
-
 
     setSortOrder(newOrder);
   };

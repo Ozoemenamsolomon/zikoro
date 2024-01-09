@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -13,6 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import AddAttendeeTagForm from "@/components/forms/AddAttendeeTagForm";
 import AddNotesForm from "@/components/forms/AddNoteForm";
+import AttendeeBadge from "@/components/AttendeeBadge";
+import { usePDF } from "react-to-pdf";
+import { Button } from "@/components/ui/button";
 
 export default function SecondSection({ attendee }: { attendee: TAttendee }) {
   const {
@@ -103,6 +107,10 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
     // Open the URL in a new tab or window
     window.open(whatsappWebUrl, "_blank");
   }
+
+  const { toPDF, targetRef } = usePDF({
+    filename: `${firstName}-${lastName}-badge.pdf`,
+  });
 
   return (
     <>
@@ -203,7 +211,10 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
           </div>
         )}
         {whatsappNumber && (
-          <button onClick={sendWhatsAppMessage}  className="flex-1  flex flex-col gap-2 items-center justify-center">
+          <button
+            onClick={sendWhatsAppMessage}
+            className="flex-1  flex flex-col gap-2 items-center justify-center"
+          >
             <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -296,25 +307,46 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
         </section>
       )}
       <section className="flex justify-between items-center px-2 border-t-[1px] border-gray-200 pt-4">
-        <div className=" flex flex-col items-center gap-2 w-fit">
-          <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="25"
-              height="24"
-              viewBox="0 0 25 24"
-              fill="none"
-            >
-              <path
-                d="M15.8926 18L16.0659 21.5156L12.5099 19.0444L8.93392 21.518L9.1074 18H7.60557L7.34673 23.25H9.06667L12.5079 20.8697L15.9332 23.25H17.6532L17.3944 18H15.8926ZM19.9723 7.26163L19.8694 5.0091L17.9703 3.79377L16.7547 1.89444L14.5022 1.79132L12.5 0.754395L10.4978 1.79155L8.24523 1.89468L7.02967 3.79377L5.13053 5.0091L5.02768 7.26163L3.99048 9.26385L5.02768 11.2661L5.13081 13.5186L7.02967 14.7339L8.24504 16.6333L10.4976 16.7362L12.5 17.7733L14.5022 16.7362L16.7547 16.6333L17.9701 14.7339L19.8694 13.5188L19.9723 11.2663L21.0095 9.26404L19.9723 7.26163ZM18.4889 10.8686L18.4062 12.674L16.884 13.648L15.9099 15.1703L14.1045 15.2528L12.5 16.084L10.8953 15.2528L9.08987 15.1703L8.11581 13.648L6.59373 12.674L6.51128 10.8686L5.67967 9.26385L6.51109 7.65941L6.59373 5.85379L8.11581 4.87972L9.08987 3.3575L10.8953 3.275L12.5 2.44372L14.1047 3.27496L15.9101 3.35746L16.8842 4.87968L18.4062 5.85379L18.4887 7.65918L19.3203 9.26385L18.4889 10.8686Z"
-                fill="black"
-              />
-            </svg>
-          </div>
-          <span className=" text-[#3E404B] font-semibold text-small">
-            View badge
-          </span>
-        </div>
+        <Dialog>
+          <DialogTrigger>
+            <div className=" flex flex-col items-center gap-2 w-fit">
+              <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="24"
+                  viewBox="0 0 25 24"
+                  fill="none"
+                >
+                  <path
+                    d="M15.8926 18L16.0659 21.5156L12.5099 19.0444L8.93392 21.518L9.1074 18H7.60557L7.34673 23.25H9.06667L12.5079 20.8697L15.9332 23.25H17.6532L17.3944 18H15.8926ZM19.9723 7.26163L19.8694 5.0091L17.9703 3.79377L16.7547 1.89444L14.5022 1.79132L12.5 0.754395L10.4978 1.79155L8.24523 1.89468L7.02967 3.79377L5.13053 5.0091L5.02768 7.26163L3.99048 9.26385L5.02768 11.2661L5.13081 13.5186L7.02967 14.7339L8.24504 16.6333L10.4976 16.7362L12.5 17.7733L14.5022 16.7362L16.7547 16.6333L17.9701 14.7339L19.8694 13.5188L19.9723 11.2663L21.0095 9.26404L19.9723 7.26163ZM18.4889 10.8686L18.4062 12.674L16.884 13.648L15.9099 15.1703L14.1045 15.2528L12.5 16.084L10.8953 15.2528L9.08987 15.1703L8.11581 13.648L6.59373 12.674L6.51128 10.8686L5.67967 9.26385L6.51109 7.65941L6.59373 5.85379L8.11581 4.87972L9.08987 3.3575L10.8953 3.275L12.5 2.44372L14.1047 3.27496L15.9101 3.35746L16.8842 4.87968L18.4062 5.85379L18.4887 7.65918L19.3203 9.26385L18.4889 10.8686Z"
+                    fill="black"
+                  />
+                </svg>
+              </div>
+              <span className=" text-[#3E404B] font-semibold text-small">
+                View badge
+              </span>
+            </div>
+          </DialogTrigger>
+          <DialogContent className="px-3">
+            <DialogHeader>
+              <DialogTitle>
+                <span className="capitalize">View Badge</span>
+              </DialogTitle>
+            </DialogHeader>
+            <div className="flex justify-center items-center flex-col gap-4">
+              <div className="w-[250px] h-[400px]" ref={targetRef}>
+                <AttendeeBadge attendee={attendee} />
+              </div>
+              <DialogClose asChild>
+                <Button className="bg-basePrimary w-full" onClick={toPDF}>
+                  Download badge
+                </Button>
+              </DialogClose>
+            </div>
+          </DialogContent>
+        </Dialog>
         <div className=" flex flex-col items-center gap-2 w-fit">
           <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
             <svg

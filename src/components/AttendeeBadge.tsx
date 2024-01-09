@@ -1,15 +1,39 @@
+import { TAttendee } from "@/types/attendee";
 import React from "react";
 
-const AttendeeBadge = () => {
+const AttendeeBadge = ({ attendee }: { attendee: TAttendee }) => {
+  const { firstName, lastName, organization, jobTitle, attendeeType } =
+    attendee;
+  const oneAttendeeType = () => {
+    const hierarchyOrder = [
+      "sponsor",
+      "exhibitor",
+      "speaker",
+      "organizer",
+      "moderator",
+    ];
+
+    for (const type of hierarchyOrder) {
+      const pickedType = attendeeType.find((currType) => currType === type);
+      if (pickedType) {
+        return pickedType;
+      }
+    }
+
+    return "attendee";
+  };
+
   return (
-    <div className="w-full h-full rounded-md relative border-[1px]">
+    <div className="w-full h-full rounded-md relative border-[1px] capitalize">
       <div className="bg-green-800 h-1/3 rounded-t-md" />
       <div className="bg-white h-2/3 relative pt-[50px] pb-2 rounded-b-md">
         <div className="rounded-full bg-gray-300 h-[100px] w-[100px] absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 border-2 border-green-700" />
-        <div className="flex flex-col justify-center items-center gap-2 py-2">
-          <span className="text-gray-800 uppercase font-medium">John Doe</span>
-          <span className="text-sm text-gray-600">Frontend Developer</span>
-          <span className="text-sm text-gray-600">Orthoex</span>
+        <div className="flex flex-col justify-center items-center gap-2 p-2">
+          <span className="text-gray-800 uppercase font-medium">
+            {firstName + " " + lastName}
+          </span>
+          <span className="text-sm text-gray-600">{jobTitle}</span>
+          <span className="text-sm text-gray-600">{organization}</span>
           <svg
             width={79}
             height={80}
@@ -43,7 +67,7 @@ const AttendeeBadge = () => {
       </div>
       <div className="bg-green-800 w-full h-6 absolute bottom-0 flex justify-center items-center rounded-b">
         <span className="text-white text-[10px] font-medium text-center uppercase tracking-[0.3em]">
-          Attendee
+          {oneAttendeeType()}
         </span>
       </div>
       <div className="bg-green-800 w-6 h-12 absolute bottom-0 rounded-r-lg rounded-bl left-0" />
