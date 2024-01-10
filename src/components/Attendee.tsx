@@ -110,10 +110,10 @@ const Attendee: React.FC<AttendeeProps> = ({
       <div className="col-span-6">
         <div className="justify-start items-start flex flex-col gap-1 min-w-full">
           <h4 className="text-gray-900 font-semibold text-sm capitalize w-full text-left">
-            {firstName + " " + lastName}
+            {firstName + " " + (lastName)}
           </h4>
           <span className="text-[10px] font-medium text-gray-700 truncate w-full text-left">
-            {jobTitle + ", " + organization}
+          {`${jobTitle ? jobTitle + ', ' : ''}${organization || ''}`}
           </span>
           {currentCheckin && currentCheckin.checkin && (
             <div className="flex gap-1 text-[10px] text-[#717171]">

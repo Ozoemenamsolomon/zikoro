@@ -56,7 +56,7 @@ export const useUpdateAttendees = () => {
         payload,
       });
 
-      if (status !== 200) throw data.data;
+      if (status !== 200) throw data.data.error;
 
       console.log(data);
       toast({
@@ -67,7 +67,7 @@ export const useUpdateAttendees = () => {
       setError(true);
       console.log(error);
       toast({
-        description: error,
+        description: "something went wrong, try again later",
       });
     } finally {
       setLoading(false);

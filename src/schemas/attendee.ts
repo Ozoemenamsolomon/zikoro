@@ -6,7 +6,7 @@ export const checkinSchema = z.object({
 });
 
 export const AttendeeSchema = z.object({
-  registrationDate: z.string(),
+  registrationDate: z.string().optional(),
   userEmail: z.string().email(),
   firstName: z.string().min(2, {
     message: "email must be at least 2 characters.",

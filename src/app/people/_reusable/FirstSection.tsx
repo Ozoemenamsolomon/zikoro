@@ -4,6 +4,7 @@ import Filter, { TFilterType, TSelectedFilter } from "@/components/Filter";
 import CertificateDialog from "@/components/moreOptionDialog/certificateDialog";
 import ChangeAttendeeType from "@/components/moreOptionDialog/changeAttendeeType";
 import CheckinMultiple from "@/components/moreOptionDialog/checkinMultiple";
+import ImportAttendees from "@/components/moreOptionDialog/importAttendees";
 import PrintBadges from "@/components/moreOptionDialog/printBadges";
 import {
   Dialog,
@@ -125,7 +126,7 @@ const moreOptions: TMoreOptions[] = [
   },
   {
     label: "Import Attendees",
-    Component: ChangeAttendeeType,
+    Component: ImportAttendees,
   },
 ];
 

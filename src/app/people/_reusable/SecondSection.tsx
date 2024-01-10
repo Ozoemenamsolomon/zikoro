@@ -20,7 +20,13 @@ import { Button } from "@/components/ui/button";
 import { useGetAttendeeCertificates } from "@/hooks/certificate";
 import SelectCertificateModal from "@/components/selectCertificateModal";
 
-export default function SecondSection({ attendee }: { attendee: TAttendee }) {
+export default function SecondSection({
+  attendee,
+  getAttendees,
+}: {
+  attendee: TAttendee;
+  getAttendees: () => Promise<void>;
+}) {
   const {
     registrationDate,
     userEmail,
@@ -66,11 +72,14 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
       attendeeId: id,
     });
 
-  const { attendeeCertificates, isLoading: attendeeCertificatesIsLoading, getAttendeeCertificates } =
-    useGetAttendeeCertificates({
-      eventId: 1234567890,
-      attendeeId: id,
-    });
+  const {
+    attendeeCertificates,
+    isLoading: attendeeCertificatesIsLoading,
+    getAttendeeCertificates,
+  } = useGetAttendeeCertificates({
+    eventId: 1234567890,
+    attendeeId: id,
+  });
 
   console.log(attendeeCertificates);
 
@@ -310,7 +319,7 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
       </section>
       <section className="flex justify-between items-center border-t-[1px] border-gray-200 px-2 pt-4">
         <h3 className="text-xl text-greyBlack font-semibold">Credentials</h3>
-        {!attendeeCertificatesIsLoading && attendeeCertificates && (
+        {!attendeeCertificatesIsLoading && attendeeCertificates.length > 0 && (
           <Dialog>
             <DialogTrigger>
               <span className="  text-sm text-[#001FCC] ">
@@ -393,31 +402,50 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
             Release certificate
           </span>
         </div>
-        <div className=" flex flex-col items-center gap-2 w-fit">
-          <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <path
-                d="M9 5.5C9 5.36739 9.05268 5.24021 9.14645 5.14645C9.24021 5.05268 9.36739 5 9.5 5H14.5C14.6326 5 14.7598 5.05268 14.8536 5.14645C14.9473 5.24021 15 5.36739 15 5.5C15 5.63261 14.9473 5.75979 14.8536 5.85355C14.7598 5.94732 14.6326 6 14.5 6H9.5C9.36739 6 9.24021 5.94732 9.14645 5.85355C9.05268 5.75979 9 5.63261 9 5.5ZM7.5 8C7.36739 8 7.24021 8.05268 7.14645 8.14645C7.05268 8.24021 7 8.36739 7 8.5C7 8.63261 7.05268 8.75979 7.14645 8.85355C7.24021 8.94732 7.36739 9 7.5 9H16.5C16.6326 9 16.7598 8.94732 16.8536 8.85355C16.9473 8.75979 17 8.63261 17 8.5C17 8.36739 16.9473 8.24021 16.8536 8.14645C16.7598 8.05268 16.6326 8 16.5 8H7.5ZM7 10.5C7 10.3674 7.05268 10.2402 7.14645 10.1464C7.24021 10.0527 7.36739 10 7.5 10H16.5C16.6326 10 16.7598 10.0527 16.8536 10.1464C16.9473 10.2402 17 10.3674 17 10.5C17 10.6326 16.9473 10.7598 16.8536 10.8536C16.7598 10.9473 16.6326 11 16.5 11H7.5C7.36739 11 7.24021 10.9473 7.14645 10.8536C7.05268 10.7598 7 10.6326 7 10.5ZM7.5 12C7.36739 12 7.24021 12.0527 7.14645 12.1464C7.05268 12.2402 7 12.3674 7 12.5C7 12.6326 7.05268 12.7598 7.14645 12.8536C7.24021 12.9473 7.36739 13 7.5 13H16.5C16.6326 13 16.7598 12.9473 16.8536 12.8536C16.9473 12.7598 17 12.6326 17 12.5C17 12.3674 16.9473 12.2402 16.8536 12.1464C16.7598 12.0527 16.6326 12 16.5 12H7.5Z"
-                fill="black"
+        {!attendeeCertificatesIsLoading && attendeeCertificates.length > 0 && (
+          <Dialog>
+            <DialogTrigger>
+              <div className=" flex flex-col items-center gap-2 w-fit">
+                <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M9 5.5C9 5.36739 9.05268 5.24021 9.14645 5.14645C9.24021 5.05268 9.36739 5 9.5 5H14.5C14.6326 5 14.7598 5.05268 14.8536 5.14645C14.9473 5.24021 15 5.36739 15 5.5C15 5.63261 14.9473 5.75979 14.8536 5.85355C14.7598 5.94732 14.6326 6 14.5 6H9.5C9.36739 6 9.24021 5.94732 9.14645 5.85355C9.05268 5.75979 9 5.63261 9 5.5ZM7.5 8C7.36739 8 7.24021 8.05268 7.14645 8.14645C7.05268 8.24021 7 8.36739 7 8.5C7 8.63261 7.05268 8.75979 7.14645 8.85355C7.24021 8.94732 7.36739 9 7.5 9H16.5C16.6326 9 16.7598 8.94732 16.8536 8.85355C16.9473 8.75979 17 8.63261 17 8.5C17 8.36739 16.9473 8.24021 16.8536 8.14645C16.7598 8.05268 16.6326 8 16.5 8H7.5ZM7 10.5C7 10.3674 7.05268 10.2402 7.14645 10.1464C7.24021 10.0527 7.36739 10 7.5 10H16.5C16.6326 10 16.7598 10.0527 16.8536 10.1464C16.9473 10.2402 17 10.3674 17 10.5C17 10.6326 16.9473 10.7598 16.8536 10.8536C16.7598 10.9473 16.6326 11 16.5 11H7.5C7.36739 11 7.24021 10.9473 7.14645 10.8536C7.05268 10.7598 7 10.6326 7 10.5ZM7.5 12C7.36739 12 7.24021 12.0527 7.14645 12.1464C7.05268 12.2402 7 12.3674 7 12.5C7 12.6326 7.05268 12.7598 7.14645 12.8536C7.24021 12.9473 7.36739 13 7.5 13H16.5C16.6326 13 16.7598 12.9473 16.8536 12.8536C16.9473 12.7598 17 12.6326 17 12.5C17 12.3674 16.9473 12.2402 16.8536 12.1464C16.7598 12.0527 16.6326 12 16.5 12H7.5Z"
+                      fill="black"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M19 18C19 18.5304 18.7893 19.0391 18.4142 19.4142C18.0391 19.7893 17.5304 20 17 20H15.5V22L14 21.25L12.5 22V20H7C6.46957 20 5.96086 19.7893 5.58579 19.4142C5.21071 19.0391 5 18.5304 5 18V4C5 3.46957 5.21071 2.96086 5.58579 2.58579C5.96086 2.21071 6.46957 2 7 2H17C17.5304 2 18.0391 2.21071 18.4142 2.58579C18.7893 2.96086 19 3.46957 19 4V18ZM7 3C6.73478 3 6.48043 3.10536 6.29289 3.29289C6.10536 3.48043 6 3.73478 6 4V18C6 18.2652 6.10536 18.5196 6.29289 18.7071C6.48043 18.8946 6.73478 19 7 19H12.5V17.823C12.2454 17.5343 12.0795 17.1783 12.0223 16.7977C11.965 16.4171 12.0188 16.0281 12.1771 15.6772C12.3355 15.3264 12.5917 15.0288 12.915 14.82C13.2384 14.6112 13.6151 14.5001 14 14.5001C14.3849 14.5001 14.7616 14.6112 15.085 14.82C15.4083 15.0288 15.6645 15.3264 15.8229 15.6772C15.9812 16.0281 16.035 16.4171 15.9777 16.7977C15.9205 17.1783 15.7546 17.5343 15.5 17.823V19H17C17.2652 19 17.5196 18.8946 17.7071 18.7071C17.8946 18.5196 18 18.2652 18 18V4C18 3.73478 17.8946 3.48043 17.7071 3.29289C17.5196 3.10536 17.2652 3 17 3H7ZM14.5 18.437C14.172 18.5215 13.828 18.5215 13.5 18.437V20.382L14 20.132L14.5 20.382V18.437ZM14 17.5C14.2652 17.5 14.5196 17.3946 14.7071 17.2071C14.8946 17.0196 15 16.7652 15 16.5C15 16.2348 14.8946 15.9804 14.7071 15.7929C14.5196 15.6054 14.2652 15.5 14 15.5C13.7348 15.5 13.4804 15.6054 13.2929 15.7929C13.1054 15.9804 13 16.2348 13 16.5C13 16.7652 13.1054 17.0196 13.2929 17.2071C13.4804 17.3946 13.7348 17.5 14 17.5Z"
+                      fill="black"
+                    />
+                  </svg>
+                </div>
+                <span className=" text-[#3E404B] font-semibold text-small">
+                  View certificate
+                </span>
+              </div>
+            </DialogTrigger>
+            <DialogContent className="px-3">
+              <DialogHeader>
+                <DialogTitle>
+                  <span className="capitalize">Select Certificate</span>
+                </DialogTitle>
+              </DialogHeader>
+              <SelectCertificateModal
+                certificates={attendeeCertificates}
+                action={"recall"}
+                attendeeId={id}
+                getAttendeeCertificates={getAttendeeCertificates}
               />
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M19 18C19 18.5304 18.7893 19.0391 18.4142 19.4142C18.0391 19.7893 17.5304 20 17 20H15.5V22L14 21.25L12.5 22V20H7C6.46957 20 5.96086 19.7893 5.58579 19.4142C5.21071 19.0391 5 18.5304 5 18V4C5 3.46957 5.21071 2.96086 5.58579 2.58579C5.96086 2.21071 6.46957 2 7 2H17C17.5304 2 18.0391 2.21071 18.4142 2.58579C18.7893 2.96086 19 3.46957 19 4V18ZM7 3C6.73478 3 6.48043 3.10536 6.29289 3.29289C6.10536 3.48043 6 3.73478 6 4V18C6 18.2652 6.10536 18.5196 6.29289 18.7071C6.48043 18.8946 6.73478 19 7 19H12.5V17.823C12.2454 17.5343 12.0795 17.1783 12.0223 16.7977C11.965 16.4171 12.0188 16.0281 12.1771 15.6772C12.3355 15.3264 12.5917 15.0288 12.915 14.82C13.2384 14.6112 13.6151 14.5001 14 14.5001C14.3849 14.5001 14.7616 14.6112 15.085 14.82C15.4083 15.0288 15.6645 15.3264 15.8229 15.6772C15.9812 16.0281 16.035 16.4171 15.9777 16.7977C15.9205 17.1783 15.7546 17.5343 15.5 17.823V19H17C17.2652 19 17.5196 18.8946 17.7071 18.7071C17.8946 18.5196 18 18.2652 18 18V4C18 3.73478 17.8946 3.48043 17.7071 3.29289C17.5196 3.10536 17.2652 3 17 3H7ZM14.5 18.437C14.172 18.5215 13.828 18.5215 13.5 18.437V20.382L14 20.132L14.5 20.382V18.437ZM14 17.5C14.2652 17.5 14.5196 17.3946 14.7071 17.2071C14.8946 17.0196 15 16.7652 15 16.5C15 16.2348 14.8946 15.9804 14.7071 15.7929C14.5196 15.6054 14.2652 15.5 14 15.5C13.7348 15.5 13.4804 15.6054 13.2929 15.7929C13.1054 15.9804 13 16.2348 13 16.5C13 16.7652 13.1054 17.0196 13.2929 17.2071C13.4804 17.3946 13.7348 17.5 14 17.5Z"
-                fill="black"
-              />
-            </svg>
-          </div>
-          <span className=" text-[#3E404B] font-semibold text-small">
-            View certificate
-          </span>
-        </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </section>
       <section className="space-y-4 border-t-[1px] border-gray-200 pt-4">
         <h3 className="p-2 pb-4 border-b-[1px] border-gray-200 text-xl text-greyBlack font-semibold">
@@ -434,12 +462,14 @@ export default function SecondSection({ attendee }: { attendee: TAttendee }) {
             <h4 className="text-gray-800 font-medium">Bio</h4>
             <p className="text-gray-700 text-sm font-normal">{bio}</p>
           </div>
-          <div className="flex flex-col">
-            <h4 className="text-gray-800 font-medium">Location</h4>
-            <span className=" text-gray-700 text-sm">
-              {city + ", " + country}
-            </span>
-          </div>
+          {city && country && (
+            <div className="flex flex-col">
+              <h4 className="text-gray-800 font-medium">Location</h4>
+              <span className=" text-gray-700 text-sm">
+                {city + ", " + country}
+              </span>
+            </div>
+          )}
           <div className="flex flex-col">
             <h4 className="text-gray-800 font-medium">Social Media</h4>
             <div className="flex gap-4 items-center">
