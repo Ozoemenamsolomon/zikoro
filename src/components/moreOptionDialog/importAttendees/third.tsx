@@ -81,7 +81,7 @@ const Third = ({
       </div>
       <DialogClose asChild>
         <Button className="bg-basePrimary w-full" onClick={submitAttendees}>
-          Download all badges as PDF
+          Import Attendees
         </Button>
       </DialogClose>
     </>

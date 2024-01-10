@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useState, ChangeEvent, Dispatch, SetStateAction } from "react";
 import * as XLSX from "xlsx";
+import { toast } from "@/components/ui/use-toast";
 
 const First = ({
   setExcelResult,
@@ -35,8 +36,13 @@ const First = ({
           header: 1,
         });
         console.log(jsonData);
-        setExcelResult(jsonData);
-        setStep(1);
+
+        if (jsonData[0].length === 5) {
+          setExcelResult(jsonData);
+          setStep(1);
+        } else {
+          toast({ description: "There should be exactly eight headers" });
+        }
       }
     };
 
