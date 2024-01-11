@@ -70,7 +70,7 @@ const First = ({
           />
           <label
             htmlFor="excel"
-            className="hover:cursor-pointer flex justify-center items-center gap-6 h-10 w-full rounded-md border border-gray-300 bg-gray-200 px-3 py-2 text-sm flex-[30%]"
+            className="hover:cursor-pointer flex justify-center items-center gap-6 h-10 w-full border border-gray-300 bg-gray-200 px-3 py-2 text-sm flex-[30%]"
           >
             Choose File
           </label>
@@ -104,7 +104,7 @@ const First = ({
         disabled={!selectedFile}
         className="bg-basePrimary w-full"
       >
-        Save
+        Continue
       </Button>
     </>
   );

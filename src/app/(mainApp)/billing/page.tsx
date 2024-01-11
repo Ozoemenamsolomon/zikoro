@@ -19,9 +19,7 @@ import {
 } from "@/components/ui/pagination";
 import { useGetBillings } from "@/hooks/billing";
 import { TEventTransaction } from "@/types/billing";
-import {
-  extractUniqueTypes
-} from "@/utils/helpers";
+import { extractUniqueTypes } from "@/utils/helpers";
 import { useEffect, useState } from "react";
 import { AngleDown } from "styled-icons/fa-solid";
 import { columns } from "./columns";
@@ -368,7 +366,10 @@ export default function page() {
               <DropdownMenuContent className="w-56 space-y-6 px-4">
                 {billingFilter.map(({ label, accessor }) => (
                   <div key={label} className="flex items-center space-x-2">
-                    <Checkbox className="text-basePrimary" id="terms" />
+                    <Checkbox
+                      className="data-[state=checked]:bg-basePrimary"
+                      id="terms"
+                    />
                     <label
                       htmlFor="terms"
                       className="text-sm font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"

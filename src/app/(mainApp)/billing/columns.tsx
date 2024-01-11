@@ -8,7 +8,7 @@ export const columns: ColumnDef<TEventTransaction>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
+      <Checkbox className="data-[state=checked]:bg-basePrimary"
         checked={
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
@@ -18,7 +18,7 @@ export const columns: ColumnDef<TEventTransaction>[] = [
       />
     ),
     cell: ({ row }) => (
-      <Checkbox
+      <Checkbox className="data-[state=checked]:bg-basePrimary"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"

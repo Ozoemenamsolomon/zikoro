@@ -234,7 +234,7 @@ export default function ViewAttendeesSection({
       </div>
       <div className="space-y-4">
         <div className="flex items-center space-x-2">
-          <Checkbox
+          <Checkbox className="data-[state=checked]:bg-basePrimary"
             id="terms2"
             onCheckedChange={() =>
               toggleValue(
@@ -265,7 +265,7 @@ export default function ViewAttendeesSection({
         <div className="space-y-4 max-h-32 overflow-auto">
           {mappedAttendees.map((attendee) => (
             <div className="flex items-center space-x-2">
-              <Checkbox
+              <Checkbox className="data-[state=checked]:bg-basePrimary"
                 id="terms2"
                 onCheckedChange={() => toggleValue(attendee)}
                 checked={selectedAttendees.includes(attendee)}

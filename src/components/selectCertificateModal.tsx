@@ -53,7 +53,7 @@ const SelectCertificateModal = ({
       <div className="space-y-4 max-h-32 overflow-auto">
         {certificates.map((certificate) => (
           <div className="flex items-center space-x-2">
-            <Checkbox
+            <Checkbox className="data-[state=checked]:bg-basePrimary"
               id="terms2"
               onCheckedChange={() => toggleValue(certificate)}
               checked={selectedCertificates.includes(certificate)}

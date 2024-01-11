@@ -19,11 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-basebody">
       <body className={`${inter.className} h-screen flex relative`}>
-        <Sidebar />
-        <div className="flex-1">
-          <Topbar />
-          <div className="">{children}</div>
-        </div>
+        {children}
       </body>
     </html>
   );

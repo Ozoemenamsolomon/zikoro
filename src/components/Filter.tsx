@@ -55,7 +55,7 @@ export default function Filter({
               {options &&
                 options.map((option) => (
                   <div className="flex text-gray-700 items-center gap-2 capitalize font-medium">
-                    <Checkbox
+                    <Checkbox className="data-[state=checked]:bg-basePrimary"
                       id={option}
                       checked={
                         selectedFilters
