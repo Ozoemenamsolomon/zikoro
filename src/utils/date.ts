@@ -82,3 +82,28 @@ export function convertDateFormat(inputDate: string): string {
 
   return formattedDate;
 }
+
+export function formatDateTo(originalDate) {
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  const parsedDate = new Date(originalDate);
+  const formattedDate = parsedDate.toLocaleDateString("en-US", options);
+
+  // Extract day, month, and year separately
+  const [month, day, year] = formattedDate.split(" ");
+
+  // Convert day to ordinal number
+  const ordinalDay = getOrdinalSuffix(parseInt(day, 10));
+
+  // Format the result as "1ST OCTOBER 2023"
+  const result = `${ordinalDay} ${month.toUpperCase()} ${year}`;
+
+  return result;
+}
+
+// Function to get the ordinal suffix for a number (e.g., 1st, 2nd, 3rd)
+export function getOrdinalSuffix(number) {
+  const suffixes = ["th", "st", "nd", "rd"];
+  const relevantDigits = number < 30 ? number % 20 : number % 10;
+
+  return `${number}${suffixes[relevantDigits <= 3 ? relevantDigits : 0]}`;
+}

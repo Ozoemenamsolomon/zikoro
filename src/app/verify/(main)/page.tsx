@@ -2,9 +2,25 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useVerifyAttendeeCertificate } from "@/hooks/certificate";
+import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
-  const [certificateId, setCertificateId] = useState<string>();
+  const [certificateId, setCertificateId] = useState<string>("");
+  const router = useRouter();
+
+  const { verifyAttendeeCertificate, isLoading, error } =
+    useVerifyAttendeeCertificate();
+
+  const onSubmit = async () => {
+    const certificate = await verifyAttendeeCertificate(certificateId);
+
+    console.log(certificate);
+
+    if (!!certificate) router.push(`/verify/${certificateId}`);
+  };
+
   return (
     <section className="h-screen w-screen flex items-center justify-center gap-6 pt-8">
       <div className="flex-1 flex justify-center">
@@ -103,12 +119,16 @@ const Page = () => {
         <div className="flex flex-col gap-2">
           <span className="text-gray-800 font-medium">Certificate ID</span>
           <Input
-            onInput={setCertificateId}
+            onInput={(e) => setCertificateId(e.target.value)}
             placeholder="Enter certificate ID"
             className="w-3/4 rounded-none bg-gray-50 border border-gray-100"
           />
         </div>
-        <Button className="bg-basePrimary w-3/4 rounded-none py-4">
+        <Button
+          className="bg-basePrimary w-3/4 rounded-none py-4"
+          disabled={certificateId.length < 18}
+          onClick={onSubmit}
+        >
           Verify
         </Button>
       </div>

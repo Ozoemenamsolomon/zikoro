@@ -11,10 +11,12 @@ export async function GET(
     try {
       const { certificateId } = params;
 
+      // .select("*")
       const { data, error, status } = await supabase
-        .from("attendeeCertificateS")
-        .select("*")
-        .eq("certificateId", certificateId);
+        .from("attendeeCertificates")
+        .select("*, certificate!inner(*), attendee:attendees!inner(*)")
+        .eq("certificateId", certificateId)
+        .maybeSingle();
 
       if (error) throw error;
 

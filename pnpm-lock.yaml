@@ -68,6 +68,12 @@ dependencies:
   date-fns:
     specifier: ^3.0.6
     version: 3.0.6
+  html2canvas:
+    specifier: ^1.4.1
+    version: 1.4.1
+  jspdf:
+    specifier: ^2.5.1
+    version: 2.5.1
   lucide-react:
     specifier: ^0.297.0
     version: 0.297.0(react@18.2.0)
@@ -77,6 +83,9 @@ dependencies:
   react:
     specifier: ^18
     version: 18.2.0
+  react-component-export-image:
+    specifier: ^1.0.6
+    version: 1.0.6
   react-day-picker:
     specifier: ^8.10.0
     version: 8.10.0(date-fns@3.0.6)(react@18.2.0)
@@ -2398,6 +2407,13 @@ packages:
       performance-now: 2.1.0
     dev: false
     optional: true
+
+  /react-component-export-image@1.0.6:
+    resolution: {integrity: sha512-LQHVt6HPHyyu96J57D5tSsYD1E5Hpky6X4HKbnCgepIK/aAnyQslNmpvKBAYPehCb6baGF4bWl7Ug15nGb2bpw==}
+    dependencies:
+      html2canvas: 1.4.1
+      jspdf: 2.5.1
+    dev: false
 
   /react-day-picker@8.10.0(date-fns@3.0.6)(react@18.2.0):
     resolution: {integrity: sha512-mz+qeyrOM7++1NCb1ARXmkjMkzWVh2GL9YiPbRjKe0zHccvekk4HE+0MPOZOrosn8r8zTHIIeOUXTmXRqmkRmg==}

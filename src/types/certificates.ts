@@ -1,3 +1,5 @@
+import { TAttendee } from "@/types/attendee";
+
 export type TAttendeeCertificate = {
   id?: number;
   created_at: string;
@@ -26,4 +28,9 @@ export type TCertificate = {
   attendanceRate: number;
   criteria: string[];
   organisationLogo: string;
+};
+
+export type TFullCertificate = TAttendeeCertificate & {
+  certificate: TCertificate;
+  attendee: TAttendee;
 };

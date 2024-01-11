@@ -1,6 +1,6 @@
 import { toast } from "@/components/ui/use-toast";
 import { TAttendee } from "@/types/attendee";
-import { TAttendeeCertificate, TCertificate } from "@/types/certificates";
+import { TAttendeeCertificate, TCertificate, TFullCertificate } from "@/types/certificates";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
@@ -248,3 +248,52 @@ export const useRecallAttendeeCertificates = ({
 
   return { recallAttendeeCertificates, isLoading, error };
 };
+
+type UseVerifyAttendeeCertificateResult = {
+  verifyAttendeeCertificate: (
+    certificateId: string
+  ) => Promise<TFullCertificate | null>;
+} & RequestStatus;
+
+export const useVerifyAttendeeCertificate =
+  (): UseVerifyAttendeeCertificateResult => {
+    const [isLoading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<boolean>(false);
+
+    const verifyAttendeeCertificate = async (
+      certificateId: string
+    ): Promise<TFullCertificate | null> => {
+      setLoading(true);
+      toast({
+        description: "verifying certificate...",
+      });
+
+      try {
+        const { data, status } = await getRequest<TFullCertificate>({
+          endpoint: `/certificates/verify/${certificateId}`,
+        });
+
+        if (status !== 200) {
+          throw data;
+        }
+
+        console.log(data.data);
+        if (!data.data) {
+          toast({
+            description: "this certificate is not valid",
+            variant: "destructive",
+          });
+          return null;
+        }
+
+        return data.data;
+      } catch (error) {
+        setError(true);
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return { isLoading, error, verifyAttendeeCertificate };
+  };
