@@ -238,6 +238,16 @@ const billingFilter: TFilterType[] = [
 ];
 
 export default function page() {
+  const [shownColumns, setShownColumns] = useState<string[]>([
+    "event",
+    "userId",
+    "transactionReference",
+    "created_at",
+    "attendees",
+    "currency",
+    "amountPaid",
+    "select",
+  ]);
   const { billings, isLoading } = useGetBillings({ userId: 1 });
   const [filters, setFilters] = useState<TFilterType[]>(
     billingFilter.filter(({ icon }) => icon)
@@ -270,6 +280,13 @@ export default function page() {
   }, [isLoading]);
 
   console.log(billings);
+
+  const onChange = (accessorKey) =>
+    setShownColumns((prevShown) =>
+      prevShown.includes(accessorKey)
+        ? prevShown.filter((item) => item !== accessorKey)
+        : [...prevShown, accessorKey]
+    );
 
   return (
     <section className="bg-white p-4 space-y-6 max-w-full">
@@ -363,21 +380,28 @@ export default function page() {
                   <AngleDown className="w-5 h-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 space-y-6 px-4">
-                {billingFilter.map(({ label, accessor }) => (
-                  <div key={label} className="flex items-center space-x-2">
-                    <Checkbox
-                      className="data-[state=checked]:bg-basePrimary"
-                      id="terms"
-                    />
-                    <label
-                      htmlFor="terms"
-                      className="text-sm font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              <DropdownMenuContent className="w-56 space-y-4 px-4">
+                {columns
+                  .filter((column) => column?.id !== "select")
+                  .map(({ header, accessorKey }) => (
+                    <div
+                      key={accessorKey}
+                      className="flex items-center space-x-2"
                     >
-                      {label}
-                    </label>
-                  </div>
-                ))}
+                      <Checkbox
+                        className="data-[state=checked]:bg-basePrimary"
+                        id="terms"
+                        onCheckedChange={() => onChange(accessorKey)}
+                        checked={shownColumns.includes(accessorKey)}
+                      />
+                      <label
+                        htmlFor="terms"
+                        className="text-sm font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {header}
+                      </label>
+                    </div>
+                  ))}
               </DropdownMenuContent>
             </DropdownMenu>
             <button>
@@ -421,7 +445,12 @@ export default function page() {
           selectedFilters={selectedFilters}
         />
         <div className="py-4 space-y-2 max-w-full">
-          <DataTable columns={columns} data={billings} />
+          <DataTable
+            columns={columns.filter(({ accessorKey }) =>
+              shownColumns.includes(accessorKey)
+            )}
+            data={billings}
+          />
           <Pagination>
             <PaginationContent>
               <PaginationItem>

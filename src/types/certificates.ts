@@ -28,6 +28,7 @@ export type TCertificate = {
   attendanceRate: number;
   criteria: string[];
   organisationLogo: string;
+  cpdPoints: number;
 };
 
 export type TFullCertificate = TAttendeeCertificate & {

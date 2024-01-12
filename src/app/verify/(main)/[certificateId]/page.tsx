@@ -59,7 +59,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     <section className="min-h-screen flex justify-center gap-6 pt-20 pb-8">
       {!isLoading ? (
         <>
-          <div className="flex-1 flex flex-col justify-center items-center gap-4">
+          <div className="flex-1 flex flex-col items-center gap-4">
             <div className="flex gap-2 w-3/4">
               <Button onClick={handleDownloadPdf} className="bg-basePrimary">
                 Download PDF
@@ -72,7 +72,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               </Button>
             </div>
             <div
-              className="bg-white w-3/4 space-y-6 text-black"
+              className="bg-white w-3/4 space-y-6 text-black pb-4"
               ref={certificateRef}
             >
               <div className="h-6 w-full relative">
@@ -97,12 +97,12 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                     alt={"zikoro logo"}
                   />
                 </div>
-                <div className="mb-12 space-y-8 text-center w-full">
+                <div className="mb-12 space-y-4 text-center w-full">
                   <h1 className="text-2xl uppercase">training certificate</h1>
-                  <span className="text-lg">This is to certify that</span>
+                  <p className="text-lg">This is to certify that</p>
                 </div>
-                <div className="pb-1 border-b border-b-black mx-auto w-2/3 text-center mb-6">
-                  <span className="text-xl">
+                <div className="pb-1 mx-auto w-2/3 text-center mb-6">
+                  <span className="text-2xl">
                     {certificate?.attendee.firstName +
                       " " +
                       certificate?.attendee.lastName}
@@ -112,7 +112,8 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   <p>
                     Successfully completed the{" "}
                     {certificate?.certificate.TrainingDuration}-hour{" "}
-                    {certificate?.CertificateName}, earning 8 credits.{" "}
+                    {certificate?.CertificateName}, earning{" "}
+                    {certificate?.certificate.cpdPoints} credits.{" "}
                   </p>
                   <p>
                     A program offered by XXXXXXXXXX, in collaboration with
@@ -139,7 +140,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                         maxWidth: "100%",
                         width: "100%",
                       }}
-                      value={certificate?.attendeeId || "www.zikoro.com/verify"}
+                      value={`www.zikoro.com/verify/${certificate?.certificateId}`}
                       viewBox={`0 0 256 256`}
                     />
                   </div>
@@ -147,6 +148,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                     Certificate ID {certificate?.certificateId}
                   </h2>
                   <a
+                    className="text-black"
                     href="www.zikoro.com/verify"
                     className="flex gap-1 items-center text-[10px]"
                   >
@@ -183,7 +185,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 </div>
               </div>
 
-              <div className="h-6 relative">
+              {/* <div className="h-6 relative">
                 <Image
                   layout="fill"
                   objectFit="cover"
@@ -191,10 +193,10 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   src={"/images/certificate_design.png"}
                   alt={"design"}
                 />
-              </div>
+              </div> */}
             </div>
           </div>
-          <div className="flex-1 flex flex-col justify-around">
+          <div className="flex-1 flex flex-col justify-around gap-12 px-2">
             <div className="flex gap-4">
               <div>
                 <svg
@@ -247,12 +249,12 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               <h2 className="text-gray-800 text-xl font-medium">
                 About Zikoro
               </h2>
-              <p>
+              <p className="text-gray-700 text-sm">
                 Our platform aims to make event organization easy for event
                 organizers, regardless of the event's size, while providing
                 attendees with a smooth experience beyond just attending.{" "}
               </p>
-              <p className="text-gray-700">
+              <p className="text-gray-700 text-sm">
                 At Zikoro, we empower event organizers to create and distribute
                 certificates to attendees of conferences, workshops, and
                 seminars, enabling them to define their award criteria.
@@ -262,16 +264,13 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               <h2 className="text-gray-800 text-xl font-medium">
                 Scope of the training
               </h2>
-              <ul className="space-y-2 list-disc">
-                <li className="text-gray-700">
-                  Functional anatomy and biomechanics of the foot
-                </li>
-                <li className="text-gray-700">
-                  Surgical techniques in the acute diabetic foot ulcer
-                </li>
-                <li className="text-gray-700">
-                  Diabetic foot disease in end-stage renal disease
-                </li>
+              <ul className="space-y-2 text-sm">
+                {certificate?.certificate?.trainingScope.map((item, index) => (
+                  <li className="text-gray-700 flex gap-2" key={index}>
+                    <span className="text-xl">.</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

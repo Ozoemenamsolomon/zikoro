@@ -121,7 +121,8 @@ const Page = () => {
           <Input
             onInput={(e) => setCertificateId(e.target.value)}
             placeholder="Enter certificate ID"
-            className="w-3/4 rounded-none bg-gray-50 border border-gray-100"
+            className="w-3/4 rounded-none bg-gray-100 border border-gray-400"
+
           />
         </div>
         <Button

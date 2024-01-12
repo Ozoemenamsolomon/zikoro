@@ -110,7 +110,36 @@ export default function ThirdSection() {
         <h4 className=" text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
           Payment
         </h4>
-        <div className="flex flex-col w-full items-center justify-center h-48 gap-2">
+        <div className="flex flex-col w-full items-center">
+          <div>
+            <h2 className="text-xs text-gray-600">Amount</h2>
+            <h3 className="text-lg text-gray-800">#150,000</h3>
+          </div>
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>Registered by</span>
+            <span>Idrisrash2017@gmail.com</span>
+          </div>
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>Registration date</span>
+            <span>25 Dec 2023</span>
+          </div>
+          <div className="flex justify-between text-sm text-gray-600 items-center">
+            <span>25 Dec 2023</span>
+            <span className="bg-red-100 p-1 text-red-600">
+              Awaiting payment
+            </span>
+          </div>
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>Transaction date</span>
+            <span>20 Dec. 2023</span>
+          </div>
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>Reference</span>
+            <span>484393840223</span>
+          </div>
+        </div>
+
+        {/* <div className="flex flex-col w-full items-center justify-center h-48 gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height={16}
@@ -123,7 +152,7 @@ export default function ThirdSection() {
           <p className="text-xs px-2 font-medium text-gray-700 text-center">
             Nothing to show, this attendee was added by an admin.
           </p>
-        </div>
+        </div> */}
       </div>
       <section className="mb-2 pt-2 border-t-[1px] space-y-4">
         <div className="flex items-center gap-8cd zikocd px-2">

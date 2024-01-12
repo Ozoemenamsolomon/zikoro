@@ -14,7 +14,7 @@ export async function GET(
       const { data, error, status } = await supabase
         .from("eventTransactions")
         .select("*")
-        // .eq("userId", userId);
+        .eq("userId", userId);
 
       if (error) throw error;
 
