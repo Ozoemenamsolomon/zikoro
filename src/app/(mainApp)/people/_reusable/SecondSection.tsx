@@ -12,6 +12,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import AddAttendeeTagForm from "@/components/forms/AddAttendeeTagForm";
 import AddNotesForm from "@/components/forms/AddNoteForm";
 import AttendeeBadge from "@/components/AttendeeBadge";
@@ -403,8 +411,8 @@ export default function SecondSection({
           </span>
         </div>
         {!attendeeCertificatesIsLoading && attendeeCertificates.length > 0 && (
-          <Dialog>
-            <DialogTrigger>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
               <div className=" flex flex-col items-center gap-2 w-fit">
                 <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
                   <svg
@@ -430,21 +438,17 @@ export default function SecondSection({
                   View certificate
                 </span>
               </div>
-            </DialogTrigger>
-            <DialogContent className="px-3">
-              <DialogHeader>
-                <DialogTitle>
-                  <span className="capitalize">Select Certificate</span>
-                </DialogTitle>
-              </DialogHeader>
-              <SelectCertificateModal
-                certificates={attendeeCertificates}
-                action={"recall"}
-                attendeeId={id}
-                getAttendeeCertificates={getAttendeeCertificates}
-              />
-            </DialogContent>
-          </Dialog>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="py-4 min-w-[200px]">
+              {attendeeCertificates.map((certificate) => (
+                <DropdownMenuItem key={certificate.id}>
+                  <Link href={`/verify/${certificate.certificateId}`}>
+                    {certificate.CertificateName}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </section>
       <section className="space-y-4 border-t-[1px] border-gray-200 pt-4">

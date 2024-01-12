@@ -91,23 +91,11 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                     src={"/images/your_logo.png"}
                     alt={"zikoro logo"}
                   />
-                  {/* <Image
-                    src={"/images/your_logo.png"}
-                    alt={"zikoro logo"}
-                    width={50}
-                    height={10}
-                  /> */}
                   <img
                     className="w-[50px] h-[50px]"
                     src={"/images/zikoro_logo.png"}
                     alt={"zikoro logo"}
                   />
-                  {/* <Image
-                    src={"/images/zikoro_logo.png"}
-                    alt={"zikoro logo"}
-                    width={50}
-                    height={10}
-                  /> */}
                 </div>
                 <div className="mb-12 space-y-8 text-center w-full">
                   <h1 className="text-2xl uppercase">training certificate</h1>
@@ -151,7 +139,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                         maxWidth: "100%",
                         width: "100%",
                       }}
-                      value={id}
+                      value={certificate?.attendeeId || "www.zikoro.com/verify"}
                       viewBox={`0 0 256 256`}
                     />
                   </div>
