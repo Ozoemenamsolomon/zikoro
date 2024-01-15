@@ -199,10 +199,10 @@ export default function FirstSection({
       attendees
         .filter(
           ({ firstName, lastName, organization, jobTitle }) =>
-            firstName.toLowerCase().includes(searchTerm) ||
-            lastName.toLowerCase().includes(searchTerm) ||
-            jobTitle.toLowerCase().includes(searchTerm) ||
-            organization.toLowerCase().includes(searchTerm)
+            firstName?.toLowerCase().includes(searchTerm) ||
+            lastName?.toLowerCase().includes(searchTerm) ||
+            jobTitle?.toLowerCase().includes(searchTerm) ||
+            organization?.toLowerCase().includes(searchTerm)
         )
         .filter((attendee) => {
           return selectedFilters.every(({ key, value }) => {
