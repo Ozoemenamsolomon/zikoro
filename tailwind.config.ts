@@ -60,7 +60,7 @@ const config: Config = {
         },
       },
       fontSize: {
-        'small': '12px',
+        'tiny': '10px',
       },
       borderRadius: {
         lg: "var(--radius)",
