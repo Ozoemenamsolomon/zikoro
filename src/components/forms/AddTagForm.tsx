@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useUpdateTags } from "@/hooks/tags";
+import { useUpdateTags } from "@/services/tags";
 import { TTag, TTags } from "@/types/tags";
 import COLORTAG from "@/utils/colorTag";
 import { useState } from "react";

@@ -1,4 +1,4 @@
-import { useUpdateAttendees } from "@/hooks/attendee";
+import { useUpdateAttendees } from "@/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import { TFavouriteContact } from "@/types/favourites";
 import { formatDate, isWithinTimeRange } from "@/utils/date";

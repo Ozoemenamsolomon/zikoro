@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { DialogClose } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { useRecallAttendeeCertificates } from "@/hooks/certificate";
+import { useRecallAttendeeCertificates } from "@/services/certificate";
 
 const SelectCertificateModal = ({
   certificates,

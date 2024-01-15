@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useUpdateAttendees } from "@/hooks/attendee";
+import { useUpdateAttendees } from "@/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import React, { useEffect, useState } from "react";
 import { DialogClose } from "../ui/dialog";

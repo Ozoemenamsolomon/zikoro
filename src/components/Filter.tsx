@@ -14,7 +14,9 @@ export type TFilterType = {
   label: string;
   accessor: string;
   icon?: React.ReactNode;
-  options: TFilterOptions[];
+  options?: TFilterOptions[];
+  type?: string;
+
 };
 
 export type TSelectedFilter = {

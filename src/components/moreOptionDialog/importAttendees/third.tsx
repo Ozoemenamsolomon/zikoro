@@ -3,7 +3,7 @@ import { THeaders } from "./";
 import { DialogClose } from "../../ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TAttendee } from "@/types/attendee";
-import { useUpdateAttendees } from "@/hooks/attendee";
+import { useUpdateAttendees } from "@/services/attendee";
 
 const Third = ({
   data,

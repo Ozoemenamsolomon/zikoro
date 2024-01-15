@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useVerifyAttendeeCertificate } from "@/hooks/certificate";
+import { useVerifyAttendeeCertificate } from "@/services/certificate";
 import { TFullCertificate } from "@/types/certificates";
 import { formatDateToHumanReadable } from "@/utils/date";
 import html2canvas from "html2canvas";

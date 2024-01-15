@@ -1,6 +1,6 @@
 "use client"
 import React from "react";
-import { useGetAttendeesWithNotes } from "@/hooks/attendee";
+import { useGetAttendeesWithNotes } from "@/services/attendee";
 import ReusablePeopleComponent from "../_reusable";
 
 export default function page() {

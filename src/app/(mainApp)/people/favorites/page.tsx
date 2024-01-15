@@ -1,5 +1,5 @@
 "use client";
-import { useGetAttendeesWithFavourites } from "@/hooks/attendee";
+import { useGetAttendeesWithFavourites } from "@/services/attendee";
 import { HeartFill } from "styled-icons/bootstrap";
 import ReusablePeopleComponent from "../_reusable";
 
