@@ -306,7 +306,7 @@ export default function page() {
           </svg>
           <span className="text-gray-700 font-medium">Revenue</span>
           <span className="text-gray-900 font-semibold text-2xl">₦100,000</span>
-          <div className="text-[10px] text-green-500 flex items-center gap-1.5 p-1 rounded bg-green-50 w-fit">
+          <div className="text-tiny text-green-500 flex items-center gap-1.5 p-1 rounded bg-green-50 w-fit">
             <span className="font-medium capitalize">Wallet: #90,000</span>
           </div>
         </div>

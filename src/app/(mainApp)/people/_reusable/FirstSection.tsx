@@ -415,7 +415,7 @@ export default function FirstSection({
               stroke-linejoin="round"
             />
           </svg>
-          <span className=" text-[10px] font-medium text-ash leading-[145%] ">
+          <span className=" text-tiny font-medium text-ash leading-[145%] ">
             {showFilter ? "Hide" : "Show"}
           </span>
         </button>
@@ -459,7 +459,7 @@ export default function FirstSection({
               fill="#717171"
             />
           </svg>
-          <button className=" text-small" onClick={toggleSort}>
+          <button className=" text-xs" onClick={toggleSort}>
             A - Z
           </button>
         </div>

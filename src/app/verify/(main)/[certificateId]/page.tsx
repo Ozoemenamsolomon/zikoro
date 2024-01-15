@@ -144,13 +144,13 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                       viewBox={`0 0 256 256`}
                     />
                   </div>
-                  <h2 className="text-[10px]">
+                  <h2 className="text-tiny">
                     Certificate ID {certificate?.certificateId}
                   </h2>
                   <a
                     className="text-black"
                     href="www.zikoro.com/verify"
-                    className="flex gap-1 items-center text-[10px]"
+                    className="flex gap-1 items-center text-tiny"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

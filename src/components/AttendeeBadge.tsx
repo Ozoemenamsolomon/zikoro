@@ -82,7 +82,7 @@ const AttendeeBadge = ({ attendee }: { attendee: TAttendee }) => {
         </div>
       </div>
       <div className="bg-green-800 w-full h-6 absolute bottom-0 flex justify-center items-center rounded-b">
-        <span className="text-white text-[10px] font-medium text-center uppercase tracking-[0.3em]">
+        <span className="text-white text-tiny font-medium text-center uppercase tracking-[0.3em]">
           {oneAttendeeType()}
         </span>
       </div>

@@ -35,7 +35,7 @@ export default function AddTagForm({
   return (
     <div className="space-y-4">
       <div className="relative">
-        <label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+        <label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
           Tag
         </label>
         <Input

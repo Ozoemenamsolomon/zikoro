@@ -67,7 +67,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
   return (
     <div className="space-y-6 max-h-[80vh] overflow-auto hide-scrollbar py-4 pl-4 pr-1">
       <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
-        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
           Action
         </span>
         <RadioGroup
@@ -98,7 +98,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
         </RadioGroup>
       </div>
       <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
-        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
           Attendee Type
         </span>
         <div className="flex gap-2 flex-wrap justify-between">

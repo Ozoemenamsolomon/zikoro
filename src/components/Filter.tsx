@@ -93,7 +93,7 @@ export default function Filter({
       </Menubar>
       <div className="flex gap-2 flex-wrap px-2 justify-center">
         {selectedFilters.map(({ label, key }) => (
-          <div className="text-[10px] text-earlyBirdColor flex items-center gap-1.5 p-1 rounded bg-[#EEF0FF] w-fit">
+          <div className="text-tiny text-earlyBirdColor flex items-center gap-1.5 p-1 rounded bg-[#EEF0FF] w-fit">
             <span className="font-medium capitalize">{label}</span>
             <button onClick={() => onFilter(key, label, [])}>
               <svg

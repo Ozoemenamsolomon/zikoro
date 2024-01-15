@@ -112,11 +112,11 @@ const Attendee: React.FC<AttendeeProps> = ({
           <h4 className="text-gray-900 font-semibold text-sm capitalize w-full text-left">
             {firstName + " " + (lastName)}
           </h4>
-          <span className="text-[10px] font-medium text-gray-700 truncate w-full text-left">
+          <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
           {`${jobTitle ? jobTitle + ', ' : ''}${organization || ''}`}
           </span>
           {currentCheckin && currentCheckin.checkin && (
-            <div className="flex gap-1 text-[10px] text-[#717171]">
+            <div className="flex gap-1 text-tiny text-[#717171]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1.5em"
@@ -141,7 +141,7 @@ const Attendee: React.FC<AttendeeProps> = ({
               .map((type) => (
                 <div
                   key={type}
-                  className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-[10px] "
+                  className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-tiny "
                 >
                   {type}
                 </div>

@@ -56,22 +56,22 @@ const Third = ({
           <tbody>
             {data.map((row, index) => (
               <tr>
-                <td className="py-2 px-4 border-b text-gray-500 text-[10px]">
+                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
                   {row[headers.firstName]}
                 </td>
-                <td className="py-2 px-4 border-b text-gray-500 text-[10px]">
+                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
                   {row[headers.lastName]}
                 </td>
-                <td className="py-2 px-4 border-b text-gray-500 text-[10px]">
+                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
                   {row[headers.email]}
                 </td>
-                <td className="py-2 px-4 border-b text-gray-500 text-[10px]">
+                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
                   {row[headers.phoneNumber]}
                 </td>
-                <td className="py-2 px-4 border-b text-gray-500 text-[10px]">
+                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
                   {row[headers.whatsappNumber]}
                 </td>
-                <td className="py-2 px-4 border-b text-gray-500 text-[10px]">
+                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
                   Attendee
                 </td>
               </tr>

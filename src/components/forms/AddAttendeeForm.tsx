@@ -240,7 +240,7 @@ export default function AddAttendeeForm({
                 name="phoneNumber"
                 render={({ field }) => (
                   <FormItem className="relative h-fit">
-                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                       Phone number
                     </FormLabel>
                     <input
@@ -269,7 +269,7 @@ export default function AddAttendeeForm({
                 name="whatsappNumber"
                 render={({ field }) => (
                   <FormItem className="relative">
-                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                       WhatsApp number
                     </FormLabel>
                     <input
@@ -298,7 +298,7 @@ export default function AddAttendeeForm({
             name="profilePicture"
             render={({ field }) => (
               <FormItem className="relative">
-                <div className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                <div className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Profile picture
                 </div>
                 <FormLabel className="hover:cursor-pointer flex items-center gap-6 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
@@ -312,7 +312,7 @@ export default function AddAttendeeForm({
             )}
           />
           <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
-            <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+            <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
               Attendee Type
             </span>
             <div className="flex gap-2 flex-wrap justify-between">
@@ -332,7 +332,7 @@ export default function AddAttendeeForm({
                 </button>
               ))}
             </div>
-            <span className="text-[10px] font-medium text-gray-500">
+            <span className="text-tiny font-medium text-gray-500">
               You can assign multiple roles to the attendee
             </span>
           </div>
@@ -354,7 +354,7 @@ export default function AddAttendeeForm({
             name="x"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Twitter
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">
@@ -376,7 +376,7 @@ export default function AddAttendeeForm({
             name="linkedin"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   LinkedIn
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">
@@ -398,7 +398,7 @@ export default function AddAttendeeForm({
             name="instagram"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Instagram
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">
@@ -420,7 +420,7 @@ export default function AddAttendeeForm({
             name="facebook"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Facebook
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">

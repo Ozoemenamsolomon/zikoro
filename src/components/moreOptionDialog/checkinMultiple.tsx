@@ -94,7 +94,7 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
   return (
     <div className="space-y-6 max-h-[80vh] overflow-auto hide-scrollbar py-4 pl-4 pr-1">
       <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
-        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
           Action
         </span>
         <RadioGroup
@@ -125,7 +125,7 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
         </RadioGroup>
       </div>
       <div className="relative h-fit w-full">
-        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
           Event Date
         </span>
         <div className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-gray-700 z-10 font-medium">

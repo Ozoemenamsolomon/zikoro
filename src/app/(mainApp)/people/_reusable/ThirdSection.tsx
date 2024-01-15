@@ -2,6 +2,7 @@
 "use client";
 import RewardCard from "@/components/RewardCard";
 import PointsCard from "@/components/PointsCard";
+import { Button } from "@/components/ui/button";
 
 interface RewardData {
   imgSrc: string;
@@ -106,38 +107,61 @@ export default function ThirdSection() {
 
   return (
     <>
-      <div className="mb-12 mt-2 space-y-4">
-        <h4 className=" text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
+      <div className="mb-6 mt-2 space-y-4">
+        <h4 className="text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
           Payment
         </h4>
-        <div className="flex flex-col w-full items-center">
-          <div>
-            <h2 className="text-xs text-gray-600">Amount</h2>
-            <h3 className="text-lg text-gray-800">#150,000</h3>
+        <div className="flex flex-col w-full gap-2 px-2">
+          <div className="mb-2">
+            <h2 className="text-tiny text-gray-600">Amount</h2>
+            <h3 className="text-lg text-gray-900 font-semibold">#150,000.00</h3>
           </div>
-          <div className="flex justify-between text-sm text-gray-600">
+          <div className="flex justify-between text-xs text-gray-600 font-medium">
             <span>Registered by</span>
             <span>Idrisrash2017@gmail.com</span>
           </div>
-          <div className="flex justify-between text-sm text-gray-600">
+          <div className="flex justify-between text-xs text-gray-600 font-medium">
             <span>Registration date</span>
             <span>25 Dec 2023</span>
           </div>
-          <div className="flex justify-between text-sm text-gray-600 items-center">
-            <span>25 Dec 2023</span>
-            <span className="bg-red-100 p-1 text-red-600">
+          <div className="flex justify-between text-xs text-gray-600 font-medium items-center">
+            <span>Status</span>
+            <span className="bg-red-100 p-1 text-red-600 rounded">
               Awaiting payment
             </span>
           </div>
-          <div className="flex justify-between text-sm text-gray-600">
+          <div className="flex justify-between text-xs text-gray-600 font-medium">
             <span>Transaction date</span>
             <span>20 Dec. 2023</span>
           </div>
-          <div className="flex justify-between text-sm text-gray-600">
+          <div className="flex justify-between text-xs text-gray-600 font-medium">
             <span>Reference</span>
             <span>484393840223</span>
           </div>
         </div>
+        <Button className="bg-basePrimary w-fit flex gap-4 mx-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={24}
+            height={24}
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M7.42854 12H13.1428M7.42854 14.2857H15.4285M7.42854 16.5714H10.8571M18.8571 17.7143V9.71429L13.1428 4H7.42854C6.82233 4 6.24095 4.24082 5.81229 4.66947C5.38364 5.09812 5.14282 5.67951 5.14282 6.28571V17.7143C5.14282 18.3205 5.38364 18.9019 5.81229 19.3305C6.24095 19.7592 6.82233 20 7.42854 20H16.5714C17.1776 20 17.759 19.7592 18.1876 19.3305C18.6163 18.9019 18.8571 18.3205 18.8571 17.7143Z"
+              stroke="white"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M13.1428 4V7.42857C13.1428 8.03478 13.3836 8.61616 13.8123 9.04482C14.2409 9.47347 14.8223 9.71429 15.4285 9.71429H18.8571"
+              stroke="white"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span>Invoice</span>
+        </Button>
 
         {/* <div className="flex flex-col w-full items-center justify-center h-48 gap-2">
           <svg
@@ -155,7 +179,7 @@ export default function ThirdSection() {
         </div> */}
       </div>
       <section className="mb-2 pt-2 border-t-[1px] space-y-4">
-        <div className="flex items-center gap-8cd zikocd px-2">
+        <div className="flex items-center justify-between px-2">
           <h4 className="font-semibold text-greyBlack">Reward Points</h4>
           <button className="px-3 py-2 rounded-md flex gap-3 bg-[#3F845F] text-white items-center">
             <svg
@@ -222,12 +246,12 @@ export default function ThirdSection() {
           {mapp}
         </div>
       </section>
-      <section className="pt-2 border-t-[1px] space-y-4">
+      {/* <section className="pt-2 border-t-[1px] space-y-4">
         <h3 className="text-lg font-semibold text-greyBlack px-2 border-t-[1px]">
           How to earn points
         </h3>
         <div className="space-y-2">{mapped}</div>
-      </section>
+      </section> */}
     </>
   );
 }

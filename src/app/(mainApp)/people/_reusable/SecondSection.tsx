@@ -174,7 +174,7 @@ export default function SecondSection({
   return (
     <>
       <section className="flex justify-between px-4 items-center">
-        <span className="text-[10px] text-gray-700 font-medium">
+        <span className="text-tiny text-gray-700 font-medium">
           {checkin && checkin.length > 0
             ? checkin.filter((elm) => elm.checkin).length + "x check-ins"
             : "Not checked in on any date"}
@@ -232,10 +232,10 @@ export default function SecondSection({
           {firstName + " " + lastName}
         </h3>
         <div className=" flex flex-col">
-          <span className=" text-small text-[#3E404B]  leading-normal">
+          <span className=" text-xs text-[#3E404B]  leading-normal">
             {email}
           </span>
-          <span className=" text-small text-ash leading-normal">
+          <span className=" text-xs text-ash leading-normal">
             {phoneNumber}
           </span>
         </div>
@@ -400,7 +400,7 @@ export default function SecondSection({
                   />
                 </svg>
               </div>
-              <span className=" text-[#3E404B] font-semibold text-small">
+              <span className=" text-[#3E404B] font-semibold text-xs">
                 View badge
               </span>
             </div>
@@ -447,7 +447,7 @@ export default function SecondSection({
                       />
                     </svg>
                   </div>
-                  <span className=" text-[#3E404B] font-semibold text-small">
+                  <span className=" text-[#3E404B] font-semibold text-xs">
                     Release certificate
                   </span>
                 </div>
@@ -496,7 +496,7 @@ export default function SecondSection({
                     />
                   </svg>
                 </div>
-                <span className=" text-[#3E404B] font-semibold text-small">
+                <span className=" text-[#3E404B] font-semibold text-xs">
                   View certificate
                 </span>
               </div>
@@ -765,10 +765,10 @@ export default function SecondSection({
               </div>
             </div>
             <div className="flex-[25%] flex flex-col text-right">
-              <span className="text-gray-500 text-small font-medium">
+              <span className="text-gray-500 text-xs font-medium">
                 20 Nov 2023
               </span>
-              <span className="text-gray-500 text-small font-normal">
+              <span className="text-gray-500 text-xs font-normal">
                 2:00-3:00PM
               </span>
             </div>
@@ -803,10 +803,10 @@ export default function SecondSection({
               </svg>
             </div>
             <div className="flex-[25%] flex flex-col text-right">
-              <span className=" text-ash text-small font-medium">
+              <span className=" text-ash text-xs font-medium">
                 20 Nov 2023
               </span>
-              <span className="text-ash text-small font-normal">
+              <span className="text-ash text-xs font-normal">
                 2:00-3:00PM
               </span>
             </div>
