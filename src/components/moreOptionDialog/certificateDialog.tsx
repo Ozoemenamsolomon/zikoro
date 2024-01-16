@@ -16,7 +16,7 @@ import {
   useGetAttendeesCertificates,
   useGetEventCertificates,
   useUpdateAttendeeCertificates,
-} from "@/services/certificate";
+} from "@/hooks/services/certificate";
 import { TCertificate } from "@/types/certificates";
 import { DialogClose } from "../ui/dialog";
 

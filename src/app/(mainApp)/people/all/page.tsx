@@ -1,5 +1,5 @@
 "use client";
-import { useGetAttendees } from "@/services/attendee";
+import { useGetAttendees } from "@/hooks/services/attendee";
 import React from "react";
 import ReusablePeopleComponent from "../_reusable";
 

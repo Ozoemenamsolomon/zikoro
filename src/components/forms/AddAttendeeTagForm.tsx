@@ -3,7 +3,7 @@ import {
   useGetTags,
   useUpdateAttendeetags,
   useUpdateTags,
-} from "@/services/tags";
+} from "@/hooks/services/tags";
 import { TAttendeeTags, TTag, TTags } from "@/types/tags";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";

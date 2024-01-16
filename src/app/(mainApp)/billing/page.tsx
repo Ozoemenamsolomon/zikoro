@@ -17,7 +17,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useGetBillings } from "@/services/billing";
+import { useGetBillings } from "@/hooks/services/billing";
 import { TEventTransaction } from "@/types/billing";
 import { extractUniqueTypes } from "@/utils/helpers";
 import { useEffect, useState } from "react";

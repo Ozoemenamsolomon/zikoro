@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
-import useDisclose from "@/services/useDisclose";
+import useDisclose from "@/hooks/services/useDisclose";
 import { TAttendee } from "@/types/attendee";
 import { useState } from "react";
 import FirstSection from "./FirstSection";

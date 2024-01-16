@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Camera, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import { useCreateAttendee } from "@/services/attendee";
+import { useCreateAttendee } from "@/hooks/services/attendee";
 import { AttendeeSchema } from "@/schemas/attendee";
 import { TAttendee, TAttendeeType } from "@/types/attendee";
 import {

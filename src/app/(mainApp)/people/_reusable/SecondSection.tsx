@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
-import { useGetnote } from "@/services/notes";
-import { useGetAttendeetags, useUpdateAttendeetags } from "@/services/tags";
+import { useGetnote } from "@/hooks/services/notes";
+import { useGetAttendeetags, useUpdateAttendeetags } from "@/hooks/services/tags";
 import { useEffect } from "react";
 import Link from "next/link";
 import {
@@ -29,7 +29,7 @@ import {
   useGetAttendeeCertificates,
   useGetEventCertificates,
   useUpdateAttendeeCertificates,
-} from "@/services/certificate";
+} from "@/hooks/services/certificate";
 import SelectCertificateModal from "@/components/selectCertificateModal";
 
 export default function SecondSection({

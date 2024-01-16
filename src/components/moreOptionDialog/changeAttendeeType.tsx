@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { attendeeTypeOptions } from "@/data/attendee";
-import { useUpdateAttendees } from "@/services/attendee";
+import { useUpdateAttendees } from "@/hooks/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import React, { useEffect, useState } from "react";
 import { DialogClose } from "../ui/dialog";

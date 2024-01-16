@@ -20,8 +20,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { useUpdateAttendees } from "@/services/attendee";
-import { useGetFavourites, useUpdateFavourites } from "@/services/favourites";
+import { useUpdateAttendees } from "@/hooks/services/attendee";
+import { useGetFavourites, useUpdateFavourites } from "@/hooks/services/favourites";
 import { TAttendee } from "@/types/attendee";
 import {
   calculateAndSetMaxHeight,
