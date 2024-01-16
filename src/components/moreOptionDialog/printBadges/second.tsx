@@ -34,19 +34,27 @@ const Second = ({ selectedAttendees }: { selectedAttendees: TAttendee[] }) => {
       <div className="pt-4 pb-12 w-full">
         <div className="relative flex h-[350px] w-full">
           <div className="absolute left-2 -z-10 w-[200px] h-full">
-            <AttendeeBadge attendee={selectedAttendees[1]} />
+            {selectedAttendees[1] && (
+              <AttendeeBadge attendee={selectedAttendees[1]} />
+            )}
           </div>
           <div className="w-[200px] absolute h-full left-1/2 -translate-x-1/2 top-10">
-            <AttendeeBadge attendee={selectedAttendees[0]} />
+            {selectedAttendees[0] && (
+              <AttendeeBadge attendee={selectedAttendees[0]} />
+            )}
           </div>
           <div className="absolute right-2 -z-10 w-[200px] h-full">
-            <AttendeeBadge attendee={selectedAttendees[2]} />
+            {selectedAttendees[2] && (
+              <AttendeeBadge attendee={selectedAttendees[2]} />
+            )}
           </div>
         </div>
       </div>
-      <span className="text-gray-500 text-sm text-center">
+      <div className="w-full text-center">
+      <span className="text-gray-500 text-sm">
         {selectedAttendees.length} Attendee Badges Selected
       </span>
+      </div>
       <DialogClose asChild>
         <Button
           disabled={selectedAttendees.length === 0}
