@@ -46,10 +46,10 @@ export function calculateAndSetMaxHeight(
   }
 }
 
-export function generateAlphanumericHash(): string {
+export function generateAlphanumericHash(length: number): string {
   const characters =
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  const hashLength = 18;
+  const hashLength = length || 18;
   let hash = "";
 
   for (let i = 0; i < hashLength; i++) {

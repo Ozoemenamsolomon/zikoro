@@ -1,61 +1,73 @@
 "use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy } from "styled-icons/boxicons-regular";
+import { toast } from "@/components/ui/use-toast";
+import { attendeeTypeOptions } from "@/data/attendee";
+import { useInviteAttendees } from "@/hooks/services/attendee";
+import { TInviteDetails } from "@/types/attendee";
+import { generateAlphanumericHash } from "@/utils/helpers";
+import { useCopyToClipboard } from "@uidotdev/usehooks";
+import { useState } from "react";
+import { Calendar, Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
 import { Users } from "styled-icons/heroicons-outline";
-import { Calendar } from "styled-icons/boxicons-regular";
-
-const InviteSchema = z.object({
-  email: z.string().min(2, {
-    message: "email must be at least 2 characters.",
-  }),
-  attendeeType: z.string().min(2, {
-    message: "attendee must be at least 2 characters.",
-  }),
-});
-
-export type InviteSchema = z.infer<typeof InviteSchema>;
 
 export default function Page() {
+  const [invitees, setInvitees] = useState<Record<string, TInviteDetails>>({
+    [generateAlphanumericHash(5)]: {
+      email: "",
+      attendeeType: "",
+    },
+  });
+
+  const [message, setMessage] = useState<string>();
+
   const [copiedText, copyToClipboard] = useCopyToClipboard();
   const hasCopiedText = Boolean(copiedText);
 
-  const defaultValues: Partial<InviteSchema> = {
-    email: "",
-    attendeeType: "",
-  };
-  const form = useForm<z.infer<typeof InviteSchema>>({
-    resolver: zodResolver(InviteSchema),
-    defaultValues,
-  });
+  const { inviteAttendees } = useInviteAttendees();
 
-  function onSubmit(data: z.infer<typeof InviteSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-gray-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+  async function onSubmit(e) {
+    e.preventDefault();
+    inviteAttendees({
+      payload: {
+        Message: message,
+        InviteDetails: invitees,
+        eventName: "event",
+        eventId: 1234567890,
+      },
     });
   }
+
+  const updateInvitee = (key: string, newVal: Partial<TInviteDetails>) => {
+    console.log(newVal);
+    setInvitees((prevInvitees) => {
+      const prevVal = prevInvitees[key];
+      return { ...prevInvitees, [key]: { ...prevVal, ...newVal } };
+    });
+  };
+
+  const createNewInvitee = () => {
+    console.log("create new invitees");
+    setInvitees((prevInvitees) => {
+      const key = generateAlphanumericHash(5);
+      return {
+        ...prevInvitees,
+        [key]: {
+          email: "",
+          attendeeType: "",
+        },
+      };
+    });
+  };
 
   return (
     <section className="px-8 pt-2 pb-8">
@@ -64,87 +76,111 @@ export default function Page() {
         <div className="grid grid-cols-3 gap-4">
           <div className="col-span-2 space-y-6">
             <div className="space-y-4 text-gray-700">
-              <div className="flex justify-between p-2 border-[1px]">
+              <div className="flex justify-between w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
+                <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+                  Share link
+                </span>
                 <span>www.zikoro.com/orthoex/event3502/invite.com</span>
-                <Copy className="w-5 h-5 text-gray-700" />
+                {hasCopiedText ? (
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 24 24"
+                    height="1.25em"
+                    width="1.25em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M2.394 13.742L7.137 17.362 14.753 8.658 13.247 7.342 6.863 14.638 3.606 12.152zM21.753 8.658L20.247 7.342 13.878 14.621 13.125 14.019 11.875 15.581 14.122 17.379z" />
+                  </svg>
+                ) : (
+                  <button
+                    onClick={() =>
+                      copyToClipboard(
+                        "www.zikoro.com/orthoex/event3502/invite.com"
+                      )
+                    }
+                  >
+                    <Copy className="w-5 h-5 text-gray-700" />
+                  </button>
+                )}
               </div>
               <span className="text-sm">
                 Share your link with as many people as you want to invite to
                 your event.
               </span>
             </div>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-3"
-              >
-                <h1 className="text-gray-900 text-lg font-medium">
-                  Invite by email
-                </h1>
-                <div className="space-y-2">
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem className="relative">
-                          <FormLabel className="absolute -top-2 right-4 bg-white text-gray-600 text-sm capitalize p-1.5">
-                            email
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter event title" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="attendeeType"
-                      render={({ field }) => (
-                        <FormItem className="relative">
-                          <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-white text-gray-600 text-sm capitalize p-1.5">
-                            Attendee type
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Select attendee type"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="flex gap-2 font-medium items-center text-basePrimary">
-                    <PlusCircleOutline className="w-5 h-5" />
-                    <span className="text-sm">Add new</span>
-                  </div>
-                </div>
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="relative">
-                      <FormLabel className="absolute -translate-y-1/3 top-0 right-4 bg-white text-gray-600 text-sm capitalize p-1.5">
-                        Message
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Write a text you wish to send with invite email"
-                          {...field}
+            <form onSubmit={onSubmit} className="space-y-4">
+              <h1 className="text-gray-900 text-lg font-medium">
+                Invite by email
+              </h1>
+              <div className="space-y-2">
+                {Object.entries(invitees).map(
+                  ([key, { email, attendeeType }]) => (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="w-full rounded-md bg-background text-sm relative">
+                        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+                          Email
+                        </span>
+                        <Input
+                          // value={email}
+                          onInput={(e) =>
+                            updateInvitee(key, { email: e.target.value })
+                          }
+                          placeholder="Enter invitee email"
+                          required
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                      </div>
+                      <div className="w-full rounded-md bg-background text-sm relative">
+                        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+                          Attendee Type
+                        </span>
+                        <Select
+                          // defaultValue={attendeeType}
+                          onValueChange={(value) =>
+                            updateInvitee(key, { attendeeType: value })
+                          }
+                          required
+                        >
+                          <SelectTrigger className="text-gray-500">
+                            <SelectValue placeholder="select Attendee type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {attendeeTypeOptions.map(({ label, value }) => (
+                              <SelectItem key={label} value={value}>
+                                {label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  )
+                )}
+                <button
+                  type="button"
+                  onClick={createNewInvitee}
+                  className="flex gap-2 font-medium items-center text-basePrimary"
+                >
+                  <PlusCircleOutline className="w-5 h-5" />
+                  <span className="text-sm">Add new</span>
+                </button>
+              </div>
+              <div className="w-full rounded-md bg-background text-sm relative">
+                <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+                  Message
+                </span>
+                <Textarea
+                  value={message}
+                  onInput={(e) => setMessage(e.target.value)}
+                  placeholder="Enter message"
+                  required
                 />
-                <Button type="submit" className="bg-basePrimary">
-                  Send Invitation
-                </Button>
-              </form>
-            </Form>
+              </div>
+              <Button type="submit" className="bg-basePrimary">
+                Send Invitation
+              </Button>
+            </form>
           </div>
           <div className="bg-basebody rounded-sm">
             <div className="space-y-2 border-b-2 p-2">

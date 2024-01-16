@@ -18,3 +18,17 @@ export type TAttendeeType = {
   label: string;
   value: string;
 };
+
+export type TInviteDetails = {
+  email: string
+  attendeeType: string
+}
+
+export type AttendeeEmailInvites {
+  id: bigint;
+  created_at: string;
+  eventId?: bigint | null;
+  eventName?: number | null;
+  Message?: string | null;
+  InviteDetails: TInviteDetails[];
+}
