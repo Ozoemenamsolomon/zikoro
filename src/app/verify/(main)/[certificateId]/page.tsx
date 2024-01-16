@@ -102,7 +102,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   <p className="text-lg">This is to certify that</p>
                 </div>
                 <div className="pb-1 mx-auto w-2/3 text-center mb-6">
-                  <span className="text-2xl">
+                  <span className="text-4xl font-DancingScript">
                     {certificate?.attendee.firstName +
                       " " +
                       certificate?.attendee.lastName}
@@ -185,7 +185,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 </div>
               </div>
 
-              {/* <div className="h-6 relative">
+              <div className="h-6 relative">
                 <Image
                   layout="fill"
                   objectFit="cover"
@@ -193,11 +193,11 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   src={"/images/certificate_design.png"}
                   alt={"design"}
                 />
-              </div> */}
+              </div>
             </div>
           </div>
-          <div className="flex-1 flex flex-col justify-around gap-12 px-2">
-            <div className="flex gap-4">
+          <div className="flex-1 flex flex-col items-center justify-around gap-12 px-2">
+            <div className="flex gap-4 w-3/4">
               <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -245,7 +245,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 </h1>
               </div>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-4 w-3/4">
               <h2 className="text-gray-800 text-xl font-medium">
                 About Zikoro
               </h2>
@@ -260,7 +260,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 seminars, enabling them to define their award criteria.
               </p>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-4 w-3/4">
               <h2 className="text-gray-800 text-xl font-medium">
                 Scope of the training
               </h2>
