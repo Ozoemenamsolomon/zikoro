@@ -463,7 +463,7 @@ export default function SecondSection({
                       )
                   )
                   .map((eventCertificate) => (
-                    <DropdownMenuItem key={certificate.id}>
+                    <DropdownMenuItem key={eventCertificate.id}>
                       <button onClick={() => releaseCertificate(eventCertificate)}>
                         {eventCertificate.certificateName}
                       </button>
