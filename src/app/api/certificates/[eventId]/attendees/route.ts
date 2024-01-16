@@ -12,10 +12,26 @@ export async function GET(
     try {
       const { eventId } = params;
 
-      const { data, error, status } = await supabase
+      const {
+        data: certificateData,
+        error: certificateError,
+        status,
+      } = await supabase
         .from("attendeeCertificates")
-        .select("*")
+        .select("attendeeId")
         .eq("eventId", eventId);
+
+      if (certificateError) throw certificateError;
+
+      const attendeeIds = new Set(
+        certificateData.flatMap(({ attendeeId }) => [].concat(attendeeId))
+      );
+
+
+      const { data, error } = await supabase
+        .from("attendees")
+        .select("*")
+        .in("id", Array.from(attendeeIds));
 
       if (error) throw error;
 

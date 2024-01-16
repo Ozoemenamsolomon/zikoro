@@ -185,7 +185,7 @@ export const useGetAttendeesWithFavourites = () => {
   return { attendees, isLoading, error, getAttendees };
 };
 
-export const useGetAttendeesWithCertificate = () => {
+export const useGetAttendeesWithCertificates = () => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -210,4 +210,35 @@ export const useGetAttendeesWithCertificate = () => {
   }, []);
 
   return { attendees, isLoading, error, getAttendees };
+};
+
+export const useInviteAttendees = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const inviteAttendees = async ({ payload }: { payload: TAttendee }) => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await postRequest({
+        endpoint: "/attendees/invite",
+        payload,
+      });
+
+      if (status !== 200) throw data.data.error;
+
+      console.log(data);
+      return data;
+    } catch (error) {
+      console.log(error);
+      setError(true);
+      toast({
+        description: "an error has occured",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { inviteAttendees, isLoading, error };
 };
