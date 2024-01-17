@@ -1,20 +1,23 @@
 "use client"
 
-import { config } from '@/config/__urls';
-import { usePaystackPayment } from 'react-paystack';
+// import { config } from '@/config/__url';
+// import { usePaystackPayment } from 'react-paystack';
 
 export function usePayStackPayment() {
-    const initializePayment = usePaystackPayment(config);
+
+  /**
+   const payStackconfig = {
+    reference: (new Date()).getTime().toString(),
+    email: "",
+    amount: 20000, 
+    publicKey: config.payment,
+};
+    const initializePayment = usePaystackPayment(payStackconfig);
 
    
     async function initializePaystackPayment() {
 
-        const payStackconfig = {
-            reference: (new Date()).getTime().toString(),
-            email: "",
-            amount: 20000, 
-            publicKey: config.payment,
-        };
+       
         initializePayment(onSuccess, onClose)
     
             
@@ -30,5 +33,6 @@ export function usePayStackPayment() {
         console.log('closed')
       }
     }
+   */
 
 }
