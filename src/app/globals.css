@@ -1,3 +1,206 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body {
+  overflow-x: hidden;
+  height: 100%;
+}
+.modal {
+  -webkit-animation-duration: 0.7s;
+  animation-duration: 0.7s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.swipeInLeft {
+  animation-name: swipeInLeft;
+  -webkit-animation-name: swipeInLeft;
+}
+
+@keyframes swipeInLeft {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+@-webkit-keyframes swipeInLeft {
+  0% {
+    -webkit-transform: translateX(-100%);
+  }
+
+  100% {
+    -webkit-transform: translateX(0px);
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
+.shadow {
+  box-shadow: rgba(207, 207, 207, 0.1) 2px 0px 16px,
+    rgba(207, 207, 207, 0.1) -2px 0px 4px, rgba(207, 207, 207, 0.1) 0px 2px 12px,
+    rgba(207, 207, 207, 0.1) 0px -2px 16px;
+}
+
+.reg-scroll-style::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+}
+
+.reg-scroll-style::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  @apply bg-gray-300;
+}
+
+.reg-scroll-style::-webkit-scrollbar-track {
+  border-radius: 6px;
+  @apply bg-gray-100;
+}
+
+.drop-container {
+  position: relative;
+  padding-left: 40px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* Hide the browser's default checkbox rounded-full w-3 h-3 bg-black*/
+.drop-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.drop-checkmark {
+  position: absolute;
+  top: 8px;
+  left: 11px;
+
+  height: 20px;
+  width: 20px;
+  border-radius: 4px;
+  border: 1px solid #001fcc;
+  background-color: #fff;
+}
+
+/* On mouse-over, add a grey background color */
+.drop-container:hover input ~ .drop-checkmark {
+  background-color: white;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background: #b847fe;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.drop-checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.drop-container input:checked ~ .drop-checkmark:after {
+  display: block;
+}
+
+.drop-checkmark::before {
+  position: absolute;
+  content: "";
+  width: 5px;
+  height: 10px;
+  left: 6px;
+  top: 3px;
+  transform: rotate(50deg);
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
+}
+
+/* Style the checkmark/indicator */
+.drop-container .drop-checkmark:after {
+  position: absolute;
+  content: "";
+  width: 5px;
+  height: 10px;
+  left: 6px;
+  top: 3px;
+  transform: rotate(50deg);
+  @apply border-r-2 border-b-2 border-black;
+  border-radius: 6px;
+}
+
+.box-animation {
+  animation: fadeInAndSlide 0.6s ease-out;
+}
+@keyframes fadeInAndSlide {
+  from {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeInAndSlide {
+  from {
+    -webkit-transform: translateY(-4px);
+    -webkit-opacity: 0;
+  }
+  to {
+    -webkit-transform: translateY(0);
+    -webkit-opacity: 1;
+  }
+}
+
+div .react-datepicker__day--selected {
+  @apply bg-zikoro;
+  color: white;
+}
+div .react-datepicker__day--selected:hover {
+  @apply bg-zikoro;
+  color: white;
+}
+div .react-datepicker__day--in-range {
+  @apply bg-zikoro;
+  color: white;
+}
+
+div .react-datepicker__day--in-range:hover {
+  @apply bg-zikoro;
+  color: white;
+}
+
+div .react-datepicker__day--keyboard-selected {
+  @apply bg-blue-500;
+}
+
+div .react-datepicker__day--keyboard-selected:hover {
+  @apply bg-zikoro;
+}
+
+div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-range, .react-datepicker__month-text--in-range, .react-datepicker__quarter-text--in-range, .react-datepicker__year-text--in-range) {
+  @apply bg-zikoro text-white;
+}
