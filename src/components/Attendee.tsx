@@ -110,10 +110,10 @@ const Attendee: React.FC<AttendeeProps> = ({
       <div className="col-span-6">
         <div className="justify-start items-start flex flex-col gap-1 min-w-full">
           <h4 className="text-gray-900 font-semibold text-sm capitalize w-full text-left">
-            {firstName + " " + (lastName)}
+            {firstName + " " + lastName}
           </h4>
           <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
-          {`${jobTitle ? jobTitle + ', ' : ''}${organization || ''}`}
+            {`${jobTitle ? jobTitle + ", " : ""}${organization || ""}`}
           </span>
           {currentCheckin && currentCheckin.checkin && (
             <div className="flex gap-1 text-tiny text-[#717171]">
@@ -136,16 +136,19 @@ const Attendee: React.FC<AttendeeProps> = ({
             </div>
           )}
           <div className="flex gap-1.5 flex-wrap w-fit">
-            {attendeeType
-              .filter((type) => attendeeType.length > 1 && type !== "attendee")
-              .map((type) => (
-                <div
-                  key={type}
-                  className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-tiny "
-                >
-                  {type}
-                </div>
-              ))}
+            {attendeeType &&
+              attendeeType
+                .filter(
+                  (type) => attendeeType.length > 1 && type !== "attendee"
+                )
+                .map((type) => (
+                  <div
+                    key={type}
+                    className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-tiny "
+                  >
+                    {type}
+                  </div>
+                ))}
           </div>
         </div>
       </div>
