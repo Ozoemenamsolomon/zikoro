@@ -48,7 +48,7 @@ export function SingleEvent({
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
   const [chosenPrice, setChosenPrice] = useState<number | undefined>(10000);
-  const [priceCategory, setPriceCategory] = useState<string | undefined>("")
+  const [priceCategory, setPriceCategory] = useState<string | undefined>("");
   const router = useRouter();
 
   function onClose() {
@@ -107,7 +107,6 @@ export function SingleEvent({
   const pricingArray = useMemo(() => {
     if (Array.isArray(event?.pricing)) {
       return event?.pricing?.map((value) => {
-      
         if (value["Early Bird"]) {
           return {
             price: value["Early Bird"],
@@ -265,7 +264,7 @@ export function SingleEvent({
                     onClick={(e) => {
                       e.stopPropagation();
                       selectedPrice(price);
-                      setPriceCategory(name)
+                      setPriceCategory(name);
                     }}
                     disabled={isDateGreaterThanToday(date)}
                     className={cn(
@@ -353,6 +352,9 @@ export function SingleEvent({
           priceCategory={priceCategory}
           eventTitle={event?.eventTitle}
           close={onClose}
+          eventLocation={`${event?.eventCity ?? ""}${!removeComma && ","} ${
+            event?.eventCountry ?? ""
+          }`}
           eventId={eventId}
           organization={organization}
           price={chosenPrice}

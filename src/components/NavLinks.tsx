@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import Link from "next/link";
 import { links } from "@/constants";
@@ -6,8 +7,8 @@ import { useParams, usePathname } from "next/navigation";
 import { cn } from "@/lib";
 import { Button } from "@/components"
 
-export const NavLinks = ({ query }: { query: string | null }) => {
-  const { id } = useParams()
+export const NavLinks = ({ query, id }: {id: string | string[], query: string | null }) => {
+ 
   const pathname = usePathname();
 
 

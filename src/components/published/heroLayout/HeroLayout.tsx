@@ -210,7 +210,7 @@ export function HeroLayout({
         <div className="absolute top-[200px] md:top-[300px] bg-gray-50 w-full mx-auto">
           <div className="flex flex-col pb-20 sm:gap-y-6 gap-y-20 items-center mx-auto justify-center w-[95%] sm:w-[65%] lg:w-[90%] xl:w-[70%]">
             {children}
-            {(!loading && !isLastPage) && (
+            { (!loading && !isLastPage) && (
               <Button
                 onClick={() =>
                   loadMore(pagination.endIndex + 1, pagination.endIndex + 1)

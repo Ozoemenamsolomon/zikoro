@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { NavLinks } from ".";
 import { HeaderWidget } from "./home";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useParams } from "next/navigation";
 
 export function SideBarLayout({
   children,
@@ -18,6 +18,7 @@ export function SideBarLayout({
 }) {
   const [isNav, setNav] = useState(false);
   const param = useSearchParams()
+
   const [queryParam, setQueryParam] = useState<string | null>(null)
   const query = param.get("organization")
 
@@ -54,7 +55,7 @@ export function SideBarLayout({
 }
 
 function SideNavs({ close, isNav, query }: { close: () => void; isNav: boolean, query: string | null }) {
-
+  const { id } = useParams()
 
   return (
     <div
@@ -86,7 +87,7 @@ function SideNavs({ close, isNav, query }: { close: () => void; isNav: boolean, 
             className="w-[150px] h-[40px]"
           />
           {/**nav links */}
-          {<NavLinks query={query} />}
+          {<NavLinks query={query} id={id} />}
         </div>
       </div>
     </div>
