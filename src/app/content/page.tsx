@@ -1,171 +1,199 @@
 "use client";
-import * as React from "react";
-import { FormEvent, useState } from "react";
-import { CustomTextBox } from "@/components/CustomTextBox";
-import { CustomSelect } from "@/components/CustomSelect";
-import { CustomInput } from "@/components/CustomInput";
-import { usePathname } from "next/navigation";
-import { DataAndTimeAdapter } from "@/context/DataAndTimeAdapter";
+import { FormEvent, useState, useRef, useEffect } from "react";
+import { CustomTextBox } from "@/components/content/CustomTextBox";
+import { CustomSelect } from "@/components/content/CustomSelect";
+import { CustomInput } from "@/components/content/CustomInput";
+import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { addEvent } from "../server-actions/addEvent";
+import { Camera } from "@styled-icons/feather/Camera";
+import countries from "@/../countrylist.json";
+// import { getEvent } from "@/app/getEvent/page";
+interface ImageFile {
+  url: string | undefined;
+  name: string;
+  size: number;
+  type?: string;
+  blob?: Blob;
+  arrayBuffer?: () => Promise<ArrayBuffer>;
+  slice?: (start?: number, end?: number, contentType?: string) => Blob;
+  stream?: () => ReadableStream<Uint8Array>;
+  text?: () => Promise<string>;
+}
 
-import { Eye } from "styled-icons/evil";
-import { UploadOutline } from "styled-icons/evaicons-outline";
-import { Check } from "styled-icons/material";
-type ContentData = {
-  title: string;
-  startDateAndTime: Date | null;
-  endDateAndTime: Date | null;
-  visibility: string;
-  category: string;
-  participants: string;
-  locationType: string;
-  address: string;
-  city: string;
-  poster: string;
-  organisationLogo: string;
-  eventDesc: string;
-  prerequisites: string;
-  benefit: string;
-  currency: string;
-  earlyBirdPrice: string;
-  earlyBirdValidity: string;
-  standardPrice: string;
-  standardValidity: string;
-  lateBirdPrice: string;
-  lateBirdValidity: string;
-};
+export default function Event(): JSX.Element {
+  const [organisationLogoArr, setOrganisationLogoArr] = useState(
+    [] as ImageFile[]
+  );
+  const [eventPosterArr, setEventPosterArr] = useState([] as ImageFile[]);
+  const [isSaved, setIsSaved] = useState<boolean>(true);
 
-export default function Event(this: any): JSX.Element {
-  const [data, setData] = useState<ContentData>({
-    title: "",
-    startDateAndTime: null,
-    endDateAndTime: null,
-    visibility: "",
-    category: "",
-    participants: "",
-    locationType: "",
-    address: "",
-    city: "",
-    poster: "",
-    organisationLogo: "",
-    eventDesc: "",
-    prerequisites: "",
-    benefit: "",
-    currency: "",
-    earlyBirdPrice: "",
-    earlyBirdValidity: "",
-    standardPrice: "",
-    standardValidity: "",
-    lateBirdPrice: "",
-    lateBirdValidity: "",
-  });
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const posterInputRef = useRef<HTMLInputElement>(null);
 
-  const previewAction = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    e.preventDefault();
+  const [isOpen1, setIsOpen1] = useState<boolean>(false);
+  const [isOpen3, setIsOpen3] = useState<boolean>(false);
+  const [isOpen2, setIsOpen2] = useState<boolean>(false);
 
-    const formData = new FormData(e.currentTarget.form as HTMLFormElement);
+  const [isStartDateOpen, setIsStartDateOpen] = useState<boolean>(false);
+  const [isEndDateOpen, setIsEndDateOpen] = useState<boolean>(false);
 
-    const values = Array.from(formData.values());
-    const isEmpty = values.includes("");
+  const selectImage = (inputRef: React.RefObject<HTMLInputElement>) => {
+    inputRef.current?.click();
+  };
 
-    if (isEmpty) {
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setImageArray: React.Dispatch<React.SetStateAction<ImageFile[]>>,
+    imageArr: React.SetStateAction<ImageFile[]>
+  ) => {
+    const { files } = e.target;
+    if (!files) {
       return;
     }
-    const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      tel: formData.get("tel"),
-      date: formData.get("date"),
-      startTime: formData.get("startTime"),
-      endTime: formData.get("endTime"),
-    };
-    console.log(data);
-
-    // const formData = new FormData(e.currentTarget);
-    // // const values = Array.from(formData.values());
-    // // const isEmpty = values.every((value) => value === "");
-    // // const data = Object.fromEntries(formData);
-    // Array.from(formData.entries()).forEach(([key, value]) => {
-    //   console.log(key, value);
-    // });
-    // console.log(data);
-
-    // e.currentTarget.reset();
+    const newImages = Array.from(files || []).map((file) => ({
+      name: file.name,
+      size: file.size,
+      url: URL.createObjectURL(file),
+    }));
+    setImageArray((prevImages) => [...prevImages, ...newImages]);
+    const isImageSizeExceedsLimit = newImages.some(
+      (image) => image.size > 2 * 1024 * 1024
+    );
+    console.log(
+      "images size",
+      isImageSizeExceedsLimit,
+      newImages.map((i) => i.size)
+    );
+    if (newImages.length === 3) {
+      alert("Please select only 3 images");
+    }
+    // console.log("newImages", newImages);
   };
 
-  // const [file, setFile] = useState<File | null>(null);
-  // const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files) {
-  //     setFile(e.target.files[0]);
-  //   }
-  // }
-  const publishAction = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    const values = Array.from(formData.values());
-    const isEmpty = values.every((value) => value === "");
-    const data = Object.fromEntries(formData);
-    console.log(data);
-
-    // e.currentTarget.reset();
+  const deleteImage = (
+    index: number,
+    setImageArray: React.Dispatch<React.SetStateAction<ImageFile[]>>,
+    imageArr: ImageFile[]
+  ) => {
+    const newImages = [...imageArr];
+    newImages.splice(index, 1);
+    setImageArray(newImages);
   };
 
-  //   const pathname = usePathname();
+  const country = countries.map((country) => country.name);
+
+  function onCountryChange() {
+    removeCountriesDropDownList();
+    const eventCountry = document.getElementById("eventCountry");
+
+    if (!eventCountry) {
+      return;
+    }
+    const countryValue = (
+      eventCountry as HTMLSelectElement
+    )?.value.toLowerCase();
+
+    const filteredInputValue: string[] = [];
+    country.forEach((country) => {
+      if (
+        country.substring(0, countryValue.length).toLowerCase() === countryValue
+      ) {
+        filteredInputValue.push(country);
+      }
+    });
+    countriesDropDownList(filteredInputValue);
+  }
+
+  function countriesDropDownList(list: string[]) {
+    const countriesContainer = document.getElementById("countriesContainer");
+    if (!countriesContainer) {
+      return;
+    }
+    const ul = document.createElement("ul");
+    ul.setAttribute("id", "countriesUl");
+    ul.style.width = "100%";
+
+    list.forEach((country) => {
+      const li = document.createElement("li");
+      li.setAttribute("id", "countriesLi");
+      li.innerHTML = country;
+      ul.appendChild(li);
+
+      li.addEventListener("click", () => {
+        const eventCountry = document.getElementById("eventCountry");
+        if (!eventCountry) {
+          return;
+        }
+        (eventCountry as HTMLSelectElement).value = country;
+        removeCountriesDropDownList();
+      });
+    });
+    countriesContainer.appendChild(ul);
+
+    window.addEventListener("click", () => {
+      removeCountriesDropDownList();
+    });
+  }
+
+  function removeCountriesDropDownList() {
+    const countriesContainer = document.getElementById("countriesContainer");
+    if (!countriesContainer) {
+      return;
+    }
+    countriesContainer.innerHTML = "";
+  }
+
   return (
-    <DataAndTimeAdapter>
+    <DateAndTimeAdapter>
       <div className="p-4">
         <h6 className="font-medium">Event information</h6>
       </div>
-      {/* form */}
-      <form
-        className="w-[100%]"
-        onSubmit={() => {
-          publishAction;
-          previewAction;
-        }}
-        id="form"
-      >
-        <div className="grid grid-cols-2">
-          <div className="p-1 space-y-10">
+      <form className="w-[100%]" id="form" action={addEvent}>
+        <div className="grid grid-cols-2 gap-6">
+          <div className="p-1 space-y-8">
             <CustomInput
+              name="eventTitle"
               label="Event title"
               id="eventTitle"
               placeholder="Enter event title"
               type="text"
             />
             <div className="flex justify-between gap-2 relative">
-              <span className="z-10 -top-2 translate-x-12 left-20 bg-white rounded-sm block text-[12px] text-gray-700 absolute">
+              <span className="font-medium z-10 -top-2 translate-x-10 left-20 bg-white rounded-sm block text-[12px] text-gray-700 absolute">
                 {" "}
                 Start date and time
               </span>
-              <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-2 rounded-sm z-10">
-                {" "}
-                End date and time
-              </span>
               <DateTimePicker
-                name="date_time_picker"
+                open={isStartDateOpen}
+                onOpen={() => setIsStartDateOpen(!isStartDateOpen)}
+                onClose={() => setIsStartDateOpen(!isStartDateOpen)}
+                name="startDateAndTime"
+                slotProps={{
+                  textField: {
+                    // required: true,
+                    placeholder: "Pick date and time",
+                    InputProps: {
+                      className: "flex flex-row-reverse",
+                      endAdornment: (
+                        <img
+                          src={"/date-time.svg"}
+                          alt="calendar-icon"
+                          width={25}
+                          height={25}
+                          className="cursor-pointer"
+                          onClick={() => setIsStartDateOpen(!isStartDateOpen)}
+                        />
+                      ),
+                    },
+                  },
+                }}
                 sx={{
                   width: "100%",
-                  height: "56px",
-                  color: "#717171",
-                  "& .MuiInputBase-input": {
-                    paddingBlock: "10px",
-                    paddingLeft: "15px",
-                    fontSize: "14px",
-                    color: "black",
-                  },
-                  "& .MuiInputBase-root": {
-                    height: "60px",
-                  },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    border: "1px solid #f3f3f3",
-                  },
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
                       borderColor: "#f3f3f3",
-                      borderRadius: "5px",
                     },
                     "&:hover fieldset": {
                       borderColor: "#f3f3f3",
@@ -176,24 +204,36 @@ export default function Event(this: any): JSX.Element {
                   },
                 }}
               />
+              <span className="span font-medium"> End date and time</span>
               <DateTimePicker
+                open={isEndDateOpen}
+                onOpen={() => setIsEndDateOpen(!isEndDateOpen)}
+                onClose={() => setIsEndDateOpen(!isEndDateOpen)}
+                name="endDateAndTime"
+                slotProps={{
+                  textField: {
+                    // required: true,
+                    placeholder: "Pick date and time",
+                    InputProps: {
+                      className: "flex flex-row-reverse",
+                      endAdornment: (
+                        <img
+                          src={"/date-time.svg"}
+                          alt="calendar-icon"
+                          width={25}
+                          height={25}
+                          className="cursor-pointer"
+                          onClick={() => setIsEndDateOpen(!isEndDateOpen)}
+                        />
+                      ),
+                    },
+                  },
+                }}
                 sx={{
                   width: "100%",
-                  height: "56px",
-                  color: "#717171",
-                  "& .MuiInputBase-input": {
-                    paddingBlock: "10px",
-                    paddingLeft: "15px",
-                    fontSize: "14px",
-                    color: "black",
-                  },
-                  "& .MuiInputBase-root": {
-                    height: "60px",
-                  },
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
                       borderColor: "#f3f3f3",
-                      borderRadius: "5px",
                     },
                     "&:hover fieldset": {
                       borderColor: "#f3f3f3",
@@ -208,63 +248,185 @@ export default function Event(this: any): JSX.Element {
             <CustomSelect
               label="Event visibilty"
               placeholder="Please select"
-              name="event_visibility"
+              name="eventVisibility"
+              id="eventVisibility"
             />
             <CustomSelect
               label="Industry"
               placeholder="Please select"
               name="industry"
+              id="industry"
             />
 
-            <CustomSelect label="Event category" placeholder="Please select" />
+            <CustomSelect
+              label="Event category"
+              placeholder="Please select"
+              name="eventCategory"
+              id="eventCategory"
+            />
             <CustomInput
+              name="noOfParticipants"
               label="Number of Participants"
               id="noOfParticipants"
               type="number"
               placeholder="0"
             />
-            <CustomSelect label="Location type" placeholder="Please select" />
+            <CustomSelect
+              label="Location type"
+              placeholder="Please select"
+              name="locationType"
+              id="locationType"
+            />
             <div className="flex justify-between gap-4">
               <CustomInput
+                name="eventAddress"
                 label="Event address"
                 type="text"
                 id="eventAddress"
                 containerClassName="w-1/2"
                 placeholder="Enter address"
               />
+              <div className="w-1/2 relative">
+                <CustomInput
+                  name="eventCountry"
+                  label="Event country"
+                  type="text"
+                  id="eventCountry"
+                  containerClassName="w-full"
+                  placeholder="Enter country"
+                  onInput={onCountryChange}
+                />
+                <span
+                  id="countriesContainer"
+                  className="absolute z-10 text-basecolor mt-2 w-full"
+                ></span>
+              </div>
+            </div>
+            <div className="p-4 w-[100%] rounded-md border border-[#f3f3f3] sm:text-sm relative">
+              <Camera
+                size={20}
+                onClick={() => {
+                  eventPosterArr.length < 3 && selectImage(posterInputRef);
+                }}
+                role="button"
+              />
               <CustomInput
-                label="Event country"
-                type="text"
-                id="eventCountry"
-                containerClassName="w-1/2"
-                placeholder="Enter country"
+                name="eventPoster"
+                type="file"
+                label="Event poster"
+                labelClassName="label-style"
+                accept="image/*"
+                inputClassName="hidden"
+                multiple
+                id="eventPoster"
+                placeholder="Select image"
+                fileInputRef={posterInputRef}
+                onChange={(e) => {
+                  handleFileChange(e, setEventPosterArr, eventPosterArr);
+                  console.log("value", e.target.value);
+                }}
+                value={eventPosterArr.map((poster) => poster.url).join(", ")}
               />
             </div>
-
-            <CustomInput
-              label="Event poster"
-              type="file"
-              accept="image/*"
-              id="eventPoster"
-              placeholder="Select image"
-            />
             <span className="description-text">
               Image size should be 1080px by 1080px
             </span>
-            <div className="">
+            <div className="flex space-x-2 items-center">
+              {eventPosterArr.map((poster, index) => {
+                return (
+                  <div className="image relative w-32" key={index}>
+                    <span
+                      className="delete-btn"
+                      onClick={() =>
+                        deleteImage(index, setEventPosterArr, eventPosterArr)
+                      }
+                      role="button"
+                    >
+                      &times;
+                    </span>
+                    <img
+                      src={poster.url}
+                      alt={poster.name}
+                      className="rounded-sm"
+                      width={200}
+                      height={`auto`}
+                    />
+                  </div>
+                );
+              })}
+              <button onClick={() => console.log(eventPosterArr)}>Click</button>
+            </div>
+
+            <div className="p-4 w-[100%] rounded-md border border-[#f3f3f3] sm:text-sm relative">
+              <Camera
+                size={20}
+                onClick={() => {
+                  organisationLogoArr.length < 1 && selectImage(logoInputRef);
+                }}
+                role="button"
+              />
               <CustomInput
+                name="organisationLogo"
                 label="Organisation logo"
+                labelClassName="label-style"
                 type="file"
                 accept="image/*"
                 id="organisationLogo"
                 placeholder="Select image"
+                inputClassName="hidden"
+                onChange={(e) => {
+                  handleFileChange(
+                    e,
+                    setOrganisationLogoArr,
+                    organisationLogoArr
+                  );
+                }}
+                fileInputRef={logoInputRef}
+                value={organisationLogoArr.map((logo) => logo.url).join(", ")}
               />
             </div>
+
             <span className="description-text">
               Image size should be 1080px by 1080px
             </span>
+            <div className="flex space-x-2 items-center">
+              <button
+                className="border-2 border-red-500"
+                onClick={() =>
+                  console.log(organisationLogoArr.map((logo) => logo.url))
+                }
+              >
+                Click
+              </button>
+              {organisationLogoArr.map((logo, index) => {
+                return (
+                  <div className="image relative w-40" key={index}>
+                    <span
+                      className="delete-btn"
+                      onClick={() =>
+                        deleteImage(
+                          index,
+                          setOrganisationLogoArr,
+                          organisationLogoArr
+                        )
+                      }
+                      role="button"
+                    >
+                      &times;
+                    </span>
+                    <img
+                      src={logo.url}
+                      alt={logo.name}
+                      className="rounded-sm"
+                      width={200}
+                      height={`auto`}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
-          <div className="p-4 space-y-6">
+          <div className="px-4 space-y-6">
             <CustomTextBox
               label="Description"
               id="description"
@@ -275,49 +437,60 @@ export default function Event(this: any): JSX.Element {
               id="prerequisites"
               name="prerequisites"
             />
-            <CustomTextBox label="Benefit" id="benefit" name="benefit" />
+            <CustomTextBox label="Benefits" id="benefits" name="benefits" />
             <CustomSelect
               label="Pricing currency"
               placeholder="Please select currency"
+              name="pricingCurrency"
+              id="pricingCurrency"
             />
             <div className="border-2 border-[#f3f3f3] p-4 rounded-md space-y-5 pb-10">
               <h5>Pricing</h5>
               <div className="flex items-center gap-2 relative">
                 <CustomInput
+                  name="earlyBird"
                   label="Early bird"
                   id="earlyBird"
                   type="number"
                   containerClassName="w-1/2"
                   placeholder="Enter price"
                 />
-                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-2 rounded-sm z-10">
-                  {" "}
-                  Validity
-                </span>
+                <span className="span font-medium"> Validity</span>
                 <DatePicker
-                  sx={{
-                    width: "50%",
-                    color: "#717171",
-                    "& .MuiInputBase-input": {
-                      paddingLeft: "15px",
-                      height: "22px",
-                      fontSize: "12px",
-                      color: "black",
+                  open={isOpen1}
+                  onOpen={() => setIsOpen1(!isOpen1)}
+                  onClose={() => setIsOpen1(!isOpen1)}
+                  name="earlyBirdValidity"
+                  className="w-1/2"
+                  slotProps={{
+                    textField: {
+                      // required: true,
+                      placeholder: "Pick date",
+                      InputProps: {
+                        className: "flex flex-row-reverse",
+                        endAdornment: (
+                          <img
+                            src={"/date-time.svg"}
+                            alt="calendar-icon"
+                            width={25}
+                            height={25}
+                            className="cursor-pointer"
+                            onClick={() => setIsOpen1(!isOpen1)}
+                          />
+                        ),
+                      },
                     },
+                  }}
+                  sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
                         borderColor: "#f3f3f3",
-                        borderRadius: "8px",
                       },
                       "&:hover fieldset": {
                         borderColor: "#f3f3f3",
                       },
                       "&.Mui-focused fieldset": {
                         borderColor: "black",
-                        borderRadius: "5px",
-                      },
-                      "& .MuiFormControl-root": {
-                        padding: "0px",
                       },
                     },
                   }}
@@ -325,50 +498,49 @@ export default function Event(this: any): JSX.Element {
               </div>
               <div className="flex items-center  justify-between gap-2 relative">
                 <CustomInput
+                  name="standard"
                   label="Standard"
                   id="standard"
                   type="number"
                   containerClassName="w-1/2"
                   placeholder="Enter price"
                 />
-                {/* <CustomInput
-                          label="Validity"
-                          id="validity"
-                          type="date"
-                          containerClassName="w-1/2"
-                          placeholder="Pick date"
-                        /> */}
-                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-2 rounded-sm z-10">
-                  {" "}
-                  Validity
-                </span>
+                <span className="span font-medium"> Validity</span>
                 <DatePicker
-                  // value={this.state.value}
-                  // onChange={(newValue) => this.setState({ value: newValue })}
-                  sx={{
-                    width: "50%",
-
-                    color: "#717171",
-                    "& .MuiInputBase-input": {
-                      paddingLeft: "15px",
-                      height: "22px",
-                      fontSize: "12px",
-                      color: "black",
+                  open={isOpen2}
+                  onOpen={() => setIsOpen2(!isOpen2)}
+                  onClose={() => setIsOpen2(!isOpen2)}
+                  name="standardValidity"
+                  className="w-1/2"
+                  slotProps={{
+                    textField: {
+                      // required: true,
+                      placeholder: "Pick date",
+                      InputProps: {
+                        className: "flex flex-row-reverse",
+                        endAdornment: (
+                          <img
+                            src={"/date-time.svg"}
+                            alt="calendar-icon"
+                            width={25}
+                            height={25}
+                            className="cursor-pointer"
+                            onClick={() => setIsOpen2(!isOpen2)}
+                          />
+                        ),
+                      },
                     },
+                  }}
+                  sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
                         borderColor: "#f3f3f3",
-                        borderRadius: "5px",
                       },
                       "&:hover fieldset": {
                         borderColor: "#f3f3f3",
                       },
                       "&.Mui-focused fieldset": {
                         borderColor: "black",
-                        borderRadius: "8px",
-                      },
-                      "& .MuiFormControl-root": {
-                        padding: "0px",
                       },
                     },
                   }}
@@ -376,48 +548,49 @@ export default function Event(this: any): JSX.Element {
               </div>
               <div className="flex items-center justify-between gap-2 relative">
                 <CustomInput
+                  name="lateBird"
                   label="Late bird"
                   id="lateBird"
                   type="number"
                   containerClassName="w-1/2"
                   placeholder="Enter price"
                 />
-                {/* <CustomInput
-                          label="Validity"
-                          id="validity"
-                          type="date"
-                          containerClassName="w-1/2"
-                          placeholder="Pick date"
-                        /> */}
-                <span className="block text-[12px] bg-white text-gray-700 absolute right-3 -top-2 rounded-sm z-10">
-                  {" "}
-                  Validity
-                </span>
+                <span className="span font-medium"> Validity</span>
                 <DatePicker
-                  sx={{
-                    width: "50%",
-                    color: "#717171",
-                    "& .MuiInputBase-input": {
-                      paddingLeft: "15px",
-                      height: "22px",
-                      fontSize: "12px",
-                      color: "black",
+                  open={isOpen3}
+                  onOpen={() => setIsOpen3(!isOpen3)}
+                  onClose={() => setIsOpen3(!isOpen3)}
+                  name="lateBirdValidity"
+                  className="w-1/2"
+                  slotProps={{
+                    textField: {
+                      // required: true,
+                      placeholder: "Pick date",
+                      InputProps: {
+                        className: "flex flex-row-reverse",
+                        endAdornment: (
+                          <img
+                            src={"/date-time.svg"}
+                            alt="calendar-icon"
+                            width={25}
+                            height={25}
+                            className="cursor-pointer"
+                            onClick={() => setIsOpen3(!isOpen3)}
+                          />
+                        ),
+                      },
                     },
+                  }}
+                  sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
                         borderColor: "#f3f3f3",
-                        borderRadius: "5px",
                       },
                       "&:hover fieldset": {
                         borderColor: "#f3f3f3",
                       },
-
                       "&.Mui-focused fieldset": {
                         borderColor: "black",
-                        borderRadius: "8px",
-                      },
-                      "& .MuiFormControl-root": {
-                        padding: "0px",
                       },
                     },
                   }}
@@ -427,6 +600,38 @@ export default function Event(this: any): JSX.Element {
           </div>
         </div>
       </form>
-    </DataAndTimeAdapter>
+    </DateAndTimeAdapter>
   );
 }
+
+export const Button = ({
+  children,
+  form,
+  type,
+  text,
+  containerClassName,
+  spanClassName,
+  onClick,
+}: {
+  children?: React.ReactNode;
+  form?: string;
+  type: "submit" | "button" | "reset";
+  text: string;
+  containerClassName?: string;
+  spanClassName?: string;
+  onClick?: () => void;
+}) => {
+  return (
+    <>
+      <button
+        className={`${containerClassName} text-sm flex justify-center items-center py-[10px] px-[16px] rounded-[5px]`}
+        type={type}
+        id={form}
+        onClick={onClick}
+      >
+        <span className={spanClassName}>{text}</span>
+        {children}
+      </button>
+    </>
+  );
+};

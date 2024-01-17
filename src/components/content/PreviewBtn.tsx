@@ -8,7 +8,7 @@ export const PreviewBtn = () => {
   return (
     <>
       <button
-        className="w-[120px] flex justify-center items-center bg-purplebg text-white py-[10px] px-[16px] rounded-[5px]"
+        className="w-[120px] flex justify-center items-center bg-bluebg text-white py-[10px] px-[16px] rounded-[5px]"
         type="submit"
         form="form"
       >

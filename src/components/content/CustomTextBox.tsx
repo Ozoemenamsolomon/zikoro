@@ -1,4 +1,6 @@
 "use client";
+import { manrope } from "@/utils/fonts";
+
 export const CustomTextBox: React.FC<{
   label: string;
   id: string;
@@ -9,7 +11,7 @@ export const CustomTextBox: React.FC<{
     <div className="relative">
       <label
         htmlFor={id}
-        className="block text-[12px]  bg-white text-gray-700 absolute right-3 -top-2 rounded-sm"
+        className={`${manrope.className} font-medium block text-[12px]  bg-white text-gray-700 absolute right-3 -top-2 rounded-sm`}
       >
         {label}
       </label>

@@ -3,9 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Manrope } from "next/font/google";
+import { manrope } from "../utils/fonts";
 
-const manrope = Manrope({ weight: "500", subsets: ["cyrillic"] });
 const links = [
   {
     name: "Content",
@@ -54,9 +53,9 @@ const Topbar = () => {
           <Link
             href={href}
             key={index}
-            className={`p-2 ${manrope.className} ${
+            className={`p-2 font-medium  ${manrope.className} ${
               pathname.includes(href)
-                ? "text-purplebg font-medium border-b border-purplebg"
+                ? "text-bluebg font-medium border-b border-bluebg"
                 : "font-normal"
             }`}
           >

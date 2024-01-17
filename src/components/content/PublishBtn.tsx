@@ -7,7 +7,7 @@ export const PublishBtn = () => {
   return (
     <>
       <button
-        className="flex justify-center items-center text-purplebg border-[1px] border-purplebg py-[10px] px-[16px] rounded-[5px]"
+        className="flex justify-center items-center text-bluebg border-[1px] border-bluebg py-[10px] px-[16px] rounded-[5px]"
         type="submit"
         form="form"
       >

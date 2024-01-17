@@ -33,6 +33,7 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+    --bluebg: #001fcc;
   }
 
   .dark {
@@ -75,19 +76,126 @@
   }
 }
 
-/* remove default drop down arrow */
-select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+input::placeholder {
+  color: #d6d6d6;
 }
 
-select:required:invalid {
-  color: #c4c2c2;
+textarea::placeholder {
+  color: #d6d6d6;
 }
 
 .description-text {
   font-size: 10px;
   font-weight: 400;
   color: #717171;
+}
+
+.span {
+  display: block;
+  font-size: 12px;
+  background: white;
+  color: rgb(55 65 81);
+  position: absolute;
+  right: 12px;
+  top: -8px;
+  z-index: 10;
+  border-radius: 4px;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding-inline: 5px;
+  z-index: 10;
+  font-weight: 900;
+  font-size: 1.5rem;
+  color: #c4c2c2;
+  transition: 0.2s ease-in-out;
+}
+
+.delete-btn:hover {
+  color: red;
+  transform: scale(1.3);
+}
+
+.MuiInputBase-input {
+  padding-left: "15px";
+  color: "black";
+  font-size: 14px;
+  &::placeholder {
+    color: #8e8e8e;
+  }
+}
+.MuiInputBase-root {
+  height: 56px;
+  padding-left: 15px;
+}
+
+.MuiOutlinedInput-root {
+  border-radius: 8px;
+  & fieldset {
+    border-color: #f3f3f3;
+  }
+}
+
+/* label style for org logo and event poster */
+
+.label-style {
+  top: -3rem;
+  margin-top: 1px;
+  right: 0;
+  transform: translateX(3px);
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+#countriesUl {
+  background: white;
+  border: none;
+  max-height: 350px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: absolute;
+  padding: 5px;
+  z-index: 10;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+#countriesUl #countriesLi {
+  list-style: none;
+}
+
+#countriesUl #countriesLi {
+  border-bottom: 1px solid #f3f3f3;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 15px 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: 0.2s;
+  overflow: hidden;
+}
+
+#countriesUl #countriesLi:hover {
+  background: #f4f9fa;
+  color: black;
+}
+
+option {
+  font-size: 14px;
+  padding: 16px;
+  transition: 0.2s;
+  border-bottom: 1px solid #f3f3f3;
+}
+
+option:hover {
+  background: #f7f7f7;
 }

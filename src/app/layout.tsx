@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { Heebo } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
-
-const heebo = Heebo({ subsets: ["latin"] });
+import { heebo } from "../utils/fonts";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="bg-white ">
+    <html lang="en" className="bg-white" suppressHydrationWarning={true}>
       <body className={`${heebo.className} h-screen flex`}>
         <Sidebar></Sidebar>
         <div className="flex-1">

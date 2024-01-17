@@ -1,54 +1,60 @@
 "use client";
-import React from "react";
-
-import { CustomInput } from "@/components/CustomInput";
-
+import { CustomInput } from "@/components/content/CustomInput";
+import { CustomSelect } from "@/components/content/CustomSelect";
+import { addContact } from "@/app/server-actions/addContact";
 function Contact() {
   return (
     <>
       <div className="p-4">
         <h6 className="font-medium">Contact information</h6>
       </div>
-      <form className="w-[100%]" action="" method="post" id="form">
-        <div className="grid grid-cols-2">
-          <div className="p-4 space-y-10">
+      <form className="w-[100%]" action={addContact} id="form">
+        <div className="grid grid-cols-2 mb-10 gap-6 px-4">
+          <div className="py-4 space-y-10">
             <CustomInput
-              label="Organisation name"
-              id="eventTitle"
-              placeholder="Organisation name"
+              name="organizationName"
+              label="Organization name"
+              id="organizationName"
+              placeholder="Organization name"
               type="text"
+            />
+            <CustomSelect
+              name="country"
+              label="Country"
+              id="country"
+              placeholder="Select country"
             />
 
             <CustomInput
-              id="country"
-              label="Country"
-              placeholder="Select country"
-            />
-            <CustomInput
+              name="phoneNumber"
               label="Phone number"
-              id="telephone"
+              id="phoneNumber"
               type="tel"
               placeholder="+234"
             />
+
             <CustomInput
+              name="whatsappNumber"
               label="Whatsapp number"
-              id="telephone"
+              id="whatsappNumber"
               type="tel"
               placeholder="Enter whatsapp number"
             />
             <CustomInput
+              name="email"
               label="Email"
               id="email"
               placeholder="Enter email address"
               type="text"
             />
           </div>
-          <div className="p-4 space-y-10 mb-5 mt-5 mr-5 border rounded-md ">
+          <div className="p-4 mt-[1rem] space-y-10 border rounded-md ">
             <h6 className="text-bold">Social media profile</h6>
             <div className="relative">
               <CustomInput
+                name="twitterUrl"
                 label="Twitter"
-                id="email"
+                id="twitterUrl"
                 placeholder="https://www.x.com/"
                 type="text"
               />
@@ -59,8 +65,9 @@ function Contact() {
             </div>
             <div className="relative">
               <CustomInput
+                name="linkedinUrl"
                 label="LinkedIn"
-                id="email"
+                id="linkedinUrl"
                 placeholder="https://www.linkedin.com/"
                 type="text"
               />
@@ -71,8 +78,9 @@ function Contact() {
             </div>
             <div className="relative">
               <CustomInput
+                name="instagramUrl"
                 label="Instagram"
-                id="email"
+                id="instagramUrl"
                 placeholder="https://www.instagram.com/"
                 type="text"
               />
@@ -83,8 +91,9 @@ function Contact() {
             </div>
             <div className="relative">
               <CustomInput
+                name="facebookUrl"
                 label="Facebook"
-                id="email"
+                id="facebookUrl"
                 placeholder="https://www.facebook.com/"
                 type="text"
               />

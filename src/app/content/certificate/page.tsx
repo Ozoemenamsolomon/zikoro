@@ -1,8 +1,6 @@
 "use client";
-
-import React from "react";
-import { CustomInput } from "@/components/CustomInput";
-import { CustomSelect } from "@/components/CustomSelect";
+import { CustomInput } from "@/components/content/CustomInput";
+import { CustomSelect } from "@/components/content/CustomSelect";
 import { Switch } from "@/components/ui/switch";
 import { Check } from "styled-icons/material";
 import { AddToQueue } from "@styled-icons/boxicons-regular/AddToQueue";
@@ -10,11 +8,11 @@ import { Trash } from "@styled-icons/boxicons-regular/Trash";
 import { Cog } from "@styled-icons/boxicons-regular/Cog";
 import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
 import { Certificate as CertificateIcon } from "@styled-icons/fluentui-system-regular/Certificate";
-import { CustomTextBox } from "@/components/CustomTextBox";
+import { CustomTextBox } from "@/components/content/CustomTextBox";
 import { useState } from "react";
-import { Manrope } from "next/font/google";
 import { PlusCircle } from "lucide-react";
 import { MinusCircle } from "lucide-react";
+import { manrope } from "@/utils/fonts";
 
 import {
   Dialog,
@@ -26,12 +24,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-const manrope = Manrope({ subsets: ["latin"], weight: "600" });
 const certifcates = [
   {
     img: "/certificates/cert0.jpg",
     label: "/certificates/zikoro_small.svg",
-    className: 230,
   },
   {
     img: "/certificates/cert2.svg",
@@ -58,7 +54,7 @@ export default function Certificate() {
         <div className="flex justify-between items-center space-x-6">
           <button className="text-center">
             <span className="pr-[2px]">
-              Saved <Check size={15} className="text-purplebg" />
+              Saved <Check size={15} className="text-bluebg" />
             </span>
           </button>
           <Trash size={20} className="text-red-500" />
@@ -68,18 +64,19 @@ export default function Certificate() {
       </div>
       <div>
         <div className="flex space-x-10 items-center">
-          <CustomSelect
+          <CustomInput
             label="Certificate name"
-            // id="eventTitle"
+            id="certificateName"
+            name="certificateName"
             placeholder="Please select"
-            classname="w-1/2"
+            containerClassName="w-1/2"
           />
           <CustomSelect
             label="Certificate heading"
-            // id="eventTitle"
+            name="certificateHeading"
+            id="certificateHeading"
             placeholder="Please select training heading"
-            // type="text"
-            classname="w-1/2"
+            containerClassName="w-1/2"
           />
         </div>
 
@@ -89,12 +86,13 @@ export default function Certificate() {
         <div className="flex justify-center pl-[12rem] items-center space-x-2">
           <Switch
             onClick={() => setIsCPD(!isCPD)}
-            className={`data-[state=checked]:bg-purplebg w-[32px] h-[22px]`}
+            className={`data-[state=checked]:bg-bluebg w-[32px] h-[22px]`}
           />
           <span className="text-[16px]">CPD required</span>
         </div>
         <div className="flex mt-5 space-x-10 items-center">
           <CustomInput
+            name="trainingduration"
             label="Training duration(hours)"
             id="trainingduration"
             placeholder="0"
@@ -103,19 +101,20 @@ export default function Certificate() {
           />
 
           <CustomInput
+            name="cpdPoint"
             label="CPD Points"
             id="cpdPoint"
             placeholder="0"
             type="number"
             containerClassName="w-1/2"
-            disabled={!isCPD && true}
+            disabled={!isCPD}
           />
         </div>
       </div>
       <div className="flex mt-6">
         <div className="space-y-4 w-1/2 mr-8 text-[16px]">
           <p className="text-[#717171]">Logo position</p>
-          <button className="border-purplebg border mr-4 bg-[#EBEBEB] text-purplebg rounded-[4px] py-[12px] px-[16px]">
+          <button className="border-bluebg border mr-4 bg-[#EBEBEB] text-bluebg rounded-[4px] py-[12px] px-[16px]">
             Left
           </button>
           <button className="border bg-white border-[#717171] rounded-[4px] py-[12px] px-[16px] mr-4">
@@ -137,21 +136,25 @@ export default function Certificate() {
       <div className="flex items-center space-x-2">
         <Switch
           onClick={() => setIsZikoroLogo(!isZikoroLogo)}
-          className={`data-[state=checked]:bg-purplebg w-[32px] h-[22px]`}
+          className={`data-[state=checked]:bg-bluebg w-[32px] h-[22px]`}
         />
         <span className="text-[16px]">Include Zikoro Logo</span>
       </div>
       <div className="mt-[3rem]">
         <h3 className="text-[18px] font-[500]">Certificate Template</h3>
-        <div className="flex justify-between mt-2">
+        <div className="flex justify-between items-center mt-2">
           {certifcates.map((item, index) => (
             <div key={index} className="relative">
               <img
                 src={item.img}
-                width={`${item.className}` || 200}
-                height={200}
+                width={200}
+                height={`auto`}
                 alt="certificate"
-                className={`${item.label ? `border border-purplebg p-0` : ""}`}
+                className={`${
+                  item.label
+                    ? `border border-bluebg p-0 h-[284px]`
+                    : "h-[300px]"
+                }`}
               />
               {item.tag ? (
                 <span className="absolute top-20 translate-y-12 left-[30%] z-10 bg-black p-1 text-[12px] text-white rounded-md">
@@ -172,7 +175,7 @@ export default function Certificate() {
           ))}
         </div>
         <div className="flex mt-8 space-x-4 items-center">
-          <button className="border-2 border-purplebg w-[6rem] px-[12px] py-[8px] rounded-[5px] text-purplebg">
+          <button className="border-2 border-bluebg w-[6rem] px-[12px] py-[8px] rounded-[5px] text-bluebg">
             Save
           </button>
         </div>
@@ -186,7 +189,7 @@ const DialogDemo = () => {
 
   const initialValue = 0;
 
-  const [disabled, setDisabled] = useState(initialValue >= 100 ? true : false);
+  const [disabled, setDisabled] = useState(!!(initialValue >= 100));
 
   const incrementer = (): void => {
     const newValue: number = initialValue + 20;
@@ -221,14 +224,14 @@ const DialogDemo = () => {
             Attendance
           </span>
           <div
-            className={`flex items-center text-[14px] text-[#717171] ${manrope.className}`}
+            className={`font-semibold flex items-center text-[14px] text-[#717171] ${manrope.className}`}
           >
             <div className="flex items-center">
               <input
                 type="radio"
-                id="html"
+                id="attendance"
                 name="attendance"
-                value="Event"
+                value="attendance"
                 className="w-[16px] h-[16px] mx-[8px]"
               />
               <label htmlFor="html">Event</label>

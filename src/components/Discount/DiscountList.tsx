@@ -1,7 +1,5 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
-// import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
-// import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import React from "react";
 
@@ -35,7 +33,7 @@ export const DiscountList: React.FC<{
       <li>{quantity}</li>
       <li>
         <Switch
-          className={`data-[state=checked]:bg-purplebg w-[32px] h-[22px]`}
+          className={`data-[state=checked]:bg-bluebg w-[32px] h-[22px]`}
         />
       </li>
     </ul>

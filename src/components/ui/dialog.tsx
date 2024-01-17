@@ -44,12 +44,12 @@ const DialogContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+      <DialogPrimitive.Close className="absolute right-10 top-6 rounded-sm opacity-70 ring-offset-background transition-opacity focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
         <X
           className="mt-2 text-black"
           strokeWidth="3px"
           color="black"
-          size={15}
+          size={18}
         />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
