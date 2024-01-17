@@ -225,8 +225,11 @@ export const useInviteAttendees = () => {
         payload,
       });
 
-      if (status !== 200) throw data.data.error;
+      if (status !== 201) throw data.data.error;
 
+      toast({
+        description: "Invitees sent successfuly",
+      });
       console.log(data);
       return data;
     } catch (error) {
