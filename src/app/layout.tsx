@@ -6,11 +6,11 @@ import { Toaster } from "react-hot-toast";
 import { TOASTER_PROPS } from "@/lib";
 import { metaGenerator } from "./meta";
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const generateMetadata = async (): Promise<Metadata> =>
-	await metaGenerator();
-
+  await metaGenerator();
 
 export default function RootLayout({
   children,
@@ -21,8 +21,10 @@ export default function RootLayout({
     <html lang="en" className=" text-mobile sm:text-desktop">
       <body className={`${inter.className}`}>
         <NetworkWrapper>
-			<Toaster {...TOASTER_PROPS}/>
-			{children}</NetworkWrapper>
+          <Toaster {...TOASTER_PROPS} />
+          {children}
+        
+        </NetworkWrapper>
       </body>
     </html>
   );

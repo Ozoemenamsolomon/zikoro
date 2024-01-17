@@ -1,19 +1,32 @@
 "use client";
 
 import { cn } from "@/lib";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { NavLinks } from ".";
+import { HeaderWidget } from "./home";
+import { useSearchParams } from "next/navigation";
 
 export function SideBarLayout({
   children,
   className,
+  isHomePage
 }: {
   children: React.ReactNode;
   className?: string;
+  isHomePage?: boolean
 }) {
   const [isNav, setNav] = useState(false);
+  const param = useSearchParams()
+  const [queryParam, setQueryParam] = useState<string | null>(null)
+  const query = param.get("organization")
 
+  useEffect(() => {
+    if (param) {
+      const query = param.get("organization")
+      setQueryParam(query)
+    }
+  }, [])
   function onClose() {
     setNav((nav) => !nav);
   }
@@ -32,15 +45,16 @@ export function SideBarLayout({
           className
         )}
       >
+        {isHomePage && <HeaderWidget currentQuery={query} />}
         {children}
       </div>
-      <SideNavs isNav={isNav} close={onClose} />
+      <SideNavs isNav={isNav} close={onClose} query={queryParam} />
     </>
   );
 }
 
-function SideNavs({ close, isNav }: { close: () => void; isNav: boolean }) {
-  
+function SideNavs({ close, isNav, query }: { close: () => void; isNav: boolean, query: string | null }) {
+
 
   return (
     <div
@@ -50,11 +64,10 @@ function SideNavs({ close, isNav }: { close: () => void; isNav: boolean }) {
         e.stopPropagation();
         close();
       }}
-      className={`fixed z-[70] inset-y-0 left-0 h-full modal swipeInLeft ${
-        isNav
+      className={`fixed z-[70] inset-y-0 left-0 h-full modal swipeInLeft ${isNav
           ? "w-full bg-white/50  min-[1024px]:w-[250px]"
           : "max-[1024px]:hidden w-[250px] "
-      }`}
+        }`}
     >
       <div
         aria-roledescription="container"
@@ -70,10 +83,10 @@ function SideNavs({ close, isNav }: { close: () => void; isNav: boolean }) {
             alt="logo"
             width={300}
             height={200}
-            className="w-[150px] h-[50px]"
+            className="w-[150px] h-[40px]"
           />
           {/**nav links */}
-          <NavLinks />
+          {<NavLinks query={query} />}
         </div>
       </div>
     </div>
