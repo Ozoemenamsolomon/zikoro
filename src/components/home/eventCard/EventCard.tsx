@@ -7,7 +7,7 @@ import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
 import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { Users } from "@styled-icons/fa-solid/Users";
-import { Dot } from "@styled-icons/bootstrap/Dot"
+import { Dot } from "@styled-icons/bootstrap/Dot";
 import { useState, useMemo } from "react";
 import { AboutWidget, EventLocationType } from "@/components/composables";
 import { Event } from "@/types";
@@ -15,13 +15,18 @@ import { DeleteEventModal } from "..";
 import { formatDate, formatTime, dateFormatting } from "@/utils";
 import { useDuplicateEvent } from "@/hooks";
 
-export function EventCard({ event, refetch }: { refetch: () => Promise<any>, event: Event }) {
+export function EventCard({
+  event,
+  refetch,
+}: {
+  refetch: () => Promise<any>;
+  event: Event;
+}) {
   const [isAction, setAction] = useState(false);
 
   function onClose() {
     setAction((prev) => !prev);
   }
-
 
   const startDate = useMemo(
     () => formatDate(event?.startDateTime ?? "0"),
@@ -46,10 +51,9 @@ export function EventCard({ event, refetch }: { refetch: () => Promise<any>, eve
     [event?.createdAt ?? "0"]
   );
 
-
   const removeComma = useMemo(() => {
     return event.eventCity === null || event.eventCountry === null;
-  }, [event.eventCity, event.eventCountry])
+  }, [event.eventCity, event.eventCountry]);
   return (
     <div className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4 shadow-md w-full">
       <div className="w-full flex items-center justify-between">
@@ -60,7 +64,9 @@ export function EventCard({ event, refetch }: { refetch: () => Promise<any>, eve
             className="relative px-0 h-10 bg-transparent"
           >
             <ThreeDotsVertical size={20} />
-            {isAction && <ActionModal refetch={refetch} close={onClose} id={event?.id} />}
+            {isAction && (
+              <ActionModal refetch={refetch} close={onClose} id={event?.id} />
+            )}
           </Button>
         </div>
       </div>
@@ -71,24 +77,39 @@ export function EventCard({ event, refetch }: { refetch: () => Promise<any>, eve
           text={`${startDate} – ${endDate}`}
         />
         <AboutWidget Icon={TimeFive} text={`${startTime} - ${endTime}`} />
-        <AboutWidget Icon={LocationDot} text={<p className="flex items-center ">
-          {`${event?.eventCity ?? ""}`}{!removeComma && <span>,</span>}
-          <span className="ml-1">{`${event?.eventCountry ?? ""}`}</span></p>} />
+        <AboutWidget
+          Icon={LocationDot}
+          text={
+            <p className="flex items-center ">
+              {`${event?.eventCity ?? ""}`}
+              {!removeComma && <span>,</span>}
+              <span className="ml-1">{`${event?.eventCountry ?? ""}`}</span>
+            </p>
+          }
+        />
         <AboutWidget
           Icon={Users}
-          text={<p className="flex items-center ">
-            <span>{`${event.expectedParticipants ?? 0} participants`}</span>
+          text={
+            <p className="flex items-center ">
+              <span>{`${event.expectedParticipants ?? 0} participants`}</span>
 
-            {event?.registered !== null && <Dot size={22} />}
-            {event?.registered !== null && <span className="text-xs font-medium  text-zikoro">{`${event?.registered.toLocaleString() ?? ""} registered`}</span>}
-          </p>}
+              {event?.registered !== null && <Dot size={22} />}
+              {event?.registered !== null && (
+                <span className="text-xs font-medium  text-zikoro">{`${
+                  event?.registered.toLocaleString() ?? ""
+                } registered`}</span>
+              )}
+            </p>
+          }
         />
       </div>
 
       <div className="flex items-center justify-between w-full">
-        {Array.isArray(event?.pricing) && <p className="font-medium">{`₦${(
-          event?.pricing[1]?.Standard || 0
-        ).toLocaleString()}`}</p>}
+        {Array.isArray(event?.pricing) && (
+          <p className="font-medium">{`₦${(
+            event?.pricing[1]?.standard || 0
+          ).toLocaleString()}`}</p>
+        )}
         <div className="flex items-center gap-x-2">
           <EventLocationType locationType={event.locationType} />
           <div className="flex text-xs text-gray-500 flex-col items-start justify-start">
@@ -97,11 +118,19 @@ export function EventCard({ event, refetch }: { refetch: () => Promise<any>, eve
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 }
 
-function ActionModal({ close, id, refetch }: { refetch: () => Promise<any>, close: () => void; id: number }) {
+function ActionModal({
+  close,
+  id,
+  refetch,
+}: {
+  refetch: () => Promise<any>;
+  close: () => void;
+  id: number;
+}) {
   const { duplicateEvent, loading } = useDuplicateEvent();
   const [isDeleteModal, openDeleteModal] = useState(false);
 
@@ -111,7 +140,7 @@ function ActionModal({ close, id, refetch }: { refetch: () => Promise<any>, clos
 
   async function duplicate() {
     await duplicateEvent(id);
-    refetch()
+    refetch();
     close();
   }
   return (
@@ -128,7 +157,6 @@ function ActionModal({ close, id, refetch }: { refetch: () => Promise<any>, clos
           <Button
             onClick={() => {
               onClose();
-
             }}
             className="items-center h-10 w-full text-red-600 hover:bg-gray-100 justify-start text-xs"
           >
@@ -146,7 +174,9 @@ function ActionModal({ close, id, refetch }: { refetch: () => Promise<any>, clos
         </div>
       </div>
 
-      {isDeleteModal && <DeleteEventModal refetch={refetch} close={onClose} id={id} />}
+      {isDeleteModal && (
+        <DeleteEventModal refetch={refetch} close={onClose} id={id} />
+      )}
     </>
   );
 }

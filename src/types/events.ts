@@ -27,9 +27,9 @@ export enum EventDetailTab {
 }
 
 interface PricingType {
-  "Early Bird"?: number;
-  "Standard"?: number;
-  "Late Bird"?: number;
+  earlyBird?: number;
+  standard?: number;
+  lateBird?: number;
   Validity: string;
 }
 

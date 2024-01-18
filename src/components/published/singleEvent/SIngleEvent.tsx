@@ -107,21 +107,21 @@ export function SingleEvent({
   const pricingArray = useMemo(() => {
     if (Array.isArray(event?.pricing)) {
       return event?.pricing?.map((value) => {
-        if (value["Early Bird"]) {
+        if (value?.earlyBird) {
           return {
-            price: value["Early Bird"],
+            price: value?.earlyBird,
             name: "Early Bird",
             date: value?.Validity,
           };
-        } else if (value?.Standard) {
+        } else if (value?.standard) {
           return {
-            price: value.Standard,
+            price: value?.standard,
             name: "Standard",
             date: value?.Validity,
           };
         } else {
           return {
-            price: value["Late Bird"],
+            price: value?.lateBird,
             name: "Late Bird",
             date: value?.Validity,
           };
