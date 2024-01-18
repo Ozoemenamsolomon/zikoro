@@ -119,7 +119,7 @@ export function BookEvent({
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="w-[95%] sm:w-[65%] lg:w-[90%] m-auto  shadow-lg overflow-hidden xl:w-[70%] overflow-y-auto lg:overflow-hidden bg-white grid absolute inset-0  grid-cols-1 gap-6 lg:grid-cols-2 items-start h-[85%]  lg:h-[41rem] rounded-xl sm:rounded-2xl "
+          className="w-[95%] sm:w-[65%] lg:w-[90%] m-auto  shadow-lg overflow-hidden xl:w-[70%] overflow-y-auto lg:overflow-hidden bg-white grid absolute inset-0  grid-cols-1 gap-2 lg:grid-cols-2 items-start h-[85%]  lg:h-[41rem] rounded-xl sm:rounded-2xl "
         >
           <div className="absolute right-3 z-20 top-3 ">
             <Button
@@ -128,6 +128,46 @@ export function BookEvent({
             >
               <CloseOutline size={28} />
             </Button>
+          </div>
+          <div className="w-full flex flex-col gap-y-3 p-4 sm:p-6 h-full px-3 bg-gray-100">
+            <h2 className="text-lg sm:text-xl font-semibold">
+              {`${eventTitle}`}
+            </h2>
+            <h2 className="text-sm sm:text-base  text-gray-500">
+              {`${startDate} - ${endDate}`}
+            </h2>
+
+            <Image
+              className="w-full h-64 mt-3 rounded-lg object-cover"
+              src="/images/rect.png"
+              alt="eventimage"
+              width={700}
+              height={700}
+            />
+
+            <div className="w-full border mt-3 border-gray-300 rounded-lg py-4 px-3">
+              <h2 className="text-base sm:text-lg mb-3 font-semibold ">
+                Order Summary
+              </h2>
+
+              <div className=" flex items-center  justify-between w-full">
+                <p>{`${fields.length}x People Attending:`}</p>
+                <p> {`₦${computedPrice?.toLocaleString()}`}</p>
+              </div>
+              <div className=" flex items-center justify-between w-full">
+                <p>{`${fields.length}x Discount:`}</p>
+                <p> {`₦${discount}`}</p>
+              </div>
+              <div className=" flex items-center justify-between w-full">
+                <p>{`${fields.length}x Processing fee:`}</p>
+                <p> {`₦${processingFee?.toLocaleString()}`}</p>
+              </div>
+
+              <div className="border-t border-gray-300 font-semibold py-2 mt-3 w-full flex items-center justify-between">
+                <p className="">Total</p>
+                {computedPrice && <p>{` ₦${total?.toLocaleString()}`}</p>}
+              </div>
+            </div>
           </div>
           <div className="w-full flex flex-col gap-y-4 p-4 sm:p-6">
             <div className="w-full flex items-center justify-center py-3 border-b">
@@ -275,7 +315,7 @@ export function BookEvent({
                   <div className="w-full flex flex-col items-start justify-start gap-y-2">
                     <p className="mb-4">How do you hear about us?</p>
 
-                    {["instagram", "facebook", "x", "others"].map((value) => (
+                    {["instagram", "facebook", "x","linkedIn", "others"].map((value) => (
                       <FormField
                         control={form.control}
                         name="aboutUs"
@@ -325,46 +365,7 @@ export function BookEvent({
             </div>
           </div>
 
-          <div className="w-full flex flex-col gap-y-3 p-4 sm:p-6 h-full px-3 bg-gray-100">
-            <h2 className="text-lg sm:text-xl font-semibold">
-              {`${eventTitle}`}
-            </h2>
-            <h2 className="text-sm sm:text-base  text-gray-500">
-              {`${startDate} - ${endDate}`}
-            </h2>
-
-            <Image
-              className="w-full h-64 mt-3 rounded-lg object-cover"
-              src="/images/rect.png"
-              alt="eventimage"
-              width={700}
-              height={700}
-            />
-
-            <div className="w-full border mt-3 border-gray-300 rounded-lg py-4 px-3">
-              <h2 className="text-base sm:text-lg mb-3 font-semibold ">
-                Order Summary
-              </h2>
-
-              <div className=" flex items-center  justify-between w-full">
-                <p>{`${fields.length}x People Attending:`}</p>
-                <p> {`₦${computedPrice?.toLocaleString()}`}</p>
-              </div>
-              <div className=" flex items-center justify-between w-full">
-                <p>{`${fields.length}x Discount:`}</p>
-                <p> {`₦${discount}`}</p>
-              </div>
-              <div className=" flex items-center justify-between w-full">
-                <p>{`${fields.length}x Processing fee:`}</p>
-                <p> {`₦${processingFee?.toLocaleString()}`}</p>
-              </div>
-
-              <div className="border-t border-gray-300 font-semibold py-2 mt-3 w-full flex items-center justify-between">
-                <p className="">Total</p>
-                {computedPrice && <p>{` ₦${total?.toLocaleString()}`}</p>}
-              </div>
-            </div>
-          </div>
+      
         </div>
       </div>
       {isPaymentModal && (

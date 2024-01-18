@@ -23,7 +23,7 @@ export const attendeeValidationSchema = z.array(
 
 export const eventBookingValidationSchema = z.object({
   attendeeApplication: attendeeValidationSchema,
-  aboutUs: z.enum(["instagram", "facebook", "x", "others"]),
+  aboutUs: z.enum(["instagram", "facebook", "x", "linkedIn", "others"]),
   others: z
     .string()
     .refine((value) => value !== undefined && value.trim() !== "", {

@@ -107,23 +107,23 @@ export function SingleEvent({
   const pricingArray = useMemo(() => {
     if (Array.isArray(event?.pricing)) {
       return event?.pricing?.map((value) => {
-        if (value["Early Bird"]) {
+        if (value?.earlyBird) {
           return {
-            price: value["Early Bird"],
+            price: value?.earlyBird,
             name: "Early Bird",
-            date: value?.Validity,
+            date: value?.validity,
           };
-        } else if (value?.Standard) {
+        } else if (value?.standard) {
           return {
-            price: value.Standard,
+            price: value?.standard,
             name: "Standard",
-            date: value?.Validity,
+            date: value?.validity,
           };
         } else {
           return {
-            price: value["Late Bird"],
+            price: value?.lateBird,
             name: "Late Bird",
-            date: value?.Validity,
+            date: value?.validity,
           };
         }
       });
@@ -155,7 +155,7 @@ export function SingleEvent({
       >
         <div
           className={cn(
-            "w-full flex flex-col justify-start items-start gap-y-4 bg-white rounded-2xl  shadow h-fit p-4 sm:p-6",
+            "w-full flex flex-col justify-start items-start gap-y-4 bg-white rounded-2xl  shadow h-fit py-4 px-4 sm:px-10 sm:py-6",
             isExpired && "relative",
             className
           )}
@@ -167,8 +167,8 @@ export function SingleEvent({
           {isExpired && (
             <div className="w-full h-full inset-0 absolute z-10 bg-white/50"></div>
           )}
-          <div className="w-full grid grid-cols-1 gap-6 lg:grid-cols-2 items-start">
-            <div className="w-full flex flex-col gap-y-4 items-start justify-start">
+          <div className="w-full grid grid-cols-1 lg:grid-cols-7 items-start">
+            <div className="w-full lg:col-span-4 flex flex-col gap-y-4 items-start justify-start">
               <p className="text-base sm:text-xl font-medium mb-4 ">
                 {event?.eventTitle}
               </p>
@@ -248,7 +248,7 @@ export function SingleEvent({
               </div>
             </div>
 
-            <div className="w-full flex flex-col items-start justify-start gap-y-4">
+            <div className="w-full flex lg:col-span-3 flex-col items-start justify-start gap-y-4">
               <div className="flex items-center gap-x-2">
                 <AboutWidget
                   Icon={Users}
@@ -258,7 +258,7 @@ export function SingleEvent({
                   12 slots left
                 </p>
               </div>
-              <div className="grid grid-cols-3 items-center w-full gap-3">
+              <div className="grid grid-cols-3 gap-1 items-center w-full">
                 {pricingArray?.map(({ name, price, date }) => (
                   <Button
                     onClick={(e) => {
@@ -269,7 +269,9 @@ export function SingleEvent({
                     disabled={isDateGreaterThanToday(date)}
                     className={cn(
                       "flex flex-col group relative rounded-lg items-start justify-start  border p-2 h-full w-full",
-                      isDateGreaterThanToday(date) ? "" : "hover:border-zikoro",
+                      isDateGreaterThanToday(date)
+                        ? ""
+                        : "hover:border-zikoro border-black",
 
                       activeSelectedPrice(price) && "border-zikoro"
                     )}
@@ -294,9 +296,20 @@ export function SingleEvent({
                         </div>
                       )}
                     </div>
-                    <div className="text-gray-500 text-[10px] flex flex-col justify-start rounded-md items-start">
+                    <div
+                      className={cn(
+                        " text-[10px] flex flex-col justify-start rounded-md items-start",
+                        isDateGreaterThanToday(date)
+                          ? "text-gray-500"
+                          : "text-black"
+                      )}
+                    >
                       <p>{name}</p>
-                      <p>{`Valid till ${date}`}</p>
+                      {date ? (
+                        <p>{`Valid till ${date}`}</p>
+                      ) : (
+                        <p className="w-1 h-1"></p>
+                      )}
                     </div>
                   </Button>
                 ))}
