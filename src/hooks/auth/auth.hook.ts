@@ -6,6 +6,33 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
+import Cookies from 'js-cookie';
+
+
+export const saveCookie = (name: string, value: any) => {
+  if (typeof value !== 'string') {
+    const newVale = JSON.stringify(value);
+    Cookies.set(name, newVale);
+  } else {
+    Cookies.set(name, value);
+  }
+};
+
+export const getCookie = (name: string) => {
+  let value;
+  const jsonString = Cookies.get(name);
+
+  try {
+    if (typeof jsonString === 'string') {
+      const jsonObject = JSON.parse(jsonString);
+      value = jsonObject;
+    }
+  } catch (error) {
+    value = jsonString;
+  }
+
+  return value;
+};
 
 export function useRegister() {
   const [loading, setLoading] = useState(false);
@@ -74,6 +101,7 @@ export function useLogin() {
       }
 
       if (data) {
+        saveCookie("user", data)
         toast.success("Sign In Successful");
         router.push("/");
       }

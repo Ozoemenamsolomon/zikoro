@@ -301,9 +301,11 @@ export function useBookingEvent() {
   const [loading, setLoading] = useState(false);
 
   async function registerAttendees(
+    allowPayment: (bool:boolean) => void,
     values: z.infer<typeof eventBookingValidationSchema>,
     eventId?: number,
-    organization?: string | null
+    organization?: string | null,
+    
   ) {
     const { others, attendeeApplication } = values;
 
@@ -347,11 +349,13 @@ export function useBookingEvent() {
 
         if (error) {
           toast.error(error.message);
+          allowPayment(false)
           return;
         }
 
         if (status === 201 || status === 200) {
           setLoading(false);
+          allowPayment(true)
           toast.success("Attendees Registration successful");
         }
       }
@@ -363,5 +367,50 @@ export function useBookingEvent() {
   return {
     registerAttendees,
     loading,
+  };
+}
+
+export function useTransactionDetail() {
+  const [loading, setLoading] = useState(false);
+  async function sendTransactionDetail(toggleSuccessModal:(bool:boolean) => void,values: any) {
+
+    setLoading(true)
+    try {
+      const { data, error: err } = await supabase.auth.getUser();
+      if (err) {
+        toast.error(err.message);
+        setLoading(false);
+        return;
+      }
+      if (data?.user) {
+        const payload = {
+          ...values,
+          userEmail: data?.user?.email,
+          userId: data?.user?.id,
+        };
+
+        const { error, status } = await supabase
+          .from("eventTransactions")
+          .upsert([{ ...payload }]);
+
+        if (error) {
+          toast.error(error.message);
+          return;
+        }
+
+        if (status === 201 || status === 200) {
+          setLoading(false);
+          toggleSuccessModal(true)
+          // toast.success("Al");
+        }
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  }
+
+  return {
+    sendTransactionDetail,
+    loading
   };
 }

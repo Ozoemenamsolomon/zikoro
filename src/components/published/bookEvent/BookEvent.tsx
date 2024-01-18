@@ -27,6 +27,7 @@ export function BookEvent({
   startDate,
   priceCategory,
   eventTitle,
+  eventLocation,
 }: {
   eventId?: number;
   eventDate?: string;
@@ -37,8 +38,10 @@ export function BookEvent({
   organization?: string | null;
   price?: number;
   close: () => void;
+  eventLocation?: string;
 }) {
   const [attendees, setAttendees] = useState<any[]>([]);
+  const [isPaymentModal, setOpenPaymentModal] = useState(false);
   const form = useForm<z.infer<typeof eventBookingValidationSchema>>({
     resolver: zodResolver(eventBookingValidationSchema),
     defaultValues: {
@@ -73,6 +76,9 @@ export function BookEvent({
     });
   }
 
+  function allowPayment(bool: boolean) {
+    setOpenPaymentModal(bool);
+  }
   // dummy prices
   const processingFee = useMemo(() => {
     return 2000 * fields?.length;
@@ -99,7 +105,7 @@ export function BookEvent({
       return; /// stop submission
     }
     setAttendees(values.attendeeApplication);
-    await registerAttendees(values, eventId, organization);
+    await registerAttendees(allowPayment, values, eventId, organization);
   }
   return (
     <>
@@ -304,10 +310,13 @@ export function BookEvent({
                   )}
                   <Button
                     type="submit"
-                    className="h-12 px-8 gap-x-2 w-28 bg-zikoro hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium"
+                    className="h-12 w-[130px] px-8 gap-x-2 bg-zikoro hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium"
                   >
                     {form.formState.isSubmitting && (
-                      <LoaderAlt className="animate-spin" />
+                      <LoaderAlt
+                        className="animate-spin text-white"
+                        size={22}
+                      />
                     )}
                     <span>Continue</span>
                   </Button>
@@ -358,14 +367,18 @@ export function BookEvent({
           </div>
         </div>
       </div>
-      {form.formState.isSubmitSuccessful && (
+      {isPaymentModal && (
         <Payment
           eventDate={eventDate}
+          allowPayment={allowPayment}
           priceCategory={priceCategory}
           eventTitle={eventTitle}
+          startDate={startDate}
+          endDate={endDate}
           attendeesDetails={attendees}
           eventId={eventId}
           count={fields?.length}
+          eventLocation={eventLocation}
           discount={discount}
           total={total}
           eventPrice={price}

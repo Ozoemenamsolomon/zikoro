@@ -65,3 +65,8 @@ trainingDuration: string
 whatsappNumber: string
 registered: string
 }
+
+export interface PaymentConfigProps {
+  email: string;
+  amount?: number;
+}
