@@ -30,7 +30,7 @@ export function HeaderWidget({ currentQuery }: { currentQuery: string | null }) 
   }
 
   const formattedList: OrganizationListType[] = useMemo(() => {
-    return organizationList.map(({ id, organizationName }) => {
+    return organizationList?.map(({ id, organizationName }) => {
       return { id, value: organizationName };
     });
   }, [organizationList]);
@@ -69,7 +69,7 @@ export function HeaderWidget({ currentQuery }: { currentQuery: string | null }) 
             <SelectContent>
               {Array.isArray(formattedList) &&
                 formattedList?.map(({ value }) => (
-                  <SelectItem key={value} value={value}>
+                  <SelectItem key={value ?? "Select Organization"} value={value}>
                     {value}
                   </SelectItem>
                 ))}

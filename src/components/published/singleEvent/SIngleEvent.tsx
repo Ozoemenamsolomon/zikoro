@@ -146,6 +146,16 @@ export function SingleEvent({
     return event?.eventCity === null || event?.eventCountry === null;
   }, [event?.eventCity, event?.eventCountry]);
 
+  const isAllContactUnavailable = useMemo(() => {
+    return (
+      event?.phoneNumber === null ||
+      event?.whatsappNumber === null ||
+      event?.email === null
+    );
+  }, [event?.phoneNumber, event?.whatsappNumber, event?.email]);
+
+  console.log({isAllContactUnavailable}, event?.whatsappNumber === null);
+
   return (
     <>
       <Comp
@@ -178,7 +188,7 @@ export function SingleEvent({
                   <div className="flex items-center gap-x-2">
                     <p>{`${startDate} – ${endDate}`}</p>
                     {timeDifference && (
-                      <p className="text-xs bg-gray-200 rounded-md p-2 ">
+                      <p className="text-xs bg-gray-100 rounded-md p-2 ">
                         {timeDifference}
                       </p>
                     )}
@@ -189,41 +199,56 @@ export function SingleEvent({
               <AboutWidget
                 Icon={LocationDot}
                 text={
-                  <p>{`${event?.eventCity ?? ""}${!removeComma && ","} ${
-                    event?.eventCountry ?? ""
-                  }`}</p>
+                  <p>
+                    {`${event?.eventCity ?? ""}`}
+                    {!removeComma && <span>,</span>}
+                    {`${event?.eventCountry ?? ""}`}
+                  </p>
                 }
               />
 
               <div className="w-full space-y-2 flex flex-col items-start justify-start">
-                <h3>Speak with the Event Team</h3>
+                {isAllContactUnavailable && <h3>Speak with the Event Team</h3>}
 
-                <div className="flex items-center gap-x-2">
-                  <Button
-                    onClick={phoneCall}
-                    disabled={event?.phoneNumber === null}
-                    className="text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro"
-                  >
-                    <Telephone size={22} />
-                    <span>Phone Call</span>
-                  </Button>
-                  <Button
-                    onClick={whatsapp}
-                    disabled={event?.whatsappNumber === null}
-                    className="text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro"
-                  >
-                    <Whatsapp size={22} />
-                    <span>Whatsapp</span>
-                  </Button>
-                  <Button
-                    onClick={sendMail}
-                    disabled={event?.email === null}
-                    className="text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro"
-                  >
-                    <EmailOutline size={22} />
-                    <span>Email</span>
-                  </Button>
-                </div>
+                { (
+                  <div className="flex items-center gap-x-2">
+                    <Button
+                      onClick={phoneCall}
+                      disabled={event?.phoneNumber === null}
+                      className={cn(
+                        "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
+                        event?.phoneNumber === null && "hidden"
+                      )}
+                    >
+                      <Telephone size={22} />
+                      <span>Phone Call</span>
+                    </Button>
+
+                    <Button
+                      onClick={whatsapp}
+                      disabled={event?.whatsappNumber === null}
+                      className={cn(
+                        "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
+                        event?.whatsappNumber === null && "hidden"
+                      )}
+                    >
+                      <Whatsapp size={22} />
+                      <span>WhatsApp</span>
+                    </Button>
+
+                    <Button
+                      onClick={sendMail}
+                      disabled={event?.email === null}
+                      className={cn(
+                        "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
+                        event?.email === null && "hidden"
+                      )}
+                    >
+                      <EmailOutline size={22} />
+                      <span>Email</span>
+                    </Button>
+                  </div>
+                )}
               </div>
 
               <div className="w-full flex flex-col justify-start items-start space-y-2 ">
@@ -339,12 +364,7 @@ export function SingleEvent({
               </Button>
               <div className="w-full flex flex-col justify-start items-start space-y-2">
                 <h3 className="font-medium">SHARE THIS EVENT</h3>
-                <div className="flex items-center gap-x-2">
-                  <TwitterIcon />
-                  <LinkedinIcon />
-                  <FacebookIcon />
-                  <InstagramIcon />
-                </div>
+                <div className="flex items-center gap-x-2"></div>
               </div>
             </div>
           </div>
@@ -373,6 +393,53 @@ export function SingleEvent({
           price={chosenPrice}
         />
       )}
+    </>
+  );
+}
+
+function ActionModal({ close }: { close: () => void }) {
+  return (
+    <>
+      <div className="absolute right-0 top-10  w-48">
+        <Button className="fixed inset-0 bg-none h-full w-full z-[100"></Button>
+        <div
+          role="button"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className="flex relative z-[50]  flex-col py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
+        >
+          <Button className="items-center flex  h-10 w-full text-red-600 hover:bg-gray-100 justify-start text-xs">
+            <TwitterIcon />
+            <span>X</span>
+          </Button>
+
+          <Button
+            className={
+              "items-center h-10 gap-x-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
+            }
+          >
+            <LinkedinIcon />
+            <span>LinkedIn</span>
+          </Button>
+          <Button
+            className={
+              "items-center h-10 gap-x-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
+            }
+          >
+            <FacebookIcon />
+            <span>Facebook</span>
+          </Button>
+          <Button
+            className={
+              "items-center h-10 gap-x-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
+            }
+          >
+            <InstagramIcon />
+            <span>Instagram</span>
+          </Button>
+        </div>
+      </div>
     </>
   );
 }

@@ -55,6 +55,7 @@ export const NavLinks = ({
                     ? `${href}/organization/${id}?organization=${query}`
                     : href
                 }
+                target={href === "/events" ? "blank" : ""}
                 className={cn(
                   "p-3 px-4 flex  items-center gap-x-2  w-full",
                   href === pathname &&

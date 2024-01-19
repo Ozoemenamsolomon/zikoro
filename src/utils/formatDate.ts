@@ -75,13 +75,17 @@ export function calculateTimeDifference(startStr: any, endStr: any): string {
 
   const result: string[] = [];
 
-  if (days > 0) {
-    result.push(`${days} ${days === 1 ? "Day" : "Days"}`);
+  // Day
+  if (days + 1 > 0) {
+    result.push(`${days + 1} ${days + 1 === 1 ? "Day" : "Days"}`);
   }
 
-  if (hours > 0) {
+  // Hour
+/**
+   if (hours > 0) {
     result.push(`${hours} ${hours === 1 ? "Hour" : "Hours"}`);
   }
+ */
 
   return result.join(" ");
 }
