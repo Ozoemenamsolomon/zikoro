@@ -129,7 +129,7 @@ export function Payment({
       </div>
       {loading && (
         <div className="w-full h-full inset-0 fixed bg-white/50 z-[300]">
-          <div className="absolute inset-0 m-auto w-[95%] sm:w-[400px] gap-y-2 h-[300px] bg-white rounded-lg flex flex-col items-center justify-center">
+          <div className="absolute inset-0 m-auto w-[95%] sm:w-[400px] gap-y-2 h-[300px]  rounded-lg flex flex-col items-center justify-center">
             <div className="w-[120px] h-[120px] rounded-full border-l border-b border-gray-400 animate-spin"></div>
             <p>Processing...</p>
           </div>
@@ -180,9 +180,9 @@ function PaymentSuccess({
       <div
         role="button"
         onClick={(e) => e.stopPropagation()}
-        className="w-[95%] sm:w-[70%] h-fit flex flex-col gap-y-8 items-start justify-start max-w-[700px]  rounded-sm absolute bg-white shadow py-6 sm:py-8 px-3 sm:px-10 m-auto inset-0"
+        className="w-[95%] sm:w-[70%] h-fit flex flex-col gap-y-14 items-start justify-start max-w-[700px]  rounded-sm absolute bg-white shadow py-6 sm:py-8 px-3 sm:px-10 m-auto inset-0"
       >
-        <div className="flex items-center gap-x-2">
+        <div className="flex items-start gap-x-6">
           <CheckCircleFill className="text-[#00D685]" size={48} />
           <div className="space-y-1">
             <h1 className="text-xl sm:text-[28px]">
@@ -196,7 +196,7 @@ function PaymentSuccess({
 
         <div>
           <h2 className="uppercase text-base sm:text-lg">You are attending</h2>
-          <h1 className="text-lg sm:text-3xl">{eventTitle}</h1>
+          <h1 className="text-lg font-bold sm:text-3xl">{eventTitle}</h1>
         </div>
 
         <div className="grid grid-cols-2 gap-6 items-center w-full">

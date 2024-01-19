@@ -30,7 +30,7 @@ interface PricingType {
   earlyBird?: number;
   standard?: number;
   lateBird?: number;
-  Validity: string;
+  validity: string;
 }
 
 export interface Event {

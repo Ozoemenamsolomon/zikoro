@@ -39,7 +39,7 @@ export function CreateOrganization({ close }: { close: () => void }) {
     <div
       role="button"
       onClick={close}
-      className="w-full h-full fixed z-[60] inset-0 bg-black/50"
+      className="w-full h-full fixed z-[100] inset-0 bg-black/50"
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -66,9 +66,9 @@ export function CreateOrganization({ close }: { close: () => void }) {
                 <InputOffsetLabel label="Name">
                   <Input
                     type="text"
-                    placeholder="Enter Organization Name"
+                    placeholder="Select Organization Name"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-black text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -84,7 +84,7 @@ export function CreateOrganization({ close }: { close: () => void }) {
                   >
                     <SelectTrigger className="border focus:border-gray-500 h-12">
                       <SelectValue
-                        placeholder="Enter organization Type"
+                        placeholder="Select organization Type"
                         className="placeholder:text-sm h-12 border focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                       />
                     </SelectTrigger>
@@ -109,7 +109,7 @@ export function CreateOrganization({ close }: { close: () => void }) {
                   >
                     <SelectTrigger className="border focus:border-gray-500 h-12">
                       <SelectValue
-                        placeholder="Enter Subscription Plan"
+                        placeholder="Select Subscription Plan"
                         className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                       />
                     </SelectTrigger>

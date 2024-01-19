@@ -15,7 +15,3 @@ export const paymentConfig = ({ email, amount }: PaymentConfigProps) => {
   return configuration;
 };
 
-export const onSuccess = async (reference: any) => {
-  // verifyPayment(reference);
-  console.log(reference);
-};

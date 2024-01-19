@@ -95,7 +95,7 @@ export function HeroLayout({
         />
 
         <div className=" h-fit w-fit absolute inset-0 m-auto">
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center gap-y-4 justify-center">
             <h2 className="text-2xl font-semibold sm:text-5xl ">
               Featured Events
             </h2>
@@ -208,7 +208,7 @@ export function HeroLayout({
         </div>
 
         <div className="absolute top-[200px] md:top-[300px] bg-gray-50 w-full mx-auto">
-          <div className="flex flex-col pb-20 sm:gap-y-6 gap-y-20 items-center mx-auto justify-center w-[95%] sm:w-[65%] lg:w-[90%] xl:w-[70%]">
+          <div className="flex flex-col pb-20 sm:gap-y-6 gap-y-20 items-center mx-auto justify-center w-[95%] sm:w-[65%] lg:w-[80%] xl:w-[65%]">
             {children}
             { (!loading && !isLastPage) && (
               <Button

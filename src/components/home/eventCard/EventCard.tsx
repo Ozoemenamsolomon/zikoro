@@ -12,7 +12,12 @@ import { useState, useMemo } from "react";
 import { AboutWidget, EventLocationType } from "@/components/composables";
 import { Event } from "@/types";
 import { DeleteEventModal } from "..";
-import { formatDate, formatTime, dateFormatting } from "@/utils";
+import {
+  formatDate,
+  formatTime,
+  dateFormatting,
+  COUNTRIES_CURRENCY,
+} from "@/utils";
 import { useDuplicateEvent } from "@/hooks";
 
 export function EventCard({
@@ -54,6 +59,19 @@ export function EventCard({
   const removeComma = useMemo(() => {
     return event.eventCity === null || event.eventCountry === null;
   }, [event.eventCity, event.eventCountry]);
+
+  const currency = useMemo(() => {
+    
+    if (event?.pricingCurrency) {
+      const symbol = COUNTRIES_CURRENCY.find((v) => String(v.code) === String(event?.pricingCurrency))?.symbol || "₦";
+      console.log(event?.pricingCurrency , symbol)
+      return symbol
+    }
+     
+      
+  }, [event?.pricingCurrency]);
+
+
   return (
     <div className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4 shadow-md w-full">
       <div className="w-full flex items-center justify-between">
@@ -105,10 +123,12 @@ export function EventCard({
       </div>
 
       <div className="flex items-center justify-between w-full">
-        {Array.isArray(event?.pricing) && (
-          <p className="font-medium">{`₦${(
+        {Array.isArray(event?.pricing) ? (
+          <p className="font-medium">{`${currency ? currency : ""}${(
             event?.pricing[1]?.standard || 0
           ).toLocaleString()}`}</p>
+        ) : (
+          <p className="w-1 h-1"></p>
         )}
         <div className="flex items-center gap-x-2">
           <EventLocationType locationType={event.locationType} />
