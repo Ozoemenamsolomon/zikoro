@@ -18,7 +18,7 @@ export const UserActions = () => {
     user: { name: userName, avatar },
   } = {
     user: {
-      name: "User Name",
+      name: user.nickname,
       avatar: "/b92cf7b1b06acc1b9a0759b6f97724c349488816.webp",
     },
   };
@@ -38,10 +38,10 @@ export const UserActions = () => {
         <PersonFeedback className="w-6 h-6" />
         Give feedback
       </button>
-      <button className="flex gap-2 text-red-700">
+      <Link href="/api/auth/logout" className="flex gap-2 text-red-700">
         <LogOut className="w-6 h-6" />
         Log out
-      </button>
+      </Link>
     </div>
   );
 };
