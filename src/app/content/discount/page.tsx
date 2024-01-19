@@ -1,4 +1,3 @@
-"use client";
 import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
@@ -20,6 +19,59 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { addDiscount } from "@/app/server-actions/addDiscount";
 import supabase from "@/utils/supabaseConfig";
 import { revalidatePath } from "next/cache";
+
+// const addDiscount = async (formData: FormData) => {
+//   "use server";
+//   const discountCode = formData.get("discountCode");
+//   const minQty = formData.get("minQty");
+//   const discountAmount = parseInt(formData.get("discountAmount") as string);
+//   const discountPercentage = formData.get("percentage");
+//   const validUntil = formData.get("validUntil");
+//   const quantity = formData.get("quantity");
+//   const status = true;
+
+//   if (
+//     !discountCode ||
+//     !minQty ||
+//     !discountAmount ||
+//     !discountPercentage ||
+//     !validUntil ||
+//     !quantity
+//   ) {
+//     return;
+//   }
+//   const { data, error } = await supabase.from("discount").insert([
+//     {
+//       discountCode: discountCode,
+//       minQty: minQty,
+//       discountAmount: discountAmount,
+//       discountPercentage: discountPercentage,
+//       validUntil: validUntil,
+//       quantity: quantity,
+//       status: status,
+//     },
+//   ]);
+//   if (error) {
+//     console.log(error);
+//     throw error;
+//   }
+//   if (data) {
+//     console.log(data, "discount added");
+//   }
+// };
+
+// const fetchDiscount = async () => {
+//   const { data, error } = await supabase.from("discount").select();
+//   if (error) {
+//     console.log(error);
+//     throw error;
+//   }
+//   if (data) {
+//     console.log(data);
+//     revalidatePath("/content/discount");
+//   }
+//   return data;
+// };
 
 export default function Discount() {
   const [discountData, setDiscountData] = useState<[]>([]);

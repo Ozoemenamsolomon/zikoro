@@ -163,7 +163,7 @@ export default function Event(): JSX.Element {
               type="text"
             />
             <div className="flex justify-between gap-2 relative">
-              <span className="font-medium z-10 -top-2 translate-x-10 left-20 bg-white rounded-sm block text-[12px] text-gray-700 absolute">
+              <span className="z-10 -top-2 translate-x-10 left-20 bg-white rounded-sm block text-xs text-basecolor absolute">
                 {" "}
                 Start date and time
               </span>
@@ -177,7 +177,7 @@ export default function Event(): JSX.Element {
                     // required: true,
                     placeholder: "Pick date and time",
                     InputProps: {
-                      className: "flex flex-row-reverse",
+                      className: "flex flex-row-reverse text-sm",
                       endAdornment: (
                         <img
                           src={"/date-time.svg"}
@@ -206,7 +206,10 @@ export default function Event(): JSX.Element {
                   },
                 }}
               />
-              <span className="span font-medium"> End date and time</span>
+              <span className="span text-xs text-basecolor">
+                {" "}
+                End date and time
+              </span>
               <DateTimePicker
                 open={isEndDateOpen}
                 onOpen={() => setIsEndDateOpen(!isEndDateOpen)}
@@ -444,7 +447,7 @@ export default function Event(): JSX.Element {
                   containerClassName="w-1/2"
                   placeholder="Enter price"
                 />
-                <span className="span font-medium"> Validity</span>
+                <span className="span text-xs text-basecolor"> Validity</span>
                 <DatePicker
                   open={isOpen1}
                   onOpen={() => setIsOpen1(!isOpen1)}
@@ -494,7 +497,7 @@ export default function Event(): JSX.Element {
                   containerClassName="w-1/2"
                   placeholder="Enter price"
                 />
-                <span className="span font-medium"> Validity</span>
+                <span className="span text-xs text-basecolor"> Validity</span>
                 <DatePicker
                   open={isOpen2}
                   onOpen={() => setIsOpen2(!isOpen2)}
@@ -544,7 +547,7 @@ export default function Event(): JSX.Element {
                   containerClassName="w-1/2"
                   placeholder="Enter price"
                 />
-                <span className="span font-medium"> Validity</span>
+                <span className="span text-xs text-basecolor"> Validity</span>
                 <DatePicker
                   open={isOpen3}
                   onOpen={() => setIsOpen3(!isOpen3)}

@@ -1,7 +1,8 @@
 "use client";
 
 import { type Editor } from "@tiptap/react";
-import { Bold, Italic } from "lucide-react";
+import { TypeBold } from "@styled-icons/bootstrap/TypeBold";
+import { TypeItalic } from "@styled-icons/bootstrap/TypeItalic";
 import { Toggle } from "@/components/ui/toggle";
 import { ListBullet } from "styled-icons/heroicons-outline";
 
@@ -21,13 +22,13 @@ export const Toolbar = ({ editor }: Props) => {
         pressed={editor.isActive("bold")}
         onPressedChange={() => editor.chain().focus().toggleBold().run()}
       >
-        <Bold className="h-4 w-4" />
+        <TypeBold className="h-4 w-4" />
       </Toggle>
       <Toggle
         pressed={editor.isActive("italic")}
         onPressedChange={() => editor.chain().focus().toggleItalic().run()}
       >
-        <Italic className="h-4 w-4" />
+        <TypeItalic className="h-4 w-4" />
       </Toggle>
       <Toggle
         pressed={editor.isActive("heading", { level: 1 })}
