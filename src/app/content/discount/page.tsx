@@ -1,3 +1,4 @@
+"use client";
 import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
