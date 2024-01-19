@@ -4,11 +4,10 @@ import { usePathname } from "next/navigation";
 import { Eye } from "styled-icons/evil";
 import { UploadOutline } from "styled-icons/evaicons-outline";
 import { Check } from "styled-icons/material";
-import { Button } from "./page";
+import { Button } from "@/components/content/Button";
 import { useState } from "react";
-
-// import { getLastSavedId } from "@/app/getEvent/page";
 import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 export default function Home({ children }: { children?: React.ReactNode }) {
   const links = [
@@ -61,11 +60,11 @@ export default function Home({ children }: { children?: React.ReactNode }) {
                     className="text-center text-[14px]"
                     onClick={() => {
                       setIsSaved(!isSaved);
-                      // if (isSaved) {
-                      //   toast.success("Saved");
-                      // } else {
-                      //   toast.error("Please try again later");
-                      // }
+                      if (isSaved) {
+                        toast.success("Saved");
+                      } else {
+                        toast.error("Event has already been saved");
+                      }
                     }}
                     type="submit"
                     form="form"
@@ -87,7 +86,7 @@ export default function Home({ children }: { children?: React.ReactNode }) {
                     spanClassName="mr-2"
                     children={<UploadOutline width={20} />}
                     onClick={() => {
-                      // toast.success("Event successfully published!");
+                      toast.success("Event successfully published!");
                     }}
                   />
                 </form>

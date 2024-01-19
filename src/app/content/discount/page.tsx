@@ -1,8 +1,8 @@
 "use client";
 import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
 import { Separator } from "@/components/ui/separator";
-import { DiscountList } from "@/components/Discount/DiscountList";
-import { useEffect, useState } from "react";
+import { Switch } from "@/components/ui/switch";
+import { useState, useEffect } from "react";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -18,8 +18,69 @@ import { MinusCircle, PlusCircle } from "styled-icons/heroicons-outline";
 import { CustomInput } from "@/components/content/CustomInput";
 import { DatePicker } from "@mui/x-date-pickers";
 import { addDiscount } from "@/app/server-actions/addDiscount";
+import supabase from "@/utils/supabaseConfig";
+import { revalidatePath } from "next/cache";
 
 export default function Discount() {
+  const [discountData, setDiscountData] = useState<[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [value, setValue] = useState<string>("off");
+
+  useEffect(() => {
+    const getDiscount = async () => {
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase.from("discount").select();
+        if (error) {
+          setError(true);
+          console.log(error);
+          throw error;
+        }
+        if (data) {
+          console.log(data);
+          setDiscountData(data as any);
+          setError(false);
+          revalidatePath("/content/discount");
+        }
+      } catch (error) {
+        setError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getDiscount();
+  }, []);
+
+  // remove timestamp from date
+  const formattedData = discountData.map((discount: any) => {
+    return {
+      ...discount,
+      created_at: discount.created_at.slice(0, 10),
+      validUntil: discount.validUntil.slice(0, 10),
+    };
+  });
+
+  // change status
+  const changeStatus = async (id: string, status: boolean) => {
+    try {
+      const { data, error } = await supabase
+        .from("discount")
+        .update({ status: !status })
+        .eq("id", id);
+      if (error) {
+        console.log(error);
+        throw error;
+      }
+      if (data) {
+        console.log(data);
+        revalidatePath("/content/discount");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="p-4">
       <div className="flex justify-between my-5">
@@ -38,118 +99,87 @@ export default function Discount() {
           <li>Status</li>
         </ul>
 
-        <DiscountList
-          createdAt="2023-12-01"
-          code="t555"
-          minQty="1"
-          validUntil="2023-12-12"
-          amount="5000"
-          percentage="NULL"
-          quantity="1"
-          status="checked"
-        />
-        <Separator />
-        <DiscountList
-          createdAt="2023-12-01"
-          code="t555"
-          minQty="1"
-          validUntil="2023-12-12"
-          amount="5000"
-          percentage="NULL"
-          quantity="1"
-          status="checked"
-        />
-        <Separator />
-        <DiscountList
-          createdAt="2023-12-01"
-          code="t555"
-          minQty="1"
-          validUntil="2023-12-12"
-          amount="5000"
-          percentage="NULL"
-          quantity="1"
-          status="checked"
-        />
-        <Separator />
-        <DiscountList
-          createdAt="2023-12-01"
-          code="t555"
-          minQty="1"
-          validUntil="2023-12-12"
-          amount="5000"
-          percentage="NULL"
-          quantity="1"
-          status="checked"
-        />
-        <Separator />
-        <DiscountList
-          createdAt="2023-12-01"
-          code="t555"
-          minQty="1"
-          validUntil="2023-12-12"
-          amount="5000"
-          percentage="NULL"
-          quantity="1"
-          status="checked"
-        />
-        <Separator />
-        <DiscountList
-          createdAt="2023-12-01"
-          code="t555"
-          minQty="1"
-          validUntil="2023-12-12"
-          amount="5000"
-          percentage="NULL"
-          quantity="1"
-          status="checked"
-        />
+        {formattedData.map((discount: any) => (
+          <DiscountList
+            key={discount.id}
+            createdAt={discount.created_at}
+            code={discount.discountCode}
+            minQty={discount.minQty}
+            validUntil={discount.validUntil}
+            amount={discount.discountAmount || "NULL"}
+            percentage={discount.discountPercentage || "NULL"}
+            quantity={discount.quantity}
+            status={discount.status}
+            onClick={() => {
+              changeStatus(discount.id, discount.status);
+              setValue(discount.status ? "on" : "off");
+              console.log(value);
+            }}
+            value={value}
+          />
+        ))}
         <Separator />
       </div>
     </div>
   );
 }
 
-const DialogDemo = () => {
-  const [color, setColor] = useState("#D6D6D6");
+const DiscountList: React.FC<{
+  createdAt?: string;
+  code?: string;
+  minQty: string;
+  validUntil?: string;
+  amount?: string;
+  percentage?: string;
+  quantity?: string;
+  status?: boolean;
+  onClick?: () => void;
+  value: string;
+}> = ({
+  createdAt = "",
+  code = "",
+  minQty = "",
+  validUntil = "",
+  amount = "",
+  percentage = "",
+  quantity = "",
+  status = false,
+  onClick = () => {},
+  value = "",
+}) => {
+  return (
+    <ul className="grid grid-cols-8 place-items-center text-center p-3 text-[12px] border-x">
+      <li className="flex items-center">{createdAt}</li>
+      <li>{code}</li>
+      <li>{minQty}</li>
+      <li>{validUntil}</li>
+      <li>{amount}</li>
+      <li>{percentage}</li>
+      <li>{quantity}</li>
+      <li>
+        <Switch
+          className={`data-[state=checked]:bg-bluebg w-[32px] h-[22px]`}
+          checked={
+            validUntil >= new Date().toISOString().split("T")[0]
+              ? true
+              : false && status
+          }
+          onClick={onClick}
+          value={value}
+        />
+      </li>
+    </ul>
+  );
+};
 
+const DialogDemo = () => {
   const [minQty, setMinQty] = useState<number>(1);
   const [quantity, setQuantity] = useState<number>(1);
   const [percentage, setPercentage] = useState<number>(5);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [isAmtChecked, setIsAmtChecked] = useState<boolean>(false);
   const [isPercChecked, setIsPercChecked] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  // const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   const formData = new FormData(e.currentTarget.form as HTMLFormElement);
-  //   // const minQtyValue = formData.append("minQty", minQty.toString());
-  //   // const quantityValue = formData.append("quantity", quantity.toString());
-  //   // const values = Array.from(formData.values());
-  //   const data = Object.fromEntries(formData);
-  //   console.log(data, minQty, quantity);
-  // };
-  // const data = Object.fromEntries(formData);
-  // const values = Array.from(formData.values());
-
-  // console.log("data", data);
-  // console.log("values", values);
-  // return values;
-
-  // async function appendToFormData() {
-  //   const formData = new FormData();
-  //   formData.append("minQty", minQty.toString());
-  //   formData.append("quantity", quantity.toString());
-  //   formData.append("percentage", percentage.toString());
-  //   // console.log(formData);
-  //   return formData;
-  // }
-
-  // const addDataToDiscount = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   const formData = await appendToFormData();
-  //   console.log(formData);
-  // };
 
   return (
     <DateAndTimeAdapter>
@@ -178,7 +208,7 @@ const DialogDemo = () => {
               />
               <div className="flex justify-between items-center mt-4">
                 <p className="text-base">Minimum Quantity</p>
-                <div className="flex justify-between space-x-2">
+                <div className="flex justify-between">
                   <MinusCircle
                     size={25}
                     color="gray"
@@ -189,13 +219,13 @@ const DialogDemo = () => {
                       }
                     }}
                   />
-                  {/* <p>{minQty}</p> */}
                   <input
                     type="number"
                     value={minQty}
                     readOnly
                     name="minQty"
                     id="minQty"
+                    className="w-10 pl-2.5 text-center"
                   />
                   <PlusCircle
                     size={25}
@@ -218,7 +248,7 @@ const DialogDemo = () => {
                   className="w-full"
                   slotProps={{
                     textField: {
-                      // required: true,
+                      required: true,
                       placeholder: "Pick date",
                       InputProps: {
                         className: "flex flex-row-reverse",
@@ -232,6 +262,11 @@ const DialogDemo = () => {
                             onClick={() => setIsOpen(!isOpen)}
                           />
                         ),
+                      },
+                    },
+                    popper: {
+                      sx: {
+                        pointerEvents: "auto",
                       },
                     },
                   }}
@@ -295,7 +330,7 @@ const DialogDemo = () => {
               ) : (
                 <div className="flex justify-between items-center mt-8">
                   <p className="text-base">Discount percentage</p>
-                  <div className="flex justify-between space-x-2">
+                  <div className="flex justify-between">
                     <MinusCircle
                       size={25}
                       color="gray"
@@ -306,15 +341,18 @@ const DialogDemo = () => {
                         }
                       }}
                     />
-                    {/* <p>{percentage}%</p> */}
-                    <input
-                      type="number"
-                      value={percentage}
-                      readOnly
-                      name="percentage"
-                      id="percentage"
-                    />
-                    {/* <span></span> */}
+                    <div className="flex items-center -space-x-3">
+                      <input
+                        type="number"
+                        value={percentage}
+                        readOnly
+                        name="percentage"
+                        id="percentage"
+                        className="w-12 text-end"
+                      />
+                      <p className="mr-2">%</p>
+                    </div>
+
                     <PlusCircle
                       size={25}
                       color="#001FCC"
@@ -338,13 +376,13 @@ const DialogDemo = () => {
                       }
                     }}
                   />
-                  {/* <p>{quantity}</p> */}
                   <input
                     type="number"
                     value={quantity}
                     readOnly
                     name="quantity"
                     id="quantity"
+                    className="w-8 pl-2 text-center"
                   />
                   <PlusCircle
                     size={25}
@@ -360,7 +398,6 @@ const DialogDemo = () => {
               type="submit"
               onClick={() => {
                 setDialogOpen(!dialogOpen);
-                // console.log(minQty, quantity, percentage);
               }}
             >
               Done

@@ -1,6 +1,5 @@
 "use client";
 import { FormEvent, useState, useRef, useEffect } from "react";
-import { CustomTextBox } from "@/components/content/CustomTextBox";
 import { CustomSelect } from "@/components/content/CustomSelect";
 import { CustomInput } from "@/components/content/CustomInput";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
@@ -9,7 +8,8 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { addEvent } from "../server-actions/addEvent";
 import { Camera } from "@styled-icons/feather/Camera";
 import countries from "@/../countrylist.json";
-// import { getEvent } from "@/app/getEvent/page";
+import Tiptap from "@/components/content/Tiptap";
+
 interface ImageFile {
   url: string | undefined;
   name: string;
@@ -38,6 +38,8 @@ export default function Event(): JSX.Element {
 
   const [isStartDateOpen, setIsStartDateOpen] = useState<boolean>(false);
   const [isEndDateOpen, setIsEndDateOpen] = useState<boolean>(false);
+
+  const [eventDesc, setEventDesc] = useState<string>("Write something here");
 
   const selectImage = (inputRef: React.RefObject<HTMLInputElement>) => {
     inputRef.current?.click();
@@ -354,7 +356,6 @@ export default function Event(): JSX.Element {
                   </div>
                 );
               })}
-              <button onClick={() => console.log(eventPosterArr)}>Click</button>
             </div>
 
             <div className="p-4 w-[100%] rounded-md border border-[#f3f3f3] sm:text-sm relative">
@@ -390,14 +391,6 @@ export default function Event(): JSX.Element {
               Image size should be 1080px by 1080px
             </span>
             <div className="flex space-x-2 items-center">
-              <button
-                className="border-2 border-red-500"
-                onClick={() =>
-                  console.log(organisationLogoArr.map((logo) => logo.url))
-                }
-              >
-                Click
-              </button>
               {organisationLogoArr.map((logo, index) => {
                 return (
                   <div className="image relative w-40" key={index}>
@@ -427,17 +420,13 @@ export default function Event(): JSX.Element {
             </div>
           </div>
           <div className="px-4 space-y-6">
-            <CustomTextBox
-              label="Description"
-              id="description"
-              name="eventDesc"
+            <Tiptap
+              onChange={(content: string) => {
+                console.log("changed", content);
+              }}
+              description="Description"
+              value="Initial value"
             />
-            <CustomTextBox
-              label="Prerequisites"
-              id="prerequisites"
-              name="prerequisites"
-            />
-            <CustomTextBox label="Benefits" id="benefits" name="benefits" />
             <CustomSelect
               label="Pricing currency"
               placeholder="Please select currency"
@@ -603,35 +592,3 @@ export default function Event(): JSX.Element {
     </DateAndTimeAdapter>
   );
 }
-
-export const Button = ({
-  children,
-  form,
-  type,
-  text,
-  containerClassName,
-  spanClassName,
-  onClick,
-}: {
-  children?: React.ReactNode;
-  form?: string;
-  type: "submit" | "button" | "reset";
-  text: string;
-  containerClassName?: string;
-  spanClassName?: string;
-  onClick?: () => void;
-}) => {
-  return (
-    <>
-      <button
-        className={`${containerClassName} text-sm flex justify-center items-center py-[10px] px-[16px] rounded-[5px]`}
-        type={type}
-        id={form}
-        onClick={onClick}
-      >
-        <span className={spanClassName}>{text}</span>
-        {children}
-      </button>
-    </>
-  );
-};

@@ -199,3 +199,12 @@ option {
 option:hover {
   background: #f7f7f7;
 }
+
+/* text editor placeholder styles */
+.tiptap p.is-editor-empty:first-child::before {
+  color: #d8d6d6;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}

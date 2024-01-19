@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="bg-white" suppressHydrationWarning={true}>
+    <html lang="en" className="bg-white">
       <body className={`${heebo.className} h-screen flex`}>
         <Sidebar></Sidebar>
         <div className="flex-1">

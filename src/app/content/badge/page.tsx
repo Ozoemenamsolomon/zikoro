@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Eye } from "styled-icons/evil";
-import { Cog } from "@styled-icons/heroicons-outline/Cog";
+import { Cog } from "@styled-icons/boxicons-regular/Cog";
 import { Check } from "styled-icons/material";
 import { Colorize } from "@styled-icons/material-outlined/Colorize";
 import { manrope } from "@/utils/fonts";
@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 const badges = [
   ["/badges/badge3.png", "/badges/badge2.png", "/badges/badge1.png"],
@@ -25,6 +27,7 @@ export default function Badge() {
   const [bodyColor, setBodyColor] = useState("#D6D6D6");
   const [footerColor, setFooterColor] = useState("#D6D6D6");
   const [initialValue, setInitialValue] = useState(0);
+  const [isSaved, setIsSaved] = useState(false);
 
   const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHeaderColor(event.target.value);
@@ -40,7 +43,8 @@ export default function Badge() {
           </button>
           <button className="text-center">
             <span className="pr-[2px] text-[#3E404B]">
-              Save <Check size={15} className="text-bluebg" />
+              {isSaved ? "Saved" : "Save"}{" "}
+              <Check size={15} className="text-bluebg" />
             </span>
           </button>
           <span className="text-[#3E404B]">Color theme</span>
@@ -104,13 +108,24 @@ export default function Badge() {
         </div>
       </div>
       <div className="flex mt-8 space-x-4 items-center">
-        <button className="w-[132px] bg-bluebg text-white p-[10px] rounded-[4px]">
+        <button
+          className="w-[132px] bg-bluebg text-white p-[10px] rounded-[4px]"
+          onClick={() => {
+            setIsSaved(!isSaved);
+            if (isSaved) {
+              toast.success("Saved");
+            } else {
+              toast.error("Event has already been saved");
+            }
+          }}
+        >
           Save
         </button>
         <button className="w-[132px] border border-bluebg p-[10px] rounded-[4px] text-bluebg">
           Preview
         </button>
       </div>
+      <Toaster />
     </div>
   );
 }

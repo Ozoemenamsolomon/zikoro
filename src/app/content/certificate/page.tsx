@@ -13,6 +13,8 @@ import { useState } from "react";
 import { PlusCircle } from "lucide-react";
 import { MinusCircle } from "lucide-react";
 import { manrope } from "@/utils/fonts";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 import {
   Dialog,
@@ -23,6 +25,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const certifcates = [
   {
@@ -47,6 +50,7 @@ export default function Certificate() {
   const [isCPD, setIsCPD] = useState(false);
   const [isZikoroLogo, setIsZikoroLogo] = useState(false);
   const [dataState, setDataState] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-8">
@@ -54,7 +58,8 @@ export default function Certificate() {
         <div className="flex justify-between items-center space-x-6">
           <button className="text-center">
             <span className="pr-[2px]">
-              Saved <Check size={15} className="text-bluebg" />
+              {isSaved ? "Saved" : "Save"}{" "}
+              <Check size={15} className="text-bluebg" />
             </span>
           </button>
           <Trash size={20} className="text-red-500" />
@@ -175,11 +180,22 @@ export default function Certificate() {
           ))}
         </div>
         <div className="flex mt-8 space-x-4 items-center">
-          <button className="border-2 border-bluebg w-[6rem] px-[12px] py-[8px] rounded-[5px] text-bluebg">
+          <button
+            className="border-2 border-bluebg w-[6rem] px-[12px] py-[8px] rounded-[5px] text-bluebg"
+            onClick={() => {
+              setIsSaved(!isSaved);
+              if (isSaved) {
+                toast.success("Certificate has been saved");
+              } else {
+                toast.error("Certificate has already been saved");
+              }
+            }}
+          >
             Save
           </button>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 }
@@ -190,96 +206,155 @@ const DialogDemo = () => {
   const initialValue = 0;
 
   const [disabled, setDisabled] = useState(!!(initialValue >= 100));
-
-  const incrementer = (): void => {
-    const newValue: number = initialValue + 20;
-    console.log(newValue);
-    if (newValue >= 100) {
-      setColor("#D6D6D6");
-      setDisabled(true);
-    }
-  };
-
-  // const decrementer = (): void => {
-  //   const initialValue: number = 0;
-  //   const newValue: number = initialValue - 20;
-  //   if (newValue >= 100) {
-  //     setColor("#D6D6D6");
-  //     setDisabled(true);
-  //   }
-  // };
+  const [attendanceRate, setAttendanceRate] = useState(0);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [isTrackOpen, setIsTrackOpen] = useState<boolean>(false);
+  const [isSessionopen, setIsSessionOpen] = useState<boolean>(false);
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Cog size={20} />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
             <p className="text-[24px] font-medium">Certificate Settings</p>
           </DialogTitle>
         </DialogHeader>
-        <div className="grid tems-center mt-10 gap-4 border rounded-[4px] relative p-2">
-          <span className="absolute right-2 -top-[0.5rem] px-2  bg-white text-[12px]">
+        <div className="grid tems-center mt-10 gap-4 border rounded-[4px] relative p-4 h-14">
+          <span className="absolute right-2 -top-[0.7rem] bg-white text-[12px]">
             Attendance
           </span>
-          <div
-            className={`font-semibold flex items-center text-[14px] text-[#717171] ${manrope.className}`}
+          <RadioGroup
+            className="flex space-x-6 data-[state=checked]:border-bluebg text-[#717171]"
+            defaultValue="event"
           >
-            <div className="flex items-center">
-              <input
-                type="radio"
-                id="attendance"
-                name="attendance"
-                value="attendance"
-                className="w-[16px] h-[16px] mx-[8px]"
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="event"
+                id="event"
+                className="fill-current text-bluebg"
+                onClick={() => {
+                  setIsSessionOpen(false);
+                  setIsTrackOpen(false);
+                }}
               />
-              <label htmlFor="html">Event</label>
+              <label className="text-sm">Event</label>
             </div>
-            <div className="flex items-center mx-4">
-              <input
-                type="radio"
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
                 id="track"
-                name="attendance"
-                value="Track"
-                className="w-[16px] h-[16px] mx-[8px]"
+                value="track"
+                className="fill-current text-bluebg"
+                onClick={() => {
+                  setIsSessionOpen(false);
+                  setIsTrackOpen(!isTrackOpen);
+                }}
               />
-              <label htmlFor="html">Track</label>
+              <label className="text-sm">Track</label>
             </div>
-            <div className="flex items-center">
-              <input
-                type="radio"
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
                 id="session"
-                name="attendance"
-                value="Session"
-                className="w-[16px] h-[16px] mx-[8px]"
+                value="session"
+                className="fill-current text-bluebg"
+                onClick={() => {
+                  setIsSessionOpen(!isSessionopen);
+                  setIsTrackOpen(false);
+                }}
               />
-              <label htmlFor="html">Session</label>
+              <label className="text-sm">Session</label>
             </div>
-          </div>
+          </RadioGroup>
         </div>
         <span className="description-text pt-2">
           To be eligible for a certificate an attendee must have been checked in
           for any of the selected option
         </span>
-        <div>
+        {isTrackOpen && (
+          <CustomSelect
+            label="Track"
+            name="track"
+            id="track"
+            containerClassName="my-8"
+          />
+        )}
+        {isSessionopen && (
+          <CustomSelect
+            label="Session"
+            name="session"
+            id="session"
+            containerClassName="my-8"
+          />
+        )}
+        <div className="flex justify-between items-center mb-4 mt-8">
           <p>Attendance rate</p>
-          <div>
-            <PlusCircle size={20} />
+          <div className="flex items-center">
             <MinusCircle
-              onClick={() => incrementer}
-              size={20}
-              color={color}
-              onBlur={() => {
-                setColor("#001FCC");
+              size={25}
+              color="gray"
+              role="button"
+              onClick={() => {
+                if (attendanceRate > 1) {
+                  setAttendanceRate(attendanceRate - 1);
+                }
               }}
+            />
+            <input
+              type="number"
+              value={attendanceRate}
+              readOnly
+              name="attendanceRate"
+              id="attendanceRate"
+              className="w-10 text-end"
+            />
+            <span className="mr-2">%</span>
+            <PlusCircle
+              size={25}
+              color="#001FCC"
+              role="button"
+              onClick={() => setAttendanceRate(attendanceRate + 1)}
             />
           </div>
         </div>
-
-        <DialogFooter>
-          <button type="submit">Save changes</button>
-        </DialogFooter>
+        <div className="grid tems-center mt-5 gap-4 border rounded-[4px] relative p-4 h-14">
+          <span className="absolute right-2 -top-[0.7rem] bg-white text-[12px]">
+            Criteria
+          </span>
+          <RadioGroup className="flex space-x-6 data-[state=checked]:border-bluebg text-[#717171] text-sm">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="1dayAttendance"
+                id="1dayAttendance"
+                className="fill-current text-bluebg"
+              />
+              <label className="text-sm">1-day Attendance</label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                id="completeDaysOfEvent"
+                value="completeDaysOfEvent"
+                className="fill-current text-bluebg"
+              />
+              <label className="text-sm">Complete days of event</label>
+            </div>
+          </RadioGroup>
+        </div>
+        <span className="description-text pt-2">
+          Please enable{" "}
+          <span className="text-bluebg underline">multiple check-in</span> if
+          you choose complete days of event as a criteria for issuing
+          certificate
+        </span>
+        <button
+          className="bg-bluebg text-white px-[12px] py-[8px] rounded-[5px] w-full mt-6"
+          type="submit"
+          onClick={() => {
+            setDialogOpen(!dialogOpen);
+          }}
+        >
+          Done
+        </button>
       </DialogContent>
     </Dialog>
   );
