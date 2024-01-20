@@ -252,7 +252,7 @@ export const useInviteAttendees = () => {
 
 type UseGetEmailInvitesResult = {
   emailInvites: TAttendeeEmailInvites[];
-  getemailinvites: () => Promise<void>;
+  getEmailInvites: () => Promise<void>;
 } & RequestStatus;
 
 export const useGetEmailInvites = (): UseGetEmailInvitesResult => {
@@ -285,4 +285,31 @@ export const useGetEmailInvites = (): UseGetEmailInvitesResult => {
   }, []);
 
   return { emailInvites, isLoading, error, getEmailInvites };
+};
+
+export const useGetAttendeesWithNotes = () => {
+  const [attendees, setAttendees] = useState<TAttendee[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendees = async () => {
+    setLoading(true);
+
+    const { data, status } = await getRequest<TAttendee[]>({
+      endpoint: "/notes/10/attendees",
+    });
+
+    setLoading(false);
+
+    if (status !== 200) return setError(true);
+
+    console.log(data.data);
+    return setAttendees(data.data);
+  };
+
+  useEffect(() => {
+    getAttendees();
+  }, []);
+
+  return { attendees, isLoading, error, getAttendees };
 };
