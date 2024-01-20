@@ -57,18 +57,20 @@ export function Payment({
 
     const payload = {
       eventId,
-      eventTransactionRef: eventReference,
+      eventRegistrationRef: eventReference,
       paymentDate: new Date(),
       amountPaid: total,
       attendees: count,
       currency: "NGN",
       paidStatus: reference.status === "success",
       eventDate,
-      priceCategory: "Standard",  /// change to priceCategory after validity date has been adjusted
+     // priceCategory: "Standard", 
       event: eventTitle,
       attendeesDetails,
       eventPrice,
     };
+
+     /// change to priceCategory after validity date has been adjusted
     await sendTransactionDetail(toggleSuccessModal, payload);
   }
 
