@@ -64,7 +64,7 @@ export function Payment({
       currency: "NGN",
       paidStatus: reference.status === "success",
       eventDate,
-      priceCategory: priceCategory || "Standard",
+      priceCategory: "Standard",  /// change to priceCategory after validity date has been adjusted
       event: eventTitle,
       attendeesDetails,
       eventPrice,
