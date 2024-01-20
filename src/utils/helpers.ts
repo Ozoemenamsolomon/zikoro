@@ -1,4 +1,7 @@
-export function extractUniqueTypes<T>(arr: T[], ppty: keyof T): string[] {
+export function extractUniqueTypes<T>(
+  arr: T[],
+  ppty: keyof T
+): { label: string; value: string }[] {
   const uniqueTypesSet = new Set<string>(
     arr.flatMap((obj) => {
       const value = obj[ppty];
@@ -6,7 +9,10 @@ export function extractUniqueTypes<T>(arr: T[], ppty: keyof T): string[] {
     })
   );
 
-  return Array.from(uniqueTypesSet);
+  return Array.from(uniqueTypesSet).map((value) => ({
+    label: value,
+    value,
+  }));
 }
 
 type CamelCaseObject = { [key: string]: any };
@@ -58,6 +64,13 @@ export function generateAlphanumericHash(length: number): string {
   }
 
   return hash;
+}
+
+export function getProperty<T>(obj: T, key: string): any {
+  if (typeof obj === "object" && obj !== null && key in obj) {
+    return (obj as Record<string, any>)[key];
+  }
+  return null; // Handle the case where the key is not present
 }
 
 export function areAllPropertiesSet(obj: Record<string, any>): boolean {

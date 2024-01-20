@@ -24,11 +24,11 @@ export type TInviteDetails = {
   attendeeType: string
 }
 
-export type AttendeeEmailInvites {
-  id: bigint;
-  created_at: string;
-  eventId?: bigint | null;
-  eventName?: number | null;
+export type TAttendeeEmailInvites {
+  id?: bigint;
+  created_at?: string;
+  eventId: number;
+  eventName: string;
   Message?: string | null;
   InviteDetails: TInviteDetails[];
 }

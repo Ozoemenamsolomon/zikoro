@@ -42,7 +42,7 @@ const Attendee: React.FC<AttendeeProps> = ({
   const { updateAttendees } = useUpdateAttendees();
 
   const currentCheckin =
-    checkin && checkin.find(({ date }) => isWithinTimeRange(date));
+    checkin && checkin.find(({ date }) => isWithinTimeRange(date, null));
 
   const toggleCheckin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();

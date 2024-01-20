@@ -36,8 +36,14 @@ export function DataTable<TData, TValue>({
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
+              style={{
+                display: "grid",
+                gridTemplateColumns: `auto 1.5fr repeat(${
+                  columns.length - 2
+                }, minmax(0, 1fr))`,
+              }}
               key={headerGroup.id}
-              className="max-w-full grid grid-cols-[auto_1.5fr_repeat(8,_minmax(0,_1fr))] gap-2 bg-gray-100"
+              className="max-w-full gap-2 bg-gray-100"
             >
               {headerGroup.headers.map((header) => {
                 return (
@@ -61,7 +67,13 @@ export function DataTable<TData, TValue>({
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
-                className="max-w-full grid grid-cols-[auto_1.5fr_repeat(8,_minmax(0,_1fr))] gap-2"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: `auto 1.5fr repeat(${
+                    columns.length - 2
+                  }, minmax(0, 1fr))`,
+                }}
+                className="max-w-full grid grid-cols-[auto_1.5fr_repeat(8,_minmax(0,_1fr))]  gap-2"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >

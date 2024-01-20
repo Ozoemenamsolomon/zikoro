@@ -1,6 +1,5 @@
-// @ts-nocheck
 "use client";
-import Filter, { TFilterType, TSelectedFilter } from "@/components/Filter";
+import Filter from "@/components/Filter";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -24,8 +23,10 @@ import { useEffect, useState } from "react";
 import { AngleDown } from "styled-icons/fa-solid";
 import { columns } from "../columns";
 import { DataTable } from "../data-table";
+import { TFilter } from "@/types/filter";
+import { useFilter } from "@/hooks/common/useFilter";
 
-const billingFilter: TFilterType[] = [
+const billingsFilter: TFilter<TEventTransaction>[] = [
   {
     label: "Event",
     accessor: "event",
@@ -43,14 +44,7 @@ const billingFilter: TFilterType[] = [
         />
       </svg>
     ),
-  },
-  {
-    label: "user ID",
-    accessor: "userId",
-  },
-  {
-    label: "Reference",
-    accessor: "transactionReference",
+    optionsFromData: true,
   },
   {
     label: "Trans. Date",
@@ -69,10 +63,7 @@ const billingFilter: TFilterType[] = [
         />
       </svg>
     ),
-  },
-  {
-    label: "Attendees",
-    accessor: "attendees",
+    type: "dateRange",
   },
   {
     label: "Currency",
@@ -101,6 +92,7 @@ const billingFilter: TFilterType[] = [
         />
       </svg>
     ),
+    optionsFromData: true,
   },
   {
     label: "Amount",
@@ -121,10 +113,13 @@ const billingFilter: TFilterType[] = [
         />
       </svg>
     ),
+    type: "range",
+    steps: 100,
+    max: 100000,
   },
   {
     label: "Payout Date",
-    accessor: "payoutDate",
+    accessor: "payOutDate",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -139,6 +134,7 @@ const billingFilter: TFilterType[] = [
         />
       </svg>
     ),
+    type: "dateRange",
   },
   {
     label: "Status",
@@ -169,6 +165,10 @@ const billingFilter: TFilterType[] = [
         </defs>
       </svg>
     ),
+    options: [
+      { label: "Paid", value: true },
+      { label: "Not Paid", value: false },
+    ],
   },
   {
     label: "Price Category",
@@ -189,14 +189,6 @@ const billingFilter: TFilterType[] = [
         />
       </svg>
     ),
-  },
-  {
-    label: "City",
-    accessor: "city",
-  },
-  {
-    label: "Country",
-    accessor: "country",
   },
   {
     label: "Discount",
@@ -230,10 +222,9 @@ const billingFilter: TFilterType[] = [
         </defs>
       </svg>
     ),
-  },
-  {
-    label: "Payout Option",
-    accessor: "payoutOption",
+    type: "slider",
+    steps: 10,
+    max: 100,
   },
 ];
 
@@ -249,34 +240,25 @@ export default function All() {
     "select",
   ]);
   const { billings, isLoading } = useGetBillings({ userId: 1 });
-  const [filters, setFilters] = useState<TFilterType[]>(
-    billingFilter.filter(({ icon }) => icon)
-  );
-  const [selectedFilters, setSelectedFilters] = useState<TSelectedFilter[]>([]);
+  const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
+    useFilter<TEventTransaction>({
+      data: billings,
+      dataFilters: billingsFilter,
+    });
 
-  const setFilter = (key: string, label: string, value: any[]) => {
-    console.log(key, value);
-    const newFilters = selectedFilters.filter((filter) => filter.key !== key);
-
-    if (value.length > 0) {
-      newFilters.push({ key, value, label });
-    }
-
-    setSelectedFilters(newFilters);
-  };
+  console.log(filteredData, billings);
 
   useEffect(() => {
     if (isLoading) return;
 
-    setFilters((prevFilters) =>
-      prevFilters.map((filter) => ({
-        ...filter,
-        options: extractUniqueTypes<TEventTransaction>(
-          billings,
-          filter.accessor
-        ),
-      }))
-    );
+    filters
+      .filter((filter) => filter.optionsFromData)
+      .forEach(({ accessor }) => {
+        setOptions(
+          accessor,
+          extractUniqueTypes<TEventTransaction>(billings, accessor)
+        );
+      });
   }, [isLoading]);
 
   console.log(billings);
@@ -438,19 +420,19 @@ export default function All() {
             </button>
           </div>
         </div>
-        <Filter
+        <Filter<TEventTransaction>
           className={`space-y-4 max-w-full`}
           filters={filters}
-          onFilter={setFilter}
+          applyFilter={applyFilter}
           selectedFilters={selectedFilters}
         />
-        <div className="py-4 space-y-2 max-w-full">
+        <div className="space-y-2 max-w-full">
           <DataTable
             columns={columns.filter(
               ({ accessorKey, id }) =>
                 shownColumns.includes(accessorKey) || shownColumns.includes(id)
             )}
-            data={billings}
+            data={filteredData}
           />
           <Pagination>
             <PaginationContent>

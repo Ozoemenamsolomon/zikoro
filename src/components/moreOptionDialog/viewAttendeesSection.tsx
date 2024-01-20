@@ -1,30 +1,48 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { TAttendee } from "@/types/attendee";
-import { Input } from "@/components/ui/input";
-import Filter, { TFilterType, TSelectedFilter } from "@/components/Filter";
-import { extractUniqueTypes } from "@/utils/helpers";
+import Filter from "@/components/Filter";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { useFilter } from "@/hooks/common/useFilter";
+import { TAttendee } from "@/types/attendee";
+import { TFilter } from "@/types/filter";
+import { isWithinTimeRange } from "@/utils/date";
+import { extractUniqueTypes } from "@/utils/helpers";
+import { useEffect, useState } from "react";
 
-const attendeeFilter: TFilterType[] = [
+const attendeeFilter: TFilter<TAttendee>[] = [
   {
-    label: "check-in date",
+    label: "checked-in",
     accessor: "checkin",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width={16}
-        height={16}
+        width="16"
+        height="16"
         viewBox="0 0 16 16"
         fill="none"
       >
         <path
-          d="M6 7.3335H4.66667V8.66683H6V7.3335ZM8.66667 7.3335H7.33333V8.66683H8.66667V7.3335ZM11.3333 7.3335H10V8.66683H11.3333V7.3335ZM12.6667 2.66683H12V1.3335H10.6667V2.66683H5.33333V1.3335H4V2.66683H3.33333C2.59333 2.66683 2.00667 3.26683 2.00667 4.00016L2 13.3335C2 13.6871 2.14048 14.0263 2.39052 14.2763C2.64057 14.5264 2.97971 14.6668 3.33333 14.6668H12.6667C13.4 14.6668 14 14.0668 14 13.3335V4.00016C14 3.26683 13.4 2.66683 12.6667 2.66683ZM12.6667 13.3335H3.33333V6.00016H12.6667V13.3335Z"
-          fill="#D6D6D6"
+          d="M5.33333 8.32312L8.162 11.1518L13.818 5.49512M2 8.32312L4.82867 11.1518M10.4853 5.49512L8.33333 7.66645"
+          stroke="#CFCFCF"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
         />
       </svg>
     ),
-    options: [],
+    options: [
+      { label: "07/01/2024", value: "01/07/2024" },
+      { label: "08/01/2024", value: "01/08/2024" },
+      { label: "09/01/2024", value: "01/09/2024" },
+    ],
+    onFilter: (attendee: TAttendee, date: string[]) => {
+      return date.some(
+        (compareDate) =>
+          attendee.checkin &&
+          attendee.checkin.find(({ date }) => {
+            return isWithinTimeRange(date, compareDate);
+          })
+      );
+    },
   },
   {
     label: "ticket type",
@@ -44,7 +62,7 @@ const attendeeFilter: TFilterType[] = [
         <path d="M9.5 6.5H10.5V9.5H9.5V6.5Z" fill="#CFCFCF" />
       </svg>
     ),
-    options: [],
+    optionsFromData: true,
   },
   {
     label: "attendee",
@@ -63,7 +81,7 @@ const attendeeFilter: TFilterType[] = [
         />
       </svg>
     ),
-    options: [],
+    optionsFromData: true,
   },
   {
     label: "favourite",
@@ -135,55 +153,40 @@ export default function ViewAttendeesSection({
   selectedAttendees: TAttendee[];
   toggleValue: (value: TAttendee | TAttendee[]) => void;
 }) {
-  const [mappedAttendees, setMappedAttendees] = useState<TAttendee[]>([]);
-  const [filters, setFilters] = useState<TFilterType[]>(attendeeFilter);
-  const [selectedFilters, setSelectedFilters] = useState<TSelectedFilter[]>([]);
+  const {
+    filteredData: mappedAttendees,
+    filters,
+    selectedFilters,
+    applyFilter,
+    setOptions,
+  } = useFilter<TAttendee>({
+    data: attendees,
+    dataFilters: attendeeFilter,
+  });
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const setFilter = (key: string, label: string, value: any[]) => {
-    const newFilters = selectedFilters.filter((filter) => filter.key !== key);
-
-    if (value.length > 0) {
-      newFilters.push({ key, value, label });
-    }
-
-    setSelectedFilters(newFilters);
-  };
-
   useEffect(() => {
-    setFilters((prevFilters) =>
-      prevFilters.map((filter) => ({
-        ...filter,
-        options: extractUniqueTypes<TAttendee>(attendees, filter.accessor),
-      }))
-    );
-  }, [attendees]);
+    // if () return;
 
-  useEffect(() => {
-    setMappedAttendees(
-      attendees
-        .filter(
-          ({ firstName, lastName }) =>
-            firstName.toLowerCase().includes(searchTerm) ||
-            lastName.toLowerCase().includes(searchTerm)
-        )
-        .filter((attendee) => {
-          return selectedFilters.every(({ key, value }) => {
-            const attendeePropertyValue = attendee[key];
+    filters
+      .filter((filter) => filter.optionsFromData)
+      .forEach(({ accessor }) => {
+        setOptions(
+          accessor,
+          extractUniqueTypes<TAttendee>(attendees, accessor)
+        );
+      });
+  }, []);
 
-            if (value.length === 0 || attendeePropertyValue == null) {
-              return true;
-            }
-
-            if (Array.isArray(attendeePropertyValue)) {
-              return value.some((elm) => attendeePropertyValue.includes(elm));
-            }
-
-            return value.includes(attendeePropertyValue);
-          });
-        })
-    );
-  }, [attendees, selectedFilters, searchTerm]);
+  // useEffect(() => {
+  //   setMappedAttendees(
+  //     attendees.filter(
+  //       ({ firstName, lastName }) =>
+  //         firstName.toLowerCase().includes(searchTerm) ||
+  //         lastName.toLowerCase().includes(searchTerm)
+  //     )
+  //   );
+  // }, [attendees, selectedFilters, searchTerm]);
 
   return (
     <>
@@ -228,13 +231,14 @@ export default function ViewAttendeesSection({
         <Filter
           className={"my-4 space-y-4"}
           filters={filters}
-          onFilter={setFilter}
+          applyFilter={applyFilter}
           selectedFilters={selectedFilters}
         />
       </div>
       <div className="space-y-4">
         <div className="flex items-center space-x-2">
-          <Checkbox className="data-[state=checked]:bg-basePrimary"
+          <Checkbox
+            className="data-[state=checked]:bg-basePrimary"
             id="terms2"
             onCheckedChange={() =>
               toggleValue(
@@ -265,7 +269,8 @@ export default function ViewAttendeesSection({
         <div className="space-y-4 max-h-32 overflow-auto">
           {mappedAttendees.map((attendee) => (
             <div className="flex items-center space-x-2">
-              <Checkbox className="data-[state=checked]:bg-basePrimary"
+              <Checkbox
+                className="data-[state=checked]:bg-basePrimary"
                 id="terms2"
                 onCheckedChange={() => toggleValue(attendee)}
                 checked={selectedAttendees.includes(attendee)}

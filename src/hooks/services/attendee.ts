@@ -1,5 +1,5 @@
 import { toast } from "@/components/ui/use-toast";
-import { TAttendee } from "@/types/attendee";
+import { TAttendee, TAttendeeEmailInvites } from "@/types/attendee";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
 
@@ -131,7 +131,7 @@ export const useGetAttendeesWithTags = () => {
   return { attendees, isLoading, error, getAttendees };
 };
 
-export const useGetAttendeesWithNotes = () => {
+export const useGetAttendeesWithEmailInvites = () => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -140,7 +140,7 @@ export const useGetAttendeesWithNotes = () => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAttendee[]>({
-      endpoint: "/notes/10/attendees",
+      endpoint: "/emailinvites/10/attendees",
     });
 
     setLoading(false);
@@ -216,12 +216,16 @@ export const useInviteAttendees = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const inviteAttendees = async ({ payload }: { payload: TAttendee }) => {
+  const inviteAttendees = async ({
+    payload,
+  }: {
+    payload: TAttendeeEmailInvites;
+  }) => {
     setLoading(true);
 
     try {
       const { data, status } = await postRequest({
-        endpoint: "/attendees/invite",
+        endpoint: "/attendees/invites",
         payload,
       });
 
@@ -244,4 +248,41 @@ export const useInviteAttendees = () => {
   };
 
   return { inviteAttendees, isLoading, error };
+};
+
+type UseGetEmailInvitesResult = {
+  emailInvites: TAttendeeEmailInvites[];
+  getemailinvites: () => Promise<void>;
+} & RequestStatus;
+
+export const useGetEmailInvites = (): UseGetEmailInvitesResult => {
+  const [emailInvites, setEmailInvites] = useState<TAttendeeEmailInvites[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getEmailInvites = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TAttendeeEmailInvites[]>({
+        endpoint: `/attendees/invites`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      } else {
+        setEmailInvites(data.data);
+      }
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getEmailInvites();
+  }, []);
+
+  return { emailInvites, isLoading, error, getEmailInvites };
 };

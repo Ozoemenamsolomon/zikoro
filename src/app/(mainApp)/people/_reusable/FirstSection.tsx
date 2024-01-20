@@ -1,6 +1,6 @@
 "use client";
 import Attendee from "@/components/Attendee";
-import Filter, { TFilterType, TSelectedFilter } from "@/components/Filter";
+import Filter, { TFilter } from "@/components/Filter";
 import CertificateDialog from "@/components/moreOptionDialog/certificateDialog";
 import ChangeAttendeeType from "@/components/moreOptionDialog/changeAttendeeType";
 import CheckinMultiple from "@/components/moreOptionDialog/checkinMultiple";
@@ -20,9 +20,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { useFilter } from "@/hooks/common/useFilter";
 import { useUpdateAttendees } from "@/hooks/services/attendee";
-import { useGetFavourites, useUpdateFavourites } from "@/hooks/services/favourites";
+import {
+  useGetFavourites,
+  useUpdateFavourites,
+} from "@/hooks/services/favourites";
 import { TAttendee } from "@/types/attendee";
+import { isWithinTimeRange } from "@/utils/date";
 import {
   calculateAndSetMaxHeight,
   convertCamelToNormal,
@@ -33,7 +38,7 @@ import * as XLSX from "xlsx";
 
 type TSortorder = "asc" | "desc" | "none";
 
-const attendeeFilter: TFilterType[] = [
+const attendeeFilter: TFilter<TAttendee>[] = [
   {
     label: "ticket type",
     accessor: "ticketType",
@@ -52,7 +57,7 @@ const attendeeFilter: TFilterType[] = [
         <path d="M9.5 6.5H10.5V9.5H9.5V6.5Z" fill="#CFCFCF" />
       </svg>
     ),
-    options: [],
+    optionsFromData: true,
   },
   {
     label: "attendee",
@@ -71,7 +76,7 @@ const attendeeFilter: TFilterType[] = [
         />
       </svg>
     ),
-    options: [],
+    optionsFromData: true,
   },
   {
     label: "checked-in",
@@ -93,7 +98,20 @@ const attendeeFilter: TFilterType[] = [
         />
       </svg>
     ),
-    options: [],
+    options: [
+      { label: "07/01/2024", value: "01/07/2024" },
+      { label: "08/01/2024", value: "01/08/2024" },
+      { label: "09/01/2024", value: "01/09/2024" },
+    ],
+    onFilter: (attendee: TAttendee, date: string[]) => {
+      return date.some(
+        (compareDate) =>
+          attendee.checkin &&
+          attendee.checkin.find(({ date }) => {
+            return isWithinTimeRange(date, compareDate);
+          })
+      );
+    },
   },
 ];
 
@@ -146,9 +164,16 @@ export default function FirstSection({
   selectedAttendee: TAttendee;
 }) {
   const divRef = useRef<HTMLDivElement>();
-  const [mappedAttendees, setMappedAttendees] = useState<TAttendee[]>([]);
-  const [filters, setFilters] = useState<TFilterType[]>(attendeeFilter);
-  const [selectedFilters, setSelectedFilters] = useState<TSelectedFilter[]>([]);
+  const {
+    filteredData: mappedAttendees,
+    filters,
+    selectedFilters,
+    applyFilter,
+    setOptions,
+  } = useFilter<TAttendee>({
+    data: attendees,
+    dataFilters: attendeeFilter,
+  });
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<TSortorder>("none");
@@ -192,60 +217,37 @@ export default function FirstSection({
     calculateAndSetMaxHeight(divRef);
   }, [mappedAttendees]);
 
-  useEffect(() => {
-    if (isLoading) return;
+  // useEffect(() => {
+  //   if (isLoading) return;
 
-    setMappedAttendees(
-      attendees
-        .filter(
-          ({ firstName, lastName, organization, jobTitle }) =>
-            firstName?.toLowerCase().includes(searchTerm) ||
-            lastName?.toLowerCase().includes(searchTerm) ||
-            jobTitle?.toLowerCase().includes(searchTerm) ||
-            organization?.toLowerCase().includes(searchTerm)
-        )
-        .filter((attendee) => {
-          return selectedFilters.every(({ key, value }) => {
-            const attendeePropertyValue = attendee[key];
-
-            if (attendeePropertyValue === null) return false;
-
-            if (value.length === 0) return true;
-
-            if (Array.isArray(attendeePropertyValue)) {
-              return value.some((elm) => attendeePropertyValue.includes(elm));
-            }
-
-            return value.includes(attendeePropertyValue);
-          });
-        })
-        .sort((a, b) =>
-          sortOrder === "asc"
-            ? a.firstName.localeCompare(b.firstName)
-            : b.firstName.localeCompare(a.firstName)
-        )
-    );
-  }, [attendees, selectedFilters, sortOrder, searchTerm]);
-
-  const setFilter = (key: string, label: string, value: any[]) => {
-    const newFilters = selectedFilters.filter((filter) => filter.key !== key);
-
-    if (value.length > 0) {
-      newFilters.push({ key, value, label });
-    }
-
-    setSelectedFilters(newFilters);
-  };
+  //   setMappedAttendees(
+  //     attendees
+  //       .filter(
+  //         ({ firstName, lastName, organization, jobTitle }) =>
+  //           firstName?.toLowerCase().includes(searchTerm) ||
+  //           lastName?.toLowerCase().includes(searchTerm) ||
+  //           jobTitle?.toLowerCase().includes(searchTerm) ||
+  //           organization?.toLowerCase().includes(searchTerm)
+  //       )
+  //       .sort((a, b) =>
+  //         sortOrder === "asc"
+  //           ? a.firstName.localeCompare(b.firstName)
+  //           : b.firstName.localeCompare(a.firstName)
+  //       )
+  //   );
+  // }, [attendees, sortOrder, searchTerm]);
 
   useEffect(() => {
     if (isLoading) return;
 
-    setFilters((prevFilters) =>
-      prevFilters.map((filter) => ({
-        ...filter,
-        options: extractUniqueTypes<TAttendee>(attendees, filter.accessor),
-      }))
-    );
+    filters
+      .filter((filter) => filter.optionsFromData)
+      .forEach(({ accessor }) => {
+        setOptions(
+          accessor,
+          extractUniqueTypes<TAttendee>(attendees, accessor)
+        );
+      });
   }, [isLoading]);
 
   const toggleSort = () => {
@@ -420,12 +422,12 @@ export default function FirstSection({
           </span>
         </button>
       </div>
-      <Filter
+      <Filter<TAttendee>
         className={`transition-all duration-150 my-4 space-y-4 ${
           showFilter ? "h-fit" : "h-0 overflow-hidden"
         }`}
         filters={filters}
-        onFilter={setFilter}
+        applyFilter={applyFilter}
         selectedFilters={selectedFilters}
       />
       <div className="flex justify-between px-2 mt-4 mb-2">
