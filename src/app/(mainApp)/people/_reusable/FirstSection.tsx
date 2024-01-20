@@ -58,6 +58,7 @@ const attendeeFilter: TFilter<TAttendee>[] = [
       </svg>
     ),
     optionsFromData: true,
+    type: "multiple",
   },
   {
     label: "attendee",
@@ -77,6 +78,7 @@ const attendeeFilter: TFilter<TAttendee>[] = [
       </svg>
     ),
     optionsFromData: true,
+    type: "multiple",
   },
   {
     label: "checked-in",
@@ -112,6 +114,7 @@ const attendeeFilter: TFilter<TAttendee>[] = [
           })
       );
     },
+    type: "multiple",
   },
 ];
 
