@@ -40,14 +40,18 @@ export function Events({ id }: { id: string }) {
         const isLocationMatch =
           locations.length === 0 || locations.includes(event.eventCity);
 
-        return isDateInRange && isTitleMatch && isLocationMatch;
+        return (
+          isDateInRange &&
+          isTitleMatch &&
+          isLocationMatch
+          
+        );
       });
 
       setFilteredEvents(filtered);
     }
   }, [publishedEvents, startDate, endDate, titles, locations]);
 
- 
   return (
     <HeroLayout
       loading={loading}
@@ -63,7 +67,13 @@ export function Events({ id }: { id: string }) {
       {Array.isArray(filteredEvents) &&
         filteredEvents?.length > 0 &&
         filteredEvents?.map((event) => (
-          <SingleEvent key={event.id} event={event} eventId={event.id} organization={query} className="mb-6 sm:mb-10" />
+          <SingleEvent
+            key={event.id}
+            event={event}
+            eventId={event.id}
+            organization={query}
+            className="mb-6 sm:mb-10"
+          />
         ))}
       {!loading && filteredEvents?.length === 0 && (
         <EmptyCard text={`No event for ${query} organization`} />

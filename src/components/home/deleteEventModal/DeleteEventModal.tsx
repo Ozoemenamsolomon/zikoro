@@ -31,7 +31,7 @@ export function DeleteEventModal({
     <div
       role="button"
       onClick={close}
-      className="w-full h-full fixed z-[60] inset-0 bg-black/50"
+      className="w-full h-full fixed z-[200] inset-0 bg-black/50"
     >
       <div
         onClick={(e) => e.stopPropagation()}

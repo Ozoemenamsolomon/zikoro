@@ -10,12 +10,12 @@ export const attendeeValidationSchema = z.array(
     lastName: z.string().min(3, { message: "Last Name is required" }),
     phoneNumber: z
       .string()
-      .refine((value) => value && /^\d{11,}$/.test(value), {
+      .refine((value) => value && /^(\+\d{11,}|\d{11,})$/.test(value), {
         message: "Phone number must be at least 11 digits",
       }),
     whatsappNumber: z
       .string()
-      .refine((value) => value && /^\d{11,}$/.test(value), {
+      .refine((value) => value && /^(\+\d{11,}|\d{11,})$/.test(value), {
         message: "Whatsapp number must be at least 11 digits",
       }),
   })

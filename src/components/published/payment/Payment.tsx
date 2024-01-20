@@ -22,6 +22,7 @@ export function Payment({
   allowPayment,
   eventId,
   attendeesDetails,
+  eventReference,
 }: {
   total?: number;
   allowPayment: (bool: boolean) => void;
@@ -36,14 +37,15 @@ export function Payment({
   priceCategory?: string;
   eventTitle?: string;
   eventLocation?: string;
+  eventReference: string;
 }) {
   const { sendTransactionDetail, loading } = useTransactionDetail();
   const [isSuccessModal, setSuccessModal] = useState(false);
-  const [refNumber, setRefNumber] = useState("");
   const user = getCookie("user");
   const config = paymentConfig({
+    reference: eventReference,
     email: user?.user?.email!,
-    amount: total,
+    amount: Number(total),
   });
 
   function toggleSuccessModal(bool: boolean) {
@@ -52,10 +54,10 @@ export function Payment({
 
   async function handleSuccess(reference: any) {
     // console.log(reference);
-    setRefNumber(reference.reference);
+
     const payload = {
       eventId,
-      transactionReference: reference.reference,
+      transactionReference: eventReference,
       paymentDate: new Date(),
       amountPaid: total,
       attendees: count,
@@ -143,7 +145,7 @@ export function Payment({
           endDate={endDate}
           count={count}
           toggleSuccessModal={toggleSuccessModal}
-          reference={refNumber}
+          reference={eventReference}
           eventTitle={eventTitle}
           userEmail={user?.user?.email}
         />
@@ -162,7 +164,7 @@ function PaymentSuccess({
   startDate,
   endDate,
 }: {
-  reference: string | undefined;
+  reference: string;
   eventTitle?: string;
   toggleSuccessModal: (bool: boolean) => void;
   userEmail?: string;
