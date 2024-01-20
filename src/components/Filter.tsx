@@ -1,3 +1,4 @@
+import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import {
@@ -6,96 +7,248 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Slider } from "@/components/ui/slider";
+import { FilterOptionsProps, FilterProps } from "@/types/filter";
 import React from "react";
 
-export type TFilterOptions = string;
+const MultipleFilter: React.FC<FilterOptionsProps<T>> = ({
+  filter,
+  selectedFilters,
+  applyFilter,
+}) => {
+  const { type, accessor, onFilter, label: filterLabel } = filter;
+  return (
+    <>
+      {filter.options &&
+        filter.options.map(({ label, value }) => (
+          <div className="flex text-gray-700 items-center gap-2 capitalize font-medium">
+            <Checkbox
+              className="data-[state=checked]:bg-basePrimary"
+              id={label}
+              checked={
+                selectedFilters
+                  .find(({ key }) => key === accessor)
+                  ?.value.includes(value) || false
+              }
+              onCheckedChange={(checked) => {
+                const index = selectedFilters.findIndex(
+                  (filter) => filter.key === accessor
+                );
+                const prevValue =
+                  index !== -1 ? selectedFilters[index].value : [];
+                const newValue = checked
+                  ? [...prevValue, value]
+                  : prevValue.filter((selected) => selected !== value);
 
-export type TFilterType = {
-  label: string;
-  accessor: string;
-  icon?: React.ReactNode;
-  options?: TFilterOptions[];
-  type?: string;
-
+                applyFilter(accessor, filterLabel, newValue, onFilter, type);
+              }}
+            />
+            <Label
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              htmlFor={label}
+            >
+              {label}
+            </Label>
+          </div>
+        ))}
+    </>
+  );
 };
 
-export type TSelectedFilter = {
-  key: string;
-  label: string;
-  value: any[];
+const DateRangeFilter: React.FC<FilterOptionsProps<T>> = ({
+  filter,
+  selectedFilters,
+  applyFilter,
+}) => {
+  const { type, accessor, onFilter, label: filterLabel } = filter;
+  const date = selectedFilters.find(({ key }) => key === accessor);
+
+  console.log(date, "here");
+  return (
+    <Calendar
+      mode="range"
+      selected={date?.value}
+      onSelect={(value) =>
+        applyFilter(accessor, filterLabel, value, onFilter, type)
+      }
+      className="rounded-md border"
+    />
+  );
 };
 
-interface FilterProps {
-  className: string;
-  onFilter: (key: string, label: string, value: any[]) => void;
-  filters: TFilterType[];
-  selectedFilters: TSelectedFilter[];
-}
+const SliderFilter: React.FC<FilterOptionsProps<T>> = ({
+  filter,
+  selectedFilters,
+  applyFilter,
+}) => {
+  const { type, accessor, onFilter, label: filterLabel } = filter;
+  const slideValue = selectedFilters.find(({ key }) => key === accessor);
 
-export default function Filter({
+  return (
+    <div className="space-y-2 py-2">
+      <div className="flex text-sm text-gray-600 justify-between">
+        <span>{slideValue?.value[0] || 0}</span>
+      </div>
+      <Slider
+        onValueChange={(value) =>
+          applyFilter(accessor, filterLabel, value, onFilter, type)
+        }
+        defaultValue={slideValue?.value || [filter?.max]}
+        max={filter?.max}
+        step={filter?.steps}
+      />
+    </div>
+  );
+};
+
+const RangeFilter: React.FC<FilterOptionsProps<T>> = ({
+  filter,
+  selectedFilters,
+  applyFilter,
+}) => {
+  const { type, accessor, onFilter, label: filterLabel } = filter;
+  const range = selectedFilters.find(({ key }) => key === accessor);
+
+  return (
+    <div className="space-y-2 py-2">
+      <div className="flex text-sm text-gray-600 justify-between">
+        <span>{range?.value[0] || 0}</span>
+        <span>{range?.value[1] || filter?.max}</span>
+      </div>
+      <Slider
+        onValueChange={(value) =>
+          applyFilter(accessor, filterLabel, value, onFilter, type)
+        }
+        defaultValue={range?.value || [0, filter?.max]}
+        max={filter?.max}
+        step={filter?.steps}
+      />
+    </div>
+  );
+};
+
+const SingleFilter: React.FC<FilterOptionsProps<T>> = ({
+  filter,
+  selectedFilters,
+  applyFilter,
+}) => {
+  const { type, accessor, onFilter, label: filterLabel } = filter;
+  const singleValue = selectedFilters.find(({ key }) => key === accessor);
+
+  return (
+    <RadioGroup
+      onValueChange={(value) =>
+        applyFilter(accessor, filterLabel, value, onFilter, type)
+      }
+      defaultValue={singleValue?.value}
+    >
+      {filter?.options &&
+        filter?.options.map(({ label, value }) => (
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value={value} id={label} />
+            <Label htmlFor={value}>{label}</Label>
+          </div>
+        ))}
+    </RadioGroup>
+  );
+};
+
+const FilterOptions: React.FC<FilterOptionsProps<T>> = React.memo(
+  ({ filter, selectedFilters, applyFilter }) => {
+    const { type, accessor, onFilter, label: filterLabel } = filter;
+
+    switch (type) {
+      case "multiple":
+        return (
+          <MultipleFilter
+            filter={filter}
+            selectedFilters={selectedFilters}
+            applyFilter={applyFilter}
+          />
+        );
+
+      case "range":
+        return (
+          <RangeFilter
+            filter={filter}
+            selectedFilters={selectedFilters}
+            applyFilter={applyFilter}
+          />
+        );
+
+      case "dateRange":
+        return (
+          <DateRangeFilter
+            filter={filter}
+            selectedFilters={selectedFilters}
+            applyFilter={applyFilter}
+          />
+        );
+
+      case "slider":
+        return (
+          <SliderFilter
+            filter={filter}
+            selectedFilters={selectedFilters}
+            applyFilter={applyFilter}
+          />
+        );
+
+      default:
+        return (
+          <SingleFilter
+            filter={filter}
+            selectedFilters={selectedFilters}
+            applyFilter={applyFilter}
+          />
+        );
+    }
+  }
+);
+
+const Filter: React.FC<FilterProps<T>> = ({
   className,
   filters,
-  onFilter,
+  applyFilter,
   selectedFilters,
-}: FilterProps) {
+}) => {
   return (
     <div className={className}>
       <Menubar className="flex justify-between px-1 border-0">
-        {filters.map(({ label, accessor, options, icon }, index) => (
-          <MenubarMenu>
-            <MenubarTrigger
-              className={`flex gap-0.5 items-center w-full min-w-fit justify-center px-0.5 ${
-                index > 0 ? "border-l-[1px]" : ""
-              }`}
-            >
-              {icon}
-              <span className="text-xs font-medium text-ticketColor capitalize">
-                {label}
-              </span>
-            </MenubarTrigger>
-            <MenubarContent className="space-y-2 w-fit">
-              {options &&
-                options.map((option) => (
-                  <div className="flex text-gray-700 items-center gap-2 capitalize font-medium">
-                    <Checkbox className="data-[state=checked]:bg-basePrimary"
-                      id={option}
-                      checked={
-                        selectedFilters
-                          .find(({ key }) => key === accessor)
-                          ?.value.includes(option) || false
-                      }
-                      onCheckedChange={(checked: boolean) => {
-                        const index = selectedFilters.findIndex(
-                          (filter) => filter.key === accessor
-                        );
-
-                        const prevValue =
-                          index !== -1 ? selectedFilters[index].value : [];
-
-                        const newValue = checked
-                          ? [...prevValue, option]
-                          : prevValue.filter((selected) => selected !== option);
-
-                        onFilter(accessor, label, newValue);
-                      }}
-                    />
-                    <Label
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                      htmlFor={option}
-                    >
-                      {option}
-                    </Label>
-                  </div>
-                ))}
-            </MenubarContent>
-          </MenubarMenu>
-        ))}
+        {filters.map((filter, index) => {
+          const { label, accessor, options, icon } = filter;
+          return (
+            <MenubarMenu key={accessor}>
+              <MenubarTrigger
+                className={`flex gap-0.5 items-center w-full min-w-fit justify-center px-0.5 ${
+                  index > 0 ? "border-l-[1px]" : ""
+                }`}
+              >
+                {icon}
+                <span className="text-xs font-medium text-ticketColor capitalize">
+                  {label}
+                </span>
+              </MenubarTrigger>
+              <MenubarContent className="space-y-2 w-fit">
+                <FilterOptions<T>
+                  filter={filter}
+                  selectedFilters={selectedFilters}
+                  applyFilter={applyFilter}
+                />
+              </MenubarContent>
+            </MenubarMenu>
+          );
+        })}
       </Menubar>
       <div className="flex gap-2 flex-wrap px-2 justify-center">
         {selectedFilters.map(({ label, key }) => (
-          <div className="text-tiny text-earlyBirdColor flex items-center gap-1.5 p-1 rounded bg-[#EEF0FF] w-fit">
+          <div
+            key={key}
+            className="text-tiny text-earlyBirdColor flex items-center gap-1.5 p-1 rounded bg-[#EEF0FF] w-fit"
+          >
             <span className="font-medium capitalize">{label}</span>
-            <button onClick={() => onFilter(key, label, [])}>
+            <button onClick={() => applyFilter(key, label, [])}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="2em"
@@ -114,4 +267,6 @@ export default function Filter({
       </div>
     </div>
   );
-}
+};
+
+export default Filter;
