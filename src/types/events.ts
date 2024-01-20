@@ -48,9 +48,9 @@ eventVisibility: string
 expectedParticipants: number
 facebook: string
 id: number
-twitter:string
 industry:string
 instagram:string
+x:string
 linkedin:string
 locationType: "Hybrid" | "Onsite" | "Online" | "Virtual";
 organisationLogo: string
@@ -69,4 +69,5 @@ registered: string
 export interface PaymentConfigProps {
   email: string;
   amount?: number;
+  reference:string
 }

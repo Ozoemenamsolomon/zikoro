@@ -7,6 +7,7 @@ import { CheckCircleFill, Telephone } from "styled-icons/bootstrap";
 import { Whatsapp } from "styled-icons/remix-fill";
 import { EmailOutline } from "styled-icons/evaicons-outline";
 import { Button } from "@/components";
+import { Share } from "@styled-icons/bootstrap/Share";
 import { EventLocationType, AboutWidget } from "@/components/composables";
 import Link from "next/link";
 import { cn } from "@/lib";
@@ -18,6 +19,7 @@ import {
   calculateTimeDifference,
   hasTimeElapsed,
   isDateGreaterThanToday,
+  COUNTRIES_CURRENCY,
 } from "@/utils";
 import {
   FacebookIcon,
@@ -48,6 +50,7 @@ export function SingleEvent({
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
   const [chosenPrice, setChosenPrice] = useState<number | undefined>(10000);
+  const [isShareDropDown, showShareDropDown] = useState(false);
   const [priceCategory, setPriceCategory] = useState<string | undefined>("");
   const router = useRouter();
 
@@ -134,6 +137,10 @@ export function SingleEvent({
     return selected === chosenPrice;
   }
 
+  function toggleShareDropDown() {
+    showShareDropDown((prev) => !prev);
+  }
+
   function selectedPrice(value: number | undefined) {
     if (chosenPrice !== undefined && chosenPrice === value) {
       setChosenPrice(undefined);
@@ -154,7 +161,28 @@ export function SingleEvent({
     );
   }, [event?.phoneNumber, event?.whatsappNumber, event?.email]);
 
-  console.log({isAllContactUnavailable}, event?.whatsappNumber === null);
+  const isAllSocialUnavailable = useMemo(() => {
+    return (
+      event?.x === null &&
+      event?.instagram === null &&
+      event?.linkedin === null &&
+      event?.facebook === null
+    );
+  }, [event?.x, event?.instagram, event?.linkedin, event?.facebook]);
+
+  const currency = useMemo(() => {
+    if (event?.pricingCurrency) {
+      const symbol =
+        COUNTRIES_CURRENCY.find(
+          (v) => String(v.code) === String(event?.pricingCurrency)
+        )?.symbol ?? "₦";
+      return symbol;
+    }
+  }, [event?.pricingCurrency]);
+
+  const availableSlot = useMemo(() => {
+    return Number(event?.expectedParticipants) - Number(event?.registered);
+  }, [event?.expectedParticipants, event?.registered]);
 
   return (
     <>
@@ -208,69 +236,96 @@ export function SingleEvent({
               />
 
               <div className="w-full space-y-2 flex flex-col items-start justify-start">
-                {isAllContactUnavailable && <h3>Speak with the Event Team</h3>}
+                {!isAllContactUnavailable && <h3>Speak with the Event Team</h3>}
 
-                { (
-                  <div className="flex items-center gap-x-2">
-                    <Button
-                      onClick={phoneCall}
-                      disabled={event?.phoneNumber === null}
-                      className={cn(
-                        "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
-                        event?.phoneNumber === null && "hidden"
-                      )}
-                    >
-                      <Telephone size={22} />
-                      <span>Phone Call</span>
-                    </Button>
-
-                    <Button
-                      onClick={whatsapp}
-                      disabled={event?.whatsappNumber === null}
-                      className={cn(
-                        "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
-                        event?.whatsappNumber === null && "hidden"
-                      )}
-                    >
-                      <Whatsapp size={22} />
-                      <span>WhatsApp</span>
-                    </Button>
-
-                    <Button
-                      onClick={sendMail}
-                      disabled={event?.email === null}
-                      className={cn(
-                        "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
-                        event?.email === null && "hidden"
-                      )}
-                    >
-                      <EmailOutline size={22} />
-                      <span>Email</span>
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-              <div className="w-full flex flex-col justify-start items-start space-y-2 ">
-                <h3>Learn more about the event organizers</h3>
                 <div className="flex items-center gap-x-2">
-                  <Link href={event?.twitter ? event?.twitter : "/"}>
-                    <TwitterIcon />
-                  </Link>
-                  <Link href={event?.linkedin ? event?.linkedin : "/"}>
-                    {" "}
-                    <LinkedinIcon />
-                  </Link>
-                  <Link href={event?.facebook ? event?.facebook : "/"}>
-                    {" "}
-                    <FacebookIcon />
-                  </Link>
-                  <Link href={event?.instagram ? event?.instagram : "/"}>
-                    {" "}
-                    <InstagramIcon />
-                  </Link>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      phoneCall();
+                    }}
+                    disabled={event?.phoneNumber === null}
+                    className={cn(
+                      "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
+                      event?.phoneNumber === null && "hidden"
+                    )}
+                  >
+                    <Telephone size={22} />
+                    <span>Phone Call</span>
+                  </Button>
+
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      whatsapp();
+                    }}
+                    disabled={event?.whatsappNumber === null}
+                    className={cn(
+                      "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
+                      event?.whatsappNumber === null && "hidden"
+                    )}
+                  >
+                    <Whatsapp size={22} />
+                    <span>WhatsApp</span>
+                  </Button>
+
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      sendMail();
+                    }}
+                    disabled={event?.email === null}
+                    className={cn(
+                      "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
+                      event?.email === null && "hidden"
+                    )}
+                  >
+                    <EmailOutline size={22} />
+                    <span>Email</span>
+                  </Button>
                 </div>
               </div>
+
+              {!isAllSocialUnavailable && (
+                <div className="w-full flex flex-col justify-start items-start space-y-2 ">
+                  <h3>Learn more about the event organizers</h3>
+                  <div className="flex items-center gap-x-2">
+                    <Link
+                      href={event?.x ? event?.x : "/"}
+                      className={cn("block", event?.x === null && "hidden")}
+                    >
+                      <TwitterIcon />
+                    </Link>
+                    <Link
+                      href={event?.linkedin ? event?.linkedin : "/"}
+                      className={cn(
+                        "block",
+                        event?.linkedin === null && "hidden"
+                      )}
+                    >
+                      <LinkedinIcon />
+                    </Link>
+                    <Link
+                      href={event?.facebook ? event?.facebook : "/"}
+                      className={cn(
+                        "block",
+                        event?.facebook === null && "hidden"
+                      )}
+                    >
+                      <FacebookIcon />
+                    </Link>
+                    <Link
+                      href={event?.instagram ? event?.instagram : "/"}
+                      className={cn(
+                        "block",
+                        event?.instagram === null && "hidden"
+                      )}
+                    >
+                      <InstagramIcon />
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="w-full flex lg:col-span-3 flex-col items-start justify-start gap-y-4">
@@ -279,9 +334,11 @@ export function SingleEvent({
                   Icon={Users}
                   text={`${event?.expectedParticipants ?? 0} participants`}
                 />
-                <p className="text-red-600 bg-red-100 text-xs p-2 rounded-md">
-                  12 slots left
-                </p>
+                {availableSlot > 0 && (
+                  <p className="text-red-600 bg-red-100 text-xs p-2 rounded-md">
+                    {` ${availableSlot} slots left`}
+                  </p>
+                )}
               </div>
               <div className="grid grid-cols-3 gap-1 items-center w-full">
                 {pricingArray?.map(({ name, price, date }) => (
@@ -305,9 +362,9 @@ export function SingleEvent({
                       <div className="w-full h-full absolute inset-0 bg-white/50"></div>
                     )}
                     <div className="flex items-center justify-between w-full">
-                      <p className="font-medium text-[13px]">{`₦${(
-                        price ?? 0
-                      )?.toLocaleString()}`}</p>
+                      <p className="font-medium text-[13px]">{`${
+                        currency ? currency : "₦"
+                      }${(Number(price) ?? 0)?.toLocaleString()}`}</p>
 
                       {!isDateGreaterThanToday(date) && (
                         <div
@@ -353,7 +410,7 @@ export function SingleEvent({
                 </div>
               </div>
               <Button
-                disabled={chosenPrice === undefined}
+                disabled={priceCategory === undefined}
                 onClick={(e) => {
                   e.stopPropagation();
                   onClose();
@@ -364,7 +421,25 @@ export function SingleEvent({
               </Button>
               <div className="w-full flex flex-col justify-start items-start space-y-2">
                 <h3 className="font-medium">SHARE THIS EVENT</h3>
-                <div className="flex items-center gap-x-2"></div>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleShareDropDown();
+                  }}
+                  className="relative px-1"
+                >
+                  <Share size={24} />
+
+                  {isShareDropDown && (
+                    <ActionModal
+                      close={toggleShareDropDown}
+                      x={"https://twitter.com"}
+                      linkedIn={"https://linkedIn.com"}
+                      facebook={"https://www.fb.com"}
+                      instagram={"https://www.instagram.com"}
+                    />
+                  )}
+                </Button>
               </div>
             </div>
           </div>
@@ -397,47 +472,69 @@ export function SingleEvent({
   );
 }
 
-function ActionModal({ close }: { close: () => void }) {
+function ActionModal({
+  close,
+  x,
+  facebook,
+  instagram,
+  linkedIn,
+}: {
+  x: string;
+  facebook: string;
+  instagram: string;
+  linkedIn: string;
+  close: () => void;
+}) {
   return (
     <>
-      <div className="absolute right-0 top-10  w-48">
+      <div className="absolute left-0 top-10  w-48">
         <Button className="fixed inset-0 bg-none h-full w-full z-[100"></Button>
         <div
           role="button"
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="flex relative z-[50]  flex-col py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
+          className="flex relative z-[50]   flex-col py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
         >
-          <Button className="items-center flex  h-10 w-full text-red-600 hover:bg-gray-100 justify-start text-xs">
+          <Link
+            target="_blank"
+            href={x}
+            className="items-center flex px-2  h-10 w-full gap-x-2 hover:bg-gray-100 justify-start text-xs"
+          >
             <TwitterIcon />
             <span>X</span>
-          </Button>
+          </Link>
 
-          <Button
+          <Link
+            target="_blank"
+            href={linkedIn}
             className={
-              "items-center h-10 gap-x-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
+              "items-center h-10 gap-x-2 px-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
             }
           >
             <LinkedinIcon />
             <span>LinkedIn</span>
-          </Button>
-          <Button
+          </Link>
+          <Link
+            target="_blank"
+            href={facebook}
             className={
-              "items-center h-10 gap-x-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
+              "items-center h-10 gap-x-2 px-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
             }
           >
             <FacebookIcon />
             <span>Facebook</span>
-          </Button>
-          <Button
+          </Link>
+          <Link
+            target="_blank"
+            href={instagram}
             className={
-              "items-center h-10 gap-x-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
+              "items-center h-10 gap-x-2 px-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
             }
           >
             <InstagramIcon />
             <span>Instagram</span>
-          </Button>
+          </Link>
         </div>
       </div>
     </>

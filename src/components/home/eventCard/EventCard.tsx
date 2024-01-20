@@ -66,10 +66,21 @@ export function EventCard({
         COUNTRIES_CURRENCY.find(
           (v) => String(v.code) === String(event?.pricingCurrency)
         )?.symbol || "₦";
-      console.log(event?.pricingCurrency, symbol);
       return symbol;
     }
   }, [event?.pricingCurrency]);
+
+  const price = useMemo(() => {
+    if (Array.isArray(event?.pricing) && event?.pricing[1]?.standard) {
+      const standardPrice = event?.pricing[1].standard;
+
+      return Number(standardPrice)?.toLocaleString(undefined, {
+        maximumFractionDigits: 0,
+      });
+    } else {
+      return "";
+    }
+  }, [event.pricing]);
 
   return (
     <div className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4 shadow-md w-full">
@@ -128,12 +139,13 @@ export function EventCard({
 
       <div className="flex items-center justify-between w-full">
         {Array.isArray(event?.pricing) && event?.pricing[1]?.standard ? (
-          <p className="font-medium">{`${currency ? currency : ""}${
-           String(event?.pricing[1].standard).toLocaleString() || 0
-          }`}</p>
+          <p className="font-medium">{`${
+            currency ? currency : "₦"
+          }${price}`}</p>
         ) : (
           <p className="w-1 h-1"></p>
         )}
+
         <div className="flex items-center gap-x-2">
           <EventLocationType locationType={event.locationType} />
           <div className="flex text-xs text-gray-500 flex-col items-start justify-start">

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
+import { nanoid } from "nanoid";
 import { PlusCircleFill } from "styled-icons/bootstrap";
 import { CircleMinus } from "styled-icons/fa-solid";
 import { Payment } from "@/components/published";
@@ -57,6 +58,7 @@ export function BookEvent({
     },
   });
   const { registerAttendees } = useBookingEvent();
+  const eventReference = nanoid();
   const { fields, remove, append } = useFieldArray({
     control: form.control,
     name: "attendeeApplication",
@@ -105,7 +107,13 @@ export function BookEvent({
       return; /// stop submission
     }
     setAttendees(values.attendeeApplication);
-    await registerAttendees(allowPayment, values, eventId, organization);
+    await registerAttendees(
+      allowPayment,
+      eventReference,
+      values,
+      eventId,
+      organization
+    );
   }
   return (
     <>
@@ -315,23 +323,25 @@ export function BookEvent({
                   <div className="w-full flex flex-col items-start justify-start gap-y-2">
                     <p className="mb-4">How do you hear about us?</p>
 
-                    {["instagram", "facebook", "x","linkedIn", "others"].map((value) => (
-                      <FormField
-                        control={form.control}
-                        name="aboutUs"
-                        render={({ field }) => (
-                          <label className="flex items-center">
-                            <input
-                              type="radio"
-                              {...field}
-                              value={value}
-                              className="h-[20px] pt-3 w-[20px] mr-4"
-                            />
-                            <span className="capitalize">{value}</span>
-                          </label>
-                        )}
-                      />
-                    ))}
+                    {["instagram", "facebook", "x", "linkedIn", "others"].map(
+                      (value) => (
+                        <FormField
+                          control={form.control}
+                          name="aboutUs"
+                          render={({ field }) => (
+                            <label className="flex items-center">
+                              <input
+                                type="radio"
+                                {...field}
+                                value={value}
+                                className="h-[20px] pt-3 w-[20px] mr-4"
+                              />
+                              <span className="capitalize">{value}</span>
+                            </label>
+                          )}
+                        />
+                      )
+                    )}
                   </div>
                   {form.watch("aboutUs") === "others" && (
                     <FormField
@@ -364,8 +374,6 @@ export function BookEvent({
               </Form>
             </div>
           </div>
-
-      
         </div>
       </div>
       {isPaymentModal && (
@@ -375,6 +383,7 @@ export function BookEvent({
           priceCategory={priceCategory}
           eventTitle={eventTitle}
           startDate={startDate}
+          eventReference={eventReference}
           endDate={endDate}
           attendeesDetails={attendees}
           eventId={eventId}
