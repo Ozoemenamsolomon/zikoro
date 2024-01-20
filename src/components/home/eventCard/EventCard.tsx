@@ -61,16 +61,15 @@ export function EventCard({
   }, [event.eventCity, event.eventCountry]);
 
   const currency = useMemo(() => {
-    
     if (event?.pricingCurrency) {
-      const symbol = COUNTRIES_CURRENCY.find((v) => String(v.code) === String(event?.pricingCurrency))?.symbol || "₦";
-      console.log(event?.pricingCurrency , symbol)
-      return symbol
+      const symbol =
+        COUNTRIES_CURRENCY.find(
+          (v) => String(v.code) === String(event?.pricingCurrency)
+        )?.symbol || "₦";
+      console.log(event?.pricingCurrency, symbol);
+      return symbol;
     }
-     
-      
   }, [event?.pricingCurrency]);
-
 
   return (
     <div className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4 shadow-md w-full">
@@ -83,7 +82,12 @@ export function EventCard({
           >
             <ThreeDotsVertical size={20} />
             {isAction && (
-              <ActionModal refetch={refetch} close={onClose} id={event?.id} />
+              <ActionModal
+                isPublished={event.published}
+                refetch={refetch}
+                close={onClose}
+                id={event?.id}
+              />
             )}
           </Button>
         </div>
@@ -123,10 +127,10 @@ export function EventCard({
       </div>
 
       <div className="flex items-center justify-between w-full">
-        {Array.isArray(event?.pricing) ? (
-          <p className="font-medium">{`${currency ? currency : ""}${(
-            event?.pricing[1]?.standard || 0
-          ).toLocaleString()}`}</p>
+        {Array.isArray(event?.pricing) && event?.pricing[1]?.standard ? (
+          <p className="font-medium">{`${currency ? currency : ""}${
+           String(event?.pricing[1].standard).toLocaleString() || 0
+          }`}</p>
         ) : (
           <p className="w-1 h-1"></p>
         )}
@@ -146,9 +150,11 @@ function ActionModal({
   close,
   id,
   refetch,
+  isPublished,
 }: {
   refetch: () => Promise<any>;
   close: () => void;
+  isPublished: boolean;
   id: number;
 }) {
   const { duplicateEvent, loading } = useDuplicateEvent();
@@ -195,7 +201,12 @@ function ActionModal({
       </div>
 
       {isDeleteModal && (
-        <DeleteEventModal refetch={refetch} close={onClose} id={id} />
+        <DeleteEventModal
+          isPublished={isPublished}
+          refetch={refetch}
+          close={onClose}
+          id={id}
+        />
       )}
     </>
   );

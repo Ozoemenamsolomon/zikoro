@@ -66,9 +66,9 @@ export function CreateOrganization({ close }: { close: () => void }) {
                 <InputOffsetLabel label="Name">
                   <Input
                     type="text"
-                    placeholder="Select Organization Name"
+                    placeholder="Enter Organization Name"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-black text-gray-700"
+                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -80,7 +80,7 @@ export function CreateOrganization({ close }: { close: () => void }) {
                 <InputOffsetLabel label={"Organization Type"}>
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value}
+                    value={field.value || "Select organization Type"}
                   >
                     <SelectTrigger className="border focus:border-gray-500 h-12">
                       <SelectValue
@@ -91,7 +91,7 @@ export function CreateOrganization({ close }: { close: () => void }) {
 
                     <SelectContent>
                       {orgType.map((value) => (
-                        <SelectItem value={value}>{value}</SelectItem>
+                        <SelectItem value={value ?? "Select Organization Type"}>{value}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -105,7 +105,7 @@ export function CreateOrganization({ close }: { close: () => void }) {
                 <InputOffsetLabel label={"Pricing Plan"}>
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value}
+                    value={field.value || "Select Subscription Plan"}
                   >
                     <SelectTrigger className="border focus:border-gray-500 h-12">
                       <SelectValue
@@ -116,7 +116,7 @@ export function CreateOrganization({ close }: { close: () => void }) {
 
                     <SelectContent>
                       {pricingPlan.map((value) => (
-                        <SelectItem value={value}>{value}</SelectItem>
+                        <SelectItem value={value ?? "Select Subscription Plan"}>{value}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
