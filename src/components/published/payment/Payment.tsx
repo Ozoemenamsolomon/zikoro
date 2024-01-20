@@ -57,7 +57,7 @@ export function Payment({
 
     const payload = {
       eventId,
-      transactionReference: eventReference,
+      eventTransactionRef: eventReference,
       paymentDate: new Date(),
       amountPaid: total,
       attendees: count,
