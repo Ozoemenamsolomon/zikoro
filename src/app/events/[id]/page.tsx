@@ -7,7 +7,7 @@ import { Footer, HeadMeta } from "@/components";
 import { useFetchSingleEvent } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 
-export default async function Page({
+export default function Page({
   params: { id },
 }: {
   params: { id: string };
