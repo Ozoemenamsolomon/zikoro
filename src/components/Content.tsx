@@ -134,7 +134,8 @@ export default function Content() {
                   <p className="text-sm font-medium text-gray-700">
                     Event category
                   </p>
-                  <div className=" p-4 rounded-md border-2 border-[#f3f3f3] shadow-sm ">
+                 {/****
+                 <div className=" p-4 rounded-md border-2 border-[#f3f3f3] shadow-sm ">
                     <select
                       className="w-full bg-white border-0 sm:text-sm focus:border-0 outline-0"
                       placeholder="Please select"
@@ -144,8 +145,10 @@ export default function Content() {
                       <option value="hybrid">Hybrid</option>
                     </select>
                   </div>
+                  */}
                 </div>
-                <div className="">
+                {/**
+                 <div className="">
                   <label
                     htmlFor="NumberOfParticipants"
                     className="block text-sm font-medium text-gray-700"
@@ -161,6 +164,7 @@ export default function Content() {
                     />
                   </div>
                 </div>
+                 */}
               </div>
             </div>
           </form>

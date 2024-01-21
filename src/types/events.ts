@@ -34,40 +34,53 @@ interface PricingType {
 }
 
 export interface Event {
-  createdAt: string
-createdBy: string
-description: string
-email: string
-endDateTime: string
-eventAddress: string
-eventCategory: string
-eventCity:string
-eventCountry:string
-eventTitle: string
-eventVisibility: string
-expectedParticipants: number
-facebook: string
-id: number
-industry:string
-instagram:string
-x:string
-linkedin:string
-locationType: "Hybrid" | "Onsite" | "Online" | "Virtual";
-organisationLogo: string
-organisationName: string
-phoneNumber: string
-prerequisites: string
-pricing: PricingType[]
-pricingCurrency: string
-published: boolean
-startDateTime: string
-trainingDuration: string
-whatsappNumber: string
-registered: string
+  createdAt: string;
+  createdBy: string;
+  description: string;
+  email: string;
+  endDateTime: string;
+  eventAddress: string;
+  eventCategory: string;
+  eventCity: string;
+  eventCountry: string;
+  eventTitle: string;
+  eventVisibility: string;
+  expectedParticipants: number;
+  facebook: string;
+  id: number;
+  industry: string;
+  instagram: string;
+  x: string;
+  linkedin: string;
+  locationType: "Hybrid" | "Onsite" | "Online" | "Virtual";
+  organisationLogo: string;
+  organisationName: string;
+  phoneNumber: string;
+  prerequisites: string;
+  pricing: PricingType[];
+  pricingCurrency: string;
+  published: boolean;
+  startDateTime: string;
+  trainingDuration: string;
+  whatsappNumber: string;
+  registered: string;
 }
 
 export interface PaymentConfigProps {
   email: string;
   amount?: number;
-  reference:string
+  reference: string;
+}
+
+export interface DiscountCodeType {
+  created_at: string;
+  discountAmount: number;
+  discountCode: string;
+  discountPercentage: string;
+  eventId: number;
+  id: number;
+  minQty: number;
+  quantity: number;
+  status: boolean;
+  validUntil: string;
 }

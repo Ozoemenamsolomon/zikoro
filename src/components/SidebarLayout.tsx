@@ -71,7 +71,7 @@ function SideNavs({
   isNav: boolean;
   query: string | null;
 }) {
-  const { id } = useParams();
+  const { organizationId } = useParams();
 
   return (
     <div
@@ -104,7 +104,7 @@ function SideNavs({
             className="w-[150px] h-[40px]"
           />
           {/**nav links */}
-          <NavLinks query={query} id={id} />
+          <NavLinks query={query} id={organizationId} />
         </div>
         <div className="w-full px-4 flex flex-col  items-start justify-start bottom-5 inset-x-0 absolute  gap-y-2">
           <div className="w-full">

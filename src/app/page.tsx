@@ -1,30 +1,12 @@
-"use client";
+import Home from "@/components/home/Home"
+import { withPageAuthRequired } from "@auth0/nextjs-auth0"
 
-import { SideBarLayout } from "@/components";
-import { EventCards, EmptyCard } from "../components/home";
-import { useGetQueries } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 
-export default function Page() {
-  const { data: eventData, refetch, loading } = useGetQueries("events");
-
-  return (
-    <main className="w-full h-full">
-      <SideBarLayout isHomePage={true}>
-        {loading && (
-          <div className="w-full h-[300px] flex items-center justify-center">
-            <LoaderAlt size={50} className="animate-spin" />
-          </div>
-        )}
-        {!loading && eventData.length > 0 && (
-          <EventCards refetch={refetch} events={eventData} />
-        )}
-        {!loading && eventData?.length === 0 && (
-          <EmptyCard
-            text={`You have not added any event. Start by creating an organization`}
-          />
-        )}
-      </SideBarLayout>
-    </main>
-  );
+async function Page() {
+  return <Home/>
 }
+
+
+export default Page
+
+//  withPageAuthRequired(Page, {returnTo: "/"})

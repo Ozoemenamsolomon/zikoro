@@ -4,7 +4,7 @@ import { Lock } from "@styled-icons/fa-solid/Lock";
 import { PaystackButton } from "react-paystack";
 import { useState } from "react";
 import { paymentConfig } from "@/hooks/common/usePayStackPayment";
-import { useTransactionDetail, getCookie } from "@/hooks";
+import { getCookie, useUpdateTransactionDetail } from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { CheckCircleFill } from "@styled-icons/bootstrap/CheckCircleFill";
 
@@ -15,6 +15,7 @@ export function Payment({
   priceCategory,
   eventDate,
   eventPrice,
+  currency,
   eventLocation,
   eventTitle,
   startDate,
@@ -23,11 +24,14 @@ export function Payment({
   eventId,
   attendeesDetails,
   eventReference,
+  referralSource,
+  discountCode,
 }: {
   total?: number;
   allowPayment: (bool: boolean) => void;
   discount: number;
   count: number;
+  currency: string | undefined;
   attendeesDetails: any[];
   eventPrice?: number;
   startDate?: string;
@@ -38,14 +42,16 @@ export function Payment({
   eventTitle?: string;
   eventLocation?: string;
   eventReference: string;
+  discountCode?: string;
+  referralSource?: string;
 }) {
-  const { sendTransactionDetail, loading } = useTransactionDetail();
+  const { sendTransactionDetail, loading } = useUpdateTransactionDetail();
   const [isSuccessModal, setSuccessModal] = useState(false);
   const user = getCookie("user");
   const config = paymentConfig({
     reference: eventReference,
     email: user?.user?.email!,
-    amount: Number(total),
+    amount: total,
   });
 
   function toggleSuccessModal(bool: boolean) {
@@ -59,18 +65,24 @@ export function Payment({
       eventId,
       eventRegistrationRef: eventReference,
       paymentDate: new Date(),
+      expiredAt: null,
       amountPaid: total,
       attendees: count,
-      currency: "NGN",
+      discountValue: discount,
+      referralSource,
+      discountCode,
+      currency,
       paidStatus: reference.status === "success",
       eventDate,
-     // priceCategory: "Standard", 
+      ticketCategory: priceCategory,
       event: eventTitle,
       attendeesDetails,
       eventPrice,
     };
 
-     /// change to priceCategory after validity date has been adjusted
+    //  console.log({ payload });
+
+    /// change to priceCategory after validity date has been adjusted
     await sendTransactionDetail(toggleSuccessModal, payload);
   }
 

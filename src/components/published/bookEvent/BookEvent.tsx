@@ -16,7 +16,8 @@ import { eventBookingValidationSchema } from "@/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { CloseOutline } from "styled-icons/evaicons-outline";
-import { useBookingEvent } from "@/hooks";
+import { useBookingEvent, useTransactionDetail } from "@/hooks";
+import toast from "react-hot-toast";
 
 export function BookEvent({
   close,
@@ -25,24 +26,35 @@ export function BookEvent({
   organization,
   eventDate,
   endDate,
+  minimumAttendees,
   startDate,
+  discountAmount,
+  currency,
+  discountPercentage,
   priceCategory,
   eventTitle,
   eventLocation,
+  discountCode,
 }: {
   eventId?: number;
+  discountCode?: string;
   eventDate?: string;
   priceCategory?: string;
   endDate?: string;
   startDate?: string;
   eventTitle?: string;
+  minimumAttendees?: number;
   organization?: string | null;
   price?: number;
+  discountAmount: number;
+  discountPercentage: number;
   close: () => void;
   eventLocation?: string;
+  currency: string | undefined;
 }) {
   const [attendees, setAttendees] = useState<any[]>([]);
   const [isPaymentModal, setOpenPaymentModal] = useState(false);
+  const {sendTransactionDetail} = useTransactionDetail()
   const form = useForm<z.infer<typeof eventBookingValidationSchema>>({
     resolver: zodResolver(eventBookingValidationSchema),
     defaultValues: {
@@ -81,17 +93,41 @@ export function BookEvent({
   function allowPayment(bool: boolean) {
     setOpenPaymentModal(bool);
   }
-  // dummy prices
-  const processingFee = useMemo(() => {
-    return 2000 * fields?.length;
-  }, [fields]);
-  const discount = useMemo(() => {
-    return 1000 * fields?.length;
-  }, [fields]);
-  //*** */
 
+  const othersValue = form.watch("others");
+  const aboutUsValue = form.watch("aboutUs");
+
+  const socialMediaMapping: Record<string, string | any> = {
+    instagram: "instagram",
+    facebook: "facebook",
+    whatsapp: "whatsapp",
+    friends: "friends",
+    others: othersValue,
+  };
+  let social: string | undefined;
+
+  if (aboutUsValue === "others") {
+    social = othersValue;
+  } else if (socialMediaMapping[aboutUsValue]) {
+    social = aboutUsValue;
+  }
+
+  // calculating  the discount
+  const discount = useMemo(() => {
+    return discountAmount !== null
+      ? Number(discountAmount) * fields?.length
+      : ((Number(price) * Number(discountPercentage)) / 100) * fields?.length;
+  }, [fields]);
+
+  // calculating the processing Fee
+  const processingFee = useMemo(() => {
+    if (price) return ((Number(price - discount) * 5) / 100) * fields?.length;
+  }, [fields]);
+
+  // calculating total
   const total = useMemo(() => {
-    if (computedPrice) return computedPrice - discount + processingFee;
+    if (computedPrice && processingFee)
+      return computedPrice - discount + processingFee;
   }, [computedPrice, processingFee, discount]);
 
   async function onSubmit(
@@ -106,14 +142,55 @@ export function BookEvent({
 
       return; /// stop submission
     }
+
+    // checking if the attendees number satisfy the minimum attendees required to use the event discount code
+    if (minimumAttendees !== undefined && minimumAttendees !== fields?.length) {
+      toast.error(
+        `Discount code is valid for minimum of ${minimumAttendees} attendees`
+      );
+      return;
+    }
     setAttendees(values.attendeeApplication);
     await registerAttendees(
-      allowPayment,
+     
       eventReference,
       values,
       eventId,
       organization
     );
+
+   // todays date 
+const today = new Date()
+
+// Calculate the date for the next 7 days
+const nextSevenDays = new Date(today);
+nextSevenDays.setDate(today.getDate() + 7);
+
+// Format the result as a string in the specified format
+const formattedNextSevenDays = nextSevenDays.toISOString()
+
+const payload = {
+      eventId,
+      eventRegistrationRef: eventReference,
+      paymentDate: today,
+      expiredAt: formattedNextSevenDays ,
+      amountPaid: total,
+      attendees: fields?.length,
+      discountValue: discount,
+      referralSource: social,
+      discountCode,
+      currency,
+      paidStatus: false,
+      ticketCategory: priceCategory,
+      eventDate,
+      event: eventTitle,
+      eventPrice: price,
+      attendeesDetails: values.attendeeApplication,
+    };
+
+    //
+    await sendTransactionDetail( allowPayment,payload )
+    
   }
   return (
     <>
@@ -164,7 +241,7 @@ export function BookEvent({
               </div>
               <div className=" flex items-center justify-between w-full">
                 <p>{`${fields.length}x Discount:`}</p>
-                <p> {`₦${discount}`}</p>
+                <p> {`- ₦${discount?.toLocaleString()}`}</p>
               </div>
               <div className=" flex items-center justify-between w-full">
                 <p>{`${fields.length}x Processing fee:`}</p>
@@ -387,6 +464,9 @@ export function BookEvent({
           endDate={endDate}
           attendeesDetails={attendees}
           eventId={eventId}
+          currency={currency}
+          referralSource={social}
+          discountCode={discountCode}
           count={fields?.length}
           eventLocation={eventLocation}
           discount={discount}
