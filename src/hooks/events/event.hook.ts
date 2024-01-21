@@ -356,7 +356,7 @@ export function useBookingEvent() {
             organization,
             ...social,
             registrationDate: new Date(),
-            eventTransactionRef,
+            eventRegistrationRef: eventTransactionRef,
             userEmail: data?.user.email,
           };
         });
