@@ -1,12 +1,20 @@
 "use client";
 
-import { SideBarLayout } from "@/components";
-import { EventCards, EmptyCard } from "@/components/home";
+import { SideBarLayout } from "../SidebarLayout";
+import { EventCards, EmptyCard } from ".";
 import { useFetchOrganizationEvents } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 
-export default function Page({ params: { id } }: { params: { id: string } }) {
-  const { data: eventData, refetch, loading } = useFetchOrganizationEvents(id);
+export default function OrganizationHome({
+  organizationId,
+}: {
+  organizationId: string;
+}) {
+  const {
+    data: eventData,
+    refetch,
+    loading,
+  } = useFetchOrganizationEvents(organizationId);
 
   return (
     <main className="w-full h-full">

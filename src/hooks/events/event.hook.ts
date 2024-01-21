@@ -92,7 +92,7 @@ export async function fetchData(): Promise<Event[] | null> {
   }
 }
 
-export function useFetchOrganizationEvents(id?: string) {
+export function useFetchOrganizationEvents(id?: string | string[]) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any[]>([]);
 
@@ -317,29 +317,12 @@ export function useBookingEvent() {
   const [loading, setLoading] = useState(false);
 
   async function registerAttendees(
-    allowPayment: (bool: boolean) => void,
-    eventTransactionRef:string,
+    eventTransactionRef: string,
     values: z.infer<typeof eventBookingValidationSchema>,
     eventId?: number,
     organization?: string | null
-    
   ) {
-    const { others, attendeeApplication } = values;
-
-    const socialMediaMapping: Record<string, string | any> = {
-      instagram: "instagram",
-      facebook: "facebook",
-      whatsapp: "whatsapp",
-      friends: "friends",
-      others: others,
-    };
-    let social: Record<string, any> = {};
-
-    if (values.aboutUs === "others") {
-      social = { others: values.others };
-    } else if (socialMediaMapping[values.aboutUs]) {
-      social = { [values.aboutUs]: values.aboutUs };
-    }
+    const { attendeeApplication } = values;
 
     try {
       const { data, error: err } = await supabase.auth.getUser();
@@ -354,7 +337,6 @@ export function useBookingEvent() {
             ...attendee,
             eventId,
             organization,
-            ...social,
             registrationDate: new Date(),
             eventRegistrationRef: eventTransactionRef,
             userEmail: data?.user.email,
@@ -366,14 +348,20 @@ export function useBookingEvent() {
           .upsert([...attendees]);
 
         if (error) {
-          toast.error(error.message);
-          allowPayment(false);
+          if (error.message === `duplicate key value violates unique constraint "attendees_email_key"`) {
+            toast.error("User has already registered for this event")
+          }
+          else {
+            toast.error(error.message);
+          }
+         
+         // allowPayment(false);
           return;
         }
 
         if (status === 201 || status === 200) {
           setLoading(false);
-          allowPayment(true);
+        //  allowPayment(true);
           toast.success("Attendees Registration successful");
         }
       }
@@ -391,7 +379,7 @@ export function useBookingEvent() {
 export function useTransactionDetail() {
   const [loading, setLoading] = useState(false);
   async function sendTransactionDetail(
-    toggleSuccessModal: (bool: boolean) => void,
+    allowPayment: (bool: boolean) => void,
     values: any
   ) {
     setLoading(true);
@@ -409,7 +397,7 @@ export function useTransactionDetail() {
           userId: data?.user?.id,
         };
 
-        const { error, status } = await supabase
+        const { data: successData, error, status } = await supabase
           .from("eventTransactions")
           .upsert([{ ...payload }]);
 
@@ -420,8 +408,9 @@ export function useTransactionDetail() {
 
         if (status === 201 || status === 200) {
           setLoading(false);
-          toggleSuccessModal(true);
+          allowPayment(true);
           // toast.success("Al");
+        //  console.log({successData})
         }
       }
     } catch (error) {
@@ -432,5 +421,112 @@ export function useTransactionDetail() {
   return {
     sendTransactionDetail,
     loading,
+   
+  };
+}
+
+
+export function useUpdateTransactionDetail() {
+  const [loading, setLoading] = useState(false)
+
+  async function sendTransactionDetail(
+    toggleSuccessModal:(bool:boolean) => void,
+    payload:any
+  ) {
+
+    setLoading(true);
+    try {
+
+        const {  error, status } = await supabase
+          .from("eventTransactions")
+          .update(payload)
+          .eq("eventRegistrationRef", payload.eventRegistrationRef)
+
+        if (error) {
+          toast.error(error.message);
+          return;
+        }
+
+        if (status === 204 || status === 200) {
+          setLoading(false);
+          toggleSuccessModal(true);
+          // toast.success("Al");
+         
+        }
+      
+    } catch (error) {
+      setLoading(false);
+    }
+  }
+
+  return {
+    sendTransactionDetail,
+    loading
+  }
+  }
+
+  
+
+
+export function useRedeemDiscountCode() {
+  const [loading, setLoading] = useState(false);
+  const [discountAmount, setDiscountAmount] = useState<number>(0);
+  const [discountPercentage, setDiscountPercentage] = useState<number>(0);
+  const [minAttendees, setMinAttendees] = useState<number | undefined>();
+
+  async function verifyDiscountCode(code: string | undefined, eventId: string) {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("discount")
+        .select("*")
+        .eq("eventId", eventId);
+
+      if (error) {
+        setLoading(false);
+        throw error;
+      }
+
+      console.log({ data });
+
+      // check if code exist
+      let isDiscountCodeExist = data?.map((v) => v.discountCode).includes(code);
+      if (!isDiscountCodeExist) {
+        toast.error("Discount code does not exist");
+        setLoading(false);
+        return;
+      }
+      // check if status is false
+      let discount = data?.find((v) => v.discountCode === code);
+      let isDiscountCodeValid = discount?.status;
+      if (!isDiscountCodeValid) {
+        toast.error("Discount code has expired");
+        setLoading(false);
+        return;
+      }
+
+      toast.success("Discount code has been applied successfully");
+      // check the minQty
+      if (isDiscountCodeValid) setMinAttendees(discount?.minQty);
+
+      // setDiscount amount
+      if (isDiscountCodeValid) setDiscountAmount(discount?.discountAmount );
+
+      if (isDiscountCodeValid)
+        setDiscountPercentage(discount?.discountPercentage);
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      return null;
+    }
+  }
+
+  return {
+    verifyDiscountCode,
+    loading,
+    minAttendees,
+    discountAmount,
+    discountPercentage,
   };
 }

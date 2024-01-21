@@ -31,6 +31,7 @@ import { useState, useMemo } from "react";
 import { BookEvent } from "..";
 import { useRouter } from "next/navigation";
 import { Event } from "@/types";
+import { useRedeemDiscountCode } from "@/hooks";
 
 export function SingleEvent({
   className,
@@ -49,8 +50,16 @@ export function SingleEvent({
 }) {
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
-  const [chosenPrice, setChosenPrice] = useState<number | undefined>(10000);
+  const {
+    verifyDiscountCode,
+    loading,
+    minAttendees,
+    discountAmount,
+    discountPercentage,
+  } = useRedeemDiscountCode();
+  const [chosenPrice, setChosenPrice] = useState<number | undefined>();
   const [isShareDropDown, showShareDropDown] = useState(false);
+  const [code, setCode] = useState("");
   const [priceCategory, setPriceCategory] = useState<string | undefined>("");
   const router = useRouter();
 
@@ -112,29 +121,39 @@ export function SingleEvent({
       return event?.pricing?.map((value) => {
         if (value?.earlyBird) {
           return {
-            price: value?.earlyBird,
+            price:
+              discountAmount !== null
+                ? Number(value?.earlyBird) - Number(discountAmount)
+                : (Number(value?.earlyBird) * Number(discountPercentage)) / 100,
             name: "Early Bird",
             date: value?.validity,
           };
         } else if (value?.standard) {
           return {
-            price: value?.standard,
+            price:
+              discountAmount !== null
+                ? Number(value?.standard) - Number(discountAmount)
+                : (Number(value?.standard) * Number(discountPercentage)) / 100,
             name: "Standard",
             date: value?.validity,
           };
         } else {
+          if (!value?.lateBird) return;
           return {
-            price: value?.lateBird,
+            price:
+              discountAmount !== null
+                ? Number(value?.lateBird) - Number(discountAmount)
+                : (Number(value?.lateBird) * Number(discountPercentage)) / 100,
             name: "Late Bird",
             date: value?.validity,
           };
         }
       });
     }
-  }, [event?.pricing]);
+  }, [event?.pricing, discountAmount, discountPercentage]);
 
-  function activeSelectedPrice(selected: number | undefined) {
-    return selected === chosenPrice;
+  function activeSelectedPrice(selected: string | undefined) {
+    return selected === priceCategory;
   }
 
   function toggleShareDropDown() {
@@ -142,13 +161,20 @@ export function SingleEvent({
   }
 
   function selectedPrice(value: number | undefined) {
-    if (chosenPrice !== undefined && chosenPrice === value) {
-      setChosenPrice(undefined);
+    setChosenPrice(value);
+  }
+
+  function selectedPriceCategory(value: string | undefined) {
+    if (priceCategory === undefined && priceCategory !== value) {
+      setPriceCategory(undefined);
     } else {
-      setChosenPrice(value);
+      setPriceCategory(value);
     }
   }
 
+ 
+
+  // conditonally adding comma to separate city and location
   const removeComma = useMemo(() => {
     return event?.eventCity === null || event?.eventCountry === null;
   }, [event?.eventCity, event?.eventCountry]);
@@ -170,6 +196,7 @@ export function SingleEvent({
     );
   }, [event?.x, event?.instagram, event?.linkedin, event?.facebook]);
 
+  // determingn the currerncy symbol
   const currency = useMemo(() => {
     if (event?.pricingCurrency) {
       const symbol =
@@ -180,9 +207,16 @@ export function SingleEvent({
     }
   }, [event?.pricingCurrency]);
 
+  // calculating the difference between the expected participants and  registered participants
   const availableSlot = useMemo(() => {
     return Number(event?.expectedParticipants) - Number(event?.registered);
   }, [event?.expectedParticipants, event?.registered]);
+
+  /// verifying and redeeming a discount code'
+  async function redeem() {
+    await verifyDiscountCode(code, String(eventId));
+   // setCode("")
+  }
 
   return (
     <>
@@ -236,7 +270,9 @@ export function SingleEvent({
               />
 
               <div className="w-full space-y-2 flex flex-col items-start justify-start">
-                {!isAllContactUnavailable && <h3>Speak with the Event Team</h3>}
+                {(event?.phoneNumber !== null ||
+                  event?.whatsappNumber !== null ||
+                  event?.email !== null) && <h3>Speak with the Event Team</h3>}
 
                 <div className="flex items-center gap-x-2">
                   <Button
@@ -341,71 +377,92 @@ export function SingleEvent({
                 )}
               </div>
               <div className="grid grid-cols-3 gap-1 items-center w-full">
-                {pricingArray?.map(({ name, price, date }) => (
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      selectedPrice(price);
-                      setPriceCategory(name);
-                    }}
-                    disabled={isDateGreaterThanToday(date)}
-                    className={cn(
-                      "flex flex-col group relative rounded-lg items-start justify-start  border p-2 h-full w-full",
-                      isDateGreaterThanToday(date)
-                        ? ""
-                        : "hover:border-zikoro border-black",
-
-                      activeSelectedPrice(price) && "border-zikoro"
-                    )}
-                  >
-                    {isDateGreaterThanToday(date) && (
-                      <div className="w-full h-full absolute inset-0 bg-white/50"></div>
-                    )}
-                    <div className="flex items-center justify-between w-full">
-                      <p className="font-medium text-[13px]">{`${
-                        currency ? currency : "₦"
-                      }${(Number(price) ?? 0)?.toLocaleString()}`}</p>
-
-                      {!isDateGreaterThanToday(date) && (
-                        <div
+                {Array.isArray(pricingArray) &&
+                  pricingArray &&
+                  pricingArray?.map((v) => {
+                    if (v) {
+                      return (
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            selectedPrice(v?.price);
+                            selectedPriceCategory(v?.name)
+                          }}
+                          disabled={isDateGreaterThanToday(v?.date)}
                           className={cn(
-                            "hidden group-hover:block",
+                            "flex flex-col group relative rounded-lg items-start justify-start  border p-2 h-full w-full",
+                            isDateGreaterThanToday(v?.date)
+                              ? ""
+                              : "hover:border-zikoro border-black",
 
-                            activeSelectedPrice(price) && "block"
+                            activeSelectedPrice(v?.name) && "border-zikoro"
                           )}
                         >
-                          <CheckCircleFill className=" text-zikoro" size={20} />
-                        </div>
-                      )}
-                    </div>
-                    <div
-                      className={cn(
-                        " text-[10px] flex flex-col justify-start rounded-md items-start",
-                        isDateGreaterThanToday(date)
-                          ? "text-gray-500"
-                          : "text-black"
-                      )}
-                    >
-                      <p>{name}</p>
-                      {date ? (
-                        <p>{`Valid till ${date}`}</p>
-                      ) : (
-                        <p className="w-1 h-1"></p>
-                      )}
-                    </div>
-                  </Button>
-                ))}
+                          {isDateGreaterThanToday(v?.date) && (
+                            <div className="w-full h-full absolute inset-0 bg-white/50"></div>
+                          )}
+                          <div className="flex items-center justify-between w-full">
+                            <p className="font-medium text-[13px]">{`${
+                              currency ? currency : "₦"
+                            }${(Number(v?.price) ?? 0)?.toLocaleString()}`}</p>
+
+                            {!isDateGreaterThanToday(v?.date) && (
+                              <div
+                                className={cn(
+                                  "hidden group-hover:block",
+
+                                  activeSelectedPrice(v?.name) && "block"
+                                )}
+                              >
+                                <CheckCircleFill
+                                  className=" text-zikoro"
+                                  size={20}
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <div
+                            className={cn(
+                              " text-[10px] flex flex-col justify-start rounded-md items-start",
+                              isDateGreaterThanToday(v?.date)
+                                ? "text-gray-500"
+                                : "text-black"
+                            )}
+                          >
+                            <p>{v?.name}</p>
+                            {v?.date ? (
+                              <p>{`Valid till ${v?.date}`}</p>
+                            ) : (
+                              <p className="w-1 h-1"></p>
+                            )}
+                          </div>
+                        </Button>
+                      );
+                    }
+                    return null;
+                  })}
               </div>
 
-              <div className="w-full flex flex-col gap-y-2 items-start justify-start">
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                className="w-full flex flex-col gap-y-2 items-start justify-start"
+              >
                 <div className="w-full flex items-center ">
                   <input
                     type="text"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
                     placeholder="Enter a valid discount code"
                     className="bg-transparent h-14 rounded-l-md px-3 outline-none placeholder:text-gray-300 border border-gray-300 w-[75%]"
                   />
-                  <Button className="h-14 text-white rounded-r-md rounded-l-none bg-gray-500 font-medium px-0 w-[25%]">
-                    Redeem
+                  <Button
+                    disabled={code === ""}
+                    onClick={redeem}
+                    className="h-14 text-white rounded-r-md rounded-l-none bg-gray-500 font-medium px-0 w-[25%]"
+                  >
+                    {loading ? "Verifying..." : "Redeem"}
                   </Button>
                 </div>
               </div>
@@ -420,16 +477,15 @@ export function SingleEvent({
                 Book Now
               </Button>
               <div className="w-full flex flex-col justify-start items-start space-y-2">
-                <h3 className="font-medium">SHARE THIS EVENT</h3>
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleShareDropDown();
                   }}
-                  className="relative px-1"
+                  className="relative px-1 gap-x-3"
                 >
-                  <Share size={24} />
-
+                  <Share size={23} />
+                  <h3 className="font-medium ">Share this Event</h3>
                   {isShareDropDown && (
                     <ActionModal
                       close={toggleShareDropDown}
@@ -456,8 +512,13 @@ export function SingleEvent({
         <BookEvent
           eventDate={event?.startDateTime}
           endDate={endDate}
+          discountCode={code}
+          discountAmount={discountAmount}
+          discountPercentage={discountPercentage}
           startDate={startDate}
+          currency={currency}
           priceCategory={priceCategory}
+          minimumAttendees={minAttendees}
           eventTitle={event?.eventTitle}
           close={onClose}
           eventLocation={`${event?.eventCity ?? ""}${!removeComma && ","} ${

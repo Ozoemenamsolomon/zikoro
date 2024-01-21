@@ -1,23 +1,8 @@
-import {createMiddlewareClient} from '@supabase/auth-helpers-nextjs'
-import { NextResponse, NextRequest } from 'next/server';
+import { withMiddlewareAuthRequired } from "@auth0/nextjs-auth0/edge";
 
-export async function middleware(req: NextRequest){
-    const path = req.nextUrl.pathname;
-    const res = NextResponse.next();
-    const supabase = createMiddlewareClient({req, res});
-    await supabase.auth.getSession();
+export default withMiddlewareAuthRequired();
 
-    const unprotectedPaths = ['/login', '/register'];
-
-    const isPublicPath = unprotectedPaths.includes(path);
- 
-   const user = req.cookies.get('user')?.value || '';
-  
-   
-    if (!isPublicPath && !user  && path !== '/login') {
-        const loginUrl = new URL('/login', req.nextUrl.origin).toString();
-     return NextResponse.redirect(loginUrl);
-   }
-   
- //   return res;
-}
+/* export const config = {
+  //TODO: Determine route matcher
+  matcher: "/about/:path*",
+}; */
