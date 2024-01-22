@@ -1,3 +1,6 @@
+
+import { TAttendee } from "./attendee";
+
 export type TEventTransaction = {
   id: number;
   created_at: string;
@@ -22,4 +25,5 @@ export type TEventTransaction = {
   PayOutStatus: string;
   payOutDate: string;
   currency: string;
+  ticketCategory: string;
 };
