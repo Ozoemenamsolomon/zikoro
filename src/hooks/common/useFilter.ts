@@ -48,7 +48,10 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
               return pptyVal >= value[0] && pptyVal <= value[1];
             case "dateRange":
               console.log("dateRange");
-              return pptyVal >= value.from && pptyVal <= value.to;
+              return (
+                new Date(pptyVal) >= new Date(value.from) &&
+                new Date(pptyVal) <= new Date(value.to)
+              );
             case "slider":
               console.log("slider");
               return pptyVal <= value;
