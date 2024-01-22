@@ -12,12 +12,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { attendeeTypeOptions } from "@/data/attendee";
 import {
   useGetEmailInvites,
-  useInviteAttendees
+  useInviteAttendees,
 } from "@/hooks/services/attendee";
 import { TInviteDetails } from "@/types/attendee";
-import { generateAlphanumericHash } from "@/utils/helpers";
+import {
+  calculateAndSetMaxHeight,
+  generateAlphanumericHash,
+} from "@/utils/helpers";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Calendar, Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
 import { Users } from "styled-icons/heroicons-outline";
@@ -35,12 +38,14 @@ export default function Page() {
   const [copiedText, copyToClipboard] = useCopyToClipboard();
   const hasCopiedText = Boolean(copiedText);
 
-  const { emailInvites, isLoading } = useGetEmailInvites();
+  const { emailInvites, isLoading, getEmailInvites } = useGetEmailInvites();
   const { inviteAttendees } = useInviteAttendees();
+
+  const divRef = useRef<HTMLDivElement>();
 
   async function onSubmit(e) {
     e.preventDefault();
-    inviteAttendees({
+    await inviteAttendees({
       payload: {
         Message: message,
         InviteDetails: Object.entries(invitees).map(([key, value]) => value),
@@ -48,6 +53,7 @@ export default function Page() {
         eventId: 1234567890,
       },
     });
+    await getEmailInvites();
   }
 
   const updateInvitee = (key: string, newVal: Partial<TInviteDetails>) => {
@@ -84,6 +90,10 @@ export default function Page() {
       return newInvitees;
     });
   };
+
+  useEffect(() => {
+    calculateAndSetMaxHeight(divRef);
+  }, [invitees]);
 
   return (
     <section className="pt-2 pb-8 border-t-[1px] border-[#F3F3F3]">
@@ -130,7 +140,7 @@ export default function Page() {
               <h1 className="text-gray-900 text-lg font-medium">
                 Invite by email
               </h1>
-              <div className="space-y-2">
+              <div className="space-y-4">
                 {Object.entries(invitees).map(
                   ([key, { email, attendeeType }], index) => (
                     <div className="grid grid-cols-12 gap-4">
@@ -155,11 +165,12 @@ export default function Page() {
                           onValueChange={(value) =>
                             updateInvitee(key, { attendeeType: value })
                           }
+                          defaultValue={"attendee"}
                           required
                         >
-                          <SelectTrigger className="placeholder:text-sm placeholder:text-gray-200 text-gray-700">
+                          <SelectTrigger>
                             <SelectValue
-                              className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                              className="text-sm text-gray-200"
                               placeholder="select Attendee type"
                             />
                           </SelectTrigger>
@@ -210,7 +221,7 @@ export default function Page() {
                   className="flex gap-2 font-medium items-center text-basePrimary"
                 >
                   <PlusCircleOutline className="w-5 h-5" />
-                  <span className="text-sm">Add new</span>
+                  <span className="text-sm">invite</span>
                 </button>
               </div>
               <div className="w-full rounded-md bg-background text-sm relative">
@@ -230,7 +241,7 @@ export default function Page() {
               </Button>
             </form>
           </div>
-          <div className="bg-basebody rounded-sm">
+          <div className="bg-basebody rounded-sm h-fit min-h-[100px]">
             <div className="space-y-2 border-b-2 p-2">
               <h2 className="text-gray-700 font-medium">Email Invites</h2>
               <div className="flex gap-4 items-center text-gray-500 text-sm">
@@ -258,7 +269,10 @@ export default function Page() {
                 </div>
               </div>
             </div>
-            <div className="p-2 flex flex-col gap-6">
+            <div
+              className="p-2 flex flex-col gap-6 overflow-auto hide-scrollbar"
+              ref={divRef}
+            >
               {!isLoading &&
                 emailInvites.map(({ InviteDetails }) => {
                   return (
@@ -281,7 +295,7 @@ export default function Page() {
                     ))
                   );
                 })}
-              <div className="flex items-center gap-4">
+              {/* <div className="flex items-center gap-4">
                 <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
                   YB
                 </div>
@@ -328,7 +342,7 @@ export default function Page() {
                     <span className="text-yellow-500">Registered</span>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

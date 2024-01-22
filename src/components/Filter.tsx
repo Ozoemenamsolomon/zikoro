@@ -146,7 +146,7 @@ const SingleFilter: React.FC<FilterOptionsProps<T>> = ({
       {filter?.options &&
         filter?.options.map(({ label, value }) => (
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value={value} id={label} />
+            <RadioGroupItem className="data-[state=checked]:bg-basePrimary" value={value} id={label} />
             <Label htmlFor={value}>{label}</Label>
           </div>
         ))}
