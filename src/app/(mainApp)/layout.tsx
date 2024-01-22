@@ -7,11 +7,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="relative h-full">
-      <div className="fixed w-1/6 h-full top-0 left-0">
-        <Sidebar />
+    <main className="grid grid-cols-12 relative h-full">
+      <div className="relative col-span-2 h-full">
+        <div className="w-full relative h-full">
+          <Sidebar />
+        </div>
       </div>
-      <section className="ml-[16.666667%] border border-l-2">
+      <section className="col-span-10 border border-l-2">
         <Topbar />
         <div className="">{children}</div>
       </section>
