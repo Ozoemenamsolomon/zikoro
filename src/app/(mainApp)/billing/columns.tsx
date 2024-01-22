@@ -42,10 +42,10 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     ),
   },
   {
-    accessorKey: "transactionReference",
+    accessorKey: "eventRegistrationRef",
     header: "Reference",
     cell: ({ row }) => (
-      <div className="truncate">{row.getValue("transactionReference")}</div>
+      <div className="truncate">{row.getValue("eventRegistrationRef")}</div>
     ),
   },
   {
