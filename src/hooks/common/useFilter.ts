@@ -84,7 +84,7 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
         key,
         value,
         label,
-        type: type || "multiple",
+        type: type || "single",
         onFilter: onFilter || null,
       });
     }
