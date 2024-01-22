@@ -8,7 +8,8 @@ export const columns: ColumnDef<TEventTransaction>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox className="data-[state=checked]:bg-basePrimary"
+      <Checkbox
+        className="data-[state=checked]:bg-basePrimary"
         checked={
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
@@ -18,7 +19,8 @@ export const columns: ColumnDef<TEventTransaction>[] = [
       />
     ),
     cell: ({ row }) => (
-      <Checkbox className="data-[state=checked]:bg-basePrimary"
+      <Checkbox
+        className="data-[state=checked]:bg-basePrimary"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
@@ -32,10 +34,12 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     header: "Event",
   },
   {
-    accessorKey: "userId",
-    header: "user ID",
+    accessorKey: "userEmail",
+    header: "Paid by",
 
-    cell: ({ row }) => <div className="truncate">{row.getValue("userId")}</div>,
+    cell: ({ row }) => (
+      <div className="truncate">{row.getValue("userEmail")}</div>
+    ),
   },
   {
     accessorKey: "transactionReference",
@@ -79,5 +83,18 @@ export const columns: ColumnDef<TEventTransaction>[] = [
   {
     accessorKey: "PaidStatus",
     header: "Status",
+    cell: ({ row }) => (
+      <div className="max-w-full truncate">
+        {row.getValue("payOutDate") ? "Paid" : "Not Paid"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "eventPrice",
+    header: "Ticket Price",
+  },
+  {
+    accessorKey: "discountCode",
+    header: "Discount Code",
   },
 ];

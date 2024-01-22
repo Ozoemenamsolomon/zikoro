@@ -45,6 +45,7 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
       </svg>
     ),
     optionsFromData: true,
+    type: "multiple",
   },
   {
     label: "Trans. Date",
@@ -93,6 +94,7 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
       </svg>
     ),
     optionsFromData: true,
+    type: "multiple",
   },
   {
     label: "Amount",
@@ -171,8 +173,8 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
     ],
   },
   {
-    label: "Price Category",
-    accessor: "priceCategory",
+    label: "Ticket Category",
+    accessor: "ticketCategory",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -189,10 +191,12 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
         />
       </svg>
     ),
+    type: "multiple",
+    optionsFromData: true,
   },
   {
-    label: "Discount",
-    accessor: "discount",
+    label: "Discount code",
+    accessor: "discountCode",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -222,9 +226,8 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
         </defs>
       </svg>
     ),
-    type: "slider",
-    steps: 10,
-    max: 100,
+    optionsFromData: true,
+    type: "multiple",
   },
 ];
 
