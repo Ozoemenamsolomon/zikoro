@@ -180,7 +180,7 @@ const payload = {
       referralSource: social,
       discountCode,
       currency,
-      paidStatus: false,
+      registrationCompleted: false,
       ticketCategory: priceCategory,
       eventDate,
       event: eventTitle,
