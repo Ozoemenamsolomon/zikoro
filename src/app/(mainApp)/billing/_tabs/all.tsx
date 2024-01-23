@@ -139,8 +139,8 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
     type: "dateRange",
   },
   {
-    label: "Status",
-    accessor: "paidStatus",
+    label: "Registration Status",
+    accessor: "registrationCompleted",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -357,7 +357,7 @@ export default function All() {
             2/10 Transactions selected
           </span>
           <div className="flex gap-4">
-            <Button className="bg-basePrimary w-full">Payout</Button>
+            <Button className="bg-basePrimary w-full">Request Payout</Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className="bg-white border-[1px] border-basePrimary text-basePrimary flex gap-2 items-center">
@@ -365,7 +365,7 @@ export default function All() {
                   <AngleDown className="w-5 h-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 space-y-4 px-4">
+              <DropdownMenuContent className="w-56 space-y-4 px-4 h-[500px] hide-scrollbar overflow-auto">
                 {columns
                   .filter((column) => column?.id !== "select")
                   .map(({ header, accessorKey }) => (

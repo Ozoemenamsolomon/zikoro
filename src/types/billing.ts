@@ -19,7 +19,7 @@ export type TEventTransaction = {
   affliateEmail: string;
   afliateCode: string;
   amountPaid: number;
-  paidStatus: boolean;
+  registrationCompleted: boolean;
   attendees: number;
   attendeesDetails: Partial<TAttendee>[];
   PayOutStatus: string;

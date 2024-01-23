@@ -66,6 +66,10 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     header: "Currency",
   },
   {
+    accessorKey: "eventPrice",
+    header: "Ticket Price",
+  },
+  {
     accessorKey: "amountPaid",
     header: "Amount",
   },
@@ -81,20 +85,60 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     ),
   },
   {
-    accessorKey: "PaidStatus",
-    header: "Status",
-    cell: ({ row }) => (
-      <div className="max-w-full truncate">
-        {row.getValue("payOutDate") ? "Paid" : "Not Paid"}
-      </div>
-    ),
+    accessorKey: "registrationCompleted",
+    header: "Reg. Status",
+    cell: ({ row }) => {
+      const regStatus = row.getValue("payOutDate");
+      return (
+        <div
+          className={`max-w-full truncate p-2 ${
+            regStatus
+              ? "bg-green-100 text-green-600"
+              : "bg-red-100 text-red-600"
+          } rounded-2xl w-fit text-sm`}
+        >
+          {regStatus ? "Complete" : "Incomplete"}
+        </div>
+      );
+    },
   },
   {
-    accessorKey: "eventPrice",
-    header: "Ticket Price",
+    accessorKey: "payOutStatus",
+    header: "PayOut Status",
+    cell: ({ row }) => {
+      const payOutStatus = row.getValue("payOutStatus")?.toLowerCase();
+
+      return (
+        <div
+          className={`max-w-full truncate p-2 ${
+            payOutStatus === "paid"
+              ? "bg-green-100 text-green-600"
+              : payOutStatus === "requested"
+              ? "bg-yellow-100 text-yellow-600"
+              : payOutStatus === "new"
+              ? "bg-blue-100 text-blue-600"
+              : "bg-gray-100 text-gray-600"
+          } rounded-2xl w-fit text-sm capitalize`}
+        >
+          {payOutStatus || "N/A"}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "discountCode",
     header: "Discount Code",
+  },
+  {
+    accessorKey: "affliateEmail",
+    header: "Affiliate Email",
+  },
+  {
+    accessorKey: "affliateCode",
+    header: "Affiliate Code",
+  },
+  {
+    accessorKey: "ticketCategory",
+    header: "Ticket Category",
   },
 ];
