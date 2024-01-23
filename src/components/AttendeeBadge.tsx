@@ -14,14 +14,16 @@ const AttendeeBadge = ({ attendee }: { attendee: TAttendee }) => {
       "moderator",
     ];
 
+    if (!attendeeType) {
+      return "attendee";
+    }
+
     for (const type of hierarchyOrder) {
       const pickedType = attendeeType.find((currType) => currType === type);
       if (pickedType) {
         return pickedType;
       }
     }
-
-    return "attendee";
   };
 
   return (
