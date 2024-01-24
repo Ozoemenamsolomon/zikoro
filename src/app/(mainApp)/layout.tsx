@@ -1,3 +1,5 @@
+"use client";
+import { Toaster } from "@/components/ui/toaster";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 
@@ -17,6 +19,7 @@ export default function RootLayout({
         <Topbar />
         <div className="">{children}</div>
       </section>
+      <Toaster />
     </main>
   );
 }

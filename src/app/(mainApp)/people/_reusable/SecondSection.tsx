@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 import { useGetnote } from "@/hooks/services/notes";
-import { useGetAttendeetags, useUpdateAttendeetags } from "@/hooks/services/tags";
+import { useGetAttendeeTags, useUpdateAttendeeTags } from "@/hooks/services/tags";
 import { useEffect } from "react";
 import Link from "next/link";
 import {
@@ -76,11 +76,11 @@ export default function SecondSection({
     attendeeTags,
     isLoading: attendeeTagsisLoading,
     // error,
-    getAttendeetags,
-  } = useGetAttendeetags({ attendeeId: id });
+    getAttendeeTags,
+  } = useGetAttendeeTags({ attendeeId: id });
 
-  const { updateAttendeetags, isLoading: updatetagsIsLoading } =
-    useUpdateAttendeetags({
+  const { updateAttendeeTags, isLoading: updatetagsIsLoading } =
+    useUpdateAttendeeTags({
       attendeeId: id,
     });
 
@@ -115,8 +115,8 @@ export default function SecondSection({
       ),
     };
 
-    await updateAttendeetags({ payload });
-    await getAttendeetags();
+    await updateAttendeeTags({ payload });
+    await getAttendeeTags();
   }
 
   const sendMail = () => {

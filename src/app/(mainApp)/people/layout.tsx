@@ -1,5 +1,5 @@
 "use client";
-import { Toaster } from "@/components/ui/toaster";
+
 import { TLink } from "@/types/links";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -36,7 +36,6 @@ const People = ({ children }: { children: React.ReactNode }) => {
         </nav>
         {children}
       </section>
-      <Toaster />
     </>
   );
 };

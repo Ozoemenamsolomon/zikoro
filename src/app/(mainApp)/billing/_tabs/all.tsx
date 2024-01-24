@@ -16,7 +16,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useGetBillings } from "@/hooks/services/billing";
+import { useGetEventTransactions } from "@/hooks/services/billing";
 import { TEventTransaction } from "@/types/billing";
 import { extractUniqueTypes } from "@/utils/helpers";
 import { useEffect, useState } from "react";
@@ -25,8 +25,19 @@ import { columns } from "../columns";
 import { DataTable } from "../data-table";
 import { TFilter } from "@/types/filter";
 import { useFilter } from "@/hooks/common/useFilter";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { RowSelectionState } from "@tanstack/react-table";
+import RequestPayoutDialog from "@/components/requestPayoutDialog";
+import { toast } from "@/components/ui/use-toast";
 
-const billingsFilter: TFilter<TEventTransaction>[] = [
+const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
   {
     label: "Event",
     accessor: "event",
@@ -46,6 +57,7 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
     ),
     optionsFromData: true,
     type: "multiple",
+    order: 1,
   },
   {
     label: "Trans. Date",
@@ -65,10 +77,11 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
       </svg>
     ),
     type: "dateRange",
+    order: 5,
   },
   {
-    label: "Currency",
-    accessor: "currency",
+    label: "Payout Status",
+    accessor: "payOutStatus",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -77,24 +90,27 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
         viewBox="0 0 21 20"
         fill="none"
       >
-        <path
-          d="M18.3804 17.5L13.3804 12.5M3.38037 8.33333C3.38037 9.09938 3.53125 9.85792 3.82441 10.5657C4.11756 11.2734 4.54724 11.9164 5.08891 12.4581C5.63059 12.9998 6.27365 13.4295 6.98138 13.7226C7.68912 14.0158 8.44766 14.1667 9.2137 14.1667C9.97975 14.1667 10.7383 14.0158 11.446 13.7226C12.1538 13.4295 12.7968 12.9998 13.3385 12.4581C13.8802 11.9164 14.3098 11.2734 14.603 10.5657C14.8962 9.85792 15.047 9.09938 15.047 8.33333C15.047 7.56729 14.8962 6.80875 14.603 6.10101C14.3098 5.39328 13.8802 4.75022 13.3385 4.20854C12.7968 3.66687 12.1538 3.23719 11.446 2.94404C10.7383 2.65088 9.97975 2.5 9.2137 2.5C8.44766 2.5 7.68912 2.65088 6.98138 2.94404C6.27365 3.23719 5.63059 3.66687 5.08891 4.20854C4.54724 4.75022 4.11756 5.39328 3.82441 6.10101C3.53125 6.80875 3.38037 7.56729 3.38037 8.33333Z"
-          stroke="#717171"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M10.8805 5.83333H8.79712C8.4656 5.83333 8.14766 5.96503 7.91324 6.19945C7.67882 6.43387 7.54712 6.75181 7.54712 7.08333C7.54712 7.41485 7.67882 7.7328 7.91324 7.96722C8.14766 8.20164 8.4656 8.33333 8.79712 8.33333H9.63045C9.96197 8.33333 10.2799 8.46503 10.5143 8.69945C10.7488 8.93387 10.8805 9.25181 10.8805 9.58333C10.8805 9.91485 10.7488 10.2328 10.5143 10.4672C10.2799 10.7016 9.96197 10.8333 9.63045 10.8333H7.54712M9.21379 10.8333V11.6667M9.21379 5V5.83333"
-          stroke="#717171"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <g clipPath="url(#clip0_11614_15267)">
+          <path
+            d="M20.4402 10C20.4402 10.9245 20.323 11.8099 20.0886 12.6562C19.8542 13.5026 19.519 14.3001 19.0828 15.0488C18.6466 15.7975 18.1257 16.4714 17.5203 17.0703C16.9148 17.6693 16.2377 18.1901 15.489 18.6328C14.7403 19.0755 13.9428 19.4108 13.0964 19.6387C12.2501 19.8665 11.3647 19.987 10.4402 20C9.51571 20 8.63029 19.8828 7.78394 19.6484C6.93758 19.4141 6.14006 19.0788 5.39136 18.6426C4.64266 18.2064 3.96883 17.6855 3.36987 17.0801C2.77091 16.4746 2.25008 15.7975 1.80737 15.0488C1.36466 14.3001 1.02938 13.5026 0.801514 12.6562C0.573649 11.8099 0.453206 10.9245 0.440186 10C0.440186 9.08203 0.557373 8.19661 0.791748 7.34375C1.02612 6.49089 1.36141 5.69336 1.79761 4.95117C2.23381 4.20898 2.75464 3.53516 3.36011 2.92969C3.96558 2.32422 4.64266 1.80339 5.39136 1.36719C6.14006 0.93099 6.93758 0.595703 7.78394 0.361328C8.63029 0.126953 9.51571 0.00651042 10.4402 0C11.3582 0 12.2436 0.117188 13.0964 0.351562C13.9493 0.585938 14.7468 0.921224 15.489 1.35742C16.2312 1.79362 16.905 2.31445 17.5105 2.91992C18.116 3.52539 18.6368 4.20247 19.073 4.95117C19.5092 5.69987 19.8445 6.4974 20.0789 7.34375C20.3132 8.1901 20.4337 9.07552 20.4402 10ZM10.4402 18.75C11.241 18.75 12.0125 18.6458 12.7546 18.4375C13.4968 18.2292 14.1934 17.9362 14.8445 17.5586C15.4955 17.181 16.088 16.722 16.6218 16.1816C17.1557 15.6413 17.6114 15.0521 17.989 14.4141C18.3666 13.776 18.6628 13.0794 18.8777 12.3242C19.0925 11.569 19.1967 10.7943 19.1902 10C19.1902 9.19922 19.086 8.42773 18.8777 7.68555C18.6694 6.94336 18.3764 6.24674 17.9988 5.5957C17.6212 4.94466 17.1622 4.35221 16.6218 3.81836C16.0815 3.28451 15.4923 2.82878 14.8542 2.45117C14.2162 2.07357 13.5196 1.77734 12.7644 1.5625C12.0092 1.34766 11.2345 1.24349 10.4402 1.25C9.63289 1.25 8.85815 1.35417 8.11597 1.5625C7.37378 1.77083 6.68042 2.0638 6.03589 2.44141C5.39136 2.81901 4.79891 3.27799 4.25854 3.81836C3.71818 4.35872 3.26245 4.94792 2.89136 5.58594C2.52026 6.22396 2.22404 6.92057 2.00269 7.67578C1.78133 8.43099 1.67716 9.20573 1.69019 10C1.69019 10.8073 1.79435 11.582 2.00269 12.3242C2.21102 13.0664 2.50399 13.7598 2.88159 14.4043C3.2592 15.0488 3.71818 15.6413 4.25854 16.1816C4.79891 16.722 5.3881 17.1777 6.02612 17.5488C6.66414 17.9199 7.36076 18.2161 8.11597 18.4375C8.87117 18.6589 9.64592 18.763 10.4402 18.75ZM10.4402 13.75C10.7983 13.75 11.1466 13.7012 11.4851 13.6035C11.8236 13.5059 12.1427 13.3594 12.4421 13.1641C12.7416 12.9688 13.0053 12.7441 13.2332 12.4902C13.461 12.2363 13.6596 11.9401 13.8289 11.6016L14.9617 12.1484C14.7533 12.5846 14.4929 12.9785 14.1804 13.3301C13.8679 13.6816 13.5131 13.9811 13.116 14.2285C12.7188 14.4759 12.2957 14.6647 11.8464 14.7949C11.3972 14.9251 10.9285 14.9935 10.4402 15C9.72404 15 9.04045 14.8535 8.3894 14.5605C7.73836 14.2676 7.17196 13.8509 6.69019 13.3105V15H5.44019V11.25H9.19019V12.5H7.64722C7.99878 12.8906 8.4187 13.1966 8.90698 13.418C9.39526 13.6393 9.90633 13.75 10.4402 13.75ZM14.1902 6.68945V5H15.4402V8.75H11.6902V7.5H13.2332C12.8816 7.10938 12.4617 6.80339 11.9734 6.58203C11.4851 6.36068 10.974 6.25 10.4402 6.25C10.0821 6.25 9.73381 6.29883 9.39526 6.39648C9.05672 6.49414 8.73771 6.64062 8.43823 6.83594C8.13875 7.03125 7.87508 7.25586 7.64722 7.50977C7.41935 7.76367 7.22078 8.0599 7.05151 8.39844L5.9187 7.85156C6.12703 7.41536 6.38745 7.02148 6.69995 6.66992C7.01245 6.31836 7.36727 6.01888 7.7644 5.77148C8.16154 5.52409 8.58472 5.33529 9.03394 5.20508C9.48315 5.07487 9.9519 5.00651 10.4402 5C11.1563 5 11.8399 5.14648 12.491 5.43945C13.142 5.73242 13.7084 6.14909 14.1902 6.68945Z"
+            fill="#717171"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_11614_15267">
+            <rect
+              width={20}
+              height={20}
+              fill="white"
+              transform="translate(0.440186)"
+            />
+          </clipPath>
+        </defs>
       </svg>
     ),
     optionsFromData: true,
     type: "multiple",
+    order: 6,
   },
   {
     label: "Amount",
@@ -118,6 +134,7 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
     type: "range",
     steps: 100,
     max: 100000,
+    order: 4,
   },
   {
     label: "Payout Date",
@@ -137,6 +154,7 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
       </svg>
     ),
     type: "dateRange",
+    order: 7,
   },
   {
     label: "Registration Status",
@@ -171,6 +189,7 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
       { label: "Paid", value: true },
       { label: "Not Paid", value: false },
     ],
+    order: 3,
   },
   {
     label: "Ticket Category",
@@ -193,6 +212,7 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
     ),
     type: "multiple",
     optionsFromData: true,
+    order: 2,
   },
   {
     label: "Discount code",
@@ -228,6 +248,7 @@ const billingsFilter: TFilter<TEventTransaction>[] = [
     ),
     optionsFromData: true,
     type: "multiple",
+    order: 8,
   },
 ];
 
@@ -242,14 +263,36 @@ export default function All() {
     "amountPaid",
     "select",
   ]);
-  const { billings, isLoading } = useGetBillings({ userId: 1 });
-  const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
-    useFilter<TEventTransaction>({
-      data: billings,
-      dataFilters: billingsFilter,
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+  const { eventTransactions, isLoading, getEventTransactions } =
+    useGetEventTransactions({
+      userId: 1,
     });
 
-  console.log(filteredData, billings);
+  const totalRevenue = eventTransactions.reduce(
+    (acc, { amountPaid }) => amountPaid + acc,
+    0
+  );
+  const totalWallet = eventTransactions
+    .filter(({ PayOutStatus }) => PayOutStatus !== "Paid")
+    .reduce((acc, { amountPaid }) => amountPaid + acc, 0);
+  const totalAffiliateCommission = eventTransactions.reduce(
+    (acc, { affliateCommission }) => acc + affliateCommission,
+    0
+  );
+  const totalAttendees = eventTransactions.reduce(
+    (acc, { attendees }) => attendees + acc,
+    0
+  );
+
+  const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
+    useFilter<TEventTransaction>({
+      data: eventTransactions,
+      dataFilters: eventTransactionsFilter,
+    });
+
+  console.log(filteredData, eventTransactions);
 
   useEffect(() => {
     if (isLoading) return;
@@ -259,12 +302,12 @@ export default function All() {
       .forEach(({ accessor }) => {
         setOptions(
           accessor,
-          extractUniqueTypes<TEventTransaction>(billings, accessor)
+          extractUniqueTypes<TEventTransaction>(eventTransactions, accessor)
         );
       });
   }, [isLoading]);
 
-  console.log(billings);
+  console.log(eventTransactions);
 
   const onChange = (accessorKey) =>
     setShownColumns((prevShown) =>
@@ -276,7 +319,7 @@ export default function All() {
   return (
     <section className="space-y-6 max-w-full">
       <div className="flex justify-end gap-4">
-        <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md">
+        <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md w-[200px]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={33}
@@ -290,12 +333,16 @@ export default function All() {
             />
           </svg>
           <span className="text-gray-700 font-medium">Revenue</span>
-          <span className="text-gray-900 font-semibold text-2xl">₦100,000</span>
+          <span className="text-gray-900 font-semibold text-2xl">
+            ₦{new Intl.NumberFormat().format(totalRevenue)}
+          </span>
           <div className="text-tiny text-green-500 flex items-center gap-1.5 p-1 rounded bg-green-50 w-fit">
-            <span className="font-medium capitalize">Wallet: #90,000</span>
+            <span className="font-medium capitalize">
+              Wallet: ₦{new Intl.NumberFormat().format(totalWallet)}
+            </span>
           </div>
         </div>
-        <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md">
+        <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md w-[200px]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={33}
@@ -318,10 +365,14 @@ export default function All() {
               strokeLinejoin="round"
             />
           </svg>
-          <span className="text-gray-700 font-medium">Commission</span>
-          <span className="text-gray-900 font-semibold text-2xl">₦35,000</span>
+          <span className="text-gray-700 font-medium">
+            Affiliate Commission
+          </span>
+          <span className="text-gray-900 font-semibold text-2xl">
+            ₦{new Intl.NumberFormat().format(totalAffiliateCommission)}
+          </span>
         </div>
-        <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md">
+        <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md w-[200px]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width={33}
@@ -346,18 +397,58 @@ export default function All() {
               </clipPath>
             </defs>
           </svg>
-          <span className="text-gray-700 font-medium">Paid Attendees</span>
-          <span className="text-gray-900 font-semibold text-2xl">50</span>
+          <span className="text-gray-700 font-medium">Attendees</span>
+          <span className="text-gray-900 font-semibold text-2xl">
+            {totalAttendees}
+          </span>
         </div>
       </div>
 
       <div className="space-y-4">
         <div className="flex justify-between items-end">
           <span className="text-gray-500 font-medium text-sm">
-            2/10 Transactions selected
+            {Object.entries(rowSelection).length}/{filteredData.length}{" "}
+            Transactions selected
           </span>
           <div className="flex gap-4">
-            <Button className="bg-basePrimary w-full">Request Payout</Button>
+            <Dialog
+              onOpenChange={(newOpen) => {
+                console.log(
+                  filteredData.filter(({ id }) => rowSelection[id]).length === 0
+                );
+                if (
+                  newOpen &&
+                  filteredData.filter(({ id }) => rowSelection[id]).length === 0
+                )
+                  toast({
+                    description: "Please select unrequested transactions",
+                  });
+              }}
+            >
+              <DialogTrigger
+                asChild
+                disabled={
+                  filteredData.filter(({ id }) => rowSelection[id]).length === 0
+                }
+              >
+                <Button className="bg-basePrimary w-full">
+                  Request Payout
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="px-3">
+                <DialogHeader>
+                  <DialogTitle>
+                    <span className="capitalize">Request Payout</span>
+                  </DialogTitle>
+                </DialogHeader>
+                <RequestPayoutDialog
+                  selectedRows={filteredData.filter(
+                    ({ id }) => rowSelection[id]
+                  )}
+                  getEventTransactions={getEventTransactions}
+                />
+              </DialogContent>
+            </Dialog>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className="bg-white border-[1px] border-basePrimary text-basePrimary flex gap-2 items-center">
@@ -423,11 +514,13 @@ export default function All() {
             </button>
           </div>
         </div>
-        <Filter<TEventTransaction>
+        <Filter
           className={`space-y-4 max-w-full`}
           filters={filters}
           applyFilter={applyFilter}
-          selectedFilters={selectedFilters}
+          selectedFilters={selectedFilters.sort(
+            (a, b) => (a.order || Infinity) - (b.order || Infinity)
+          )}
         />
         <div className="space-y-2 max-w-full">
           <DataTable
@@ -436,6 +529,8 @@ export default function All() {
                 shownColumns.includes(accessorKey) || shownColumns.includes(id)
             )}
             data={filteredData}
+            rowSelection={rowSelection}
+            setRowSelection={setRowSelection}
           />
           <Pagination>
             <PaginationContent>

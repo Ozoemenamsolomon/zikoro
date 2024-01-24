@@ -37,6 +37,7 @@
     "jspdf": "^2.5.1",
     "lucide-react": "^0.297.0",
     "next": "14.0.3",
+    "nodemailer": "^6.9.8",
     "react": "^18",
     "react-component-export-image": "^1.0.6",
     "react-day-picker": "^8.10.0",

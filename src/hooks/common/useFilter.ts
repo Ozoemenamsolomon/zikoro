@@ -27,43 +27,31 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
     selectedFilters.forEach(({ key, value, type, onFilter }) => {
       // Assuming `key` is the accessor and `value` is the selected values array
 
-      console.log(key, value, type);
       result = result.filter((item) => {
         const pptyVal = getProperty<T>(item, key);
-        console.log(pptyVal, key, value, type);
 
         if (onFilter) {
-          console.log("on filter");
           return onFilter(item, value);
         } else {
           switch (type) {
             case "multiple":
-              console.log(
-                "multiple",
-                value.some((elm) => pptyVal && pptyVal.includes(elm))
-              );
               return value.some((elm) => pptyVal && pptyVal.includes(elm));
             case "range":
-              console.log("range");
               return pptyVal >= value[0] && pptyVal <= value[1];
             case "dateRange":
-              console.log("dateRange");
               return (
                 new Date(pptyVal) >= new Date(value.from) &&
                 new Date(pptyVal) <= new Date(value.to)
               );
             case "slider":
-              console.log("slider");
               return pptyVal <= value;
             default:
-              console.log("single");
               return value === pptyVal;
           }
         }
       });
     });
 
-    console.log(result, "filtered result");
     setFilteredData(result);
   }, [data, filters, selectedFilters]);
 

@@ -8,23 +8,28 @@ export const columns: ColumnDef<TEventTransaction>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        className="data-[state=checked]:bg-basePrimary"
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <div className="pl-2">
+        <Checkbox
+          className="data-[state=checked]:bg-basePrimary"
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        className="data-[state=checked]:bg-basePrimary"
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="pl-2">
+        <Checkbox
+          className="data-[state=checked]:bg-basePrimary"
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          disabled={!row.getCanSelect()}
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,

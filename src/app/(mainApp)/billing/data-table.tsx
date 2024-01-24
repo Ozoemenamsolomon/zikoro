@@ -1,6 +1,7 @@
 "use client";
 import {
   ColumnDef,
+  RowSelectionState,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -14,20 +15,31 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Dispatch, SetStateAction } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  rowSelection: RowSelectionState;
+  setRowSelection: Dispatch<SetStateAction<RowSelectionState>>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  rowSelection,
+  setRowSelection,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onRowSelectionChange: setRowSelection,
+    state: { rowSelection },
+    getRowId: (row) => row.id,
+    enableRowSelection: (row) =>
+      row?.original?.payOutStatus !== "requested" &&
+      row?.original?.payOutStatus !== "paid",
   });
 
   return (
