@@ -7,6 +7,6 @@ async function Page() {
 }
 
 
-export default Page
+export default withPageAuthRequired(Page)
 
-//  withPageAuthRequired(Page, {returnTo: "/"})
+//  

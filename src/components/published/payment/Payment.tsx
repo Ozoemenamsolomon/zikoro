@@ -72,7 +72,7 @@ export function Payment({
       referralSource,
       discountCode,
       currency,
-      paidStatus: reference.status === "success",
+      registrationCompleted: reference.status === "success",
       eventDate,
       ticketCategory: priceCategory,
       event: eventTitle,

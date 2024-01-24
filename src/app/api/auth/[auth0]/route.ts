@@ -8,7 +8,6 @@ import {
 } from "@auth0/nextjs-auth0";
 import { NextRequest, NextResponse } from "next/server";
 
-/**
  const afterCallback: AfterCallbackAppRoute = (req, session) => {
   if (!session.user.isFirstLogin) {
     const user = getUser(session.user.email);
@@ -17,10 +16,10 @@ import { NextRequest, NextResponse } from "next/server";
 
   return session;
 };
- */
+ 
 
 export const GET = handleAuth({
-/**
+
    async callback(req: NextRequest, ctx: AppRouteHandlerFnContext) {
     const res = await handleCallback(req, ctx, { afterCallback });
     const session = await getSession();
@@ -32,5 +31,5 @@ export const GET = handleAuth({
     }
     return res;
   },
- */
+ 
 });

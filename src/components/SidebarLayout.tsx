@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Button, NavLinks } from ".";
 import { HeaderWidget } from "./home";
+import Link from "next/link";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import { useSearchParams, useParams } from "next/navigation";
 import {
   CustomerCareIcon,
@@ -24,6 +26,8 @@ export function SideBarLayout({
   className?: string;
   isHomePage?: boolean;
 }) {
+  const { user, error } = useUser();
+
   const [isNav, setNav] = useState(false);
   const param = useSearchParams();
 
@@ -32,10 +36,10 @@ export function SideBarLayout({
 
   useEffect(() => {
     if (param) {
-      const query = param.get("organization");
       setQueryParam(query);
     }
   }, []);
+
   function onClose() {
     setNav((nav) => !nav);
   }
@@ -116,22 +120,25 @@ function SideNavs({
               <span>Support</span>
             </Button>
             <div className="flex items-center gap-x-2">
-            <Button className="px-0 h-fit">
-              <WhatsappIcon />
-            </Button>
-            <Button className="px-0 h-fit">
-              <EmailIcon />
-            </Button>
+              <Button className="px-0 h-fit">
+                <WhatsappIcon />
+              </Button>
+              <Button className="px-0 h-fit">
+                <EmailIcon />
+              </Button>
             </div>
           </div>
           <div className="flex items-center gap-x-2">
             <CircleUser className="text-zikoro" size={22} />
             <p>Idris Rasheed</p>
           </div>
-          <Button className="flex items-center h-fit px-0 gap-x-2">
+          <Link
+            href="/api/auth/logout"
+            className="flex items-center h-fit gap-x-2"
+          >
             <LogOutIcon />
             <span className="text-[#EC2D30]">Log Out</span>
-          </Button>
+          </Link>
         </div>
       </div>
     </div>

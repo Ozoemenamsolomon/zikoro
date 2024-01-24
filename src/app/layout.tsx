@@ -5,6 +5,8 @@ import { NetworkWrapper } from "@/components/wrappers";
 import { Toaster } from "react-hot-toast";
 import { TOASTER_PROPS } from "@/lib";
 import { metaGenerator } from "./meta";
+import { UserProvider } from '@auth0/nextjs-auth0/client';
+
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,13 +21,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className=" text-mobile sm:text-desktop">
-      <body className={`${inter.className}`}>
+     <UserProvider>
+     <body className={`${inter.className}`}>
         <NetworkWrapper>
           <Toaster {...TOASTER_PROPS} />
           {children}
         
         </NetworkWrapper>
       </body>
+     </UserProvider>
     </html>
   );
 }
