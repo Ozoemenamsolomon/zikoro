@@ -66,7 +66,7 @@ export async function PATCH(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
-  
+
   if (req.method === "GET") {
     try {
       const { data, error, status } = await supabase

@@ -10,6 +10,7 @@ export type TCheckin = z.infer<typeof checkinSchema>;
 export type TAttendee = z.infer<typeof AttendeeSchema> & {
   [key: string]: any;
   id: number;
+  eventRegistrationRef: string;
 };
 
 export type TAttendeeNote = z.infer<typeof attendeeNoteSchema>;

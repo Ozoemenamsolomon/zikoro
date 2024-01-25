@@ -26,6 +26,7 @@ import {
   useGetFavourites,
   useUpdateFavourites,
 } from "@/hooks/services/favourites";
+import { useGetAttendeesTags } from "@/hooks/services/tags";
 import { TAttendee } from "@/types/attendee";
 import { isWithinTimeRange } from "@/utils/date";
 import {
@@ -35,6 +36,7 @@ import {
 } from "@/utils/helpers";
 import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
+import { TAttendeeTags } from "@/types/tags";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -121,6 +123,7 @@ const attendeeFilter: TFilter<TAttendee>[] = [
 export interface MoreOptionsProps {
   attendees: TAttendee[];
   getAttendees: () => Promise<void>;
+  attendeesTags: TAttendeeTags[];
 }
 
 type TMoreOptions = {
@@ -188,6 +191,14 @@ export default function FirstSection({
     getFavourites,
     isLoading: favouriteIsLoading,
   } = useGetFavourites({ userId: 10 });
+
+  const {
+    attendeesTags,
+    isLoading: attendeesTagsIsLoading,
+    getAttendeesTags,
+  } = useGetAttendeesTags({
+    userId: 10,
+  });
 
   const { updateFavourites } = useUpdateFavourites({ userId: 10 });
 
@@ -360,6 +371,7 @@ export default function FirstSection({
                 <CurrentSelectedModal.Component
                   attendees={mappedAttendees}
                   getAttendees={getAttendees}
+                  attendeesTags={attendeesTags}
                 />
               )}
             </DialogContent>
@@ -470,18 +482,31 @@ export default function FirstSection({
         </div>
       </div>
       <div className="overflow-auto hide-scrollbar" ref={divRef}>
-        {mappedAttendees.map((attendee) => (
-          <Attendee
-            key={attendee.id}
-            attendee={attendee}
-            isSelected={attendee.id === selectedAttendee?.id}
-            selectAttendee={onSelectAttendee}
-            getAttendees={getAttendees}
-            favourites={favourites}
-            favouriteIsLoading={favouriteIsLoading}
-            toggleFavourites={toggleFavourites}
-          />
-        ))}
+        {mappedAttendees
+          .filter(
+            ({ firstName, lastName, organization, jobTitle }) =>
+              firstName?.toLowerCase().includes(searchTerm) ||
+              lastName?.toLowerCase().includes(searchTerm) ||
+              jobTitle?.toLowerCase().includes(searchTerm) ||
+              organization?.toLowerCase().includes(searchTerm)
+          )
+          .sort((a, b) =>
+            sortOrder === "asc"
+              ? a.firstName.localeCompare(b.firstName)
+              : b.firstName.localeCompare(a.firstName)
+          )
+          .map((attendee) => (
+            <Attendee
+              key={attendee.id}
+              attendee={attendee}
+              isSelected={attendee.id === selectedAttendee?.id}
+              selectAttendee={onSelectAttendee}
+              getAttendees={getAttendees}
+              favourites={favourites}
+              favouriteIsLoading={favouriteIsLoading}
+              toggleFavourites={toggleFavourites}
+            />
+          ))}
       </div>
     </section>
   );

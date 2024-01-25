@@ -71,7 +71,7 @@ export async function POST(
       if (action === "release") {
         query = await supabase.from("attendeeCertificates").upsert(
           attendeeInfo.map((attendee) => {
-            const certificateId = generateAlphanumericHash();
+            const certificateId = createHash();
             return {
               certificateId,
               certificateURL: "www.zikoro.com/verify/" + certificateId,

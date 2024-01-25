@@ -111,7 +111,7 @@ const Page = () => {
           <h1 className="text-gray-800 font-medium text-xl">
             Verify certificate
           </h1>
-          <span className="text-gray-700">
+          <span className="text-gray-700 w-3/4">
             To verify the authenticity of a certificate, compare its details
             with the presented copy.
           </span>

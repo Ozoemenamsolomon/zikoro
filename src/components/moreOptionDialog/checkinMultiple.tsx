@@ -19,6 +19,7 @@ import { isWithinTimeRange } from "@/utils/date";
 const checkinMultiple: React.FC<MoreOptionsProps> = ({
   attendees,
   getAttendees,
+  attendeesTags,
 }) => {
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
@@ -38,14 +39,12 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
                   isWithinTimeRange(entry.date, eventDate)
                 );
                 return (
-                  isWithinTimeRange(entry.date, eventDate) &&
-                  entry.checkin
+                  isWithinTimeRange(entry.date, eventDate) && entry.checkin
                 );
               })
           : checkin?.some(
               (entry) =>
-                isWithinTimeRange(entry.date, eventDate) &&
-                entry.checkin
+                isWithinTimeRange(entry.date, eventDate) && entry.checkin
             ) || false;
       })
     );
@@ -160,6 +159,7 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
         attendees={mappedAttendees}
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
+        attendeesTags={attendeesTags}
       />
       <DialogClose asChild>
         <Button

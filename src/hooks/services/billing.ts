@@ -45,6 +45,54 @@ export const useGetEventTransactions = ({
   return { eventTransactions, isLoading, error, getEventTransactions };
 };
 
+type UseGetAttendeeEventTransactionsResult = {
+  attendeeEventTransactions: TEventTransaction;
+  getAttendeeEventTransactions: () => Promise<void>;
+} & RequestStatus;
+
+export const useGetAttendeeEventTransactions = ({
+  userId,
+  eventRegistrationRef,
+}: {
+  userId: number;
+  eventRegistrationRef: string;
+}): UseGetAttendeeEventTransactionsResult => {
+  const [attendeeEventTransactions, setAttendeeEventTransactions] =
+    useState<TEventTransaction>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendeeEventTransactions = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TEventTransaction>({
+        endpoint: `/billing/${userId}/${eventRegistrationRef}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setAttendeeEventTransactions(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendeeEventTransactions();
+  }, [userId]);
+
+  return {
+    attendeeEventTransactions,
+    isLoading,
+    error,
+    getAttendeeEventTransactions,
+  };
+};
+
 type useRequestPayOutResult = {
   requestPayOut: ({ payload }: { payload: TFavouriteContact }) => Promise<void>;
 } & RequestStatus;

@@ -106,7 +106,7 @@ export default function Page() {
                 <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Share link
                 </span>
-                <span>www.zikoro.com/orthoex/event3502/invite.com</span>
+                <span>www.zikoro.com/events/1?source=link</span>
                 {hasCopiedText ? (
                   <svg
                     stroke="currentColor"
@@ -122,9 +122,7 @@ export default function Page() {
                 ) : (
                   <button
                     onClick={() =>
-                      copyToClipboard(
-                        "www.zikoro.com/orthoex/event3502/invite.com"
-                      )
+                      copyToClipboard("www.zikoro.com/events/1?source=link")
                     }
                   >
                     <Copy className="w-5 h-5 text-gray-700" />

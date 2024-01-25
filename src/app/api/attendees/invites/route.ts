@@ -45,7 +45,9 @@ export async function POST(req: NextRequest) {
       console.log(InviteDetails.map(({ email }: { email: string }) => email));
       let nodemailer = require("nodemailer");
       const transporter = nodemailer.createTransport({
-        service: "hotmail",
+        host: "smtp.zoho.com",
+        port: 465,
+        secure: true,
         auth: {
           user: process.env.NEXT_PUBLIC_EMAIL,
           pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
@@ -53,7 +55,7 @@ export async function POST(req: NextRequest) {
       });
 
       const mailData = {
-        from: process.env.NEXT_PUBLIC_EMAIL,
+        from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
         to: InviteDetails.map(({ email }: { email: string }) => email),
         subject: `Invite from [organization] to [event name]`,
         html: `<div>${Message}</div>`,

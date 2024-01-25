@@ -6,23 +6,21 @@ import { TAttendee } from "@/types/attendee";
 import { TFilter } from "@/types/filter";
 import { isWithinTimeRange } from "@/utils/date";
 import { extractUniqueTypes } from "@/utils/helpers";
-import { useEffect, useState } from "react";
-import { useGetAttendeesTags } from "@/hooks/services/tags";
-import { TAttendeeTags, TTag } from "@/types/tags";
+import { useEffect, useState } from "react";  
+import { TTag } from "@/types/tags";
+import { TAttendeeTags } from "@/types/tags";
 
 export default function ViewAttendeesSection({
   attendees,
   toggleValue,
   selectedAttendees,
+  attendeesTags,
 }: {
   attendees: TAttendee[];
   selectedAttendees: TAttendee[];
   toggleValue: (value: TAttendee | TAttendee[]) => void;
+  attendeesTags: TAttendeeTags[];
 }) {
-  const { attendeesTags, isLoading, getAttendeesTags } = useGetAttendeesTags({
-    userId: 10,
-  });
-
   const attendeeFilter: TFilter<TAttendee>[] = [
     {
       label: "checked-in",
@@ -221,8 +219,6 @@ export default function ViewAttendeesSection({
   }, []);
 
   useEffect(() => {
-    if (isLoading) return;
-
     setOptions(
       "tags",
       (() => {
@@ -233,7 +229,7 @@ export default function ViewAttendeesSection({
         return extractUniqueTypes<TTag>(tags || [], "label");
       })()
     );
-  }, [isLoading]);
+  }, []);
 
   // useEffect(() => {
   //   setMappedAttendees(

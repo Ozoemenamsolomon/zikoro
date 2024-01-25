@@ -4,21 +4,21 @@ import { cookies } from "next/headers";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { certificateId: string } }
+  { params }: { params: { userId: string; eventRegistrationRef: string } }
 ) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      const { certificateId } = params;
+      const { userId, eventRegistrationRef } = params;
 
-      // .select("*")
       const { data, error, status } = await supabase
-        .from("attendeeCertificates")
-        .select(
-          "*, certificate!inner(*, event:events!inner(organization:organization!inner(*))), attendee:attendees!inner(*)"
-        )
-        .eq("certificateId", certificateId)
+        .from("eventTransactions")
+        .select("*, events!inner(*)")
+        // .eq("events.organisationId", 5)
+        .eq("eventRegistrationRef", eventRegistrationRef)
         .maybeSingle();
+
+      console.log(data, eventRegistrationRef);
 
       if (error) throw error;
 

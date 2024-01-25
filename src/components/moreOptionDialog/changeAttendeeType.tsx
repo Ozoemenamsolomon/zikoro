@@ -9,7 +9,11 @@ import React, { useEffect, useState } from "react";
 import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
 
-const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
+const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
+  attendees,
+  getAttendees,
+  attendeesTags,
+}) => {
   const [mappedAttendees, setMappedAttendees] = useState<TAttendee[]>([]);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
   const [selectedAttendeeType, setSelectedAttendeeType] = useState<string>("");
@@ -20,9 +24,10 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
       attendees.filter(
         ({ attendeeType }) =>
           selectedAttendeeType === "" ||
-          (action === "assign"
-            ? !attendeeType.includes(selectedAttendeeType)
-            : attendeeType.includes(selectedAttendeeType))
+          (attendeeType &&
+            (action === "assign"
+              ? !attendeeType?.includes(selectedAttendeeType)
+              : attendeeType?.includes(selectedAttendeeType)))
       )
     );
   }, [attendees, selectedAttendeeType, action]);
@@ -43,7 +48,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
     setSelectedAttendees(updatedValue);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const payload = selectedAttendees.map((attendee) => {
       const newAttendeeType =
         action === "assign"
@@ -57,7 +62,8 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
       };
     });
 
-    updateAttendees({ payload });
+    await updateAttendees({ payload });
+    await getAttendees();
   };
 
   useEffect(() => {
@@ -129,6 +135,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
         attendees={mappedAttendees}
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
+        attendeesTags={attendeesTags}
       />
       <DialogClose asChild>
         <Button

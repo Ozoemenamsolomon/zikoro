@@ -1,3 +1,5 @@
+import * as crypto from "crypto";
+
 export function extractUniqueTypes<T>(
   arr: T[],
   ppty: keyof T
@@ -64,6 +66,12 @@ export function generateAlphanumericHash(length: number): string {
   }
 
   return hash;
+}
+
+export function createHash(data: string): string {
+  const hash = crypto.createHash("sha256");
+  hash.update(data);
+  return hash.digest("hex");
 }
 
 export function getProperty<T>(obj: T, key: string): any {

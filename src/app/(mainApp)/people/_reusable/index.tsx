@@ -49,7 +49,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
             />
           </section>
           <section className="col-span-3 pt-2">
-            <ThirdSection />
+            <ThirdSection attendee={selectedAttendee} />
           </section>
         </>
       ) : (
