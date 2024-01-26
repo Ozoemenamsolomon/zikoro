@@ -54,7 +54,7 @@ export function BookEvent({
 }) {
   const [attendees, setAttendees] = useState<any[]>([]);
   const [isPaymentModal, setOpenPaymentModal] = useState(false);
-  const {sendTransactionDetail} = useTransactionDetail()
+  const { sendTransactionDetail } = useTransactionDetail();
   const form = useForm<z.infer<typeof eventBookingValidationSchema>>({
     resolver: zodResolver(eventBookingValidationSchema),
     defaultValues: {
@@ -69,8 +69,8 @@ export function BookEvent({
       ],
     },
   });
-  const { registerAttendees } = useBookingEvent();
-  const eventReference = nanoid();
+  const { registerAttendees, isRegistered } = useBookingEvent();
+
   const { fields, remove, append } = useFieldArray({
     control: form.control,
     name: "attendeeApplication",
@@ -93,6 +93,11 @@ export function BookEvent({
   function allowPayment(bool: boolean) {
     setOpenPaymentModal(bool);
   }
+
+  // memoized the reference to invoke once
+  const eventReference = useMemo(() => {
+    return nanoid();
+  }, [nanoid]);
 
   const othersValue = form.watch("others");
   const aboutUsValue = form.watch("aboutUs");
@@ -128,6 +133,9 @@ export function BookEvent({
   const total = useMemo(() => {
     if (computedPrice && processingFee)
       return computedPrice - discount + processingFee;
+    else {
+      return 0;
+    }
   }, [computedPrice, processingFee, discount]);
 
   async function onSubmit(
@@ -151,29 +159,26 @@ export function BookEvent({
       return;
     }
     setAttendees(values.attendeeApplication);
-    await registerAttendees(
-     
-      eventReference,
-      values,
-      eventId,
-      organization
-    );
+    await registerAttendees(eventReference, values, eventId, organization);
 
-   // todays date 
-const today = new Date()
+    // return if user is registered -- attendees data will not be sent to the eventTransaction table
+    if (isRegistered) return;
 
-// Calculate the date for the next 7 days
-const nextSevenDays = new Date(today);
-nextSevenDays.setDate(today.getDate() + 7);
+    // todays date
+    const today = new Date();
 
-// Format the result as a string in the specified format
-const formattedNextSevenDays = nextSevenDays.toISOString()
+    // Calculate the date for the next 7 days
+    const nextSevenDays = new Date(today);
+    nextSevenDays.setDate(today.getDate() + 7);
 
-const payload = {
+    // Format the result as a string in the specified format
+    const formattedNextSevenDays = nextSevenDays.toISOString();
+
+    const payload = {
       eventId,
       eventRegistrationRef: eventReference,
       paymentDate: today,
-      expiredAt: formattedNextSevenDays ,
+      expiredAt: formattedNextSevenDays,
       amountPaid: total,
       attendees: fields?.length,
       discountValue: discount,
@@ -189,15 +194,14 @@ const payload = {
     };
 
     //
-    await sendTransactionDetail( allowPayment,payload )
-    
+    await sendTransactionDetail(allowPayment, payload);
   }
   return (
     <>
       <div
         role="button"
         onClick={close}
-        className="w-full h-full inset-0 bg-black/50 z-50 fixed"
+        className="w-full h-full inset-0 bg-black/50 z-[80] fixed"
       >
         <div
           role="button"

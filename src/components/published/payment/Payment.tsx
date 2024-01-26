@@ -74,6 +74,7 @@ export function Payment({
       currency,
       registrationCompleted: reference.status === "success",
       eventDate,
+      payOutStatus: "new",
       ticketCategory: priceCategory,
       event: eventTitle,
       attendeesDetails,
@@ -97,7 +98,31 @@ export function Payment({
     ),
     onSuccess: (reference: any) => handleSuccess(reference),
   };
+  async function submit() {
+    const payload = {
+      eventId,
+      eventRegistrationRef: eventReference,
+      paymentDate: new Date(),
+      expiredAt: null,
+      amountPaid: total,
+      attendees: count,
+      discountValue: discount,
+      referralSource,
+      discountCode,
+      currency,
+      registrationCompleted: true,
+      eventDate,
+      ticketCategory: priceCategory,
+      event: eventTitle,
+      attendeesDetails,
+      eventPrice,
+    };
 
+    //  console.log({ payload });
+
+    /// change to priceCategory after validity date has been adjusted
+    await sendTransactionDetail(toggleSuccessModal, payload);
+  }
   return (
     <>
       <div className="w-full h-full z-[200] bg-[#FAFAFA] fixed inset-0">
@@ -130,7 +155,17 @@ export function Payment({
             </div>
           </div>
           <div className="w-full flex items-center justify-center">
-            <PaystackButton {...componentProps} />
+            {total && total > 0 ? (
+              <PaystackButton {...componentProps} />
+            ) : (
+              <Button
+                onClick={submit}
+                className="w-full gap-x-2 bg-zikoro text-gray-50 font-medium"
+              >
+                <Lock size={22} />
+                <span>{`Confirm`}</span>
+              </Button>
+            )}
           </div>
           {/**
          <Button

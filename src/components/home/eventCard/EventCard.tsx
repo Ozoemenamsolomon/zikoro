@@ -8,6 +8,7 @@ import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { Users } from "@styled-icons/fa-solid/Users";
 import { Dot } from "@styled-icons/bootstrap/Dot";
+import { Edit } from "@styled-icons/boxicons-solid/Edit";
 import { useState, useMemo } from "react";
 import { AboutWidget, EventLocationType } from "@/components/composables";
 import { Event } from "@/types";
@@ -149,7 +150,16 @@ export function EventCard({
         <div className="flex items-center gap-x-2">
           <EventLocationType locationType={event.locationType} />
           <div className="flex text-xs text-gray-500 flex-col items-start justify-start">
-            <p>{event.published ? "Published" : "Draft"}</p>
+            <p>
+              {event.published ? (
+                "Published"
+              ) : (
+                <button className="flex items-center gap-x-1">
+                  <Edit size={16} />
+                  <span>Edit</span>
+                </button>
+              )}
+            </p>
             <p>{createdAt}</p>
           </div>
         </div>

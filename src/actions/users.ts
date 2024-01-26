@@ -21,4 +21,6 @@ export const getUser = async (email: string) => {
   //   console.log({error});
   // }
   // return user;
+
 };
+

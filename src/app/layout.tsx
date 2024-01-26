@@ -7,8 +7,6 @@ import { TOASTER_PROPS } from "@/lib";
 import { metaGenerator } from "./meta";
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 
-
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const generateMetadata = async (): Promise<Metadata> =>
