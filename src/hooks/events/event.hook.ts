@@ -315,6 +315,7 @@ export function useFetchSingleEvent(id: string) {
 
 export function useBookingEvent() {
   const [loading, setLoading] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false)
 
   async function registerAttendees(
     eventTransactionRef: string,
@@ -349,20 +350,21 @@ export function useBookingEvent() {
 
         if (error) {
           if (error.message === `duplicate key value violates unique constraint "attendees_email_key"`) {
-            toast.error("User has already registered for this event")
+           // toast.error("User has already registered for this event")
           }
           else {
             toast.error(error.message);
           }
          
-         // allowPayment(false);
+          setIsRegistered(true)
           return;
         }
 
         if (status === 201 || status === 200) {
           setLoading(false);
+          setIsRegistered(false)
         //  allowPayment(true);
-          toast.success("Attendees Registration successful");
+          toast.success("Attendees Information has been Captured. Proceed to Payment...");
         }
       }
     } catch (error) {
@@ -373,6 +375,7 @@ export function useBookingEvent() {
   return {
     registerAttendees,
     loading,
+    isRegistered
   };
 }
 

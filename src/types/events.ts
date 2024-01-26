@@ -52,7 +52,7 @@ export interface Event {
   instagram: string;
   x: string;
   linkedin: string;
-  locationType: "Hybrid" | "Onsite" | "Online" | "Virtual";
+  locationType: "Hybrid" | "Onsite" |  "Virtual";
   organisationLogo: string;
   organisationName: string;
   phoneNumber: string;

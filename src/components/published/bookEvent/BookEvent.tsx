@@ -69,7 +69,7 @@ export function BookEvent({
       ],
     },
   });
-  const { registerAttendees } = useBookingEvent();
+  const { registerAttendees, isRegistered } = useBookingEvent();
   const eventReference = nanoid();
   const { fields, remove, append } = useFieldArray({
     control: form.control,
@@ -127,7 +127,7 @@ export function BookEvent({
   // calculating total
   const total = useMemo(() => {
     if (computedPrice && processingFee)
-      return computedPrice - discount + processingFee;
+      return computedPrice - discount + processingFee || 0;
   }, [computedPrice, processingFee, discount]);
 
   async function onSubmit(
@@ -158,6 +158,9 @@ export function BookEvent({
       eventId,
       organization
     );
+
+    // return if user is registered -- attendees data will not be sent to the eventTransaction table
+    if (isRegistered) return
 
    // todays date 
 const today = new Date()

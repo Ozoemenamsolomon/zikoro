@@ -124,7 +124,8 @@ export function SingleEvent({
             price:
               discountAmount !== null
                 ? Number(value?.earlyBird) - Number(discountAmount)
-                : (Number(value?.earlyBird) * Number(discountPercentage)) / 100,
+                : Number(value?.earlyBird) -
+                  (Number(value?.earlyBird) * Number(discountPercentage)) / 100,
             name: "Early Bird",
             date: value?.validity,
           };
@@ -133,7 +134,8 @@ export function SingleEvent({
             price:
               discountAmount !== null
                 ? Number(value?.standard) - Number(discountAmount)
-                : (Number(value?.standard) * Number(discountPercentage)) / 100,
+                : Number(value?.standard) -
+                  (Number(value?.standard) * Number(discountPercentage)) / 100,
             name: "Standard",
             date: value?.validity,
           };
@@ -143,7 +145,8 @@ export function SingleEvent({
             price:
               discountAmount !== null
                 ? Number(value?.lateBird) - Number(discountAmount)
-                : (Number(value?.lateBird) * Number(discountPercentage)) / 100,
+                : Number(value?.lateBird) -
+                  (Number(value?.lateBird) * Number(discountPercentage)) / 100,
             name: "Late Bird",
             date: value?.validity,
           };
@@ -171,8 +174,6 @@ export function SingleEvent({
       setPriceCategory(value);
     }
   }
-
- 
 
   // conditonally adding comma to separate city and location
   const removeComma = useMemo(() => {
@@ -215,7 +216,7 @@ export function SingleEvent({
   /// verifying and redeeming a discount code'
   async function redeem() {
     await verifyDiscountCode(code, String(eventId));
-   // setCode("")
+    // setCode("")
   }
 
   return (
@@ -386,7 +387,7 @@ export function SingleEvent({
                           onClick={(e) => {
                             e.stopPropagation();
                             selectedPrice(v?.price);
-                            selectedPriceCategory(v?.name)
+                            selectedPriceCategory(v?.name);
                           }}
                           disabled={isDateGreaterThanToday(v?.date)}
                           className={cn(
