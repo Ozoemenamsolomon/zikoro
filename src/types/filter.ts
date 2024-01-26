@@ -42,7 +42,7 @@ export type TOption = {
   value: any;
 };
 
-export type onFilterProps<T> = (data: T, value: any[]) => boolean;
+export type onFilterProps<T> = (data: T, value: any[] | any) => boolean;
 
 export type applyFilterProps<T> = (
   key: string,

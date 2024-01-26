@@ -6,20 +6,23 @@ import { TAttendee } from "@/types/attendee";
 import { TFilter } from "@/types/filter";
 import { isWithinTimeRange } from "@/utils/date";
 import { extractUniqueTypes } from "@/utils/helpers";
-import { useEffect, useState } from "react";  
+import { useEffect, useState } from "react";
 import { TTag } from "@/types/tags";
 import { TAttendeeTags } from "@/types/tags";
+import { TFavouriteContact } from "@/types/favourites";
 
 export default function ViewAttendeesSection({
   attendees,
   toggleValue,
   selectedAttendees,
   attendeesTags,
+  favourites,
 }: {
   attendees: TAttendee[];
   selectedAttendees: TAttendee[];
   toggleValue: (value: TAttendee | TAttendee[]) => void;
   attendeesTags: TAttendeeTags[];
+  favourites: TFavouriteContact;
 }) {
   const attendeeFilter: TFilter<TAttendee>[] = [
     {
@@ -123,8 +126,15 @@ export default function ViewAttendeesSection({
           </defs>
         </svg>
       ),
-      options: [],
-      type: "multiple",
+      options: [
+        { label: "favourite", value: true },
+        { label: "not favourite", value: false },
+      ],
+      onFilter: (attendee: TAttendee, isFavourite: boolean) =>
+        !!favourites.attendees &&
+        (isFavourite
+          ? favourites.attendees.includes(attendee.id)
+          : !favourites.attendees.includes(attendee.id)),
     },
     {
       label: "tags",
@@ -157,7 +167,12 @@ export default function ViewAttendeesSection({
           />
         </svg>
       ),
-      options: [],
+      options: extractUniqueTypes<TTag>(
+        attendeesTags?.flatMap((attendee) =>
+          attendee?.attendeeTags?.map((tag) => tag)
+        ) || [],
+        "label"
+      ),
       onFilter: (attendee: TAttendee, selectedTags: string[]) => {
         const attendeeTags = attendeesTags.find((attendeeTag) => {
           console.log(attendeeTag);
@@ -206,30 +221,30 @@ export default function ViewAttendeesSection({
           extractUniqueTypes<TAttendee>(attendees, accessor)
         );
       });
-    setOptions(
-      "tags",
-      (() => {
-        const tags = attendeesTags.flatMap((attendee) =>
-          attendee.attendeeTags.map((tag) => tag)
-        );
+    // setOptions(
+    //   "tags",
+    //   (() => {
+    //     const tags = attendeesTags.flatMap((attendee) =>
+    //       attendee.attendeeTags.map((tag) => tag)
+    //     );
 
-        return extractUniqueTypes<TTag>(tags || [], "label");
-      })()
-    );
+    //     return extractUniqueTypes<TTag>(tags || [], "label");
+    //   })()
+    // );
   }, []);
 
-  useEffect(() => {
-    setOptions(
-      "tags",
-      (() => {
-        const tags = attendeesTags.flatMap((attendee) =>
-          attendee.attendeeTags.map((tag) => tag)
-        );
+  // useEffect(() => {
+  //   setOptions(
+  //     "tags",
+  //     (() => {
+  //       const tags = attendeesTags.flatMap((attendee) =>
+  //         attendee.attendeeTags.map((tag) => tag)
+  //       );
 
-        return extractUniqueTypes<TTag>(tags || [], "label");
-      })()
-    );
-  }, []);
+  //       return extractUniqueTypes<TTag>(tags || [], "label");
+  //     })()
+  //   );
+  // }, []);
 
   // useEffect(() => {
   //   setMappedAttendees(

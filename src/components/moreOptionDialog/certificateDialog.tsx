@@ -23,6 +23,8 @@ import { DialogClose } from "../ui/dialog";
 const CertificateDialog: React.FC<MoreOptionsProps> = ({
   attendees,
   getAttendees,
+  favourites,
+  attendeesTags
 }) => {
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
@@ -166,6 +168,8 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         </Select>
       </div>
       <ViewAttendeesSection
+        attendeesTags={attendeesTags}
+        favourites={favourites}
         attendees={mappedAttendees}
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}

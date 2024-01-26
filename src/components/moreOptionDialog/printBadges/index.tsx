@@ -8,6 +8,8 @@ import Dimensions from "./dimensions";
 const PrintBadges: React.FC<MoreOptionsProps> = ({
   attendees,
   getAttendees,
+  favourites,
+  attendeesTags,
 }) => {
   const [step, setStep] = useState<number>(0);
   const [mappedAttendees, setMappedAttendees] =
@@ -181,6 +183,8 @@ const PrintBadges: React.FC<MoreOptionsProps> = ({
           setSelectedAttendees={setSelectedAttendees}
           step={step}
           setStep={setStep}
+          favourites={favourites}
+          attendeesTags={attendeesTags}
         />
       ) : step === 1 ? (
         <Dimensions />

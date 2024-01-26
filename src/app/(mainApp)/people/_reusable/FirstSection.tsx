@@ -37,6 +37,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { TAttendeeTags } from "@/types/tags";
+import { TFavouriteContact } from "@/types/favourites";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -124,6 +125,7 @@ export interface MoreOptionsProps {
   attendees: TAttendee[];
   getAttendees: () => Promise<void>;
   attendeesTags: TAttendeeTags[];
+  favourites: TFavouriteContact;
 }
 
 type TMoreOptions = {
@@ -372,6 +374,7 @@ export default function FirstSection({
                   attendees={mappedAttendees}
                   getAttendees={getAttendees}
                   attendeesTags={attendeesTags}
+                  favourites={favourites}
                 />
               )}
             </DialogContent>
@@ -437,7 +440,7 @@ export default function FirstSection({
           </span>
         </button>
       </div>
-      <Filter<TAttendee>
+      <Filter
         className={`transition-all duration-150 my-4 space-y-4 ${
           showFilter ? "h-fit" : "h-0 overflow-hidden"
         }`}

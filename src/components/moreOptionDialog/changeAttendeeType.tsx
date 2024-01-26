@@ -13,6 +13,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
   attendees,
   getAttendees,
   attendeesTags,
+  favourites
 }) => {
   const [mappedAttendees, setMappedAttendees] = useState<TAttendee[]>([]);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
@@ -132,10 +133,11 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
         </div>
       </div>
       <ViewAttendeesSection
+        attendeesTags={attendeesTags}
+        favourites={favourites}
         attendees={mappedAttendees}
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
-        attendeesTags={attendeesTags}
       />
       <DialogClose asChild>
         <Button

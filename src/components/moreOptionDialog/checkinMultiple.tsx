@@ -20,7 +20,9 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
   attendees,
   getAttendees,
   attendeesTags,
+  favourites,
 }) => {
+  console.log(attendeesTags);
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
@@ -156,10 +158,12 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
         </Select>
       </div>
       <ViewAttendeesSection
+        attendeesTags={attendeesTags}
+        favourites={favourites}
+        favourites={favourites}
         attendees={mappedAttendees}
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
-        attendeesTags={attendeesTags}
       />
       <DialogClose asChild>
         <Button
