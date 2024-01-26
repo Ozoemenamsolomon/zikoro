@@ -468,7 +468,7 @@ export function SingleEvent({
                 </div>
               </div>
               <Button
-                disabled={priceCategory === undefined}
+                disabled={priceCategory === ""}
                 onClick={(e) => {
                   e.stopPropagation();
                   onClose();

@@ -154,7 +154,7 @@ export function Payment({
             </div>
           </div>
           <div className="w-full flex items-center justify-center">
-            {eventPrice && eventPrice > 0 ? (
+            {total && total > 0 ? (
               <PaystackButton {...componentProps} />
             ) : (
               <Button

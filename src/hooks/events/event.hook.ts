@@ -146,7 +146,7 @@ export function useDuplicateEvent() {
       }
 
       // Create a new event with the same data
-      const newEvent = { ...originalEvent };
+      const newEvent = { ...originalEvent, published: false };
       delete newEvent.id; // delete the id
 
       // Insert the new event into the events table
@@ -315,7 +315,7 @@ export function useFetchSingleEvent(id: string) {
 
 export function useBookingEvent() {
   const [loading, setLoading] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false)
+  const [isRegistered, setIsRegistered] = useState(false);
 
   async function registerAttendees(
     eventTransactionRef: string,
@@ -349,22 +349,26 @@ export function useBookingEvent() {
           .upsert([...attendees]);
 
         if (error) {
-          if (error.message === `duplicate key value violates unique constraint "attendees_email_key"`) {
-           // toast.error("User has already registered for this event")
-          }
-          else {
+          if (
+            error.message ===
+            `duplicate key value violates unique constraint "attendees_email_key"`
+          ) {
+            // toast.error("User has already registered for this event")
+          } else {
             toast.error(error.message);
           }
-         
-          setIsRegistered(true)
+
+          setIsRegistered(true);
           return;
         }
 
         if (status === 201 || status === 200) {
           setLoading(false);
-          setIsRegistered(false)
-        //  allowPayment(true);
-          toast.success("Attendees Information has been Captured. Proceed to Payment...");
+          setIsRegistered(false);
+          //  allowPayment(true);
+          toast.success(
+            "Attendees Information has been Captured. Proceed to Payment..."
+          );
         }
       }
     } catch (error) {
@@ -375,7 +379,7 @@ export function useBookingEvent() {
   return {
     registerAttendees,
     loading,
-    isRegistered
+    isRegistered,
   };
 }
 
@@ -400,9 +404,11 @@ export function useTransactionDetail() {
           userId: data?.user?.id,
         };
 
-        const { data: successData, error, status } = await supabase
-          .from("eventTransactions")
-          .upsert([{ ...payload }]);
+        const {
+          data: successData,
+          error,
+          status,
+        } = await supabase.from("eventTransactions").upsert([{ ...payload }]);
 
         if (error) {
           toast.error(error.message);
@@ -410,10 +416,11 @@ export function useTransactionDetail() {
         }
 
         if (status === 201 || status === 200) {
+       
           setLoading(false);
           allowPayment(true);
           // toast.success("Al");
-        //  console.log({successData})
+          //  console.log({successData})
         }
       }
     } catch (error) {
@@ -424,39 +431,52 @@ export function useTransactionDetail() {
   return {
     sendTransactionDetail,
     loading,
-   
   };
 }
 
-
 export function useUpdateTransactionDetail() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   async function sendTransactionDetail(
-    toggleSuccessModal:(bool:boolean) => void,
-    payload:any
+    toggleSuccessModal: (bool: boolean) => void,
+    payload: any
   ) {
-
     setLoading(true);
     try {
+      const { error, status } = await supabase
+        .from("eventTransactions")
+        .update(payload)
+        .eq("eventRegistrationRef", payload.eventRegistrationRef);
 
-        const {  error, status } = await supabase
-          .from("eventTransactions")
-          .update(payload)
-          .eq("eventRegistrationRef", payload.eventRegistrationRef)
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
 
-        if (error) {
-          toast.error(error.message);
-          return;
-        }
+      if (status === 204 || status === 200) {
+           // To  update the bookedSpot
 
-        if (status === 204 || status === 200) {
-          setLoading(false);
-          toggleSuccessModal(true);
-          // toast.success("Al");
-         
-        }
-      
+          // fetch event
+          // Fetch the event by ID
+          const { data: originalEvent, error: fetchError } = await supabase
+            .from("events")
+            .select("*")
+            .eq("id", payload.eventId)
+            .single();
+
+          const registered =
+            originalEvent.registered === null
+              ? payload.attendees
+              : Number(originalEvent?.registered) + payload.attendees;
+          const { error, status } = await supabase
+            .from("events")
+            .update({...originalEvent, registered})
+            .eq("id", payload.eventId)
+
+        setLoading(false);
+        toggleSuccessModal(true);
+        // toast.success("Al");
+      }
     } catch (error) {
       setLoading(false);
     }
@@ -464,12 +484,9 @@ export function useUpdateTransactionDetail() {
 
   return {
     sendTransactionDetail,
-    loading
-  }
-  }
-
-  
-
+    loading,
+  };
+}
 
 export function useRedeemDiscountCode() {
   const [loading, setLoading] = useState(false);
@@ -490,7 +507,7 @@ export function useRedeemDiscountCode() {
         throw error;
       }
 
-      console.log({ data });
+      // console.log({ data });
 
       // check if code exist
       let isDiscountCodeExist = data?.map((v) => v.discountCode).includes(code);
@@ -513,7 +530,7 @@ export function useRedeemDiscountCode() {
       if (isDiscountCodeValid) setMinAttendees(discount?.minQty);
 
       // setDiscount amount
-      if (isDiscountCodeValid) setDiscountAmount(discount?.discountAmount );
+      if (isDiscountCodeValid) setDiscountAmount(discount?.discountAmount);
 
       if (isDiscountCodeValid)
         setDiscountPercentage(discount?.discountPercentage);
