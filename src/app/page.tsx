@@ -1,5 +1,5 @@
 import Home from "@/components/home/Home"
-import { withPageAuthRequired } from "@auth0/nextjs-auth0"
+// import { withPageAuthRequired } from "@auth0/nextjs-auth0"
 
 
 async function Page() {
@@ -7,6 +7,6 @@ async function Page() {
 }
 
 
-export default withPageAuthRequired(Page)
+export default Page
 
 //  

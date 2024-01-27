@@ -1,5 +1,5 @@
 import OrganizationHome from "@/components/home/OrganizationHome";
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+// import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 
 
  function Page({ params: { organizationId } }: { params: { organizationId: string } }) {
