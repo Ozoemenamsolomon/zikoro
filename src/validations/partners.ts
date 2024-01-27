@@ -33,15 +33,36 @@ export const jobSchema = z.object({
 });
 
 export const partnerSchema = z.object({
-    partnersType: z.string().min(3, { message: "Title is required" }),
-    companyName: z.string().min(3, { message: "Company Name is required" }),
-    description: z.string().min(3, { message: "Job Description is required" }),
-    city: z.string().min(3, { message: "City is required" }),
-    country: z.string().min(3, { message: "Country is required" }),
-    media: z.string().min(3, { message: "Media is required" }),
-    logo: z
-      .string()
-      .min(3, { message: "Company logo is required" }),
-      website: z.string().min(3, { message: "Website Link is required" }),
-      exhibitionHall: z.string().min(3, { message: "Exhibition Hall is required" }),
-  });
+  partnersType: z.string().min(3, { message: "Title is required" }),
+  companyName: z.string().min(3, { message: "Company Name is required" }),
+  description: z.string().min(3, { message: "Job Description is required" }),
+  city: z.string().min(3, { message: "City is required" }),
+  country: z.string().min(3, { message: "Country is required" }),
+  email: z
+    .string()
+    .email({ message: "Email must be a valid email" })
+    .refine(
+      (value) =>
+        value && /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/.test(value),
+      {
+        message: "Invalid email address",
+      }
+    ),
+  industry: z.string().min(3, { message: "Industry is required" }),
+  boothNumber: z.string().min(3, { message: "Booth Number is required" }),
+  boothStaff: z.string().min(3, { message: "Staff is required" }),
+  media: z.string().min(3, { message: "Media is required" }),
+  logo: z.string().min(3, { message: "Company logo is required" }),
+  website: z.string().min(3, { message: "Website Link is required" }),
+  exhibitionHall: z.string().min(3, { message: "Exhibition Hall is required" }),
+  phoneNumber: z
+    .string()
+    .refine((value) => value && /^(\+\d{11,}|\d{11,})$/.test(value), {
+      message: "Phone number must be at least 11 digits",
+    }),
+  whatsappNumber: z
+    .string()
+    .refine((value) => value && /^(\+\d{11,}|\d{11,})$/.test(value), {
+      message: "Whatsapp number must be at least 11 digits",
+    }),
+});

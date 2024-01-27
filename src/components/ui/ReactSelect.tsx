@@ -28,7 +28,7 @@ export const ReactSelect = <T extends FieldValues>(
   } = useController(controllerProps) as UseControllerReturn<T>;
 
   return (
-    <div className="w-full relative h-[48px]">
+    <div className="w-full relative 3rem">
       <label
         className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1"
         htmlFor="select"
@@ -45,7 +45,7 @@ export const ReactSelect = <T extends FieldValues>(
             "&:hover": {
                 borderColor: "#6b7280",
               },
-            height: "48px",
+            height: "3rem",
             backgroundColor: "#ffffff",
             boxShadow:"0px"
           }),

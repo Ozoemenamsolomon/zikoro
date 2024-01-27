@@ -36,10 +36,10 @@ export function AddBanners({ close }: { close: () => void }) {
       <div
         onClick={(e) => e.stopPropagation()}
         role="button"
-        className="w-[95%] sm:w-[640px] box-animation h-fit flex flex-col gap-y-6 rounded-lg bg-white m-auto absolute inset-0 py-6 px-3 sm:px-4"
+        className="w-[95%] sm:w-[640px] box-animation h-fit flex flex-col gap-y-6 rounded-lg bg-white m-auto absolute inset-0 py-8 px-3 sm:px-6"
       >
         <div className="w-full flex items-center justify-between">
-          <h2 className="font-medium text-lg sm:text-xl">Bannes</h2>
+          <h2 className="font-medium text-lg sm:text-xl">Banners</h2>
           <Button onClick={close} className="px-1 h-fit w-fit">
             <CloseOutline size={22} />
           </Button>
@@ -70,15 +70,21 @@ export function AddBanners({ close }: { close: () => void }) {
                   control={form.control}
                   name={`banners.${index}.file` as const}
                   render={({ field }) => (
-                    <InputOffsetLabel label="Banner">
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        placeholder="File"
-                        {...field}
-                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
-                      />
-                    </InputOffsetLabel>
+                    <div className="w-full flex flex-col items-start justify-start gap-y-1">
+                      <InputOffsetLabel label="Banner">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          placeholder="File"
+                          {...field}
+                          className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                        />
+                      </InputOffsetLabel>
+
+                      <p className="text-xs text-[#717171]">
+                        For best result use 1080px by 1080px
+                      </p>
+                    </div>
                   )}
                 />
 

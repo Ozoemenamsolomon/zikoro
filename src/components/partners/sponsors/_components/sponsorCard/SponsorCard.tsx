@@ -26,7 +26,7 @@ export function SponsorCard() {
         <div className="flex flex-wrap  items-start justify-start leading-6">
           Lorem ipsum dolor sit amet consectetur. Et montes ultricies libero eu
           leo in in adipiscing nunc. Nec pellentesque malesuada{" "}
-          <Link href="/" className="text-zikoro">
+          <Link href="/partners/1" className="text-zikoro">
             Read more
           </Link>
         </div>
