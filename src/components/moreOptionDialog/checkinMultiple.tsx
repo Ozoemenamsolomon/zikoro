@@ -160,7 +160,6 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
       <ViewAttendeesSection
         attendeesTags={attendeesTags}
         favourites={favourites}
-        favourites={favourites}
         attendees={mappedAttendees}
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}

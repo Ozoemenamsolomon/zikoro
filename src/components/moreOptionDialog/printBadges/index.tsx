@@ -3,7 +3,7 @@ import First from "./first";
 import Preview from "./preview";
 import { MoreOptionsProps } from "@/app/people/_reusable/FirstSection";
 import { TAttendee } from "@/types/attendee";
-import Dimensions from "./dimensions";
+import Dimensions, { TDimensions } from "./dimensions";
 
 const PrintBadges: React.FC<MoreOptionsProps> = ({
   attendees,
@@ -12,9 +12,15 @@ const PrintBadges: React.FC<MoreOptionsProps> = ({
   attendeesTags,
 }) => {
   const [step, setStep] = useState<number>(0);
+  const [dimensions, setDimensions] = useState<TDimensions>();
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
+
+  const updateBadgeSize = (dimensions: TDimensions) => {
+    setDimensions(dimensions);
+    setStep(2);
+  };
 
   return (
     <div className="space-y-6 max-h-[80vh] overflow-auto hide-scrollbar py-4 pl-4 pr-1">
@@ -187,7 +193,7 @@ const PrintBadges: React.FC<MoreOptionsProps> = ({
           attendeesTags={attendeesTags}
         />
       ) : step === 1 ? (
-        <Dimensions />
+        <Dimensions updateBadgeSize={updateBadgeSize} />
       ) : (
         <Preview selectedAttendees={selectedAttendees} />
       )}

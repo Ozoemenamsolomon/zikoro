@@ -10,10 +10,14 @@ export default function InputOffsetLabel({
   children,
   label,
   isRequired,
+  append,
+  prepend,
 }: {
   children: React.ReactNode;
   label: string;
   isRequired?: boolean;
+  append?: React.ReactNode;
+  prepend?: React.ReactNode;
 }) {
   return (
     <FormItem className="relative">
@@ -21,7 +25,26 @@ export default function InputOffsetLabel({
         {label}
         {isRequired && <sup className="text-red-700">*</sup>}
       </FormLabel>
-      <FormControl>{children}</FormControl>
+      {append && (
+        <div className="absolute !my-0 left-2 z-10 h-full flex items-center">
+          {append}
+        </div>
+      )}
+      {prepend && (
+        <div className="absolute !my-0 right-2 z-10 h-full flex items-center">
+          {prepend}
+        </div>
+      )}
+      <FormControl>
+        <div
+          className={`${append ? "[&>*]:pl-8" : ""} ${
+            prepend ? "[&>*]:pr-8" : ""
+          }`}
+        >
+          {children}
+        </div>
+      </FormControl>
+
       <FormMessage />
     </FormItem>
   );
