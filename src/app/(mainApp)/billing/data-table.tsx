@@ -5,6 +5,7 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -16,6 +17,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Dispatch, SetStateAction } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -40,44 +51,15 @@ export function DataTable<TData, TValue>({
     enableRowSelection: (row) =>
       row?.original?.payOutStatus !== "requested" &&
       row?.original?.payOutStatus !== "paid",
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
-    <div className="rounded-md border max-w-full">
-      <Table className="max-w-full">
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              style={{
-                display: "grid",
-                gridTemplateColumns: `auto 1.5fr repeat(${
-                  columns.length - 2
-                }, minmax(0, 1fr))`,
-              }}
-              key={headerGroup.id}
-              className="max-w-full gap-2 bg-gray-100"
-            >
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead
-                    key={header.id}
-                    className="text-gray-700 font-medium px-1 pt-2"
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody className="max-w-full">
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+    <div>
+      <div className="rounded-md border max-w-full">
+        <Table className="max-w-full">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 style={{
                   display: "grid",
@@ -85,29 +67,139 @@ export function DataTable<TData, TValue>({
                     columns.length - 2
                   }, minmax(0, 1fr))`,
                 }}
-                className="max-w-full grid grid-cols-[auto_1.5fr_repeat(8,_minmax(0,_1fr))]  gap-2"
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                key={headerGroup.id}
+                className="max-w-full gap-2 bg-gray-100"
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className="py-4 px-1 text-gray-600 text-sm font-medium"
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      key={header.id}
+                      className="text-gray-700 font-medium px-1 pt-2"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody className="max-w-full">
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: `auto 1.5fr repeat(${
+                      columns.length - 2
+                    }, minmax(0, 1fr))`,
+                  }}
+                  className="max-w-full grid grid-cols-[auto_1.5fr_repeat(8,_minmax(0,_1fr))]  gap-2"
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className="py-4 px-1 text-gray-600 text-sm font-medium"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="flex items-center justify-center gap-4 py-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+          className="text-gray-700 disabled:text-gray-300 !p-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={9}
+            height={14}
+            viewBox="0 0 9 14"
+            fill="none"
+          >
+            <path
+              d="M7.5 13L1.5 7L7.5 1"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Button>
+        <div className="flex items-center gap-2 text-gray-500 font-medium w-max text-sm">
+          <span>Page</span>
+          <Select
+            defaultValue={table.getState().pagination.pageIndex}
+            onValueChange={(value: any) => table.setPageIndex(value as number)}
+          >
+            <SelectTrigger className="pt-1 pb-0 px-2">
+              <SelectValue className="placeholder:text-sm placeholder:text-gray-200 text-gray-700" />
+            </SelectTrigger>
+            <SelectContent className="max-h-64 hide-scrollbar overflow-auto">
+              {table.getPageOptions().map((value) => (
+                <SelectItem key={value} value={value}>
+                  {value + 1}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <span>of</span>
+          <span>{table.getPageCount()}</span>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+          className="text-gray-700 disabled:text-gray-300 !p-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={24}
+            height={24}
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M8.5 6L14.5 12L8.5 18"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Button>
+        <div className="flex gap-2 items-center font-medium text-gray-700 text-sm">
+          <span className="bg-gray-200 p-2 rounded">{data.length} rows</span>
+          <span>10 records</span>
+        </div>
+      </div>
     </div>
   );
 }
