@@ -8,6 +8,11 @@ import { Whatsapp } from "styled-icons/remix-fill";
 import { EmailOutline } from "styled-icons/evaicons-outline";
 import { Button } from "@/components";
 import { Share } from "@styled-icons/bootstrap/Share";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+} from "next-share";
 import { EventLocationType, AboutWidget } from "@/components/composables";
 import Link from "next/link";
 import { cn } from "@/lib";
@@ -490,6 +495,7 @@ export function SingleEvent({
                   {isShareDropDown && (
                     <ActionModal
                       close={toggleShareDropDown}
+                      eventId={eventId}
                       x={"https://twitter.com"}
                       linkedIn={"https://linkedIn.com"}
                       facebook={"https://www.fb.com"}
@@ -536,13 +542,12 @@ export function SingleEvent({
 
 function ActionModal({
   close,
-  x,
-  facebook,
   instagram,
-  linkedIn,
+  eventId,
 }: {
   x: string;
   facebook: string;
+  eventId?: number;
   instagram: string;
   linkedIn: string;
   close: () => void;
@@ -558,40 +563,44 @@ function ActionModal({
           }}
           className="flex relative z-[50]   flex-col py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
         >
-          <Link
-            target="_blank"
-            href={x}
-            className="items-center flex px-2  h-10 w-full gap-x-2 hover:bg-gray-100 justify-start text-xs"
+          <TwitterShareButton
+            url={`https://zikoro-copy.vercel.app/events/${eventId}`}
           >
-            <TwitterIcon />
-            <span>X</span>
-          </Link>
+            <button className="items-center flex px-2  h-10 w-full gap-x-2 justify-start text-xs">
+              <TwitterIcon />
+              <span>X</span>
+            </button>
+          </TwitterShareButton>
 
-          <Link
-            target="_blank"
-            href={linkedIn}
-            className={
-              "items-center h-10 gap-x-2 px-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
-            }
+          <LinkedinShareButton
+            url={`https://zikoro-copy.vercel.app/events/${eventId}`}
           >
-            <LinkedinIcon />
-            <span>LinkedIn</span>
-          </Link>
-          <Link
-            target="_blank"
-            href={facebook}
-            className={
-              "items-center h-10 gap-x-2 px-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
-            }
+            <button
+              className={
+                "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
+              }
+            >
+              <LinkedinIcon />
+              <span>LinkedIn</span>
+            </button>
+          </LinkedinShareButton>
+          <FacebookShareButton
+            url={`https://zikoro-copy.vercel.app/events/${eventId}`}
           >
-            <FacebookIcon />
-            <span>Facebook</span>
-          </Link>
+            <button
+              className={
+                "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
+              }
+            >
+              <FacebookIcon />
+              <span>Facebook</span>
+            </button>
+          </FacebookShareButton>
           <Link
             target="_blank"
             href={instagram}
             className={
-              "items-center h-10 gap-x-2 px-2 flex hover:bg-gray-100 justify-start w-full  text-xs"
+              "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
             }
           >
             <InstagramIcon />

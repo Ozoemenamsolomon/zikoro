@@ -74,6 +74,7 @@ export function Payment({
       currency,
       registrationCompleted: reference.status === "success",
       eventDate,
+      payOutStatus: "new",
       ticketCategory: priceCategory,
       event: eventTitle,
       attendeesDetails,

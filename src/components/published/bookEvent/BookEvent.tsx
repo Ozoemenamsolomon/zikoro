@@ -201,7 +201,7 @@ export function BookEvent({
       <div
         role="button"
         onClick={close}
-        className="w-full h-full inset-0 bg-black/50 z-50 fixed"
+        className="w-full h-full inset-0 bg-black/50 z-[80] fixed"
       >
         <div
           role="button"
