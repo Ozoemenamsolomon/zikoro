@@ -109,7 +109,8 @@
 }
 
 .hide-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
+    /* background-color: rgba(0, 0, 0, 0.2); */
+    background-color: transparent
 }
 
 .hide-scrollbar:hover::-webkit-scrollbar-thumb {

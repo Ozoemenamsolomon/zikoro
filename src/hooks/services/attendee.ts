@@ -16,15 +16,19 @@ export const useCreateAttendee = () => {
         payload,
       });
 
-      if (status !== 200) throw data.data.error;
+      console.log(data, status);
+      if (status !== 201) throw data.data.error;
 
-      console.log(data);
+      toast({
+        description: "Attendee created successfully",
+      });
       return data;
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.error);
       setError(true);
       toast({
-        description: error,
+        description: error.response.data.error,
+        variant: "destructive",
       });
     } finally {
       setLoading(false);

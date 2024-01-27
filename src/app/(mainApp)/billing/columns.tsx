@@ -100,7 +100,7 @@ export const columns: ColumnDef<TEventTransaction>[] = [
             regStatus
               ? "bg-green-100 text-green-600"
               : "bg-red-100 text-red-600"
-          } rounded-2xl w-fit text-sm`}
+          } rounded w-fit text-sm`}
         >
           {regStatus ? "Complete" : "Incomplete"}
         </div>
@@ -123,7 +123,7 @@ export const columns: ColumnDef<TEventTransaction>[] = [
               : payOutStatus === "new"
               ? "bg-blue-100 text-blue-600"
               : "bg-gray-100 text-gray-600"
-          } rounded-2xl w-fit text-sm capitalize`}
+          } rounded w-fit text-sm capitalize`}
         >
           {payOutStatus || "N/A"}
         </div>

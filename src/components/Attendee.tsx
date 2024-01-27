@@ -41,44 +41,50 @@ const Attendee: React.FC<AttendeeProps> = ({
 
   const { updateAttendees } = useUpdateAttendees();
 
-  const currentCheckin =
-    checkin && checkin.find(({ date }) => isWithinTimeRange(date, null));
+  const recentCheckin =
+    checkin &&
+    checkin.length > 0 &&
+    checkin.reduce((prev, current) => {
+      return prev.date > current.date && current.checkin ? prev : current;
+    });
+
+  console.log(recentCheckin);
 
   const toggleCheckin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
-    const updatedCheckinValue = !currentCheckin || !currentCheckin.checkin;
+    const isCheckedInToday =
+      recentCheckin && isWithinTimeRange(recentCheckin.date, null);
     const newDate = new Date();
     newDate.setHours(12, 0, 0, 0);
+
     const updatedCheckin = checkin
-      ? currentCheckin
-        ? [
-            ...checkin.filter((elm) => elm !== currentCheckin),
-            {
-              date: newDate,
-              checkin: updatedCheckinValue,
-            },
-          ]
+      ? recentCheckin && isWithinTimeRange(recentCheckin.date, null)
+        ? checkin.filter((elm) => elm !== recentCheckin)
         : [
             ...checkin,
             {
               date: newDate,
-              checkin: updatedCheckinValue,
+              checkin: true,
             },
           ]
       : [
           {
             date: newDate,
-            checkin: updatedCheckinValue,
+            checkin: true,
           },
         ];
+
+    console.log(updatedCheckin, isCheckedInToday);
 
     const payload: TAttendee[] = [{ ...attendee, checkin: updatedCheckin }];
 
     await updateAttendees({
       payload,
       message: `Attendee ${
-        updatedCheckinValue ? "checked in" : "unchecked"
+        recentCheckin && isWithinTimeRange(recentCheckin.date, null)
+          ? "unchecked"
+          : "checked in"
       } successfully`,
     });
 
@@ -87,7 +93,7 @@ const Attendee: React.FC<AttendeeProps> = ({
 
   const CheckInDate = () => {
     const { day, month, year } =
-      currentCheckin && formatDate(currentCheckin.date);
+      recentCheckin && formatDate(recentCheckin.date);
 
     return <span>{day + "." + month + "." + year}</span>;
   };
@@ -115,7 +121,7 @@ const Attendee: React.FC<AttendeeProps> = ({
           <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
             {`${jobTitle ? jobTitle + ", " : ""}${organization || ""}`}
           </span>
-          {currentCheckin && currentCheckin.checkin && (
+          {recentCheckin && (
             <div className="flex gap-1 text-tiny text-[#717171]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -205,7 +211,7 @@ const Attendee: React.FC<AttendeeProps> = ({
         <button
           onClick={toggleCheckin}
           className={`text-[8px] flex items-center gap-0.5 ${
-            currentCheckin && currentCheckin.checkin
+            recentCheckin && isWithinTimeRange(recentCheckin.date, null)
               ? "text-basePrimary"
               : "text-gray-700"
           }`}
@@ -228,7 +234,9 @@ const Attendee: React.FC<AttendeeProps> = ({
             </svg>
           </div>
           <span>
-            {currentCheckin && currentCheckin.checkin ? "undo" : "Check-in"}
+            {recentCheckin && isWithinTimeRange(recentCheckin.date, null)
+              ? "undo"
+              : "Check-in"}
           </span>
         </button>
       </div>

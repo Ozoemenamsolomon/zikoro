@@ -292,7 +292,7 @@ export default function FirstSection({
 
   const exportAttendees = () => {
     const normalizedData = convertCamelToNormal<TAttendee>(
-      mappedAttendees,
+      filteredData,
       " "
     );
     const worksheet = XLSX.utils.json_to_sheet(normalizedData);

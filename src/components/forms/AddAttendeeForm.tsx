@@ -100,11 +100,7 @@ export default function AddAttendeeForm({
         : "N/A",
     };
 
-    const response = await createAttendee({ payload });
-
-    toast({
-      description: "Attendee created successfully",
-    });
+    await createAttendee({ payload });
   }
 
   return (
@@ -117,7 +113,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
-                  <InputOffsetLabel label="First name">
+                  <InputOffsetLabel isRequired label="First name">
                     <Input
                       placeholder="Enter first name"
                       {...field}
@@ -132,7 +128,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="lastName"
                 render={({ field }) => (
-                  <InputOffsetLabel label={"Last name"}>
+                  <InputOffsetLabel isRequired label={"Last name"}>
                     <Input
                       placeholder={"Enter last name"}
                       {...field}
@@ -147,7 +143,7 @@ export default function AddAttendeeForm({
             control={form.control}
             name="email"
             render={({ field }) => (
-              <InputOffsetLabel label={"Email"}>
+              <InputOffsetLabel isRequired label={"Email"}>
                 <Input
                   placeholder="Enter email"
                   {...field}
@@ -194,7 +190,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="city"
                 render={({ field }) => (
-                  <InputOffsetLabel label={"City"}>
+                  <InputOffsetLabel isRequired label={"City"}>
                     <Input
                       placeholder="Enter city"
                       {...field}
@@ -209,7 +205,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="country"
                 render={({ field }) => (
-                  <InputOffsetLabel label={"Country"}>
+                  <InputOffsetLabel isRequired label={"Country"}>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -242,6 +238,7 @@ export default function AddAttendeeForm({
                   <FormItem className="relative h-fit">
                     <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                       Phone number
+                      <sup className="text-red-700">*</sup>
                     </FormLabel>
                     <input
                       type="text"

@@ -36,7 +36,7 @@ export function isWithinTimeRange(dateString, dateToCompare) {
   nextDay.setDate(currentDate.getDate() + 1);
 
   // Check if the parsed date is within the time range
-  return date >= currentDate && date < nextDay;
+  return date >= currentDate && date <= nextDay;
 }
 
 // Helper function to pad a number with leading zero if needed

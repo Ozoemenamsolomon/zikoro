@@ -48,9 +48,7 @@ export function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     state: { rowSelection },
     getRowId: (row) => row.id,
-    enableRowSelection: (row) =>
-      row?.original?.payOutStatus !== "requested" &&
-      row?.original?.payOutStatus !== "paid",
+    enableRowSelection: (row) => row?.original?.payOutStatus === "new",
     getPaginationRowModel: getPaginationRowModel(),
   });
 
@@ -155,7 +153,7 @@ export function DataTable<TData, TValue>({
         <div className="flex items-center gap-2 text-gray-500 font-medium w-max text-sm">
           <span>Page</span>
           <Select
-            defaultValue={table.getState().pagination.pageIndex}
+            value={table.getState().pagination.pageIndex}
             onValueChange={(value: any) => table.setPageIndex(value as number)}
           >
             <SelectTrigger className="pt-1 pb-0 px-2">
@@ -196,8 +194,29 @@ export function DataTable<TData, TValue>({
           </svg>
         </Button>
         <div className="flex gap-2 items-center font-medium text-gray-700 text-sm">
-          <span className="bg-gray-200 p-2 rounded">{data.length} rows</span>
-          <span>10 records</span>
+          <div className="flex gap-1 items-center">
+            <Select
+              value={table.getState().pagination.pageSize}
+              onValueChange={(value: any) => table.setPageSize(value as number)}
+            >
+              <SelectTrigger className="pt-1 pb-0 px-2 focus:ring-0">
+                <SelectValue className="placeholder:text-sm placeholder:text-gray-200 text-gray-700" />
+              </SelectTrigger>
+              <SelectContent className="max-h-64 hide-scrollbar overflow-auto">
+                {[10, 20, 50, 100, 200, 500, 1000].map((value) => (
+                  <SelectItem key={value} value={value}>
+                    {value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <span>rows</span>
+          </div>
+          {/* <span className="bg-gray-200 p-2 rounded">{data.length} rows</span> */}
+          <div className="flex gap-1">
+            <span>{data.length}</span>
+            <span>records</span>
+          </div>
         </div>
       </div>
     </div>

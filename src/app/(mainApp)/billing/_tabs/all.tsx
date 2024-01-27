@@ -250,7 +250,7 @@ export default function All() {
     "transactionReference",
     "created_at",
     "attendees",
-    "currency",
+    "payOutStatus",
     "amountPaid",
     "select",
   ]);

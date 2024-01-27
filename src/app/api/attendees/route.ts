@@ -8,8 +8,21 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      const { error } = await supabase.from("attendees").insert(params);
-      if (error) throw error;
+      const { data, error: checkIfRegisteredError } = await supabase
+        .from("attendees")
+        .select("*")
+        .eq("email", params.email)
+        .eq("eventId", params.eventId)
+        .maybeSingle();
+
+      if (checkIfRegisteredError) throw checkIfRegisteredError?.code;
+      if (data) throw "email error";
+
+      const { error } = await supabase
+        .from("attendees")
+        .insert(params);
+      if (error) throw error.code;
+
       return NextResponse.json(
         { msg: "attendee created successfully" },
         {
@@ -20,7 +33,10 @@ export async function POST(req: NextRequest) {
       console.error(error);
       return NextResponse.json(
         {
-          error: "An error occurred while making the request.",
+          error:
+            error === "email error"
+              ? "Email already registered for this event"
+              : "An error occurred while making the request.",
         },
         {
           status: 500,
