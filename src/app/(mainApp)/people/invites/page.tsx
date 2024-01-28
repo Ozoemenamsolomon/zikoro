@@ -24,6 +24,7 @@ import { useEffect, useRef, useState } from "react";
 import { Calendar, Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
 import { Users } from "styled-icons/heroicons-outline";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Page() {
   const [invitees, setInvitees] = useState<Record<string, TInviteDetails>>({
@@ -239,7 +240,21 @@ export default function Page() {
               </Button>
             </form>
           </div>
-          <div className="bg-basebody rounded-sm h-fit min-h-[100px]">
+          <Tabs className="bg-basebody rounded-sm w-full">
+            <TabsList className="bg-transparent flex w-full !p-0">
+              <TabsTrigger
+                className="flex-1 bg-white data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/20 border-2 data-[state=active]:border-basePrimary data-[state=active]:text-basePrimary rounded-none"
+                value="link"
+              >
+                Link
+              </TabsTrigger>
+              <TabsTrigger
+                className="flex-1 bg-white data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/20 border-2 data-[state=active]:border-basePrimary data-[state=active]:text-basePrimary rounded-none"
+                value="email"
+              >
+                Email
+              </TabsTrigger>
+            </TabsList>
             <div className="space-y-2 border-b-2 p-2">
               <h2 className="text-gray-700 font-medium">Email Invites</h2>
               <div className="flex gap-4 items-center text-gray-500 text-sm">
@@ -271,78 +286,35 @@ export default function Page() {
               className="p-2 flex flex-col gap-6 overflow-auto hide-scrollbar"
               ref={divRef}
             >
-              {!isLoading &&
-                emailInvites.map(({ InviteDetails }) => {
-                  return (
-                    InviteDetails &&
-                    InviteDetails.map(({ email, attendeeType }) => (
-                      <div className="flex items-center gap-4">
-                        <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
-                          YB
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <span className="text-sm font-medium">{email}</span>
-                          <div className="flex gap-4 text-xs items-center">
-                            <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
-                              {attendeeType}
-                            </span>
-                            <span className="text-yellow-500">Pending</span>
+              <TabsContent value="link">
+                {!isLoading &&
+                  emailInvites.map(({ InviteDetails }) => {
+                    return (
+                      InviteDetails &&
+                      InviteDetails.map(({ email, attendeeType }) => (
+                        <div className="flex items-center gap-4">
+                          <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
+                            YB
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <span className="text-sm font-medium">{email}</span>
+                            <div className="flex gap-4 text-xs items-center">
+                              <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
+                                {attendeeType}
+                              </span>
+                              <span className="text-yellow-500">Pending</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))
-                  );
-                })}
-              {/* <div className="flex items-center gap-4">
-                <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
-                  YB
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm font-medium">
-                    cyrilugoh2121@gmail.com
-                  </span>
-                  <div className="flex gap-4 text-xs items-center">
-                    <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
-                      Speaker
-                    </span>
-                    <span className="text-yellow-500">Pending</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
-                  YB
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm font-medium">
-                    davidudem64@gmail.com
-                  </span>
-                  <div className="flex gap-4 text-xs items-center">
-                    <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
-                      Attendee
-                    </span>
-                    <span className="text-green-500">Registered</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
-                  YB
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm font-medium">
-                    bilalyusufubah@gmail.com
-                  </span>
-                  <div className="flex gap-4 text-xs items-center">
-                    <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
-                      Speaker
-                    </span>
-                    <span className="text-yellow-500">Registered</span>
-                  </div>
-                </div>
-              </div> */}
+                      ))
+                    );
+                  })}
+              </TabsContent>
+              <TabsContent value="invoices">
+                Change your password here.
+              </TabsContent>
             </div>
-          </div>
+          </Tabs>
         </div>
       </div>
     </section>
