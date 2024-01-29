@@ -10,8 +10,13 @@ import { Button } from "@/components/ui/button";
 export default function Contact() {
   const [dialCode, setDialCode] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<string>("");
-  const [whatsappNumber, setWhatsappNumber] = useState<string | null>(null);
-
+  const [whatsappNumber, setWhatsappNumber] = useState<string>("");
+  const [noOfEvents, setNoOfEvents] = useState({
+    one: false,
+    twoToFive: false,
+    sixToTen: false,
+    elevenPlus: false,
+  });
   // function to find country dial code
   const findDialCode = (countryName: string) => {
     const country = countries.find(
@@ -118,6 +123,10 @@ export default function Contact() {
                   name="one"
                   value={"1"}
                   className="w-4 h-4"
+                  onClick={() =>
+                    setNoOfEvents({ ...noOfEvents, one: !noOfEvents.one })
+                  }
+                  checked={noOfEvents.one}
                 />
                 <span>Only 1</span>
               </div>
@@ -127,6 +136,13 @@ export default function Contact() {
                   name="twoToFive"
                   value={"2-5"}
                   className="w-4 h-4"
+                  onClick={() =>
+                    setNoOfEvents({
+                      ...noOfEvents,
+                      twoToFive: !noOfEvents.twoToFive,
+                    })
+                  }
+                  checked={noOfEvents.twoToFive}
                 />
                 <span>2 - 5</span>
               </div>
@@ -136,8 +152,15 @@ export default function Contact() {
                   name="sixToTen"
                   value={"6-10"}
                   className="w-4 h-4 text-#F3F3F3"
+                  onClick={() =>
+                    setNoOfEvents({
+                      ...noOfEvents,
+                      sixToTen: !noOfEvents.sixToTen,
+                    })
+                  }
+                  checked={noOfEvents.sixToTen}
                 />
-                <span>6 - 5</span>
+                <span>6 - 10</span>
               </div>
               <div className="flex items-center space-x-3">
                 <input
@@ -145,6 +168,13 @@ export default function Contact() {
                   name="moreThanTen"
                   value={"more than 10"}
                   className="w-4 h-4"
+                  onClick={() =>
+                    setNoOfEvents({
+                      ...noOfEvents,
+                      elevenPlus: !noOfEvents.elevenPlus,
+                    })
+                  }
+                  checked={noOfEvents.elevenPlus}
                 />
                 <span>More than 10</span>
               </div>
