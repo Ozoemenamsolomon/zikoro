@@ -2,7 +2,7 @@ import React from "react";
 import { DateRange } from "react-day-picker";
 
 export interface FilterProps<T> {
-  className: string;
+  className?: string;
   applyFilter: applyFilterProps<T>;
   filters: TFilter<T>[];
   selectedFilters: TSelectedFilter<T>[];

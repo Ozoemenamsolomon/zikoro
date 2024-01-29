@@ -124,7 +124,7 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
     ),
     type: "range",
     steps: 100,
-    max: 100000,
+    max: 1000000,
     order: 4,
   },
   {
@@ -148,7 +148,7 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
     order: 7,
   },
   {
-    label: "Registration Status",
+    label: "Reg. Status",
     accessor: "registrationCompleted",
     icon: (
       <svg
@@ -177,10 +177,24 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
       </svg>
     ),
     options: [
-      { label: "Paid", value: true },
-      { label: "Not Paid", value: false },
+      { label: "Paid", value: 2 },
+      { label: "Free", value: 1 },
+      { label: "Not Paid", value: 0 },
     ],
     order: 3,
+    onFilter: (
+      transaction: TEventTransaction,
+      registrationCompleted: number[]
+    ) => {
+      console.log(transaction.registrationCompleted, registrationCompleted);
+      return registrationCompleted.some((status) =>
+        status === 0
+          ? !transaction.registrationCompleted
+          : status === 1
+          ? transaction.registrationCompleted && transaction.amountPaid === 0
+          : transaction.registrationCompleted && transaction.amountPaid > 0
+      );
+    },
   },
   {
     label: "Ticket Category",
@@ -245,14 +259,15 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
 
 export default function All() {
   const [shownColumns, setShownColumns] = useState<string[]>([
+    "select",
     "event",
-    "userId",
-    "transactionReference",
+    "userEmail",
+    "eventRegistrationRef",
     "created_at",
     "attendees",
-    "payOutStatus",
     "amountPaid",
-    "select",
+    "registrationCompleted",
+    "payOutStatus",
   ]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -261,27 +276,27 @@ export default function All() {
       userId: 1,
     });
 
-  const totalRevenue = eventTransactions.reduce(
-    (acc, { amountPaid }) => amountPaid + acc,
-    0
-  );
-  const totalWallet = eventTransactions
-    .filter(({ PayOutStatus }) => PayOutStatus !== "Paid")
-    .reduce((acc, { amountPaid }) => amountPaid + acc, 0);
-  const totalAffiliateCommission = eventTransactions.reduce(
-    (acc, { affliateCommission }) => acc + affliateCommission,
-    0
-  );
-  const totalAttendees = eventTransactions.reduce(
-    (acc, { attendees }) => attendees + acc,
-    0
-  );
-
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<TEventTransaction>({
       data: eventTransactions,
       dataFilters: eventTransactionsFilter,
     });
+
+  const totalRevenue = filteredData.reduce(
+    (acc, { amountPaid }) => amountPaid + acc,
+    0
+  );
+  const totalWallet = filteredData
+    .filter(({ payOutStatus }) => payOutStatus !== "Paid")
+    .reduce((acc, { amountPaid }) => amountPaid + acc, 0);
+  const totalAffiliateCommission = eventTransactions.reduce(
+    (acc, { affliateCommission }) => acc + affliateCommission,
+    0
+  );
+  const totalAttendees = filteredData.reduce(
+    (acc, { attendees }) => attendees + acc,
+    0
+  );
 
   console.log(filteredData, eventTransactions);
 

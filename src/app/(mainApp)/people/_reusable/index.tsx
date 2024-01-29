@@ -33,58 +33,42 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   const selectAttendee = (attendee: TAttendee) => setSelectedAttendee(attendee);
 
   const divRef = useRef<HTMLDivElement>();
-  const [containerWidth, setContainerWidth] = useState<number>();
 
   useLayoutEffect(() => {
-    calculateAndSetMaxHeight(divRef);
+    const div = divRef.current;
 
-    const distanceToEdge = window.innerWidth - divRef.current.offsetLeft;
+    // Get the distance from the top of the div to the bottom of the screen
+    const distanceToBottom = window.innerHeight - div.offsetTop;
 
-    divRef.current.style.maxWidth = `${distanceToEdge}px`;
-    setContainerWidth(distanceToEdge);
+    // Set the maximum height of the div
+    div.style.height = `${distanceToBottom}px`;
   }, []);
 
   return (
     <section
-      className="relative overflow-auto border-t-[1px] border-[#F3F3F3] w-full no-scrollbar"
+      className="relative h-fit border-t-[1px] border-[#F3F3F3] w-full grid grid-cols-10 overflow-hidden"
       ref={divRef}
     >
-      <section
-        style={{ width: containerWidth * 0.3 + "px" }}
-        className="border-r-[1px] border-[#F3F3F3] absolute top-0 left-0 w-[30%] pt-2"
-      >
-        <div
-          style={{ width: containerWidth * 0.3 + "px" }}
-          className="fixed w-[30%]"
-        >
-          <FirstSection
-            onOpen={onOpenAttendeeForm}
-            onSelectAttendee={selectAttendee}
-            selectedAttendee={selectedAttendee}
-            attendees={attendees}
-            isLoading={isLoading}
-            getAttendees={getAttendees}
-          />
-        </div>
+      <section className="col-span-3 border-r-[1px] border-[#F3F3F3] pt-2">
+        <FirstSection
+          onOpen={onOpenAttendeeForm}
+          onSelectAttendee={selectAttendee}
+          selectedAttendee={selectedAttendee}
+          attendees={attendees}
+          isLoading={isLoading}
+          getAttendees={getAttendees}
+        />
       </section>
       {selectedAttendee ? (
         <>
-          <section className="w-[40%] mx-[30%] pt-4 space-y-4 border-r-[1px]">
+          <section className="col-span-4 pt-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">
             <SecondSection
               attendee={selectedAttendee}
               getAttendees={getAttendees}
             />
           </section>
-          <section
-            style={{ width: containerWidth * 0.3 + "px" }}
-            className="flex flex-col absolute w-[30%] top-0 right-0 pt-2"
-          >
-            <div
-              style={{ width: containerWidth * 0.3 + "px" }}
-              className="fixed w-[30%]"
-            >
-              <ThirdSection attendee={selectedAttendee} />
-            </div>
+          <section className="flex flex-col col-span-3 pt-2">
+            <ThirdSection attendee={selectedAttendee} />
           </section>
         </>
       ) : (

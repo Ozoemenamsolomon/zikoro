@@ -1,7 +1,10 @@
 // @ts-nocheck
 "use client";
 import { useGetnote } from "@/hooks/services/notes";
-import { useGetAttendeeTags, useUpdateAttendeeTags } from "@/hooks/services/tags";
+import {
+  useGetAttendeeTags,
+  useUpdateAttendeeTags,
+} from "@/hooks/services/tags";
 import { useEffect } from "react";
 import Link from "next/link";
 import {
@@ -357,32 +360,36 @@ export default function SecondSection({
           </span>
         </div>
       </section>
-      <section className="flex justify-between items-center border-t-[1px] border-gray-200 px-2 pt-4">
-        <h3 className="text-xl text-greyBlack font-semibold">Credentials</h3>
-        {!attendeeCertificatesIsLoading && attendeeCertificates.length > 0 && (
-          <Dialog>
-            <DialogTrigger>
-              <span className="  text-sm text-[#001FCC] ">
-                Recall certificate
-              </span>
-            </DialogTrigger>
-            <DialogContent className="px-3">
-              <DialogHeader>
-                <DialogTitle>
-                  <span className="capitalize">Select Certificate</span>
-                </DialogTitle>
-              </DialogHeader>
-              <SelectCertificateModal
-                certificates={attendeeCertificates}
-                action={"recall"}
-                attendeeId={id}
-                getAttendeeCertificates={getAttendeeCertificates}
-              />
-            </DialogContent>
-          </Dialog>
+      <section className="flex justify-between items-center border-y-[1px] border-gray-200 p-2">
+        <h3 className="text-lg text-greyBlack font-semibold">Credentials</h3>
+        {!attendeeCertificatesIsLoading ? (
+          attendeeCertificates.length > 0 && (
+            <Dialog>
+              <DialogTrigger>
+                <span className="  text-sm text-[#001FCC] ">
+                  Recall certificate
+                </span>
+              </DialogTrigger>
+              <DialogContent className="px-3">
+                <DialogHeader>
+                  <DialogTitle>
+                    <span className="capitalize">Select Certificate</span>
+                  </DialogTitle>
+                </DialogHeader>
+                <SelectCertificateModal
+                  certificates={attendeeCertificates}
+                  action={"recall"}
+                  attendeeId={id}
+                  getAttendeeCertificates={getAttendeeCertificates}
+                />
+              </DialogContent>
+            </Dialog>
+          )
+        ) : (
+          <p className="px-2 text-sm font-medium text-gray-500">Loading...</p>
         )}
       </section>
-      <section className="flex justify-between items-center px-2 border-t-[1px] border-gray-200 pt-4">
+      <section className="flex justify-between items-center px-2">
         <Dialog>
           <DialogTrigger>
             <div className=" flex flex-col items-center gap-2 w-fit">
@@ -424,11 +431,12 @@ export default function SecondSection({
           </DialogContent>
         </Dialog>
         {!getEventCertificatesIsLoading &&
-          eventCertificates.some((eventCertificate) =>
-            !attendeeCertificates.some(
-              (attendeecertificate) =>
-                eventCertificate.id === attendeecertificate.CertificateGroupId
-            )
+          eventCertificates.some(
+            (eventCertificate) =>
+              !attendeeCertificates.some(
+                (attendeecertificate) =>
+                  eventCertificate.id === attendeecertificate.CertificateGroupId
+              )
           ) && (
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -464,7 +472,9 @@ export default function SecondSection({
                   )
                   .map((eventCertificate) => (
                     <DropdownMenuItem key={eventCertificate.id}>
-                      <button onClick={() => releaseCertificate(eventCertificate)}>
+                      <button
+                        onClick={() => releaseCertificate(eventCertificate)}
+                      >
                         {eventCertificate.certificateName}
                       </button>
                     </DropdownMenuItem>
@@ -513,8 +523,8 @@ export default function SecondSection({
           </DropdownMenu>
         )}
       </section>
-      <section className="space-y-4 border-t-[1px] border-gray-200 pt-4">
-        <h3 className="p-2 pb-4 border-b-[1px] border-gray-200 text-xl text-greyBlack font-semibold">
+      <section className="space-y-4 border-t-[1px] border-gray-200 pt-2">
+        <h3 className="px-2 pb-2 border-b-[1px] border-gray-200 text-lg text-greyBlack font-semibold">
           Profile
         </h3>
         <div className="space-y-4 px-2">
@@ -636,9 +646,9 @@ export default function SecondSection({
           </div>
         </div>
       </section>
-      <section className="border-t-[1px] border-gray-200 pt-4 space-y-4">
+      <section className="border-t-[1px] border-gray-200 pt-2 space-y-4">
         <div className="flex justify-between items-center border-b-[1px] border-gray-200 pb-2 px-2">
-          <h4 className="text-xl font-medium text-greyBlack ">Tags</h4>
+          <h4 className="text-lg font-medium text-greyBlack ">Tags</h4>
           <Dialog>
             <DialogTrigger>
               <button className="flex gap-1">
@@ -670,7 +680,7 @@ export default function SecondSection({
             </DialogContent>
           </Dialog>
         </div>
-        <div className="flex gap-2 flex-wrap px-2">
+        <div className="flex gap-2 flex-wrap px-2 py-2">
           {!attendeeTagsisLoading ? (
             <>
               {attendeeTags?.attendeeTags &&
@@ -699,7 +709,9 @@ export default function SecondSection({
                   ))}
                 </>
               ) : (
-                <p>No tags for this attendee</p>
+                <p className="px-2 text-sm font-medium text-gray-500">
+                  No tags for this attendee
+                </p>
               )}
             </>
           ) : (
@@ -707,11 +719,11 @@ export default function SecondSection({
           )}
         </div>
       </section>
-      <section className="pt-4 border-t-[1px] border-gray-200 space-y-4">
-        <h4 className="px-2 text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 ">
+      <section className="pt-2 border-t-[1px] border-gray-200 space-y-4">
+        <h4 className="px-2 text-lg text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 ">
           Speaking at
         </h4>
-        <div className="space-y-2 bg-[#FAFAFA] mx-2 p-2 rounded divide-y-[1px]">
+        <div className="space-y-2  mx-2 p-2 rounded divide-y-[1px]">
           <div className="flex justify-between gap-2 items-center">
             <div className="flex-[75%] flex gap-1 items-center">
               <span className="text-sm font-medium text-greyBlack">
@@ -775,11 +787,11 @@ export default function SecondSection({
           </div>
         </div>
       </section>
-      <section className="border-t-[1px] border-gray-200 pt-4 space-y-4">
-        <h4 className=" text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
+      <section className="border-t-[1px] border-gray-200 pt-2 space-y-4">
+        <h4 className=" text-lg text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
           Moderating at
         </h4>
-        <div className="p-2 bg-[#FAFAFA] rounded mx-2">
+        <div className="p-2  rounded mx-2">
           <div className="flex justify-between items-center gap-2">
             <div className="flex-[75%] flex gap-2 items-center">
               <span className=" font-medium text-greyBlack">
@@ -803,19 +815,15 @@ export default function SecondSection({
               </svg>
             </div>
             <div className="flex-[25%] flex flex-col text-right">
-              <span className=" text-ash text-xs font-medium">
-                20 Nov 2023
-              </span>
-              <span className="text-ash text-xs font-normal">
-                2:00-3:00PM
-              </span>
+              <span className=" text-ash text-xs font-medium">20 Nov 2023</span>
+              <span className="text-ash text-xs font-normal">2:00-3:00PM</span>
             </div>
           </div>
         </div>
       </section>
-      <section className="border-t-[1px] border-gray-200 space-y-4 pt-4">
+      <section className="border-t-[1px] border-gray-200 space-y-4 pt-2">
         <div className="flex justify-between items-center border-b-[1px] border-gray-200 pb-2 px-2">
-          <h4 className=" text-xl font-medium text-greyBlack">Note</h4>
+          <h4 className="text-lg font-medium text-greyBlack">Note</h4>
           <Dialog>
             <DialogTrigger>
               <button className="flex gap-1">
@@ -859,7 +867,7 @@ export default function SecondSection({
                   {note.notes}
                 </p>
               ) : (
-                <p className="px-2 text-sm font-medium text-gray-700">
+                <p className="px-2 text-sm font-medium text-gray-500">
                   No note for this attendee
                 </p>
               )}

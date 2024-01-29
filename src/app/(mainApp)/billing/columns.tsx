@@ -93,16 +93,19 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     accessorKey: "registrationCompleted",
     header: "Reg. Status",
     cell: ({ row }) => {
-      const regStatus = row.getValue("payOutDate");
+      const regStatus = row.getValue("registrationCompleted");
+      const amountPaid = row.getValue("amountPaid");
       return (
         <div
           className={`max-w-full truncate p-2 ${
             regStatus
-              ? "bg-green-100 text-green-600"
+              ? amountPaid > 0
+                ? "bg-green-100 text-green-600"
+                : "bg-gray-100 text-gray-600"
               : "bg-red-100 text-red-600"
           } rounded w-fit text-sm`}
         >
-          {regStatus ? "Complete" : "Incomplete"}
+          {regStatus ? (amountPaid > 0 ? "Complete" : "Free") : "Incomplete"}
         </div>
       );
     },

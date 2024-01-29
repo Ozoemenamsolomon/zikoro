@@ -143,10 +143,22 @@ const SingleFilter: React.FC<FilterOptionsProps<T>> = ({
       }
       defaultValue={singleValue?.value}
     >
+      <div className="flex items-center space-x-2 mb-2">
+        <RadioGroupItem
+          className="data-[state=checked]:bg-basePrimary"
+          value={""}
+          id={"unset"}
+        />
+        <Label htmlFor={"unset"}>unset</Label>
+      </div>
       {filter?.options &&
         filter?.options.map(({ label, value }) => (
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem className="data-[state=checked]:bg-basePrimary" value={value} id={label} />
+          <div className="flex items-center space-x-2 mb-2">
+            <RadioGroupItem
+              className="data-[state=checked]:bg-basePrimary"
+              value={value}
+              id={label}
+            />
             <Label htmlFor={value}>{label}</Label>
           </div>
         ))}
@@ -159,15 +171,6 @@ const FilterOptions: React.FC<FilterOptionsProps<T>> = React.memo(
     const { type, accessor, onFilter, label: filterLabel } = filter;
 
     switch (type) {
-      case "multiple":
-        return (
-          <MultipleFilter
-            filter={filter}
-            selectedFilters={selectedFilters}
-            applyFilter={applyFilter}
-          />
-        );
-
       case "range":
         return (
           <RangeFilter
@@ -195,9 +198,18 @@ const FilterOptions: React.FC<FilterOptionsProps<T>> = React.memo(
           />
         );
 
-      default:
+      case "single":
         return (
           <SingleFilter
+            filter={filter}
+            selectedFilters={selectedFilters}
+            applyFilter={applyFilter}
+          />
+        );
+
+      default:
+        return (
+          <MultipleFilter
             filter={filter}
             selectedFilters={selectedFilters}
             applyFilter={applyFilter}

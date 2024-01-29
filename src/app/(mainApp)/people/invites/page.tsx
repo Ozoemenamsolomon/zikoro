@@ -25,8 +25,64 @@ import { Calendar, Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
 import { Users } from "styled-icons/heroicons-outline";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TFilter } from "@/types/filter";
+import { useFilter } from "@/hooks/common/useFilter";
+import Filter from "@/components/Filter";
+
+type TInviteDetail = {
+  email: string;
+  attendeeType: string;
+  created_at?: string;
+};
+
 
 export default function Page() {
+  const inviteesFilters: TFilter<TInviteDetail>[] = [
+    {
+      label: "date",
+      accessor: "created_at",
+      type: "dateRange",
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width={16}
+          height={16}
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <path
+            d="M5.33333 8.32312L8.162 11.1518L13.818 5.49512M2 8.32312L4.82867 11.1518M10.4853 5.49512L8.33333 7.66645"
+            stroke="#CFCFCF"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+    },
+    {
+      label: "date",
+      accessor: "created_ate",
+      type: "dateRange",
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width={16}
+          height={16}
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <path
+            d="M5.33333 8.32312L8.162 11.1518L13.818 5.49512M2 8.32312L4.82867 11.1518M10.4853 5.49512L8.33333 7.66645"
+            stroke="#CFCFCF"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+    },
+  ];
   const [invitees, setInvitees] = useState<Record<string, TInviteDetails>>({
     [generateAlphanumericHash(5)]: {
       email: "",
@@ -40,10 +96,21 @@ export default function Page() {
   const hasCopiedText = Boolean(copiedText);
 
   const { emailInvites, isLoading, getEmailInvites } = useGetEmailInvites();
-  const { inviteAttendees } = useInviteAttendees();
+  const data = !!emailInvites
+    ? emailInvites.flatMap(({ InviteDetails, created_at }) =>
+        InviteDetails.map((invitee) => ({ ...invitee, created_at }))
+      )
+    : [];
+
+  // const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
+  //   useFilter<TInviteDetail>({
+  //     data: [],
+  //     dataFilters: inviteesFilters,
+  //   });
 
   const divRef = useRef<HTMLDivElement>();
 
+  const { inviteAttendees } = useInviteAttendees();
   async function onSubmit(e) {
     e.preventDefault();
     await inviteAttendees({
@@ -240,7 +307,7 @@ export default function Page() {
               </Button>
             </form>
           </div>
-          <Tabs className="bg-basebody rounded-sm w-full">
+          {/* <Tabs defaultValue="link" className="bg-basebody rounded-sm w-full">
             <TabsList className="bg-transparent flex w-full !p-0">
               <TabsTrigger
                 className="flex-1 bg-white data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/20 border-2 data-[state=active]:border-basePrimary data-[state=active]:text-basePrimary rounded-none"
@@ -262,17 +329,11 @@ export default function Page() {
                 <span>20/450 Invites pending</span>
               </div>
               <div className="text-gray-300 flex justify-between text-sm">
-                <div className="flex gap-2 items-center">
-                  <div className="flex gap-0.5 items-center">
-                    <Calendar className="w-5 h-5" />
-                    <span>Date</span>
-                  </div>
-                  <div className="h-5 w-[3px] bg-gray-300" />
-                  <div className="flex gap-0.5 items-center border-r-1 border-gray-400 pr-2">
-                    <Users className="w-5 h-5" />
-                    <span>Attendees</span>
-                  </div>
-                </div>
+                <Filter
+                  filters={filters}
+                  applyFilter={applyFilter}
+                  selectedFilters={selectedFilters}
+                />
                 <div>
                   <Input
                     type="text"
@@ -288,33 +349,28 @@ export default function Page() {
             >
               <TabsContent value="link">
                 {!isLoading &&
-                  emailInvites.map(({ InviteDetails }) => {
-                    return (
-                      InviteDetails &&
-                      InviteDetails.map(({ email, attendeeType }) => (
-                        <div className="flex items-center gap-4">
-                          <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
-                            YB
-                          </div>
-                          <div className="flex flex-col gap-1">
-                            <span className="text-sm font-medium">{email}</span>
-                            <div className="flex gap-4 text-xs items-center">
-                              <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
-                                {attendeeType}
-                              </span>
-                              <span className="text-yellow-500">Pending</span>
-                            </div>
-                          </div>
+                  filteredData.map(({ email, attendeeType }) => (
+                    <div className="flex items-center gap-4">
+                      <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
+                        YB
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-sm font-medium">{email}</span>
+                        <div className="flex gap-4 text-xs items-center">
+                          <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
+                            {attendeeType}
+                          </span>
+                          <span className="text-yellow-500">Pending</span>
                         </div>
-                      ))
-                    );
-                  })}
+                      </div>
+                    </div>
+                  ))}
               </TabsContent>
               <TabsContent value="invoices">
                 Change your password here.
               </TabsContent>
             </div>
-          </Tabs>
+          </Tabs> */}
         </div>
       </div>
     </section>

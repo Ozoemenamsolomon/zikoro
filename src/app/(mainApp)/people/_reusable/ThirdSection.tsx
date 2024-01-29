@@ -154,7 +154,7 @@ export default function ThirdSection({ attendee }: { attendee: TAttendee }) {
               <div className="mb-2">
                 <h2 className="text-tiny text-gray-600">Amount</h2>
                 <h3 className="text-lg text-gray-900 font-semibold">
-                ₦
+                  ₦
                   {new Intl.NumberFormat().format(
                     attendeeEventTransactions.amountPaid /
                       attendeeEventTransactions.attendees
@@ -214,7 +214,7 @@ export default function ThirdSection({ attendee }: { attendee: TAttendee }) {
                 <span>{attendeeEventTransactions.eventRegistrationRef}</span>
               </div>
             </div>
-            <Button disabled className="bg-sky-200 w-fit flex gap-4 mx-2">
+            <Button disabled className="bg-basePrimary w-fit flex gap-4 mx-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={24}

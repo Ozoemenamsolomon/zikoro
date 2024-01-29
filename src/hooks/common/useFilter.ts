@@ -34,8 +34,6 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
           return onFilter(item, value);
         } else {
           switch (type) {
-            case "multiple":
-              return value.some((elm) => pptyVal && pptyVal.includes(elm));
             case "range":
               return pptyVal >= value[0] && pptyVal <= value[1];
             case "dateRange":
@@ -47,8 +45,10 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
               );
             case "slider":
               return pptyVal <= value;
-            default:
+            case "single":
               return value === pptyVal;
+            default:
+              return value.some((elm) => pptyVal && pptyVal.includes(elm));
           }
         }
       });
@@ -68,7 +68,7 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
 
     if (
       (Array.isArray(value) && value.length > 0) ||
-      (!Array.isArray(value) && value)
+      (!Array.isArray(value) && value !== null && value !== "")
     ) {
       newFilters.push({
         key,

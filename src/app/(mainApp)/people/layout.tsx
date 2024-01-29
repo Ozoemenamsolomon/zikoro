@@ -4,6 +4,8 @@ import { TLink } from "@/types/links";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { calculateAndSetMaxHeight } from "@/utils/helpers";
+import { useRef, useState, useLayoutEffect } from "react";
 
 export const PeopleLinks: TLink[] = [
   { name: "All", href: "all" },
