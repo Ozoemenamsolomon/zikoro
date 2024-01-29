@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,10 +23,13 @@ export default function RootLayout({
     <UserProvider>
       <html lang="en" className="bg-basebody ">
         <body className={`${inter.className} flex`}>
-          <Sidebar></Sidebar>
+          {/* <Sidebar></Sidebar> */}
           <div className="flex-1">
-            <Topbar></Topbar>
-            <div className="pt-4 pl-4">{children}</div>
+            {/* <Topbar></Topbar> */}
+            {/* className="pt-4 pl-4" */}
+            <Header />
+            <div>{children}</div>
+            <Footer />
           </div>
         </body>
       </html>
