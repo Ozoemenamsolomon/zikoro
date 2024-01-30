@@ -10,7 +10,7 @@ import {
 import { useGetEventTransactions } from "@/hooks/services/billing";
 import { TEventTransaction } from "@/types/billing";
 import { extractUniqueTypes } from "@/utils/helpers";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { AngleDown } from "styled-icons/fa-solid";
 import { columns } from "../columns";
 import { DataTable } from "../data-table";
@@ -229,9 +229,20 @@ export default function All() {
                   <AngleDown className="w-5 h-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 space-y-4 px-4 h-[500px] hide-scrollbar overflow-auto">
+              <DropdownMenuContent className="w-56 space-y-4 px-4 hide-scrollbar overflow-auto">
                 {columns
-                  .filter((column) => column?.id !== "select")
+                  .filter(
+                    (column) =>
+                      ![
+                        "select",
+                        "event",
+                        "payOutStatus",
+                        "amountPaid",
+                        "payOutDate",
+                        "registrationCompleted",
+                        "created_at",
+                      ].includes(column?.accessorKey)
+                  )
                   .map(({ header, accessorKey }) => (
                     <div
                       key={accessorKey}
@@ -247,7 +258,7 @@ export default function All() {
                         htmlFor="terms"
                         className="text-sm font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        {header}
+                        {header as ReactNode}
                       </label>
                     </div>
                   ))}
@@ -289,21 +300,20 @@ export default function All() {
         </div>
         <Filter
           className={`space-y-4 max-w-full`}
-          filters={filters}
-          applyFilter={applyFilter}
-          selectedFilters={selectedFilters.sort(
+          filters={filters.sort(
             (a, b) => (a.order || Infinity) - (b.order || Infinity)
           )}
+          applyFilter={applyFilter}
+          selectedFilters={selectedFilters}
         />
         <div className="space-y-2 max-w-full">
           <DataTable
-            columns={columns.filter(
-              ({ accessorKey, id }) =>
-                shownColumns.includes(accessorKey) || shownColumns.includes(id)
+            columns={columns.filter(({ accessorKey }) =>
+              shownColumns.includes(accessorKey)
             )}
             data={filteredData}
-            rowSelection={rowSelection}
-            setRowSelection={setRowSelection}
+            state={{ rowSelection }}
+            onRowSelectionChange={setRowSelection}
           />
         </div>
       </div>

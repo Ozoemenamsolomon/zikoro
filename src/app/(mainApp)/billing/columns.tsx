@@ -4,9 +4,31 @@ import { TEventTransaction } from "@/types/billing";
 import { convertDateFormat } from "@/utils/date";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<TEventTransaction>[] = [
+export const columns: {
+  accessorKey:
+    | "select"
+    | "event"
+    | "userEmail"
+    | "eventRegistrationRef"
+    | "created_at"
+    | "attendees"
+    | "currency"
+    | "eventPrice"
+    | "amountPaid"
+    | "payOutDate"
+    | "registrationCompleted"
+    | "payOutStatus"
+    | "discountCode"
+    | "affliateEmail"
+    | "affliateCode"
+    | "ticketCategory";
+  header: ColumnDef<TEventTransaction>["header"];
+  cell?: ColumnDef<TEventTransaction>["cell"];
+  enableSorting?: boolean;
+  enableHiding?: boolean;
+}[] = [
   {
-    id: "select",
+    accessorKey: "select",
     header: ({ table }) => (
       <div className="pl-2">
         <Checkbox
@@ -94,7 +116,7 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     header: "Reg. Status",
     cell: ({ row }) => {
       const regStatus = row.getValue("registrationCompleted");
-      const amountPaid = row.getValue("amountPaid");
+      const amountPaid = row.getValue("amountPaid") as number;
       return (
         <div
           className={`max-w-full truncate p-2 ${
@@ -114,7 +136,9 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     accessorKey: "payOutStatus",
     header: "PayOut Status",
     cell: ({ row }) => {
-      const payOutStatus = row.getValue("payOutStatus")?.toLowerCase();
+      const payOutStatus = (
+        row.getValue("payOutStatus") as string
+      )?.toLowerCase();
 
       return (
         <div
