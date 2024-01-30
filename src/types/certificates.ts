@@ -1,10 +1,14 @@
+import { TAttendee } from "@/types/attendee";
+
 export type TAttendeeCertificate = {
   id?: number;
   created_at: string;
-  eventId: string;
+  eventId: number;
   attendeeEmail: string;
   certificateId: string;
+  CertificateGroupId: number;
   certificateURL: string;
+  CertificateName: string;
   attendeeId: number;
 };
 
@@ -24,4 +28,10 @@ export type TCertificate = {
   attendanceRate: number;
   criteria: string[];
   organisationLogo: string;
+  cpdPoints: number;
+};
+
+export type TFullCertificate = TAttendeeCertificate & {
+  certificate: TCertificate;
+  attendee: TAttendee;
 };

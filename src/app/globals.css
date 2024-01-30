@@ -64,6 +64,14 @@
         --input: 217.2 32.6% 17.5%;
         --ring: 212.7 26.8% 83.9%;
     }
+
+
+    @font-face {
+        font-family: "DancingScript";
+        src: url('/fonts/DancingScript.ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
 }
 
 #search-input {
@@ -101,7 +109,8 @@
 }
 
 .hide-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
+    /* background-color: rgba(0, 0, 0, 0.2); */
+    background-color: transparent
 }
 
 .hide-scrollbar:hover::-webkit-scrollbar-thumb {

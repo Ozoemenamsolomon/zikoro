@@ -1,9 +1,9 @@
 import {
-  useGetAttendeetags,
+  useGetAttendeeTags,
   useGetTags,
-  useUpdateAttendeetags,
+  useUpdateAttendeeTags,
   useUpdateTags,
-} from "@/hooks/tags";
+} from "@/hooks/services/tags";
 import { TAttendeeTags, TTag, TTags } from "@/types/tags";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
@@ -40,10 +40,10 @@ export default function AddAttendeeTagForm({
     attendeeTags,
     isLoading: attendeeTagsisLoading,
     // error,
-  } = useGetAttendeetags({ attendeeId });
+  } = useGetAttendeeTags({ attendeeId });
 
-  const { updateAttendeetags, isLoading: updatetagsIsLoading } =
-    useUpdateAttendeetags({
+  const { updateAttendeeTags, isLoading: updatetagsIsLoading } =
+    useUpdateAttendeeTags({
       attendeeId,
     });
 
@@ -67,7 +67,7 @@ export default function AddAttendeeTagForm({
         };
 
     console.log(payload, "on the front side");
-    await updateAttendeetags({ payload });
+    await updateAttendeeTags({ payload });
     getTags();
   }
 

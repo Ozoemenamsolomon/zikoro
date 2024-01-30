@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
-import { useUpdatenote } from "@/hooks/notes";
+import { useUpdatenote } from "@/hooks/services/notes";
 import { DialogClose } from "../ui/dialog";
 
 export default function AddNotesForm({

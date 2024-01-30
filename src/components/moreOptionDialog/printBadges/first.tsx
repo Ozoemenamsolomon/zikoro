@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { TAttendee } from "@/types/attendee";
 import { Dispatch, SetStateAction } from "react";
 import ViewAttendeesSection from "../viewAttendeesSection";
+import { TAttendeeTags } from "@/types/tags";
+import { TFavouriteContact } from "@/types/favourites";
 
 const First = ({
   mappedAttendees,
@@ -10,6 +12,8 @@ const First = ({
   setSelectedAttendees,
   step,
   setStep,
+  favourites,
+  attendeesTags,
 }: {
   mappedAttendees: TAttendee[];
   setMappedAttendees: Dispatch<SetStateAction<TAttendee[]>>;
@@ -17,6 +21,8 @@ const First = ({
   setSelectedAttendees: Dispatch<SetStateAction<TAttendee[]>>;
   step: number;
   setStep: Dispatch<SetStateAction<number>>;
+  favourites: TFavouriteContact;
+  attendeesTags: TAttendeeTags[];
 }) => {
   // useEffect(() => {
   //   setMappedAttendees(
@@ -50,6 +56,7 @@ const First = ({
   return (
     <>
       <ViewAttendeesSection
+        favourites={favourites}
         attendees={mappedAttendees}
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}

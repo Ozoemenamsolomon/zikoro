@@ -3,13 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { attendeeTypeOptions } from "@/data/attendee";
-import { useUpdateAttendees } from "@/hooks/attendee";
+import { useUpdateAttendees } from "@/hooks/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import React, { useEffect, useState } from "react";
 import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
 
-const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
+const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
+  attendees,
+  getAttendees,
+  attendeesTags,
+  favourites
+}) => {
   const [mappedAttendees, setMappedAttendees] = useState<TAttendee[]>([]);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
   const [selectedAttendeeType, setSelectedAttendeeType] = useState<string>("");
@@ -20,9 +25,10 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
       attendees.filter(
         ({ attendeeType }) =>
           selectedAttendeeType === "" ||
-          (action === "assign"
-            ? !attendeeType.includes(selectedAttendeeType)
-            : attendeeType.includes(selectedAttendeeType))
+          (attendeeType &&
+            (action === "assign"
+              ? !attendeeType?.includes(selectedAttendeeType)
+              : attendeeType?.includes(selectedAttendeeType)))
       )
     );
   }, [attendees, selectedAttendeeType, action]);
@@ -43,7 +49,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
     setSelectedAttendees(updatedValue);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const payload = selectedAttendees.map((attendee) => {
       const newAttendeeType =
         action === "assign"
@@ -57,7 +63,8 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
       };
     });
 
-    updateAttendees({ payload });
+    await updateAttendees({ payload });
+    await getAttendees();
   };
 
   useEffect(() => {
@@ -67,7 +74,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
   return (
     <div className="space-y-6 max-h-[80vh] overflow-auto hide-scrollbar py-4 pl-4 pr-1">
       <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
-        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
           Action
         </span>
         <RadioGroup
@@ -98,7 +105,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
         </RadioGroup>
       </div>
       <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
-        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
           Attendee Type
         </span>
         <div className="flex gap-2 flex-wrap justify-between">
@@ -126,6 +133,8 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({ attendees }) => {
         </div>
       </div>
       <ViewAttendeesSection
+        attendeesTags={attendeesTags}
+        favourites={favourites}
         attendees={mappedAttendees}
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}

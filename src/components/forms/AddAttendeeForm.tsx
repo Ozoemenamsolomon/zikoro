@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Camera, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import { useCreateAttendee } from "@/hooks/attendee";
+import { useCreateAttendee } from "@/hooks/services/attendee";
 import { AttendeeSchema } from "@/schemas/attendee";
 import { TAttendee, TAttendeeType } from "@/types/attendee";
 import {
@@ -90,7 +90,6 @@ export default function AddAttendeeForm({
 
   async function onSubmit(data: z.infer<typeof AttendeeSchema>) {
     onClose();
-    console.log("submitting the attendee");
     const payload = {
       ...data,
       phoneNumber: data.phoneNumber
@@ -101,13 +100,7 @@ export default function AddAttendeeForm({
         : "N/A",
     };
 
-    console.log(payload);
-    const response = await createAttendee({ payload });
-    console.log(response, payload);
-
-    toast({
-      description: "Attendee created successfully",
-    });
+    await createAttendee({ payload });
   }
 
   return (
@@ -120,7 +113,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
-                  <InputOffsetLabel label="First name">
+                  <InputOffsetLabel isRequired label="First name">
                     <Input
                       placeholder="Enter first name"
                       {...field}
@@ -135,7 +128,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="lastName"
                 render={({ field }) => (
-                  <InputOffsetLabel label={"Last name"}>
+                  <InputOffsetLabel isRequired label={"Last name"}>
                     <Input
                       placeholder={"Enter last name"}
                       {...field}
@@ -150,7 +143,7 @@ export default function AddAttendeeForm({
             control={form.control}
             name="email"
             render={({ field }) => (
-              <InputOffsetLabel label={"Email"}>
+              <InputOffsetLabel isRequired label={"Email"}>
                 <Input
                   placeholder="Enter email"
                   {...field}
@@ -197,7 +190,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="city"
                 render={({ field }) => (
-                  <InputOffsetLabel label={"City"}>
+                  <InputOffsetLabel isRequired label={"City"}>
                     <Input
                       placeholder="Enter city"
                       {...field}
@@ -212,7 +205,7 @@ export default function AddAttendeeForm({
                 control={form.control}
                 name="country"
                 render={({ field }) => (
-                  <InputOffsetLabel label={"Country"}>
+                  <InputOffsetLabel isRequired label={"Country"}>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -243,8 +236,9 @@ export default function AddAttendeeForm({
                 name="phoneNumber"
                 render={({ field }) => (
                   <FormItem className="relative h-fit">
-                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                       Phone number
+                      <sup className="text-red-700">*</sup>
                     </FormLabel>
                     <input
                       type="text"
@@ -272,7 +266,7 @@ export default function AddAttendeeForm({
                 name="whatsappNumber"
                 render={({ field }) => (
                   <FormItem className="relative">
-                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                    <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                       WhatsApp number
                     </FormLabel>
                     <input
@@ -301,7 +295,7 @@ export default function AddAttendeeForm({
             name="profilePicture"
             render={({ field }) => (
               <FormItem className="relative">
-                <div className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                <div className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Profile picture
                 </div>
                 <FormLabel className="hover:cursor-pointer flex items-center gap-6 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
@@ -315,7 +309,7 @@ export default function AddAttendeeForm({
             )}
           />
           <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
-            <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+            <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
               Attendee Type
             </span>
             <div className="flex gap-2 flex-wrap justify-between">
@@ -335,7 +329,7 @@ export default function AddAttendeeForm({
                 </button>
               ))}
             </div>
-            <span className="text-[10px] font-medium text-gray-500">
+            <span className="text-tiny font-medium text-gray-500">
               You can assign multiple roles to the attendee
             </span>
           </div>
@@ -357,7 +351,7 @@ export default function AddAttendeeForm({
             name="x"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Twitter
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">
@@ -379,7 +373,7 @@ export default function AddAttendeeForm({
             name="linkedin"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   LinkedIn
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">
@@ -401,7 +395,7 @@ export default function AddAttendeeForm({
             name="instagram"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Instagram
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">
@@ -423,7 +417,7 @@ export default function AddAttendeeForm({
             name="facebook"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+                <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Facebook
                 </FormLabel>
                 <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">

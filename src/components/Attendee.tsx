@@ -1,7 +1,7 @@
-import { useUpdateAttendees } from "@/hooks/attendee";
+import { useUpdateAttendees } from "@/hooks/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import { TFavouriteContact } from "@/types/favourites";
-import { formatDate } from "@/utils/date";
+import { formatDate, isWithinTimeRange } from "@/utils/date";
 
 type AttendeeProps = {
   attendee: TAttendee;
@@ -41,35 +41,35 @@ const Attendee: React.FC<AttendeeProps> = ({
 
   const { updateAttendees } = useUpdateAttendees();
 
-  const currentCheckin =
+  const recentCheckin =
     checkin &&
-    checkin.find(({ date }) => date === new Date().toLocaleDateString("en-DE"));
+    checkin.length > 0 &&
+    checkin.reduce((prev, current) => {
+      return prev.date > current.date && current.checkin ? prev : current;
+    });
 
   const toggleCheckin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
-    const updatedCheckinValue = !currentCheckin || !currentCheckin.checkin;
+    const isCheckedInToday =
+      recentCheckin && isWithinTimeRange(recentCheckin.date, null);
+    const newDate = new Date();
+    newDate.setHours(12, 0, 0, 0);
 
     const updatedCheckin = checkin
-      ? currentCheckin
-        ? [
-            ...checkin.filter((elm) => elm !== currentCheckin),
-            {
-              date: new Date().toLocaleDateString("en-DE"),
-              checkin: updatedCheckinValue,
-            },
-          ]
+      ? recentCheckin && isWithinTimeRange(recentCheckin.date, null)
+        ? checkin.filter((elm) => elm !== recentCheckin)
         : [
             ...checkin,
             {
-              date: new Date().toLocaleDateString("en-DE"),
-              checkin: updatedCheckinValue,
+              date: newDate,
+              checkin: true,
             },
           ]
       : [
           {
-            date: new Date().toLocaleDateString("en-DE"),
-            checkin: updatedCheckinValue,
+            date: newDate,
+            checkin: true,
           },
         ];
 
@@ -78,14 +78,21 @@ const Attendee: React.FC<AttendeeProps> = ({
     await updateAttendees({
       payload,
       message: `Attendee ${
-        updatedCheckinValue ? "checked in" : "unchecked"
+        recentCheckin && isWithinTimeRange(recentCheckin.date, null)
+          ? "unchecked"
+          : "checked in"
       } successfully`,
     });
 
     await getAttendees();
   };
 
-  const { day, month, year } = formatDate(registrationDate);
+  const CheckInDate = () => {
+    const { day, month, year } =
+      recentCheckin && formatDate(recentCheckin.date);
+
+    return <span>{day + "." + month + "." + year}</span>;
+  };
 
   return (
     <button
@@ -107,11 +114,11 @@ const Attendee: React.FC<AttendeeProps> = ({
           <h4 className="text-gray-900 font-semibold text-sm capitalize w-full text-left">
             {firstName + " " + lastName}
           </h4>
-          <span className="text-[10px] font-medium text-gray-700 truncate w-full text-left">
-            {jobTitle + ", " + organization}
+          <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
+            {`${jobTitle ? jobTitle + ", " : ""}${organization || ""}`}
           </span>
-          {currentCheckin && currentCheckin.checkin && (
-            <div className="flex gap-1 text-[10px] text-[#717171]">
+          {recentCheckin && (
+            <div className="flex gap-1 text-tiny text-[#717171]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="1.5em"
@@ -127,20 +134,23 @@ const Attendee: React.FC<AttendeeProps> = ({
                   strokeLinejoin="round"
                 />
               </svg>
-              <span>{day + "." + month + "." + year}</span>
+              <CheckInDate />
             </div>
           )}
           <div className="flex gap-1.5 flex-wrap w-fit">
-            {attendeeType
-              .filter((type) => attendeeType.length > 1 && type !== "attendee")
-              .map((type) => (
-                <div
-                  key={type}
-                  className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-[10px] "
-                >
-                  {type}
-                </div>
-              ))}
+            {attendeeType &&
+              attendeeType
+                .filter(
+                  (type) => attendeeType.length > 1 && type !== "attendee"
+                )
+                .map((type) => (
+                  <div
+                    key={type}
+                    className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-tiny "
+                  >
+                    {type}
+                  </div>
+                ))}
           </div>
         </div>
       </div>
@@ -197,7 +207,7 @@ const Attendee: React.FC<AttendeeProps> = ({
         <button
           onClick={toggleCheckin}
           className={`text-[8px] flex items-center gap-0.5 ${
-            currentCheckin && currentCheckin.checkin
+            recentCheckin && isWithinTimeRange(recentCheckin.date, null)
               ? "text-basePrimary"
               : "text-gray-700"
           }`}
@@ -220,7 +230,9 @@ const Attendee: React.FC<AttendeeProps> = ({
             </svg>
           </div>
           <span>
-            {currentCheckin && currentCheckin.checkin ? "undo" : "Check-in"}
+            {recentCheckin && isWithinTimeRange(recentCheckin.date, null)
+              ? "undo"
+              : "Check-in"}
           </span>
         </button>
       </div>

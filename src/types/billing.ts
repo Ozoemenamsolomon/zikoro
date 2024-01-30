@@ -1,8 +1,10 @@
+import { TAttendee } from "./attendee";
+
 export type TEventTransaction = {
   id: number;
   created_at: string;
   expiredAt: string;
-  transactionReference: string;
+  eventRegistrationRef: string;
   eventId: number;
   event: string;
   eventDate: string;
@@ -11,15 +13,17 @@ export type TEventTransaction = {
   eventPrice: number;
   paymentDate: string;
   referralSource: string;
-  discountcode: string;
+  discountCode: string;
   discountValue: number;
   affliateEmail: string;
   afliateCode: string;
   amountPaid: number;
-  paidStatus: boolean;
+  registrationCompleted: boolean;
   attendees: number;
   attendeesDetails: Partial<TAttendee>[];
-  PayOutStatus: string;
+  payOutStatus: string;
   payOutDate: string;
   currency: string;
+  ticketCategory: string;
+  affliateCommission: number;
 };

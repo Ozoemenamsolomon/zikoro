@@ -2,9 +2,9 @@
 
 import React from "react";
 import Image from "next/image";
-import { Home } from "@styled-icons/typicons/Home";
+import { Home } from "styled-icons/typicons";
 import { MoneyDollarBox } from "styled-icons/remix-fill";
-import { MegaphoneLoud } from "@styled-icons/fluentui-system-filled/MegaphoneLoud";
+import { MegaphoneLoud } from "styled-icons/fluentui-system-filled";
 import { PaperPlane } from "styled-icons/fa-regular";
 import { Cog } from "styled-icons/heroicons-outline";
 import { NavLinks } from "./NavLinks";
@@ -40,7 +40,7 @@ export const links: TLink[] = [
 ];
 const Sidebar = () => {
   return (
-    <div className="h-full w-[250px] bg-white flex-col flex justify-between sticky top-0 border-r-[1px]">
+    <div className="h-full w-full bg-white flex-col flex justify-between">
       <div className="flex flex-col gap-8">
         <Image
           className="p-4"

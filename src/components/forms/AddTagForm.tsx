@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useUpdateTags } from "@/hooks/tags";
+import { useUpdateTags } from "@/hooks/services/tags";
 import { TTag, TTags } from "@/types/tags";
 import COLORTAG from "@/utils/colorTag";
 import { useState } from "react";
@@ -35,7 +35,7 @@ export default function AddTagForm({
   return (
     <div className="space-y-4">
       <div className="relative">
-        <label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+        <label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
           Tag
         </label>
         <Input

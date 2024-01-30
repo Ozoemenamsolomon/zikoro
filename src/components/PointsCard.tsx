@@ -12,7 +12,7 @@ const PointsCard: React.FC<PointCardProps>=({imgSrc,heading,text})=>{
             <Image src={imgSrc} width={32} height={32} alt={heading} />
             <div className="">
                 <h4 className=" text-sm text-greyBlack font-medium">{heading}</h4>
-                <p className=" text-small font-normal text-[#717171]">{text}</p>
+                <p className=" text-xs font-normal text-[#717171]">{text}</p>
             </div>
         </section>
     )

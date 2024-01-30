@@ -12,13 +12,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetEventCertificates } from "@/hooks/certificate";
+import {
+  useGetAttendeesCertificates,
+  useGetEventCertificates,
+  useUpdateAttendeeCertificates,
+} from "@/hooks/services/certificate";
 import { TCertificate } from "@/types/certificates";
 import { DialogClose } from "../ui/dialog";
 
 const CertificateDialog: React.FC<MoreOptionsProps> = ({
   attendees,
   getAttendees,
+  favourites,
+  attendeesTags
 }) => {
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
@@ -28,21 +34,47 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
     useState<TCertificate>();
 
   const {
+    attendeesCertificates,
+    isLoading: attendeesCertificateisLoading,
+    getAttendeesCertificates,
+  } = useGetAttendeesCertificates({ eventId: 1234567890 });
+
+  const {
     eventCertificates,
     isLoading: eventCertificateisLoading,
     getEventCertificates,
   } = useGetEventCertificates({ eventId: 1234567890 });
 
+  const { updateAttendeeCertificates } = useUpdateAttendeeCertificates({
+    eventId: 1234567890,
+  });
+
   useEffect(() => {
     console.log(selectedCertificate);
-    if (!selectedCertificate) return;
+    if (!selectedCertificate || attendeesCertificateisLoading) return;
 
-    const attendanceSet = new Set(selectedCertificate.attendance);
-    console.log(attendanceSet);
+    const attendeesId = attendeesCertificates
+      .filter(({ CertificateGroupId }) => {
+        console.log(
+          CertificateGroupId === selectedCertificate.id,
+          CertificateGroupId,
+          selectedCertificate.id
+        );
+        return CertificateGroupId === selectedCertificate.id;
+      })
+      .map(({ attendeeId }) => attendeeId);
+    console.log(
+      attendeesId,
+      selectedCertificate.id,
+      attendeesCertificates,
+      "set"
+    );
 
     setMappedAttendees(
       attendees.filter(({ id }) =>
-        action === "release" ? !attendanceSet.has(id) : attendanceSet.has(id)
+        action === "release"
+          ? !attendeesId.includes(id)
+          : attendeesId.includes(id)
       )
     );
   }, [action, selectedCertificate]);
@@ -59,14 +91,30 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
     setSelectedAttendees(updatedValue);
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     console.log(selectedAttendees, selectedCertificate);
+    if (!selectedCertificate) return;
+
+    await updateAttendeeCertificates({
+      payload: {
+        action,
+        attendeeInfo: selectedAttendees.map(({ id, email }) => ({
+          attendeeId: id,
+          attendeeEmail: email,
+        })),
+        certificateInfo: {
+          eventId: 1234567890,
+          CertificateGroupId: selectedCertificate.id,
+          CertificateName: selectedCertificate.certificateName,
+        },
+      },
+    });
   };
 
   return (
     <div className="space-y-6 max-h-[80vh] overflow-auto hide-scrollbar py-4 pl-4 pr-1">
       <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
-        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
           Action
         </span>
         <RadioGroup
@@ -96,7 +144,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         </RadioGroup>
       </div>
       <div className="relative h-fit w-full">
-        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-[10px] px-1">
+        <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
           Certificate name
         </span>
         <Select
@@ -120,6 +168,8 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         </Select>
       </div>
       <ViewAttendeesSection
+        attendeesTags={attendeesTags}
+        favourites={favourites}
         attendees={mappedAttendees}
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
