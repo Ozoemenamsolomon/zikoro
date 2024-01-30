@@ -16,6 +16,7 @@ export const useCreateAttendee = () => {
         payload,
       });
 
+      console.log(data, status);
       if (status !== 201) throw data.data.error;
 
       toast({
@@ -61,6 +62,7 @@ export const useUpdateAttendees = () => {
 
       if (status !== 200) throw data.data.error;
 
+      console.log(data);
       toast({
         description: message || "Attendee created successfully",
       });
@@ -121,6 +123,7 @@ export const useGetAttendeesWithTags = () => {
 
     if (status !== 200) return setError(true);
 
+    console.log(data.data);
     return setAttendees(data.data);
   };
 
@@ -147,6 +150,7 @@ export const useGetAttendeesWithEmailInvites = () => {
 
     if (status !== 200) return setError(true);
 
+    console.log(data.data);
     return setAttendees(data.data);
   };
 
@@ -173,6 +177,7 @@ export const useGetAttendeesWithFavourites = () => {
 
     if (status !== 200) return setError(true);
 
+    console.log(data.data);
     return setAttendees(data.data);
   };
 
@@ -199,6 +204,7 @@ export const useGetAttendeesWithCertificates = () => {
 
     if (status !== 200) return setError(true);
 
+    console.log(data.data);
     return setAttendees(data.data);
   };
 
@@ -231,6 +237,7 @@ export const useInviteAttendees = () => {
       toast({
         description: "Invitees sent successfuly",
       });
+      console.log(data);
       return data;
     } catch (error) {
       console.log(error);
@@ -299,6 +306,7 @@ export const useGetAttendeesWithNotes = () => {
 
     if (status !== 200) return setError(true);
 
+    console.log(data.data);
     return setAttendees(data.data);
   };
 
