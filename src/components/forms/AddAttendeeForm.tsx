@@ -74,7 +74,6 @@ export default function AddAttendeeForm({
     }
   }, [country]);
 
-  console.log(attendeeType);
   const toggleAttendeeType = (value: string) => {
     const newAttendeeType = () => {
       if (attendeeType.includes(value)) {

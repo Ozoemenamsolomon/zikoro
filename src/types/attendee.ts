@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export type TCheckin = z.infer<typeof checkinSchema>;
 
-export type TAttendee = z.infer<typeof AttendeeSchema> & { [key: string]: any };
+export type TAttendee = z.infer<typeof AttendeeSchema>;
 
 export type TAttendeeNote = z.infer<typeof attendeeNoteSchema>;
 

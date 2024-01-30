@@ -160,8 +160,6 @@ export default function FirstSection({
     isLoading: favouriteIsLoading,
   } = useGetFavourites({ userId: 10 });
 
-  console.log(favourites);
-
   const { updateFavourites } = useUpdateFavourites({ userId: 10 });
 
   const toggleFavourites = async (id: number, isFavourite: boolean) => {
@@ -247,8 +245,6 @@ export default function FirstSection({
         options: extractUniqueTypes<TAttendee>(attendees, filter.accessor),
       }))
     );
-
-    console.log(attendees);
   }, [isLoading]);
 
   const toggleSort = () => {
@@ -268,8 +264,6 @@ export default function FirstSection({
         newOrder = "none";
         break;
     }
-
-    console.log(newOrder);
 
     setSortOrder(newOrder);
   };

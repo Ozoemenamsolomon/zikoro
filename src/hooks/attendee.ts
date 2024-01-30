@@ -93,7 +93,6 @@ export const useGetAttendees = () => {
 
     if (status !== 200) return setError(true);
 
-    console.log(data.data);
     return setAttendees(data.data);
   };
 
