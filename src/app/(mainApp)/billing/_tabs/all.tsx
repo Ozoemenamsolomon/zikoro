@@ -298,8 +298,6 @@ export default function All() {
     0
   );
 
-  console.log(filteredData, eventTransactions);
-
   useEffect(() => {
     if (isLoading) return;
 
@@ -312,8 +310,6 @@ export default function All() {
         );
       });
   }, [isLoading]);
-
-  console.log(eventTransactions);
 
   const onChange = (accessorKey) =>
     setShownColumns((prevShown) =>
