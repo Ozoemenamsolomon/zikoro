@@ -18,9 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="bg-basebody">
-      <body className={`${inter.className} h-screen relative`}>
-        {children}
-      </body>
+      <body className={`${inter.className} h-screen relative`}>{children}</body>
     </html>
   );
 }

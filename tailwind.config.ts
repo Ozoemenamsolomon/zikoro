@@ -62,9 +62,6 @@ const config: Config = {
       fontSize: {
         tiny: "10px",
       },
-      fontFamily: {
-        DancingScript: ["DancingScript", "san-serif"],
-      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

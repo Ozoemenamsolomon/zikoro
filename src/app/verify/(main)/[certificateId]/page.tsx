@@ -10,6 +10,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { exportComponentAsPNG } from "react-component-export-image";
 import QRCode from "react-qr-code";
+import { Dancing_Script } from "next/font/google";
+
+const dancingScript = Dancing_Script({ subsets: ["latin"] });
 
 const Page = ({ params }: { params: { certificateId: string } }) => {
   const [certificate, setCertificate] = useState<TFullCertificate | null>(null);
@@ -122,7 +125,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   <p className="text-lg">This is to certify that</p>
                 </div>
                 <div className="pb-1 mx-auto w-2/3 text-center mb-6">
-                  <span className="text-4xl font-DancingScript">
+                  <span className={`${dancingScript.className} text-4xl`}>
                     {certificate?.attendee.firstName +
                       " " +
                       certificate?.attendee.lastName}
