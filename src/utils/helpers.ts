@@ -93,3 +93,24 @@ export function areAllPropertiesSet(obj: Record<string, any>): boolean {
   }
   return true;
 }
+
+export function findKeysWithSharedValue(
+  map: Map<any, any>
+): Map<string, any[]> {
+  const encounteredValues: Map<string, any[]> = new Map();
+
+  for (let [key, value] of Array.from(map)) {
+    if (encounteredValues.has(value) && value) {
+      encounteredValues.get(value)!.push(key);
+    } else {
+      encounteredValues.set(value, [key]);
+    }
+  }
+
+  // Filter and return only entries where multiple keys share the same value
+  return new Map(
+    Array.from(encounteredValues.entries()).filter(
+      ([value, keys]) => keys.length > 1
+    )
+  );
+}

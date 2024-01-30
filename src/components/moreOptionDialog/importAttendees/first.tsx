@@ -37,11 +37,14 @@ const First = ({
         });
         console.log(jsonData);
 
-        if (jsonData[0].length === 5) {
+        if (jsonData[0].length > 5) {
           setExcelResult(jsonData);
           setStep(1);
         } else {
-          toast({ description: "There should be exactly eight headers" });
+          toast({
+            description: "There should be at least five columns",
+            variant: "destructive",
+          });
         }
       }
     };

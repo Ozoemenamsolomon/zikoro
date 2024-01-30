@@ -48,8 +48,6 @@ const Attendee: React.FC<AttendeeProps> = ({
       return prev.date > current.date && current.checkin ? prev : current;
     });
 
-  console.log(recentCheckin);
-
   const toggleCheckin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
@@ -74,8 +72,6 @@ const Attendee: React.FC<AttendeeProps> = ({
             checkin: true,
           },
         ];
-
-    console.log(updatedCheckin, isCheckedInToday);
 
     const payload: TAttendee[] = [{ ...attendee, checkin: updatedCheckin }];
 

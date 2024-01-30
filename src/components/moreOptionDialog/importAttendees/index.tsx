@@ -20,16 +20,54 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
 }) => {
   const [step, setStep] = useState<number>(0);
   const [excelResult, setExcelResult] = useState<any[][]>([]);
-  const [headers, setHeaders] = useState<THeaders>({
-    firstName: null,
-    lastName: null,
-    email: null,
-    phoneNumber: null,
-    whatsappNumber: null,
-  });
+  const [headers, setHeaders] = useState<
+    Map<{ label: string; value: string; isRequired: boolean }, any>
+  >(
+    new Map([
+      [{ label: "First name", value: "firstName", isRequired: true }, null],
+      [{ label: "Last name", value: "lastName", isRequired: true }, null],
+      [{ label: "Email", value: "email", isRequired: true }, null],
+      [{ label: "Phone number", value: "phoneNumber", isRequired: true }, null],
+      [{ label: "WhatsApp", value: "whatsappNumber", isRequired: true }, null],
+      [
+        { label: "Attendee Type", value: "attendeeType", isRequired: false },
+        null,
+      ],
+      [{ label: "jobTitle", value: "jobTitle", isRequired: false }, null],
+      [
+        { label: "organization", value: "organization", isRequired: false },
+        null,
+      ],
+      [{ label: "city", value: "city", isRequired: false }, null],
+      [{ label: "country", value: "country", isRequired: false }, null],
+      [{ label: "bio", value: "bio", isRequired: false }, null],
+      [{ label: "x", value: "x", isRequired: false }, null],
+      [{ label: "LinkedIn", value: "linkedin", isRequired: false }, null],
+      [{ label: "instagram", value: "instagram", isRequired: false }, null],
+      [{ label: "facebook", value: "facebook", isRequired: false }, null],
+    ])
+  );
 
-  const updateHeader = (index: number, value: string) => {
-    setHeaders((prevHeaders) => ({ ...prevHeaders, [value]: index }));
+  const updateHeader = (
+    key: { label: string; value: string; isRequired: boolean },
+    value: string
+  ) => {
+    console.log(value);
+    setHeaders((prevHeaders) => {
+      prevHeaders.set(key, value);
+      return prevHeaders;
+    });
+  };
+
+  const deleteHeader = (key: {
+    label: string;
+    value: string;
+    isRequired: boolean;
+  }) => {
+    setHeaders((prevHeaders) => {
+      prevHeaders.delete(key);
+      return prevHeaders;
+    });
   };
 
   return (
@@ -197,12 +235,14 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
         <Second
           headers={headers}
           updateHeader={updateHeader}
+          deleteHeader={deleteHeader}
           excelHeaders={excelResult[0]}
           step={step}
           setStep={setStep}
         />
       ) : (
         <Third
+          excelHeaders={excelResult[0]}
           data={excelResult.filter((row, index) => index > 0)}
           headers={headers}
           getAttendees={getAttendees}

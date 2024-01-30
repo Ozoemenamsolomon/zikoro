@@ -9,11 +9,16 @@ const Third = ({
   data,
   headers,
   getAttendees,
+  excelHeaders,
 }: {
   data: any[][];
-  headers: THeaders;
+  excelHeaders: any[];
+  headers: Map<{ label: string; value: string; isRequired: boolean }, any>;
   getAttendees: () => Promise<void>;
 }) => {
+  const headerMap = new Map(
+    excelHeaders.map((header, index) => [header, index])
+  );
   const { updateAttendees } = useUpdateAttendees();
 
   const submitAttendees = async () => {
@@ -25,8 +30,8 @@ const Third = ({
         attendeeType: ["attendee"],
       };
 
-      Object.entries(headers).forEach(([key, headerValue]) => {
-        attendee[key] = row[headerValue];
+      Array.from(headers).forEach(([key, value]) => {
+        attendee[key.value] = row[headerMap.get(value)];
       });
 
       return attendee;
@@ -43,12 +48,12 @@ const Third = ({
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
-              {Object.keys(headers).map((header) => (
+              {Array.from(headers).map(([key, value]) => (
                 <th
-                  key={header}
+                  key={key.value}
                   className="py-2 px-4 border-b capitalize text-xs font-medium text-gray-600"
                 >
-                  {header.replace(/([a-z])([A-Z])/g, `$1 $2`).toLowerCase()}
+                  {key.label}
                 </th>
               ))}
             </tr>
@@ -56,24 +61,11 @@ const Third = ({
           <tbody>
             {data.map((row, index) => (
               <tr>
-                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
-                  {row[headers.firstName]}
-                </td>
-                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
-                  {row[headers.lastName]}
-                </td>
-                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
-                  {row[headers.email]}
-                </td>
-                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
-                  {row[headers.phoneNumber]}
-                </td>
-                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
-                  {row[headers.whatsappNumber]}
-                </td>
-                <td className="py-2 px-4 border-b text-gray-500 text-tiny">
-                  Attendee
-                </td>
+                {Array.from(headers).map(([key, value]) => (
+                  <td className="py-2 px-4 border-b text-gray-500 text-tiny">
+                    {row[headerMap.get(value)]}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
