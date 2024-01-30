@@ -1,6 +1,10 @@
 import { toast } from "@/components/ui/use-toast";
 import { TAttendee } from "@/types/attendee";
-import { TAttendeeCertificate, TCertificate, TFullCertificate } from "@/types/certificates";
+import {
+  TAttendeeCertificate,
+  TCertificate,
+  TFullCertificate,
+} from "@/types/certificates";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
@@ -177,7 +181,6 @@ export const useGetAttendeeCertificates = ({
       if (status !== 200) {
         throw data;
       }
-      console.log(data.data);
       setAttendeeCertificates(data.data);
     } catch (error) {
       setError(true);
@@ -277,7 +280,6 @@ export const useVerifyAttendeeCertificate =
           throw data;
         }
 
-        console.log(data.data);
         if (!data.data) {
           toast({
             description: "this certificate is not valid",

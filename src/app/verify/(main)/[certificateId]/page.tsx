@@ -26,11 +26,11 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
   const verify = async () => {
     const verifiedCertificate = await verifyAttendeeCertificate(certificateId);
 
-    console.log(verifiedCertificate);
-
-    if (!!verifiedCertificate) {
-      setCertificate(verifiedCertificate);
+    if (!verifiedCertificate) {
+      router.replace("/verify");
     }
+
+    setCertificate(verifiedCertificate);
   };
 
   useEffect(() => {
