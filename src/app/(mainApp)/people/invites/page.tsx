@@ -26,7 +26,6 @@ import { PlusCircleOutline } from "styled-icons/evaicons-outline";
 import { Users } from "styled-icons/heroicons-outline";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TFilter } from "@/types/filter";
-import { useFilter } from "@/hooks/common/useFilter";
 import Filter from "@/components/Filter";
 
 type TInviteDetail = {
@@ -34,7 +33,6 @@ type TInviteDetail = {
   attendeeType: string;
   created_at?: string;
 };
-
 
 export default function Page() {
   const inviteesFilters: TFilter<TInviteDetail>[] = [

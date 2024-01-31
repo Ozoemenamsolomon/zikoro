@@ -168,7 +168,7 @@ const SingleFilter: React.FC<FilterOptionsProps<T>> = ({
 
 const FilterOptions: React.FC<FilterOptionsProps<T>> = React.memo(
   ({ filter, selectedFilters, applyFilter }) => {
-    const { type, accessor, onFilter, label: filterLabel } = filter;
+    const { type } = filter;
 
     switch (type) {
       case "range":
