@@ -393,7 +393,7 @@ export function AddPartners({
                     <FormControl>
                       <Input
                         className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
-                        placeholder="Enter phone number"
+                        placeholder="Enter Phone Number"
                         {...field}
                         type="tel"
                       />
@@ -420,7 +420,7 @@ export function AddPartners({
                     <FormControl>
                       <Input
                         className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
-                        placeholder="Enter whatsapp number"
+                        placeholder="Enter Whatsapp Number"
                         {...field}
                         type="tel"
                       />
