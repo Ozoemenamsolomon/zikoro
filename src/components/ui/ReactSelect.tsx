@@ -1,4 +1,7 @@
+"use client"
+
 import Select from "react-select";
+import * as React from "react"
 import {
   UseControllerProps,
   UseControllerReturn,
@@ -6,6 +9,14 @@ import {
   FieldValues,
 } from "react-hook-form";
 
+
+interface SelectProps<T extends FieldValues> extends UseControllerProps<T> {
+  options: { value: string; label: string }[];
+  error?: string;
+  label?: string;
+  placeHolder: string;
+  isMulti?: boolean;
+}
 function ErrorText({ children }: { children?: string }) {
   return (
     <div>
@@ -14,18 +25,12 @@ function ErrorText({ children }: { children?: string }) {
   );
 }
 
-export const ReactSelect = <T extends FieldValues>(
-  prop: UseControllerProps<T> & {
-    options: { value: string; label: string }[];
-    error?: string;
-    label?: string;
-    placeHolder: string;
-  }
-) => {
-  const { label, options, error, placeHolder, ...controllerProps } = prop;
-  const {
-    field: { onChange },
-  } = useController(controllerProps) as UseControllerReturn<T>;
+export const ReactSelect = React.forwardRef<HTMLSelectElement, SelectProps<FieldValues>>(
+  (props, ref) => {
+    const { label, options, error, placeHolder, isMulti, ...controllerProps } = props;
+    const {
+      field: { onChange },
+    } = useController(controllerProps) as UseControllerReturn<FieldValues>;
 
   return (
     <div className="w-full relative 3rem">
@@ -37,6 +42,7 @@ export const ReactSelect = <T extends FieldValues>(
       </label>
 
       <Select
+     
         placeholder={placeHolder}
         styles={{
           control: (baseStyles, state) => ({
@@ -78,4 +84,4 @@ export const ReactSelect = <T extends FieldValues>(
       <ErrorText>{error}</ErrorText>
     </div>
   );
-};
+})

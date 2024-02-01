@@ -1,15 +1,4 @@
-export interface Event {
-  name: string;
-  type: string;
-  startDate: string;
-  endDate: string;
-  startTime: string;
-  endTime: string;
-  location: string;
-  participants: string;
-  price: number;
-  publishedDate: string;
-}
+
 
 export interface Attendees {
   firstName: string;
@@ -31,6 +20,11 @@ interface PricingType {
   standard?: number;
   lateBird?: number;
   validity: string;
+}
+
+
+type PartnerIndustry = {
+  name:string , color:string
 }
 
 export interface Event {
@@ -64,6 +58,7 @@ export interface Event {
   trainingDuration: string;
   whatsappNumber: string;
   registered: string;
+  partnerIndustry:PartnerIndustry[] 
 }
 
 export interface PaymentConfigProps {

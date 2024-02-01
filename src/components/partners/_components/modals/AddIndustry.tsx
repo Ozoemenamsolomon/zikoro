@@ -10,47 +10,65 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import React, { useMemo, useState } from "react";
 import { cn } from "@/lib";
 import toast from "react-hot-toast";
-import {IndustryType} from "@/types"
+import { IndustryType } from "@/types";
+import {
+  useFetchCreatedEventIndustries,
+  useCreateEventIndustry,
+} from "@/hooks";
 
 type FormValue = {
   name: string;
 };
 
-
 export function AddIndustry({
   setActive,
   close,
-  handleSelected,
-  selectedIndustry,
+  eventId,
 }: {
   close: () => void;
-  handleSelected:(name:string, color:string) => void;
-  selectedIndustry: IndustryType | null
+  eventId: string;
+
   setActive: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const form = useForm<FormValue>();
   const [industryColor, setIndustryColor] = useState<string>("");
-  const [createdIndustry, setCreatedIndustry] = useState<IndustryType[]>([]);
-
+  // const [createdIndustry, setCreatedIndustry] = useState<IndustryType[]>([]);
+  const { loading, createEventIndustry } = useCreateEventIndustry();
+  const { data, refetch } = useFetchCreatedEventIndustries(eventId);
 
   async function onSubmit(value: FormValue) {
-    if (industryColor === "") {
-      toast.error("Pls, Select a Color");
+    if (industryColor === "" || value.name === undefined) {
+      toast.error("Pls, Select a Color or Name");
+      return;
     }
 
-    setCreatedIndustry((prev) => [
+    await createEventIndustry(data, eventId, {
+      name: value.name,
+      color: industryColor,
+    });
+
+    form.reset({
+      name: "",
+    });
+    setIndustryColor("");
+    refetch();
+
+    /*
+     setCreatedIndustry((prev) => [
       ...prev,
       { name: value.name, color: industryColor },
     ]);
+    */
   }
 
-
   // FN to remove from the list of industries
-  function remove(id: number) {
+  /**
+   function remove(id: number) {
     const updatedList = createdIndustry.filter((_, index) => index !== id);
 
     setCreatedIndustry(updatedList);
   }
+ */
   return (
     <div
       role="button"
@@ -104,29 +122,31 @@ export function AddIndustry({
                 circleSize={36}
               />
             </div>
-            {createdIndustry?.length > 0 && (
-              <div className="w-full flex flex-col gap-y-4 items-start justify-start">
-                <h3>Your Created Industry</h3>
+            {Array.isArray(data?.partnerIndustry) &&
+              data?.partnerIndustry?.length > 0 && (
+                <div className="w-full flex flex-col gap-y-4 items-start justify-start">
+                  <h3>Your Created Industry</h3>
 
-                <div className="w-full flex flex-wrap items-center gap-4">
-                  {createdIndustry.map(({ name, color }, id) => (
-                    <CreatedIndustry
-                      handleSelected={handleSelected}
-                      name={name}
-                      remove={remove}
-                      id={id}
-                      color={color}
-                      selectedIndustry={selectedIndustry}
-                    />
-                  ))}
+                  <div className="w-full flex flex-wrap items-center gap-4">
+                    {Array.isArray(data?.partnerIndustry) &&
+                      data?.partnerIndustry.map(({ name, color }) => (
+                        <CreatedIndustry
+                          key={name}
+                          name={name}
+                          //  remove={remove}
+
+                          color={color}
+                        />
+                      ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
             <Button
-              disabled={false}
+              type="submit"
+              disabled={loading}
               className="mt-4 h-12 w-full gap-x-2 bg-zikoro text-gray-50 font-medium"
             >
-              {"" && <LoaderAlt size={22} className="animate-spin" />}
+              {loading && <LoaderAlt size={22} className="animate-spin" />}
               <span>Create Industry</span>
             </Button>
           </form>
@@ -136,21 +156,7 @@ export function AddIndustry({
   );
 }
 
-function CreatedIndustry({
-  color,
-  name,
-  remove,
-  id,
-  selectedIndustry,
-  handleSelected,
-}: {
-  color: string;
-  name: string;
-  remove: (id: number) => void;
-  id: number;
-  selectedIndustry: IndustryType | null;
-  handleSelected: (name: string, color: string) => void;
-}) {
+function CreatedIndustry({ color, name }: { color: string; name: string }) {
   const rgba = useMemo(
     (alpha = 0.1) => {
       const r = parseInt(color.slice(1, 3), 16);
@@ -166,11 +172,10 @@ function CreatedIndustry({
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
-        handleSelected(name, color);
       }}
       className={cn(
         `relative  rounded-none bg-opacity-20  `,
-        selectedIndustry?.name === name && "border-zikoro border"
+        "" === name && "border-zikoro border"
       )}
     >
       <span className="font-medium capitalize"> {name}</span>
@@ -178,23 +183,16 @@ function CreatedIndustry({
         className="absolute top-[-14px] right-[-13px]"
         onClick={(e) => e.stopPropagation()}
       >
-        {selectedIndustry?.name === name ? (
+        {"" === name ? (
           <button
             onClick={(e) => {
               e.stopPropagation();
-              remove(id);
             }}
           >
             <CheckCircleFill className="text-zikoro" size={16} />
           </button>
         ) : (
-          <button
-            className="rounded-full p-1 bg-gray-100 flex items-center justify-center"
-            onClick={(e) => {
-              e.stopPropagation();
-              remove(id);
-            }}
-          >
+          <button className="rounded-full p-1 bg-gray-100 flex items-center justify-center">
             <CloseOutline className="text-[#717171]" size={16} />
           </button>
         )}

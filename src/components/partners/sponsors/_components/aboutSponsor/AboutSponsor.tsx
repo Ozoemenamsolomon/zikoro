@@ -38,7 +38,7 @@ export function AboutSponsor() {
             muted
             className="w-full h-full  object-cover"
           >
-            <source src="/images/videoplayback.mp4" type="video/mp4" />
+            <source src="/images/videoplay.mp4" type="video/mp4" />
           </video>
         </div>
         <div className="flex items-center px-3 gap-x-6">
@@ -52,7 +52,7 @@ export function AboutSponsor() {
 
         <div className="w-full px-3 flex items-center justify-between ">
           <Image
-            src="/images/paystack.png"
+            src="/images/paystacks.png"
             alt="sponsor-logo"
             className="w-[150px] h-[40px]"
             width={200}
@@ -146,6 +146,7 @@ export function AboutSponsor() {
               profession=""
               company=""
               name=""
+              email=""
               image=""
             />
           ))}

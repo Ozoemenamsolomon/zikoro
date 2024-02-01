@@ -25,28 +25,103 @@ import { COUNTRY_CODE } from "@/utils";
 import { partnerSchema } from "@/validations";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { cn } from "@/lib";
 import { AddIndustry } from "..";
-import { IndustryType } from "@/types";
+import {
+  useAddPartners,
+  useFetchAttendees,
+  useFetchCreatedEventIndustries,
+} from "@/hooks";
+import { BoothStaffWidget } from "../../sponsors/_components";
 
-export function AddPartners({ close }: { close: () => void }) {
+type FormFiles = {
+  media: FileList;
+  companyLogo: FileList;
+};
+
+//type SchemaForm = z.infer<typeof partnerSchema>
+
+//type PartnersFormSchema  = FormFiles & SchemaForm
+export function AddPartners({
+  close,
+  eventId,
+  eventName,
+}: {
+  eventId: string;
+  eventName: string | null;
+  close: () => void;
+}) {
+  let eventTitle: string | undefined;
+  if (eventName) {
+    eventTitle = eventName;
+  }
+
   const [active, setActive] = useState(1);
-  const [selectedIndustry, setSelectedIndustry] = useState<IndustryType | null>(
-    null
+  const { loading, addPartners } = useAddPartners();
+  const { attendees } = useFetchAttendees(eventId);
+  const { data: eventData } = useFetchCreatedEventIndustries(eventId);
+
+  const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
+    "+234"
   );
-  const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
-  const [whatsappCountryCode, setWhatsAppCountryCode] =
-    useState<string>("+234");
+  const [selectedAttendees, setSelectedAttendees] = useState<any[]>([]);
+  const [whatsappCountryCode, setWhatsAppCountryCode] = useState<
+    string | undefined
+  >("+234");
   const form = useForm<z.infer<typeof partnerSchema>>({
     resolver: zodResolver(partnerSchema),
     defaultValues: {
-      industry: selectedIndustry?.name,
+      eventId,
+      eventName: eventTitle,
     },
   });
 
+  //
+  const country = form.watch("country");
+  const selectedBoothStaff = form.watch("boothStaff");
+
+  // memoized to minimize re-rendering
+  const attendeesEmail = useMemo(() => {
+    return selectedAttendees.map(({ email }) => email);
+  }, [selectedBoothStaff]);
+
+  // adding boothStaff
   useEffect(() => {
+    if (selectedBoothStaff) {
+      // check if boothStaff has been selected
+      const isBoothStaffPresent = attendeesEmail.includes(selectedBoothStaff);
+
+      // return if the staff is present
+      if (isBoothStaffPresent) return;
+
+      // get a boothstaff from the attendees array
+      const presentAttendee = attendees.filter(
+        ({ email }) => email === selectedBoothStaff
+      );
+
+      setSelectedAttendees((prev) => [...prev, ...presentAttendee]);
+    }
+  }, [selectedBoothStaff]);
+
+  // delete a  selected attendees
+  function remove(email: string) {
+    setSelectedAttendees(selectedAttendees.filter((v) => v.email !== email));
+  }
+  useEffect(() => {
+    if (country) {
+      const currentCountryCode = COUNTRY_CODE.find(
+        (v) => v.name === country
+      )?.dial_code;
+
+      setWhatsAppCountryCode(currentCountryCode);
+      setPhoneCountryCode(currentCountryCode);
+    }
+  }, [country]);
+
+  /**
+   useEffect(() => {
     if (selectedIndustry !== null) {
       form.setValue("industry", selectedIndustry.name);
     }
@@ -56,15 +131,45 @@ export function AddPartners({ close }: { close: () => void }) {
     setSelectedIndustry({ name, color });
   }
 
+ */
+//  const industryValue = form.watch("industry");
+ // console.log({ industryValue });
+
   async function onSubmit(values: z.infer<typeof partnerSchema>) {
+    const selectedIndustry = eventData?.partnerIndustry.find(
+      ({ name }) => name.toLowerCase() === values.industry
+    );
 
-    const payload: z.infer<typeof partnerSchema> = {
+    const payload: any = {
       ...values,
-      whatsappNumber: whatsappCountryCode + values.whatsappNumber,
+      whatsApp: whatsappCountryCode + values.whatsApp,
       phoneNumber: phoneCountryCode + values.phoneNumber,
+      boothStaff: selectedAttendees,
+      industry: selectedIndustry,
+    };
 
-    }
+    await addPartners(payload);
   }
+
+  // convert attendees list to an array of object {value, label} pairs
+  const attendeeOptions = useMemo(() => {
+    return attendees.map(({ firstName, lastName, email }) => {
+      return {
+        label: `${firstName} ${lastName}`,
+        value: email,
+      };
+    });
+  }, [attendees]);
+
+  ///
+  const formattedIndustriesList = useMemo(() => {
+   return Array.isArray(eventData?.partnerIndustry) &&
+      eventData?.partnerIndustry?.map(({ name }) => {
+        return { label: name, value: name }
+      })
+    
+  }, [eventData?.partnerIndustry]);
+
   return (
     <div
       role="button"
@@ -92,7 +197,7 @@ export function AddPartners({ close }: { close: () => void }) {
           >
             <FormField
               control={form.control}
-              name="partnersType"
+              name="partnerType"
               render={({ field }) => (
                 <ReactSelect
                   {...field}
@@ -119,48 +224,37 @@ export function AddPartners({ close }: { close: () => void }) {
                 </InputOffsetLabel>
               )}
             />
-            <FormField
-              control={form.control}
-              name="logo"
-              render={({ field }) => (
-                <div className="w-full flex flex-col items-start justify-start gap-y-1">
-                  <InputOffsetLabel label="Logo">
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      placeholder="File"
-                      {...field}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
-                    />
-                  </InputOffsetLabel>
+            <div className="w-full flex flex-col items-start justify-start gap-y-1">
+              <InputOffsetLabel label=" Logo">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  placeholder="File"
+                  {...form.register("companyLogo")}
+                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                />
+              </InputOffsetLabel>
 
-                  <p className="text-xs text-[#717171]">
-                    Selected file should not be bigger than 5mb
-                  </p>
-                </div>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="media"
-              render={({ field }) => (
-                <div className="w-full flex flex-col items-start justify-start gap-y-1">
-                  <InputOffsetLabel label="Media">
-                    <Input
-                      type="file"
-                      accept="video/*"
-                      placeholder="File"
-                      {...field}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
-                    />
-                  </InputOffsetLabel>
+              <p className="text-xs text-[#717171]">
+                Selected file should not be bigger than 2MB
+              </p>
+            </div>
+            <div className="w-full flex flex-col items-start justify-start gap-y-1">
+              <InputOffsetLabel label="Media">
+                <Input
+                  type="file"
+                  accept="video/*"
+                  placeholder="File"
+                  {...form.register("media")}
+                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                />
+              </InputOffsetLabel>
 
-                  <p className="text-xs text-[#717171]">
-                    Selected file should notn be bigger than 5mb
-                  </p>
-                </div>
-              )}
-            />
+              <p className="text-xs text-[#717171]">
+                Selected file should not be bigger than 2MB
+              </p>
+            </div>
+
             <FormField
               control={form.control}
               name="description"
@@ -178,32 +272,50 @@ export function AddPartners({ close }: { close: () => void }) {
               control={form.control}
               name="boothStaff"
               render={({ field }) => (
-                <InputOffsetLabel label="Booth Staff">
-                  <Input
-                    type="text"
-                    placeholder="Enter the staff name"
-                    {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                  />
-                </InputOffsetLabel>
+                <ReactSelect
+                  {...field}
+                  placeHolder="Select the Booth Staff"
+                  label="Booth Staff"
+                  options={attendeeOptions}
+                />
               )}
             />
+
+            <div className="w-full grid grid-cols-2 items-center gap-4">
+              {Array.isArray(selectedAttendees) &&
+                selectedAttendees.map(
+                  ({
+                    firstName,
+                    lastName,
+                    organization,
+                    email,
+                    jobTitle,
+                    profilePicture,
+                  }) => (
+                    <BoothStaffWidget
+                      key={email}
+                      email={email}
+                      remove={remove}
+                      image={profilePicture}
+                      name={`${firstName} ${lastName}`}
+                      company={organization}
+                      profession={jobTitle}
+                      isAddingBoothStaff
+                    />
+                  )
+                )}
+            </div>
             <div className="w-full flex items-center gap-x-2">
               <FormField
-
-              
                 control={form.control}
                 name="industry"
                 render={({ field }) => (
-                  <InputOffsetLabel className="w-10/12" label="Industry">
-                    <Input
-                      type="text"
-                      placeholder="Enter the staff name"
-                      {...field}
-                      readOnly
-                      className=" w-full placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                    />
-                  </InputOffsetLabel>
+                  <ReactSelect
+                    {...field}
+                    placeHolder="Select Industry"
+                    label="Industry"
+                    options={formattedIndustriesList && formattedIndustriesList}
+                  />
                 )}
               />
               <Button
@@ -252,7 +364,9 @@ export function AddPartners({ close }: { close: () => void }) {
 
                       <SelectContent>
                         {COUNTRY_CODE.map(({ name }) => (
-                          <SelectItem value={name}>{name}</SelectItem>
+                          <SelectItem key={name} value={name}>
+                            {name}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -272,7 +386,7 @@ export function AddPartners({ close }: { close: () => void }) {
                     </FormLabel>
                     <input
                       type="text"
-                      className="!mt-0 text-sm absolute top-[35%]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
+                      className="!mt-0 text-sm absolute top-[1.4rem]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
                       value={phoneCountryCode}
                       onChange={(e) => setPhoneCountryCode(e.target.value)}
                     />
@@ -291,7 +405,7 @@ export function AddPartners({ close }: { close: () => void }) {
 
               <FormField
                 control={form.control}
-                name="whatsappNumber"
+                name="whatsApp"
                 render={({ field }) => (
                   <FormItem className="relative">
                     <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-[10px] px-1">
@@ -299,7 +413,7 @@ export function AddPartners({ close }: { close: () => void }) {
                     </FormLabel>
                     <input
                       type="text"
-                      className="!mt-0 text-sm absolute top-[35%] left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
+                      className="!mt-0 text-sm absolute top-[1.4rem] left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
                       value={whatsappCountryCode}
                       onChange={(e) => setWhatsAppCountryCode(e.target.value)}
                     />
@@ -345,42 +459,11 @@ export function AddPartners({ close }: { close: () => void }) {
               )}
             />
 
-            <div className="w-full grid grid-cols-2 items-center gap-4">
-              <FormField
-                control={form.control}
-                name="exhibitionHall"
-                render={({ field }) => (
-                  <InputOffsetLabel label="Exhibition Hall">
-                    <Input
-                      type="text"
-                      placeholder="hall"
-                      {...field}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                    />
-                  </InputOffsetLabel>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="boothNumber"
-                render={({ field }) => (
-                  <InputOffsetLabel label="Booth Number">
-                    <Input
-                      type="text"
-                      placeholder="Enter the booth number"
-                      {...field}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                    />
-                  </InputOffsetLabel>
-                )}
-              />
-            </div>
-
             <Button
-              disabled={false}
+              disabled={loading}
               className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-zikoro h-12 rounded-md text-gray-50 font-medium"
             >
-              {"" && <LoaderAlt size={22} className="animate-spin" />}
+              {loading && <LoaderAlt size={22} className="animate-spin" />}
               <span>Save</span>
             </Button>
           </form>
@@ -388,8 +471,9 @@ export function AddPartners({ close }: { close: () => void }) {
       </div>
       {active === 2 && (
         <AddIndustry
-          handleSelected={handleSelected}
-          selectedIndustry={selectedIndustry}
+          // handleSelected={handleSelected}
+          eventId={eventId}
+          // selectedIndustry={selectedIndustry}
           close={close}
           setActive={setActive}
         />

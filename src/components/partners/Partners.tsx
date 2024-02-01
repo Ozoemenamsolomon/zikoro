@@ -2,11 +2,10 @@
 
 import { useForm } from "react-hook-form";
 import { SideBarLayout } from "..";
-import { Button, Form, FormControl, FormField, FormItem, Input } from "..";
-import { AddPartners, HeaderTab } from "./_components";
+import { Form, FormControl, FormField, FormItem, Input } from "..";
+import {HeaderTab } from "./_components";
 import { Search } from "@styled-icons/evil/Search";
 import { Gift } from "@styled-icons/bootstrap/Gift";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { usePartnersTab } from "@/context";
 import { Briefcase } from "@styled-icons/ionicons-outline/Briefcase";
 import { RecordCircle } from "@styled-icons/bootstrap/RecordCircle";
@@ -14,49 +13,48 @@ import { PartnersEnum } from "@/types";
 import { Stamp } from "@styled-icons/fa-solid/Stamp";
 import { LocationOn } from "@styled-icons/material-outlined/LocationOn";
 import { Sponsors } from "./sponsors/Sponsors";
-import { useState } from "react";
+import { Exhibitors } from "./sponsors/Exhibitors";
+import { useFetchPartners } from "@/hooks";
 
-export function Partners() {
+
+export function Partners({ eventId }: { eventId: string }) {
   const form = useForm();
   const { active } = usePartnersTab();
-  const [isOpen, setOpen] = useState(false);
+  const {data, loading} = useFetchPartners(eventId)
 
-  function onClose() {
-    setOpen((prev) => !prev);
-  }
   return (
     <SideBarLayout className="px-0 sm:px-0">
-      <HeaderTab />
+      <HeaderTab eventId={eventId}/>
 
-      <div className="w-full flex items-center justify-between border-b p-4">
-        <div className="text-xs flex items-center gap-x-2">
-          <button className="flex relative hover:text-zikoro items-center w-full  text-[#D6D6D6]  gap-x-1">
+      <div className="w-full flex items-center justify-between p-4">
+        <div className=" w-[90%] flex items-center">
+          <button className="flex  items-center  relative hover:text-zikoro  w-fit px-3  text-[#D6D6D6]  gap-x-1">
             <IndustryIcon />
-            <p>Company Name </p>
+            <p className="">Company Name </p>
           </button>
-          <button className="flex relative items-center hover:text-zikoro w-full justify-center border-x px-4 text-[#D6D6D6]  gap-x-1">
+          <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-x text-[#D6D6D6]  gap-x-1">
             <LocationOn size={16} />
             <p>Location </p>
           </button>
-          <button className="flex relative items-center hover:text-zikoro w-full justify-center border-r px-4 text-[#D6D6D6]  gap-x-1">
+          <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r  text-[#D6D6D6]  gap-x-1">
             <Briefcase size={16} />
             <p>Industry</p>
           </button>
 
-          <button className="flex relative items-center hover:text-zikoro w-full justify-center border-r text-[#D6D6D6]  gap-x-1">
+          <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r text-[#D6D6D6]  gap-x-1">
             <RecordCircle size={16} />
             <p>Exhibition Hall </p>
           </button>
-          <button className="flex relative items-center hover:text-zikoro w-full justify-center border-r text-[#D6D6D6]  gap-x-1">
+          <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r text-[#D6D6D6]  gap-x-1">
             <Gift size={16} />
             <p>Promo </p>
           </button>
-          <button className="flex relative items-center hover:text-zikoro w-full justify-center text-[#D6D6D6]  gap-x-1">
+          <button className="flex relative items-center hover:text-zikoro w-fit px-3 text-[#D6D6D6]  gap-x-1">
             <Stamp size={16} />
             <p>StampIT </p>
           </button>
         </div>
-        <div className="flex items-center gap-x-2">
+        <div className="flex items-center">
           <Form {...form}>
             <form className="w-fit">
               <FormField
@@ -80,25 +78,13 @@ export function Partners() {
               />
             </form>
           </Form>
-          <Button
-            onClick={onClose}
-            className="text-gray-50 bg-zikoro gap-x-2 h-11 sm:h-12 font-medium"
-          >
-            <PlusCircle size={22} />
-            <p>Partner</p>
-          </Button>
+         
         </div>
       </div>
 
-      {active === PartnersEnum.SPONSORS_TAB && <Sponsors />}
-      {active === PartnersEnum.EXHIBITORS_TAB && (
-        <div className="w-full flex items-center justify-center h-80">
-          <p className="font-semibold text-xl text-red-500">
-            OOPS! NO EXHIBITOR
-          </p>
-        </div>
-      )}
-      {isOpen && <AddPartners close={onClose} />}
+      {active === PartnersEnum.SPONSORS_TAB && <Sponsors data={data} />}
+      {active === PartnersEnum.EXHIBITORS_TAB &&  <Exhibitors data={data} />}
+    
     </SideBarLayout>
   );
 }

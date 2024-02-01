@@ -159,7 +159,7 @@ export function BookEvent({
       return;
     }
     setAttendees(values.attendeeApplication);
-    await registerAttendees(eventReference, values, eventId, organization);
+    await registerAttendees(eventReference, values, eventId, "attendee");
 
     // return if user is registered -- attendees data will not be sent to the eventTransaction table
     if (isRegistered) return;

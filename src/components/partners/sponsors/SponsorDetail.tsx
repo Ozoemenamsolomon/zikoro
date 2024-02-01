@@ -7,7 +7,7 @@ import { HeaderTab } from "../_components";
 export function SponsorDetails() {
   return (
     <SideBarLayout className="px-0 sm:px-0">
-      <HeaderTab />
+      <HeaderTab eventId="" />
       <div className="w-full grid lg:grid-cols-7 items-start">
         <AboutSponsor />
         <SponsorBanners />

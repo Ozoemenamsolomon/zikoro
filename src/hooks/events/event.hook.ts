@@ -321,7 +321,7 @@ export function useBookingEvent() {
     eventTransactionRef: string,
     values: z.infer<typeof eventBookingValidationSchema>,
     eventId?: number,
-    organization?: string | null
+    attendants?: string | null
   ) {
     const { attendeeApplication } = values;
 
@@ -337,7 +337,7 @@ export function useBookingEvent() {
           return {
             ...attendee,
             eventId,
-            organization,
+            attendeeType: [attendants],
             registrationDate: new Date(),
             eventRegistrationRef: eventTransactionRef,
             userEmail: data?.user.email,
@@ -416,7 +416,6 @@ export function useTransactionDetail() {
         }
 
         if (status === 201 || status === 200) {
-       
           setLoading(false);
           allowPayment(true);
           // toast.success("Al");
@@ -454,24 +453,24 @@ export function useUpdateTransactionDetail() {
       }
 
       if (status === 204 || status === 200) {
-           // To  update the bookedSpot
+        // To  update the bookedSpot
 
-          // fetch event
-          // Fetch the event by ID
-          const { data: originalEvent, error: fetchError } = await supabase
-            .from("events")
-            .select("*")
-            .eq("id", payload.eventId)
-            .single();
+        // fetch event
+        // Fetch the event by ID
+        const { data: originalEvent, error: fetchError } = await supabase
+          .from("events")
+          .select("*")
+          .eq("id", payload.eventId)
+          .single();
 
-          const registered =
-            originalEvent.registered === null
-              ? payload.attendees
-              : Number(originalEvent?.registered) + payload.attendees;
-          const { error, status } = await supabase
-            .from("events")
-            .update({...originalEvent, registered})
-            .eq("id", payload.eventId)
+        const registered =
+          originalEvent.registered === null
+            ? payload.attendees
+            : Number(originalEvent?.registered) + payload.attendees;
+        const { error, status } = await supabase
+          .from("events")
+          .update({ ...originalEvent, registered })
+          .eq("id", payload.eventId);
 
         setLoading(false);
         toggleSuccessModal(true);
@@ -548,5 +547,35 @@ export function useRedeemDiscountCode() {
     minAttendees,
     discountAmount,
     discountPercentage,
+  };
+}
+
+export function useFetchAttendees(id: string) {
+  const [attendees, setAttendees] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchData();
+  }, [id]);
+  // Fetch the attendees for an event
+  async function fetchData() {
+    try {
+      const {
+        data,
+        error: fetchError,
+  
+      } = await supabase.from("attendees").select("*").eq("eventId", id);
+
+      if (fetchError) {
+        return null;
+      }
+
+      setAttendees(data);
+     
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return {
+    attendees,
   };
 }

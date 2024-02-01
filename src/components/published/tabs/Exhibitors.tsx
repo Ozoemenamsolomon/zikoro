@@ -4,7 +4,7 @@ export function Exhibitors() {
   const exhibitors = [
     "/images/ortho.png",
     "/images/cowrywise.png",
-    "/images/paystack.png",
+    "/images/paystacks.png",
     "/svg/kiniflow.svg",
   ];
   return (

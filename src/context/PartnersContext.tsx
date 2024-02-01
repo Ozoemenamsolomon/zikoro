@@ -12,6 +12,7 @@ type PartnersContextType = {
   active: number;
   setActive: React.Dispatch<SetStateAction<number>>;
 };
+
 export const PartnersContext = createContext<PartnersContextType>(
   {} as PartnersContextType
 );

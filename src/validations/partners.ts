@@ -33,7 +33,11 @@ export const jobSchema = z.object({
 });
 
 export const partnerSchema = z.object({
-  partnersType: z.string().min(3, { message: "Title is required" }),
+  eventId: z.string(),
+  companyLogo: z.any(),
+  media:z.any(),
+  eventName: z.string().min(1, { message: "Event Name is required" }),
+  partnerType: z.string().min(3, { message: "Title is required" }),
   companyName: z.string().min(3, { message: "Company Name is required" }),
   description: z.string().min(3, { message: "Job Description is required" }),
   city: z.string().min(3, { message: "City is required" }),
@@ -49,20 +53,16 @@ export const partnerSchema = z.object({
       }
     ),
   industry: z.string().min(3, { message: "Industry is required" }),
-  boothNumber: z.string().min(3, { message: "Booth Number is required" }),
   boothStaff: z.string().min(3, { message: "Staff is required" }),
-  media: z.string().min(3, { message: "Media is required" }),
-  logo: z.string().min(3, { message: "Company logo is required" }),
   website: z.string().min(3, { message: "Website Link is required" }),
-  exhibitionHall: z.string().min(3, { message: "Exhibition Hall is required" }),
   phoneNumber: z
     .string()
-    .refine((value) => value && /^(\+\d{11,}|\d{11,})$/.test(value), {
+    .refine((value) => value && /^(\+\d{10,}|\d{10,})$/.test(value), {
       message: "Phone number must be at least 11 digits",
     }),
-  whatsappNumber: z
+  whatsApp: z
     .string()
-    .refine((value) => value && /^(\+\d{11,}|\d{11,})$/.test(value), {
+    .refine((value) => value && /^(\+\d{10,}|\d{10,})$/.test(value), {
       message: "Whatsapp number must be at least 11 digits",
     }),
 });

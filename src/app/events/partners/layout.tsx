@@ -1,5 +1,6 @@
-
 import type { Metadata } from "next";
+import { PartnersProvider } from "@/context";
+
 
 export const metadata: Metadata = {
   title: "Partners",
@@ -7,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return children
+  return <PartnersProvider>{ children}</PartnersProvider>
 }

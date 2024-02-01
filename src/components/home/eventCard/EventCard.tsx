@@ -20,6 +20,7 @@ import {
   COUNTRIES_CURRENCY,
 } from "@/utils";
 import { useDuplicateEvent } from "@/hooks";
+import { useRouter } from "next/navigation";
 
 export function EventCard({
   event,
@@ -29,6 +30,7 @@ export function EventCard({
   event: Event;
 }) {
   const [isAction, setAction] = useState(false);
+  const router = useRouter();
 
   function onClose() {
     setAction((prev) => !prev);
@@ -83,13 +85,24 @@ export function EventCard({
     }
   }, [event.pricing]);
 
+  
+
   return (
-    <div className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4 shadow-md w-full">
+    <div
+      role="button"
+      onClick={() =>
+        router.push(`/events/partners/${event.id}?title=${event.eventTitle}`)
+      }
+      className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4 shadow-md w-full"
+    >
       <div className="w-full flex items-center justify-between">
         <p className="font-medium text-lg">{event?.eventTitle ?? ""}</p>
         <div className="flex items-center gap-x-2">
           <Button
-            onClick={onClose}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
             className="relative px-0 h-10 bg-transparent"
           >
             <ThreeDotsVertical size={20} />

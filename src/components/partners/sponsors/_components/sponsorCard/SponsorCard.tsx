@@ -1,42 +1,54 @@
 import Image from "next/image";
 import Link from "next/link";
+import { TPartner } from "@/types";
+import { useMemo } from "react";
 import { Location } from "@styled-icons/fluentui-system-regular/Location";
 
-export function SponsorCard() {
+export function SponsorCard({ sponsor }: { sponsor: TPartner }) {
+  const image = useMemo(() => {
+    const regex = /^[https://]/;
+    if (regex.test(sponsor.companyLogo)) {
+      return sponsor.companyLogo;
+    } else {
+      return "/images/zikoro.png";
+    }
+  }, [sponsor.companyLogo]);
   return (
     <Link
-      href="/partners/1"
-      className="shadow border border-gray-50 relative rounded-lg overflow-hidden bg-white p-4 grid grid-cols-3 items-center"
+      href={`/partners/${sponsor.id}`}
+      className="shadow border border-gray-50 relative rounded-lg overflow-hidden bg-white  grid grid-cols-3 items-center"
     >
-      <button className="absolute right-[-2px] top-0 flex items-center justify-center w-fit bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-b-md">
-        StampIT
-      </button>
+      {sponsor.stampIt && (
+        <button className="absolute right-[-2px] top-0 flex items-center justify-center w-fit bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-b-md">
+          StampIT
+        </button>
+      )}
       <Image
-        src="/images/paystack.png"
+        src={image}
         alt="sponsor-logo"
         width={300}
         height={100}
-        className="w-32 h-fit"
+        className="w-36 pl-4 py-8 lg:w-[6rem] xl:w-32 h-fit"
       />
-      <div className="w-full items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
+      <div className="w-full px-4 py-8 bg-[#FDFDFD] items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
         <h3 className="font-semibold text-black text-base sm:text-xl">
-          Paystack
+          {sponsor.companyName}
         </h3>
 
-        <div className="flex flex-wrap  items-start justify-start leading-6">
-          Lorem ipsum dolor sit amet consectetur. Et montes ultricies libero eu
-          leo in in adipiscing nunc. Nec pellentesque malesuada{" "}
-          <Link href="/partners/1" className="text-zikoro">
-            Read more
-          </Link>
+        <div className="flex flex-wrap line-clamp-3 text-sm w-full  items-start justify-start leading-6">
+          {sponsor.description}
+
+          <div className="ml-2 text-zikoro cursor-pointer"> Read more</div>
         </div>
 
         <p>Hall 25</p>
 
         <div className="flex items-center gap-x-6">
-          <button className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
-            StampIT
-          </button>
+          {sponsor.stampIt && (
+            <button className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
+              StampIT
+            </button>
+          )}
           <button className="bg-[#F44444] bg-opacity-10 text-xs text-[#F44444] px-2 py-2 rounded-md">
             Promo
           </button>
@@ -45,12 +57,14 @@ export function SponsorCard() {
         <div className="flex items-center gap-x-3">
           <div className="flex items-center gap-x-2">
             <Location size={16} className="text-[#717171]" />
-            <p>Ikeja, Nigeria</p>
+            <p>{`${sponsor.city}, ${sponsor.country}`}</p>
           </div>
-          <div className="flex items-center gap-x-2">
-            <IndustryIcon />
-            <p>Medical Device</p>
-          </div>
+          {sponsor.industry && (
+            <div className="flex items-center gap-x-2">
+              <IndustryIcon />
+              <p>{sponsor.industry?.name}</p>
+            </div>
+          )}
         </div>
       </div>
     </Link>

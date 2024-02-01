@@ -12,3 +12,4 @@ export * from "./ui/scrollableCard/ScrollableCard"
  export * from "./ui/Select"
  export * from "./headMeta/HeadMeta"
  export * from "./ui/ReactSelect";
+ export * from "./ui/Textarea"

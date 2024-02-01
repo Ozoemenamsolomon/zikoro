@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image";
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
