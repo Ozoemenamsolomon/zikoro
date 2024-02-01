@@ -314,7 +314,7 @@ export function AddPartners({
                     {...field}
                     placeHolder="Select Industry"
                     label="Industry"
-                    options={formattedIndustriesList && formattedIndustriesList}
+                    options={formattedIndustriesList || []}
                   />
                 )}
               />
