@@ -20,11 +20,13 @@ import { CircleUser } from "styled-icons/fa-solid";
 export function SideBarLayout({
   children,
   className,
+  parentClassName,
   isHomePage,
 }: {
   children: React.ReactNode;
   className?: string;
   isHomePage?: boolean;
+  parentClassName?: string;
 }) {
   const { user, error } = useUser();
 
@@ -47,7 +49,7 @@ export function SideBarLayout({
   return (
     <>
       <div
-        className={`w-full lg:w-[calc(100%-250px)] min-[1024px]:float-right right-0 z-50 fixed bg-white  border-gray-200 px-3 py-3 sm:py-4 sm:px-6 flex justify-between items-center `}
+        className={cn(`w-full lg:w-[calc(100%-250px)] min-[1024px]:float-right right-0 z-50 fixed bg-white  border-gray-200 px-3 py-3 sm:py-4 sm:px-6 flex justify-between items-center `,  parentClassName)}
       >
         <div className="justify-between  w-full flex items-center"></div>
       </div>
