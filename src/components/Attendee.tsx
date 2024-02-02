@@ -138,7 +138,11 @@ const Attendee: React.FC<AttendeeProps> = ({
             </div>
           )}
           <div className="flex gap-1.5 flex-wrap w-fit">
-            {attendeeType &&
+            {attendeeType && !Array.isArray(attendeeType) ? (
+              <div className="py-0.5 w-[55px] px-1.5 rounded-sm bg-[#EEFAFF] text-[#2685CA] text-tiny ">
+                {attendeeType}
+              </div>
+            ) : (
               attendeeType
                 .filter(
                   (type) => attendeeType.length > 1 && type !== "attendee"
@@ -150,7 +154,8 @@ const Attendee: React.FC<AttendeeProps> = ({
                   >
                     {type}
                   </div>
-                ))}
+                ))
+            )}
           </div>
         </div>
       </div>
