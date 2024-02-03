@@ -9,8 +9,8 @@ export interface IndustryType {
 }
 
 export interface PartnerBannerType {
-  file: string
-  link:string
+  file: string;
+  link: string;
 }
 
 export interface TPartner {
@@ -21,7 +21,7 @@ export interface TPartner {
   companyLogo: string;
   companyName: string;
   country: string;
-stampIt:boolean
+  stampIt: boolean;
   created_at: string;
   description: string;
   email: string;
@@ -30,11 +30,28 @@ stampIt:boolean
   exhibitionHall: string;
   id: number;
   industry: { name: string; color: string };
-  jobs: JSON;
+  jobs: PartnerJobType[];
   media: string;
   partnerType: string;
   phoneNumber: string;
   products: JSON;
   website: string;
   whatsApp: string;
+}
+
+export interface PartnerJobType {
+  jobTitle: string;
+  applicationLink: string;
+  maxSalary: string;
+  minSalary: string;
+  salaryDuration: string;
+  flexibility: string;
+  description: string;
+  city: string;
+  country: string;
+  employmentType: string;
+  experienceLevel: string;
+  qualification: string;
+  currencyCode: string;
+  partnerId: string;
 }

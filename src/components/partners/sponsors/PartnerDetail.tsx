@@ -10,9 +10,9 @@ export function PartnerDetails({ partnerId }: { partnerId: string }) {
   const { data, refetch } = useFetchSinglePartner(partnerId);
   return (
     <SideBarLayout className="px-0 sm:px-0">
-      <HeaderTab eventId="" />
-      <div className="w-full grid lg:grid-cols-7 items-start">
-        <AboutPartner partner={data} refetch={refetch} />
+      <HeaderTab eventId="" refetch={refetch} />
+      <div className="w-full grid grid-cols-1 lg:grid-cols-8 items-start">
+        <AboutPartner partner={data} partnerId={partnerId} refetch={refetch} />
         <PartnerBanners
           partner={data}
           refetch={refetch}

@@ -96,7 +96,7 @@ body {
   top: 8px;
   left: 11px;
 
-  height: 20px;
+  height: 17px;
   width: 20px;
   border-radius: 4px;
   border: 1px solid #001fcc;
@@ -203,4 +203,44 @@ div .react-datepicker__day--keyboard-selected:hover {
 
 div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-range, .react-datepicker__month-text--in-range, .react-datepicker__quarter-text--in-range, .react-datepicker__year-text--in-range) {
   @apply bg-zikoro text-white;
+}
+
+.line-clamp {
+  -webkit-line-clamp: 3;
+    overflow: hidden;
+    /* height: 4.5rem; */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+.line-clamp-one {
+  -webkit-line-clamp: 1;
+    /* height: 4.5rem; */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+.slider .slick-dots {
+  position: absolute;
+  bottom: 20px;
+
+}
+.slider .slick-dots li {
+  margin: 0px 7px;
+  width: 8px;
+  height: 8px;
+}
+
+
+.slider .slick-dots li button:before {
+  color: black;
+  border: 1px solid grey;
+  border-radius:50%;
+  content: '';
+  width:10px;
+  height:10px;
+}
+.slider .slick-dots li.slick-active button::before {
+  background-color: black
+
 }

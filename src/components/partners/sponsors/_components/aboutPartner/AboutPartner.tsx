@@ -12,76 +12,135 @@ import { Location } from "@styled-icons/fluentui-system-regular/Location";
 import { PhoneCall } from "@styled-icons/boxicons-solid/PhoneCall";
 import { EditOutline } from "@styled-icons/evaicons-outline/EditOutline";
 import { useRouter } from "next/navigation";
-import { useState, useMemo } from "react";
+import { useState } from "react";
+import { EmptyCard } from "@/components/composables";
 import { AddJob } from "@/components/partners/_components";
 import { TPartner } from "@/types";
 
-export function AboutPartner({ partner, refetch }: {refetch: () => Promise<null | undefined> ,  partner: TPartner | null }) {
+export function AboutPartner({
+  partner,
+  refetch,
+  partnerId,
+}: {
+  partnerId: string;
+  refetch: () => Promise<null | undefined>;
+  partner: TPartner | null;
+}) {
   const router = useRouter();
   const [isAddJob, setAddJob] = useState(false);
 
   function onOpen() {
     setAddJob((prev) => !prev);
   }
+
+  // call phone
+  function phoneCall() {
+    window.open(`tel:${partner?.phoneNumber}`, "_blank");
+  }
+  // chat on whatsapp
+  function whatsapp() {
+    window.open(`https://wa.me/${partner?.whatsApp}`, "_blank");
+  }
+
+  // send mail
+  function sendMail() {
+    window.open(`mailto:${partner?.email}`, "_blank");
+  }
+
+  // send mail
+  function visitWebsite() {
+    window.open(partner?.website, "_blank");
+  }
+
   return (
     <>
-      <div className="w-full lg:col-span-4  border-r">
-        <section className="flex flex-col border-b items-start gap-y-6 justify-start py-4 w-full">
-          <Button onClick={() => router.back()}>
-            <ArrowBack className="px-1 h-fit w-fit" size={24} />
-          </Button>
+      <div className="w-full lg:col-span-5  border-r">
+        <section className="flex flex-col border-b items-start gap-y-0 justify-start pb-4 w-full">
+          <div className="w-full flex items-center gap-x-2  p-[0.2rem] border-b">
+            <Button onClick={() => router.back()}>
+              <ArrowBack className="px-1 h-fit w-fit" size={24} />
+            </Button>
 
-          <div className="w-full h-64 sm:h-80 lg:h-80 overflow-hidden">
-           {partner?.media && <video
-              height={300}
-              width={1000}
-              autoPlay
-              
-              muted
-              className="w-full h-full  object-cover"
-            >
-              <source src={partner?.media} type="video/mp4" />
-            </video>}
-          </div>
-          <div className="flex items-center px-3 gap-x-6">
-            {partner?.stampIt && (
-              <button className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
-                StampIT
+            <div className="flex items-center px-3 gap-x-6">
+              {partner?.stampIt && (
+                <button className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
+                  StampIT
+                </button>
+              )}
+              <button className="bg-[#F44444] bg-opacity-10 text-xs text-[#F44444] px-2 py-2 rounded-md">
+                Promo
               </button>
-            )}
-            <button className="bg-[#F44444] bg-opacity-10 text-xs text-[#F44444] px-2 py-2 rounded-md">
-              Promo
-            </button>
+
+              {partner?.jobs && partner?.jobs?.length > 0 && (
+                <button className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
+                  Hiring
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="w-full px-3 flex items-center justify-between ">
+          <div className="w-full h-64 sm:h-[20.5rem] lg:h-[20.5rem] overflow-hidden">
+            {partner?.media && (
+              <video
+                height={500}
+                width={1000}
+                autoPlay
+                muted
+                className="w-full h-full  object-cover"
+              >
+                <source src={partner?.media} type="video/mp4" />
+              </video>
+            )}
+          </div>
+
+          <div className="w-full px-3 mt-4 flex items-center justify-between ">
             <Image
               src={partner?.companyLogo ?? "/images/zikoro.png"}
               alt="sponsor-logo"
-              className="w-[150px] h-[40px]"
+              className="w-[150px] max-h-[4rem] h-fit"
               width={200}
               height={90}
             />
 
             <div className="flex items-center gap-x-2">
-              <Button className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] ">
-                <PhoneCall size={22} className="text-black" />
-              </Button>
-              <Button className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] ">
-                <Whatsapp size={22} className="text-black" />
-              </Button>
-              <Button className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] ">
-                <Email size={22} className="text-black" />
-              </Button>
-              <Button className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] ">
-                <World size={22} className="text-black" />
-              </Button>
+              {partner?.phoneNumber !== null && (
+                <Button
+                  onClick={phoneCall}
+                  className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] "
+                >
+                  <PhoneCall size={22} className="text-black" />
+                </Button>
+              )}
+              {partner?.whatsApp !== null && (
+                <Button
+                  onClick={whatsapp}
+                  className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] "
+                >
+                  <Whatsapp size={22} className="text-black" />
+                </Button>
+              )}
+              {partner?.email !== null && (
+                <Button
+                  onClick={sendMail}
+                  className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] "
+                >
+                  <Email size={22} className="text-black" />
+                </Button>
+              )}
+              {partner?.website !== null && (
+                <Button
+                  onClick={visitWebsite}
+                  className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] "
+                >
+                  <World size={22} className="text-black" />
+                </Button>
+              )}
             </div>
           </div>
         </section>
 
         <section className="w-full flex flex-col  pb-2 border-b">
-          <div className="w-full px-3 py-4 border-b flex items-center justify-between">
+          <div className="w-full px-3 py-3 border-b flex items-center justify-between">
             <p className="font-semibold text-base sm:text-xl">
               Company Description
             </p>
@@ -90,7 +149,9 @@ export function AboutPartner({ partner, refetch }: {refetch: () => Promise<null 
             </Button>
           </div>
           <div className="items-start px-3 py-4 justify-start flex w-full flex-col gap-y-2">
-            <p className="mb-4 font-semibold text-base sm:text-xl">{partner?.companyName ?? ""}</p>
+            <p className="mb-4 font-semibold text-base sm:text-xl">
+              {partner?.companyName ?? ""}
+            </p>
             <div className="w-full flex flex-col items-start justify-start leading-6 text-[#717171]">
               {partner?.description ?? ""}
             </div>
@@ -110,31 +171,29 @@ export function AboutPartner({ partner, refetch }: {refetch: () => Promise<null 
           </div>
         </section>
 
-        <section className="w-full flex flex-col">
-          <div className="w-full px-3 py-4 border-b ">
+        <section className="w-full flex flex-col border-b">
+          <div className="w-full px-3 py-3 border-b ">
             <p className="font-semibold text-base sm:text-xl">
               Sponsored Sessions
             </p>
           </div>
-          <div className="items-start py-4 justify-start flex w-full flex-col gap-y-2">
-            <SponsoredSessionWidget
-              title="Resin Mould"
-              date="20 Nov 2002"
-              time="2:00PM - 3:00PM"
-            />
-
-            <SponsoredSessionWidget
-              title="Analysis of Human Performance"
-              date="20 Nov 2002"
-              time="2:00PM - 3:00PM"
-            />
-
-            <div></div>
+          <div className="items-start pt-4 justify-start flex w-full flex-col px-3">
+            {[1, 2, 3].map((_, idx) => (
+              <SponsoredSessionWidget
+                title="Resin Mould"
+                date="20 Nov 2002"
+                time="2:00PM - 3:00PM"
+                className={
+                  idx === [1, 2, 3].length - 1 ? "border-b-0" : "border-b"
+                }
+                key={_}
+              />
+            ))}
           </div>
         </section>
 
         <section className="w-full flex flex-col  pb-2 border-b">
-          <div className="w-full px-3 py-4 border-b flex items-center justify-between">
+          <div className="w-full px-3 py-3 border-b flex items-center justify-between">
             <p className="font-semibold text-base sm:text-xl">Booth Staff</p>
             <Button className="w-fit h-fit px-1">
               <EditOutline size={22} />
@@ -156,7 +215,7 @@ export function AboutPartner({ partner, refetch }: {refetch: () => Promise<null 
         </section>
 
         <section className="w-full flex flex-col  pb-2 border-b">
-          <div className="w-full px-3 py-4 border-b flex items-center justify-between">
+          <div className="w-full px-3 py-3 border-b flex items-center justify-between">
             <p className="font-semibold text-base sm:text-xl">Jobs</p>
 
             <Button onClick={onOpen} className="px-1 h-fit w-fitf">
@@ -164,14 +223,33 @@ export function AboutPartner({ partner, refetch }: {refetch: () => Promise<null 
             </Button>
           </div>
           <div className="w-full px-3 py-4 grid grid-cols-1 items-center gap-6">
-            {[1, 2, 3, 4].map((_) => (
-              <JobWidget key={_} />
-            ))}
+            {partner?.jobs === null && (
+              <EmptyCard height="80" width="82" text="No available Job" />
+            )}
+            {Array.isArray(partner?.jobs) &&
+              partner?.jobs.map((job, index) => (
+                <JobWidget
+                  key={index}
+                  job={job}
+                  className={
+                    index === partner?.jobs?.length - 1
+                      ? "border-b-0"
+                      : "border-b"
+                  }
+                />
+              ))}
           </div>
         </section>
       </div>
 
-      {isAddJob && <AddJob close={onOpen} />}
+      {isAddJob && (
+        <AddJob
+          partner={partner}
+          refetch={refetch}
+          close={onOpen}
+          partnerId={partnerId}
+        />
+      )}
     </>
   );
 }

@@ -17,7 +17,7 @@ export const addBannerSchema = z.object({
 
 export const jobSchema = z.object({
   jobTitle: z.string().min(3, { message: "Title is required" }),
-  companyName: z.string().min(3, { message: "Company Name is required" }),
+  applicationLink: z.string().min(3, { message: "Application Link is required" }),
   maxSalary: z.string().min(3, { message: "Max. Salary is required" }),
   minSalary: z.string().min(3, { message: "Min. Salary is required" }),
   salaryDuration: z.string().min(3, { message: "Salary Duration is required" }),

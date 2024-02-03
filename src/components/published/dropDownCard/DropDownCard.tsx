@@ -1,3 +1,5 @@
+import _ from "lodash"
+
 type DropDownType = {
   data: { value: string }[];
   name: string;
@@ -12,15 +14,15 @@ export function DropDownCards({
   handleRadioChange,
 }: DropDownType) {
 
-    
-  return (
+let refinedData = _.uniqBy(data, "value")
 
-    
+
+  return (  
     <div
       onClick={(e) => e.stopPropagation()}
       className="w-[200px] relative z-[120] rounded-lg  shadow bg-white flex flex-col"
     >
-      {data.map(({ value }) => (
+      {refinedData.map(({ value }) => (
         <label
           key={value}
           className=" w-full flex  py-2 border-b  hover:bg-gray-50 relative drop-container"

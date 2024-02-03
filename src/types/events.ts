@@ -23,7 +23,7 @@ interface PricingType {
 }
 
 
-type PartnerIndustry = {
+export type PartnerIndustry = {
   name:string , color:string
 }
 
@@ -58,7 +58,7 @@ export interface Event {
   trainingDuration: string;
   whatsappNumber: string;
   registered: string;
-  partnerIndustry:PartnerIndustry[] 
+  partnerIndustry: PartnerIndustry[] 
 }
 
 export interface PaymentConfigProps {

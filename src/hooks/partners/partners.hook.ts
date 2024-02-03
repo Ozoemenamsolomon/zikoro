@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import * as z from "zod";
-import { Event, TPartner, PartnerBannerType } from "@/types";
+import { Event, TPartner, PartnerBannerType, PartnerJobType } from "@/types";
 import { partnerSchema } from "@/validations";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
@@ -83,6 +83,7 @@ export function useFetchPartners(eventId: string) {
   return {
     data,
     loading,
+    refetch:fetchPartners
   };
 }
 
@@ -270,6 +271,49 @@ export function useAddPartnerBanner() {
 
   return {
     addPartnerBanner,
+    loading,
+  };
+}
+
+export function useAddPartnerJob() {
+  const [loading, setLoading] = useState(false);
+
+  async function addPartnerJob(
+    partnerId: string,
+    partnerJob: PartnerJobType,
+    partner: TPartner | null
+  ) {
+    setLoading(true);
+    try {
+      let jobs = {};
+
+      if (partner?.jobs && partner?.jobs !== null) {
+        jobs = { jobs: [...partner?.jobs, partnerJob] };
+      } else {
+        jobs = { jobs: [partnerJob] };
+      }
+      const { error, status } = await supabase
+        .from("eventPartners")
+        .update([jobs])
+        .eq("id", partnerId);
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (status === 204 || status === 200) {
+        //
+        toast.success("Jobs added successfully");
+        setLoading(false);
+      }
+    } catch (error) {
+      return;
+    }
+  }
+
+  return {
+    addPartnerJob,
     loading,
   };
 }

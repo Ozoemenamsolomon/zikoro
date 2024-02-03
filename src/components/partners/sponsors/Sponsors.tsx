@@ -5,17 +5,15 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { EmptyCard } from "@/components/composables";
 
 export function Sponsors({
-  data,
+  sponsors,
   loading,
 }: {
-  data: TPartner[];
+  sponsors: TPartner[];
   loading: boolean;
 }) {
-  const sponsors = useMemo(() => {
-    return data.filter((v) => v.partnerType.toLowerCase() === "sponsor");
-  }, [data]);
+
   return (
-    <div className="w-full grid lg:grid-cols-2 mt-6 items-center gap-6 px-4">
+    <div className="w-full h-full grid md:grid-cols-2 xl:grid-cols-3 mt-6 items-center gap-6 px-4">
       {loading && (
         <div className="w-full col-span-full h-[300px] flex items-center justify-center">
           <LoaderAlt size={50} className="animate-spin" />

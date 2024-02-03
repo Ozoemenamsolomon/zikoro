@@ -12,6 +12,8 @@ export function Payment({
   total,
   discount,
   count,
+  processingFee,
+  amountPayable,
   priceCategory,
   eventDate,
   eventPrice,
@@ -32,6 +34,8 @@ export function Payment({
   discount: number;
   count: number;
   currency: string | undefined;
+  processingFee?: number
+  amountPayable?:number
   attendeesDetails: any[];
   eventPrice?: number;
   startDate?: string;
@@ -71,6 +75,8 @@ export function Payment({
       discountValue: discount,
       referralSource,
       discountCode,
+      amountPayable,
+      processingFee,
       currency,
       registrationCompleted: reference.status === "success",
       eventDate,

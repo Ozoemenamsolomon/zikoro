@@ -35,6 +35,7 @@ import {
   useFetchCreatedEventIndustries,
 } from "@/hooks";
 import { BoothStaffWidget } from "../../sponsors/_components";
+import { PartnerIndustry } from "@/types";
 
 type FormFiles = {
   media: FileList;
@@ -48,8 +49,10 @@ export function AddPartners({
   close,
   eventId,
   eventName,
+  refetchPartners
 }: {
   eventId: string;
+  refetchPartners: () => Promise<null | undefined>
   eventName: string | null;
   close: () => void;
 }) {
@@ -61,7 +64,7 @@ export function AddPartners({
   const [active, setActive] = useState(1);
   const { loading, addPartners } = useAddPartners();
   const { attendees } = useFetchAttendees(eventId);
-  const { data: eventData } = useFetchCreatedEventIndustries(eventId);
+  const { data: eventData, refetch } = useFetchCreatedEventIndustries(eventId);
 
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
     "+234"
@@ -109,6 +112,13 @@ export function AddPartners({
   function remove(email: string) {
     setSelectedAttendees(selectedAttendees.filter((v) => v.email !== email));
   }
+
+  // refetch industries
+  useEffect(() => {
+    refetch();
+  }, [active]);
+
+
   useEffect(() => {
     if (country) {
       const currentCountryCode = COUNTRY_CODE.find(
@@ -132,8 +142,8 @@ export function AddPartners({
   }
 
  */
-//  const industryValue = form.watch("industry");
- // console.log({ industryValue });
+  //  const industryValue = form.watch("industry");
+  // console.log({ industryValue });
 
   async function onSubmit(values: z.infer<typeof partnerSchema>) {
     const selectedIndustry = eventData?.partnerIndustry.find(
@@ -149,6 +159,8 @@ export function AddPartners({
     };
 
     await addPartners(payload);
+    refetchPartners()
+    close()
   }
 
   // convert attendees list to an array of object {value, label} pairs
@@ -163,11 +175,14 @@ export function AddPartners({
 
   ///
   const formattedIndustriesList = useMemo(() => {
-   return Array.isArray(eventData?.partnerIndustry) &&
-      eventData?.partnerIndustry?.map(({ name }) => {
-        return { label: name, value: name }
+    if (!eventData?.partnerIndustry) return;
+    let partner: PartnerIndustry[] = eventData?.partnerIndustry;
+    return (
+      Array.isArray(partner) &&
+      partner?.map(({ name }) => {
+        return { label: name, value: name };
       })
-    
+    );
   }, [eventData?.partnerIndustry]);
 
   return (

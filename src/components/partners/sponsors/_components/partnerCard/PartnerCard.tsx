@@ -13,10 +13,12 @@ export function PartnerCard({ sponsor }: { sponsor: TPartner }) {
       return "/images/zikoro.png";
     }
   }, [sponsor.companyLogo]);
+
+  // console.log(sponsor.industry?.name);
   return (
     <Link
       href={`/partners/${sponsor.id}`}
-      className="shadow border border-gray-50 relative rounded-lg overflow-hidden bg-white  grid grid-cols-3 items-center"
+      className="shadow border h-full border-gray-50 relative rounded-lg overflow-hidden bg-white flex flex-col gap-y-2 items-start justify-start"
     >
       {sponsor.stampIt && (
         <button className="absolute right-[-2px] top-0 flex items-center justify-center w-fit bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-b-md">
@@ -28,30 +30,25 @@ export function PartnerCard({ sponsor }: { sponsor: TPartner }) {
         alt="sponsor-logo"
         width={300}
         height={100}
-        className="w-36 pl-4 py-8 lg:w-[6rem] xl:w-32 h-fit"
+        className="w-36 pl-4 pt-8 lg:w-[6rem] xl:w-32 h-[70px]"
       />
-      <div className="w-full px-4 py-8 bg-[#FDFDFD] items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
-        <h3 className="font-semibold text-black text-base sm:text-xl">
+      <div className="w-full px-4 py-8  items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
+        <div className="font-semibold flex capitalize flex-wrap text-black text-xl">
           {sponsor.companyName}
-        </h3>
-
-        <div className="flex flex-wrap line-clamp-3 text-sm w-full  items-start justify-start leading-6">
-          {sponsor.description}
-
-          <div className="ml-2 text-zikoro cursor-pointer"> Read more</div>
         </div>
 
-        <p>Hall 25</p>
+        <div className="flex flex-wrap  line-clamp text-sm w-full  items-start justify-start leading-6">
+          {sponsor.description}
+        </div>
 
-        <div className="flex items-center gap-x-6">
-          {sponsor.stampIt && (
-            <button className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
-              StampIT
-            </button>
+        {/**  */}
+        <div className="flex items-center text-sm capitalize gap-x-2">
+          {sponsor.exhibitionHall && (
+            <p>{`${sponsor.exhibitionHall}${
+              !!sponsor.exhibitionHall && ","
+            }`}</p>
           )}
-          <button className="bg-[#F44444] bg-opacity-10 text-xs text-[#F44444] px-2 py-2 rounded-md">
-            Promo
-          </button>
+          {sponsor.boothNumber && <p>{`Booth ${sponsor.boothNumber}`}</p>}
         </div>
 
         <div className="flex items-center gap-x-3">
@@ -59,12 +56,23 @@ export function PartnerCard({ sponsor }: { sponsor: TPartner }) {
             <Location size={16} className="text-[#717171]" />
             <p>{`${sponsor.city}, ${sponsor.country}`}</p>
           </div>
-          {sponsor.industry && (
+          {sponsor.industry?.name !== undefined && (
             <div className="flex items-center gap-x-2">
               <IndustryIcon />
               <p>{sponsor.industry?.name}</p>
             </div>
           )}
+        </div>
+
+        <div className="flex items-center gap-x-6">
+          {sponsor?.jobs?.length > 0 && (
+            <button className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
+              Hiring
+            </button>
+          )}
+          <button className="bg-[#F44444] bg-opacity-10 text-xs text-[#F44444] px-2 py-2 rounded-md">
+            Promo
+          </button>
         </div>
       </div>
     </Link>

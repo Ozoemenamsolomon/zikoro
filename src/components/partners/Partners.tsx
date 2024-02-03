@@ -1,90 +1,286 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { SideBarLayout } from "..";
+import { Button, SideBarLayout } from "..";
 import { Form, FormControl, FormField, FormItem, Input } from "..";
-import {HeaderTab } from "./_components";
+import { HeaderTab } from "./_components";
 import { Search } from "@styled-icons/evil/Search";
 import { Gift } from "@styled-icons/bootstrap/Gift";
 import { usePartnersTab } from "@/context";
 import { Briefcase } from "@styled-icons/ionicons-outline/Briefcase";
 import { RecordCircle } from "@styled-icons/bootstrap/RecordCircle";
-import { PartnersEnum } from "@/types";
+import { PartnersEnum, TPartner } from "@/types";
 import { Stamp } from "@styled-icons/fa-solid/Stamp";
 import { LocationOn } from "@styled-icons/material-outlined/LocationOn";
 import { Sponsors } from "./sponsors/Sponsors";
 import { Exhibitors } from "./sponsors/Exhibitors";
 import { useFetchPartners } from "@/hooks";
+import { useState, useMemo, useEffect } from "react";
+import { DropDownCards } from "../published";
+import _ from "lodash";
+import { cn } from "@/lib";
+import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 
+type FormValue = {
+  search: string;
+};
 
 export function Partners({ eventId }: { eventId: string }) {
-  const form = useForm();
   const { active } = usePartnersTab();
-  const {data, loading} = useFetchPartners(eventId)
+  const [locations, selectedLocations] = useState<string[]>([]);
+  const [industries, selectedIndustries] = useState<string[]>([]);
+  const [isLocationDropDown, setShowLocationDropDown] = useState(false);
+  const [isIndustryDropDown, setShowIndustryDropDown] = useState(false);
+  const [isStamp, setIsStamp] = useState(false);
+  const { data, loading,  refetch } = useFetchPartners(eventId);
+  const [partnerData, setPartnerData] = useState<TPartner[] | undefined>(
+    undefined
+  );
+  const form = useForm<FormValue>({
+    defaultValues: {
+      search: "",
+    },
+  });
+  // set to initial state when the search field is empty
+  useEffect(() => {
+    if (form.watch("search") === "") {
+      setPartnerData(undefined);
+    }
+  }, [form.watch("search")]);
+
+  // filter by partner's name
+  function onSubmit(value: FormValue) {
+    // console.log(value);
+    if (data) {
+      const filtered = data.filter((partner) => {
+        const isPresent =
+          value.search.length === 0 ||
+          partner.companyName
+            .toLowerCase()
+            .includes(value.search.toLowerCase());
+
+        return isPresent;
+      });
+
+      setPartnerData(filtered);
+    }
+  }
+
+  // other filters
+  useEffect(() => {
+    if (data) {
+      const filtered = data.filter((partner) => {
+        // Title filter
+        const isIndustryMatch =
+          industries.length === 0 || industries.includes(partner.industry.name);
+
+        // Location filter
+        const isLocationMatch =
+          locations.length === 0 || locations.includes(partner.city);
+
+        // stamp filter
+        //  const isStampMatch = isStamp === partner.stampIt;
+
+        return isLocationMatch && isIndustryMatch;
+      });
+
+      setPartnerData(filtered);
+    }
+  }, [data]);
+
+  const sponsors = useMemo(() => {
+    return (partnerData || data).filter(
+      (v) => v.partnerType.toLowerCase() === "sponsor"
+    );
+  }, [data, partnerData]);
+
+  const exhibitors = useMemo(() => {
+    return (partnerData || data).filter(
+      (v) => v.partnerType.toLowerCase() === "exhibitor"
+    );
+  }, [data, partnerData]);
+
+  //  location
+  const partnersLocationList = useMemo(() => {
+    return data
+      ?.filter((v) => v.city !== undefined)
+      ?.map(({ city }) => {
+        return { value: city };
+      });
+  }, [data]);
+
+  //  industry
+  const partnersIndustryList = useMemo(() => {
+    return data
+      ?.filter((v) => v.industry?.name !== undefined)
+      ?.map(({ industry }) => {
+        return { value: industry?.name };
+      });
+  }, [data]);
+
+  //
+  const handleSelectedLocations = (value: string) => {
+    const isValueSelected = locations.includes(value);
+    //  console.log({ isValueSelected });
+
+    selectedLocations((prevSelectedValues) => {
+      if (isValueSelected) {
+        return prevSelectedValues.filter(
+          (selectedValue) => selectedValue !== value
+        );
+      } else {
+        return [...prevSelectedValues, value];
+      }
+    });
+  };
+
+  const handleSelectedIndustries = (value: string) => {
+    const isValueSelected = industries.includes(value);
+    // console.log({ isValueSelected });
+
+    selectedIndustries((prevSelectedValues) => {
+      if (isValueSelected) {
+        return prevSelectedValues.filter(
+          (selectedValue) => selectedValue !== value
+        );
+      } else {
+        return [...prevSelectedValues, value];
+      }
+    });
+  };
+
+  /// filter stampIt
+  function filterWithStampIt(value: boolean) {
+    setIsStamp((prev) => !prev);
+
+    setPartnerData(data?.filter((partner) => partner.stampIt === !value));
+  }
+
+  // checking if any of the filter is active to set the state of clear filter button
+  const isSearch = form.watch("search") !== "";
+  const isFilterActive = useMemo(() => {
+    return locations.length > 0 || industries.length > 0 || isSearch;
+  }, [locations, industries, isSearch]);
+
+  function clearAllFilters() {
+    form.reset({
+      search: "",
+    });
+    selectedLocations([]);
+    selectedIndustries([]);
+  }
 
   return (
     <SideBarLayout className="px-0 sm:px-0">
-      <HeaderTab eventId={eventId}/>
+      <HeaderTab eventId={eventId}  refetch={refetch}/>
 
-      <div className="w-full flex items-center justify-between p-4">
-        <div className=" w-[90%] flex items-center">
-          <button className="flex  items-center  relative hover:text-zikoro  w-fit px-3  text-[#D6D6D6]  gap-x-1">
-            <IndustryIcon />
-            <p className="">Company Name </p>
-          </button>
-          <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-x text-[#D6D6D6]  gap-x-1">
-            <LocationOn size={16} />
-            <p>Location </p>
-          </button>
-          <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r  text-[#D6D6D6]  gap-x-1">
-            <Briefcase size={16} />
-            <p>Industry</p>
-          </button>
+      <div className="w-full flex flex-col justify-start items-start ">
+        <div className="w-full flex items-center justify-between p-4">
+          <div className=" w-[90%] flex items-center">
+            <button className="hidden  items-center  relative hover:text-zikoro  w-fit px-3  text-[#D6D6D6]  gap-x-1">
+              <IndustryIcon />
+              <p className="">Company Name </p>
+            </button>
+            <button
+              onClick={() => setShowLocationDropDown((prev) => !prev)}
+              className="flex relative items-center hover:text-zikoro w-fit px-3 border-x text-[#D6D6D6]  gap-x-1"
+            >
+              <LocationOn size={16} />
+              <p>Location </p>
+              {isLocationDropDown && (
+                <div className="absolute top-8 left-0">
+                  <button className="w-full h-full fixed inset-0 z-[100]"></button>
+                  <DropDownCards
+                    data={partnersLocationList}
+                    name="location"
+                    selectedValues={locations}
+                    handleRadioChange={handleSelectedLocations}
+                  />
+                </div>
+              )}
+            </button>
+            <button
+              onClick={() => setShowIndustryDropDown((prev) => !prev)}
+              className="flex relative items-center hover:text-zikoro w-fit px-3 border-r  text-[#D6D6D6]  gap-x-1"
+            >
+              <Briefcase size={16} />
+              <p>Industry</p>
 
-          <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r text-[#D6D6D6]  gap-x-1">
-            <RecordCircle size={16} />
-            <p>Exhibition Hall </p>
-          </button>
-          <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r text-[#D6D6D6]  gap-x-1">
-            <Gift size={16} />
-            <p>Promo </p>
-          </button>
-          <button className="flex relative items-center hover:text-zikoro w-fit px-3 text-[#D6D6D6]  gap-x-1">
-            <Stamp size={16} />
-            <p>StampIT </p>
-          </button>
+              {isIndustryDropDown && (
+                <div className="absolute top-8 left-0">
+                  <button className="w-full h-full fixed inset-0 z-[100]"></button>
+                  <DropDownCards
+                    data={partnersIndustryList}
+                    name="industry"
+                    selectedValues={industries}
+                    handleRadioChange={handleSelectedIndustries}
+                  />
+                </div>
+              )}
+            </button>
+
+            <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r text-[#D6D6D6]  gap-x-1">
+              <RecordCircle size={16} />
+              <p>Exhibition Hall </p>
+            </button>
+            <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r text-[#D6D6D6]  gap-x-1">
+              <Gift size={16} />
+              <p>Promo </p>
+            </button>
+            <button
+              onClick={() => filterWithStampIt(isStamp)}
+              className={cn(
+                "flex relative items-center hover:text-zikoro w-fit px-3 text-[#D6D6D6]  gap-x-1",
+                isStamp && "text-zikoro"
+              )}
+            >
+              <Stamp size={16} />
+              <p>StampIT </p>
+            </button>
+          </div>
+          <div className="flex items-center">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="w-fit">
+                <FormField
+                  control={form.control}
+                  name="search"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <div className="relative w-80 h-12">
+                          <Search size={22} className="absolute top-3 left-2" />
+                          <Input
+                            type="search"
+                            placeholder="search partner"
+                            {...field}
+                            className=" placeholder:text-sm h-12 pr-4 pl-10 w-80  focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                          />
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
+          </div>
         </div>
-        <div className="flex items-center">
-          <Form {...form}>
-            <form className="w-fit">
-              <FormField
-                control={form.control}
-                name="search"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div className="relative w-80 h-12">
-                        <Search size={22} className="absolute top-3 left-2" />
-                        <Input
-                          type="search"
-                          placeholder="search sponsor"
-                          {...field}
-                          className=" placeholder:text-sm h-12 pr-4 pl-10 w-80  focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
-                        />
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
-         
-        </div>
+        {isFilterActive && (
+          <Button
+            onClick={clearAllFilters}
+            className="bg-gray-50 h-10 ml-4 gap-x-2 text-gray-500"
+          >
+            <CloseOutline size={20} />
+            <span> Clear Filters</span>
+          </Button>
+        )}
       </div>
 
-      {active === PartnersEnum.SPONSORS_TAB && <Sponsors data={data} loading={loading} />}
-      {active === PartnersEnum.EXHIBITORS_TAB &&  <Exhibitors data={data} loading={loading} />}
-    
+      {active === PartnersEnum.SPONSORS_TAB && (
+        <Sponsors sponsors={sponsors} loading={loading} />
+      )}
+      {active === PartnersEnum.EXHIBITORS_TAB && (
+        <Exhibitors exhibitors={exhibitors} loading={loading} />
+      )}
     </SideBarLayout>
   );
 }

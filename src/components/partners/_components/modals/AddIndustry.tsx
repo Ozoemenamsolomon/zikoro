@@ -10,7 +10,7 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import React, { useMemo, useState } from "react";
 import { cn } from "@/lib";
 import toast from "react-hot-toast";
-import { IndustryType } from "@/types";
+import { IndustryType, PartnerIndustry } from "@/types";
 import {
   useFetchCreatedEventIndustries,
   useCreateEventIndustry,
@@ -69,6 +69,7 @@ export function AddIndustry({
     setCreatedIndustry(updatedList);
   }
  */
+
   return (
     <div
       role="button"

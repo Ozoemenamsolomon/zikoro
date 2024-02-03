@@ -14,7 +14,7 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEventFilterHook } from "@/context";
-import { useGetPublishedEvents } from "../../../hooks/events/event.hook";
+// import { useGetPublishedEvents } from "../../../hooks/events/event.hook";
 
 export function HeroLayout({
   children,

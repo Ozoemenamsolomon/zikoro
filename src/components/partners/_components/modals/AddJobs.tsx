@@ -18,6 +18,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown } from "@styled-icons/bootstrap/ChevronDown";
 import { jobSchema } from "@/validations";
+import { useAddPartnerJob } from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import {
@@ -28,15 +29,36 @@ import {
   workExperience,
 } from "@/constants";
 import { useState } from "react";
+import { TPartner } from "@/types";
 import { cn } from "@/lib";
 
-export function AddJob({ close }: { close: () => void }) {
+export function AddJob({
+  close,
+  partnerId,
+  refetch,
+  partner,
+}: {
+  partnerId: string;
+  partner: TPartner | null;
+  refetch: () => Promise<null | undefined>;
+  close: () => void;
+}) {
+  const { loading, addPartnerJob } = useAddPartnerJob();
   const [currencyCode, setcurrencyCode] = useState("NGN");
   const form = useForm<z.infer<typeof jobSchema>>({
     resolver: zodResolver(jobSchema),
   });
 
-  async function onSubmit(values: z.infer<typeof jobSchema>) {}
+  async function onSubmit(values: z.infer<typeof jobSchema>) {
+    const payload = {
+      ...values,
+      partnerId,
+      currencyCode,
+    };
+    await addPartnerJob(partnerId, payload, partner);
+    refetch();
+    close();
+  }
   return (
     <div
       role="button"
@@ -73,20 +95,7 @@ export function AddJob({ close }: { close: () => void }) {
                 </InputOffsetLabel>
               )}
             />
-            <FormField
-              control={form.control}
-              name="companyName"
-              render={({ field }) => (
-                <InputOffsetLabel label="Company Name">
-                  <Input
-                    type="text"
-                    placeholder="Enter the Company Name"
-                    {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                  />
-                </InputOffsetLabel>
-              )}
-            />
+           
             <div className="w-full grid grid-cols-3 items-center gap-3">
               <FormField
                 control={form.control}
@@ -102,7 +111,7 @@ export function AddJob({ close }: { close: () => void }) {
                     />
                     <FormControl>
                       <Input
-                        className="h-12 placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-14"
+                        className="h-12 placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-16"
                         placeholder="min"
                         {...field}
                         type="number"
@@ -126,7 +135,7 @@ export function AddJob({ close }: { close: () => void }) {
                     />
                     <FormControl>
                       <Input
-                        className="h-12 placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-14"
+                        className="h-12 placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-16"
                         placeholder="max"
                         {...field}
                         type="number"
@@ -242,12 +251,25 @@ export function AddJob({ close }: { close: () => void }) {
                 />
               )}
             />
-
+             <FormField
+              control={form.control}
+              name="applicationLink"
+              render={({ field }) => (
+                <InputOffsetLabel label="Application Link">
+                  <Input
+                    type="text"
+                    placeholder="Enter the Application Link"
+                    {...field}
+                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                  />
+                </InputOffsetLabel>
+              )}
+            />
             <Button
-              disabled={false}
+              disabled={loading}
               className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-zikoro h-12 rounded-md text-gray-50 font-medium"
             >
-              {"" && <LoaderAlt size={22} className="animate-spin" />}
+              {loading && <LoaderAlt size={22} className="animate-spin" />}
               <span>Create Job</span>
             </Button>
           </form>
@@ -273,20 +295,22 @@ function CurrencyDropDown({
         e.preventDefault();
         setOpen((prev) => !prev);
       }}
-      className="absolute left-2 top-3 text-mobile flex items-center gap-x-1"
+      className="absolute left-2 top-[0.8rem] text-mobile flex items-center gap-x-1"
     >
       <p>{currencyCode}</p>
 
       <ChevronDown size={16} />
       <div className="absolute left-0 top-10 w-full">
-       {isOpen && <button
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            setOpen(false);
-          }}
-          className="w-full z-[400] h-full fixed inset-0"
-        ></button>}
+        {isOpen && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setOpen(false);
+            }}
+            className="w-full z-[400] h-full fixed inset-0"
+          ></button>
+        )}
         {isOpen && (
           <ul className="relative shadow z-[600] w-[80px] bg-white py-2 rounded-md">
             {currency.map((item, index) => (
