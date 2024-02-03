@@ -51,16 +51,16 @@ export const NavLinks = ({
             <li key={name} className="w-full">
               <Link
                 href={
-                  href === "/events"
+                  href === "/published-events"
                     ? `${href}/organization/${id}?organization=${query}`
                     : href
                 }
-                target={href === "/events" ? "blank" : ""}
+                target={href === "/published-events" ? "blank" : ""}
                 className={cn(
                   "p-3 px-4 flex  items-center gap-x-2  w-full",
                   href === pathname &&
                     "text-zikoro  bg-zikoro border-l-4 border-zikoro bg-opacity-10  ",
-                  query === null && href === "/events" && "hidden"
+                  query === null && href === "/published-events" && "hidden"
                 )}
               >
                 {Icon && (

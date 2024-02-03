@@ -1,11 +1,12 @@
 "use client";
 
 import { SideBarLayout } from "../SidebarLayout";
-import { EventCards, EmptyCard } from ".";
+import { EventCards } from ".";
+import { EmptyCard } from "../composables";
 import {useGetQueries} from "@/hooks"
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 
-export default function Home() {
+export default function EventHome() {
   const { data: eventData, refetch, loading } = useGetQueries("events");
 
   return (

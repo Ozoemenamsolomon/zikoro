@@ -49,7 +49,7 @@ export function AddJob({ close }: { close: () => void }) {
         className="w-[95%] sm:w-[500px] box-animation h-fit flex mb-10 flex-col gap-y-6 rounded-lg bg-white  mx-auto absolute inset-x-0 py-6 px-3 sm:px-4"
       >
         <div className="w-full flex items-center justify-between">
-          <h2 className="font-medium text-lg sm:text-xl">Banners</h2>
+          <h2 className="font-medium text-lg sm:text-xl">Add Job</h2>
           <Button onClick={close} className="px-1 h-fit w-fit">
             <CloseOutline size={22} />
           </Button>

@@ -244,9 +244,15 @@ export function DoubleColumnIcon() {
   );
 }
 
-export function EmptyIcon() {
+export function EmptyIcon({
+  height = "100",
+  width = "101",
+}: {
+  width?: string;
+  height?: string;
+}) {
   return (
-    <svg width="101" height="100" viewBox="0 0 101 100" fill="none">
+    <svg width={width} height={height} viewBox="0 0 101 100" fill="none">
       <g id="calendar 1" opacity="0.4" clipPath="url(#clip0_12824_2593)">
         <g id="Group">
           <path

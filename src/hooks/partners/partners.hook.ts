@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import * as z from "zod";
-import { Event } from "@/types";
+import { Event, TPartner, PartnerBannerType } from "@/types";
 import { partnerSchema } from "@/validations";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
@@ -73,6 +73,7 @@ export function useFetchPartners(eventId: string) {
       }
 
       setData(data);
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       //  console.log(error);
@@ -178,5 +179,97 @@ export function useFetchCreatedEventIndustries(eventId: string) {
   return {
     data,
     refetch: fetchData,
+  };
+}
+
+export function useFetchSinglePartner(partnerId: string) {
+  const [data, setData] = useState<TPartner | null>(null);
+
+  useEffect(() => {
+    fetchSinglePartner();
+  }, []);
+
+  async function fetchSinglePartner() {
+    try {
+      // Fetch the partner by ID
+      const { data, error, status } = await supabase
+        .from("eventPartners")
+        .select("*")
+        .eq("id", partnerId)
+        .single();
+
+      if (error) {
+        toast.error(error.message);
+        return null;
+      }
+
+      if (status === 200) {
+        setData(data);
+      }
+    } catch (error) {
+      return null;
+    }
+  }
+
+  return {
+    data,
+    refetch: fetchSinglePartner,
+  };
+}
+
+export function useAddPartnerBanner() {
+  const [loading, setLoading] = useState(false);
+
+  async function addPartnerBanner(
+    partnerId: string,
+    partnerBanners: any[],
+    partner: TPartner | null
+  ) {
+    setLoading(true);
+    try {
+      const promises = partnerBanners.map(({ file, link }) => {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const imageLink = await uploadFile(file[0], "image");
+
+            resolve({ file: imageLink, link });
+          } catch (error) {
+            reject(error);
+          }
+        });
+      });
+
+      const result = await Promise.all(promises);
+      let banners = {};
+
+      if (partner?.banners && partner?.banners !== null) {
+        banners = { banners: [...partner?.banners, ...result] };
+      } else {
+        banners = { banners: result };
+      }
+      const { error, status } = await supabase
+        .from("eventPartners")
+        .update([banners])
+        .eq("id", partnerId);
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (status === 204 || status === 200) {
+        //
+        toast.success("Banners added successfully");
+        setLoading(false);
+      }
+    } catch (error) {
+      return;
+    }
+  }
+
+  return {
+    addPartnerBanner,
+    loading,
   };
 }

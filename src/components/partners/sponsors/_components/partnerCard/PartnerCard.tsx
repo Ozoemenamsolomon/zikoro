@@ -4,7 +4,7 @@ import { TPartner } from "@/types";
 import { useMemo } from "react";
 import { Location } from "@styled-icons/fluentui-system-regular/Location";
 
-export function SponsorCard({ sponsor }: { sponsor: TPartner }) {
+export function PartnerCard({ sponsor }: { sponsor: TPartner }) {
   const image = useMemo(() => {
     const regex = /^[https://]/;
     if (regex.test(sponsor.companyLogo)) {

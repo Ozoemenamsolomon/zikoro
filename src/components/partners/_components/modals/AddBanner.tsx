@@ -2,12 +2,26 @@ import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { Form, FormField, Input, InputOffsetLabel, Button } from "@/components";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
+import { TPartner } from "@/types";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addBannerSchema } from "@/validations";
+import { uploadFile } from "@/utils";
+import { useAddPartnerBanner } from "@/hooks";
 
-export function AddBanners({ close }: { close: () => void }) {
+export function AddBanners({
+  close,
+  partnerId,
+  refetch,
+  partner,
+}: {
+  partnerId: string;
+  partner: TPartner | null;
+  refetch: () => Promise<null | undefined>;
+  close: () => void;
+}) {
+  const { loading, addPartnerBanner } = useAddPartnerBanner();
   const form = useForm<z.infer<typeof addBannerSchema>>({
     resolver: zodResolver(addBannerSchema),
     defaultValues: {
@@ -26,7 +40,14 @@ export function AddBanners({ close }: { close: () => void }) {
     });
   }
 
-  async function onSubmit(values: z.infer<typeof addBannerSchema>) {}
+  async function onSubmit(values: z.infer<typeof addBannerSchema>) {
+   
+    await addPartnerBanner(partnerId, values.banners, partner);
+
+    // console.log({ result });
+    refetch();
+    close()
+  }
   return (
     <div
       role="button"
@@ -66,27 +87,22 @@ export function AddBanners({ close }: { close: () => void }) {
                     <CloseOutline size={28} className="text-red-600" />
                   </Button>
                 )}
-                <FormField
-                  control={form.control}
-                  name={`banners.${index}.file` as const}
-                  render={({ field }) => (
-                    <div className="w-full flex flex-col items-start justify-start gap-y-1">
-                      <InputOffsetLabel label="Banner">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          placeholder="File"
-                          {...field}
-                          className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
-                        />
-                      </InputOffsetLabel>
 
-                      <p className="text-xs text-[#717171]">
-                        For best result use 1080px by 1080px
-                      </p>
-                    </div>
-                  )}
-                />
+                <div className="w-full flex flex-col items-start justify-start gap-y-1">
+                  <InputOffsetLabel label="Banner">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      placeholder="File"
+                      {...form.register(`banners.${index}.file` as const)}
+                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                    />
+                  </InputOffsetLabel>
+
+                  <p className="text-xs text-[#717171]">
+                    For best result use 1080px by 1080px
+                  </p>
+                </div>
 
                 <FormField
                   control={form.control}
@@ -117,10 +133,10 @@ export function AddBanners({ close }: { close: () => void }) {
             </Button>
 
             <Button
-              disabled={false}
+              disabled={loading}
               className="mt-4 h-12 w-full gap-x-2 bg-zikoro text-gray-50 font-medium"
             >
-              {"" && <LoaderAlt size={22} className="animate-spin" />}
+              {loading && <LoaderAlt size={22} className="animate-spin" />}
               <span>Add Banners</span>
             </Button>
           </form>

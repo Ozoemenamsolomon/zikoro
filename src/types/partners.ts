@@ -8,8 +8,13 @@ export interface IndustryType {
   color: string;
 }
 
+export interface PartnerBannerType {
+  file: string
+  link:string
+}
+
 export interface TPartner {
-  banners: string;
+  banners: PartnerBannerType[];
   boothNumber: string;
   boothStaff: JSON;
   city: string;

@@ -2,7 +2,7 @@ import * as z from "zod";
 
 const bannerSchema = z.array(
   z.object({
-    file: z.string().min(3, { message: "Field is required" }),
+    file: z.any(),
     link: z
       .string()
       .min(3, { message: "Banner Link is required" })

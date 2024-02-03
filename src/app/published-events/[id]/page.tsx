@@ -41,7 +41,7 @@ export default function Page({
           )}
 
           <Link
-            href={`/events/organization/${id}`}
+            href={`/published-events/organization/${id}`}
             className="flex mt-10 sm:mt-20 hover:underline items-center gap-x-2 text-zikoro text-sm"
           >
             <span>See All Events</span>

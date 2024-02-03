@@ -290,6 +290,11 @@ export const links: NavLinkType[] = [
     href: "/",
   },
   {
+    name: "Events",
+    icon: EventIcon,
+    href: "/events",
+  },
+  {
     name: "Billing",
     icon: BillingIcon,
     href: "/billing",
@@ -302,7 +307,7 @@ export const links: NavLinkType[] = [
   {
     name: "Published Events",
     icon: PublishedEventsIcon,
-    href: "/events",
+    href: "/published-events",
   },
   {
     name: "Notes",

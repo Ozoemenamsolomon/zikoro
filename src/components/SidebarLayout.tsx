@@ -4,7 +4,7 @@ import { cn } from "@/lib";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Button, NavLinks } from ".";
-import { HeaderWidget } from "./home";
+import { HeaderWidget } from "./eventHome";
 import Link from "next/link";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useSearchParams, useParams } from "next/navigation";

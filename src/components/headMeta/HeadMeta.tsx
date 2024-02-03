@@ -19,7 +19,7 @@ export function HeadMeta({
       <meta property="og:title" content={eventTitle} />
       <meta property="og:description" content={aboutEvent} />
       <meta property="og:image" content={imageLink} />
-      <meta property="og:url" content={`https://zikoro-copy.vercel.app/events/${eventId}`} />
+      <meta property="og:url" content={`https://zikoro-copy.vercel.app/published-events/${eventId}`} />
     </Head>
   );
 }

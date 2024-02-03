@@ -1,7 +1,8 @@
 "use client";
 
 import { SideBarLayout } from "../SidebarLayout";
-import { EventCards, EmptyCard } from ".";
+import { EventCards } from ".";
+import { EmptyCard } from "../composables";
 import { useFetchOrganizationEvents } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 

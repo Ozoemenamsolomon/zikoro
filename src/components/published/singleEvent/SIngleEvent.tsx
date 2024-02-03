@@ -228,7 +228,7 @@ export function SingleEvent({
     <>
       <Comp
         disabled={isExpired}
-        onClick={() => router.push(`/events/${event?.id}`)}
+        onClick={() => router.push(`/published-events/${event?.id}`)}
         className={cn("w-full h-fit")}
       >
         <div
@@ -510,7 +510,7 @@ export function SingleEvent({
           {!isDetail && (
             <Link
               className="text-zikoro "
-              href={`/events/${event?.id}`}
+              href={`/published-events/${event?.id}`}
             >{`Read more >>`}</Link>
           )}
         </div>
@@ -564,7 +564,7 @@ function ActionModal({
           className="flex relative z-[50]   flex-col py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
         >
           <TwitterShareButton
-            url={`https://zikoro-copy.vercel.app/events/${eventId}`}
+            url={`https://zikoro-copy.vercel.app/published-events/${eventId}`}
           >
             <button className="items-center flex px-2  h-10 w-full gap-x-2 justify-start text-xs">
               <TwitterIcon />
@@ -573,7 +573,7 @@ function ActionModal({
           </TwitterShareButton>
 
           <LinkedinShareButton
-            url={`https://zikoro-copy.vercel.app/events/${eventId}`}
+            url={`https://zikoro-copy.vercel.app/published-events/${eventId}`}
           >
             <button
               className={
@@ -585,7 +585,7 @@ function ActionModal({
             </button>
           </LinkedinShareButton>
           <FacebookShareButton
-            url={`https://zikoro-copy.vercel.app/events/${eventId}`}
+            url={`https://zikoro-copy.vercel.app/published-events/${eventId}`}
           >
             <button
               className={
