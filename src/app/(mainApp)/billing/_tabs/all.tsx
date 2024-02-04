@@ -5,6 +5,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGetEventTransactions } from "@/hooks/services/billing";
@@ -68,7 +72,7 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
       </svg>
     ),
     type: "dateRange",
-    order: 5,
+    order: 6,
   },
   {
     label: "Payout Status",
@@ -101,7 +105,7 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
     ),
     optionsFromData: true,
     type: "multiple",
-    order: 6,
+    order: 7,
   },
   {
     label: "Amount",
@@ -125,7 +129,7 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
     type: "range",
     steps: 100,
     max: 1000000,
-    order: 4,
+    order: 5,
   },
   {
     label: "Payout Date",
@@ -145,7 +149,7 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
       </svg>
     ),
     type: "dateRange",
-    order: 7,
+    order: 8,
   },
   {
     label: "Reg. Status",
@@ -181,7 +185,7 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
       { label: "Free", value: 1 },
       { label: "Not Paid", value: 0 },
     ],
-    order: 3,
+    order: 4,
     onFilter: (
       transaction: TEventTransaction,
       registrationCompleted: number[]
@@ -253,7 +257,31 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
     ),
     optionsFromData: true,
     type: "multiple",
-    order: 8,
+    order: 9,
+  },
+  {
+    label: "Currency",
+    accessor: "currency",
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={21}
+        height={20}
+        viewBox="0 0 21 20"
+        fill="none"
+      >
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M10.6007 2.29297C8.55629 2.29297 6.59565 3.10509 5.15005 4.55069C3.70446 5.99628 2.89233 7.95692 2.89233 10.0013C2.89233 12.0457 3.70446 14.0063 5.15005 15.4519C6.59565 16.8975 8.55629 17.7096 10.6007 17.7096C12.645 17.7096 14.6057 16.8975 16.0513 15.4519C17.4969 14.0063 18.309 12.0457 18.309 10.0013C18.309 7.95692 17.4969 5.99628 16.0513 4.55069C14.6057 3.10509 12.645 2.29297 10.6007 2.29297ZM1.64233 10.0013C1.64233 5.0538 5.65317 1.04297 10.6007 1.04297C15.5482 1.04297 19.559 5.0538 19.559 10.0013C19.559 14.9488 15.5482 18.9596 10.6007 18.9596C5.65317 18.9596 1.64233 14.9488 1.64233 10.0013ZM10.6007 4.3763C10.7664 4.3763 10.9254 4.44215 11.0426 4.55936C11.1598 4.67657 11.2257 4.83554 11.2257 5.0013V5.26547C12.584 5.5088 13.7257 6.52964 13.7257 7.91797C13.7257 8.08373 13.6598 8.2427 13.5426 8.35991C13.4254 8.47712 13.2664 8.54297 13.1007 8.54297C12.9349 8.54297 12.7759 8.47712 12.6587 8.35991C12.5415 8.2427 12.4757 8.08373 12.4757 7.91797C12.4757 7.35297 12.0057 6.7538 11.2257 6.54047V9.43214C12.584 9.67547 13.7257 10.6963 13.7257 12.0846C13.7257 13.473 12.584 14.4938 11.2257 14.7371V15.0013C11.2257 15.1671 11.1598 15.326 11.0426 15.4432C10.9254 15.5605 10.7664 15.6263 10.6007 15.6263C10.4349 15.6263 10.2759 15.5605 10.1587 15.4432C10.0415 15.326 9.97567 15.1671 9.97567 15.0013V14.7371C8.61733 14.4938 7.47567 13.473 7.47567 12.0846C7.47567 11.9189 7.54152 11.7599 7.65873 11.6427C7.77594 11.5255 7.93491 11.4596 8.10067 11.4596C8.26643 11.4596 8.4254 11.5255 8.54261 11.6427C8.65982 11.7599 8.72567 11.9189 8.72567 12.0846C8.72567 12.6496 9.19567 13.2488 9.97567 13.4613V10.5705C8.61733 10.3271 7.47567 9.3063 7.47567 7.91797C7.47567 6.52964 8.61733 5.5088 9.97567 5.26547V5.0013C9.97567 4.83554 10.0415 4.67657 10.1587 4.55936C10.2759 4.44215 10.4349 4.3763 10.6007 4.3763ZM9.97567 6.54047C9.19567 6.7538 8.72567 7.35297 8.72567 7.91797C8.72567 8.48297 9.19567 9.08214 9.97567 9.29464V6.54047ZM11.2257 10.7071V13.4621C12.0057 13.2488 12.4757 12.6505 12.4757 12.0846C12.4757 11.5196 12.0057 10.9196 11.2257 10.7071Z"
+          fill="#717171"
+        />
+      </svg>
+    ),
+    type: "single",
+    optionsFromData: true,
+    order: 4,
+    defaultValue: "NGN",
   },
 ];
 
@@ -270,7 +298,6 @@ export default function All() {
     "payOutStatus",
   ]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-
   const { eventTransactions, isLoading, getEventTransactions } =
     useGetEventTransactions({
       userId: 1,
@@ -297,6 +324,8 @@ export default function All() {
     (acc, { attendees }) => attendees + acc,
     0
   );
+  const currency =
+    selectedFilters.find(({ key }) => key === "currency")?.value ?? "NGN";
 
   console.log(filteredData, eventTransactions);
 
@@ -340,11 +369,13 @@ export default function All() {
           </svg>
           <span className="text-gray-700 font-medium">Revenue</span>
           <span className="text-gray-900 font-semibold text-2xl">
-            ₦{new Intl.NumberFormat().format(totalRevenue)}
+            {currency}
+            {new Intl.NumberFormat().format(totalRevenue)}
           </span>
           <div className="text-tiny text-green-500 flex items-center gap-1.5 p-1 rounded bg-green-50 w-fit">
             <span className="font-medium capitalize">
-              Wallet: ₦{new Intl.NumberFormat().format(totalWallet)}
+              Wallet: {currency}
+              {new Intl.NumberFormat().format(totalWallet)}
             </span>
           </div>
         </div>
@@ -375,7 +406,8 @@ export default function All() {
             Affiliate Commission
           </span>
           <span className="text-gray-900 font-semibold text-2xl">
-            ₦{new Intl.NumberFormat().format(totalAffiliateCommission)}
+            {currency}
+            {new Intl.NumberFormat().format(totalAffiliateCommission)}
           </span>
         </div>
         <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md w-[200px]">

@@ -15,19 +15,15 @@ import {
   useInviteAttendees,
 } from "@/hooks/services/attendee";
 import { TInviteDetails } from "@/types/attendee";
+import { TFilter } from "@/types/filter";
 import {
   calculateAndSetMaxHeight,
   generateAlphanumericHash,
 } from "@/utils/helpers";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useEffect, useRef, useState } from "react";
-import { Calendar, Copy } from "styled-icons/boxicons-regular";
+import { Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
-import { Users } from "styled-icons/heroicons-outline";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TFilter } from "@/types/filter";
-import { useFilter } from "@/hooks/common/useFilter";
-import Filter from "@/components/Filter";
 
 type TInviteDetail = {
   email: string;

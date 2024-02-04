@@ -27,6 +27,7 @@ export interface TFilter<T> {
   optionsFromData?: boolean;
   icon?: React.ReactNode;
   order?: number;
+  defaultValue?: typeof T;
 }
 
 export type TFilterType =

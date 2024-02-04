@@ -133,7 +133,7 @@ const SingleFilter: React.FC<FilterOptionsProps<T>> = ({
   selectedFilters,
   applyFilter,
 }) => {
-  const { type, accessor, onFilter, label: filterLabel } = filter;
+  const { defaultValue, type, accessor, onFilter, label: filterLabel } = filter;
   const singleValue = selectedFilters.find(({ key }) => key === accessor);
 
   return (
@@ -141,7 +141,7 @@ const SingleFilter: React.FC<FilterOptionsProps<T>> = ({
       onValueChange={(value) =>
         applyFilter(accessor, filterLabel, value, onFilter, type)
       }
-      defaultValue={singleValue?.value}
+      defaultValue={defaultValue ?? singleValue?.value}
     >
       <div className="flex items-center space-x-2 mb-2">
         <RadioGroupItem
