@@ -5,15 +5,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const Whatsapp = () => {
   return (
     <Tabs defaultValue="account">
-      <TabsList className="bg-transparent">
+      <TabsList className="bg-transparent px-4 border-b pb-3 pt-2 flex justify-start w-full">
         <TabsTrigger
-          className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none"
+          className="py-3 data-[state=active]:shadow-none px-4 data-[state=active]:bg-transparent data-[state=active]:text-basePrimary rounded-none"
           value="account"
         >
           Account
         </TabsTrigger>
         <TabsTrigger
-          className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none"
+          className="py-3 data-[state=active]:shadow-none px-4 data-[state=active]:bg-transparent data-[state=active]:text-basePrimary rounded-none"
           value="password"
         >
           Password

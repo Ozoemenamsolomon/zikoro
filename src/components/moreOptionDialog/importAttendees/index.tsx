@@ -71,7 +71,7 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
   };
 
   return (
-    <div className="space-y-6 max-h-[80vh] overflow-auto hide-scrollbar py-4 pl-4 pr-1">
+    <div className="space-y-6 max-h-[80vh] overflow-auto hide-scrollbar py-4 px-4">
       <div className="flex gap-2 items-center pr-2">
         <div className="flex gap-1 items-center">
           <svg

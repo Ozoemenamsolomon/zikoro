@@ -2,6 +2,7 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Email, SMS, Whatsapp, Affiliate } from "./_tabs";
+import { useRef, useState, useLayoutEffect } from "react";
 
 type TMarketingTabs = {
   label: string;
@@ -16,6 +17,11 @@ const marketingTabs: TMarketingTabs[] = [
     component: <Email />,
   },
   {
+    label: "Affiliates",
+    value: "affiliate",
+    component: <Affiliate />,
+  },
+  {
     label: "SMS",
     value: "sms",
     component: <SMS />,
@@ -25,16 +31,23 @@ const marketingTabs: TMarketingTabs[] = [
     value: "whatsapp",
     component: <Whatsapp />,
   },
-  {
-    label: "Affiliate",
-    value: "affiliate",
-    component: <Affiliate />,
-  },
 ];
 
 const page = () => {
+  const divRef = useRef<HTMLDivElement>();
+
+  useLayoutEffect(() => {
+    const div = divRef.current;
+
+    // Get the distance from the top of the div to the bottom of the screen
+    const distanceToBottom = window.innerHeight - div.offsetTop;
+
+    // Set the maximum height of the div
+    div.style.height = `${distanceToBottom}px`;
+  }, []);
+
   return (
-    <section className="bg-white space-y-6">
+    <section className="bg-white space-y-6" ref={divRef}>
       <Tabs defaultValue="email">
         <TabsList className="bg-transparent border-b px-4 pt-4 w-full flex justify-start">
           {marketingTabs.map((tab) => (
