@@ -17,7 +17,6 @@ import { extractUniqueTypes } from "@/utils/helpers";
 import { useEffect, useState } from "react";
 import { AngleDown } from "styled-icons/fa-solid";
 import { columns } from "../columns";
-import { DataTable } from "../data-table";
 import { TFilter } from "@/types/filter";
 import { useFilter } from "@/hooks/common/useFilter";
 import {
@@ -31,6 +30,7 @@ import {
 import { RowSelectionState } from "@tanstack/react-table";
 import RequestPayoutDialog from "@/components/requestPayoutDialog";
 import { toast } from "@/components/ui/use-toast";
+import { DataTable } from "@/components/DataTable";
 
 const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
   {
@@ -561,7 +561,7 @@ export default function All() {
           )}
         />
         <div className="space-y-2 max-w-full">
-          <DataTable
+          <DataTable<TEventTransaction>
             columns={columns.filter(
               ({ accessorKey, id }) =>
                 shownColumns.includes(accessorKey) || shownColumns.includes(id)
@@ -569,6 +569,7 @@ export default function All() {
             data={filteredData}
             rowSelection={rowSelection}
             setRowSelection={setRowSelection}
+            canSelectRow={(row) => row?.original?.payOutStatus === "new"}
           />
         </div>
       </div>

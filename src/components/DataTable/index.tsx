@@ -28,19 +28,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData> {
+  columns: ColumnDef<TData>[];
   data: TData[];
   rowSelection: RowSelectionState;
   setRowSelection: Dispatch<SetStateAction<RowSelectionState>>;
+  canSelectRow?: (row: TData) => boolean;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData>({
   columns,
   data,
   rowSelection,
   setRowSelection,
-}: DataTableProps<TData, TValue>) {
+  canSelectRow,
+}: DataTableProps<TData>) {
   const table = useReactTable({
     data,
     columns,
@@ -48,7 +50,7 @@ export function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     state: { rowSelection },
     getRowId: (row) => row.id,
-    enableRowSelection: (row) => row?.original?.payOutStatus === "new",
+    enableRowSelection: canSelectRow || true,
     getPaginationRowModel: getPaginationRowModel(),
   });
 
