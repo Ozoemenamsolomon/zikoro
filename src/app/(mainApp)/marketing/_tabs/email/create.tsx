@@ -28,13 +28,25 @@ import { TIME_ZONES } from "@/utils/timezones";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-import { useRef, useState, useLayoutEffect } from "react";
+import { useRef, useState, useLayoutEffect, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useGetAttendees } from "@/hooks/services/attendee";
+import "@mdxeditor/editor/style.css";
+import { TextEditor } from "@/components/TextEditor";
+import { useSendMarketingEmail } from "@/hooks/services/marketing";
 
 const CreateEmailSchema = z
   .object({
-    title: z.string(),
+    category: z.string(),
     subject: z.string(),
     sender: z.string(),
     replyTo: z.string().optional(),
@@ -68,10 +80,19 @@ const Create = () => {
   const defaultValues: Partial<TCreateEmail> = {
     sender: "your organization",
     isScheduled: false,
+    content: "here",
   };
 
   const [sendTest, setSendTest] = useState<boolean>(false);
   const [testEmail, setTestEmail] = useState<string>("");
+  const [recipientSource, setRecipientSource] = useState<"attendees" | "list">(
+    "list"
+  );
+
+  const { attendees, getAttendees, isLoading } = useGetAttendees();
+
+  const { sendMarketingEmail, isLoading: sendEmailIsLoading } =
+    useSendMarketingEmail();
 
   const form = useForm<TCreateEmail>({
     resolver: zodResolver(CreateEmailSchema),
@@ -80,10 +101,34 @@ const Create = () => {
 
   const { watch, setValue } = form;
 
+  const content = watch("content");
   const isScheduled = watch("isScheduled");
 
-  const onSubmit = (data: TCreateEmail) => {
+  useEffect(() => {
+    if (recipientSource === "attendees")
+      setValue("recipients", attendees?.map(({ email }) => email) || []);
+  }, [recipientSource]);
+
+  const onSubmit = async (data: TCreateEmail) => {
     console.log(data);
+    await sendMarketingEmail({
+      payload: {
+        organizationId: 5,
+        userId: 10,
+        userEmail: "ubahyusuf484@gmail.com",
+        emailCategory: data.category,
+        subject: data.subject,
+        sendersName: data.sender,
+        replyTo: data.replyTo,
+        emailBody: data.content,
+        emailRecipient: data.recipients,
+      },
+    });
+  };
+
+  const setMessage = (content: string) => {
+    console.log(content);
+    setValue("content", content);
   };
 
   return (
@@ -96,7 +141,7 @@ const Create = () => {
           <div className="flex-1">
             <FormField
               control={form.control}
-              name="title"
+              name="category"
               render={({ field }) => (
                 <FormItem className="relative w-full space-y-0">
                   <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
@@ -112,7 +157,7 @@ const Create = () => {
                         <SelectTrigger>
                           <SelectValue
                             placeholder="Select campaign category"
-                            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-full"
+                            className="[&>*]:text-sm [&>*]:text-gray-200 [&>*]:capitalize w-full"
                           />
                         </SelectTrigger>
                       </FormControl>
@@ -122,7 +167,7 @@ const Create = () => {
                             <SelectItem
                               key={event}
                               value={event}
-                              className="inline-flex gap-2"
+                              className="inline-flex gap-2 capitalize"
                             >
                               {event}
                             </SelectItem>
@@ -184,6 +229,99 @@ const Create = () => {
               )}
             />
           </div>
+        </div>
+        <div className="space-y-4 border px-3 py-4">
+          {isLoading ? (
+            <span className="font-medium text-gray-700">Loading...</span>
+          ) : (
+            <>
+              <div className="flex justify-between items-center">
+                <span>Who should receive this mail?</span>
+                <div className="flex">
+                  <Button
+                    onClick={() => setRecipientSource("attendees")}
+                    type="button"
+                    className={cn(
+                      "rounded-none border-2 w-28 border-basePrimary",
+                      recipientSource === "attendees"
+                        ? "bg-basePrimary text-white"
+                        : "bg-white text-basePrimary"
+                    )}
+                  >
+                    Attendees
+                  </Button>
+                  <Button
+                    onClick={() => setRecipientSource("list")}
+                    type="button"
+                    className={cn(
+                      "rounded-none border-2 w-28 border-basePrimary",
+                      recipientSource === "list"
+                        ? "bg-basePrimary text-white"
+                        : "bg-white text-basePrimary"
+                    )}
+                  >
+                    List
+                  </Button>
+                </div>
+              </div>
+              {recipientSource === "attendees" ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">
+                    {attendees.length} people will receive this mail
+                  </span>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="text-sm text-basePrimary font-medium hover:bg-transparent hover:text-basePrimary"
+                      >
+                        View
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="px-3 max-h-[500px] overflow-auto hide-scrollbar">
+                      <DialogHeader>
+                        <DialogTitle>
+                          <span className="capitalize">Email Recipient</span>
+                        </DialogTitle>
+                      </DialogHeader>
+                      <ul className="space-y-2">
+                        {attendees?.map(({ email }) => (
+                          <li className="text-sm font-medium text-gray-700">
+                            {email}
+                          </li>
+                        ))}
+                      </ul>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              ) : (
+                <FormField
+                  control={form.control}
+                  name="recipients"
+                  render={({ field }) => (
+                    <InputOffsetLabel isRequired label={"Recipients"}>
+                      <Input
+                        type="string"
+                        placeholder={
+                          "Enter emails seperated by semi-colon seperated"
+                        }
+                        onInput={(e) =>
+                          field.onChange(e.target.value.split(";"))
+                        }
+                        className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+              )}
+            </>
+          )}
+        </div>
+        <div className="w-full rounded-md border border-input bg-background text-sm relative">
+          <span className="absolute top-0 -translate-y-1/2 right-4 text-gray-600 text-tiny px-1 z-10">
+            Message
+          </span>
+          <TextEditor onChange={setMessage} markdown={content} />
         </div>
         <div className="flex gap-8 items-center">
           <FormField
@@ -274,8 +412,9 @@ const Create = () => {
                       </FormControl>
                       <SelectContent className="h-64 hide-scrollbar overflow-auto w-auto">
                         {TIME_ZONES.flatMap(({ zones }) =>
-                          zones.map(({ label, value }) => (
+                          zones.map(({ label, value }, index) => (
                             <SelectItem
+                              key={value + index}
                               value={value}
                               className="inline-flex gap-2"
                             >
@@ -322,11 +461,12 @@ const Create = () => {
             />
           </div>
           <Button
+            disabled={isLoading}
             type="submit"
             className="bg-basePrimary w-full flex items-center gap-4 flex-[30%]"
           >
             <span className="text-white">
-              Send {!sendTest ? "test" : ""} email
+              Send {sendTest ? "test" : ""} email
             </span>
             <span className="text-white">
               <svg

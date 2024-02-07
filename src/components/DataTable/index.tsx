@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
+  Row,
 } from "@tanstack/react-table";
 
 import {
@@ -31,9 +32,10 @@ import {
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
   data: TData[];
-  rowSelection: RowSelectionState;
-  setRowSelection: Dispatch<SetStateAction<RowSelectionState>>;
-  canSelectRow?: (row: TData) => boolean;
+  rowSelection?: RowSelectionState;
+  setRowSelection?: Dispatch<SetStateAction<RowSelectionState>>;
+  canSelectRow?: (row: Row<TData>) => boolean;
+  rowStyle: React.CSSProperties;
 }
 
 export function DataTable<TData>({
@@ -42,6 +44,7 @@ export function DataTable<TData>({
   rowSelection,
   setRowSelection,
   canSelectRow,
+  rowStyle,
 }: DataTableProps<TData>) {
   const table = useReactTable({
     data,
@@ -61,12 +64,7 @@ export function DataTable<TData>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: `auto 1.5fr repeat(${
-                    columns.length - 2
-                  }, minmax(0, 1fr))`,
-                }}
+                style={rowStyle}
                 key={headerGroup.id}
                 className="max-w-full gap-2 bg-gray-100"
               >
@@ -92,15 +90,10 @@ export function DataTable<TData>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: `auto 1.5fr repeat(${
-                      columns.length - 2
-                    }, minmax(0, 1fr))`,
-                  }}
+                  style={rowStyle}
                   className="max-w-full grid grid-cols-[auto_1.5fr_repeat(8,_minmax(0,_1fr))]  gap-2"
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  // data-state={row?.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell

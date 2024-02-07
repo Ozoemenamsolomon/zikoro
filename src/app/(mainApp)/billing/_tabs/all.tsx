@@ -344,7 +344,7 @@ export default function All() {
 
   console.log(eventTransactions);
 
-  const onChange = (accessorKey) =>
+  const onChange = (accessorKey: string) =>
     setShownColumns((prevShown) =>
       prevShown.includes(accessorKey)
         ? prevShown.filter((item) => item !== accessorKey)
@@ -554,11 +554,11 @@ export default function All() {
         </div>
         <Filter
           className={`space-y-4 max-w-full`}
-          filters={filters}
-          applyFilter={applyFilter}
-          selectedFilters={selectedFilters.sort(
+          filters={filters.sort(
             (a, b) => (a.order || Infinity) - (b.order || Infinity)
           )}
+          applyFilter={applyFilter}
+          selectedFilters={selectedFilters}
         />
         <div className="space-y-2 max-w-full">
           <DataTable<TEventTransaction>
@@ -570,6 +570,12 @@ export default function All() {
             rowSelection={rowSelection}
             setRowSelection={setRowSelection}
             canSelectRow={(row) => row?.original?.payOutStatus === "new"}
+            rowStyle={{
+              display: "grid",
+              gridTemplateColumns: `auto 1.5fr repeat(${
+                columns.length - 2
+              }, minmax(0, 1fr))`,
+            }}
           />
         </div>
       </div>

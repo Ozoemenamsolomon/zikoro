@@ -42,12 +42,13 @@ const page = () => {
     // Get the distance from the top of the div to the bottom of the screen
     const distanceToBottom = window.innerHeight - div.offsetTop;
 
+    if (!div) return;
     // Set the maximum height of the div
-    div.style.height = `${distanceToBottom}px`;
+    div.style.minHeight = `${distanceToBottom}px`;
   }, []);
 
   return (
-    <section className="bg-white space-y-6" ref={divRef}>
+    <section className="bg-white space-y-6" ref={divRef || null}>
       <Tabs defaultValue="email">
         <TabsList className="bg-transparent border-b px-4 pt-4 w-full flex justify-start">
           {marketingTabs.map((tab) => (

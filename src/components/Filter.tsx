@@ -219,12 +219,12 @@ const FilterOptions: React.FC<FilterOptionsProps<T>> = React.memo(
   }
 );
 
-const Filter: React.FC<FilterProps<T>> = ({
+function Filter<T>({
   className,
   filters,
   applyFilter,
   selectedFilters,
-}) => {
+}: FilterProps<T>) {
   return (
     <div className={className}>
       <Menubar className="flex justify-between px-1 border-0">
@@ -279,6 +279,6 @@ const Filter: React.FC<FilterProps<T>> = ({
       </div>
     </div>
   );
-};
+}
 
 export default Filter;
