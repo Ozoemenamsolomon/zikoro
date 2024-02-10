@@ -32,6 +32,7 @@ import {
 import { useEffect, useState } from "react";
 import COUNTRY_CODE from "@/utils/countryCode";
 import { attendeeTypeOptions } from "@/data/attendee";
+import { uploadFiles } from "@/utils/helpers";
 
 export default function AddAttendeeForm({
   isOpen,
@@ -102,6 +103,35 @@ export default function AddAttendeeForm({
 
     await createAttendee({ payload });
   }
+
+  const [profilePictureIsUploading, setProfilePictureUploading] =
+    useState<boolean>(false);
+
+  const uploadProfilePicture = async (file: File) => {
+    try {
+      setProfilePictureUploading(true);
+      const url =
+        "https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME}/image/upload";
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "docs_upload_example_us_preset");
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Failed to upload files");
+
+      const data = await response.text();
+      alert("File uploaded successfully");
+
+      console.log("File uploaded successfully!", data);
+    } catch (error) {
+      console.error("Error uploading file:");
+    } finally {
+      setProfilePictureUploading(false);
+    }
+  };
 
   return (
     <Overlay isOpen={isOpen} onClose={onClose} title="Attendee">
@@ -290,24 +320,31 @@ export default function AddAttendeeForm({
               />
             </div>
           </div>
-          <FormField
-            control={form.control}
-            name="profilePicture"
-            render={({ field }) => (
-              <FormItem className="relative">
-                <div className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-                  Profile picture
-                </div>
-                <FormLabel className="hover:cursor-pointer flex items-center gap-6 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                  <Camera className="w-6 h-6" />
-                  <span className="text-gray-200">Select Image</span>
-                </FormLabel>
-                <FormControl>
-                  <Input type="file" className="hidden" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+
+          <div className="relative">
+            <div className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+              Profile picture
+            </div>
+            <label
+              htmlFor="profilePicture"
+              className="hover:cursor-pointer flex items-center gap-6 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            >
+              <Camera className="w-6 h-6" />
+              {profilePictureIsUploading ? (
+                <span className="text-gray-500">Loading...</span>
+              ) : (
+                <span className="text-gray-200">Select Image</span>
+              )}
+            </label>
+            <div className="opacity-0 absolute w-full h-full top-0 hover:cursor-pointer">
+              <Input
+                name="profilePicture"
+                type="file"
+                onChange={(e) => uploadProfilePicture(e.target.files[0])}
+              />
+            </div>
+          </div>
+
           <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
             <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
               Attendee Type
