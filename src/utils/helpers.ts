@@ -54,7 +54,7 @@ export function calculateAndSetMaxHeight(
   }
 }
 
-export function generateAlphanumericHash(length: number): string {
+export function generateAlphanumericHash(length?: number): string {
   const characters =
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   const hashLength = length || 18;
