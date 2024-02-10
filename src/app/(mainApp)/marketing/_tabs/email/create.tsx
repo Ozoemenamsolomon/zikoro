@@ -40,8 +40,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useGetAttendees } from "@/hooks/services/attendee";
-import "@mdxeditor/editor/style.css";
-import { TextEditor } from "@/components/TextEditor";
+// import "@mdxeditor/editor/style.css";
+// import { TextEditor } from "@/components/TextEditor";
 import { useSendMarketingEmail } from "@/hooks/services/marketing";
 
 const CreateEmailSchema = z
@@ -317,12 +317,12 @@ const Create = () => {
             </>
           )}
         </div>
-        <div className="w-full rounded-md border border-input bg-background text-sm relative">
+        {/* <div className="w-full rounded-md border border-input bg-background text-sm relative">
           <span className="absolute top-0 -translate-y-1/2 right-4 text-gray-600 text-tiny px-1 z-10">
             Message
           </span>
           <TextEditor onChange={setMessage} markdown={content} />
-        </div>
+        </div> */}
         <div className="flex gap-8 items-center">
           <FormField
             control={form.control}
