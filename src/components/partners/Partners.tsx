@@ -32,7 +32,7 @@ export function Partners({ eventId }: { eventId: string }) {
   const [isLocationDropDown, setShowLocationDropDown] = useState(false);
   const [isIndustryDropDown, setShowIndustryDropDown] = useState(false);
   const [isStamp, setIsStamp] = useState(false);
-  const { data, loading,  refetch } = useFetchPartners(eventId);
+  const { data, loading, refetch } = useFetchPartners(eventId);
   const [partnerData, setPartnerData] = useState<TPartner[] | undefined>(
     undefined
   );
@@ -171,8 +171,12 @@ export function Partners({ eventId }: { eventId: string }) {
   }
 
   return (
-    <SideBarLayout className="px-0 sm:px-0">
-      <HeaderTab eventId={eventId}  refetch={refetch}/>
+    <SideBarLayout
+      hasTopBar
+      className="px-0 sm:px-0 pt-4 sm:pt-4"
+      parentClassName="px-0 sm:px-0"
+    >
+      <HeaderTab eventId={eventId} refetch={refetch} />
 
       <div className="w-full flex flex-col justify-start items-start ">
         <div className="w-full flex items-center justify-between p-4">

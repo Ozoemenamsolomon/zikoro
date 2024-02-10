@@ -4,65 +4,71 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+
 const links = [
   {
-    name: "Content",
-    href: "/content",
+    name: "Home",
+    href: `home/:eventId`,
   },
   {
     name: "People",
-    href: "/people",
+    href: "people/all",
   },
   {
     name: "Agenda",
-    href: "/agenda",
+    href: "agenda",
   },
   {
     name: "Partners",
-    href: "/partners",
+    href: `partners/:eventId`,
   },
   {
     name: "Products",
-    href: "/products",
+    href: "products",
   },
   {
     name: "Interactions",
-    href: "/interactions",
+    href: "interactions",
   },
   {
     name: "Documents",
-    href: "/documents",
+    href: "documents",
   },
   {
     name: "Analytics",
-    href: "/analytics",
+    href: "analytics",
   },
   {
     name: "Settings",
-    href: "/settings",
+    href: "settings",
   },
 ];
 
 const Topbar = () => {
-  const pathname = usePathname();
+  const pathnames = usePathname().split("/");
+  const currentLink = pathnames[pathnames.length - 2];
+
+ 
+
   return (
-    <div className="bg-white w-full flex gap-12 text-gray-500 sticky top-0">
-      {links.map(({ name, href }) => {
-        return (
-          <Link
-            href={href}
-            className={` ${
-              pathname === href
-                ? "text-orange-500 border-b-2 border-orange-500"
-                : ""
-            }`}
-          >
-            {name}
-          </Link>
-        );
-      })}
-    </div>
+    <nav className="bg-white w-full px-4 pt-4 h-max border-b-[1px]">
+      <ul className="flex justify-between text-gray-700">
+        {links.map(({ name, href }) => {
+          return (
+            <li
+              className={`pb-1 text-sm ${
+                currentLink.includes(href)
+                  ? "text-zikoro border-b-2 border-zikoro font-medium"
+                  : ""
+              }`}
+            >
+              <Link href={"/" + href}>{name}</Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 };
 
-export default Topbar;
+export { Topbar };

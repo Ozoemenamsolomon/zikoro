@@ -6,11 +6,13 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
+import { UserProfile } from "@auth0/nextjs-auth0/client";
 
 
+const supabase = createClientComponentClient();
 export const saveCookie = (name: string, value: any) => {
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     const newVale = JSON.stringify(value);
     Cookies.set(name, newVale);
   } else {
@@ -23,7 +25,7 @@ export const getCookie = (name: string) => {
   const jsonString = Cookies.get(name);
 
   try {
-    if (typeof jsonString === 'string') {
+    if (typeof jsonString === "string") {
       const jsonObject = JSON.parse(jsonString);
       value = jsonObject;
     }
@@ -34,44 +36,34 @@ export const getCookie = (name: string) => {
   return value;
 };
 
-export function useRegister() {
+export function useOnboarding() {
   const [loading, setLoading] = useState(false);
-  const supabase = createClientComponentClient();
+  const router = useRouter()
+  
 
-  async function registration(values: z.infer<typeof registrationSchema>) {
+  async function registration(values: z.infer<typeof registrationSchema>, user: UserProfile | undefined) {
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email: values.userEmail,
-        password: values.password,
-      });
+      const { error, status } = await supabase
+        .from("users")
+        .upsert([
+          {
+            ...values,
+            userEmail: user?.email,
+            created_at: user?.updated_at,
+          },
+        ]);
 
       if (error) {
         toast.error(error.message);
-        setLoading(false);
+        setLoading(false)
         return;
       }
 
-      if (data?.user) {
-        console.log();
-        const { password, ...restDatas } = values;
-        let created_at;
-        if (data?.user?.identities) {
-          created_at = data?.user?.identities[0]?.created_at;
-          console.log(data?.user?.identities[0]?.created_at);
-        }
-        // Store user data in a 'users' table
-        const { error, status } = await supabase
-          .from("users")
-          .upsert({ userId: data?.user.id, created_at, ...restDatas });
-
-        if (error) {
-          toast.error(error.message);
-          setLoading(false);
-          return;
-        }
-        if (status === 201)
-          toast.success("Sign Up successful, Verify your mail to continue");
+      if (status === 201 || status === 200) {
+        setLoading(false);
+        router.push("/auth/login")
+        toast.success("Profile Updated successfully");
       }
     } catch (error) {}
   }
@@ -84,7 +76,6 @@ export function useRegister() {
 export function useLogin() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClientComponentClient();
 
   async function logIn(values: z.infer<typeof loginSchema>) {
     setLoading(true);
@@ -101,7 +92,7 @@ export function useLogin() {
       }
 
       if (data) {
-        saveCookie("user", data)
+        saveCookie("user", data);
         toast.success("Sign In Successful");
         router.push("/");
       }

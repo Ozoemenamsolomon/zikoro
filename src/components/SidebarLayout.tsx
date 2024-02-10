@@ -16,19 +16,31 @@ import {
   WhatsappIcon,
 } from "@/constants";
 import { CircleUser } from "styled-icons/fa-solid";
-
+import { redirect } from "next/navigation";
+import { Topbar } from ".";
 export function SideBarLayout({
   children,
   className,
   parentClassName,
   isHomePage,
+  hasTopBar,
 }: {
   children: React.ReactNode;
   className?: string;
   isHomePage?: boolean;
+  hasTopBar?:boolean
   parentClassName?: string;
 }) {
   const { user, error } = useUser();
+
+  // using this to redirect new users to onboarding
+  // before modiifcation from the TL
+
+  useEffect(() => {
+    if (user && user.isFirstLogin) {
+      redirect("/onboarding");
+    }
+  }, [user]);
 
   const [isNav, setNav] = useState(false);
   const param = useSearchParams();
@@ -49,9 +61,12 @@ export function SideBarLayout({
   return (
     <>
       <div
-        className={cn(`w-full lg:w-[calc(100%-250px)] min-[1024px]:float-right right-0 z-50 fixed bg-white  border-gray-200 px-3 py-3 sm:py-4 sm:px-6 flex justify-between items-center `,  parentClassName)}
+        className={cn(
+          `w-full lg:w-[calc(100%-250px)] min-[1024px]:float-right right-0 z-50 fixed bg-white  border-gray-200 px-3 py-3 sm:py-4 sm:px-6 flex justify-between items-center `,
+          parentClassName
+        )}
       >
-        <div className="justify-between  w-full flex items-center"></div>
+       {hasTopBar && <Topbar/>}
       </div>
 
       <div

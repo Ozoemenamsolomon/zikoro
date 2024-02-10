@@ -3,6 +3,7 @@ import { Button } from "@/components";
 import { Lock } from "@styled-icons/fa-solid/Lock";
 import { PaystackButton } from "react-paystack";
 import { useState } from "react";
+import {OrganizerContact} from "@/types"
 import { paymentConfig } from "@/hooks/common/usePayStackPayment";
 import { getCookie, useUpdateTransactionDetail } from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
@@ -15,6 +16,8 @@ export function Payment({
   processingFee,
   amountPayable,
   priceCategory,
+  organizerContact,
+  organization,
   eventDate,
   eventPrice,
   currency,
@@ -40,6 +43,8 @@ export function Payment({
   eventPrice?: number;
   startDate?: string;
   endDate?: string;
+  organization?: string | null;
+  organizerContact: OrganizerContact
   eventId?: number;
   eventDate?: string;
   priceCategory?: string;
@@ -75,9 +80,15 @@ export function Payment({
       discountValue: discount,
       referralSource,
       discountCode,
+      eventLocation,
       amountPayable,
       processingFee,
+      count,
       currency,
+      organizerContact,
+      organization,
+      startDate,
+      endDate,
       registrationCompleted: reference.status === "success",
       eventDate,
       payOutStatus: "new",
@@ -116,6 +127,12 @@ export function Payment({
       referralSource,
       discountCode,
       currency,
+      organizerContact,
+      organization,
+      count,
+      startDate,
+      endDate,
+      eventLocation,
       registrationCompleted: true,
       eventDate,
       ticketCategory: priceCategory,

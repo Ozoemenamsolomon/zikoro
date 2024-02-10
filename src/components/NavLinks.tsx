@@ -28,7 +28,7 @@ export const NavLinks = ({
               <Button
                 className={cn(
                   "p-3 px-4 flex  items-center justify-start gap-x-2  w-full",
-                  href === pathname &&
+                  pathname.includes(href) &&
                     "text-zikoro  bg-zikoro border-l-4 border-zikoro bg-opacity-10  "
                 )}
               >

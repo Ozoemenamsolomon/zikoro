@@ -14,12 +14,17 @@ import {
 } from "@/components";
 import { CreateOrganization } from "..";
 import { useRouter } from "next/navigation";
+import _ from "lodash";
 
 type OrganizationListType = {
   id: Number;
   value: string;
 };
-export function HeaderWidget({ currentQuery }: { currentQuery: string | null }) {
+export function HeaderWidget({
+  currentQuery,
+}: {
+  currentQuery: string | null;
+}) {
   const [organization, setOrganization] = useState(currentQuery ?? "");
   const [isOpen, setOpen] = useState(false);
   const router = useRouter();
@@ -30,9 +35,12 @@ export function HeaderWidget({ currentQuery }: { currentQuery: string | null }) 
   }
 
   const formattedList: OrganizationListType[] = useMemo(() => {
-    return organizationList?.map(({ id, organizationName }) => {
-      return { id, value: organizationName };
-    });
+    const restructuredList = organizationList?.map(
+      ({ id, organizationName }) => {
+        return { id, value: organizationName };
+      }
+    );
+    return _.uniqBy(restructuredList, "value");
   }, [organizationList]);
 
   console.log({ organization });
@@ -69,7 +77,10 @@ export function HeaderWidget({ currentQuery }: { currentQuery: string | null }) 
             <SelectContent>
               {Array.isArray(formattedList) &&
                 formattedList?.map(({ value }) => (
-                  <SelectItem key={value ?? "Select Organization"} value={value}>
+                  <SelectItem
+                    key={value ?? "Select Organization"}
+                    value={value}
+                  >
                     {value}
                   </SelectItem>
                 ))}

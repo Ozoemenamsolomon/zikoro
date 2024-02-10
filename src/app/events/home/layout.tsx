@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
+import { PartnersProvider } from "@/context";
 
-import { AuthLayout } from "@/components";
 
 export const metadata: Metadata = {
-  title: `Login Page`,
-  description: "Description",
+  title: "Event Home Page",
+  description: "The event schedules and description",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <AuthLayout>{children}</AuthLayout>;
+  return  children
 }

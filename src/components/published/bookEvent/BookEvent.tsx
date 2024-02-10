@@ -16,6 +16,7 @@ import { eventBookingValidationSchema } from "@/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { CloseOutline } from "styled-icons/evaicons-outline";
+import {OrganizerContact} from "@/types"
 import { useBookingEvent, useTransactionDetail } from "@/hooks";
 import toast from "react-hot-toast";
 
@@ -30,6 +31,7 @@ export function BookEvent({
   startDate,
   discountAmount,
   currency,
+  organizerContact,
   discountPercentage,
   priceCategory,
   eventTitle,
@@ -42,6 +44,7 @@ export function BookEvent({
   priceCategory?: string;
   endDate?: string;
   startDate?: string;
+  organizerContact: OrganizerContact;
   eventTitle?: string;
   minimumAttendees?: number;
   organization?: string | null;
@@ -409,6 +412,7 @@ export function BookEvent({
                     {["instagram", "facebook", "x", "linkedIn", "others"].map(
                       (value) => (
                         <FormField
+                        key={value}
                           control={form.control}
                           name="aboutUs"
                           render={({ field }) => (
@@ -470,6 +474,8 @@ export function BookEvent({
           endDate={endDate}
           attendeesDetails={attendees}
           eventId={eventId}
+          organization={organization}
+          organizerContact={organizerContact}
           currency={currency}
           processingFee={processingFee}
           amountPayable={processingFee ? total - processingFee: total}

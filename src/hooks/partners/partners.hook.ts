@@ -52,7 +52,7 @@ export function useAddPartners() {
   };
 }
 
-export function useFetchPartners(eventId: string) {
+export function useFetchPartners(eventId: string | number) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any[]>([]);
   useEffect(() => {

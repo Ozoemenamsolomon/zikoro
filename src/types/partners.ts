@@ -13,6 +13,7 @@ export interface PartnerBannerType {
   link: string;
 }
 
+
 export interface TPartner {
   banners: PartnerBannerType[];
   boothNumber: string;

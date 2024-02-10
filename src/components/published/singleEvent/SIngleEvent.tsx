@@ -35,7 +35,7 @@ import {
 import { useState, useMemo } from "react";
 import { BookEvent } from "..";
 import { useRouter } from "next/navigation";
-import { Event } from "@/types";
+import { Event, OrganizerContact } from "@/types";
 import { useRedeemDiscountCode } from "@/hooks";
 
 export function SingleEvent({
@@ -69,7 +69,7 @@ export function SingleEvent({
   const router = useRouter();
 
   function onClose() {
-    if (isDetail) return;
+   // if (isDetail) return;
     setOpen((prev) => !prev);
   }
 
@@ -223,6 +223,12 @@ export function SingleEvent({
     await verifyDiscountCode(code, String(eventId));
     // setCode("")
   }
+
+  const organizerContact: OrganizerContact = {
+    whatsappNumber: event?.whatsappNumber,
+    phoneNumber: event?.phoneNumber,
+    email: event?.email,
+  };
 
   return (
     <>
@@ -476,6 +482,8 @@ export function SingleEvent({
                 disabled={priceCategory === ""}
                 onClick={(e) => {
                   e.stopPropagation();
+                  e.stopPropagation()
+                  console.log("clicked", onClose)
                   onClose();
                 }}
                 className="text-white font-medium bg-zikoro rounded-md h-14 w-full"
@@ -524,6 +532,7 @@ export function SingleEvent({
           discountPercentage={discountPercentage}
           startDate={startDate}
           currency={currency}
+          organizerContact={organizerContact}
           priceCategory={priceCategory}
           minimumAttendees={minAttendees}
           eventTitle={event?.eventTitle}

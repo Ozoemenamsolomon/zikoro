@@ -10,6 +10,8 @@ import {
 } from "@/validations";
 import { Event } from "@/types";
 import _ from "lodash";
+import { postRequest } from "@/utils";
+import { AxiosError } from "axios";
 
 const supabase = createClientComponentClient();
 
@@ -351,7 +353,7 @@ export function useBookingEvent() {
         if (error) {
           if (
             error.message ===
-            `duplicate key value violates unique constraint "attendees_email_key"`
+            `duplicate key value violates unique constraint "/attendees_email_key/"`
           ) {
             // toast.error("User has already registered for this event")
           } else {
@@ -441,42 +443,28 @@ export function useUpdateTransactionDetail() {
     payload: any
   ) {
     setLoading(true);
+
     try {
-      const { error, status } = await supabase
-        .from("eventTransactions")
-        .update(payload)
-        .eq("eventRegistrationRef", payload.eventRegistrationRef);
-
-      if (error) {
-        toast.error(error.message);
-        return;
+      const { data, status } = await postRequest({
+        endpoint: "/payment",
+        payload,
+      });
+      /**
+       if (status !== 204) {
+       toast.error(error.message);
+       return;
       }
-
+    */
       if (status === 204 || status === 200) {
-        // To  update the bookedSpot
-
-        // fetch event
-        // Fetch the event by ID
-        const { data: originalEvent, error: fetchError } = await supabase
-          .from("events")
-          .select("*")
-          .eq("id", payload.eventId)
-          .single();
-
-        const registered =
-          originalEvent.registered === null
-            ? payload.attendees
-            : Number(originalEvent?.registered) + payload.attendees;
-        const { error, status } = await supabase
-          .from("events")
-          .update({ ...originalEvent, registered })
-          .eq("id", payload.eventId);
-
         setLoading(false);
         toggleSuccessModal(true);
-        // toast.success("Al");
+         toast.success("Transaction Successful");
       }
-    } catch (error) {
+    } catch (error:any) {
+     /// console.log(error)
+      toast.error(
+        error?.response?.data?.error || "An error occurred while making the request."
+      );
       setLoading(false);
     }
   }
@@ -559,18 +547,16 @@ export function useFetchAttendees(id: string) {
   // Fetch the attendees for an event
   async function fetchData() {
     try {
-      const {
-        data,
-        error: fetchError,
-  
-      } = await supabase.from("attendees").select("*").eq("eventId", id);
+      const { data, error: fetchError } = await supabase
+        .from("attendees")
+        .select("*")
+        .eq("eventId", id);
 
       if (fetchError) {
         return null;
       }
 
       setAttendees(data);
-     
     } catch (error) {
       console.log(error);
     }

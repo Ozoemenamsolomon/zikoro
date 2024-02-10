@@ -20,20 +20,21 @@ import {
 import { registrationSchema } from "@/validations";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import Link from "next/link";
 import { useState } from "react";
 import { Eye } from "@styled-icons/feather/Eye";
 import { EyeOff } from "@styled-icons/feather/EyeOff";
 import { COUNTRY_CODE } from "@/utils";
-import { useRegister } from "@/hooks";
+import { useOnboarding } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 
 export default function Page() {
-  const [showPassword, setShowPassword] = useState(false);
+  const { user } = useUser();
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
   const [whatsappCountryCode, setWhatsAppCountryCode] =
     useState<string>("+234");
-  const { loading, registration } = useRegister();
+  const { loading, registration } = useOnboarding();
 
   const form = useForm<z.infer<typeof registrationSchema>>({
     resolver: zodResolver(registrationSchema),
@@ -45,12 +46,19 @@ export default function Page() {
       whatsappNumber: whatsappCountryCode + values.whatsappNumber,
       phoneNumber: phoneCountryCode + values.phoneNumber,
     };
-    await registration(payload);
+    await registration(payload, user);
   }
 
   return (
     <>
-      <h2 className="font-medium text-lg sm:text-xl mb-6">Create an account</h2>
+      <div className="w-full flex flex-col gap-y-1 mb-6 items-start justify-start">
+        <h2 className="font-medium text-lg sm:text-xl">Welcome back 👋</h2>
+        <div className="text-mobile w-full text-gray-600">
+          You are logged in as
+          <span className="font-semibold ml-1">{user?.email}</span>. Kindly
+          update your profile to continue
+        </div>
+      </div>
 
       <Form {...form}>
         <form
@@ -87,45 +95,7 @@ export default function Page() {
               )}
             />
           </div>
-          <FormField
-            control={form.control}
-            name="userEmail"
-            render={({ field }) => (
-              <InputOffsetLabel label="Email">
-                <Input
-                  type="email"
-                  placeholder="Enter your email address"
-                  {...field}
-                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                />
-              </InputOffsetLabel>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <InputOffsetLabel label="Password">
-                <div className="relative h-12 w-full">
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter Password"
-                    {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                  />
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setShowPassword((prev) => !prev);
-                    }}
-                    className="absolute right-3 inset-y-1/4"
-                  >
-                    {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
-                  </button>
-                </div>
-              </InputOffsetLabel>
-            )}
-          />
+
           <div className="w-full grid grid-cols-2 items-center gap-2">
             <FormField
               control={form.control}
@@ -160,7 +130,9 @@ export default function Page() {
 
                     <SelectContent>
                       {COUNTRY_CODE.map(({ name }) => (
-                        <SelectItem value={name}>{name}</SelectItem>
+                        <SelectItem key={name} value={name}>
+                          {name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -185,7 +157,7 @@ export default function Page() {
                   />
                   <FormControl>
                     <Input
-                      className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-12"
+                      className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
                       placeholder="Enter phone number"
                       {...field}
                       type="tel"
@@ -212,7 +184,7 @@ export default function Page() {
                   />
                   <FormControl>
                     <Input
-                      className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-12"
+                      className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
                       placeholder="Enter whatsapp number"
                       {...field}
                       type="tel"
@@ -235,15 +207,17 @@ export default function Page() {
             className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-zikoro h-12 rounded-md text-gray-50 font-medium"
           >
             {loading && <LoaderAlt size={22} className="animate-spin" />}
-            <span>Sigup</span>
+            <span>Update Profile</span>
           </Button>
 
-          <div className="w-full flex items-center gap-x-1 justify-center">
+          {/**
+           <div className="w-full flex items-center gap-x-1 justify-center">
             <p>Already have an account?</p>
             <Link href="/login" className="text-zikoro font-medium">
               Sign in
             </Link>
           </div>
+         */}
         </form>
       </Form>
     </>

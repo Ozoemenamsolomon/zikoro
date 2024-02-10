@@ -7,6 +7,11 @@ export interface Attendees {
   email: string;
   whatsappNumber: string;
 }
+export interface OrganizerContact {
+  whatsappNumber:string |  undefined
+  email:string | undefined
+  phoneNumber:string | undefined
+}
 
 export enum EventDetailTab {
   ABOUT_TAB = 1,

@@ -13,14 +13,7 @@ export const loginSchema = z.object({
 });
 
 export const registrationSchema = z.object({
-  userEmail: z
-    .string()
-    .email({ message: "Email must be a valid email" })
-    .min(1, { message: "Email is required" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters" })
-    .min(1, { message: "Password is required" }),
+
   firstName: z.string().min(1, { message: "Username is required" }),
   lastName: z.string().min(1, { message: "Username is required" }),
   phoneNumber: z.string().refine((value) => value && /^\d{10,}$/.test(value), {

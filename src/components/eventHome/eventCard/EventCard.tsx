@@ -91,7 +91,7 @@ export function EventCard({
     <div
       role="button"
       onClick={() =>
-        router.push(`/published-events/partners/${event.id}?title=${event.eventTitle}`)
+        router.push(`/events/home/${event.id}`)
       }
       className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4 shadow-md w-full"
     >

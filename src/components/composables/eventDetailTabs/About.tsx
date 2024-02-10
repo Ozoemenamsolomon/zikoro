@@ -4,9 +4,17 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 
-import { FeedBackCard } from "..";
+import { FeedBackCard } from "../../published";
+import { cn } from "@/lib";
+import { Event } from "@/types";
 
-export function About() {
+export function About({
+  className,
+  event,
+}: {
+  event: Event | null;
+  className?: string;
+}) {
   const settings = {
     dots: true,
     infinite: true,
@@ -18,7 +26,12 @@ export function About() {
   };
   return (
     <div className="w-full  flex-col flex gap-y-6 sm:gap-y-20">
-      <div className="w-full px-4 sm:px-6 gap-6 grid grid-cols-1 lg:grid-cols-2 items-center">
+      <div
+        className={cn(
+          "w-full px-4 sm:px-6 gap-6 grid grid-cols-1 lg:grid-cols-2 items-center",
+          className
+        )}
+      >
         <div className="w-full flex flex-col border gap-y-6 rounded-lg p-3 sm:p-4">
           <ul className="list-disc w-full flex flex-col items-start justify-start space-y-4">
             <h2 className="font-medium text-base sm:text-lg ">About Event</h2>

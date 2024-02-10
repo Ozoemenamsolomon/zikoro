@@ -1,5 +1,5 @@
 
-export async function uploadFile(file: File, type:string) {
+export async function uploadFile(file: File | string, type:string) {
 
   const formData = new FormData();
   formData.append("file", file);
