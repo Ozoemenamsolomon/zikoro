@@ -51,10 +51,30 @@ export const columns: ColumnDef<TAffiliate>[] = [
   {
     accessorKey: "accountDetails",
     header: "Account Details",
-    // cell: ({ row }) => (
-    //   <div className="max-w-full truncate">
-    //     {convertDateFormat(row.getValue("created_at"))}
-    //   </div>
-    // ),
+    cell: ({ row }) => {
+      const accountDetails = row.getValue("accountDetails");
+
+      if (!accountDetails) return <div>N/A</div>;
+
+      return (
+        <div className="space-y-1">
+          <span className="text-xs font-medium text-gray-500">
+            {accountDetails?.accountNumber || "N/A"}
+            <div className="text-gray-500 flex no-wrap">
+              <span className="flex-[70%] truncate">
+                {accountDetails?.accountName || "N/A"}
+              </span>
+              <span className="flex-[30%]">
+                | {accountDetails?.currency || "N/A"}
+              </span>
+            </div>
+          </span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "affliateCode",
+    header: "Affiliate Code",
   },
 ];
