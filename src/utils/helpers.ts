@@ -115,29 +115,30 @@ export function findKeysWithSharedValue(
   );
 }
 
-export function uploadFiles(files: File[]) {
+export async function uploadFiles(files: File[]) {
   const url =
     "https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME}/image/upload";
 
   const formData = new FormData();
 
   for (let i = 0; i < files.length; i++) {
-    let file = files[i];
-    formData.append("file", file);
-    // formData.append("upload_preset", "docs_upload_example_us_preset");
-
-    fetch(url, {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        return response.text();
-      })
-      .then((data) => {
-        alert("files uploaded successfully");
-      })
-      .catch((error) => {
-        console.log(error);
+    try {
+      let file = files[i];
+      formData.append("file", file);
+      // formData.append("upload_preset", "docs_upload_example_us_preset");
+      const response = await fetch(url, {
+        method: "POST",
+        body: formData,
       });
+
+      if (response.ok) {
+        const data = await response.text();
+        alert("Files uploaded successfully");
+      } else {
+        throw new Error("Failed to upload files");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
