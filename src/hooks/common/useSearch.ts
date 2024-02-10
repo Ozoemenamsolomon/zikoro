@@ -1,12 +1,15 @@
 import React from "react";
 import { useEffect, useState } from "react";
 
-interface UseSearchProps<T> {
+interface UseSearchProps<T extends Record<string, string>> {
   data: T[];
   accessorKey: (keyof T)[];
 }
 
-const useSearch = <T>({ data, accessorKey }: UseSearchProps<T>) => {
+const useSearch = <T extends Record<string, string>>({
+  data,
+  accessorKey,
+}: UseSearchProps<T>) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   console.log(searchTerm);
