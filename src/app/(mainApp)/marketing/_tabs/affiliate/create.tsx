@@ -35,10 +35,14 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  useCreateAffiliateLink,
+  useGetAffiliates,
+} from "@/hooks/services/marketing";
 
 const CreateAffiliateSchema = z.object({
   event: z.string(),
-  affiliate: z.string(),
+  affiliateId: z.string(),
   payoutSchedule: z.string(),
   commissionType: z.string(),
   value: z.number(),
@@ -50,8 +54,8 @@ type TCreateAffiliate = z.infer<typeof CreateAffiliateSchema>;
 
 const Create = () => {
   const defaultValues: Partial<TCreateAffiliate> = {
-    affiliate: "bilalyusufuba@gmail.com",
     commissionType: "percentage",
+    value: 5,
   };
 
   const form = useForm<TCreateAffiliate>({
@@ -59,12 +63,38 @@ const Create = () => {
     defaultValues,
   });
 
-  const { watch, setValue } = form;
+  const { affiliates, isLoading: affiliatesIsLoading } = useGetAffiliates();
+
+  const { createAffiliateLink, isLoading: createLinkIsLoading } =
+    useCreateAffiliateLink();
+
+  const { watch } = form;
 
   const commissionType = watch("commissionType");
 
-  const onSubmit = (data: TCreateAffiliate) => {
+  const onSubmit = async (data: TCreateAffiliate) => {
     console.log(data);
+    const {
+      affiliate,
+      commissionType,
+      event,
+      goal,
+      payoutSchedule,
+      validity,
+      value,
+    } = data;
+    await createAffiliateLink({
+      payload: {
+        payoutSchedule,
+        validity,
+        commissionValue: value,
+        commissionType,
+        event,
+        Goal: goal,
+        affiliateId: 1,
+        userId: 5,
+      },
+    });
   };
 
   return (
@@ -84,7 +114,7 @@ const Create = () => {
             </div>
             <FormField
               control={form.control}
-              name="affiliate"
+              name="affiliateId"
               render={({ field }) => (
                 <FormItem className="relative w-full space-y-0">
                   <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
@@ -96,21 +126,25 @@ const Create = () => {
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger disabled={affiliatesIsLoading}>
                           <SelectValue
-                            placeholder="Select affiliate"
+                            placeholder={
+                              !affiliatesIsLoading
+                                ? "Select affiliate"
+                                : "Loading..."
+                            }
                             className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-full"
                           />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="max-h-[250px] hide-scrollbar overflow-auto">
-                        {["bilal", "kachi", "idris"].map((event) => (
+                        {affiliates.map(({ firstName, lastname, id }) => (
                           <SelectItem
-                            key={event}
-                            value={event}
+                            key={id}
+                            value={id.toString()}
                             className="inline-flex gap-2"
                           >
-                            {event}
+                            {firstName + " " + lastname}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -273,6 +307,8 @@ const Create = () => {
                           defaultValue={5}
                           value={field.value}
                           type="number"
+                          min={0}
+                          max={100}
                         />
                         <span>%</span>
                       </div>
@@ -312,7 +348,7 @@ const Create = () => {
                     <Input
                       type="number"
                       placeholder={"Enter amount"}
-                      {...field}
+                      onInput={(e) => field.onChange(parseInt(e.target.value))}
                       className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                     />
                   </InputOffsetLabel>
@@ -406,8 +442,14 @@ const Create = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="bg-basePrimary w-full">
-              Create Link
+            <Button
+              disabled={affiliatesIsLoading || createLinkIsLoading}
+              type="submit"
+              className="bg-basePrimary w-full"
+            >
+              {!affiliatesIsLoading && !createLinkIsLoading
+                ? "Create Link"
+                : "Loading..."}
             </Button>
           </section>
         </form>

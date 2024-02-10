@@ -7,7 +7,7 @@ import { extractUniqueTypes } from "@/utils/helpers";
 import { DataTable } from "@/components/DataTable";
 import { columns } from "./columns";
 
-const marketingEmailsFilter: TFilter<TSentEmail>[] = [
+const performanceFilter: TFilter<TSentEmail>[] = [
   {
     label: "Campaign name",
     accessor: "emailCategory",

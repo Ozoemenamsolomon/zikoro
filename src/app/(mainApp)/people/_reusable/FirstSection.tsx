@@ -400,7 +400,7 @@ export default function FirstSection({
             />
           </svg>
           <Input
-            type="email"
+            type="text"
             placeholder="Search attendees"
             onInput={(event) => setSearchTerm(event.target.value)}
             className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8 w-full"
