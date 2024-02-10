@@ -1,6 +1,6 @@
 import { toast } from "@/components/ui/use-toast";
 import { TAffiliate, TAffiliateLink, TSentEmail } from "@/types/marketing";
-import { UseGetResult, usePostResult, usePostResult } from "@/types/request";
+import { UseGetResult, usePostResult } from "@/types/request";
 import { postRequest, getRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
 
@@ -163,11 +163,7 @@ export const useCreateAffiliate = (): usePostResult<
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const createAffiliate = async ({
-    payload,
-  }: {
-    payload: TAffiliate;
-  }) => {
+  const createAffiliate = async ({ payload }: { payload: TAffiliate }) => {
     setLoading(true);
     toast({
       description: "creating affiliate...",
