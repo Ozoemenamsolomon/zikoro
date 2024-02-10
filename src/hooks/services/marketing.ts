@@ -1,4 +1,5 @@
 import { toast } from "@/components/ui/use-toast";
+import { TAffiliate, TAffiliateLink, TSentEmail } from "@/types/marketing";
 import { UseGetResult, usePostResult, usePostResult } from "@/types/request";
 import { postRequest, getRequest } from "@/utils/api";
 import { useState, useEffect } from "react";

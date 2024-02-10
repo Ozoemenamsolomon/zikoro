@@ -17,12 +17,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import CreateAffiliateForm from "@/components/forms/createAffiliateForm";
+import useSearch from "@/hooks/common/useSearch";
+import { TAffiliate } from "@/types/marketing";
 
 const Affiliates = () => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const { getAffiliates, affiliates, isLoading } = useGetAffiliates();
+  const { searchTerm, searchedData, setSearchTerm } = useSearch<TAffiliate>({
+    data: affiliates,
+    accessorKey: ["email", "firstName", "lastname"],
+  });
 
   return (
     <section className="p-4 space-y-4">
@@ -73,6 +78,8 @@ const Affiliates = () => {
         <Input
           type="text"
           placeholder="Search by email"
+          value={searchTerm}
+          disabled={isLoading}
           onInput={(event) => setSearchTerm(event.target.value)}
           className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8 w-full"
         />
@@ -80,7 +87,7 @@ const Affiliates = () => {
       <div className="space-y-2 max-w-full">
         <DataTable<TAffiliate>
           columns={columns}
-          data={affiliates}
+          data={searchedData}
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
           rowStyle={{
