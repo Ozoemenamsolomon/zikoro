@@ -142,3 +142,36 @@ export async function uploadFiles(files: File[]) {
     }
   }
 }
+
+export async function uploadFile(
+  file: File | string,
+  type: string
+): Promise<{ url: string | null; error: any | null }> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("cloud_name", "kachiozo");
+  formData.append("upload_preset", "w5xbik6z");
+  formData.append("folder", "ZIKORO");
+  type === "video" && formData.append("resource_type", "video");
+
+  try {
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/kachiozo/${type}/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+
+      return { url: data.url, error: null };
+    } else {
+      throw "failed to upload file";
+    }
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return { url: null, error };
+  }
+}

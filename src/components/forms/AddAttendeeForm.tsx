@@ -32,7 +32,7 @@ import {
 import { useEffect, useState } from "react";
 import COUNTRY_CODE from "@/utils/countryCode";
 import { attendeeTypeOptions } from "@/data/attendee";
-import { uploadFiles } from "@/utils/helpers";
+import { uploadFile, uploadFiles } from "@/utils/helpers";
 
 export default function AddAttendeeForm({
   isOpen,
@@ -65,6 +65,7 @@ export default function AddAttendeeForm({
 
   const attendeeType = watch("attendeeType");
   const country = watch("country");
+  const profilePicture = watch("profilePicture");
 
   useEffect(() => {
     const newCountry = COUNTRY_CODE.find(({ name }) => country === name);
@@ -107,27 +108,20 @@ export default function AddAttendeeForm({
   const [profilePictureIsUploading, setProfilePictureUploading] =
     useState<boolean>(false);
 
-  const uploadProfilePicture = async (file: File) => {
+  const uploadProfilePicture = async (file: File | null) => {
     try {
+      if (!file) return;
       setProfilePictureUploading(true);
-      const url =
-        "https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME}/image/upload";
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "docs_upload_example_us_preset");
-      const response = await fetch(url, {
-        method: "POST",
-        body: formData,
-      });
+      const { url, error } = await uploadFile(file, "image");
 
-      if (!response.ok) throw new Error("Failed to upload files");
-
-      const data = await response.text();
+      if (error) throw error;
       alert("File uploaded successfully");
 
-      console.log("File uploaded successfully!", data);
+      setValue("profilePicture", url || "");
+      console.log("File uploaded successfully!", url);
     } catch (error) {
-      console.error("Error uploading file:");
+      alert("error uploading profile picture");
+      console.error("Error uploading file:", error);
     } finally {
       setProfilePictureUploading(false);
     }
@@ -332,6 +326,8 @@ export default function AddAttendeeForm({
               <Camera className="w-6 h-6" />
               {profilePictureIsUploading ? (
                 <span className="text-gray-500">Loading...</span>
+              ) : profilePicture ? (
+                <span className="text-gray-500 truncate">{profilePicture}</span>
               ) : (
                 <span className="text-gray-200">Select Image</span>
               )}
@@ -341,6 +337,7 @@ export default function AddAttendeeForm({
                 name="profilePicture"
                 type="file"
                 onChange={(e) => uploadProfilePicture(e.target.files[0])}
+                accept="image/*"
               />
             </div>
           </div>

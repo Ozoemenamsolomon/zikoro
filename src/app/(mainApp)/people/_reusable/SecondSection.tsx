@@ -34,6 +34,7 @@ import {
   useUpdateAttendeeCertificates,
 } from "@/hooks/services/certificate";
 import SelectCertificateModal from "@/components/selectCertificateModal";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function SecondSection({
   attendee,
@@ -203,7 +204,12 @@ export default function SecondSection({
         </div>
       </section>
       <section className="flex flex-col items-center justify-center text-center px-4">
-        <div className="text-white relative w-12 h-12 rounded-[50%] bg-[#D9D9D9] flex justify-center items-center mb-4">
+        <Avatar className="w-12 h-12">
+          <AvatarImage className="h-full w-full object-cover" src={profilePicture} />
+          <AvatarFallback>{firstName[0] + lastName[0]}</AvatarFallback>
+        </Avatar>
+
+        {/* <div className="text-white relative w-12 h-12 rounded-[50%] bg-[#D9D9D9] flex justify-center items-center mb-4">
           <span className="">{firstName[0] + lastName[0]}</span>
           <svg
             className="absolute bottom-0 right-0"
@@ -230,7 +236,7 @@ export default function SecondSection({
               stroke-linecap="round"
             />
           </svg>
-        </div>
+        </div> */}
         <h3 className=" text-greyBlack font-semibold">
           {firstName + " " + lastName}
         </h3>
