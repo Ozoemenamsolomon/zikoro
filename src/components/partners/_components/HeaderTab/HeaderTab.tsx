@@ -20,14 +20,14 @@ export function HeaderTab({
   const [isOpen, setOpen] = useState(false);
   const search = useSearchParams();
 
-  const eventName = search.get("title");
+
 
   function onClose() {
     setOpen((prev) => !prev);
   }
   return (
     <>
-      <div className="flex pr-4 items-center justify-between w-full pb-4 border-b">
+      <div className="flex pr-4 items-center justify-between w-full pb-4 border-b pt-16">
         <div className="flex items-center gap-x-8">
           <Button
             onClick={() => setActive(1)}
@@ -58,7 +58,7 @@ export function HeaderTab({
       </div>
 
       {isOpen && (
-        <AddPartners refetchPartners={refetch} close={onClose} eventId={eventId} eventName={eventName} />
+        <AddPartners refetchPartners={refetch} close={onClose} eventId={eventId}  />
       )}
     </>
   );

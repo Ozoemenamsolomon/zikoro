@@ -29,7 +29,9 @@ export function BookEvent({
   endDate,
   minimumAttendees,
   startDate,
+  eventImage,
   discountAmount,
+  address,
   currency,
   organizerContact,
   discountPercentage,
@@ -44,11 +46,13 @@ export function BookEvent({
   priceCategory?: string;
   endDate?: string;
   startDate?: string;
+  eventImage:string
   organizerContact: OrganizerContact;
   eventTitle?: string;
   minimumAttendees?: number;
   organization?: string | null;
   price?: number;
+  address?:string
   discountAmount: number;
   discountPercentage: number;
   close: () => void;
@@ -233,7 +237,7 @@ export function BookEvent({
 
             <Image
               className="w-full h-64 mt-3 rounded-lg object-cover"
-              src="/images/rect.png"
+              src={eventImage}
               alt="eventimage"
               width={700}
               height={700}
@@ -466,9 +470,11 @@ export function BookEvent({
       {isPaymentModal && (
         <Payment
           eventDate={eventDate}
+          eventImage={eventImage}
           allowPayment={allowPayment}
           priceCategory={priceCategory}
           eventTitle={eventTitle}
+          address={address}
           startDate={startDate}
           eventReference={eventReference}
           endDate={endDate}

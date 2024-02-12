@@ -175,7 +175,9 @@ export function Partners({ eventId }: { eventId: string }) {
       hasTopBar
       className="px-0 sm:px-0 pt-4 sm:pt-4"
       parentClassName="px-0 sm:px-0"
+      eventId={eventId}
     >
+ 
       <HeaderTab eventId={eventId} refetch={refetch} />
 
       <div className="w-full flex flex-col justify-start items-start ">

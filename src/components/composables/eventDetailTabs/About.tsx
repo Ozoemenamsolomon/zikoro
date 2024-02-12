@@ -11,9 +11,11 @@ import { Event } from "@/types";
 export function About({
   className,
   event,
+  isEventDetailPage,
 }: {
   event: Event | null;
   className?: string;
+  isEventDetailPage?: boolean;
 }) {
   const settings = {
     dots: true,
@@ -99,54 +101,57 @@ export function About({
           </div>
         </div>
 
-        <div className="w-full h-full flex flex-col gap-y-6">
-          <Image
-            src="/images/rect.png"
-            alt="eventimage"
-            width={700}
-            height={700}
-            className="rounded-lg w-full h-72"
-          />
-          <Image
-            src="/images/inactive.png"
-            alt="eventimage"
-            width={700}
-            height={700}
-            className="rounded-lg w-full h-72"
-          />
-          <ul className="w-full flex flex-col items-start justify-start space-y-4">
-            <h2 className="font-medium text-base sm:text-lg ">Event Address</h2>
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              Gain an understanding of the different types of resin, their
-              properties.
-            </li>
-          </ul>
-        </div>
+        {isEventDetailPage && (
+          <div className="w-full h-full flex flex-col gap-y-6">
+            <Image
+              src={
+                event?.eventPoster
+                  ? event?.eventPoster?.image1
+                  : "/images/rect.png"
+              }
+              alt="eventimage"
+              width={700}
+              height={700}
+              className="rounded-lg w-full h-72"
+            />
+
+           {event?.eventAddress && <ul className="w-full flex flex-col items-start justify-start space-y-4">
+              <h2 className="font-medium text-base sm:text-lg ">
+                Event Address
+              </h2>
+              <li className="flex flex-wrap leading-6 items-start justify-start">
+                {event?.eventAddress}
+              </li>
+            </ul>}
+          </div>
+        )}
       </div>
 
-      <div className="w-full flex flex-col items-center py-10 sm:py-20 justify-center gap-y-6 sm:gap-y-8 bg-gray-50">
-        <h2 className="font-semibold text-base sm:text-2xl ">
-          What past event attendees are saying...
-        </h2>
+      {isEventDetailPage && (
+        <div className="w-full flex flex-col items-center py-10 sm:py-20 justify-center gap-y-6 sm:gap-y-8 bg-gray-50">
+          <h2 className="font-semibold text-base sm:text-2xl ">
+            What past event attendees are saying...
+          </h2>
 
-        <div className="mx-auto hidden w-[95%]  sm:block">
-          <ScrollableCards>
-            {[1, 2, 3, 4, 5].map((_) => (
-              <FeedBackCard key={_} />
-            ))}
-          </ScrollableCards>
+          <div className="mx-auto hidden w-[95%]  sm:block">
+            <ScrollableCards>
+              {[1, 2, 3, 4, 5].map((_) => (
+                <FeedBackCard key={_} />
+              ))}
+            </ScrollableCards>
+          </div>
+          <div className="block w-full sm:hidden">
+            <Slider
+              className=" z-[4] hidden h-full w-full sm:block "
+              {...settings}
+            >
+              {[1, 2, 3, 4, 5].map((_) => (
+                <FeedBackCard key={_} />
+              ))}
+            </Slider>
+          </div>
         </div>
-        <div className="block w-full sm:hidden">
-          <Slider
-            className=" z-[4] hidden h-full w-full sm:block "
-            {...settings}
-          >
-            {[1, 2, 3, 4, 5].map((_) => (
-              <FeedBackCard key={_} />
-            ))}
-          </Slider>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

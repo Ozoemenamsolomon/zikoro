@@ -6,7 +6,6 @@ import Image from "next/image";
 import { Button, NavLinks } from ".";
 import { HeaderWidget } from "./eventHome";
 import Link from "next/link";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { useSearchParams, useParams } from "next/navigation";
 import {
   CustomerCareIcon,
@@ -16,37 +15,33 @@ import {
   WhatsappIcon,
 } from "@/constants";
 import { CircleUser } from "styled-icons/fa-solid";
-import { redirect } from "next/navigation";
 import { Topbar } from ".";
+import { useValidateUser } from "@/hooks";
+
 export function SideBarLayout({
   children,
   className,
   parentClassName,
   isHomePage,
   hasTopBar,
+  eventId,
 }: {
   children: React.ReactNode;
   className?: string;
   isHomePage?: boolean;
-  hasTopBar?:boolean
+  hasTopBar?: boolean;
   parentClassName?: string;
+  eventId?: string;
 }) {
-  const { user, error } = useUser();
-
-  // using this to redirect new users to onboarding
-  // before modiifcation from the TL
-
-  useEffect(() => {
-    if (user && user.isFirstLogin) {
-      redirect("/onboarding");
-    }
-  }, [user]);
 
   const [isNav, setNav] = useState(false);
   const param = useSearchParams();
 
   const [queryParam, setQueryParam] = useState<string | null>(null);
   const query = param.get("organization");
+
+  // validate user
+  useValidateUser()
 
   useEffect(() => {
     if (param) {
@@ -66,7 +61,7 @@ export function SideBarLayout({
           parentClassName
         )}
       >
-       {hasTopBar && <Topbar/>}
+        {hasTopBar && <Topbar eventId={eventId} />}
       </div>
 
       <div

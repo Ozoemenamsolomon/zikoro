@@ -15,8 +15,8 @@ export interface OrganizerContact {
 
 export enum EventDetailTab {
   ABOUT_TAB = 1,
-  SPEAKERS_TAB,
   AGENDA_TAB,
+  SPEAKERS_TAB,
   EXIHIBITORS_TAB,
 }
 
@@ -64,6 +64,8 @@ export interface Event {
   whatsappNumber: string;
   registered: string;
   partnerIndustry: PartnerIndustry[] 
+  eventPoster:{image1: string}
+
 }
 
 export interface PaymentConfigProps {

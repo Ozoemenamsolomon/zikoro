@@ -20,7 +20,11 @@ export function Speakers() {
       {active === 1 && (
         <div className=" w-full flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
           {[1, 2, 3, 4, 5, 6].map((_) => (
-            <SpeakerWidget key={_} changeActiveState={changeActiveState} />
+            <SpeakerWidget
+              key={_}
+              changeActiveState={changeActiveState}
+              isViewProfile
+            />
           ))}
         </div>
       )}
@@ -31,8 +35,10 @@ export function Speakers() {
 
 function SpeakerWidget({
   changeActiveState,
+  isViewProfile,
 }: {
   changeActiveState: (v: number) => void;
+  isViewProfile?: boolean;
 }) {
   return (
     <div className="w-[250px] flex flex-col gap-y-2 items-center justify-center p-4 border rounded-lg">
@@ -47,17 +53,19 @@ function SpeakerWidget({
         Moderator
       </button>
       <div className="flex  items-center flex-col justify-center">
-        <h2 className="font-semibold text-gray-500 text-xl">John Doe</h2>
+        <h2 className="font-semibold  text-lg">John Doe</h2>
         <p className="text-gray-500">Product Designer</p>
         <p className="text-gray-500">OrthoEx</p>
       </div>
 
-      <Button
-        onClick={() => changeActiveState(2)}
-        className="px-0 h-fit w-fit  bg-none  text-mobile"
-      >
-        <span className="text-zikoro">View Profile</span>
-      </Button>
+      {isViewProfile && (
+        <Button
+          onClick={() => changeActiveState(2)}
+          className="px-0 h-fit w-fit  bg-none  text-mobile"
+        >
+          <span className="text-zikoro">View Profile</span>
+        </Button>
+      )}
     </div>
   );
 }
@@ -81,10 +89,10 @@ function SpeakerInfo({
         <SpeakerWidget changeActiveState={changeActiveState} />
 
         <div className="w-full md:w-[70%] flex flex-col gap-y-2 items-start justify-start pb-4 border rounded-lg">
-          <h2 className="px-3 font-semibold w-full border-b py-3">Profile</h2>
+          <h2 className="px-3 font-semibold w-full border-b py-3">About </h2>
 
           <div className="px-3 flex flex-col gap-y-2 mt-2 items-start justify-start">
-            <h2 className=" font-semibold ">Bio</h2>
+        
             <div className="flex flex-wrap w-full text-mobile text-gray-600 items-start justify-start">
               I'm an enthusiastic and goal driven professional with passion to
               help people lead quality lives. With a background in Biomechanics,

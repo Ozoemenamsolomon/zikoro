@@ -11,9 +11,10 @@ import {
 import { Event } from "@/types";
 import _ from "lodash";
 import { postRequest } from "@/utils";
-import { AxiosError } from "axios";
+import {getCookie} from "@/hooks"
 
 const supabase = createClientComponentClient();
+const userData = getCookie("user")
 
 export function useCreateOrganisation() {
   const [loading, setLoading] = useState(false);
@@ -22,16 +23,10 @@ export function useCreateOrganisation() {
     setLoading(true);
 
     try {
-      const { data, error: err } = await supabase.auth.getUser();
-      if (err) {
-        toast.error(err.message);
-        setLoading(false);
-        return;
-      }
-      if (data?.user) {
+     
         const { error, status } = await supabase
           .from("organization")
-          .upsert([{ ...values, organizationOwner: data?.user?.email }]);
+          .upsert([{ ...values, organizationOwner: userData?.email }]);
 
         if (error) {
           toast.error(error.message);
@@ -42,7 +37,7 @@ export function useCreateOrganisation() {
           setLoading(false);
           toast.success("Organisation created successfully");
         }
-      }
+   
     } catch (error) {}
   }
 
@@ -77,21 +72,6 @@ export function useGetQueries(tableName: string) {
     loading,
     data,
   };
-}
-
-export async function fetchData(): Promise<Event[] | null> {
-  try {
-    const { data, error } = await supabase.from("events").select("*");
-
-    if (error) {
-      toast.error(error.message);
-
-      return null;
-    }
-    return data;
-  } catch (error) {
-    return null;
-  }
 }
 
 export function useFetchOrganizationEvents(id?: string | string[]) {
@@ -328,13 +308,8 @@ export function useBookingEvent() {
     const { attendeeApplication } = values;
 
     try {
-      const { data, error: err } = await supabase.auth.getUser();
-      if (err) {
-        toast.error(err.message);
-        setLoading(false);
-        return;
-      }
-      if (data?.user) {
+   
+
         const attendees = attendeeApplication.map((attendee) => {
           return {
             ...attendee,
@@ -342,7 +317,7 @@ export function useBookingEvent() {
             attendeeType: [attendants],
             registrationDate: new Date(),
             eventRegistrationRef: eventTransactionRef,
-            userEmail: data?.user.email,
+            userEmail: userData?.email,
           };
         });
 
@@ -353,7 +328,7 @@ export function useBookingEvent() {
         if (error) {
           if (
             error.message ===
-            `duplicate key value violates unique constraint "/attendees_email_key/"`
+            `duplicate key value violates unique constraint "attendees_email_key"`
           ) {
             // toast.error("User has already registered for this event")
           } else {
@@ -372,7 +347,7 @@ export function useBookingEvent() {
             "Attendees Information has been Captured. Proceed to Payment..."
           );
         }
-      }
+   
     } catch (error) {
       setLoading(false);
     }
@@ -393,17 +368,12 @@ export function useTransactionDetail() {
   ) {
     setLoading(true);
     try {
-      const { data, error: err } = await supabase.auth.getUser();
-      if (err) {
-        toast.error(err.message);
-        setLoading(false);
-        return;
-      }
-      if (data?.user) {
+   
+
         const payload = {
           ...values,
-          userEmail: data?.user?.email,
-          userId: data?.user?.id,
+          userEmail: userData?.email,
+          userId: userData?.id,
         };
 
         const {
@@ -423,7 +393,7 @@ export function useTransactionDetail() {
           // toast.success("Al");
           //  console.log({successData})
         }
-      }
+   
     } catch (error) {
       setLoading(false);
     }

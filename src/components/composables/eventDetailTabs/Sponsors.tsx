@@ -10,13 +10,15 @@ export function Sponsors({ event }: { event: Event }) {
   const { data, loading } = useFetchPartners(event?.id);
 
   return (
-    <div className="  w-full flex flex-col gap-y-2 items-start justify-start p-4 sm:p-6">
+    <div className="  w-full grid grid-cols-1 sm:grid-cols-2 gap-2 items-start justify-start pb-4 px-4 sm:pb-6 sm:px-6">
       {loading && (
         <div className="w-full col-span-full h-[300px] flex items-center justify-center">
           <LoaderAlt size={50} className="animate-spin" />
         </div>
       )}
-      {!loading && <EmptyCard text="No available partner for this event" />}
+      {!loading && Array.isArray(data) && data?.length === 0 && (
+        <EmptyCard text="No available partner for this event" />
+      )}
       {!loading &&
         Array.isArray(data) &&
         data?.map((sponsor) => (

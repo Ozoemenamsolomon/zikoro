@@ -69,7 +69,7 @@ export function SingleEvent({
   const router = useRouter();
 
   function onClose() {
-   // if (isDetail) return;
+    // if (isDetail) return;
     setOpen((prev) => !prev);
   }
 
@@ -482,8 +482,8 @@ export function SingleEvent({
                 disabled={priceCategory === ""}
                 onClick={(e) => {
                   e.stopPropagation();
-                  e.stopPropagation()
-                  console.log("clicked", onClose)
+                  e.stopPropagation();
+                  console.log("clicked", onClose);
                   onClose();
                 }}
                 className="text-white font-medium bg-zikoro rounded-md h-14 w-full"
@@ -528,6 +528,10 @@ export function SingleEvent({
           eventDate={event?.startDateTime}
           endDate={endDate}
           discountCode={code}
+          address={event?.eventAddress}
+          eventImage={
+            event?.eventPoster ? event?.eventPoster?.image1 : "/images/rect.png"
+          }
           discountAmount={discountAmount}
           discountPercentage={discountPercentage}
           startDate={startDate}

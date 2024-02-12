@@ -14,7 +14,7 @@ const afterCallback: AfterCallbackAppRoute = (req, session) => {
     const user = getUser(session.user.email);
     session.user.zikoroUser = user;
   }
-  console.log({session})
+ 
   return session;
 };
 

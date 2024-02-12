@@ -17,7 +17,7 @@ export function EventDetail({ event }: { event: Event }) {
         className="w-full bg-none  shadow-none"
       />
 
-      <EventDetailTabs event={event} />
+      <EventDetailTabs event={event} isEventDetailPage/>
     </div>
   );
 }

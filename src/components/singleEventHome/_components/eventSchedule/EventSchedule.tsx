@@ -28,16 +28,11 @@ export function EventSchedule({ event }: { event: Event | null }) {
   );
 
   return (
-    <div className="w-full flex flex-col gap-y-4 items-start justify-start">
-      <Button onClick={() => router.back()}>
-        <ArrowBack className="px-1 h-fit w-fit" size={22} />
-        <p>Back</p>
-      </Button>
-
-     <div className="w-full px-4">
+    <div className="w-full flex flex-col gap-y-4 items-start justify-start ">
+     <div className="w-full">
      <Image
-        className="w-full h-64 rounded-lg object-cover"
-        src="/images/rect.png"
+        className="w-full h-64 rounded-none object-cover"
+        src={ event?.eventPoster ? event?.eventPoster?.image1 : "/images/rect.png"}
         alt="eventimage"
         width={700}
         height={700}

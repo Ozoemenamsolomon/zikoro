@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { cn } from "@/lib";
+import { useEffect, useMemo, useState } from "react";
 
 export function CountDown({ startDate }: { startDate: string }) {
   const [timeLeft, setTimeLeft] = useState({
@@ -34,8 +35,18 @@ export function CountDown({ startDate }: { startDate: string }) {
 
   const { days, hours, minutes, seconds } = timeLeft;
 
+  // check if event has expired expired
+  const hasExpired = useMemo(() => {
+    return days === 0 && hours === 0 && minutes === 0 && seconds === 0;
+  }, [days, hours, minutes, seconds]);
+
   return (
-    <div className="w-full grid grid-cols-4 justify-center bg-[#FAFAFA] items-center py-6 px-6">
+    <div
+      className={cn(
+        "w-full grid grid-cols-4 justify-center bg-[#FAFAFA] items-center py-6 px-6",
+        hasExpired && "hidden"
+      )}
+    >
       <div className="border-r w-full flex flex-col items-center gap-y-2 justify-center">
         <p>Days</p>
         <p className="font-medium text-xl">{days}</p>

@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AddBanners } from "@/components/partners/_components";
 import { TPartner } from "@/types";
-import { EmptyCard } from "@/components/composables";
+
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";

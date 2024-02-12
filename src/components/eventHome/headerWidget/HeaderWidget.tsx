@@ -15,6 +15,7 @@ import {
 import { CreateOrganization } from "..";
 import { useRouter } from "next/navigation";
 import _ from "lodash";
+import {getCookie} from "@/hooks"
 
 type OrganizationListType = {
   id: Number;
@@ -43,18 +44,19 @@ export function HeaderWidget({
     return _.uniqBy(restructuredList, "value");
   }, [organizationList]);
 
-  console.log({ organization });
 
   function showOrganizationEvents(value: string) {
     const org = formattedList.find((o) => o.value === value);
     router.push(`events/${org?.id}?organization=${value}`);
   }
+
+ 
   return (
     <div>
       <div className="w-full mb-4 sm:mb-6 items-start flex-col gap-y-2 sm:items-center sm:flex-row sm:justify-between justify-start flex">
         <div className="flex flex-col gap-y-2 items-start justify-start">
           <h2 className="font-semibold text-base sm:text-2xl">
-            Welcome, Rasheed
+            {`Welcome, User`}
           </h2>
           <p className="text-gray-500"></p>
         </div>

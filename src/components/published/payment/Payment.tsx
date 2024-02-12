@@ -12,8 +12,10 @@ import { CheckCircleFill } from "@styled-icons/bootstrap/CheckCircleFill";
 export function Payment({
   total,
   discount,
+  eventImage,
   count,
   processingFee,
+  address,
   amountPayable,
   priceCategory,
   organizerContact,
@@ -40,6 +42,7 @@ export function Payment({
   processingFee?: number
   amountPayable?:number
   attendeesDetails: any[];
+  eventImage:string
   eventPrice?: number;
   startDate?: string;
   endDate?: string;
@@ -51,6 +54,7 @@ export function Payment({
   eventTitle?: string;
   eventLocation?: string;
   eventReference: string;
+  address?:string
   discountCode?: string;
   referralSource?: string;
 }) {
@@ -72,6 +76,7 @@ export function Payment({
 
     const payload = {
       eventId,
+      eventImage,
       eventRegistrationRef: eventReference,
       paymentDate: new Date(),
       expiredAt: null,
@@ -80,9 +85,9 @@ export function Payment({
       discountValue: discount,
       referralSource,
       discountCode,
-      eventLocation,
       amountPayable,
       processingFee,
+      address,
       count,
       currency,
       organizerContact,
@@ -121,6 +126,7 @@ export function Payment({
       eventRegistrationRef: eventReference,
       paymentDate: new Date(),
       expiredAt: null,
+      eventImage,
       amountPaid: total,
       attendees: count,
       discountValue: discount,
@@ -130,9 +136,10 @@ export function Payment({
       organizerContact,
       organization,
       count,
+      address,
       startDate,
       endDate,
-      eventLocation,
+ 
       registrationCompleted: true,
       eventDate,
       ticketCategory: priceCategory,

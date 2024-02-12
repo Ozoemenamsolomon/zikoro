@@ -18,7 +18,7 @@ export function PartnerCard({ sponsor }: { sponsor: TPartner }) {
   return (
     <Link
       href={`/partners/${sponsor.id}`}
-      className="shadow border h-full border-gray-50 relative rounded-lg overflow-hidden bg-white flex flex-col gap-y-2 items-start justify-start"
+      className=" border  h-full border-gray-100 relative rounded-lg overflow-hidden bg-white flex flex-col gap-y-2 items-start justify-start"
     >
       {sponsor.stampIt && (
         <button className="absolute right-[-2px] top-0 flex items-center justify-center w-fit bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-b-md">

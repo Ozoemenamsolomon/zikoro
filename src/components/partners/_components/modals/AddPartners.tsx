@@ -33,6 +33,7 @@ import {
   useAddPartners,
   useFetchAttendees,
   useFetchCreatedEventIndustries,
+  useFetchSingleEvent,
 } from "@/hooks";
 import { BoothStaffWidget } from "../../sponsors/_components";
 import { PartnerIndustry } from "@/types";
@@ -48,22 +49,18 @@ type FormFiles = {
 export function AddPartners({
   close,
   eventId,
-  eventName,
+
   refetchPartners
 }: {
   eventId: string;
   refetchPartners: () => Promise<null | undefined>
-  eventName: string | null;
   close: () => void;
 }) {
-  let eventTitle: string | undefined;
-  if (eventName) {
-    eventTitle = eventName;
-  }
 
   const [active, setActive] = useState(1);
   const { loading, addPartners } = useAddPartners();
   const { attendees } = useFetchAttendees(eventId);
+  const {data} = useFetchSingleEvent(eventId)
   const { data: eventData, refetch } = useFetchCreatedEventIndustries(eventId);
 
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
@@ -77,7 +74,7 @@ export function AddPartners({
     resolver: zodResolver(partnerSchema),
     defaultValues: {
       eventId,
-      eventName: eventTitle,
+      eventName: data?.eventTitle,
     },
   });
 

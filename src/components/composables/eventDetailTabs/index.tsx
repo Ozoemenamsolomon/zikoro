@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import { Button } from "@/components";
@@ -10,17 +10,19 @@ export function EventDetailTabs({
   className,
   aboutClassName,
   event,
+  isEventDetailPage,
 }: {
   event: Event | null;
   className?: string;
+  isEventDetailPage?: boolean;
   aboutClassName?: string;
 }) {
   const [active, setActive] = useState(1);
 
   const tabs = [
     { id: 1, name: "About" },
-    { id: 2, name: "Speakers" },
-    { id: 3, name: "Agenda" },
+    { id: 2, name: "Agenda" },
+    { id: 3, name: "Speakers" },
     { id: 4, name: "Partners" },
   ];
   return (
@@ -45,10 +47,18 @@ export function EventDetailTabs({
         ))}
       </div>
 
-      {active === EventDetailTab.ABOUT_TAB && <About event={event} className={aboutClassName} />}
+      {active === EventDetailTab.ABOUT_TAB && (
+        <About
+          isEventDetailPage={isEventDetailPage}
+          event={event}
+          className={aboutClassName}
+        />
+      )}
       {active === EventDetailTab.SPEAKERS_TAB && <Speakers />}
       {active === EventDetailTab.AGENDA_TAB && <Agenda />}
-      {active === EventDetailTab.EXIHIBITORS_TAB && event && <Sponsors event={event} />}
+      {active === EventDetailTab.EXIHIBITORS_TAB && event && (
+        <Sponsors event={event} />
+      )}
     </>
   );
 }
