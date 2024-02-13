@@ -43,6 +43,7 @@ import { useGetAttendees } from "@/hooks/services/attendee";
 // import "@mdxeditor/editor/style.css";
 // import { TextEditor } from "@/components/TextEditor";
 import { useSendMarketingEmail } from "@/hooks/services/marketing";
+import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSection";
 
 const CreateEmailSchema = z
   .object({
@@ -77,8 +78,21 @@ const CreateEmailSchema = z
 type TCreateEmail = z.infer<typeof CreateEmailSchema>;
 
 const Create = () => {
+  const { attendees, getAttendees, isLoading } = useGetAttendees();
+  const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
+
+  type ValueType = TAttendee | TAttendee[];
+  const toggleValue = (value: ValueType) => {
+    const updatedValue = Array.isArray(value)
+      ? value
+      : value && selectedAttendees.includes(value)
+      ? selectedAttendees.filter((item) => item !== value)
+      : [...selectedAttendees, value];
+
+    setSelectedAttendees(updatedValue);
+  };
+
   const defaultValues: Partial<TCreateEmail> = {
-    sender: "your organization",
     isScheduled: false,
     content: "here",
   };
@@ -88,8 +102,6 @@ const Create = () => {
   const [recipientSource, setRecipientSource] = useState<"attendees" | "list">(
     "list"
   );
-
-  const { attendees, getAttendees, isLoading } = useGetAttendees();
 
   const { sendMarketingEmail, isLoading: sendEmailIsLoading } =
     useSendMarketingEmail();
@@ -108,6 +120,10 @@ const Create = () => {
     if (recipientSource === "attendees")
       setValue("recipients", attendees?.map(({ email }) => email) || []);
   }, [recipientSource]);
+
+  const setRecipients = () => {
+    setValue("recipients", selectedAttendees);
+  };
 
   const onSubmit = async (data: TCreateEmail) => {
     console.log(data);
@@ -209,6 +225,7 @@ const Create = () => {
                     type="string"
                     {...field}
                     className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 mt-0"
+                    placeholder="enter organization name"
                   />
                 </InputOffsetLabel>
               )}
@@ -236,7 +253,7 @@ const Create = () => {
           ) : (
             <>
               <div className="flex justify-between items-center">
-                <span>Who should receive this mail?</span>
+                <span>Who should receive this email?</span>
                 <div className="flex">
                   <Button
                     onClick={() => setRecipientSource("attendees")}
@@ -266,16 +283,31 @@ const Create = () => {
               </div>
               {recipientSource === "attendees" ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">
-                    {attendees.length} people will receive this mail
-                  </span>
+                  {selectedAttendees.length > 0 && (
+                    <span className="text-sm font-medium">
+                      {selectedAttendees.length} attendees will receive this
+                      mail
+                    </span>
+                  )}
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button
                         variant="ghost"
-                        className="text-sm text-basePrimary font-medium hover:bg-transparent hover:text-basePrimary"
+                        className="text-sm text-basePrimary font-medium hover:bg-transparent hover:text-basePrimary flex gap-2 items-center"
                       >
-                        View
+                        <svg
+                          stroke="currentColor"
+                          fill="currentColor"
+                          stroke-width="0"
+                          viewBox="0 0 1024 1024"
+                          height="1.5em"
+                          width="1.5em"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path>
+                          <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+                        </svg>
+                        <span>Recipients</span>
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="px-3 max-h-[500px] overflow-auto hide-scrollbar">
@@ -284,13 +316,22 @@ const Create = () => {
                           <span className="capitalize">Email Recipient</span>
                         </DialogTitle>
                       </DialogHeader>
-                      <ul className="space-y-2">
-                        {attendees?.map(({ email }) => (
-                          <li className="text-sm font-medium text-gray-700">
-                            {email}
-                          </li>
-                        ))}
-                      </ul>
+                      <ViewAttendeesSection
+                        favourites={[]}
+                        attendeeTags={[]}
+                        attendees={attendees}
+                        selectedAttendees={selectedAttendees}
+                        toggleValue={toggleValue}
+                      />
+                      <DialogClose>
+                        <Button
+                          disabled={selectedAttendees.length === 0}
+                          className="bg-basePrimary w-full"
+                          onClick={setRecipients}
+                        >
+                          Continue
+                        </Button>
+                      </DialogClose>
                     </DialogContent>
                   </Dialog>
                 </div>

@@ -191,3 +191,45 @@ export const useCreateAffiliate = (): usePostResult<
 
   return { createAffiliate, isLoading, error };
 };
+
+export const useUpdateAffiliate = ({
+  affiliateId,
+}: {
+  affiliateId: number;
+}): usePostResult<TAffiliate, "updateAffiliate"> => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const updateAffiliate = async ({
+    payload,
+  }: {
+    payload: Partial<TAffiliate>;
+  }) => {
+    setLoading(true);
+    toast({
+      description: "updating affiliate...",
+    });
+    try {
+      console.log(affiliateId, "affiliateId")
+      const { data, status } = await postRequest({
+        endpoint: `marketing/affiliate/${affiliateId}`,
+        payload,
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: "Affiliate updated successfully",
+      });
+    } catch (error) {
+      setError(true);
+      toast({
+        description: "An error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { updateAffiliate, isLoading, error };
+};

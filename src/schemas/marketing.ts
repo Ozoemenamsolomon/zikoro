@@ -23,6 +23,5 @@ export const AffiliateSchema = z.object({
     .regex(/^\d{11}$/, { message: "Phone number must be 11 digits long" }),
   accountDetails: accountDetailsSchema,
   payoutSchedule: z.string().optional(),
-  
   affliateStatus: z.boolean(),
 });

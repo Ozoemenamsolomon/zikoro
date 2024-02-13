@@ -1,5 +1,11 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+import {
+  useGetAffiliates,
+  useUpdateAffiliate,
+} from "@/hooks/services/marketing";
+import { TAffiliate } from "@/types/marketing";
 import { convertDateFormat } from "@/utils/date";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -52,7 +58,7 @@ export const columns: ColumnDef<TAffiliate>[] = [
     accessorKey: "accountDetails",
     header: "Account Details",
     cell: ({ row }) => {
-      const accountDetails = row.getValue("accountDetails");
+      const accountDetails = row.original.accountDetails;
 
       if (!accountDetails) return <div>N/A</div>;
 
@@ -76,5 +82,36 @@ export const columns: ColumnDef<TAffiliate>[] = [
   {
     accessorKey: "affliateCode",
     header: "Affiliate Code",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.original.affliateStatus;
+      const affiliateId = row.original.id;
+
+      console.log(affiliateId, status);
+
+      const { updateAffiliate, isLoading } = useUpdateAffiliate({
+        affiliateId: affiliateId as number,
+      });
+
+      const { getAffiliates, isLoading: affiliatesIsLoading } =
+        useGetAffiliates();
+
+      const updateAffiliateStatus = async (affliateStatus: boolean) => {
+        await updateAffiliate({ payload: { affliateStatus } });
+        await getAffiliates();
+      };
+
+      return (
+        <Switch
+          defaultChecked={status}
+          onCheckedChange={updateAffiliateStatus}
+          disabled={isLoading || affiliatesIsLoading}
+          className="data-[state=checked]:bg-basePrimary"
+        />
+      );
+    },
   },
 ];
