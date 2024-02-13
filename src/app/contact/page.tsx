@@ -63,7 +63,7 @@ export default function Contact() {
           </p>
         </div>
 
-        <div className="bg-white px-8 py-6 m-8 rounded-md">
+        <div className="bg-white px-8 py-6 my-6 mr-6 rounded-md">
           <p className="text-black font-medium text-xl my-4">Contact us</p>
           <form>
             <div className="grid grid-cols-2 gap-y-8 gap-x-6">
@@ -106,6 +106,7 @@ export default function Contact() {
                 name="phoneNumber"
                 label="Phone number"
                 id="phoneNumber"
+                labelClassName="px-2"
                 type="tel"
                 placeholder="+234"
                 value={dialCode ?? ""}
@@ -125,7 +126,12 @@ export default function Contact() {
                   value={"1"}
                   className="w-4 h-4"
                   onClick={() =>
-                    setNoOfEvents({ ...noOfEvents, one: !noOfEvents.one })
+                    setNoOfEvents({
+                      one: !noOfEvents.one,
+                      twoToFive: false,
+                      sixToTen: false,
+                      elevenPlus: false,
+                    })
                   }
                   checked={noOfEvents.one}
                 />
@@ -139,8 +145,10 @@ export default function Contact() {
                   className="w-4 h-4"
                   onClick={() =>
                     setNoOfEvents({
-                      ...noOfEvents,
+                      one: false,
                       twoToFive: !noOfEvents.twoToFive,
+                      sixToTen: false,
+                      elevenPlus: false,
                     })
                   }
                   checked={noOfEvents.twoToFive}
@@ -155,8 +163,10 @@ export default function Contact() {
                   className="w-4 h-4 text-#F3F3F3"
                   onClick={() =>
                     setNoOfEvents({
-                      ...noOfEvents,
+                      one: false,
+                      twoToFive: false,
                       sixToTen: !noOfEvents.sixToTen,
+                      elevenPlus: false,
                     })
                   }
                   checked={noOfEvents.sixToTen}
@@ -171,7 +181,9 @@ export default function Contact() {
                   className="w-4 h-4"
                   onClick={() =>
                     setNoOfEvents({
-                      ...noOfEvents,
+                      one: false,
+                      twoToFive: false,
+                      sixToTen: false,
                       elevenPlus: !noOfEvents.elevenPlus,
                     })
                   }
@@ -185,6 +197,7 @@ export default function Contact() {
                 label="Expected attendees"
                 type="number"
                 name="expectedAttendees"
+                labelClassName="px-2"
                 id="expectedAttendees"
                 placeholder="No of attendees"
               />
@@ -212,7 +225,6 @@ export default function Contact() {
           </form>
         </div>
       </div>
-      <div></div>
     </div>
   );
 }

@@ -12,7 +12,7 @@ export const CustomTextBox: React.FC<{
     <div className="relative">
       <label
         htmlFor={id}
-        className={`${manrope.className} font-medium block text-[12px]  bg-white text-[#3E404B]  absolute right-3 -top-2 rounded-sm`}
+        className={`${manrope.className} font-medium block text-[12px] px-2 bg-white text-[#3E404B]  absolute right-3 -top-2 rounded-sm`}
       >
         {label}
       </label>
