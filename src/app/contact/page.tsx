@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import countries from "@/../countryList.json";
 import { CustomTextBox } from "@/components/CustomTextbox";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Contact() {
   const [dialCode, setDialCode] = useState<string | null>(null);
@@ -201,6 +202,13 @@ export default function Contact() {
               placeholder="Write something here"
             />
             <Button className="w-full mt-5 bg-bluebg py-6">Submit</Button>
+            <span className="description-text">
+              By clicking the button below, you consent to allow Zikoro to store
+              and process your information by our{" "}
+              <Link href="www.zikoro.com/privacy" target="_blank">
+                Privacy Policy
+              </Link>
+            </span>
           </form>
         </div>
       </div>

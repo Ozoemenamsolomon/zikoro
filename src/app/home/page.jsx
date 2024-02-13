@@ -4,6 +4,7 @@ import { useState } from "react";
 import { NotificationsActive } from "@styled-icons/material-outlined/NotificationsActive";
 import { AngleUp } from "@styled-icons/fa-solid/AngleUp";
 import { AngleDown } from "@styled-icons/fa-solid/AngleDown";
+import Link from "next/link";
 
 export default function HomePage() {
   const [hide, setHide] = useState(false);
@@ -55,7 +56,7 @@ export default function HomePage() {
           />
           <div className="text-center py-16">
             <p className="text-[#15161B] text-4xl font-semibold">
-              Made for people. Built for engagements & connections
+              Made for people. Built for engagements & connections.
             </p>
             <div className="grid grid-cols-3 justify-items-center mx-12 text-[#3E404B] my-10">
               <div className="flex justify-center items-center space-x-3">
@@ -107,20 +108,20 @@ export default function HomePage() {
         </div>
         <div>
           <div className="flex flex-col text-center items-center mt-8">
-            <h3 className="text-3xl text-bluebg">Features</h3>
+            <h3 className="text-3xl text-bluebg uppercase">Features</h3>
             <p className="text-[#15161B] text-4xl leading-snug font-semibold my-4">
               See what you get from the most practical event <br />
               management platform
             </p>
             <div className="mt-3">
               <ul className="flex space-x-6 text-[#717171]">
-                <li className="p-4 border-b border-bluebg text-bluebg">
+                <li className="p-4 border-b-2 text-bold border-bluebg text-bluebg">
                   Ticketing & Registeration
                 </li>
                 <li className="p-4">Digital Credentialing</li>
                 <li className="p-4">Event Management</li>
-                <li className="p-4">Attendee Experience</li>
-                <li className="p-4">Branding </li>
+                <li className="p-4">Attendee Engagement</li>
+                <li className="p-4">Gamification</li>
                 <li className="p-4">Exhibitor's Hub </li>
               </ul>
             </div>
@@ -152,10 +153,10 @@ export default function HomePage() {
                     Multi-tier ticketing
                   </h6>
                   <p className="text-base">
-                    Streamline your event experience, providing a centralized
-                    and user-friendly space for all your event-related needs.
-                    Attendees can directly register and buy tickets from your
-                    dedicated landing page.
+                    Effortlessly offer a range of ticket options with limited
+                    validity, offering attendees diverse access and benefits.
+                    Our platform gives you complete control over the success of
+                    your event.
                   </p>
                 </div>
 
@@ -456,9 +457,12 @@ export default function HomePage() {
                   <button className="bg-bluebg text-white py-4 px-10 rounded-md">
                     Get started
                   </button>
-                  <button className="border border-bluebg text-bluebg text-semibold py-4 px-10 rounded-md">
+                  <Link
+                    href="/contact"
+                    className="border border-bluebg text-bluebg text-semibold py-4 px-10 rounded-md"
+                  >
                     Contact sales
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -4,11 +4,12 @@ import { TwitterSquare } from "@styled-icons/fa-brands/TwitterSquare";
 import { LinkedinSquare } from "@styled-icons/boxicons-logos/LinkedinSquare";
 import { FacebookSquare } from "@styled-icons/boxicons-logos/FacebookSquare";
 import { Instagram } from "@styled-icons/remix-fill/Instagram";
+import Link from "next/link";
 export const Footer = () => {
   return (
     <div className="grid bg-black text-white w-full pt-4">
       <div className="flex justify-start mb-6">
-        <div className="flex flex-col p-4 ">
+        <div className="flex flex-col py-4 pl-10 ">
           <Image
             src="/zikoro1.svg"
             alt="zikoro logo"
@@ -27,15 +28,17 @@ export const Footer = () => {
               <li className="text-lg font-medium">COMPANY</li>
               <li>About us</li>
               <li>Careers</li>
-              <li>Contact us</li>
+              <li>
+                <Link href="/contact">Contact us</Link>
+              </li>
             </ul>
             <ul className="flex flex-col py-4 space-y-4 text-sm">
               <li className="text-lg font-medium">FEATURES</li>
               <li>Ticketing & Registration</li>
-              <li> Digital Credentialing</li>
+              <li>Digital Credentialing</li>
               <li>Event Management</li>
-              <li>Attendee Experience</li>
-              <li>Branding</li>
+              <li>Attendee Engagement</li>
+              <li>Gamification</li>
               <li>Exhibitors’ Hub</li>
             </ul>
             <ul className="flex flex-col py-4 space-y-4 text-sm">
@@ -43,6 +46,7 @@ export const Footer = () => {
               <li>Conferences</li>
               <li>Tradeshows & Exhibitions</li>
               <li>Seminars & Workshops</li>
+              <li>Education</li>
               <li>Networking</li>
               <li>Culture & Arts</li>
               <li>Celebrations</li>
@@ -53,7 +57,11 @@ export const Footer = () => {
             </ul>
             <ul className="flex flex-col py-4 space-y-4 text-sm">
               <li className="text-lg font-medium">RESOURCES</li>
-              <li>Verify certificates</li>
+              <li>
+                <Link href="www.zikoro.com/verify" target="_blank">
+                  Verify certificates
+                </Link>
+              </li>
               <li>Blog</li>
               <li>FAQ</li>
               <li>Affiliates</li> <li>API</li>
@@ -67,7 +75,7 @@ export const Footer = () => {
         <p>Copyright © 2022 - Zikoro</p>
         <div className="text-start">
           <p>Follow Zikoro</p>
-          <div className="space-x-4 mt-2">
+          <div className="space-x-4 mt-2 pe-10">
             <TwitterSquare className="w-8 h-8" />
             <LinkedinSquare className="w-8 h-8" />
             <FacebookSquare className="w-8 h-8" />
