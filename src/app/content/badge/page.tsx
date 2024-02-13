@@ -285,7 +285,7 @@ export default function Badge() {
                               setOrgName(false);
                             }}
                           />
-                          <span>Hide</span>
+                          <span>Hidden</span>
                         </div>
                       </RadioGroup>
                     </div>
