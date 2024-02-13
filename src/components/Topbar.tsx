@@ -53,7 +53,7 @@ const Topbar = () => {
           <Link
             href={href}
             key={index}
-            className={`p-2 font-medium  ${manrope.className} ${
+            className={`px-2 py-4 font-medium  ${manrope.className} ${
               pathname.includes(href)
                 ? "text-bluebg font-medium border-b border-bluebg"
                 : "font-normal"

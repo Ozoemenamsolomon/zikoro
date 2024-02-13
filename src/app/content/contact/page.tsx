@@ -2,13 +2,39 @@
 import { CustomInput } from "@/components/content/CustomInput";
 import { CustomSelect } from "@/components/content/CustomSelect";
 import { addContact } from "@/app/server-actions/addContact";
+import { useEffect, useState } from "react";
+import countries from "../../../../countrylist.json";
+
 function Contact() {
+  const [dialCode, setDialCode] = useState<string | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string>("");
+  const [whatsappNumber, setWhatsappNumber] = useState<string | null>(null);
+
+  // function to find country dial code
+  const findDialCode = (countryName: string) => {
+    const country = countries.find(
+      (country: any) => country.name === countryName
+    );
+    if (country) {
+      console.log("dialcode", country.dial_code);
+      setDialCode(country.dial_code);
+      setWhatsappNumber(country.dial_code);
+      return country.dial_code;
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    findDialCode(selectedCountry);
+  }, [selectedCountry]);
+
   return (
     <>
       <div className="p-4">
         <h6 className="font-medium">Contact information</h6>
       </div>
       <form className="w-[100%]" action={addContact} id="form">
+        {/* <button>Click</button> */}
         <div className="grid grid-cols-2 mb-10 gap-6 px-4">
           <div className="py-4 space-y-10">
             <CustomInput
@@ -23,6 +49,9 @@ function Contact() {
               label="Country"
               id="country"
               placeholder="Select country"
+              // value={selectedCountry}
+              onValueChange={(value: string) => setSelectedCountry(value)}
+              // key={index}
             />
 
             <CustomInput
@@ -31,6 +60,10 @@ function Contact() {
               id="phoneNumber"
               type="tel"
               placeholder="+234"
+              value={dialCode ?? ""}
+              onChange={(e) => {
+                setDialCode(e.target.value);
+              }}
             />
 
             <CustomInput
@@ -39,6 +72,10 @@ function Contact() {
               id="whatsappNumber"
               type="tel"
               placeholder="Enter whatsapp number"
+              value={whatsappNumber ?? ""}
+              onChange={(e) => {
+                setWhatsappNumber(e.target.value);
+              }}
             />
             <CustomInput
               name="email"

@@ -45,9 +45,9 @@ export async function addEvent(formData: FormData) {
     },
   ];
 
-  const { data, error }: any = await supabase.from("events").insert([
+  const { error }: any = await supabase.from("events").insert([
     {
-      // organisationId: Math.random().toString(16).slice(2),
+      organisationId: Math.floor(Math.random() * 1000000),
       createdBy: "blessing@gmail.com",
       published: false,
       eventTitle,
@@ -73,11 +73,8 @@ export async function addEvent(formData: FormData) {
   if (error) {
     console.log(error);
   }
-
-  // revalidatePath("/getEvent");
-  console.log("Event added");
-
-  return { message: "Success", data: data?.data?.id };
+  // console.log(data?.organisationId);
+  return { message: "success" };
 }
 
 // "createdAt" timestamp with time zone DEFAULT now(),

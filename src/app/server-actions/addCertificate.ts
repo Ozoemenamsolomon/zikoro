@@ -1,3 +1,4 @@
+"use server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
@@ -5,6 +6,38 @@ import { revalidatePath } from "next/cache";
 export async function addCertificate(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+
+  const { data, error } = await supabase.from("certificate").insert([
+    {
+      // eventId: Math.random().toString(16).slice(2),
+      certificateName: formData.get("certificateName"),
+      certificateHeading: formData.get("certificateHeading"),
+      TrainingDuration: formData.get("trainingDuration"),
+      cpdRequired: formData.get("cpdRequired"),
+      cpdPoints: formData.get("cpdPoints"),
+      logoPosition: formData.get("logoPosition"),
+      attendanceRate: formData.get("attendanceRate"),
+      trainingScope: [formData.get("trainingScope")],
+      // zikoroLogo: formData.get("zikoroLogo"),
+      // certficateTemplate: formData.get("certficateTemplate"),
+      attendance: [
+        {
+          attendanceName: formData.get("attendance"),
+          attendanceType: formData.get("attendanceType"),
+        },
+      ],
+
+      criteria: formData.get("criteria"),
+      // organisationLogo: formData.get("organisationLogo"),
+    },
+  ]);
+  if (error) {
+    console.log(error);
+  }
+  // revalidatePath("/getCertificate");
+  console.log("certificate added", data);
+
+  return { message: "Success", data };
 }
 
 // CREATE TABLE IF NOT EXISTS public.certificate

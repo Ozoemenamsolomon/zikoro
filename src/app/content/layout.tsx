@@ -20,25 +20,25 @@ export default function Home({ children }: { children?: React.ReactNode }) {
       href: "/content/contact",
     },
     {
-      name: "Certificate",
-      href: "/content/certificate",
+      name: "Discount",
+      href: "/content/discount",
     },
     {
       name: "Badge",
       href: "/content/badge",
     },
     {
-      name: "Discount",
-      href: "/content/discount",
+      name: "Certificate",
+      href: "/content/certificate",
     },
   ];
   const pathname = usePathname();
   const [isSaved, setIsSaved] = useState<boolean>(true);
 
   return (
-    <div className="w-[100%] h-[100%] bg-white py-2">
-      <main className="my-4 rounded-md">
-        <div className="p-4 text-base flex items-center justify-between text-[#3E404B]">
+    <div className="w-[100%] h-[100%] bg-white">
+      <main>
+        <div className="p-4 text-base flex items-center justify-between text-[#3E404B] border-y border-basebody">
           <div className="flex items-center font-normal justify-center space-x-8 text-[14px]">
             {links.map(({ name, href }, index) => {
               return (
@@ -75,36 +75,29 @@ export default function Home({ children }: { children?: React.ReactNode }) {
                     <Check size={16} className="text-bluebg" />
                   </button>
                 </div>
-                <form
-                  id="publishForm"
-                  action={() => pathname === "/content/contact"}
-                >
-                  <Button
-                    containerClassName="border border-bluebg text-bluebg"
-                    type="submit"
-                    text="Publish"
-                    spanClassName="mr-2"
-                    children={<UploadOutline width={20} />}
-                    onClick={() => {
-                      toast.success("Event successfully published!");
-                    }}
-                  />
-                </form>
+                <Button
+                  containerClassName="border border-bluebg text-bluebg"
+                  type="submit"
+                  text="Publish"
+                  spanClassName="mr-2"
+                  children={<UploadOutline width={20} />}
+                  onClick={() => {
+                    toast.success("Event successfully published!");
+                  }}
+                />
 
                 <Button
                   text="Preview"
                   spanClassName="mr-2"
                   type="button"
-                  containerClassName="bg-bluebg text-white"
+                  containerClassName="bg-bluebg text-white border"
                   children={<Eye color="white" width={20} />}
                 />
               </div>
             </div>
           )}
         </div>
-        <div className="px-4 my-6 mx-16 border-2 rounded-md border-[#f3f3f3]">
-          {children}
-        </div>
+        <div className="px-4 my-6">{children}</div>
         <Toaster />
       </main>
     </div>

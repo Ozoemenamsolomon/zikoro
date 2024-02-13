@@ -19,7 +19,15 @@ export const CustomSelect: React.FC<{
   value?: string;
   name: string;
   containerClassName?: string;
-}> = ({ label, placeholder, value, containerClassName, name }) => {
+  onValueChange?(value: string): void;
+}> = ({
+  label,
+  placeholder,
+  value,
+  containerClassName,
+  name,
+  onValueChange,
+}) => {
   const visibilityOptions: string[] = ["Public", "Private"];
   const categoryOptions: string[] = [
     "Conferences",
@@ -67,9 +75,11 @@ export const CustomSelect: React.FC<{
     "Resin art workshop",
     "Biomechanics of lower limbs",
   ];
+  const session: string[] = ["session 1", "session 2", "session 3"];
+  const track: string[] = ["track 1", "track 2", "track 3"];
 
   return (
-    <Select name={name}>
+    <Select name={name} onValueChange={onValueChange}>
       <SelectTrigger
         className={`relative h-14 w-full bg-white border border-[#f3f3f3] sm:text-sm data-[placeholder]:text-[#c4c2c2] ${containerClassName}`}
       >
@@ -122,6 +132,22 @@ export const CustomSelect: React.FC<{
               })
             : label === "Certificate heading"
             ? certificateHeading.map((optionValue, index) => {
+                return (
+                  <SelectItem key={index} value={optionValue}>
+                    {optionValue}
+                  </SelectItem>
+                );
+              })
+            : label === "Session"
+            ? session.map((optionValue, index) => {
+                return (
+                  <SelectItem key={index} value={optionValue}>
+                    {optionValue}
+                  </SelectItem>
+                );
+              })
+            : label === "Track"
+            ? track.map((optionValue, index) => {
                 return (
                   <SelectItem key={index} value={optionValue}>
                     {optionValue}

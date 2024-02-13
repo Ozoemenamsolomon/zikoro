@@ -200,11 +200,39 @@ option:hover {
   background: #f7f7f7;
 }
 
-/* text editor placeholder styles */
-.tiptap p.is-editor-empty:first-child::before {
-  color: #d8d6d6;
+.quill {
+  width: 100%;
+  /* border-radius: 8px; */
+  margin-bottom: 3rem;
+}
+
+.quill .ql-editor {
+  height: 100%;
+}
+
+.quill > .ql-container > .ql-editor.ql-blank::before {
+  color: #d4d4d4;
+}
+
+.ql-container.ql-snow {
+  border: 1px solid #f3f3f3 !important;
+  height: 400px;
+  border-top: none;
+  font-size: 14px;
+  border-radius: 0px 0px 8px 8px;
+}
+
+.ql-toolbar.ql-snow {
+  border-radius: 8px 8px 0px 0px;
+  border: 1px solid #f3f3f3 !important;
+}
+
+.ql-editor.ql-blank::before {
+  color: rgba(0, 0, 0, 0.6);
   content: attr(data-placeholder);
-  float: left;
-  height: 0;
+  font-size: 14px;
+  left: 15px;
   pointer-events: none;
+  position: absolute;
+  right: 15px;
 }

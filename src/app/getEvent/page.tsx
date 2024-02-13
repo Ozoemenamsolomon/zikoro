@@ -5,12 +5,15 @@ export default async function getEvent() {
   const cookieStore = cookies();
   const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
-  const { data: events, error } = await supabase.from("events").select();
+  const { data: events, error } = await supabase
+    .from("events")
+    .select()
+    .order("id", { ascending: true });
   if (error) {
     console.error("Error fetching events");
   } else {
     const lastItem = events[events.length - 1];
-    // console.log(lastItem?.id);
+    console.log(lastItem?.id);
   }
   return <pre>{JSON.stringify(events, null, 2)}</pre>;
 }
@@ -27,17 +30,20 @@ export default async function getEvent() {
 // export async function getLastSavedId() {
 //   const cookieStore = cookies();
 //   const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-//   const { data: events, error } = await supabase.from("events").select();
+//   const { data: events, error } = await supabase
+//     .from("events")
+//     .select()
+//     .order("id", { ascending: true });
 //   if (error) {
 //     console.error("Error fetching id");
 //   }
 
-//   const lastItemID = events?.map((e) => e.id).sort((a, b) => b - a)[0];
+//   const organisationID = events?.map((e) => e.id).sort((a, b) => b - a)[0];
 //   // console.log("lastId", lastItemID);
 //   const { data: lastItem, error: error2 } = await supabase
 //     .from("events")
 //     .update({ published: true })
-//     .eq("id", lastItemID);
+//     .eq("id", organisationID);
 //   if (error2) {
 //     console.error("Error updating pushed status", error2);
 //   } else {

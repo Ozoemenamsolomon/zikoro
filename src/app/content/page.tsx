@@ -8,7 +8,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { addEvent } from "../server-actions/addEvent";
 import { Camera } from "@styled-icons/feather/Camera";
 import countries from "@/../countrylist.json";
-import Tiptap from "@/components/content/Tiptap";
+import TextEditor from "@/components/content/TextEditor";
 
 interface ImageFile {
   url: string | undefined;
@@ -146,6 +146,8 @@ export default function Event(): JSX.Element {
     }
     countriesContainer.innerHTML = "";
   }
+  // const [tipTapContent, setTiptapContent] = useState("");
+  const [value, setValue] = useState("");
 
   return (
     <DateAndTimeAdapter>
@@ -423,16 +425,11 @@ export default function Event(): JSX.Element {
             </div>
           </div>
           <div className="px-4 space-y-6">
-            <Tiptap
-              onChange={(content: string) => {
-                console.log("changed", content);
-              }}
-              description="Description"
-              value="Initial value"
-            />
+            <TextEditor />
             <CustomSelect
               label="Pricing currency"
               placeholder="Please select currency"
+              containerClassName="mt-10"
               name="pricingCurrency"
               id="pricingCurrency"
             />

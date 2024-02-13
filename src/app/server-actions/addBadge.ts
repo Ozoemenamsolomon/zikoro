@@ -6,6 +6,7 @@ export async function addBadge(formData: FormData) {
   const cookieStore = cookies();
   const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
+  // change to update instead of insert
   const { data, error } = await supabase.from("events").insert([
     {
       badgeColor: formData.get("badgeColor"),

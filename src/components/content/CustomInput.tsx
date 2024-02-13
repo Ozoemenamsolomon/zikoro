@@ -16,7 +16,7 @@ export const CustomInput: React.FC<{
   onChange?: (e: any) => void;
   fileInputRef?: any;
   onInput?: any;
-  value?: React.SetStateAction<string>;
+  value?: string;
 }> = ({
   label,
   name,
@@ -31,6 +31,7 @@ export const CustomInput: React.FC<{
   onChange,
   fileInputRef,
   onInput,
+  value,
 }) => {
   return (
     <div className={`${containerClassName} relative`}>
@@ -52,6 +53,7 @@ export const CustomInput: React.FC<{
         onChange={onChange}
         ref={fileInputRef}
         onInput={onInput}
+        value={value}
       />
     </div>
   );

@@ -8,13 +8,14 @@ import { Toolbar } from "./Toolbar";
 // import SubScript from "@tiptap/extension-subscript"
 // import Highlight from "@tiptap/extension-highlight"
 import Placeholder from "@tiptap/extension-placeholder";
+import ListItem from "@tiptap/extension-list-item";
 
 export default function Tiptap({
   onChange,
   description,
 }: {
-  onChange: (content: string) => void;
-  description: string;
+  onChange: (content: string, editor: any) => void;
+  description?: string;
   value: string;
 }) {
   const editor = useEditor({
@@ -33,8 +34,8 @@ export default function Tiptap({
     ],
     content: description,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
-      console.log(editor.getText());
+      onChange(editor.getHTML(), editor);
+      // console.log(editor.getText());
     },
     editorProps: {
       attributes: {
