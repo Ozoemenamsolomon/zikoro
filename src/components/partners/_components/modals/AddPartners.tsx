@@ -214,7 +214,7 @@ export function AddPartners({
                 <ReactSelect
                   {...field}
                   placeHolder="Enter the Employment Type"
-                  label="Employment Type"
+                  label="Partner Type"
                   options={[
                     { label: "Sponsor", value: "Sponsor" },
                     { label: "Exhibitor", value: "Exhibitor" },
@@ -236,6 +236,78 @@ export function AddPartners({
                 </InputOffsetLabel>
               )}
             />
+              <div className="w-full grid grid-cols-2 items-center gap-4">
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem className="relative h-fit">
+                    <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
+                      Phone number
+                    </FormLabel>
+                    <input
+                      type="text"
+                      className="!mt-0 text-sm absolute top-[1.4rem]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
+                      value={phoneCountryCode}
+                      onChange={(e) => setPhoneCountryCode(e.target.value)}
+                    />
+                    <FormControl>
+                      <Input
+                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
+                        placeholder="Enter Phone Number"
+                        {...field}
+                        type="tel"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="whatsApp"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-[10px] px-1">
+                      WhatsApp number
+                    </FormLabel>
+                    <input
+                      type="text"
+                      className="!mt-0 text-sm absolute top-[1.4rem] left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
+                      value={whatsappCountryCode}
+                      onChange={(e) => setWhatsAppCountryCode(e.target.value)}
+                    />
+                    <FormControl>
+                      <Input
+                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
+                        placeholder="Enter Whatsapp Number"
+                        {...field}
+                        type="tel"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <InputOffsetLabel label="Email">
+                  <Input
+                    type="text"
+                    placeholder="Enter the Email Address"
+                    {...field}
+                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                  />
+                </InputOffsetLabel>
+              )}
+            />
+            <div className="w-full mt-4 py-2 border-t border-gray-300 border-dashed">
+              <p className="text-sm text-gray-400">The partner will be notified to fill up the rest of the field</p>
+            </div>
             <div className="w-full flex flex-col items-start justify-start gap-y-1">
               <InputOffsetLabel label=" Logo">
                 <Input
@@ -387,75 +459,7 @@ export function AddPartners({
               />
             </div>
 
-            <div className="w-full grid grid-cols-2 items-center gap-4">
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem className="relative h-fit">
-                    <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                      Phone number
-                    </FormLabel>
-                    <input
-                      type="text"
-                      className="!mt-0 text-sm absolute top-[1.4rem]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
-                      value={phoneCountryCode}
-                      onChange={(e) => setPhoneCountryCode(e.target.value)}
-                    />
-                    <FormControl>
-                      <Input
-                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
-                        placeholder="Enter Phone Number"
-                        {...field}
-                        type="tel"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="whatsApp"
-                render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-[10px] px-1">
-                      WhatsApp number
-                    </FormLabel>
-                    <input
-                      type="text"
-                      className="!mt-0 text-sm absolute top-[1.4rem] left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
-                      value={whatsappCountryCode}
-                      onChange={(e) => setWhatsAppCountryCode(e.target.value)}
-                    />
-                    <FormControl>
-                      <Input
-                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
-                        placeholder="Enter Whatsapp Number"
-                        {...field}
-                        type="tel"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <InputOffsetLabel label="Email">
-                  <Input
-                    type="text"
-                    placeholder="Enter the Email Address"
-                    {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                  />
-                </InputOffsetLabel>
-              )}
-            />
+          
             <FormField
               control={form.control}
               name="website"

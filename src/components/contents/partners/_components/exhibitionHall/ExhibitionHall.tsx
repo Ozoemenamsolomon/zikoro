@@ -5,58 +5,113 @@ import { cn } from "@/lib";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { useState } from "react";
 import { AddExhibitionHall } from "..";
+import { useMemo } from "react";
+import { useFetchSingleEvent } from "@/hooks";
+import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { EmptyCard } from "@/components/composables";
 
-export function ExhibitionHall() {
-    const [isOpen, setOpen] = useState(false)
+type TExhibitonHall = {
+  name: string;
+  capacity: string;
+  seat: number;
+};
 
-    function onClose() {
-        setOpen((prev) => !prev)
+export function ExhibitionHall({ eventId }: { eventId: string }) {
+  const [isOpen, setOpen] = useState(false);
+  const { data, loading, refetch } = useFetchSingleEvent(eventId);
+
+  function onClose() {
+    setOpen((prev) => !prev);
+  }
+
+  // format exhibition hall array
+  const formatExhibitionHall: TExhibitonHall[] | undefined = useMemo(() => {
+    let exhibitionHall: any[];
+
+    if (data) {
+      exhibitionHall = data.exhibitionHall;
+      exhibitionHall.map((item) => {
+        return { ...item, seat: 0 };
+      });
+
+      return exhibitionHall;
     }
+  }, [data]);
   return (
-   <>
-    <div className="w-full lg:col-span-3 flex flex-col">
-      <div className="flex p-3 border-b items-center justify-between w-full">
-        <p className="font-medium">Exhibition Hall</p>
+    <>
+      <div className="w-full lg:col-span-3 flex flex-col">
+        <div className="flex p-3 border-b items-center justify-between w-full">
+          <p className="font-medium">Exhibition Hall</p>
 
-        <Button 
-        onClick={onClose}
-        className="px-1 h-fit w-fit">
-          <PlusCircle size={24} />
-        </Button>
-      </div>
-      <div className="rounded-lg w-full border">
-        <div className="w-full grid gap-3 font-medium grid-cols-3 p-2 items-center bg-gray-200 rounded-t-lg">
-          <p>Hall Name</p>
-          <p>Capacity</p>
-          <p>Filled Seat</p>
+          <Button onClick={onClose} className="px-1 h-fit w-fit">
+            <PlusCircle size={24} />
+          </Button>
         </div>
-        {[1, 2, 3].map((_, index) => (
-          <ExhibitionHallWidget
-            key={_}
-            className={
-              index === [1, 2, 3].length - 1 ? "border-b-0" : "border-b"
-            }
-          />
-        ))}
+        <div className="w-full p-3">
+          <div className=" rounded-lg w-full border">
+            <div className="w-full grid gap-3 font-medium text-sm grid-cols-3 px-2 py-4 items-center bg-gray-100 rounded-t-lg">
+              <p>Hall Name</p>
+              <p>Capacity</p>
+              <p>Filled Seat</p>
+            </div>
+            {loading && (
+              <div className="w-full col-span-full h-[300px] flex items-center justify-center">
+                <LoaderAlt size={50} className="animate-spin" />
+              </div>
+            )}
+            {!loading &&
+              Array.isArray(formatExhibitionHall) &&
+              formatExhibitionHall?.length === 0 && (
+                <EmptyCard
+                  width="70"
+                  height="70"
+                  text="No Exhibition Hall for this event"
+                />
+              )}
+            {Array.isArray(formatExhibitionHall) &&
+              formatExhibitionHall?.map((item, index) => (
+                <ExhibitionHallWidget
+                  key={`${item.name}${index}`}
+                  className={
+                    index === formatExhibitionHall?.length - 1
+                      ? "border-b-0"
+                      : "border-b"
+                  }
+                  name={item?.name}
+                  capacity={item?.capacity}
+                  seat={item?.seat}
+                />
+              ))}
+          </div>
+        </div>
       </div>
-    </div>
 
-    {isOpen && <AddExhibitionHall close={onClose}/>}
-   </>
+      {isOpen && <AddExhibitionHall eventId={eventId} refetch={refetch} close={onClose} />}
+    </>
   );
 }
 
-function ExhibitionHallWidget({ className }: { className: string }) {
+function ExhibitionHallWidget({
+  className,
+  name,
+  capacity,
+  seat,
+}: {
+  name: string;
+  capacity: string;
+  seat: number;
+  className: string;
+}) {
   return (
     <div
       className={cn(
-        "grid text-mobile grid-cols-3 items-center gap-4 p-2",
+        "grid text-sm grid-cols-3 items-center hover:bg-gray-50 gap-4 px-2 py-4",
         className
       )}
     >
-      <p>Hailey Bee</p>
-      <p>20,000</p>
-      <p>10,000</p>
+      <p>{name}</p>
+      <p>{Number(capacity)?.toLocaleString()}</p>
+      <p>{seat?.toLocaleString()}</p>
     </div>
   );
 }

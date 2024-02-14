@@ -292,6 +292,7 @@ export function useFetchSingleEvent(id: string) {
   return {
     data,
     loading,
+    refetch:fetchSingleEvent
   };
 }
 

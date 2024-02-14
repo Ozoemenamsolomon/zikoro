@@ -83,7 +83,7 @@ export function useFetchPartners(eventId: string | number) {
   return {
     data,
     loading,
-    refetch:fetchPartners
+    refetch: fetchPartners,
   };
 }
 
@@ -315,5 +315,119 @@ export function useAddPartnerJob() {
   return {
     addPartnerJob,
     loading,
+  };
+}
+
+export function useCreateEventExhibitionHall() {
+  const [loading, setLoading] = useState(false);
+
+  async function createExhibitionHall(
+    eventId: string,
+    payload: { name: string; capacity: string }
+  ) {
+    setLoading(true);
+
+    try {
+      const { data } = await supabase
+        .from("events")
+        .select("*")
+        .eq("id", eventId)
+        .single();
+
+      const { exhibitionHall: hall, ...restData } = data;
+
+      // initialize an empty array
+      let exhibitionHall = [];
+
+      // when there is no ex. hall
+      if (hall === null) {
+        exhibitionHall = [payload];
+      } else {
+        // when there is/are ex. hall
+        exhibitionHall = [...hall, payload];
+      }
+
+      const { error, status } = await supabase
+        .from("events")
+        .update({ ...restData, exhibitionHall })
+        .eq("id", eventId);
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (status === 204 || status === 200) {
+        //
+        toast.success("Exhibition Hall created successfully");
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  }
+
+  return {
+    createExhibitionHall,
+    loading,
+  };
+}
+
+export function useUpdateBooth() {
+  async function updateBooth(partnerId: string, value: string) {
+    try {
+      // Fetch the partner by ID
+      const { data } = await supabase
+        .from("eventPartners")
+        .select("*")
+        .eq("id", partnerId)
+        .single();
+
+      const { boothNumber, ...restData } = data;
+
+      const { error, status } = await supabase
+        .from("eventPartners")
+        .update({ ...restData, boothNumber: value })
+        .eq("id", partnerId);
+
+      if (status === 204 || status === 200) {
+        //
+        toast.success("Booth Number Updated");
+      }
+    } catch (error) {}
+  }
+
+  return {
+    updateBooth,
+  };
+}
+
+export function useUpdateHall() {
+  async function updateHall(partnerId: string, value: string) {
+    try {
+      // Fetch the partner by ID
+      const { data } = await supabase
+        .from("eventPartners")
+        .select("*")
+        .eq("id", partnerId)
+        .single();
+
+      const { exhibitionHall, ...restData } = data;
+
+      const { error, status } = await supabase
+        .from("eventPartners")
+        .update({ ...restData, exhibitionHall: value })
+        .eq("id", partnerId);
+
+      if (status === 204 || status === 200) {
+        //
+        toast.success("Exhibition Hall Updated");
+      }
+    } catch (error) {}
+  }
+
+  return {
+    updateHall,
   };
 }

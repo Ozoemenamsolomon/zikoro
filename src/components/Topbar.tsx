@@ -13,6 +13,10 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
       href: `/events/home/${eventId}`,
     },
     {
+      name: "Contents",
+      href: `/events/content/${eventId}/partners`,
+    },
+    {
       name: "People",
       href: "/people/all",
     },
@@ -28,10 +32,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
       name: "Products",
       href: "/products",
     },
-    {
-      name: "Contents",
-      href: `/events/content/${eventId}/partners`,
-    },
+ 
     {
       name: "Documents",
       href: "/documents",

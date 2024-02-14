@@ -2,14 +2,34 @@
 
 import { Form, FormField, Input, InputOffsetLabel, Button } from "@/components";
 import { useForm } from "react-hook-form";
-
+import * as z from "zod";
+import { hallSchema } from "@/validations";
+import { useCreateEventExhibitionHall } from "@/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 
-export function AddExhibitionHall({ close }: { close: () => void }) {
-  const form = useForm({});
+export function AddExhibitionHall({
+  close,
+  eventId,
+  refetch
+}: {
+  eventId: string;
+  close: () => void;
+  refetch: () => Promise<any>
+}) {
+  const form = useForm<z.infer<typeof hallSchema>>({
+    resolver: zodResolver(hallSchema),
+  });
+  const { loading, createExhibitionHall } = useCreateEventExhibitionHall();
 
-  async function onSubmit(values: any) {}
+  async function onSubmit(values: z.infer<typeof hallSchema>) {
+    await createExhibitionHall(eventId, values);
+    refetch()
+    close()
+    form.reset();
+  }
+
   return (
     <div
       role="button"
@@ -19,7 +39,7 @@ export function AddExhibitionHall({ close }: { close: () => void }) {
       <div
         onClick={(e) => e.stopPropagation()}
         role="button"
-        className="w-[95%] sm:w-[500px] box-animation h-fit flex mb-10 flex-col gap-y-6 rounded-lg bg-white  mx-auto absolute inset-x-0 py-6 px-3 sm:px-4"
+        className="w-[95%] sm:w-[500px] box-animation h-fit flex  flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-x-0 py-6 px-3 sm:px-4"
       >
         <div className="w-full flex items-center justify-between">
           <h2 className="font-medium text-lg sm:text-xl">
@@ -36,7 +56,7 @@ export function AddExhibitionHall({ close }: { close: () => void }) {
           >
             <FormField
               control={form.control}
-              name="hallName"
+              name="name"
               render={({ field }) => (
                 <InputOffsetLabel label="Hall Name">
                   <Input
@@ -51,7 +71,7 @@ export function AddExhibitionHall({ close }: { close: () => void }) {
 
             <FormField
               control={form.control}
-              name="hallCapacity"
+              name="capacity"
               render={({ field }) => (
                 <InputOffsetLabel label="Hall Capacity">
                   <Input
@@ -64,10 +84,10 @@ export function AddExhibitionHall({ close }: { close: () => void }) {
               )}
             />
             <Button
-              disabled={false}
+              disabled={loading}
               className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-zikoro h-12 rounded-md text-gray-50 font-medium"
             >
-              {"" && <LoaderAlt size={22} className="animate-spin" />}
+              {loading && <LoaderAlt size={22} className="animate-spin" />}
               <span>Done</span>
             </Button>
           </form>

@@ -109,9 +109,6 @@ body {
 }
 
 /* When the checkbox is checked, add a blue background */
-.container input:checked ~ .checkmark {
-  background: #b847fe;
-}
 
 /* Create the checkmark/indicator (hidden when not checked) */
 .drop-checkmark:after {
@@ -131,7 +128,7 @@ body {
   width: 5px;
   height: 10px;
   left: 6px;
-  top: 3px;
+  top: 1px;
   transform: rotate(50deg);
   border-right: 1px solid white;
   border-bottom: 1px solid white;
@@ -243,4 +240,82 @@ div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-ra
 .slider .slick-dots li.slick-active button::before {
   background-color: black
 
+}
+
+/*content partners**/
+.partner-container {
+  position: relative;
+  padding-left: 40px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* Hide the browser's default checkbox rounded-full w-3 h-3 bg-black*/
+.partner-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.partner-checkmark {
+  position: absolute;
+  top: 1px;
+  left: 11px;
+  height: 17px;
+  width: 20px;
+  border-radius: 4px;
+  border: 1px solid #000000;
+  background-color: #fff;
+}
+
+/* On mouse-over, add a grey background color */
+.partner-container:hover input ~ .partner-checkmark {
+  background-color: white;
+}
+
+/* When the checkbox is checked, add a blue background */
+.partner-container input:checked ~ .partner-checkmark {
+  background: #0001fc;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.partner-checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.partner-container input:checked ~ .partner-checkmark:after {
+  display: block;
+}
+
+.partner-checkmark::before {
+  position: absolute;
+  content: "";
+  width: 5px;
+  height: 10px;
+  left: 6px;
+  top: 1px;
+  transform: rotate(50deg);
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
+}
+
+/* Style the checkmark/indicator */
+.partner-container .partner-checkmark:after {
+  position: absolute;
+  content: "";
+  width: 5px;
+  height: 10px;
+  left: 6px;
+  top: 3px;
+  transform: rotate(50deg);
+  @apply border-r-2 border-b-2 border-white;
+  border-radius: 6px;
 }

@@ -1,5 +1,3 @@
-
-
 export interface Attendees {
   firstName: string;
   lastName: string;
@@ -8,9 +6,9 @@ export interface Attendees {
   whatsappNumber: string;
 }
 export interface OrganizerContact {
-  whatsappNumber:string |  undefined
-  email:string | undefined
-  phoneNumber:string | undefined
+  whatsappNumber: string | undefined;
+  email: string | undefined;
+  phoneNumber: string | undefined;
 }
 
 export enum EventDetailTab {
@@ -27,10 +25,10 @@ interface PricingType {
   validity: string;
 }
 
-
 export type PartnerIndustry = {
-  name:string , color:string
-}
+  name: string;
+  color: string;
+};
 
 export interface Event {
   createdAt: string;
@@ -51,7 +49,7 @@ export interface Event {
   instagram: string;
   x: string;
   linkedin: string;
-  locationType: "Hybrid" | "Onsite" |  "Virtual";
+  locationType: "Hybrid" | "Onsite" | "Virtual";
   organisationLogo: string;
   organisationName: string;
   phoneNumber: string;
@@ -63,9 +61,9 @@ export interface Event {
   trainingDuration: string;
   whatsappNumber: string;
   registered: string;
-  partnerIndustry: PartnerIndustry[] 
-  eventPoster:{image1: string}
-
+  partnerIndustry: PartnerIndustry[];
+  eventPoster: { image1: string };
+  exhibitionHall: { name: string; capacity: string }[];
 }
 
 export interface PaymentConfigProps {

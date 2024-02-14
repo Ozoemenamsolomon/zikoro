@@ -5,52 +5,55 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components";
 import { useState } from "react";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
-
-const links = [
-  {
-    name: "Event",
-    href: "event",
-  },
-  {
-    name: "Contact",
-    href: "contact",
-  },
-  {
-    name: "Certificate",
-    href: "certificate",
-  },
-  {
-    name: "Badge",
-    href: "badge",
-  },
-  {
-    name: "Discount",
-    href: "discount",
-  },
-  {
-    name: "Partners",
-    href: "partners",
-  },
-];
-
-export function ContentTabs() {
-  const pathnames = usePathname().split("/");
-  const currentLink = pathnames[pathnames.length - 2];
+import { AddPartners } from "@/components/partners/_components";
+export function ContentTabs({eventId, refetch}:{eventId:string, refetch:any;}) {
+  const pathname = usePathname()
+ 
   const [isOpen, setOpen] = useState(false);
 
   function onClose() {
     setOpen((prev) => !prev);
   }
 
+  const links = [
+    {
+      name: "Event",
+      href: "event",
+    },
+    {
+      name: "Contact",
+      href: "contact",
+    },
+    {
+      name: "Certificate",
+      href: "certificate",
+    },
+    {
+      name: "Badge",
+      href: "badge",
+    },
+    {
+      name: "Discount",
+      href: "discount",
+    },
+    {
+      name: "Partners",
+      href:   `/events/content/${eventId}/partners`,
+    },
+  ];
+  
+
   return (
-    <nav className="bg-white w-full flex items-center justify-between px-4 pt-4 h-max border-b-[1px]">
+
+    <>
+        <nav className="bg-white w-full flex items-center justify-between px-4 py-4 h-max border-b-[1px]">
       <ul className="flex gap-x-6 text-gray-700">
         {links.map(({ name, href }) => {
           return (
             <li
               className={`pb-1 text-sm ${
-                currentLink === href
-                  ? "text-zikoro border-b-2 border-zikoro font-medium"
+                pathname === href
+                  ? "text-zikoro  font-medium"
                   : ""
               }`}
             >
@@ -68,5 +71,10 @@ export function ContentTabs() {
         <p>New</p>
       </Button>
     </nav>
+
+    {isOpen && (
+        <AddPartners refetchPartners={refetch} close={onClose} eventId={eventId}  />
+      )}
+    </>
   );
 }
