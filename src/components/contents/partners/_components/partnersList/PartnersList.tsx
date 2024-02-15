@@ -3,10 +3,18 @@ import { EmptyCard } from "@/components/composables";
 import { useFetchPartners, useFetchSingleEvent } from "@/hooks";
 import { PartnerWidget } from "..";
 
-export function PartnersList({ eventId }: { eventId: string }) {
-  const { data, loading, refetch } = useFetchPartners(eventId);
+export function PartnersList({
+  eventId,
+  partners,
+  loading,
+  refetch,
+}: {
+  refetch: () => Promise<any>;
+  partners: any[];
+  loading: boolean;
+  eventId: string;
+}) {
   const { data: event } = useFetchSingleEvent(eventId);
-
 
   return (
     <div className="w-full lg:col-span-5 flex flex-col border-r">
@@ -28,7 +36,7 @@ export function PartnersList({ eventId }: { eventId: string }) {
               <LoaderAlt size={50} className="animate-spin" />
             </div>
           )}
-          {!loading && Array.isArray(data) && data?.length === 0 && (
+          {!loading && Array.isArray(partners) && partners?.length === 0 && (
             <EmptyCard
               width="100"
               height="100"
@@ -36,13 +44,13 @@ export function PartnersList({ eventId }: { eventId: string }) {
             />
           )}
           {!loading &&
-            Array.isArray(data) &&
-            data?.map((item, index) => (
+            Array.isArray(partners) &&
+            partners?.map((item, index) => (
               <PartnerWidget
-              refetch={refetch}
-              event={event}
+                refetch={refetch}
+                event={event}
                 className={
-                  index === data?.length - 1 ? "border-b-0" : "border-b"
+                  index === partners?.length - 1 ? "border-b-0" : "border-b"
                 }
                 item={item}
                 key={`${item?.name}${index}`}

@@ -16,7 +16,13 @@ type TExhibitonHall = {
   seat: number;
 };
 
-export function ExhibitionHall({ eventId }: { eventId: string }) {
+export function ExhibitionHall({
+  eventId,
+  partners,
+}: {
+  partners: any[];
+  eventId: string;
+}) {
   const [isOpen, setOpen] = useState(false);
   const { data, loading, refetch } = useFetchSingleEvent(eventId);
 
@@ -26,17 +32,21 @@ export function ExhibitionHall({ eventId }: { eventId: string }) {
 
   // format exhibition hall array
   const formatExhibitionHall: TExhibitonHall[] | undefined = useMemo(() => {
-    let exhibitionHall: any[];
-
     if (data) {
-      exhibitionHall = data.exhibitionHall;
-      exhibitionHall.map((item) => {
-        return { ...item, seat: 0 };
+      return data.exhibitionHall.map((item) => {
+        let totalSeat = 0;
+        partners.forEach((partner) => {
+          if (partner.exhibitionHall === item.name) {
+            totalSeat += Number(partner.boothNumber);
+          }
+        });
+        return { ...item, seat: totalSeat };
       });
 
-      return exhibitionHall;
+      // exhibitionHall;
     }
-  }, [data]);
+  }, [data, partners]);
+
   return (
     <>
       <div className="w-full lg:col-span-3 flex flex-col">
@@ -68,6 +78,7 @@ export function ExhibitionHall({ eventId }: { eventId: string }) {
                   text="No Exhibition Hall for this event"
                 />
               )}
+
             {Array.isArray(formatExhibitionHall) &&
               formatExhibitionHall?.map((item, index) => (
                 <ExhibitionHallWidget
@@ -86,7 +97,13 @@ export function ExhibitionHall({ eventId }: { eventId: string }) {
         </div>
       </div>
 
-      {isOpen && <AddExhibitionHall eventId={eventId} refetch={refetch} close={onClose} />}
+      {isOpen && (
+        <AddExhibitionHall
+          eventId={eventId}
+          refetch={refetch}
+          close={onClose}
+        />
+      )}
     </>
   );
 }

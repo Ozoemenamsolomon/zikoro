@@ -6,7 +6,7 @@ import { Button } from "@/components";
 import { useState } from "react";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { AddPartners } from "@/components/partners/_components";
-export function ContentTabs({eventId, refetch}:{eventId:string, refetch:any;}) {
+export function ContentTabs({eventId, refetch}:{eventId:string, refetch:() => Promise<any>;}) {
   const pathname = usePathname()
  
   const [isOpen, setOpen] = useState(false);
