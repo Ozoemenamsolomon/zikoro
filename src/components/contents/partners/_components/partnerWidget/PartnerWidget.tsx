@@ -9,25 +9,28 @@ import { cn } from "@/lib";
 import { useState, useMemo } from "react";
 import { DropDownSelect } from "@/components/contents/_components";
 import { Event } from "@/types";
-import { useUpdateHall, useUpdateBooth } from "@/hooks";
+import { useUpdateHall, useUpdateBooth, useUpdatePartnerType } from "@/hooks";
 
 export function PartnerWidget({
   item,
   event,
   className,
-  refetch
+  refetch,
 }: {
   className: string;
   item: any;
-  refetch:() => Promise<any>;
+  refetch: () => Promise<any>;
   event: Event | null;
 }) {
   const [isHall, showHalls] = useState(false);
   const [isBooth, showBooths] = useState(false);
   const [selectedBooth, setSelectedBooth] = useState("");
   const [selectedHall, setSelectedHall] = useState("");
+  const [selectedPartner, setSelectedPartner] = useState("");
+  const [isPartnerType, showPartnerType] = useState(false);
   const { updateHall } = useUpdateHall();
   const { updateBooth } = useUpdateBooth();
+  const { updatePartnerType } = useUpdatePartnerType();
 
   // format hall list
   const hallList = useMemo(() => {
@@ -50,23 +53,31 @@ export function PartnerWidget({
     showHalls((prev) => !prev);
   }
 
+  function togglePartnerType() {
+    showPartnerType((prev) => !prev);
+  }
+
   async function handleSelectedHall(value: string) {
     setSelectedHall(value);
     await updateHall(item?.id, value);
-    refetch() // fetch partners
-    showBooths(false);
-    showHalls(false);
+    refetch(); // fetch partners
 
+    showHalls(false);
   }
 
   async function handleSelectedBooth(value: string) {
     setSelectedBooth(value);
     await updateBooth(item?.id, value);
-    refetch() // fetch partners
+    refetch(); // fetch partners
     showBooths(false);
-    showHalls(false);
   }
 
+  async function handleSelectedPartner(value: string) {
+    setSelectedPartner(value);
+    await updatePartnerType(item?.id, value);
+    refetch(); // fetch partners
+    showPartnerType(false);
+  }
   return (
     <div
       className={cn(
@@ -93,7 +104,24 @@ export function PartnerWidget({
           <Call size={22} />
         </button>
       </div>
-      <p>{item?.partnerType}</p>
+      <button
+        onClick={togglePartnerType}
+        className="flex relative items-center gap-x-1"
+      >
+        <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
+          {item?.partnerType || "Select Type"}
+        </p>
+        <ArrowIosDownward size={20} />
+        {isPartnerType && (
+          <DropDownSelect
+            handleChange={handleSelectedPartner}
+            currentValue={selectedPartner}
+            close={togglePartnerType}
+            data={["Exhibitor", "Sponsor"]}
+          />
+        )}
+      </button>
+
       <p>Amateur</p>
       <button
         onClick={toggleHalls}
@@ -116,9 +144,7 @@ export function PartnerWidget({
         onClick={toggleBooths}
         className="flex items-center relative gap-x-1"
       >
-        <p className="">
-          {item?.boothNumber || "0"}
-        </p>
+        <p className="">{item?.boothNumber || "0"}</p>
         <ArrowIosDownward size={20} />
         {isBooth && (
           <DropDownSelect

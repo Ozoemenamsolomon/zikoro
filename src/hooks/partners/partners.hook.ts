@@ -431,3 +431,32 @@ export function useUpdateHall() {
     updateHall,
   };
 }
+
+export function useUpdatePartnerType() {
+  async function updatePartnerType(partnerId: string, value: string) {
+    try {
+      // Fetch the partner by ID
+      const { data } = await supabase
+        .from("eventPartners")
+        .select("*")
+        .eq("id", partnerId)
+        .single();
+
+      const { partnerType, ...restData } = data;
+
+      const { error, status } = await supabase
+        .from("eventPartners")
+        .update({ ...restData, partnerType: value })
+        .eq("id", partnerId);
+
+      if (status === 204 || status === 200) {
+        //
+        toast.success("Partner Type Updated");
+      }
+    } catch (error) {}
+  }
+
+  return {
+    updatePartnerType,
+  };
+}

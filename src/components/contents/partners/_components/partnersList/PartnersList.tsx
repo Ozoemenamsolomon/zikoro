@@ -2,7 +2,6 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { EmptyCard } from "@/components/composables";
 import { useFetchPartners, useFetchSingleEvent } from "@/hooks";
 import { PartnerWidget } from "..";
-import { useMemo } from "react";
 
 export function PartnersList({ eventId }: { eventId: string }) {
   const { data, loading, refetch } = useFetchPartners(eventId);
