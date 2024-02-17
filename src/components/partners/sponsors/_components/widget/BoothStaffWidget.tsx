@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "@/lib";
 import Image from "next/image";
 import { CloseCircle } from "@styled-icons/evaicons-solid/CloseCircle";

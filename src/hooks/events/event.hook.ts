@@ -11,10 +11,10 @@ import {
 import { Event } from "@/types";
 import _ from "lodash";
 import { postRequest } from "@/utils";
-import {getCookie} from "@/hooks"
+import { getCookie } from "@/hooks";
 
 const supabase = createClientComponentClient();
-const userData = getCookie("user")
+const userData = getCookie("user");
 
 export function useCreateOrganisation() {
   const [loading, setLoading] = useState(false);
@@ -23,21 +23,19 @@ export function useCreateOrganisation() {
     setLoading(true);
 
     try {
-     
-        const { error, status } = await supabase
-          .from("organization")
-          .upsert([{ ...values, organizationOwner: userData?.email }]);
+      const { error, status } = await supabase
+        .from("organization")
+        .upsert([{ ...values, organizationOwner: userData?.email }]);
 
-        if (error) {
-          toast.error(error.message);
-          return;
-        }
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
 
-        if (status === 201 || status === 200) {
-          setLoading(false);
-          toast.success("Organisation created successfully");
-        }
-   
+      if (status === 201 || status === 200) {
+        setLoading(false);
+        toast.success("Organisation created successfully");
+      }
     } catch (error) {}
   }
 
@@ -292,7 +290,7 @@ export function useFetchSingleEvent(id: string) {
   return {
     data,
     loading,
-    refetch:fetchSingleEvent
+    refetch: fetchSingleEvent,
   };
 }
 
@@ -309,46 +307,43 @@ export function useBookingEvent() {
     const { attendeeApplication } = values;
 
     try {
-   
+      const attendees = attendeeApplication.map((attendee) => {
+        return {
+          ...attendee,
+          eventId,
+          attendeeType: [attendants],
+          registrationDate: new Date(),
+          eventRegistrationRef: eventTransactionRef,
+          userEmail: userData?.email,
+        };
+      });
 
-        const attendees = attendeeApplication.map((attendee) => {
-          return {
-            ...attendee,
-            eventId,
-            attendeeType: [attendants],
-            registrationDate: new Date(),
-            eventRegistrationRef: eventTransactionRef,
-            userEmail: userData?.email,
-          };
-        });
+      const { error, status } = await supabase
+        .from("attendees")
+        .upsert([...attendees]);
 
-        const { error, status } = await supabase
-          .from("attendees")
-          .upsert([...attendees]);
-
-        if (error) {
-          if (
-            error.message ===
-            `duplicate key value violates unique constraint "attendees_email_key"`
-          ) {
-            // toast.error("User has already registered for this event")
-          } else {
-            toast.error(error.message);
-          }
-
-          setIsRegistered(true);
-          return;
+      if (error) {
+        if (
+          error.message ===
+          `duplicate key value violates unique constraint "attendees_email_key"`
+        ) {
+          // toast.error("User has already registered for this event")
+        } else {
+          toast.error(error.message);
         }
 
-        if (status === 201 || status === 200) {
-          setLoading(false);
-          setIsRegistered(false);
-          //  allowPayment(true);
-          toast.success(
-            "Attendees Information has been Captured. Proceed to Payment..."
-          );
-        }
-   
+        setIsRegistered(true);
+        return;
+      }
+
+      if (status === 201 || status === 200) {
+        setLoading(false);
+        setIsRegistered(false);
+        //  allowPayment(true);
+        toast.success(
+          "Attendees Information has been Captured. Proceed to Payment..."
+        );
+      }
     } catch (error) {
       setLoading(false);
     }
@@ -369,32 +364,29 @@ export function useTransactionDetail() {
   ) {
     setLoading(true);
     try {
-   
+      const payload = {
+        ...values,
+        userEmail: userData?.email,
+        userId: userData?.id,
+      };
 
-        const payload = {
-          ...values,
-          userEmail: userData?.email,
-          userId: userData?.id,
-        };
+      const {
+        data: successData,
+        error,
+        status,
+      } = await supabase.from("eventTransactions").upsert([{ ...payload }]);
 
-        const {
-          data: successData,
-          error,
-          status,
-        } = await supabase.from("eventTransactions").upsert([{ ...payload }]);
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
 
-        if (error) {
-          toast.error(error.message);
-          return;
-        }
-
-        if (status === 201 || status === 200) {
-          setLoading(false);
-          allowPayment(true);
-          // toast.success("Al");
-          //  console.log({successData})
-        }
-   
+      if (status === 201 || status === 200) {
+        setLoading(false);
+        allowPayment(true);
+        // toast.success("Al");
+        //  console.log({successData})
+      }
     } catch (error) {
       setLoading(false);
     }
@@ -429,12 +421,13 @@ export function useUpdateTransactionDetail() {
       if (status === 204 || status === 200) {
         setLoading(false);
         toggleSuccessModal(true);
-         toast.success("Transaction Successful");
+        toast.success("Transaction Successful");
       }
-    } catch (error:any) {
-     /// console.log(error)
+    } catch (error: any) {
+      /// console.log(error)
       toast.error(
-        error?.response?.data?.error || "An error occurred while making the request."
+        error?.response?.data?.error ||
+          "An error occurred while making the request."
       );
       setLoading(false);
     }
@@ -534,5 +527,35 @@ export function useFetchAttendees(id: string) {
   }
   return {
     attendees,
+  };
+}
+
+export function useEventFeedBack() {
+  const [loading, setLoading] = useState(false);
+
+  async function sendFeedback(values: any) {
+    setLoading(true);
+
+    try {
+      const { error, status } = await supabase
+        .from("zikorofeedback")
+        .upsert([{ ...values }]);
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false)
+        return;
+      }
+
+      if (status === 201 || status === 200) {
+        setLoading(false);
+        toast.success("Thanks... Your feedback has been recieved");
+      }
+    } catch (error) {}
+  }
+
+  return {
+    sendFeedback,
+    loading,
   };
 }

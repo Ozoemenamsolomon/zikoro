@@ -2,14 +2,14 @@
 
 import { sendMail, phoneCall, whatsapp } from "@/utils";
 import { ArrowIosDownward } from "@styled-icons/evaicons-solid/ArrowIosDownward";
-import { EmailOutline } from "@styled-icons/evaicons-outline/EmailOutline";
-import { Whatsapp } from "@styled-icons/boxicons-logos/Whatsapp";
+import {Phone} from "@styled-icons/feather/Phone"
 import { Call } from "styled-icons/material";
 import { cn } from "@/lib";
 import { useState, useMemo } from "react";
 import { DropDownSelect } from "@/components/contents/_components";
 import { Event } from "@/types";
 import { useUpdateHall, useUpdateBooth, useUpdatePartnerType } from "@/hooks";
+import { EmailIcon, WhatsappIcon } from "@/constants";
 
 export function PartnerWidget({
   item,
@@ -81,11 +81,11 @@ export function PartnerWidget({
   return (
     <div
       className={cn(
-        "w-full grid grid-cols-6 text-sm items-center gap-3 p-3 ",
+        "w-full grid grid-cols-7 text-sm items-center gap-3 p-3 ",
         className
       )}
     >
-      <label className=" w-full flex  relative partner-container">
+      <label className="col-span-2 w-full flex  relative partner-container">
         <input type="checkbox" />
         <span className="partner-checkmark"></span>
         <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
@@ -94,21 +94,21 @@ export function PartnerWidget({
       </label>
       <div className="flex items-center gap-x-2 ">
         <button onClick={() => sendMail(item?.email)}>
-          <EmailOutline size={22} />
+          <EmailIcon/>
         </button>
         <button onClick={() => whatsapp(item?.whatsApp)}>
           {" "}
-          <Whatsapp size={22} />
+          <WhatsappIcon/>
         </button>
         <button onClick={() => phoneCall(item?.phoneNumber)}>
-          <Call size={22} />
+          <Phone  size={22} />
         </button>
       </div>
       <button
         onClick={togglePartnerType}
         className="flex relative items-center gap-x-1"
       >
-        <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
+        <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
           {item?.partnerType || "Select Type"}
         </p>
         <ArrowIosDownward size={20} />
@@ -127,7 +127,7 @@ export function PartnerWidget({
         onClick={toggleHalls}
         className="flex relative items-center gap-x-1"
       >
-        <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
+        <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
           {item?.exhibitionHall || " Select Hall"}
         </p>
         <ArrowIosDownward size={20} />

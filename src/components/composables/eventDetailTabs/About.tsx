@@ -1,3 +1,5 @@
+"use client"
+
 import { ScrollableCards } from "@/components";
 import Image from "next/image";
 import "slick-carousel/slick/slick.css";

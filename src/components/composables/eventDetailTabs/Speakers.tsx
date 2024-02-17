@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components";
 import Image from "next/image";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";

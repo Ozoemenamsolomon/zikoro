@@ -1,5 +1,4 @@
 "use client";
-"use client";
 
 import { useState } from "react";
 import { Button } from "@/components";
@@ -8,7 +7,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { AddBanners } from "@/components/partners/_components";
 import { TPartner } from "@/types";
-
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
@@ -42,7 +40,7 @@ export function PartnerBanners({
 
   return (
     <>
-      <div className="w-full lg:col-span-3 flex flex-col">
+      <div className="w-full  flex flex-col">
         <div className="flex p-3 border-b items-center justify-between w-full">
           <p className="font-medium">Banners</p>
 

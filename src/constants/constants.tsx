@@ -316,7 +316,7 @@ export const links: NavLinkType[] = [
   },
 
   {
-    name: "Feedback",
+    name: "Give Feedback",
     icon: FeedBackIcon,
     href: "/feedback",
   },

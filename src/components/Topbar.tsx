@@ -29,10 +29,10 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
       href: `/events/partners/${eventId}`,
     },
     {
-      name: "Products",
-      href: "/products",
+      name: "Market Place",
+      href: `/events/market-place/${eventId}/jobs`,
     },
- 
+
     {
       name: "Documents",
       href: "/documents",

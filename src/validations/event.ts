@@ -37,3 +37,8 @@ export const eventBookingValidationSchema = z.object({
     })
     .optional(),
 });
+
+export const eventFeedBackSchema = z.object({
+  comment: z.string().min(3, { message: "Comment is required" }),
+  ratings: z.enum(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]),
+});

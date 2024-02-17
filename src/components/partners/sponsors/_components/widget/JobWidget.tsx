@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components";
 import { Location } from "@styled-icons/fluentui-system-regular/Location";
 import { Bag } from "@styled-icons/ionicons-solid/Bag";
@@ -26,9 +28,12 @@ export function JobWidget({ job, className }: { job: PartnerJobType, className:s
   }
   return (
     <div className={cn("w-full flex flex-col pb-4 items-start justify-start gap-y-2", className)}>
-      <h2 className="font-semibold text-base sm:text-lg">
+     <div className="flex items-start justify-start flex-col">
+     <h2 className="font-semibold text-base sm:text-lg">
         {job.jobTitle ?? ""}
       </h2>
+    <p className="text-gray-600 text-sm">{job.companyName ?? ""}</p>
+     </div>
 
      {/* <p className="text-[#717171] uppercase">{job.companyName}</p> */}
       <p>{`${currency || "₦"}${Number(job.minSalary)?.toLocaleString()} - ${
@@ -37,7 +42,7 @@ export function JobWidget({ job, className }: { job: PartnerJobType, className:s
 
       <FlexibilityType flexibility={job.flexibility} />
 
-      <p className="w-3/4 flex flex-wrap text-[#717171] items-start justify-start leading-5 text-sm">
+      <p className="w-4/5 flex flex-wrap line-clamp text-[#717171] items-start justify-start leading-5 text-sm">
         {`${job.description ?? ""}`}
       </p>
 

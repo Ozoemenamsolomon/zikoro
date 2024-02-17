@@ -7,6 +7,8 @@ import { Button, NavLinks } from ".";
 import { HeaderWidget } from "./eventHome";
 import Link from "next/link";
 import { useSearchParams, useParams } from "next/navigation";
+import { EventFeedBack } from "./modals/EventFeedback";
+
 import {
   CustomerCareIcon,
   EmailIcon,
@@ -25,6 +27,7 @@ export function SideBarLayout({
   isHomePage,
   hasTopBar,
   eventId,
+  eventName,
 }: {
   children: React.ReactNode;
   className?: string;
@@ -32,16 +35,25 @@ export function SideBarLayout({
   hasTopBar?: boolean;
   parentClassName?: string;
   eventId?: string;
+  eventName?: string;
 }) {
-
   const [isNav, setNav] = useState(false);
   const param = useSearchParams();
+  const [isOpen, setOpen] = useState(false);
 
   const [queryParam, setQueryParam] = useState<string | null>(null);
   const query = param.get("organization");
 
+  function onOpen() {
+    setOpen(true);
+  }
+
+  function onShot() {
+    setOpen(false);
+  }
+
   // validate user
-  useValidateUser()
+  useValidateUser();
 
   useEffect(() => {
     if (param) {
@@ -73,7 +85,15 @@ export function SideBarLayout({
         {isHomePage && <HeaderWidget currentQuery={query} />}
         {children}
       </div>
-      <SideNavs isNav={isNav} close={onClose} query={queryParam} />
+      <SideNavs
+        isNav={isNav}
+        close={onClose}
+        onClose={onShot}
+        onOpen={onOpen}
+        query={queryParam}
+        eventId={eventId}
+      />
+      {isOpen && <EventFeedBack close={onShot} />}
     </>
   );
 }
@@ -82,10 +102,16 @@ function SideNavs({
   close,
   isNav,
   query,
+  onClose,
+  eventId,
+  onOpen,
 }: {
   close: () => void;
+  onClose: () => void;
   isNav: boolean;
+  eventId?: string;
   query: string | null;
+  onOpen: () => void;
 }) {
   const { organizationId } = useParams();
 
@@ -120,7 +146,13 @@ function SideNavs({
             className="w-[150px] h-[40px]"
           />
           {/**nav links */}
-          <NavLinks query={query} id={organizationId} />
+          <NavLinks
+            onOpen={onOpen}
+            eventId={eventId}
+            query={query}
+            onClose={onClose}
+            id={organizationId}
+          />
         </div>
         <div className="w-full px-4 flex flex-col  items-start justify-start bottom-5 inset-x-0 absolute  gap-y-2">
           <div className="w-full">

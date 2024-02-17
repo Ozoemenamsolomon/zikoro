@@ -460,3 +460,26 @@ export function useUpdatePartnerType() {
     updatePartnerType,
   };
 }
+
+export function useFetchPartnersJob(eventId: string | number) {
+  const { data, loading } = useFetchPartners(eventId);
+
+  let allPartnersJob: any[] = [];
+
+  data.map((item) => {
+    const { jobs } = item;
+
+    if (jobs !== null && Array.isArray(jobs)) {
+      jobs.map((job) => {
+        allPartnersJob.push(job);
+      });
+    }
+  });
+
+  console.log({ allPartnersJob });
+
+  return {
+    jobs: allPartnersJob,
+    loading,
+  };
+}

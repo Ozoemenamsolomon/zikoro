@@ -16,9 +16,9 @@ export function ContentPartners({ eventId }: { eventId: string }) {
       eventId={eventId}
     >
       <ContentTabs eventId={eventId} refetch={refetch} />
-      <div className="w-full grid grid-cols-1 gap-4 lg:gap-0 lg:grid-cols-8 items-start">
+      <div className="w-full items-start">
         <PartnersList eventId={eventId} partners={data} refetch={refetch} loading={loading}/>
-        <ExhibitionHall eventId={eventId} partners={data} />
+       
       </div>
     </SideBarLayout>
   );

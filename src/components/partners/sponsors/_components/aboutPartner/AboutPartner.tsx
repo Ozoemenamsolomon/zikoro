@@ -16,7 +16,7 @@ import { useState } from "react";
 import { EmptyCard } from "@/components/composables";
 import { AddJob } from "@/components/partners/_components";
 import { TPartner } from "@/types";
-
+import { phoneCall, sendMail, whatsapp } from "@/utils";
 export function AboutPartner({
   partner,
   refetch,
@@ -31,20 +31,6 @@ export function AboutPartner({
 
   function onOpen() {
     setAddJob((prev) => !prev);
-  }
-
-  // call phone
-  function phoneCall() {
-    window.open(`tel:${partner?.phoneNumber}`, "_blank");
-  }
-  // chat on whatsapp
-  function whatsapp() {
-    window.open(`https://wa.me/${partner?.whatsApp}`, "_blank");
-  }
-
-  // send mail
-  function sendMail() {
-    window.open(`mailto:${partner?.email}`, "_blank");
   }
 
   // send mail
@@ -105,7 +91,7 @@ export function AboutPartner({
             <div className="flex items-center gap-x-2">
               {partner?.phoneNumber !== null && (
                 <Button
-                  onClick={phoneCall}
+                  onClick={() => phoneCall(partner?.phoneNumber)}
                   className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] "
                 >
                   <PhoneCall size={22} className="text-black" />
@@ -113,7 +99,7 @@ export function AboutPartner({
               )}
               {partner?.whatsApp !== null && (
                 <Button
-                  onClick={whatsapp}
+                  onClick={() => whatsapp(partner?.whatsApp)}
                   className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] "
                 >
                   <Whatsapp size={22} className="text-black" />
@@ -121,7 +107,7 @@ export function AboutPartner({
               )}
               {partner?.email !== null && (
                 <Button
-                  onClick={sendMail}
+                  onClick={() => sendMail(partner?.email)}
                   className="px-0 h-10 w-10 rounded-full bg-[#F3F3F3] "
                 >
                   <Email size={22} className="text-black" />

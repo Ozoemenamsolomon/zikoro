@@ -35,7 +35,7 @@ export interface TPartner {
   media: string;
   partnerType: string;
   phoneNumber: string;
-  products: JSON;
+  offers: JSON;
   website: string;
   whatsApp: string;
 }
@@ -55,4 +55,5 @@ export interface PartnerJobType {
   qualification: string;
   currencyCode: string;
   partnerId: string;
+  companyName:string
 }

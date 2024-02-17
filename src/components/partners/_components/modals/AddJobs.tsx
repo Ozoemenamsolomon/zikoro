@@ -54,6 +54,7 @@ export function AddJob({
       ...values,
       partnerId,
       currencyCode,
+      companyName: partner ? partner?.companyName : "",
     };
     await addPartnerJob(partnerId, payload, partner);
     refetch();
@@ -95,7 +96,7 @@ export function AddJob({
                 </InputOffsetLabel>
               )}
             />
-           
+
             <div className="w-full grid grid-cols-3 items-center gap-3">
               <FormField
                 control={form.control}
@@ -251,7 +252,7 @@ export function AddJob({
                 />
               )}
             />
-             <FormField
+            <FormField
               control={form.control}
               name="applicationLink"
               render={({ field }) => (
