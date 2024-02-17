@@ -17,6 +17,19 @@ const RequestPayoutDialog = ({
     (acc, { amountPaid }) => amountPaid + acc,
     0
   );
+  const totalProcessingFee = selectedRows.reduce(
+    (acc, { processingFee }) => processingFee + acc,
+    0
+  );
+  const totalAffiliateCommission = selectedRows.reduce(
+    (acc, { affiliateCommission }) => affiliateCommission + acc,
+    0
+  );
+
+  const totalAttendees = selectedRows.reduce(
+    (acc, { attendees }) => acc + attendees,
+    0
+  );
 
   const { requestPayOut } = useRequestPayOut({ userId: 1 });
 
@@ -56,7 +69,7 @@ const RequestPayoutDialog = ({
                   {row.attendees}
                 </td>
                 <td className="py-2 px-4 border-b text-gray-500 text-tiny text-center">
-                  {row.amountPaid}
+                  {row.amountPaid - row.processingFee - row.affiliateCommission}
                 </td>
               </tr>
             ))}
@@ -65,11 +78,43 @@ const RequestPayoutDialog = ({
       </div>
       <div className="space-y-2">
         <div className="border">
-          <div className="flex justify-between p-4 border-b">
-            <span className="text-gray-700 text-sm">Total Payout</span>
-            <span className="text-gray-800 font-semibold">
-              ₦{new Intl.NumberFormat().format(totalRevenue)}
-            </span>
+          <div className="space-y-2 p-4 border-b">
+            <h2 className="text-lg text-gray-900 font-medium">
+              Payout Summary
+            </h2>
+            <div className="flex justify-between">
+              <span className="text-gray-700 text-sm">
+                {totalAttendees}x Tickets
+              </span>
+              <span className="text-gray-800 font-semibold">
+                ₦{new Intl.NumberFormat().format(totalRevenue)}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-700 text-sm">
+                {totalAttendees}x Processing Fee
+              </span>
+              <span className="text-gray-800 font-semibold">
+                ₦{new Intl.NumberFormat().format(totalProcessingFee)}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-700 text-sm">
+                {totalAttendees}x Affiliate Fee
+              </span>
+              <span className="text-gray-800 font-semibold">
+                ₦{new Intl.NumberFormat().format(totalAffiliateCommission)}
+              </span>
+            </div>
+            <div className="flex justify-between border-t pt-2">
+              <span className="text-gray-900 font-medium">Total</span>
+              <span className="text-gray-800 font-semibold">
+                ₦
+                {new Intl.NumberFormat().format(
+                  totalRevenue - totalProcessingFee - totalAffiliateCommission
+                )}
+              </span>
+            </div>
           </div>
           <div className="flex justify-between p-4">
             <span className="text-gray-700 text-sm">Beneficiary</span>

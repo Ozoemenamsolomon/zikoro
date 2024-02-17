@@ -14,7 +14,11 @@ export async function POST(
 
       const { error } = await supabase
         .from("eventTransactions")
-        .update({ payOutStatus: "requested" })
+        .update({
+          payOutStatus: "requested",
+          payOutRequestDate: new Date().toISOString(),
+          payOutRequestedBy: "ubahyusuf484@gmail.com",
+        })
         .in("id", payload);
 
       if (error) throw error;

@@ -310,14 +310,15 @@ export default function All() {
     });
 
   const totalRevenue = filteredData.reduce(
-    (acc, { amountPaid }) => amountPaid + acc,
+    (acc, { amountPaid }) => (amountPaid || 0) + acc,
     0
   );
   const totalWallet = filteredData
     .filter(({ payOutStatus }) => payOutStatus !== "Paid")
-    .reduce((acc, { amountPaid }) => amountPaid + acc, 0);
+    .reduce((acc, { amountPaid }) => (amountPaid || 0) + acc, 0);
+
   const totalAffiliateCommission = eventTransactions.reduce(
-    (acc, { affliateCommission }) => acc + affliateCommission,
+    (acc, { affliateCommission }) => acc + (affliateCommission || 0),
     0
   );
   const totalAttendees = filteredData.reduce(
@@ -473,7 +474,7 @@ export default function All() {
                   Request Payout
                 </Button>
               </DialogTrigger>
-              <DialogContent className="px-3">
+              <DialogContent className="px-3 max-h-[500px] hide-scrollbar overflow-auto">
                 <DialogHeader>
                   <DialogTitle>
                     <span className="capitalize">Request Payout</span>
@@ -573,7 +574,7 @@ export default function All() {
             rowStyle={{
               display: "grid",
               gridTemplateColumns: `auto 1.5fr repeat(${
-                columns.length - 2
+                shownColumns.length - 2
               }, minmax(0, 1fr))`,
             }}
           />

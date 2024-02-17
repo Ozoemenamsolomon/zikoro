@@ -116,8 +116,15 @@ export const useGetMarketingEmails = (): UseGetResult<
   };
 };
 
+interface AffiliateLinkInfo {
+  payload: TAffiliateLink;
+  organizationName: string;
+  affiliateName: string;
+  eventPoster: string;
+}
+
 export const useCreateAffiliateLink = (): usePostResult<
-  TAffiliateLink,
+  AffiliateLinkInfo,
   "createAffiliateLink"
 > => {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -125,17 +132,25 @@ export const useCreateAffiliateLink = (): usePostResult<
 
   const createAffiliateLink = async ({
     payload,
+    organizationName,
+    affiliateName,
+    eventPoster,
   }: {
     payload: TAffiliateLink;
+    organizationName: string;
+    affiliateName: string;
+    eventPoster: string;
   }) => {
     setLoading(true);
     toast({
       description: "sending email...",
     });
     try {
+      const { affliateId } = payload;
+      console.log(affliateId);
       const { data, status } = await postRequest({
-        endpoint: "marketing/affiliate",
-        payload,
+        endpoint: `marketing/affiliate/link/${affliateId}`,
+        payload: { payload, affiliateName, organizationName, eventPoster },
       });
 
       if (status !== 201) throw data.data;
@@ -192,6 +207,46 @@ export const useCreateAffiliate = (): usePostResult<
   return { createAffiliate, isLoading, error };
 };
 
+export const useGetAffiliateLinks = (): UseGetResult<
+  TAffiliateLink[],
+  "affiliateLinks",
+  "getAffiliateLinks"
+> => {
+  const [affiliateLinks, setAffiliateLinks] = useState<TAffiliateLink[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAffiliateLinks = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TAffiliateLink[]>({
+        endpoint: "marketing/affiliate/link",
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setAffiliateLinks(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAffiliateLinks();
+  }, []);
+
+  return {
+    affiliateLinks,
+    isLoading,
+    error,
+    getAffiliateLinks,
+  };
+};
+
 export const useUpdateAffiliate = ({
   affiliateId,
 }: {
@@ -210,7 +265,7 @@ export const useUpdateAffiliate = ({
       description: "updating affiliate...",
     });
     try {
-      console.log(affiliateId, "affiliateId")
+      console.log(affiliateId, "affiliateId");
       const { data, status } = await postRequest({
         endpoint: `marketing/affiliate/${affiliateId}`,
         payload,

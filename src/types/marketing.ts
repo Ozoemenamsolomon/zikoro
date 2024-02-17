@@ -1,5 +1,6 @@
 import { AffiliateSchema } from "@/schemas/marketing";
 import { z } from "zod";
+import { TEventTransaction } from "./billing";
 
 export interface TSentEmail {
   id?: number;
@@ -10,40 +11,45 @@ export interface TSentEmail {
   emailCategory: string;
   subject: string;
   sendersName: string;
-  replyTo?: string | null;
+  replyTo?: string;
   emailBody: string;
   emailRecipient: string[];
-  sendDateTime?: Date | null;
-  sendTimeZone?: string | null;
+  sendDateTime?: Date;
+  sendTimeZone?: string;
 }
 
 // interface TAffiliate {
 //   id: number;
 //   created_at: Date;
-//   organizationId: number | null;
-//   organizationName: string | null;
-//   userId: number | null;
-//   userEmail: string | null;
-//   firstName: string | null;
-//   lastname: string | null;
-//   email: string | null;
-//   accountDetails: Record<string, any> | null; // You might want to define a proper type for accountDetails
-//   payoutSchedule: string | null;
-//   affliateStatus: boolean | null;
+//   organizationId: number ;
+//   organizationName: string ;
+//   userId: number ;
+//   userEmail: string ;
+//   firstName: string ;
+//   lastname: string ;
+//   email: string ;
+//   accountDetails: Record<string, any> ; // You might want to define a proper type for accountDetails
+//   payoutSchedule: string ;
+//   affliateStatus: boolean ;
 // }
 
 export interface TAffiliate extends z.TypeOf<typeof AffiliateSchema> {}
 
 export interface TAffiliateLink {
-  id?: number;
-  created_at?: Date;
-  userId: number | null;
-  affiliateId: number | null;
-  event: string | null;
-  payoutSchedule: string | null;
-  commissionType: string | null;
-  commissionValue: number | null;
-  validity: Date | null;
-  Goal: string | null;
-  affliateLink?: string;
+  id: bigint;
+  created_at: Date;
+  userId?: number;
+  affiliateId?: bigint;
+  eventName?: string;
+  payoutSchedule?: string;
+  commissionType: string;
+  commissionValue: number;
+  validity?: Date;
+  Goal?: string;
+  affiliateLink?: string;
+  eventId?: string;
+  affliateEmail?: string;
+  affiliate?: TAffiliate;
+  eventTransactions?: TEventTransaction[];
+  linkCode?: string;
 }

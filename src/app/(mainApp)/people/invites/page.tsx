@@ -1,4 +1,5 @@
 "use client";
+import Filter from "@/components/Filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,8 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { attendeeTypeOptions } from "@/data/attendee";
+import { useFilter } from "@/hooks/common/useFilter";
 import {
   useGetEmailInvites,
   useInviteAttendees,
@@ -21,6 +24,7 @@ import {
   generateAlphanumericHash,
 } from "@/utils/helpers";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
+import { Users } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
@@ -31,54 +35,34 @@ type TInviteDetail = {
   created_at?: string;
 };
 
+const inviteesFilters: TFilter<TInviteDetail>[] = [
+  {
+    label: "date",
+    accessor: "created_at",
+    type: "dateRange",
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={16}
+        height={16}
+        viewBox="0 0 16 16"
+        fill="none"
+      >
+        <path
+          d="M5.33333 8.32312L8.162 11.1518L13.818 5.49512M2 8.32312L4.82867 11.1518M10.4853 5.49512L8.33333 7.66645"
+          stroke="#CFCFCF"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+    type: "dateRange",
+    order: 1,
+  },
+];
 
 export default function Page() {
-  const inviteesFilters: TFilter<TInviteDetail>[] = [
-    {
-      label: "date",
-      accessor: "created_at",
-      type: "dateRange",
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width={16}
-          height={16}
-          viewBox="0 0 16 16"
-          fill="none"
-        >
-          <path
-            d="M5.33333 8.32312L8.162 11.1518L13.818 5.49512M2 8.32312L4.82867 11.1518M10.4853 5.49512L8.33333 7.66645"
-            stroke="#CFCFCF"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ),
-    },
-    {
-      label: "date",
-      accessor: "created_ate",
-      type: "dateRange",
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width={16}
-          height={16}
-          viewBox="0 0 16 16"
-          fill="none"
-        >
-          <path
-            d="M5.33333 8.32312L8.162 11.1518L13.818 5.49512M2 8.32312L4.82867 11.1518M10.4853 5.49512L8.33333 7.66645"
-            stroke="#CFCFCF"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ),
-    },
-  ];
   const [invitees, setInvitees] = useState<Record<string, TInviteDetails>>({
     [generateAlphanumericHash(5)]: {
       email: "",
@@ -92,15 +76,14 @@ export default function Page() {
   const hasCopiedText = Boolean(copiedText);
 
   const { emailInvites, isLoading, getEmailInvites } = useGetEmailInvites();
-  const data = !!emailInvites
-    ? emailInvites.flatMap(({ InviteDetails, created_at }) =>
-        InviteDetails.map((invitee) => ({ ...invitee, created_at }))
-      )
-    : [];
+  const data = emailInvites.flatMap(({ InviteDetails, created_at }) =>
+    InviteDetails.map((invitee) => ({ ...invitee, created_at }))
+  );
+  console.log(data);
 
   // const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
   //   useFilter<TInviteDetail>({
-  //     data: [],
+  //     data,
   //     dataFilters: inviteesFilters,
   //   });
 

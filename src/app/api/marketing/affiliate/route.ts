@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   if (req.method === "GET") {
     try {
       const { data, error, status } = await supabase
-        .from("affliate")
+        .from("affiliate")
         .select("*");
 
       if (error) throw error;
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       const affliateCode = generateAlphanumericHash(7);
 
       const { error } = await supabase
-        .from("affliate")
+        .from("affiliate")
         .insert({ ...payload, affliateCode });
 
       if (error) throw error;

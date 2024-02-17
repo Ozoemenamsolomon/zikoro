@@ -7,8 +7,8 @@ export async function GET(req: NextRequest) {
   if (req.method === "GET") {
     try {
       const { data, error, status } = await supabase
-        .from("affliateLinks")
-        .select("*");
+        .from("affiliateLinks")
+        .select("*, eventTransactions!inner(*)");
 
       if (error) throw error;
 
@@ -31,42 +31,6 @@ export async function GET(req: NextRequest) {
     }
   } else {
     return NextResponse.json({ error: "Method not allowed" });
-  }
-}
-
-export async function POST(req: NextRequest) {
-  const supabase = createRouteHandlerClient({ cookies });
-  if (req.method === "POST") {
-    try {
-      const payload = await req.json();
-
-      const { error } = await supabase.from("affliateLinks").insert(payload);
-
-      if (error) throw error;
-      return NextResponse.json(
-        { msg: "payout requested successfully" },
-        {
-          status: 201,
-        }
-      );
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json(
-        {
-          error: "An error occurred while making the request.",
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-  } else {
-    return NextResponse.json(
-      { error: "Method not allowed" },
-      {
-        status: 500,
-      }
-    );
   }
 }
 

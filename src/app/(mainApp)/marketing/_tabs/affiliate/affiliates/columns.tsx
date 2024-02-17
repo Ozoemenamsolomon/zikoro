@@ -40,19 +40,19 @@ export const columns: ColumnDef<TAffiliate>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "email",
-    header: "Email",
-    // cell: ({ row }) => (
-    //     <div className="truncate">{row.getValue("userEmail")}</div>
-    //   ),
-  },
-  {
     accessorKey: "firstName",
     header: "First Name",
   },
   {
     accessorKey: "lastname",
     header: "Last Name",
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    // cell: ({ row }) => (
+    //     <div className="truncate">{row.getValue("userEmail")}</div>
+    //   ),
   },
   {
     accessorKey: "accountDetails",

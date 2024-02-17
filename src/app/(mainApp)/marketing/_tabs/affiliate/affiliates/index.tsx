@@ -92,7 +92,7 @@ const Affiliates = () => {
           setRowSelection={setRowSelection}
           rowStyle={{
             display: "grid",
-            gridTemplateColumns: `auto 1.5fr repeat(5, minmax(0, 1fr)) auto`,
+            gridTemplateColumns: `auto repeat(2, minmax(0, 1fr)) 1.5fr repeat(3, minmax(0, 1fr)) auto`,
           }}
         />
       </div>

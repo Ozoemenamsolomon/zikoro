@@ -76,7 +76,7 @@ export const columns: ColumnDef<TEventTransaction>[] = [
   },
   {
     accessorKey: "amountPaid",
-    header: "Amount",
+    header: "Revenue",
   },
   {
     accessorKey: "payOutDate",
@@ -97,12 +97,12 @@ export const columns: ColumnDef<TEventTransaction>[] = [
       const amountPaid = row.getValue("amountPaid");
       return (
         <div
-          className={`max-w-full truncate p-2 ${
+          className={`max-w-full truncate p-1 border ${
             regStatus
               ? amountPaid > 0
-                ? "bg-green-100 text-green-600"
-                : "bg-gray-100 text-gray-600"
-              : "bg-red-100 text-red-600"
+                ? "bg-green-100 text-green-600 border-green-600"
+                : "bg-gray-100 text-gray-600 border-gray-600"
+              : "bg-red-100 text-red-600 border-red-600"
           } rounded w-fit text-sm`}
         >
           {regStatus ? (amountPaid > 0 ? "Complete" : "Free") : "Incomplete"}
@@ -118,14 +118,14 @@ export const columns: ColumnDef<TEventTransaction>[] = [
 
       return (
         <div
-          className={`max-w-full truncate p-2 ${
+          className={`max-w-full truncate p-1 border ${
             payOutStatus === "paid"
-              ? "bg-green-100 text-green-600"
+              ? "bg-green-100 text-green-600 border-green-600"
               : payOutStatus === "requested"
-              ? "bg-yellow-100 text-yellow-600"
+              ? "bg-yellow-100 text-yellow-600 border-yellow-600"
               : payOutStatus === "new"
-              ? "bg-blue-100 text-blue-600"
-              : "bg-gray-100 text-gray-600"
+              ? "bg-blue-100 text-blue-600 border-blue-600"
+              : "bg-gray-100 text-gray-600 border-gray-600"
           } rounded w-fit text-sm capitalize`}
         >
           {payOutStatus || "N/A"}

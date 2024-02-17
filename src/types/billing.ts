@@ -26,4 +26,7 @@ export type TEventTransaction = {
   currency: string;
   ticketCategory: string;
   affliateCommission: number;
+  processingFee: number;
+  payOutRequestDate: string | null;
+  payOutRequestedBy: string | null;
 };

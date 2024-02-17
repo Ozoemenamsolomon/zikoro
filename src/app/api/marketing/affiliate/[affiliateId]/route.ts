@@ -12,7 +12,7 @@ export async function GET(
     try {
       const { affiliateId } = params;
       const { data, error, status } = await supabase
-        .from("affliate")
+        .from("affiliate")
         .select("*")
         .eq("id", affiliateId);
 
@@ -52,7 +52,7 @@ export async function POST(
       const payload = await req.json();
 
       const { error } = await supabase
-        .from("affliate")
+        .from("affiliate")
         .update(payload)
         .eq("id", affiliateId);
 

@@ -39,6 +39,7 @@ import {
   useCreateAffiliateLink,
   useGetAffiliates,
 } from "@/hooks/services/marketing";
+import { useGetEvents } from "@/hooks/services/events";
 
 const CreateAffiliateSchema = z.object({
   event: z.string(),
@@ -64,6 +65,8 @@ const Create = () => {
   });
 
   const { affiliates, isLoading: affiliatesIsLoading } = useGetAffiliates();
+  const { events, isLoading: eventsIsLoading } = useGetEvents();
+  console.log(events);
 
   const { createAffiliateLink, isLoading: createLinkIsLoading } =
     useCreateAffiliateLink();
@@ -75,7 +78,7 @@ const Create = () => {
   const onSubmit = async (data: TCreateAffiliate) => {
     console.log(data);
     const {
-      affiliate,
+      affiliateId,
       commissionType,
       event,
       goal,
@@ -83,16 +86,35 @@ const Create = () => {
       validity,
       value,
     } = data;
+
     await createAffiliateLink({
+      organizationName:
+        events?.find(({ id }) => id == event)?.organization.organizationName ||
+        "Organization",
+      affiliateName:
+        affiliates?.find(({ id }) => id == affiliateId)?.firstName ||
+        "Affiliate",
+      eventPoster:
+        events?.find(({ id }) => id == event)?.eventPoster.image1 || "",
       payload: {
         payoutSchedule,
         validity,
         commissionValue: value,
         commissionType,
-        event,
+        eventId: event !== "all" ? event : 0,
+        eventName: events?.find(({ id }) => id == event)?.eventTitle || "All",
         Goal: goal,
-        affiliateId: 1,
+        affiliateId: affiliateId,
+        affiliateEmail:
+          affiliates?.find(({ id }) => id == affiliateId)?.email ||
+          "affiliate@email.com",
         userId: 5,
+        affiliateLink: `www.zikoro-copy.vercel.app/published-event${
+          event !== "all" && "/" + event
+        }/${
+          affiliates?.find(({ id }) => id == affiliateId)?.affliateCode ||
+          "w37h4ud"
+        }`,
       },
     });
   };
@@ -138,15 +160,21 @@ const Create = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="max-h-[250px] hide-scrollbar overflow-auto">
-                        {affiliates.map(({ firstName, lastname, id }) => (
-                          <SelectItem
-                            key={id}
-                            value={id.toString()}
-                            className="inline-flex gap-2"
-                          >
-                            {firstName + " " + lastname}
-                          </SelectItem>
-                        ))}
+                        <SelectItem value={"all"} className="inline-flex gap-2">
+                          All
+                        </SelectItem>
+                        {affiliates.map(
+                          ({ firstName, lastname, id, affliateStatus }) => (
+                            <SelectItem
+                              disabled={!affliateStatus}
+                              key={id}
+                              value={id.toString()}
+                              className="inline-flex gap-2"
+                            >
+                              {firstName + " " + lastname}
+                            </SelectItem>
+                          )
+                        )}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -168,21 +196,23 @@ const Create = () => {
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger disabled={eventsIsLoading}>
                           <SelectValue
-                            placeholder="Select event"
+                            placeholder={
+                              !eventsIsLoading ? "Select event" : "Loading..."
+                            }
                             className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-full"
                           />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="max-h-[250px] hide-scrollbar overflow-auto">
-                        {["All", "event1", "event2"].map((event) => (
+                      <SelectContent className="max-h-[250px] w-[500px] hide-scrollbar overflow-auto">
+                        {events.map(({ id, eventTitle }) => (
                           <SelectItem
-                            key={event}
-                            value={event}
+                            key={id}
+                            value={id.toString()}
                             className="inline-flex gap-2"
                           >
-                            {event}
+                            {eventTitle}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -443,11 +473,13 @@ const Create = () => {
               )}
             />
             <Button
-              disabled={affiliatesIsLoading || createLinkIsLoading}
+              disabled={
+                affiliatesIsLoading || createLinkIsLoading || eventsIsLoading
+              }
               type="submit"
               className="bg-basePrimary w-full"
             >
-              {!affiliatesIsLoading && !createLinkIsLoading
+              {!affiliatesIsLoading && !createLinkIsLoading && !eventsIsLoading
                 ? "Create Link"
                 : "Loading..."}
             </Button>
