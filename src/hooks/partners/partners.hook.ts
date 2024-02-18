@@ -501,12 +501,10 @@ export function useDeletePartner() {
     }
 
     if (status === 204) {
-      toast.success("Partner deleted successfully")
-       setLoading(false);
-      return
+      toast.success("Partner deleted successfully");
+      setLoading(false);
+      return;
     }
-
-   
   }
 
   async function deleteAll() {
@@ -519,10 +517,10 @@ export function useDeletePartner() {
       return;
     }
 
-     if (status === 204) {
-      toast.success("Partners deleted successfully")
-       setLoading(false);
-      return
+    if (status === 204) {
+      toast.success("Partners deleted successfully");
+      setLoading(false);
+      return;
     }
   }
 
@@ -530,5 +528,84 @@ export function useDeletePartner() {
     deletes,
     deleteAll,
     loading,
+  };
+}
+
+export function useDeleteEventExhibitionHall(eventId: string) {
+  const [loading, setLoading] = useState(false);
+
+
+  async function deleteExhibitionHall( selectedRows: string[]) {
+    setLoading(true);
+
+    try {
+
+      const { data } = await supabase
+      .from("events")
+      .select("*")
+      .eq("id", eventId)
+      .single();
+  
+    const { exhibitionHall: hall, ...restData } = data;
+      // filter out the halls given their names
+      const filteredHall = hall?.filter(
+        (item: any) => !selectedRows.includes(item?.name)
+      );
+
+      const { error, status } = await supabase
+        .from("events")
+        .update({ ...restData, exhibitionHall: filteredHall })
+        .eq("id", eventId);
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (status === 204 || status === 200) {
+        //
+        toast.success("Exhibition Hall deleted successfully");
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  }
+
+  async function deleteAll() {
+    setLoading(true);
+    try {
+      const { data } = await supabase
+      .from("events")
+      .select("*")
+      .eq("id", eventId)
+      .single();
+  
+    const { exhibitionHall: hall, ...restData } = data;
+
+      const { error, status } = await supabase
+        .from("events")
+        .update({ ...restData, exhibitionHall: [] })
+        .eq("id", eventId);
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (status === 204 || status === 200) {
+        //
+        toast.success("Exhibition Hall deleted successfully");
+        setLoading(false);
+      }
+    } catch (error) {}
+  }
+
+  return {
+    deleteExhibitionHall,
+    loading,
+    deleteAll,
   };
 }

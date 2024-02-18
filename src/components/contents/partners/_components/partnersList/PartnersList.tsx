@@ -21,7 +21,7 @@ export function PartnersList({
   const { data: event, refetch: refetchSingleEvent } =
     useFetchSingleEvent(eventId);
   const [isOpen, setOpen] = useState(false);
-  const {loading: delLoading, deletes, deleteAll} = useDeletePartner()
+  const { loading: delLoading, deletes, deleteAll } = useDeletePartner();
   const [isAddHall, setAddHall] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
@@ -37,7 +37,11 @@ export function PartnersList({
 
   // select a row
   function selectRow(value: number) {
-    setSelectedRows((prev) => [...prev, value]);
+    if (selectedRows.includes(value)) {
+      setSelectedRows(selectedRows.filter((v) => v !== value));
+    } else {
+      setSelectedRows((prev) => [...prev, value]);
+    }
   }
 
   // select all the rows
@@ -53,17 +57,16 @@ export function PartnersList({
 
   // delete selected
   async function deleteSelectedRows() {
-    if ( selectedRows?.length === partners?.length) {
-    await  deleteAll()
-    refetch()
+    if (selectedRows?.length === partners?.length) {
+      await deleteAll();
+      refetch();
+    } else {
+      await deletes(selectedRows);
+      refetch();
     }
-    else {
-    await  deletes(selectedRows)
-    refetch()
-    }
+     // empty the selected array
+     setSelectedRows([])
   }
-
-
 
   return (
     <>
@@ -73,8 +76,9 @@ export function PartnersList({
             <p className="font-medium">Partners</p>
             {selectedRows?.length > 0 && (
               <Button
-              onClick={deleteSelectedRows}
-              className="px-2 text-xs gap-x-2 bg-gray-50 py-2 h-fit w-fit">
+                onClick={deleteSelectedRows}
+                className="px-2 text-xs gap-x-2 bg-gray-50 py-2 h-fit w-fit"
+              >
                 <Delete size={18} />
                 <span>{`Delete ${
                   selectedRows?.length === partners?.length
@@ -82,7 +86,7 @@ export function PartnersList({
                     : `${
                         selectedRows?.length === 1
                           ? "a row"
-                          : `${selectedRows?.length}`
+                          : `${selectedRows?.length} rows`
                       }`
                 }`}</span>
               </Button>
@@ -105,7 +109,7 @@ export function PartnersList({
           <table className="w-full border-x border-b rounded-t-lg ">
             <tr className="w-full rounded-t-lg grid grid-cols-7 text-sm font-medium items-center bg-gray-100 gap-3 px-3 py-4 ">
               <th className="text-start col-span-2 w-full">
-                <label className="col-span-2 w-full flex  relative partner-container">
+                <label className=" w-full flex  relative partner-container">
                   <input onChange={(e) => selectAllRow(e)} type="checkbox" />
                   <span className="partner-checkmark"></span>
                   <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
