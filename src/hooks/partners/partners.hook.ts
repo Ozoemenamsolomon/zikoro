@@ -483,3 +483,52 @@ export function useFetchPartnersJob(eventId: string | number) {
     loading,
   };
 }
+
+export function useDeletePartner() {
+  const [loading, setLoading] = useState(false);
+
+  async function deletes(ids: number[]) {
+    setLoading(true);
+    const { error, status } = await supabase
+      .from("eventPartners")
+      .delete()
+      .in("id", ids);
+
+    if (error) {
+      setLoading(false);
+      toast.error(error.message);
+      return;
+    }
+
+    if (status === 204) {
+      toast.success("Partner deleted successfully")
+       setLoading(false);
+      return
+    }
+
+   
+  }
+
+  async function deleteAll() {
+    setLoading(true);
+    const { error, status } = await supabase.from("eventPartners").delete();
+
+    if (error) {
+      setLoading(false);
+      toast.error(error.message);
+      return;
+    }
+
+     if (status === 204) {
+      toast.success("Partners deleted successfully")
+       setLoading(false);
+      return
+    }
+  }
+
+  return {
+    deletes,
+    deleteAll,
+    loading,
+  };
+}

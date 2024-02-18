@@ -2,14 +2,10 @@
 
 import { Button } from "@/components";
 import { cn } from "@/lib";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
-import { useState } from "react";
-import { AddExhibitionHall } from "..";
 import { useMemo } from "react";
 import { useFetchSingleEvent } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { EmptyCard } from "@/components/composables";
-import { Eye } from "@styled-icons/evil/Eye";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 
 type TExhibitonHall = {
@@ -49,6 +45,8 @@ export function ExhibitionHall({
       // exhibitionHall;
     }
   }, [data, partners]);
+  
+  
 
   return (
     <div className="w-full h-full inset-0 fixed z-[9999] bg-black/50">

@@ -1,3 +1,7 @@
+"use client";
+
+import { useDropBoxPosition } from "@/context";
+import { useEffect, useRef } from "react";
 export function DropDownSelect({
   close,
   data,
@@ -9,8 +13,18 @@ export function DropDownSelect({
   handleChange: (value: string) => Promise<void>;
   currentValue: string | number;
 }) {
+  const { position, getBoxHeight } = useDropBoxPosition();
+  const boxRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Ensure boxRef is not null before using it
+    if (boxRef.current) {
+      getBoxHeight(boxRef?.current?.offsetHeight, boxRef?.current?.offsetWidth );
+    }
+  }, [boxRef]);
+  
   return (
-    <div className="absolute top-7 left-0">
+    <div ref={boxRef} style={position} className="absolute ">
       <button className="w-full h-full z-[999] fixed inset-0 bg-black/10"></button>
       <ul
         role="button"
