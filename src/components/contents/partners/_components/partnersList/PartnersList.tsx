@@ -92,6 +92,9 @@ export function PartnersList({
               </Button>
             )}
           </div>
+          <Button>
+            <p>Add Sponsor Level</p>
+          </Button>
           <div
             //  onClick={""}
             className=" flex items-center px-4 group rounded-md justify-center bg-transparent   transition-all transform duration-300 ease-in-out gap-x-2 h-11 sm:h-12"
