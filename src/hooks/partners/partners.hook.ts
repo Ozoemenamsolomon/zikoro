@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import * as z from "zod";
-import { Event, TPartner, PartnerBannerType, PartnerJobType } from "@/types";
+import { Event, TPartner, PartnerJobType } from "@/types";
 import { partnerSchema } from "@/validations";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
@@ -534,19 +534,17 @@ export function useDeletePartner() {
 export function useDeleteEventExhibitionHall(eventId: string) {
   const [loading, setLoading] = useState(false);
 
-
-  async function deleteExhibitionHall( selectedRows: string[]) {
+  async function deleteExhibitionHall(selectedRows: string[]) {
     setLoading(true);
 
     try {
-
       const { data } = await supabase
-      .from("events")
-      .select("*")
-      .eq("id", eventId)
-      .single();
-  
-    const { exhibitionHall: hall, ...restData } = data;
+        .from("events")
+        .select("*")
+        .eq("id", eventId)
+        .single();
+
+      const { exhibitionHall: hall, ...restData } = data;
       // filter out the halls given their names
       const filteredHall = hall?.filter(
         (item: any) => !selectedRows.includes(item?.name)
@@ -577,12 +575,12 @@ export function useDeleteEventExhibitionHall(eventId: string) {
     setLoading(true);
     try {
       const { data } = await supabase
-      .from("events")
-      .select("*")
-      .eq("id", eventId)
-      .single();
-  
-    const { exhibitionHall: hall, ...restData } = data;
+        .from("events")
+        .select("*")
+        .eq("id", eventId)
+        .single();
+
+      const { exhibitionHall: hall, ...restData } = data;
 
       const { error, status } = await supabase
         .from("events")
@@ -607,5 +605,77 @@ export function useDeleteEventExhibitionHall(eventId: string) {
     deleteExhibitionHall,
     loading,
     deleteAll,
+  };
+}
+
+export function useAddSponsorsType() {
+  const [loading, setLoading] = useState(false);
+
+  async function addSponsors(
+    levelData: { type: string; id: string }[] | undefined,
+    close: () => void,
+    eventId: string,
+    payload: { id: string; type: string }
+  ) {
+    try {
+      setLoading(true);
+      const { data } = await supabase
+        .from("events")
+        .select("*")
+        .eq("id", eventId)
+        .single();
+
+      const { sponsorType: type, ...restData } = data;
+
+      // initialize an empty array
+      let sponsorType: { type: string; id: string }[] = [];
+
+      if (data) {
+        const isLevelExist = levelData
+          ?.map(({ type }) => type)
+          .includes(payload.type);
+
+        if (isLevelExist && levelData) {
+          toast.error("Sponsor Level already exist");
+
+          sponsorType = [...levelData];
+
+          return;
+        }
+
+        // when there is no ex. hall
+        if (type === null) {
+          sponsorType = [payload];
+        } else {
+          // when there is/are  sponsor
+          sponsorType = [...type, payload];
+        }
+      }
+
+      const { error, status } = await supabase
+        .from("events")
+        .update({ ...restData, sponsorType })
+        .eq("id", eventId);
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (status === 204 || status === 200) {
+        //
+        toast.success("Sponsor Type created successfully");
+        close();
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  }
+
+  return {
+    addSponsors,
+    loading,
   };
 }

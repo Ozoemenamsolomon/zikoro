@@ -30,9 +30,11 @@ export function PartnerWidget({
 }) {
   const [isHall, showHalls] = useState(false);
   const [isBooth, showBooths] = useState(false);
+  const [isSponsorLevel, showSponsorDropDown] = useState(false);
   const [selectedBooth, setSelectedBooth] = useState("");
   const [selectedHall, setSelectedHall] = useState("");
   const [selectedPartner, setSelectedPartner] = useState("");
+  const [selectedLevel, setSelectedLevel] = useState("");
   const [boothList, setBoothList] = useState<string[]>([]);
   const [isPartnerType, showPartnerType] = useState(false);
   const { updateHall } = useUpdateHall();
@@ -44,6 +46,13 @@ export function PartnerWidget({
   const hallList = useMemo(() => {
     if (event) {
       return event.exhibitionHall.map(({ name }) => name);
+    }
+  }, [event]);
+
+  // format sponsor level
+  const levelList = useMemo(() => {
+    if (event) {
+      return event.sponsorType.map(({ type }) => type);
     }
   }, [event]);
 
@@ -73,7 +82,7 @@ export function PartnerWidget({
       );
 
       // remove the boothNumber from the availabe booths
-     const booths = numbers.filter((number) => !boothNumbers.includes(number));
+      const booths = numbers.filter((number) => !boothNumbers.includes(number));
 
       setBoothList(booths);
     }
@@ -84,6 +93,10 @@ export function PartnerWidget({
   }
   function toggleHalls() {
     showHalls((prev) => !prev);
+  }
+
+  function toggleLevelDropDown() {
+    showSponsorDropDown((prev) => !prev);
   }
 
   function togglePartnerType() {
@@ -110,6 +123,13 @@ export function PartnerWidget({
     await updatePartnerType(item?.id, value);
     refetch(); // fetch partners
     showPartnerType(false);
+  }
+
+  async function handleSelectedLevel(value: string) {
+    setSelectedLevel(value);
+    //   await updatePartnerType(item?.id, value);
+    // refetch(); // fetch partners
+    showSponsorDropDown(false);
   }
 
   return (
@@ -165,7 +185,29 @@ export function PartnerWidget({
         </button>
       </td>
 
-      <td className="text-start">Amateur</td>
+      <td>
+        <button
+          onClick={(e: any) => {
+            getClientPosition(e);
+            toggleLevelDropDown();
+          }}
+          className="flex relative items-center gap-x-1"
+        >
+          <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
+            {item?.sponsorType || " Select Level"}
+          </p>
+          <ArrowIosDownward size={20} />
+          {isSponsorLevel && (
+            <DropDownSelect
+              handleChange={handleSelectedLevel}
+              currentValue={selectedLevel}
+              close={toggleLevelDropDown}
+              data={levelList}
+            />
+          )}
+        </button>
+      </td>
+
       <td>
         <button
           onClick={(e: any) => {

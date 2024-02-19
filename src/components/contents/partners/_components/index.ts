@@ -1,4 +1,5 @@
 export * from "./exhibitionHall/ExhibitionHall"
 export * from "./modals/AddExhibitionHall"
+export * from "./modals/AddSponsorLevel"
 export * from "./partnersList/PartnersList"
 export * from "./partnerWidget/PartnerWidget"

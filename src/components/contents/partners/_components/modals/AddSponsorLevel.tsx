@@ -4,25 +4,36 @@ import { Form, FormField, Input, InputOffsetLabel, Button } from "@/components";
 import { useForm } from "react-hook-form";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { useAddSponsorsType } from "@/hooks";
+import { nanoid } from "nanoid";
+import { CreatedPreview } from "@/components/composables";
+
+type FormValue = {
+  type: string;
+};
 
 export function AddSponsorLevel({
   close,
   eventId,
-  refetch
+  refetch,
+  sponsorLevels
 }: {
   eventId: string;
   close: () => void;
-  refetch: () => Promise<any>
+  refetch: () => Promise<any>;
+  sponsorLevels: {id:string, type:string}[] | undefined
 }) {
-  const form = useForm({
+  const form = useForm<FormValue>({});
+  const { loading, addSponsors } = useAddSponsorsType();
 
-  });
- // const { loading, createExhibitionHall } = useCreateEventExhibitionHall();
-
-  async function onSubmit(values:any) {
-   // await createExhibitionHall(eventId, values);
-  //  refetch()
-    close()
+  async function onSubmit(values: FormValue) {
+    const payload = {
+      ...values,
+      id: nanoid(),
+    };
+    await addSponsors(sponsorLevels , close, eventId, payload);
+    refetch();
+  
     form.reset();
   }
 
@@ -30,12 +41,12 @@ export function AddSponsorLevel({
     <div
       role="button"
       onClick={close}
-      className="w-full h-full fixed z-[100] overflow-y-auto pt-14  inset-0 bg-black/50"
+      className="w-full h-full fixed z-[100]  pt-14  inset-0 bg-black/50"
     >
       <div
         onClick={(e) => e.stopPropagation()}
         role="button"
-        className="w-[95%] sm:w-[500px] box-animation h-fit flex  flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-x-0 py-6 px-3 sm:px-4"
+        className="w-[95%] sm:w-[500px] box-animation h-fit flex  flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4"
       >
         <div className="w-full flex items-center justify-between">
           <h2 className="font-medium text-lg sm:text-xl">
@@ -52,7 +63,7 @@ export function AddSponsorLevel({
           >
             <FormField
               control={form.control}
-              name="sponsorType"
+              name="type"
               render={({ field }) => (
                 <InputOffsetLabel label="Sponsor Level">
                   <Input
@@ -64,6 +75,23 @@ export function AddSponsorLevel({
                 </InputOffsetLabel>
               )}
             />
+
+            <div className="w-full flex flex-col items-start justify-start gap-y-2">
+              <h2 className="font-semibold text-lg"> Created Sponsor Level</h2>
+
+              <div className="w-full flex flex-wrap items-center gap-4">
+                    {Array.isArray(sponsorLevels) &&
+                      sponsorLevels.map(({type }) => (
+                        <CreatedPreview
+                          key={type}
+                          name={type}
+                          //  remove={remove}
+
+                          color={"#000000"}
+                        />
+                      ))}
+                  </div>
+            </div>
 
             <Button
               disabled={loading}
@@ -78,3 +106,5 @@ export function AddSponsorLevel({
     </div>
   );
 }
+
+

@@ -1,7 +1,7 @@
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { EmptyCard } from "@/components/composables";
 import { useDeletePartner, useFetchSingleEvent } from "@/hooks";
-import { PartnerWidget, ExhibitionHall, AddExhibitionHall } from "..";
+import { PartnerWidget, ExhibitionHall, AddExhibitionHall, AddSponsorLevel } from "..";
 import { useState } from "react";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { Eye } from "@styled-icons/evil/Eye";
@@ -23,6 +23,7 @@ export function PartnersList({
   const [isOpen, setOpen] = useState(false);
   const { loading: delLoading, deletes, deleteAll } = useDeletePartner();
   const [isAddHall, setAddHall] = useState(false);
+  const [isAddSponsorType, showAddSponsorType] = useState(false);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
   function onToggle() {
@@ -33,7 +34,11 @@ export function PartnersList({
     setAddHall((prev) => !prev);
   }
 
-  // handle delete
+function onAddSponsor() {
+showAddSponsorType((prev) => !prev)
+}
+
+  // **** handle delete ****  //
 
   // select a row
   function selectRow(value: number) {
@@ -68,6 +73,8 @@ export function PartnersList({
      setSelectedRows([])
   }
 
+  /**** */
+
   return (
     <>
       <div className="w-full  flex flex-col border-r">
@@ -92,7 +99,9 @@ export function PartnersList({
               </Button>
             )}
           </div>
-          <Button>
+          <Button
+          onClick={onAddSponsor}
+          >
             <p>Add Sponsor Level</p>
           </Button>
           <div
@@ -179,6 +188,16 @@ export function PartnersList({
           close={onClose}
         />
       )}
+
+      {isAddSponsorType && 
+      
+      <AddSponsorLevel
+      eventId={eventId}
+      refetch={refetchSingleEvent}
+      close={onAddSponsor}
+      sponsorLevels={event?.sponsorType}
+      />
+      }
     </>
   );
 }
