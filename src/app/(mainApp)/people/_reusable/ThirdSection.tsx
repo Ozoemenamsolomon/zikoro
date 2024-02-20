@@ -24,7 +24,6 @@ export default function ThirdSection({ attendee }: { attendee: TAttendee }) {
       eventRegistrationRef,
     });
 
-  console.log(attendeeEventTransactions);
   const data: RewardData[] = [
     { id: 1, points: 1000, imgSrc: "/images/unknown 1.png", text: "Questions" },
     {
@@ -172,10 +171,10 @@ export default function ThirdSection({ attendee }: { attendee: TAttendee }) {
               <div className="flex justify-between text-xs text-gray-600 font-medium items-center">
                 <span>Status</span>
                 <div
-                  className={`max-w-full truncate py-1 px-2 ${
+                  className={`max-w-full truncate py-1 px-2 border ${
                     attendeeEventTransactions.registrationCompleted
-                      ? "bg-green-100 text-green-600"
-                      : "bg-red-100 text-red-600"
+                      ? "bg-green-100 text-green-600 border-green-600"
+                      : "bg-red-100 text-red-600 border-red-600"
                   } rounded-md w-fit text-tiny`}
                 >
                   {attendeeEventTransactions.registrationCompleted

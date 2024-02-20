@@ -315,7 +315,14 @@ export default function All() {
   );
   const totalWallet = filteredData
     .filter(({ payOutStatus }) => payOutStatus !== "Paid")
-    .reduce((acc, { amountPaid }) => (amountPaid || 0) + acc, 0);
+    .reduce(
+      (acc, { amountPaid, affliateCommission, processingFee }) =>
+        (amountPaid || 0) -
+        (processingFee || 0) -
+        (affliateCommission || 0) +
+        acc,
+      0
+    );
 
   const totalAffiliateCommission = eventTransactions.reduce(
     (acc, { affliateCommission }) => acc + (affliateCommission || 0),
@@ -328,7 +335,7 @@ export default function All() {
   const currency =
     selectedFilters.find(({ key }) => key === "currency")?.value ?? "NGN";
 
-  console.log(filteredData, eventTransactions);
+  // console.log(filteredData, eventTransactions);
 
   useEffect(() => {
     if (isLoading) return;
@@ -343,7 +350,7 @@ export default function All() {
       });
   }, [isLoading]);
 
-  console.log(eventTransactions);
+  // console.log(eventTransactions);
 
   const onChange = (accessorKey: string) =>
     setShownColumns((prevShown) =>
@@ -351,6 +358,11 @@ export default function All() {
         ? prevShown.filter((item) => item !== accessorKey)
         : [...prevShown, accessorKey]
     );
+
+  useEffect(() => {
+    console.log("default set currency");
+    applyFilter("currency", "Currency", "NGN", () => {}, "single");
+  }, []);
 
   return (
     <section className="space-y-6 max-w-full">

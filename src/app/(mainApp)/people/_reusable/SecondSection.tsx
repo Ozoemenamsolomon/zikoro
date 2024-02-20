@@ -5,7 +5,7 @@ import {
   useGetAttendeeTags,
   useUpdateAttendeeTags,
 } from "@/hooks/services/tags";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Dialog,
@@ -69,8 +69,6 @@ export default function SecondSection({
     ticketType,
     registrationDate,
   } = attendee;
-
-  console.log(registrationDate);
 
   const {
     note,
@@ -178,12 +176,40 @@ export default function SecondSection({
     filename: `${firstName}-${lastName}-badge.pdf`,
   });
 
+  const parentCardRef = useRef<HTMLDivElement>();
+  const innerCardRef = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+    const parentCard = parentCardRef.current;
+    const innerCard = innerCardRef.current;
+
+    if (!parentCard || !innerCard) return;
+
+    console.log(innerCard.style, parentCard.style);
+    parentCard.style.height = `${innerCard.style.height}px`;
+  }, [attendee]);
+
+  const [cardIsFlipped, setFlipCard] = useState<boolean>(false);
+
+  const flipCard = () => setFlipCard((prevFlip) => !prevFlip);
+
   return (
     <>
-      <div className="bg-transparent w-full h-[175px] [perspective:1000px] hover:[&>*]:[transform:_rotateY(180deg)]">
-        <div className="relative w-full h-max text-center duration-700 transition-transform [transform-style:_preserve-3d]">
-          <div className="absolute w-full h-full [backface-visibility:_hidden]">
-            <section className="pt-8 pb-4 px-6 bg-gray-200 relative">
+      <div
+        ref={parentCardRef}
+        className="bg-transparent w-full [perspective:1000px] h-[230px]"
+      >
+        <button
+          onClick={flipCard}
+          className={`relative w-full h-full text-center duration-700 transition-transform [transform-style:_preserve-3d] ${
+            cardIsFlipped ? "[transform:_rotateY(180deg)]" : ""
+          }`}
+        >
+          <div className="absolute w-full h-full [backface-visibility:_hidden] top-0">
+            <section
+              className="pt-8 pb-4 px-6 bg-gray-50 relative h-full"
+              ref={innerCardRef}
+            >
               <img
                 src="/images/card_design.png"
                 alt="design"
@@ -191,7 +217,7 @@ export default function SecondSection({
               />
               <div className="flex justify-center gap-4">
                 <div className="flex-1 flex justify-center">
-                  <Avatar className="w-24 h-24">
+                  <Avatar className="w-32 h-32">
                     <AvatarImage
                       className="h-full w-full object-cover"
                       src={profilePicture}
@@ -201,7 +227,7 @@ export default function SecondSection({
                     </AvatarFallback>
                   </Avatar>
                 </div>
-                <div className="flex-1 flex flex-col gap-2">
+                <div className="flex-1 flex flex-col gap-2 text-left h-full">
                   <div className="uppercase">
                     <h3 className="text-gray-500 font-semibold text-2xl -tracking-wider">
                       {firstName}
@@ -343,19 +369,21 @@ export default function SecondSection({
               </div>
             </section>
           </div>
-          <section className="[transform:_rotateY(180deg)]">here</section>
-        </div>
+          <section className="[transform:_rotateY(180deg)] bg-gray-200 absolute [backface-visibility:_hidden] top-0">
+            here
+          </section>
+        </button>
       </div>
-      <section className="space-y-6 p-4">
+      <section className="space-y-6 p-4 pt-0">
         <div className="flex justify-between items-center">
-          <span className="text-xs font-medium text-gray-500">
+          <span className="text-tiny font-medium text-gray-500">
             Added {format(new Date(registrationDate), "dd MMMM, yyyy")}
           </span>
           <div className="flex gap-1 items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
+              width="15"
+              height="15"
               viewBox="0 0 20 20"
               fill="none"
             >
@@ -639,22 +667,15 @@ export default function SecondSection({
       </section>
       <section className="space-y-4 border-t-[1px] border-gray-200 pt-2">
         <h3 className="px-2 pb-2 border-b-[1px] border-gray-200 text-lg text-greyBlack font-semibold">
-          Profile
+          About
         </h3>
         <div className="space-y-4 px-2">
-          <div className="flex flex-col">
-            <h4 className=" text-[#222] leading-normal font-medium">
-              {jobTitle}
-            </h4>
-            <span className=" text-[#3E404B] text-sm ">{organization}</span>
-          </div>
           <div className="">
-            <h4 className="text-gray-800 font-medium">Bio</h4>
             <p className="text-gray-700 text-sm font-normal">{bio}</p>
           </div>
           {city && country && (
             <div className="flex flex-col">
-              <h4 className="text-gray-800 font-medium">Location</h4>
+              {/* <h4 className="text-gray-800 font-medium">Location</h4> */}
               <span className=" text-gray-700 text-sm">
                 {city + ", " + country}
               </span>
@@ -901,40 +922,6 @@ export default function SecondSection({
           </div>
         </div>
       </section>
-      <section className="border-t-[1px] border-gray-200 pt-2 space-y-4">
-        <h4 className=" text-lg text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
-          Moderating at
-        </h4>
-        <div className="p-2  rounded mx-2">
-          <div className="flex justify-between items-center gap-2">
-            <div className="flex-[75%] flex gap-2 items-center">
-              <span className=" font-medium text-greyBlack">
-                Epoxy resin art workshop
-              </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-              >
-                <path
-                  d="M13.3333 7.33333C13.1565 7.33333 12.987 7.40357 12.8619 7.5286C12.7369 7.65362 12.6667 7.82319 12.6667 8V12C12.6667 12.1768 12.5964 12.3464 12.4714 12.4714C12.3464 12.5964 12.1768 12.6667 12 12.6667H4C3.82319 12.6667 3.65362 12.5964 3.5286 12.4714C3.40357 12.3464 3.33333 12.1768 3.33333 12V4C3.33333 3.82319 3.40357 3.65362 3.5286 3.5286C3.65362 3.40357 3.82319 3.33333 4 3.33333H8C8.17681 3.33333 8.34638 3.2631 8.4714 3.13807C8.59643 3.01305 8.66667 2.84348 8.66667 2.66667C8.66667 2.48986 8.59643 2.32029 8.4714 2.19526C8.34638 2.07024 8.17681 2 8 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H12C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12V8C14 7.82319 13.9298 7.65362 13.8047 7.5286C13.6797 7.40357 13.5101 7.33333 13.3333 7.33333Z"
-                  fill="black"
-                />
-                <path
-                  d="M10.6668 3.33333H11.7201L7.52679 7.52C7.4643 7.58198 7.41471 7.65571 7.38086 7.73695C7.34702 7.81819 7.32959 7.90533 7.32959 7.99333C7.32959 8.08134 7.34702 8.16848 7.38086 8.24972C7.41471 8.33096 7.4643 8.40469 7.52679 8.46667C7.58876 8.52915 7.6625 8.57875 7.74374 8.61259C7.82498 8.64644 7.91211 8.66387 8.00012 8.66387C8.08813 8.66387 8.17527 8.64644 8.25651 8.61259C8.33775 8.57875 8.41148 8.52915 8.47346 8.46667L12.6668 4.28V5.33333C12.6668 5.51014 12.737 5.67971 12.8621 5.80474C12.9871 5.92976 13.1566 6 13.3335 6C13.5103 6 13.6798 5.92976 13.8049 5.80474C13.9299 5.67971 14.0001 5.51014 14.0001 5.33333V2.66667C14.0001 2.48986 13.9299 2.32029 13.8049 2.19526C13.6798 2.07024 13.5103 2 13.3335 2H10.6668C10.49 2 10.3204 2.07024 10.1954 2.19526C10.0704 2.32029 10.0001 2.48986 10.0001 2.66667C10.0001 2.84348 10.0704 3.01305 10.1954 3.13807C10.3204 3.2631 10.49 3.33333 10.6668 3.33333Z"
-                  fill="black"
-                />
-              </svg>
-            </div>
-            <div className="flex-[25%] flex flex-col text-right">
-              <span className=" text-ash text-xs font-medium">20 Nov 2023</span>
-              <span className="text-ash text-xs font-normal">2:00-3:00PM</span>
-            </div>
-          </div>
-        </div>
-      </section>
       <section className="border-t-[1px] border-gray-200 space-y-4 pt-2">
         <div className="flex justify-between items-center border-b-[1px] border-gray-200 pb-2 px-2">
           <h4 className="text-lg font-medium text-greyBlack">Note</h4>
@@ -989,6 +976,40 @@ export default function SecondSection({
           ) : (
             <p className="px-2 text-sm font-medium text-gray-700">Loading...</p>
           )}
+        </div>
+      </section>
+      <section className="border-t-[1px] border-gray-200 pt-2 space-y-4">
+        <h4 className=" text-lg text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
+          Moderating at
+        </h4>
+        <div className="p-2  rounded mx-2">
+          <div className="flex justify-between items-center gap-2">
+            <div className="flex-[75%] flex gap-2 items-center">
+              <span className=" font-medium text-greyBlack">
+                Epoxy resin art workshop
+              </span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <path
+                  d="M13.3333 7.33333C13.1565 7.33333 12.987 7.40357 12.8619 7.5286C12.7369 7.65362 12.6667 7.82319 12.6667 8V12C12.6667 12.1768 12.5964 12.3464 12.4714 12.4714C12.3464 12.5964 12.1768 12.6667 12 12.6667H4C3.82319 12.6667 3.65362 12.5964 3.5286 12.4714C3.40357 12.3464 3.33333 12.1768 3.33333 12V4C3.33333 3.82319 3.40357 3.65362 3.5286 3.5286C3.65362 3.40357 3.82319 3.33333 4 3.33333H8C8.17681 3.33333 8.34638 3.2631 8.4714 3.13807C8.59643 3.01305 8.66667 2.84348 8.66667 2.66667C8.66667 2.48986 8.59643 2.32029 8.4714 2.19526C8.34638 2.07024 8.17681 2 8 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H12C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12V8C14 7.82319 13.9298 7.65362 13.8047 7.5286C13.6797 7.40357 13.5101 7.33333 13.3333 7.33333Z"
+                  fill="black"
+                />
+                <path
+                  d="M10.6668 3.33333H11.7201L7.52679 7.52C7.4643 7.58198 7.41471 7.65571 7.38086 7.73695C7.34702 7.81819 7.32959 7.90533 7.32959 7.99333C7.32959 8.08134 7.34702 8.16848 7.38086 8.24972C7.41471 8.33096 7.4643 8.40469 7.52679 8.46667C7.58876 8.52915 7.6625 8.57875 7.74374 8.61259C7.82498 8.64644 7.91211 8.66387 8.00012 8.66387C8.08813 8.66387 8.17527 8.64644 8.25651 8.61259C8.33775 8.57875 8.41148 8.52915 8.47346 8.46667L12.6668 4.28V5.33333C12.6668 5.51014 12.737 5.67971 12.8621 5.80474C12.9871 5.92976 13.1566 6 13.3335 6C13.5103 6 13.6798 5.92976 13.8049 5.80474C13.9299 5.67971 14.0001 5.51014 14.0001 5.33333V2.66667C14.0001 2.48986 13.9299 2.32029 13.8049 2.19526C13.6798 2.07024 13.5103 2 13.3335 2H10.6668C10.49 2 10.3204 2.07024 10.1954 2.19526C10.0704 2.32029 10.0001 2.48986 10.0001 2.66667C10.0001 2.84348 10.0704 3.01305 10.1954 3.13807C10.3204 3.2631 10.49 3.33333 10.6668 3.33333Z"
+                  fill="black"
+                />
+              </svg>
+            </div>
+            <div className="flex-[25%] flex flex-col text-right">
+              <span className=" text-ash text-xs font-medium">20 Nov 2023</span>
+              <span className="text-ash text-xs font-normal">2:00-3:00PM</span>
+            </div>
+          </div>
         </div>
       </section>
     </>

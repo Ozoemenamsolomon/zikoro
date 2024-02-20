@@ -10,7 +10,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { FilterOptionsProps, FilterProps } from "@/types/filter";
-import React from "react";
+import React, { useEffect } from "react";
 
 const MultipleFilter: React.FC<FilterOptionsProps<T>> = ({
   filter,
@@ -136,12 +136,19 @@ const SingleFilter: React.FC<FilterOptionsProps<T>> = ({
   const { defaultValue, type, accessor, onFilter, label: filterLabel } = filter;
   const singleValue = selectedFilters.find(({ key }) => key === accessor);
 
+  useEffect(() => {
+    console.log("is default set?", defaultValue);
+    if (!defaultValue) return;
+    console.log("default set", defaultValue);
+    applyFilter(accessor, filterLabel, defaultValue, onFilter, type);
+  }, []);
+
   return (
     <RadioGroup
       onValueChange={(value) =>
         applyFilter(accessor, filterLabel, value, onFilter, type)
       }
-      defaultValue={defaultValue ?? singleValue?.value}
+      defaultValue={defaultValue || singleValue?.value}
     >
       <div className="flex items-center space-x-2 mb-2">
         <RadioGroupItem

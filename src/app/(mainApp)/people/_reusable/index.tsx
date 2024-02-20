@@ -61,7 +61,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
       </section>
       {selectedAttendee ? (
         <>
-          <section className="col-span-4 pt-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">
+          <section className="col-span-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">
             <SecondSection
               attendee={selectedAttendee}
               getAttendees={getAttendees}
