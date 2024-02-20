@@ -64,7 +64,7 @@ export interface Event {
   partnerIndustry: PartnerIndustry[];
   eventPoster: { image1: string };
   exhibitionHall: { name: string; capacity: string }[];
-  sponsorType: {type: string, id:string}[]
+  sponsorCategory: {type: string, id:string}[]
 }
 
 export interface PaymentConfigProps {

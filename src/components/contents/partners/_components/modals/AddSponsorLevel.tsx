@@ -15,13 +15,14 @@ type FormValue = {
 export function AddSponsorLevel({
   close,
   eventId,
-  refetch,
-  sponsorLevels
+  setActive,
+  sponsorLevels,
 }: {
   eventId: string;
   close: () => void;
-  refetch: () => Promise<any>;
-  sponsorLevels: {id:string, type:string}[] | undefined
+  setActive: React.Dispatch<React.SetStateAction<number>>;
+
+  sponsorLevels: { id: string; type: string }[] | undefined;
 }) {
   const form = useForm<FormValue>({});
   const { loading, addSponsors } = useAddSponsorsType();
@@ -31,9 +32,8 @@ export function AddSponsorLevel({
       ...values,
       id: nanoid(),
     };
-    await addSponsors(sponsorLevels , close, eventId, payload);
-    refetch();
-  
+    await addSponsors(sponsorLevels, close, eventId, payload);
+
     form.reset();
   }
 
@@ -50,9 +50,9 @@ export function AddSponsorLevel({
       >
         <div className="w-full flex items-center justify-between">
           <h2 className="font-medium text-lg sm:text-xl">
-            Create Sponsor Level
+            Create Sponsor Category
           </h2>
-          <Button onClick={close} className="px-1 h-fit w-fit">
+          <Button onClick={() => setActive(1)} className="px-1 h-fit w-fit">
             <CloseOutline size={22} />
           </Button>
         </div>
@@ -77,20 +77,23 @@ export function AddSponsorLevel({
             />
 
             <div className="w-full flex flex-col items-start justify-start gap-y-2">
-              <h2 className="font-semibold text-lg"> Created Sponsor Level</h2>
+              <h2 className="font-semibold text-lg">
+                {" "}
+                Created Sponsor Category
+              </h2>
 
               <div className="w-full flex flex-wrap items-center gap-4">
-                    {Array.isArray(sponsorLevels) &&
-                      sponsorLevels.map(({type }) => (
-                        <CreatedPreview
-                          key={type}
-                          name={type}
-                          //  remove={remove}
+                {Array.isArray(sponsorLevels) &&
+                  sponsorLevels.map(({ type }) => (
+                    <CreatedPreview
+                      key={type}
+                      name={type}
+                      //  remove={remove}
 
-                          color={"#000000"}
-                        />
-                      ))}
-                  </div>
+                      color={"#000000"}
+                    />
+                  ))}
+              </div>
             </div>
 
             <Button
@@ -98,7 +101,7 @@ export function AddSponsorLevel({
               className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-zikoro h-12 rounded-md text-gray-50 font-medium"
             >
               {loading && <LoaderAlt size={22} className="animate-spin" />}
-              <span>Create Sponsor Level</span>
+              <span>Create Sponsor Category</span>
             </Button>
           </form>
         </Form>
@@ -106,5 +109,3 @@ export function AddSponsorLevel({
     </div>
   );
 }
-
-

@@ -7,7 +7,12 @@ import { cn } from "@/lib";
 import { useState, useMemo, useEffect } from "react";
 import { DropDownSelect } from "@/components/contents/_components";
 import { Event } from "@/types";
-import { useUpdateHall, useUpdateBooth, useUpdatePartnerType } from "@/hooks";
+import {
+  useUpdateHall,
+  useUpdateBooth,
+  useUpdatePartnerType,
+  useUpdateSponsor,
+} from "@/hooks";
 import { EmailIcon, WhatsappIcon } from "@/constants";
 import { useDropBoxPosition } from "@/context";
 
@@ -40,6 +45,7 @@ export function PartnerWidget({
   const { updateHall } = useUpdateHall();
   const { updateBooth } = useUpdateBooth();
   const { updatePartnerType } = useUpdatePartnerType();
+  const { updateSponsorCategory } = useUpdateSponsor();
   const { getClientPosition } = useDropBoxPosition();
 
   // format hall list
@@ -52,7 +58,7 @@ export function PartnerWidget({
   // format sponsor level
   const levelList = useMemo(() => {
     if (event) {
-      return event.sponsorType.map(({ type }) => type);
+      return event.sponsorCategory.map(({ type }) => type);
     }
   }, [event]);
 
@@ -77,12 +83,17 @@ export function PartnerWidget({
       );
 
       // get their booth numbers
-      const boothNumbers = partnersWithHall.map(
-        ({ boothNumber }) => boothNumber
-      );
+      const boothNumbers = partnersWithHall.map((item) => {
+        if (item?.boothNumber && Array.isArray(item?.boothNumber)) {
+          return item?.boothNumber
+           
+        }
+      });
 
+      const filterBoothNumber = boothNumbers.filter((v) => v !== undefined).flat()
+    
       // remove the boothNumber from the availabe booths
-      const booths = numbers.filter((number) => !boothNumbers.includes(number));
+      const booths = numbers.filter((number) => !filterBoothNumber.includes(number));
 
       setBoothList(booths);
     }
@@ -127,8 +138,8 @@ export function PartnerWidget({
 
   async function handleSelectedLevel(value: string) {
     setSelectedLevel(value);
-    //   await updatePartnerType(item?.id, value);
-    // refetch(); // fetch partners
+    await updateSponsorCategory(item?.id, value);
+    refetch(); // fetch partners
     showSponsorDropDown(false);
   }
 
@@ -186,26 +197,30 @@ export function PartnerWidget({
       </td>
 
       <td>
-        <button
-          onClick={(e: any) => {
-            getClientPosition(e);
-            toggleLevelDropDown();
-          }}
-          className="flex relative items-center gap-x-1"
-        >
-          <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
-            {item?.sponsorType || " Select Level"}
-          </p>
-          <ArrowIosDownward size={20} />
-          {isSponsorLevel && (
-            <DropDownSelect
-              handleChange={handleSelectedLevel}
-              currentValue={selectedLevel}
-              close={toggleLevelDropDown}
-              data={levelList}
-            />
-          )}
-        </button>
+        {item?.partnerType.toLowerCase() === "sponsor" ? (
+          <button
+            onClick={(e: any) => {
+              getClientPosition(e);
+              toggleLevelDropDown();
+            }}
+            className="flex relative items-center gap-x-1"
+          >
+            <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
+              {item?.sponsorCategory || " Select Level"}
+            </p>
+            <ArrowIosDownward size={20} />
+            {isSponsorLevel && (
+              <DropDownSelect
+                handleChange={handleSelectedLevel}
+                currentValue={selectedLevel}
+                close={toggleLevelDropDown}
+                data={levelList}
+              />
+            )}
+          </button>
+        ) : (
+          <p className="w-1 h-1"></p>
+        )}
       </td>
 
       <td>
@@ -239,7 +254,7 @@ export function PartnerWidget({
           }}
           className="flex items-center relative gap-x-1"
         >
-          <p className="">{item?.boothNumber || "0"}</p>
+          <p className="">{item?.boothNumber?.toString() || "0"}</p>
           <ArrowIosDownward size={20} />
           {isBooth && (
             <DropDownSelect

@@ -23,6 +23,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { COUNTRY_CODE } from "@/utils";
 import { partnerSchema } from "@/validations";
+import { AddSponsorLevel } from "@/components/contents/partners/_components";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useEffect, useState, useMemo } from "react";
@@ -38,29 +39,19 @@ import {
 import { BoothStaffWidget } from "../../sponsors/_components";
 import { PartnerIndustry } from "@/types";
 
-type FormFiles = {
-  media: FileList;
-  companyLogo: FileList;
-};
-
-//type SchemaForm = z.infer<typeof partnerSchema>
-
-//type PartnersFormSchema  = FormFiles & SchemaForm
 export function AddPartners({
   close,
   eventId,
-
-  refetchPartners
+  refetchPartners,
 }: {
   eventId: string;
-  refetchPartners: () => Promise<null | undefined>
+  refetchPartners: () => Promise<null | undefined>;
   close: () => void;
 }) {
-
   const [active, setActive] = useState(1);
   const { loading, addPartners } = useAddPartners();
   const { attendees } = useFetchAttendees(eventId);
-  const {data} = useFetchSingleEvent(eventId)
+  const { data } = useFetchSingleEvent(eventId);
   const { data: eventData, refetch } = useFetchCreatedEventIndustries(eventId);
 
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
@@ -70,8 +61,10 @@ export function AddPartners({
   const [whatsappCountryCode, setWhatsAppCountryCode] = useState<
     string | undefined
   >("+234");
-  const form = useForm<z.infer<typeof partnerSchema>>({
-    resolver: zodResolver(partnerSchema),
+
+  // <z.infer<typeof partnerSchema>>
+  const form = useForm<any>({
+    // resolver: zodResolver(partnerSchema),
     defaultValues: {
       eventId,
       eventName: data?.eventTitle,
@@ -115,7 +108,6 @@ export function AddPartners({
     refetch();
   }, [active]);
 
-
   useEffect(() => {
     if (country) {
       const currentCountryCode = COUNTRY_CODE.find(
@@ -141,8 +133,8 @@ export function AddPartners({
  */
   //  const industryValue = form.watch("industry");
   // console.log({ industryValue });
-
-  async function onSubmit(values: z.infer<typeof partnerSchema>) {
+  //  z.infer<typeof partnerSchema>
+  async function onSubmit(values: any) {
     const selectedIndustry = eventData?.partnerIndustry.find(
       ({ name }) => name.toLowerCase() === values.industry
     );
@@ -156,8 +148,8 @@ export function AddPartners({
     };
 
     await addPartners(payload);
-    refetchPartners()
-    close()
+    refetchPartners();
+    close();
   }
 
   // convert attendees list to an array of object {value, label} pairs
@@ -182,6 +174,18 @@ export function AddPartners({
     );
   }, [eventData?.partnerIndustry]);
 
+  // format event list
+  const formattedSponsorCategoryList = useMemo(() => {
+    if (!eventData?.sponsorCategory) return;
+    let category: { type: string; id: string }[] = eventData?.sponsorCategory;
+    return (
+      Array.isArray(category) &&
+      category?.map(({ type }) => {
+        return { label: type, value: type };
+      })
+    );
+  }, [eventData?.sponsorCategory]);
+
   return (
     <div
       role="button"
@@ -193,7 +197,8 @@ export function AddPartners({
         role="button"
         className={cn(
           "w-[95%] sm:w-[500px] box-animation h-fit flex mb-10 flex-col gap-y-6 rounded-lg bg-white  mx-auto absolute inset-x-0 py-6 px-3 sm:px-4",
-          active === 2 && "hidden"
+          active === 2 && "hidden",
+          active === 3 && "hidden"
         )}
       >
         <div className="w-full flex items-center justify-between">
@@ -222,6 +227,34 @@ export function AddPartners({
                 />
               )}
             />
+            {form.watch("partnerType") === "Sponsor" && (
+              <div className="w-full flex items-center gap-x-2">
+                <FormField
+                  control={form.control}
+                  name="sponsorCategory"
+                  render={({ field }) => (
+                    <ReactSelect
+                      {...field}
+                      placeHolder="Select Sponsor Category"
+                      label="Sponsor Category"
+                      options={formattedSponsorCategoryList || []}
+                    />
+                  )}
+                />
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setActive(3);
+                  }}
+                  className="hover:bg-zikoro  text-zikoro  rounded-md border border-zikoro hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
+                >
+                  <PlusCircle size={22} />
+                  <p>Category</p>
+                </Button>
+              </div>
+            )}
+
             <FormField
               control={form.control}
               name="companyName"
@@ -236,7 +269,7 @@ export function AddPartners({
                 </InputOffsetLabel>
               )}
             />
-              <div className="w-full grid grid-cols-2 items-center gap-4">
+            <div className="w-full grid grid-cols-2 items-center gap-4">
               <FormField
                 control={form.control}
                 name="phoneNumber"
@@ -306,7 +339,9 @@ export function AddPartners({
               )}
             />
             <div className="w-full mt-4 py-2 border-t border-gray-300 border-dashed">
-              <p className="text-sm text-gray-400">The partner will be notified to fill up the rest of the field</p>
+              <p className="text-sm text-gray-400">
+                The partner will be notified to fill up the rest of the field
+              </p>
             </div>
             <div className="w-full flex flex-col items-start justify-start gap-y-1">
               <InputOffsetLabel label=" Logo">
@@ -459,7 +494,6 @@ export function AddPartners({
               />
             </div>
 
-          
             <FormField
               control={form.control}
               name="website"
@@ -492,6 +526,14 @@ export function AddPartners({
           // selectedIndustry={selectedIndustry}
           close={close}
           setActive={setActive}
+        />
+      )}
+      {active === 3 && (
+        <AddSponsorLevel
+        eventId={eventId}
+        sponsorLevels={eventData?.sponsorCategory}
+        close={close}
+        setActive={setActive}
         />
       )}
     </div>

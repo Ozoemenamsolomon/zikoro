@@ -38,8 +38,9 @@ export function ExhibitionHall({
       return data.exhibitionHall.map((item) => {
         let totalSeat = 0;
         partners.forEach((partner) => {
-          if (partner.exhibitionHall === item.name) {
-            totalSeat += Number(partner.boothNumber);
+          if (partner.exhibitionHall === item.name && partner?.boothNumber) {
+            
+            totalSeat += partner?.boothNumber?.length;
           }
         });
         return { ...item, seat: totalSeat };
@@ -56,7 +57,6 @@ export function ExhibitionHall({
     } else {
       setSelectedHall((prev) => [...prev, value]);
     }
-    
   }
 
   // select all the rows
@@ -78,7 +78,7 @@ export function ExhibitionHall({
       refetch();
     }
     // empty the selected array
-    setSelectedHall([])
+    setSelectedHall([]);
   }
 
   return (

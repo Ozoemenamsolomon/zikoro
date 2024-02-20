@@ -1,7 +1,12 @@
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { EmptyCard } from "@/components/composables";
 import { useDeletePartner, useFetchSingleEvent } from "@/hooks";
-import { PartnerWidget, ExhibitionHall, AddExhibitionHall, AddSponsorLevel } from "..";
+import {
+  PartnerWidget,
+  ExhibitionHall,
+  AddExhibitionHall,
+  AddSponsorLevel,
+} from "..";
 import { useState } from "react";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { Eye } from "@styled-icons/evil/Eye";
@@ -23,7 +28,7 @@ export function PartnersList({
   const [isOpen, setOpen] = useState(false);
   const { loading: delLoading, deletes, deleteAll } = useDeletePartner();
   const [isAddHall, setAddHall] = useState(false);
-  const [isAddSponsorType, showAddSponsorType] = useState(false);
+
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
   function onToggle() {
@@ -33,10 +38,6 @@ export function PartnersList({
   function onClose() {
     setAddHall((prev) => !prev);
   }
-
-function onAddSponsor() {
-showAddSponsorType((prev) => !prev)
-}
 
   // **** handle delete ****  //
 
@@ -69,8 +70,8 @@ showAddSponsorType((prev) => !prev)
       await deletes(selectedRows);
       refetch();
     }
-     // empty the selected array
-     setSelectedRows([])
+    // empty the selected array
+    setSelectedRows([]);
   }
 
   /**** */
@@ -99,11 +100,7 @@ showAddSponsorType((prev) => !prev)
               </Button>
             )}
           </div>
-          <Button
-          onClick={onAddSponsor}
-          >
-            <p>Add Sponsor Level</p>
-          </Button>
+
           <div
             //  onClick={""}
             className=" flex items-center px-4 group rounded-md justify-center bg-transparent   transition-all transform duration-300 ease-in-out gap-x-2 h-11 sm:h-12"
@@ -131,7 +128,7 @@ showAddSponsorType((prev) => !prev)
               </th>
               <th className=" text-start col-span-1 w-full">Contact</th>
               <th className="text-start">Partner Type</th>
-              <th className="text-start">Sponsor Type</th>
+              <th className="text-start">Sponsor Category</th>
               <th className="text-start">Exhibiton Hall</th>
               <th className="text-start">Booth</th>
             </tr>
@@ -188,16 +185,6 @@ showAddSponsorType((prev) => !prev)
           close={onClose}
         />
       )}
-
-      {isAddSponsorType && 
-      
-      <AddSponsorLevel
-      eventId={eventId}
-      refetch={refetchSingleEvent}
-      close={onAddSponsor}
-      sponsorLevels={event?.sponsorType}
-      />
-      }
     </>
   );
 }

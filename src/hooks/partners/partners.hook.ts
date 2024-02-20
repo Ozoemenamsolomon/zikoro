@@ -386,9 +386,18 @@ export function useUpdateBooth() {
 
       const { boothNumber, ...restData } = data;
 
+  let booths = []
+
+  if (boothNumber === null) {
+    booths = [value]
+  }
+  else {
+    booths = [...boothNumber, value]
+  }
+
       const { error, status } = await supabase
         .from("eventPartners")
-        .update({ ...restData, boothNumber: value })
+        .update({ ...restData, boothNumber: booths })
         .eq("id", partnerId);
 
       if (status === 204 || status === 200) {
@@ -458,6 +467,36 @@ export function useUpdatePartnerType() {
 
   return {
     updatePartnerType,
+  };
+}
+
+
+export function useUpdateSponsor() {
+  async function updateSponsorCategory(partnerId: string, value: string) {
+    try {
+      // Fetch the partner by ID
+      const { data } = await supabase
+        .from("eventPartners")
+        .select("*")
+        .eq("id", partnerId)
+        .single();
+
+      const { sponsorCategory, ...restData } = data;
+
+      const { error, status } = await supabase
+        .from("eventPartners")
+        .update({ ...restData, sponsorCategory: value })
+        .eq("id", partnerId);
+
+      if (status === 204 || status === 200) {
+        //
+        toast.success("Sponsor Category Updated");
+      }
+    } catch (error) {}
+  }
+
+  return {
+    updateSponsorCategory,
   };
 }
 
@@ -625,10 +664,10 @@ export function useAddSponsorsType() {
         .eq("id", eventId)
         .single();
 
-      const { sponsorType: type, ...restData } = data;
+      const { sponsorCategory: type, ...restData } = data;
 
       // initialize an empty array
-      let sponsorType: { type: string; id: string }[] = [];
+      let sponsorCategory: { type: string; id: string }[] = [];
 
       if (data) {
         const isLevelExist = levelData
@@ -638,23 +677,23 @@ export function useAddSponsorsType() {
         if (isLevelExist && levelData) {
           toast.error("Sponsor Level already exist");
 
-          sponsorType = [...levelData];
+          sponsorCategory = [...levelData];
 
           return;
         }
 
         // when there is no ex. hall
         if (type === null) {
-          sponsorType = [payload];
+          sponsorCategory = [payload];
         } else {
           // when there is/are  sponsor
-          sponsorType = [...type, payload];
+          sponsorCategory = [...type, payload];
         }
       }
 
       const { error, status } = await supabase
         .from("events")
-        .update({ ...restData, sponsorType })
+        .update({ ...restData, sponsorCategory })
         .eq("id", eventId);
 
       if (error) {
@@ -666,7 +705,7 @@ export function useAddSponsorsType() {
       if (status === 204 || status === 200) {
         //
         toast.success("Sponsor Type created successfully");
-        close();
+       // close();
         setLoading(false);
       }
     } catch (error) {
