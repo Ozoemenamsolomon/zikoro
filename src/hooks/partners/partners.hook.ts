@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import * as z from "zod";
-import { Event, TPartner, PartnerJobType } from "@/types";
+import { Event, TPartner, PartnerJobType, PromotionalOfferType } from "@/types";
 import { partnerSchema } from "@/validations";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
@@ -318,6 +318,57 @@ export function useAddPartnerJob() {
   };
 }
 
+export function useAddPartnerPromo() {
+  const [loading, setLoading] = useState(false);
+
+  async function addPromo(
+    partnerId: string,
+    promo: PromotionalOfferType,
+    partner: TPartner | null
+  ) {
+    setLoading(true);
+    try {
+      let offers = {};
+
+      const { productImage, ...restData } = promo;
+      const image = await uploadFile(productImage[0], "image");
+      const payload = {
+        ...restData,
+        productImage: image,
+      };
+
+      if (partner?.offers && partner?.offers !== null) {
+        offers = {
+          offers: [...partner?.offers, payload],
+        };
+      } else {
+        offers = { offers: [payload] };
+      }
+      const { error, status } = await supabase
+        .from("eventPartners")
+        .update([offers])
+        .eq("id", partnerId);
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (status === 204 || status === 200) {
+        //
+        toast.success("Offer added successfully");
+        setLoading(false);
+      }
+    } catch (error) {
+      return;
+    }
+  }
+
+  return {
+    addPromo,
+    loading,
+  };
+}
 export function useCreateEventExhibitionHall() {
   const [loading, setLoading] = useState(false);
 
@@ -386,14 +437,13 @@ export function useUpdateBooth() {
 
       const { boothNumber, ...restData } = data;
 
-  let booths = []
+      let booths = [];
 
-  if (boothNumber === null) {
-    booths = [value]
-  }
-  else {
-    booths = [...boothNumber, value]
-  }
+      if (boothNumber === null) {
+        booths = [value];
+      } else {
+        booths = [...boothNumber, value];
+      }
 
       const { error, status } = await supabase
         .from("eventPartners")
@@ -470,7 +520,6 @@ export function useUpdatePartnerType() {
   };
 }
 
-
 export function useUpdateSponsor() {
   async function updateSponsorCategory(partnerId: string, value: string) {
     try {
@@ -515,10 +564,29 @@ export function useFetchPartnersJob(eventId: string | number) {
     }
   });
 
-  console.log({ allPartnersJob });
-
   return {
     jobs: allPartnersJob,
+    loading,
+  };
+}
+
+export function useFetchPartnersOffers(eventId: string | number) {
+  const { data, loading } = useFetchPartners(eventId);
+
+  let allPartnersOffers: any[] = [];
+
+  data.map((item) => {
+    const { offers } = item;
+
+    if (offers !== null && Array.isArray(offers)) {
+      offers.map((offer) => {
+        allPartnersOffers.push(offer);
+      });
+    }
+  });
+
+  return {
+    offers: allPartnersOffers,
     loading,
   };
 }
@@ -705,7 +773,7 @@ export function useAddSponsorsType() {
       if (status === 204 || status === 200) {
         //
         toast.success("Sponsor Type created successfully");
-       // close();
+        // close();
         setLoading(false);
       }
     } catch (error) {

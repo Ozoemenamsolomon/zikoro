@@ -158,10 +158,10 @@ export function BookEvent({
       return; /// stop submission
     }
 
-    console.log({minimumAttendees})
+   
     // checking if the attendees number satisfy the minimum attendees required to use the event discount code
     if (minimumAttendees !== undefined && minimumAttendees !== fields?.length) {
-      console.log("yeH")
+    
       toast.error(
         `Discount code is valid for minimum of ${minimumAttendees} attendees`
       );

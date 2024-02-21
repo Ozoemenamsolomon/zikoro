@@ -110,3 +110,18 @@ export function isDateGreaterThanToday(targetDate: string): boolean {
 
   return targetDateTime < today;
 }
+
+
+export function formatShortDate(inputDate: string): string {
+  const [year, month, day] = inputDate.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+
+  const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+  };
+
+  const formatter = new Intl.DateTimeFormat('en-US', options);
+  return formatter.format(date);
+}

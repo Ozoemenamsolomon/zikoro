@@ -15,7 +15,7 @@ export function MarketPlaceTab({eventId}:{eventId?:string}) {
       name: "Offers",
     },
     {
-      href: "/offers",
+      href: "/",
       name: "Rewards",
     },
   ];

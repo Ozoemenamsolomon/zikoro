@@ -34,39 +34,38 @@ export function PartnerBanners({
     speed: 400,
     slidesToShow: 1,
     slidesToScroll: 1,
- 
   };
-
 
   return (
     <>
-      <div className="w-full  flex flex-col">
-        <div className="flex p-3 border-b items-center justify-between w-full">
-          <p className="font-medium">Banners</p>
+      {
+        <div className="w-full  flex flex-col">
+          <div className="flex p-3 border-b items-center justify-between w-full">
+            <p className="font-medium">Banners</p>
 
-          <Button onClick={onClose} className="px-1 h-fit w-fit">
-            <PlusCircle size={24} />
-          </Button>
-        </div>
-        <Slider
+            <Button onClick={onClose} className="px-1 h-fit w-fit">
+              <PlusCircle size={24} />
+            </Button>
+          </div>
+          <Slider
             className=" z-[4] slider  p-2 h-full   sm:block "
             {...settings}
           >
             {Array.isArray(partner?.banners) &&
-            partner?.banners.map(({ file, link }, idx) => (
-              <Link href={link} target="blank">
-                <Image
-                  src={file}
-                  alt={`banners${idx}`}
-                  width={700}
-                  height={600}
-                  className="w-full h-80 rounded-lg"
-                />
-              </Link>
-            ))}
-            </Slider>
-        
-      </div>
+              partner?.banners.map(({ file, link }, idx) => (
+                <Link href={link} target="blank">
+                  <Image
+                    src={file}
+                    alt={`banners${idx}`}
+                    width={700}
+                    height={600}
+                    className="w-full h-80 rounded-lg"
+                  />
+                </Link>
+              ))}
+          </Slider>
+        </div>
+      }
 
       {isOpen && (
         <AddBanners

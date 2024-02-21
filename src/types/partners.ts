@@ -35,9 +35,10 @@ export interface TPartner {
   media: string;
   partnerType: string;
   phoneNumber: string;
-  offers: JSON;
+  offers: PromotionalOfferType[];
   website: string;
   whatsApp: string;
+
 }
 
 export interface PartnerJobType {
@@ -56,4 +57,23 @@ export interface PartnerJobType {
   currencyCode: string;
   partnerId: string;
   companyName:string
+}
+
+export interface PromotionalOfferType {
+  serviceTitle:string
+  endDate:string
+  productPrice:string
+  productPromo:string
+  offerDetails:string
+  voucherCode:any
+  redeem:"email" | "url" | "whatsapp"
+  url:string | undefined
+  whatsApp:string | undefined
+  email:string | undefined
+  currencyCode: string;
+  partnerId: string;
+  companyName:string
+  productImage:any
+
+
 }

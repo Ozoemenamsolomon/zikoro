@@ -73,3 +73,41 @@ export const hallSchema = z.object({
   name: z.string().min(3, { message: "Hall Name is required" }),
   capacity: z.string().min(1, { message: "Hall Capacity is required" }),
 });
+
+
+export const offerCreationSchema = z.object({
+  serviceTitle: z.string().min(3, { message: "Title is required" }),
+  productImage: z.any(),
+  endDate: z
+    .string()
+    .min(3, { message: "Application Link is required" }),
+  productPrice: z.string().min(3, { message: "Max. Salary is required" }),
+  productPromo: z.string().min(3, { message: "Min. Salary is required" }),
+  offerDetails: z.string().min(3, { message: "Offer Details is required" }),
+  voucherCode: z.any(),
+  redeem: z.enum(["whatsapp", "email", "url"]),
+  url: z
+    .string()
+    .refine((value) => value !== undefined && value.trim() !== "", {
+      message: "Please provide a url",
+    })
+    .optional(),
+    whatsApp: z
+    .string()
+    .refine((value) => value !== undefined && value.trim() !== "", {
+      message: "Please provide a url",
+    })
+    .optional(),
+    email: z
+    .string()
+    .email({ message: "Email must be a valid email" })
+    .refine(
+      (value) =>
+        value && /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/.test(value),
+      {
+        message: "Invalid email address",
+      }
+    )
+    .optional(),
+
+})
