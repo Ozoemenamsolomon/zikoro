@@ -15,7 +15,7 @@ import { RowSelectionState } from "@tanstack/react-table";
 const affiliateLinkFilter: TFilter<TAffiliateLink>[] = [
   {
     label: "Affiliates",
-    accessor: "affiliates",
+    accessor: "affiliate",
     icon: (
       <svg
         width={20}
@@ -147,7 +147,7 @@ const Performance = () => {
     .reduce(
       (acc, { eventTransactions }) =>
         acc +
-        eventTransactions.reduce((acc, { amountPaid }) => amountPaid + acc, 0),
+        (eventTransactions && eventTransactions.reduce((acc, { amountPaid }) => amountPaid + acc, 0) || 0),
       0
     )
     .toFixed(2);
@@ -156,9 +156,10 @@ const Performance = () => {
     .reduce(
       (acc, { eventTransactions }) =>
         acc +
-        eventTransactions
-          .filter(({ payOutStatus }) => payOutStatus !== "Paid")
-          .reduce((acc, { amountPaid }) => amountPaid + acc, 0),
+        (eventTransactions &&
+          eventTransactions
+            .filter(({ payOutStatus }) => payOutStatus !== "Paid")
+            .reduce((acc, { amountPaid }) => amountPaid + acc, 0) || 0),
       0
     )
     .toFixed(2);
@@ -170,15 +171,15 @@ const Performance = () => {
         (commissionType === "fixed"
           ? commissionValue
           : commissionValue *
-            0.01 *
-            (eventTransactions
-              ? eventTransactions
-                  .filter(
-                    ({ amountPaid, registrationCompleted }) =>
-                      amountPaid > 0 && registrationCompleted
-                  )
-                  .reduce((acc, curr) => acc + curr.amountPaid, 0)
-              : 0)),
+          0.01 *
+          (eventTransactions
+            ? eventTransactions
+              .filter(
+                ({ amountPaid, registrationCompleted }) =>
+                  amountPaid > 0 && registrationCompleted
+              )
+              .reduce((acc, curr) => acc + curr.amountPaid, 0)
+            : 0)),
       0
     )
     .toFixed(2);
@@ -186,17 +187,18 @@ const Performance = () => {
   const totalPaidAttendees = filteredData.reduce(
     (acc, { eventTransactions }) =>
       acc +
-      eventTransactions
-        .filter(
-          ({ amountPaid, registrationCompleted }) =>
-            amountPaid > 0 && registrationCompleted
-        )
-        .reduce((acc, { attendees }) => attendees + acc, 0),
+      (eventTransactions &&
+        eventTransactions
+          .filter(
+            ({ amountPaid, registrationCompleted }) =>
+              amountPaid > 0 && registrationCompleted
+          )
+          .reduce((acc, { attendees }) => attendees + acc, 0) || 0),
     0
   );
 
   const totalAffiliates = new Set(
-    filteredData.map(({ affiliateEmail }) => affiliateEmail)
+    filteredData.map(({ affliateEmail }) => affliateEmail)
   ).size;
 
   useEffect(() => {
@@ -344,9 +346,8 @@ const Performance = () => {
           data={filteredData}
           rowStyle={{
             display: "grid",
-            gridTemplateColumns: `auto 1.5fr repeat(${
-              columns.length - 2
-            }, minmax(0, 1fr))`,
+            gridTemplateColumns: `auto 1.5fr repeat(${columns.length - 3
+              }, minmax(0, 1fr)) auto`,
           }}
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}

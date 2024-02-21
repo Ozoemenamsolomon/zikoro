@@ -1,8 +1,10 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TAffiliateLink } from "@/types/marketing";
 import { convertDateFormat } from "@/utils/date";
 import { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
 
 export const columns: ColumnDef<TAffiliateLink>[] = [
   {
@@ -54,11 +56,11 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
     accessorFn: (row) =>
       row.eventTransactions
         ? row.eventTransactions
-            .filter(
-              ({ amountPaid, registrationCompleted }) =>
-                amountPaid > 0 && registrationCompleted
-            )
-            .reduce((acc, curr) => acc + curr.attendees, 0)
+          .filter(
+            ({ amountPaid, registrationCompleted }) =>
+              amountPaid > 0 && registrationCompleted
+          )
+          .reduce((acc, curr) => acc + curr.attendees, 0)
         : 0,
   },
   {
@@ -67,21 +69,21 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
       (row.commissionType === "fixed"
         ? row.commissionValue
         : (row.commissionValue *
-            0.01 *
-            (row.eventTransactions
-              ? row.eventTransactions
-                  .filter(
-                    ({ amountPaid, registrationCompleted }) =>
-                      amountPaid > 0 && registrationCompleted
-                  )
-                  .reduce((acc, curr) => acc + curr.amountPaid, 0)
-              : 0)) /
-          (row
-            ? row.eventTransactions.reduce(
-                (acc, curr) => acc + curr.attendees,
-                0
+          0.01 *
+          (row.eventTransactions
+            ? row.eventTransactions
+              .filter(
+                ({ amountPaid, registrationCompleted }) =>
+                  amountPaid > 0 && registrationCompleted
               )
-            : 1)
+              .reduce((acc, curr) => acc + curr.amountPaid, 0)
+            : 0)) /
+        (row
+          ? row.eventTransactions.reduce(
+            (acc, curr) => acc + curr.attendees,
+            0
+          )
+          : 1)
       ).toFixed(2),
   },
   {
@@ -90,26 +92,26 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
       row.commissionType === "fixed"
         ? row.commissionValue
         : row.commissionValue *
-          0.01 *
-          (row.eventTransactions
-            ? row.eventTransactions
-                .filter(
-                  ({ amountPaid, registrationCompleted }) =>
-                    amountPaid > 0 && registrationCompleted
-                )
-                .reduce((acc, curr) => acc + curr.amountPaid, 0)
-            : 0),
+        0.01 *
+        (row.eventTransactions
+          ? row.eventTransactions
+            .filter(
+              ({ amountPaid, registrationCompleted }) =>
+                amountPaid > 0 && registrationCompleted
+            )
+            .reduce((acc, curr) => acc + curr.amountPaid, 0)
+          : 0),
   },
   {
     header: "Revenue",
     accessorFn: (row) =>
       row.eventTransactions
         ? row.eventTransactions
-            .filter(
-              ({ amountPaid, registrationCompleted }) =>
-                amountPaid > 0 && registrationCompleted
-            )
-            .reduce((acc, curr) => acc + curr.amountPaid, 0)
+          .filter(
+            ({ amountPaid, registrationCompleted }) =>
+              amountPaid > 0 && registrationCompleted
+          )
+          .reduce((acc, curr) => acc + curr.amountPaid, 0)
         : 0,
   },
   {
@@ -119,9 +121,15 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
       <div>{convertDateFormat(row.getValue("created_at"))}</div>
     ),
   },
-//   {
-//     id: "details",
-//     header: "details",
-//     row: (row) => 
-//   }
+  {
+    accessorKey: "payoutSchedule",
+    header: "Payment Schedule"
+  },
+  {
+    id: "details",
+    header: "Details",
+    cell: ({ row }) =>
+      <Link className="text-basePrimary" href={`/marketing/affiliate/link/${row.original.id}/transactions/details`}>Details</Link>
+
+  }
 ];

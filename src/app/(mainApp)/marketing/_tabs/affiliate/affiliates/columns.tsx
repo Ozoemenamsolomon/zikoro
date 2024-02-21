@@ -50,9 +50,9 @@ export const columns: ColumnDef<TAffiliate>[] = [
   {
     accessorKey: "email",
     header: "Email",
-    // cell: ({ row }) => (
-    //     <div className="truncate">{row.getValue("userEmail")}</div>
-    //   ),
+    cell: ({ row }) => (
+      <div className="truncate overflow-hidden max-w-full">{row.original.email}</div>
+    ),
   },
   {
     accessorKey: "accountDetails",

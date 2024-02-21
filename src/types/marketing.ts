@@ -33,10 +33,10 @@ export interface TSentEmail {
 //   affliateStatus: boolean ;
 // }
 
-export interface TAffiliate extends z.TypeOf<typeof AffiliateSchema> {}
+export interface TAffiliate extends z.TypeOf<typeof AffiliateSchema> { }
 
 export interface TAffiliateLink {
-  id: bigint;
+  id: number;
   created_at: Date;
   userId?: number;
   affiliateId?: bigint;
