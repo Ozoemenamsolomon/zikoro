@@ -16,15 +16,11 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
       eventId={eventId}
       eventName={data?.eventTitle}
     >
-      <div className="w-full grid grid-cols-7 items-start pt-14 ">
-        <div className="w-full col-span-4 flex flex-col gap-y-4  items-start justify-start border-r">
+      <div className="w-full grid grid-cols-1 md:grid-cols-7 items-start pt-14 ">
+        <div className="w-full md:col-span-4 flex flex-col gap-y-4  items-start justify-start border-r">
           <EventSchedule event={data} />
 
-          <EventDetailTabs
-  
-            event={data}
-            aboutClassName={"lg:grid-cols-1"}
-          />
+          <EventDetailTabs event={data} aboutClassName={"lg:grid-cols-1"} />
         </div>
       </div>
     </SideBarLayout>

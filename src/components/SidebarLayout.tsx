@@ -44,6 +44,7 @@ export function SideBarLayout({
   const [queryParam, setQueryParam] = useState<string | null>(null);
   const query = param.get("organization");
 
+
   function onOpen() {
     setOpen(true);
   }
@@ -73,7 +74,7 @@ export function SideBarLayout({
           parentClassName
         )}
       >
-        {hasTopBar && <Topbar eventId={eventId} />}
+        {hasTopBar && <Topbar eventId={eventId}  />}
       </div>
 
       <div
@@ -114,7 +115,7 @@ function SideNavs({
   onOpen: () => void;
 }) {
   const { organizationId } = useParams();
-
+  console.log({query})
   return (
     <div
       aria-roledescription="container"

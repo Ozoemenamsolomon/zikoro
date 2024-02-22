@@ -4,7 +4,7 @@ import Image from "next/image";
 import { AlertCircle } from "@styled-icons/feather/AlertCircle";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { Button } from "@/components";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { formatShortDate, sendMail, whatsapp } from "@/utils";
 import { PromotionalOfferType } from "@/types";
 export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
@@ -13,6 +13,14 @@ export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
   function onClose() {
     setOpen((prev) => !prev);
   }
+
+  const formatDiscount = useMemo(() => {
+    return (
+      (Number(offer?.productPrice) -
+        Number(offer?.productPromo)) / Number(offer?.productPrice) *
+      100
+    );
+  }, [offer?.productPrice, offer?.productPromo]);
   return (
     <>
       <div className="w-full h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
@@ -25,7 +33,7 @@ export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
             className="w-full rounded-t-md h-40 sm:h-56"
           />
           <span className="absolute text-white text-xs bg-zikoro px-2 py-1 rounded-bl-lg top-0 right-0">
-            2%
+            {`${formatDiscount}%`}
           </span>
         </div>
         <div className="w-full px-3 flex items-start justify-between">
@@ -56,7 +64,10 @@ export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
                 visitOfferPage(offer?.url);
               }
               if (offer?.whatsApp) {
-                whatsapp(offer?.whatsApp, `I'm interested in the ${offer?.serviceTitle ?? ""} offer`);
+                whatsapp(
+                  offer?.whatsApp,
+                  `I'm interested in the ${offer?.serviceTitle ?? ""} offer`
+                );
               }
               if (offer?.email) {
                 sendMail(offer?.email);
@@ -80,7 +91,6 @@ function visitOfferPage(url: string) {
   window.open(url, "_blank");
 }
 
-
 function OfferCardModal({
   close,
   offer,
@@ -97,7 +107,7 @@ function OfferCardModal({
       <div
         onClick={(e) => e.stopPropagation()}
         role="button"
-        className="w-[95%] sm:w-[500px] box-animation h-fit flex mb-10 flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4"
+        className="w-[95%] sm:w-[450px] box-animation h-fit flex mb-10 flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4"
       >
         <div className="w-full flex items-end justify-end">
           <Button onClick={close} className="px-1 h-fit w-fit">
@@ -148,13 +158,19 @@ function OfferCardModal({
                   visitOfferPage(offer?.url);
                 }
                 if (offer?.whatsApp) {
-                  whatsapp(offer?.whatsApp, `I'm interested in the ${offer?.serviceTitle ?? ""} offer`);
+                  whatsapp(
+                    offer?.whatsApp,
+                    `I'm interested in the ${offer?.serviceTitle ?? ""} offer`
+                  );
                 }
                 if (offer?.email) {
                   sendMail(offer?.email);
                 }
               }}
-            className="text-zikoro text-sm font-semibold">Get Offer</button>
+              className="text-zikoro text-sm font-semibold"
+            >
+              Get Offer
+            </button>
             <p className="font-semibold text-zinc-700 text-sm">
               Discount code: 534rewfw
             </p>{" "}

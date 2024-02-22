@@ -85,18 +85,17 @@ export function EventCard({
     }
   }, [event.pricing]);
 
-  
 
   return (
     <div
       role="button"
       onClick={() =>
-        router.push(`/events/home/${event.id}`)
+        window.open(`/events/home/${event?.eventAlias}`, "_blank")
       }
-      className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4 shadow-md w-full"
+      className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4  w-full"
     >
       <div className="w-full flex items-center justify-between">
-        <p className="font-medium text-lg">{event?.eventTitle ?? ""}</p>
+        <p className="font-medium text-lg line-clamp-1">{event?.eventTitle ?? ""}</p>
         <div className="flex items-center gap-x-2">
           <Button
             onClick={(e) => {

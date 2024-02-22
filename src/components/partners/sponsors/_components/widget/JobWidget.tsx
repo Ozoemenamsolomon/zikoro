@@ -67,7 +67,7 @@ export function JobWidget({ job, className }: { job: PartnerJobType, className:s
 
       <Button
       onClick={apply}
-      className="hover:text-gray-50 mt-3 transform border transition-all duration-300 ease-in-out w-fit border-zikoro hover:bg-zikoro text-zikoro gap-x-2 h-11 sm:h-12 font-medium">
+      className="hover:text-gray-50 w-full sm:w-fit mt-3 transform border transition-all duration-300 ease-in-out  border-zikoro hover:bg-zikoro text-zikoro gap-x-2 h-11 sm:h-12 font-medium">
         Apply Now
       </Button>
     </div>

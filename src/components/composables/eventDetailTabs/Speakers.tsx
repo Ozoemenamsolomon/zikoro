@@ -20,7 +20,7 @@ export function Speakers() {
   return (
     <>
       {active === 1 && (
-        <div className=" w-full flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
+        <div className=" w-full grid grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
           {[1, 2, 3, 4, 5, 6].map((_) => (
             <SpeakerWidget
               key={_}
@@ -43,7 +43,7 @@ function SpeakerWidget({
   isViewProfile?: boolean;
 }) {
   return (
-    <div className="w-[250px] flex flex-col gap-y-2 items-center justify-center p-4 border rounded-lg">
+    <div className="w-full sm:w-[250px] flex flex-col gap-y-2 items-center justify-center p-4 border rounded-lg">
       <Image
         src="/b92cf7b1b06acc1b9a0759b6f97724c349488816.webp"
         width={300}

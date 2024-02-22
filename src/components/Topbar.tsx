@@ -47,6 +47,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
     },
   ];
 
+
   return (
     <nav className="bg-white w-full px-4 pt-4 h-max border-b-[1px]">
       <ul className="flex justify-between text-gray-700">
@@ -54,7 +55,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
           return (
             <li
               className={`pb-1 text-sm ${
-                pathname === href
+                pathname === href.split("?")[0]
                   ? "text-zikoro border-b-2 border-zikoro font-medium"
                   : ""
               }`}

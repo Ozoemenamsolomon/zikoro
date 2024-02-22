@@ -51,14 +51,14 @@ export function PartnerWidget({
   // format hall list
   const hallList = useMemo(() => {
     if (event) {
-      return event.exhibitionHall.map(({ name }) => name);
+      return event.exhibitionHall?.map(({ name }) => name);
     }
   }, [event]);
 
   // format sponsor level
   const levelList = useMemo(() => {
     if (event) {
-      return event.sponsorCategory.map(({ type }) => type);
+      return event?.sponsorCategory?.map(({ type }) => type);
     }
   }, [event]);
 

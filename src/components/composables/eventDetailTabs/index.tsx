@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components";
 import { cn } from "@/lib";
 import { Event, EventDetailTab } from "@/types";
+import {User} from "@styled-icons/feather/User"
 import { About, Speakers, Sponsors, Agenda } from "..";
 
 export function EventDetailTabs({

@@ -52,7 +52,7 @@ export function PartnerOffers({ eventId }: { eventId: string }) {
   return (
     <MarketPlaceLayout eventId={eventId}>
       <div className="flex items-end w-full justify-end">
-        <div className="flex items-center px-4">
+        <div className="flex w-full sm:w-fit items-center px-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="w-fit">
               <FormField
@@ -61,7 +61,7 @@ export function PartnerOffers({ eventId }: { eventId: string }) {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <div className="relative w-80 h-12">
+                      <div className="relative w-full sm:w-80 h-12">
                         <Search size={22} className="absolute top-3 left-2" />
                         <Input
                           type="search"
