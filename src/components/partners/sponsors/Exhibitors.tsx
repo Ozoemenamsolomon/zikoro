@@ -7,9 +7,11 @@ import { EmptyCard } from "@/components/composables";
 export function Exhibitors({
   exhibitors,
   loading,
+  eventId
 }: {
   exhibitors: TPartner[];
   loading: boolean;
+  eventId: string;
 }) {
 
 
@@ -27,7 +29,7 @@ export function Exhibitors({
       {!loading &&
         exhibitors.length > 0 &&
         exhibitors.map((sponsor) => (
-          <PartnerCard key={sponsor.id} sponsor={sponsor} />
+          <PartnerCard key={sponsor.id} eventId={eventId} sponsor={sponsor} />
         ))}
     </div>
   );

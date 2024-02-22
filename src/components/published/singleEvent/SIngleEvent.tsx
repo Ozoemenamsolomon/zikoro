@@ -234,7 +234,7 @@ export function SingleEvent({
     <>
       <Comp
         disabled={isExpired}
-        onClick={() => router.push(`/live-events/${event?.eventAlias}`)}
+        onClick={() => router.push(`/live-events/${event?.id}`)}
         className={cn("w-full h-fit")}
       >
         <div
@@ -518,7 +518,7 @@ export function SingleEvent({
           {!isDetail && (
             <Link
               className="text-zikoro "
-              href={`/live-events/${event?.eventAlias}`}
+              href={`/live-events/${event?.id}`}
             >{`Read more >>`}</Link>
           )}
         </div>

@@ -177,7 +177,6 @@ export function Partners({ eventId }: { eventId: string }) {
       parentClassName="px-0 sm:px-0"
       eventId={eventId}
     >
- 
       <HeaderTab eventId={eventId} refetch={refetch} />
 
       <div className="w-full flex flex-col justify-start items-start ">
@@ -282,10 +281,14 @@ export function Partners({ eventId }: { eventId: string }) {
       </div>
 
       {active === PartnersEnum.SPONSORS_TAB && (
-        <Sponsors sponsors={sponsors} loading={loading} />
+        <Sponsors sponsors={sponsors} loading={loading} eventId={eventId} />
       )}
       {active === PartnersEnum.EXHIBITORS_TAB && (
-        <Exhibitors exhibitors={exhibitors} loading={loading} />
+        <Exhibitors
+          exhibitors={exhibitors}
+          loading={loading}
+          eventId={eventId}
+        />
       )}
     </SideBarLayout>
   );

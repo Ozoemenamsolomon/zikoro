@@ -90,7 +90,7 @@ export function EventCard({
     <div
       role="button"
       onClick={() =>
-        window.open(`/events/home/${event?.eventAlias}`, "_blank")
+        window.open(`/events/home/${event?.id}`, "_blank")
       }
       className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4  w-full"
     >

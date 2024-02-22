@@ -270,7 +270,7 @@ export function useFetchSingleEvent(id: string) {
       const { data, error: fetchError } = await supabase
         .from("events")
         .select("*")
-        .eq("eventAlias", id)
+        .eq("id", id)
         .single();
 
       if (fetchError) {
