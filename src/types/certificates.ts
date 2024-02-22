@@ -35,3 +35,12 @@ export type TFullCertificate = TAttendeeCertificate & {
   certificate: TCertificate;
   attendee: TAttendee;
 };
+
+export interface CertificateTemplate {
+  id: number;
+  created_at: Date;
+  templateName?: string | null;
+  templateUrl?: string | null;
+  category?: string | null;
+  figmaName?: string | null;
+}

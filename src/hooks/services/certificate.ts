@@ -1,6 +1,12 @@
 import { toast } from "@/components/ui/use-toast";
 import { TAttendee } from "@/types/attendee";
-import { TAttendeeCertificate, TCertificate, TFullCertificate } from "@/types/certificates";
+import {
+  CertificateTemplate,
+  TAttendeeCertificate,
+  TCertificate,
+  TFullCertificate,
+} from "@/types/certificates";
+import { RequestStatus, UseGetResult } from "@/types/request";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
@@ -297,3 +303,45 @@ export const useVerifyAttendeeCertificate =
 
     return { isLoading, error, verifyAttendeeCertificate };
   };
+
+export const useGetCertificateTemplates = (): UseGetResult<
+  CertificateTemplate[],
+  "certificateTemplates",
+  "getCertificateTemplates"
+> => {
+  const [certificateTemplates, setCertificateTemplates] = useState<
+    CertificateTemplate[]
+  >([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getCertificateTemplates = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<CertificateTemplate[]>({
+        endpoint: "marketing/certificates/templates",
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setCertificateTemplates(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCertificateTemplates();
+  }, []);
+
+  return {
+    certificateTemplates,
+    isLoading,
+    error,
+    getCertificateTemplates,
+  };
+};

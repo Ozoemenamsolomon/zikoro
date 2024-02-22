@@ -1,6 +1,7 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRef, useState, useLayoutEffect } from "react";
+import Certificates from "./_tabs/certificate";
 
 interface TTabs {
   label: string;
@@ -20,9 +21,9 @@ const contentTabs: TTabs[] = [
     component: <div>here</div>,
   },
   {
-    label: "Content",
-    value: "content",
-    component: <div>here</div>,
+    label: "Certificate",
+    value: "certificate",
+    component: <Certificates />,
   },
   {
     label: "Badge",

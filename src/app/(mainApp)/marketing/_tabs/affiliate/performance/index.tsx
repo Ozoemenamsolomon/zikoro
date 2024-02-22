@@ -11,6 +11,7 @@ import { DataTable } from "@/components/DataTable";
 import { TAffiliateLink } from "@/types/marketing";
 import { columns } from "./columns";
 import { RowSelectionState } from "@tanstack/react-table";
+import { TEventTransaction } from "@/types/billing";
 
 const affiliateLinkFilter: TFilter<TAffiliateLink>[] = [
   {
@@ -130,6 +131,34 @@ const affiliateLinkFilter: TFilter<TAffiliateLink>[] = [
 ];
 
 const Performance = () => {
+  const shownColumns: (keyof TEventTransaction)[] = [
+    'id',
+    'created_at',
+    'expiredAt',
+    'eventRegistrationRef',
+    'eventId',
+    'event',
+    'eventDate',
+    'userId',
+    'eventPrice',
+    'paymentDate',
+    'referralSource',
+    'discountCode',
+    'discountValue',
+    'affliateCode',
+    'amountPaid',
+    'registrationCompleted',
+    'attendees',
+    'attendeesDetails',
+    'payOutStatus',
+    'payOutDate',
+    'ticketCategory',
+    'affliateCommission',
+    'processingFee',
+    'payOutRequestDate',
+    'payOutRequestedBy',
+  ];
+
   const { affiliateLinks, getAffiliateLinks, isLoading } =
     useGetAffiliateLinks();
 
@@ -141,7 +170,7 @@ const Performance = () => {
       dataFilters: affiliateLinkFilter,
     });
 
-  console.log(filteredData);
+  // console.log(filteredData, "here");
 
   const totalRevenue = filteredData
     .reduce(
@@ -342,8 +371,13 @@ const Performance = () => {
       />
       <div className="space-y-2 max-w-full">
         <DataTable<TAffiliateLink>
-          columns={columns}
-          data={filteredData}
+          columns={
+            columns.filter(
+              ({ accessorKey, id }) =>
+                shownColumns.includes(accessorKey) || shownColumns.includes(id)
+            )
+          }
+          data={data?.affiliateLinks ?? []}
           rowStyle={{
             display: "grid",
             gridTemplateColumns: `auto 1.5fr repeat(${columns.length - 3
