@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import * as z from "zod";
-import { Event, TPartner, PartnerJobType, PromotionalOfferType } from "@/types";
+import { Event, TPartner, PartnerJobType} from "@/types";
 import { partnerSchema } from "@/validations";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
@@ -323,7 +323,7 @@ export function useAddPartnerPromo() {
 
   async function addPromo(
     partnerId: string,
-    promo: PromotionalOfferType,
+    promo: any,
     partner: TPartner | null
   ) {
     setLoading(true);

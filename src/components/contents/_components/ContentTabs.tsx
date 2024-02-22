@@ -6,7 +6,7 @@ import { Button } from "@/components";
 import { useState } from "react";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { AddPartners } from "@/components/partners/_components";
-import {Eye} from "@styled-icons/evil/Eye"
+
 export function ContentTabs({
   eventId,
   refetch,
