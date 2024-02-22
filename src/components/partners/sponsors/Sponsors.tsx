@@ -6,12 +6,10 @@ import { EmptyCard } from "@/components/composables";
 
 export function Sponsors({
   sponsors,
-  loading,
-  eventId
+  loading
 }: {
   sponsors: TPartner[];
   loading: boolean;
-  eventId: string;
 }) {
 
   return (
@@ -27,7 +25,7 @@ export function Sponsors({
       {!loading &&
         sponsors.length > 0 &&
         sponsors.map((sponsor) => (
-          <PartnerCard key={sponsor.id} eventId={eventId} sponsor={sponsor} />
+          <PartnerCard key={sponsor.id} sponsor={sponsor} />
         ))}
     </div>
   );

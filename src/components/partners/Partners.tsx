@@ -281,13 +281,13 @@ export function Partners({ eventId }: { eventId: string }) {
       </div>
 
       {active === PartnersEnum.SPONSORS_TAB && (
-        <Sponsors sponsors={sponsors} loading={loading} eventId={eventId} />
+        <Sponsors sponsors={sponsors} loading={loading}  />
       )}
       {active === PartnersEnum.EXHIBITORS_TAB && (
         <Exhibitors
           exhibitors={exhibitors}
           loading={loading}
-          eventId={eventId}
+       
         />
       )}
     </SideBarLayout>
