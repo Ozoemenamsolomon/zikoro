@@ -16,8 +16,8 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import RequestPayoutDialog from "@/components/requestPayoutDialog";
-
 const LinkDetails = () => {
+  
   const { linkId } = useParams();
 
   const { affiliateLink, getAffiliateLink, isLoading } = useGetAffiliateLink({
