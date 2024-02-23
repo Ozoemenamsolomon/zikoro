@@ -4,10 +4,16 @@ import { useFetchSingleEvent } from "@/hooks";
 import { EventSchedule } from "./_components";
 import { SideBarLayout } from "..";
 import { EventDetailTabs } from "../composables";
+import { useState } from "react";
+import { cn } from "@/lib";
 
 export function SingleEventHome({ eventId }: { eventId: string }) {
   const { data } = useFetchSingleEvent(eventId);
+  const [active, setActive] = useState(1);
 
+  function setActiveTab(active: number) {
+    setActive(active);
+  }
   return (
     <SideBarLayout
       hasTopBar
@@ -18,9 +24,15 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     >
       <div className="w-full grid grid-cols-1 md:grid-cols-7 items-start pt-14 ">
         <div className="w-full md:col-span-4 flex flex-col gap-y-4  items-start justify-start border-r">
-          <EventSchedule event={data} />
-
-          <EventDetailTabs event={data} aboutClassName={"lg:grid-cols-1"} />
+          <div className={cn("w-full",active > 1 && "hidden sm:block")}>
+            <EventSchedule event={data} />
+          </div>
+          <EventDetailTabs
+            active={active}
+            setActiveTab={setActiveTab}
+            event={data}
+            aboutClassName={"lg:grid-cols-1"}
+          />
         </div>
       </div>
     </SideBarLayout>

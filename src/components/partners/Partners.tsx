@@ -180,93 +180,92 @@ export function Partners({ eventId }: { eventId: string }) {
       <HeaderTab eventId={eventId} refetch={refetch} />
 
       <div className="w-full flex flex-col justify-start items-start ">
-        <div className="w-full flex items-center justify-between p-4">
-          <div className=" w-[90%] flex items-center">
-            <button className="hidden  items-center  relative hover:text-zikoro  w-fit px-3  text-[#D6D6D6]  gap-x-1">
-              <IndustryIcon />
-              <p className="">Company Name </p>
-            </button>
-            <button
-              onClick={() => setShowLocationDropDown((prev) => !prev)}
-              className="flex relative items-center hover:text-zikoro w-fit px-3 border-x text-[#D6D6D6]  gap-x-1"
-            >
-              <LocationOn size={16} />
-              <p>Location </p>
-              {isLocationDropDown && (
-                <div className="absolute top-8 left-0">
-                  <button className="w-full h-full fixed inset-0 z-[100]"></button>
+        <div className="parent-container relative w-full overflow-x-auto no-scrollbar">
+          <div className="min-w-[1000px] flex items-center justify-between p-4">
+            <div className=" w-[90%] flex items-center">
+              <button className="hidden  items-center  relative hover:text-zikoro  w-fit px-3  text-[#D6D6D6]  gap-x-1">
+                <IndustryIcon />
+                <p className="">Company Name </p>
+              </button>
+              <button
+                onClick={() => setShowLocationDropDown((prev) => !prev)}
+                className="flex relative items-center hover:text-zikoro w-fit px-3 border-x text-[#D6D6D6]  gap-x-1"
+              >
+                <LocationOn size={16} />
+                <p>Location </p>
+                {isLocationDropDown && (
                   <DropDownCards
                     data={partnersLocationList}
                     name="location"
                     selectedValues={locations}
                     handleRadioChange={handleSelectedLocations}
                   />
-                </div>
-              )}
-            </button>
-            <button
-              onClick={() => setShowIndustryDropDown((prev) => !prev)}
-              className="flex relative items-center hover:text-zikoro w-fit px-3 border-r  text-[#D6D6D6]  gap-x-1"
-            >
-              <Briefcase size={16} />
-              <p>Industry</p>
+                )}
+              </button>
+              <button
+                onClick={() => setShowIndustryDropDown((prev) => !prev)}
+                className="flex relative items-center hover:text-zikoro w-fit px-3 border-r  text-[#D6D6D6]  gap-x-1"
+              >
+                <Briefcase size={16} />
+                <p>Industry</p>
 
-              {isIndustryDropDown && (
-                <div className="absolute top-8 left-0">
-                  <button className="w-full h-full fixed inset-0 z-[100]"></button>
+                {isIndustryDropDown && (
                   <DropDownCards
                     data={partnersIndustryList}
                     name="industry"
                     selectedValues={industries}
                     handleRadioChange={handleSelectedIndustries}
                   />
-                </div>
-              )}
-            </button>
+                )}
+              </button>
 
-            <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r text-[#D6D6D6]  gap-x-1">
-              <RecordCircle size={16} />
-              <p>Exhibition Hall </p>
-            </button>
-            <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r text-[#D6D6D6]  gap-x-1">
-              <Gift size={16} />
-              <p>Promo </p>
-            </button>
-            <button
-              onClick={() => filterWithStampIt(isStamp)}
-              className={cn(
-                "flex relative items-center hover:text-zikoro w-fit px-3 text-[#D6D6D6]  gap-x-1",
-                isStamp && "text-zikoro"
-              )}
-            >
-              <Stamp size={16} />
-              <p>StampIT </p>
-            </button>
-          </div>
-          <div className="flex items-center">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="w-fit">
-                <FormField
-                  control={form.control}
-                  name="search"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <div className="relative w-80 h-12">
-                          <Search size={22} className="absolute top-3 left-2" />
-                          <Input
-                            type="search"
-                            placeholder="search partner"
-                            {...field}
-                            className=" placeholder:text-sm h-12 pr-4 pl-10 w-80  focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
-                          />
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </form>
-            </Form>
+              <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r text-[#D6D6D6]  gap-x-1">
+                <RecordCircle size={16} />
+                <p>Exhibition Hall </p>
+              </button>
+              <button className="flex relative items-center hover:text-zikoro w-fit px-3 border-r text-[#D6D6D6]  gap-x-1">
+                <Gift size={16} />
+                <p>Promo </p>
+              </button>
+              <button
+                onClick={() => filterWithStampIt(isStamp)}
+                className={cn(
+                  "flex relative items-center hover:text-zikoro w-fit px-3 text-[#D6D6D6]  gap-x-1",
+                  isStamp && "text-zikoro"
+                )}
+              >
+                <Stamp size={16} />
+                <p>StampIT </p>
+              </button>
+            </div>
+            <div className="flex items-center">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="w-fit">
+                  <FormField
+                    control={form.control}
+                    name="search"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative w-80 h-12">
+                            <Search
+                              size={22}
+                              className="absolute top-3 left-2"
+                            />
+                            <Input
+                              type="search"
+                              placeholder="search partner"
+                              {...field}
+                              className=" placeholder:text-sm h-12 pr-4 pl-10 w-80  focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                            />
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </form>
+              </Form>
+            </div>
           </div>
         </div>
         {isFilterActive && (
@@ -281,14 +280,10 @@ export function Partners({ eventId }: { eventId: string }) {
       </div>
 
       {active === PartnersEnum.SPONSORS_TAB && (
-        <Sponsors sponsors={sponsors} loading={loading}  />
+        <Sponsors sponsors={sponsors} loading={loading} />
       )}
       {active === PartnersEnum.EXHIBITORS_TAB && (
-        <Exhibitors
-          exhibitors={exhibitors}
-          loading={loading}
-       
-        />
+        <Exhibitors exhibitors={exhibitors} loading={loading} />
       )}
     </SideBarLayout>
   );

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Button } from "@/components";
 import Image from "next/image";
@@ -11,7 +11,11 @@ import {
 } from "@/constants";
 import { useState } from "react";
 
-export function Speakers() {
+export function Speakers({
+  changeMajorActiveState,
+}: {
+  changeMajorActiveState: (n: number) => void;
+}) {
   const [active, setActive] = useState(1);
 
   function changeActiveState(active: number) {
@@ -19,6 +23,16 @@ export function Speakers() {
   }
   return (
     <>
+      <div className="flex flex-col gap-y-3 mb-1 p-4 w-full items-start justify-start sm:hidden">
+        <Button
+          onClick={() => changeMajorActiveState(1)}
+          className="px-0 h-fit w-fit  bg-none  "
+        >
+          <ArrowBack className="px-1" size={22} />
+          <span>Back</span>
+        </Button>
+        <p className="font-semibold text-base">Speakers</p>
+      </div>
       {active === 1 && (
         <div className=" w-full grid grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
           {[1, 2, 3, 4, 5, 6].map((_) => (
@@ -94,7 +108,6 @@ function SpeakerInfo({
           <h2 className="px-3 font-semibold w-full border-b py-3">About </h2>
 
           <div className="px-3 flex flex-col gap-y-2 mt-2 items-start justify-start">
-        
             <div className="flex flex-wrap w-full text-mobile text-gray-600 items-start justify-start">
               I'm an enthusiastic and goal driven professional with passion to
               help people lead quality lives. With a background in Biomechanics,

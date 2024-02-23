@@ -29,7 +29,7 @@ export function About({
     slidesToScroll: 1,
   };
   return (
-    <div className="w-full  flex-col flex gap-y-6 sm:gap-y-20">
+    <div className="w-full  hidden flex-col sm:flex gap-y-6 sm:gap-y-20">
       <div
         className={cn(
           "w-full px-4 sm:px-6 gap-6 grid grid-cols-1 lg:grid-cols-2 items-center",
