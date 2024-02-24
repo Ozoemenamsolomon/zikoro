@@ -181,7 +181,7 @@ function SideNavs({
           <div className="w-full flex items-center justify-between">
             <Button className="px-1 h-fit gap-x-2">
               <CustomerCareIcon />
-              <span>Support</span>
+              <span className="text-mobile sm:text-desktop">Support</span>
             </Button>
             <div className="flex items-center gap-x-2">
               <Button className="px-0 h-fit">

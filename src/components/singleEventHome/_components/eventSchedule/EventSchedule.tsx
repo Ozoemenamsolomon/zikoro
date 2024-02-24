@@ -31,7 +31,7 @@ export function EventSchedule({ event }: { event: Event | null }) {
     <div className="w-full flex flex-col gap-y-4 items-start justify-start ">
      <div className="w-full">
      <Image
-        className="w-full h-48 sm:h-64 rounded-none object-cover"
+        className="w-full h-36 sm:h-64 rounded-none object-cover"
         src={ event?.eventPoster ? event?.eventPoster?.image1 : "/images/rect.png"}
         alt="eventimage"
         width={700}
