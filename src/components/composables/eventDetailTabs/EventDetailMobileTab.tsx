@@ -16,7 +16,7 @@ export function EventDetailMobileTab({
 }) {
   const router = useRouter();
   return (
-    <div className="sm:hidden w-full grid grid-cols-3 gap-4 items-center justify-center">
+    <div className="sm:hidden w-full grid grid-cols-3 gap-8 items-center justify-center">
       <button
         onClick={() => router.push(`/events/partners/${eventId}`)}
         className="flex flex-col gap-y-2 items-center justify-center"

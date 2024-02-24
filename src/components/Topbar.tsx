@@ -9,7 +9,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
 
   const links = [
     {
-      name: "Home",
+      name: "Reception",
       href: `/events/home/${eventId}`,
     },
     {

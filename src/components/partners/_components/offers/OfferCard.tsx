@@ -30,7 +30,7 @@ export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
             alt="product"
             width={600}
             height={600}
-            className="w-full rounded-t-md h-40 sm:h-56"
+            className="w-full rounded-t-md h-[180px] sm:h-56"
           />
           <span className="absolute text-white text-xs bg-zikoro px-2 py-1 rounded-bl-lg top-0 right-0">
             {`${formatDiscount}%`}
@@ -122,7 +122,7 @@ function OfferCardModal({
               alt="product"
               width={600}
               height={600}
-              className="w-full rounded-t-md h-40 sm:h-56"
+              className="w-full rounded-t-md h-[180px] sm:h-56"
             />
             <span className="absolute text-white text-xs bg-zikoro px-2 py-1 rounded-bl-lg top-0 right-0">
               2%

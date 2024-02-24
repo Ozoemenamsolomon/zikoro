@@ -3,7 +3,7 @@
 import { cn } from "@/lib";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Button, NavLinks } from ".";
+import { Button, MobileBottomNav, NavLinks } from ".";
 import { HeaderWidget } from "./eventHome";
 import Link from "next/link";
 import { useSearchParams, useParams } from "next/navigation";
@@ -44,7 +44,6 @@ export function SideBarLayout({
   const [queryParam, setQueryParam] = useState<string | null>(null);
   const query = param.get("organization");
 
-
   function onOpen() {
     setOpen(true);
   }
@@ -74,7 +73,7 @@ export function SideBarLayout({
           parentClassName
         )}
       >
-        {hasTopBar && <Topbar eventId={eventId}  />}
+        {hasTopBar && <Topbar eventId={eventId} />}
       </div>
 
       <div
@@ -95,6 +94,7 @@ export function SideBarLayout({
         eventId={eventId}
       />
       {isOpen && <EventFeedBack close={onShot} />}
+      <MobileBottomNav eventId={eventId} toggleSideNav={onClose} />
     </>
   );
 }
@@ -115,7 +115,7 @@ function SideNavs({
   onOpen: () => void;
 }) {
   const { organizationId } = useParams();
-  console.log({query})
+  console.log({ query });
   return (
     <div
       aria-roledescription="container"
@@ -124,7 +124,7 @@ function SideNavs({
         e.stopPropagation();
         close();
       }}
-      className={`fixed z-[70] inset-y-0 left-0 h-full modal swipeInLeft ${
+      className={`fixed z-[9999999] inset-y-0 left-0 h-full modal swipeInLeft ${
         isNav
           ? "w-full bg-white/50  min-[1024px]:w-[250px]"
           : "max-[1024px]:hidden w-[250px] "
@@ -136,7 +136,7 @@ function SideNavs({
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className=" py-3   sm:py-4 flex flex-col relative  items-center h-full w-[250px] cursor-pointer shadow-md"
+        className=" py-3   sm:py-4 flex flex-col relative  items-center h-full bg-white w-[200px] sm:w-[250px] cursor-pointer shadow-md"
       >
         <div className="flex  flex-col gap-y-10 items-center w-full">
           <Image
@@ -155,9 +155,28 @@ function SideNavs({
             id={organizationId}
           />
         </div>
-        <div className="w-full px-4 flex flex-col  items-start justify-start bottom-5 inset-x-0 absolute  gap-y-2">
-          <div className="w-full">
-            <SubscriptionFrame />
+        <div className="w-full text-[10px] sm:text-xs px-4 flex flex-col  items-start justify-start bottom-5 inset-x-0 absolute  gap-y-2">
+          <div className="my-1 w-full flex items-center gap-x-2 p-3 rounded-md bg-zikoro/10">
+            <Image
+              src="/svg/sub.svg"
+              width={200}
+              height={200}
+              alt="sub"
+              className="w-16 h-20"
+            />
+            <div className="flex flex-col items-start justify-start gap-y-1">
+              <p>Upgrade your plans for more features</p>
+              <Button className="flex px-0 w-fit h-fit text-zikoro items-center gap-x-2">
+                <p>Upgrade</p>
+                <Image
+                  src="/images/parklight.png"
+                  width={200}
+                  height={200}
+                  alt="sub"
+                  className="w-4 h-4"
+                />
+              </Button>
+            </div>
           </div>
           <div className="w-full flex items-center justify-between">
             <Button className="px-1 h-fit gap-x-2">
@@ -173,16 +192,18 @@ function SideNavs({
               </Button>
             </div>
           </div>
-          <div className="flex items-center gap-x-2">
+          <div className="text-mobile sm:text-desktop flex items-center gap-x-2">
             <CircleUser className="text-zikoro" size={22} />
-            <p>Idris Rasheed</p>
+            <p className="text-mobile sm:text-desktop">Idris Rasheed</p>
           </div>
           <Link
             href="/api/auth/logout"
             className="flex items-center h-fit gap-x-2"
           >
             <LogOutIcon />
-            <span className="text-[#EC2D30]">Log Out</span>
+            <span className="text-[#EC2D30] text-mobile sm:text-desktop">
+              Log Out
+            </span>
           </Link>
         </div>
       </div>
