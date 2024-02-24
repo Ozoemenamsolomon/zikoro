@@ -1,27 +1,33 @@
 "use client";
-
 import { TLink } from "@/types/links";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { calculateAndSetMaxHeight } from "@/utils/helpers";
-import { useRef, useState, useLayoutEffect, useEffect } from "react";
 
 export const PeopleLinks: TLink[] = [
-  { name: "All", href: "all" },
-  { name: "released certificates", href: "released_certificates" },
-  { name: "favorites", href: "favorites" },
-  { name: "tags", href: "tags" },
-  { name: "notes", href: "notes" },
-  { name: "invites", href: "invites" },
+  {
+    name: "Event",
+    href: "event",
+  },
+  {
+    name: "Contact",
+    href: "contact",
+  },
+  {
+    name: "Certificate",
+    href: "certificate",
+  },
+  {
+    name: "Badge",
+    href: "badge",
+  },
+  {
+    name: "Discount",
+    href: "discount",
+  },
 ];
 
 const People = ({ children }: { children: React.ReactNode }) => {
-  const pathNames = usePathname().split("/");
-
-  useEffect(() => {
-    console.log(pathNames);
-  }, [pathNames]);
+  const currentLink = usePathname().split("/").pop();
 
   return (
     <>
@@ -32,9 +38,7 @@ const People = ({ children }: { children: React.ReactNode }) => {
               <li
                 key={name}
                 className={`text-sm capitalize ${
-                  pathNames.includes(href)
-                    ? "text-basePrimary"
-                    : "text-gray-700"
+                  currentLink === href ? "text-basePrimary" : "text-gray-700"
                 }`}
               >
                 <Link href={href}>{name}</Link>

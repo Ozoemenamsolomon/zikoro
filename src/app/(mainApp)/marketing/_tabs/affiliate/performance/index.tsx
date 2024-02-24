@@ -131,34 +131,6 @@ const affiliateLinkFilter: TFilter<TAffiliateLink>[] = [
 ];
 
 const Performance = () => {
-  const shownColumns: (keyof TEventTransaction)[] = [
-    'id',
-    'created_at',
-    'expiredAt',
-    'eventRegistrationRef',
-    'eventId',
-    'event',
-    'eventDate',
-    'userId',
-    'eventPrice',
-    'paymentDate',
-    'referralSource',
-    'discountCode',
-    'discountValue',
-    'affliateCode',
-    'amountPaid',
-    'registrationCompleted',
-    'attendees',
-    'attendeesDetails',
-    'payOutStatus',
-    'payOutDate',
-    'ticketCategory',
-    'affliateCommission',
-    'processingFee',
-    'payOutRequestDate',
-    'payOutRequestedBy',
-  ];
-
   const { affiliateLinks, getAffiliateLinks, isLoading } =
     useGetAffiliateLinks();
 
@@ -176,7 +148,12 @@ const Performance = () => {
     .reduce(
       (acc, { eventTransactions }) =>
         acc +
-        (eventTransactions && eventTransactions.reduce((acc, { amountPaid }) => amountPaid + acc, 0) || 0),
+        ((eventTransactions &&
+          eventTransactions.reduce(
+            (acc, { amountPaid }) => amountPaid + acc,
+            0
+          )) ||
+          0),
       0
     )
     .toFixed(2);
@@ -185,10 +162,11 @@ const Performance = () => {
     .reduce(
       (acc, { eventTransactions }) =>
         acc +
-        (eventTransactions &&
+        ((eventTransactions &&
           eventTransactions
             .filter(({ payOutStatus }) => payOutStatus !== "Paid")
-            .reduce((acc, { amountPaid }) => amountPaid + acc, 0) || 0),
+            .reduce((acc, { amountPaid }) => amountPaid + acc, 0)) ||
+          0),
       0
     )
     .toFixed(2);
@@ -200,15 +178,15 @@ const Performance = () => {
         (commissionType === "fixed"
           ? commissionValue
           : commissionValue *
-          0.01 *
-          (eventTransactions
-            ? eventTransactions
-              .filter(
-                ({ amountPaid, registrationCompleted }) =>
-                  amountPaid > 0 && registrationCompleted
-              )
-              .reduce((acc, curr) => acc + curr.amountPaid, 0)
-            : 0)),
+            0.01 *
+            (eventTransactions
+              ? eventTransactions
+                  .filter(
+                    ({ amountPaid, registrationCompleted }) =>
+                      amountPaid > 0 && registrationCompleted
+                  )
+                  .reduce((acc, curr) => acc + curr.amountPaid, 0)
+              : 0)),
       0
     )
     .toFixed(2);
@@ -216,13 +194,14 @@ const Performance = () => {
   const totalPaidAttendees = filteredData.reduce(
     (acc, { eventTransactions }) =>
       acc +
-      (eventTransactions &&
+      ((eventTransactions &&
         eventTransactions
           .filter(
             ({ amountPaid, registrationCompleted }) =>
               amountPaid > 0 && registrationCompleted
           )
-          .reduce((acc, { attendees }) => attendees + acc, 0) || 0),
+          .reduce((acc, { attendees }) => attendees + acc, 0)) ||
+        0),
     0
   );
 
@@ -371,17 +350,13 @@ const Performance = () => {
       />
       <div className="space-y-2 max-w-full">
         <DataTable<TAffiliateLink>
-          columns={
-            columns.filter(
-              ({ accessorKey, id }) =>
-                shownColumns.includes(accessorKey) || shownColumns.includes(id)
-            )
-          }
-          data={data?.affiliateLinks ?? []}
+          columns={columns}
+          data={affiliateLinks}
           rowStyle={{
             display: "grid",
-            gridTemplateColumns: `auto 1.5fr repeat(${columns.length - 3
-              }, minmax(0, 1fr)) auto`,
+            gridTemplateColumns: `auto 1.5fr repeat(${
+              columns.length - 3
+            }, minmax(0, 1fr)) auto`,
           }}
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}

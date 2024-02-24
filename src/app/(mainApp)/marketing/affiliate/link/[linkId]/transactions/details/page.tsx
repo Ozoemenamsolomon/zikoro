@@ -16,8 +16,8 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import RequestPayoutDialog from "@/components/requestPayoutDialog";
+
 const LinkDetails = () => {
-  
   const { linkId } = useParams();
 
   const { affiliateLink, getAffiliateLink, isLoading } = useGetAffiliateLink({
@@ -56,7 +56,9 @@ const LinkDetails = () => {
               ).length === 0
             }
           >
-            <Button className="bg-basePrimary w-fit px-4">Request Payout</Button>
+            <Button className="bg-basePrimary w-fit px-4">
+              Request Payout
+            </Button>
           </DialogTrigger>
           <DialogContent className="px-3 max-h-[500px] hide-scrollbar overflow-auto">
             <DialogHeader>
