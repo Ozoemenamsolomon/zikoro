@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
+import Designs from "./_tabs/Designs";
+import Element from "./_tabs/Element";
+import Text from "./_tabs/Text";
+import Verification from "./_tabs/verification";
+import Settings from "./_tabs/Settings";
 
 const tabs = [
   {
@@ -12,19 +17,18 @@ const tabs = [
     value: "designs",
     icon: (
       <svg
-        width={21}
-        height={20}
-        viewBox="0 0 21 20"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
         stroke="currentColor"
+        fill="currentColor"
+        strokeWidth={0}
+        viewBox="0 0 1024 1024"
+        height="2em"
+        width="2em"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <path
-          d="M0.5 0H20.5V20H0.5V0ZM2.5 2V6H18.5V2H2.5ZM18.5 8H9.5V18H18.5V8ZM7.5 18V8H2.5V18H7.5Z"
-          fill="#3E404B"
-        />
+        <path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-696 72h136v656H184V184zm656 656H384V384h456v456zM384 320V184h456v136H384z" />
       </svg>
     ),
+    component: <Designs />,
   },
   {
     label: "background",
@@ -42,6 +46,7 @@ const tabs = [
         <path d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM224 416H64v-96h160v96zm0-160H64v-96h160v96zm224 160H288v-96h160v96zm0-160H288v-96h160v96z" />
       </svg>
     ),
+    component: <Element />,
   },
   {
     label: "text",
@@ -69,6 +74,7 @@ const tabs = [
         <path d="M11.434 4H4.566L4.5 5.994h.386c.21-1.252.612-1.446 2.173-1.495l.343-.011v6.343c0 .537-.116.665-1.049.748V12h3.294v-.421c-.938-.083-1.054-.21-1.054-.748V4.488l.348.01c1.56.05 1.963.244 2.173 1.496h.386L11.434 4z" />
       </svg>
     ),
+    component: <Text />,
   },
   {
     label: "element",
@@ -90,6 +96,7 @@ const tabs = [
         />
       </svg>
     ),
+    component: <Element />,
   },
   {
     label: "verification",
@@ -107,6 +114,7 @@ const tabs = [
         <path d="M622.3 271.1l-115.2-45c-4.1-1.6-12.6-3.7-22.2 0l-115.2 45c-10.7 4.2-17.7 14-17.7 24.9 0 111.6 68.7 188.8 132.9 213.9 9.6 3.7 18 1.6 22.2 0C558.4 489.9 640 420.5 640 296c0-10.9-7-20.7-17.7-24.9zM496 462.4V273.3l95.5 37.3c-5.6 87.1-60.9 135.4-95.5 151.8zM224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm96 40c0-2.5.8-4.8 1.1-7.2-2.5-.1-4.9-.8-7.5-.8h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c6.8 0 13.3-1.5 19.2-4-54-42.9-99.2-116.7-99.2-212z" />
       </svg>
     ),
+    component: <Verification />,
   },
   {
     label: "settings",
@@ -124,6 +132,7 @@ const tabs = [
         <path d="M416.3 256c0-21 13.1-38.9 31.7-46.1-4.9-20.5-13-39.7-23.7-57.1-6.4 2.8-13.2 4.3-20.1 4.3-12.6 0-25.2-4.8-34.9-14.4-14.9-14.9-18.2-36.8-10.2-55-17.3-10.7-36.6-18.8-57-23.7C295 82.5 277 95.7 256 95.7S217 82.5 209.9 64c-20.5 4.9-39.7 13-57.1 23.7 8.1 18.1 4.7 40.1-10.2 55-9.6 9.6-22.3 14.4-34.9 14.4-6.9 0-13.7-1.4-20.1-4.3C77 170.3 68.9 189.5 64 210c18.5 7.1 31.7 25 31.7 46.1 0 21-13.1 38.9-31.6 46.1 4.9 20.5 13 39.7 23.7 57.1 6.4-2.8 13.2-4.2 20-4.2 12.6 0 25.2 4.8 34.9 14.4 14.8 14.8 18.2 36.8 10.2 54.9 17.4 10.7 36.7 18.8 57.1 23.7 7.1-18.5 25-31.6 46-31.6s38.9 13.1 46 31.6c20.5-4.9 39.7-13 57.1-23.7-8-18.1-4.6-40 10.2-54.9 9.6-9.6 22.2-14.4 34.9-14.4 6.8 0 13.7 1.4 20 4.2 10.7-17.4 18.8-36.7 23.7-57.1-18.4-7.2-31.6-25.1-31.6-46.2zm-159.4 79.9c-44.3 0-80-35.9-80-80s35.7-80 80-80 80 35.9 80 80-35.7 80-80 80z" />
       </svg>
     ),
+    component: <Settings />,
   },
 ];
 
@@ -212,23 +221,30 @@ const page = () => {
       </section>
       <section className="relative h-max">
         <div className="mr-[60%]">
-          <Tabs defaultValue="" className="flex" ref={divRef}>
-            {
-              <TabsList className="bg-transparent flex flex-col gap-2 justify-between [height:unset_!important] px-0">
-                {tabs.map(({ label, value, icon }) => (
-                  <TabsTrigger
-                    className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/10 data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none flex flex-col gap-1 w-full"
-                    value={value}
-                  >
-                    {icon}
-                    <span className="capitalize">{label}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            }
-            <TabsContent value="">
-              <div>here</div>
-            </TabsContent>
+          <Tabs defaultValue="designs" className="flex" ref={divRef}>
+            <TabsList className="bg-transparent flex flex-col gap-2 justify-between [height:unset_!important] p-0 border-r-2 rounded-none flex-[20%]">
+              {tabs.map(({ label, value, icon }) => (
+                <TabsTrigger
+                  className="data-[state=active]:shadow-none px-4 py-2 data-[state=active]:bg-basePrimary/5 data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none flex flex-col gap-1 w-full"
+                  value={value}
+                >
+                  {icon}
+                  <span className="capitalize">{label}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {tabs.map(({ label, value, component }) => (
+              <TabsContent
+                value={value}
+                className="flex-[70%] border-r-2 mt-0"
+                key={value}
+              >
+                <h3 className="border-b-2 py-2 px-4 text-lg font-semibold text-gray-800 capitalize">
+                  {label}
+                </h3>
+                <div className="p-2">{component}</div>
+              </TabsContent>
+            ))}
           </Tabs>
         </div>
       </section>
