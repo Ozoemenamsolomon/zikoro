@@ -181,7 +181,7 @@ export function Partners({ eventId }: { eventId: string }) {
 
       <div className="w-full flex flex-col justify-start items-start ">
         <div className="parent-container relative w-full overflow-x-auto no-scrollbar">
-          <div className="min-w-[1000px] flex items-center justify-between p-4">
+          <div className="min-w-[800px] flex items-center justify-between p-4">
             <div className=" w-[90%] flex items-center">
               <button className="hidden  items-center  relative hover:text-zikoro  w-fit px-3  text-[#D6D6D6]  gap-x-1">
                 <IndustryIcon />

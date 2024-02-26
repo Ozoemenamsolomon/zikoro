@@ -319,3 +319,23 @@ div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-ra
   @apply border-r-2 border-b-2 border-white;
   border-radius: 6px;
 }
+
+.partner-scroll-style::-webkit-scrollbar {
+ display: none;
+}
+
+.partner-scroll-style:hover::-webkit-scrollbar {
+  width: 10px;
+  height: 6px;
+  display: block;
+}
+
+.partner-scroll-style::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  @apply bg-gray-300;
+}
+
+.partner-scroll-style::-webkit-scrollbar-track {
+  border-radius: 6px;
+  @apply bg-gray-100;
+}

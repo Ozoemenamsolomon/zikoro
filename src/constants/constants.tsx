@@ -58,6 +58,25 @@ export function MarketingIcon({ color }: { color: string }) {
   );
 }
 
+export function ReferralIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <rect width="24" height="24" fill="url(#pattern0)" />
+      <defs>
+        <pattern
+          id="pattern0"
+          patternContentUnits="objectBoundingBox"
+          width="1"
+          height="1"
+        >
+          <use transform="scale(0.00195312)" />
+        </pattern>
+        <image id="image0_15494_3335" width="512" height="512" />
+      </defs>
+    </svg>
+  );
+}
+
 export function PublishedEventsIcon({ color }: { color: string }) {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -320,6 +339,23 @@ export function NotificationIcon({ color }: { color: string }) {
   );
 }
 
+export function AnalyticsIcon({color}:{color:string}) {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+     
+    >
+      <path
+        d="M7.42938 16.8438H8.61687V11.5H7.42938V16.8438ZM16.3831 16.8438H17.5706V5.5625H16.3831V16.8438ZM11.9062 16.8438H13.0938V13.875H11.9062V16.8438ZM11.9062 11.5H13.0938V9.125H11.9062V11.5ZM4.91781 21C4.37156 21 3.91556 20.8171 3.54981 20.4514C3.18327 20.0848 3 19.6284 3 19.0822V3.91781C3 3.37156 3.18327 2.91556 3.54981 2.54981C3.91556 2.18327 4.37156 2 4.91781 2H20.0822C20.6284 2 21.0844 2.18327 21.4502 2.54981C21.8167 2.91556 22 3.37156 22 3.91781V19.0822C22 19.6284 21.8171 20.0844 21.4514 20.4502C21.0848 20.8167 20.6284 21 20.0822 21H4.91781ZM4.91781 19.8125H20.0822C20.2643 19.8125 20.4317 19.7365 20.5845 19.5845C20.7365 19.4317 20.8125 19.2643 20.8125 19.0822V3.91781C20.8125 3.73573 20.7365 3.56829 20.5845 3.4155C20.4317 3.2635 20.2643 3.1875 20.0822 3.1875H4.91781C4.73573 3.1875 4.56829 3.2635 4.4155 3.4155C4.2635 3.56829 4.1875 3.73573 4.1875 3.91781V19.0822C4.1875 19.2643 4.2635 19.4317 4.4155 19.5845C4.56829 19.7365 4.73573 19.8125 4.91781 19.8125Z"
+        fill={color}
+      />
+    </svg>
+  );
+}
+
 export function Hamburger({ color }: { color: string }) {
   return (
     <svg width="25" height="24" viewBox="0 0 24 24" fill="none">
@@ -366,11 +402,20 @@ export const links: NavLinkType[] = [
     href: "/live-events",
   },
   {
+    name: "Notification",
+    icon: NotificationIcon,
+    href: "/notifications",
+  },
+  {
     name: "Notes",
     icon: NoteIcon,
     href: "/notes",
   },
-
+  {
+    name: "Analytics",
+    icon: AnalyticsIcon,
+    href: "/analytics",
+  },
   {
     name: "Give Feedback",
     icon: FeedBackIcon,
@@ -380,6 +425,11 @@ export const links: NavLinkType[] = [
     name: "Organization",
     icon: OrganizationIcon,
     href: "/organization",
+  },
+  {
+    name: "Refer a Friend",
+    icon: ReferralIcon,
+    href: "/referral",
   },
 ];
 

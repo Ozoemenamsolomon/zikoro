@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { TPartner } from "@/types";
 import { useMemo } from "react";
+
 import { Location } from "@styled-icons/fluentui-system-regular/Location";
 
 export function PartnerCard({ sponsor}: {  sponsor: TPartner }) {

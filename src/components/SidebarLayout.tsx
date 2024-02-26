@@ -178,7 +178,18 @@ function SideNavs({
               </Button>
             </div>
           </div>
+          <div className="w-full flex items-center gap-x-2">
+              <p className="text-mobile sm:text-sm">Powered By</p>
+              <Image
+              src="/images/zikoro.png"
+              alt="logo"
+              width={200}
+              height={100}
+              className="w-24 h-8"
+              />
+            </div>
           <div className="w-full flex items-center justify-between">
+            
             <Button className="px-1 h-fit gap-x-2">
               <CustomerCareIcon />
               <span className="text-mobile sm:text-desktop">Support</span>

@@ -114,59 +114,65 @@ export function PartnersList({
             </button>
           </div>
         </div>
-        <div className="w-full p-3">
-          <table className="w-full border-x border-b rounded-t-lg ">
-            <tr className="w-full rounded-t-lg grid grid-cols-7 text-sm font-medium items-center bg-gray-100 gap-3 px-3 py-4 ">
-              <th className="text-start col-span-2 w-full">
-                <label className=" w-full flex  relative partner-container">
-                  <input onChange={(e) => selectAllRow(e)} type="checkbox" />
-                  <span className="partner-checkmark"></span>
-                  <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
-                    Partner
-                  </p>
-                </label>
-              </th>
-              <th className=" text-start col-span-1 w-full">Contact</th>
-              <th className="text-start">Partner Type</th>
-              <th className="text-start">Sponsor Category</th>
-              <th className="text-start">Exhibiton Hall</th>
-              <th className="text-start">Booth</th>
-            </tr>
-            {loading && (
-              <tr className="w-full col-span-full h-[300px] flex items-center justify-center">
-                <td>
-                  <LoaderAlt size={50} className="animate-spin" />
-                </td>
+        <div className="w-full partner-scroll-style overflow-x-auto">
+          <div className="w-full min-w-[1000px] p-3">
+            <table className="w-full border-b rounded-lg ">
+              <tr className="w-full rounded-t-lg grid grid-cols-7 text-sm font-medium items-center bg-gray-100 gap-3 px-3 py-4 ">
+                <th className="text-start col-span-2 w-full">
+                  <label className=" w-full flex  relative partner-container">
+                    <input onChange={(e) => selectAllRow(e)} type="checkbox" />
+                    <span className="partner-checkmark"></span>
+                    <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
+                      Partner
+                    </p>
+                  </label>
+                </th>
+                <th className=" text-start col-span-1 w-full">Contact</th>
+                <th className="text-start">Partner Type</th>
+                <th className="text-start">Sponsor Category</th>
+                <th className="text-start">Exhibiton Hall</th>
+                <th className="text-start">Booth</th>
               </tr>
-            )}
-            {!loading && Array.isArray(partners) && partners?.length === 0 && (
-              <tr>
-                <td>
-                  <EmptyCard
-                    width="100"
-                    height="100"
-                    text="No available partner for this event"
+              {loading && (
+                <tr className="w-full col-span-full h-[300px] flex items-center justify-center">
+                  <td>
+                    <LoaderAlt size={50} className="animate-spin" />
+                  </td>
+                </tr>
+              )}
+              {!loading &&
+                Array.isArray(partners) &&
+                partners?.length === 0 && (
+                  <tr>
+                    <td>
+                      <EmptyCard
+                        width="100"
+                        height="100"
+                        text="No available partner for this event"
+                      />
+                    </td>
+                  </tr>
+                )}
+              {!loading &&
+                Array.isArray(partners) &&
+                partners?.map((item, index) => (
+                  <PartnerWidget
+                    refetch={refetch}
+                    selectRowFn={selectRow}
+                    selectedRows={selectedRows}
+                    event={event}
+                    partners={partners}
+                    className={
+                      index === partners?.length - 1
+                        ? "border-b-0 border-x"
+                        : "border-b border-x"
+                    }
+                    item={item}
+                    key={`${item?.name}${index}`}
                   />
-                </td>
-              </tr>
-            )}
-            {!loading &&
-              Array.isArray(partners) &&
-              partners?.map((item, index) => (
-                <PartnerWidget
-                  refetch={refetch}
-                  selectRowFn={selectRow}
-                  selectedRows={selectedRows}
-                  event={event}
-                  partners={partners}
-                  className={
-                    index === partners?.length - 1 ? "border-b-0" : "border-b"
-                  }
-                  item={item}
-                  key={`${item?.name}${index}`}
-                />
-              ))}
-          </table>
+                ))}
+            </table>
+          </div>
         </div>
       </div>
 
