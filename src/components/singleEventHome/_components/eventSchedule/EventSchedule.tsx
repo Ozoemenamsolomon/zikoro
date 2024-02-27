@@ -29,33 +29,37 @@ export function EventSchedule({ event }: { event: Event | null }) {
 
   return (
     <div className="w-full flex flex-col gap-y-4 items-start justify-start ">
-     <div className="w-full">
-     <Image
-        className="w-full h-28 sm:h-64 rounded-none object-cover"
-        src={ event?.eventPoster ? event?.eventPoster?.image1 : "/images/rect.png"}
-        alt="eventimage"
-        width={700}
-        height={700}
-      />
-     </div>
+      {event?.eventPoster && (
+        <div className="w-full">
+          <Image
+            className="w-full h-28 sm:h-64 rounded-none object-cover"
+            src={event?.eventPoster ? event?.eventPoster?.image1 : ""}
+            alt="eventimage"
+            width={700}
+            height={700}
+          />
+        </div>
+      )}
 
       <h1 className="px-4 font-semibold text-2xl">{event?.eventTitle ?? ""}</h1>
-      {event && <div className="flex px-4 items-center justify-between w-full">
-        <AboutWidget
-          Icon={CalendarDateFill}
-          text={`${startDate} – ${endDate}`}
-        />
-        <AboutWidget
-          Icon={LocationDot}
-          text={
-            <p className="flex items-center ">
-              {`${event?.eventCity ?? ""}`}
-              {!removeComma && <span>,</span>}
-              <span className="ml-1">{`${event?.eventCountry ?? ""}`}</span>
-            </p>
-          }
-        />
-      </div>}
+      {event && (
+        <div className="flex px-4 items-center justify-between w-full">
+          <AboutWidget
+            Icon={CalendarDateFill}
+            text={`${startDate} – ${endDate}`}
+          />
+          <AboutWidget
+            Icon={LocationDot}
+            text={
+              <p className="flex items-center ">
+                {`${event?.eventCity ?? ""}`}
+                {!removeComma && <span>,</span>}
+                <span className="ml-1">{`${event?.eventCountry ?? ""}`}</span>
+              </p>
+            }
+          />
+        </div>
+      )}
 
       {event?.startDateTime && <CountDown startDate={event?.startDateTime} />}
     </div>

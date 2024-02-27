@@ -235,7 +235,7 @@ export function Partners({ eventId }: { eventId: string }) {
                 )}
               >
                 <Stamp size={16} />
-                <p>StampIT </p>
+                <p>StampCard </p>
               </button>
             </div>
             <div className="flex items-center">

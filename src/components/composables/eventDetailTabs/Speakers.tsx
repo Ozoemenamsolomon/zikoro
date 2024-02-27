@@ -21,18 +21,22 @@ export function Speakers({
   function changeActiveState(active: number) {
     setActive(active);
   }
-  return (
-    <>
-      <div className="flex flex-col gap-y-3 mb-1 p-4 w-full items-start justify-start sm:hidden">
-        <Button
+
+  /**
+    <Button
           onClick={() => changeMajorActiveState(1)}
           className="px-0 h-fit w-fit  bg-none  "
         >
           <ArrowBack className="px-1" size={22} />
           <span>Back</span>
         </Button>
+   */
+  return (
+    <>
+     {active === 1 && <div className="flex  flex-col p-4  w-full items-start justify-start sm:hidden">
+       
         <p className="font-semibold text-base">Speakers</p>
-      </div>
+      </div>}
       {active === 1 && (
         <div className=" w-full grid grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
           {[1, 2, 3, 4, 5, 6].map((_) => (
@@ -92,13 +96,13 @@ function SpeakerInfo({
   changeActiveState: (v: number) => void;
 }) {
   return (
-    <div className="w-full px-3 flex flex-col gap-y-4 items-start justify-start">
+    <div className="w-full px-3 py-4 flex flex-col gap-y-4 items-start justify-start">
       <Button
         onClick={() => changeActiveState(1)}
         className="px-0 h-fit w-fit  bg-none  "
       >
         <ArrowBack className="px-1" size={22} />
-        <span>Back to Speakers</span>
+        <span>Back</span>
       </Button>
 
       <div className="flex flex-col md:flex-row gap-4 items-center md:items-start w-full">

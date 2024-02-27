@@ -60,7 +60,7 @@ export function EventDetailMobileTab({
           className="flex flex-col gap-y-2 items-center justify-center"
         >
           <SpeakerIcon />
-          <p>Speaker</p>
+          <p>Speakers</p>
         </button>
         <button
           onClick={() => router.push(`/events/market-place/${eventId}/jobs`)}

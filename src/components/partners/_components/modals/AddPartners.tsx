@@ -190,13 +190,13 @@ export function AddPartners({
     <div
       role="button"
       onClick={close}
-      className="w-full h-full fixed z-[100] overflow-y-auto pt-14  inset-0 bg-black/50"
+      className="w-full h-full fixed z-[99999999]    inset-0 bg-black/50"
     >
       <div
         onClick={(e) => e.stopPropagation()}
         role="button"
         className={cn(
-          "w-[95%] sm:w-[500px] box-animation h-fit flex mb-10 flex-col gap-y-6 rounded-lg bg-white  mx-auto absolute inset-x-0 py-6 px-3 sm:px-4",
+          "w-[95%] sm:w-[500px] box-animation h-[90vh] overflow-auto flex flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4",
           active === 2 && "hidden",
           active === 3 && "hidden"
         )}

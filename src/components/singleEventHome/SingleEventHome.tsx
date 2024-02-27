@@ -43,7 +43,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             <EventSchedule event={data} />
           </div>
           {Array.isArray(partnersData) && partnersData?.length > 0 && (
-            <div className="w-full grid grid-cols-8 items-center gap-2 justify-center">
+            <div className={cn("w-full grid grid-cols-8 sm:hidden items-center gap-2 justify-center", active > 1 && "hidden")}>
               <div className="w-full h-[89px] col-span-3 font-semibold flex items-center justify-center">
                 Sponsors
               </div>
