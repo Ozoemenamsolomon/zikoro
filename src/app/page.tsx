@@ -1,5 +1,11 @@
-const Home = () => {
-  return <div>Home</div>;
-};
+function Page() {
+  return (
+    <div>
+      <p>Home</p>
+    </div>
+  );
+}
 
-export default Home;
+export default Page;
+
+//
