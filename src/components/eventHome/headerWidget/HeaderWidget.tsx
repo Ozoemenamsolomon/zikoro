@@ -47,7 +47,7 @@ export function HeaderWidget({
 
   function showOrganizationEvents(value: string) {
     const org = formattedList.find((o) => o.value === value);
-    router.push(`events/${org?.id}?organization=${value}`);
+    router.push(`/events/${org?.id}?organization=${value}`);
   }
 
  

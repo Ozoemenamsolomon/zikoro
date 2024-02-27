@@ -217,15 +217,28 @@ div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-ra
     -webkit-box-orient: vertical;
 }
 
+.banner .slick-dots {
+  display:none;
+ 
+  
+
+}
+.banner .slick-dots li {
+  display:none;
+ 
+}
+
 .slider .slick-dots {
   position: absolute;
   bottom: 20px;
+  
 
 }
 .slider .slick-dots li {
   margin: 0px 7px;
   width: 8px;
   height: 8px;
+ 
 }
 
 
@@ -238,7 +251,8 @@ div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-ra
   height:10px;
 }
 .slider .slick-dots li.slick-active button::before {
-  background-color: black
+  background-color: black;
+  display:none;
 
 }
 

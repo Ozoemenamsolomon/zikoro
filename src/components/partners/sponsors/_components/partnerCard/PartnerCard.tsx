@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -7,7 +7,7 @@ import { useMemo } from "react";
 
 import { Location } from "@styled-icons/fluentui-system-regular/Location";
 
-export function PartnerCard({ sponsor}: {  sponsor: TPartner }) {
+export function PartnerCard({ sponsor }: { sponsor: TPartner }) {
   const image = useMemo(() => {
     const regex = /^[https://]/;
     if (regex.test(sponsor.companyLogo)) {
@@ -25,7 +25,7 @@ export function PartnerCard({ sponsor}: {  sponsor: TPartner }) {
     >
       {sponsor.stampIt && (
         <button className="absolute right-[-2px] top-0 flex items-center justify-center w-fit bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-b-md">
-          StampIT
+          StampCard
         </button>
       )}
       <Image
@@ -73,9 +73,11 @@ export function PartnerCard({ sponsor}: {  sponsor: TPartner }) {
               Hiring
             </button>
           )}
-          <button className="bg-[#F44444] bg-opacity-10 text-xs text-[#F44444] px-2 py-2 rounded-md">
-            Promo
-          </button>
+          {sponsor?.offers?.length > 0 && (
+            <button className="bg-[#F44444] bg-opacity-10 text-xs text-[#F44444] px-2 py-2 rounded-md">
+              Promo
+            </button>
+          )}
         </div>
       </div>
     </Link>
