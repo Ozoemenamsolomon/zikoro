@@ -41,6 +41,7 @@ const links = [
     name: "Settings",
     href: "settings",
   },
+  
 ];
 
 const Topbar = () => {
@@ -48,23 +49,22 @@ const Topbar = () => {
   const currentLink = pathnames[pathnames.length - 2];
 
   return (
-    <nav className="bg-white w-full sticky top-0 px-4 pt-4 h-max border-b-[1px]">
-      <ul className="flex justify-between text-gray-700">
-        {links.map(({ name, href }) => {
-          return (
-            <li
-              className={`pb-1 text-sm ${
-                currentLink === href
-                  ? "text-basePrimary border-b-2 border-basePrimary font-medium"
-                  : ""
-              }`}
-            >
-              <Link href={"/" + href}>{name}</Link>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+    <div className="bg-white w-full pt-4 flex gap-12 text-gray-500 sticky top-0 z-10">
+      {links.map(({ name, href }) => {
+        return (
+          <Link
+            href={href}
+            className={` ${
+              pathname === href
+                ? "text-zikoroBlue border-b-2 border-zikoroBlue"
+                : ""
+            }`}
+          >
+            {name}
+          </Link>
+        );
+      })}
+    </div>
   );
 };
 

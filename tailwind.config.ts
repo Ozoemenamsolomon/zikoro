@@ -1,12 +1,14 @@
-import type { Config } from "tailwindcss";
+import type { Config } from "tailwindcss"
 
-const config: Config = {
+const config = {
   darkMode: ["class"],
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+	],
+  prefix: "",
   theme: {
     container: {
       center: true,
@@ -17,12 +19,7 @@ const config: Config = {
     },
     extend: {
       colors: {
-        basebody: "#f3f3f3",
-        basePrimary: "#001fcc",
-        ticketColor: "#CFCFCF",
-        greyBlack: "#0A0E2E",
-        earlyBirdColor: "#001FCC",
-        ash: "#717171",
+        zikoroBlue: "hsl(var(--zblue))" ,
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -57,9 +54,6 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      fontSize: {
-        tiny: "10px",
-      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -82,5 +76,6 @@ const config: Config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-};
-export default config;
+} satisfies Config
+
+export default config
