@@ -25,13 +25,13 @@ export function DropDownSelect({
   
   return (
     <div ref={boxRef} style={position} className="absolute ">
-      <button className="w-full h-full z-[999] fixed inset-0 bg-black/10"></button>
+      <button className="relative-box w-full h-full z-[99999999] fixed inset-0 bg-black/10"></button>
       <ul
         role="button"
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="w-[200px] relative z-[99999] max-w-[250px] py-2 rounded-md shadow-md border border-gray-200  bg-white h-fit max-h-[300px] overflow-y-auto"
+        className="w-[200px] relative z-[99999999999] max-w-[250px] py-2 rounded-md shadow-md border border-gray-200  bg-white h-fit max-h-[300px] overflow-y-auto"
       >
         {data &&
           data?.map((value, index) => (

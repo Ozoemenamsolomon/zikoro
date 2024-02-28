@@ -7,11 +7,13 @@ import {
   AddExhibitionHall,
   AddSponsorLevel,
 } from "..";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { Eye } from "@styled-icons/evil/Eye";
 import { Button } from "@/components";
 import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
+import { useDropBoxPosition } from "@/context";
+import { cn } from "@/lib";
 export function PartnersList({
   eventId,
   partners,
@@ -28,6 +30,7 @@ export function PartnersList({
   const [isOpen, setOpen] = useState(false);
   const { loading: delLoading, deletes, deleteAll } = useDeletePartner();
   const [isAddHall, setAddHall] = useState(false);
+  const { isActive } = useDropBoxPosition();
 
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
@@ -39,6 +42,8 @@ export function PartnersList({
     setAddHall((prev) => !prev);
   }
 
+
+  
   // **** handle delete ****  //
 
   // select a row
@@ -114,8 +119,13 @@ export function PartnersList({
             </button>
           </div>
         </div>
-        <div className="w-full partner-scroll-style overflow-x-auto">
-          <div className="w-full min-w-[1000px] p-3">
+        <div
+          className={cn(
+            "w-full  partner-scroll-style ",
+            isActive ? "overflow-x-auto" : "overflow-x-auto"
+          )}
+        >
+          <div className="w-full min-w-[1000px]  p-3">
             <table className="w-full border-b rounded-lg ">
               <tr className="w-full rounded-t-lg grid grid-cols-7 text-sm font-medium items-center bg-gray-100 gap-3 px-3 py-4 ">
                 <th className="text-start col-span-2 w-full">
@@ -180,6 +190,7 @@ export function PartnersList({
         <ExhibitionHall
           close={onToggle}
           eventId={eventId}
+          refetchSingleEvent={refetchSingleEvent}
           partners={partners}
         />
       )}

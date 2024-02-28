@@ -47,6 +47,7 @@ export function PartnerWidget({
   const { updatePartnerType } = useUpdatePartnerType();
   const { updateSponsorCategory } = useUpdateSponsor();
   const { getClientPosition } = useDropBoxPosition();
+  const {setIsActive} = useDropBoxPosition()
 
   // format hall list
   const hallList = useMemo(() => {
@@ -85,15 +86,18 @@ export function PartnerWidget({
       // get their booth numbers
       const boothNumbers = partnersWithHall.map((item) => {
         if (item?.boothNumber && Array.isArray(item?.boothNumber)) {
-          return item?.boothNumber
-           
+          return item?.boothNumber;
         }
       });
 
-      const filterBoothNumber = boothNumbers.filter((v) => v !== undefined).flat()
-    
+      const filterBoothNumber = boothNumbers
+        .filter((v) => v !== undefined)
+        .flat();
+
       // remove the boothNumber from the availabe booths
-      const booths = numbers.filter((number) => !filterBoothNumber.includes(number));
+      const booths = numbers.filter(
+        (number) => !filterBoothNumber.includes(number)
+      );
 
       setBoothList(booths);
     }
@@ -101,17 +105,21 @@ export function PartnerWidget({
 
   function toggleBooths() {
     showBooths((prev) => !prev);
+    setIsActive((prev) => !prev)
   }
   function toggleHalls() {
     showHalls((prev) => !prev);
+    setIsActive((prev) => !prev)
   }
 
   function toggleLevelDropDown() {
     showSponsorDropDown((prev) => !prev);
+    setIsActive((prev) => !prev)
   }
 
   function togglePartnerType() {
     showPartnerType((prev) => !prev);
+    setIsActive((prev) => !prev)
   }
 
   async function handleSelectedHall(value: string) {
@@ -121,6 +129,29 @@ export function PartnerWidget({
 
     showHalls(false);
   }
+
+  // check if any of partner hall has been deleted
+  // delete the hall and booth number from the partner data
+  useEffect(() => {
+    (async () => {
+      if (event) {
+        //  hall
+        const hall = item?.exhibitionHall;
+        if (hall === null) return
+
+        //check if the hall is still available
+        const isHallPresent = event?.exhibitionHall.some(
+          ({ name }) => name.toLowerCase() === hall?.toLowerCase()
+        );
+        // when the hall is not available then, remove it from this partner data
+        if (!isHallPresent) {
+          await updateBooth(item?.id, null);
+          await updateHall(item?.id, null);
+          refetch(); // fetch partners
+        }
+      }
+    })();
+  }, [event]);
 
   async function handleSelectedBooth(value: string) {
     setSelectedBooth(value);

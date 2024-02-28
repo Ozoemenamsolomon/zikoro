@@ -19,10 +19,12 @@ export function ExhibitionHall({
   eventId,
   partners,
   close,
+  refetchSingleEvent
 }: {
   partners: any[];
   eventId: string;
   close: () => void;
+  refetchSingleEvent: () => Promise<null | undefined>
 }) {
   const { data, loading, refetch } = useFetchSingleEvent(eventId);
   const [selectedHall, setSelectedHall] = useState<string[]>([]);
@@ -73,9 +75,11 @@ export function ExhibitionHall({
     if (selectedHall?.length === formatExhibitionHall?.length) {
       await deleteAll();
       refetch();
+      refetchSingleEvent()
     } else {
       await deleteExhibitionHall(selectedHall);
       refetch();
+      refetchSingleEvent()
     }
     // empty the selected array
     setSelectedHall([]);

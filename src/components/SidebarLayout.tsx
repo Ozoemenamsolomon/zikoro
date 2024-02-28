@@ -115,7 +115,7 @@ function SideNavs({
   onOpen: () => void;
 }) {
   const { organizationId } = useParams();
-  console.log({ query });
+
   return (
     <div
       aria-roledescription="container"

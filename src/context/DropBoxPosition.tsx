@@ -13,6 +13,8 @@ type BoxPositionContextType = {
   position: { left: number; top: number };
   getClientPosition: (e: MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   getBoxHeight: (t: number, r: number) => void;
+  isActive: boolean;
+  setIsActive: React.Dispatch<SetStateAction<boolean>>;
 };
 
 export const BoxPositionContext = createContext<BoxPositionContextType>(
@@ -25,12 +27,12 @@ export function BoxPositionProvider({
   children: React.ReactNode;
 }) {
   const [position, setPosition] = useState({ left: 0, top: 28 });
+  const [isActive, setIsActive] = useState(false)
   const [clientX, setClientX] = useState(0);
   const [clientY, setClientY] = useState(0);
 
   function getBoxHeight(top: number, left: number) {
-    // const clientX = localStorage.getItem("clientX");
-    // const clientY = localStorage.getItem("clientY");
+ 
 
     const newPosition = { ...position };
    
@@ -45,14 +47,14 @@ export function BoxPositionProvider({
         let yPosition = -top;
 
         newPosition.top = yPosition;
-        //  setPosition({...position, top: yPosition})
+       
       }
 
       setPosition(newPosition);
-      //  localStorage.removeItem("clientX")
+    
       setClientX(0);
       setClientY(0);
-      //  localStorage.removeItem("clientY");
+    
     }
   }
 
@@ -73,6 +75,8 @@ export function BoxPositionProvider({
       position,
       getClientPosition,
       getBoxHeight,
+      isActive,
+      setIsActive,
     };
   }, [position]);
 

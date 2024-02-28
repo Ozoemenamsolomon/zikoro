@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import * as z from "zod";
-import { Event, TPartner, PartnerJobType} from "@/types";
+import { Event, TPartner, PartnerJobType } from "@/types";
 import { partnerSchema } from "@/validations";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
@@ -426,7 +426,7 @@ export function useCreateEventExhibitionHall() {
 }
 
 export function useUpdateBooth() {
-  async function updateBooth(partnerId: string, value: string) {
+  async function updateBooth(partnerId: string, value: string | null) {
     try {
       // Fetch the partner by ID
       const { data } = await supabase
@@ -447,12 +447,12 @@ export function useUpdateBooth() {
 
       const { error, status } = await supabase
         .from("eventPartners")
-        .update({ ...restData, boothNumber: booths })
+        .update({ ...restData, boothNumber: value === null ? null : booths })
         .eq("id", partnerId);
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Booth Number Updated");
+        if (value !== null) toast.success("Booth Number Updated");
       }
     } catch (error) {}
   }
@@ -463,7 +463,7 @@ export function useUpdateBooth() {
 }
 
 export function useUpdateHall() {
-  async function updateHall(partnerId: string, value: string) {
+  async function updateHall(partnerId: string, value: string | null) {
     try {
       // Fetch the partner by ID
       const { data } = await supabase
@@ -481,7 +481,7 @@ export function useUpdateHall() {
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Exhibition Hall Updated");
+        if (value !== null) toast.success("Exhibition Hall Updated");
       }
     } catch (error) {}
   }

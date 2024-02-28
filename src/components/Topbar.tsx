@@ -50,7 +50,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
 
   return (
     <nav className="w-full overflow-x-auto no-scrollbar">
-      <div className="bg-white min-w-[900px] px-4 pt-4 h-max border-b-[1px]">
+      <div className="bg-white min-w-[900px] px-4 pt-4 h-max border-b-2">
       <ul className="flex justify-between text-gray-700">
         {links.map(({ name, href }) => {
           return (
