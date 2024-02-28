@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,10 +18,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="bg-basebody">
-      <body className={`${inter.className} h-screen relative`}>
-        {children}
-      </body>
-    </html>
+    <UserProvider>
+      <html lang="en" className="bg-basebody ">
+        <body className={`${inter.className} flex`}>
+          <Sidebar></Sidebar>
+          <div className="flex-1">
+            <Topbar></Topbar>
+            <div className="pt-4 pl-4">{children}</div>
+          </div>
+        </body>
+      </html>
+    </UserProvider>
   );
 }
