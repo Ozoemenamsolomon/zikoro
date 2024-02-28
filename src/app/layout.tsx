@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Heebo } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
+import {AppWrapper} from "@/context"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ["latin"] });
+const heebo = Heebo({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,14 +24,18 @@ export default function RootLayout({
   return (
     <UserProvider>
       <html lang="en" className="bg-basebody ">
-        <body className={`${inter.className} flex`}>
+        <body className={`${inter.className} ${heebo.className} flex`}>
           <Sidebar></Sidebar>
           <div className="flex-1">
             <Topbar></Topbar>
-            <div className="pt-4 pl-4">{children}</div>
+              <AppWrapper>
+                {children}
+                <ToastContainer/>
+              </AppWrapper>
           </div>
         </body>
       </html>
+    
     </UserProvider>
   );
 }

@@ -41,19 +41,20 @@ const links = [
     name: "Settings",
     href: "/settings",
   },
+  
 ];
 
 const Topbar = () => {
   const pathname = usePathname();
   return (
-    <div className="bg-white w-full flex gap-12 text-gray-500 sticky top-0">
+    <div className="bg-white w-full pt-4 flex gap-12 text-gray-500 sticky top-0 z-10">
       {links.map(({ name, href }) => {
         return (
           <Link
             href={href}
             className={` ${
               pathname === href
-                ? "text-orange-500 border-b-2 border-orange-500"
+                ? "text-zikoroBlue border-b-2 border-zikoroBlue"
                 : ""
             }`}
           >
