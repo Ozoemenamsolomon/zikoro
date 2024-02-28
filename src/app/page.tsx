@@ -1,11 +1,14 @@
-function Page() {
+import HomePage from "./home/page";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+const Home = () => {
   return (
     <div>
-      <p>Home</p>
+      {/* <Header /> */}
+      <HomePage />
+      {/* <Footer /> */}
     </div>
   );
-}
+};
 
-export default Page;
-
-//
+export default Home;
