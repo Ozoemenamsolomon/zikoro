@@ -18,8 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TabProps } from "../page";
 
-const Settings = () => {
+const Settings = ({ settings, editSettings }: TabProps) => {
   const [criteria, setCriteria] = useState<number>(0);
   const [date, setDate] = React.useState<Date>();
 
@@ -29,7 +30,11 @@ const Settings = () => {
       <div className="space-y-2 text-gray-500 pt-2 pb-4">
         <div className="flex justify-between">
           <span className="font-medium text-sm">Size</span>
-          <RadioGroup defaultValue="A4" className="flex gap-2 text-sm">
+          <RadioGroup
+            onValueChange={(value) => editSettings("size", value)}
+            value={settings.size}
+            className="flex gap-2 text-sm"
+          >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="A4" id="A4" />
               <Label htmlFor="A4">A4</Label>
@@ -42,7 +47,11 @@ const Settings = () => {
         </div>
         <div className="flex justify-between">
           <span className="font-medium text-sm">Orientation</span>
-          <RadioGroup defaultValue="A4" className="flex gap-2 text-sm">
+          <RadioGroup
+            onValueChange={(value) => editSettings("orientation", value)}
+            value={settings.orientation}
+            className="flex gap-2 text-sm"
+          >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="portrait" id="portrait" />
               <Label htmlFor="portrait">Portrait</Label>
@@ -61,19 +70,55 @@ const Settings = () => {
         <div className="space-y-2 text-sm font-medium text-gray-500 pt-2 pb-4">
           <div className="flex justify-between">
             <span>Event Attendees</span>
-            <Switch className="data-[state=checked]:bg-basePrimary" />
+            <Switch
+              className="data-[state=checked]:bg-basePrimary"
+              checked={settings.canReceive.eventAttendees}
+              onCheckedChange={(status) =>
+                editSettings("canReceive", {
+                  ...settings.canReceive,
+                  eventAttendees: status,
+                })
+              }
+            />
           </div>
           <div className="flex justify-between">
             <span>Track Attendees</span>
-            <Switch className="data-[state=checked]:bg-basePrimary" />
+            <Switch
+              className="data-[state=checked]:bg-basePrimary"
+              checked={settings.canReceive.trackAttendees}
+              onCheckedChange={(status) =>
+                editSettings("canReceive", {
+                  ...settings.canReceive,
+                  trackAttendees: status,
+                })
+              }
+            />
           </div>
           <div className="flex justify-between">
             <span>Session Attendees</span>
-            <Switch className="data-[state=checked]:bg-basePrimary" />
+            <Switch
+              className="data-[state=checked]:bg-basePrimary"
+              checked={settings.canReceive.sessionAttendees}
+              onCheckedChange={(status) =>
+                editSettings("canReceive", {
+                  ...settings.canReceive,
+                  sessionAttendees: status,
+                })
+              }
+            />
           </div>
           <div className="flex justify-between">
             <span>Quiz Participants</span>
-            <Switch className="data-[state=checked]:bg-basePrimary" />
+            <Switch
+              className="data-[state=checked]:bg-basePrimary"
+              checked={settings.canReceive.quizParticipants}
+              onCheckedChange={(status) =>
+                editSettings("canReceive", {
+                  ...settings.canReceive,
+                  quizParticipant: status,
+                })
+              }
+            />
           </div>
         </div>
         <div className="pt-4 border-t-2">
@@ -83,13 +128,14 @@ const Settings = () => {
               <button
                 type="button"
                 onClick={() =>
-                  setCriteria((prevCriteria) =>
-                    prevCriteria > 5 ? prevCriteria - 5 : 0
+                  editSettings(
+                    "criteria",
+                    settings.criteria > 5 ? settings.criteria - 5 : 0
                   )
                 }
-                disabled={criteria === 0}
+                disabled={settings.criteria === 0}
                 className={`${
-                  criteria > 0 ? "text-basePrimary" : "text-gray-500"
+                  settings.criteria > 0 ? "text-basePrimary" : "text-gray-500"
                 } disabled:opacity-70`}
               >
                 <svg
@@ -106,18 +152,19 @@ const Settings = () => {
                 </svg>
               </button>
               <span className="text-sm font-medium text-gray-500">
-                {criteria}%
+                {settings.criteria}%
               </span>
               <button
                 onClick={() =>
-                  setCriteria((prevCriteria) =>
-                    prevCriteria < 95 ? prevCriteria + 5 : 100
+                  editSettings(
+                    "criteria",
+                    settings.criteria < 95 ? settings.criteria + 5 : 100
                   )
                 }
-                disabled={criteria === 100}
+                disabled={settings.criteria === 100}
                 type="button"
                 className={`${
-                  criteria < 100 ? "text-basePrimary" : "text-gray-500"
+                  settings.criteria < 100 ? "text-basePrimary" : "text-gray-500"
                 } disabled:opacity-70`}
               >
                 <svg
@@ -140,62 +187,79 @@ const Settings = () => {
       <div className="pt-4 border-t-2 space-y-4">
         <div className="flex justify-between">
           <span className="text-sm font-medium text-gray-500">Expires on</span>
-          <Switch className="data-[state=checked]:bg-basePrimary" />
+          <Switch
+            className="data-[state=checked]:bg-basePrimary"
+            checked={settings.canExpire}
+            onCheckedChange={(status) => editSettings("canExpire", status)}
+          />
         </div>
-        <div className="col-span-6 w-full rounded-md bg-background text-sm relative">
-          <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-            Expiry date
-          </span>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-full flex gap-2 items-center justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth={0}
-                  viewBox="0 0 1024 1024"
-                  height="1.5em"
-                  width="1.5em"
-                  xmlns="http://www.w3.org/2000/svg"
+        {settings.canExpire && (
+          <div className="col-span-6 w-full rounded-md bg-background text-sm relative">
+            <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+              Expiry date
+            </span>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-full flex gap-2 items-center justify-start text-left font-normal",
+                    !settings.expiryDate && "text-muted-foreground"
+                  )}
                 >
-                  <path d="M712 304c0 4.4-3.6 8-8 8h-56c-4.4 0-8-3.6-8-8v-48H384v48c0 4.4-3.6 8-8 8h-56c-4.4 0-8-3.6-8-8v-48H184v136h656V256H712v48z" />
-                  <path d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zm0-448H184V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136z" />
-                </svg>
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 1024 1024"
+                    height="1.5em"
+                    width="1.5em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M712 304c0 4.4-3.6 8-8 8h-56c-4.4 0-8-3.6-8-8v-48H384v48c0 4.4-3.6 8-8 8h-56c-4.4 0-8-3.6-8-8v-48H184v136h656V256H712v48z" />
+                    <path d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zm0-448H184V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136z" />
+                  </svg>
 
-                {date ? format(date, "PPP") : <span>Pick a date</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              align="start"
-              className="flex w-auto flex-col space-y-2 p-2"
-            >
-              <Select
-                onValueChange={(value) =>
-                  setDate(addDays(new Date(), parseInt(value)))
-                }
+                  {settings.expiryDate ? (
+                    format(settings.expiryDate, "PPP")
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="start"
+                className="flex w-auto flex-col space-y-2 p-2"
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="0">Same Day</SelectItem>
-                  <SelectItem value="365">In a year</SelectItem>
-                  <SelectItem value="1825">In 5 years</SelectItem>
-                  <SelectItem value="3650">In 10 years</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="rounded-md border">
-                <Calendar mode="single" selected={date} onSelect={setDate} />
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
+                <Select
+                  onValueChange={(value) =>
+                    editSettings(
+                      "expiryDate",
+                      addDays(new Date(), parseInt(value))
+                    )
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    <SelectItem value="0">Same Day</SelectItem>
+                    <SelectItem value="365">In a year</SelectItem>
+                    <SelectItem value="1825">In 5 years</SelectItem>
+                    <SelectItem value="3650">In 10 years</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div className="rounded-md border">
+                  <Calendar
+                    mode="single"
+                    selected={settings.expiryDate}
+                    onSelect={(date) => editSettings("expiryDate", date)}
+                  />
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+        )}
       </div>
     </div>
   );

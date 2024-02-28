@@ -44,6 +44,7 @@ import { useGetAttendees } from "@/hooks/services/attendee";
 // import { TextEditor } from "@/components/TextEditor";
 import { useSendMarketingEmail } from "@/hooks/services/marketing";
 import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSection";
+import { TAttendee } from "@/types/attendee";
 
 const CreateEmailSchema = z
   .object({

@@ -320,7 +320,7 @@ export const useGetCertificateTemplates = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<CertificateTemplate[]>({
-        endpoint: "marketing/certificates/templates",
+        endpoint: "/certificates/templates",
       });
 
       if (status !== 200) {

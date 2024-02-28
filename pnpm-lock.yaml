@@ -149,6 +149,9 @@ dependencies:
   tailwindcss-animate:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.3.6)
+  use-undo:
+    specifier: ^1.1.1
+    version: 1.1.1(react-dom@18.2.0)(react@18.2.0)
   xlsx:
     specifier: ^0.18.5
     version: 0.18.5
@@ -4018,6 +4021,16 @@ packages:
       detect-node-es: 1.1.0
       react: 18.2.0
       tslib: 2.6.2
+    dev: false
+
+  /use-undo@1.1.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-2NNpJv7TDQpyETgRTG5I/CsABX5nhExpx8PEhWiDsnW9C5BA6Xnn8G9u/lPeg3+JsBrBtUx8/5bMbGmpnWz1Cw==}
+    peerDependencies:
+      react: '>=16.8.6'
+      react-dom: '>=16.8.6'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /util-deprecate@1.0.2:

@@ -350,10 +350,9 @@ export default function AddAttendeeForm({
               {attendeeTypeOptions.map(({ label, value }) => (
                 <button
                   className={`text-sm p-1.5 mx-auto border-2 rounded font-medium",
-                    ${
-                      attendeeType.includes(value)
-                        ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
-                        : "border-gray-600 text-gray-600 bg-white"
+                    ${attendeeType.includes(value)
+                      ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
+                      : "border-gray-600 text-gray-600 bg-white"
                     }
                   `}
                   type="button"

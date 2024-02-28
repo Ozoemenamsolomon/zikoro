@@ -12,24 +12,36 @@ export type TAttendeeCertificate = {
   attendeeId: number;
 };
 
-export type TCertificate = {
-  id: number;
-  created_at?: string;
-  eventId: string;
+export interface TCertificateSettings {
+  size: string;
+  orientation: string;
+  canReceive: {
+    eventAttendees: boolean;
+    trackAttendees: boolean;
+    sessionAttendees: boolean;
+    quizParticipants: boolean;
+  };
+  criteria: number;
+  canExpire: boolean;
+  expiryDate: Date;
+  skills: string[];
+}
+
+export interface TCertificateDetails {
+  verification: { showId: boolean; showQRCode: boolean; showURL: boolean };
+  background: string | null;
+  text: { heading: string; showLocation: boolean; showDate: boolean };
+  logos: { companyLogo: string | null; showZikoro: boolean };
+}
+export interface TCertificate {
+  id?: number;
+  created_at: Date;
+  eventId: number;
   certificateName: string;
-  certificateHeading: string;
-  TrainingDuration: number;
-  cpdRequired: boolean;
-  logoPosition: string;
-  trainingScope: string[];
-  zikoroLogo: boolean;
-  certficateTemplate: string;
-  attendance: number[];
-  attendanceRate: number;
-  criteria: string[];
-  organisationLogo: string;
-  cpdPoints: number;
-};
+  certficateDetails: TCertificateDetails;
+  certificateSettings?: any;
+  cerificateUrl?: string;
+}
 
 export type TFullCertificate = TAttendeeCertificate & {
   certificate: TCertificate;
@@ -39,8 +51,8 @@ export type TFullCertificate = TAttendeeCertificate & {
 export interface CertificateTemplate {
   id: number;
   created_at: Date;
-  templateName?: string | null;
-  templateUrl?: string | null;
-  category?: string | null;
-  figmaName?: string | null;
+  templateName: string;
+  templateUrl: string;
+  category: string;
+  figmaName: string;
 }

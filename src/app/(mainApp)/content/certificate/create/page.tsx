@@ -1,8 +1,8 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/Components/ui/button";
+import { Input } from "@/Components/ui/input";
 import { useRouter } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import Designs from "./_tabs/Designs";
@@ -10,6 +10,16 @@ import Element from "./_tabs/Element";
 import Text from "./_tabs/Text";
 import Verification from "./_tabs/verification";
 import Settings from "./_tabs/Settings";
+import Image from "next/image";
+import QRCode from "react-qr-code";
+import { formatDateToHumanReadable } from "@/utils/date";
+import { cn } from "@/lib/utils";
+import Background from "./_tabs/Background";
+import {
+  TCertificateDetails,
+  TCertificateSettings,
+} from "@/types/certificates";
+import useUndo from "use-undo";
 
 const tabs = [
   {
@@ -28,7 +38,7 @@ const tabs = [
         <path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-696 72h136v656H184V184zm656 656H384V384h456v456zM384 320V184h456v136H384z" />
       </svg>
     ),
-    component: <Designs />,
+    Component: ({ ...props }: TabProps) => <Designs {...props} />,
   },
   {
     label: "background",
@@ -46,7 +56,7 @@ const tabs = [
         <path d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM224 416H64v-96h160v96zm0-160H64v-96h160v96zm224 160H288v-96h160v96zm0-160H288v-96h160v96z" />
       </svg>
     ),
-    component: <Element />,
+    Component: ({ ...props }) => <Background {...props} />,
   },
   {
     label: "text",
@@ -74,7 +84,7 @@ const tabs = [
         <path d="M11.434 4H4.566L4.5 5.994h.386c.21-1.252.612-1.446 2.173-1.495l.343-.011v6.343c0 .537-.116.665-1.049.748V12h3.294v-.421c-.938-.083-1.054-.21-1.054-.748V4.488l.348.01c1.56.05 1.963.244 2.173 1.496h.386L11.434 4z" />
       </svg>
     ),
-    component: <Text />,
+    Component: ({ ...props }: TabProps) => <Text {...props} />,
   },
   {
     label: "element",
@@ -96,7 +106,7 @@ const tabs = [
         />
       </svg>
     ),
-    component: <Element />,
+    Component: ({ ...props }: TabProps) => <Element {...props} />,
   },
   {
     label: "verification",
@@ -114,7 +124,7 @@ const tabs = [
         <path d="M622.3 271.1l-115.2-45c-4.1-1.6-12.6-3.7-22.2 0l-115.2 45c-10.7 4.2-17.7 14-17.7 24.9 0 111.6 68.7 188.8 132.9 213.9 9.6 3.7 18 1.6 22.2 0C558.4 489.9 640 420.5 640 296c0-10.9-7-20.7-17.7-24.9zM496 462.4V273.3l95.5 37.3c-5.6 87.1-60.9 135.4-95.5 151.8zM224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm96 40c0-2.5.8-4.8 1.1-7.2-2.5-.1-4.9-.8-7.5-.8h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c6.8 0 13.3-1.5 19.2-4-54-42.9-99.2-116.7-99.2-212z" />
       </svg>
     ),
-    component: <Verification />,
+    Component: ({ ...props }: TabProps) => <Verification {...props} />,
   },
   {
     label: "settings",
@@ -132,20 +142,70 @@ const tabs = [
         <path d="M416.3 256c0-21 13.1-38.9 31.7-46.1-4.9-20.5-13-39.7-23.7-57.1-6.4 2.8-13.2 4.3-20.1 4.3-12.6 0-25.2-4.8-34.9-14.4-14.9-14.9-18.2-36.8-10.2-55-17.3-10.7-36.6-18.8-57-23.7C295 82.5 277 95.7 256 95.7S217 82.5 209.9 64c-20.5 4.9-39.7 13-57.1 23.7 8.1 18.1 4.7 40.1-10.2 55-9.6 9.6-22.3 14.4-34.9 14.4-6.9 0-13.7-1.4-20.1-4.3C77 170.3 68.9 189.5 64 210c18.5 7.1 31.7 25 31.7 46.1 0 21-13.1 38.9-31.6 46.1 4.9 20.5 13 39.7 23.7 57.1 6.4-2.8 13.2-4.2 20-4.2 12.6 0 25.2 4.8 34.9 14.4 14.8 14.8 18.2 36.8 10.2 54.9 17.4 10.7 36.7 18.8 57.1 23.7 7.1-18.5 25-31.6 46-31.6s38.9 13.1 46 31.6c20.5-4.9 39.7-13 57.1-23.7-8-18.1-4.6-40 10.2-54.9 9.6-9.6 22.2-14.4 34.9-14.4 6.8 0 13.7 1.4 20 4.2 10.7-17.4 18.8-36.7 23.7-57.1-18.4-7.2-31.6-25.1-31.6-46.2zm-159.4 79.9c-44.3 0-80-35.9-80-80s35.7-80 80-80 80 35.9 80 80-35.7 80-80 80z" />
       </svg>
     ),
-    component: <Settings />,
+    Component: ({ ...props }: TabProps) => <Settings {...props} />,
   },
 ];
+
+export interface TabProps {
+  details: TCertificateDetails;
+  setValue: (key: keyof TCertificateDetails, value: any) => void;
+  settings: TCertificateSettings;
+  editSettings: (key: keyof TCertificateSettings, value: any) => void;
+}
 
 const page = () => {
   const divRef = useRef<HTMLDivElement>();
   const router = useRouter();
 
-  const [name, setName] = useState<string>("untitled");
+  const [certificateName, setName] = useState<string>("");
+  const [
+    detailState,
+    { set: setDetails, undo: undoDetails, redo: redoDetails },
+  ] = useUndo<TCertificateDetails>({
+    text: {
+      heading: "Training certificate",
+      showLocation: true,
+      showDate: true,
+    },
+    verification: { showId: true, showQRCode: true, showURL: true },
+    background: null,
+    logos: { companyLogo: null, showZikoro: true },
+  });
+  const { present: details } = detailState;
+
+  const [settings, setSettings] = useState<TCertificateSettings>({
+    size: "A4",
+    orientation: "portrait",
+    canReceive: {
+      eventAttendees: true,
+      quizParticipants: false,
+      sessionAttendees: false,
+      trackAttendees: false,
+    },
+    criteria: 100,
+    canExpire: false,
+    expiryDate: new Date(),
+    skills: [],
+  });
 
   useEffect(() => {
     if (!divRef) return;
     calculateAndSetMaxHeight(divRef);
   }, []);
+
+  const setValue = (key: keyof TCertificateDetails, value: any) => {
+    console.log(key + ": " + value);
+    setDetails({ ...details, [key]: value });
+  };
+
+  const editSettings = (key: keyof TCertificateSettings, value: any) => {
+    console.log(key + ": " + value);
+    setSettings({ ...settings, [key]: value });
+  };
+
+  const saveCertificate = () => {
+    console.log(settings, details);
+  };
 
   return (
     <section className="flex flex-col">
@@ -172,14 +232,14 @@ const page = () => {
         <Input
           type="text"
           className="outline-0 bg-transparent border-0 max-w-fit px-4 focus-visible:ring-sky-300 flex justify-center"
-          value={name}
+          value={certificateName}
           onInput={(e) => setName(e.target.value)}
         />
         <div className="flex gap-2">
           <Button
             className="flex gap-2"
             variant={"ghost"}
-            onClick={() => router.back()}
+            onClick={saveCertificate}
           >
             <svg
               stroke="currentColor"
@@ -219,9 +279,9 @@ const page = () => {
           </Button>
         </div>
       </section>
-      <section className="relative h-max">
-        <div className="mr-[60%]">
-          <Tabs defaultValue="designs" className="flex" ref={divRef}>
+      <section className="grid grid-cols-10">
+        <div className="col-span-4" ref={divRef}>
+          <Tabs defaultValue="designs" className="flex">
             <TabsList className="bg-transparent flex flex-col gap-2 justify-between [height:unset_!important] p-0 border-r-2 rounded-none flex-[20%]">
               {tabs.map(({ label, value, icon }) => (
                 <TabsTrigger
@@ -233,19 +293,170 @@ const page = () => {
                 </TabsTrigger>
               ))}
             </TabsList>
-            {tabs.map(({ label, value, component }) => (
+            {tabs.map(({ label, value, Component }) => (
               <TabsContent
                 value={value}
-                className="flex-[70%] border-r-2 mt-0"
+                className="flex-[70%] border-r-2 mt-0 max-h-full overflow-hidden"
                 key={value}
               >
                 <h3 className="border-b-2 py-2 px-4 text-lg font-semibold text-gray-800 capitalize">
                   {label}
                 </h3>
-                <div className="p-2">{component}</div>
+                <div className="p-2 h-full overflow-auto">
+                  {
+                    <Component
+                      settings={settings}
+                      editSettings={editSettings}
+                      details={details}
+                      setValue={setValue}
+                    />
+                  }
+                </div>
               </TabsContent>
             ))}
           </Tabs>
+        </div>
+        <div className="col-span-6 flex flex-col items-center bg-basebody gap-4 pb-6">
+          <div className="flex gap-4 text-gray-500 w-full bg-white py-2 px-4">
+            <button onClick={undoDetails}>
+              <svg
+                stroke="currentColor"
+                fill="currentColor"
+                strokeWidth={0}
+                viewBox="0 0 24 24"
+                height="2em"
+                width="2em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M9,10h6c1.654,0,3,1.346,3,3s-1.346,3-3,3h-3v2h3c2.757,0,5-2.243,5-5s-2.243-5-5-5H9V5L4,9l5,4V10z" />
+              </svg>
+            </button>
+            <button onClick={redoDetails}>
+              <svg
+                stroke="currentColor"
+                fill="currentColor"
+                strokeWidth={0}
+                viewBox="0 0 24 24"
+                height="2em"
+                width="2em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M9,18h3v-2H9c-1.654,0-3-1.346-3-3s1.346-3,3-3h6v3l5-4l-5-4v3H9c-2.757,0-5,2.243-5,5S6.243,18,9,18z" />
+              </svg>
+            </button>
+          </div>
+          <div
+            className="w-4/5 space-y-6 text-black py-20 bg-no-repeat"
+            style={{
+              backgroundSize: "cover",
+              backgroundImage: !!details.background
+                ? `url(${details.background})`
+                : "",
+              backgroundColor: "#fff",
+            }}
+            // ref={certificateRef}
+          >
+            <div className="px-12">
+              <div className="flex justify-between mb-8">
+                <img
+                  className="w-[50px] h-[50px]"
+                  src={"/images/your_logo.png"}
+                  alt={"zikoro logo"}
+                />
+                <img
+                  className="w-[50px] h-[50px]"
+                  src={"/images/zikoro_logo.png"}
+                  alt={"zikoro logo"}
+                />
+              </div>
+              <div className="mb-12 space-y-4 text-center w-full">
+                <h1 className="text-2xl uppercase">{details.text.heading}</h1>
+                <p className="text-lg">This is to certify that</p>
+              </div>
+              <div className="pb-1 mx-auto w-2/3 text-center mb-6">
+                <span className="text-4xl font-DancingScript">
+                  {"ABDUR-RASHEED IDRIS"}
+                </span>
+              </div>
+              <div className="space-y-2 mb-4 text-sm text-center w-full">
+                <p>
+                  Successfully completed the {"XX"}-hour {"CERTIFICATE NAME"},
+                  earning {"XX"} credits.{" "}
+                </p>
+                <p>
+                  A program offered by {"ORGANIZATION NAME"}, in collaboration
+                  with Zikoro
+                </p>
+              </div>
+              <p className="text-xs text-center w-full mb-6">
+                {details.text.showDate && formatDateToHumanReadable(new Date())}
+                {details.text.showLocation && details.text.showDate && ", "}
+                {details.text.showLocation && "LAGOS, NIGERIA"}
+              </p>
+              <div className="flex flex-col items-center gap-2">
+                {details.verification.showQRCode && (
+                  <div
+                    style={{
+                      height: "auto",
+                      margin: "0 auto",
+                      maxWidth: 64,
+                      width: "100%",
+                    }}
+                  >
+                    <QRCode
+                      size={256}
+                      style={{
+                        height: "auto",
+                        maxWidth: "100%",
+                        width: "100%",
+                      }}
+                      value={`www.zikoro.com/`}
+                      viewBox={`0 0 256 256`}
+                    />
+                  </div>
+                )}
+                {details.verification.showId && (
+                  <h2 className="text-tiny">Certificate ID {1234567890}</h2>
+                )}
+                {details.verification.showURL && (
+                  <a
+                    href="www.zikoro.com/verify"
+                    className="flex gap-1 items-center text-tiny text-black"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width={15}
+                      height={15}
+                      viewBox="0 0 16 17"
+                      fill="none"
+                    >
+                      <g clipPath="url(#clip0_11548_17274)">
+                        <path
+                          d="M11.7956 8.80994C11.7937 8.21232 11.7297 7.61652 11.6044 7.03216H13.2044C13.122 6.78841 13.0225 6.55078 12.9067 6.32105H11.4178C11.1379 5.38596 10.7038 4.5042 10.1333 3.71216C9.76888 3.55892 9.38888 3.44566 9 3.37438C9.78149 4.21405 10.3714 5.21335 10.7289 6.30327L8.33334 6.30327V3.29883H7.66667L7.66667 6.30772L5.27112 6.30772C5.62937 5.21583 6.22082 4.21492 7.00445 3.37438C6.61724 3.44447 6.23874 3.55623 5.87556 3.70772C5.30287 4.49644 4.86576 5.37516 4.58223 6.30772H3.08445C2.96648 6.54164 2.86548 6.78375 2.78223 7.03216H4.39556C4.27035 7.61652 4.20631 8.21232 4.20445 8.80994C4.20568 9.46362 4.28022 10.1151 4.42667 10.7522H2.85334C2.94528 11.0013 3.0552 11.2434 3.18223 11.4766H4.61778C4.88988 12.3281 5.29325 13.1318 5.81334 13.8588C6.18577 14.0186 6.57483 14.1363 6.97334 14.2099C6.24797 13.4187 5.69012 12.489 5.33334 11.4766H7.67111L7.67111 14.2944L8.33778 14.2944L8.33778 11.4766H10.6667C10.3087 12.4894 9.74929 13.4192 9.02223 14.2099C9.4226 14.1338 9.81318 14.013 10.1867 13.8499C10.7059 13.1257 11.1093 12.325 11.3822 11.4766H12.8044C12.9309 11.2477 13.0408 11.0101 13.1333 10.7655H11.5556C11.709 10.1248 11.7895 9.46875 11.7956 8.80994ZM7.66667 10.7522H5.11556C4.80266 9.52898 4.78894 8.24843 5.07556 7.01883L7.66667 7.01883V10.7522ZM10.8844 10.7522H8.33334V7.03216L10.9244 7.03216C11.0521 7.61604 11.1147 8.21227 11.1111 8.80994C11.1147 9.46415 11.0386 10.1164 10.8844 10.7522Z"
+                          fill="black"
+                        />
+                        <path
+                          d="M8.00003 1.69824C6.59359 1.69824 5.21872 2.1153 4.04931 2.89668C2.87989 3.67806 1.96844 4.78866 1.43022 6.08805C0.891997 7.38743 0.751173 8.81724 1.02556 10.1967C1.29994 11.5761 1.97721 12.8432 2.97172 13.8377C3.96622 14.8322 5.2333 15.5094 6.61272 15.7838C7.99214 16.0582 9.42195 15.9174 10.7213 15.3792C12.0207 14.8409 13.1313 13.9295 13.9127 12.7601C14.6941 11.5907 15.1111 10.2158 15.1111 8.80935C15.1111 6.92337 14.3619 5.11463 13.0283 3.78104C11.6948 2.44745 9.88601 1.69824 8.00003 1.69824ZM8.00003 15.0316C6.76939 15.0316 5.56639 14.6666 4.54315 13.9829C3.51991 13.2992 2.72239 12.3275 2.25145 11.1905C1.7805 10.0535 1.65728 8.80245 1.89737 7.59546C2.13745 6.38847 2.73006 5.27977 3.60025 4.40958C4.47045 3.53938 5.57914 2.94678 6.78614 2.70669C7.99313 2.4666 9.24421 2.58982 10.3812 3.06077C11.5181 3.53171 12.4899 4.32923 13.1736 5.35247C13.8573 6.37571 14.2223 7.57871 14.2223 8.80935C14.2223 10.4596 13.5667 12.0422 12.3998 13.2091C11.2329 14.376 9.65027 15.0316 8.00003 15.0316Z"
+                          fill="black"
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_11548_17274">
+                          <rect
+                            width={16}
+                            height={16}
+                            fill="white"
+                            transform="translate(0 0.80957)"
+                          />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                    <span>www.zikoro.com/verify</span>
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </section>
