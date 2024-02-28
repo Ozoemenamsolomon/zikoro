@@ -5,7 +5,7 @@ import { CustomSelect } from "@/components/CustomSelect";
 import { useState, useEffect } from "react";
 import countries from "@/../countryList.json";
 import { CustomTextBox } from "@/components/CustomTextbox";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components";
 import Link from "next/link";
 
 export default function Contact() {
