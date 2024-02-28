@@ -1,6 +1,7 @@
 import React from 'react'
+import { TabProps } from '../page'
 
-const Element = () => {
+const Element = ({}: TabProps) => {
   return (
     <div>Element</div>
   )

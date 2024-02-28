@@ -171,7 +171,7 @@ export default function FirstSection({
   onSelectAttendee: (attendee: TAttendee) => void;
   selectedAttendee: TAttendee;
 }) {
-  const divRef = useRef<HTMLDivElement>();
+  const divRef = useRef<HTMLDivElement>(null);
   const {
     filteredData: mappedAttendees,
     filters,

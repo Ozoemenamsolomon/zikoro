@@ -12,12 +12,13 @@ import { Slider } from "@/components/ui/slider";
 import { FilterOptionsProps, FilterProps } from "@/types/filter";
 import React, { useEffect } from "react";
 
-const MultipleFilter: React.FC<FilterOptionsProps<T>> = ({
+function MultipleFilter<T>({
   filter,
   selectedFilters,
   applyFilter,
-}) => {
+}: FilterOptionsProps<T>) {
   const { type, accessor, onFilter, label: filterLabel } = filter;
+
   return (
     <>
       {filter.options &&
@@ -39,7 +40,7 @@ const MultipleFilter: React.FC<FilterOptionsProps<T>> = ({
                   index !== -1 ? selectedFilters[index].value : [];
                 const newValue = checked
                   ? [...prevValue, value]
-                  : prevValue.filter((selected) => selected !== value);
+                  : prevValue.filter((selected: any) => selected !== value);
 
                 applyFilter(accessor, filterLabel, newValue, onFilter, type);
               }}
@@ -54,13 +55,13 @@ const MultipleFilter: React.FC<FilterOptionsProps<T>> = ({
         ))}
     </>
   );
-};
+}
 
-const DateRangeFilter: React.FC<FilterOptionsProps<T>> = ({
+function DateRangeFilter<T>({
   filter,
   selectedFilters,
   applyFilter,
-}) => {
+}: FilterOptionsProps<T>) {
   const { type, accessor, onFilter, label: filterLabel } = filter;
   const date = selectedFilters.find(({ key }) => key === accessor);
 
@@ -75,13 +76,13 @@ const DateRangeFilter: React.FC<FilterOptionsProps<T>> = ({
       className="rounded-md border"
     />
   );
-};
+}
 
-const SliderFilter: React.FC<FilterOptionsProps<T>> = ({
+function SliderFilter<T>({
   filter,
   selectedFilters,
   applyFilter,
-}) => {
+}: FilterOptionsProps<T>) {
   const { type, accessor, onFilter, label: filterLabel } = filter;
   const slideValue = selectedFilters.find(({ key }) => key === accessor);
 
@@ -100,13 +101,13 @@ const SliderFilter: React.FC<FilterOptionsProps<T>> = ({
       />
     </div>
   );
-};
+}
 
-const RangeFilter: React.FC<FilterOptionsProps<T>> = ({
+function RangeFilter<T>({
   filter,
   selectedFilters,
   applyFilter,
-}) => {
+}: FilterOptionsProps<T>) {
   const { type, accessor, onFilter, label: filterLabel } = filter;
   const range = selectedFilters.find(({ key }) => key === accessor);
 
@@ -126,13 +127,13 @@ const RangeFilter: React.FC<FilterOptionsProps<T>> = ({
       />
     </div>
   );
-};
+}
 
-const SingleFilter: React.FC<FilterOptionsProps<T>> = ({
+function SingleFilter<T>({
   filter,
   selectedFilters,
   applyFilter,
-}) => {
+}: FilterOptionsProps<T>) {
   const { defaultValue, type, accessor, onFilter, label: filterLabel } = filter;
   const singleValue = selectedFilters.find(({ key }) => key === accessor);
 
@@ -171,60 +172,114 @@ const SingleFilter: React.FC<FilterOptionsProps<T>> = ({
         ))}
     </RadioGroup>
   );
-};
+}
 
-const FilterOptions: React.FC<FilterOptionsProps<T>> = React.memo(
-  ({ filter, selectedFilters, applyFilter }) => {
-    const { type, accessor, onFilter, label: filterLabel } = filter;
+// const FilterOptions: React.FC<FilterOptionsProps<T>> = React.memo(
+//   ({ filter, selectedFilters, applyFilter }) => {
+//     const { type, accessor, onFilter, label: filterLabel } = filter;
 
-    switch (type) {
-      case "range":
-        return (
-          <RangeFilter
-            filter={filter}
-            selectedFilters={selectedFilters}
-            applyFilter={applyFilter}
-          />
-        );
+//     switch (type) {
+//       case "range":
+//         return (
+//           <RangeFilter
+//             filter={filter}
+//             selectedFilters={selectedFilters}
+//             applyFilter={applyFilter}
+//           />
+//         );
 
-      case "dateRange":
-        return (
-          <DateRangeFilter
-            filter={filter}
-            selectedFilters={selectedFilters}
-            applyFilter={applyFilter}
-          />
-        );
+//       case "dateRange":
+//         return (
+//           <DateRangeFilter
+//             filter={filter}
+//             selectedFilters={selectedFilters}
+//             applyFilter={applyFilter}
+//           />
+//         );
 
-      case "slider":
-        return (
-          <SliderFilter
-            filter={filter}
-            selectedFilters={selectedFilters}
-            applyFilter={applyFilter}
-          />
-        );
+//       case "slider":
+//         return (
+//           <SliderFilter
+//             filter={filter}
+//             selectedFilters={selectedFilters}
+//             applyFilter={applyFilter}
+//           />
+//         );
 
-      case "single":
-        return (
-          <SingleFilter
-            filter={filter}
-            selectedFilters={selectedFilters}
-            applyFilter={applyFilter}
-          />
-        );
+//       case "single":
+//         return (
+//           <SingleFilter
+//             filter={filter}
+//             selectedFilters={selectedFilters}
+//             applyFilter={applyFilter}
+//           />
+//         );
 
-      default:
-        return (
-          <MultipleFilter
-            filter={filter}
-            selectedFilters={selectedFilters}
-            applyFilter={applyFilter}
-          />
-        );
-    }
+//       default:
+//         return (
+//           <MultipleFilter
+//             filter={filter}
+//             selectedFilters={selectedFilters}
+//             applyFilter={applyFilter}
+//           />
+//         );
+//     }
+//   }
+// );
+function FilterOptions<T>({
+  filter,
+  selectedFilters,
+  applyFilter,
+}: FilterOptionsProps<T>) {
+  const { type, accessor, onFilter, label: filterLabel } = filter;
+
+  switch (type) {
+    case "range":
+      return (
+        <RangeFilter
+          filter={filter}
+          selectedFilters={selectedFilters}
+          applyFilter={applyFilter}
+        />
+      );
+
+    case "dateRange":
+      return (
+        <DateRangeFilter
+          filter={filter}
+          selectedFilters={selectedFilters}
+          applyFilter={applyFilter}
+        />
+      );
+
+    case "slider":
+      return (
+        <SliderFilter
+          filter={filter}
+          selectedFilters={selectedFilters}
+          applyFilter={applyFilter}
+        />
+      );
+
+    case "single":
+      return (
+        <SingleFilter
+          filter={filter}
+          selectedFilters={selectedFilters}
+          applyFilter={applyFilter}
+        />
+      );
+
+    default:
+      return (
+        <MultipleFilter
+          filter={filter}
+          selectedFilters={selectedFilters}
+          applyFilter={applyFilter}
+        />
+      );
   }
-);
+}
 
 function Filter<T>({
   className,
@@ -238,7 +293,7 @@ function Filter<T>({
         {filters.map((filter, index) => {
           const { label, accessor, options, icon } = filter;
           return (
-            <MenubarMenu key={accessor}>
+            <MenubarMenu key={accessor as unknown as string}>
               <MenubarTrigger
                 className={`flex gap-0.5 items-center w-full min-w-fit justify-center px-0.5 ${
                   index > 0 ? "border-l-[1px]" : ""
@@ -263,7 +318,7 @@ function Filter<T>({
       <div className="flex gap-2 flex-wrap px-2 justify-center">
         {selectedFilters.map(({ label, key }) => (
           <div
-            key={key}
+            key={label}
             className="text-tiny text-earlyBirdColor flex items-center gap-1.5 p-1 rounded bg-[#EEF0FF] w-fit"
           >
             <span className="font-medium capitalize">{label}</span>

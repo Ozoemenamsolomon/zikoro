@@ -87,7 +87,7 @@ export default function Page() {
   //     dataFilters: inviteesFilters,
   //   });
 
-  const divRef = useRef<HTMLDivElement>();
+  const divRef = useRef<HTMLDivElement>(null);
 
   const { inviteAttendees } = useInviteAttendees();
   async function onSubmit(e) {

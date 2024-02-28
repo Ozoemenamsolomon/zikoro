@@ -32,7 +32,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const selectAttendee = (attendee: TAttendee) => setSelectedAttendee(attendee);
 
-  const divRef = useRef<HTMLDivElement>();
+  const divRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const div = divRef.current;

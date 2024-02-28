@@ -1,8 +1,8 @@
 "use client";
-import { Button } from "@/Components/ui/button";
-import { Input } from "@/Components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/Components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import Designs from "./_tabs/Designs";
@@ -10,10 +10,8 @@ import Element from "./_tabs/Element";
 import Text from "./_tabs/Text";
 import Verification from "./_tabs/verification";
 import Settings from "./_tabs/Settings";
-import Image from "next/image";
 import QRCode from "react-qr-code";
 import { formatDateToHumanReadable } from "@/utils/date";
-import { cn } from "@/lib/utils";
 import Background from "./_tabs/Background";
 import {
   TCertificateDetails,
@@ -56,7 +54,7 @@ const tabs = [
         <path d="M464 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zM224 416H64v-96h160v96zm0-160H64v-96h160v96zm224 160H288v-96h160v96zm0-160H288v-96h160v96z" />
       </svg>
     ),
-    Component: ({ ...props }) => <Background {...props} />,
+    Component: ({ ...props }: TabProps) => <Background {...props} />,
   },
   {
     label: "text",
@@ -154,7 +152,7 @@ export interface TabProps {
 }
 
 const page = () => {
-  const divRef = useRef<HTMLDivElement>();
+  const divRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const [certificateName, setName] = useState<string>("");
@@ -233,7 +231,7 @@ const page = () => {
           type="text"
           className="outline-0 bg-transparent border-0 max-w-fit px-4 focus-visible:ring-sky-300 flex justify-center"
           value={certificateName}
-          onInput={(e) => setName(e.target.value)}
+          onInput={(e) => setName(e.currentTarget.value)}
         />
         <div className="flex gap-2">
           <Button

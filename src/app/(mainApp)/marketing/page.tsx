@@ -34,7 +34,7 @@ const marketingTabs: TMarketingTabs[] = [
 ];
 
 const page = () => {
-  const divRef = useRef<HTMLDivElement>();
+  const divRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const div = divRef.current;

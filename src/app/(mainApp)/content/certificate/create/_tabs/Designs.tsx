@@ -8,7 +8,7 @@ import React, { useEffect, useRef } from "react";
 import { TabProps } from "../page";
 
 const Designs = ({ details, setValue }: TabProps) => {
-  const divRef = useRef<HTMLDivElement>();
+  const divRef = useRef<HTMLDivElement>(null);
   const { certificateTemplates, isLoading, getCertificateTemplates } =
     useGetCertificateTemplates();
 

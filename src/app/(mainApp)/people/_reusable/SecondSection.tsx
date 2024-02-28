@@ -176,8 +176,8 @@ export default function SecondSection({
     filename: `${firstName}-${lastName}-badge.pdf`,
   });
 
-  const parentCardRef = useRef<HTMLDivElement>();
-  const innerCardRef = useRef<HTMLDivElement>();
+  const parentCardRef = useRef<HTMLDivElement>(null);
+  const innerCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const parentCard = parentCardRef.current;
