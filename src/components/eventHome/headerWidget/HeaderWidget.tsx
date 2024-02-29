@@ -15,7 +15,6 @@ import {
 import { CreateOrganization } from "..";
 import { useRouter } from "next/navigation";
 import _ from "lodash";
-import {getCookie} from "@/hooks"
 
 type OrganizationListType = {
   id: Number;
@@ -44,13 +43,16 @@ export function HeaderWidget({
     return _.uniqBy(restructuredList, "value");
   }, [organizationList]);
 
-
   function showOrganizationEvents(value: string) {
     const org = formattedList.find((o) => o.value === value);
     router.push(`/events/${org?.id}?organization=${value}`);
   }
 
- 
+  function newEvent() {
+    const org = formattedList.find((o) => o.value === organization);
+    router.push(`/create/${org?.id}`);
+  }
+
   return (
     <div>
       <div className="w-full mb-4 sm:mb-6 items-start flex-col gap-y-2 sm:items-center sm:flex-row sm:justify-between justify-start flex">
@@ -95,7 +97,10 @@ export function HeaderWidget({
             <PlusCircle size={22} />
             <p>Organization</p>
           </Button>
-          <Button className="text-gray-50 bg-zikoro gap-x-2 h-11 sm:h-12 font-medium">
+          <Button
+            onClick={newEvent}
+            className="text-gray-50 bg-zikoro gap-x-2 h-11 sm:h-12 font-medium"
+          >
             <PlusCircle size={22} />
             <p>Event</p>
           </Button>

@@ -7,6 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import {
   eventBookingValidationSchema,
   organizationSchema,
+  newEventSchema
 } from "@/validations";
 import { Event } from "@/types";
 import _ from "lodash";
@@ -41,6 +42,35 @@ export function useCreateOrganisation() {
 
   return {
     organisation,
+    loading,
+  };
+}
+
+export function useCreateEvent() {
+  const [loading, setLoading] = useState(false);
+
+  async function createEvent(values: z.infer<typeof newEventSchema>) {
+    setLoading(true);
+
+    try {
+      const { error, status } = await supabase
+        .from("events")
+        .upsert([{ ...values, email: userData?.email }]);
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      if (status === 201 || status === 200) {
+        setLoading(false);
+        toast.success("Event created successfully");
+      }
+    } catch (error) {}
+  }
+
+  return {
+    createEvent,
     loading,
   };
 }

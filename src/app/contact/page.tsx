@@ -3,7 +3,7 @@ import Image from "next/image";
 import { CustomInput } from "@/components/CustomInput";
 import { CustomSelect } from "@/components/CustomSelect";
 import { useState, useEffect } from "react";
-import countries from "@/../countryList.json";
+import countries from "@/../../countrylist.json";
 import { CustomTextBox } from "@/components/CustomTextbox";
 import { Button } from "@/components";
 import Link from "next/link";
@@ -214,7 +214,7 @@ export default function Contact() {
               name="message"
               placeholder="Write something here"
             />
-            <Button className="w-full mt-5 bg-bluebg py-6">Submit</Button>
+            <Button className="w-full mt-5 bg-zikoro py-6">Submit</Button>
             <span className="description-text">
               By clicking the button below, you consent to allow Zikoro to store
               and process your information by our{" "}

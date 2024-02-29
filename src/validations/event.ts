@@ -42,3 +42,15 @@ export const eventFeedBackSchema = z.object({
   comment: z.string().min(3, { message: "Comment is required" }),
   ratings: z.enum(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]),
 });
+
+export const newEventSchema = z.object({
+  startDateTime: z.object({}),
+  endDateTime: z.object({}),
+  eventTitle: z.string().min(3, { message: "Title is required" }),
+  eventAddress: z.string().min(3, { message: "Address is required" }),
+  locationType: z.string(),
+  expectedParticipants: z.string(),
+  eventCity: z.string(),
+  eventCountry: z.string(),
+  organizationId: z.any()
+});
