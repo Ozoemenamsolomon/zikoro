@@ -181,7 +181,7 @@ const page = () => {
     canReceive: {
       eventAttendees: true,
       quizParticipants: false,
-      sessionAttendees: false,
+    sessionAttendees: false,
       trackAttendees: false,
     },
     criteria: 100,

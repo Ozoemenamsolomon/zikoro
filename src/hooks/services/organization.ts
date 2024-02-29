@@ -2,7 +2,7 @@ import { TOrganization } from "@/types/organization";
 import { toast } from "@/components/ui/use-toast";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
-import { UseGetResult } from "@/types/request";
+import { UseGetResult, usePostResult } from "@/types/request";
 
 export const useGetOrganizations = (): UseGetResult<
   TOrganization[],
@@ -90,4 +90,46 @@ export const useGetOrganization = ({
     error,
     getOrganization,
   };
+};
+
+export const useUpdateOrganization = ({
+  organizationId,
+}: {
+  organizationId: number;
+}): usePostResult<Partial<TOrganization>, "updateOrganization"> => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const updateOrganization = async ({
+    payload,
+  }: {
+    payload: Partial<TOrganization>;
+  }) => {
+    setLoading(true);
+    toast({
+      description: "updating organization...",
+    });
+    try {
+      console.log(organizationId, "organizationId");
+      const { data, status } = await postRequest({
+        endpoint: `organization/${organizationId}`,
+        payload,
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: "Organization updated successfully",
+      });
+    } catch (error) {
+      setError(true);
+      toast({
+        description: "An error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { updateOrganization, isLoading, error };
 };

@@ -2,27 +2,25 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { organizationId: number } }
+) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
     try {
-      const params = await req.json();
+      const { organizationId } = params;
+      console.log(params);
+      const payload = await req.json();
 
-      const { data, error: checkIfRegisteredError } = await supabase
+      const { error } = await supabase
         .from("organization")
-        .select("*")
-        .eq("email", params.email)
-        .eq("eventId", params.eventId)
-        .maybeSingle();
+        .update(payload)
+        .eq("id", organizationId);
 
-      if (checkIfRegisteredError) throw checkIfRegisteredError?.code;
-      if (data) throw "email error";
-
-      const { error } = await supabase.from("attendees").insert(params);
-      if (error) throw error.code;
-
+      if (error) throw error;
       return NextResponse.json(
-        { msg: "attendee created successfully" },
+        { msg: "organization updated successfully" },
         {
           status: 201,
         }
@@ -31,18 +29,20 @@ export async function POST(req: NextRequest) {
       console.error(error);
       return NextResponse.json(
         {
-          error:
-            error === "email error"
-              ? "Email already registered for this event"
-              : "An error occurred while making the request.",
+          error: "An error occurred while making the request.",
         },
         {
-          status: 500,
+          status: 400,
         }
       );
     }
   } else {
-    return NextResponse.json({ error: "Method not allowed" });
+    return NextResponse.json(
+      { error: "Method not allowed" },
+      {
+        status: 500,
+      }
+    );
   }
 }
 
@@ -89,7 +89,7 @@ export async function GET(
     try {
       const { data, error, status } = await supabase
         .from("organization")
-        .select("*, organization!inner(*)")
+        .select("*")
         .eq("id", organizationId)
         .maybeSingle();
 

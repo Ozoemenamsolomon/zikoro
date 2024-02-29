@@ -19,13 +19,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TabProps } from "../page";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 const Settings = ({ settings, editSettings }: TabProps) => {
   const [criteria, setCriteria] = useState<number>(0);
   const [date, setDate] = React.useState<Date>();
+  const [newSkill, setSkill] = React.useState<string>("");
 
   return (
-    <div className="">
+    <div className="pb-2">
       <h4 className="text-lg text-gray-700 font-medium">Paper Format</h4>
       <div className="space-y-2 text-gray-500 pt-2 pb-4">
         <div className="flex justify-between">
@@ -123,7 +133,9 @@ const Settings = ({ settings, editSettings }: TabProps) => {
         </div>
         <div className="pt-4 border-t-2">
           <div className="flex justify-between items-center">
-            <span className="text-gray-500 font-medium text-sm">Attendance Criteria</span>
+            <span className="text-gray-500 font-medium text-sm">
+              Attendance Criteria
+            </span>
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -184,7 +196,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           </div>
         </div>
       </div>
-      <div className="pt-4 border-t-2 space-y-4">
+      <div className="pt-4 border-t-2 space-y-4 pb-2">
         <div className="flex justify-between">
           <span className="text-sm font-medium text-gray-500">Expires on</span>
           <Switch
@@ -260,6 +272,64 @@ const Settings = ({ settings, editSettings }: TabProps) => {
             </Popover>
           </div>
         )}
+      </div>
+      <div className="space-y-2 pt-4 border-t-2">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-2">
+              <svg
+                stroke="currentColor"
+                fill="currentColor"
+                strokeWidth={0}
+                viewBox="0 0 1024 1024"
+                height="1.5em"
+                width="1.5em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z" />
+                <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z" />
+              </svg>
+              <span>Skills</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="px-3">
+            <DialogHeader>
+              <DialogTitle>
+                <span className="capitalize">Add Skills</span>
+              </DialogTitle>
+            </DialogHeader>
+            <div className="relative border-b py-4">
+              <span className="text-tiny text-gray-500 font-medium absolute top-2 left-2">
+                skill
+              </span>
+              <Input
+                type="text"
+                className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 focus-visible:ring-0"
+                value={newSkill}
+                onInput={(e) => setSkill(e.currentTarget.value)}
+              />
+            </div>
+            <DialogClose asChild>
+              <Button
+                onClick={() =>
+                  editSettings("skills", [...settings.skills, newSkill])
+                }
+                className="bg-basePrimary"
+              >
+                Add Skill
+              </Button>
+            </DialogClose>
+          </DialogContent>
+        </Dialog>
+        <div className="flex flex-wrap justify-start gap-2">
+          {settings.skills.map((skill) => (
+            <div
+              className={`text-sm p-1.5 border-2 rounded font-medium text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]`}
+            >
+              {skill}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
