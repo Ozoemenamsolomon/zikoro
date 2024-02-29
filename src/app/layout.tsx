@@ -14,6 +14,7 @@ export const generateMetadata = async (): Promise<Metadata> =>
 
 export default function RootLayout({
   children,
+  children,
 }: {
   children: React.ReactNode;
 }) {
