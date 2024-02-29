@@ -31,7 +31,7 @@ const People = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <section className="bg-white py-4 space-y-4">
+      <section className="bg-white pt-4 space-y-4">
         <nav className="px-1 flex justify-between items-center">
           <ul className="flex gap-8 px-4">
             {PeopleLinks.map(({ href, name }) => (

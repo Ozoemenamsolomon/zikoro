@@ -35,11 +35,11 @@ export interface TCertificateDetails {
 }
 export interface TCertificate {
   id?: number;
-  created_at: Date;
+  created_at?: Date;
   eventId: number;
   certificateName: string;
   certficateDetails: TCertificateDetails;
-  certificateSettings?: any;
+  certificateSettings?: TCertificateSettings;
   cerificateUrl?: string;
 }
 

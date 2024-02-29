@@ -3,8 +3,11 @@ import React, { useState } from "react";
 import { TabProps } from "../page";
 import { Input } from "@/components/ui/input";
 import { uploadFile } from "@/utils/helpers";
+import { useGetOrganization } from "@/hooks/services/organization";
 
 const Background = ({ details, setValue }: TabProps) => {
+  const { organization, isLoading } = useGetOrganization({ organizationId: 5 });
+  console.log(organization);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [backgroundUploading, setBackgroundUploading] =
     useState<boolean>(false);
@@ -33,6 +36,7 @@ const Background = ({ details, setValue }: TabProps) => {
     <div className="flex flex-col gap-2 items-center py-4">
       {" "}
       <Button
+        disabled={backgroundUploading}
         onClick={() => document.getElementById("file-input")?.click()}
         className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-4 justify-center items-center rounded-md py-2 px-3"
       >

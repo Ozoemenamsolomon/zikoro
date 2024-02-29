@@ -1,19 +1,18 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useGetCertificateTemplates } from "@/hooks/services/certificate";
+import { useGetCertificates } from "@/hooks/services/certificate";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 const Certificates = () => {
   const router = useRouter();
 
-  const { certificateTemplates, isLoading, getCertificateTemplates } =
-    useGetCertificateTemplates();
+  const { certificates, isLoading } = useGetCertificates();
 
-  console.log(certificateTemplates);
+  console.log(certificates);
 
-  if (certificateTemplates.length === 0 || isLoading)
+  if ((certificates && certificates.length === 0) || isLoading)
     return (
       <div className="flex flex-col h-96 w-full items-center justify-center gap-2">
         <svg
@@ -133,7 +132,28 @@ const Certificates = () => {
       </div>
     );
 
-  return <div>Certificates</div>;
+  return (
+    <div className="flex flex-col gap-2 px-2">
+      <Button
+        className="bg-basePrimary flex gap-4 items-center self-end w-fit"
+        onClick={() => router.push("/content/certificate/create")}
+      >
+        <svg
+          stroke="currentColor"
+          fill="currentColor"
+          strokeWidth={0}
+          viewBox="0 0 1024 1024"
+          height="1.5em"
+          width="1.5em"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z" />
+          <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z" />
+        </svg>
+        <span>Certificate</span>
+      </Button>
+    </div>
+  );
 };
 
 export default Certificates;

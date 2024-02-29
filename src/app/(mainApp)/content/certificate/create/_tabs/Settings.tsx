@@ -123,7 +123,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
         </div>
         <div className="pt-4 border-t-2">
           <div className="flex justify-between items-center">
-            <span className="text-gray-500 font-medium text-sm">Value</span>
+            <span className="text-gray-500 font-medium text-sm">Attendance Criteria</span>
             <div className="flex items-center gap-2">
               <button
                 type="button"

@@ -8,8 +8,8 @@ export async function GET(req: NextRequest) {
   if (req.method === "GET") {
     try {
       const { data, error, status } = await supabase
-        .from("events")
-        .select("*, organization!inner(*)");
+        .from("organization")
+        .select("*");
 
       if (error) throw error;
 

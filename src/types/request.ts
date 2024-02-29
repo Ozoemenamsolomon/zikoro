@@ -4,7 +4,7 @@ export type RequestStatus = {
 };
 
 export type UseGetResult<T, K extends string, L extends string> = {
-  [Key in K]: T;
+  [Key in K]: T | null;
 } & { [Action in L]: () => Promise<void> } & RequestStatus;
 
 export type usePostResult<T, K extends string> = {

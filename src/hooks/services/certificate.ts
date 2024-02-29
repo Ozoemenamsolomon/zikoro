@@ -6,9 +6,111 @@ import {
   TCertificate,
   TFullCertificate,
 } from "@/types/certificates";
-import { RequestStatus, UseGetResult } from "@/types/request";
+import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
+
+export const useSaveCertificate = (): usePostResult<
+  TCertificate,
+  "saveCertificate"
+> => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const saveCertificate = async ({ payload }: { payload: TCertificate }) => {
+    setLoading(true);
+    toast({
+      description: "saving certificate...",
+    });
+    try {
+      const { data, status } = await postRequest({
+        endpoint: "/certificates",
+        payload,
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: "Certificate Saved Successfully",
+      });
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { saveCertificate, isLoading, error };
+};
+
+export const useGetCertificate = ({
+  certificateId,
+}: {
+  certificateId: number;
+}): UseGetResult<TCertificate, "certificate", "getCertificate"> => {
+  const [certificate, setCertificates] = useState<TCertificate | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getCertificate = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TCertificate>({
+        endpoint: `/certificate/${certificateId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setCertificates(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCertificate();
+  }, [certificateId]);
+
+  return { certificate, isLoading, error, getCertificate };
+};
+
+export const useGetCertificates = (): UseGetResult<
+  TCertificate[],
+  "certificates",
+  "getCertificates"
+> => {
+  const [certificates, setCertificates] = useState<TCertificate[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getCertificates = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TCertificate[]>({
+        endpoint: `/certificates`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setCertificates(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCertificates();
+  }, []);
+
+  return { certificates, isLoading, error, getCertificates };
+};
 
 type UseGetEventCertificatesResult = {
   eventCertificates: TCertificate[];

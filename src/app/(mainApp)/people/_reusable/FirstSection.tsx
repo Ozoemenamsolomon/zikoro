@@ -1,6 +1,6 @@
 "use client";
 import Attendee from "@/components/Attendee";
-import Filter, { TFilter } from "@/components/Filter";
+import Filter from "@/components/Filter";
 import CertificateDialog from "@/components/moreOptionDialog/certificateDialog";
 import ChangeAttendeeType from "@/components/moreOptionDialog/changeAttendeeType";
 import CheckinMultiple from "@/components/moreOptionDialog/checkinMultiple";
@@ -38,6 +38,7 @@ import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { TAttendeeTags } from "@/types/tags";
 import { TFavouriteContact } from "@/types/favourites";
+import { TFilter } from "@/types/filter";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -198,9 +199,7 @@ export default function FirstSection({
     attendeesTags,
     isLoading: attendeesTagsIsLoading,
     getAttendeesTags,
-  } = useGetAttendeesTags({
-    userId: 10,
-  });
+  } = useGetAttendeesTags();
 
   const { updateFavourites } = useUpdateFavourites({ userId: 10 });
 
@@ -292,7 +291,7 @@ export default function FirstSection({
 
   const exportAttendees = () => {
     const normalizedData = convertCamelToNormal<TAttendee>(
-      filteredData,
+      mappedAttendees,
       " "
     );
     const worksheet = XLSX.utils.json_to_sheet(normalizedData);

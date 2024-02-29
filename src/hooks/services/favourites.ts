@@ -1,5 +1,6 @@
 import { toast } from "@/components/ui/use-toast";
 import { TFavouriteContact } from "@/types/favourites";
+import { RequestStatus } from "@/types/request";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
@@ -19,7 +20,11 @@ export const useUpdateFavourites = ({
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const updateFavourites = async ({ payload }: { payload: TFavourites }) => {
+  const updateFavourites = async ({
+    payload,
+  }: {
+    payload: TFavouriteContact;
+  }) => {
     setLoading(true);
     toast({
       description: "updating favourite...",

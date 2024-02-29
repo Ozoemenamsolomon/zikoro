@@ -6,5 +6,4 @@ export const favouriteContactSchema = z.object({
   eventId: z.string().nullable(),
   userEmail: z.string().nullable(),
   userId: z.bigint().nullable(),
-  attendees: z.array(z.number()).nullable(),
 });
