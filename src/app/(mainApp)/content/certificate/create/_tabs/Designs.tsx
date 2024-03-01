@@ -12,7 +12,6 @@ const Designs = ({ details, setValue }: TabProps) => {
   const { certificateTemplates, isLoading, getCertificateTemplates } =
     useGetCertificateTemplates();
 
-  console.log(certificateTemplates);
 
   const { searchTerm, searchedData, setSearchTerm } =
     useSearch<CertificateTemplate>({

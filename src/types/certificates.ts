@@ -30,8 +30,7 @@ export interface TCertificateSettings {
 export interface TCertificateDetails {
   verification: { showId: boolean; showQRCode: boolean; showURL: boolean };
   background: string | null;
-  text: { heading: string; showLocation: boolean; showDate: boolean };
-  logos: { companyLogo: string | null; showZikoro: boolean };
+  craftHash: string;
 }
 export interface TCertificate {
   id?: number;
@@ -55,4 +54,24 @@ export interface CertificateTemplate {
   templateUrl: string;
   category: string;
   figmaName: string;
+}
+
+export interface certificateAsset {
+  id: string;
+  position: { x: number; y: number };
+}
+
+export interface certificateElement extends certificateAsset {
+  size: { x: number; y: number };
+  url: string;
+}
+
+export interface certificateText extends certificateAsset {
+  style: {
+    fontSize: number;
+    isBold: boolean;
+    color: string;
+    isItalic: boolean;
+  };
+  text: string;
 }

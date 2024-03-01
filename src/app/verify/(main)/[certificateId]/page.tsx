@@ -17,6 +17,7 @@ import { exportComponentAsPNG } from "react-component-export-image";
 import QRCode from "react-qr-code";
 import { ShareSocial } from "react-share-social";
 
+
 const style = {
   root: {
     background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",

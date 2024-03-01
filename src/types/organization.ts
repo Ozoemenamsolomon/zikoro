@@ -1,3 +1,5 @@
+import { certificateAsset } from "./certificates";
+
 export interface TOrganization {
   id: number;
   created_at: string;
@@ -25,6 +27,6 @@ export interface TOrganization {
 }
 
 export interface TCertificateAsset {
-  logos: string[];
+  elements:  string[];
   backgrounds: string[];
 }

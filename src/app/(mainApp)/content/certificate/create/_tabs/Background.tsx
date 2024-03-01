@@ -8,8 +8,10 @@ import {
   useUpdateOrganization,
 } from "@/hooks/services/organization";
 import { cn } from "@/lib/utils";
+import { useEditor, Element } from "@craftjs/core";
 
 const Background = ({ details, setValue }: TabProps) => {
+  const { connectors } = useEditor();
   const {
     organization,
     isLoading: fetching,
@@ -41,18 +43,23 @@ const Background = ({ details, setValue }: TabProps) => {
         ? {
             certificateAsset: {
               ...organization?.certificateAsset,
-              backgrounds: [
-                ...organization?.certificateAsset?.backgrounds,
-                url,
-              ],
+              backgrounds: organization?.certificateAsset?.backgrounds
+                ? [...organization?.certificateAsset?.backgrounds, url]
+                : [url],
             },
           }
         : {
             certificateAsset: {
               backgrounds: [url],
-              logos: [],
+              elements: [],
             },
           };
+
+      // const payload = {
+      //   certificateAsset: {
+      //     backgrounds: organization?.certificateAsset?.backgrounds,
+      //   },
+      // };
 
       await updateOrganization({
         payload,

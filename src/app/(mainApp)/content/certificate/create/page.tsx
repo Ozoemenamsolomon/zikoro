@@ -1,13 +1,19 @@
 "use client";
+import { Editor, Element, Frame, useEditor } from "@craftjs/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
-import { calculateAndSetMaxHeight } from "@/utils/helpers";
+import {
+  base64ToFile,
+  calculateAndSetMaxHeight,
+  uploadFile,
+} from "@/utils/helpers";
+import { Container, SettingsPanel, Text } from "@/components/certificate";
 import Designs from "./_tabs/Designs";
-import Element from "./_tabs/Element";
-import Text from "./_tabs/Text";
+import ElementTab from "./_tabs/Element";
+import TextTab from "./_tabs/Text";
 import Verification from "./_tabs/verification";
 import Settings from "./_tabs/Settings";
 import QRCode from "react-qr-code";
@@ -19,6 +25,10 @@ import {
 } from "@/types/certificates";
 import useUndo from "use-undo";
 import { useSaveCertificate } from "@/hooks/services/certificate";
+import { Image as ImageElement } from "@/components/certificate";
+import lz from "lzutf8";
+import { exportComponentAsPNG } from "react-component-export-image";
+import { useToPng } from "@hugocxl/react-to-image";
 
 const tabs = [
   {
@@ -83,7 +93,7 @@ const tabs = [
         <path d="M11.434 4H4.566L4.5 5.994h.386c.21-1.252.612-1.446 2.173-1.495l.343-.011v6.343c0 .537-.116.665-1.049.748V12h3.294v-.421c-.938-.083-1.054-.21-1.054-.748V4.488l.348.01c1.56.05 1.963.244 2.173 1.496h.386L11.434 4z" />
       </svg>
     ),
-    Component: ({ ...props }: TabProps) => <Text {...props} />,
+    Component: ({ ...props }: TabProps) => <TextTab {...props} />,
   },
   {
     label: "element",
@@ -105,7 +115,7 @@ const tabs = [
         />
       </svg>
     ),
-    Component: ({ ...props }: TabProps) => <Element {...props} />,
+    Component: ({ ...props }: TabProps) => <ElementTab {...props} />,
   },
   {
     label: "verification",
@@ -164,14 +174,9 @@ const page = () => {
     detailState,
     { set: setDetails, undo: undoDetails, redo: redoDetails },
   ] = useUndo<TCertificateDetails>({
-    text: {
-      heading: "Training certificate",
-      showLocation: true,
-      showDate: true,
-    },
+    craftHash: "",
     verification: { showId: true, showQRCode: true, showURL: true },
     background: null,
-    logos: { companyLogo: null, showZikoro: true },
   });
   const { present: details } = detailState;
 
@@ -181,7 +186,7 @@ const page = () => {
     canReceive: {
       eventAttendees: true,
       quizParticipants: false,
-    sessionAttendees: false,
+      sessionAttendees: false,
       trackAttendees: false,
     },
     criteria: 100,
@@ -215,292 +220,368 @@ const page = () => {
     setSettings({ ...settings, [key]: value });
   };
 
-  const onSave = async () => {
-    await saveCertificate({
-      payload: {
-        eventId: 5,
-        certficateDetails: details,
-        certificateSettings: settings,
-        certificateName,
-      },
-    });
-  };
+  const hashRef = useRef<string>("");
 
-  return (
-    <section className="flex flex-col overflow-hidden border-t" ref={divRef}>
-      <section className="border-b flex justify-between px-4 py-2">
-        <Button
-          className="flex gap-2"
-          variant={"ghost"}
-          onClick={() => router.back()}
-        >
+  const [{ data: png }, convert, certificateRef] = useToPng<HTMLDivElement>({
+    onSuccess: async (data) => {
+      console.log(hashRef.current);
+      console.log(data, "image");
+
+      // const img = new Image();
+      // img.src = data;
+
+      const snapshot = base64ToFile(
+        data,
+        certificateName + new Date().toISOString()
+      );
+      const { url, error } = await uploadFile(snapshot, "image");
+
+      if (error || !url) throw error;
+      console.log(url);
+      // alert("File uploaded successfully", url);
+
+      await saveCertificate({
+        payload: {
+          eventId: 5,
+          certficateDetails: { ...details, craftHash: hashRef.current },
+          certificateSettings: settings,
+          certificateName,
+          cerificateUrl: url,
+        },
+      });
+    },
+  });
+
+  // const onSave = async (query: string) => {
+  //   convert()
+  // };
+
+  console.log(details.background);
+
+  const SaveButton = () => {
+    const { actions, query, enabled } = useEditor((state) => ({
+      enabled: state.options.enabled,
+    }));
+
+    return (
+      <Button
+        disabled={isLoading}
+        className="flex gap-2"
+        variant={"ghost"}
+        onClick={() => {
+          const json = query.serialize();
+          hashRef.current = lz.encodeBase64(lz.compress(json));
+          convert();
+        }}
+      >
+        {isLoading ? (
+          <div className="animate-spin">
+            <svg
+              stroke="currentColor"
+              fill="currentColor"
+              strokeWidth={0}
+              viewBox="0 0 1024 1024"
+              height="1em"
+              width="1em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
+            </svg>
+          </div>
+        ) : (
           <svg
             stroke="currentColor"
             fill="currentColor"
             strokeWidth={0}
-            viewBox="0 0 24 24"
+            viewBox="0 0 1024 1024"
             height="1em"
             width="1em"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M21 11L6.414 11 11.707 5.707 10.293 4.293 2.586 12 10.293 19.707 11.707 18.293 6.414 13 21 13z" />
+            <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z" />
           </svg>
+        )}
+        <span>{isLoading ? "Saving..." : "Save"}</span>
+      </Button>
+    );
+  };
 
-          <span>Back</span>
-        </Button>
-        <Input
-          type="text"
-          className="outline-0 bg-transparent border-0 max-w-fit px-4 focus-visible:ring-sky-300 flex justify-center"
-          value={certificateName}
-          onInput={(e) => setName(e.currentTarget.value)}
-        />
-        <div className="flex gap-2">
+  return (
+    <Editor resolver={{ Text, Container, ImageElement, QRCode }}>
+      <section className="flex flex-col overflow-hidden border-t" ref={divRef}>
+        <section className="border-b flex justify-between px-4 py-2">
           <Button
-            disabled={isLoading}
             className="flex gap-2"
             variant={"ghost"}
-            onClick={onSave}
+            onClick={() => router.back()}
           >
-            {isLoading ? (
-              <div className="animate-spin">
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth={0}
-                  viewBox="0 0 1024 1024"
-                  height="1em"
-                  width="1em"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
-                </svg>
-              </div>
-            ) : (
-              <svg
-                stroke="currentColor"
-                fill="currentColor"
-                strokeWidth={0}
-                viewBox="0 0 1024 1024"
-                height="1em"
-                width="1em"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z" />
-              </svg>
-            )}
-            <span>{isLoading ? "Saving..." : "Save"}</span>
-          </Button>
-          <Button className="bg-basePrimary flex gap-4 items-center">
             <svg
               stroke="currentColor"
               fill="currentColor"
               strokeWidth={0}
               viewBox="0 0 24 24"
-              height="1.5em"
-              width="1.5em"
+              height="1em"
+              width="1em"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path
-                d="M16.9498 5.96781L15.5356 7.38203L13 4.84646V17.0421H11V4.84653L8.46451 7.38203L7.05029 5.96781L12 1.01807L16.9498 5.96781Z"
-                fill="currentColor"
-              />
-              <path
-                d="M5 20.9819V10.9819H9V8.98193H3V22.9819H21V8.98193H15V10.9819H19V20.9819H5Z"
-                fill="currentColor"
-              />
+              <path d="M21 11L6.414 11 11.707 5.707 10.293 4.293 2.586 12 10.293 19.707 11.707 18.293 6.414 13 21 13z" />
             </svg>
 
-            <span>Export</span>
+            <span>Back</span>
           </Button>
-        </div>
-      </section>
-      <section className="grid grid-cols-10">
-        <div className="col-span-4 max-h-full overflow-auto">
-          <Tabs defaultValue="designs" className="flex">
-            <TabsList className="bg-transparent flex flex-col gap-2 justify-between [height:unset_!important] p-0 border-r-2 rounded-none flex-[20%]">
-              {tabs.map(({ label, value, icon }) => (
-                <TabsTrigger
-                  className="data-[state=active]:shadow-none px-4 py-2 data-[state=active]:bg-basePrimary/5 data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none flex flex-col gap-1 w-full"
-                  value={value}
-                >
-                  {icon}
-                  <span className="capitalize">{label}</span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-            {tabs.map(({ label, value, Component }) => (
-              <TabsContent
-                value={value}
-                className="flex-[70%] border-r-2 mt-0 max-h-full overflow-auto no-scrollbar"
-                key={value}
-              >
-                <h3 className="border-b py-2 px-4 text-lg font-semibold text-gray-800 capitalize">
-                  {label}
-                </h3>
-                <div className="p-2 h-full overflow-auto">
-                  {
-                    <Component
-                      settings={settings}
-                      editSettings={editSettings}
-                      details={details}
-                      setValue={setValue}
-                    />
-                  }
-                </div>
-              </TabsContent>
-            ))}
-          </Tabs>
-        </div>
-        <div className="col-span-6 flex flex-col items-center bg-basebody">
-          <div className="flex gap-4 text-gray-500 w-full bg-white py-2 px-4">
-            <button onClick={undoDetails}>
+          <Input
+            type="text"
+            className="outline-0 bg-transparent border-0 max-w-fit px-4 focus-visible:ring-sky-300 flex justify-center"
+            value={certificateName}
+            onInput={(e) => setName(e.currentTarget.value)}
+          />
+          <div className="flex gap-2">
+            <SaveButton />
+            <Button className="bg-basePrimary flex gap-4 items-center">
               <svg
                 stroke="currentColor"
                 fill="currentColor"
                 strokeWidth={0}
                 viewBox="0 0 24 24"
-                height="2em"
-                width="2em"
+                height="1.5em"
+                width="1.5em"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="M9,10h6c1.654,0,3,1.346,3,3s-1.346,3-3,3h-3v2h3c2.757,0,5-2.243,5-5s-2.243-5-5-5H9V5L4,9l5,4V10z" />
+                <path
+                  d="M16.9498 5.96781L15.5356 7.38203L13 4.84646V17.0421H11V4.84653L8.46451 7.38203L7.05029 5.96781L12 1.01807L16.9498 5.96781Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M5 20.9819V10.9819H9V8.98193H3V22.9819H21V8.98193H15V10.9819H19V20.9819H5Z"
+                  fill="currentColor"
+                />
               </svg>
-            </button>
-            <button onClick={redoDetails}>
-              <svg
-                stroke="currentColor"
-                fill="currentColor"
-                strokeWidth={0}
-                viewBox="0 0 24 24"
-                height="2em"
-                width="2em"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M9,18h3v-2H9c-1.654,0-3-1.346-3-3s1.346-3,3-3h6v3l5-4l-5-4v3H9c-2.757,0-5,2.243-5,5S6.243,18,9,18z" />
-              </svg>
-            </button>
+
+              <span>Export</span>
+            </Button>
           </div>
-          <div
-            className="py-6 overflow-auto w-full no-scrollbar flex justify-center"
-            ref={certificateDivRef}
-          >
-            <div
-              className="w-4/5 h-fit space-y-6 text-black py-20 bg-no-repeat"
-              style={{
-                backgroundSize: "cover",
-                backgroundImage: !!details.background
-                  ? `url(${details.background})`
-                  : "",
-                backgroundColor: "#fff",
-              }}
-              // ref={certificateRef}
-            >
-              <div className="px-12">
-                <div className="flex justify-between mb-8">
-                  <img
-                    className="w-[50px] h-[50px]"
-                    src={"/images/your_logo.png"}
-                    alt={"zikoro logo"}
-                  />
-                  <img
-                    className="w-[50px] h-[50px]"
-                    src={"/images/zikoro_logo.png"}
-                    alt={"zikoro logo"}
-                  />
-                </div>
-                <div className="mb-12 space-y-4 text-center w-full">
-                  <h1 className="text-2xl uppercase">{details.text.heading}</h1>
-                  <p className="text-lg">This is to certify that</p>
-                </div>
-                <div className="pb-1 mx-auto w-2/3 text-center mb-6">
-                  <span className="text-4xl font-DancingScript">
-                    {"ABDUR-RASHEED IDRIS"}
-                  </span>
-                </div>
-                <div className="space-y-2 mb-4 text-sm text-center w-full">
-                  <p>
-                    Successfully completed the {"XX"}-hour {"CERTIFICATE NAME"},
-                    earning {"XX"} credits.{" "}
-                  </p>
-                  <p>
-                    A program offered by {"ORGANIZATION NAME"}, in collaboration
-                    with Zikoro
-                  </p>
-                </div>
-                <p className="text-xs text-center w-full mb-6">
-                  {details.text.showDate &&
-                    formatDateToHumanReadable(new Date())}
-                  {details.text.showLocation && details.text.showDate && ", "}
-                  {details.text.showLocation && "LAGOS, NIGERIA"}
-                </p>
-                <div className="flex flex-col items-center gap-2">
-                  {details.verification.showQRCode && (
-                    <div
-                      style={{
-                        height: "auto",
-                        margin: "0 auto",
-                        maxWidth: 64,
-                        width: "100%",
-                      }}
-                    >
-                      <QRCode
-                        size={256}
-                        style={{
-                          height: "auto",
-                          maxWidth: "100%",
-                          width: "100%",
-                        }}
-                        value={`www.zikoro.com/`}
-                        viewBox={`0 0 256 256`}
+        </section>
+
+        <section className="grid grid-cols-10">
+          <div className="col-span-4 max-h-full overflow-auto">
+            <Tabs defaultValue="designs" className="flex">
+              <TabsList className="bg-transparent flex flex-col gap-2 justify-between [height:unset_!important] p-0 border-r-2 rounded-none flex-[20%]">
+                {tabs.map(({ label, value, icon }) => (
+                  <TabsTrigger
+                    className="data-[state=active]:shadow-none px-4 py-2 data-[state=active]:bg-basePrimary/5 data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none flex flex-col gap-1 w-full"
+                    value={value}
+                  >
+                    {icon}
+                    <span className="capitalize">{label}</span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {tabs.map(({ label, value, Component }) => (
+                <TabsContent
+                  value={value}
+                  className="flex-[70%] border-r-2 mt-0 max-h-full overflow-auto no-scrollbar"
+                  key={value}
+                >
+                  <h3 className="border-b py-2 px-4 text-lg font-semibold text-gray-800 capitalize">
+                    {label}
+                  </h3>
+                  <div className="p-2 h-full overflow-auto">
+                    {
+                      <Component
+                        settings={settings}
+                        editSettings={editSettings}
+                        details={details}
+                        setValue={setValue}
                       />
-                    </div>
-                  )}
-                  {details.verification.showId && (
-                    <h2 className="text-tiny">Certificate ID {1234567890}</h2>
-                  )}
-                  {details.verification.showURL && (
-                    <a
-                      href="www.zikoro.com/verify"
-                      className="flex gap-1 items-center text-tiny text-black"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width={15}
-                        height={15}
-                        viewBox="0 0 16 17"
-                        fill="none"
-                      >
-                        <g clipPath="url(#clip0_11548_17274)">
-                          <path
-                            d="M11.7956 8.80994C11.7937 8.21232 11.7297 7.61652 11.6044 7.03216H13.2044C13.122 6.78841 13.0225 6.55078 12.9067 6.32105H11.4178C11.1379 5.38596 10.7038 4.5042 10.1333 3.71216C9.76888 3.55892 9.38888 3.44566 9 3.37438C9.78149 4.21405 10.3714 5.21335 10.7289 6.30327L8.33334 6.30327V3.29883H7.66667L7.66667 6.30772L5.27112 6.30772C5.62937 5.21583 6.22082 4.21492 7.00445 3.37438C6.61724 3.44447 6.23874 3.55623 5.87556 3.70772C5.30287 4.49644 4.86576 5.37516 4.58223 6.30772H3.08445C2.96648 6.54164 2.86548 6.78375 2.78223 7.03216H4.39556C4.27035 7.61652 4.20631 8.21232 4.20445 8.80994C4.20568 9.46362 4.28022 10.1151 4.42667 10.7522H2.85334C2.94528 11.0013 3.0552 11.2434 3.18223 11.4766H4.61778C4.88988 12.3281 5.29325 13.1318 5.81334 13.8588C6.18577 14.0186 6.57483 14.1363 6.97334 14.2099C6.24797 13.4187 5.69012 12.489 5.33334 11.4766H7.67111L7.67111 14.2944L8.33778 14.2944L8.33778 11.4766H10.6667C10.3087 12.4894 9.74929 13.4192 9.02223 14.2099C9.4226 14.1338 9.81318 14.013 10.1867 13.8499C10.7059 13.1257 11.1093 12.325 11.3822 11.4766H12.8044C12.9309 11.2477 13.0408 11.0101 13.1333 10.7655H11.5556C11.709 10.1248 11.7895 9.46875 11.7956 8.80994ZM7.66667 10.7522H5.11556C4.80266 9.52898 4.78894 8.24843 5.07556 7.01883L7.66667 7.01883V10.7522ZM10.8844 10.7522H8.33334V7.03216L10.9244 7.03216C11.0521 7.61604 11.1147 8.21227 11.1111 8.80994C11.1147 9.46415 11.0386 10.1164 10.8844 10.7522Z"
-                            fill="black"
+                    }
+                  </div>
+                </TabsContent>
+              ))}
+            </Tabs>
+          </div>
+          <div className="col-span-6 flex flex-col items-center bg-basebody">
+            <div className="grid grid-cols-10 bg-white w-full">
+              <div className="col-span-2 flex gap-4 text-gray-500 py-2 px-4">
+                <button onClick={undoDetails}>
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 24 24"
+                    height="2em"
+                    width="2em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M9,10h6c1.654,0,3,1.346,3,3s-1.346,3-3,3h-3v2h3c2.757,0,5-2.243,5-5s-2.243-5-5-5H9V5L4,9l5,4V10z" />
+                  </svg>
+                </button>
+                <button onClick={redoDetails}>
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 24 24"
+                    height="2em"
+                    width="2em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M9,18h3v-2H9c-1.654,0-3-1.346-3-3s1.346-3,3-3h6v3l5-4l-5-4v3H9c-2.757,0-5,2.243-5,5S6.243,18,9,18z" />
+                  </svg>
+                </button>
+              </div>
+              <div className="col-span-8">
+                <SettingsPanel />
+              </div>
+            </div>
+            <div
+              className="py-6 overflow-auto w-full no-scrollbar flex justify-center"
+              ref={certificateDivRef}
+            >
+              <div
+                className="relative w-4/5 h-fit space-y-6 text-black bg-no-repeat"
+                style={{
+                  backgroundSize: "cover",
+                  backgroundImage: !!details.background
+                    ? `url(${details.background})`
+                    : "",
+                  backgroundColor: "#fff",
+                  width: "90%",
+                  height: "750px",
+                }}
+                ref={certificateRef}
+              >
+                <Frame>
+                  <Element
+                    className="px-12"
+                    canvas
+                    is={Container}
+                    data-cy="root-container"
+                  >
+                    <ImageElement
+                      src="/images/your_logo.png"
+                      width={50}
+                      height={50}
+                    />
+                    <ImageElement
+                      src={"/images/zikoro_logo.png"}
+                      width={50}
+                      height={50}
+                    />
+                    <Text
+                      text={"TRAINING CERTIFICATE"}
+                      textAlign={"center"}
+                      fontSize={32}
+                      tagName={"h1"}
+                      textTransform={"uppercase"}
+                    />
+                    {/* <h1 className="text-2xl uppercase">
+                      {details.text.heading}
+                    </h1> */}
+                    <Text
+                      text={"This is to certify that"}
+                      fontSize={16}
+                      textAlign="center"
+                    />
+                    <Text
+                      text={"ABDUR-RASHEED IDRIS"}
+                      fontSize={40}
+                      textAlign="center"
+                      fontFamily="DancingScript"
+                      textTransform="uppercase"
+                    />
+                    <Text
+                      text={`Successfully completed the ${"XX"}-hour
+                        ${"CERTIFICATE NAME"}, earning ${"XX"} credits.`}
+                      fontSize={16}
+                      textAlign="center"
+                    />
+                    <Text
+                      text={`A program offered by {"ORGANIZATION NAME"}, in
+                        collaboration with Zikoro`}
+                      fontSize={16}
+                      textAlign="center"
+                    />
+
+                    {/* <p className="text-xs text-center w-full mb-6">
+                      {details.text.showDate &&
+                        formatDateToHumanReadable(new Date())}
+                      {details.text.showLocation &&
+                        details.text.showDate &&
+                        ", "}
+                      {details.text.showLocation && "LAGOS, NIGERIA"}
+                    </p> */}
+                    {/* <div className="flex flex-col items-center gap-2">
+                      {details.verification.showQRCode && (
+                        <div
+                          style={{
+                            height: "auto",
+                            margin: "0 auto",
+                            maxWidth: 64,
+                            width: "100%",
+                          }}
+                        >
+                          <QRCode
+                            size={256}
+                            style={{
+                              height: "auto",
+                              maxWidth: "100%",
+                              width: "100%",
+                            }}
+                            value={`www.zikoro.com/`}
+                            viewBox={`0 0 256 256`}
                           />
-                          <path
-                            d="M8.00003 1.69824C6.59359 1.69824 5.21872 2.1153 4.04931 2.89668C2.87989 3.67806 1.96844 4.78866 1.43022 6.08805C0.891997 7.38743 0.751173 8.81724 1.02556 10.1967C1.29994 11.5761 1.97721 12.8432 2.97172 13.8377C3.96622 14.8322 5.2333 15.5094 6.61272 15.7838C7.99214 16.0582 9.42195 15.9174 10.7213 15.3792C12.0207 14.8409 13.1313 13.9295 13.9127 12.7601C14.6941 11.5907 15.1111 10.2158 15.1111 8.80935C15.1111 6.92337 14.3619 5.11463 13.0283 3.78104C11.6948 2.44745 9.88601 1.69824 8.00003 1.69824ZM8.00003 15.0316C6.76939 15.0316 5.56639 14.6666 4.54315 13.9829C3.51991 13.2992 2.72239 12.3275 2.25145 11.1905C1.7805 10.0535 1.65728 8.80245 1.89737 7.59546C2.13745 6.38847 2.73006 5.27977 3.60025 4.40958C4.47045 3.53938 5.57914 2.94678 6.78614 2.70669C7.99313 2.4666 9.24421 2.58982 10.3812 3.06077C11.5181 3.53171 12.4899 4.32923 13.1736 5.35247C13.8573 6.37571 14.2223 7.57871 14.2223 8.80935C14.2223 10.4596 13.5667 12.0422 12.3998 13.2091C11.2329 14.376 9.65027 15.0316 8.00003 15.0316Z"
-                            fill="black"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_11548_17274">
-                            <rect
-                              width={16}
-                              height={16}
-                              fill="white"
-                              transform="translate(0 0.80957)"
-                            />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                      <span>www.zikoro.com/verify</span>
-                    </a>
-                  )}
-                </div>
+                        </div>
+                      )}
+                      {details.verification.showId && (
+                        <h2 className="text-tiny">
+                          Certificate ID {1234567890}
+                        </h2>
+                      )}
+                      {details.verification.showURL && (
+                        <a
+                          href="www.zikoro.com/verify"
+                          className="flex gap-1 items-center text-tiny text-black"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={15}
+                            height={15}
+                            viewBox="0 0 16 17"
+                            fill="none"
+                          >
+                            <g clipPath="url(#clip0_11548_17274)">
+                              <path
+                                d="M11.7956 8.80994C11.7937 8.21232 11.7297 7.61652 11.6044 7.03216H13.2044C13.122 6.78841 13.0225 6.55078 12.9067 6.32105H11.4178C11.1379 5.38596 10.7038 4.5042 10.1333 3.71216C9.76888 3.55892 9.38888 3.44566 9 3.37438C9.78149 4.21405 10.3714 5.21335 10.7289 6.30327L8.33334 6.30327V3.29883H7.66667L7.66667 6.30772L5.27112 6.30772C5.62937 5.21583 6.22082 4.21492 7.00445 3.37438C6.61724 3.44447 6.23874 3.55623 5.87556 3.70772C5.30287 4.49644 4.86576 5.37516 4.58223 6.30772H3.08445C2.96648 6.54164 2.86548 6.78375 2.78223 7.03216H4.39556C4.27035 7.61652 4.20631 8.21232 4.20445 8.80994C4.20568 9.46362 4.28022 10.1151 4.42667 10.7522H2.85334C2.94528 11.0013 3.0552 11.2434 3.18223 11.4766H4.61778C4.88988 12.3281 5.29325 13.1318 5.81334 13.8588C6.18577 14.0186 6.57483 14.1363 6.97334 14.2099C6.24797 13.4187 5.69012 12.489 5.33334 11.4766H7.67111L7.67111 14.2944L8.33778 14.2944L8.33778 11.4766H10.6667C10.3087 12.4894 9.74929 13.4192 9.02223 14.2099C9.4226 14.1338 9.81318 14.013 10.1867 13.8499C10.7059 13.1257 11.1093 12.325 11.3822 11.4766H12.8044C12.9309 11.2477 13.0408 11.0101 13.1333 10.7655H11.5556C11.709 10.1248 11.7895 9.46875 11.7956 8.80994ZM7.66667 10.7522H5.11556C4.80266 9.52898 4.78894 8.24843 5.07556 7.01883L7.66667 7.01883V10.7522ZM10.8844 10.7522H8.33334V7.03216L10.9244 7.03216C11.0521 7.61604 11.1147 8.21227 11.1111 8.80994C11.1147 9.46415 11.0386 10.1164 10.8844 10.7522Z"
+                                fill="black"
+                              />
+                              <path
+                                d="M8.00003 1.69824C6.59359 1.69824 5.21872 2.1153 4.04931 2.89668C2.87989 3.67806 1.96844 4.78866 1.43022 6.08805C0.891997 7.38743 0.751173 8.81724 1.02556 10.1967C1.29994 11.5761 1.97721 12.8432 2.97172 13.8377C3.96622 14.8322 5.2333 15.5094 6.61272 15.7838C7.99214 16.0582 9.42195 15.9174 10.7213 15.3792C12.0207 14.8409 13.1313 13.9295 13.9127 12.7601C14.6941 11.5907 15.1111 10.2158 15.1111 8.80935C15.1111 6.92337 14.3619 5.11463 13.0283 3.78104C11.6948 2.44745 9.88601 1.69824 8.00003 1.69824ZM8.00003 15.0316C6.76939 15.0316 5.56639 14.6666 4.54315 13.9829C3.51991 13.2992 2.72239 12.3275 2.25145 11.1905C1.7805 10.0535 1.65728 8.80245 1.89737 7.59546C2.13745 6.38847 2.73006 5.27977 3.60025 4.40958C4.47045 3.53938 5.57914 2.94678 6.78614 2.70669C7.99313 2.4666 9.24421 2.58982 10.3812 3.06077C11.5181 3.53171 12.4899 4.32923 13.1736 5.35247C13.8573 6.37571 14.2223 7.57871 14.2223 8.80935C14.2223 10.4596 13.5667 12.0422 12.3998 13.2091C11.2329 14.376 9.65027 15.0316 8.00003 15.0316Z"
+                                fill="black"
+                              />
+                            </g>
+                            <defs>
+                              <clipPath id="clip0_11548_17274">
+                                <rect
+                                  width={16}
+                                  height={16}
+                                  fill="white"
+                                  transform="translate(0 0.80957)"
+                                />
+                              </clipPath>
+                            </defs>
+                          </svg>
+                          <span>www.zikoro.com/verify</span>
+                        </a>
+                      )}
+                    </div> */}
+                  </Element>
+                </Frame>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </section>
-    </section>
+    </Editor>
   );
 };
 
