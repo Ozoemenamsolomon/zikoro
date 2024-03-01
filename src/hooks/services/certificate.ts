@@ -32,6 +32,7 @@ export const useSaveCertificate = (): usePostResult<
       toast({
         description: "Certificate Saved Successfully",
       });
+      return data.data;
     } catch (error) {
       setError(true);
     } finally {
@@ -45,7 +46,7 @@ export const useSaveCertificate = (): usePostResult<
 export const useGetCertificate = ({
   certificateId,
 }: {
-  certificateId: number;
+  certificateId: string;
 }): UseGetResult<TCertificate, "certificate", "getCertificate"> => {
   const [certificate, setCertificates] = useState<TCertificate | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -56,7 +57,7 @@ export const useGetCertificate = ({
 
     try {
       const { data, status } = await getRequest<TCertificate>({
-        endpoint: `/certificate/${certificateId}`,
+        endpoint: `/certificates/${certificateId}`,
       });
 
       if (status !== 200) {

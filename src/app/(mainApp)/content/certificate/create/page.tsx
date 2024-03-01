@@ -1,8 +1,15 @@
 "use client";
-import { Editor, Element, Frame, useEditor } from "@craftjs/core";
+import {
+  Editor,
+  Element,
+  Frame,
+  SerializedNode,
+  SerializedNodes,
+  useEditor,
+} from "@craftjs/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import {
@@ -20,11 +27,15 @@ import QRCode from "react-qr-code";
 import { formatDateToHumanReadable } from "@/utils/date";
 import Background from "./_tabs/Background";
 import {
+  TCertificate,
   TCertificateDetails,
   TCertificateSettings,
 } from "@/types/certificates";
 import useUndo from "use-undo";
-import { useSaveCertificate } from "@/hooks/services/certificate";
+import {
+  useGetCertificate,
+  useSaveCertificate,
+} from "@/hooks/services/certificate";
 import { Image as ImageElement } from "@/components/certificate";
 import lz from "lzutf8";
 import { exportComponentAsPNG } from "react-component-export-image";
@@ -155,6 +166,211 @@ const tabs = [
   },
 ];
 
+const DEFAULT_FRAME_STATE: SerializedNodes = {
+  ROOT: {
+    type: { resolvedName: "Container" },
+    isCanvas: true,
+    props: { className: "px-12", "data-cy": "root-container" },
+    displayName: "Container",
+    custom: {},
+    hidden: false,
+    nodes: [
+      "jRhdIGLpF6",
+      "dctg3UrG0u",
+      "MrWpdo15n4",
+      "UAyB7m2OTd",
+      "G_9evjnPXh",
+      "ejgclGttJ2",
+      "48bTDW8UT_",
+      "Y1aEfA-fvY",
+    ],
+    linkedNodes: {},
+  },
+  jRhdIGLpF6: {
+    type: { resolvedName: "ImageElement" },
+    isCanvas: false,
+    props: {
+      src: "/images/your_logo.png",
+      width: 50,
+      height: 50,
+      pageX: 98,
+      pageY: 135,
+    },
+    displayName: "Image",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  dctg3UrG0u: {
+    type: { resolvedName: "ImageElement" },
+    isCanvas: false,
+    props: {
+      src: "/images/zikoro_logo.png",
+      width: 50,
+      height: 50,
+      pageX: 359,
+      pageY: 80,
+    },
+    displayName: "Image",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  MrWpdo15n4: {
+    type: { resolvedName: "Text" },
+    isCanvas: false,
+    props: {
+      text: "TRAINING CERTIFICATE",
+      fontSize: 32,
+      isBold: false,
+      isItalic: false,
+      color: "#000",
+      isUnderline: false,
+      tagName: "h1",
+      textAlign: "center",
+      textTransform: "uppercase",
+    },
+    displayName: "Text",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  UAyB7m2OTd: {
+    type: { resolvedName: "Text" },
+    isCanvas: false,
+    props: {
+      text: "This is to certify that",
+      fontSize: 16,
+      isBold: false,
+      isItalic: false,
+      color: "#000",
+      isUnderline: false,
+      tagName: "p",
+      textAlign: "center",
+      textTransform: "none",
+    },
+    displayName: "Text",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  G_9evjnPXh: {
+    type: { resolvedName: "Text" },
+    isCanvas: false,
+    props: {
+      text: "ABDUR-RASHEED IDRIS",
+      fontSize: 40,
+      isBold: false,
+      isItalic: false,
+      color: "#000",
+      isUnderline: false,
+      tagName: "p",
+      textAlign: "center",
+      textTransform: "uppercase",
+      fontFamily: "DancingScript",
+    },
+    displayName: "Text",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  ejgclGttJ2: {
+    type: { resolvedName: "Text" },
+    isCanvas: false,
+    props: {
+      text: "Successfully completed the XX-hour\n                        CERTIFICATE NAME, earning XX credits.",
+      fontSize: 16,
+      isBold: false,
+      isItalic: false,
+      color: "#000",
+      isUnderline: false,
+      tagName: "p",
+      textAlign: "center",
+      textTransform: "none",
+    },
+    displayName: "Text",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  "48bTDW8UT_": {
+    type: { resolvedName: "Text" },
+    isCanvas: false,
+    props: {
+      text: 'A program offered by {"ORGANIZATION NAME"}, in\n                        collaboration with Zikoro',
+      fontSize: 16,
+      isBold: false,
+      isItalic: false,
+      color: "#000",
+      isUnderline: false,
+      tagName: "p",
+      textAlign: "center",
+      textTransform: "none",
+    },
+    displayName: "Text",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  "Y1aEfA-fvY": {
+    type: "div",
+    isCanvas: false,
+    props: { className: "flex flex-col items-center gap-2" },
+    displayName: "div",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: ["z55csfWw8N"],
+    linkedNodes: {},
+  },
+  z55csfWw8N: {
+    type: "div",
+    isCanvas: false,
+    props: {
+      style: { height: "auto", margin: "0 auto", maxWidth: 64, width: "100%" },
+    },
+    displayName: "div",
+    custom: {},
+    parent: "Y1aEfA-fvY",
+    hidden: false,
+    nodes: ["MdIdRUSVrQ"],
+    linkedNodes: {},
+  },
+  MdIdRUSVrQ: {
+    type: { resolvedName: "QRCode" },
+    isCanvas: false,
+    props: {
+      size: 256,
+      style: { height: "auto", maxWidth: "100%", width: "100%" },
+      value: "www.zikoro.com/",
+      viewBox: "0 0 256 256",
+      bgColor: "#FFFFFF",
+      fgColor: "#000000",
+      level: "L",
+    },
+    displayName: "QRCode",
+    custom: {},
+    parent: "z55csfWw8N",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+};
+
 export interface TabProps {
   details: TCertificateDetails;
   setValue: (key: keyof TCertificateDetails, value: any) => void;
@@ -166,6 +382,18 @@ const page = () => {
   const divRef = useRef<HTMLDivElement>(null);
   const certificateDivRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  const certificateId = searchParams.get("certificateId");
+
+  const { certificate, isLoading: certificateIsLoading } = useGetCertificate({
+    certificateId: certificateId || "",
+  });
+
+  const [editableCertificate, setCertificate] = useState<TCertificate | null>(
+    null
+  );
 
   const { saveCertificate, isLoading } = useSaveCertificate();
 
@@ -179,6 +407,34 @@ const page = () => {
     background: null,
   });
   const { present: details } = detailState;
+
+  // const [json, setJson] = useState<SerializedNodes | string>(
+  //   DEFAULT_FRAME_STATE
+  // );
+
+  // const json = lz.decompress(lz.decodeBase64(details?.craftHash));
+
+  // useEffect(() => {
+  //   console.log(json === DEFAULT_FRAME_STATE, "json state");
+  // }, [json]);
+
+  useEffect(() => {
+    if (certificateIsLoading || !certificate) return;
+
+    console.log(certificate);
+
+    setCertificate(certificate);
+
+    if (certificate?.certificateName) {
+      setName(certificate?.certificateName);
+    }
+    if (certificate?.certficateDetails) {
+      setDetails(certificate?.certficateDetails);
+    }
+    if (certificate?.certificateSettings) {
+      setSettings(certificate?.certificateSettings);
+    }
+  }, [certificateIsLoading]);
 
   const [settings, setSettings] = useState<TCertificateSettings>({
     size: "A4",
@@ -240,15 +496,25 @@ const page = () => {
       console.log(url);
       // alert("File uploaded successfully", url);
 
-      await saveCertificate({
-        payload: {
-          eventId: 5,
-          certficateDetails: { ...details, craftHash: hashRef.current },
-          certificateSettings: settings,
-          certificateName,
-          cerificateUrl: url,
-        },
+      const newCertificate = await saveCertificate({
+        payload: editableCertificate
+          ? {
+              ...editableCertificate,
+              certficateDetails: { ...details, craftHash: hashRef.current },
+              certificateSettings: settings,
+              certificateName,
+              cerificateUrl: url,
+            }
+          : {
+              eventId: 5,
+              certficateDetails: { ...details, craftHash: hashRef.current },
+              certificateSettings: settings,
+              certificateName,
+              cerificateUrl: url,
+            },
       });
+      console.log(newCertificate);
+      setCertificate(newCertificate);
     },
   });
 
@@ -256,7 +522,8 @@ const page = () => {
   //   convert()
   // };
 
-  console.log(details.background);
+  console.log(details.craftHash);
+  console.log(typeof DEFAULT_FRAME_STATE, typeof details.craftHash);
 
   const SaveButton = () => {
     const { actions, query, enabled } = useEditor((state) => ({
@@ -269,8 +536,9 @@ const page = () => {
         className="flex gap-2"
         variant={"ghost"}
         onClick={() => {
-          const json = query.serialize();
-          hashRef.current = lz.encodeBase64(lz.compress(json));
+          // const json = query.serialize();
+          // hashRef.current = lz.encodeBase64(lz.compress(json));
+          hashRef.current = query.serialize();
           convert();
         }}
       >
@@ -450,8 +718,12 @@ const page = () => {
                 }}
                 ref={certificateRef}
               >
-                <Frame>
-                  <Element
+                <Frame
+                  data={
+                    JSON.stringify(details?.craftHash) || DEFAULT_FRAME_STATE
+                  }
+                >
+                  {/* <Element
                     className="px-12"
                     canvas
                     is={Container}
@@ -474,9 +746,9 @@ const page = () => {
                       tagName={"h1"}
                       textTransform={"uppercase"}
                     />
-                    {/* <h1 className="text-2xl uppercase">
+                    <h1 className="text-2xl uppercase">
                       {details.text.heading}
-                    </h1> */}
+                    </h1>
                     <Text
                       text={"This is to certify that"}
                       fontSize={16}
@@ -502,15 +774,15 @@ const page = () => {
                       textAlign="center"
                     />
 
-                    {/* <p className="text-xs text-center w-full mb-6">
+                    <p className="text-xs text-center w-full mb-6">
                       {details.text.showDate &&
                         formatDateToHumanReadable(new Date())}
                       {details.text.showLocation &&
                         details.text.showDate &&
                         ", "}
                       {details.text.showLocation && "LAGOS, NIGERIA"}
-                    </p> */}
-                    {/* <div className="flex flex-col items-center gap-2">
+                    </p>
+                    <div className="flex flex-col items-center gap-2">
                       {details.verification.showQRCode && (
                         <div
                           style={{
@@ -573,8 +845,8 @@ const page = () => {
                           <span>www.zikoro.com/verify</span>
                         </a>
                       )}
-                    </div> */}
-                  </Element>
+                    </div>
+                  </Element> */}
                 </Frame>
               </div>
             </div>

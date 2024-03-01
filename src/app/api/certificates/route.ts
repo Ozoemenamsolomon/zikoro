@@ -40,11 +40,17 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      const { error } = await supabase.from("certificate").upsert(params);
+      console.log(params);
+
+      const { data, error } = await supabase
+        .from("certificate")
+        .upsert(params)
+        .select()
+        .maybeSingle();
       if (error) throw error;
 
       return NextResponse.json(
-        { msg: "certificate saved successfully" },
+        { msg: "certificate saved successfully", data },
         {
           status: 201,
         }

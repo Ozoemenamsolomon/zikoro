@@ -13,7 +13,8 @@ export async function GET(
       const { data, error, status } = await supabase
         .from("certificate")
         .select("*")
-        .eq("id", certificateId);
+        .eq("id", certificateId)
+        .maybeSingle();
 
       if (error) throw error;
 
