@@ -44,13 +44,14 @@ export const eventFeedBackSchema = z.object({
 });
 
 export const newEventSchema = z.object({
-  startDateTime: z.object({}),
-  endDateTime: z.object({}),
+  startDateTime: z.any(),
+  endDateTime: z.any(),
   eventTitle: z.string().min(3, { message: "Title is required" }),
   eventAddress: z.string().min(3, { message: "Address is required" }),
   locationType: z.string(),
   expectedParticipants: z.string(),
   eventCity: z.string(),
+  eventAlias: z.any(),
   eventCountry: z.string(),
-  organizationId: z.any()
+  organisationId: z.any()
 });

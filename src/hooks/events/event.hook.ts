@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import {useRouter} from "next/navigation"
 import * as z from "zod";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import {
   eventBookingValidationSchema,
   organizationSchema,
-  newEventSchema
+  newEventSchema,
 } from "@/validations";
 import { Event } from "@/types";
 import _ from "lodash";
@@ -26,7 +27,7 @@ export function useCreateOrganisation() {
     try {
       const { error, status } = await supabase
         .from("organization")
-        .upsert([{ ...values, organizationOwner: userData?.email }]);
+        .upsert([{ ...values, organizationOwner: userData?.userEmail }]);
 
       if (error) {
         toast.error(error.message);
@@ -48,22 +49,32 @@ export function useCreateOrganisation() {
 
 export function useCreateEvent() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter()
 
   async function createEvent(values: z.infer<typeof newEventSchema>) {
     setLoading(true);
+   
 
     try {
-      const { error, status } = await supabase
-        .from("events")
-        .upsert([{ ...values, email: userData?.email }]);
+      const { data, error, status } = await supabase.from("events").upsert([
+        {
+          ...values,
+          email: userData?.userEmail,
+          createdBy: userData?.userEmail,
+          published:false
+        },
+      ]);
 
       if (error) {
         toast.error(error.message);
+        setLoading(false);
         return;
       }
-
+    
       if (status === 201 || status === 200) {
         setLoading(false);
+       
+        router.push(` /events/content/${values.eventAlias}/event`)
         toast.success("Event created successfully");
       }
     } catch (error) {}
@@ -573,7 +584,7 @@ export function useEventFeedBack() {
 
       if (error) {
         toast.error(error.message);
-        setLoading(false)
+        setLoading(false);
         return;
       }
 

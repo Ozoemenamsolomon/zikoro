@@ -25,7 +25,7 @@ export function ContentTabs({
   const links = [
     {
       name: "Event",
-      href: "event",
+      href: `/events/content/${eventId}/event`,
     },
     {
       name: "Contact",

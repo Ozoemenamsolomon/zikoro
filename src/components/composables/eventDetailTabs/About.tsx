@@ -32,7 +32,7 @@ export function About({
     <div className="w-full  hidden flex-col sm:flex gap-y-6 sm:gap-y-20">
       <div
         className={cn(
-          "w-full px-4 sm:px-6 gap-6 grid grid-cols-1 lg:grid-cols-2 items-center",
+          "w-full px-4 sm:px-6 gap-6 grid grid-cols-1  items-center",
           className
         )}
       >
@@ -101,21 +101,9 @@ export function About({
             before the start of the class. Tickets can be used as credit for
             another comparable available workshop.
           </div>
-        </div>
 
-        {isEventDetailPage && (
           <div className="w-full h-full flex flex-col gap-y-6">
-            <Image
-              src={
-                event?.eventPoster
-                  ? event?.eventPoster?.image1
-                  : "/images/rect.png"
-              }
-              alt="eventimage"
-              width={700}
-              height={700}
-              className="rounded-lg w-full h-72"
-            />
+           
 
            {event?.eventAddress && <ul className="w-full flex flex-col items-start justify-start space-y-4">
               <h2 className="font-medium text-base sm:text-lg ">
@@ -126,7 +114,9 @@ export function About({
               </li>
             </ul>}
           </div>
-        )}
+        </div>
+
+      
       </div>
 
       {isEventDetailPage && (

@@ -22,7 +22,7 @@ export default function Page({
         imageLink={"https://imagetolink.com/ib/9bs4n2aVoi.png"}
         eventId={id}
       />
-      <div className="w-full h-full bg-gray-50 p-4 sm:p-6">
+      <div className="w-full h-full bg-gray-50 fixed inset-0 overflow-y-auto p-4 sm:p-6">
         <Image
           src="/images/zikoro.png"
           alt="logo"
@@ -31,7 +31,7 @@ export default function Page({
           className="w-[150px] h-[40px]"
         />
 
-        <div className="mt-10 sm:mt-32 mx-auto  w-[95%] sm:w-[65%] lg:w-[90%] xl:w-[70%]">
+        <div className="mt-10 sm:mt-32 mx-auto  w-[95%] sm:w-[65%] lg:w-[90%] xl:w-[80%]">
           {eventDetail ? (
             <EventDetail event={eventDetail} />
           ) : (

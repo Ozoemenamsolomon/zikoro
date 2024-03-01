@@ -208,7 +208,7 @@ export function HeroLayout({
         </div>
 
         <div className="absolute top-[200px] md:top-[300px] bg-gray-50 w-full mx-auto">
-          <div className="flex flex-col pb-20 sm:gap-y-6 gap-y-20 items-center mx-auto justify-center w-[95%] sm:w-[65%] lg:w-[80%] xl:w-[65%]">
+          <div className="flex flex-col pb-20 sm:gap-y-6 gap-y-20 items-center mx-auto justify-center w-[95%] sm:w-[65%] lg:w-[80%] xl:w-[75%]">
             {children}
             { (!loading && !isLastPage) && (
               <Button

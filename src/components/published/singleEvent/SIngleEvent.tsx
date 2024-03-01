@@ -3,9 +3,10 @@
 import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
 import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
 import { CalendarDateFill } from "@styled-icons/bootstrap/CalendarDateFill";
-import { CheckCircleFill, Telephone } from "styled-icons/bootstrap";
+import { Telephone } from "styled-icons/bootstrap";
 import { Whatsapp } from "styled-icons/remix-fill";
 import { EmailOutline } from "styled-icons/evaicons-outline";
+import Image from "next/image";
 import { Button } from "@/components";
 import { Share } from "@styled-icons/bootstrap/Share";
 import {
@@ -23,7 +24,6 @@ import {
   dateFormatting,
   calculateTimeDifference,
   hasTimeElapsed,
-  isDateGreaterThanToday,
   COUNTRIES_CURRENCY,
 } from "@/utils";
 import {
@@ -36,7 +36,6 @@ import { useState, useMemo } from "react";
 import { BookEvent } from "..";
 import { useRouter } from "next/navigation";
 import { Event, OrganizerContact } from "@/types";
-import { useRedeemDiscountCode } from "@/hooks";
 
 export function SingleEvent({
   className,
@@ -45,6 +44,7 @@ export function SingleEvent({
   useDiv = false,
   organization,
   eventId,
+  imageClassName
 }: {
   isDetail?: boolean;
   className?: string;
@@ -52,20 +52,13 @@ export function SingleEvent({
   organization?: string | null;
   eventId?: number;
   useDiv?: boolean;
+  imageClassName?:string
 }) {
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
-  const {
-    verifyDiscountCode,
-    loading,
-    minAttendees,
-    discountAmount,
-    discountPercentage,
-  } = useRedeemDiscountCode();
-  const [chosenPrice, setChosenPrice] = useState<number | undefined>();
+
   const [isShareDropDown, showShareDropDown] = useState(false);
-  const [code, setCode] = useState("");
-  const [priceCategory, setPriceCategory] = useState<string | undefined>("");
+
   const router = useRouter();
 
   function onClose() {
@@ -120,64 +113,8 @@ export function SingleEvent({
     window.open(`mailto:${event?.email}`, "_blank");
   }
 
-  /// restructure pricing array
-  const pricingArray = useMemo(() => {
-    if (Array.isArray(event?.pricing)) {
-      return event?.pricing?.map((value) => {
-        if (value?.earlyBird) {
-          return {
-            price:
-              discountAmount !== null
-                ? Number(value?.earlyBird) - Number(discountAmount)
-                : Number(value?.earlyBird) -
-                  (Number(value?.earlyBird) * Number(discountPercentage)) / 100,
-            name: "Early Bird",
-            date: value?.validity,
-          };
-        } else if (value?.standard) {
-          return {
-            price:
-              discountAmount !== null
-                ? Number(value?.standard) - Number(discountAmount)
-                : Number(value?.standard) -
-                  (Number(value?.standard) * Number(discountPercentage)) / 100,
-            name: "Standard",
-            date: value?.validity,
-          };
-        } else {
-          if (!value?.lateBird) return;
-          return {
-            price:
-              discountAmount !== null
-                ? Number(value?.lateBird) - Number(discountAmount)
-                : Number(value?.lateBird) -
-                  (Number(value?.lateBird) * Number(discountPercentage)) / 100,
-            name: "Late Bird",
-            date: value?.validity,
-          };
-        }
-      });
-    }
-  }, [event?.pricing, discountAmount, discountPercentage]);
-
-  function activeSelectedPrice(selected: string | undefined) {
-    return selected === priceCategory;
-  }
-
   function toggleShareDropDown() {
     showShareDropDown((prev) => !prev);
-  }
-
-  function selectedPrice(value: number | undefined) {
-    setChosenPrice(value);
-  }
-
-  function selectedPriceCategory(value: string | undefined) {
-    if (priceCategory === undefined && priceCategory !== value) {
-      setPriceCategory(undefined);
-    } else {
-      setPriceCategory(value);
-    }
   }
 
   // conditonally adding comma to separate city and location
@@ -218,17 +155,23 @@ export function SingleEvent({
     return Number(event?.expectedParticipants) - Number(event?.registered);
   }, [event?.expectedParticipants, event?.registered]);
 
-  /// verifying and redeeming a discount code'
-  async function redeem() {
-    await verifyDiscountCode(code, String(eventId));
-    // setCode("")
-  }
-
   const organizerContact: OrganizerContact = {
     whatsappNumber: event?.whatsappNumber,
     phoneNumber: event?.phoneNumber,
     email: event?.email,
   };
+
+  const price = useMemo(() => {
+    if (Array.isArray(event?.pricing) && event?.pricing[1]?.standard) {
+      const standardPrice = event?.pricing[1].standard;
+
+      return Number(standardPrice)?.toLocaleString(undefined, {
+        maximumFractionDigits: 0,
+      });
+    } else {
+      return "";
+    }
+  }, [event?.pricing]);
 
   return (
     <>
@@ -239,36 +182,48 @@ export function SingleEvent({
       >
         <div
           className={cn(
-            "w-full flex flex-col justify-start items-start gap-y-4 bg-white rounded-2xl  shadow h-fit py-4 px-4 sm:px-10 sm:py-6",
+            "w-full flex flex-col justify-start items-start gap-y-4 bg-white rounded-2xl  shadow h-fit ",
             isExpired && "relative",
             className
           )}
         >
-          <EventLocationType
-            locationType={event?.locationType}
-            className="w-fit px-4 h-10 text-xs"
-          />
           {isExpired && (
             <div className="w-full h-full inset-0 absolute z-10 bg-white/50"></div>
           )}
-          <div className="w-full grid grid-cols-1 lg:grid-cols-7 items-start">
-            <div className="w-full lg:col-span-4 flex flex-col gap-y-4 items-start justify-start">
-              <p className="text-base sm:text-xl font-medium mb-4 ">
+          <div className="w-full grid grid-cols-1 h-full gap-4 lg:grid-cols-8 items-start">
+            <div className="w-full h-full flex lg:col-span-4 flex-col items-start justify-start gap-y-4">
+              <Image
+                src={event?.eventPoster ? event?.eventPoster?.image1 : ""}
+                alt="event-image"
+                width={600}
+                height={600}
+                className={cn("w-full h-full rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl object-cover", imageClassName)}
+              />
+            </div>
+            {/** */}
+            <div className="w-full lg:col-span-4 flex flex-col gap-y-3 py-4 px-4 sm:px-10 sm:py-6 items-start justify-start">
+              <p className="text-base text-start w-full  sm:text-2xl font-medium  ">
                 {event?.eventTitle}
               </p>
-              <AboutWidget
-                Icon={CalendarDateFill}
-                text={
-                  <div className="flex items-center gap-x-2">
-                    <p>{`${startDate} – ${endDate}`}</p>
-                    {timeDifference && (
-                      <p className="text-xs bg-gray-100 rounded-md p-2 ">
-                        {timeDifference}
-                      </p>
-                    )}
-                  </div>
-                }
-              />
+              <div className="flex items-center justify-between w-full">
+                <AboutWidget
+                  Icon={CalendarDateFill}
+                  text={
+                    <div className="flex items-center gap-x-2">
+                      <p>{`${startDate} – ${endDate}`}</p>
+                      {timeDifference && (
+                        <p className="text-xs bg-gray-100 rounded-md p-2 ">
+                          {timeDifference}
+                        </p>
+                      )}
+                    </div>
+                  }
+                />
+                <EventLocationType
+                  locationType={event?.locationType}
+                  className="w-fit px-4 h-10 text-xs"
+                />
+              </div>
               <AboutWidget Icon={TimeFive} text={`${startTime} - ${endTime}`} />
               <AboutWidget
                 Icon={LocationDot}
@@ -281,7 +236,7 @@ export function SingleEvent({
                 }
               />
 
-              <div className="w-full space-y-2 flex flex-col items-start justify-start">
+              <div className="w-full flex items-center gap-x-6 justify-start">
                 {(event?.phoneNumber !== null ||
                   event?.whatsappNumber !== null ||
                   event?.email !== null) && <h3>Speak with the Event Team</h3>}
@@ -294,12 +249,11 @@ export function SingleEvent({
                     }}
                     disabled={event?.phoneNumber === null}
                     className={cn(
-                      "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
+                      "text-black h-fit w-fit px-0",
                       event?.phoneNumber === null && "hidden"
                     )}
                   >
-                    <Telephone size={22} />
-                    <span>Phone Call</span>
+                    <Telephone size={20} />
                   </Button>
 
                   <Button
@@ -309,12 +263,11 @@ export function SingleEvent({
                     }}
                     disabled={event?.whatsappNumber === null}
                     className={cn(
-                      "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
+                      "text-black h-fit w-fit px-0",
                       event?.whatsappNumber === null && "hidden"
                     )}
                   >
                     <Whatsapp size={22} />
-                    <span>WhatsApp</span>
                   </Button>
 
                   <Button
@@ -324,16 +277,51 @@ export function SingleEvent({
                     }}
                     disabled={event?.email === null}
                     className={cn(
-                      "text-zikoro bg-transparent h-12 gap-x-2 border border-zikoro",
+                      "text-black h-fit w-fit px-0",
                       event?.email === null && "hidden"
                     )}
                   >
                     <EmailOutline size={22} />
-                    <span>Email</span>
                   </Button>
                 </div>
               </div>
 
+             
+
+            
+
+              <div className="w-full flex items-center justify-between">
+                {Array.isArray(event?.pricing) &&
+                event?.pricing[1]?.standard ? (
+                  <p className="font-semibold text-xl">{`${
+                    currency ? currency : "₦"
+                  }${price}`}</p>
+                ) : (
+                  <p className="font-semibold text-xl">Free</p>
+                )}
+                <div className="flex items-center gap-x-2">
+                  <AboutWidget
+                    Icon={Users}
+                    text={`${event?.expectedParticipants ?? 0} participants`}
+                  />
+                  {availableSlot > 0 && (
+                    <p className="text-red-600 bg-red-100 text-xs p-2 rounded-md">
+                      {` ${availableSlot} slots left`}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.stopPropagation();
+
+                  onClose();
+                }}
+                className="text-white font-medium bg-zikoro rounded-md h-14 w-full"
+              >
+                Book Now
+              </Button>
               {!isAllSocialUnavailable && (
                 <div className="w-full flex flex-col justify-start items-start space-y-2 ">
                   <h3>Learn more about the event organizers</h3>
@@ -374,123 +362,7 @@ export function SingleEvent({
                   </div>
                 </div>
               )}
-            </div>
-
-            <div className="w-full flex lg:col-span-3 flex-col items-start justify-start gap-y-4">
-              <div className="flex items-center gap-x-2">
-                <AboutWidget
-                  Icon={Users}
-                  text={`${event?.expectedParticipants ?? 0} participants`}
-                />
-                {availableSlot > 0 && (
-                  <p className="text-red-600 bg-red-100 text-xs p-2 rounded-md">
-                    {` ${availableSlot} slots left`}
-                  </p>
-                )}
-              </div>
-              <div className="grid grid-cols-3 gap-1 items-center w-full">
-                {Array.isArray(pricingArray) &&
-                  pricingArray &&
-                  pricingArray?.map((v) => {
-                    if (v) {
-                      return (
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            selectedPrice(v?.price);
-                            selectedPriceCategory(v?.name);
-                          }}
-                          disabled={isDateGreaterThanToday(v?.date)}
-                          className={cn(
-                            "flex flex-col group relative rounded-lg items-start justify-start  border p-2 h-full w-full",
-                            isDateGreaterThanToday(v?.date)
-                              ? ""
-                              : "hover:border-zikoro border-black",
-
-                            activeSelectedPrice(v?.name) && "border-zikoro"
-                          )}
-                        >
-                          {isDateGreaterThanToday(v?.date) && (
-                            <div className="w-full h-full absolute inset-0 bg-white/50"></div>
-                          )}
-                          <div className="flex items-center justify-between w-full">
-                            <p className="font-medium text-[13px]">{`${
-                              currency ? currency : "₦"
-                            }${(Number(v?.price) ?? 0)?.toLocaleString()}`}</p>
-
-                            {!isDateGreaterThanToday(v?.date) && (
-                              <div
-                                className={cn(
-                                  "hidden group-hover:block",
-
-                                  activeSelectedPrice(v?.name) && "block"
-                                )}
-                              >
-                                <CheckCircleFill
-                                  className=" text-zikoro"
-                                  size={20}
-                                />
-                              </div>
-                            )}
-                          </div>
-                          <div
-                            className={cn(
-                              " text-[10px] flex flex-col justify-start rounded-md items-start",
-                              isDateGreaterThanToday(v?.date)
-                                ? "text-gray-500"
-                                : "text-black"
-                            )}
-                          >
-                            <p>{v?.name}</p>
-                            {v?.date ? (
-                              <p>{`Valid till ${v?.date}`}</p>
-                            ) : (
-                              <p className="w-1 h-1"></p>
-                            )}
-                          </div>
-                        </Button>
-                      );
-                    }
-                    return null;
-                  })}
-              </div>
-
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                className="w-full flex flex-col gap-y-2 items-start justify-start"
-              >
-                <div className="w-full flex items-center ">
-                  <input
-                    type="text"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    placeholder="Enter a valid discount code"
-                    className="bg-transparent h-14 rounded-l-md px-3 outline-none placeholder:text-gray-300 border border-gray-300 w-[75%]"
-                  />
-                  <Button
-                    disabled={code === ""}
-                    onClick={redeem}
-                    className="h-14 text-white rounded-r-md rounded-l-none bg-gray-500 font-medium px-0 w-[25%]"
-                  >
-                    {loading ? "Verifying..." : "Redeem"}
-                  </Button>
-                </div>
-              </div>
-              <Button
-                disabled={priceCategory === ""}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.stopPropagation();
-                  console.log("clicked", onClose);
-                  onClose();
-                }}
-                className="text-white font-medium bg-zikoro rounded-md h-14 w-full"
-              >
-                Book Now
-              </Button>
-              <div className="w-full flex flex-col justify-start items-start space-y-2">
+              <div className="w-full flex  justify-between items-center ">
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -511,34 +383,30 @@ export function SingleEvent({
                     />
                   )}
                 </Button>
+                {!isDetail && (
+                  <Link
+                    className="text-zikoro "
+                    href={`/live-events/${event?.id}`}
+                  >{`Read more >>`}</Link>
+                )}
               </div>
             </div>
           </div>
-
-          {!isDetail && (
-            <Link
-              className="text-zikoro "
-              href={`/live-events/${event?.id}`}
-            >{`Read more >>`}</Link>
-          )}
         </div>
       </Comp>
       {isOpen && (
         <BookEvent
+          event={event}
           eventDate={event?.startDateTime}
           endDate={endDate}
-          discountCode={code}
           address={event?.eventAddress}
           eventImage={
             event?.eventPoster ? event?.eventPoster?.image1 : "/images/rect.png"
           }
-          discountAmount={discountAmount}
-          discountPercentage={discountPercentage}
+          availableSlot={availableSlot}
           startDate={startDate}
           currency={currency}
           organizerContact={organizerContact}
-          priceCategory={priceCategory}
-          minimumAttendees={minAttendees}
           eventTitle={event?.eventTitle}
           close={onClose}
           eventLocation={`${event?.eventCity ?? ""}${!removeComma && ","} ${
@@ -546,11 +414,25 @@ export function SingleEvent({
           }`}
           eventId={eventId}
           organization={organization}
-          price={chosenPrice}
         />
       )}
     </>
   );
+}
+
+{
+  /**
+   
+
+
+
+*/
+}
+
+{
+  /**
+   
+*/
 }
 
 function ActionModal({

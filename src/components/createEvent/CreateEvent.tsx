@@ -7,18 +7,10 @@ import {
   Input,
   InputOffsetLabel,
   Button,
-  FormControl,
-  FormItem,
-  Select,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  FormLabel,
   ReactSelect,
-  FormMessage,
 } from "@/components";
 import { newEventSchema } from "@/validations";
+import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@auth0/nextjs-auth0/client";
@@ -36,6 +28,8 @@ export default function CreateEvent({
 }) {
   const [isStartDateOpen, setIsStartDateOpen] = useState<boolean>(false);
   const [isEndDateOpen, setIsEndDateOpen] = useState<boolean>(false);
+  const [startDateValue, setStartDateValue] = useState<string | null>(null);
+  const [endDateValue, setEndDateValue] = useState<string | null>(null);
   const { createEvent, loading } = useCreateEvent();
   const { user } = useUser();
 
@@ -44,15 +38,24 @@ export default function CreateEvent({
   });
 
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
-    await createEvent({ ...values, organizationId });
+    const eventAlias = uuidv4().replace(/-/g, '').substring(0, 20);
+    await createEvent({
+      ...values,
+      startDateTime: startDateValue,
+      endDateTime: endDateValue,
+      eventAlias,
+      organisationId: organizationId,
+      
+    });
   }
 
   const countriesList = useMemo(() => {
     return COUNTRY_CODE.map((country) => ({
       label: country.name,
-      value: country.code,
+      value: country.name,
     }));
   }, [COUNTRY_CODE]);
+
 
   return (
     <DateAndTimeAdapter>
@@ -84,13 +87,16 @@ export default function CreateEvent({
               <FormField
                 control={form.control}
                 name="startDateTime"
-                render={({ field }) => (
+                render={() => (
                   <InputOffsetLabel label="Start date and time">
                     <DateTimePicker
                       open={isStartDateOpen}
                       onOpen={() => setIsStartDateOpen(!isStartDateOpen)}
                       onClose={() => setIsStartDateOpen(!isStartDateOpen)}
-                      {...field}
+                      value={startDateValue}
+                      onChange={(newValue) => {
+                        setStartDateValue(newValue);
+                      }}
                       slotProps={{
                         textField: {
                           // required: true,
@@ -114,6 +120,7 @@ export default function CreateEvent({
                       }}
                       sx={{
                         width: "100%",
+
                         "& .MuiOutlinedInput-root": {
                           "& fieldset": {
                             borderColor: "#f3f3f3",
@@ -139,7 +146,10 @@ export default function CreateEvent({
                       open={isEndDateOpen}
                       onOpen={() => setIsEndDateOpen(!isEndDateOpen)}
                       onClose={() => setIsEndDateOpen(!isEndDateOpen)}
-                      {...field}
+                      value={endDateValue}
+                      onChange={(newValue) => {
+                        setEndDateValue(newValue);
+                      }}
                       slotProps={{
                         textField: {
                           // required: true,
@@ -161,6 +171,7 @@ export default function CreateEvent({
                       }}
                       sx={{
                         width: "100%",
+
                         "& .MuiOutlinedInput-root": {
                           "& fieldset": {
                             borderColor: "#f3f3f3",
