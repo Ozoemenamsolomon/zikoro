@@ -513,130 +513,132 @@ const page = () => {
               >
                 {hashRef.current ? (
                   <Frame data={hashRef.current}>
-                    {/* <Element
-                    className="px-12"
-                    canvas
-                    is={Container}
-                    data-cy="root-container"
-                  >
-                    <ImageElement
-                      src="/images/your_logo.png"
-                      width={50}
-                      height={50}
-                    />
-                    <ImageElement
-                      src={"/images/zikoro_logo.png"}
-                      width={50}
-                      height={50}
-                    />
-                    <Text
-                      text={"TRAINING CERTIFICATE"}
-                      textAlign={"center"}
-                      fontSize={32}
-                      tagName={"h1"}
-                      textTransform={"uppercase"}
-                    />
-                    <h1 className="text-2xl uppercase">
-                      {details.text.heading}
-                    </h1>
-                    <Text
-                      text={"This is to certify that"}
-                      fontSize={16}
-                      textAlign="center"
-                    />
-                    <Text
-                      text={"ABDUR-RASHEED IDRIS"}
-                      fontSize={40}
-                      textAlign="center"
-                      fontFamily="DancingScript"
-                      textTransform="uppercase"
-                    />
-                    <Text
-                      text={`Successfully completed the ${"XX"}-hour
+                    {!hashRef.current && (
+                      <Element
+                        className="px-12"
+                        canvas
+                        is={Container}
+                        data-cy="root-container"
+                      >
+                        <ImageElement
+                          src="/images/your_logo.png"
+                          width={50}
+                          height={50}
+                        />
+                        <ImageElement
+                          src={"/images/zikoro_logo.png"}
+                          width={50}
+                          height={50}
+                        />
+                        <Text
+                          text={"TRAINING CERTIFICATE"}
+                          textAlign={"center"}
+                          fontSize={32}
+                          tagName={"h1"}
+                          textTransform={"uppercase"}
+                        />
+                        <h1 className="text-2xl uppercase">
+                          {details.text.heading}
+                        </h1>
+                        <Text
+                          text={"This is to certify that"}
+                          fontSize={16}
+                          textAlign="center"
+                        />
+                        <Text
+                          text={"ABDUR-RASHEED IDRIS"}
+                          fontSize={40}
+                          textAlign="center"
+                          fontFamily="DancingScript"
+                          textTransform="uppercase"
+                        />
+                        <Text
+                          text={`Successfully completed the ${"XX"}-hour
                         ${"CERTIFICATE NAME"}, earning ${"XX"} credits.`}
-                      fontSize={16}
-                      textAlign="center"
-                    />
-                    <Text
-                      text={`A program offered by {"ORGANIZATION NAME"}, in
+                          fontSize={16}
+                          textAlign="center"
+                        />
+                        <Text
+                          text={`A program offered by {"ORGANIZATION NAME"}, in
                         collaboration with Zikoro`}
-                      fontSize={16}
-                      textAlign="center"
-                    />
+                          fontSize={16}
+                          textAlign="center"
+                        />
 
-                    <p className="text-xs text-center w-full mb-6">
-                      {details.text.showDate &&
-                        formatDateToHumanReadable(new Date())}
-                      {details.text.showLocation &&
-                        details.text.showDate &&
-                        ", "}
-                      {details.text.showLocation && "LAGOS, NIGERIA"}
-                    </p>
-                    <div className="flex flex-col items-center gap-2">
-                      {details.verification.showQRCode && (
-                        <div
-                          style={{
-                            height: "auto",
-                            margin: "0 auto",
-                            maxWidth: 64,
-                            width: "100%",
-                          }}
-                        >
-                          <QRCode
-                            size={256}
-                            style={{
-                              height: "auto",
-                              maxWidth: "100%",
-                              width: "100%",
-                            }}
-                            value={`www.zikoro.com/`}
-                            viewBox={`0 0 256 256`}
-                          />
+                        <p className="text-xs text-center w-full mb-6">
+                          {details.text.showDate &&
+                            formatDateToHumanReadable(new Date())}
+                          {details.text.showLocation &&
+                            details.text.showDate &&
+                            ", "}
+                          {details.text.showLocation && "LAGOS, NIGERIA"}
+                        </p>
+                        <div className="flex flex-col items-center gap-2">
+                          {details.verification.showQRCode && (
+                            <div
+                              style={{
+                                height: "auto",
+                                margin: "0 auto",
+                                maxWidth: 64,
+                                width: "100%",
+                              }}
+                            >
+                              <QRCode
+                                size={256}
+                                style={{
+                                  height: "auto",
+                                  maxWidth: "100%",
+                                  width: "100%",
+                                }}
+                                value={`www.zikoro.com/`}
+                                viewBox={`0 0 256 256`}
+                              />
+                            </div>
+                          )}
+                          {details.verification.showId && (
+                            <h2 className="text-tiny">
+                              Certificate ID {1234567890}
+                            </h2>
+                          )}
+                          {details.verification.showURL && (
+                            <a
+                              href="www.zikoro.com/verify"
+                              className="flex gap-1 items-center text-tiny text-black"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width={15}
+                                height={15}
+                                viewBox="0 0 16 17"
+                                fill="none"
+                              >
+                                <g clipPath="url(#clip0_11548_17274)">
+                                  <path
+                                    d="M11.7956 8.80994C11.7937 8.21232 11.7297 7.61652 11.6044 7.03216H13.2044C13.122 6.78841 13.0225 6.55078 12.9067 6.32105H11.4178C11.1379 5.38596 10.7038 4.5042 10.1333 3.71216C9.76888 3.55892 9.38888 3.44566 9 3.37438C9.78149 4.21405 10.3714 5.21335 10.7289 6.30327L8.33334 6.30327V3.29883H7.66667L7.66667 6.30772L5.27112 6.30772C5.62937 5.21583 6.22082 4.21492 7.00445 3.37438C6.61724 3.44447 6.23874 3.55623 5.87556 3.70772C5.30287 4.49644 4.86576 5.37516 4.58223 6.30772H3.08445C2.96648 6.54164 2.86548 6.78375 2.78223 7.03216H4.39556C4.27035 7.61652 4.20631 8.21232 4.20445 8.80994C4.20568 9.46362 4.28022 10.1151 4.42667 10.7522H2.85334C2.94528 11.0013 3.0552 11.2434 3.18223 11.4766H4.61778C4.88988 12.3281 5.29325 13.1318 5.81334 13.8588C6.18577 14.0186 6.57483 14.1363 6.97334 14.2099C6.24797 13.4187 5.69012 12.489 5.33334 11.4766H7.67111L7.67111 14.2944L8.33778 14.2944L8.33778 11.4766H10.6667C10.3087 12.4894 9.74929 13.4192 9.02223 14.2099C9.4226 14.1338 9.81318 14.013 10.1867 13.8499C10.7059 13.1257 11.1093 12.325 11.3822 11.4766H12.8044C12.9309 11.2477 13.0408 11.0101 13.1333 10.7655H11.5556C11.709 10.1248 11.7895 9.46875 11.7956 8.80994ZM7.66667 10.7522H5.11556C4.80266 9.52898 4.78894 8.24843 5.07556 7.01883L7.66667 7.01883V10.7522ZM10.8844 10.7522H8.33334V7.03216L10.9244 7.03216C11.0521 7.61604 11.1147 8.21227 11.1111 8.80994C11.1147 9.46415 11.0386 10.1164 10.8844 10.7522Z"
+                                    fill="black"
+                                  />
+                                  <path
+                                    d="M8.00003 1.69824C6.59359 1.69824 5.21872 2.1153 4.04931 2.89668C2.87989 3.67806 1.96844 4.78866 1.43022 6.08805C0.891997 7.38743 0.751173 8.81724 1.02556 10.1967C1.29994 11.5761 1.97721 12.8432 2.97172 13.8377C3.96622 14.8322 5.2333 15.5094 6.61272 15.7838C7.99214 16.0582 9.42195 15.9174 10.7213 15.3792C12.0207 14.8409 13.1313 13.9295 13.9127 12.7601C14.6941 11.5907 15.1111 10.2158 15.1111 8.80935C15.1111 6.92337 14.3619 5.11463 13.0283 3.78104C11.6948 2.44745 9.88601 1.69824 8.00003 1.69824ZM8.00003 15.0316C6.76939 15.0316 5.56639 14.6666 4.54315 13.9829C3.51991 13.2992 2.72239 12.3275 2.25145 11.1905C1.7805 10.0535 1.65728 8.80245 1.89737 7.59546C2.13745 6.38847 2.73006 5.27977 3.60025 4.40958C4.47045 3.53938 5.57914 2.94678 6.78614 2.70669C7.99313 2.4666 9.24421 2.58982 10.3812 3.06077C11.5181 3.53171 12.4899 4.32923 13.1736 5.35247C13.8573 6.37571 14.2223 7.57871 14.2223 8.80935C14.2223 10.4596 13.5667 12.0422 12.3998 13.2091C11.2329 14.376 9.65027 15.0316 8.00003 15.0316Z"
+                                    fill="black"
+                                  />
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_11548_17274">
+                                    <rect
+                                      width={16}
+                                      height={16}
+                                      fill="white"
+                                      transform="translate(0 0.80957)"
+                                    />
+                                  </clipPath>
+                                </defs>
+                              </svg>
+                              <span>www.zikoro.com/verify</span>
+                            </a>
+                          )}
                         </div>
-                      )}
-                      {details.verification.showId && (
-                        <h2 className="text-tiny">
-                          Certificate ID {1234567890}
-                        </h2>
-                      )}
-                      {details.verification.showURL && (
-                        <a
-                          href="www.zikoro.com/verify"
-                          className="flex gap-1 items-center text-tiny text-black"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={15}
-                            height={15}
-                            viewBox="0 0 16 17"
-                            fill="none"
-                          >
-                            <g clipPath="url(#clip0_11548_17274)">
-                              <path
-                                d="M11.7956 8.80994C11.7937 8.21232 11.7297 7.61652 11.6044 7.03216H13.2044C13.122 6.78841 13.0225 6.55078 12.9067 6.32105H11.4178C11.1379 5.38596 10.7038 4.5042 10.1333 3.71216C9.76888 3.55892 9.38888 3.44566 9 3.37438C9.78149 4.21405 10.3714 5.21335 10.7289 6.30327L8.33334 6.30327V3.29883H7.66667L7.66667 6.30772L5.27112 6.30772C5.62937 5.21583 6.22082 4.21492 7.00445 3.37438C6.61724 3.44447 6.23874 3.55623 5.87556 3.70772C5.30287 4.49644 4.86576 5.37516 4.58223 6.30772H3.08445C2.96648 6.54164 2.86548 6.78375 2.78223 7.03216H4.39556C4.27035 7.61652 4.20631 8.21232 4.20445 8.80994C4.20568 9.46362 4.28022 10.1151 4.42667 10.7522H2.85334C2.94528 11.0013 3.0552 11.2434 3.18223 11.4766H4.61778C4.88988 12.3281 5.29325 13.1318 5.81334 13.8588C6.18577 14.0186 6.57483 14.1363 6.97334 14.2099C6.24797 13.4187 5.69012 12.489 5.33334 11.4766H7.67111L7.67111 14.2944L8.33778 14.2944L8.33778 11.4766H10.6667C10.3087 12.4894 9.74929 13.4192 9.02223 14.2099C9.4226 14.1338 9.81318 14.013 10.1867 13.8499C10.7059 13.1257 11.1093 12.325 11.3822 11.4766H12.8044C12.9309 11.2477 13.0408 11.0101 13.1333 10.7655H11.5556C11.709 10.1248 11.7895 9.46875 11.7956 8.80994ZM7.66667 10.7522H5.11556C4.80266 9.52898 4.78894 8.24843 5.07556 7.01883L7.66667 7.01883V10.7522ZM10.8844 10.7522H8.33334V7.03216L10.9244 7.03216C11.0521 7.61604 11.1147 8.21227 11.1111 8.80994C11.1147 9.46415 11.0386 10.1164 10.8844 10.7522Z"
-                                fill="black"
-                              />
-                              <path
-                                d="M8.00003 1.69824C6.59359 1.69824 5.21872 2.1153 4.04931 2.89668C2.87989 3.67806 1.96844 4.78866 1.43022 6.08805C0.891997 7.38743 0.751173 8.81724 1.02556 10.1967C1.29994 11.5761 1.97721 12.8432 2.97172 13.8377C3.96622 14.8322 5.2333 15.5094 6.61272 15.7838C7.99214 16.0582 9.42195 15.9174 10.7213 15.3792C12.0207 14.8409 13.1313 13.9295 13.9127 12.7601C14.6941 11.5907 15.1111 10.2158 15.1111 8.80935C15.1111 6.92337 14.3619 5.11463 13.0283 3.78104C11.6948 2.44745 9.88601 1.69824 8.00003 1.69824ZM8.00003 15.0316C6.76939 15.0316 5.56639 14.6666 4.54315 13.9829C3.51991 13.2992 2.72239 12.3275 2.25145 11.1905C1.7805 10.0535 1.65728 8.80245 1.89737 7.59546C2.13745 6.38847 2.73006 5.27977 3.60025 4.40958C4.47045 3.53938 5.57914 2.94678 6.78614 2.70669C7.99313 2.4666 9.24421 2.58982 10.3812 3.06077C11.5181 3.53171 12.4899 4.32923 13.1736 5.35247C13.8573 6.37571 14.2223 7.57871 14.2223 8.80935C14.2223 10.4596 13.5667 12.0422 12.3998 13.2091C11.2329 14.376 9.65027 15.0316 8.00003 15.0316Z"
-                                fill="black"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_11548_17274">
-                                <rect
-                                  width={16}
-                                  height={16}
-                                  fill="white"
-                                  transform="translate(0 0.80957)"
-                                />
-                              </clipPath>
-                            </defs>
-                          </svg>
-                          <span>www.zikoro.com/verify</span>
-                        </a>
-                      )}
-                    </div>
-                  </Element> */}
+                      </Element>
+                    )}
                   </Frame>
                 ) : (
                   <div className="h-1/2 w-full flex items-center justify-center">
