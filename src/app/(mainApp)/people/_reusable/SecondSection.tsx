@@ -390,7 +390,9 @@ export default function SecondSection({
                         fill="black"
                       />
                     </svg>
-                    <span className="text-gray-500 text-sm truncate">{phoneNumber}</span>
+                    <span className="text-gray-500 text-sm truncate">
+                      {phoneNumber}
+                    </span>
                   </div>
                 )}
                 {(whatsappNumber || phoneNumber) && (
@@ -427,7 +429,9 @@ export default function SecondSection({
                       fill="#15161B"
                     />
                   </svg>
-                  <span className="text-gray-500 text-sm truncate">{email}</span>
+                  <span className="text-gray-500 text-sm truncate">
+                    {email}
+                  </span>
                 </div>
                 {
                   <div className="flex gap-2 items-center">
@@ -502,7 +506,9 @@ export default function SecondSection({
                 </div>
                 {(x || linkedin || instagram || facebook) && (
                   <div className="flex flex-col">
-                    <h4 className="text-gray-800 font-medium text-left">Social Media</h4>
+                    <h4 className="text-gray-800 font-medium text-left">
+                      Social Media
+                    </h4>
                     <div className="flex gap-4 items-center">
                       {x && (
                         <svg
@@ -804,6 +810,7 @@ export default function SecondSection({
           </DialogContent>
         </Dialog>
         {!getEventCertificatesIsLoading &&
+          eventCertificates &&
           eventCertificates.some(
             (eventCertificate) =>
               !attendeeCertificates.some(

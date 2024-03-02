@@ -18,15 +18,16 @@ export async function GET(
         status,
       } = await supabase
         .from("attendeeCertificates")
-        .select("attendeeId")
+        .select("*")
         .eq("eventId", eventId);
+
+      console.log(certificateData);
 
       if (certificateError) throw certificateError;
 
       const attendeeIds = new Set(
         certificateData.flatMap(({ attendeeId }) => [].concat(attendeeId))
       );
-
 
       const { data, error } = await supabase
         .from("attendees")

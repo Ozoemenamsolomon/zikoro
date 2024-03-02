@@ -1,5 +1,7 @@
+import { TOrganization } from "./organization";
+
 export interface TEvent {
-  id: bigint;
+  id: number;
   createdAt?: Date;
   createdBy: string;
   eventTitle: string;
@@ -37,4 +39,5 @@ export interface TEvent {
   eventTimeZone?: string;
   description?: Record<string, any>;
   partnerIndustry?: Record<string, any>;
+  organization: TOrganization;
 }

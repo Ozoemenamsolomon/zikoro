@@ -134,7 +134,7 @@ export const useGetEventCertificates = ({
 
     try {
       const { data, status } = await getRequest<TCertificate[]>({
-        endpoint: `/certificates/${eventId}`,
+        endpoint: `/certificates/events/${eventId}`,
       });
 
       if (status !== 200) {
@@ -176,7 +176,7 @@ export const useGetAttendeesCertificates = ({
 
     try {
       const { data, status } = await getRequest<TAttendeeCertificate[]>({
-        endpoint: `/certificates/${eventId}/attendees`,
+        endpoint: `/certificates/events/${eventId}/attendees`,
       });
 
       if (status !== 200) {
@@ -234,7 +234,7 @@ export const useUpdateAttendeeCertificates = ({
     });
     try {
       const { data, status } = await postRequest({
-        endpoint: `/certificates/${eventId}/attendees`,
+        endpoint: `/certificates/events/${eventId}/attendees`,
         payload,
       });
 
@@ -280,7 +280,7 @@ export const useGetAttendeeCertificates = ({
 
     try {
       const { data, status } = await getRequest<TAttendeeCertificate[]>({
-        endpoint: `/certificates/${eventId}/attendees/${attendeeId}`,
+        endpoint: `/certificates/events/${eventId}/attendees/${attendeeId}`,
       });
 
       if (status !== 200) {
@@ -335,7 +335,7 @@ export const useRecallAttendeeCertificates = ({
     });
     try {
       const { data, status } = await postRequest({
-        endpoint: `/certificates/${eventId}/attendees/${attendeeId}`,
+        endpoint: `/certificates/events/${eventId}/attendees/${attendeeId}`,
         payload,
       });
 

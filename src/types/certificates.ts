@@ -1,4 +1,5 @@
 import { TAttendee } from "@/types/attendee";
+import { SerializedNodes } from "@craftjs/core";
 
 export type TAttendeeCertificate = {
   id?: number;
@@ -30,7 +31,7 @@ export interface TCertificateSettings {
 export interface TCertificateDetails {
   verification: { showId: boolean; showQRCode: boolean; showURL: boolean };
   background: string | null;
-  craftHash: string;
+  craftHash: SerializedNodes | string;
 }
 export interface TCertificate {
   id?: number;
@@ -54,24 +55,4 @@ export interface CertificateTemplate {
   templateUrl: string;
   category: string;
   figmaName: string;
-}
-
-export interface certificateAsset {
-  id: string;
-  position: { x: number; y: number };
-}
-
-export interface certificateElement extends certificateAsset {
-  size: { x: number; y: number };
-  url: string;
-}
-
-export interface certificateText extends certificateAsset {
-  style: {
-    fontSize: number;
-    isBold: boolean;
-    color: string;
-    isItalic: boolean;
-  };
-  text: string;
 }

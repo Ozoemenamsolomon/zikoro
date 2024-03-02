@@ -24,7 +24,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
   attendees,
   getAttendees,
   favourites,
-  attendeesTags
+  attendeesTags,
 }) => {
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
@@ -48,6 +48,8 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
   const { updateAttendeeCertificates } = useUpdateAttendeeCertificates({
     eventId: 1234567890,
   });
+
+  console.log(attendeesCertificates, "attendees certificate");
 
   useEffect(() => {
     console.log(selectedCertificate);
@@ -161,9 +163,10 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
             <SelectValue placeholder={"Select Certificate Name"} />
           </SelectTrigger>
           <SelectContent>
-            {eventCertificates.map(({ id, certificateName }) => (
-              <SelectItem value={id}>{certificateName}</SelectItem>
-            ))}
+            {eventCertificates &&
+              eventCertificates.map(({ id, certificateName }) => (
+                <SelectItem value={id}>{certificateName}</SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>
