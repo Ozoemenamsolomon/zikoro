@@ -2,7 +2,7 @@ import { useNode } from "@craftjs/core";
 import React, { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
-import Draggable from "react-draggable";
+import Draggable, { ControlPosition } from "react-draggable";
 import { Resizable } from "re-resizable";
 
 export interface ImageProps {
@@ -33,9 +33,10 @@ const Image = ({ width, height, src, pageX, pageY }: ImageProps) => {
     setEditable(false);
   }, [selected]);
 
-  console.log(width, height);
-
-  const [startingPos, setStartingPos] = useState({ x: pageX, y: pageY });
+  const [startingPos, setStartingPos] = useState<ControlPosition>({
+    x: pageX || 0,
+    y: pageY || 0,
+  });
 
   const handleStop = (e, data) => {
     setStartingPos({ x: data.x, y: data.y });
@@ -45,12 +46,12 @@ const Image = ({ width, height, src, pageX, pageY }: ImageProps) => {
     }, 500);
   };
 
-  console.log(src, "source");
   return (
     <Draggable onStop={handleStop} position={startingPos}>
       <div
         ref={(ref) => connect(ref)}
         onClick={() => selected && setEditable(true)}
+        className="cursor-move"
       >
         <div
           style={{ width: width + "px", height: height + "px" }}

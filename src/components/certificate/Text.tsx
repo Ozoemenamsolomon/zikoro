@@ -9,11 +9,10 @@ import {
   UnderlineIcon,
 } from "@radix-ui/react-icons";
 import { Toggle } from "../ui/toggle";
-import Draggable from "react-draggable";
+import Draggable, { ControlPosition } from "react-draggable";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -21,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { HexColorPicker } from "react-colorful";
+import { cn } from "@/lib/utils";
 
 export interface Textprops {
   isBold?: boolean;
@@ -60,11 +60,14 @@ const Text = ({
     dragged: state.events.dragged,
   }));
 
-  const [startingPos, setStartingPos] = useState({ x: pageX, y: pageY });
+  const [startingPos, setStartingPos] = useState<ControlPosition>({
+    x: pageX || 0,
+    y: pageY || 0,
+  });
 
   const handleStop = (e, data) => {
     setStartingPos({ x: data.x, y: data.y });
-    setProp((prop: ImageProps) => {
+    setProp((prop: Textprops) => {
       prop.pageX = data.x;
       prop.pageY = data.y;
     }, 500);
@@ -81,33 +84,38 @@ const Text = ({
   }, [selected]);
 
   return (
-    <div
-      ref={(ref) => connect(ref)}
-      onClick={() => selected && setEditable(true)}
-    >
-      <ContentEditable
-        html={text}
-        disabled={!editable}
-        onChange={(e) =>
-          setProp(
-            (props) =>
-              (props.text = e.target.value.replace(/<\/?[^>]+(>|$)/g, "")),
-            500
-          )
-        }
-        tagName={tagName}
-        style={{
-          fontSize: `${fontSize}px`,
-          textAlign,
-          color,
-          fontFamily,
-          fontWeight: isBold ? 600 : 400,
-          fontStyle: isItalic ? "italic" : "normal",
-          textDecoration: isUnderline ? "underline" : "none",
-          textTransform,
-        }}
-      />
-    </div>
+    <Draggable onStop={handleStop} position={startingPos}>
+      <div
+        ref={(ref) => connect(ref)}
+        onClick={() => selected}
+        onDoubleClick={() => setEditable(true)}
+        className={cn(editable ? "cursor-text" : "cursor-move")}
+      >
+        <ContentEditable
+          html={text}
+          disabled={!editable}
+          onChange={(e) =>
+            setProp(
+              (props) =>
+                (props.text = e.target.value.replace(/<\/?[^>]+(>|$)/g, "")),
+              500
+            )
+          }
+          tagName={tagName}
+          style={{
+            fontSize: `${fontSize}px`,
+            textAlign,
+            color,
+            fontFamily,
+            fontWeight: isBold ? 600 : 400,
+            fontStyle: isItalic ? "italic" : "normal",
+            textDecoration: isUnderline ? "underline" : "none",
+            textTransform,
+          }}
+          className={cn(selected && "border-2 border-sky-400")}
+        />
+      </div>
+    </Draggable>
   );
 };
 
@@ -282,6 +290,8 @@ export const TextDefaultProps: Textprops = {
   tagName: "p",
   textAlign: "left",
   textTransform: "none",
+  pageX: 0,
+  pageY: 0,
 };
 
 Text.craft = {

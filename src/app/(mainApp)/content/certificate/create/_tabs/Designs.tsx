@@ -12,7 +12,6 @@ const Designs = ({ details, setValue }: TabProps) => {
   const { certificateTemplates, isLoading, getCertificateTemplates } =
     useGetCertificateTemplates();
 
-
   const { searchTerm, searchedData, setSearchTerm } =
     useSearch<CertificateTemplate>({
       data: certificateTemplates || [],
@@ -39,6 +38,7 @@ const Designs = ({ details, setValue }: TabProps) => {
         {certificateTemplates &&
           certificateTemplates.map(({ templateUrl }) => (
             <button
+              key={templateUrl}
               onClick={() => setValue("background", templateUrl)}
               className={cn(
                 "border-2 shadow-sm rounded-md",

@@ -166,7 +166,7 @@ const tabs = [
   },
 ];
 
-const DEFAULT_FRAME_STATE: SerializedNodes = {
+const DEFAULT_FRAME_STATE: SerializedNode = {
   ROOT: {
     type: { resolvedName: "Container" },
     isCanvas: true,
@@ -193,8 +193,8 @@ const DEFAULT_FRAME_STATE: SerializedNodes = {
       src: "/images/your_logo.png",
       width: 50,
       height: 50,
-      pageX: 98,
-      pageY: 135,
+      pageX: -32,
+      pageY: 20,
     },
     displayName: "Image",
     custom: {},
@@ -210,8 +210,8 @@ const DEFAULT_FRAME_STATE: SerializedNodes = {
       src: "/images/zikoro_logo.png",
       width: 50,
       height: 50,
-      pageX: 359,
-      pageY: 80,
+      pageX: 463,
+      pageY: -37,
     },
     displayName: "Image",
     custom: {},
@@ -226,13 +226,15 @@ const DEFAULT_FRAME_STATE: SerializedNodes = {
     props: {
       text: "TRAINING CERTIFICATE",
       fontSize: 32,
-      isBold: false,
+      isBold: true,
       isItalic: false,
       color: "#000",
       isUnderline: false,
       tagName: "h1",
       textAlign: "center",
       textTransform: "uppercase",
+      pageX: -8,
+      pageY: 1,
     },
     displayName: "Text",
     custom: {},
@@ -254,6 +256,8 @@ const DEFAULT_FRAME_STATE: SerializedNodes = {
       tagName: "p",
       textAlign: "center",
       textTransform: "none",
+      pageX: 15,
+      pageY: 291,
     },
     displayName: "Text",
     custom: {},
@@ -275,6 +279,8 @@ const DEFAULT_FRAME_STATE: SerializedNodes = {
       tagName: "p",
       textAlign: "center",
       textTransform: "uppercase",
+      pageX: 1,
+      pageY: -5,
       fontFamily: "DancingScript",
     },
     displayName: "Text",
@@ -297,6 +303,8 @@ const DEFAULT_FRAME_STATE: SerializedNodes = {
       tagName: "p",
       textAlign: "center",
       textTransform: "none",
+      pageX: 3,
+      pageY: 14,
     },
     displayName: "Text",
     custom: {},
@@ -318,6 +326,8 @@ const DEFAULT_FRAME_STATE: SerializedNodes = {
       tagName: "p",
       textAlign: "center",
       textTransform: "none",
+      pageX: 24,
+      pageY: 202,
     },
     displayName: "Text",
     custom: {},
@@ -434,6 +444,13 @@ const page = () => {
     if (certificate?.certificateSettings) {
       setSettings(certificate?.certificateSettings);
     }
+
+    if (certificate?.certficateDetails?.craftHash) {
+      console.log(certificate?.certficateDetails?.craftHash, "craft hash");
+      // hashRef.current = lz.decompress(
+      //   lz.decodeBase64(certificate?.certficateDetails?.craftHash)
+      // );
+    }
   }, [certificateIsLoading]);
 
   const [settings, setSettings] = useState<TCertificateSettings>({
@@ -476,11 +493,15 @@ const page = () => {
     setSettings({ ...settings, [key]: value });
   };
 
-  const hashRef = useRef<string>("");
+  const hashRef = useRef<SerializedNode | string>("");
+
+  useEffect(() => {
+    hashRef.current = DEFAULT_FRAME_STATE;
+  }, []);
 
   const [{ data: png }, convert, certificateRef] = useToPng<HTMLDivElement>({
     onSuccess: async (data) => {
-      console.log(hashRef.current);
+      console.log(hashRef.current, "what you get");
       console.log(data, "image");
 
       // const img = new Image();
@@ -536,9 +557,12 @@ const page = () => {
         className="flex gap-2"
         variant={"ghost"}
         onClick={() => {
-          // const json = query.serialize();
-          // hashRef.current = lz.encodeBase64(lz.compress(json));
-          hashRef.current = query.serialize();
+          const json = query.serialize();
+          hashRef.current = lz.encodeBase64(lz.compress(json));
+          console.log(
+            lz.encodeBase64(lz.compress(json)),
+            "what you see"
+          );
           convert();
         }}
       >
@@ -632,11 +656,11 @@ const page = () => {
 
         <section className="grid grid-cols-10">
           <div className="col-span-4 max-h-full overflow-auto">
-            <Tabs defaultValue="designs" className="flex">
-              <TabsList className="bg-transparent flex flex-col gap-2 justify-between [height:unset_!important] p-0 border-r-2 rounded-none flex-[20%]">
+            <Tabs defaultValue="designs" className="flex h-full">
+              <TabsList className="bg-transparent flex flex-col [justify-content:_unset_!important] gap-2 p-0 border-r-2 rounded-none flex-[20%] h-full">
                 {tabs.map(({ label, value, icon }) => (
                   <TabsTrigger
-                    className="data-[state=active]:shadow-none px-4 py-2 data-[state=active]:bg-basePrimary/5 data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none flex flex-col gap-1 w-full"
+                    className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/5 data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none flex flex-col gap-1 w-full"
                     value={value}
                   >
                     {icon}
@@ -719,9 +743,8 @@ const page = () => {
                 ref={certificateRef}
               >
                 <Frame
-                  data={
-                    JSON.stringify(details?.craftHash) || DEFAULT_FRAME_STATE
-                  }
+                  // json={hashRef.current}
+                  data={hashRef.current}
                 >
                   {/* <Element
                     className="px-12"
