@@ -166,221 +166,6 @@ const tabs = [
   },
 ];
 
-const DEFAULT_FRAME_STATE: SerializedNode = {
-  ROOT: {
-    type: { resolvedName: "Container" },
-    isCanvas: true,
-    props: { className: "px-12", "data-cy": "root-container" },
-    displayName: "Container",
-    custom: {},
-    hidden: false,
-    nodes: [
-      "jRhdIGLpF6",
-      "dctg3UrG0u",
-      "MrWpdo15n4",
-      "UAyB7m2OTd",
-      "G_9evjnPXh",
-      "ejgclGttJ2",
-      "48bTDW8UT_",
-      "Y1aEfA-fvY",
-    ],
-    linkedNodes: {},
-  },
-  jRhdIGLpF6: {
-    type: { resolvedName: "ImageElement" },
-    isCanvas: false,
-    props: {
-      src: "/images/your_logo.png",
-      width: 50,
-      height: 50,
-      pageX: -32,
-      pageY: 20,
-    },
-    displayName: "Image",
-    custom: {},
-    parent: "ROOT",
-    hidden: false,
-    nodes: [],
-    linkedNodes: {},
-  },
-  dctg3UrG0u: {
-    type: { resolvedName: "ImageElement" },
-    isCanvas: false,
-    props: {
-      src: "/images/zikoro_logo.png",
-      width: 50,
-      height: 50,
-      pageX: 463,
-      pageY: -37,
-    },
-    displayName: "Image",
-    custom: {},
-    parent: "ROOT",
-    hidden: false,
-    nodes: [],
-    linkedNodes: {},
-  },
-  MrWpdo15n4: {
-    type: { resolvedName: "Text" },
-    isCanvas: false,
-    props: {
-      text: "TRAINING CERTIFICATE",
-      fontSize: 32,
-      isBold: true,
-      isItalic: false,
-      color: "#000",
-      isUnderline: false,
-      tagName: "h1",
-      textAlign: "center",
-      textTransform: "uppercase",
-      pageX: -8,
-      pageY: 1,
-    },
-    displayName: "Text",
-    custom: {},
-    parent: "ROOT",
-    hidden: false,
-    nodes: [],
-    linkedNodes: {},
-  },
-  UAyB7m2OTd: {
-    type: { resolvedName: "Text" },
-    isCanvas: false,
-    props: {
-      text: "This is to certify that",
-      fontSize: 16,
-      isBold: false,
-      isItalic: false,
-      color: "#000",
-      isUnderline: false,
-      tagName: "p",
-      textAlign: "center",
-      textTransform: "none",
-      pageX: 15,
-      pageY: 291,
-    },
-    displayName: "Text",
-    custom: {},
-    parent: "ROOT",
-    hidden: false,
-    nodes: [],
-    linkedNodes: {},
-  },
-  G_9evjnPXh: {
-    type: { resolvedName: "Text" },
-    isCanvas: false,
-    props: {
-      text: "ABDUR-RASHEED IDRIS",
-      fontSize: 40,
-      isBold: false,
-      isItalic: false,
-      color: "#000",
-      isUnderline: false,
-      tagName: "p",
-      textAlign: "center",
-      textTransform: "uppercase",
-      pageX: 1,
-      pageY: -5,
-      fontFamily: "DancingScript",
-    },
-    displayName: "Text",
-    custom: {},
-    parent: "ROOT",
-    hidden: false,
-    nodes: [],
-    linkedNodes: {},
-  },
-  ejgclGttJ2: {
-    type: { resolvedName: "Text" },
-    isCanvas: false,
-    props: {
-      text: "Successfully completed the XX-hour\n                        CERTIFICATE NAME, earning XX credits.",
-      fontSize: 16,
-      isBold: false,
-      isItalic: false,
-      color: "#000",
-      isUnderline: false,
-      tagName: "p",
-      textAlign: "center",
-      textTransform: "none",
-      pageX: 3,
-      pageY: 14,
-    },
-    displayName: "Text",
-    custom: {},
-    parent: "ROOT",
-    hidden: false,
-    nodes: [],
-    linkedNodes: {},
-  },
-  "48bTDW8UT_": {
-    type: { resolvedName: "Text" },
-    isCanvas: false,
-    props: {
-      text: 'A program offered by {"ORGANIZATION NAME"}, in\n                        collaboration with Zikoro',
-      fontSize: 16,
-      isBold: false,
-      isItalic: false,
-      color: "#000",
-      isUnderline: false,
-      tagName: "p",
-      textAlign: "center",
-      textTransform: "none",
-      pageX: 24,
-      pageY: 202,
-    },
-    displayName: "Text",
-    custom: {},
-    parent: "ROOT",
-    hidden: false,
-    nodes: [],
-    linkedNodes: {},
-  },
-  "Y1aEfA-fvY": {
-    type: "div",
-    isCanvas: false,
-    props: { className: "flex flex-col items-center gap-2" },
-    displayName: "div",
-    custom: {},
-    parent: "ROOT",
-    hidden: false,
-    nodes: ["z55csfWw8N"],
-    linkedNodes: {},
-  },
-  z55csfWw8N: {
-    type: "div",
-    isCanvas: false,
-    props: {
-      style: { height: "auto", margin: "0 auto", maxWidth: 64, width: "100%" },
-    },
-    displayName: "div",
-    custom: {},
-    parent: "Y1aEfA-fvY",
-    hidden: false,
-    nodes: ["MdIdRUSVrQ"],
-    linkedNodes: {},
-  },
-  MdIdRUSVrQ: {
-    type: { resolvedName: "QRCode" },
-    isCanvas: false,
-    props: {
-      size: 256,
-      style: { height: "auto", maxWidth: "100%", width: "100%" },
-      value: "www.zikoro.com/",
-      viewBox: "0 0 256 256",
-      bgColor: "#FFFFFF",
-      fgColor: "#000000",
-      level: "L",
-    },
-    displayName: "QRCode",
-    custom: {},
-    parent: "z55csfWw8N",
-    hidden: false,
-    nodes: [],
-    linkedNodes: {},
-  },
-};
-
 export interface TabProps {
   details: TCertificateDetails;
   setValue: (key: keyof TCertificateDetails, value: any) => void;
@@ -418,16 +203,6 @@ const page = () => {
   });
   const { present: details } = detailState;
 
-  // const [json, setJson] = useState<SerializedNodes | string>(
-  //   DEFAULT_FRAME_STATE
-  // );
-
-  // const json = lz.decompress(lz.decodeBase64(details?.craftHash));
-
-  // useEffect(() => {
-  //   console.log(json === DEFAULT_FRAME_STATE, "json state");
-  // }, [json]);
-
   useEffect(() => {
     if (certificateIsLoading || !certificate) return;
 
@@ -447,9 +222,10 @@ const page = () => {
 
     if (certificate?.certficateDetails?.craftHash) {
       console.log(certificate?.certficateDetails?.craftHash, "craft hash");
-      // hashRef.current = lz.decompress(
-      //   lz.decodeBase64(certificate?.certficateDetails?.craftHash)
-      // );
+      hashRef.current = lz.decompress(
+        lz.decodeBase64(certificate?.certficateDetails?.craftHash)
+      );
+      console.log(hashRef.current);
     }
   }, [certificateIsLoading]);
 
@@ -493,11 +269,7 @@ const page = () => {
     setSettings({ ...settings, [key]: value });
   };
 
-  const hashRef = useRef<SerializedNode | string>("");
-
-  useEffect(() => {
-    hashRef.current = DEFAULT_FRAME_STATE;
-  }, []);
+  const hashRef = useRef<SerializedNodes | string | undefined>();
 
   const [{ data: png }, convert, certificateRef] = useToPng<HTMLDivElement>({
     onSuccess: async (data) => {
@@ -559,10 +331,7 @@ const page = () => {
         onClick={() => {
           const json = query.serialize();
           hashRef.current = lz.encodeBase64(lz.compress(json));
-          console.log(
-            lz.encodeBase64(lz.compress(json)),
-            "what you see"
-          );
+          console.log(lz.encodeBase64(lz.compress(json)), "what you see");
           convert();
         }}
       >
@@ -742,11 +511,9 @@ const page = () => {
                 }}
                 ref={certificateRef}
               >
-                <Frame
-                  // json={hashRef.current}
-                  data={hashRef.current}
-                >
-                  {/* <Element
+                {hashRef.current ? (
+                  <Frame data={hashRef.current}>
+                    {/* <Element
                     className="px-12"
                     canvas
                     is={Container}
@@ -870,7 +637,24 @@ const page = () => {
                       )}
                     </div>
                   </Element> */}
-                </Frame>
+                  </Frame>
+                ) : (
+                  <div className="h-1/2 w-full flex items-center justify-center">
+                    <div className="animate-spin">
+                      <svg
+                        stroke="currentColor"
+                        fill="currentColor"
+                        strokeWidth={0}
+                        viewBox="0 0 1024 1024"
+                        height="2.5em"
+                        width="2.5em"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
+                      </svg>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
