@@ -1,14 +1,13 @@
-"use client"
+"use client";
 
 import Select from "react-select";
-import * as React from "react"
+import * as React from "react";
 import {
   UseControllerProps,
   UseControllerReturn,
   useController,
   FieldValues,
 } from "react-hook-form";
-
 
 interface SelectProps<T extends FieldValues> extends UseControllerProps<T> {
   options: { value: string; label: string }[];
@@ -25,12 +24,22 @@ function ErrorText({ children }: { children?: string }) {
   );
 }
 
-export const ReactSelect = React.forwardRef<HTMLSelectElement, SelectProps<FieldValues>>(
-  (props, ref) => {
-    const { label, options, error, placeHolder, isMulti, ...controllerProps } = props;
-    const {
-      field: { onChange },
-    } = useController(controllerProps) as UseControllerReturn<FieldValues>;
+export const ReactSelect = React.forwardRef<
+  HTMLSelectElement,
+  SelectProps<FieldValues>
+>((props, ref) => {
+  const {
+    label,
+    options,
+    error,
+    placeHolder,
+    defaultValue,
+    isMulti,
+    ...controllerProps
+  } = props;
+  const {
+    field: { onChange },
+  } = useController(controllerProps) as UseControllerReturn<FieldValues>;
 
   return (
     <div className="w-full relative 3rem">
@@ -42,20 +51,20 @@ export const ReactSelect = React.forwardRef<HTMLSelectElement, SelectProps<Field
       </label>
 
       <Select
-     
+        defaultValue={defaultValue}
         placeholder={placeHolder}
         styles={{
           control: (baseStyles, state) => ({
             ...baseStyles,
             borderColor: state?.isFocused ? "#6b7280" : "#e5e7eb",
             "&:hover": {
-                borderColor: "#6b7280",
-              },
+              borderColor: "#6b7280",
+            },
             height: "3rem",
             backgroundColor: "#ffffff",
-            boxShadow:"0px"
+            boxShadow: "0px",
           }),
-        
+
           option: (baseStyles, state) => ({
             ...baseStyles,
             textAlign: "start",
@@ -65,17 +74,18 @@ export const ReactSelect = React.forwardRef<HTMLSelectElement, SelectProps<Field
           singleValue: (baseStyles) => ({
             ...baseStyles,
             textAlign: "start",
-            textDecoration:"capitalize"
+            textDecoration: "capitalize",
           }),
           placeholder: (baseStyles) => ({
             ...baseStyles,
             textAlign: "start",
             color: "#e5e7eb",
+            fontSize: "13px",
           }),
           menu: (baseStyles) => ({
             ...baseStyles,
             borderRadius: "6px",
-            zIndex:100
+            zIndex: 100,
           }),
         }}
         options={options}
@@ -84,4 +94,4 @@ export const ReactSelect = React.forwardRef<HTMLSelectElement, SelectProps<Field
       <ErrorText>{error}</ErrorText>
     </div>
   );
-})
+});

@@ -3,7 +3,13 @@ import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 
-export default function TextEditor() {
+export default function TextEditor({
+  onChange,
+  defaultValue,
+}: {
+  onChange: (v: any) => void;
+  defaultValue: string | undefined
+}) {
   const quillModules = {
     toolbar: {
       container: [
@@ -65,13 +71,15 @@ export default function TextEditor() {
   const [content, setContent] = useState("");
   const handleEditorChange = (content: string) => {
     setContent(content);
-    console.log("newContent", content);
+    onChange(content);
+    //console.log("newContent", content);
   };
 
   return (
     <div className="mb-5">
       <QuillEditor
         value={content}
+        defaultValue={defaultValue}
         onChange={(e) => {
           handleEditorChange(e);
         }}

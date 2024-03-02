@@ -8,47 +8,51 @@ import { Check } from "styled-icons/material";
 import { Button } from "@/components";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-export function ContentTopNav() {
+export function ContentTopNav({eventId}:{eventId:string}) {
     const links = [
         {
           name: "Event",
-          href: "/content",
+          href: `/events/content/${eventId}/event`,
         },
         {
           name: "Contact",
-          href: "/content/contact",
+          href: `/events/content/${eventId}/contact`,
         },
         {
           name: "Discount",
-          href: "/content/discount",
+          href: `/events/content/${eventId}/discount`,
         },
         {
           name: "Badge",
-          href: "/content/badge",
+          href: `/events/content/${eventId}/badge`,
         },
         {
           name: "Certificate",
-          href: "/content/certificate",
+          href: `/events/content/${eventId}/certificate`,
         },
+        {
+          name: "Partners",
+          href: `/events/content/${eventId}/partners`
+        }
       ];
       const pathname = usePathname();
       const [isSaved, setIsSaved] = useState<boolean>(true);
     return (
-        <div className="w-full p-4 text-base flex items-center justify-between text-[#3E404B] border-y border-basebody">
-        <div className="flex items-center font-normal justify-center space-x-8 text-[14px]">
+        <div className="w-full p-4 text-base flex items-center justify-between text-[#3E404B] border-b-2 border-basebody">
+        <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
           {links.map(({ name, href }, index) => {
             return (
               <Link
                 href={href}
                 key={index}
-                className={`pl-2 ${pathname === href && "text-bluebg"}`}
+                className={`pl-2 ${pathname === href && "text-zikoro"}`}
               >
                 {name}
               </Link>
             );
           })}
         </div>
-        {pathname !== "/content/contact" && pathname !== "/content" ? null : (
+        {/*pathname !== "/content/contact" && pathname !== "/content" ? null : (
           <div className="flex items-center justify-center space-x-6 mx-4">
             <div className="space-x-3 flex items-center justify-center text-[14px]">
               <div className="flex justify-center items-center pr-4 text-[#717171]">
@@ -89,7 +93,7 @@ export function ContentTopNav() {
               </Button>
             </div>
           </div>
-        )}
+                )*/}
       </div>
     )
 }

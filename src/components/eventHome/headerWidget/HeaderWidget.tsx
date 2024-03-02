@@ -2,7 +2,7 @@
 
 import { useGetQueries } from "@/hooks";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import {
   Button,
@@ -42,6 +42,7 @@ export function HeaderWidget({
     );
     return _.uniqBy(restructuredList, "value");
   }, [organizationList]);
+
 
   function showOrganizationEvents(value: string) {
     const org = formattedList.find((o) => o.value === value);

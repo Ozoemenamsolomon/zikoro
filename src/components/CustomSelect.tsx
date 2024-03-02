@@ -1,14 +1,14 @@
 "use client";
 import { AngleDown } from "@styled-icons/fa-solid/AngleDown";
 import { manrope } from "@/lib/fonts";
-import countries from "@/../countryList.json";
+import {COUNTRY_CODE} from "@/utils"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components";
 
 const industryType: string[] = [
   "Medical",
@@ -67,7 +67,7 @@ export const CustomSelect: React.FC<{
         <SelectValue placeholder={placeholder} />
         <SelectContent>
           {label === "Country"
-            ? countries.map((country, index) => {
+            ? COUNTRY_CODE?.map((country, index) => {
                 return (
                   <SelectItem key={index} value={country.name}>
                     {country.name}

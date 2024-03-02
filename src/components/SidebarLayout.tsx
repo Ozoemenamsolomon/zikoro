@@ -18,7 +18,7 @@ import {
 } from "@/constants";
 import { CircleUser } from "styled-icons/fa-solid";
 import { Topbar } from ".";
-import { useValidateUser } from "@/hooks";
+import { saveCookie, useValidateUser } from "@/hooks";
 
 export function SideBarLayout({
   children,
@@ -116,6 +116,12 @@ function SideNavs({
 }) {
   const { organizationId } = useParams();
 
+  useEffect(() => {
+    if (organizationId) {
+      saveCookie("currentOrganization", { id: organizationId, name: query });
+    }
+  }, [organizationId]);
+
   return (
     <div
       aria-roledescription="container"
@@ -179,17 +185,16 @@ function SideNavs({
             </div>
           </div>
           <div className="w-full flex items-center gap-x-2">
-              <p className="text-mobile sm:text-sm">Powered By</p>
-              <Image
+            <p className="text-mobile sm:text-sm">Powered By</p>
+            <Image
               src="/images/zikoro.png"
               alt="logo"
               width={200}
               height={100}
               className="w-24 h-8"
-              />
-            </div>
+            />
+          </div>
           <div className="w-full flex items-center justify-between">
-            
             <Button className="px-1 h-fit gap-x-2">
               <CustomerCareIcon />
               <span className="text-mobile sm:text-desktop">Support</span>

@@ -53,5 +53,37 @@ export const newEventSchema = z.object({
   eventCity: z.string(),
   eventAlias: z.any(),
   eventCountry: z.string(),
-  organisationId: z.any()
+  organisationId: z.any(),
 });
+
+const eventPricing = z.array(
+  z.object({
+    ticketQuantity: z.string().optional(),
+    attendeeType: z.string().optional(),
+    description: z.string().optional(),
+    price: z.string().optional(),
+    validity: z.string().optional(),
+  })
+);
+
+
+export const updateEventSchema = z.object({
+  startDateTime: z.any(),
+  endDateTime: z.any(),
+  eventTitle: z.string().min(3, { message: "Title is required" }),
+  eventAddress: z.string().min(3, { message: "Address is required" }),
+  locationType: z.string(),
+  expectedParticipants: z.string(),
+  eventCity: z.string(),
+  eventCountry: z.string(),
+  eventVisibility: z.string().optional(),
+  industry: z.string().optional(),
+  eventCategory: z.string().optional(),
+  eventPoster: z.any(),
+  organisationLogo: z.any(),
+  pricingCurrency: z.string().optional(),
+  description: z.string().optional(),
+  pricing: eventPricing,
+ 
+});
+

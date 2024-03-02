@@ -3,14 +3,14 @@ import { AngleDown } from "@styled-icons/fa-solid/AngleDown";
 import { manrope } from "@/utils/fonts";
 import { useState } from "react";
 import axios from "axios";
-import countries from "@/../countrylist.json";
+import { COUNTRY_CODE } from "@/utils";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components";
 
 export const CustomSelect: React.FC<{
   label?: string;
@@ -107,7 +107,7 @@ export const CustomSelect: React.FC<{
                 );
               })
             : label === "Country" || label === "Event country"
-            ? countries.map((country, index) => {
+           ? COUNTRY_CODE?.map((country, index) => {
                 return (
                   <SelectItem key={index} value={country.name}>
                     {country.name}
