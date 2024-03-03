@@ -1,4 +1,4 @@
-import { TLink } from "@/types/links";
+import { TLink } from "@/components/Sidebar";
 
 export const PeopleLinks: TLink[] = [
   { name: "All", href: "all" },

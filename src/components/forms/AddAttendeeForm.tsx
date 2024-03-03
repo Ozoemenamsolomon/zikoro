@@ -78,12 +78,14 @@ export default function AddAttendeeForm({
 
   const toggleAttendeeType = (value: string) => {
     const newAttendeeType = () => {
-      if (attendeeType.includes(value)) {
+      if (attendeeType && attendeeType.includes(value)) {
         // If value is already in the array, remove it
         return attendeeType.filter((item: string) => item !== value);
-      } else {
+      } else if (attendeeType && !attendeeType.includes(value)) {
         // If value is not in the array, add it
         return [...attendeeType, value];
+      } else {
+        return [value];
       }
     };
 
@@ -357,7 +359,7 @@ export default function AddAttendeeForm({
                 <button
                   className={`text-sm p-1.5 mx-auto border-2 rounded font-medium",
                     ${
-                      attendeeType.includes(value)
+                      attendeeType && attendeeType.includes(value)
                         ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
                         : "border-gray-600 text-gray-600 bg-white"
                     }

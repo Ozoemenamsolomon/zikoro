@@ -53,10 +53,14 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
     const payload = selectedAttendees.map((attendee) => {
       const newAttendeeType =
         action === "assign"
-          ? [...attendee.attendeeType, selectedAttendeeType]
-          : attendee.attendeeType.filter(
+          ? !attendee.attendeeType
+            ? [selectedAttendeeType]
+            : [...attendee.attendeeType, selectedAttendeeType]
+          : attendee.attendeeType
+          ? attendee.attendeeType.filter(
               (type) => type !== selectedAttendeeType
-            );
+            )
+          : [];
       return {
         ...attendee,
         attendeeType: newAttendeeType,
