@@ -161,7 +161,7 @@ export default function Discount({eventId}:{eventId:string}) {
           <li>Status</li>
         </ul>
 
-        {formattedData.map((discount: any) => (
+        {Array.isArray(formattedData) && formattedData.map((discount: any, id, arr) => (
           <DiscountList
             key={discount.id}
             createdAt={discount.created_at}
@@ -211,7 +211,7 @@ const DiscountList: React.FC<{
   value = "",
 }) => {
   return (
-    <ul className="grid grid-cols-8 place-items-center text-center p-3 text-[12px] border-x">
+    <ul className="grid grid-cols-8 place-items-center text-center p-3 text-[12px] border-x border-b">
       <li className="flex items-center">{createdAt}</li>
       <li>{code}</li>
       <li>{minQty}</li>
