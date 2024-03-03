@@ -3,8 +3,8 @@
 import { Eye } from "styled-icons/evil";
 import { UploadOutline } from "styled-icons/evaicons-outline";
 import { Check } from "styled-icons/material";
-import { AddToQueue } from "@styled-icons/boxicons-regular/AddToQueue";
-import { Trash } from "@styled-icons/boxicons-regular/Trash";
+import { AddToQueue } from "styled-icons/boxicons-regular";
+import { Trash } from "styled-icons/boxicons-regular";
 import Link from "next/link";
 // import { useState } from "react";
 
@@ -15,7 +15,7 @@ export default function Content() {
   //   price: 0,
   // })
   return (
-    <div className="w-[100%] h-[100%] bg-[#FFFFFF]">
+    <div className="w-full h-full bg-[#FFFFFF]">
       <main className="">
         {/* header */}
         <div className="h-[120px] text-2xl ">Content</div>
@@ -74,7 +74,7 @@ export default function Content() {
             <h6 className="text-bold">Event information</h6>
           </div>
           {/* form */}
-          <form className="w-[100%] ">
+          <form className="w-full ">
             <div className="grid grid-cols-2">
               <div className="p-4 space-y-6">
                 <div className="w-100">
@@ -89,7 +89,7 @@ export default function Content() {
                       type="text"
                       name="eventName"
                       id="eventName"
-                      className="p-5 w-[100%] rounded-md border-2 border-[#f3f3f3] shadow-sm sm:text-sm"
+                      className="p-5 w-full rounded-md border-2 border-[#f3f3f3] shadow-sm sm:text-sm"
                     />
                   </div>
                 </div>
@@ -135,10 +135,8 @@ export default function Content() {
                     Event category
                   </p>
                   <div className=" p-4 rounded-md border-2 border-[#f3f3f3] shadow-sm ">
-                    <select
-                      className="w-full bg-white border-0 sm:text-sm focus:border-0 outline-0"
-                      placeholder="Please select"
-                    >
+                    <select className="w-full bg-white border-0 sm:text-sm focus:border-0 outline-0">
+                      <option value="">Please select</option>
                       <option value="onsite">Onsite</option>
                       <option value="online">Online</option>
                       <option value="hybrid">Hybrid</option>
