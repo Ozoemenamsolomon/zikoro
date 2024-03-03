@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import {useRouter} from "next/navigation"
+import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import {
@@ -49,11 +49,10 @@ export function useCreateOrganisation() {
 
 export function useCreateEvent() {
   const [loading, setLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   async function createEvent(values: z.infer<typeof newEventSchema>) {
     setLoading(true);
-   
 
     try {
       const { data, error, status } = await supabase.from("events").upsert([
@@ -61,7 +60,7 @@ export function useCreateEvent() {
           ...values,
           email: userData?.userEmail,
           createdBy: userData?.userEmail,
-          published:false
+          published: false,
         },
       ]);
 
@@ -70,11 +69,11 @@ export function useCreateEvent() {
         setLoading(false);
         return;
       }
-    
+
       if (status === 201 || status === 200) {
         setLoading(false);
-       
-        router.push(` /events/content/${values.eventAlias}/event`)
+
+        router.push(` /events/content/${values.eventAlias}/event`);
         toast.success("Event created successfully");
       }
     } catch (error) {}
@@ -82,6 +81,40 @@ export function useCreateEvent() {
 
   return {
     createEvent,
+    loading,
+  };
+}
+
+export function useUpdateEvent() {
+  const [loading, setLoading] = useState(false);
+
+  async function update(values: any, eventId: string) {
+    setLoading(true);
+
+    try {
+      const { data, error, status } = await supabase.from("events").update([
+        {
+          ...values,
+        },
+      ])
+      .eq("id", eventId )
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (status === 201 || status === 200) {
+        setLoading(false);
+
+        toast.success("Event updated successfully");
+      }
+    } catch (error) {}
+  }
+
+  return {
+    update,
     loading,
   };
 }
@@ -307,6 +340,7 @@ export function useFetchSingleEvent(id: string) {
 
   async function fetchSingleEvent() {
     try {
+      setLoading(true);
       // Fetch the event by ID
       const { data, error: fetchError } = await supabase
         .from("events")

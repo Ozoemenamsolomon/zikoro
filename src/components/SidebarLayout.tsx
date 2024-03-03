@@ -161,7 +161,11 @@ function SideNavs({
             id={organizationId}
           />
         </div>
-        <div className="w-full text-[10px] sm:text-xs px-4 flex flex-col  items-start justify-start bottom-5 inset-x-0 absolute  gap-y-2">
+        <div className="w-full text-[10px] sm:text-xs px-4 flex flex-col  items-start justify-start bottom-5 inset-x-0 absolute  gap-y-3">
+        <div className="w-full flex items-center gap-x-2 ">
+            <Link href="https://www.zikoro.com" className="text-mobile sm:text-desktop text-zikoro font-medium hover:underline ">Try Zikoro!</Link>
+            
+          </div>
           <div className="my-1 w-full flex items-center gap-x-2 p-3 rounded-md bg-zikoro/10">
             <Image
               src="/svg/sub.svg"
@@ -184,16 +188,7 @@ function SideNavs({
               </Button>
             </div>
           </div>
-          <div className="w-full flex items-center gap-x-2">
-            <p className="text-mobile sm:text-sm">Powered By</p>
-            <Image
-              src="/images/zikoro.png"
-              alt="logo"
-              width={200}
-              height={100}
-              className="w-24 h-8"
-            />
-          </div>
+        
           <div className="w-full flex items-center justify-between">
             <Button className="px-1 h-fit gap-x-2">
               <CustomerCareIcon />
