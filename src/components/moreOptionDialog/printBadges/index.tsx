@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import First from "./first";
 import Preview from "./preview";
-import { MoreOptionsProps } from "@/app/people/_reusable/FirstSection";
 import { TAttendee } from "@/types/attendee";
 import Dimensions, { TDimensions } from "./dimensions";
+import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
 
 const PrintBadges: React.FC<MoreOptionsProps> = ({
   attendees,

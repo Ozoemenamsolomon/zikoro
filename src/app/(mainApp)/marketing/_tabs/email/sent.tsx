@@ -6,6 +6,7 @@ import Filter from "@/components/Filter";
 import { extractUniqueTypes } from "@/utils/helpers";
 import { DataTable } from "@/components/DataTable";
 import { columns } from "./columns";
+import { TSentEmail } from "@/types/marketing";
 
 const marketingEmailsFilter: TFilter<TSentEmail>[] = [
   {
@@ -117,12 +118,12 @@ const Sent = () => {
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<TSentEmail>({
-      data: marketingEmails,
+      data: marketingEmails || [],
       dataFilters: marketingEmailsFilter,
     });
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !marketingEmails) return;
 
     filters
       .filter((filter) => filter.optionsFromData)

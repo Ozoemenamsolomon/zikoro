@@ -127,7 +127,10 @@ const Background = ({ details, setValue }: TabProps) => {
             id="file-input"
             name="background"
             type="file"
-            onChange={(e) => uploadBackground(e.target.files[0])}
+            onChange={(e) =>
+              e.currentTarget.files &&
+              uploadBackground(e.currentTarget.files[0])
+            }
             accept="image/*"
           />
         </div>

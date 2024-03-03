@@ -361,7 +361,13 @@ export default function All() {
 
   useEffect(() => {
     console.log("default set currency");
-    applyFilter("currency", "Currency", "NGN", () => {}, "single");
+    applyFilter(
+      "currency",
+      "Currency",
+      "NGN",
+      (transaction, currency) => transaction.currency === currency,
+      "single"
+    );
   }, []);
 
   return (
@@ -577,7 +583,8 @@ export default function All() {
           <DataTable<TEventTransaction>
             columns={columns.filter(
               ({ accessorKey, id }) =>
-                shownColumns.includes(accessorKey) || shownColumns.includes(id)
+                shownColumns.includes(accessorKey) ||
+                (id && shownColumns.includes(id))
             )}
             data={filteredData}
             rowSelection={rowSelection}

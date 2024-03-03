@@ -2,7 +2,10 @@ import { useNode } from "@craftjs/core";
 import React, { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
-import Draggable, { ControlPosition } from "react-draggable";
+import Draggable, {
+  ControlPosition,
+  DraggableEventHandler,
+} from "react-draggable";
 import { Resizable } from "re-resizable";
 
 export interface ImageProps {
@@ -38,7 +41,7 @@ const Image = ({ width, height, src, pageX, pageY }: ImageProps) => {
     y: pageY || 0,
   });
 
-  const handleStop = (e, data) => {
+  const handleStop: DraggableEventHandler = (e, data) => {
     setStartingPos({ x: data.x, y: data.y });
     setProp((prop: ImageProps) => {
       prop.pageX = data.x;
@@ -49,7 +52,7 @@ const Image = ({ width, height, src, pageX, pageY }: ImageProps) => {
   return (
     <Draggable onStop={handleStop} position={startingPos}>
       <div
-        ref={(ref) => connect(ref)}
+        ref={(ref) => ref && connect(ref)}
         onClick={() => selected && setEditable(true)}
         className="cursor-move"
       >
@@ -98,7 +101,10 @@ const ImageSettings = () => {
         <Input
           className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-[50px] border-0"
           onInput={(e) => {
-            setProp((props) => (props.width = e.currentTarget.value), 500);
+            setProp(
+              (props: ImageProps) => (props.width = parseInt(e.currentTarget.value)),
+              500
+            );
           }}
           value={width}
         />
@@ -123,7 +129,10 @@ const ImageSettings = () => {
         <Input
           className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-[50px] border-0"
           onInput={(e) => {
-            setProp((props) => (props.height = e.currentTarget.value), 500);
+            setProp(
+              (props: ImageProps) => (props.height = parseInt(e.currentTarget.value)),
+              500
+            );
           }}
           value={height}
         />

@@ -25,7 +25,7 @@ import {
 } from "@/utils/helpers";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Users } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { SyntheticEvent, useEffect, useRef, useState } from "react";
 import { Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
 
@@ -39,7 +39,6 @@ const inviteesFilters: TFilter<TInviteDetail>[] = [
   {
     label: "date",
     accessor: "created_at",
-    type: "dateRange",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +89,7 @@ export default function Page() {
   const divRef = useRef<HTMLDivElement>(null);
 
   const { inviteAttendees } = useInviteAttendees();
-  async function onSubmit(e) {
+  async function onSubmit(e: SyntheticEvent) {
     e.preventDefault();
     await inviteAttendees({
       payload: {
@@ -196,7 +195,7 @@ export default function Page() {
                         <Input
                           className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                           onInput={(e) =>
-                            updateInvitee(key, { email: e.target.value })
+                            updateInvitee(key, { email: e.currentTarget.value })
                           }
                           placeholder="Enter invitee email"
                           required
@@ -275,7 +274,7 @@ export default function Page() {
                 </span>
                 <Textarea
                   value={message}
-                  onInput={(e) => setMessage(e.target.value)}
+                  onInput={(e) => setMessage(e.currentTarget.value)}
                   className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                   placeholder="Enter message"
                   required

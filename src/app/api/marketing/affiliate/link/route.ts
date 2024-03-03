@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
 
       console.log(mailData);
 
-      await transporter.sendMail(mailData, function (err, info) {
+      await transporter.sendMail(mailData, function (err: any, info: any) {
         if (err) {
           console.log(err);
           throw err;

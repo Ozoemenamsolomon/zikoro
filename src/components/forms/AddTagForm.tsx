@@ -9,7 +9,7 @@ export default function AddTagForm({
   currentTags,
   getTags,
 }: {
-  currentTags: TTags;
+  currentTags: TTags | null;
   getTags: () => void;
 }) {
   console.log(currentTags, "tag");
@@ -20,7 +20,7 @@ export default function AddTagForm({
     userId: 10,
   });
 
-  async function onSubmit(data: TTag) {
+  async function onSubmit() {
     const payload: TTags = currentTags
       ? {
           ...currentTags,
@@ -41,7 +41,7 @@ export default function AddTagForm({
         <Input
           placeholder="create new tag"
           value={label}
-          onInput={(e) => setLabel(e.target.value)}
+          onInput={(e) => setLabel(e.currentTarget.value)}
           className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 mt-0"
         />
       </div>
@@ -61,7 +61,7 @@ export default function AddTagForm({
       </div>
       <Button
         disabled={!label || !color}
-        onClick={onSubmit}
+        onClick={() => onSubmit()}
         className="bg-basePrimary w-full"
       >
         Create New Tag

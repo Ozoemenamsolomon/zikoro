@@ -12,7 +12,7 @@ const Toolbar = () => {
         </div>
         <div className="flex flex-col">
           <button
-            ref={(ref) => connectors.create(ref, <Text text="Hi world" />)}
+            ref={(ref) => ref && connectors.create(ref, <Text text="Hi world" />)}
             className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             data-cy="toolbox-text"
           >

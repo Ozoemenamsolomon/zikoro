@@ -123,7 +123,10 @@ const Create = () => {
   }, [recipientSource]);
 
   const setRecipients = () => {
-    setValue("recipients", selectedAttendees);
+    setValue(
+      "recipients",
+      selectedAttendees.map(({ email }) => email)
+    );
   };
 
   const onSubmit = async (data: TCreateEmail) => {
@@ -318,8 +321,6 @@ const Create = () => {
                         </DialogTitle>
                       </DialogHeader>
                       <ViewAttendeesSection
-                        favourites={[]}
-                        attendeeTags={[]}
                         attendees={attendees}
                         selectedAttendees={selectedAttendees}
                         toggleValue={toggleValue}
@@ -348,7 +349,7 @@ const Create = () => {
                           "Enter emails seperated by semi-colon seperated"
                         }
                         onInput={(e) =>
-                          field.onChange(e.target.value.split(";"))
+                          field.onChange(e.currentTarget.value.split(";"))
                         }
                         className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                       />
@@ -497,7 +498,7 @@ const Create = () => {
             </span>
             <Input
               className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
-              onInput={(e) => setTestEmail(e.target.value)}
+              onInput={(e) => setTestEmail(e.currentTarget.value)}
               placeholder="Enter email"
               disabled={!sendTest}
             />

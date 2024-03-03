@@ -1,5 +1,5 @@
 "use client";
-import { TLink } from "@/types/links";
+import { TLink } from "@/components/Sidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 

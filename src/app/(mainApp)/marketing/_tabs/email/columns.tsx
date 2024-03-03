@@ -1,4 +1,5 @@
 "use client";
+import { TSentEmail } from "@/types/marketing";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<TSentEmail>[] = [
@@ -21,13 +22,13 @@ export const columns: ColumnDef<TSentEmail>[] = [
     cell: ({ row }) => {
       const date = new Date(row.getValue("created_at"));
 
-      const dateOptions = {
+      const dateOptions: Intl.DateTimeFormatOptions = {
         month: "2-digit",
         day: "2-digit",
         year: "numeric",
       };
 
-      const timeOptions = {
+      const timeOptions: Intl.DateTimeFormatOptions = {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true,
@@ -42,6 +43,6 @@ export const columns: ColumnDef<TSentEmail>[] = [
   {
     accessorKey: "emailRecipient",
     header: "Recipient",
-    cell: ({ row }) => row.getValue("emailRecipient").length,
+    cell: ({ row }) => row.original.emailRecipient.length,
   },
 ];

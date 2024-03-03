@@ -1,4 +1,5 @@
 'use client'
+
 import {
     MDXEditor,
   toolbarPlugin,
@@ -20,6 +21,7 @@ import {
   diffSourcePlugin,
   markdownShortcutPlugin,
   SandpackConfig,
+  // @ts-ignore
 } from '@mdxeditor/editor'
 
 const defaultSnippetContent = `

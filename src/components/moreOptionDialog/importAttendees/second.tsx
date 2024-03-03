@@ -7,9 +7,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, FormEventHandler, SetStateAction } from "react";
 import { findKeysWithSharedValue } from "@/utils/helpers";
 import { toast } from "@/components/ui/use-toast";
+import { TAttendee } from "@/types/attendee";
 
 const Second = ({
   headers,
@@ -19,14 +20,17 @@ const Second = ({
   step,
   setStep,
 }: {
-  headers: Map<{ label: string; value: string; isRequired: boolean }, any>;
+  headers: Map<
+    { label: string; value: keyof TAttendee; isRequired: boolean },
+    any
+  >;
   updateHeader: (
-    key: { label: string; value: string; isRequired: boolean },
+    key: { label: string; value: keyof TAttendee; isRequired: boolean },
     value: string
   ) => void;
   deleteHeader: (key: {
     label: string;
-    value: string;
+    value: keyof TAttendee;
     isRequired: boolean;
   }) => void;
   excelHeaders: any[];
@@ -41,7 +45,7 @@ const Second = ({
     { label: "WhatsApp", value: "whatsappNumber" },
   ];
 
-  const onSubmit = (e) => {
+  const onSubmit: FormEventHandler = (e) => {
     e.preventDefault();
 
     for (let [key, value] of Array.from(headers)) {

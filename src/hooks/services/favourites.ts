@@ -8,7 +8,7 @@ type useUpdateFavouritesResult = {
   updateFavourites: ({
     payload,
   }: {
-    payload: TFavouriteContact;
+    payload: Partial<TFavouriteContact>;
   }) => Promise<void>;
 } & RequestStatus;
 
@@ -23,7 +23,7 @@ export const useUpdateFavourites = ({
   const updateFavourites = async ({
     payload,
   }: {
-    payload: TFavouriteContact;
+    payload: Partial<TFavouriteContact>;
   }) => {
     setLoading(true);
     toast({
@@ -50,7 +50,7 @@ export const useUpdateFavourites = ({
 };
 
 type UseGetFavouritesResult = {
-  favourites: TFavouriteContact;
+  favourites: TFavouriteContact | null;
   getFavourites: () => Promise<void>;
 } & RequestStatus;
 
@@ -59,7 +59,7 @@ export const useGetFavourites = ({
 }: {
   userId: number;
 }): UseGetFavouritesResult => {
-  const [favourites, setFavourites] = useState<TFavouriteContact>();
+  const [favourites, setFavourites] = useState<TFavouriteContact | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 

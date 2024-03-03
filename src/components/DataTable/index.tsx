@@ -38,7 +38,7 @@ interface DataTableProps<TData> {
   rowStyle: React.CSSProperties;
 }
 
-export function DataTable<TData>({
+export function DataTable<TData extends { id?: number }>({
   columns,
   data,
   rowSelection,
@@ -52,7 +52,7 @@ export function DataTable<TData>({
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: setRowSelection,
     state: { rowSelection },
-    getRowId: (row) => row.id,
+    getRowId: (row) => (row?.id ? row?.id.toString() : ""),
     enableRowSelection: canSelectRow || true,
     getPaginationRowModel: getPaginationRowModel(),
   });
@@ -148,7 +148,7 @@ export function DataTable<TData>({
         <div className="flex items-center gap-2 text-gray-500 font-medium w-max text-sm">
           <span>Page</span>
           <Select
-            value={table.getState().pagination.pageIndex}
+            value={table.getState().pagination.pageIndex.toString()}
             onValueChange={(value: any) => table.setPageIndex(value as number)}
           >
             <SelectTrigger className="pt-1 pb-0 px-2">
@@ -156,7 +156,7 @@ export function DataTable<TData>({
             </SelectTrigger>
             <SelectContent className="max-h-64 hide-scrollbar overflow-auto">
               {table.getPageOptions().map((value) => (
-                <SelectItem key={value} value={value}>
+                <SelectItem key={value} value={value.toString()}>
                   {value + 1}
                 </SelectItem>
               ))}
@@ -191,7 +191,7 @@ export function DataTable<TData>({
         <div className="flex gap-2 items-center font-medium text-gray-700 text-sm">
           <div className="flex gap-1 items-center">
             <Select
-              value={table.getState().pagination.pageSize}
+              value={table.getState().pagination.pageSize.toString()}
               onValueChange={(value: any) => table.setPageSize(value as number)}
             >
               <SelectTrigger className="pt-1 pb-0 px-2 focus:ring-0">
@@ -199,7 +199,7 @@ export function DataTable<TData>({
               </SelectTrigger>
               <SelectContent className="max-h-64 hide-scrollbar overflow-auto">
                 {[10, 20, 50, 100, 200, 500, 1000].map((value) => (
-                  <SelectItem key={value} value={value}>
+                  <SelectItem key={value} value={value.toString()}>
                     {value}
                   </SelectItem>
                 ))}

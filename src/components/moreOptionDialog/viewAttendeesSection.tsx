@@ -21,8 +21,8 @@ export default function ViewAttendeesSection({
   attendees: TAttendee[];
   selectedAttendees: TAttendee[];
   toggleValue: (value: TAttendee | TAttendee[]) => void;
-  attendeesTags: TAttendeeTags[];
-  favourites: TFavouriteContact;
+  attendeesTags?: TAttendeeTags[];
+  favourites?: TFavouriteContact;
 }) {
   const attendeeFilter: TFilter<TAttendee>[] = [
     {
@@ -174,6 +174,7 @@ export default function ViewAttendeesSection({
         "label"
       ),
       onFilter: (attendee: TAttendee, selectedTags: string[]) => {
+        if (!attendeesTags) return false;
         const attendeeTags = attendeesTags.find((attendeeTag) => {
           console.log(attendeeTag);
           return attendeeTag.attendeeId === attendee.id;
@@ -279,7 +280,7 @@ export default function ViewAttendeesSection({
           <Input
             type="email"
             placeholder="Search attendees"
-            onInput={(event) => setSearchTerm(event.target.value)}
+            onInput={(event) => setSearchTerm(event.currentTarget.value)}
             className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8"
           />
           <svg

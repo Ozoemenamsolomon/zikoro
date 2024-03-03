@@ -6,7 +6,6 @@ import React from "react";
 import { FormControl, FormLabel } from "../ui/form";
 import { Slider } from "../ui/slider";
 
-
 interface ContainerProps {
   className: string;
   children: React.ReactNode;
@@ -17,7 +16,7 @@ const Container = ({ children, className }: ContainerProps) => {
     connectors: { connect, drag },
   } = useNode();
   return (
-    <div className={className} ref={(ref) => connect(drag(ref))}>
+    <div className={className} ref={(ref) => ref && connect(drag(ref))}>
       {children}
     </div>
   );

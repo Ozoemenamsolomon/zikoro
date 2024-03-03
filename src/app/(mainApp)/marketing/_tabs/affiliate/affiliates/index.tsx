@@ -25,7 +25,7 @@ const Affiliates = () => {
 
   const { getAffiliates, affiliates, isLoading } = useGetAffiliates();
   const { searchTerm, searchedData, setSearchTerm } = useSearch<TAffiliate>({
-    data: affiliates,
+    data: affiliates || [],
     accessorKey: ["email", "firstName", "lastname"],
   });
 
@@ -80,7 +80,7 @@ const Affiliates = () => {
           placeholder="Search by email"
           value={searchTerm}
           disabled={isLoading}
-          onInput={(event) => setSearchTerm(event.target.value)}
+          onInput={(event) => setSearchTerm(event.currentTarget.value)}
           className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8 w-full"
         />
       </div>

@@ -10,10 +10,7 @@ import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
-export const useSaveCertificate = (): usePostResult<
-  TCertificate,
-  "saveCertificate"
-> => {
+export const useSaveCertificate = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -23,7 +20,7 @@ export const useSaveCertificate = (): usePostResult<
       description: "saving certificate...",
     });
     try {
-      const { data, status } = await postRequest({
+      const { data, status } = await postRequest<TCertificate>({
         endpoint: "/certificates",
         payload,
       });
@@ -203,7 +200,7 @@ type useUpdateAttendeeCertificatesResult = {
   }: {
     payload: {
       certificateInfo: Partial<TAttendeeCertificate>;
-      attendeeInfo: { attendeeId: number; attendeeEmail: string }[];
+      attendeeInfo: { attendeeId?: number; attendeeEmail: string }[];
       action: string;
     };
   }) => Promise<void>;
@@ -222,7 +219,7 @@ export const useUpdateAttendeeCertificates = ({
   }: {
     payload: {
       certificateInfo: Partial<TAttendeeCertificate>;
-      attendeeInfo: { attendeeId: number; attendeeEmail: string }[];
+      attendeeInfo: { attendeeId?: number; attendeeEmail: string }[];
       action: string;
     };
   }) => {
@@ -233,7 +230,7 @@ export const useUpdateAttendeeCertificates = ({
       } certificates...`,
     });
     try {
-      const { data, status } = await postRequest({
+      const { data, status } = await postRequest<{ msg: string }>({
         endpoint: `/certificates/events/${eventId}/attendees`,
         payload,
       });
@@ -334,7 +331,7 @@ export const useRecallAttendeeCertificates = ({
       description: "recalling certificates...",
     });
     try {
-      const { data, status } = await postRequest({
+      const { data, status } = await postRequest<{ msg: string }>({
         endpoint: `/certificates/events/${eventId}/attendees/${attendeeId}`,
         payload,
       });

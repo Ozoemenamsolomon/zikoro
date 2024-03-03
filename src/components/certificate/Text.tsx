@@ -9,7 +9,10 @@ import {
   UnderlineIcon,
 } from "@radix-ui/react-icons";
 import { Toggle } from "../ui/toggle";
-import Draggable, { ControlPosition } from "react-draggable";
+import Draggable, {
+  ControlPosition,
+  DraggableEventHandler,
+} from "react-draggable";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,7 +68,7 @@ const Text = ({
     y: pageY || 0,
   });
 
-  const handleStop = (e, data) => {
+  const handleStop: DraggableEventHandler = (e, data) => {
     setStartingPos({ x: data.x, y: data.y });
     setProp((prop: Textprops) => {
       prop.pageX = data.x;
@@ -86,7 +89,7 @@ const Text = ({
   return (
     <Draggable onStop={handleStop} position={startingPos}>
       <div
-        ref={(ref) => connect(ref)}
+        ref={(ref) => ref && connect(ref)}
         onClick={() => selected}
         onDoubleClick={() => setEditable(true)}
         className={cn(editable ? "cursor-text" : "cursor-move")}
@@ -96,7 +99,7 @@ const Text = ({
           disabled={!editable}
           onChange={(e) =>
             setProp(
-              (props) =>
+              (props: Textprops) =>
                 (props.text = e.target.value.replace(/<\/?[^>]+(>|$)/g, "")),
               500
             )
@@ -171,7 +174,7 @@ const TextSettings = () => {
               min={16}
               max={50}
               onValueChange={(value) => {
-                setProp((props) => (props.fontSize = value), 1000);
+                setProp((props: Textprops) => (props.fontSize = value[0]), 1000);
               }}
             />
           </DropdownMenuContent>
@@ -183,7 +186,7 @@ const TextSettings = () => {
           aria-label="Toggle italic"
           pressed={isBold}
           onPressedChange={(value) => {
-            setProp((props) => (props.isBold = value), 1000);
+            setProp((props: Textprops) => (props.isBold = value), 1000);
           }}
         >
           <FontBoldIcon className="h-4 w-4" />
@@ -193,7 +196,7 @@ const TextSettings = () => {
           aria-label="Toggle italic"
           pressed={isItalic}
           onPressedChange={(value) => {
-            setProp((props) => (props.isItalic = value), 1000);
+            setProp((props: Textprops) => (props.isItalic = value), 1000);
           }}
         >
           <FontItalicIcon className="h-4 w-4" />
@@ -203,7 +206,7 @@ const TextSettings = () => {
           aria-label="Toggle italic"
           pressed={isUnderline}
           onPressedChange={(value) => {
-            setProp((props) => (props.isUnderline = value), 1000);
+            setProp((props: Textprops) => (props.isUnderline = value), 1000);
           }}
         >
           <UnderlineIcon className="h-4 w-4" />
@@ -233,7 +236,7 @@ const TextSettings = () => {
             <HexColorPicker
               color={color}
               onChange={(color) =>
-                setProp((props) => (props.color = color), 1000)
+                setProp((props: Textprops) => (props.color = color), 1000)
               }
             />
           </DropdownMenuContent>
@@ -257,7 +260,7 @@ const TextSettings = () => {
             <DropdownMenuRadioGroup
               value={fontFamily}
               onValueChange={(value) =>
-                setProp((props) => (props.fontFamily = value))
+                setProp((props: Textprops) => (props.fontFamily = value))
               }
             >
               <DropdownMenuRadioItem value="serif">Serif</DropdownMenuRadioItem>

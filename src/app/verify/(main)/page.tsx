@@ -119,7 +119,7 @@ const Page = () => {
         <div className="flex flex-col gap-2">
           <span className="text-gray-800 font-medium">Certificate ID</span>
           <Input
-            onInput={(e) => setCertificateId(e.target.value)}
+            onInput={(e) => setCertificateId(e.currentTarget.value)}
             placeholder="Enter certificate ID"
             className="w-3/4 rounded-none bg-gray-100 border border-gray-400"
 

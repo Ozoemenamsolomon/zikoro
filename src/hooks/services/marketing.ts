@@ -131,15 +131,9 @@ export const useCreateAffiliateLink = (): usePostResult<
   const [error, setError] = useState<boolean>(false);
 
   const createAffiliateLink = async ({
-    payload,
-    organizationName,
-    affiliateName,
-    eventPoster,
+    payload: { payload, organizationName, affiliateName, eventPoster },
   }: {
-    payload: TAffiliateLink;
-    organizationName: string;
-    affiliateName: string;
-    eventPoster: string;
+    payload: AffiliateLinkInfo;
   }) => {
     setLoading(true);
     toast({
@@ -245,12 +239,14 @@ export const useGetAffiliateLinks = (): UseGetResult<
   };
 };
 
-export const useGetAffiliateLink = ({ linkId }: { linkId: number }): UseGetResult<
-  TAffiliateLink,
-  "affiliateLink",
-  "getAffiliateLink"
-> => {
-  const [affiliateLink, setAffiliateLink] = useState<TAffiliateLink[]>([]);
+export const useGetAffiliateLink = ({
+  linkId,
+}: {
+  linkId: number;
+}): UseGetResult<TAffiliateLink, "affiliateLink", "getAffiliateLink"> => {
+  const [affiliateLink, setAffiliateLink] = useState<TAffiliateLink | null>(
+    null
+  );
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -258,7 +254,7 @@ export const useGetAffiliateLink = ({ linkId }: { linkId: number }): UseGetResul
     setLoading(true);
 
     try {
-      const { data, status } = await getRequest<TAffiliateLink[]>({
+      const { data, status } = await getRequest<TAffiliateLink>({
         endpoint: `marketing/affiliate/link/${linkId}`,
       });
 
@@ -289,7 +285,7 @@ export const useUpdateAffiliate = ({
   affiliateId,
 }: {
   affiliateId: number;
-}): usePostResult<TAffiliate, "updateAffiliate"> => {
+}): usePostResult<Partial<TAffiliate>, "updateAffiliate"> => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 

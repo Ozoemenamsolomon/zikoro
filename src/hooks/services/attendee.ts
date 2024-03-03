@@ -1,5 +1,6 @@
 import { toast } from "@/components/ui/use-toast";
 import { TAttendee, TAttendeeEmailInvites } from "@/types/attendee";
+import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
 
@@ -16,15 +17,17 @@ export const useCreateAttendee = () => {
         payload,
       });
 
-      console.log(data, status);
-      if (status !== 201) throw data.data.error;
+      if (status !== 201)
+        return toast({
+          description: data.data.error,
+          variant: "destructive",
+        });
 
       toast({
         description: "Attendee created successfully",
       });
       return data;
     } catch (error) {
-      console.log(error.response.data.error);
       setError(true);
       toast({
         description: error.response.data.error,
@@ -46,7 +49,7 @@ export const useUpdateAttendees = () => {
     payload,
     message,
   }: {
-    payload: TAttendee[];
+    payload: Partial<TAttendee>[];
     message?: string;
   }) => {
     setLoading(true);
@@ -62,14 +65,12 @@ export const useUpdateAttendees = () => {
 
       if (status !== 200) throw data.data.error;
 
-      console.log(data);
       toast({
         description: message || "Attendee created successfully",
       });
       return data;
     } catch (error) {
       setError(true);
-      console.log(error);
       toast({
         description: "something went wrong, try again later",
       });
@@ -97,7 +98,6 @@ export const useGetAttendees = () => {
 
     if (status !== 200) return setError(true);
 
-    console.log(data.data);
     return setAttendees(data.data);
   };
 
@@ -124,7 +124,6 @@ export const useGetAttendeesWithTags = () => {
 
     if (status !== 200) return setError(true);
 
-    console.log(data.data);
     return setAttendees(data.data);
   };
 
@@ -151,7 +150,6 @@ export const useGetAttendeesWithEmailInvites = () => {
 
     if (status !== 200) return setError(true);
 
-    console.log(data.data);
     return setAttendees(data.data);
   };
 
@@ -178,7 +176,6 @@ export const useGetAttendeesWithFavourites = () => {
 
     if (status !== 200) return setError(true);
 
-    console.log(data.data);
     return setAttendees(data.data);
   };
 
@@ -205,7 +202,6 @@ export const useGetAttendeesWithCertificates = () => {
 
     if (status !== 200) return setError(true);
 
-    console.log(data.data);
     return setAttendees(data.data);
   };
 
@@ -238,10 +234,8 @@ export const useInviteAttendees = () => {
       toast({
         description: "Invitees sent successfuly",
       });
-      console.log(data);
       return data;
     } catch (error) {
-      console.log(error);
       setError(true);
       toast({
         description: "an error has occured",
@@ -307,7 +301,6 @@ export const useGetAttendeesWithNotes = () => {
 
     if (status !== 200) return setError(true);
 
-    console.log(data.data);
     return setAttendees(data.data);
   };
 

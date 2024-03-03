@@ -1,5 +1,3 @@
-import { certificateAsset } from "./certificates";
-
 export interface TOrganization {
   id: number;
   created_at: string;

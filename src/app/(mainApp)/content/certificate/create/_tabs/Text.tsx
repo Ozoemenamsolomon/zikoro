@@ -51,7 +51,9 @@ const Text = ({ details, setValue }: TabProps) => {
       <div className="flex flex-col gap-4">
         {TextTypes.map(({ label, props }) => (
           <button
-            ref={(ref) => connectors.create(ref, <TextElement {...props} />)}
+            ref={(ref) =>
+              ref && connectors.create(ref, <TextElement {...props} />)
+            }
             className={cn(
               "bg-gray-50 py-3 px-2 rounded text-gray-800",
               props.isBold && "font-bold"

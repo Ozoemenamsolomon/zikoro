@@ -93,8 +93,8 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     accessorKey: "registrationCompleted",
     header: "Reg. Status",
     cell: ({ row }) => {
-      const regStatus = row.getValue("registrationCompleted");
-      const amountPaid = row.getValue("amountPaid");
+      const regStatus = row.original.registrationCompleted;
+      const amountPaid = row.original.amountPaid;
       return (
         <div
           className={`max-w-full truncate p-1 border ${
@@ -114,7 +114,7 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     accessorKey: "payOutStatus",
     header: "PayOut Status",
     cell: ({ row }) => {
-      const payOutStatus = row.getValue("payOutStatus")?.toLowerCase();
+      const payOutStatus = row.original.payOutStatus?.toLowerCase();
 
       return (
         <div

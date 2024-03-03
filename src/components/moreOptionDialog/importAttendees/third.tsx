@@ -13,7 +13,10 @@ const Third = ({
 }: {
   data: any[][];
   excelHeaders: any[];
-  headers: Map<{ label: string; value: string; isRequired: boolean }, any>;
+  headers: Map<
+    { label: string; value: keyof TAttendee; isRequired: boolean },
+    any
+  >;
   getAttendees: () => Promise<void>;
 }) => {
   const headerMap = new Map(
@@ -22,7 +25,7 @@ const Third = ({
   const { updateAttendees } = useUpdateAttendees();
 
   const submitAttendees = async () => {
-    const payload: TAttendee[] = data.map((row, index) => {
+    const payload: Partial<TAttendee>[] = data.map((row, index) => {
       const attendee: Partial<TAttendee> = {
         userEmail: "ubahyusuf484@gmail.com",
         eventId: "1234567890",
@@ -31,7 +34,9 @@ const Third = ({
       };
 
       Array.from(headers).forEach(([key, value]) => {
-        attendee[key.value] = row[headerMap.get(value)];
+        const rowValue = headerMap.get(value);
+        if (!rowValue) return;
+        attendee[key.value] = row[rowValue];
       });
 
       return attendee;
@@ -40,6 +45,11 @@ const Third = ({
     console.log(payload);
     await updateAttendees({ payload });
     await getAttendees();
+  };
+
+  const showRow = (value: any, row: any[]) => {
+    const rowValue = headerMap.get(value);
+    return rowValue && row[rowValue];
   };
 
   return (
@@ -63,7 +73,7 @@ const Third = ({
               <tr>
                 {Array.from(headers).map(([key, value]) => (
                   <td className="py-2 px-4 border-b text-gray-500 text-tiny">
-                    {row[headerMap.get(value)]}
+                    {showRow(value, row)}
                   </td>
                 ))}
               </tr>

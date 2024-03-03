@@ -112,7 +112,7 @@ export default function CreateAffiliateForm() {
           <div className="flex-1">
             <FormField
               control={form.control}
-              name="accountDetails.bankCounty"
+              name="accountDetails.bankCountry"
               render={({ field }) => (
                 <InputOffsetLabel isRequired label="Bank Country">
                   <Input

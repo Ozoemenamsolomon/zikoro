@@ -22,7 +22,7 @@ const RequestPayoutDialog = ({
     0
   );
   const totalAffiliateCommission = selectedRows.reduce(
-    (acc, { affiliateCommission }) => affiliateCommission + acc,
+    (acc, { affliateCommission }) => affliateCommission + acc,
     0
   );
 
@@ -34,7 +34,7 @@ const RequestPayoutDialog = ({
   const { requestPayOut } = useRequestPayOut({ userId: 1 });
 
   const onRequestPayOut = async () => {
-    const payload = selectedRows.map(({ id }) => id);
+    const payload = selectedRows.map(({ id }) => id.toString());
     await requestPayOut({ payload });
     await getEventTransactions();
   };
@@ -69,7 +69,7 @@ const RequestPayoutDialog = ({
                   {row.attendees}
                 </td>
                 <td className="py-2 px-4 border-b text-gray-500 text-tiny text-center">
-                  {row.amountPaid - row.processingFee - row.affiliateCommission}
+                  {row.amountPaid - row.processingFee - row.affliateCommission}
                 </td>
               </tr>
             ))}

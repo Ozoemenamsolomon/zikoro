@@ -269,7 +269,7 @@ const page = () => {
     setSettings({ ...settings, [key]: value });
   };
 
-  const hashRef = useRef<SerializedNodes | string | undefined>();
+  const hashRef = useRef<string | undefined>();
 
   const [{ data: png }, convert, certificateRef] = useToPng<HTMLDivElement>({
     onSuccess: async (data) => {
@@ -289,6 +289,8 @@ const page = () => {
       console.log(url);
       // alert("File uploaded successfully", url);
 
+      if (!hashRef.current) return;
+
       const newCertificate = await saveCertificate({
         payload: editableCertificate
           ? {
@@ -307,7 +309,10 @@ const page = () => {
             },
       });
       console.log(newCertificate);
-      setCertificate(newCertificate);
+
+      if (newCertificate) {
+        setCertificate(newCertificate);
+      }
     },
   });
 

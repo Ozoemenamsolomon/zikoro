@@ -189,7 +189,8 @@ const Certificates = () => {
                 </div>
                 <div className="flex">
                   <span className="text-tiny font-medium text-gray-500">
-                    {format(new Date(created_at), "dd MMMM, yyyy")}
+                    {created_at &&
+                      format(new Date(created_at), "dd MMMM, yyyy")}
                   </span>
                 </div>
               </div>

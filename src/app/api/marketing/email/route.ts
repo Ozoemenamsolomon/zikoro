@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
         html: `<div>${emailBody}</div>`,
       };
 
-      await transporter.sendMail(mailData, function (err, info) {
+      await transporter.sendMail(mailData, function (err: any, info: any) {
         if (err) throw err;
         else console.log(info);
       });

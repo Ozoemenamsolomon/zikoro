@@ -1,4 +1,3 @@
-import { InviteTemplate } from "@/components/emailTemplates";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -61,7 +60,7 @@ export async function POST(req: NextRequest) {
         html: `<div>${Message}</div>`,
       };
 
-      await transporter.sendMail(mailData, function (err, info) {
+      await transporter.sendMail(mailData, function (err: any, info: any) {
         if (err) throw err;
         else console.log(info);
       });

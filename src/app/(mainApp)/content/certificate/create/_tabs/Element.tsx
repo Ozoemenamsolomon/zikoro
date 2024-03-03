@@ -122,7 +122,7 @@ const Element = ({}: TabProps) => {
             id="file-input"
             name="background"
             type="file"
-            onChange={(e) => uploadElement(e.target.files[0])}
+            onChange={(e) => e.target.files && uploadElement(e.target.files[0])}
             accept="image/*"
           />
         </div>
@@ -136,7 +136,9 @@ const Element = ({}: TabProps) => {
             <button
               // onClick={() => setValue("background", url)}
               className="shadow-sm"
-              ref={(ref) => connectors.create(ref, <ImageElement src={url} />)}
+              ref={(ref) =>
+                ref && connectors.create(ref, <ImageElement src={url} />)
+              }
               data-cy="toolbox-image"
             >
               <img src={url} />

@@ -1,5 +1,6 @@
 import { TAttendee } from "@/types/attendee";
 import { SerializedNodes } from "@craftjs/core";
+import { TEvent } from "./events";
 
 export type TAttendeeCertificate = {
   id?: number;
@@ -31,7 +32,7 @@ export interface TCertificateSettings {
 export interface TCertificateDetails {
   verification: { showId: boolean; showQRCode: boolean; showURL: boolean };
   background: string | null;
-  craftHash: SerializedNodes | string;
+  craftHash: string;
 }
 export interface TCertificate {
   id?: number;
@@ -41,6 +42,7 @@ export interface TCertificate {
   certficateDetails: TCertificateDetails;
   certificateSettings?: TCertificateSettings;
   cerificateUrl?: string;
+  event?: TEvent;
 }
 
 export type TFullCertificate = TAttendeeCertificate & {

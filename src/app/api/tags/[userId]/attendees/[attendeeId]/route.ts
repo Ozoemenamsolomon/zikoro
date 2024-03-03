@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { userId: string; attendeeId; number } }
+  { params }: { params: { userId: string; attendeeId: number; } }
 ) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {

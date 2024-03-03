@@ -147,7 +147,7 @@ const Compose = () => {
                 control={form.control}
                 name="phoneNumbers"
                 render={({ field }) => (
-                  <InputOffsetLabel isrequired label="Phone Numbers">
+                  <InputOffsetLabel isRequired label="Phone Numbers">
                     <Textarea
                       placeholder="Enter phone numbers"
                       {...field}
@@ -160,7 +160,7 @@ const Compose = () => {
                 control={form.control}
                 name="message"
                 render={({ field }) => (
-                  <InputOffsetLabel isrequired label="Text message">
+                  <InputOffsetLabel isRequired label="Text message">
                     <Textarea
                       placeholder="Enter text message"
                       {...field}

@@ -1,9 +1,9 @@
 import React, { useState, ChangeEvent } from "react";
 import First from "./first";
 import Second from "./second";
-import { MoreOptionsProps } from "@/app/people/_reusable/FirstSection";
 import Third from "./third";
 import { TAttendee } from "@/types/attendee";
+import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
 
 export type THeaders = {
   firstName: number | null;
@@ -21,7 +21,7 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
   const [step, setStep] = useState<number>(0);
   const [excelResult, setExcelResult] = useState<any[][]>([]);
   const [headers, setHeaders] = useState<
-    Map<{ label: string; value: string; isRequired: boolean }, any>
+    Map<{ label: string; value: keyof TAttendee; isRequired: boolean }, any>
   >(
     new Map([
       [{ label: "First name", value: "firstName", isRequired: true }, null],
@@ -49,7 +49,7 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
   );
 
   const updateHeader = (
-    key: { label: string; value: string; isRequired: boolean },
+    key: { label: string; value: keyof TAttendee; isRequired: boolean },
     value: string
   ) => {
     console.log(value);
@@ -61,7 +61,7 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
 
   const deleteHeader = (key: {
     label: string;
-    value: string;
+    value: keyof TAttendee;
     isRequired: boolean;
   }) => {
     setHeaders((prevHeaders) => {

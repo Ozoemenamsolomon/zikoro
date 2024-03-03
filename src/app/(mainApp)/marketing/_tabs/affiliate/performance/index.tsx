@@ -138,7 +138,7 @@ const Performance = () => {
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<TAffiliateLink>({
-      data: affiliateLinks,
+      data: affiliateLinks || [],
       dataFilters: affiliateLinkFilter,
     });
 
@@ -210,7 +210,7 @@ const Performance = () => {
   ).size;
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !affiliateLinks) return;
 
     filters
       .filter((filter) => filter.optionsFromData)
@@ -241,7 +241,7 @@ const Performance = () => {
           <span className="text-gray-700 font-medium">Revenue</span>
           <span className="text-gray-900 font-semibold text-2xl">
             NGN
-            {new Intl.NumberFormat().format(totalRevenue)}
+            {new Intl.NumberFormat().format(parseInt(totalRevenue))}
           </span>
         </div>
         <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md w-[200px]">
@@ -270,12 +270,12 @@ const Performance = () => {
           <span className="text-gray-700 font-medium">Commission</span>
           <span className="text-gray-900 font-semibold text-2xl">
             NGN
-            {new Intl.NumberFormat().format(totalAffiliateCommission)}
+            {new Intl.NumberFormat().format(parseInt(totalAffiliateCommission))}
           </span>
           <div className="text-tiny text-green-500 flex items-center gap-1.5 p-1 rounded bg-green-50 w-fit">
             <span className="font-medium capitalize">
               Wallet: NGN
-              {new Intl.NumberFormat().format(totalWallet)}
+              {new Intl.NumberFormat().format(parseInt(totalWallet))}
             </span>
           </div>
         </div>
@@ -351,7 +351,7 @@ const Performance = () => {
       <div className="space-y-2 max-w-full">
         <DataTable<TAffiliateLink>
           columns={columns}
-          data={affiliateLinks}
+          data={affiliateLinks || []}
           rowStyle={{
             display: "grid",
             gridTemplateColumns: `auto 1.5fr repeat(${

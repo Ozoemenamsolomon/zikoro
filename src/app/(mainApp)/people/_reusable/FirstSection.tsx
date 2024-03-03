@@ -126,7 +126,7 @@ export interface MoreOptionsProps {
   attendees: TAttendee[];
   getAttendees: () => Promise<void>;
   attendeesTags: TAttendeeTags[];
-  favourites: TFavouriteContact;
+  favourites?: TFavouriteContact;
 }
 
 type TMoreOptions = {
@@ -373,7 +373,7 @@ export default function FirstSection({
                   attendees={mappedAttendees}
                   getAttendees={getAttendees}
                   attendeesTags={attendeesTags}
-                  favourites={favourites}
+                  favourites={favourites ? favourites : undefined}
                 />
               )}
             </DialogContent>
@@ -401,7 +401,7 @@ export default function FirstSection({
           <Input
             type="text"
             placeholder="Search attendees"
-            onInput={(event) => setSearchTerm(event.target.value)}
+            onInput={(event) => setSearchTerm(event.currentTarget.value)}
             className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8 w-full"
           />
           <svg

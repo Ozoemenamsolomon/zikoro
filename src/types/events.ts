@@ -11,7 +11,7 @@ export interface TEvent {
   eventVisibility?: string;
   industry: string;
   eventCategory: string;
-  expectedParticipants?: bigint;
+  expectedParticipants?: number;
   locationType?: string;
   eventAddress?: string;
   eventCountry?: string;
@@ -30,9 +30,9 @@ export interface TEvent {
   linkedin?: string;
   instagram?: string;
   facebook?: string;
-  trainingDuration?: bigint;
+  trainingDuration?: number;
   badgeSettings?: Record<string, any>;
-  organisationId?: bigint;
+  organisationId?: number;
   eventCity?: string;
   registered?: number;
   eventPostalCode?: string;

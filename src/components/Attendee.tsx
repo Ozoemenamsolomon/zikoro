@@ -2,13 +2,14 @@ import { useUpdateAttendees } from "@/hooks/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import { TFavouriteContact } from "@/types/favourites";
 import { formatDate, isWithinTimeRange } from "@/utils/date";
+import { format } from "date-fns";
 
 type AttendeeProps = {
   attendee: TAttendee;
   isSelected: boolean;
   selectAttendee: (attendee: TAttendee) => void;
   getAttendees: () => Promise<void>;
-  favourites: TFavouriteContact;
+  favourites: TFavouriteContact | null;
   toggleFavourites: (id: number, isFavourite: boolean) => Promise<void>;
   favouriteIsLoading: boolean;
 };
@@ -62,13 +63,13 @@ const Attendee: React.FC<AttendeeProps> = ({
         : [
             ...checkin,
             {
-              date: newDate,
+              date: newDate.toDateString(),
               checkin: true,
             },
           ]
       : [
           {
-            date: newDate,
+            date: newDate.toDateString(),
             checkin: true,
           },
         ];
@@ -85,13 +86,6 @@ const Attendee: React.FC<AttendeeProps> = ({
     });
 
     await getAttendees();
-  };
-
-  const CheckInDate = () => {
-    const { day, month, year } =
-      recentCheckin && formatDate(recentCheckin.date);
-
-    return <span>{day + "." + month + "." + year}</span>;
   };
 
   return (
@@ -134,7 +128,7 @@ const Attendee: React.FC<AttendeeProps> = ({
                   strokeLinejoin="round"
                 />
               </svg>
-              <CheckInDate />
+              <span>{format(recentCheckin.date, "dd . MM . yyyy")}</span>
             </div>
           )}
           <div className="flex gap-1.5 flex-wrap w-fit">
@@ -166,6 +160,7 @@ const Attendee: React.FC<AttendeeProps> = ({
           disabled={favouriteIsLoading}
           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation();
+            if (!id) return;
             toggleFavourites(id, isFavourite);
           }}
         >

@@ -74,9 +74,9 @@ export function createHash(data: string): string {
   return hash.digest("hex");
 }
 
-export function getProperty<T>(obj: T, key: string): any {
+export function getProperty<T>(obj: T, key: keyof T): any {
   if (typeof obj === "object" && obj !== null && key in obj) {
-    return (obj as Record<string, any>)[key];
+    return (obj as Record<keyof T, any>)[key];
   }
   return null; // Handle the case where the key is not present
 }

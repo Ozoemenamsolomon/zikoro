@@ -268,7 +268,9 @@ export default function AddAttendeeForm({
                       type="text"
                       className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-gray-700 z-10 font-medium h-full w-fit max-w-[36px] border-y-[1px]"
                       value={phoneCountryCode}
-                      onInput={(e) => setPhoneCountryCode(e.target.value)}
+                      onInput={(e) =>
+                        setPhoneCountryCode(e.currentTarget.value)
+                      }
                     />
                     <FormControl>
                       <Input
@@ -297,7 +299,9 @@ export default function AddAttendeeForm({
                       type="text"
                       className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-gray-700 z-10 font-medium h-10 w-fit max-w-[36px] border-y-[1px]"
                       value={whatsappCountryCode}
-                      onInput={(e) => setWhatsAppCountryCode(e.target.value)}
+                      onInput={(e) =>
+                        setWhatsAppCountryCode(e.currentTarget.value)
+                      }
                     />
                     <FormControl>
                       <Input
@@ -336,7 +340,9 @@ export default function AddAttendeeForm({
               <Input
                 name="profilePicture"
                 type="file"
-                onChange={(e) => uploadProfilePicture(e.target.files[0])}
+                onChange={(e) =>
+                  e.target.files && uploadProfilePicture(e.target.files[0])
+                }
                 accept="image/*"
               />
             </div>
@@ -350,9 +356,10 @@ export default function AddAttendeeForm({
               {attendeeTypeOptions.map(({ label, value }) => (
                 <button
                   className={`text-sm p-1.5 mx-auto border-2 rounded font-medium",
-                    ${attendeeType.includes(value)
-                      ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
-                      : "border-gray-600 text-gray-600 bg-white"
+                    ${
+                      attendeeType.includes(value)
+                        ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
+                        : "border-gray-600 text-gray-600 bg-white"
                     }
                   `}
                   type="button"
