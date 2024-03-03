@@ -6,7 +6,7 @@ import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import { useRef, useState, useLayoutEffect, useEffect } from "react";
 import { TLink } from "@/components/Sidebar";
 
-export const PeopleLinks: TLink[] = [
+const PeopleLinks: TLink[] = [
   { name: "All", href: "all" },
   { name: "released certificates", href: "released_certificates" },
   { name: "favorites", href: "favorites" },
