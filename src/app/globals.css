@@ -77,3 +77,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+.gradient-text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}

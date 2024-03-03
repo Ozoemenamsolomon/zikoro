@@ -6,10 +6,13 @@ import {IoClose} from "react-icons/io5"
 import {toast } from 'react-toastify';
 import { supabase } from "../utils/Utils"
 
+type AwaitAppPicsProps = {
+  url: string,
+  id: number,
+}
 
-export default function AwaitAppPic({url, id}){
-
-        const approve = async (imageId: string) => {
+export default function AwaitAppPic({url, id}: AwaitAppPicsProps){
+        const approve = async (imageId: number) => {
           try {        
             // Update the parameters for the specified image
             const { error } = await supabase
@@ -24,10 +27,9 @@ export default function AwaitAppPic({url, id}){
             } catch (error) {
               
             }
-        };
-               
+        };               
   
-        const reject = async (imageId: string) => {
+        const reject = async (imageId:number) => {
             try {        
               // Update the parameters for the specified image
               const { error } = await supabase
