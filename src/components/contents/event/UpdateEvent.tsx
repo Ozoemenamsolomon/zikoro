@@ -48,7 +48,7 @@ export default function UpdateEvent({
 }: {
   eventId: string;
 }): JSX.Element {
-  const { data, loading } = useFetchSingleEvent(eventId);
+  const { data, loading }: {data: any, loading: boolean} = useFetchSingleEvent(eventId);
   const { loading: updating, update } = useUpdateEvent();
   const form = useForm<z.infer<typeof updateEventSchema>>({
     resolver: zodResolver(updateEventSchema),
@@ -106,7 +106,7 @@ export default function UpdateEvent({
         pricing: data?.pricing,
       });
       setEventPosterArr(
-        data?.eventPoster?.map((v) => {
+        data?.eventPoster?.map((v:any) => {
           return { url: v, file: undefined, isValid: true };
         })
       );
