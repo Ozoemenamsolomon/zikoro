@@ -4,9 +4,31 @@ import { TEventTransaction } from "@/types/billing";
 import { convertDateFormat } from "@/utils/date";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<TEventTransaction>[] = [
+export const columns: {
+  accessorKey:
+    | "select"
+    | "event"
+    | "userEmail"
+    | "eventRegistrationRef"
+    | "created_at"
+    | "attendees"
+    | "currency"
+    | "eventPrice"
+    | "amountPaid"
+    | "payOutDate"
+    | "registrationCompleted"
+    | "payOutStatus"
+    | "discountCode"
+    | "affliateEmail"
+    | "affliateCode"
+    | "ticketCategory";
+  header: ColumnDef<TEventTransaction>["header"];
+  cell?: ColumnDef<TEventTransaction>["cell"];
+  enableSorting?: boolean;
+  enableHiding?: boolean;
+}[] = [
   {
-    id: "select",
+    accessorKey: "select",
     header: ({ table }) => (
       <div className="pl-2">
         <Checkbox

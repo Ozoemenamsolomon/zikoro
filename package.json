@@ -67,7 +67,6 @@
     "react-resizable": "^3.0.5",
     "react-share-social": "^0.1.55",
     "react-to-pdf": "^1.0.1",
-    "styled-components": "^6.1.1",
     "styled-icons": "^10.47.0",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",

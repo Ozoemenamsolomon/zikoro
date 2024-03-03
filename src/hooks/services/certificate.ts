@@ -283,7 +283,6 @@ export const useGetAttendeeCertificates = ({
       if (status !== 200) {
         throw data;
       }
-      console.log(data.data);
       setAttendeeCertificates(data.data);
     } catch (error) {
       setError(true);
@@ -383,7 +382,6 @@ export const useVerifyAttendeeCertificate =
           throw data;
         }
 
-        console.log(data.data);
         if (!data.data) {
           toast({
             description: "this certificate is not valid",

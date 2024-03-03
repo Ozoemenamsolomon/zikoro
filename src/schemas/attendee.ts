@@ -6,7 +6,8 @@ export const checkinSchema = z.object({
 });
 
 export const AttendeeSchema = z.object({
-  registrationDate: z.string().optional(),
+  id: z.number().optional(),
+  registrationDate: z.string(),
   userEmail: z.string().email(),
   firstName: z.string().min(2, {
     message: "email must be at least 2 characters.",
@@ -32,9 +33,13 @@ export const AttendeeSchema = z.object({
   facebook: z.string().optional(),
   certificate: z.boolean(),
   profilePicture: z.string().optional(),
-  attendeeType: z.array(z.string()),
+  attendeeType: z.array(z.string()).nullable(),
   eventId: z.string(),
   checkin: z.array(checkinSchema).optional(),
+  badge: z.string().optional(),
+  ticketType: z.string().optional(),
+  eventRegistrationRef: z.string().optional(),
+  userId: z.number().optional(),
 });
 
 export const attendeeNoteSchema = z.object({

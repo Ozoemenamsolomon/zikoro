@@ -51,11 +51,11 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
   const verify = async () => {
     const verifiedCertificate = await verifyAttendeeCertificate(certificateId);
 
-    console.log(verifiedCertificate);
-
-    if (!!verifiedCertificate) {
-      setCertificate(verifiedCertificate);
+    if (!verifiedCertificate) {
+      router.replace("/verify");
     }
+
+    setCertificate(verifiedCertificate);
   };
 
   useEffect(() => {
@@ -161,7 +161,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   <p className="text-lg">This is to certify that</p>
                 </div>
                 <div className="pb-1 mx-auto w-2/3 text-center mb-6">
-                  <span className="text-4xl font-DancingScript">
+                  <span className={`${dancingScript.className} text-4xl`}>
                     {certificate?.attendee.firstName +
                       " " +
                       certificate?.attendee.lastName}
