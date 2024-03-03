@@ -1,6 +1,6 @@
 import { TEventTransaction } from "@/types/billing";
 import React from "react";
-import { DialogClose } from "@/components/ui/dialog";
+// import { DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRequestPayOut } from "@/hooks/services/billing";
 
@@ -131,11 +131,11 @@ const RequestPayoutDialog = ({
           issues are identified.
         </span>
       </div>
-      <DialogClose asChild>
+      {/* <DialogClose asChild>
         <Button className="bg-basePrimary w-full" onClick={onRequestPayOut}>
           Request Payout
         </Button>
-      </DialogClose>
+      </DialogClose> */}
     </div>
   );
 };

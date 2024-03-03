@@ -17,7 +17,7 @@ import {
   useUpdateAttendeeCertificates,
 } from "@/hooks/services/certificate";
 import { TCertificate } from "@/types/certificates";
-import { DialogClose } from "../ui/dialog";
+// import { DialogClose } from "../ui/dialog";
 import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
 
 const CertificateDialog: React.FC<MoreOptionsProps> = ({
@@ -169,9 +169,14 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
           </SelectTrigger>
           <SelectContent>
             {eventCertificates &&
-              eventCertificates.map(({ id, certificateName }) => (
-                id && <SelectItem value={id?.toString()}>{certificateName}</SelectItem>
-              ))}
+              eventCertificates.map(
+                ({ id, certificateName }) =>
+                  id && (
+                    <SelectItem value={id?.toString()}>
+                      {certificateName}
+                    </SelectItem>
+                  )
+              )}
           </SelectContent>
         </Select>
       </div>
@@ -182,7 +187,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
       />
-      <DialogClose asChild>
+      {/* <DialogClose asChild>
         <Button
           disabled={
             selectedAttendees.length === 0 || !action || !selectedCertificate
@@ -192,7 +197,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         >
           Save
         </Button>
-      </DialogClose>
+      </DialogClose> */}
     </div>
   );
 };

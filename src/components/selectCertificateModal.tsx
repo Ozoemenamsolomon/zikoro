@@ -1,7 +1,7 @@
 import { TAttendeeCertificate } from "@/types/certificates";
 import React, { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
-import { DialogClose } from "./ui/dialog";
+// import { DialogClose } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { useRecallAttendeeCertificates } from "@/hooks/services/certificate";
 
@@ -53,7 +53,8 @@ const SelectCertificateModal = ({
       <div className="space-y-4 max-h-32 overflow-auto">
         {certificates.map((certificate) => (
           <div className="flex items-center space-x-2">
-            <Checkbox className="data-[state=checked]:bg-basePrimary"
+            <Checkbox
+              className="data-[state=checked]:bg-basePrimary"
               id="terms2"
               onCheckedChange={() => toggleValue(certificate)}
               checked={selectedCertificates.includes(certificate)}
@@ -67,7 +68,7 @@ const SelectCertificateModal = ({
           </div>
         ))}
       </div>
-      <DialogClose asChild>
+      {/* <DialogClose asChild>
         <Button
           disabled={selectedCertificates.length === 0}
           className="bg-basePrimary w-full"
@@ -75,7 +76,7 @@ const SelectCertificateModal = ({
         >
           Save
         </Button>
-      </DialogClose>
+      </DialogClose> */}
     </div>
   );
 };

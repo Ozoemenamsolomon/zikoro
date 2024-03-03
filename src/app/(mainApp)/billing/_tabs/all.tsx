@@ -140,7 +140,8 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
       />
-      <DialogClose asChild>
+      {/* TODO: DialogClose should only be used with Dialog */}
+      {/* <DialogClose asChild>
         <Button
           disabled={
             selectedAttendees.length === 0 || selectedAttendeeType.length === 0
@@ -150,7 +151,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
         >
           Save
         </Button>
-      </DialogClose>
+      </DialogClose> */}
     </div>
   );
 };

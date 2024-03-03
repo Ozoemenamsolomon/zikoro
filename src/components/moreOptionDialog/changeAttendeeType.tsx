@@ -5,7 +5,7 @@ import { attendeeTypeOptions } from "@/data/attendee";
 import { useUpdateAttendees } from "@/hooks/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import React, { useEffect, useState } from "react";
-import { DialogClose } from "../ui/dialog";
+// import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
 import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
 
@@ -144,7 +144,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
       />
-      <DialogClose asChild>
+      {/* <DialogClose asChild>
         <Button
           disabled={
             selectedAttendees.length === 0 || selectedAttendeeType.length === 0
@@ -154,7 +154,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
         >
           Save
         </Button>
-      </DialogClose>
+      </DialogClose> */}
     </div>
   );
 };
