@@ -1,0 +1,43 @@
+import { TOrganization } from "./organization";
+
+export interface TEvent {
+  id: number;
+  createdAt?: Date;
+  createdBy: string;
+  eventTitle: string;
+  published: boolean;
+  startDateTime?: Date;
+  endDateTime?: Date;
+  eventVisibility?: string;
+  industry: string;
+  eventCategory: string;
+  expectedParticipants?: number;
+  locationType?: string;
+  eventAddress?: string;
+  eventCountry?: string;
+  eventPoster?: Record<string, any>;
+  organisationLogo?: string;
+  prerequisites?: string;
+  benefits?: Record<string, any>;
+  pricingCurrency?: string;
+  pricing?: Record<string, any>;
+  organisationName?: string;
+  country?: string;
+  phoneNumber?: string;
+  whatsappNumber?: string;
+  email?: string;
+  x?: string;
+  linkedin?: string;
+  instagram?: string;
+  facebook?: string;
+  trainingDuration?: number;
+  badgeSettings?: Record<string, any>;
+  organisationId?: number;
+  eventCity?: string;
+  registered?: number;
+  eventPostalCode?: string;
+  eventTimeZone?: string;
+  description?: Record<string, any>;
+  partnerIndustry?: Record<string, any>;
+  organization: TOrganization;
+}
