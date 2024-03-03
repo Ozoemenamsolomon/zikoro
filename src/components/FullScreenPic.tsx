@@ -2,7 +2,11 @@
 import React, {useEffect, useState } from "react"
 import Image from "next/image"
 
-export default function ApprvPic({url}){
+type FullScreenPicProps = {
+        url: string,
+    }
+
+export default function FullScreenPic({url}: FullScreenPicProps){
 
         return (
                 <div className="" >

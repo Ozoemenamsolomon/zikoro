@@ -18,6 +18,18 @@ const config = {
       },
     },
     extend: {
+      gradientColorStops: theme => ({
+        'custom-gradient-start': '#001FCC',
+        'custom-gradient-end': '#9D00FF',
+      }),
+      linearGradientDirections: {
+        // Define your custom gradient direction
+        'top-right': 'to top right',
+      },
+      linearGradientColors: theme => ({
+        'custom-gradient': [theme('colors.custom-gradient-start'), theme('colors.custom-gradient-end')],
+      }),
+     
       colors: {
         zikoroBlue: "hsl(var(--zblue))" ,
         border: "hsl(var(--border))",

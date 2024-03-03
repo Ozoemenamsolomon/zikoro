@@ -9,17 +9,19 @@ import {toast } from 'react-toastify';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../components/ui/alert-dialog"
 import { TiWarningOutline } from "react-icons/ti";
 import FileSaver from "file-saver";
-import { useAppContext } from '../context/index'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
+type ApprvPicProps = {
+    url: string,
+    id: number,
+    like: number
+}
 
-
-export default function ApprvPic({url, id, like}){
+export default function ApprvPic({url, id, like}: ApprvPicProps) {
     const [open , setOpen] = useState(false)
     const [liked, setLiked] = useState(false)
     const [likes, setLikes] = useState(0)
     const [textareaValue, setTextareaValue] = useState('');
-
 
     //download function
     const download =  (imgUrl: string) => {
@@ -29,7 +31,7 @@ export default function ApprvPic({url, id, like}){
     }
 
     //delete function
-    const del = async(imageId: string) => {
+    const del = async(imageId: number) => {
         try {        
             // Update the parameters for the specified image
               const { error } = await supabase.from('eventPhotos').delete().eq('id', imageId);
@@ -47,7 +49,7 @@ export default function ApprvPic({url, id, like}){
     }
 
     //like functionality
-    const likeFunc = async(imageId: string) => {
+    const likeFunc = async(imageId: number) => {
         try {        
             // Update the parameters for the specified image
             const { error } = await supabase
@@ -67,13 +69,12 @@ export default function ApprvPic({url, id, like}){
         setLiked(true)
     }
 
-    
     //Report Functionality
-    const handleTextareaChange = (event) => {
+    const handleTextareaChange: React.ChangeEventHandler<HTMLTextAreaElement> = (event) => {
         setTextareaValue(event.target.value);
     };
 
-    const reportImage = async (imageId: string) => {
+    const reportImage = async (imageId: number) => {
         try {        
             // Update the parameters for the specified image
             const { error } = await supabase
@@ -96,8 +97,6 @@ export default function ApprvPic({url, id, like}){
 
     const [admin, setAdmin] = useState(!false)
     const [hoverActive, setHoverActive] = useState(false)
-
-  
 
     return (
                     <div className="relative " onMouseOver={() => setHoverActive(true)}  onMouseOut={() => setHoverActive(false)} >
@@ -154,7 +153,7 @@ export default function ApprvPic({url, id, like}){
                                                             
                                                                 <div className='relative  mt-8 '>
                                                                     <div className='flex items-center space-x-4 rounded-lg cursor-pointer '>            
-                                                                        <textarea id="message" rows="5" class="block p-2.5 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 focus:outline-none  dark:bg-gray-700" placeholder="Write your thoughts here..." onChange={handleTextareaChange} required></textarea>
+                                                                        <textarea id="message" rows={5} className="block p-2.5 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 focus:outline-none  dark:bg-gray-700" placeholder="Write your thoughts here..." onChange={handleTextareaChange} required></textarea>
                                                                     </div>
                                                                     <p className='absolute right-4 -top-2 px-1 bg-white font-light text-sm'>Comment</p>
                                                                 </div>

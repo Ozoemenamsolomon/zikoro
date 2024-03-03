@@ -6,11 +6,16 @@ import {RiToggleLine} from "react-icons/ri"
 import { supabase } from "../utils/Utils"
 import {toast } from 'react-toastify';
 
+type AwaitAppPicsProps = {
+  url: string,
+  id: number,
+  photoUrl: string
+}
+
 
 export default function AwaitAppPics(){
     const [togOn, setTogOn] = useState(false)
-    const [images, setImages] = useState([]);
-    const [id, setId] = useState([]);
+    const [images, setImages] = useState<AwaitAppPicsProps[]|undefined>(undefined);
 
     //toggler function
     const toggler = () => {
@@ -75,8 +80,8 @@ export default function AwaitAppPics(){
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                        
-                        {images.length > 0 ? (
-                            images.map((image, index) => (
+                        {images?.length ? (
+                            images?.map((image, index) => (
                                 <Picture key={index} id={image.id} url={image.photoUrl}  />
                             ))
                         ) : (

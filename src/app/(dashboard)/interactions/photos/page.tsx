@@ -2,23 +2,24 @@
 import React, { useEffect, useRef, useState } from 'react'
 import {CiCirclePlus} from "react-icons/ci"
 import {MdOutlineFullscreen} from "react-icons/md"
-import ApprovedPics from "../../../components/ApprovedPics"
-import AwaitAppPics from "../../../components/AwaitAppPics"
-import UnAppPics from "../../../components/UnAppPics"
+import ApprovedPics from "@/components/ApprovedPics"
+import AwaitAppPics from "@/components/AwaitAppPics"
+import UnAppPics from "@/components/UnAppPics"
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useAppContext } from '../../../context'
-import Modal from '../../../components/Modal'
+import { useAppContext } from '@/context'
+import Modal from '@/components/Modal'
 import { IoSettingsOutline } from "react-icons/io5";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import Image from "next/image"
-import FullScreenPics from "../../../components/FullScreenPics"
+import FullScreenPics from "@/components/FullScreenPics"
 import { RiToggleFill, RiToggleLine } from 'react-icons/ri'
 import { BiExitFullscreen } from "react-icons/bi";
 import {FiFile} from "react-icons/fi"
-import { supabase } from "../../../utils/Utils"
+import { supabase } from "@/utils/Utils"
 import {toast } from 'react-toastify';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Photos() {
     const links = [
@@ -54,7 +55,7 @@ export default function Photos() {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const pathname = usePathname();
     const [admin, setAdmin] = useState(!false)
-    const filePickerRef = useRef(null)
+    const filePickerRef = useRef<any>(null)
     const [file, setFile] = useState(null)
     const [zikoroText, setZikoroText] = useState(true)
     const [defaultBanner, setDefaultBanner] = useState(true)
@@ -251,7 +252,16 @@ export default function Photos() {
                                                            </div>
                                                                 {/* right */}
                                                                     <div className=' relative w-9/12  '>
-                                                                        <FullScreenPics/>
+                                                                    <motion.div
+                                                                         initial={{ y: "100vh" }}
+                                                                         animate={{ y: 0 }}
+                                                                         transition={{ duration: 1 }}
+                                                                    >
+                                                                        <AnimatePresence>
+                                                                             <FullScreenPics/>
+                                                                        </AnimatePresence>
+                                                                    </motion.div>
+                                                                       
                                                                         <div className="bg-black absolute rounded-full flex opacity-45 items-center justify-center w-8 h-8 top-4 right-8" onClick={close} >
                                                                         <BiExitFullscreen fill="#ffffff" className="text-white" />
 
@@ -288,7 +298,7 @@ export default function Photos() {
                                                         <div className='relative border border-gray-200 rounded-md mt-8 '>
                                                             <div  onClick={() => filePickerRef.current.click()} className='flex items-center space-x-4 py-6 px-4 rounded-lg cursor-pointer '>
                                                                 <FiFile />
-                                                                <input  type="file" ref={filePickerRef} onChange={addImage} hidden/>
+                                                                <input  type="file" ref={filePickerRef} disabled={defaultBanner} onChange={addImage} hidden/>
                                                                 { 
                                                                 file &&
                                                                 <p className='font-extralight text-xs'>{file.name} </p>
