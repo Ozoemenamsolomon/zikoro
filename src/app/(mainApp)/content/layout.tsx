@@ -3,7 +3,7 @@ import { TLink } from "@/components/Sidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export const PeopleLinks: TLink[] = [
+const PeopleLinks: TLink[] = [
   {
     name: "Event",
     href: "event",
