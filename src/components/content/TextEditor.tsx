@@ -10,6 +10,8 @@ export default function TextEditor({
   onChange: (v: any) => void;
   defaultValue: string | undefined
 }) {
+
+ 
   const quillModules = {
     toolbar: {
       container: [
@@ -78,8 +80,8 @@ export default function TextEditor({
   return (
     <div className="mb-5">
       <QuillEditor
-        value={content}
-        defaultValue={defaultValue}
+        value={defaultValue}
+       // defaultValue={defaultValue}
         onChange={(e) => {
           handleEditorChange(e);
         }}

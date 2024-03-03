@@ -35,10 +35,11 @@ import {
   ReactSelect,
 } from "@/components";
 import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
+import toast from "react-hot-toast";
 
 interface ImageFile {
   url: string | undefined;
-  file: File;
+  file?: File;
   isValid: boolean;
 }
 
@@ -48,7 +49,7 @@ export default function UpdateEvent({
   eventId: string;
 }): JSX.Element {
   const { data, loading } = useFetchSingleEvent(eventId);
-  const {loading: updating, update} = useUpdateEvent()
+  const { loading: updating, update } = useUpdateEvent();
   const form = useForm<z.infer<typeof updateEventSchema>>({
     resolver: zodResolver(updateEventSchema),
     defaultValues: {
@@ -63,8 +64,6 @@ export default function UpdateEvent({
       ],
     },
   });
-
-  console.log({ data });
 
   const [organisationLogoArr, setOrganisationLogoArr] = useState(
     [] as ImageFile[]
@@ -89,32 +88,58 @@ export default function UpdateEvent({
       description: "",
     });
   }
-useEffect(() => {
-  if (data) {
-    form.reset({
-      eventTitle: data?.eventTitle,
-      eventCity: data?.eventCity,
-      eventAddress: data?.eventAddress,
-      expectedParticipants: String(data?.expectedParticipants),
-      description: data?.description,
+  useEffect(() => {
+    if (data) {
+      form.reset({
+        eventTitle: data?.eventTitle,
+        eventCity: data?.eventCity,
+        eventAddress: data?.eventAddress,
+        expectedParticipants: String(data?.expectedParticipants),
+        description: data?.description,
+        startDateTime: data?.startDateTime,
+        endDateTime: data?.endDateTime,
+        eventVisibility: data?.eventVisibility,
+        industry: data?.industry,
+        eventCategory: data?.eventCategory,
+        locationType: data?.locationType,
+        eventCountry: data?.eventCountry,
+        pricing: data?.pricing,
+      });
+      setEventPosterArr(
+        data?.eventPoster?.map((v) => {
+          return { url: v, file: undefined, isValid: true };
+        })
+      );
+    }
+  }, [data]);
 
-    })
-
-   
-  }
-
-},[data])
+  console.log(form.getValues());
+  //
   async function onSubmit(values: z.infer<typeof updateEventSchema>) {
+    console.log(values);
+    if (values.pricing?.length > 0) {
+      const isNotEqualPrice = values?.pricing?.some(
+        ({ ticketQuantity }) =>
+          Number(ticketQuantity) !== Number(values?.expectedParticipants)
+      );
+      if (isNotEqualPrice) {
+        toast.error(
+          "Number of expected participants must equal the ticket quantity"
+        );
+        return;
+      }
+    }
     const posterUrl = eventPosterArr.map((v) => v.url);
     const logoUrl = organisationLogoArr.map((v) => v.url);
     console.log({ values });
     const payload = {
       ...values,
       eventPoster: posterUrl,
-      organizationLogo: logoUrl,
+      organisationLogo: logoUrl,
+    };
 
-    }
-  await update(payload, eventId)
+    // return;
+    await update(payload, eventId);
   }
 
   const countriesList = useMemo(() => {
@@ -220,9 +245,9 @@ useEffect(() => {
               <div className="w-full py-4 flex items-center justify-between">
                 <h6 className="font-medium">Event information</h6>
                 <div className="flex items-center gap-x-2">
-                <Button
+                  <Button
                     onClick={(e) => {
-                      e.preventDefault();
+                      //   e.preventDefault();
                       e.stopPropagation();
                     }}
                     className="gap-x-2"
@@ -231,17 +256,23 @@ useEffect(() => {
                     <Check2 size={22} />
                   </Button>
                   <Button
+                    // onClick={() => {
+                    //   console.log(form.getValues())
+                    //   }}
                     type="submit"
                     className="text-zikoro border border-zikoro gap-x-2"
                   >
+                    {updating && (
+                      <LoaderAlt size={22} className="animate-spin" />
+                    )}
                     <p>Publish</p>
                     <Download size={22} />
                   </Button>
-                
+
                   <Button
                     // type="submit"
                     onClick={(e) => {
-                      e.preventDefault();
+                      //  e.preventDefault();
                       e.stopPropagation();
                     }}
                     className="text-gray-50 bg-zikoro gap-x-2"
@@ -274,52 +305,12 @@ useEffect(() => {
                       name="startDateTime"
                       render={() => (
                         <InputOffsetLabel label="Start date and time">
-                          <DateTimePicker
-                            open={isStartDateOpen}
-                            onOpen={() => setIsStartDateOpen(!isStartDateOpen)}
-                            onClose={() => setIsStartDateOpen(!isStartDateOpen)}
-                            name="startDateTime"
-                            value={startDateValue}
+                          <Input
+                            placeholder="Enter event title"
+                            type="datetime-local"
                             defaultValue={data?.startDateTime}
-                            onChange={(newValue) => {
-                              setStartDateValue(newValue);
-                              form.setValue("startDateTime", newValue);
-                            }}
-                            slotProps={{
-                              textField: {
-                                // required: true,
-                                placeholder: "Pick date and time",
-                                InputProps: {
-                                  className: "flex flex-row-reverse text-sm",
-                                  endAdornment: (
-                                    <img
-                                      src={"/date-time.svg"}
-                                      alt="calendar-icon"
-                                      width={25}
-                                      height={25}
-                                      className="cursor-pointer"
-                                      onClick={() =>
-                                        setIsStartDateOpen(!isStartDateOpen)
-                                      }
-                                    />
-                                  ),
-                                },
-                              },
-                            }}
-                            sx={{
-                              width: "100%",
-                              "& .MuiOutlinedInput-root": {
-                                "& fieldset": {
-                                  borderColor: "#f3f3f3",
-                                },
-                                "&:hover fieldset": {
-                                  borderColor: "#f3f3f3",
-                                },
-                                "&.Mui-focused fieldset": {
-                                  borderColor: "black",
-                                },
-                              },
-                            }}
+                            {...form.register("startDateTime")}
+                            className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                           />
                         </InputOffsetLabel>
                       )}
@@ -330,52 +321,12 @@ useEffect(() => {
                       name="endDateTime"
                       render={({ field }) => (
                         <InputOffsetLabel label="End date and time">
-                          <DateTimePicker
-                            open={isEndDateOpen}
-                            onOpen={() => setIsEndDateOpen(!isEndDateOpen)}
-                            onClose={() => setIsEndDateOpen(!isEndDateOpen)}
-                            name="endDateTime"
-                            value={endDateValue}
+                          <Input
+                            placeholder="Enter event title"
+                            type="datetime-local"
                             defaultValue={data?.endDateTime}
-                            onChange={(newValue) => {
-                              setEndDateValue(newValue);
-                              form.setValue("endDateTime", newValue);
-                            }}
-                            slotProps={{
-                              textField: {
-                                // required: true,
-                                placeholder: "Pick date and time",
-                                InputProps: {
-                                  className: "flex flex-row-reverse",
-                                  endAdornment: (
-                                    <img
-                                      src={"/date-time.svg"}
-                                      alt="calendar-icon"
-                                      width={25}
-                                      height={25}
-                                      className="cursor-pointer"
-                                      onClick={() =>
-                                        setIsEndDateOpen(!isEndDateOpen)
-                                      }
-                                    />
-                                  ),
-                                },
-                              },
-                            }}
-                            sx={{
-                              width: "100%",
-                              "& .MuiOutlinedInput-root": {
-                                "& fieldset": {
-                                  borderColor: "#f3f3f3",
-                                },
-                                "&:hover fieldset": {
-                                  borderColor: "#f3f3f3",
-                                },
-                                "&.Mui-focused fieldset": {
-                                  borderColor: "black",
-                                },
-                              },
-                            }}
+                            {...form.register("endDateTime")}
+                            className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                           />
                         </InputOffsetLabel>
                       )}
@@ -579,12 +530,8 @@ useEffect(() => {
                       );
                     })}
                   </div>
-                 
                 </div>
                 <div className="px-4 space-y-6">
-
-         
-
                   <div className="w-full">
                     <FormField
                       control={form.control}
@@ -648,11 +595,12 @@ useEffect(() => {
                     })}
                   </div>
 
-
-                  <TextEditor
-                    defaultValue={data?.description}
-                    onChange={handleChange}
-                  />
+                  {data?.description && (
+                    <TextEditor
+                      defaultValue={data?.description}
+                      onChange={handleChange}
+                    />
+                  )}
 
                   <FormField
                     control={form.control}
@@ -670,13 +618,12 @@ useEffect(() => {
                       />
                     )}
                   />
-               
                 </div>
 
                 <div className="border-2 col-span-full w-full border-[#f3f3f3] p-4 rounded-md space-y-5 pb-10">
-                    <h5>Pricing</h5>
+                  <h5>Pricing</h5>
                   <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-3">
-                  {fields.map((field, id) => (
+                    {fields.map((field, id) => (
                       <div
                         key={field.id}
                         className="w-full flex flex-col items-start gap-y-4 justify-start"
@@ -691,7 +638,7 @@ useEffect(() => {
                           </button>
                         </div>
                         <div className="w-full grid grid-cols-2 items-center gap-3">
-                        <FormField
+                          <FormField
                             control={form.control}
                             name={`pricing.${id}.attendeeType` as const}
                             render={({ field }) => (
@@ -723,7 +670,6 @@ useEffect(() => {
                               </InputOffsetLabel>
                             )}
                           />
-                        
                         </div>
                         <FormField
                           control={form.control}
@@ -779,15 +725,15 @@ useEffect(() => {
                       </div>
                     ))}
                   </div>
-                    <Button
-                      onClick={appendPricing}
-                      className="text-sm text-zikoro gap-x-2 h-fit w-fit"
-                    >
-                      <PlusCircle size={18} />
-                      <p>Price Category</p>
-                    </Button>
-                    {/** */}
-                  </div>
+                  <Button
+                    onClick={appendPricing}
+                    className="text-sm text-zikoro gap-x-2 h-fit w-fit"
+                  >
+                    <PlusCircle size={18} />
+                    <p>Price Category</p>
+                  </Button>
+                  {/** */}
+                </div>
               </div>
             </form>
           </Form>

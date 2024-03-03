@@ -90,7 +90,7 @@ export function SideBarLayout({
         close={onClose}
         onClose={onShot}
         onOpen={onOpen}
-        query={queryParam}
+        query={query}
         eventId={eventId}
       />
       {isOpen && <EventFeedBack close={onShot} />}

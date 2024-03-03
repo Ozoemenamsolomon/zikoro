@@ -105,7 +105,7 @@ export function useUpdateEvent() {
         return;
       }
 
-      if (status === 201 || status === 200) {
+      if (status === 204 || status === 200) {
         setLoading(false);
 
         toast.success("Event updated successfully");
@@ -113,8 +113,34 @@ export function useUpdateEvent() {
     } catch (error) {}
   }
 
+  async function updateOrg(values: any, orgId: string) {
+    setLoading(true);
+
+    try {
+      const { data, error, status } = await supabase.from("organization").update([
+        {
+          ...values,
+        },
+      ])
+      .eq("id", orgId )
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (status === 204 || status === 200) {
+        setLoading(false);
+
+        toast.success("Organization updated successfully");
+      }
+    } catch (error) {}
+  }
+
   return {
     update,
+    updateOrg,
     loading,
   };
 }
@@ -143,6 +169,45 @@ export function useGetQueries(tableName: string) {
     refetch: fetchData,
     loading,
     data,
+  };
+}
+
+export function useFetchSingleOrganization(id: string) {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<Event | null>(null);
+
+  useEffect(() => {
+    fecthSingleOrg();
+  }, []);
+
+  async function fecthSingleOrg() {
+    try {
+      setLoading(true);
+      // Fetch the event by ID
+      const { data, error: fetchError } = await supabase
+        .from("organization")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (fetchError) {
+        toast.error(fetchError.message);
+        setLoading(false);
+        return null;
+      }
+
+      setLoading(false);
+      setData(data);
+    } catch (error) {
+      setLoading(false);
+      return null;
+    }
+  }
+
+  return {
+    data,
+    loading,
+    refetch: fecthSingleOrg,
   };
 }
 

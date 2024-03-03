@@ -1,6 +1,6 @@
 "use client";
 import { Download } from "@styled-icons/bootstrap/Download";
-import { addContact } from "@/app/server-actions/addContact";
+import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useEffect, useState, useMemo } from "react";
 import { COUNTRY_CODE } from "@/utils";
 import { ContentTopNav } from "@/components/content/topNav";
@@ -18,11 +18,15 @@ import {
   FormMessage,
 } from "@/components";
 import { useForm } from "react-hook-form";
+import { useFetchSingleOrganization, getCookie, useUpdateEvent } from "@/hooks";
 
 function Contact({ eventId }: { eventId: string }) {
   const [dialCode, setDialCode] = useState<string | null>(null);
+  const org = getCookie("currentOrganization");
+  const { data, refetch } = useFetchSingleOrganization(org?.id);
+  const { updateOrg, loading } = useUpdateEvent();
   const [selectedCountry, setSelectedCountry] = useState<string>("");
-  const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
+  const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>("+234");
   const [whatsappCountryCode, setWhatsAppCountryCode] = useState<
     string | undefined
   >("+234");
@@ -35,6 +39,24 @@ function Contact({ eventId }: { eventId: string }) {
     }));
   }, [COUNTRY_CODE]);
 
+  async function onSubmit(values: any) {
+    //  console.log({ values });
+    await updateOrg(values, org?.id);
+  }
+
+  const country = form.watch("country")
+  
+  useEffect(() => {
+    if (country) {
+      const currentCountryCode = COUNTRY_CODE.find(
+        (v) => v.name === country
+      )?.dial_code;
+
+      setWhatsAppCountryCode(currentCountryCode);
+      setPhoneCountryCode(currentCountryCode);
+    }
+  }, [country]);
+
   return (
     <SideBarLayout
       hasTopBar
@@ -43,194 +65,199 @@ function Contact({ eventId }: { eventId: string }) {
       eventId={eventId}
     >
       <ContentTopNav eventId={eventId} />
-     
-      <Form {...form}>
-      <form className="w-full"  id="form">
-      <div className="w-full p-4 flex items-center justify-between">
-        <h6 className="font-medium">Contact information</h6>
-        <Button
-                  type="submit"
-                  className="text-zikoro border border-zikoro gap-x-2"
-                >
-                  <p>Publish</p>
-                  <Download size={22} />
-                </Button>
-      </div>
-        {/* <button>Click</button> */}
-        <div className="grid grid-cols-2 mb-10 gap-6 px-4">
-          <div className="py-4 space-y-10">
-            <FormField
-              control={form.control}
-              name="eventCountry"
-              render={({ field }) => (
-                <ReactSelect
-                  {...field}
-                  placeHolder="Select the Country"
-                  label="Event Country"
-                  options={countriesList}
-                />
-              )}
-            />
 
-            <div className="w-full grid grid-cols-2 items-center gap-4">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full"
+          id="form"
+        >
+          <div className="w-full p-4 flex items-center justify-between">
+            <h6 className="font-medium">Contact information</h6>
+            <Button
+              type="submit"
+              className="text-zikoro border border-zikoro gap-x-2"
+            >
+              {loading && <LoaderAlt className="animate-spin" />}
+              <p>Update</p>
+              <Download size={22} />
+            </Button>
+          </div>
+          {/* <button>Click</button> */}
+          <div className="grid grid-cols-2 mb-10 gap-6 px-4">
+            <div className="py-4 space-y-10">
               <FormField
                 control={form.control}
-                name="phoneNumber"
+                name="country"
                 render={({ field }) => (
-                  <FormItem className="relative h-fit">
-                    <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                      Phone number
-                    </FormLabel>
-                    <input
-                      type="text"
-                      className="!mt-0 text-sm absolute top-[35%]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
-                      value={phoneCountryCode}
-                      onChange={(e) => setPhoneCountryCode(e.target.value)}
-                    />
-                    <FormControl>
-                      <Input
-                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
-                        placeholder="Enter phone number"
-                        {...form.register("phoneNumber")}
-                        type="tel"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <ReactSelect
+                    {...form.register("country")}
+                    placeHolder="Select the Country"
+                    label="Event Country"
+                    options={countriesList}
+                  />
                 )}
               />
 
+              <div className="w-full grid grid-cols-2 items-center gap-4">
+                <FormField
+                  control={form.control}
+                  name="eventPhoneNumber"
+                  render={({ field }) => (
+                    <FormItem className="relative h-fit">
+                      <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
+                        Phone number
+                      </FormLabel>
+                      <input
+                        type="text"
+                        className="!mt-0 text-sm absolute top-[35%]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
+                        value={phoneCountryCode}
+                        onChange={(e) => setPhoneCountryCode(e.target.value)}
+                      />
+                      <FormControl>
+                        <Input
+                          className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
+                          placeholder="Enter phone number"
+                          {...form.register("eventPhoneNumber")}
+                          type="tel"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="eventWhatsApp"
+                  render={({ field }) => (
+                    <FormItem className="relative">
+                      <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-[10px] px-1">
+                        WhatsApp number
+                      </FormLabel>
+                      <input
+                        type="text"
+                        className="!mt-0 text-sm absolute top-[35%] left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
+                        value={whatsappCountryCode}
+                        onChange={(e) => setWhatsAppCountryCode(e.target.value)}
+                      />
+                      <FormControl>
+                        <Input
+                          className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
+                          placeholder="Enter whatsapp number"
+                          {...form.register("eventWhatsApp")}
+                          type="tel"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
-                name="whatsappNumber"
+                name="email"
                 render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-[10px] px-1">
-                      WhatsApp number
-                    </FormLabel>
-                    <input
+                  <InputOffsetLabel label="Email Address">
+                    <Input
                       type="text"
-                      className="!mt-0 text-sm absolute top-[35%] left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
-                      value={whatsappCountryCode}
-                      onChange={(e) => setWhatsAppCountryCode(e.target.value)}
+                      placeholder="Enter email address"
+                      {...form.register("email")}
+                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                     />
-                    <FormControl>
-                      <Input
-                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
-                        placeholder="Enter whatsapp number"
-                        {...form.register("whatsappNumber")}
-                        type="tel"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  </InputOffsetLabel>
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <InputOffsetLabel label="Email Address">
-                  <Input
-                    type="text"
-                    placeholder="Enter email address"
-                    {...form.register("email")}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                  />
-                </InputOffsetLabel>
-              )}
-            />
+            <div className="p-4 mt-[1rem] space-y-10 border rounded-md ">
+              <h6 className="text-bold">Social media profile</h6>
+
+              <FormField
+                control={form.control}
+                name="x"
+                render={({ field }) => (
+                  <InputOffsetLabel className="relative" label="Twitter">
+                    <div className="relative h-12 w-full">
+                      <Input
+                        type="text"
+                        placeholder="https://www.x.com/"
+                        {...form.register("x")}
+                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                      <img
+                        src="/twitter.svg"
+                        className="text-sm text-black absolute top-3 ml-2 right-4 p-1 "
+                      />
+                    </div>
+                  </InputOffsetLabel>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="linkedIn"
+                render={({ field }) => (
+                  <InputOffsetLabel className="relative" label="LinkedIn">
+                    <div className="w-full relative h-12">
+                      <Input
+                        type="text"
+                        placeholder="https://www.linkedin.com/"
+                        {...form.register("linkedIn")}
+                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                      <img
+                        src="/linkedin.svg"
+                        className="text-sm text-black absolute top-5 ml-2 right-4 p-1 "
+                      />
+                    </div>
+                  </InputOffsetLabel>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="facebook"
+                render={({ field }) => (
+                  <InputOffsetLabel className="relative" label="Facebook">
+                    <div className="w-full relative h-12">
+                      <Input
+                        type="text"
+                        placeholder="https://www.facebook.com/"
+                        {...form.register("facebook")}
+                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                      <img
+                        src="/twitter.svg"
+                        className="text-sm text-black absolute top-5 ml-2 right-4 p-1 "
+                      />
+                    </div>
+                  </InputOffsetLabel>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="instagram"
+                render={({ field }) => (
+                  <InputOffsetLabel className="relative" label="Instagram">
+                    <div className="w-full relative h-12">
+                      <Input
+                        type="text"
+                        placeholder="https://www.instagram.com/"
+                        {...form.register("instagram")}
+                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                      <img
+                        src="/instagram.svg"
+                        className="text-sm text-black absolute top-5 ml-2 right-4 p-1 "
+                      />
+                    </div>
+                  </InputOffsetLabel>
+                )}
+              />
+            </div>
           </div>
-          <div className="p-4 mt-[1rem] space-y-10 border rounded-md ">
-            <h6 className="text-bold">Social media profile</h6>
-
-            <FormField
-              control={form.control}
-              name="twitterUrl"
-              render={({ field }) => (
-                <InputOffsetLabel className="relative" label="Twitter">
-                  <div className="w-full relative h-12">
-                    <Input
-                      type="text"
-                      placeholder="https://www.x.com/"
-                      {...form.register("twitterUrl")}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                    />
-                    <img
-                      src="/twitter.svg"
-                      className="text-sm text-black absolute top-5 ml-2 right-4 p-1 "
-                    />
-                  </div>
-                </InputOffsetLabel>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="linkedinUrl"
-              render={({ field }) => (
-                <InputOffsetLabel className="relative" label="LinkedIn">
-                  <div className="w-full relative h-12">
-                    <Input
-                      type="text"
-                      placeholder="https://www.linkedin.com/"
-                      {...form.register("linkedinUrl")}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                    />
-                    <img
-                      src="/linkedin.svg"
-                      className="text-sm text-black absolute top-5 ml-2 right-4 p-1 "
-                    />
-                  </div>
-                </InputOffsetLabel>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="facebookUrl"
-              render={({ field }) => (
-                <InputOffsetLabel className="relative" label="Facebook">
-                  <div className="w-full relative h-12">
-                    <Input
-                      type="text"
-                      placeholder="https://www.facebook.com/"
-                      {...form.register("facebookUrl")}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                    />
-                    <img
-                      src="/twitter.svg"
-                      className="text-sm text-black absolute top-5 ml-2 right-4 p-1 "
-                    />
-                  </div>
-                </InputOffsetLabel>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="instagramUrl"
-              render={({ field }) => (
-                <InputOffsetLabel className="relative" label="Instagram">
-                  <div className="w-full relative h-12">
-                    <Input
-                      type="text"
-                      placeholder="https://www.instagram.com/"
-                      {...form.register("instagramUrl")}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                    />
-                    <img
-                      src="/instagram.svg"
-                      className="text-sm text-black absolute top-5 ml-2 right-4 p-1 "
-                    />
-                  </div>
-                </InputOffsetLabel>
-              )}
-            />
-          </div>
-        </div>
-      </form>
+        </form>
       </Form>
     </SideBarLayout>
   );
