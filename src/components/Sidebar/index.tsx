@@ -13,7 +13,7 @@ import { UserActions } from "@/components/UserActions";
 export type TLink = {
   name: string;
   href: string;
-  icon?: React.FC;
+  icon?: React.FC<{ className: string }>;
 };
 
 export const links: TLink[] = [

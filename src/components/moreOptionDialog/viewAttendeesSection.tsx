@@ -131,7 +131,7 @@ export default function ViewAttendeesSection({
         { label: "not favourite", value: false },
       ],
       onFilter: (attendee: TAttendee, isFavourite: boolean) =>
-        !!favourites.attendees &&
+        !!favourites?.attendees &&
         (isFavourite
           ? favourites.attendees.includes(attendee.id)
           : !favourites.attendees.includes(attendee.id)),

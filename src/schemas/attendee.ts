@@ -40,6 +40,10 @@ export const AttendeeSchema = z.object({
   ticketType: z.string().optional(),
   eventRegistrationRef: z.string().optional(),
   userId: z.number().optional(),
+
+  // TODO: @ajax484 please correct this type
+  tags: z.array(z.string()).optional(),
+  favourite: z.boolean().optional(),
 });
 
 export const attendeeNoteSchema = z.object({

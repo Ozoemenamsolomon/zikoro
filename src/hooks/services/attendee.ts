@@ -19,7 +19,7 @@ export const useCreateAttendee = () => {
 
       if (status !== 201)
         return toast({
-          description: data.data.error,
+          description: (data.data as { error: string }).error,
           variant: "destructive",
         });
 
@@ -29,10 +29,11 @@ export const useCreateAttendee = () => {
       return data;
     } catch (error) {
       setError(true);
-      toast({
-        description: error.response.data.error,
-        variant: "destructive",
-      });
+      console.log({ error });
+      // toast({
+      //   description: error.response.data.error,
+      //   variant: "destructive",
+      // });
     } finally {
       setLoading(false);
     }
@@ -63,7 +64,7 @@ export const useUpdateAttendees = () => {
         payload,
       });
 
-      if (status !== 200) throw data.data.error;
+      if (status !== 200) throw data;
 
       toast({
         description: message || "Attendee created successfully",
@@ -229,7 +230,7 @@ export const useInviteAttendees = () => {
         payload,
       });
 
-      if (status !== 201) throw data.data.error;
+      if (status !== 201) throw data;
 
       toast({
         description: "Invitees sent successfuly",

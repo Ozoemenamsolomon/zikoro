@@ -15,8 +15,8 @@ import { useRouter } from "next/navigation";
 import { ReactInstance, useEffect, useRef, useState } from "react";
 import { exportComponentAsPNG } from "react-component-export-image";
 import QRCode from "react-qr-code";
-// @ts-ignore Ts error from library but it works
-import { ShareSocial } from "react-share-social";
+// @ts-ignore @ajax484 please use an alternative
+// import { ShareSocial } from "react-share-social";
 
 const style = {
   root: {
@@ -117,7 +117,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <ShareSocial
+                  {/* <ShareSocial
                     url={`http:localhost:3000/verify/${certificateId}`}
                     socialTypes={[
                       "facebook",
@@ -126,7 +126,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                       "linkedin",
                     ]}
                     style={style}
-                  />
+                  /> */}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -184,7 +184,10 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   </p>
                 </div>
                 <p className="text-xs text-center w-full mb-6">
-                  {certificate?.created_at && formatDateToHumanReadable(new Date(certificate?.created_at))}
+                  {certificate?.created_at &&
+                    formatDateToHumanReadable(
+                      new Date(certificate?.created_at)
+                    )}
                   , LAGOS, NIGERIA
                 </p>
                 <div className="flex flex-col items-center gap-2">
