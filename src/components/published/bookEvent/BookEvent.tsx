@@ -107,6 +107,7 @@ export function BookEvent({
     });
   }
 
+  
   function allowPayment(bool: boolean) {
     setOpenPaymentModal(bool);
   }
