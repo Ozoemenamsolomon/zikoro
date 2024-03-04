@@ -47,7 +47,7 @@ export const useGetEventTransactions = ({
 };
 
 type UseGetAttendeeEventTransactionsResult = {
-  attendeeEventTransactions: TEventTransaction;
+  attendeeEventTransactions: TEventTransaction | null;
   getAttendeeEventTransactions: () => Promise<void>;
 } & RequestStatus;
 
@@ -59,7 +59,7 @@ export const useGetAttendeeEventTransactions = ({
   eventRegistrationRef: string;
 }): UseGetAttendeeEventTransactionsResult => {
   const [attendeeEventTransactions, setAttendeeEventTransactions] =
-    useState<TEventTransaction>(null);
+    useState<TEventTransaction | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -95,7 +95,7 @@ export const useGetAttendeeEventTransactions = ({
 };
 
 type useRequestPayOutResult = {
-  requestPayOut: ({ payload }: { payload: TFavouriteContact }) => Promise<void>;
+  requestPayOut: ({ payload }: { payload: string[] }) => Promise<void>;
 } & RequestStatus;
 
 export const useRequestPayOut = ({

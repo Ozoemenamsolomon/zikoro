@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { generateAlphanumericHash } from "@/utils/helpers";
+import { createHash, generateAlphanumericHash } from "@/utils/helpers";
 
 export async function GET(
   req: NextRequest,
@@ -18,15 +18,16 @@ export async function GET(
         status,
       } = await supabase
         .from("attendeeCertificates")
-        .select("attendeeId")
+        .select("*")
         .eq("eventId", eventId);
+
+      console.log(certificateData);
 
       if (certificateError) throw certificateError;
 
       const attendeeIds = new Set(
         certificateData.flatMap(({ attendeeId }) => [].concat(attendeeId))
       );
-
 
       const { data, error } = await supabase
         .from("attendees")
@@ -70,8 +71,10 @@ export async function POST(
 
       if (action === "release") {
         query = await supabase.from("attendeeCertificates").upsert(
-          attendeeInfo.map((attendee) => {
-            const certificateId = createHash();
+          attendeeInfo.map((attendee: any) => {
+            const certificateId = createHash(
+              JSON.stringify({ ...certificateInfo, ...attendee })
+            );
             return {
               certificateId,
               certificateURL: "www.zikoro.com/verify/" + certificateId,
@@ -88,7 +91,9 @@ export async function POST(
           .eq("CertificateGroupId", certificateInfo.CertificateGroupId)
           .in(
             "attendeeId",
-            attendeeInfo.map(({ attendeeId }) => attendeeId)
+            attendeeInfo.map(
+              ({ attendeeId }: { attendeeId: number }) => attendeeId
+            )
           );
       }
 

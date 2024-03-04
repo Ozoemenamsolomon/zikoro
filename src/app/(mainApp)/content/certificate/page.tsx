@@ -1,19 +1,19 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useGetCertificateTemplates } from "@/hooks/services/certificate";
+import { useGetCertificates } from "@/hooks/services/certificate";
+import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 const Certificates = () => {
   const router = useRouter();
 
-  const { certificateTemplates, isLoading, getCertificateTemplates } =
-    useGetCertificateTemplates();
+  const { certificates, isLoading } = useGetCertificates();
 
-  console.log(certificateTemplates);
+  console.log(certificates);
 
-  if (certificateTemplates.length === 0 || isLoading)
+  if ((certificates && certificates.length === 0) || isLoading)
     return (
       <div className="flex flex-col h-96 w-full items-center justify-center gap-2">
         <svg
@@ -133,7 +133,73 @@ const Certificates = () => {
       </div>
     );
 
-  return <div>Certificates</div>;
+  return (
+    <div className="flex flex-col gap-2 px-2 py-4">
+      <Button
+        className="bg-basePrimary flex gap-4 items-center self-end w-fit"
+        onClick={() => router.push("/content/certificate/create")}
+      >
+        <svg
+          stroke="currentColor"
+          fill="currentColor"
+          strokeWidth={0}
+          viewBox="0 0 1024 1024"
+          height="1.5em"
+          width="1.5em"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z" />
+          <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z" />
+        </svg>
+        <span>Certificate</span>
+      </Button>
+      <div className="grid-cols-4 grid gap-4">
+        {certificates?.map(
+          ({ cerificateUrl, certificateName, created_at, id }) => (
+            <button
+              className="border border-gray-200 rounded-md"
+              onClick={() =>
+                router.push(`/content/certificate/create?certificateId=${id}`)
+              }
+            >
+              <div className="w-full h-[250px] overflow-hidden">
+                <img className="object-fill" src={cerificateUrl || ""} />
+              </div>
+              <div className="space-y-1 px-4 py-2 border-t border-gray-200">
+                <h2 className="text-gray-800 font-bold text-left">
+                  {certificateName}
+                </h2>
+                <div className="flex gap-2 items-center text-sm text-gray-600 font-medium">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 16 16"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.995-.944v-.002.002zM7.022 13h7.956a.274.274 0 00.014-.002l.008-.002c-.002-.264-.167-1.03-.76-1.72C13.688 10.629 12.718 10 11 10c-1.717 0-2.687.63-3.24 1.276-.593.69-.759 1.457-.76 1.72a1.05 1.05 0 00.022.004zm7.973.056v-.002.002zM11 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0zM6.936 9.28a5.88 5.88 0 00-1.23-.247A7.35 7.35 0 005 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 015 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10c-1.668.02-2.615.64-3.16 1.276C1.163 11.97 1 12.739 1 13h3c0-1.045.323-2.086.92-3zM1.5 5.5a3 3 0 116 0 3 3 0 01-6 0zm3-2a2 2 0 100 4 2 2 0 000-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span>Event Attendees</span>
+                </div>
+                <div className="flex">
+                  <span className="text-tiny font-medium text-gray-500">
+                    {created_at &&
+                      format(new Date(created_at), "dd MMMM, yyyy")}
+                  </span>
+                </div>
+              </div>
+            </button>
+          )
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Certificates;

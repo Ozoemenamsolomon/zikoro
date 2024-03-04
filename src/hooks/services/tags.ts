@@ -1,4 +1,5 @@
 import { toast } from "@/components/ui/use-toast";
+import { RequestStatus } from "@/types/request";
 import { TAttendeeTags, TTags } from "@/types/tags";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
@@ -41,7 +42,7 @@ export const useUpdateTags = ({
 };
 
 type UseGetTagsResult = {
-  tags: TTags;
+  tags: TTags | null;
   getTags: () => Promise<void>;
 } & RequestStatus;
 
@@ -50,7 +51,7 @@ export const useGetTags = ({
 }: {
   userId: number;
 }): UseGetTagsResult => {
-  const [tags, setTags] = useState<TTags>({});
+  const [tags, setTags] = useState<TTags | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -84,7 +85,7 @@ type useUpdateAttendeeTagsResult = {
   updateAttendeeTags: ({
     payload,
   }: {
-    payload: TAttendeeTags;
+    payload: Partial<TAttendeeTags>;
   }) => Promise<void>;
 } & RequestStatus;
 
@@ -99,7 +100,7 @@ export const useUpdateAttendeeTags = ({
   const updateAttendeeTags = async ({
     payload,
   }: {
-    payload: TAttendeeTags;
+    payload: Partial<TAttendeeTags>;
   }) => {
     setLoading(true);
 
@@ -132,7 +133,7 @@ export const useUpdateAttendeeTags = ({
 };
 
 type UseGetAttendeeTagsResult = {
-  attendeeTags: TAttendeeTags;
+  attendeeTags: TAttendeeTags | null;
   getAttendeeTags: () => Promise<void>;
 } & RequestStatus;
 
@@ -141,7 +142,7 @@ export const useGetAttendeeTags = ({
 }: {
   attendeeId: number;
 }): UseGetAttendeeTagsResult => {
-  const [attendeeTags, setTags] = useState<TAttendeeTags>();
+  const [attendeeTags, setTags] = useState<TAttendeeTags | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 

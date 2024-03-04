@@ -34,7 +34,7 @@ const First = ({
         const first_worksheet = dt.Sheets[dt.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(first_worksheet, {
           header: 1,
-        });
+        }) as any[][];
         console.log(jsonData);
 
         if (jsonData[0].length > 5) {

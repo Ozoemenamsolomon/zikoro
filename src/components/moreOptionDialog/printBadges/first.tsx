@@ -21,7 +21,7 @@ const First = ({
   setSelectedAttendees: Dispatch<SetStateAction<TAttendee[]>>;
   step: number;
   setStep: Dispatch<SetStateAction<number>>;
-  favourites: TFavouriteContact;
+  favourites?: TFavouriteContact;
   attendeesTags: TAttendeeTags[];
 }) => {
   // useEffect(() => {

@@ -35,9 +35,13 @@ import { attendeeTypeOptions } from "@/data/attendee";
 import { uploadFile, uploadFiles } from "@/utils/helpers";
 
 export default function AddAttendeeForm({
+  attendee,
   isOpen,
   onClose,
+  getAttendee,
 }: {
+  getAttendee?: () => Promise<void>;
+  attendee?: TAttendee;
   isOpen: boolean;
   onClose: () => void;
 }) {
@@ -45,12 +49,12 @@ export default function AddAttendeeForm({
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
   const [whatsappCountryCode, setWhatsAppCountryCode] =
     useState<string>("+234");
-  const defaultValues: Partial<TAttendee> = {
+  const defaultValues: Partial<TAttendee> = attendee || {
     registrationDate: new Date().toISOString(),
     certificate: true,
     userEmail: "ubahyusuf484@gmail.com",
     attendeeType: ["attendee"],
-    eventId: "1234567890",
+    eventId: 1234567890,
     country: "Nigeria",
   };
 
@@ -61,7 +65,12 @@ export default function AddAttendeeForm({
     defaultValues,
   });
 
-  const { watch, setValue } = form;
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+  } = form;
+  console.log(errors);
 
   const attendeeType = watch("attendeeType");
   const country = watch("country");
@@ -78,12 +87,14 @@ export default function AddAttendeeForm({
 
   const toggleAttendeeType = (value: string) => {
     const newAttendeeType = () => {
-      if (attendeeType.includes(value)) {
+      if (attendeeType && attendeeType.includes(value)) {
         // If value is already in the array, remove it
         return attendeeType.filter((item: string) => item !== value);
-      } else {
+      } else if (attendeeType && !attendeeType.includes(value)) {
         // If value is not in the array, add it
         return [...attendeeType, value];
+      } else {
+        return [value];
       }
     };
 
@@ -103,6 +114,7 @@ export default function AddAttendeeForm({
     };
 
     await createAttendee({ payload });
+    attendee && getAttendee && (await getAttendee());
   }
 
   const [profilePictureIsUploading, setProfilePictureUploading] =
@@ -128,7 +140,11 @@ export default function AddAttendeeForm({
   };
 
   return (
-    <Overlay isOpen={isOpen} onClose={onClose} title="Attendee">
+    <Overlay
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`${attendee ? "Update" : "Create"}Attendee`}
+    >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="flex gap-4 h-fit">
@@ -268,7 +284,9 @@ export default function AddAttendeeForm({
                       type="text"
                       className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-gray-700 z-10 font-medium h-full w-fit max-w-[36px] border-y-[1px]"
                       value={phoneCountryCode}
-                      onInput={(e) => setPhoneCountryCode(e.target.value)}
+                      onInput={(e) =>
+                        setPhoneCountryCode(e.currentTarget.value)
+                      }
                     />
                     <FormControl>
                       <Input
@@ -297,7 +315,9 @@ export default function AddAttendeeForm({
                       type="text"
                       className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-gray-700 z-10 font-medium h-10 w-fit max-w-[36px] border-y-[1px]"
                       value={whatsappCountryCode}
-                      onInput={(e) => setWhatsAppCountryCode(e.target.value)}
+                      onInput={(e) =>
+                        setWhatsAppCountryCode(e.currentTarget.value)
+                      }
                     />
                     <FormControl>
                       <Input
@@ -327,7 +347,9 @@ export default function AddAttendeeForm({
               {profilePictureIsUploading ? (
                 <span className="text-gray-500">Loading...</span>
               ) : profilePicture ? (
-                <span className="text-gray-500 truncate">{profilePicture}</span>
+                <span className="text-gray-500 truncate">
+                  Profile Uploaded successfully
+                </span>
               ) : (
                 <span className="text-gray-200">Select Image</span>
               )}
@@ -336,7 +358,9 @@ export default function AddAttendeeForm({
               <Input
                 name="profilePicture"
                 type="file"
-                onChange={(e) => uploadProfilePicture(e.target.files[0])}
+                onChange={(e) =>
+                  e.target.files && uploadProfilePicture(e.target.files[0])
+                }
                 accept="image/*"
               />
             </div>
@@ -350,9 +374,10 @@ export default function AddAttendeeForm({
               {attendeeTypeOptions.map(({ label, value }) => (
                 <button
                   className={`text-sm p-1.5 mx-auto border-2 rounded font-medium",
-                    ${attendeeType.includes(value)
-                      ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
-                      : "border-gray-600 text-gray-600 bg-white"
+                    ${
+                      attendeeType && attendeeType.includes(value)
+                        ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
+                        : "border-gray-600 text-gray-600 bg-white"
                     }
                   `}
                   type="button"
@@ -467,7 +492,11 @@ export default function AddAttendeeForm({
               </FormItem>
             )}
           />
-          <Button type="submit" className="bg-basePrimary w-full">
+          <Button
+            disabled={profilePictureIsUploading}
+            type="submit"
+            className="bg-basePrimary w-full"
+          >
             Save
           </Button>
         </form>

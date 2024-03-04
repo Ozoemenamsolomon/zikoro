@@ -33,13 +33,15 @@ export interface TSentEmail {
 //   affliateStatus: boolean ;
 // }
 
-export interface TAffiliate extends z.TypeOf<typeof AffiliateSchema> { }
+export interface TAffiliate extends z.TypeOf<typeof AffiliateSchema> {
+  affliateCode: string;
+}
 
 export interface TAffiliateLink {
-  id: number;
-  created_at: Date;
+  id?: number;
+  created_at?: Date;
   userId?: number;
-  affiliateId?: bigint;
+  affiliateId?: number;
   eventName?: string;
   payoutSchedule?: string;
   commissionType: string;
@@ -47,7 +49,7 @@ export interface TAffiliateLink {
   validity?: Date;
   Goal?: string;
   affiliateLink?: string;
-  eventId?: string;
+  eventId?: number;
   affliateEmail?: string;
   affiliate?: TAffiliate;
   eventTransactions?: TEventTransaction[];

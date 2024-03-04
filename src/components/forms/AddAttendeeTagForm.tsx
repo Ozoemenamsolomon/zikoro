@@ -52,7 +52,7 @@ export default function AddAttendeeTagForm({
   });
 
   async function onSubmit() {
-    const payload: TAttendeeTags = attendeeTags
+    const payload: Partial<TAttendeeTags> = attendeeTags
       ? {
           ...attendeeTags,
           attendeeTags: [...attendeeTags.attendeeTags, ...selectedTags],
@@ -60,7 +60,7 @@ export default function AddAttendeeTagForm({
       : {
           userEmail: "ubahyusuf484@gmail.com",
           attendeeEmail: attendeeEmail,
-          eventId: 1234567890,
+          eventId: "1234567890",
           attendeeId,
           userId: 10,
           attendeeTags: selectedTags,
@@ -72,6 +72,7 @@ export default function AddAttendeeTagForm({
   }
 
   async function removeTag(tag: TTag) {
+    if (!tags) return;
     const payload: TTags = {
       ...tags,
       tags: tags.tags.filter((prevTag) => prevTag !== tag),
@@ -96,7 +97,7 @@ export default function AddAttendeeTagForm({
 
   return (
     <div className="space-y-6">
-      <AddTagForm tags={tags} getTags={getTags} />
+      <AddTagForm currentTags={tags} getTags={getTags} />
       <div className="space-y-2">
         <h4 className="text-gray-800 font-medium">Your Tags</h4>
         <div className="flex flex-wrap gap-2">

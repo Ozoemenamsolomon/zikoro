@@ -1,4 +1,3 @@
-import { MoreOptionsProps } from "@/app/people/_reusable/FirstSection";
 import { TAttendee } from "@/types/attendee";
 import React, { useEffect, useState } from "react";
 import ViewAttendeesSection from "./viewAttendeesSection";
@@ -19,12 +18,13 @@ import {
 } from "@/hooks/services/certificate";
 import { TCertificate } from "@/types/certificates";
 import { DialogClose } from "../ui/dialog";
+import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
 
 const CertificateDialog: React.FC<MoreOptionsProps> = ({
   attendees,
   getAttendees,
   favourites,
-  attendeesTags
+  attendeesTags,
 }) => {
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
@@ -49,6 +49,8 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
     eventId: 1234567890,
   });
 
+  console.log(attendeesCertificates, "attendees certificate");
+
   useEffect(() => {
     console.log(selectedCertificate);
     if (!selectedCertificate || attendeesCertificateisLoading) return;
@@ -71,10 +73,12 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
     );
 
     setMappedAttendees(
-      attendees.filter(({ id }) =>
-        action === "release"
-          ? !attendeesId.includes(id)
-          : attendeesId.includes(id)
+      attendees.filter(
+        ({ id }) =>
+          id &&
+          (action === "release"
+            ? !attendeesId.includes(id)
+            : attendeesId.includes(id))
       )
     );
   }, [action, selectedCertificate]);
@@ -95,13 +99,16 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
     console.log(selectedAttendees, selectedCertificate);
     if (!selectedCertificate) return;
 
+    if (selectedAttendees.some(({ id }) => !id)) return;
+    const editedSelectedAttendees = selectedAttendees.map(({ id, email }) => ({
+      attendeeId: id,
+      attendeeEmail: email,
+    }));
+
     await updateAttendeeCertificates({
       payload: {
         action,
-        attendeeInfo: selectedAttendees.map(({ id, email }) => ({
-          attendeeId: id,
-          attendeeEmail: email,
-        })),
+        attendeeInfo: editedSelectedAttendees,
         certificateInfo: {
           eventId: 1234567890,
           CertificateGroupId: selectedCertificate.id,
@@ -150,20 +157,21 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         <Select
           onValueChange={(value) => {
             const certificate = eventCertificates.find(
-              ({ id }) => id === value
+              ({ id }) => id?.toString() === value
             );
             if (certificate) setSelectedCertificate(certificate);
           }}
-          defaultValue={selectedCertificate?.id || null}
+          defaultValue={selectedCertificate?.id?.toString()}
           disabled={eventCertificateisLoading}
         >
           <SelectTrigger className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-full">
             <SelectValue placeholder={"Select Certificate Name"} />
           </SelectTrigger>
           <SelectContent>
-            {eventCertificates.map(({ id, certificateName }) => (
-              <SelectItem value={id}>{certificateName}</SelectItem>
-            ))}
+            {eventCertificates &&
+              eventCertificates.map(({ id, certificateName }) => (
+                id && <SelectItem value={id?.toString()}>{certificateName}</SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>

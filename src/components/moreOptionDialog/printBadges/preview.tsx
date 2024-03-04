@@ -6,11 +6,13 @@ import AttendeeBadge from "@/components/AttendeeBadge";
 import { usePDF } from "react-to-pdf";
 
 const Second = ({ selectedAttendees }: { selectedAttendees: TAttendee[] }) => {
-  const parentRef = useRef();
+  const parentRef = useRef<HTMLDivElement>(null);
   const { toPDF, targetRef } = usePDF({ filename: "page.pdf" });
 
   const printBadges = () => {
     const parentElm = parentRef.current;
+
+    if (!parentElm) return;
 
     // Remove the 'hidden' class
     parentElm.classList.remove("hidden");
@@ -51,9 +53,9 @@ const Second = ({ selectedAttendees }: { selectedAttendees: TAttendee[] }) => {
         </div>
       </div>
       <div className="w-full text-center">
-      <span className="text-gray-500 text-sm">
-        {selectedAttendees.length} Attendee Badges Selected
-      </span>
+        <span className="text-gray-500 text-sm">
+          {selectedAttendees.length} Attendee Badges Selected
+        </span>
       </div>
       <DialogClose asChild>
         <Button

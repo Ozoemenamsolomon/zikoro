@@ -1,6 +1,6 @@
 "use client";
 import Attendee from "@/components/Attendee";
-import Filter, { TFilter } from "@/components/Filter";
+import Filter from "@/components/Filter";
 import CertificateDialog from "@/components/moreOptionDialog/certificateDialog";
 import ChangeAttendeeType from "@/components/moreOptionDialog/changeAttendeeType";
 import CheckinMultiple from "@/components/moreOptionDialog/checkinMultiple";
@@ -38,6 +38,7 @@ import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import { TAttendeeTags } from "@/types/tags";
 import { TFavouriteContact } from "@/types/favourites";
+import { TFilter } from "@/types/filter";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -125,7 +126,7 @@ export interface MoreOptionsProps {
   attendees: TAttendee[];
   getAttendees: () => Promise<void>;
   attendeesTags: TAttendeeTags[];
-  favourites: TFavouriteContact;
+  favourites?: TFavouriteContact;
 }
 
 type TMoreOptions = {
@@ -171,7 +172,7 @@ export default function FirstSection({
   onSelectAttendee: (attendee: TAttendee) => void;
   selectedAttendee: TAttendee;
 }) {
-  const divRef = useRef<HTMLDivElement>();
+  const divRef = useRef<HTMLDivElement>(null);
   const {
     filteredData: mappedAttendees,
     filters,
@@ -198,9 +199,7 @@ export default function FirstSection({
     attendeesTags,
     isLoading: attendeesTagsIsLoading,
     getAttendeesTags,
-  } = useGetAttendeesTags({
-    userId: 10,
-  });
+  } = useGetAttendeesTags();
 
   const { updateFavourites } = useUpdateFavourites({ userId: 10 });
 
@@ -292,7 +291,7 @@ export default function FirstSection({
 
   const exportAttendees = () => {
     const normalizedData = convertCamelToNormal<TAttendee>(
-      filteredData,
+      mappedAttendees,
       " "
     );
     const worksheet = XLSX.utils.json_to_sheet(normalizedData);
@@ -374,7 +373,7 @@ export default function FirstSection({
                   attendees={mappedAttendees}
                   getAttendees={getAttendees}
                   attendeesTags={attendeesTags}
-                  favourites={favourites}
+                  favourites={favourites ? favourites : undefined}
                 />
               )}
             </DialogContent>
@@ -402,7 +401,7 @@ export default function FirstSection({
           <Input
             type="text"
             placeholder="Search attendees"
-            onInput={(event) => setSearchTerm(event.target.value)}
+            onInput={(event) => setSearchTerm(event.currentTarget.value)}
             className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8 w-full"
           />
           <svg

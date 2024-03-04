@@ -6,9 +6,109 @@ import {
   TCertificate,
   TFullCertificate,
 } from "@/types/certificates";
-import { RequestStatus, UseGetResult } from "@/types/request";
+import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
+
+export const useSaveCertificate = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const saveCertificate = async ({ payload }: { payload: TCertificate }) => {
+    setLoading(true);
+    toast({
+      description: "saving certificate...",
+    });
+    try {
+      const { data, status } = await postRequest<TCertificate>({
+        endpoint: "/certificates",
+        payload,
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: "Certificate Saved Successfully",
+      });
+      return data.data;
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { saveCertificate, isLoading, error };
+};
+
+export const useGetCertificate = ({
+  certificateId,
+}: {
+  certificateId: string;
+}): UseGetResult<TCertificate, "certificate", "getCertificate"> => {
+  const [certificate, setCertificates] = useState<TCertificate | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getCertificate = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TCertificate>({
+        endpoint: `/certificates/${certificateId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setCertificates(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCertificate();
+  }, [certificateId]);
+
+  return { certificate, isLoading, error, getCertificate };
+};
+
+export const useGetCertificates = (): UseGetResult<
+  TCertificate[],
+  "certificates",
+  "getCertificates"
+> => {
+  const [certificates, setCertificates] = useState<TCertificate[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getCertificates = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TCertificate[]>({
+        endpoint: `/certificates`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setCertificates(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCertificates();
+  }, []);
+
+  return { certificates, isLoading, error, getCertificates };
+};
 
 type UseGetEventCertificatesResult = {
   eventCertificates: TCertificate[];
@@ -31,7 +131,7 @@ export const useGetEventCertificates = ({
 
     try {
       const { data, status } = await getRequest<TCertificate[]>({
-        endpoint: `/certificates/${eventId}`,
+        endpoint: `/certificates/events/${eventId}`,
       });
 
       if (status !== 200) {
@@ -73,7 +173,7 @@ export const useGetAttendeesCertificates = ({
 
     try {
       const { data, status } = await getRequest<TAttendeeCertificate[]>({
-        endpoint: `/certificates/${eventId}/attendees`,
+        endpoint: `/certificates/events/${eventId}/attendees`,
       });
 
       if (status !== 200) {
@@ -100,7 +200,7 @@ type useUpdateAttendeeCertificatesResult = {
   }: {
     payload: {
       certificateInfo: Partial<TAttendeeCertificate>;
-      attendeeInfo: { attendeeId: number; attendeeEmail: string }[];
+      attendeeInfo: { attendeeId?: number; attendeeEmail: string }[];
       action: string;
     };
   }) => Promise<void>;
@@ -119,7 +219,7 @@ export const useUpdateAttendeeCertificates = ({
   }: {
     payload: {
       certificateInfo: Partial<TAttendeeCertificate>;
-      attendeeInfo: { attendeeId: number; attendeeEmail: string }[];
+      attendeeInfo: { attendeeId?: number; attendeeEmail: string }[];
       action: string;
     };
   }) => {
@@ -130,8 +230,8 @@ export const useUpdateAttendeeCertificates = ({
       } certificates...`,
     });
     try {
-      const { data, status } = await postRequest({
-        endpoint: `/certificates/${eventId}/attendees`,
+      const { data, status } = await postRequest<{ msg: string }>({
+        endpoint: `/certificates/events/${eventId}/attendees`,
         payload,
       });
 
@@ -177,13 +277,12 @@ export const useGetAttendeeCertificates = ({
 
     try {
       const { data, status } = await getRequest<TAttendeeCertificate[]>({
-        endpoint: `/certificates/${eventId}/attendees/${attendeeId}`,
+        endpoint: `/certificates/events/${eventId}/attendees/${attendeeId}`,
       });
 
       if (status !== 200) {
         throw data;
       }
-      console.log(data.data);
       setAttendeeCertificates(data.data);
     } catch (error) {
       setError(true);
@@ -231,8 +330,8 @@ export const useRecallAttendeeCertificates = ({
       description: "recalling certificates...",
     });
     try {
-      const { data, status } = await postRequest({
-        endpoint: `/certificates/${eventId}/attendees/${attendeeId}`,
+      const { data, status } = await postRequest<{ msg: string }>({
+        endpoint: `/certificates/events/${eventId}/attendees/${attendeeId}`,
         payload,
       });
 
@@ -283,7 +382,6 @@ export const useVerifyAttendeeCertificate =
           throw data;
         }
 
-        console.log(data.data);
         if (!data.data) {
           toast({
             description: "this certificate is not valid",

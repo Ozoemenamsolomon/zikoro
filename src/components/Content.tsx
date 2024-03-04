@@ -3,8 +3,8 @@
 import { Eye } from "styled-icons/evil";
 import { UploadOutline } from "styled-icons/evaicons-outline";
 import { Check } from "styled-icons/material";
-import { AddToQueue } from "@styled-icons/boxicons-regular/AddToQueue";
-import { Trash } from "@styled-icons/boxicons-regular/Trash";
+import { AddToQueue } from "styled-icons/boxicons-regular";
+import { Trash } from "styled-icons/boxicons-regular";
 import Link from "next/link";
 // import { useState } from "react";
 

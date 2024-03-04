@@ -1,5 +1,6 @@
 import { toast } from "@/components/ui/use-toast";
 import { TFavouriteContact } from "@/types/favourites";
+import { RequestStatus } from "@/types/request";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
@@ -7,7 +8,7 @@ type useUpdateFavouritesResult = {
   updateFavourites: ({
     payload,
   }: {
-    payload: TFavouriteContact;
+    payload: Partial<TFavouriteContact>;
   }) => Promise<void>;
 } & RequestStatus;
 
@@ -19,7 +20,11 @@ export const useUpdateFavourites = ({
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const updateFavourites = async ({ payload }: { payload: TFavourites }) => {
+  const updateFavourites = async ({
+    payload,
+  }: {
+    payload: Partial<TFavouriteContact>;
+  }) => {
     setLoading(true);
     toast({
       description: "updating favourite...",
@@ -45,7 +50,7 @@ export const useUpdateFavourites = ({
 };
 
 type UseGetFavouritesResult = {
-  favourites: TFavouriteContact;
+  favourites: TFavouriteContact | null;
   getFavourites: () => Promise<void>;
 } & RequestStatus;
 
@@ -54,7 +59,7 @@ export const useGetFavourites = ({
 }: {
   userId: number;
 }): UseGetFavouritesResult => {
-  const [favourites, setFavourites] = useState<TFavouriteContact>();
+  const [favourites, setFavourites] = useState<TFavouriteContact | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 

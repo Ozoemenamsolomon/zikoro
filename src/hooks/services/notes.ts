@@ -1,4 +1,5 @@
 import { TAttendeeNote } from "@/types/attendee";
+import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
 
@@ -34,7 +35,7 @@ export const useUpdatenote = ({
 };
 
 type UseGetnoteResult = {
-  notes: TAttendeeNote[];
+  note: TAttendeeNote | null;
   getnote: () => Promise<void>;
 } & RequestStatus;
 

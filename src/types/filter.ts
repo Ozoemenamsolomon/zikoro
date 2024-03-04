@@ -9,7 +9,7 @@ export interface FilterProps<T> {
 }
 
 export type TSelectedFilter<T> = {
-  key: string;
+  key: keyof T;
   label: string;
   value: DateRange | any[] | any;
   type?: TFilterType;
@@ -27,7 +27,7 @@ export interface TFilter<T> {
   optionsFromData?: boolean;
   icon?: React.ReactNode;
   order?: number;
-  defaultValue?: typeof T;
+  defaultValue?: T[keyof T];
 }
 
 export type TFilterType =
@@ -46,15 +46,15 @@ export type TOption = {
 export type onFilterProps<T> = (data: T, value: any[] | any) => boolean;
 
 export type applyFilterProps<T> = (
-  key: string,
+  key: keyof T,
   label: string,
-  value: any[],
+  value: unknown,
   onFilter?: onFilterProps<T>,
   type?: TFilterType
 ) => void;
 
 export interface FilterOptionsProps<T> {
-  filter: Partial<TFilter<T>>;
+  filter: TFilter<T>;
   selectedFilters: TSelectedFilter<T>[];
   applyFilter: applyFilterProps<T>;
 }

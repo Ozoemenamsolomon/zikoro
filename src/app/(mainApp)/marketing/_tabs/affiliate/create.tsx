@@ -87,34 +87,33 @@ const Create = () => {
       value,
     } = data;
 
+    const thisEvent = events?.find(({ id }) => id.toString() == event);
+    const thisAffiliate = affiliates?.find(
+      ({ id }) => id?.toString() == affiliateId
+    );
+
+    if (!thisEvent || !thisAffiliate) return;
+
     await createAffiliateLink({
-      organizationName:
-        events?.find(({ id }) => id == event)?.organization.organizationName ||
-        "Organization",
-      affiliateName:
-        affiliates?.find(({ id }) => id == affiliateId)?.firstName ||
-        "Affiliate",
-      eventPoster:
-        events?.find(({ id }) => id == event)?.eventPoster.image1 || "",
       payload: {
-        payoutSchedule,
-        validity,
-        commissionValue: value,
-        commissionType,
-        eventId: event !== "all" ? event : 0,
-        eventName: events?.find(({ id }) => id == event)?.eventTitle || "All",
-        Goal: goal,
-        affiliateId: affiliateId,
-        affiliateEmail:
-          affiliates?.find(({ id }) => id == affiliateId)?.email ||
-          "affiliate@email.com",
-        userId: 5,
-        affiliateLink: `www.zikoro-copy.vercel.app/published-event${
-          event !== "all" && "/" + event
-        }/${
-          affiliates?.find(({ id }) => id == affiliateId)?.affliateCode ||
-          "w37h4ud"
-        }`,
+        organizationName: thisEvent?.organization.organizationName,
+        affiliateName: thisAffiliate?.firstName,
+        eventPoster: thisEvent?.eventPoster?.image1,
+        payload: {
+          payoutSchedule,
+          validity,
+          commissionValue: value,
+          commissionType,
+          eventId: event !== "all" ? parseInt(event) : 0,
+          eventName: thisEvent?.eventTitle,
+          Goal: goal,
+          affiliateId: parseInt(affiliateId),
+          affliateEmail: thisAffiliate?.email || "affiliate@email.com",
+          userId: 5,
+          affiliateLink: `www.zikoro-copy.vercel.app/published-event${
+            event !== "all" && "/" + event
+          }/${thisAffiliate?.affliateCode}`,
+        },
       },
     });
   };
@@ -163,18 +162,20 @@ const Create = () => {
                         <SelectItem value={"all"} className="inline-flex gap-2">
                           All
                         </SelectItem>
-                        {affiliates.map(
-                          ({ firstName, lastname, id, affliateStatus }) => (
-                            <SelectItem
-                              disabled={!affliateStatus}
-                              key={id}
-                              value={id.toString()}
-                              className="inline-flex gap-2"
-                            >
-                              {firstName + " " + lastname}
-                            </SelectItem>
-                          )
-                        )}
+                        {affiliates &&
+                          affiliates.map(
+                            ({ firstName, lastname, id, affliateStatus }) =>
+                              id ? (
+                                <SelectItem
+                                  disabled={!affliateStatus}
+                                  key={id}
+                                  value={id?.toString()}
+                                  className="inline-flex gap-2"
+                                >
+                                  {firstName + " " + lastname}
+                                </SelectItem>
+                              ) : null
+                          )}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -206,15 +207,16 @@ const Create = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="max-h-[250px] w-[500px] hide-scrollbar overflow-auto">
-                        {events.map(({ id, eventTitle }) => (
-                          <SelectItem
-                            key={id}
-                            value={id.toString()}
-                            className="inline-flex gap-2"
-                          >
-                            {eventTitle}
-                          </SelectItem>
-                        ))}
+                        {events &&
+                          events.map(({ id, eventTitle }) => (
+                            <SelectItem
+                              key={id}
+                              value={id.toString()}
+                              className="inline-flex gap-2"
+                            >
+                              {eventTitle}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -378,7 +380,7 @@ const Create = () => {
                     <Input
                       type="number"
                       placeholder={"Enter amount"}
-                      onInput={(e) => field.onChange(parseInt(e.target.value))}
+                      onInput={(e) => field.onChange(parseInt(e.currentTarget.value))}
                       className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                     />
                   </InputOffsetLabel>

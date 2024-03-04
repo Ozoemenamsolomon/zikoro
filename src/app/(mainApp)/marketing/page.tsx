@@ -34,10 +34,12 @@ const marketingTabs: TMarketingTabs[] = [
 ];
 
 const page = () => {
-  const divRef = useRef<HTMLDivElement>();
+  const divRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const div = divRef.current;
+
+    if (!div) return;
 
     // Get the distance from the top of the div to the bottom of the screen
     const distanceToBottom = window.innerHeight - div.offsetTop;

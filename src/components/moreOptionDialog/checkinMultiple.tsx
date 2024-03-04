@@ -1,4 +1,3 @@
-import { MoreOptionsProps } from "@/app/people/all/FirstSection";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -15,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
 import { isWithinTimeRange } from "@/utils/date";
+import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
 
 const checkinMultiple: React.FC<MoreOptionsProps> = ({
   attendees,
@@ -38,15 +38,17 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
                 console.log(
                   entry.date,
                   eventDate,
-                  isWithinTimeRange(entry.date, eventDate)
+                  isWithinTimeRange(entry.date, eventDate.toISOString())
                 );
                 return (
-                  isWithinTimeRange(entry.date, eventDate) && entry.checkin
+                  isWithinTimeRange(entry.date, eventDate.toISOString()) &&
+                  entry.checkin
                 );
               })
           : checkin?.some(
               (entry) =>
-                isWithinTimeRange(entry.date, eventDate) && entry.checkin
+                isWithinTimeRange(entry.date, eventDate.toISOString()) &&
+                entry.checkin
             ) || false;
       })
     );
@@ -67,15 +69,19 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
   };
 
   const onSubmit = async () => {
-    let newDate = eventDate.setHours(12, 0, 0, 0);
+    let newDate = new Date(eventDate);
+    newDate.setHours(12, 0, 0, 0);
     console.log(eventDate, newDate);
     const payload = selectedAttendees.map((attendee) => {
       const newCheckin = !attendee.checkin
-        ? [{ date: newDate, checkin: true }]
+        ? [{ date: newDate.toISOString(), checkin: true }]
         : action === "checkin"
-        ? [...(attendee.checkin ?? []), { date: newDate, checkin: true }]
+        ? [
+            ...(attendee.checkin ?? []),
+            { date: newDate.toISOString(), checkin: true },
+          ]
         : (attendee.checkin ?? []).filter(
-            ({ date }) => !isWithinTimeRange(eventDate, date)
+            ({ date }) => !isWithinTimeRange(eventDate.toISOString(), date)
           );
 
       return {
@@ -102,6 +108,7 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
           defaultValue={action}
           value={action}
           onValueChange={(value) => {
+            if (value !== "checkin" && value !== "undo") return;
             setAction(value);
           }}
         >

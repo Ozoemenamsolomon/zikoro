@@ -14,7 +14,7 @@ export function getTimeFromDate(date: Date = new Date()): string {
 
 export function formatDateToHumanReadable(date: Date | undefined): string {
   if (!date) return "";
-  const options = {
+  const options: Intl.DateTimeFormatOptions = {
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -23,7 +23,7 @@ export function formatDateToHumanReadable(date: Date | undefined): string {
   return date.toLocaleDateString(undefined, options);
 }
 
-export function isWithinTimeRange(dateString, dateToCompare) {
+export function isWithinTimeRange(dateString: string, dateToCompare: string | null) {
   // Parse the input date string into a Date object
   let date = new Date(dateString);
 
@@ -44,10 +44,10 @@ export function padZero(number: number): string {
   return number < 10 ? `0${number}` : number.toString();
 }
 
-export function formatDate(inputDateString) {
+export function formatDate(inputDateString: string) {
   const inputDate = new Date(inputDateString);
 
-  const options = {
+  const options: Intl.DateTimeFormatOptions = {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -56,9 +56,9 @@ export function formatDate(inputDateString) {
   const formatter = new Intl.DateTimeFormat("en-US", options);
   const parts = formatter.formatToParts(inputDate);
 
-  const day = parts.find((part) => part.type === "day").value;
-  const month = parts.find((part) => part.type === "month").value;
-  const year = parts.find((part) => part.type === "year").value;
+  const day = parts && parts.find((part) => part.type === "day")?.value;
+  const month = parts && parts.find((part) => part.type === "month")?.value;
+  const year = parts && parts.find((part) => part.type === "year")?.value;
 
   return { day, month, year };
 }
@@ -83,8 +83,8 @@ export function convertDateFormat(inputDate: string): string {
   return formattedDate;
 }
 
-export function formatDateTo(originalDate) {
-  const options = { year: "numeric", month: "long", day: "numeric" };
+export function formatDateTo(originalDate: Date) {
+  const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long", day: "numeric" };
   const parsedDate = new Date(originalDate);
   const formattedDate = parsedDate.toLocaleDateString("en-US", options);
 
@@ -101,7 +101,7 @@ export function formatDateTo(originalDate) {
 }
 
 // Function to get the ordinal suffix for a number (e.g., 1st, 2nd, 3rd)
-export function getOrdinalSuffix(number) {
+export function getOrdinalSuffix(number: number) {
   const suffixes = ["th", "st", "nd", "rd"];
   const relevantDigits = number < 30 ? number % 20 : number % 10;
 

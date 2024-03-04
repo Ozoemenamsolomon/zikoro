@@ -3,10 +3,9 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     container: {
@@ -24,7 +23,6 @@ const config: Config = {
         greyBlack: "#0A0E2E",
         earlyBirdColor: "#001FCC",
         ash: "#717171",
-        lightOrange: "rgba(230, 129, 17, 0.05)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -61,9 +59,6 @@ const config: Config = {
       },
       fontSize: {
         tiny: "10px",
-      },
-      fontFamily: {
-        DancingScript: ["DancingScript", "san-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -12,9 +12,10 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { ReactInstance, useEffect, useRef, useState } from "react";
 import { exportComponentAsPNG } from "react-component-export-image";
 import QRCode from "react-qr-code";
+// @ts-ignore Ts error from library but it works
 import { ShareSocial } from "react-share-social";
 
 const style = {
@@ -38,7 +39,7 @@ const style = {
 const Page = ({ params }: { params: { certificateId: string } }) => {
   const [certificate, setCertificate] = useState<TFullCertificate | null>(null);
 
-  const certificateRef = useRef();
+  const certificateRef = useRef<HTMLDivElement | null>(null);
 
   const { certificateId } = params;
 
@@ -50,11 +51,11 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
   const verify = async () => {
     const verifiedCertificate = await verifyAttendeeCertificate(certificateId);
 
-    console.log(verifiedCertificate);
-
-    if (!!verifiedCertificate) {
-      setCertificate(verifiedCertificate);
+    if (!verifiedCertificate) {
+      router.replace("/verify");
     }
+
+    setCertificate(verifiedCertificate);
   };
 
   useEffect(() => {
@@ -63,6 +64,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
 
   const handleDownloadPdf = async () => {
     const element = certificateRef.current;
+    if (!element) return;
     const canvas = await html2canvas(element);
     const data = canvas.toDataURL("image/png");
 
@@ -159,19 +161,19 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   <p className="text-lg">This is to certify that</p>
                 </div>
                 <div className="pb-1 mx-auto w-2/3 text-center mb-6">
-                  <span className="text-4xl font-DancingScript">
+                  <span className={`font-DancingScript text-4xl`}>
                     {certificate?.attendee.firstName +
                       " " +
                       certificate?.attendee.lastName}
                   </span>
                 </div>
                 <div className="space-y-2 mb-4 text-sm text-center w-full">
-                  <p>
+                  {/* <p>
                     Successfully completed the{" "}
                     {certificate?.certificate.TrainingDuration}-hour{" "}
                     {certificate?.CertificateName}, earning{" "}
                     {certificate?.certificate.cpdPoints} credits.{" "}
-                  </p>
+                  </p> */}
                   <p>
                     A program offered by{" "}
                     {
@@ -182,7 +184,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   </p>
                 </div>
                 <p className="text-xs text-center w-full mb-6">
-                  {formatDateToHumanReadable(new Date(certificate?.created_at))}
+                  {certificate?.created_at && formatDateToHumanReadable(new Date(certificate?.created_at))}
                   , LAGOS, NIGERIA
                 </p>
                 <div className="flex flex-col items-center gap-2">
@@ -298,7 +300,10 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 </span>
                 <span className="font-medium text-gray-700">
                   Issued on{" "}
-                  {formatDateToHumanReadable(new Date(certificate?.created_at))}{" "}
+                  {certificate?.created_at &&
+                    formatDateToHumanReadable(
+                      new Date(certificate?.created_at)
+                    )}{" "}
                 </span>
                 <span className="font-medium text-gray-700">
                   Issuing organization:{" "}
@@ -333,22 +338,22 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               <h2 className="text-gray-800 text-xl font-medium">
                 Scope of the training
               </h2>
-              <ul className="space-y-2 text-sm">
+              {/* <ul className="space-y-2 text-sm">
                 {certificate?.certificate?.trainingScope.map((item, index) => (
                   <li className="text-gray-700 flex gap-2" key={index}>
                     <span className="text-xl">.</span>
                     <span>{item}</span>
                   </li>
                 ))}
-              </ul>
+              </ul> */}
             </div>
           </div>
         </>
       ) : !isLoading && !certificate ? (
         <div>this certificate dos not exist</div>
       ) : (
-        <div class="flex items-center justify-center h-screen">
-          <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+        <div className="flex items-center justify-center h-screen">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
         </div>
       )}
     </section>

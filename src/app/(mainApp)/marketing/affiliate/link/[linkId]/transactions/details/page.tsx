@@ -20,11 +20,10 @@ import RequestPayoutDialog from "@/components/requestPayoutDialog";
 const LinkDetails = () => {
   const { linkId } = useParams();
 
+  if (Array.isArray(linkId)) return null;
   const { affiliateLink, getAffiliateLink, isLoading } = useGetAffiliateLink({
-    linkId,
+    linkId: parseInt(linkId),
   });
-
-  console.log(affiliateLink);
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -35,10 +34,10 @@ const LinkDetails = () => {
         <Dialog
           onOpenChange={(newOpen) => {
             if (
-              newOpen &&
-              (!affiliateLink.eventTransactions ||
-                (affiliateLink.eventTransactions &&
-                  affiliateLink.eventTransactions.filter(
+              newOpen && 
+              (!affiliateLink?.eventTransactions ||
+                (affiliateLink?.eventTransactions &&
+                  affiliateLink?.eventTransactions.filter(
                     ({ id }) => rowSelection[id]
                   ).length === 0))
             )
@@ -49,8 +48,8 @@ const LinkDetails = () => {
         >
           <DialogTrigger
             asChild
-            disabled={
-              affiliateLink.eventTransactions &&
+            disabled={ 
+              affiliateLink?.eventTransactions &&
               affiliateLink.eventTransactions.filter(
                 ({ id }) => rowSelection[id]
               ).length === 0
@@ -68,7 +67,7 @@ const LinkDetails = () => {
             </DialogHeader>
             <RequestPayoutDialog
               selectedRows={
-                (affiliateLink.eventTransactions &&
+                (affiliateLink?.eventTransactions &&
                   affiliateLink.eventTransactions.filter(
                     ({ id }) => rowSelection[id]
                   )) ||

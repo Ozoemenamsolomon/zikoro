@@ -74,9 +74,9 @@ export function createHash(data: string): string {
   return hash.digest("hex");
 }
 
-export function getProperty<T>(obj: T, key: string): any {
+export function getProperty<T>(obj: T, key: keyof T): any {
   if (typeof obj === "object" && obj !== null && key in obj) {
-    return (obj as Record<string, any>)[key];
+    return (obj as Record<keyof T, any>)[key];
   }
   return null; // Handle the case where the key is not present
 }
@@ -174,4 +174,18 @@ export async function uploadFile(
     console.error("Error uploading image:", error);
     return { url: null, error };
   }
+}
+
+export function base64ToFile(base64Data: string, fileName: string): File {
+  const byteCharacters = atob(base64Data.split(",")[1]);
+  const byteNumbers = new Array<number>(byteCharacters.length);
+
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: "image/png" });
+
+  return new File([blob], fileName, { type: "image/png" });
 }

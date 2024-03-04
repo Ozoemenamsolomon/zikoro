@@ -48,7 +48,7 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
             case "single":
               return value === pptyVal;
             default:
-              return value.some((elm) => pptyVal && pptyVal.includes(elm));
+              return value.some((elm: any) => pptyVal && pptyVal.includes(elm));
           }
         }
       });
@@ -82,7 +82,7 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
     setSelectedFilters(newFilters);
   };
 
-  const setOptions = (key: string, options: TOption[]) => {
+  const setOptions = (key: keyof T, options: TOption[]) => {
     const newFilter = filters.find((filter) => filter.accessor === key);
 
     if (newFilter) {

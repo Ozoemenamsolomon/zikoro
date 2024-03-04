@@ -9,32 +9,37 @@ import { PaperPlane } from "styled-icons/fa-regular";
 import { Cog } from "styled-icons/heroicons-outline";
 import { NavLinks } from "./NavLinks";
 import { UserActions } from "@/components/UserActions";
-import { TLink } from "@/types/links";
+
+export type TLink = {
+  name: string;
+  href: string;
+  icon?: React.FC;
+};
 
 export const links: TLink[] = [
   {
     name: "Home",
-    icon: Home,
+    icon: ({ ...props }) => <Home {...props} />,
     href: "/",
   },
   {
     name: "Billing",
-    icon: MoneyDollarBox,
+    icon: ({ ...props }) => <MoneyDollarBox {...props} />,
     href: "/billing",
   },
   {
     name: "Marketing",
-    icon: MegaphoneLoud,
+    icon: ({ ...props }) => <MegaphoneLoud {...props} />,
     href: "/marketing",
   },
   {
     name: "Published Events",
-    icon: PaperPlane,
+    icon: ({ ...props }) => <PaperPlane {...props} />,
     href: "/events",
   },
   {
     name: "Settings",
-    icon: Cog,
+    icon: ({ ...props }) => <Cog {...props} />,
     href: "/settings",
   },
 ];
@@ -50,8 +55,8 @@ const Sidebar = () => {
           height={100}
         ></Image>
         <NavLinks />
-      </div>
       <UserActions />
+      </div>
     </div>
   );
 };

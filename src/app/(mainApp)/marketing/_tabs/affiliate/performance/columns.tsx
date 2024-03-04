@@ -78,7 +78,7 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
               )
               .reduce((acc, curr) => acc + curr.amountPaid, 0)
             : 0)) /
-        (row
+        (row.eventTransactions
           ? row.eventTransactions.reduce(
             (acc, curr) => acc + curr.attendees,
             0

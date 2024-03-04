@@ -8,9 +8,9 @@ import { z } from "zod";
 export type TCheckin = z.infer<typeof checkinSchema>;
 
 export type TAttendee = z.infer<typeof AttendeeSchema> & {
-  [key: string]: any;
   id?: number;
   eventRegistrationRef?: string;
+  ticketType?: string;
 };
 
 export type TAttendeeNote = z.infer<typeof attendeeNoteSchema>;
@@ -26,7 +26,7 @@ export type TInviteDetails = {
 };
 
 export type TAttendeeEmailInvites = {
-  id?: bigint;
+  id?: number;
   created_at?: string;
   eventId: number;
   eventName: string;

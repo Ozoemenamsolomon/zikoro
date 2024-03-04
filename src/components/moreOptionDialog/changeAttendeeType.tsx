@@ -1,4 +1,3 @@
-import { MoreOptionsProps } from "@/app/people/all/FirstSection";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -8,12 +7,13 @@ import { TAttendee } from "@/types/attendee";
 import React, { useEffect, useState } from "react";
 import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
+import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
 
 const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
   attendees,
   getAttendees,
   attendeesTags,
-  favourites
+  favourites,
 }) => {
   const [mappedAttendees, setMappedAttendees] = useState<TAttendee[]>([]);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
@@ -53,10 +53,14 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
     const payload = selectedAttendees.map((attendee) => {
       const newAttendeeType =
         action === "assign"
-          ? [...attendee.attendeeType, selectedAttendeeType]
-          : attendee.attendeeType.filter(
+          ? !attendee.attendeeType
+            ? [selectedAttendeeType]
+            : [...attendee.attendeeType, selectedAttendeeType]
+          : attendee.attendeeType
+          ? attendee.attendeeType.filter(
               (type) => type !== selectedAttendeeType
-            );
+            )
+          : [];
       return {
         ...attendee,
         attendeeType: newAttendeeType,
@@ -81,6 +85,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
           defaultValue={action}
           value={action}
           onValueChange={(value) => {
+            if (value !== "assign" && value !== "remove") return;
             setAction(value);
           }}
         >

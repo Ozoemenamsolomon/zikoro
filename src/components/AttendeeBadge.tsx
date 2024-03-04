@@ -77,7 +77,7 @@ const AttendeeBadge = ({ attendee }: { attendee: TAttendee }) => {
             <QRCode
               size={256}
               style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-              value={id}
+              value={id && id?.toString() || ""}
               viewBox={`0 0 256 256`}
             />
           </div>
