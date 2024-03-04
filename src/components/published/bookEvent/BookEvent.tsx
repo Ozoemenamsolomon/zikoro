@@ -105,9 +105,7 @@ export function BookEvent({
       whatsappNumber: "",
       phoneNumber: "",
     });
-  }
-
-  
+  }  
   function allowPayment(bool: boolean) {
     setOpenPaymentModal(bool);
   }
