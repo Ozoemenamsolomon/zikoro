@@ -174,7 +174,7 @@ export default function Discount({eventId}:{eventId:string}) {
             status={discount.status}
             onClick={() => {
               changeStatus(discount.id, discount.status);
-              setValue(discount.status ? "on" : "off");
+             setValue(discount.status ? "on" : "off");
               console.log(value);
             }}
             value={value}

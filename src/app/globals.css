@@ -143,7 +143,7 @@ option:hover {
 
 .ql-container.ql-snow {
   border: 1px solid #f3f3f3 !important;
-  height: 400px;
+  height: 300px;
   border-top: none;
   font-size: 14px;
   border-radius: 0px 0px 8px 8px;
@@ -657,6 +657,9 @@ div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-ra
   border-radius: 6px;
 }
 
+.innerhtml h1 {
+ font-size: 40px;
+}
 .partner-scroll-style::-webkit-scrollbar {
  display: none;
 }

@@ -16,11 +16,11 @@ export default function TextEditor({
     toolbar: {
       container: [
         ["bold", "italic", "underline", "strike"],
-        ["blockquote", "code-block"],
+        ["blockquote"],
         [{ list: "ordered" }, { list: "bullet" }],
         [{ script: "sub" }, { script: "super" }],
         [{ indent: "-1" }, { indent: "+1" }],
-        [{ direction: "rtl" }],
+     //   [{ direction: "rtl" }],
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
         [{ color: [] }, { background: [] }],
         [
@@ -28,12 +28,12 @@ export default function TextEditor({
             font: [],
           },
         ],
-        [{ align: [] }],
-        ["link", "image", "video"],
+      //  [{ align: [] }],
+        ["link"], // "image", "video"
         ["clean"],
         ["undo"],
         ["redo"],
-        ["imageResize", "imageTextAlternative"],
+       // ["imageResize", "imageTextAlternative"],
       ],
     },
     history: {
@@ -54,7 +54,7 @@ export default function TextEditor({
     "bullet",
     "link",
     "image",
-    "align",
+   // "align",
     "color",
     "code-block",
     "undo",
@@ -70,7 +70,7 @@ export default function TextEditor({
     "list",
   ];
 
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(defaultValue);
   const handleEditorChange = (content: string) => {
     setContent(content);
     onChange(content);
@@ -80,7 +80,7 @@ export default function TextEditor({
   return (
     <div className="mb-5">
       <QuillEditor
-        value={defaultValue}
+        value={content}
        // defaultValue={defaultValue}
         onChange={(e) => {
           handleEditorChange(e);

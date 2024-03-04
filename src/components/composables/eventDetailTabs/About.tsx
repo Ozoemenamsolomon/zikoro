@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { ScrollableCards } from "@/components";
 import Image from "next/image";
@@ -37,86 +37,24 @@ export function About({
         )}
       >
         <div className="w-full flex flex-col border gap-y-6 rounded-lg p-3 sm:p-4">
-          <ul className="list-disc w-full flex flex-col items-start justify-start space-y-4">
-            <h2 className="font-medium text-base sm:text-lg ">About Event</h2>
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              In this workshop, the anatomical basics of modeling are taught on
-              the basis of the eye, nose and ear. The right choice of modelling
-              clay will be another component. Important tools and corresponding
-              techniques are discussed.
-            </li>
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              At the end of the seminar, a certificate of participation will be
-              handed over.
-            </li>
-          </ul>
-          <ul className="list-disc w-full flex flex-col items-start justify-start space-y-4">
-            <h2 className="font-medium text-base sm:text-lg ">Description</h2>
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              Attended the School of Fine Arts and Design in Berlin.
-            </li>
-
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              Founded his own miniature label "Savage Feget Minis.
-            </li>
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              {" "}
-              In 2012 - has since worked for leading companies in the gaming
-              industry.
-            </li>
-          </ul>
-          <ul className="list-disc w-full flex flex-col items-start justify-start space-y-4">
-            <h2 className="font-medium text-base sm:text-lg ">Benefits</h2>
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              Gain an understanding of the different types of resin, their
-              properties, mixing techniques, and the tools needed for successful
-              resin crafting.
-            </li>
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              Experiment with various pigments, powders, and glitters to add
-              dazzling colours and textures to your resin creations.
-            </li>
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              Master the art of pouring and curing resin to achieve
-              professional-looking jewellery pieces.
-            </li>
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              Practise the techniques for achieving various jewellery effects
-              and patterns.
-            </li>
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              Practise the techniques for achieving various jewellery effects
-              and patterns.
-            </li>
-            <li className="flex flex-wrap leading-6 items-start justify-start">
-              Practise the techniques for achieving various jewellery effects
-              and patterns.
-            </li>
-          </ul>
-          <div className="flex flex-wrap leading-6 items-start justify-start">
-            We reserve the right to cancel classes if the minimum number of
-            participants is unmet. In such case, we would offer to reschedule
-            the workshop or make complete refund.Cancelation Policy: The last
-            day to make a complete refund request for a workshop is 14 days
-            before the start of the class. Tickets can be used as credit for
-            another comparable available workshop.
-          </div>
-
+         {event?.description && <div className="innerhtml"
+            dangerouslySetInnerHTML={{
+              __html: event?.description,
+            }}
+          />}
           <div className="w-full h-full flex flex-col gap-y-6">
-           
-
-           {event?.eventAddress && <ul className="w-full flex flex-col items-start justify-start space-y-4">
-              <h2 className="font-medium text-base sm:text-lg ">
-                Event Address
-              </h2>
-              <li className="flex flex-wrap leading-6 items-start justify-start">
-                {event?.eventAddress}
-              </li>
-            </ul>}
+            {event?.eventAddress && (
+              <ul className="w-full flex flex-col items-start justify-start space-y-4">
+                <h2 className="font-medium text-base sm:text-lg ">
+                  Event Address
+                </h2>
+                <li className="flex flex-wrap leading-6 items-start justify-start">
+                  {event?.eventAddress}
+                </li>
+              </ul>
+            )}
           </div>
         </div>
-
-      
       </div>
 
       {isEventDetailPage && (

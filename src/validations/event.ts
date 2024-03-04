@@ -80,7 +80,6 @@ export const updateEventSchema = z.object({
   industry: z.string().optional(),
   eventCategory: z.string().optional(),
   eventPoster: z.any(),
-  organisationLogo: z.any(),
   pricingCurrency: z.string().optional(),
   description: z.string().optional(),
   pricing: eventPricing,

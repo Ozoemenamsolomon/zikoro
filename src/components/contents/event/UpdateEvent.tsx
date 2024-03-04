@@ -48,7 +48,12 @@ export default function UpdateEvent({
 }: {
   eventId: string;
 }): JSX.Element {
-  const { data, loading }: {data: any, loading: boolean} = useFetchSingleEvent(eventId);
+  const {
+    data,
+    loading,
+    refetch,
+  }: { data: any; loading: boolean; refetch: () => Promise<null | undefined> } =
+    useFetchSingleEvent(eventId);
   const { loading: updating, update } = useUpdateEvent();
   const form = useForm<z.infer<typeof updateEventSchema>>({
     resolver: zodResolver(updateEventSchema),
@@ -65,9 +70,6 @@ export default function UpdateEvent({
     },
   });
 
-  const [organisationLogoArr, setOrganisationLogoArr] = useState(
-    [] as ImageFile[]
-  );
   const [eventPosterArr, setEventPosterArr] = useState([] as ImageFile[]);
   const [isStartDateOpen, setIsStartDateOpen] = useState<boolean>(false);
   const [isEndDateOpen, setIsEndDateOpen] = useState<boolean>(false);
@@ -105,18 +107,20 @@ export default function UpdateEvent({
         eventCountry: data?.eventCountry,
         pricing: data?.pricing,
       });
-      setEventPosterArr(
-        data?.eventPoster?.map((v:any) => {
+      if (Array.isArray(data?.eventPoster)) {
+        const formatData = data?.eventPoster?.map((v: any) => {
           return { url: v, file: undefined, isValid: true };
-        })
-      );
+        });
+        setEventPosterArr(formatData);
+      } else {
+        setEventPosterArr([]);
+      }
     }
   }, [data]);
 
-  console.log(form.getValues());
   //
   async function onSubmit(values: z.infer<typeof updateEventSchema>) {
-    console.log(values);
+    // console.log(values);
     if (values.pricing?.length > 0) {
       const isNotEqualPrice = values?.pricing?.some(
         ({ ticketQuantity }) =>
@@ -130,16 +134,16 @@ export default function UpdateEvent({
       }
     }
     const posterUrl = eventPosterArr.map((v) => v.url);
-    const logoUrl = organisationLogoArr.map((v) => v.url);
+
     console.log({ values });
     const payload = {
       ...values,
       eventPoster: posterUrl,
-      organisationLogo: logoUrl,
     };
 
     // return;
     await update(payload, eventId);
+    refetch();
   }
 
   const countriesList = useMemo(() => {
@@ -153,38 +157,7 @@ export default function UpdateEvent({
     form.setValue("description", value);
   }
 
-  const logo = form.watch("organisationLogo");
   const poster = form.watch("eventPoster");
-
-  useEffect(() => {
-    (async () => {
-      if (logo && logo[0]) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          if (reader.result) {
-            const img = document.createElement("img");
-            console.log(img);
-
-            img.onload = () => {
-              console.log("im", reader.result);
-              setOrganisationLogoArr((prev) => [
-                ...prev,
-                {
-                  url: reader?.result?.toString(),
-                  file: logo[0],
-                  isValid: true,
-                },
-              ]);
-            };
-            img.src = URL.createObjectURL(logo[0]);
-
-            // img.naturalHeight >= 500 && img.naturalWidth >= 1000
-          }
-        };
-        reader.readAsDataURL(logo[0]);
-      }
-    })();
-  }, [logo]);
 
   useEffect(() => {
     (async () => {
@@ -219,11 +192,6 @@ export default function UpdateEvent({
     setEventPosterArr(filtered);
   }
 
-  function removeLogo(id: number) {
-    const filtered = organisationLogoArr.filter((_, index) => index !== id);
-    setOrganisationLogoArr(filtered);
-  }
-
   // console.log(form.getValues());
 
   return (
@@ -245,30 +213,13 @@ export default function UpdateEvent({
               <div className="w-full py-4 flex items-center justify-between">
                 <h6 className="font-medium">Event information</h6>
                 <div className="flex items-center gap-x-2">
-                  <Button
-                    onClick={(e) => {
-                      //   e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    className="gap-x-2"
-                  >
-                    <p>Save</p>
-                    <Check2 size={22} />
-                  </Button>
-                  <Button
-                    // onClick={() => {
-                    //   console.log(form.getValues())
-                    //   }}
-                    type="submit"
-                    className="text-zikoro border border-zikoro gap-x-2"
-                  >
+                  <Button className="gap-x-2">
                     {updating && (
                       <LoaderAlt size={22} className="animate-spin" />
                     )}
-                    <p>Publish</p>
-                    <Download size={22} />
+                    <Check2 size={22} className="text-zikoro" />
+                    <p>Save</p>
                   </Button>
-
                   <Button
                     // type="submit"
                     onClick={(e) => {
@@ -277,9 +228,22 @@ export default function UpdateEvent({
                     }}
                     className="text-gray-50 bg-zikoro gap-x-2"
                   >
-                    <p>Preview</p>
                     <Eye size={22} />
+                    <p>Preview</p>
                   </Button>
+                  <Button
+                    onClick={(e) => {
+                      //   e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    type="submit"
+                    className="text-zikoro border border-zikoro gap-x-2"
+                  >
+                    <Download size={22} />
+                    <p>Publish</p>
+                  </Button>
+
+                
                 </div>
               </div>
               <div className="w-full grid grid-cols-1 items-center md:items-start md:grid-cols-2 gap-6">
@@ -468,134 +432,9 @@ export default function UpdateEvent({
                       )}
                     />
                   </div>
-                  <div className="w-full">
-                    <FormField
-                      control={form.control}
-                      name="eventPoster"
-                      render={({ field }) => (
-                        <label
-                          htmlFor="add-poster"
-                          className="w-full border border-gray-200 relative rounded-lg flex items-center justify-start h-12"
-                        >
-                          <span className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1">
-                            Event Poster
-                          </span>
-                          <div className="flex px-4 items-center gap-x-3">
-                            <Camera size={20} />
-                            <p className="text-gray-400">Add Poster</p>
-                          </div>
-                          <input
-                            type="file"
-                            id="add-poster"
-                            {...form.register("eventPoster")}
-                            className="w-full h-full absolute inset-0 z-10"
-                            accept="image/*"
-                            hidden
-                          />
-                        </label>
-                      )}
-                    />
-
-                    <span className="description-text">
-                      Image size should be 1080px by 1080px
-                    </span>
-                  </div>
-
-                  <div className="flex gap-x-2 flex-wrap items-center">
-                    {eventPosterArr.map(({ url, isValid }, index) => {
-                      return (
-                        <div className=" relative w-32 h-32" key={index}>
-                          <Image
-                            className="w-32 h-32 rounded-md"
-                            src={url ? url : ""}
-                            width={300}
-                            height={300}
-                            alt="image"
-                          />
-                          <button
-                            onClick={() => removePoster(index)}
-                            className="absolute top-2 right-2 bg-black rounded-full text-white w-6 h-6 flex items-center justify-center"
-                          >
-                            <CloseCircle size={16} />
-                          </button>
-                          {!isValid && (
-                            <button
-                              onClick={() => removePoster(index)}
-                              className="text-red-500 absolute inset-0 w-full h-full"
-                            >
-                              <CloseCircle size={56} />
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
                 </div>
                 <div className="px-4 space-y-6">
-                  <div className="w-full">
-                    <FormField
-                      control={form.control}
-                      name="organisationLogo"
-                      render={({ field }) => (
-                        <label
-                          htmlFor="add-logo"
-                          className="w-full border border-gray-200 relative rounded-lg flex items-center justify-start h-12"
-                        >
-                          <span className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1">
-                            Organization Logo
-                          </span>
-                          <div className="flex px-4 items-center gap-x-3">
-                            <Camera size={20} />
-                            <p className="text-gray-400">Add Logo</p>
-                          </div>
-                          <input
-                            type="file"
-                            id="add-logo"
-                            {...form.register("organisationLogo")}
-                            className="w-full h-full absolute inset-0 z-10"
-                            accept="image/*"
-                            hidden
-                          />
-                        </label>
-                      )}
-                    />
-
-                    <span className="description-text">
-                      Image size should be 1080px by 1080px
-                    </span>
-                  </div>
-
-                  <div className="flex space-x-2 items-center">
-                    {organisationLogoArr.map(({ url, isValid }, index) => {
-                      return (
-                        <div className=" relative w-32 h-32" key={index}>
-                          <Image
-                            className="w-32 h-32 rounded-md"
-                            src={url ? url : ""}
-                            width={300}
-                            height={300}
-                            alt="image"
-                          />
-                          <button
-                            onClick={() => removeLogo(index)}
-                            className="absolute top-2 right-2 bg-black rounded-full text-white w-6 h-6 flex items-center justify-center"
-                          >
-                            <CloseCircle size={16} />
-                          </button>
-                          {!isValid && (
-                            <button
-                              onClick={() => removeLogo(index)}
-                              className="text-red-500 absolute inset-0 w-full h-full"
-                            >
-                              <CloseCircle size={56} />
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {data?.description && (
+                  { (
                     <TextEditor
                       defaultValue={data?.description}
                       onChange={handleChange}
@@ -726,13 +565,79 @@ export default function UpdateEvent({
                     ))}
                   </div>
                   <Button
-                    onClick={appendPricing}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      appendPricing();
+                    }}
                     className="text-sm text-zikoro gap-x-2 h-fit w-fit"
                   >
                     <PlusCircle size={18} />
                     <p>Price Category</p>
                   </Button>
                   {/** */}
+                </div>
+                <div className="w-full">
+                  <FormField
+                    control={form.control}
+                    name="eventPoster"
+                    render={({ field }) => (
+                      <label
+                        htmlFor="add-poster"
+                        className="w-full border border-gray-200 relative rounded-lg flex items-center justify-start h-12"
+                      >
+                        <span className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1">
+                          Event Poster
+                        </span>
+                        <div className="flex px-4 items-center gap-x-3">
+                          <Camera size={20} />
+                          <p className="text-gray-400">Add Poster</p>
+                        </div>
+                        <input
+                          type="file"
+                          id="add-poster"
+                          {...form.register("eventPoster")}
+                          className="w-full h-full absolute inset-0 z-10"
+                          accept="image/*"
+                          hidden
+                        />
+                      </label>
+                    )}
+                  />
+
+                  <span className="description-text">
+                    Image size should be 1080px by 1080px
+                  </span>
+                </div>
+
+                <div className="flex gap-x-2 flex-wrap items-center">
+                  {eventPosterArr.map(({ url, isValid }, index) => {
+                    return (
+                      <div className=" relative w-32 h-32" key={index}>
+                        <Image
+                          className="w-32 h-32 rounded-md"
+                          src={url ? url : ""}
+                          width={300}
+                          height={300}
+                          alt="image"
+                        />
+                        <button
+                          onClick={() => removePoster(index)}
+                          className="absolute top-2 right-2 bg-black rounded-full text-white w-6 h-6 flex items-center justify-center"
+                        >
+                          <CloseCircle size={16} />
+                        </button>
+                        {!isValid && (
+                          <button
+                            onClick={() => removePoster(index)}
+                            className="text-red-500 absolute inset-0 w-full h-full"
+                          >
+                            <CloseCircle size={56} />
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </form>

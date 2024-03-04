@@ -5,6 +5,9 @@ import { useEffect, useState, useMemo } from "react";
 import { COUNTRY_CODE } from "@/utils";
 import { ContentTopNav } from "@/components/content/topNav";
 import { SideBarLayout } from "@/components";
+import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
+import { Camera } from "@styled-icons/feather/Camera";
+import Image from "next/image"
 import {
   Form,
   FormField,
@@ -20,11 +23,21 @@ import {
 import { useForm } from "react-hook-form";
 import { useFetchSingleOrganization, getCookie, useUpdateEvent } from "@/hooks";
 
+interface ImageFile {
+  url: string | undefined;
+  file?: File;
+  isValid: boolean;
+}
+
+
 function Contact({ eventId }: { eventId: string }) {
   const [dialCode, setDialCode] = useState<string | null>(null);
   const org = getCookie("currentOrganization");
   const { data, refetch } = useFetchSingleOrganization(org?.id);
   const { updateOrg, loading } = useUpdateEvent();
+  const [organisationLogoArr, setOrganisationLogoArr] = useState(
+    [] as ImageFile[]
+  );
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>("+234");
   const [whatsappCountryCode, setWhatsAppCountryCode] = useState<
@@ -41,6 +54,13 @@ function Contact({ eventId }: { eventId: string }) {
 
   async function onSubmit(values: any) {
     //  console.log({ values });
+    const logoUrl = organisationLogoArr.map((v) => v.url);
+    const payload = {
+      ...values,
+      organisationLogo: logoUrl,
+
+    }
+
     await updateOrg(values, org?.id);
   }
 
@@ -56,6 +76,44 @@ function Contact({ eventId }: { eventId: string }) {
       setPhoneCountryCode(currentCountryCode);
     }
   }, [country]);
+
+  const logo = form.watch("organisationLogo");
+
+  useEffect(() => {
+    (async () => {
+      if (logo && logo[0]) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (reader.result) {
+            const img = document.createElement("img");
+            console.log(img);
+
+            img.onload = () => {
+              console.log("im", reader.result);
+              setOrganisationLogoArr((prev) => [
+                ...prev,
+                {
+                  url: reader?.result?.toString(),
+                  file: logo[0],
+                  isValid: true,
+                },
+              ]);
+            };
+            img.src = URL.createObjectURL(logo[0]);
+
+            // img.naturalHeight >= 500 && img.naturalWidth >= 1000
+          }
+        };
+        reader.readAsDataURL(logo[0]);
+      }
+    })();
+  }, [logo]);
+
+  function removeLogo(id: number) {
+    const filtered = organisationLogoArr.filter((_, index) => index !== id);
+    setOrganisationLogoArr(filtered);
+  }
+
 
   return (
     <SideBarLayout
@@ -168,6 +226,69 @@ function Contact({ eventId }: { eventId: string }) {
                   </InputOffsetLabel>
                 )}
               />
+
+<div className="w-full">
+                    <FormField
+                      control={form.control}
+                      name="organisationLogo"
+                      render={({ field }) => (
+                        <label
+                          htmlFor="add-logo"
+                          className="w-full border border-gray-200 relative rounded-lg flex items-center justify-start h-12"
+                        >
+                          <span className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1">
+                            Organization Logo
+                          </span>
+                          <div className="flex px-4 items-center gap-x-3">
+                            <Camera size={20} />
+                            <p className="text-gray-400">Add Logo</p>
+                          </div>
+                          <input
+                            type="file"
+                            id="add-logo"
+                            {...form.register("organisationLogo")}
+                            className="w-full h-full absolute inset-0 z-10"
+                            accept="image/*"
+                            hidden
+                          />
+                        </label>
+                      )}
+                    />
+
+                    <span className="description-text">
+                      Image size should be 1080px by 1080px
+                    </span>
+                  </div>
+
+                  <div className="flex space-x-2 items-center">
+                    {organisationLogoArr.map(({ url, isValid }, index) => {
+                      return (
+                        <div className=" relative w-32 h-32" key={index}>
+                          <Image
+                            className="w-32 h-32 rounded-md"
+                            src={url ? url : ""}
+                            width={300}
+                            height={300}
+                            alt="image"
+                          />
+                          <button
+                            onClick={() => removeLogo(index)}
+                            className="absolute top-2 right-2 bg-black rounded-full text-white w-6 h-6 flex items-center justify-center"
+                          >
+                            <CloseCircle size={16} />
+                          </button>
+                          {!isValid && (
+                            <button
+                              onClick={() => removeLogo(index)}
+                              className="text-red-500 absolute inset-0 w-full h-full"
+                            >
+                              <CloseCircle size={56} />
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
             </div>
             <div className="p-4 mt-[1rem] space-y-10 border rounded-md ">
               <h6 className="text-bold">Social media profile</h6>

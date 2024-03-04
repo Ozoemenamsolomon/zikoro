@@ -117,6 +117,8 @@ export function SingleEvent({
     showShareDropDown((prev) => !prev);
   }
 
+  console.log(event?.eventPoster)
+
   // conditonally adding comma to separate city and location
   const removeComma = useMemo(() => {
     return event?.eventCity === null || event?.eventCountry === null;
@@ -192,13 +194,17 @@ export function SingleEvent({
           )}
           <div className="w-full grid grid-cols-1 h-full gap-4 lg:grid-cols-8 items-start">
             <div className="w-full h-full flex lg:col-span-4 flex-col items-start justify-start gap-y-4">
-              <Image
-                src={event?.eventPoster ? event?.eventPoster?.image1 : ""}
+             {Array.isArray( event?.eventPoster)  &&  event?.eventPoster?.length > 0 ? <Image
+                src={ Array.isArray( event?.eventPoster) ? event?.eventPoster[0] : ""}
                 alt="event-image"
                 width={600}
                 height={600}
-                className={cn("w-full h-full rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl object-cover", imageClassName)}
+                className={cn("w-full h-full rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl object-cover")}
               />
+              :
+              <div className="w-full h-full rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl  animate-pulse">
+                <div className="w-full h-full bg-gray-200"></div>
+              </div>}
             </div>
             {/** */}
             <div className="w-full lg:col-span-4 flex flex-col gap-y-3 py-4 px-4 sm:px-10 sm:py-6 items-start justify-start">
@@ -401,7 +407,7 @@ export function SingleEvent({
           endDate={endDate}
           address={event?.eventAddress}
           eventImage={
-            event?.eventPoster ? event?.eventPoster?.image1 : "/images/rect.png"
+           Array.isArray( event?.eventPoster) ? event?.eventPoster[0]: "/images/rect.png"
           }
           availableSlot={availableSlot}
           startDate={startDate}
