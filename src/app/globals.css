@@ -679,12 +679,22 @@ div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-ra
 /* Unordered List */
 .innerhtml ul {
   list-style-type: disc; /* Default filled circle */
+  padding-left: 2rem;
 }
 
 /* Ordered List */
 .innerhtml ol {
   list-style-type: decimal; /* Default decimal numbers */
+  padding-left: 2rem;
 }
+.innerhtml ul li {
+  padding-bottom: 2rem;
+}
+
+.innerhtml ol li {
+  padding-bottom: 2rem;
+}
+
 .partner-scroll-style::-webkit-scrollbar {
  display: none;
 }
