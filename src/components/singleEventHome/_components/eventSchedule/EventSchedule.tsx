@@ -29,15 +29,19 @@ export function EventSchedule({ event }: { event: Event | null }) {
 
   return (
     <div className="w-full flex flex-col gap-y-4 items-start justify-start ">
-      {event?.eventPoster && (
+      {Array.isArray(event?.eventPoster) && event?.eventPoster?.length > 0 ? (
         <div className="w-full">
           <Image
             className="w-full h-28 sm:h-64 rounded-none object-cover"
-            src={event?.eventPoster ? event?.eventPoster?.image1 : ""}
+            src={event?.eventPoster[0]}
             alt="eventimage"
             width={700}
             height={700}
           />
+        </div>
+      ) : (
+        <div className=" w-full h-28 sm:h-64 rounded-none  animate-pulse">
+          <div className="w-full h-full bg-gray-200"></div>
         </div>
       )}
 
