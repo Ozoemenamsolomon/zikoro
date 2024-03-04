@@ -32,7 +32,7 @@ export interface TCertificateSettings {
 export interface TCertificateDetails {
   verification: { showId: boolean; showQRCode: boolean; showURL: boolean };
   background: string | null;
-  craftHash: string;
+  craftHash: string | SerializedNodes;
 }
 export interface TCertificate {
   id?: number;

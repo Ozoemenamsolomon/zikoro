@@ -166,6 +166,221 @@ const tabs = [
   },
 ];
 
+const DEFAULT_FRAME_STATE: SerializedNodes = {
+  ROOT: {
+    type: { resolvedName: "Container" },
+    isCanvas: true,
+    props: { className: "px-12", "data-cy": "root-container" },
+    displayName: "Container",
+    custom: {},
+    hidden: false,
+    nodes: [
+      "jRhdIGLpF6",
+      "dctg3UrG0u",
+      "MrWpdo15n4",
+      "UAyB7m2OTd",
+      "G_9evjnPXh",
+      "ejgclGttJ2",
+      "48bTDW8UT_",
+      "Y1aEfA-fvY",
+    ],
+    linkedNodes: {},
+  },
+  jRhdIGLpF6: {
+    type: { resolvedName: "ImageElement" },
+    isCanvas: false,
+    props: {
+      src: "/images/your_logo.png",
+      width: 50,
+      height: 50,
+      pageX: -32,
+      pageY: 20,
+    },
+    displayName: "Image",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  dctg3UrG0u: {
+    type: { resolvedName: "ImageElement" },
+    isCanvas: false,
+    props: {
+      src: "/images/zikoro_logo.png",
+      width: 50,
+      height: 50,
+      pageX: 463,
+      pageY: -37,
+    },
+    displayName: "Image",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  MrWpdo15n4: {
+    type: { resolvedName: "Text" },
+    isCanvas: false,
+    props: {
+      text: "TRAINING CERTIFICATE",
+      fontSize: 32,
+      isBold: true,
+      isItalic: false,
+      color: "#000",
+      isUnderline: false,
+      tagName: "h1",
+      textAlign: "center",
+      textTransform: "uppercase",
+      pageX: -8,
+      pageY: 1,
+    },
+    displayName: "Text",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  UAyB7m2OTd: {
+    type: { resolvedName: "Text" },
+    isCanvas: false,
+    props: {
+      text: "This is to certify that",
+      fontSize: 16,
+      isBold: false,
+      isItalic: false,
+      color: "#000",
+      isUnderline: false,
+      tagName: "p",
+      textAlign: "center",
+      textTransform: "none",
+      pageX: 15,
+      pageY: 291,
+    },
+    displayName: "Text",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  G_9evjnPXh: {
+    type: { resolvedName: "Text" },
+    isCanvas: false,
+    props: {
+      text: "ABDUR-RASHEED IDRIS",
+      fontSize: 40,
+      isBold: false,
+      isItalic: false,
+      color: "#000",
+      isUnderline: false,
+      tagName: "p",
+      textAlign: "center",
+      textTransform: "uppercase",
+      pageX: 1,
+      pageY: -5,
+      fontFamily: "DancingScript",
+    },
+    displayName: "Text",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  ejgclGttJ2: {
+    type: { resolvedName: "Text" },
+    isCanvas: false,
+    props: {
+      text: "Successfully completed the XX-hour\n                        CERTIFICATE NAME, earning XX credits.",
+      fontSize: 16,
+      isBold: false,
+      isItalic: false,
+      color: "#000",
+      isUnderline: false,
+      tagName: "p",
+      textAlign: "center",
+      textTransform: "none",
+      pageX: 3,
+      pageY: 14,
+    },
+    displayName: "Text",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  "48bTDW8UT_": {
+    type: { resolvedName: "Text" },
+    isCanvas: false,
+    props: {
+      text: 'A program offered by {"ORGANIZATION NAME"}, in\n                        collaboration with Zikoro',
+      fontSize: 16,
+      isBold: false,
+      isItalic: false,
+      color: "#000",
+      isUnderline: false,
+      tagName: "p",
+      textAlign: "center",
+      textTransform: "none",
+      pageX: 24,
+      pageY: 202,
+    },
+    displayName: "Text",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+  "Y1aEfA-fvY": {
+    type: "div",
+    isCanvas: false,
+    props: { className: "flex flex-col items-center gap-2" },
+    displayName: "div",
+    custom: {},
+    parent: "ROOT",
+    hidden: false,
+    nodes: ["z55csfWw8N"],
+    linkedNodes: {},
+  },
+  z55csfWw8N: {
+    type: "div",
+    isCanvas: false,
+    props: {
+      style: { height: "auto", margin: "0 auto", maxWidth: 64, width: "100%" },
+    },
+    displayName: "div",
+    custom: {},
+    parent: "Y1aEfA-fvY",
+    hidden: false,
+    nodes: ["MdIdRUSVrQ"],
+    linkedNodes: {},
+  },
+  MdIdRUSVrQ: {
+    type: { resolvedName: "QRCode" },
+    isCanvas: false,
+    props: {
+      size: 256,
+      style: { height: "auto", maxWidth: "100%", width: "100%" },
+      value: "www.zikoro.com/",
+      viewBox: "0 0 256 256",
+      bgColor: "#FFFFFF",
+      fgColor: "#000000",
+      level: "L",
+    },
+    displayName: "QRCode",
+    custom: {},
+    parent: "z55csfWw8N",
+    hidden: false,
+    nodes: [],
+    linkedNodes: {},
+  },
+};
+
 export interface TabProps {
   details: TCertificateDetails;
   setValue: (key: keyof TCertificateDetails, value: any) => void;
@@ -226,6 +441,8 @@ const page = () => {
         lz.decodeBase64(certificate?.certficateDetails?.craftHash)
       );
       console.log(hashRef.current);
+    } else {
+      hashRef.current = DEFAULT_FRAME_STATE;
     }
   }, [certificateIsLoading]);
 
@@ -269,10 +486,12 @@ const page = () => {
     setSettings({ ...settings, [key]: value });
   };
 
-  const hashRef = useRef<string | undefined>();
+  const hashRef = useRef<string | SerializedNodes | undefined>();
 
+  const [imageIsUploading, setUploading] = useState<boolean>(false);
   const [{ data: png }, convert, certificateRef] = useToPng<HTMLDivElement>({
     onSuccess: async (data) => {
+      setUploading(true);
       console.log(hashRef.current, "what you get");
       console.log(data, "image");
 
@@ -313,6 +532,7 @@ const page = () => {
       if (newCertificate) {
         setCertificate(newCertificate);
       }
+      setUploading(false);
     },
   });
 
@@ -339,7 +559,7 @@ const page = () => {
           convert();
         }}
       >
-        {isLoading ? (
+        {isLoading || imageIsUploading ? (
           <div className="animate-spin">
             <svg
               stroke="currentColor"
@@ -366,7 +586,7 @@ const page = () => {
             <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z" />
           </svg>
         )}
-        <span>{isLoading ? "Saving..." : "Save"}</span>
+        <span>{isLoading || imageIsUploading ? "Saving..." : "Save"}</span>
       </Button>
     );
   };
@@ -519,7 +739,7 @@ const page = () => {
                   <>
                     {hashRef.current && (
                       <Frame data={hashRef.current}>
-                        <Element
+                        {/* <Element
                           className="px-12"
                           canvas
                           is={Container}
@@ -567,7 +787,7 @@ const page = () => {
                             textAlign="center"
                           />
 
-                          {/* <p className="text-xs text-center w-full mb-6">
+                          <p className="text-xs text-center w-full mb-6">
                             {details.text.showDate &&
                               formatDateToHumanReadable(new Date())}
                             {details.text.showLocation &&
@@ -638,8 +858,8 @@ const page = () => {
                                 <span>www.zikoro.com/verify</span>
                               </a>
                             )}
-                          </div> */}
-                        </Element>
+                          </div>
+                        </Element> */}
                       </Frame>
                     )}
                   </>

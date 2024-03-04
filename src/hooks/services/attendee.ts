@@ -108,6 +108,32 @@ export const useGetAttendees = () => {
   return { attendees, isLoading, error, getAttendees };
 };
 
+export const useGetAttendee = ({ attendeeId }: { attendeeId: string }) => {
+  const [attendee, setAttendee] = useState<TAttendee | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendee = async () => {
+    setLoading(true);
+
+    const { data, status } = await getRequest<TAttendee>({
+      endpoint: `/attendees/${attendeeId}`,
+    });
+
+    setLoading(false);
+
+    if (status !== 200) return setError(true);
+
+    return setAttendee(data.data);
+  };
+
+  useEffect(() => {
+    getAttendee();
+  }, []);
+
+  return { attendee, isLoading, error, getAttendee };
+};
+
 export const useGetAttendeesWithTags = () => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);

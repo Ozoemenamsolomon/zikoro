@@ -6,43 +6,24 @@ import {
   useUpdateAttendeeTags,
 } from "@/hooks/services/tags";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import AddAttendeeTagForm from "@/components/forms/AddAttendeeTagForm";
-import AddNotesForm from "@/components/forms/AddNoteForm";
-import AttendeeBadge from "@/components/AttendeeBadge";
 import { usePDF } from "react-to-pdf";
-import { Button } from "@/components/ui/button";
 import {
   useGetAttendeeCertificates,
   useGetEventCertificates,
   useUpdateAttendeeCertificates,
 } from "@/hooks/services/certificate";
-import SelectCertificateModal from "@/components/selectCertificateModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
+import QRCode from "react-qr-code";
 
-export default function SecondSection({
+export default function UserProfile({
   attendee,
   getAttendees,
+  onOpen,
 }: {
   attendee: TAttendee;
   getAttendees?: () => Promise<void>;
+  onOpen: () => void;
 }) {
   const {
     userEmail,
@@ -185,7 +166,7 @@ export default function SecondSection({
 
     if (!parentCard || !innerCard) return;
 
-    console.log(innerCard.style, parentCard.style);
+    // console.log(innerCard.style, parentCard.style);
     parentCard.style.height = `${innerCard.style.height}px`;
   }, [attendee]);
 
@@ -206,6 +187,23 @@ export default function SecondSection({
           }`}
         >
           <section className="absolute w-full h-full [backface-visibility:_hidden] top-0">
+            <div className="relative z-[1000]">
+              <div className="absolute top-2 right-4">
+                <button onClick={onOpen} className="text-gray-700">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 1024 1024"
+                    height="1.5em"
+                    width="1.5em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
             <div
               className="pt-8 pb-4 px-6 bg-gray-50 relative h-full"
               ref={innerCardRef}
@@ -704,208 +702,35 @@ export default function SecondSection({
               Schedule Appointment
             </span>
           </div>
-          <div className="rounded border p-2 space-y-2">
-            <span className="text-xs text-gray-700 font-medium">
-              {checkin && checkin.length > 0
-                ? checkin.filter((elm) => elm.checkin).length + "x check-ins"
-                : "Not checked in on any date"}
+          <div className="flex flex-1 flex-col gap-2 p-4 border items-center">
+            <div
+              style={{
+                height: "auto",
+                margin: "0 auto",
+                maxWidth: 64,
+                width: "100%",
+              }}
+            >
+              <QRCode
+                size={256}
+                style={{
+                  height: "auto",
+                  maxWidth: "100%",
+                  width: "100%",
+                }}
+                value={`www.zikoro.com/profile/${id}`}
+                viewBox={`0 0 256 256`}
+              />
+            </div>
+            <span className="text-gray-700 font-medium text-xs">
+              Scan to share
             </span>
-            {checkin && checkin.length > 0 && (
-              <ul className="space-y-0.5">
-                {checkin.map(({ date }) => (
-                  <li className="flex gap-1 text-xs text-[#717171]">
-                    <div className="text-basePrimary">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.5em"
-                        height="1.5em"
-                        viewBox="0 0 21 20"
-                        fill="none"
-                      >
-                        <path
-                          d="M7.16667 10.4041L10.7025 13.94L17.7725 6.86914M3 10.4041L6.53583 13.94M13.6067 6.86914L10.9167 9.58331"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                    <span>{format(new Date(date), "dd.MMM.yyyy")}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
         </div>
       </section>
-      <section className="flex justify-between items-center border-y-[1px] border-gray-200 p-2">
-        <h3 className="text-lg text-greyBlack font-semibold">Credentials</h3>
-        {!attendeeCertificatesIsLoading ? (
-          attendeeCertificates.length > 0 && (
-            <Dialog>
-              <DialogTrigger>
-                <span className="  text-sm text-[#001FCC] ">
-                  Recall certificate
-                </span>
-              </DialogTrigger>
-              <DialogContent className="px-3">
-                <DialogHeader>
-                  <DialogTitle>
-                    <span className="capitalize">Select Certificate</span>
-                  </DialogTitle>
-                </DialogHeader>
-                <SelectCertificateModal
-                  certificates={attendeeCertificates}
-                  action={"recall"}
-                  attendeeId={id}
-                  getAttendeeCertificates={getAttendeeCertificates}
-                />
-              </DialogContent>
-            </Dialog>
-          )
-        ) : (
-          <p className="px-2 text-sm font-medium text-gray-500">Loading...</p>
-        )}
-      </section>
-      <section className="flex justify-between items-center px-2">
-        <Dialog>
-          <DialogTrigger>
-            <div className=" flex flex-col items-center gap-2 w-fit">
-              <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="25"
-                  height="24"
-                  viewBox="0 0 25 24"
-                  fill="none"
-                >
-                  <path
-                    d="M15.8926 18L16.0659 21.5156L12.5099 19.0444L8.93392 21.518L9.1074 18H7.60557L7.34673 23.25H9.06667L12.5079 20.8697L15.9332 23.25H17.6532L17.3944 18H15.8926ZM19.9723 7.26163L19.8694 5.0091L17.9703 3.79377L16.7547 1.89444L14.5022 1.79132L12.5 0.754395L10.4978 1.79155L8.24523 1.89468L7.02967 3.79377L5.13053 5.0091L5.02768 7.26163L3.99048 9.26385L5.02768 11.2661L5.13081 13.5186L7.02967 14.7339L8.24504 16.6333L10.4976 16.7362L12.5 17.7733L14.5022 16.7362L16.7547 16.6333L17.9701 14.7339L19.8694 13.5188L19.9723 11.2663L21.0095 9.26404L19.9723 7.26163ZM18.4889 10.8686L18.4062 12.674L16.884 13.648L15.9099 15.1703L14.1045 15.2528L12.5 16.084L10.8953 15.2528L9.08987 15.1703L8.11581 13.648L6.59373 12.674L6.51128 10.8686L5.67967 9.26385L6.51109 7.65941L6.59373 5.85379L8.11581 4.87972L9.08987 3.3575L10.8953 3.275L12.5 2.44372L14.1047 3.27496L15.9101 3.35746L16.8842 4.87968L18.4062 5.85379L18.4887 7.65918L19.3203 9.26385L18.4889 10.8686Z"
-                    fill="black"
-                  />
-                </svg>
-              </div>
-              <span className=" text-[#3E404B] font-semibold text-xs">
-                View badge
-              </span>
-            </div>
-          </DialogTrigger>
-          <DialogContent className="px-3">
-            <DialogHeader>
-              <DialogTitle>
-                <span className="capitalize">View Badge</span>
-              </DialogTitle>
-            </DialogHeader>
-            <div className="flex justify-center items-center flex-col gap-4">
-              <div className="w-[250px] h-[400px]" ref={targetRef}>
-                <AttendeeBadge attendee={attendee} />
-              </div>
-              <DialogClose asChild>
-                <Button className="bg-basePrimary w-full" onClick={toPDF}>
-                  Download badge
-                </Button>
-              </DialogClose>
-            </div>
-          </DialogContent>
-        </Dialog>
-        {!getEventCertificatesIsLoading &&
-          eventCertificates &&
-          eventCertificates.some(
-            (eventCertificate) =>
-              !attendeeCertificates.some(
-                (attendeecertificate) =>
-                  eventCertificate.id === attendeecertificate.CertificateGroupId
-              )
-          ) && (
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <div className=" flex flex-col items-center gap-2 w-fit">
-                  <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <path
-                        d="M23.0625 12C23.0632 11.1663 22.858 10.3452 22.4651 9.60988C22.0722 8.87452 21.5037 8.24758 20.8102 7.78476C20.1168 7.32194 19.3197 7.03756 18.4899 6.95688C17.66 6.87621 16.8231 7.00173 16.0535 7.32231C15.2838 7.64289 14.6053 8.14859 14.0781 8.7945C13.5509 9.44041 13.1913 10.2065 13.0315 11.0248C12.8716 11.8431 12.9163 12.6882 13.1615 13.485C13.4068 14.2819 13.8451 15.0058 14.4375 15.5925V21C14.4375 21.0959 14.4619 21.1901 14.5086 21.2739C14.5552 21.3576 14.6225 21.4281 14.7041 21.4785C14.7856 21.529 14.8786 21.5577 14.9744 21.5621C15.0702 21.5664 15.1655 21.5463 15.2512 21.5034L18 20.1291L20.7488 21.5034C20.8268 21.5423 20.9128 21.5626 21 21.5625C21.1044 21.5627 21.2068 21.5334 21.2953 21.4781C21.3769 21.4278 21.4443 21.3575 21.491 21.2738C21.5378 21.1901 21.5624 21.0959 21.5625 21V15.5925C22.0379 15.1228 22.4154 14.5634 22.6729 13.9467C22.9304 13.33 23.0628 12.6683 23.0625 12ZM14.0625 12C14.0625 11.2212 14.2934 10.46 14.7261 9.81244C15.1587 9.16492 15.7737 8.66024 16.4932 8.36222C17.2127 8.0642 18.0044 7.98623 18.7682 8.13816C19.532 8.29009 20.2336 8.6651 20.7842 9.21577C21.3349 9.76644 21.7099 10.468 21.8618 11.2318C22.0138 11.9956 21.9358 12.7873 21.6378 13.5068C21.3398 14.2263 20.8351 14.8413 20.1876 15.2739C19.54 15.7066 18.7788 15.9375 18 15.9375C16.9557 15.9375 15.9542 15.5227 15.2158 14.7842C14.4773 14.0458 14.0625 13.0443 14.0625 12ZM20.4375 20.0897L18.2512 18.9966C18.1732 18.9576 18.0872 18.9373 18 18.9373C17.9128 18.9373 17.8268 18.9576 17.7488 18.9966L15.5625 20.0897V16.4334C16.3091 16.8448 17.1476 17.0606 18 17.0606C18.8524 17.0606 19.6909 16.8448 20.4375 16.4334V20.0897ZM12.5625 18C12.5625 18.1492 12.5032 18.2923 12.3977 18.3977C12.2923 18.5032 12.1492 18.5625 12 18.5625H3.75C3.4019 18.5625 3.06806 18.4242 2.82192 18.1781C2.57578 17.9319 2.4375 17.5981 2.4375 17.25V5.25C2.4375 4.9019 2.57578 4.56806 2.82192 4.32192C3.06806 4.07578 3.4019 3.9375 3.75 3.9375H20.25C20.5981 3.9375 20.9319 4.07578 21.1781 4.32192C21.4242 4.56806 21.5625 4.9019 21.5625 5.25C21.5625 5.39918 21.5032 5.54226 21.3977 5.64775C21.2923 5.75324 21.1492 5.8125 21 5.8125C20.8508 5.8125 20.7077 5.75324 20.6023 5.64775C20.4968 5.54226 20.4375 5.39918 20.4375 5.25C20.4375 5.20027 20.4177 5.15258 20.3826 5.11742C20.3474 5.08225 20.2997 5.0625 20.25 5.0625H3.75C3.70027 5.0625 3.65258 5.08225 3.61742 5.11742C3.58225 5.15258 3.5625 5.20027 3.5625 5.25V17.25C3.5625 17.2997 3.58225 17.3474 3.61742 17.3826C3.65258 17.4177 3.70027 17.4375 3.75 17.4375H12C12.1492 17.4375 12.2923 17.4968 12.3977 17.6023C12.5032 17.7077 12.5625 17.8508 12.5625 18ZM11.0625 12.75C11.0625 12.8992 11.0032 13.0423 10.8977 13.1477C10.7923 13.2532 10.6492 13.3125 10.5 13.3125H6.75C6.60082 13.3125 6.45774 13.2532 6.35225 13.1477C6.24676 13.0423 6.1875 12.8992 6.1875 12.75C6.1875 12.6008 6.24676 12.4577 6.35225 12.3523C6.45774 12.2468 6.60082 12.1875 6.75 12.1875H10.5C10.6492 12.1875 10.7923 12.2468 10.8977 12.3523C11.0032 12.4577 11.0625 12.6008 11.0625 12.75ZM11.0625 9.75C11.0625 9.89918 11.0032 10.0423 10.8977 10.1477C10.7923 10.2532 10.6492 10.3125 10.5 10.3125H6.75C6.60082 10.3125 6.45774 10.2532 6.35225 10.1477C6.24676 10.0423 6.1875 9.89918 6.1875 9.75C6.1875 9.60082 6.24676 9.45774 6.35225 9.35225C6.45774 9.24676 6.60082 9.1875 6.75 9.1875H10.5C10.6492 9.1875 10.7923 9.24676 10.8977 9.35225C11.0032 9.45774 11.0625 9.60082 11.0625 9.75Z"
-                        fill="black"
-                      />
-                    </svg>
-                  </div>
-                  <span className=" text-[#3E404B] font-semibold text-xs">
-                    Release certificate
-                  </span>
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="py-4 min-w-[200px]">
-                {eventCertificates
-                  .filter(
-                    (eventCertificate) =>
-                      !attendeeCertificates.some(
-                        (attendeecertificate) =>
-                          eventCertificate.id ===
-                          attendeecertificate.CertificateGroupId
-                      )
-                  )
-                  .map((eventCertificate) => (
-                    <DropdownMenuItem key={eventCertificate.id}>
-                      <button
-                        onClick={() => releaseCertificate(eventCertificate)}
-                      >
-                        {eventCertificate.certificateName}
-                      </button>
-                    </DropdownMenuItem>
-                  ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-        {!attendeeCertificatesIsLoading && attendeeCertificates.length > 0 && (
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div className=" flex flex-col items-center gap-2 w-fit">
-                <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M9 5.5C9 5.36739 9.05268 5.24021 9.14645 5.14645C9.24021 5.05268 9.36739 5 9.5 5H14.5C14.6326 5 14.7598 5.05268 14.8536 5.14645C14.9473 5.24021 15 5.36739 15 5.5C15 5.63261 14.9473 5.75979 14.8536 5.85355C14.7598 5.94732 14.6326 6 14.5 6H9.5C9.36739 6 9.24021 5.94732 9.14645 5.85355C9.05268 5.75979 9 5.63261 9 5.5ZM7.5 8C7.36739 8 7.24021 8.05268 7.14645 8.14645C7.05268 8.24021 7 8.36739 7 8.5C7 8.63261 7.05268 8.75979 7.14645 8.85355C7.24021 8.94732 7.36739 9 7.5 9H16.5C16.6326 9 16.7598 8.94732 16.8536 8.85355C16.9473 8.75979 17 8.63261 17 8.5C17 8.36739 16.9473 8.24021 16.8536 8.14645C16.7598 8.05268 16.6326 8 16.5 8H7.5ZM7 10.5C7 10.3674 7.05268 10.2402 7.14645 10.1464C7.24021 10.0527 7.36739 10 7.5 10H16.5C16.6326 10 16.7598 10.0527 16.8536 10.1464C16.9473 10.2402 17 10.3674 17 10.5C17 10.6326 16.9473 10.7598 16.8536 10.8536C16.7598 10.9473 16.6326 11 16.5 11H7.5C7.36739 11 7.24021 10.9473 7.14645 10.8536C7.05268 10.7598 7 10.6326 7 10.5ZM7.5 12C7.36739 12 7.24021 12.0527 7.14645 12.1464C7.05268 12.2402 7 12.3674 7 12.5C7 12.6326 7.05268 12.7598 7.14645 12.8536C7.24021 12.9473 7.36739 13 7.5 13H16.5C16.6326 13 16.7598 12.9473 16.8536 12.8536C16.9473 12.7598 17 12.6326 17 12.5C17 12.3674 16.9473 12.2402 16.8536 12.1464C16.7598 12.0527 16.6326 12 16.5 12H7.5Z"
-                      fill="black"
-                    />
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M19 18C19 18.5304 18.7893 19.0391 18.4142 19.4142C18.0391 19.7893 17.5304 20 17 20H15.5V22L14 21.25L12.5 22V20H7C6.46957 20 5.96086 19.7893 5.58579 19.4142C5.21071 19.0391 5 18.5304 5 18V4C5 3.46957 5.21071 2.96086 5.58579 2.58579C5.96086 2.21071 6.46957 2 7 2H17C17.5304 2 18.0391 2.21071 18.4142 2.58579C18.7893 2.96086 19 3.46957 19 4V18ZM7 3C6.73478 3 6.48043 3.10536 6.29289 3.29289C6.10536 3.48043 6 3.73478 6 4V18C6 18.2652 6.10536 18.5196 6.29289 18.7071C6.48043 18.8946 6.73478 19 7 19H12.5V17.823C12.2454 17.5343 12.0795 17.1783 12.0223 16.7977C11.965 16.4171 12.0188 16.0281 12.1771 15.6772C12.3355 15.3264 12.5917 15.0288 12.915 14.82C13.2384 14.6112 13.6151 14.5001 14 14.5001C14.3849 14.5001 14.7616 14.6112 15.085 14.82C15.4083 15.0288 15.6645 15.3264 15.8229 15.6772C15.9812 16.0281 16.035 16.4171 15.9777 16.7977C15.9205 17.1783 15.7546 17.5343 15.5 17.823V19H17C17.2652 19 17.5196 18.8946 17.7071 18.7071C17.8946 18.5196 18 18.2652 18 18V4C18 3.73478 17.8946 3.48043 17.7071 3.29289C17.5196 3.10536 17.2652 3 17 3H7ZM14.5 18.437C14.172 18.5215 13.828 18.5215 13.5 18.437V20.382L14 20.132L14.5 20.382V18.437ZM14 17.5C14.2652 17.5 14.5196 17.3946 14.7071 17.2071C14.8946 17.0196 15 16.7652 15 16.5C15 16.2348 14.8946 15.9804 14.7071 15.7929C14.5196 15.6054 14.2652 15.5 14 15.5C13.7348 15.5 13.4804 15.6054 13.2929 15.7929C13.1054 15.9804 13 16.2348 13 16.5C13 16.7652 13.1054 17.0196 13.2929 17.2071C13.4804 17.3946 13.7348 17.5 14 17.5Z"
-                      fill="black"
-                    />
-                  </svg>
-                </div>
-                <span className=" text-[#3E404B] font-semibold text-xs">
-                  View certificate
-                </span>
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="py-4 min-w-[200px]">
-              {attendeeCertificates.map((certificate) => (
-                <DropdownMenuItem key={certificate.id}>
-                  <Link href={`/verify/${certificate.certificateId}`}>
-                    {certificate.CertificateName}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-      </section>
       <section className="space-y-4 border-t-[1px] border-gray-200 pt-2">
         <h3 className="px-2 pb-2 border-b-[1px] border-gray-200 text-lg text-greyBlack font-semibold">
-          About
+          About me
         </h3>
         <div className="space-y-4 px-2">
           <div className="">
@@ -1017,236 +842,9 @@ export default function SecondSection({
               )}
             </div>
           </div>
-        </div>
-      </section>
-      <section className="border-t-[1px] border-gray-200 pt-2 space-y-4">
-        <div className="flex justify-between items-center border-b-[1px] border-gray-200 pb-2 px-2">
-          <h4 className="text-lg font-medium text-greyBlack ">Tags</h4>
-          <Dialog>
-            <DialogTrigger>
-              <button className="flex gap-1">
-                <span className="text-sm text-[#15161B] font-medium">Tag</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                >
-                  <path
-                    d="M8.78345 10.8332V13.3332C8.78345 13.5693 8.86345 13.7673 9.02345 13.9273C9.18345 14.0873 9.38122 14.1671 9.61678 14.1665C9.85289 14.1665 10.0509 14.0865 10.2109 13.9265C10.3709 13.7665 10.4507 13.5687 10.4501 13.3332V10.8332H12.9501C13.1862 10.8332 13.3843 10.7532 13.5443 10.5932C13.7043 10.4332 13.784 10.2354 13.7834 9.99984C13.7834 9.76373 13.7034 9.56567 13.5434 9.40567C13.3834 9.24567 13.1857 9.16595 12.9501 9.1665H10.4501V6.6665C10.4501 6.43039 10.3701 6.23234 10.2101 6.07234C10.0501 5.91234 9.85234 5.83261 9.61678 5.83317C9.38067 5.83317 9.18261 5.91317 9.02261 6.07317C8.86261 6.23317 8.78289 6.43095 8.78345 6.6665V9.1665H6.28345C6.04734 9.1665 5.84928 9.2465 5.68928 9.4065C5.52928 9.5665 5.44956 9.76428 5.45011 9.99984C5.45011 10.2359 5.53011 10.434 5.69011 10.594C5.85011 10.754 6.04789 10.8337 6.28345 10.8332H8.78345ZM9.61678 18.3332C8.464 18.3332 7.38067 18.1143 6.36678 17.6765C5.35289 17.2387 4.47095 16.6451 3.72095 15.8957C2.97095 15.1457 2.37734 14.2637 1.94011 13.2498C1.50289 12.2359 1.284 11.1526 1.28345 9.99984C1.28345 8.84706 1.50234 7.76373 1.94011 6.74984C2.37789 5.73595 2.9715 4.854 3.72095 4.104C4.47095 3.354 5.35289 2.76039 6.36678 2.32317C7.38067 1.88595 8.464 1.66706 9.61678 1.6665C10.7696 1.6665 11.8529 1.88539 12.8668 2.32317C13.8807 2.76095 14.7626 3.35456 15.5126 4.104C16.2626 4.854 16.8565 5.73595 17.2943 6.74984C17.7321 7.76373 17.9507 8.84706 17.9501 9.99984C17.9501 11.1526 17.7312 12.2359 17.2934 13.2498C16.8557 14.2637 16.2621 15.1457 15.5126 15.8957C14.7626 16.6457 13.8807 17.2396 12.8668 17.6773C11.8529 18.1151 10.7696 18.3337 9.61678 18.3332ZM9.61678 16.6665C11.4779 16.6665 13.0543 16.0207 14.3459 14.729C15.6376 13.4373 16.2834 11.8609 16.2834 9.99984C16.2834 8.13873 15.6376 6.56234 14.3459 5.27067C13.0543 3.979 11.4779 3.33317 9.61678 3.33317C7.75567 3.33317 6.17928 3.979 4.88761 5.27067C3.59595 6.56234 2.95011 8.13873 2.95011 9.99984C2.95011 11.8609 3.59595 13.4373 4.88761 14.729C6.17928 16.0207 7.75567 16.6665 9.61678 16.6665Z"
-                    fill="#15161B"
-                  />
-                </svg>
-              </button>
-            </DialogTrigger>
-            <DialogContent className="px-3">
-              <DialogHeader>
-                <DialogTitle>
-                  <span className="capitalize">Add Tags</span>
-                </DialogTitle>
-              </DialogHeader>
-              <AddAttendeeTagForm
-                attendeeEmail={attendee?.email}
-                attendeeId={attendee?.id}
-              />
-            </DialogContent>
-          </Dialog>
-        </div>
-        <div className="flex gap-2 flex-wrap px-2 py-2">
-          {!attendeeTagsisLoading ? (
-            <>
-              {attendeeTags?.attendeeTags &&
-              attendeeTags?.attendeeTags?.length > 0 ? (
-                <>
-                  {attendeeTags?.attendeeTags.map((tag) => (
-                    <div
-                      className="relative text-sm flex items-center gap-1.5 p-2 rounded w-fit font-medium"
-                      style={{
-                        backgroundColor: tag.color + "33",
-                        color: tag.color,
-                      }}
-                    >
-                      <button
-                        onClick={() => removeAttendeeTag(tag)}
-                        style={{
-                          backgroundColor: tag.color + "55",
-                          color: tag.color,
-                        }}
-                        className="bg-white h-4 w-4 flex items-center justify-center text-[8px] absolute -right-2 -top-2 rounded-full"
-                      >
-                        x
-                      </button>
-                      <span>{tag.label}</span>
-                    </div>
-                  ))}
-                </>
-              ) : (
-                <p className="px-2 text-sm font-medium text-gray-500">
-                  No tags for this attendee
-                </p>
-              )}
-            </>
-          ) : (
-            <p>Loading...</p>
-          )}
-        </div>
-      </section>
-      <section className="pt-2 border-t-[1px] border-gray-200 space-y-4">
-        <h4 className="px-2 text-lg text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 ">
-          Speaking at
-        </h4>
-        <div className="space-y-2  mx-2 p-2 rounded divide-y-[1px]">
-          <div className="flex justify-between gap-2 items-center">
-            <div className="flex-[75%] flex gap-1 items-center">
-              <span className="text-sm font-medium text-greyBlack">
-                Reisin mould
-              </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-              >
-                <path
-                  d="M13.3333 7.33333C13.1565 7.33333 12.987 7.40357 12.8619 7.5286C12.7369 7.65362 12.6667 7.82319 12.6667 8V12C12.6667 12.1768 12.5964 12.3464 12.4714 12.4714C12.3464 12.5964 12.1768 12.6667 12 12.6667H4C3.82319 12.6667 3.65362 12.5964 3.5286 12.4714C3.40357 12.3464 3.33333 12.1768 3.33333 12V4C3.33333 3.82319 3.40357 3.65362 3.5286 3.5286C3.65362 3.40357 3.82319 3.33333 4 3.33333H8C8.17681 3.33333 8.34638 3.2631 8.4714 3.13807C8.59643 3.01305 8.66667 2.84348 8.66667 2.66667C8.66667 2.48986 8.59643 2.32029 8.4714 2.19526C8.34638 2.07024 8.17681 2 8 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H12C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12V8C14 7.82319 13.9298 7.65362 13.8047 7.5286C13.6797 7.40357 13.5101 7.33333 13.3333 7.33333Z"
-                  fill="black"
-                />
-                <path
-                  d="M10.6668 3.33333H11.7201L7.52679 7.52C7.4643 7.58198 7.41471 7.65571 7.38086 7.73695C7.34702 7.81819 7.32959 7.90533 7.32959 7.99333C7.32959 8.08134 7.34702 8.16848 7.38086 8.24972C7.41471 8.33096 7.4643 8.40469 7.52679 8.46667C7.58876 8.52915 7.6625 8.57875 7.74374 8.61259C7.82498 8.64644 7.91211 8.66387 8.00012 8.66387C8.08813 8.66387 8.17527 8.64644 8.25651 8.61259C8.33775 8.57875 8.41148 8.52915 8.47346 8.46667L12.6668 4.28V5.33333C12.6668 5.51014 12.737 5.67971 12.8621 5.80474C12.9871 5.92976 13.1566 6 13.3335 6C13.5103 6 13.6798 5.92976 13.8049 5.80474C13.9299 5.67971 14.0001 5.51014 14.0001 5.33333V2.66667C14.0001 2.48986 13.9299 2.32029 13.8049 2.19526C13.6798 2.07024 13.5103 2 13.3335 2H10.6668C10.49 2 10.3204 2.07024 10.1954 2.19526C10.0704 2.32029 10.0001 2.48986 10.0001 2.66667C10.0001 2.84348 10.0704 3.01305 10.1954 3.13807C10.3204 3.2631 10.49 3.33333 10.6668 3.33333Z"
-                  fill="black"
-                />
-              </svg>
-            </div>
-            <div className="flex-[25%] flex flex-col text-xs text-right">
-              <span className="text-gray-500 font-medium">20 Nov 2023</span>
-              <span className="text-gray-500 font-normal">2:00-3:00PM</span>
-            </div>
-          </div>
-          <div className="flex justify-between items-center gap-2 py-2">
-            <div className="flex-[75%] flex gap-1 items-center">
-              <p className="text-sm font-medium text-gray-700">
-                Analysis and optimization of human performance at work, during
-                sports and activity of daily living
-              </p>
-              <div className="flex-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                >
-                  <path
-                    d="M13.3333 7.33333C13.1565 7.33333 12.987 7.40357 12.8619 7.5286C12.7369 7.65362 12.6667 7.82319 12.6667 8V12C12.6667 12.1768 12.5964 12.3464 12.4714 12.4714C12.3464 12.5964 12.1768 12.6667 12 12.6667H4C3.82319 12.6667 3.65362 12.5964 3.5286 12.4714C3.40357 12.3464 3.33333 12.1768 3.33333 12V4C3.33333 3.82319 3.40357 3.65362 3.5286 3.5286C3.65362 3.40357 3.82319 3.33333 4 3.33333H8C8.17681 3.33333 8.34638 3.2631 8.4714 3.13807C8.59643 3.01305 8.66667 2.84348 8.66667 2.66667C8.66667 2.48986 8.59643 2.32029 8.4714 2.19526C8.34638 2.07024 8.17681 2 8 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H12C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12V8C14 7.82319 13.9298 7.65362 13.8047 7.5286C13.6797 7.40357 13.5101 7.33333 13.3333 7.33333Z"
-                    fill="black"
-                  />
-                  <path
-                    d="M10.6668 3.33333H11.7201L7.52679 7.52C7.4643 7.58198 7.41471 7.65571 7.38086 7.73695C7.34702 7.81819 7.32959 7.90533 7.32959 7.99333C7.32959 8.08134 7.34702 8.16848 7.38086 8.24972C7.41471 8.33096 7.4643 8.40469 7.52679 8.46667C7.58876 8.52915 7.6625 8.57875 7.74374 8.61259C7.82498 8.64644 7.91211 8.66387 8.00012 8.66387C8.08813 8.66387 8.17527 8.64644 8.25651 8.61259C8.33775 8.57875 8.41148 8.52915 8.47346 8.46667L12.6668 4.28V5.33333C12.6668 5.51014 12.737 5.67971 12.8621 5.80474C12.9871 5.92976 13.1566 6 13.3335 6C13.5103 6 13.6798 5.92976 13.8049 5.80474C13.9299 5.67971 14.0001 5.51014 14.0001 5.33333V2.66667C14.0001 2.48986 13.9299 2.32029 13.8049 2.19526C13.6798 2.07024 13.5103 2 13.3335 2H10.6668C10.49 2 10.3204 2.07024 10.1954 2.19526C10.0704 2.32029 10.0001 2.48986 10.0001 2.66667C10.0001 2.84348 10.0704 3.01305 10.1954 3.13807C10.3204 3.2631 10.49 3.33333 10.6668 3.33333Z"
-                    fill="black"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div className="flex-[25%] flex flex-col text-right">
-              <span className="text-gray-500 text-xs font-medium">
-                20 Nov 2023
-              </span>
-              <span className="text-gray-500 text-xs font-normal">
-                2:00-3:00PM
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="border-t-[1px] border-gray-200 space-y-4 pt-2">
-        <div className="flex justify-between items-center border-b-[1px] border-gray-200 pb-2 px-2">
-          <h4 className="text-lg font-medium text-greyBlack">Note</h4>
-          <Dialog>
-            <DialogTrigger>
-              <button className="flex gap-1">
-                <span className=" text-sm text-[#15161B] font-medium">
-                  Note
-                </span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                >
-                  <path
-                    d="M8.78345 10.8332V13.3332C8.78345 13.5693 8.86345 13.7673 9.02345 13.9273C9.18345 14.0873 9.38122 14.1671 9.61678 14.1665C9.85289 14.1665 10.0509 14.0865 10.2109 13.9265C10.3709 13.7665 10.4507 13.5687 10.4501 13.3332V10.8332H12.9501C13.1862 10.8332 13.3843 10.7532 13.5443 10.5932C13.7043 10.4332 13.784 10.2354 13.7834 9.99984C13.7834 9.76373 13.7034 9.56567 13.5434 9.40567C13.3834 9.24567 13.1857 9.16595 12.9501 9.1665H10.4501V6.6665C10.4501 6.43039 10.3701 6.23234 10.2101 6.07234C10.0501 5.91234 9.85234 5.83261 9.61678 5.83317C9.38067 5.83317 9.18261 5.91317 9.02261 6.07317C8.86261 6.23317 8.78289 6.43095 8.78345 6.6665V9.1665H6.28345C6.04734 9.1665 5.84928 9.2465 5.68928 9.4065C5.52928 9.5665 5.44956 9.76428 5.45011 9.99984C5.45011 10.2359 5.53011 10.434 5.69011 10.594C5.85011 10.754 6.04789 10.8337 6.28345 10.8332H8.78345ZM9.61678 18.3332C8.464 18.3332 7.38067 18.1143 6.36678 17.6765C5.35289 17.2387 4.47095 16.6451 3.72095 15.8957C2.97095 15.1457 2.37734 14.2637 1.94011 13.2498C1.50289 12.2359 1.284 11.1526 1.28345 9.99984C1.28345 8.84706 1.50234 7.76373 1.94011 6.74984C2.37789 5.73595 2.9715 4.854 3.72095 4.104C4.47095 3.354 5.35289 2.76039 6.36678 2.32317C7.38067 1.88595 8.464 1.66706 9.61678 1.6665C10.7696 1.6665 11.8529 1.88539 12.8668 2.32317C13.8807 2.76095 14.7626 3.35456 15.5126 4.104C16.2626 4.854 16.8565 5.73595 17.2943 6.74984C17.7321 7.76373 17.9507 8.84706 17.9501 9.99984C17.9501 11.1526 17.7312 12.2359 17.2934 13.2498C16.8557 14.2637 16.2621 15.1457 15.5126 15.8957C14.7626 16.6457 13.8807 17.2396 12.8668 17.6773C11.8529 18.1151 10.7696 18.3337 9.61678 18.3332ZM9.61678 16.6665C11.4779 16.6665 13.0543 16.0207 14.3459 14.729C15.6376 13.4373 16.2834 11.8609 16.2834 9.99984C16.2834 8.13873 15.6376 6.56234 14.3459 5.27067C13.0543 3.979 11.4779 3.33317 9.61678 3.33317C7.75567 3.33317 6.17928 3.979 4.88761 5.27067C3.59595 6.56234 2.95011 8.13873 2.95011 9.99984C2.95011 11.8609 3.59595 13.4373 4.88761 14.729C6.17928 16.0207 7.75567 16.6665 9.61678 16.6665Z"
-                    fill="#15161B"
-                  />
-                </svg>
-              </button>
-            </DialogTrigger>
-            <DialogContent className="px-3">
-              <DialogHeader>
-                <DialogTitle>
-                  <span className="capitalize">Add Note</span>
-                </DialogTitle>
-              </DialogHeader>
-              <AddNotesForm
-                attendeeEmail={attendee?.email}
-                attendeeId={attendee?.id}
-                note={note}
-                getnote={getnote}
-              />
-            </DialogContent>
-          </Dialog>
-        </div>
-        <div className="px-2 space-y-2">
-          {!noteIsLoading ? (
-            <>
-              {note ? (
-                <p className="text-sm font-normal text-[#15161B] leading-normal border-[1px] border-[#EBEBEB] rounded-lg py-4 px-2">
-                  {note.notes}
-                </p>
-              ) : (
-                <p className="px-2 text-sm font-medium text-gray-500">
-                  No note for this attendee
-                </p>
-              )}
-            </>
-          ) : (
-            <p className="px-2 text-sm font-medium text-gray-700">Loading...</p>
-          )}
-        </div>
-      </section>
-      <section className="border-t-[1px] border-gray-200 pt-2 space-y-4">
-        <h4 className=" text-lg text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
-          Moderating at
-        </h4>
-        <div className="p-2  rounded mx-2">
-          <div className="flex justify-between items-center gap-2">
-            <div className="flex-[75%] flex gap-2 items-center">
-              <span className=" font-medium text-greyBlack">
-                Epoxy resin art workshop
-              </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-              >
-                <path
-                  d="M13.3333 7.33333C13.1565 7.33333 12.987 7.40357 12.8619 7.5286C12.7369 7.65362 12.6667 7.82319 12.6667 8V12C12.6667 12.1768 12.5964 12.3464 12.4714 12.4714C12.3464 12.5964 12.1768 12.6667 12 12.6667H4C3.82319 12.6667 3.65362 12.5964 3.5286 12.4714C3.40357 12.3464 3.33333 12.1768 3.33333 12V4C3.33333 3.82319 3.40357 3.65362 3.5286 3.5286C3.65362 3.40357 3.82319 3.33333 4 3.33333H8C8.17681 3.33333 8.34638 3.2631 8.4714 3.13807C8.59643 3.01305 8.66667 2.84348 8.66667 2.66667C8.66667 2.48986 8.59643 2.32029 8.4714 2.19526C8.34638 2.07024 8.17681 2 8 2H4C3.46957 2 2.96086 2.21071 2.58579 2.58579C2.21071 2.96086 2 3.46957 2 4V12C2 12.5304 2.21071 13.0391 2.58579 13.4142C2.96086 13.7893 3.46957 14 4 14H12C12.5304 14 13.0391 13.7893 13.4142 13.4142C13.7893 13.0391 14 12.5304 14 12V8C14 7.82319 13.9298 7.65362 13.8047 7.5286C13.6797 7.40357 13.5101 7.33333 13.3333 7.33333Z"
-                  fill="black"
-                />
-                <path
-                  d="M10.6668 3.33333H11.7201L7.52679 7.52C7.4643 7.58198 7.41471 7.65571 7.38086 7.73695C7.34702 7.81819 7.32959 7.90533 7.32959 7.99333C7.32959 8.08134 7.34702 8.16848 7.38086 8.24972C7.41471 8.33096 7.4643 8.40469 7.52679 8.46667C7.58876 8.52915 7.6625 8.57875 7.74374 8.61259C7.82498 8.64644 7.91211 8.66387 8.00012 8.66387C8.08813 8.66387 8.17527 8.64644 8.25651 8.61259C8.33775 8.57875 8.41148 8.52915 8.47346 8.46667L12.6668 4.28V5.33333C12.6668 5.51014 12.737 5.67971 12.8621 5.80474C12.9871 5.92976 13.1566 6 13.3335 6C13.5103 6 13.6798 5.92976 13.8049 5.80474C13.9299 5.67971 14.0001 5.51014 14.0001 5.33333V2.66667C14.0001 2.48986 13.9299 2.32029 13.8049 2.19526C13.6798 2.07024 13.5103 2 13.3335 2H10.6668C10.49 2 10.3204 2.07024 10.1954 2.19526C10.0704 2.32029 10.0001 2.48986 10.0001 2.66667C10.0001 2.84348 10.0704 3.01305 10.1954 3.13807C10.3204 3.2631 10.49 3.33333 10.6668 3.33333Z"
-                  fill="black"
-                />
-              </svg>
-            </div>
-            <div className="flex-[25%] flex flex-col text-right">
-              <span className=" text-ash text-xs font-medium">20 Nov 2023</span>
-              <span className="text-ash text-xs font-normal">2:00-3:00PM</span>
-            </div>
+          <div className="flex flex-col">
+            <h4 className="text-gray-900 font-medium">Website</h4>
+            <span className="text-gray-700 font-medium">www.orthoex.ng</span>
           </div>
         </div>
       </section>
