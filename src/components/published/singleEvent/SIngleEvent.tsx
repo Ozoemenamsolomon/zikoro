@@ -300,7 +300,7 @@ export function SingleEvent({
               </div>
 
               <div className="w-full flex items-center justify-between">
-                {Array.isArray(event?.pricing) ? (
+                {Array.isArray(event?.pricing) && event?.pricing?.length > 0 ? (
                   <p className="font-semibold text-xl">{`${
                     currency ? currency : "₦"
                   }${price}`}</p>

@@ -658,7 +658,32 @@ div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-ra
 }
 
 .innerhtml h1 {
- font-size: 40px;
+ font-size: 2em;
+}
+.innerhtml h2 {
+  font-size: 1.5em;
+}
+.innerhtml h3 {
+  font-size: 1.17em;
+}
+.innerhtml h4 {
+  font-size: 1em;
+}
+.innerhtml h5 {
+  font-size: 0.83em;
+}
+.innerhtml h6 {
+  font-size: 0.67em;
+}
+
+/* Unordered List */
+.innerhtml ul {
+  list-style-type: disc; /* Default filled circle */
+}
+
+/* Ordered List */
+.innerhtml ol {
+  list-style-type: decimal; /* Default decimal numbers */
 }
 .partner-scroll-style::-webkit-scrollbar {
  display: none;

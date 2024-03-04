@@ -266,7 +266,6 @@ export function BookEvent({
     // setCode("")
   }
 
-  console.log({active})
   return (
     <>
       <div

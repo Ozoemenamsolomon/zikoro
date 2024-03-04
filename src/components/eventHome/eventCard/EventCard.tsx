@@ -74,8 +74,11 @@ export function EventCard({
   }, [event?.pricingCurrency]);
 
   const price = useMemo(() => {
-    if (Array.isArray(event?.pricing) && event?.pricing[1]?.standard) {
-      const standardPrice = event?.pricing[1].standard;
+    if (Array.isArray(event?.pricing)) {
+      const prices = event?.pricing?.map(({ price }) => Number(price));
+      const standardPrice = prices.reduce((lowestPrice, currentPrice) => {
+        return currentPrice < lowestPrice ? currentPrice : lowestPrice;
+      }, prices[0]);
 
       return Number(standardPrice)?.toLocaleString(undefined, {
         maximumFractionDigits: 0,
@@ -83,19 +86,18 @@ export function EventCard({
     } else {
       return "";
     }
-  }, [event.pricing]);
-
+  }, [event?.pricing]);
 
   return (
     <div
       role="button"
-      onClick={() =>
-        window.open(`/events/home/${event?.id}`, "_blank")
-      }
+      onClick={() => window.open(`/events/home/${event?.id}`, "_blank")}
       className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4  w-full"
     >
       <div className="w-full flex items-center justify-between">
-        <p className="font-medium text-lg line-clamp-1">{event?.eventTitle ?? ""}</p>
+        <p className="font-medium text-lg line-clamp-1">
+          {event?.eventTitle ?? ""}
+        </p>
         <div className="flex items-center gap-x-2">
           <Button
             onClick={(e) => {
@@ -151,7 +153,7 @@ export function EventCard({
       </div>
 
       <div className="flex items-center justify-between w-full">
-        {Array.isArray(event?.pricing) && event?.pricing[1]?.standard ? (
+        {Array.isArray(event?.pricing) && event?.pricing?.length > 0 ? (
           <p className="font-medium">{`${
             currency ? currency : "₦"
           }${price}`}</p>
