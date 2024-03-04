@@ -19,9 +19,10 @@ export enum EventDetailTab {
 }
 
 interface PricingType {
-  earlyBird?: number;
-  standard?: number;
-  lateBird?: number;
+  ticketQuantity: string;
+  attendeeType: string;
+  description: string;
+  price: string;
   validity: string;
 }
 
@@ -30,9 +31,6 @@ export type PartnerIndustry = {
   color: string;
 };
 
-type Pricing = {
-  
-}
 export interface Event {
   createdAt: string;
   createdBy: string;
@@ -65,7 +63,7 @@ export interface Event {
   whatsappNumber: string;
   registered: string;
   partnerIndustry: PartnerIndustry[];
-  eventPoster: string[]
+  eventPoster: string[];
   exhibitionHall: { name: string; capacity: string }[];
   sponsorCategory: { type: string; id: string }[];
   eventAlias: string;
@@ -89,4 +87,3 @@ export interface DiscountCodeType {
   status: boolean;
   validUntil: string;
 }
-

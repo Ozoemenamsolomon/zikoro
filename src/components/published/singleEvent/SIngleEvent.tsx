@@ -117,7 +117,6 @@ export function SingleEvent({
     showShareDropDown((prev) => !prev);
   }
 
-  console.log(event?.eventPoster);
 
   // conditonally adding comma to separate city and location
   const removeComma = useMemo(() => {
@@ -164,8 +163,11 @@ export function SingleEvent({
   };
 
   const price = useMemo(() => {
-    if (Array.isArray(event?.pricing) && event?.pricing[1]?.standard) {
-      const standardPrice = event?.pricing[1].standard;
+    if (Array.isArray(event?.pricing)) {
+      const prices = event?.pricing?.map(({ price }) => Number(price));
+      const standardPrice = prices.reduce((lowestPrice, currentPrice) => {
+        return currentPrice < lowestPrice ? currentPrice : lowestPrice;
+      }, prices[0]);
 
       return Number(standardPrice)?.toLocaleString(undefined, {
         maximumFractionDigits: 0,
@@ -298,8 +300,7 @@ export function SingleEvent({
               </div>
 
               <div className="w-full flex items-center justify-between">
-                {Array.isArray(event?.pricing) &&
-                event?.pricing[1]?.standard ? (
+                {Array.isArray(event?.pricing) ? (
                   <p className="font-semibold text-xl">{`${
                     currency ? currency : "₦"
                   }${price}`}</p>

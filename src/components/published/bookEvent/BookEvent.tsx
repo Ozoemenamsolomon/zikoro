@@ -140,13 +140,15 @@ export function BookEvent({
       ? Number(discountAmount) * fields?.length
       : ((Number(chosenPrice) * Number(discountPercentage)) / 100) *
           fields?.length;
-  }, [fields]);
+  }, [fields, chosenPrice]);
 
   // calculating the processing Fee
   const processingFee = useMemo(() => {
     if (chosenPrice)
       return ((Number(chosenPrice - discount) * 5) / 100) * fields?.length;
-  }, [fields]);
+  }, [fields, chosenPrice]);
+
+ 
 
   // calculating total
   const total = useMemo(() => {
@@ -219,40 +221,27 @@ export function BookEvent({
   /// restructure pricing array
   const pricingArray = useMemo(() => {
     if (Array.isArray(event?.pricing)) {
-      return event?.pricing?.map((value) => {
-        if (value?.earlyBird) {
+      return event?.pricing?.map(
+        ({ price, validity, ticketQuantity, attendeeType, description }) => {
+          const discountPrice =
+            discountAmount !== null
+              ? Number(price) - Number(discountAmount)
+              : Number(price) -
+                (Number(price) * Number(discountPercentage)) / 100;
+
           return {
-            price:
-              discountAmount !== null
-                ? Number(value?.earlyBird) - Number(discountAmount)
-                : Number(value?.earlyBird) -
-                  (Number(value?.earlyBird) * Number(discountPercentage)) / 100,
-            name: "Early Bird",
-            date: value?.validity,
-          };
-        } else if (value?.standard) {
-          return {
-            price:
-              discountAmount !== null
-                ? Number(value?.standard) - Number(discountAmount)
-                : Number(value?.standard) -
-                  (Number(value?.standard) * Number(discountPercentage)) / 100,
-            name: "Standard",
-            date: value?.validity,
-          };
-        } else {
-          if (!value?.lateBird) return;
-          return {
-            price:
-              discountAmount !== null
-                ? Number(value?.lateBird) - Number(discountAmount)
-                : Number(value?.lateBird) -
-                  (Number(value?.lateBird) * Number(discountPercentage)) / 100,
-            name: "Late Bird",
-            date: value?.validity,
+            validity,
+            description,
+            discountPrice,
+            price: Number(price),
+            ticketQuantity: Number(ticketQuantity) - Number(event?.registered),
+            discountPercentage: discountPrice
+              ? ((Number(price) - Number(discountPrice)) / Number(price)) * 100
+              : null,
+            attendeeType,
           };
         }
-      });
+      );
     }
   }, [event?.pricing, discountAmount, discountPercentage]);
 
@@ -277,6 +266,7 @@ export function BookEvent({
     // setCode("")
   }
 
+  console.log({active})
   return (
     <>
       <div
@@ -371,28 +361,40 @@ export function BookEvent({
                             onClick={(e) => {
                               e.stopPropagation();
                               selectedPrice(v?.price);
-                              selectedPriceCategory(v?.name);
+                              selectedPriceCategory(v?.attendeeType);
                             }}
-                            disabled={isDateGreaterThanToday(v?.date)}
+                            disabled={isDateGreaterThanToday(v?.validity)}
                             className={cn(
                               "flex flex-col group relative rounded-lg items-start justify-between  border p-4 h-[7.5rem] w-full",
-                              isDateGreaterThanToday(v?.date)
+                              isDateGreaterThanToday(v?.validity)
                                 ? ""
                                 : "hover:border-zikoro border-black",
 
-                              activeSelectedPrice(v?.name) && "border-zikoro"
+                              activeSelectedPrice(v?.attendeeType) &&
+                                "border-zikoro"
                             )}
                           >
-                            {isDateGreaterThanToday(v?.date) && (
+                            {v?.discountPercentage &&
+                              v?.discountPercentage > 0 ? (
+                                <p
+                                  className={cn(
+                                    "w-9 absolute right-4 top-[-14px] h-7 rounded-[40%] px-2 flex items-center justify-center bg-gray-200 text-xs sm:text-mobile",
+                                    activeSelectedPrice(v?.attendeeType) &&
+                                      "bg-blue-50 text-zikoro"
+                                  )}
+                                >{`${v?.discountPercentage}%`}</p>
+                              ): null}
+
+                            {isDateGreaterThanToday(v?.validity) && (
                               <div className="w-full h-full absolute inset-0 bg-white/50"></div>
                             )}
                             <div className="flex items-center justify-between w-full">
                               <div className="flex flex-col items-start justrify-start">
                                 <p className="font-medium text-base">
-                                  {v?.name}
+                                  {v?.attendeeType}
                                 </p>
-                                <p className="text-xs sm:text-sm ">
-                                  Category Description
+                                <p className="text-xs sm:text-sm w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
+                                  {v?.description}
                                 </p>
                               </div>
                               <div className="flex flex-col items-end justify-end">
@@ -401,11 +403,13 @@ export function BookEvent({
                                 }${(
                                   Number(v?.price) ?? 0
                                 )?.toLocaleString()}`}</p>
-                                <p className="font-medium text-gray-500">{`${
-                                  currency ? currency : "₦"
-                                }${(
-                                  Number(event?.pricing) ?? 0
-                                )?.toLocaleString()}`}</p>
+                                {v?.discountPrice < v?.price && (
+                                  <p className="font-medium text-gray-500">{`${
+                                    currency ? currency : "₦"
+                                  }${(
+                                    Number(v?.discountPrice) ?? 0
+                                  )?.toLocaleString()}`}</p>
+                                )}
                               </div>
 
                               {/*!isDateGreaterThanToday(v?.date) && (
@@ -427,13 +431,13 @@ export function BookEvent({
                               <div
                                 className={cn(
                                   "  flex flex-col justify-start rounded-md items-start",
-                                  isDateGreaterThanToday(v?.date)
+                                  isDateGreaterThanToday(v?.validity)
                                     ? "text-gray-500"
                                     : "text-black"
                                 )}
                               >
-                                {v?.date ? (
-                                  <p>{`Valid till ${v?.date}`}</p>
+                                {v?.validity ? (
+                                  <p>{`Valid till ${v?.validity}`}</p>
                                 ) : (
                                   <p className="w-1 h-1"></p>
                                 )}
@@ -475,7 +479,7 @@ export function BookEvent({
                   </div>
                 </div>
                 <Button
-                  // disabled={priceCategory === ""}
+                disabled={priceCategory === ""}
                   type="submit"
                   onClick={() => setActive(2)}
                   className="h-14 w-full gap-x-2 bg-zikoro hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium"
@@ -487,7 +491,7 @@ export function BookEvent({
           )}
           {/** */}
           {active === 2 && (
-            <div className="w-full hidden lg:col-span-4 flex-col gap-y-4 p-4 sm:p-6">
+            <div className="w-full lg:col-span-4 flex-col gap-y-4 p-4 sm:p-6">
               <div className="w-full flex items-center justify-center py-3 border-b">
                 <p className="text-base sm:text-xl font-semibold">Checkout</p>
               </div>
