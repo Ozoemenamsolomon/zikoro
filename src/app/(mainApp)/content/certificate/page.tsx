@@ -1,17 +1,42 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useGetCertificates } from "@/hooks/services/certificate";
+import {
+  useGetCertificates,
+  useSaveCertificate,
+} from "@/hooks/services/certificate";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useGetEvents } from "@/hooks/services/events";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { TCertificate } from "@/types/certificates";
 
 const Certificates = () => {
   const router = useRouter();
 
   const { certificates, isLoading } = useGetCertificates();
 
-  console.log(certificates);
+  const { saveCertificate, isLoading: certificateIsSaving } =
+    useSaveCertificate();
 
   if ((certificates && certificates.length === 0) || isLoading)
     return (
@@ -133,6 +158,125 @@ const Certificates = () => {
       </div>
     );
 
+  console.log(certificates);
+
+  const makeACopy = async (certificate: TCertificate, eventId: number) => {
+    delete certificate.id;
+    delete certificate.created_at;
+
+    const payload: TCertificate = {
+      ...certificate,
+      eventId,
+      certificateName: certificate.certificateName + " copy",
+    };
+
+    const newCertificate = await saveCertificate({ payload });
+
+    if (newCertificate) {
+      console.log(newCertificate);
+      router.push(
+        `/content/certificate/create?certificateId=${newCertificate.id}`
+      );
+    }
+  };
+
+  const MakeACopy = ({ certificateId }: { certificateId: number }) => {
+    const { events, isLoading } = useGetEvents();
+    const [eventId, setEventId] = useState<number>();
+    const certificate = certificates?.find(({ id }) => certificateId === id);
+
+    if (!certificate) return;
+
+    return (
+      <Dialog>
+        <DialogTrigger asChild>
+          <button
+            className="w-full hover:bg-gray-100 text-gray-700"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="p-2">Make a copy</span>
+          </button>
+        </DialogTrigger>
+        <DialogContent className="px-2 pt-4 pb-2">
+          <DialogHeader className="px-3">
+            <DialogTitle></DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex flex-col gap-4 items-center py-4">
+              <svg
+                width={65}
+                height={64}
+                viewBox="0 0 65 64"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g clipPath="url(#clip0_14187_4571)">
+                  <path
+                    d="M41.0333 61.8667H38.9C38.9 62.2629 39.0103 62.6512 39.2186 62.9882C39.4269 63.3252 39.7249 63.5976 40.0793 63.7748C40.4336 63.952 40.8303 64.027 41.2249 63.9914C41.6195 63.9558 41.9964 63.811 42.3133 63.5733L41.0333 61.8667ZM49.5667 55.4667L50.8467 53.76C50.4774 53.4831 50.0283 53.3333 49.5667 53.3333C49.1051 53.3333 48.6559 53.4831 48.2867 53.76L49.5667 55.4667ZM58.1 61.8667L56.82 63.5733C57.137 63.811 57.5138 63.9558 57.9084 63.9914C58.303 64.027 58.6997 63.952 59.0541 63.7748C59.4084 63.5976 59.7064 63.3252 59.9147 62.9882C60.123 62.6512 60.2333 62.2629 60.2333 61.8667H58.1ZM49.5667 46.9333C46.7377 46.9333 44.0246 45.8095 42.0242 43.8091C40.0238 41.8088 38.9 39.0956 38.9 36.2667H34.6333C34.6333 40.2272 36.2067 44.0256 39.0072 46.8261C41.8078 49.6267 45.6061 51.2 49.5667 51.2V46.9333ZM60.2333 36.2667C60.2333 39.0956 59.1095 41.8088 57.1091 43.8091C55.1088 45.8095 52.3956 46.9333 49.5667 46.9333V51.2C53.5272 51.2 57.3256 49.6267 60.1261 46.8261C62.9267 44.0256 64.5 40.2272 64.5 36.2667H60.2333ZM49.5667 25.6C52.3956 25.6 55.1088 26.7238 57.1091 28.7242C59.1095 30.7246 60.2333 33.4377 60.2333 36.2667H64.5C64.5 32.3061 62.9267 28.5078 60.1261 25.7072C57.3256 22.9067 53.5272 21.3333 49.5667 21.3333V25.6ZM49.5667 21.3333C45.6061 21.3333 41.8078 22.9067 39.0072 25.7072C36.2067 28.5078 34.6333 32.3061 34.6333 36.2667H38.9C38.9 33.4377 40.0238 30.7246 42.0242 28.7242C44.0246 26.7238 46.7377 25.6 49.5667 25.6V21.3333ZM38.9 44.8V61.8667H43.1667V44.8H38.9ZM42.3133 63.5733L50.8467 57.1733L48.2867 53.76L39.7533 60.16L42.3133 63.5733ZM48.2867 57.1733L56.82 63.5733L59.38 60.16L50.8467 53.76L48.2867 57.1733ZM60.2333 61.8667V44.8H55.9667V61.8667H60.2333ZM64.5 21.3333V6.4H60.2333V21.3333H64.5ZM58.1 0H6.9V4.26667H58.1V0ZM0.5 6.4V57.6H4.76667V6.4H0.5ZM6.9 64H34.6333V59.7333H6.9V64ZM0.5 57.6C0.5 59.2974 1.17428 60.9253 2.37452 62.1255C3.57475 63.3257 5.20261 64 6.9 64V59.7333C6.33421 59.7333 5.79158 59.5086 5.39151 59.1085C4.99143 58.7084 4.76667 58.1658 4.76667 57.6H0.5ZM6.9 0C5.20261 0 3.57475 0.674284 2.37452 1.87452C1.17428 3.07475 0.5 4.70261 0.5 6.4H4.76667C4.76667 5.83421 4.99143 5.29158 5.39151 4.89151C5.79158 4.49143 6.33421 4.26667 6.9 4.26667V0ZM64.5 6.4C64.5 4.70261 63.8257 3.07475 62.6255 1.87452C61.4253 0.674284 59.7974 0 58.1 0V4.26667C58.6658 4.26667 59.2084 4.49143 59.6085 4.89151C60.0086 5.29158 60.2333 5.83421 60.2333 6.4H64.5ZM13.3 21.3333H34.6333V17.0667H13.3V21.3333ZM13.3 34.1333H26.1V29.8667H13.3V34.1333Z"
+                    fill="#001FCC"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_14187_4571">
+                    <rect
+                      width={64}
+                      height={64}
+                      fill="white"
+                      transform="translate(0.5)"
+                    />
+                  </clipPath>
+                </defs>
+              </svg>
+              <span className="text-gray-800 font-medium">
+                Select the event to which you want to add this certificate to
+              </span>
+            </div>
+            <div className="relative">
+              <label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+                Event Name
+              </label>
+              <Select
+                onValueChange={(value) => setEventId(parseInt(value))}
+                value={eventId && eventId.toString()}
+              >
+                <SelectTrigger disabled={isLoading}>
+                  <SelectValue
+                    placeholder={!isLoading ? "Select event" : "Loading..."}
+                    className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-full"
+                  />
+                </SelectTrigger>
+                <SelectContent className="max-h-[250px] w-[500px] hide-scrollbar overflow-auto">
+                  {events &&
+                    events.map(({ id, eventTitle }) => (
+                      <SelectItem
+                        key={id}
+                        value={id.toString()}
+                        className="inline-flex gap-2"
+                      >
+                        {eventTitle}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <DialogClose asChild>
+              <Button
+                disabled={!eventId || isLoading}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  eventId && makeACopy(certificate, eventId);
+                }}
+                className="bg-basePrimary w-full"
+              >
+                make a copy
+              </Button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  };
+
   return (
     <div className="flex flex-col gap-2 px-2 py-4">
       <Button
@@ -155,13 +299,48 @@ const Certificates = () => {
       </Button>
       <div className="grid-cols-4 grid gap-4">
         {certificates?.map(
-          ({ cerificateUrl, certificateName, created_at, id }) => (
+          ({ cerificateUrl, certificateName, created_at, id, eventId }) => (
             <button
-              className="border border-gray-200 rounded-md"
+              disabled={certificateIsSaving}
+              className="border border-gray-200 rounded-md relative"
               onClick={() =>
                 router.push(`/content/certificate/create?certificateId=${id}`)
               }
             >
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="bg-black/10 p-2 absolute top-2 right-2"
+                  >
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth={0}
+                      viewBox="0 0 16 16"
+                      height="1.5em"
+                      width="1.5em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <ul>
+                    <li className="w-full">
+                      <MakeACopy certificateId={id} />
+                    </li>
+                    <li className="p-2 hover:bg-gray-100 text-red-700">
+                      Delete
+                    </li>
+                  </ul>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <div className="w-full h-[250px] overflow-hidden">
                 <img className="object-fill" src={cerificateUrl || ""} />
               </div>
