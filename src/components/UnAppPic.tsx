@@ -5,9 +5,14 @@ import {IoIosCheckmarkCircle} from "react-icons/io"
 import {toast } from 'react-toastify';
 import { supabase } from "../utils/Utils"
 
-export default function UnAppPic({url, id}){
+type UnAppPicProps = {
+        url: string,
+        id: number,
+}
 
-        const reApprove = async(imageId: string) => {
+export default function UnAppPic({url, id} : UnAppPicProps ){
+
+        const reApprove = async(imageId: number) => {
                 try {        
                         // Update the parameters for the specified image
                         const { error } = await supabase

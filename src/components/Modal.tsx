@@ -6,19 +6,19 @@ import { CiCamera} from "react-icons/ci";
 import { useAppContext } from '../context'
 import {IoClose} from "react-icons/io5"
 import {toast } from 'react-toastify';
-import { supabase } from "../utils/Utils"
+import { supabase } from "@/utils/Utils"
 
 
 export default function Modal() {
   const {modalOpen, setModalOpen} = useAppContext()
     const [selectedFile, setSelectedFile] = useState(null)
-    const [file, setFile] = useState(null)
+    const [file, setFile] = useState<any>(null)
     const [loading, setLoading] = useState(false)
     const filePickerRef = useRef<any>(null)
 
 
 
-    const addImages = (e) => {
+    const addImages = (e:any) => {
       const reader = new FileReader();
       
       if (e.target.files[0]) {
@@ -26,7 +26,7 @@ export default function Modal() {
           setFile(e.target.files[0])
       }
 
-      reader.onload = (readerEvent) => {
+      reader.onload = (readerEvent:any) => {
         setSelectedFile(readerEvent.target.result)
       }
        

@@ -21,12 +21,14 @@ const config = {
       gradientColorStops: theme => ({
         'custom-gradient-start': '#001FCC',
         'custom-gradient-end': '#9D00FF',
+        'custom-bg-gradient-start': '#001FCC19',
+        'custom-bg-gradient-end': '#9D00FF19',
       }),
       linearGradientDirections: {
         // Define your custom gradient direction
         'top-right': 'to top right',
       },
-      linearGradientColors: theme => ({
+      linearGradientColors: (theme: (arg0: string) => any) => ({
         'custom-gradient': [theme('colors.custom-gradient-start'), theme('colors.custom-gradient-end')],
       }),
      

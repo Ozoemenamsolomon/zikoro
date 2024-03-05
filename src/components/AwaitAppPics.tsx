@@ -36,7 +36,7 @@ export default function AwaitAppPics(){
         } toast.success('Pictures Auto-Approved');
 
       } catch (error) {
-        toast.error(`Error Rejecting Picture`);
+        toast.error(`Error Auto-Approving Pictures`);
       }
     }
 

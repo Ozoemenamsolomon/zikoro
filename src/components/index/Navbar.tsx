@@ -1,9 +1,12 @@
 "use client"
-import React from 'react'
+import { useRouter } from "next/navigation"
+import React, { useEffect } from 'react'
 import {useState} from "react"
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
 import Image from "next/image"
+import ThreeLine from '@/components/svg/ThreeLine';
+import Close from '@/components/svg/Close';
 
 export default function Homepage() {
 
@@ -28,88 +31,120 @@ export default function Homepage() {
         },
         {
           name: "Contact Us",
-          href: "/contact-us",
+          href: "/contact",
         },  
 
       ];
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const toggleMenu = () => {
-        setIsOpen(!isOpen);
+    const toggleMenuOn = () => {
+        setIsOpen(true);
     };
 
+    const toggleMenuOff = () => {
+        setIsOpen(false);
+    };
+
+    const router = useRouter()
+
+    useEffect(() => {
+
+    },[toggleMenuOff])
+
     return (
+        <div className='sticky top-0 z-auto '>
+            <nav className=" p-4 bg-white border-b-[2px] border-indigo-500 text-base ">
 
-    <nav className="bg-white p-4 border-b-[1px] border-indigo-500 text-base">
+                <div className="container flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
+                   {
+                        !isOpen && 
+                        <>
+                                <Image className="cursor-pointer" onClick={()=> router.push('/')} src="/zikoro.png" alt='logo' width={128} height={35} />
+        
+                                <div className="hidden md:block">
+                                    {links.map(({ name, href, }, index) => {
+                                        return (
+                                        <Link
+                                            key={index}
+                                            href={href}
+                                            className={` ${
+                                            pathname === href
+                                                ? "text-zikoroBlue text-lg font-medium px-4"
+                                                : "px-4 text-lg font-medium"
+                                            }`}
+                                        >
+                                            {name}
+                                        </Link>
+                                        );
+                                    })}
 
-        <div className="container flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
-            <div>
-                 <Image src="/zikoro.png" className='' alt='' width={128} height={35} />
-            </div>
+                                </div>
 
-                <div className="hidden md:block">
-                    {links.map(({ name, href, }, index) => {
-                        return (
-                        <Link
-                            key={index}
-                            href={href}
-                            className={` ${
-                            pathname === href
-                                ? "text-zikoroBlue"
-                                : "px-4 text-lg font-medium font-montserrat"
-                            }`}
-                        >
-                            {name}
-                        </Link>
-                        );
-                    })}
+                                <div className=' gap-4 hidden md:flex'>
+                                    <button onClick={() => router.push('/api/auth/login')} className=' text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md '>
+                                        Register
+                                    </button>
 
+                                    <button onClick={() => router.push('/api/auth/login')} className='text-base text-blue-700 bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md '>
+                                        Login
+                                    </button>
+                                </div>
+
+                                <div className="md:hidden">
+
+                                    <button className="text-black" onClick={toggleMenuOn}>
+                                            <ThreeLine/>
+                                    </button>
+
+                                </div>
+
+                        </>
+
+                   }
                 </div>
+        </nav>
 
-                <div className=' gap-4 hidden md:flex'>
-                    <button className=' text-white bg-gradient-to-tr text-base from-custom-gradient-start to-custom-gradient-end  p-2 rounded-md '>
-                        Start For Free
-                    </button>
-
-                    <button className='text-base text-zikoroBlue bg-transparent border border-indigo-700 p-2 rounded-md '>
-                        Login
-                    </button>
-                </div>
-
-            <div className="md:hidden">
-
-            <button className="text-black" onClick={toggleMenu}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-                </svg>
-            </button>
-
-            </div>
-        </div>
 
         {/* Mobile Menu */}
         {isOpen && (
-            <div className="md:hidden bg-gradient-to-tr max-w-full h-screen from-custom-gradient-start to-custom-gradient-end">
-                <div className="flex flex-col items-center text-white ">
-                {links.map(({ name, href }) => {
-                        return (
-                        <Link
-                            href={href}
-                            className={` ${
-                            pathname === href
-                                ? "text-zikoroBlue border-b-2 border-zikoroBlue"
-                                : "px-2 fon"
-                            }`}
-                        >
-                            {name}
-                        </Link>
-                        );
-                    })}
+            <div className="md:hidden bg-gradient-to-tr max-w-full h-screen px-5 from-custom-gradient-start to-custom-gradient-end pb-8 -mt-10 pt-8">
+
+                <div className='flex flex-col'>
+                        <div className='flex justify-end items-end pb-10 ' onClick={toggleMenuOff} >
+                            <Close />
+                    </div>
+
+                        <div className="flex flex-col items-center text-white ">
+                            {links.map(({ name, href }) => {
+                                    return (
+                                    <Link
+                                        href={href}
+                                        className="text-xl font-medium pb-7"
+                                    >
+                                        {name}
+                                    </Link>
+                                    );
+                                })}
+                        </div>
+
+                        <div className=' gap-5 flex justify-center items-center md:hidden pt-12'>
+                                            <button onClick={() => router.push('/api/auth/login')} className=' text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 px-5 rounded-md border border-white'>
+                                                Register
+                                            </button>
+
+                                            <button onClick={() => router.push('/api/auth/login')} className='text-base text-white bg-transparent border border-white py-4 px-5 rounded-md '>
+                                                Login
+                                            </button>
+                        </div>
                 </div>
+                
+
             </div>
         )}
 
-    </nav>
+        </div>
+
+   
     );
 }
