@@ -101,7 +101,7 @@ export default function ApprvPic({url, id, like}: ApprvPicProps) {
     return (
                     <div className="relative " onMouseOver={() => setHoverActive(true)}  onMouseOut={() => setHoverActive(false)} >
                       
-                    <div className="absolute left-56 top-4 ">
+                    <div className="absolute right-4 top-4 ">
 
                         { hoverActive && 
                         <Popover>

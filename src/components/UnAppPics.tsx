@@ -3,10 +3,15 @@ import React, { useEffect, useState } from "react"
 import Picture from "./UnAppPic"
 import { supabase } from "../utils/Utils"
 
+type UnAppPicsProps = {
+  url: string,
+  id: number,
+  photoUrl: string
+}
 
 export default function AwaitAppPics(){
     const [togOn, setTogOn] = useState(false)
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState<UnAppPicsProps[]|undefined>(undefined);
 
     //toggler function
     const toggler = () => {
@@ -44,7 +49,7 @@ export default function AwaitAppPics(){
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">  
-                   {images.length > 0 ? (
+                   {images?.length ? (
                             images.map((image, index) => (
                                 <Picture key={index} id={image.id} url={image.photoUrl} />
                             ))
