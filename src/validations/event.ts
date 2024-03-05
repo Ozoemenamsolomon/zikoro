@@ -58,14 +58,13 @@ export const newEventSchema = z.object({
 
 const eventPricing = z.array(
   z.object({
-    ticketQuantity: z.string().optional(),
-    attendeeType: z.string().optional(),
-    description: z.string().optional(),
-    price: z.string().optional(),
-    validity: z.string().optional(),
+    ticketQuantity: z.string().min(1, {message: "Ticket Quantity is required"}),
+    attendeeType: z.string().min(1, {message: "Attendee Type is required"}),
+    description: z.string().min(1, {message: "Description is required"}),
+    price: z.string().min(1, {message: "Price is required"}),
+    validity: z.string().min(1, {message: "Validity is required"}),
   })
 );
-
 
 export const updateEventSchema = z.object({
   startDateTime: z.any(),
@@ -83,6 +82,5 @@ export const updateEventSchema = z.object({
   pricingCurrency: z.string().optional(),
   description: z.string().optional(),
   pricing: eventPricing,
- 
+  eventTimeZone: z.string().optional(),
 });
-

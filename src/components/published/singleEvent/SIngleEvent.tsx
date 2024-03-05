@@ -34,7 +34,7 @@ import {
 } from "@/constants";
 import { useState, useMemo } from "react";
 import { BookEvent } from "..";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Event, OrganizerContact } from "@/types";
 
 export function SingleEvent({
@@ -56,7 +56,6 @@ export function SingleEvent({
 }) {
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
-
   const [isShareDropDown, showShareDropDown] = useState(false);
 
   const router = useRouter();
@@ -320,6 +319,7 @@ export function SingleEvent({
                 </div>
               </div>
               <Button
+            
                 onClick={(e) => {
                   e.stopPropagation();
                   e.stopPropagation();

@@ -22,6 +22,7 @@ import { SideBarLayout } from "@/components";
 import { ContentTopNav } from "@/components/content/topNav";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
+import {uploadFile} from "@/utils"
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { updateEventSchema } from "@/validations";
@@ -135,10 +136,22 @@ export default function UpdateEvent({
     }
     const posterUrl = eventPosterArr.map((v) => v.url);
 
-    console.log({ values });
+    let poster:string[] = []
+
+    if (posterUrl.length > 0 ) {
+        posterUrl.map(async (value) => {
+          if (value && value.startsWith("http")) {
+            poster.push(value)
+          }
+          else if (value) {
+            const img  = await uploadFile(value, "image")
+            poster.push(img)
+          }
+        })
+    }
     const payload = {
       ...values,
-      eventPoster: posterUrl,
+      eventPoster: poster,
     };
 
     // return;
@@ -223,8 +236,10 @@ export default function UpdateEvent({
                   <Button
                     // type="submit"
                     onClick={(e) => {
-                      //  e.preventDefault();
+                        e.preventDefault();
                       e.stopPropagation();
+                      window.open(`/events/content/${eventId}/preview`, '_blank')
+                   
                     }}
                     className="text-gray-50 bg-zikoro gap-x-2"
                   >
@@ -242,12 +257,10 @@ export default function UpdateEvent({
                     <Download size={22} />
                     <p>Publish</p>
                   </Button>
-
-                
                 </div>
               </div>
               <div className="w-full grid grid-cols-1 items-center md:items-start md:grid-cols-2 gap-6">
-                <div className="flex flex-col items-start justify-start p-1 gap-y-4">
+                <div className="w-full h-full flex flex-col items-start justify-start p-1 gap-y-4">
                   <FormField
                     control={form.control}
                     name="eventTitle"
@@ -296,6 +309,22 @@ export default function UpdateEvent({
                       )}
                     />
                   </div>
+
+                  <FormField
+                    control={form.control}
+                    name="eventTimeZone"
+                    render={({ field }) => (
+                      <InputOffsetLabel label="Event Timezone">
+                        <Input
+                          placeholder="Enter event timezone"
+                          type="text"
+                          defaultValue={data?.endDateTime}
+                          {...form.register("eventTimeZone")}
+                          className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        />
+                      </InputOffsetLabel>
+                    )}
+                  />
 
                   <FormField
                     control={form.control}
@@ -433,13 +462,13 @@ export default function UpdateEvent({
                     />
                   </div>
                 </div>
-                <div className="px-4 space-y-6">
-                  { (
+                <div className="w-full px-4 h-full space-y-6">
+                  {
                     <TextEditor
                       defaultValue={data?.description}
                       onChange={handleChange}
                     />
-                  )}
+                  }
 
                   <FormField
                     control={form.control}

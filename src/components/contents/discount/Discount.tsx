@@ -76,7 +76,7 @@ import { revalidatePath } from "next/cache";
 //   return data;
 // };
 
-export default function Discount({eventId}:{eventId:string}) {
+export default function Discount({ eventId }: { eventId: string }) {
   const [discountData, setDiscountData] = useState<[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -86,7 +86,10 @@ export default function Discount({eventId}:{eventId:string}) {
     const getDiscount = async () => {
       try {
         setIsLoading(true);
-        const { data, error } = await supabase.from("discount").select();
+        const { data, error } = await supabase
+          .from("discount")
+          .select("*")
+          .eq("eventId", eventId);
         if (error) {
           setError(true);
           console.log(error);
@@ -138,51 +141,52 @@ export default function Discount({eventId}:{eventId:string}) {
 
   return (
     <SideBarLayout
-    hasTopBar
-    className="px-0 sm:px-0 pt-14 sm:pt-14"
-    parentClassName="px-0 sm:px-0 py-0 sm:py-0 pt-3 sm:pt-4"
-    eventId={eventId}
-  >
-    <ContentTopNav eventId={eventId} />
-    <div className="p-4">
-      <div className="flex justify-between my-5">
-        <h6 className="font-medium">Discount</h6>
-        <DialogDemo />
-      </div>
-      <div className="p-3 ">
-        <ul className="grid grid-cols-8 place-items-center text-center border bg-[#f3f3f3] p-3 border-b-2 text-[14px] font-bold">
-          <li>Created at</li>
-          <li>Code</li>
-          <li>Min. QTy</li>
-          <li>Valid until</li>
-          <li>Amount</li>
-          <li>Percentage</li>
-          <li>Quantity</li>
-          <li>Status</li>
-        </ul>
+      hasTopBar
+      className="px-0 sm:px-0 pt-14 sm:pt-14"
+      parentClassName="px-0 sm:px-0 py-0 sm:py-0 pt-3 sm:pt-4"
+      eventId={eventId}
+    >
+      <ContentTopNav eventId={eventId} />
+      <div className="p-4">
+        <div className="flex justify-between my-5">
+          <h6 className="font-medium">Discount</h6>
+          <DialogDemo />
+        </div>
+        <div className="p-3 ">
+          <ul className="grid grid-cols-8 place-items-center text-center border bg-[#f3f3f3] p-3 border-b-2 text-[14px] font-bold">
+            <li>Created at</li>
+            <li>Code</li>
+            <li>Min. QTy</li>
+            <li>Valid until</li>
+            <li>Amount</li>
+            <li>Percentage</li>
+            <li>Quantity</li>
+            <li>Status</li>
+          </ul>
 
-        {Array.isArray(formattedData) && formattedData.map((discount: any, id, arr) => (
-          <DiscountList
-            key={discount.id}
-            createdAt={discount.created_at}
-            code={discount.discountCode}
-            minQty={discount.minQty}
-            validUntil={discount.validUntil}
-            amount={discount.discountAmount || "NULL"}
-            percentage={discount.discountPercentage || "NULL"}
-            quantity={discount.quantity}
-            status={discount.status}
-            onClick={() => {
-              changeStatus(discount.id, discount.status);
-             setValue(discount.status ? "on" : "off");
-              console.log(value);
-            }}
-            value={value}
-          />
-        ))}
-        <Separator />
+          {Array.isArray(formattedData) &&
+            formattedData.map((discount: any, id, arr) => (
+              <DiscountList
+                key={discount.id}
+                createdAt={discount.created_at}
+                code={discount.discountCode}
+                minQty={discount.minQty}
+                validUntil={discount.validUntil}
+                amount={discount.discountAmount || "NULL"}
+                percentage={discount.discountPercentage || "NULL"}
+                quantity={discount.quantity}
+                status={discount.status}
+                onClick={() => {
+                  changeStatus(discount.id, discount.status);
+                  setValue(discount.status ? "on" : "off");
+                  console.log(value);
+                }}
+                value={value}
+              />
+            ))}
+          <Separator />
+        </div>
       </div>
-    </div>
     </SideBarLayout>
   );
 }
@@ -246,7 +250,6 @@ const DialogDemo = () => {
 
   return (
     <DateAndTimeAdapter>
-
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
           <button className="flex justify-between items-center bg-zikoro text-white px-[12px] py-[8px] rounded-[5px]">

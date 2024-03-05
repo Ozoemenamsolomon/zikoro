@@ -27,6 +27,7 @@ import {
 import toast from "react-hot-toast";
 import { Event } from "@/types";
 import { CheckCircleFill } from "styled-icons/bootstrap";
+import { usePathname } from "next/navigation";
 
 export function BookEvent({
   close,
@@ -60,6 +61,7 @@ export function BookEvent({
   currency: string | undefined;
 }) {
   const [attendees, setAttendees] = useState<any[]>([]);
+  const pathname = usePathname()
   const [chosenPrice, setChosenPrice] = useState<number | undefined>();
   const [code, setCode] = useState("");
   const [active, setActive] = useState(1);
@@ -477,7 +479,7 @@ export function BookEvent({
                   </div>
                 </div>
                 <Button
-                disabled={priceCategory === ""}
+                disabled={priceCategory === "" || pathname.includes("preview")}
                   type="submit"
                   onClick={() => setActive(2)}
                   className="h-14 w-full gap-x-2 bg-zikoro hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium"

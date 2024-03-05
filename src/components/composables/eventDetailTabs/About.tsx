@@ -9,6 +9,7 @@ import Slider from "react-slick";
 import { FeedBackCard } from "../../published";
 import { cn } from "@/lib";
 import { Event } from "@/types";
+import { usePathname } from "next/navigation";
 
 export function About({
   className,
@@ -19,6 +20,7 @@ export function About({
   className?: string;
   isEventDetailPage?: boolean;
 }) {
+  const pathname = usePathname();
   const settings = {
     dots: true,
     infinite: true,
@@ -28,6 +30,7 @@ export function About({
     slidesToShow: 1,
     slidesToScroll: 1,
   };
+
   return (
     <div className="w-full  hidden flex-col sm:flex gap-y-6 sm:gap-y-20">
       <div
@@ -37,11 +40,14 @@ export function About({
         )}
       >
         <div className="w-full flex flex-col border gap-y-6 rounded-lg p-3 sm:p-4">
-         {event?.description && <div className="innerhtml"
-            dangerouslySetInnerHTML={{
-              __html: event?.description,
-            }}
-          />}
+          {event?.description && (
+            <div
+              className="innerhtml"
+              dangerouslySetInnerHTML={{
+                __html: event?.description,
+              }}
+            />
+          )}
           <div className="w-full h-full flex flex-col gap-y-6">
             {event?.eventAddress && (
               <ul className="w-full flex flex-col items-start justify-start space-y-4">
@@ -57,7 +63,7 @@ export function About({
         </div>
       </div>
 
-      {isEventDetailPage && (
+      {isEventDetailPage && !pathname.includes("preview") && (
         <div className="w-full flex flex-col items-center py-10 sm:py-20 justify-center gap-y-6 sm:gap-y-8 bg-gray-50">
           <h2 className="font-semibold text-base sm:text-2xl ">
             What past event attendees are saying...
