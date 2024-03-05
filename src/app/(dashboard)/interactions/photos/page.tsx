@@ -56,7 +56,7 @@ export default function Photos() {
     const pathname = usePathname();
     const [admin, setAdmin] = useState(!false)
     const filePickerRef = useRef<any>(null)
-    const [file, setFile] = useState(null)
+    const [file, setFile] = useState<any>(null)
     const [zikoroText, setZikoroText] = useState(true)
     const [defaultBanner, setDefaultBanner] = useState(true)
     const [fullScreenDetails, setFullScreenDetails] = useState<any>(null)
@@ -87,7 +87,7 @@ export default function Photos() {
         handle.exit()
     }
 
-    const addImage = (e) => {
+    const addImage = (e:any) => {
         if (e.target.files[0]) {
             setFile(e.target.files[0])
         }        
@@ -184,6 +184,7 @@ export default function Photos() {
 
     return (
 
+      
             <div className="font-heebo " >
                 {
                     modalOpen ? <Modal/> :
@@ -298,7 +299,7 @@ export default function Photos() {
                                                         <div className='relative border border-gray-200 rounded-md mt-8 '>
                                                             <div  onClick={() => filePickerRef.current.click()} className='flex items-center space-x-4 py-6 px-4 rounded-lg cursor-pointer '>
                                                                 <FiFile />
-                                                                <input  type="file" ref={filePickerRef} disabled={defaultBanner} onChange={addImage} hidden/>
+                                                                <input  type="file" ref={filePickerRef} disabled={defaultBanner} onChange={() => addImage} hidden/>
                                                                 { 
                                                                 file &&
                                                                 <p className='font-extralight text-xs'>{file.name} </p>
