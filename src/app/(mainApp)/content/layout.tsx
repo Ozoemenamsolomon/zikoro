@@ -1,5 +1,5 @@
 "use client";
-import { ContentLinks } from "@/data/links";
+import { ContentLinks } from "@/data/LayoutLinks";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 

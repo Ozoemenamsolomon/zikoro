@@ -41,6 +41,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
         <div className="flex justify-between">
           <span className="font-medium text-sm">Size</span>
           <RadioGroup
+            disabled
             onValueChange={(value) => editSettings("size", value)}
             value={settings.size}
             className="flex gap-2 text-sm"
@@ -58,6 +59,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
         <div className="flex justify-between">
           <span className="font-medium text-sm">Orientation</span>
           <RadioGroup
+            disabled
             onValueChange={(value) => editSettings("orientation", value)}
             value={settings.orientation}
             className="flex gap-2 text-sm"

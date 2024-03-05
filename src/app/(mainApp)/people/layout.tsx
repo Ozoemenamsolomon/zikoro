@@ -4,9 +4,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import { useRef, useState, useLayoutEffect, useEffect } from "react";
-import { TLink } from "@/components/Sidebar";
-import { PeopleLinks } from "./links";
-
+import { PeopleLinks } from "@/data/LayoutLinks";
 
 const People = ({ children }: { children: React.ReactNode }) => {
   const pathNames = usePathname().split("/");
