@@ -32,7 +32,7 @@ export function About({
   };
 
   return (
-    <div className="w-full  hidden flex-col sm:flex gap-y-6 sm:gap-y-20">
+    <div className={cn("w-full  hidden flex-col sm:flex gap-y-6 sm:gap-y-20", isEventDetailPage && "flex")}>
       <div
         className={cn(
           "w-full px-4 sm:px-6 gap-6 grid grid-cols-1  items-center",

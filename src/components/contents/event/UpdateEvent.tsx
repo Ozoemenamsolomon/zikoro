@@ -107,6 +107,7 @@ export default function UpdateEvent({
         locationType: data?.locationType,
         eventCountry: data?.eventCountry,
         pricing: data?.pricing,
+        eventTimeZone: data?.eventTimeZone
       });
       if (Array.isArray(data?.eventPoster)) {
         const formatData = data?.eventPoster?.map((v: any) => {
@@ -223,8 +224,8 @@ export default function UpdateEvent({
               className="w-full px-4 h-full "
               id="form"
             >
-              <div className="w-full py-4 flex items-center justify-between">
-                <h6 className="font-medium">Event information</h6>
+              <div className="w-full py-4 flex items-end justify-end">
+           
                 <div className="flex items-center gap-x-2">
                   <Button className="gap-x-2">
                     {updating && (
@@ -287,7 +288,7 @@ export default function UpdateEvent({
                             type="datetime-local"
                             defaultValue={data?.startDateTime}
                             {...form.register("startDateTime")}
-                            className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                            className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                           />
                         </InputOffsetLabel>
                       )}
@@ -303,7 +304,7 @@ export default function UpdateEvent({
                             type="datetime-local"
                             defaultValue={data?.endDateTime}
                             {...form.register("endDateTime")}
-                            className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                            className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                           />
                         </InputOffsetLabel>
                       )}
@@ -318,7 +319,7 @@ export default function UpdateEvent({
                         <Input
                           placeholder="Enter event timezone"
                           type="text"
-                          defaultValue={data?.endDateTime}
+                          defaultValue={data?.eventTimeZone}
                           {...form.register("eventTimeZone")}
                           className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                         />
@@ -462,7 +463,7 @@ export default function UpdateEvent({
                     />
                   </div>
                 </div>
-                <div className="w-full px-4 h-full space-y-6">
+                <div className="w-full h-full flex flex-col items-start justify-start gap-y-6">
                   {
                     <TextEditor
                       defaultValue={data?.description}

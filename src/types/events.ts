@@ -67,6 +67,7 @@ export interface Event {
   exhibitionHall: { name: string; capacity: string }[];
   sponsorCategory: { type: string; id: string }[];
   eventAlias: string;
+  eventTimeZone: string
 }
 
 export interface PaymentConfigProps {

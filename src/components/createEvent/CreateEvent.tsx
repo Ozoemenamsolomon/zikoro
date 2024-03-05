@@ -38,14 +38,13 @@ export default function CreateEvent({
   });
 
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
-    const eventAlias = uuidv4().replace(/-/g, '').substring(0, 20);
+    const eventAlias = uuidv4().replace(/-/g, "").substring(0, 20);
     await createEvent({
       ...values,
       startDateTime: startDateValue,
       endDateTime: endDateValue,
       eventAlias,
       organisationId: organizationId,
-      
     });
   }
 
@@ -55,7 +54,6 @@ export default function CreateEvent({
       value: country.name,
     }));
   }, [COUNTRY_CODE]);
-
 
   return (
     <DateAndTimeAdapter>
@@ -252,18 +250,16 @@ export default function CreateEvent({
               control={form.control}
               name="locationType"
               render={({ field }) => (
-                <InputOffsetLabel label={"Location Type"}>
-                  <ReactSelect
-                    {...field}
-                    placeHolder="Enter the Experience Level"
-                    label="Experience Level"
-                    options={[
-                      { value: "Hybrid", label: "Hybrid" },
-                      { value: "Onsite", label: "Onsite" },
-                      { value: "Virtual", label: "Virtual" },
-                    ]}
-                  />
-                </InputOffsetLabel>
+                <ReactSelect
+                  {...field}
+                  placeHolder="Select the Location Type"
+                  label="Location Type"
+                  options={[
+                    { value: "Hybrid", label: "Hybrid" },
+                    { value: "Onsite", label: "Onsite" },
+                    { value: "Virtual", label: "Virtual" },
+                  ]}
+                />
               )}
             />
 

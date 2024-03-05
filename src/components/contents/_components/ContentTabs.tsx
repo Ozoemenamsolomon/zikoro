@@ -24,7 +24,7 @@ export function ContentTabs({
 
   const links = [
     {
-      name: "Event",
+      name: "Info",
       href: `/events/content/${eventId}/event`,
     },
     {
@@ -60,7 +60,7 @@ export function ContentTabs({
                   pathname === href ? "text-zikoro  font-medium" : ""
                 }`}
               >
-                <Link href={"/" + href}>{name}</Link>
+                <Link href={href}>{name}</Link>
               </li>
             );
           })}

@@ -99,7 +99,7 @@ export default function TextEditor({
   };
 
   return (
-    <div className="mb-5">
+    <div className="mt-2 mb-5">
       <QuillEditor
         value={content}
        // defaultValue={defaultValue}

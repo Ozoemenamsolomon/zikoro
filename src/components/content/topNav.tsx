@@ -11,7 +11,7 @@ import { toast } from "react-hot-toast";
 export function ContentTopNav({eventId}:{eventId:string}) {
     const links = [
         {
-          name: "Event",
+          name: "Info",
           href: `/events/content/${eventId}/event`,
         },
         {

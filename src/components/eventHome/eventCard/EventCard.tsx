@@ -91,7 +91,7 @@ export function EventCard({
   return (
     <div
       role="button"
-      onClick={() => window.open(`/events/home/${event?.id}`, "_blank")}
+      onClick={() => window.open(`/events/content/${event?.id}/event`, "_blank")}
       className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4  w-full"
     >
       <div className="w-full flex items-center justify-between">

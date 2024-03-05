@@ -34,7 +34,7 @@ export function EventDetailTabs({
   }
   return (
     <>
-      {active === 1 && event && (
+      {!isEventDetailPage && active === 1 && event && (
         <EventDetailMobileTab
           eventId={String(event.id)}
           changeActiveState={changeActiveState}
@@ -43,7 +43,8 @@ export function EventDetailTabs({
       <div
         className={cn(
           "sm:flex hidden px-4  w-full sm:px-6 items-center gap-x-2 my-4 border-b sm:my-6 sm:gap-x-6",
-          className
+          className,
+          isEventDetailPage && "flex"
         )}
       >
         {tabs.map(({ id, name }) => (

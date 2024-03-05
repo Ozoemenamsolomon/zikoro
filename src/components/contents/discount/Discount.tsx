@@ -14,14 +14,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { Input, Button } from "@/components";
 import { MinusCircle, PlusCircle } from "styled-icons/heroicons-outline";
 import { CustomInput } from "@/components/content/CustomInput";
 import { DatePicker } from "@mui/x-date-pickers";
 import { addDiscount } from "@/app/server-actions/addDiscount";
 import supabase from "@/utils/supabaseConfig";
 import { SideBarLayout } from "@/components";
+import { useCreateDiscount } from "@/hooks";
 import { ContentTopNav } from "@/components/content/topNav";
 import { revalidatePath } from "next/cache";
+import { EmptyCard } from "@/components/composables";
 
 // const addDiscount = async (formData: FormData) => {
 //   "use server";
@@ -82,31 +86,32 @@ export default function Discount({ eventId }: { eventId: string }) {
   const [error, setError] = useState<boolean>(false);
   const [value, setValue] = useState<string>("off");
 
-  useEffect(() => {
-    const getDiscount = async () => {
-      try {
-        setIsLoading(true);
-        const { data, error } = await supabase
-          .from("discount")
-          .select("*")
-          .eq("eventId", eventId);
-        if (error) {
-          setError(true);
-          console.log(error);
-          throw error;
-        }
-        if (data) {
-          console.log(data);
-          setDiscountData(data as any);
-          setError(false);
-          revalidatePath("/content/discount");
-        }
-      } catch (error) {
+  const getDiscount = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("discount")
+        .select("*")
+        .eq("eventId", eventId);
+      if (error) {
         setError(true);
-      } finally {
-        setIsLoading(false);
+        console.log(error);
+        throw error;
       }
-    };
+      if (data) {
+        console.log(data);
+        setDiscountData(data as any);
+        setError(false);
+        revalidatePath("/content/discount");
+      }
+    } catch (error) {
+      setError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     getDiscount();
   }, []);
 
@@ -148,43 +153,54 @@ export default function Discount({ eventId }: { eventId: string }) {
     >
       <ContentTopNav eventId={eventId} />
       <div className="p-4">
-        <div className="flex justify-between my-5">
-          <h6 className="font-medium">Discount</h6>
-          <DialogDemo />
+        <div className="flex w-full items-end justify-end my-5">
+          <DialogDemo getDiscount={getDiscount} eventId={eventId} />
         </div>
-        <div className="p-3 ">
-          <ul className="grid grid-cols-8 place-items-center text-center border bg-[#f3f3f3] p-3 border-b-2 text-[14px] font-bold">
-            <li>Created at</li>
-            <li>Code</li>
-            <li>Min. QTy</li>
-            <li>Valid until</li>
-            <li>Amount</li>
-            <li>Percentage</li>
-            <li>Quantity</li>
-            <li>Status</li>
-          </ul>
-
-          {Array.isArray(formattedData) &&
-            formattedData.map((discount: any, id, arr) => (
-              <DiscountList
-                key={discount.id}
-                createdAt={discount.created_at}
-                code={discount.discountCode}
-                minQty={discount.minQty}
-                validUntil={discount.validUntil}
-                amount={discount.discountAmount || "NULL"}
-                percentage={discount.discountPercentage || "NULL"}
-                quantity={discount.quantity}
-                status={discount.status}
-                onClick={() => {
-                  changeStatus(discount.id, discount.status);
-                  setValue(discount.status ? "on" : "off");
-                  console.log(value);
-                }}
-                value={value}
-              />
-            ))}
-          <Separator />
+        <div className="overflow-x-auto w-full no-scrollbar">
+          <div className="p-3 min-w-[1000px] w-full">
+            {Array.isArray(formattedData) && formattedData?.length > 0 && (
+              <ul className="grid grid-cols-8 rounded-t-lg place-items-center text-center border bg-[#f3f3f3] p-3 border-b-2 text-[14px] font-semibold">
+                <li>Created At</li>
+                <li>Code</li>
+                <li>Min. QTy</li>
+                <li>Valid until</li>
+                <li>Amount</li>
+                <li>Percentage</li>
+                <li>Quantity</li>
+                <li>Status</li>
+              </ul>
+            )}
+            {Array.isArray(formattedData) && formattedData?.length === 0 && (
+              <>
+                <EmptyCard
+                  width="100"
+                  height="100"
+                  text="No available discount for this event"
+                />
+              </>
+            )}
+            {Array.isArray(formattedData) &&
+              formattedData.map((discount: any, id, arr) => (
+                <DiscountList
+                  key={discount.id}
+                  createdAt={discount.created_at}
+                  code={discount.discountCode}
+                  minQty={discount.minQty}
+                  validUntil={discount.validUntil}
+                  amount={discount.discountAmount || "NULL"}
+                  percentage={discount.discountPercentage || "NULL"}
+                  quantity={discount.quantity}
+                  status={discount.status}
+                  onClick={() => {
+                    changeStatus(discount.id, discount.status);
+                    setValue(discount.status ? "on" : "off");
+                    console.log(value);
+                  }}
+                  value={value}
+                />
+              ))}
+            <Separator />
+          </div>
         </div>
       </div>
     </SideBarLayout>
@@ -239,23 +255,62 @@ const DiscountList: React.FC<{
   );
 };
 
-const DialogDemo = () => {
+const DialogDemo = ({
+  getDiscount,
+  eventId,
+}: {
+  getDiscount: () => Promise<void>;
+  eventId: string;
+}) => {
   const [minQty, setMinQty] = useState<number>(1);
   const [quantity, setQuantity] = useState<number>(1);
-  const [percentage, setPercentage] = useState<number>(5);
+  const [percentage, setPercentage] = useState<number>(1);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isAmtChecked, setIsAmtChecked] = useState<boolean>(false);
+  const [isAmtChecked, setIsAmtChecked] = useState<boolean>(true);
   const [isPercChecked, setIsPercChecked] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const { createDiscount, loading } = useCreateDiscount();
+  const [discountData, setDiscountData] = useState({
+    discountCode: "",
+    discountAmount: "",
+    validUntil: "",
+  });
+
+  async function submit() {
+    const { discountAmount, ...restData } = discountData;
+
+    const payload = isAmtChecked
+      ? {
+          ...restData,
+          minQty,
+          quantity,
+          discountAmount,
+        eventId,
+          status: true,
+        }
+      : {
+          ...restData,
+          minQty,
+          quantity,
+          eventId,
+          discountPercentage: percentage,
+
+          status: true,
+        };
+
+    await createDiscount(payload);
+    getDiscount();
+    setDialogOpen((prev) => !prev);
+  }
 
   return (
     <DateAndTimeAdapter>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
-          <button className="flex justify-between items-center bg-zikoro text-white px-[12px] py-[8px] rounded-[5px]">
-            <span className="pr-[8px]">New</span>
+          <Button className="w-fit bg-zikoro items-center gap-x-2 text-gray-50">
             <AddCircle size={20} />
-          </button>
+            <span className="">Discount</span>
+          </Button>
         </DialogTrigger>
         <DialogContent className="bg-white sm:max-w-[425px] py-8 px-10 max-h-[95vh]">
           <DialogHeader>
@@ -265,17 +320,27 @@ const DialogDemo = () => {
           </DialogHeader>
           <form action={addDiscount} id="form">
             <div className="grid my-6 relative text-[#3E404B]">
-              <CustomInput
-                label="Discount code"
-                placeholder="Enter a discount code"
-                id="discountCode"
-                containerClassName="w-full"
-                type="text"
-                name="discountCode"
-              />
+              <label className="w-full relative my-3">
+                <span className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1">
+                  Discount code
+                </span>
+                <Input
+                  placeholder="Enter a discount code"
+                  type="text"
+                  value={discountData?.discountCode}
+                  onChange={(e) => {
+                    setDiscountData({
+                      ...discountData,
+                      discountCode: e.target.value,
+                    });
+                  }}
+                  name="discountCode"
+                  className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                />
+              </label>
               <div className="flex justify-between items-center mt-4">
                 <p className="text-base">Minimum Quantity</p>
-                <div className="flex justify-between">
+                <div className="flex gap-x-2 items-center justify-between">
                   <MinusCircle
                     size={25}
                     color="gray"
@@ -286,14 +351,7 @@ const DialogDemo = () => {
                       }
                     }}
                   />
-                  <input
-                    type="number"
-                    value={minQty}
-                    readOnly
-                    name="minQty"
-                    id="minQty"
-                    className="w-10 pl-2.5 text-center"
-                  />
+                  <p>{minQty}</p>
                   <PlusCircle
                     size={25}
                     color="#001FCC"
@@ -305,53 +363,21 @@ const DialogDemo = () => {
               <span className="description-text pt-2">
                 This can be used for bulk ticket purchase discount
               </span>
-              <div className="flex relative my-6">
+              <label className="flex relative my-6">
                 <span className="span">Valid until</span>
-                <DatePicker
-                  open={isOpen}
-                  onOpen={() => setIsOpen(true)}
-                  onClose={() => setIsOpen(false)}
-                  name="validUntil"
-                  className="w-full"
-                  slotProps={{
-                    textField: {
-                      required: true,
-                      placeholder: "Pick date",
-                      InputProps: {
-                        className: "flex flex-row-reverse",
-                        endAdornment: (
-                          <img
-                            src={"/date-time.svg"}
-                            alt="calendar-icon"
-                            width={25}
-                            height={25}
-                            className="cursor-pointer"
-                            onClick={() => setIsOpen(!isOpen)}
-                          />
-                        ),
-                      },
-                    },
-                    popper: {
-                      sx: {
-                        pointerEvents: "auto",
-                      },
-                    },
+                <Input
+                  placeholder="Enter Date"
+                  type="datetime-local"
+                  value={discountData?.validUntil}
+                  onChange={(e) => {
+                    setDiscountData({
+                      ...discountData,
+                      validUntil: e.target.value,
+                    });
                   }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#f3f3f3",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#f3f3f3",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "black",
-                      },
-                    },
-                  }}
+                  className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                 />
-              </div>
+              </label>
               <div className="text-sm mb-1">
                 <p>Select discount type</p>
                 <div className="flex items-center space-x-8 mt-2">
@@ -361,11 +387,10 @@ const DialogDemo = () => {
                       }`}
                       role="button"
                       name="AmtChecker"
+                      checked={isAmtChecked}
                       onClick={() => {
-                        setIsAmtChecked(!isAmtChecked);
-                        setIsPercChecked(!isPercChecked);
+                        setIsAmtChecked(true);
                       }}
-                      defaultChecked
                     />
                     <span>Amount</span>
                   </div>
@@ -376,24 +401,34 @@ const DialogDemo = () => {
                       role="button"
                       name="percenChecker"
                       id="percenChecker"
-                      checked={isPercChecked}
+                      checked={!isAmtChecked}
                       onClick={(e) => {
-                        console.log(e.currentTarget.name);
+                        setIsAmtChecked(false);
                       }}
                     />
                     <span>Percentage</span>
                   </div>
                 </div>
               </div>
-              {!isAmtChecked ? (
-                <CustomInput
-                  label="Discount amount"
-                  name="discountAmount"
-                  id="discountAmount"
-                  type="number"
-                  placeholder="Enter amount"
-                  containerClassName="mt-8"
-                />
+              {isAmtChecked ? (
+                <label className="w-full relative my-3">
+                  <span className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1">
+                    Discount amount
+                  </span>
+                  <Input
+                    placeholder="Enter a discount amount"
+                    type="number"
+                    value={discountData?.discountAmount}
+                    onChange={(e) => {
+                      setDiscountData({
+                        ...discountData,
+                        discountAmount: e.target.value,
+                      });
+                    }}
+                    name="discountAmount"
+                    className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                  />
+                </label>
               ) : (
                 <div className="flex justify-between items-center mt-8">
                   <p className="text-base">Discount percentage</p>
@@ -403,8 +438,8 @@ const DialogDemo = () => {
                       color="gray"
                       role="button"
                       onClick={() => {
-                        if (percentage > 5) {
-                          setPercentage(percentage - 5);
+                        if (percentage > 1) {
+                          setPercentage(percentage - 1);
                         }
                       }}
                     />
@@ -424,7 +459,7 @@ const DialogDemo = () => {
                       size={25}
                       color="#001FCC"
                       role="button"
-                      onClick={() => setPercentage(percentage + 5)}
+                      onClick={() => setPercentage(percentage + 1)}
                     />
                   </div>
                 </div>
@@ -443,14 +478,7 @@ const DialogDemo = () => {
                       }
                     }}
                   />
-                  <input
-                    type="number"
-                    value={quantity}
-                    readOnly
-                    name="quantity"
-                    id="quantity"
-                    className="w-8 pl-2 text-center"
-                  />
+                  <p>{quantity}</p>
                   <PlusCircle
                     size={25}
                     color="#001FCC"
@@ -461,13 +489,12 @@ const DialogDemo = () => {
               </div>
             </div>
             <button
-              className="bg-zikoro text-white px-[12px] py-[8px] rounded-[5px] w-full"
+              onClick={submit}
+              className="bg-zikoro h-12 flex items-center justify-center gap-x-2 text-white px-[12px] py-[8px] rounded-[5px] w-full"
               type="submit"
-              onClick={() => {
-                setDialogOpen(!dialogOpen);
-              }}
             >
-              Done
+              {loading && <LoaderAlt size={22} />}
+              <p> Done</p>
             </button>
           </form>
         </DialogContent>

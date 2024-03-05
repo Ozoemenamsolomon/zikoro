@@ -92,12 +92,14 @@ export function useUpdateEvent() {
     setLoading(true);
 
     try {
-      const { data, error, status } = await supabase.from("events").update([
-        {
-          ...values,
-        },
-      ])
-      .eq("id", eventId )
+      const { data, error, status } = await supabase
+        .from("events")
+        .update([
+          {
+            ...values,
+          },
+        ])
+        .eq("id", eventId);
 
       if (error) {
         toast.error(error.message);
@@ -117,12 +119,14 @@ export function useUpdateEvent() {
     setLoading(true);
 
     try {
-      const { data, error, status } = await supabase.from("organization").update([
-        {
-          ...values,
-        },
-      ])
-      .eq("id", orgId )
+      const { data, error, status } = await supabase
+        .from("organization")
+        .update([
+          {
+            ...values,
+          },
+        ])
+        .eq("id", orgId);
 
       if (error) {
         toast.error(error.message);
@@ -697,5 +701,35 @@ export function useEventFeedBack() {
   return {
     sendFeedback,
     loading,
+  };
+}
+
+export function useCreateDiscount() {
+  const [loading, setLoading] = useState(false);
+
+  async function createDiscount(values: any) {
+    try {
+      setLoading(true);
+      const { data, error, status } = await supabase.from("discount").insert([
+        {
+          ...values,
+        },
+      ]);
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+      if (status === 201 || status === 200) {
+        setLoading(false);
+        toast.success("Discount created successfully");
+      }
+    } catch (error) {}
+  }
+
+  return {
+    loading,
+    createDiscount,
   };
 }
