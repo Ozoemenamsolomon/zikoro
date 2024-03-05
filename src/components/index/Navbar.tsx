@@ -129,11 +129,11 @@ export default function Homepage() {
                         </div>
 
                         <div className=' gap-5 flex justify-center items-center md:hidden pt-12'>
-                                            <button onClick={() => router.push('/api/auth/login')} className=' text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 px-5 rounded-md border border-white'>
+                                            <button onClick={() => router.push('/api/auth/login')} className=' text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white'>
                                                 Register
                                             </button>
 
-                                            <button onClick={() => router.push('/api/auth/login')} className='text-base text-white bg-transparent border border-white py-4 px-5 rounded-md '>
+                                            <button onClick={() => router.push('/api/auth/login')} className='text-base text-white bg-transparent border border-white py-[10px] px-5 rounded-md '>
                                                 Login
                                             </button>
                         </div>
