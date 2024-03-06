@@ -117,6 +117,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   {/* <ShareSocial
+                  {/* <ShareSocial
                     url={`http:localhost:3000/verify/${certificateId}`}
                     socialTypes={[
                       "facebook",
@@ -183,6 +184,10 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   </p>
                 </div>
                 <p className="text-xs text-center w-full mb-6">
+                  {certificate?.created_at &&
+                    formatDateToHumanReadable(
+                      new Date(certificate?.created_at)
+                    )}
                   {certificate?.created_at &&
                     formatDateToHumanReadable(
                       new Date(certificate?.created_at)

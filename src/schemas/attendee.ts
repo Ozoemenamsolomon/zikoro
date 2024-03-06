@@ -34,10 +34,16 @@ export const AttendeeSchema = z.object({
   certificate: z.boolean(),
   profilePicture: z.string().nullable().optional(),
   attendeeType: z.array(z.string()).nullable(),
-  eventId: z.number(),
-  checkin: z.array(checkinSchema).nullable().optional(),
-  badge: z.string().nullable().optional(),
-  userId: z.number().nullable().optional(),
+  eventId: z.string(),
+  checkin: z.array(checkinSchema).optional(),
+  badge: z.string().optional(),
+  ticketType: z.string().optional(),
+  eventRegistrationRef: z.string().optional(),
+  userId: z.number().optional(),
+
+  // TODO: @ajax484 please correct this type
+  tags: z.array(z.string()).optional(),
+  favourite: z.boolean().optional(),
 });
 
 export const attendeeNoteSchema = z.object({

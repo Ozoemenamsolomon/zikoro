@@ -1,6 +1,6 @@
 import React from "react";
 import { THeaders } from "./";
-import { DialogClose } from "../../ui/dialog";
+// import { DialogClose } from "../../ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TAttendee } from "@/types/attendee";
 import { useUpdateAttendees } from "@/hooks/services/attendee";
@@ -81,11 +81,11 @@ const Third = ({
           </tbody>
         </table>
       </div>
-      <DialogClose asChild>
+      {/* <DialogClose asChild>
         <Button className="bg-basePrimary w-full" onClick={submitAttendees}>
           Import Attendees
         </Button>
-      </DialogClose>
+      </DialogClose> */}
     </>
   );
 };
