@@ -40,6 +40,7 @@ import { Image as ImageElement } from "@/components/certificate";
 import lz from "lzutf8";
 import { exportComponentAsPNG } from "react-component-export-image";
 import { useToPng } from "@hugocxl/react-to-image";
+import CertificateQRCode from "@/components/certificate/QRCode";
 
 const tabs = [
   {
@@ -351,7 +352,13 @@ const DEFAULT_FRAME_STATE: SerializedNodes = {
     type: "div",
     isCanvas: false,
     props: {
-      style: { height: "auto", margin: "0 auto", maxWidth: 64, width: "100%" },
+      style: {
+        height: "auto",
+        margin: "0 auto",
+        maxWidth: 64,
+        width: "100%",
+        display: "none",
+      },
     },
     displayName: "div",
     custom: {},
@@ -609,7 +616,9 @@ const page = () => {
   };
 
   return (
-    <Editor resolver={{ Text, Container, ImageElement, QRCode }}>
+    <Editor
+      resolver={{ Text, Container, ImageElement, QRCode, CertificateQRCode }}
+    >
       <section className="flex flex-col overflow-hidden border-t" ref={divRef}>
         <section className="border-b flex justify-between px-4 py-2">
           <Button
