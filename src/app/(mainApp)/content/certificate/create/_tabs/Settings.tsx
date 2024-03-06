@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -31,19 +31,22 @@ import { Input } from "@/components/ui/input";
 import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSection";
 import { useGetAttendees } from "@/hooks/services/attendee";
 import { TAttendee } from "@/types/attendee";
+import { calculateAndSetMaxHeight } from "@/utils/helpers";
+import COLORTAG from "@/utils/colorTag";
 
 const Settings = ({ settings, editSettings }: TabProps) => {
   const [criteria, setCriteria] = useState<number>(0);
   const [date, setDate] = React.useState<Date>();
   const [newSkill, setSkill] = React.useState<string>("");
+  const [color, setColor] = React.useState<string>("");
 
   const { attendees, isLoading } = useGetAttendees();
 
   console.log(settings.canReceive.exceptions);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>(
     settings.canReceive.exceptions
-      ? attendees.filter(
-          ({ id }) => settings.canReceive.exceptions?.includes(id)
+      ? attendees.filter(({ id }) =>
+          settings.canReceive.exceptions?.includes(id)
         )
       : []
   );
@@ -69,8 +72,15 @@ const Settings = ({ settings, editSettings }: TabProps) => {
     });
   };
 
+  const divRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!divRef) return;
+    calculateAndSetMaxHeight(divRef);
+  }, []);
+
   return (
-    <div className="pb-2">
+    <div ref={divRef} className="hide-scrollbar">
       <h4 className="text-lg text-gray-700 font-medium">Paper Format</h4>
       <div className="space-y-2 text-gray-500 pt-2 pb-4">
         <div className="flex justify-between">
@@ -345,7 +355,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           </div>
         )}
       </div>
-      <div className="space-y-2 pt-4 border-t-2">
+      <div className="space-y-2 pt-4 border-t-2 pb-12">
         <Dialog>
           <DialogTrigger asChild>
             <Button className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-2">
@@ -370,21 +380,44 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                 <span className="capitalize">Add Skills</span>
               </DialogTitle>
             </DialogHeader>
-            <div className="relative border-b py-4">
-              <span className="text-tiny text-gray-500 font-medium absolute top-2 left-2">
-                skill
-              </span>
-              <Input
-                type="text"
-                className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 focus-visible:ring-0"
-                value={newSkill}
-                onInput={(e) => setSkill(e.currentTarget.value)}
-              />
+            <div className="space-y-2">
+              <div className="relative border-b py-4">
+                <span className="text-tiny text-gray-500 font-medium absolute top-2 left-2">
+                  skill
+                </span>
+                <Input
+                  type="text"
+                  className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 focus-visible:ring-0"
+                  value={newSkill}
+                  onInput={(e) => setSkill(e.currentTarget.value)}
+                />
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {COLORTAG.map((colorValue) => (
+                  <button
+                    className={`
+              h-8 w-8 rounded-full
+              ${color === colorValue ? "opacity-100" : "opacity-25"}
+              `}
+                    style={{ backgroundColor: colorValue }}
+                    key={colorValue}
+                    onClick={() => setColor(colorValue)}
+                  />
+                ))}
+              </div>
             </div>
             <DialogClose asChild>
               <Button
+                disabled={
+                  !newSkill ||
+                  !color ||
+                  settings.skills.some(({ value }) => newSkill === value)
+                }
                 onClick={() =>
-                  editSettings("skills", [...settings.skills, newSkill])
+                  editSettings("skills", [
+                    ...settings.skills,
+                    { value: newSkill, color },
+                  ])
                 }
                 className="bg-basePrimary"
               >
@@ -394,11 +427,35 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           </DialogContent>
         </Dialog>
         <div className="flex flex-wrap justify-start gap-2">
-          {settings.skills.map((skill) => (
+          {settings.skills.map(({ value, color }) => (
             <div
-              className={`text-sm p-1.5 border-2 rounded font-medium text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]`}
+              className="relative text-sm flex items-center gap-1.5 p-2 rounded w-fit"
+              style={{
+                backgroundColor: color + "22",
+                color: color,
+                borderWidth: "2px",
+                borderColor:
+                  settings.skills && settings.skills.includes({ value, color })
+                    ? color
+                    : color + "22",
+              }}
             >
-              {skill}
+              <button
+                onClick={() => {
+                  const newSkills = settings.skills.filter(
+                    (skill) => skill.value !== value
+                  );
+                  editSettings("skills", newSkills);
+                }}
+                style={{
+                  backgroundColor: color + "55",
+                  color: color,
+                }}
+                className="bg-white h-4 w-4 flex items-center justify-center text-[8px] absolute -right-2 -top-2 rounded-full"
+              >
+                x
+              </button>
+              <span className="font-medium capitalize">{value}</span>
             </div>
           ))}
         </div>
