@@ -1,28 +1,18 @@
 // @ts-nocheck
 "use client";
-import { useGetnote } from "@/hooks/services/notes";
-import {
-  useGetAttendeeTags,
-  useUpdateAttendeeTags,
-} from "@/hooks/services/tags";
 import { useEffect, useRef, useState } from "react";
 import { usePDF } from "react-to-pdf";
-import {
-  useGetAttendeeCertificates,
-  useGetEventCertificates,
-  useUpdateAttendeeCertificates,
-} from "@/hooks/services/certificate";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import QRCode from "react-qr-code";
 
 export default function UserProfile({
-  attendee,
-  getAttendees,
+  user,
+  getUsers,
   onOpen,
 }: {
-  attendee: TAttendee;
-  getAttendees?: () => Promise<void>;
+  user: TUser;
+  getUsers?: () => Promise<void>;
   onOpen: () => void;
 }) {
   const {
@@ -41,69 +31,11 @@ export default function UserProfile({
     linkedin,
     instagram,
     facebook,
-    certificate,
     profilePicture,
-    attendeeType,
-    eventId,
-    checkin,
     id,
     ticketType,
     registrationDate,
-  } = attendee;
-
-  const {
-    note,
-    isLoading: noteIsLoading,
-    error,
-    getnote,
-  } = useGetnote({ attendeeId: id });
-
-  const {
-    attendeeTags,
-    isLoading: attendeeTagsisLoading,
-    // error,
-    getAttendeeTags,
-  } = useGetAttendeeTags({ attendeeId: id });
-
-  const { updateAttendeeTags, isLoading: updatetagsIsLoading } =
-    useUpdateAttendeeTags({
-      attendeeId: id,
-    });
-
-  const {
-    attendeeCertificates,
-    isLoading: attendeeCertificatesIsLoading,
-    getAttendeeCertificates,
-  } = useGetAttendeeCertificates({
-    eventId: 1234567890,
-    attendeeId: id,
-  });
-
-  const {
-    eventCertificates,
-    isLoading: getEventCertificatesIsLoading,
-    getEventCertificates,
-  } = useGetEventCertificates({ eventId: 1234567890 });
-
-  const { updateAttendeeCertificates } = useUpdateAttendeeCertificates({
-    eventId: 1234567890,
-  });
-
-  useEffect(() => {
-    getnote();
-  }, [attendee]);
-
-  async function removeAttendeeTag(tag: TTag) {
-    const payload: TAttendeeTags = {
-      ...attendeeTags,
-      attendeeTags: attendeeTags.attendeeTags.filter(
-        (prevTag) => prevTag !== tag
-      ),
-    };
-
-    await updateAttendeeTags({ payload });
-    await getAttendeeTags();
-  }
+  } = user;
 
   const sendMail = () => {
     const to = email;
@@ -132,27 +64,6 @@ export default function UserProfile({
     window.open(whatsappWebUrl, "_blank");
   }
 
-  const releaseCertificate = async (eventCertificate) => {
-    await updateAttendeeCertificates({
-      payload: {
-        action: "release",
-        attendeeInfo: [
-          {
-            attendeeId: id,
-            attendeeEmail: email,
-          },
-        ],
-        certificateInfo: {
-          eventId: 1234567890,
-          CertificateGroupId: eventCertificate.id,
-          CertificateName: eventCertificate.certificateName,
-        },
-      },
-    });
-    await getAttendeeCertificates();
-    await getEventCertificates();
-  };
-
   const { toPDF, targetRef } = usePDF({
     filename: `${firstName}-${lastName}-badge.pdf`,
   });
@@ -168,7 +79,7 @@ export default function UserProfile({
 
     // console.log(innerCard.style, parentCard.style);
     parentCard.style.height = `${innerCard.style.height}px`;
-  }, [attendee]);
+  }, [user]);
 
   const [cardIsFlipped, setFlipCard] = useState<boolean>(false);
 

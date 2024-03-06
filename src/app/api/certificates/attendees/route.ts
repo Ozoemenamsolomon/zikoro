@@ -9,16 +9,24 @@ export async function GET(
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      const { certificateId } = params;
+      const { searchParams } = new URL(req.url);
+      const certificateGroupId = searchParams.get("certificateGroupId");
+      const certificateId = searchParams.get("certificateId");
 
-      // .select("*")
-      const { data, error, status } = await supabase
+      console.log(certificateGroupId, certificateId, req.url);
+
+      const query = supabase
         .from("attendeeCertificates")
         .select(
           "*, certificate!inner(*, event:events!inner(organization:organization!inner(*))), attendee:attendees!inner(*)"
-        )
-        .eq("certificateId", certificateId)
-        .maybeSingle();
+        );
+
+      if (certificateGroupId)
+        query.eq("CertificateGroupId", certificateGroupId);
+
+      if (certificateId) query.eq("certificateId", certificateId).maybeSingle();
+
+      const { data, error } = await query;
 
       if (error) throw error;
 

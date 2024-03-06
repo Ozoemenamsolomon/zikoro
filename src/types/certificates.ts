@@ -22,6 +22,7 @@ export interface TCertificateSettings {
     trackAttendees: boolean;
     sessionAttendees: boolean;
     quizParticipants: boolean;
+    exceptions?: number[];
   };
   criteria: number;
   canExpire: boolean;

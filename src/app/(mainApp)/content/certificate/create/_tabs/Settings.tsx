@@ -28,11 +28,46 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSection";
+import { useGetAttendees } from "@/hooks/services/attendee";
+import { TAttendee } from "@/types/attendee";
 
 const Settings = ({ settings, editSettings }: TabProps) => {
   const [criteria, setCriteria] = useState<number>(0);
   const [date, setDate] = React.useState<Date>();
   const [newSkill, setSkill] = React.useState<string>("");
+
+  const { attendees, isLoading } = useGetAttendees();
+
+  console.log(settings.canReceive.exceptions);
+  const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>(
+    settings.canReceive.exceptions
+      ? attendees.filter(
+          ({ id }) => settings.canReceive.exceptions?.includes(id)
+        )
+      : []
+  );
+
+  console.log(selectedAttendees);
+
+  type ValueType = TAttendee | TAttendee[];
+
+  const toggleValue = (value: ValueType) => {
+    const updatedValue = Array.isArray(value)
+      ? value
+      : value && selectedAttendees.includes(value)
+      ? selectedAttendees.filter((item) => item !== value)
+      : [...selectedAttendees, value];
+
+    setSelectedAttendees(updatedValue);
+  };
+
+  const setRecipients = () => {
+    editSettings("canReceive", {
+      ...settings.canReceive,
+      exceptions: selectedAttendees.map(({ id }) => id),
+    });
+  };
 
   return (
     <div className="pb-2">
@@ -80,18 +115,53 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           Who should receive this certificate?
         </h4>
         <div className="space-y-2 text-sm font-medium text-gray-500 pt-2 pb-4">
-          <div className="flex justify-between">
-            <span>Event Attendees</span>
-            <Switch
-              className="data-[state=checked]:bg-basePrimary"
-              checked={settings.canReceive.eventAttendees}
-              onCheckedChange={(status) =>
-                editSettings("canReceive", {
-                  ...settings.canReceive,
-                  eventAttendees: status,
-                })
-              }
-            />
+          <div>
+            <div className="flex justify-between">
+              <span>Event Attendees</span>
+              <Switch
+                className="data-[state=checked]:bg-basePrimary"
+                checked={settings.canReceive.eventAttendees}
+                onCheckedChange={(status) =>
+                  editSettings("canReceive", {
+                    ...settings.canReceive,
+                    eventAttendees: status,
+                  })
+                }
+              />
+            </div>
+            {settings.canReceive.eventAttendees && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant={"ghost"}
+                    className="text-sm text-red-700 font-medium flex gap-2 items-center p-0 mt-2 mb-4"
+                  >
+                    <span>Select Exceptions</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="px-3 max-h-[500px] overflow-auto hide-scrollbar">
+                  <DialogHeader>
+                    <DialogTitle>
+                      <span className="capitalize">Exceptions</span>
+                    </DialogTitle>
+                  </DialogHeader>
+                  <ViewAttendeesSection
+                    attendees={attendees}
+                    selectedAttendees={selectedAttendees}
+                    toggleValue={toggleValue}
+                  />
+                  <DialogClose>
+                    <Button
+                      disabled={selectedAttendees.length === 0}
+                      className="bg-basePrimary w-full"
+                      onClick={setRecipients}
+                    >
+                      Add Exceptions
+                    </Button>
+                  </DialogClose>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
           <div className="flex justify-between">
             <span>Track Attendees</span>

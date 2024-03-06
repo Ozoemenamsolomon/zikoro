@@ -5,7 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useVerifyAttendeeCertificate } from "@/hooks/services/certificate";
+import { useGetAttendeeCertificate } from "@/hooks/services/certificate";
 import { TFullCertificate } from "@/types/certificates";
 import { formatDateToHumanReadable } from "@/utils/date";
 import html2canvas from "html2canvas";
@@ -42,13 +42,13 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
 
   const { certificateId } = params;
 
-  const { verifyAttendeeCertificate, isLoading, error } =
-    useVerifyAttendeeCertificate();
+  const { getAttendeeCertificate, isLoading, error } =
+    useGetAttendeeCertificate();
 
   const router = useRouter();
 
   const verify = async () => {
-    const verifiedCertificate = await verifyAttendeeCertificate(certificateId);
+    const verifiedCertificate = await getAttendeeCertificate({ certificateId });
 
     if (!verifiedCertificate) {
       router.replace("/verify");

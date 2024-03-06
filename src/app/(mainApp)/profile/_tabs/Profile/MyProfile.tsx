@@ -1,21 +1,21 @@
 import UserProfile from "@/components/UserProfile";
-import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
+import AddUserForm from "@/components/forms/AddUserForm";
 import useDisclose from "@/hooks/common/useDisclose";
-import { useGetAttendee } from "@/hooks/services/attendee";
+import { useGetUser } from "@/hooks/services/user";
 import React from "react";
 
 const MyProfile = () => {
-  const { attendee, isLoading, getAttendee } = useGetAttendee({
-    attendeeId: Number(24).toString(),
+  const { user, isLoading, getUser } = useGetUser({
+    userId: Number(24).toString(),
   });
 
   const {
-    isOpen: attendeeFormIsOpen,
-    onOpen: onOpenAttendeeForm,
-    onClose: onCloseAttendeeForm,
+    isOpen: userFormIsOpen,
+    onOpen: onOpenUserForm,
+    onClose: onCloseUserForm,
   } = useDisclose();
 
-  if (isLoading || !attendee)
+  if (isLoading || !user)
     return (
       <div className="h-[450px] w-full flex items-center justify-center">
         <div className="animate-spin">
@@ -37,13 +37,13 @@ const MyProfile = () => {
   return (
     <div className="grid grid-cols-10">
       <div className="col-span-4">
-        <UserProfile attendee={attendee} onOpen={onOpenAttendeeForm} />
+        <UserProfile user={user} onOpen={onOpenUserForm} />
       </div>
-      <AddAttendeeForm
-        isOpen={attendeeFormIsOpen}
-        onClose={onCloseAttendeeForm}
-        attendee={attendee}
-        getAttendee={getAttendee}
+      <AddUserForm
+        isOpen={userFormIsOpen}
+        onClose={onCloseUserForm}
+        user={user}
+        getUser={getUser}
       />
     </div>
   );

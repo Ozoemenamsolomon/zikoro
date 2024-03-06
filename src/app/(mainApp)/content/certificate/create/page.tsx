@@ -398,7 +398,7 @@ const page = () => {
   const certificateId = searchParams.get("certificateId");
 
   const { certificate, isLoading: certificateIsLoading } = useGetCertificate({
-    certificateId: certificateId || "",
+    certificateId: certificateId || "0",
   });
 
   const [editableCertificate, setCertificate] = useState<TCertificate | null>(
@@ -419,7 +419,7 @@ const page = () => {
   const { present: details } = detailState;
 
   useEffect(() => {
-    if (certificateIsLoading || !certificate) return;
+    if (certificateIsLoading) return;
 
     console.log(certificate);
 
@@ -523,6 +523,7 @@ const page = () => {
 
       if (!hashRef.current) return;
 
+      console.log(editableCertificate);
       const newCertificate = await saveCertificate({
         payload: editableCertificate
           ? {
@@ -544,6 +545,9 @@ const page = () => {
 
       if (newCertificate) {
         setCertificate(newCertificate);
+        router.push(
+          "/content/certificate/create?certificateId=" + newCertificate.id
+        );
       }
       setUploading(false);
     },

@@ -1,31 +1,25 @@
-import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { certificateId: string } }
-) {
-  const { certificateId } = params;
+export async function PATCH(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
-  if (req.method === "GET") {
+  if (req.method === "PATCH") {
     try {
-      const { data, error, status } = await supabase
-        .from("certificate")
-        .select("*")
-        .eq("id", certificateId)
-        .maybeSingle();
+      const params = await req.json();
 
+      const { error } = await supabase
+        .from("users")
+        .upsert(params, { onConflict: "id" });
       if (error) throw error;
-
       return NextResponse.json(
-        { data },
+        { msg: "users updated successfully" },
         {
           status: 200,
         }
       );
     } catch (error) {
-      console.error(error);
+      console.error(error, "patch");
       return NextResponse.json(
         {
           error: "An error occurred while making the request.",
@@ -40,26 +34,29 @@ export async function GET(
   }
 }
 
-export async function DELETE(
+export async function GET(
   req: NextRequest,
-  { params }: { params: { certificateId: string } }
+  { params }: { params: { userId: string } }
 ) {
-  const { certificateId } = params;
+  const { userId } = params;
   const supabase = createRouteHandlerClient({ cookies });
-  if (req.method === "DELETE") {
+
+  if (req.method === "GET") {
     try {
-      console.log(certificateId, "backedn delte");
       const { data, error, status } = await supabase
-        .from("certificate")
-        .delete()
-        .eq("id", certificateId);
+        .from("users")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle();
 
       if (error) throw error;
 
       return NextResponse.json(
-        { data },
         {
-          status: 201,
+          data,
+        },
+        {
+          status: 200,
         }
       );
     } catch (error) {

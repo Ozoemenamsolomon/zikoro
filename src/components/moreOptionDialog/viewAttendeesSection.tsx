@@ -199,6 +199,7 @@ export default function ViewAttendeesSection({
     },
   ];
 
+  console.log(selectedAttendees);
   const {
     filteredData: mappedAttendees,
     filters,

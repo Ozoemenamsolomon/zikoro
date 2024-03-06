@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useVerifyAttendeeCertificate } from "@/hooks/services/certificate";
+import { useGetAttendeeCertificate } from "@/hooks/services/certificate";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
@@ -10,11 +10,11 @@ const Page = () => {
   const [certificateId, setCertificateId] = useState<string>("");
   const router = useRouter();
 
-  const { verifyAttendeeCertificate, isLoading, error } =
-    useVerifyAttendeeCertificate();
+  const { getAttendeeCertificate, isLoading, error } =
+    useGetAttendeeCertificate();
 
   const onSubmit = async () => {
-    const certificate = await verifyAttendeeCertificate(certificateId);
+    const certificate = await getAttendeeCertificate(certificateId);
 
     console.log(certificate);
 

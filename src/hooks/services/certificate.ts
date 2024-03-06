@@ -40,6 +40,39 @@ export const useSaveCertificate = () => {
   return { saveCertificate, isLoading, error };
 };
 
+export const useDeleteCertificate = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const deleteCertificate = async ({
+    certificateId,
+  }: {
+    certificateId: number;
+  }) => {
+    setLoading(true);
+    toast({
+      description: "deleting certificate...",
+    });
+    try {
+      const { data, status } = await deleteRequest<TCertificate>({
+        endpoint: `/certificates/${certificateId}`,
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: "Certificate deleted successfully",
+      });
+      return data.data;
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { deleteCertificate, isLoading, error };
+};
+
 export const useGetCertificate = ({
   certificateId,
 }: {
@@ -354,53 +387,80 @@ export const useRecallAttendeeCertificates = ({
   return { recallAttendeeCertificates, isLoading, error };
 };
 
-type UseVerifyAttendeeCertificateResult = {
-  verifyAttendeeCertificate: (
-    certificateId: string
-  ) => Promise<TFullCertificate | null>;
+type UseGetAttendeeCertificateResult = {
+  getAttendeeCertificate: ({
+    certificateId,
+    certificateGroupId,
+    isVerify,
+  }: {
+    certificateId?: string;
+    certificateGroupId?: number;
+    isVerify?: boolean;
+  }) => Promise<TFullCertificate | TFullCertificate[] | null>;
 } & RequestStatus;
 
-export const useVerifyAttendeeCertificate =
-  (): UseVerifyAttendeeCertificateResult => {
-    const [isLoading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
+export const useGetAttendeeCertificate = (
+  isSilent?: boolean
+): UseGetAttendeeCertificateResult => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
-    const verifyAttendeeCertificate = async (
-      certificateId: string
-    ): Promise<TFullCertificate | null> => {
-      setLoading(true);
+  const getAttendeeCertificate = async ({
+    certificateId,
+    certificateGroupId,
+    isVerify = true,
+  }: {
+    certificateId?: string;
+    certificateGroupId?: number;
+    isVerify?: boolean;
+  }): Promise<TFullCertificate | TFullCertificate[] | null> => {
+    setLoading(true);
+
+    if (!isSilent) {
       toast({
-        description: "verifying certificate...",
+        description: isVerify
+          ? "verifying certificate..."
+          : "getting certificate...",
+      });
+    }
+
+    try {
+      const { data, status } = await getRequest<
+        TFullCertificate | TFullCertificate[]
+      >({
+        endpoint: `/certificates/attendees?${
+          (certificateId && `certificateId=${certificateId}&`) || ""
+        }${
+          (certificateGroupId && `certificateGroupId=${certificateGroupId}`) ||
+          ""
+        }`,
       });
 
-      try {
-        const { data, status } = await getRequest<TFullCertificate>({
-          endpoint: `/certificates/verify/${certificateId}`,
-        });
+      if (status !== 200) {
+        throw data;
+      }
 
-        if (status !== 200) {
-          throw data;
-        }
-
-        if (!data.data) {
+      if (!data.data) {
+        if (isVerify) {
           toast({
             description: "this certificate is not valid",
             variant: "destructive",
           });
-          return null;
         }
-
-        return data.data;
-      } catch (error) {
-        setError(true);
         return null;
-      } finally {
-        setLoading(false);
       }
-    };
 
-    return { isLoading, error, verifyAttendeeCertificate };
+      return data.data;
+    } catch (error) {
+      setError(true);
+      return null;
+    } finally {
+      setLoading(false);
+    }
   };
+
+  return { isLoading, error, getAttendeeCertificate };
+};
 
 export const useGetCertificateTemplates = (): UseGetResult<
   CertificateTemplate[],
