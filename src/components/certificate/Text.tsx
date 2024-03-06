@@ -106,7 +106,8 @@ const Text = ({
           }
           tagName={tagName}
           style={{
-            fontSize: `${fontSize}px`,
+            fontSize: `${fontSize || 16}px`,
+            lineHeight: `${fontSize ? fontSize + 4 : 18}px`,
             textAlign,
             color,
             fontFamily,
@@ -114,8 +115,10 @@ const Text = ({
             fontStyle: isItalic ? "italic" : "normal",
             textDecoration: isUnderline ? "underline" : "none",
             textTransform,
+            padding: "0px !important",
+            width: "fit-content",
           }}
-          className={cn(selected && "border-2 border-sky-400")}
+          className={cn(selected && "border-2 border-sky-400 !p-0 w-fit")}
         />
       </div>
     </Draggable>
