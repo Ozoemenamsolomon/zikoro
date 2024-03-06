@@ -20,7 +20,7 @@ export async function uploadFile(file: File | string, type:string) {
     if (response.ok) {
       const data = await response.json();
      
-      return data.url
+      return data.secure_url
     } else {
       console.error("Failed to upload image");
       return null;

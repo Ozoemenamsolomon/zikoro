@@ -17,12 +17,10 @@ import {
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { Input, Button } from "@/components";
 import { MinusCircle, PlusCircle } from "styled-icons/heroicons-outline";
-import { CustomInput } from "@/components/content/CustomInput";
-import { DatePicker } from "@mui/x-date-pickers";
 import { addDiscount } from "@/app/server-actions/addDiscount";
 import supabase from "@/utils/supabaseConfig";
 import { SideBarLayout } from "@/components";
-import { useCreateDiscount } from "@/hooks";
+import { useDiscount } from "@/hooks";
 import { ContentTopNav } from "@/components/content/topNav";
 import { revalidatePath } from "next/cache";
 import { EmptyCard } from "@/components/composables";
@@ -156,8 +154,8 @@ export default function Discount({ eventId }: { eventId: string }) {
         <div className="flex w-full items-end justify-end my-5">
           <DialogDemo getDiscount={getDiscount} eventId={eventId} />
         </div>
-        <div className="overflow-x-auto w-full no-scrollbar">
-          <div className="p-3 min-w-[1000px] w-full">
+        <div className="overflow-x-auto w-full partner-scroll-style">
+          <div className="pb-3 min-w-[1000px] w-full">
             {Array.isArray(formattedData) && formattedData?.length > 0 && (
               <ul className="grid grid-cols-8 rounded-t-lg place-items-center text-center border bg-[#f3f3f3] p-3 border-b-2 text-[14px] font-semibold">
                 <li>Created At</li>
@@ -180,23 +178,20 @@ export default function Discount({ eventId }: { eventId: string }) {
               </>
             )}
             {Array.isArray(formattedData) &&
-              formattedData.map((discount: any, id, arr) => (
+              formattedData.map((discount: any) => (
                 <DiscountList
                   key={discount.id}
                   createdAt={discount.created_at}
                   code={discount.discountCode}
                   minQty={discount.minQty}
                   validUntil={discount.validUntil}
-                  amount={discount.discountAmount || "NULL"}
-                  percentage={discount.discountPercentage || "NULL"}
+                  amount={discount.discountAmount || ""}
+                  percentage={discount.discountPercentage || ""}
                   quantity={discount.quantity}
                   status={discount.status}
-                  onClick={() => {
-                    changeStatus(discount.id, discount.status);
-                    setValue(discount.status ? "on" : "off");
-                    console.log(value);
-                  }}
-                  value={value}
+                  orgId={discount?.id}
+                  getDiscount={getDiscount}
+
                 />
               ))}
             <Separator />
@@ -216,8 +211,8 @@ const DiscountList: React.FC<{
   percentage?: string;
   quantity?: string;
   status?: boolean;
-  onClick?: () => void;
-  value: string;
+  orgId: string;
+  getDiscount: () => Promise<void>;
 }> = ({
   createdAt = "",
   code = "",
@@ -226,10 +221,20 @@ const DiscountList: React.FC<{
   amount = "",
   percentage = "",
   quantity = "",
-  status = false,
-  onClick = () => {},
-  value = "",
+  status,
+  orgId,
+  getDiscount,
 }) => {
+  const [value, setValue] = useState(status);
+  const { updating, updateDiscount } = useDiscount();
+
+  async function submit(value: boolean) {
+    setValue(value);
+    await updateDiscount(value, orgId);
+    getDiscount();
+  }
+  // console.log(value)
+
   return (
     <ul className="grid grid-cols-8 place-items-center text-center p-3 text-[12px] border-x border-b">
       <li className="flex items-center">{createdAt}</li>
@@ -241,14 +246,12 @@ const DiscountList: React.FC<{
       <li>{quantity}</li>
       <li>
         <Switch
-          className={`data-[state=checked]:bg-zikoro w-[32px] h-[22px]`}
+          className={`data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-zikoro w-[32px] h-[22px]`}
+          disabled={updating}
+          onClick={() => submit(!status)}
           checked={
-            validUntil >= new Date().toISOString().split("T")[0]
-              ? true
-              : false && status
+            validUntil >= new Date().toISOString().split("T")[0] && value
           }
-          onClick={onClick}
-          value={value}
         />
       </li>
     </ul>
@@ -265,11 +268,9 @@ const DialogDemo = ({
   const [minQty, setMinQty] = useState<number>(1);
   const [quantity, setQuantity] = useState<number>(1);
   const [percentage, setPercentage] = useState<number>(1);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isAmtChecked, setIsAmtChecked] = useState<boolean>(true);
-  const [isPercChecked, setIsPercChecked] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const { createDiscount, loading } = useCreateDiscount();
+  const { createDiscount, loading } = useDiscount();
   const [discountData, setDiscountData] = useState({
     discountCode: "",
     discountAmount: "",
@@ -285,7 +286,7 @@ const DialogDemo = ({
           minQty,
           quantity,
           discountAmount,
-        eventId,
+          eventId,
           status: true,
         }
       : {

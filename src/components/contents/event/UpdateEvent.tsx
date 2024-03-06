@@ -72,11 +72,6 @@ export default function UpdateEvent({
   });
 
   const [eventPosterArr, setEventPosterArr] = useState([] as ImageFile[]);
-  const [isStartDateOpen, setIsStartDateOpen] = useState<boolean>(false);
-  const [isEndDateOpen, setIsEndDateOpen] = useState<boolean>(false);
-  const [startDateValue, setStartDateValue] = useState<string | null>(null);
-  const [endDateValue, setEndDateValue] = useState<string | null>(null);
-
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "pricing",

@@ -10,7 +10,7 @@ import {
   organizationSchema,
   newEventSchema,
 } from "@/validations";
-import { Event } from "@/types";
+import { Event, Organization } from "@/types";
 import _ from "lodash";
 import { postRequest } from "@/utils";
 import { getCookie } from "@/hooks";
@@ -178,7 +178,7 @@ export function useGetQueries(tableName: string) {
 
 export function useFetchSingleOrganization(id: string) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Event | null>(null);
+  const [data, setData] = useState<Organization | null>(null);
 
   useEffect(() => {
     fecthSingleOrg();
@@ -704,8 +704,9 @@ export function useEventFeedBack() {
   };
 }
 
-export function useCreateDiscount() {
+export function useDiscount() {
   const [loading, setLoading] = useState(false);
+  const [updating, setUpdating] = useState(false)
 
   async function createDiscount(values: any) {
     try {
@@ -728,8 +729,34 @@ export function useCreateDiscount() {
     } catch (error) {}
   }
 
+  async function updateDiscount(value: boolean, orgId: string) {
+      try {
+        const { data, error, status } = await supabase
+        .from("discount")
+        .update({ status: value })
+        .eq("id",orgId);
+
+        if (error) {
+          toast.error(error.message);
+          setUpdating(false);
+          return;
+        }
+        if (status === 204 || status === 200) {
+          setUpdating(false);
+          toast.success("Discount updated successfully");
+        }
+      }
+      catch(error) {
+
+      }
+  }
+
+
   return {
     loading,
+    updating,
+    updateDiscount,
     createDiscount,
+
   };
 }

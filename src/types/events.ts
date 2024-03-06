@@ -67,7 +67,7 @@ export interface Event {
   exhibitionHall: { name: string; capacity: string }[];
   sponsorCategory: { type: string; id: string }[];
   eventAlias: string;
-  eventTimeZone: string
+  eventTimeZone: string;
 }
 
 export interface PaymentConfigProps {
@@ -87,4 +87,27 @@ export interface DiscountCodeType {
   quantity: number;
   status: boolean;
   validUntil: string;
+}
+
+export interface Organization {
+  id: number;
+  organizationName: string;
+  subscriptionPlan: string;
+  subscritionStartDate: Date;
+  subscriptionEndDate: Date;
+  organizationOwner: string;
+  BillingAddress: string;
+  TaxID: string;
+  organizationType: string;
+  organizationLogo: string;
+  country: string;
+  eventPhoneNumber: string;
+  eventWhatsApp: string;
+  eventContactEmail: string;
+  x: string;
+  linkedIn: string;
+  instagram: string;
+  facebook: string;
+  certificateAsset: string;
+  tiktok: string;
 }

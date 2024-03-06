@@ -75,6 +75,7 @@ export const ReactSelect = React.forwardRef<
             ...baseStyles,
             textAlign: "start",
             textDecoration: "capitalize",
+            fontSize:"13px"
           }),
           placeholder: (baseStyles) => ({
             ...baseStyles,
@@ -87,6 +88,10 @@ export const ReactSelect = React.forwardRef<
             borderRadius: "6px",
             zIndex: 100,
           }),
+          dropdownIndicator: (baseStyle) => ( {
+            ...baseStyle,
+            borderLeft: "0px"
+        })
         }}
         options={options}
         onChange={(newValue) => onChange(newValue?.value)}
