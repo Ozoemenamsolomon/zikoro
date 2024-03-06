@@ -55,7 +55,7 @@ const Text = ({ details, setValue }: TabProps) => {
               ref && connectors.create(ref, <TextElement {...props} />)
             }
             className={cn(
-              "bg-gray-50 py-3 px-2 rounded text-gray-800",
+              "bg-gray-50 py-3 px-2 rounded text-gray-800 border",
               props.isBold && "font-bold"
             )}
             data-cy="toolbox-text"

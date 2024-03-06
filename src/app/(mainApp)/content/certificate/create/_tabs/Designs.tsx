@@ -28,7 +28,7 @@ const Designs = ({ details, setValue }: TabProps) => {
       {" "}
       <Input
         type="text"
-        placeholder="Search by email"
+        placeholder="Search"
         value={searchTerm}
         disabled={isLoading}
         onInput={(event) => setSearchTerm(event.currentTarget.value)}

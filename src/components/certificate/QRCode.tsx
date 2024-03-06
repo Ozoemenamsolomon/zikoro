@@ -88,7 +88,7 @@ const QRCodeSettings = () => {
 
   return (
     <div className="flex gap-2 justify-end">
-      <div className="w-1/2 rounded-md bg-background text-sm relative border flex items-center">
+      <div className="w-fit rounded-md bg-background text-sm relative border flex items-center">
         <span className="px-2 border-r py-1 flex justify-center items-center">
           <svg
             width={16}
@@ -108,7 +108,7 @@ const QRCodeSettings = () => {
         <Input
           type="number"
           max={256}
-          className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 border-0"
+          className="p-1.5 w-[50px] placeholder:text-sm placeholder:text-gray-200 text-gray-700 border-0"
           onInput={(e) => {
             setProp(
               (props: QRCodeProps) =>

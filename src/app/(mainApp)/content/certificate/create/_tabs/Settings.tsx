@@ -144,7 +144,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                 <DialogTrigger asChild>
                   <Button
                     variant={"ghost"}
-                    className="text-sm text-red-700 font-medium flex gap-2 items-center p-0 mt-2 mb-4"
+                    className="text-sm text-basePrimary font-medium flex gap-2 items-center p-0 mt-2 mb-4"
                   >
                     <span>Select Exceptions</span>
                   </Button>
@@ -278,6 +278,73 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           </div>
         </div>
       </div>
+      <div className="pt-4 pb-2 border-t-2">
+        <div className="col-span-6 w-full rounded-md bg-background text-sm relative">
+          <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+            Publish on
+          </span>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-full flex gap-2 items-center justify-start text-left font-normal",
+                  !settings.expiryDate && "text-muted-foreground"
+                )}
+              >
+                <svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  strokeWidth={0}
+                  viewBox="0 0 1024 1024"
+                  height="1.5em"
+                  width="1.5em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M712 304c0 4.4-3.6 8-8 8h-56c-4.4 0-8-3.6-8-8v-48H384v48c0 4.4-3.6 8-8 8h-56c-4.4 0-8-3.6-8-8v-48H184v136h656V256H712v48z" />
+                  <path d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zm0-448H184V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136z" />
+                </svg>
+
+                {settings.expiryDate ? (
+                  format(settings.expiryDate, "PPP")
+                ) : (
+                  <span>Pick a date</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              className="flex w-auto flex-col space-y-2 p-2"
+            >
+              <Select
+                onValueChange={(value) =>
+                  editSettings(
+                    "expiryDate",
+                    addDays(new Date(), parseInt(value))
+                  )
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  <SelectItem value="0">Same Day</SelectItem>
+                  <SelectItem value="365">In a year</SelectItem>
+                  <SelectItem value="1825">In 5 years</SelectItem>
+                  <SelectItem value="3650">In 10 years</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="rounded-md border">
+                <Calendar
+                  mode="single"
+                  selected={settings.expiryDate}
+                  onSelect={(date) => editSettings("expiryDate", date)}
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
       <div className="pt-4 border-t-2 space-y-4 pb-2">
         <div className="flex justify-between">
           <span className="text-sm font-medium text-gray-500">Expires on</span>
@@ -380,8 +447,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                 <span className="capitalize">Add Skills</span>
               </DialogTitle>
             </DialogHeader>
-            <div className="space-y-2">
-              <div className="relative border-b py-4">
+            <div className="space-y-4">
+              <div className="relative py-4">
                 <span className="text-tiny text-gray-500 font-medium absolute top-2 left-2">
                   skill
                 </span>

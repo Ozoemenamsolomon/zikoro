@@ -1,3 +1,4 @@
+import UserContacts from "@/components/UserContacts";
 import UserProfile from "@/components/UserProfile";
 import AddUserForm from "@/components/forms/AddUserForm";
 import useDisclose from "@/hooks/common/useDisclose";
@@ -6,8 +7,10 @@ import React from "react";
 
 const MyProfile = () => {
   const { user, isLoading, getUser } = useGetUser({
-    userId: Number(24).toString(),
+    userId: Number(13).toString(),
   });
+
+  console.log(user);
 
   const {
     isOpen: userFormIsOpen,
@@ -15,7 +18,7 @@ const MyProfile = () => {
     onClose: onCloseUserForm,
   } = useDisclose();
 
-  if (isLoading || !user)
+  if (isLoading)
     return (
       <div className="h-[450px] w-full flex items-center justify-center">
         <div className="animate-spin">
@@ -34,10 +37,15 @@ const MyProfile = () => {
       </div>
     );
 
+  if (!user) return null;
+
   return (
-    <div className="grid grid-cols-10">
+    <div className="grid grid-cols-10 border-t">
       <div className="col-span-4">
         <UserProfile user={user} onOpen={onOpenUserForm} />
+      </div>
+      <div className="col-span-6">
+        <UserContacts />
       </div>
       <AddUserForm
         isOpen={userFormIsOpen}

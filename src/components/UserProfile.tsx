@@ -5,6 +5,7 @@ import { usePDF } from "react-to-pdf";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import QRCode from "react-qr-code";
+import { TUser } from "@/types/user";
 
 export default function UserProfile({
   user,
@@ -19,7 +20,6 @@ export default function UserProfile({
     userEmail,
     firstName,
     lastName,
-    email,
     jobTitle,
     organization,
     city,
@@ -34,11 +34,11 @@ export default function UserProfile({
     profilePicture,
     id,
     ticketType,
-    registrationDate,
+    created_at,
   } = user;
 
   const sendMail = () => {
-    const to = email;
+    const to = userEmail;
     const subject = "";
     const body = `Hi ${firstName}`;
 
@@ -47,7 +47,7 @@ export default function UserProfile({
       to
     )}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-    // Open the user's default email client
+    // Open the user's default userEmail client
     window.location.href = mailtoUrl;
   };
 
@@ -339,7 +339,7 @@ export default function UserProfile({
                     />
                   </svg>
                   <span className="text-gray-500 text-sm truncate">
-                    {email}
+                    {userEmail}
                   </span>
                 </div>
                 {
@@ -523,7 +523,7 @@ export default function UserProfile({
       <section className="space-y-6 p-4 pt-0">
         <div className="flex justify-between items-center">
           <span className="text-tiny font-medium text-gray-500">
-            Added {format(new Date(registrationDate), "dd MMMM, yyyy")}
+            Added {format(new Date(created_at), "dd MMMM, yyyy")}
           </span>
           <div className="flex gap-1 items-center">
             <svg

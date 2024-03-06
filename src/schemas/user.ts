@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const UserSchema = z.object({
-  id: z.bigint(),
+  id: z.number().optional(),
   created_at: z.string(), // You can define a more specific date format if needed
   userEmail: z.string(),
   firstName: z.string(),
@@ -18,5 +18,5 @@ export const UserSchema = z.object({
   linkedin: z.string(),
   instagram: z.string(),
   facebook: z.string(),
-  userId: z.string(),
+  userId: z.string().optional().nullable(),
 });

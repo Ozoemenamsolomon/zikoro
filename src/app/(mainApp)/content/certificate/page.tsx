@@ -204,17 +204,17 @@ const Certificates = () => {
       <Dialog>
         <DialogTrigger asChild>
           <button
-            className="w-full hover:bg-gray-100 text-gray-700"
+            className="w-full hover:bg-gray-100 text-gray-700 py-2"
             onClick={(e) => e.stopPropagation()}
           >
             <span className="p-2">Make a copy</span>
           </button>
         </DialogTrigger>
-        <DialogContent className="px-2 pt-4 pb-2">
+        <DialogContent className="px-2 pt-6 z-[100]">
           <DialogHeader className="px-3">
             <DialogTitle></DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-8">
             <div className="flex flex-col gap-4 items-center py-4">
               <svg
                 width={65}
@@ -258,7 +258,7 @@ const Certificates = () => {
                     className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-full"
                   />
                 </SelectTrigger>
-                <SelectContent className="max-h-[250px] w-[500px] hide-scrollbar overflow-auto">
+                <SelectContent className="max-h-[250px] w-[500px] hide-scrollbar overflow-auto z-[10000]">
                   {events &&
                     events.map(({ id, eventTitle }) => (
                       <SelectItem
@@ -281,7 +281,7 @@ const Certificates = () => {
                 }}
                 className="bg-basePrimary w-full"
               >
-                make a copy
+                Make a copy
               </Button>
             </DialogClose>
           </div>
@@ -324,7 +324,7 @@ const Certificates = () => {
             <span className="p-2">Delete</span>
           </button>
         </DialogTrigger>
-        <DialogContent className="px-4 pt-4 pb-2 z-[1000]">
+        <DialogContent className="px-4 py-6 z-[1000]">
           <DialogHeader className="px-3">
             <DialogTitle></DialogTitle>
           </DialogHeader>
@@ -553,7 +553,7 @@ const Certificates = () => {
   return (
     <div className="flex flex-col gap-2 px-2 py-4">
       <Button
-        className="bg-basePrimary flex gap-4 items-center self-end w-fit"
+        className="bg-basePrimary flex gap-4 items-center self-end w-fit py-2"
         onClick={() => router.push("/content/certificate/create")}
       >
         <svg
@@ -573,12 +573,12 @@ const Certificates = () => {
       <div className="grid-cols-4 grid gap-4">
         {certificates?.map(
           ({ cerificateUrl, certificateName, created_at, id, eventId }) => (
-            <div className="relative">
+            <div className="relative h-full">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="bg-black/10 p-2 absolute top-2 right-2 z-[100]"
+                    className="bg-black/10 p-2 absolute top-2 right-2 z-[2]"
                   >
                     <svg
                       stroke="currentColor"
@@ -610,7 +610,7 @@ const Certificates = () => {
               </DropdownMenu>
               <button
                 disabled={certificateIsSaving}
-                className="border border-gray-200 rounded-md relative w-full"
+                className="border border-gray-200 rounded-md relative w-full h-full"
                 onClick={() =>
                   router.push(`/content/certificate/create?certificateId=${id}`)
                 }
@@ -618,7 +618,7 @@ const Certificates = () => {
                 <div className="w-full h-[250px] overflow-hidden">
                   <img className="object-fill" src={cerificateUrl || ""} />
                 </div>
-                <div className="space-y-1 px-4 py-2 border-t border-gray-200">
+                <div className="space-y-1 px-4 py-2 border-t border-gray-200 h-full">
                   <h2 className="text-gray-800 font-bold text-left">
                     {certificateName}
                   </h2>

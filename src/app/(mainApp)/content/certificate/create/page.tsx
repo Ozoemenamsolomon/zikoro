@@ -648,7 +648,7 @@ const page = () => {
           />
           <div className="flex gap-2">
             <SaveButton />
-            <Button
+            {/* <Button
               className="bg-basePrimary flex gap-4 items-center"
               onClick={download}
             >
@@ -672,7 +672,7 @@ const page = () => {
               </svg>
 
               <span>Export</span>
-            </Button>
+            </Button> */}
           </div>
         </section>
 

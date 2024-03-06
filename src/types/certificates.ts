@@ -27,7 +27,7 @@ export interface TCertificateSettings {
   criteria: number;
   canExpire: boolean;
   expiryDate: Date;
-  skills: string[];
+  skills: { color: string; value: string }[];
 }
 
 export interface TCertificateDetails {

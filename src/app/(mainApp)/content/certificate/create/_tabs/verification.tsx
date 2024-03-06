@@ -15,7 +15,9 @@ const Verification = ({ details, setValue }: TabProps) => {
           ref={(ref) =>
             ref && connectors.create(ref, <CertificateQRCode url="this" />)
           }
-          className="text-sky-300 text-sm"
+          className={
+            "bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"
+          }
           data-cy="toolbox-qr-code"
         >
           Drag to add QR code
@@ -28,7 +30,9 @@ const Verification = ({ details, setValue }: TabProps) => {
               <Text text={"Certificate ID: #{certificateId#}"} />
             )
           }
-          className="text-sky-300 text-sm"
+          className={
+            "bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"
+          }
           data-cy="toolbox-qr-code"
         >
           Drag to add Certificate Id

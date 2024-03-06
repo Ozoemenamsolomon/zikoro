@@ -9,9 +9,10 @@ export const useGetUser = ({ userId }: { userId: string }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
+  console.log(userId, "user id");
   const getUser = async () => {
     setLoading(true);
-
+    console.log(userId, "user id");
     const { data, status } = await getRequest<TUser>({
       endpoint: `/users/${userId}`,
     });

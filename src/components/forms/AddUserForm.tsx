@@ -50,6 +50,12 @@ export default function AddUserForm({
     useState<string>("+234");
   const defaultValues: Partial<TUser> = user || {
     country: "Nigeria",
+    linkedin: "",
+    x: "",
+    instagram: "",
+    facebook: "",
+    bio: "my bio",
+    userId: "10",
   };
 
   const { createUser, isLoading, error } = useCreateUser();
@@ -120,7 +126,7 @@ export default function AddUserForm({
     <Overlay
       isOpen={isOpen}
       onClose={onClose}
-      title={`${user ? "Update" : "Create"}User`}
+      title={`${user ? "Update" : "Create"} User`}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
