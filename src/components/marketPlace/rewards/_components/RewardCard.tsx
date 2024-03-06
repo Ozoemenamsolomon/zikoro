@@ -1,0 +1,130 @@
+"use client";
+
+import Image from "next/image";
+import { AlertCircle } from "@styled-icons/feather/AlertCircle";
+import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { Button } from "@/components";
+import { useState } from "react";
+import { PromotionalOfferType, Reward } from "@/types";
+export function RewardCard({ reward }: { reward: Reward }) {
+  const [isOpen, setOpen] = useState(false);
+
+  function onClose() {
+    setOpen((prev) => !prev);
+  }
+
+  return (
+    <>
+      <div className="w-full h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
+        <div className="relative w-full h-40 sm:h-56 rounded-t-md overflow-hidden">
+          <Image
+            src={"/images/rect.png"}
+            alt="product"
+            width={600}
+            height={600}
+            className="w-full rounded-t-md h-[180px] sm:h-56"
+          />
+        </div>
+        <div className="w-full px-3 flex items-start justify-between">
+          <div className="flex flex-col items-start justify-start">
+            <p className="font-medium">{"Rewrd Name"}</p>
+          </div>
+          <button onClick={onClose}>
+            <AlertCircle className="text-gray-600" size={22} />
+          </button>
+        </div>
+        <div className="w-full flex flex-col px-3 items-start justify-start">
+          <div className="flex px-3 items-center gap-x-3">
+            <p className="font-semibold">{`QTY: `}</p>
+            <p className="font-semibold text-gray-400 line-through">
+              0 redeemed
+            </p>
+          </div>
+          <div className="w-full flex text-gray-500 items-center justify-between">
+            <p>Redeem for 200 points</p>
+            <p>Available points :200</p>
+          </div>
+        </div>
+        <div className="px-3 w-full mt-1 flex items-center justify-between">
+          <button
+            onClick={() => {}}
+            className="text-zikoro text-sm font-semibold"
+          >
+            Redeem Reward
+          </button>
+        </div>
+      </div>
+      {isOpen && <RewardCardModal close={onClose} reward={reward} />}
+    </>
+  );
+}
+
+function RewardCardModal({
+  close,
+  reward,
+}: {
+  reward: Reward;
+  close: () => void;
+}) {
+  return (
+    <div
+      role="button"
+      onClick={close}
+      className="w-full h-full fixed z-[100]  inset-0 bg-black/50"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        role="button"
+        className="w-[95%] sm:w-[450px] box-animation h-fit max-h-[85%] overflow-y-auto flex my-10 flex-col gap-y-6 rounded-lg bg-white  mx-auto absolute inset-0 py-6 px-3 sm:px-4"
+      >
+        <div className="w-full flex items-end justify-end">
+          <Button onClick={close} className="px-1 h-fit w-fit">
+            <CloseOutline size={22} />
+          </Button>
+        </div>
+
+        <div className="w-full h-fit pb-3 flex flex-col  gap-y-2 items-start">
+          <div className="relative w-full h-40 sm:h-56 rounded-t-md overflow-hidden">
+            <Image
+              src={"/images/rect.png"}
+              alt="product"
+              width={600}
+              height={600}
+              className="w-full rounded-t-md h-[180px] sm:h-56"
+            />
+          </div>
+
+          <div className="w-full px-3 flex items-start justify-start">
+            <div className="flex flex-col items-start justify-start">
+              <p className="font-medium"> {"Reward Name"}</p>
+            </div>
+          </div>
+          <div className="flex flex-col items-start justify-start w-full">
+            <div className="flex px-3 items-center gap-x-3">
+              <p className="font-semibold">{`QTY: `}</p>
+              <p className="font-semibold text-gray-400 line-through">
+                0 redeemed
+              </p>
+            </div>
+            <div className="w-full flex text-gray-500 items-center justify-between">
+              <p>Redeem for 200 points</p>
+              <p>Available points :200</p>
+            </div>
+          </div>
+
+          <p className="w-full flex-wrap px-3 items-start justify-start leading-6 text-gray-600 text-sm">
+            {"Halla"}
+          </p>
+          <div className="px-3 w-full mt-1 flex items-center justify-between">
+            <button
+              onClick={() => {}}
+              className="text-zikoro text-sm font-semibold"
+            >
+              Redeem Reward
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

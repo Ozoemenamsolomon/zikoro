@@ -15,7 +15,7 @@ import {
   ReactSelect,
 } from "@/components";
 import { CreateOrganization } from "..";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import _ from "lodash";
 import { useForm } from "react-hook-form";
 
@@ -28,10 +28,10 @@ export function HeaderWidget({
 }: {
   currentQuery: string | null;
 }) {
-  const [organization, setOrganization] = useState(currentQuery ?? "");
   const [isOpen, setOpen] = useState(false);
   const router = useRouter();
   const form = useForm({});
+  const { id } = useParams();
   const { data: organizationList } = useGetQueries("organization");
 
   function onClose() {
@@ -41,21 +41,20 @@ export function HeaderWidget({
   const formattedList: OrganizationListType[] = useMemo(() => {
     const restructuredList = organizationList?.map(
       ({ id, organizationName }) => {
-        return { label: id, value: organizationName };
+        return { value: id, label: organizationName };
       }
     );
     return _.uniqBy(restructuredList, "value");
   }, [organizationList]);
 
   function showOrganizationEvents(value: any) {
-   
-    const org = formattedList.find((o) => o.value === value.value);
-    router.push(`/events/${org?.label}?organization=${value.value}`);
+    const org = formattedList.find((o) => o.value === value.org);
+    router.push(`/events/${org?.value}?organization=${org?.label}`);
   }
 
   function newEvent() {
-    const org = formattedList.find((o) => o.value === organization);
-    router.push(`/create/${org?.label}`);
+    const org = formattedList.find((o) => o.label === currentQuery);
+    router.push(`/create/${org?.value}`);
   }
 
   return (
@@ -69,15 +68,19 @@ export function HeaderWidget({
         </div>
         <div className="flex items-center gap-x-3">
           <Form {...form}>
-            <form className="w-[150px]" onSubmit={form.handleSubmit(showOrganizationEvents)}>
+            <form
+              className="w-[180px]"
+              onSubmit={form.handleSubmit(showOrganizationEvents)}
+            >
               <ReactSelect
                 {...form.register("org")}
+                defaultValue={{ label: currentQuery, value: id }}
                 options={formattedList}
                 placeHolder="Select Organization"
               />
             </form>
           </Form>
-         
+
           <Button
             onClick={onClose}
             className="bg-transparent border text-zikoro hover:border-0 border-zikoro transition-all transform duration-300 ease-in-out hover:text-gray-50 hover:bg-zikoro gap-x-2 h-11 sm:h-12 font-medium"

@@ -16,8 +16,8 @@ export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
 
   const formatDiscount = useMemo(() => {
     return (
-      (Number(offer?.productPrice) -
-        Number(offer?.productPromo)) / Number(offer?.productPrice) *
+      ((Number(offer?.productPrice) - Number(offer?.productPromo)) /
+        Number(offer?.productPrice)) *
       100
     );
   }, [offer?.productPrice, offer?.productPromo]);
@@ -40,8 +40,8 @@ export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
           <div className="flex flex-col items-start justify-start">
             <p className="font-medium">{offer?.serviceTitle ?? ""}</p>
             <p className="text-xs w-full text-ellipsis overflow-hidden whitespace-nowrap text-gray-600">
-                {offer?.companyName ?? ""}
-              </p>
+              {offer?.companyName ?? ""}
+            </p>
           </div>
           <button onClick={onClose}>
             <AlertCircle className="text-gray-600" size={22} />
@@ -100,11 +100,10 @@ function OfferCardModal({
   offer: PromotionalOfferType;
   close: () => void;
 }) {
-
   const formatDiscount = useMemo(() => {
     return (
-      (Number(offer?.productPrice) -
-        Number(offer?.productPromo)) / Number(offer?.productPrice) *
+      ((Number(offer?.productPrice) - Number(offer?.productPromo)) /
+        Number(offer?.productPrice)) *
       100
     );
   }, [offer?.productPrice, offer?.productPromo]);
@@ -112,12 +111,12 @@ function OfferCardModal({
     <div
       role="button"
       onClick={close}
-      className="w-full h-full fixed z-[100] overflow-y-auto inset-0 bg-black/50"
+      className="w-full h-full fixed z-[100]  inset-0 bg-black/50"
     >
       <div
         onClick={(e) => e.stopPropagation()}
         role="button"
-        className="w-[95%] sm:w-[450px] box-animation h-fit flex my-10 flex-col gap-y-6 rounded-lg bg-white  mx-auto absolute inset-0 py-6 px-3 sm:px-4"
+        className="w-[95%] sm:w-[450px] box-animation h-fit max-h-[85%] overflow-y-auto flex my-10 flex-col gap-y-6 rounded-lg bg-white  mx-auto absolute inset-0 py-6 px-3 sm:px-4"
       >
         <div className="w-full flex items-end justify-end">
           <Button onClick={close} className="px-1 h-fit w-fit">
@@ -135,7 +134,7 @@ function OfferCardModal({
               className="w-full rounded-t-md h-[180px] sm:h-56"
             />
             <span className="absolute text-white text-xs bg-zikoro px-2 py-1 rounded-bl-lg top-0 right-0">
-            {`${formatDiscount?.toFixed(0)}%`}
+              {`${formatDiscount?.toFixed(0)}%`}
             </span>
           </div>
           <div className="w-full px-3 flex items-start justify-start">
