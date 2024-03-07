@@ -47,10 +47,14 @@ export function HeaderWidget({
     return _.uniqBy(restructuredList, "value");
   }, [organizationList]);
 
-  function showOrganizationEvents(value: any) {
-    const org = formattedList.find((o) => o.value === value.org);
-    router.push(`/events/${org?.value}?organization=${org?.label}`);
-  }
+  const selectedOrg = form.watch("org");
+  useEffect(() => {
+    if (selectedOrg) {
+    
+      const org = formattedList.find((o) => o.value === selectedOrg);
+      router.push(`/events/${org?.value}?organization=${org?.label}`);
+    }
+  }, [selectedOrg]);
 
   function newEvent() {
     const org = formattedList.find((o) => o.label === currentQuery);
@@ -70,7 +74,7 @@ export function HeaderWidget({
           <Form {...form}>
             <form
               className="w-[180px]"
-              onSubmit={form.handleSubmit(showOrganizationEvents)}
+              //  onSubmit={form.handleSubmit(showOrganizationEvents)}
             >
               <ReactSelect
                 {...form.register("org")}

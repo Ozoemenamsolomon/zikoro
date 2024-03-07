@@ -142,7 +142,7 @@ function SideNavs({
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className=" py-3   sm:py-4 flex flex-col relative  items-center h-full bg-white w-[200px] sm:w-[250px] cursor-pointer shadow-md"
+        className=" py-3   sm:py-4 flex flex-col items-center justify-between relative h-full bg-white w-[200px] sm:w-[250px] cursor-pointer border-r"
       >
         <div className="flex  flex-col gap-y-10 items-center w-full">
           <Image
@@ -161,7 +161,7 @@ function SideNavs({
             id={organizationId}
           />
         </div>
-        <div className="w-full text-[10px] sm:text-xs px-4 flex flex-col  items-start justify-start bottom-5 inset-x-0 absolute  gap-y-3">
+        <div className="w-full text-[10px] py-2 sm:text-xs px-4 flex flex-col h-[45vh] items-start justify-start gap-y-2">
         <div className="w-full flex items-center gap-x-2 ">
             <Link href="https://www.zikoro.com" className="text-mobile sm:text-desktop text-zikoro font-medium hover:underline ">Try Zikoro!</Link>
             

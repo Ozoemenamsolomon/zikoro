@@ -17,6 +17,7 @@ import { cn } from "@/lib";
 type FormValue = {
   search: string;
 };
+
 export default function StampCard({ eventId }: { eventId: string }) {
   const { loading, data } = useFetchPartners(eventId);
   const [active, setActive] = useState(false);

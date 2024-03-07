@@ -87,10 +87,11 @@ export const ReactSelect = React.forwardRef<
             ...baseStyles,
             borderRadius: "6px",
             zIndex: 100,
+            fontSize: "13px",
           }),
           dropdownIndicator: (baseStyle) => ( {
             ...baseStyle,
-            borderLeft: "0px"
+            borderRight: "0px"
         })
         }}
         options={options}

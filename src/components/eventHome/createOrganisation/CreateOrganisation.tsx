@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectContent,
   SelectItem,
+  ReactSelect,
 } from "@/components";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -30,9 +31,9 @@ export function CreateOrganization({ close }: { close: () => void }) {
   async function onSubmit(values: z.infer<typeof organizationSchema>) {
     await organisation(values);
     form.reset({
-      organizationName:"",
-      organizationType:"",
-      subscriptionPlan:""
+      organizationName: "",
+      organizationType: "",
+      subscriptionPlan: "",
     });
   }
   return (
@@ -77,50 +78,28 @@ export function CreateOrganization({ close }: { close: () => void }) {
               control={form.control}
               name="organizationType"
               render={({ field }) => (
-                <InputOffsetLabel label={"Organization Type"}>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value || "Select organization Type"}
-                  >
-                    <SelectTrigger className="border focus:border-gray-500 h-12">
-                      <SelectValue
-                        placeholder="Select organization Type"
-                        className="placeholder:text-sm h-12 border focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                      />
-                    </SelectTrigger>
-
-                    <SelectContent>
-                      {orgType.map((value) => (
-                        <SelectItem value={value ?? "Select Organization Type"}>{value}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </InputOffsetLabel>
+                <ReactSelect
+                  {...form.register("organizationType")}
+                  label="Organization Type"
+                  options={orgType.map((value) => {
+                    return { value, label: value };
+                  })}
+                  placeHolder="Select Organization"
+                />
               )}
             />
             <FormField
               control={form.control}
               name="subscriptionPlan"
               render={({ field }) => (
-                <InputOffsetLabel label={"Pricing Plan"}>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value || "Select Subscription Plan"}
-                  >
-                    <SelectTrigger className="border focus:border-gray-500 h-12">
-                      <SelectValue
-                        placeholder="Select Subscription Plan"
-                        className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                      />
-                    </SelectTrigger>
-
-                    <SelectContent>
-                      {pricingPlan.map((value) => (
-                        <SelectItem value={value ?? "Select Subscription Plan"}>{value}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </InputOffsetLabel>
+                <ReactSelect
+                  {...form.register("subscriptionPlan")}
+                  label="Pricing Plan"
+                  options={pricingPlan.map((value) => {
+                    return { value, label: value };
+                  })}
+                  placeHolder="Select Subscription Plan"
+                />
               )}
             />
 

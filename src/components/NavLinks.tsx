@@ -23,7 +23,7 @@ export const NavLinks = ({
   const pathname = usePathname();
 
   return (
-    <ul className="flex flex-col gap-y-1 items-start h-[43vh] pb-32 overflow-hidden  no-scrollbar overflow-y-auto  justify-start w-full">
+    <ul className="flex flex-col gap-y-1 items-start h-[50vh] pb-32 overflow-hidden  no-scrollbar overflow-y-auto  justify-start w-full">
       {links.map(({ href, name, icon: Icon }, idx) => {
         if (idx === links.length - 2) {
         
@@ -86,9 +86,9 @@ export const NavLinks = ({
               }
               target={href === "/live-events" ? "blank" : ""}
               className={cn(
-                "p-3 px-4 flex  items-center gap-x-2  w-full",
+                "p-3 pr-4 pl-4 flex  items-center gap-x-2  w-full",
                 href === pathname &&
-                  "text-zikoro  bg-zikoro border-l-4 border-zikoro bg-opacity-10  ",
+                  "text-zikoro pl-2 pr-4  bg-zikoro border-l-4 border-zikoro bg-opacity-10  ",
                 query === null && href === "/live-events" && "hidden"
               )}
             >
