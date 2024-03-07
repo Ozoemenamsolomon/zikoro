@@ -126,16 +126,16 @@ export default function StampCard({ eventId }: { eventId: string }) {
 
         {Array.isArray(partnerData || data) &&
           (partnerData || data).map(
-            ({ stampIt, exhibitionHall, boothNumber, eventId }) => (
+            ({ stampIt, exhibitionHall, boothNumber,companyLogo, eventId }) => (
               <div
                 key={eventId}
                 className="w-full h-52 rounded-lg border p-3 flex flex-col gap-y-2"
               >
                 <Image
-                  src="/images/cowrywise.png"
+                  src={companyLogo}
                   width={300}
                   height={300}
-                  className="w-full h-full object-contain"
+                  className="w-full h-24 object-contain"
                   alt="partner-logo"
                 />
                 <p className="text-mobile text-gray-600">{`${
