@@ -36,9 +36,9 @@ export function ContentTopNav({eventId}:{eventId:string}) {
         }
       ];
       const pathname = usePathname();
-      const [isSaved, setIsSaved] = useState<boolean>(true);
+    //  const [isSaved, setIsSaved] = useState<boolean>(true);
     return (
-        <div className="w-full overflow-x-auto no-scrollbar  p-4 text-base flex items-center justify-between text-[#3E404B] border-b-2 border-basebody">
+        <div className="w-full overflow-x-auto no-scrollbar  p-4 text-base flex items-center justify-between text-[#3E404B] border-b border-basebody">
         <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
           {links.map(({ name, href }, index) => {
             return (

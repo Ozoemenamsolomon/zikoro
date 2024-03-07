@@ -51,7 +51,7 @@ export function ContentTabs({
 
   return (
     <>
-      <nav className="bg-white w-full flex items-center justify-between px-4 py-4 h-max border-b-[1px]">
+      <nav className="bg-white w-full flex items-center justify-between px-4 py-4 h-max border-b">
         <ul className="flex gap-x-6 text-gray-700">
           {links.map(({ name, href }) => {
             return (
