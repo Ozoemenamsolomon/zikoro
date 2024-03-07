@@ -34,8 +34,8 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
     },
 
     {
-      name: "Documents",
-      href: "/documents",
+      name: "Interactions",
+      href: `/events/interaction/${eventId}/stamp-card`,
     },
     {
       name: "Analytics",
@@ -47,26 +47,25 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
     },
   ];
 
-
   return (
     <nav className="w-full overflow-x-auto no-scrollbar">
       <div className="bg-white min-w-[900px] px-4 pt-4 h-max border-b-2">
-      <ul className="flex justify-between text-gray-700">
-        {links.map(({ name, href }) => {
-          return (
-            <li
-              className={`pb-1 text-sm ${
-                pathname === href.split("?")[0]
-                  ? "text-zikoro border-b-2 border-zikoro font-medium"
-                  : ""
-              }`}
-            >
-              <Link href={href}>{name}</Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+        <ul className="flex justify-between text-gray-700">
+          {links.map(({ name, href }) => {
+            return (
+              <li
+                className={`pb-1 text-sm ${
+                  pathname === href.split("?")[0]
+                    ? "text-zikoro border-b-2 border-zikoro font-medium"
+                    : ""
+                }`}
+              >
+                <Link href={href}>{name}</Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </nav>
   );
 };

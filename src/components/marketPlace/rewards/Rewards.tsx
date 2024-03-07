@@ -21,7 +21,9 @@ export default function Rewards({ eventId }: { eventId: string }) {
   return (
     <MarketPlaceLayout eventId={eventId}>
       <div className="flex items-end w-full justify-end px-4">
-        <Button className="text-gray-50 bg-zikoro gap-x-2 h-11 sm:h-12 font-medium">
+        <Button
+        onClick={onClose}
+        className="text-gray-50 bg-zikoro gap-x-2 h-11 sm:h-12 font-medium">
           <PlusCircle size={22} />
           <p>Rewards</p>
         </Button>

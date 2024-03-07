@@ -1,6 +1,5 @@
 import { PartnerCard } from "./_components";
 import { TPartner } from "@/types";
-import { useMemo } from "react";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { EmptyCard } from "@/components/composables";
 
