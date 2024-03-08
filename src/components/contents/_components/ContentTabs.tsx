@@ -29,7 +29,7 @@ export function ContentTabs({
     },
     {
       name: "Contact",
-      href: "contact",
+      href: `/events/content/${eventId}/contact`,
     },
     {
       name: "Certificate",
@@ -41,7 +41,7 @@ export function ContentTabs({
     },
     {
       name: "Discount",
-      href: "discount",
+      href: `/events/content/${eventId}/discount`,
     },
     {
       name: "Partners",
@@ -57,7 +57,7 @@ export function ContentTabs({
             return (
               <li
                 className={`pb-1 text-sm ${
-                  pathname === href ? "text-zikoro  font-medium" : ""
+                  pathname.includes(name.toLowerCase()) ? "text-zikoro  font-medium" : ""
                 }`}
               >
                 <Link href={href}>{name}</Link>

@@ -45,7 +45,7 @@ export function ContentTopNav({eventId}:{eventId:string}) {
               <Link
                 href={href}
                 key={index}
-                className={`pl-2 ${pathname === href && "text-zikoro"}`}
+                className={`pl-2 ${ pathname.includes(name.toLowerCase()) && "text-zikoro"}`}
               >
                 {name}
               </Link>

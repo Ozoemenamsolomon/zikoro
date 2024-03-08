@@ -7,6 +7,8 @@ import { ContentTopNav } from "@/components/content/topNav";
 import { SideBarLayout } from "@/components";
 import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
 import { Camera } from "@styled-icons/feather/Camera";
+import { Eye } from "@styled-icons/feather/Eye";
+import { Check2 } from "@styled-icons/bootstrap/Check2";
 import Image from "next/image";
 import {
   Form,
@@ -119,16 +121,41 @@ function Contact({ eventId }: { eventId: string }) {
           className="w-full"
           id="form"
         >
-          <div className="w-full p-4 flex items-center justify-between">
-            <h6 className="font-medium">Contact information</h6>
-            <Button
-              type="submit"
-              className="text-zikoro border border-zikoro gap-x-2"
-            >
-              {loading && <LoaderAlt className="animate-spin" />}
-              <p>Update</p>
-              <Download size={22} />
-            </Button>
+          <div className="w-full p-4 flex items-end justify-end">
+          <div className="flex items-center gap-x-2">
+                  <Button className="gap-x-2">
+                    {loading && (
+                      <LoaderAlt size={22} className="animate-spin" />
+                    )}
+                    <Check2 size={22} className="text-zikoro" />
+                    <p>Save</p>
+                  </Button>
+                  <Button
+                    // type="submit"
+                    onClick={(e) => {
+                        e.preventDefault();
+                      e.stopPropagation();
+                      window.open(`/events/content/${eventId}/preview`, '_blank')
+                   
+                    }}
+                    className="text-gray-50 bg-zikoro gap-x-2"
+                  >
+                    <Eye size={22} />
+                    <p>Preview</p>
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      //   e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    type="submit"
+                    className="text-zikoro border border-zikoro gap-x-2"
+                  >
+                    <Download size={22} />
+                    <p>Publish</p>
+                  </Button>
+                </div>
+          
           </div>
           {/* <button>Click</button> */}
           <div className="grid grid-cols-1 md:grid-cols-2 mb-10 gap-6 px-4">
