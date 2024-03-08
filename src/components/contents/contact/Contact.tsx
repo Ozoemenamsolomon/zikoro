@@ -3,7 +3,7 @@ import { Download } from "@styled-icons/bootstrap/Download";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useEffect, useState, useMemo } from "react";
 import { COUNTRY_CODE, uploadFile } from "@/utils";
-import { ContentTopNav } from "@/components/content/topNav";
+import { ContentTopNav } from "../_components";
 import { SideBarLayout } from "@/components";
 import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
 import { Camera } from "@styled-icons/feather/Camera";

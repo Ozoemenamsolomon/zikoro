@@ -12,7 +12,7 @@ export function ContentTopNav({eventId}:{eventId:string}) {
     const links = [
         {
           name: "Info",
-          href: `/events/content/${eventId}/event`,
+          href: `/events/content/${eventId}/info`,
         },
         {
           name: "Contact",

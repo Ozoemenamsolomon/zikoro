@@ -19,7 +19,7 @@ import { COUNTRY_CODE } from "@/utils";
 import TextEditor from "@/components/content/TextEditor";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { SideBarLayout } from "@/components";
-import { ContentTopNav } from "@/components/content/topNav";
+import { ContentTopNav } from "../_components";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
 import {uploadFile} from "@/utils"

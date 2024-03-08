@@ -5,9 +5,10 @@ import {
   PartnerWidget,
   ExhibitionHall,
   AddExhibitionHall,
-  AddSponsorLevel,
+
 } from "..";
-import { useState, useEffect } from "react";
+import { AddPartners } from "@/components/partners/_components";
+import { useState } from "react";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { Eye } from "@styled-icons/evil/Eye";
 import { Button } from "@/components";
@@ -28,6 +29,7 @@ export function PartnersList({
   const { data: event, refetch: refetchSingleEvent } =
     useFetchSingleEvent(eventId);
   const [isOpen, setOpen] = useState(false);
+  const [isPartner, setPartner] = useState(false);
   const { loading: delLoading, deletes, deleteAll } = useDeletePartner();
   const [isAddHall, setAddHall] = useState(false);
   const { isActive } = useDropBoxPosition();
@@ -40,6 +42,10 @@ export function PartnersList({
 
   function onClose() {
     setAddHall((prev) => !prev);
+  }
+
+  function onPartner() {
+    setPartner((prev) => !prev);
   }
 
 
@@ -117,6 +123,14 @@ export function PartnersList({
             <button onClick={onToggle} className="">
               <Eye size={40} />
             </button>
+
+            <Button
+            onClick={onClose}
+            className="text-gray-50 bg-zikoro gap-x-2 h-11 sm:h-12 font-medium"
+          >
+            <PlusCircle size={22} />
+            <p>Partner</p>
+          </Button>
           </div>
         </div>
         <div
@@ -192,6 +206,14 @@ export function PartnersList({
           eventId={eventId}
           refetchSingleEvent={refetchSingleEvent}
           partners={partners}
+        />
+      )}
+
+{isPartner && (
+        <AddPartners
+          refetchPartners={refetch}
+          close={onPartner}
+          eventId={eventId}
         />
       )}
 

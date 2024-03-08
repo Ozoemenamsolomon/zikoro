@@ -21,7 +21,7 @@ import { addDiscount } from "@/app/server-actions/addDiscount";
 import supabase from "@/utils/supabaseConfig";
 import { SideBarLayout } from "@/components";
 import { useDiscount } from "@/hooks";
-import { ContentTopNav } from "@/components/content/topNav";
+import { ContentTopNav } from "../_components";
 import { revalidatePath } from "next/cache";
 import { EmptyCard } from "@/components/composables";
 

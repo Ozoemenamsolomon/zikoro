@@ -1,10 +1,11 @@
 "use client";
 
 import { SideBarLayout } from "@/components";
-import { ContentTabs } from "../_components/ContentTabs";
+
 import { PartnersList } from "./_components";
 import { useFetchPartners } from "@/hooks";
 import { BoxPositionProvider } from "@/context";
+import { ContentTopNav } from "../_components";
 export function ContentPartners({ eventId }: { eventId: string }) {
   const { data, loading, refetch } = useFetchPartners(eventId);
 
@@ -16,7 +17,8 @@ export function ContentPartners({ eventId }: { eventId: string }) {
         parentClassName="px-0 sm:px-0 py-0 sm:py-0 pt-3 sm:pt-4"
         eventId={eventId}
       >
-        <ContentTabs eventId={eventId} refetch={refetch} />
+     
+        <ContentTopNav eventId={eventId}/>
 
         <PartnersList
           eventId={eventId}
