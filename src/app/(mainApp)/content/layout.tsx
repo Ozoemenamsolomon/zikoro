@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const People = ({ children }: { children: React.ReactNode }) => {
-  const currentLink = usePathname().split("/").pop();
+  const currentLink = usePathname().split("/");
 
   return (
     <>
@@ -15,7 +15,9 @@ const People = ({ children }: { children: React.ReactNode }) => {
               <li
                 key={name}
                 className={`text-sm capitalize ${
-                  currentLink === href ? "text-basePrimary" : "text-gray-700"
+                  currentLink.includes(href)
+                    ? "text-basePrimary"
+                    : "text-gray-700"
                 }`}
               >
                 <Link href={href}>{name}</Link>

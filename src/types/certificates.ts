@@ -56,6 +56,7 @@ export interface CertificateTemplate {
   created_at: Date;
   templateName: string;
   templateUrl: string;
+  certificateTemplate: string;
   category: string;
   figmaName: string;
 }

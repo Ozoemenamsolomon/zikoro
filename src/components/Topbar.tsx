@@ -48,7 +48,7 @@ const Topbar = () => {
   const currentLink = pathnames[pathnames.length - 2];
 
   return (
-    <nav className="bg-white w-full sticky top-0 px-4 pt-4 h-max border-b-[1px]">
+    <nav className="bg-white w-full sticky top-0 px-4 pt-4 h-max border-b-[1px] z-[10000]">
       <ul className="flex justify-between text-gray-700">
         {links.map(({ name, href }) => {
           return (

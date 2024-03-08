@@ -1,22 +1,23 @@
 import { Input } from "@/components/ui/input";
 import useSearch from "@/hooks/common/useSearch";
-import { useGetCertificateTemplates } from "@/hooks/services/certificate";
+import { useGetBadgeTemplates } from "@/hooks/services/badge";
 import { cn } from "@/lib/utils";
-import { CertificateTemplate } from "@/types/certificates";
+import { BadgeTemplate } from "@/types/badge";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import React, { useEffect, useRef } from "react";
 import { TabProps } from "../page";
 
 const Designs = ({ details, setValue }: TabProps) => {
   const divRef = useRef<HTMLDivElement>(null);
-  const { certificateTemplates, isLoading, getCertificateTemplates } =
-    useGetCertificateTemplates();
+  const { badgeTemplates, isLoading, getBadgeTemplates } =
+    useGetBadgeTemplates();
 
-  const { searchTerm, searchedData, setSearchTerm } =
-    useSearch<CertificateTemplate>({
-      data: certificateTemplates || [],
-      accessorKey: ["templateName"],
-    });
+  console.log(badgeTemplates);
+
+  const { searchTerm, searchedData, setSearchTerm } = useSearch<BadgeTemplate>({
+    data: badgeTemplates || [],
+    accessorKey: ["templateName"],
+  });
 
   useEffect(() => {
     if (!divRef) return;
@@ -35,19 +36,19 @@ const Designs = ({ details, setValue }: TabProps) => {
         className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-xl pl-8 w-full"
       />
       <div className="grid grid-cols-2 gap-4 py-4" ref={divRef}>
-        {certificateTemplates &&
-          certificateTemplates.map(({ templateUrl, certificateTemplate }) => (
+        {badgeTemplates &&
+          badgeTemplates.map(({ BadgeUrl, BadgeTemplate }) => (
             <button
-              key={certificateTemplate}
-              onClick={() => setValue("background", templateUrl)}
+              key={BadgeTemplate}
+              onClick={() => setValue("background", BadgeUrl)}
               className={cn(
                 "border-2 shadow-sm rounded-md",
-                details.background === templateUrl
+                details.background === BadgeUrl
                   ? "border-basePrimary"
                   : "border-gray-200"
               )}
             >
-              <img src={certificateTemplate} />
+              <img src={BadgeTemplate} />
             </button>
           ))}
       </div>
