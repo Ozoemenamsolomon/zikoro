@@ -36,8 +36,10 @@ export default function Modal() {
         if (loading) return;
           const formData = new FormData(); 
           formData.append('file', file); 
-          formData.append('upload_preset', 'w5xbik6z' ); 
+          formData.append('upload_preset', 'w5xbik6z' );
+          formData.append( "folder", "ZIKORO" ); 
 
+          
           try {
             const res = await fetch(`https://api.cloudinary.com/v1_1/kachiozo/image/upload`,
               {

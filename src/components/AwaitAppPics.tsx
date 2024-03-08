@@ -1,8 +1,9 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import Picture from "./AwaitAppPic"
-import {RiToggleFill} from "react-icons/ri"
-import {RiToggleLine} from "react-icons/ri"
+import Toggler from "./svg/Toggler"
+import TogglerBlue from "./svg/TogglerBlue"
+
 import { supabase } from "../utils/Utils"
 import {toast } from 'react-toastify';
 
@@ -71,7 +72,14 @@ export default function AwaitAppPics(){
                     <p className="text-xl font-medium">Awaiting Approval</p>
                     <div className="flex font-medium space-x-2 items-center mr-4">
                     {
-                        togOn ? <RiToggleFill className="text-3xl cursor-pointer" onClick={toggler} width={32} height={20} fill="#001FCC" /> : <RiToggleLine onClick={autoApprove} className="text-3xl cursor-pointer" width={32} height={20} />
+                        togOn ? 
+                          <div className="cursor-pointer" onClick={toggler} >
+                            <TogglerBlue/> 
+                          </div>
+                        :
+                        <div className="cursor-pointer"  onClick={autoApprove} >
+                          <Toggler/>
+                        </div>
                     }
                         
                         <p className="text-base ">Auto Approve</p>

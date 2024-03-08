@@ -13,7 +13,7 @@ const montserrat = Montserrat({
 });
 
 
-export default function Home() {
+export default function Contact() {
   return (
     <div className={`${montserrat.className} `}>
         <Navbar/>

@@ -12,9 +12,11 @@ import Modal from '@/components/Modal'
 import { IoSettingsOutline } from "react-icons/io5";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import FullScreenIcon from '@/components/svg/Fullscreen'
 import Image from "next/image"
 import FullScreenPics from "@/components/FullScreenPics"
-import { RiToggleFill, RiToggleLine } from 'react-icons/ri'
+import Toggler from '@/components/svg/Toggler'
+import TogglerBlue from '@/components/svg/TogglerBlue'
 import { BiExitFullscreen } from "react-icons/bi";
 import {FiFile} from "react-icons/fi"
 import { supabase } from "@/utils/Utils"
@@ -225,9 +227,10 @@ export default function Photos() {
 
 
                                     { admin && 
-                                        <div className=' cursor-pointer hidden lg:inline' >   
-                                                    <MdOutlineFullscreen className='w-6 h-6' onClick={open}/>
-
+                                        <div className=' cursor-pointer hidden lg:inline' > 
+                                                    <div onClick={open}>
+                                                          <FullScreenIcon/>
+                                                    </div>  
                                                     {/* Fullscreen */}
 
                                                     <FullScreen handle={handle} className='bg-white w-10' >
@@ -247,8 +250,7 @@ export default function Photos() {
                                                                             <p>Powered By:</p>
                                                                             <Image src="/zikoro.png" className='' alt='' width={171} height={47}/>
                                                                         </div> 
-                                                                    }
-                                                                   
+                                                                    }              
 
                                                            </div>
                                                                 {/* right */}
@@ -291,7 +293,15 @@ export default function Photos() {
                                                             
                                                                 <p className="text-sm font-light ">Show Default Banner</p>
                                                                     {
-                                                                        defaultBanner ? <RiToggleFill className="text-3xl cursor-pointer" onClick={bannerToggler} width={32} height={20} fill="#001FCC" /> : <RiToggleLine onClick={bannerToggler} className="text-3xl cursor-pointer" width={32} height={20} />
+                                                                        defaultBanner ?
+                                                                        <div className="cursor-pointer" onClick={bannerToggler}> 
+                                                                            <TogglerBlue/>
+                                                                        </div>
+                                                                        :
+                                                                        <div className="cursor-pointer" onClick={bannerToggler}>
+                                                                            <Toggler />
+                                                                        </div>
+                                                                        
                                                                     }
                                                             </div>
                                                         
@@ -317,7 +327,20 @@ export default function Photos() {
                                                         <div className="flex font-medium space-x-2 items-center mt-8 mb-4">
                                                             <p className="text-sm font-light ">Show Powered By Zikoro</p>
                                                                 {
-                                                                    zikoroText ? <RiToggleFill className="text-3xl cursor-pointer" onClick={zikoroTextOffToggler} width={32} height={20} fill="#001FCC" /> : <RiToggleLine onClick={zikoroTextOnToggler} className="text-3xl cursor-pointer" width={32} height={20} />
+                                                                    zikoroText ? 
+
+                                                                    // <RiToggleFill className="text-3xl cursor-pointer" onClick={zikoroTextOffToggler} width={32} height={20} fill="#001FCC" /> 
+                                                                    // : 
+                                                                    // <RiToggleLine onClick={zikoroTextOnToggler} className="text-3xl cursor-pointer" width={32} height={20} />
+
+                                                                    <div className="cursor-pointer" onClick={zikoroTextOffToggler}> 
+                                                                        <TogglerBlue/>
+                                                                    </div>
+
+                                                                    :
+                                                                    <div className="cursor-pointer" onClick={zikoroTextOnToggler}>
+                                                                        <Toggler />
+                                                                    </div>
                                                                 }
                                                         </div>
                                         

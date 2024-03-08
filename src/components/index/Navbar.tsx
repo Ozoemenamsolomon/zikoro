@@ -8,7 +8,7 @@ import Image from "next/image"
 import ThreeLine from '@/components/svg/ThreeLine';
 import Close from '@/components/svg/Close';
 
-export default function Homepage() {
+export default function Navbar() {
 
     const pathname = usePathname();
 
