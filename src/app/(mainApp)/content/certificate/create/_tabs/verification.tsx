@@ -15,9 +15,7 @@ const Verification = ({ details, setValue }: TabProps) => {
           ref={(ref) =>
             ref && connectors.create(ref, <CertificateQRCode url="this" />)
           }
-          className={
-            "bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"
-          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
           data-cy="toolbox-qr-code"
         >
           Drag to add QR code
@@ -27,15 +25,49 @@ const Verification = ({ details, setValue }: TabProps) => {
             ref &&
             connectors.create(
               ref,
-              <Text text={"Certificate ID: #{certificateId#}"} />
+              <Text text={"Certificate ID: #{certificate_id#}"} isBold isItalic isNotEditable />
             )
           }
-          className={
-            "bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"
-          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
           data-cy="toolbox-qr-code"
         >
           Drag to add Certificate Id
+        </button>
+        <button
+          ref={(ref) =>
+            ref &&
+            connectors.create(
+              ref,
+              <Text text={"#{first_name#} #{last_name#}"} isBold isItalic isNotEditable />
+            )
+          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          data-cy="toolbox-qr-code"
+        >
+          Drag to add Attendee Name
+        </button>
+        <button
+          ref={(ref) =>
+            ref &&
+            connectors.create(
+              ref,
+              <Text text={"www.zikoro.com/verify/#{verification_url#}"} isBold isItalic isNotEditable />
+            )
+          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          data-cy="toolbox-qr-code"
+        >
+          Drag to add Verification URL
+        </button>
+        <button
+          ref={(ref) =>
+            ref &&
+            connectors.create(ref, <Text text={"#{city#} #{country#}"} isBold isItalic isNotEditable />)
+          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          data-cy="toolbox-qr-code"
+        >
+          Drag to add location
         </button>
       </div>
     </>

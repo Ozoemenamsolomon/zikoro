@@ -38,6 +38,7 @@ export interface Textprops {
   textTransform?: "uppercase" | "lowercase" | "capitalize" | "none";
   pageX?: number;
   pageY?: number;
+  isNotEditable: boolean;
 }
 
 const Text = ({
@@ -53,6 +54,7 @@ const Text = ({
   textTransform,
   pageX,
   pageY,
+  isNotEditable,
 }: Textprops) => {
   const {
     connectors: { connect, drag },
@@ -91,12 +93,14 @@ const Text = ({
       <div
         ref={(ref) => ref && connect(ref)}
         onClick={() => selected}
-        onDoubleClick={() => setEditable(true)}
-        className={cn(editable ? "cursor-text" : "cursor-move")}
+        onDoubleClick={() => !isNotEditable && setEditable(true)}
+        className={cn(
+          editable && !isNotEditable ? "cursor-text" : "cursor-move"
+        )}
       >
         <ContentEditable
           html={text}
-          disabled={!editable}
+          disabled={!editable || isNotEditable}
           onChange={(e) =>
             setProp(
               (props: Textprops) =>
@@ -404,6 +408,7 @@ export const TextDefaultProps: Textprops = {
   textTransform: "none",
   pageX: 0,
   pageY: 0,
+  isNotEditable: false,
 };
 
 Text.craft = {
