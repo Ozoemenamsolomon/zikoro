@@ -68,6 +68,7 @@ export function BookEvent({
   const [priceCategory, setPriceCategory] = useState<string | undefined>("");
   const [isPaymentModal, setOpenPaymentModal] = useState(false);
   const { sendTransactionDetail } = useTransactionDetail();
+  const [description, setDescription] = useState("")
   const form = useForm<z.infer<typeof eventBookingValidationSchema>>({
     resolver: zodResolver(eventBookingValidationSchema),
     defaultValues: {
@@ -141,7 +142,7 @@ export function BookEvent({
       ? Number(discountAmount) * fields?.length
       : ((Number(chosenPrice) * Number(discountPercentage)) / 100) *
           fields?.length;
-  }, [fields, chosenPrice]);
+  }, [fields, chosenPrice, discountAmount, discountPercentage]);
 
   // calculating the processing Fee
   const processingFee = useMemo(() => {
@@ -297,14 +298,18 @@ export function BookEvent({
               {`${startDate} - ${endDate}`}
             </h2>
 
-            <Image
+          {eventImage ?   <Image
               className="w-full h-64 mt-3 rounded-lg object-cover"
               src={eventImage}
               alt="eventimage"
               width={700}
               height={700}
             />
-
+            :
+            <div className="w-full mt-3 h-64 rounded-lg animate-pulse">
+              <div className="w-full h-full bg-gray-100"></div>
+            </div>
+}
             <div className="w-full border mt-3 border-gray-300 rounded-lg py-4 px-3">
               <h2 className="text-base sm:text-lg mb-3 font-semibold ">
                 Order Summary
@@ -365,7 +370,7 @@ export function BookEvent({
                             }}
                             disabled={isDateGreaterThanToday(v?.validity)}
                             className={cn(
-                              "flex flex-col group relative rounded-lg items-start justify-between  border p-4 h-[7.5rem] w-full",
+                              "flex flex-col group relative rounded-lg mt-3 items-start justify-between  border p-4 h-[7.5rem] w-full",
                               isDateGreaterThanToday(v?.validity)
                                 ? ""
                                 : "hover:border-zikoro border-black",
@@ -393,9 +398,20 @@ export function BookEvent({
                                 <p className="font-medium text-base">
                                   {v?.attendeeType}
                                 </p>
+                                <div className="flex items-center gap-x-1">
                                 <p className="text-xs sm:text-sm w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
                                   {v?.description}
                                 </p>
+                                <button 
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  e.preventDefault()
+                                  setDescription(v?.description)
+                                }}
+                                className="text-xs sm:text-sm font-medium text-zikoro">
+                                  view more
+                                </button>
+                                </div>
                               </div>
                               <div className="flex flex-col items-end justify-end">
                                 <p className="font-medium text-base">{`${
@@ -437,7 +453,7 @@ export function BookEvent({
                                 )}
                               >
                                 {v?.validity ? (
-                                  <p>{`Valid till ${v?.validity}`}</p>
+                                  <p className="text-xs sm:text-mobile">{`Valid till ${v?.validity}`}</p>
                                 ) : (
                                   <p className="w-1 h-1"></p>
                                 )}
@@ -720,6 +736,42 @@ export function BookEvent({
           eventPrice={chosenPrice}
         />
       )}
+
+      {description !== "" && <DescriptionModal description={description} setDescription={setDescription}/>}
     </>
+  );
+}
+
+
+function DescriptionModal({
+ description,
+ setDescription
+}: {
+  description:string
+  setDescription: React.Dispatch<React.SetStateAction<string>>
+}) {
+ 
+  return (
+    <div
+      role="button"
+      onClick={() => setDescription("")}
+      className="w-full h-full fixed z-[999999]  inset-0 bg-black/50"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        role="button"
+        className="w-[95%] sm:w-[450px] box-animation h-fit max-h-[85%] overflow-y-auto flex  flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4"
+      >
+        <div className="w-full flex items-end justify-end">
+          <Button   onClick={() => setDescription("")} className="px-1 h-fit w-fit">
+            <CloseOutline size={22} />
+          </Button>
+        </div>
+    <p className="font-semibold">Description</p>
+    <div className="w-full flex-wrap flex items-start justify-start leading-7">
+    {description}
+    </div>
+      </div>
+    </div>
   );
 }
