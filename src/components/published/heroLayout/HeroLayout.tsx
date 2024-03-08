@@ -91,7 +91,7 @@ export function HeroLayout({
           alt="zikoro"
           width={300}
           height={300}
-          className="w-[100px] sm:w-[150px] h-[40px]"
+          className="w-[100px] sm:w-[150px] h-[30px] sm:h-[40px]"
         />
 
         <div className=" h-fit w-fit absolute inset-0 m-auto">

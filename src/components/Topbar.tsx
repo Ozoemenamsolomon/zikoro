@@ -14,7 +14,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
     },
     {
       name: "Contents",
-      href: `/events/content/${eventId}/event`,
+      href: `/events/content/${eventId}/info`,
     },
     {
       name: "People",

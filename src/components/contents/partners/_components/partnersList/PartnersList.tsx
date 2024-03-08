@@ -142,7 +142,7 @@ export function PartnersList({
           <div className="w-full min-w-[1000px]  p-3">
             <table className="w-full border-b rounded-lg ">
              {!loading &&
-                Array.isArray(partners) && <tr className="w-full rounded-t-lg grid grid-cols-7 text-sm  items-center bg-gray-100 gap-3 px-3 py-4 ">
+                Array.isArray(partners) && <tr className="w-full rounded-t-lg grid grid-cols-7 text-sm font-semibold  items-center bg-gray-100 gap-3 px-3 py-4 ">
                 <th className="text-start col-span-2 w-full">
                   <label className=" w-full flex  relative partner-container">
                     <input onChange={(e) => selectAllRow(e)} type="checkbox" />

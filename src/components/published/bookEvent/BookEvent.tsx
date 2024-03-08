@@ -382,7 +382,7 @@ export function BookEvent({
                                     activeSelectedPrice(v?.attendeeType) &&
                                       "bg-blue-50 text-zikoro"
                                   )}
-                                >{`${v?.discountPercentage}%`}</p>
+                                >{`${v?.discountPercentage.toFixed(0)}%`}</p>
                               ): null}
 
                             {isDateGreaterThanToday(v?.validity) && (
