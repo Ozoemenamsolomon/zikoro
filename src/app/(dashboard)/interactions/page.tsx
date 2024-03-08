@@ -2,7 +2,6 @@
 import React from 'react'
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-
 export default function Interactions() {
 
     const pathname = usePathname();
@@ -38,7 +37,7 @@ export default function Interactions() {
 
     return (
         <div className=' border-y-[1px] border-gray-100 mt-4 pb-3'>
-                <div className='flex justify-between bg-white pt-2'>
+                <div className='hidden lg:flex justify-between bg-white pt-2'>
 
                                     <div className='flex gap-12 text-gray-500 sticky top-0 pb-2 '>
                                     {

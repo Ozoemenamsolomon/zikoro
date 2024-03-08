@@ -49,7 +49,7 @@ const Topbar = () => {
   const currentLink = pathnames[pathnames.length - 2];
 
   return (
-    <div className="bg-white w-full pt-4 flex gap-12 text-gray-500 sticky top-0 z-10">
+    <div className="bg-white w-full pt-4 hidden lg:flex gap-12 text-gray-500 sticky top-0 z-10">
       {links.map(({ name, href, }, i) => {
         return (
           <Link
