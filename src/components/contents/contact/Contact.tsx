@@ -160,7 +160,9 @@ function Contact({ eventId }: { eventId: string }) {
           {/* <button>Click</button> */}
           <div className="grid grid-cols-1 md:grid-cols-2 mb-10 gap-6 px-4">
             <div className="py-4 space-y-10">
-              <FormField
+       
+
+         {data &&     <FormField
                 control={form.control}
                 name="country"
                 render={({ field }) => (
@@ -171,11 +173,11 @@ function Contact({ eventId }: { eventId: string }) {
                       label: data?.country,
                     }}
                     placeHolder="Select the Country"
-                    label="Event Country"
+                    label="Country"
                     options={countriesList}
                   />
                 )}
-              />
+              />}
 
               <div className="w-full grid grid-cols-2 items-center gap-4">
                 <FormField

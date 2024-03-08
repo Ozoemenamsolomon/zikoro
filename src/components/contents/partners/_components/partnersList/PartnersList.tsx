@@ -90,7 +90,7 @@ export function PartnersList({
   return (
     <>
       <div className="w-full  flex flex-col border-r">
-        <div className="flex p-3 border-b items-center justify-between w-full">
+        <div className="flex p-3 items-center justify-between w-full">
           <div className="flex items-center gap-x-2">
             <p className="font-medium">Partners</p>
             {selectedRows?.length > 0 && (
