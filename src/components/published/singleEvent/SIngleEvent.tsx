@@ -185,7 +185,7 @@ export function SingleEvent({
       >
         <div
           className={cn(
-            "w-full flex flex-col justify-start items-start gap-y-4 bg-white rounded-2xl  shadow h-fit ",
+            "w-full flex flex-col justify-start items-start overflow-hidden gap-y-4 bg-white rounded-2xl  shadow h-fit ",
             isExpired && "relative",
             className
           )}
@@ -193,8 +193,8 @@ export function SingleEvent({
           {isExpired && (
             <div className="w-full h-full inset-0 absolute z-10 bg-white/50"></div>
           )}
-          <div className="w-full grid grid-cols-1 h-full gap-4 lg:grid-cols-8 items-start">
-            <div className="w-full h-full flex lg:col-span-4 flex-col items-start justify-start gap-y-4">
+          <div className="w-full grid grid-cols-1 h-fit gap-4 lg:grid-cols-8 items-start">
+            <div className="w-full h-72 sm:h-[350px] lg:h-full flex lg:col-span-4 flex-col items-start justify-start">
               {Array.isArray(event?.eventPoster) &&
               event?.eventPoster?.length > 0 ? (
                 <Image

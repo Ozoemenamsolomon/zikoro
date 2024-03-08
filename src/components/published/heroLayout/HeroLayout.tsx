@@ -91,15 +91,15 @@ export function HeroLayout({
           alt="zikoro"
           width={300}
           height={300}
-          className="w-[150px] h-[40px]"
+          className="w-[100px] sm:w-[150px] h-[40px]"
         />
 
         <div className=" h-fit w-fit absolute inset-0 m-auto">
-          <div className="flex flex-col items-center gap-y-4 justify-center">
+          <div className="flex flex-col items-center gap-y-2 md:gap-y-4 justify-center">
             <h2 className="text-2xl font-semibold sm:text-5xl ">
               Featured Events
             </h2>
-            <div className="w-full bg-white mt-3 items-center grid grid-cols-3 justify-center h-14 py-2 rounded-lg border shadow sm:w-[600px]">
+            <div className="w-full bg-white mt-1 md:mt-3 items-center grid grid-cols-3 justify-center h-14 py-2 rounded-lg border shadow sm:w-[600px]">
               <button
                 onClick={() => setDatePanel((prev) => !prev)}
                 className="flex relative hover:text-zikoro items-center w-full justify-center text-gray-400  gap-x-2"
@@ -173,7 +173,7 @@ export function HeroLayout({
               </button>
             </div>
             {/** toClearFilterFields */}
-            <div className="flex items-center mt-8 justify-center gap-x-3">
+            <div className="flex items-center mt-3 md:mt-8 justify-center gap-x-3">
               {startDate && (
                 <Button
                   onClick={clearDate}
@@ -207,7 +207,7 @@ export function HeroLayout({
           </div>
         </div>
 
-        <div className="absolute top-[200px] md:top-[300px] bg-gray-50 w-full mx-auto">
+        <div className="absolute inset-x-0 top-[200px] md:top-[300px] bg-gray-50 w-full mx-auto">
           <div className="flex flex-col pb-20 sm:gap-y-6 gap-y-20 items-center mx-auto justify-center w-[95%] sm:w-[65%] lg:w-[80%] xl:w-[75%]">
             {children}
             { (!loading && !isLastPage) && (

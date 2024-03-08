@@ -157,7 +157,7 @@ export default function Discount({ eventId }: { eventId: string }) {
         <div className="overflow-x-auto w-full partner-scroll-style">
           <div className="pb-3 min-w-[1000px] w-full">
             {Array.isArray(formattedData) && formattedData?.length > 0 && (
-              <ul className="grid grid-cols-8 rounded-t-lg place-items-center text-center bg-[#f3f3f3] p-3 border-b-2 text-[14px] font-medium">
+              <ul className="grid grid-cols-8 rounded-t-lg place-items-center text-center bg-[#f3f3f3] p-3 border-b-2 text-[14px]">
                 <li>Created At</li>
                 <li>Code</li>
                 <li>Min. QTy</li>
