@@ -195,7 +195,7 @@ export default function Photos() {
                     
                     {/* sub menu */}
                     <div className='bg-white pt-4 border-y-[1px] border-gray-100 mt-2'>
-                        <div className='flex justify-between p-2 mr-10 '>  
+                        <div className='hidden lg:flex justify-between p-2 mr-10 '>  
                                 {/* left */}
                             <div className='flex gap-12 text-gray-500 sticky top-0 pb-2 '>
                                     {

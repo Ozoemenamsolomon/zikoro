@@ -189,7 +189,7 @@ export default function ApprvPic({url, id, like}: ApprvPicProps) {
                         { liked ? <span className="text-zikoroBlue"> {likes} </span>  : <span> {like} </span>  }
                     </div>  
                     
-                    <Image className="object-cover h-56 " src={url} alt="picture" width={263.5} height={241} />
+                    <Image className="object-cover h-56 w-full " src={url} alt="picture" width={263.5} height={241} />
           
                     </div>              
             

@@ -66,7 +66,7 @@ export default function AwaitAppPic({url, id}: AwaitAppPicsProps){
                             <span className=""> Approve </span>
                         </div>
                         
-                          <Image className="object-cover h-60" src={url} alt="picture" width={263.5} height={241} />
+                          <Image className="object-cover h-60 w-full" src={url} alt="picture" width={263.5} height={241} />
                         
                 </div>
         )

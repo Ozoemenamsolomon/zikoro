@@ -38,7 +38,7 @@ export default function UnAppPic({url, id} : UnAppPicProps ){
                                         <span className=""> Re-Approve </span>
                                 </div> 
                          
-                                <Image className="object-cover h-60" src={url} alt="picture" width={263.5} height={231}/>
+                                <Image className="object-cover h-60 w-full" src={url} alt="picture" width={263.5} height={231}/>
                  </div>
         )
     

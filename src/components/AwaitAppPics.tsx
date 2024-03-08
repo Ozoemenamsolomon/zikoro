@@ -70,7 +70,7 @@ export default function AwaitAppPics(){
             <div className="mt-12">
                 <div className="flex justify-between mb-4 ">
                     <p className="text-xl font-medium">Awaiting Approval</p>
-                    <div className="flex font-medium space-x-2 items-center mr-4">
+                    <div className="hidden lg:flex font-medium space-x-2 items-center mr-4">
                     {
                         togOn ? 
                           <div className="cursor-pointer" onClick={toggler} >
