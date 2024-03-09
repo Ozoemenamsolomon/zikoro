@@ -60,7 +60,7 @@ const eventPricing = z.array(
   z.object({
     ticketQuantity: z.string().min(1, {message: "Ticket Quantity is required"}),
     attendeeType: z.string().min(1, {message: "Attendee Type is required"}),
-    description: z.string().min(1, {message: "Description is required"}),
+    description: z.any(),
     price: z.string().min(1, {message: "Price is required"}),
     validity: z.string().min(1, {message: "Validity is required"}),
   })
@@ -82,5 +82,5 @@ export const updateEventSchema = z.object({
   pricingCurrency: z.string().optional(),
   description: z.string().optional(),
   pricing: eventPricing,
-  eventTimeZone: z.string().optional(),
+  eventTimeZone: z.any(),
 });

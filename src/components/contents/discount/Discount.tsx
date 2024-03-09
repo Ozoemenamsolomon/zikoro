@@ -150,8 +150,8 @@ export default function Discount({ eventId }: { eventId: string }) {
       eventId={eventId}
     >
       <ContentTopNav eventId={eventId} />
-      <div className="p-4">
-        <div className="flex w-full items-end justify-end my-5">
+      <div className="px-4">
+        <div className="flex w-full items-end justify-end my-3">
           <DialogDemo getDiscount={getDiscount} eventId={eventId} />
         </div>
         <div className="overflow-x-auto w-full partner-scroll-style">
@@ -308,8 +308,8 @@ const DialogDemo = ({
     <DateAndTimeAdapter>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
-          <Button className="w-fit bg-zikoro items-center gap-x-2 text-gray-50">
-            <AddCircle size={20} />
+          <Button className="w-fit h-11 sm:h-12 bg-zikoro items-center gap-x-2 text-gray-50">
+            <AddCircle size={22} />
             <span className="">Discount</span>
           </Button>
         </DialogTrigger>

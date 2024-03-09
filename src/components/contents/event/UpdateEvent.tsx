@@ -580,7 +580,7 @@ export default function UpdateEvent({
                                   {...form.register(
                                     `pricing.${id}.validity` as const
                                   )}
-                                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                                  className=" placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                                 />
                               </InputOffsetLabel>
                             )}
