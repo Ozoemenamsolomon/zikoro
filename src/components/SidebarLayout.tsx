@@ -8,6 +8,7 @@ import { HeaderWidget } from "./eventHome";
 import Link from "next/link";
 import { useSearchParams, useParams } from "next/navigation";
 import { EventFeedBack } from "./modals/EventFeedback";
+import { VipCrown2 } from "styled-icons/remix-fill";
 
 import {
   CustomerCareIcon,
@@ -18,7 +19,7 @@ import {
 } from "@/constants";
 import { CircleUser } from "styled-icons/fa-solid";
 import { Topbar } from ".";
-import { saveCookie, useValidateUser } from "@/hooks";
+import { getCookie, useValidateUser } from "@/hooks";
 
 export function SideBarLayout({
   children,
@@ -115,12 +116,7 @@ function SideNavs({
   onOpen: () => void;
 }) {
   const { organizationId } = useParams();
-
-  useEffect(() => {
-    if (organizationId) {
-      saveCookie("currentOrganization", { id: organizationId, name: query });
-    }
-  }, [organizationId]);
+  const organization = getCookie("currentOrganization");
 
   return (
     <div
@@ -162,33 +158,39 @@ function SideNavs({
           />
         </div>
         <div className="w-full text-[10px] py-2 sm:text-xs px-4 flex flex-col h-[45vh] items-start justify-start gap-y-2">
-        <div className="w-full flex items-center gap-x-2 ">
-            <Link href="https://www.zikoro.com" className="text-mobile sm:text-desktop text-zikoro font-medium hover:underline ">Try Zikoro!</Link>
-            
+          <div className="w-full flex items-center gap-x-2 ">
+            <Link
+              href="https://www.zikoro.com"
+              className="text-mobile sm:text-desktop text-zikoro font-medium hover:underline "
+            >
+              Try Zikoro!
+            </Link>
           </div>
-          <div className="my-1 w-full flex items-center gap-x-2 p-3 rounded-md bg-zikoro/10">
-            <Image
-              src="/svg/sub.svg"
-              width={200}
-              height={200}
-              alt="sub"
-              className="w-16 h-20"
-            />
-            <div className="flex flex-col items-start justify-start gap-y-1">
-              <p>Upgrade your plans for more features</p>
-              <Button className="flex px-0 w-fit h-fit text-zikoro items-center gap-x-2">
-                <p>Upgrade</p>
-                <Image
-                  src="/images/parklight.png"
-                  width={200}
-                  height={200}
-                  alt="sub"
-                  className="w-4 h-4"
-                />
-              </Button>
+          {organization?.plan && (
+            <div className="my-1 w-full flex items-center gap-x-2 p-3 rounded-md bg-zikoro/10">
+              <div className="w-20 h-fit flex rounded-md flex-col items-center justify-center p-2 bg-[#eef0ff]">
+                <VipCrown2 size={12} className="text-zikoro" />
+                <p className="text-zikoro font-medium text-[8px] px-[2px] py-[1px] bg-zikoro/10">
+                  {organization?.plan}
+                </p>
+                <p className="text-zikoro font-medium text-[8px]">Plan</p>
+              </div>
+
+              <div className="flex flex-col items-start justify-start gap-y-1">
+                <p>Upgrade your plans for more features</p>
+                <Button className="flex px-0 w-fit h-fit text-zikoro items-center gap-x-2">
+                  <p>Upgrade</p>
+                  <Image
+                    src="/images/parklight.png"
+                    width={200}
+                    height={200}
+                    alt="sub"
+                    className="w-4 h-4"
+                  />
+                </Button>
+              </div>
             </div>
-          </div>
-        
+          )}
           <div className="w-full flex items-center justify-between">
             <Button className="px-1 h-fit gap-x-2">
               <CustomerCareIcon />

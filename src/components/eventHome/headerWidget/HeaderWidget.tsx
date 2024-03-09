@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetQueries } from "@/hooks";
+import { useGetQueries, saveCookie } from "@/hooks";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { useState, useMemo, useEffect } from "react";
 
@@ -50,9 +50,13 @@ export function HeaderWidget({
   const selectedOrg = form.watch("org");
   useEffect(() => {
     if (selectedOrg) {
-    
-      const org = formattedList.find((o) => o.value === selectedOrg);
-      router.push(`/events/${org?.value}?organization=${org?.label}`);
+      const org = organizationList.find((o) => o.id === selectedOrg);
+      saveCookie("currentOrganization", {
+        id: org?.id,
+        name: org?.organizationName,
+        plan: org?.subscriptionPlan,
+      });
+      router.push(`/events/${org?.id}?organization=${org?.organizationName}`);
     }
   }, [selectedOrg]);
 
