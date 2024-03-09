@@ -309,10 +309,13 @@ option:hover {
   font-size: 14px;
   border-radius: 0px 0px 8px 8px;
 }
-
+.ql-container.ql-snow .ql-editor {
+  border: 1px solid #d1d5db !important;
+}
 .ql-toolbar.ql-snow {
   border-radius: 8px 8px 0px 0px;
   border: 1px solid #d1d5db !important;
+  
 }
 
 .ql-editor.ql-blank::before {

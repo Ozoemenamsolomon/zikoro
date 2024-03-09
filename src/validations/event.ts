@@ -80,7 +80,7 @@ export const updateEventSchema = z.object({
   eventCategory: z.string().optional(),
   eventPoster: z.any(),
   pricingCurrency: z.string().optional(),
-  description: z.string().optional(),
+  description: z.any(),
   pricing: eventPricing,
   eventTimeZone: z.any(),
 });
