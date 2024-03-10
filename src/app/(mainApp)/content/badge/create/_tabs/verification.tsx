@@ -10,7 +10,7 @@ const Verification = ({ details, setValue }: TabProps) => {
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-4 capitalize">
         <button
           ref={(ref) =>
             ref && connectors.create(ref, <CertificateQRCode url="this" />)
@@ -25,49 +25,79 @@ const Verification = ({ details, setValue }: TabProps) => {
             ref &&
             connectors.create(
               ref,
-              <Text text={"Certificate ID: #{certificate_id#}"} isBold isItalic isNotEditable />
-            )
-          }
-          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
-          data-cy="toolbox-qr-code"
-        >
-          Drag to add Certificate Id
-        </button>
-        <button
-          ref={(ref) =>
-            ref &&
-            connectors.create(
-              ref,
               <Text text={"#{first_name#} #{last_name#}"} isBold isItalic isNotEditable />
             )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
           data-cy="toolbox-qr-code"
         >
-          Drag to add Attendee Name
+          Drag to add attendee name
         </button>
         <button
           ref={(ref) =>
             ref &&
             connectors.create(
               ref,
-              <Text text={"www.zikoro.com/verify/#{verification_url#}"} isBold isItalic isNotEditable />
+              <Text text={"#{first_name#}"} isBold isItalic isNotEditable />
             )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
           data-cy="toolbox-qr-code"
         >
-          Drag to add Verification URL
+          Drag to add attendee first name
         </button>
         <button
           ref={(ref) =>
             ref &&
-            connectors.create(ref, <Text text={"#{city#} #{country#}"} isBold isItalic isNotEditable />)
+            connectors.create(
+              ref,
+              <Text text={"#{last_name#}"} isBold isItalic isNotEditable />
+            )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
           data-cy="toolbox-qr-code"
         >
-          Drag to add location
+          Drag to add attendee last name
+        </button>
+        <button
+          ref={(ref) =>
+            ref &&
+            connectors.create(ref, <Text text={"#{profession#}"} isBold isItalic isNotEditable />)
+          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          data-cy="toolbox-qr-code"
+        >
+          Drag to add profession
+        </button>
+        <button
+          ref={(ref) =>
+            ref &&
+            connectors.create(ref, <Text text={"#{attendee_role#}"} isBold isItalic isNotEditable />)
+          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          data-cy="toolbox-qr-code"
+        >
+          Drag to add attendee role
+        </button>
+        <button
+          ref={(ref) =>
+            ref &&
+            connectors.create(ref, <Text text={"#{event_name#}"} isBold isItalic isNotEditable />)
+          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          data-cy="toolbox-qr-code"
+        >
+          Drag to add event name
+        </button>
+        <button
+          ref={(ref) =>
+            ref &&
+            connectors.create(ref, <Text text={"#{organization_name#}"} isBold isItalic isNotEditable />)
+          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          data-cy="toolbox-qr-code"
+        >
+          Drag to add organization name
         </button>
       </div>
     </>
