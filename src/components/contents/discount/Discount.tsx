@@ -3,6 +3,7 @@ import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
+import { cn } from "@/lib";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -24,7 +25,6 @@ import { useDiscount } from "@/hooks";
 import { ContentTopNav } from "../_components";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
-
 
 // const addDiscount = async (formData: FormData) => {
 //   "use server";
@@ -153,10 +153,19 @@ export default function Discount({ eventId }: { eventId: string }) {
       <ContentTopNav eventId={eventId} />
       <div className="px-4">
         <div className="flex w-full items-end justify-end my-3">
-        { Array.isArray(formattedData) && formattedData?.length > 0 && <DialogDemo getDiscount={getDiscount} eventId={eventId} />}
+          {Array.isArray(formattedData) && formattedData?.length > 0 && (
+            <DialogDemo getDiscount={getDiscount} eventId={eventId} />
+          )}
         </div>
         <div className="overflow-x-auto w-full partner-scroll-style">
-          <div className="pb-3 min-w-[1000px] w-full">
+          <div
+            className={cn(
+              "pb-3 w-full",
+              Array.isArray(formattedData) &&
+                formattedData?.length > 0 &&
+                "min-w-[1000px]"
+            )}
+          >
             {Array.isArray(formattedData) && formattedData?.length > 0 && (
               <ul className="grid grid-cols-8 rounded-t-lg place-items-center text-center font-semibold bg-[#f3f3f3] p-3 border-b-2 text-[14px]">
                 <li>Created At</li>
@@ -174,11 +183,11 @@ export default function Discount({ eventId }: { eventId: string }) {
                 <div className="w-full col-span-full items-center flex flex-col justify-center h-[300px]">
                   <div className="flex items-center justify-center flex-col gap-y-2">
                     <Image
-                    alt="discount"
-                    width={300}
-                    height={300}
-                    className="w-[100px] h-[100px]"
-                    src="/images/ediscount.png"
+                      alt="discount"
+                      width={300}
+                      height={300}
+                      className="w-[100px] h-[100px]"
+                      src="/images/ediscount.png"
                     />
                     <p className="text-[#717171] font-medium">
                       This page is empty. Discount will appear here.

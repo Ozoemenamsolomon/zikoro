@@ -132,7 +132,12 @@ export function PartnersList({
             isActive ? "overflow-x-auto" : "overflow-x-auto"
           )}
         >
-          <div className="w-full min-w-[1000px]  p-3">
+          <div  className={cn(
+              "pb-3 w-full",
+              Array.isArray(partners) &&
+                partners?.length > 0 &&
+                "min-w-[1000px]"
+            )}>
             <table className="w-full  rounded-lg ">
               <thead className="w-full">
                 {!loading &&
@@ -185,7 +190,7 @@ export function PartnersList({
                               This page is empty. Partners will appear here
                             </p>
                             <Button
-                              onClick={onClose}
+                              onClick={onPartner}
                               className="text-gray-50 bg-zikoro gap-x-2 h-11 sm:h-12 font-medium"
                             >
                               <PlusCircle size={22} />
