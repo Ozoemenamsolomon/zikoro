@@ -24,7 +24,7 @@ export function HeaderTab({
   }
   return (
     <>
-      <div className="flex pr-4 items-center justify-between w-full pb-3 border-b pt-10">
+      <div className="flex pr-4 items-center justify-between w-full pb-2 border-b pt-10">
         <div className="flex items-center gap-x-3 sm:gap-x-8 text-sm">
           <Button
             onClick={() =>

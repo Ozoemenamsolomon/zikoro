@@ -184,7 +184,7 @@ export function Partners({ eventId }: { eventId: string }) {
         className={cn(
           "w-full flex flex-col justify-start items-start ",
           Array.isArray(partnerData || data) &&
-            (partnerData || data)?.length > 0 &&
+            (partnerData || data)?.length === 0 &&
             "hidden"
         )}
       >
