@@ -534,19 +534,21 @@ const page = () => {
       const newCertificate = await saveCertificate({
         payload: editableCertificate
           ? {
-              ...editableCertificate,
-              certficateDetails: { ...details, craftHash: hashRef.current },
-              certificateSettings: settings,
-              certificateName,
-              cerificateUrl: url,
-            }
+            ...editableCertificate,
+            certficateDetails: { ...details, craftHash: hashRef.current },
+            certificateSettings: settings,
+            certificateName,
+            cerificateUrl: url,
+            lastEdited: new Date()
+          }
           : {
-              eventId: 5,
-              certficateDetails: { ...details, craftHash: hashRef.current },
-              certificateSettings: settings,
-              certificateName,
-              cerificateUrl: url,
-            },
+            eventId: 5,
+            certficateDetails: { ...details, craftHash: hashRef.current },
+            certificateSettings: settings,
+            certificateName,
+            lastEdited: new Date(),
+            cerificateUrl: url,
+          },
       });
       console.log(newCertificate);
 

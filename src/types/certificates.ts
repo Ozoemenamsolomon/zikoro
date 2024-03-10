@@ -44,6 +44,7 @@ export interface TCertificate {
   certificateSettings?: TCertificateSettings;
   cerificateUrl?: string;
   event?: TEvent;
+  lastEdited: Date;
 }
 
 export type TFullCertificate = TAttendeeCertificate & {

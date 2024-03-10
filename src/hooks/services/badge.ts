@@ -15,7 +15,7 @@ export const useSaveBadge = () => {
     });
     try {
       const { data, status } = await postRequest<TBadge>({
-        endpoint: "/badges",
+        endpoint: "/badge",
         payload,
       });
 
@@ -45,7 +45,7 @@ export const useDeleteBadge = () => {
     });
     try {
       const { data, status } = await deleteRequest<TBadge>({
-        endpoint: `/badges/${badgeId}`,
+        endpoint: `/badge/${badgeId}`,
       });
 
       if (status !== 201) throw data.data;
@@ -77,7 +77,7 @@ export const useGetBadge = ({
 
     try {
       const { data, status } = await getRequest<TBadge>({
-        endpoint: `/badges/${badgeId}`,
+        endpoint: `/badge/${badgeId}`,
       });
 
       if (status !== 200) {
@@ -112,7 +112,7 @@ export const useGetBadges = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<TBadge[]>({
-        endpoint: `/badges`,
+        endpoint: `/badge`,
       });
 
       if (status !== 200) {

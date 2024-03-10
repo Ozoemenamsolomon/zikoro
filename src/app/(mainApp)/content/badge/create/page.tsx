@@ -160,20 +160,7 @@ const tabs = [
   },
 ];
 
-const DEFAULT_FRAME_STATE: SerializedNodes = {
-  ROOT: {
-    type: { resolvedName: "Container" },
-    isCanvas: true,
-    props: { className: "px-12 h-full w-full", "data-cy": "root-container" },
-    displayName: "Container",
-    custom: {},
-    hidden: false,
-    nodes: [
-
-    ],
-    linkedNodes: {},
-  },
-};
+const DEFAULT_FRAME_STATE: SerializedNodes = { "ROOT": { "type": { "resolvedName": "Container" }, "isCanvas": true, "props": { "className": "px-12 h-full w-full", "data-cy": "root-container" }, "displayName": "Container", "custom": {}, "hidden": false, "nodes": ["fwxI1M2zXh", "gP2wtYjklF"], "linkedNodes": {} }, "fwxI1M2zXh": { "type": { "resolvedName": "Text" }, "isCanvas": false, "props": { "text": "heading", "fontSize": 32, "isBold": true, "isItalic": false, "color": "#000", "isUnderline": false, "tagName": "h1", "textAlign": "center", "textTransform": "uppercase", "pageX": 73, "pageY": 144, "isNotEditable": false }, "displayName": "Text", "custom": {}, "parent": "ROOT", "hidden": false, "nodes": [], "linkedNodes": {} }, "gP2wtYjklF": { "type": { "resolvedName": "BadgeQRCode" }, "isCanvas": false, "props": { "url": "this", "size": 64, "pageX": 101, "pageY": 202 }, "displayName": "CertificateQRCode", "custom": {}, "parent": "ROOT", "hidden": false, "nodes": [], "linkedNodes": {} } };
 
 export interface TabProps {
   details: any;
@@ -213,6 +200,11 @@ const page = () => {
   useEffect(() => {
     if (badgeIsLoading) return;
 
+    if (!badgeIsLoading && !badge) {
+      console.log("it's still setting")
+      hashRef.current = DEFAULT_FRAME_STATE;
+    }
+
     console.log(badge);
 
     setBadge(badge);
@@ -220,24 +212,22 @@ const page = () => {
     if (badge?.badgeName) {
       setName(badge?.badgeName);
     }
-    if (badge?.BadgeDetails) {
-      setDetails(badge?.BadgeDetails);
+    if (badge?.badgeDetails) {
+      setDetails(badge?.badgeDetails);
     }
     if (badge?.badgeSettings) {
       setSettings(badge?.badgeSettings);
     }
 
     if (
-      badge?.BadgeDetails?.craftHash &&
-      typeof badge?.BadgeDetails?.craftHash === "string"
+      badge?.badgeDetails?.craftHash &&
+      typeof badge?.badgeDetails?.craftHash === "string"
     ) {
-      console.log(badge?.BadgeDetails?.craftHash, "craft hash");
+      console.log(badge?.badgeDetails?.craftHash, "craft hash");
       hashRef.current = lz.decompress(
-        lz.decodeBase64(badge?.BadgeDetails?.craftHash)
+        lz.decodeBase64(badge?.badgeDetails?.craftHash)
       );
-      console.log(hashRef.current);
-    } else {
-      hashRef.current = DEFAULT_FRAME_STATE;
+      console.log(hashRef.current, "hash current");
     }
   }, [badgeIsLoading]);
 
@@ -316,17 +306,22 @@ const page = () => {
         payload: editableBadge
           ? {
             ...editableBadge,
-            BadgeDetails: { ...details, craftHash: hashRef.current },
+            badgeDetails: { ...details, craftHash: hashRef.current },
+            badgeBackground: details.background || "",
             badgeSettings: settings,
             badgeName,
             badgeUrl: url,
+            lastEdited: new Date(),
+
           }
           : {
             eventId: 5,
-            BadgeDetails: { ...details, craftHash: hashRef.current },
+            badgeDetails: { ...details, craftHash: hashRef.current },
             badgeSettings: settings,
+            badgeBackground: details.background || "",
             badgeName,
             badgeUrl: url,
+            lastEdited: new Date(),
           },
       });
       console.log(newBadge);
@@ -545,7 +540,13 @@ const page = () => {
               >
                 {!badgeIsLoading ? (
                   <>
-                    {hashRef.current && <Frame data={hashRef.current}></Frame>}
+                    {hashRef.current && (
+                      <Frame data={hashRef.current}>
+                        <Element is={Container} canvas className="w-full h-full">
+                          <Text text={"example text"} />
+                        </Element>
+                      </Frame>
+                    )}
                   </>
                 ) : (
                   <div className="h-1/2 w-full flex items-center justify-center">
@@ -564,6 +565,7 @@ const page = () => {
                     </div>
                   </div>
                 )}
+
               </div>
             </div>
           </div>

@@ -38,7 +38,7 @@ export interface Textprops {
   textTransform?: "uppercase" | "lowercase" | "capitalize" | "none";
   pageX?: number;
   pageY?: number;
-  isNotEditable: boolean;
+  isNotEditable?: boolean;
 }
 
 const Text = ({
@@ -54,7 +54,7 @@ const Text = ({
   textTransform,
   pageX,
   pageY,
-  isNotEditable,
+  isNotEditable=false,
 }: Textprops) => {
   const {
     connectors: { connect, drag },

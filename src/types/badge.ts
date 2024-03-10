@@ -3,10 +3,11 @@ export interface TBadge {
   created_at?: string;
   eventId: number;
   badgeName: string;
-  BadgeDetails: any;
+  badgeDetails: any;
   badgeSettings: any;
   badgeBackground: string;
   badgeUrl: string;
+  lastEdited: Date;
 }
 
 export interface TBadgeTemplate {

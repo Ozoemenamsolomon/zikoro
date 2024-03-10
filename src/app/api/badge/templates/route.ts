@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     try {
       // .select("*")
       const { data, error, status } = await supabase
-        .from("BadgeTemplate")
+        .from("badgeTemplate")
         .select("*");
 
       if (error) throw error;

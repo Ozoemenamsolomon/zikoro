@@ -46,7 +46,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>(
     settings.canReceive.exceptions
       ? attendees.filter(({ id }) =>
-        settings.canReceive.exceptions?.includes(id)
+        id && settings.canReceive.exceptions?.includes(id)
       )
       : []
   );

@@ -45,6 +45,9 @@ export async function POST(req: NextRequest) {
         .upsert(params)
         .select()
         .maybeSingle();
+
+      console.log(data, error);
+
       if (error) throw error;
 
       return NextResponse.json(
@@ -54,7 +57,7 @@ export async function POST(req: NextRequest) {
         }
       );
     } catch (error) {
-      console.error(error);
+      console.error("badge error:", error);
       return NextResponse.json(
         {
           error: "An error occurred while making the request.",
