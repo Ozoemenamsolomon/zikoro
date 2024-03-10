@@ -760,3 +760,67 @@ export function useDiscount() {
 
   };
 }
+
+
+export function useCreateReward() {
+  const [loading, setLoading] = useState(false)
+  async function createReward(values: any) {
+    setLoading(true);
+
+    try {
+      const { error, status } = await supabase
+        .from("rewards")
+        .upsert([{ ...values }]);
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      if (status === 201 || status === 200) {
+        setLoading(false);
+        toast.success("Reward created successfully");
+      }
+    } catch (error) {}
+  }
+
+  return {
+    createReward,
+    loading,
+  };
+}
+
+export function useFetchRewards(eventId: string | number) {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<any[]>([]);
+  useEffect(() => {
+    fetchRewards();
+  }, []);
+
+  async function fetchRewards() {
+    setLoading(true);
+    try {
+      const { data, error: fetchError } = await supabase
+        .from("rewards")
+        .select("*")
+        .eq("eventId", eventId);
+
+      if (fetchError) {
+        setLoading(false);
+        return null;
+      }
+
+      setData(data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      //  console.log(error);
+    }
+  }
+
+  return {
+    data,
+    loading,
+    refetch: fetchRewards,
+  };
+}

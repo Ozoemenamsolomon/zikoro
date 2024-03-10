@@ -4,31 +4,42 @@ import {
   FormField,
   Input,
   InputOffsetLabel,
-  Button,
-  Select,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
+  Button
 } from "@/components";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { organizationSchema } from "@/validations";
-import { useCreateOrganisation } from "@/hooks";
+import { rewardSchema } from "@/validations";
+import { useCreateReward } from "@/hooks";
+import { uploadFile } from "@/utils";
 
-const orgType = ["Private", "Business"];
-const pricingPlan = ["Free", "Lite", "Professional", "Business", "Enterprise"];
-
-export function CreateReward({ close }: { close: () => void }) {
-  const form = useForm<any>({
-    //  resolver: zodResolver(organizationSchema),
+export function CreateReward({
+  close,
+  eventId,
+  eventName,
+  refetch
+}: {
+  eventId: string;
+  eventName?: string;
+  close: () => void;
+  refetch:()=> Promise<any>
+}) {
+  const form = useForm<z.infer<typeof rewardSchema>>({
+    resolver: zodResolver(rewardSchema),
   });
-  const { organisation, loading } = useCreateOrganisation();
+  const { createReward, loading } = useCreateReward();
 
-  async function onSubmit(values: any) {
- 
+  async function onSubmit(values: z.infer<typeof rewardSchema>) {
+    const img = await uploadFile(values.image[0], "image");
+
+    await createReward({
+      ...values,
+      image: img,
+      eventId,
+      eventName,
+    });
+    refetch()
   }
   return (
     <div
@@ -98,7 +109,7 @@ export function CreateReward({ close }: { close: () => void }) {
             />
             <FormField
               control={form.control}
-              name="pointsNeeded"
+              name="point"
               render={({ field }) => (
                 <InputOffsetLabel label="Points Needed">
                   <Input

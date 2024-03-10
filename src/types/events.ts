@@ -111,3 +111,12 @@ export interface Organization {
   certificateAsset: string;
   tiktok: string;
 }
+
+export interface Reward {
+  rewardTitle: string;
+  image: string;
+  quantity: string;
+  point: string;
+  eventId: string;
+  eventName: string;
+}
