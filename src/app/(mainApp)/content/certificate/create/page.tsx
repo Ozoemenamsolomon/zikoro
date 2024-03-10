@@ -428,6 +428,10 @@ const page = () => {
   useEffect(() => {
     if (certificateIsLoading) return;
 
+    if (!certificateId) {
+      hashRef.current = DEFAULT_FRAME_STATE;
+    }
+
     console.log(certificate);
 
     setCertificate(certificate);
@@ -451,8 +455,6 @@ const page = () => {
         lz.decodeBase64(certificate?.certficateDetails?.craftHash)
       );
       console.log(hashRef.current);
-    } else {
-      hashRef.current = DEFAULT_FRAME_STATE;
     }
   }, [certificateIsLoading]);
 
@@ -756,7 +758,8 @@ const page = () => {
               <div
                 className="relative w-4/5 h-fit space-y-6 text-black bg-no-repeat"
                 style={{
-                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "100% 100%",
                   backgroundImage: !!details.background
                     ? `url(${details.background})`
                     : "",

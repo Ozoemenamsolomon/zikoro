@@ -343,10 +343,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  <SelectItem value="0">Same Day</SelectItem>
-                  <SelectItem value="365">In a year</SelectItem>
-                  <SelectItem value="1825">In 5 years</SelectItem>
-                  <SelectItem value="3650">In 10 years</SelectItem>
+                  <SelectItem value="0">Now</SelectItem>
+                  <SelectItem value="365">End of event</SelectItem>
                 </SelectContent>
               </Select>
               <div className="rounded-md border">

@@ -200,8 +200,7 @@ const page = () => {
   useEffect(() => {
     if (badgeIsLoading) return;
 
-    if (!badgeIsLoading && !badge) {
-      console.log("it's still setting")
+    if (!badgeId) {
       hashRef.current = DEFAULT_FRAME_STATE;
     }
 
