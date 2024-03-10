@@ -310,7 +310,11 @@ option:hover {
   border-radius: 0px 0px 8px 8px;
 }
 .ql-container.ql-snow .ql-editor {
-  border: 1px solid #d1d5db !important;
+  border-left: 1px solid #d1d5db !important;
+  border-right: 1px solid #d1d5db !important;
+  border-bottom: 1px solid #d1d5db !important;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 .ql-toolbar.ql-snow {
   border-radius: 8px 8px 0px 0px;

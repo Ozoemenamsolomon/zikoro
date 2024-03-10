@@ -23,7 +23,8 @@ import { SideBarLayout } from "@/components";
 import { useDiscount } from "@/hooks";
 import { ContentTopNav } from "../_components";
 import { revalidatePath } from "next/cache";
-import { EmptyCard } from "@/components/composables";
+import Image from "next/image";
+
 
 // const addDiscount = async (formData: FormData) => {
 //   "use server";
@@ -152,7 +153,7 @@ export default function Discount({ eventId }: { eventId: string }) {
       <ContentTopNav eventId={eventId} />
       <div className="px-4">
         <div className="flex w-full items-end justify-end my-3">
-          <DialogDemo getDiscount={getDiscount} eventId={eventId} />
+        { Array.isArray(formattedData) && formattedData?.length > 0 && <DialogDemo getDiscount={getDiscount} eventId={eventId} />}
         </div>
         <div className="overflow-x-auto w-full partner-scroll-style">
           <div className="pb-3 min-w-[1000px] w-full">
@@ -170,11 +171,21 @@ export default function Discount({ eventId }: { eventId: string }) {
             )}
             {Array.isArray(formattedData) && formattedData?.length === 0 && (
               <>
-                <EmptyCard
-                  width="100"
-                  height="100"
-                  text="No available discount for this event"
-                />
+                <div className="w-full col-span-full items-center flex flex-col justify-center h-[300px]">
+                  <div className="flex items-center justify-center flex-col gap-y-2">
+                    <Image
+                    alt="discount"
+                    width={300}
+                    height={300}
+                    className="w-[100px] h-[100px]"
+                    src="/images/ediscount.png"
+                    />
+                    <p className="text-[#717171] font-medium">
+                      This page is empty. Discount will appear here.
+                    </p>
+                    <DialogDemo getDiscount={getDiscount} eventId={eventId} />
+                  </div>
+                </div>
               </>
             )}
             {Array.isArray(formattedData) &&
@@ -191,7 +202,6 @@ export default function Discount({ eventId }: { eventId: string }) {
                   status={discount.status}
                   orgId={discount?.id}
                   getDiscount={getDiscount}
-
                 />
               ))}
             <Separator />

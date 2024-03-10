@@ -1,5 +1,4 @@
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
-import { EmptyCard } from "@/components/composables";
 import { useDeletePartner, useFetchSingleEvent } from "@/hooks";
 import { PartnerWidget, ExhibitionHall, AddExhibitionHall } from "..";
 import { AddPartners } from "@/components/partners/_components";
@@ -10,6 +9,7 @@ import { Button } from "@/components";
 import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
 import { useDropBoxPosition } from "@/context";
 import { cn } from "@/lib";
+import Image from "next/image";
 export function PartnersList({
   eventId,
   partners,
@@ -85,7 +85,6 @@ export function PartnersList({
       <div className="w-full  flex flex-col border-r">
         <div className="flex p-3 items-center justify-between w-full">
           <div className="flex items-center gap-x-2">
-            <p className="font-medium">Partners</p>
             {selectedRows?.length > 0 && (
               <Button
                 onClick={deleteSelectedRows}
@@ -105,8 +104,9 @@ export function PartnersList({
             )}
           </div>
 
-          <div
-            //  onClick={""}
+        { Array.isArray(partners) &&
+                  partners?.length > 0 &&  <div
+            
             className=" flex items-center group rounded-md justify-center bg-transparent   transition-all transform duration-300 ease-in-out gap-x-2 h-11 sm:h-12"
           >
             <p>Exhibition Hall</p>
@@ -118,13 +118,13 @@ export function PartnersList({
             </button>
 
             <Button
-              onClick={onClose}
+              onClick={onPartner}
               className="text-gray-50 bg-zikoro gap-x-2 h-11 sm:h-12 font-medium"
             >
               <PlusCircle size={22} />
               <p>Partner</p>
             </Button>
-          </div>
+          </div>}
         </div>
         <div
           className={cn(
@@ -133,68 +133,84 @@ export function PartnersList({
           )}
         >
           <div className="w-full min-w-[1000px]  p-3">
-            <table className="w-full border-b rounded-lg ">
-              {!loading &&
-                Array.isArray(partners) &&
-                partners?.length > 0 && (
-                  <tr className="w-full rounded-t-lg grid grid-cols-7 text-sm font-semibold  items-center bg-gray-100 gap-3 px-3 py-4 ">
-                    <th className="text-start col-span-2 w-full">
-                      <label className=" w-full flex  relative partner-container">
-                        <input
-                          onChange={(e) => selectAllRow(e)}
-                          type="checkbox"
-                        />
-                        <span className="partner-checkmark"></span>
-                        <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
-                          Partner
-                        </p>
-                      </label>
-                    </th>
-                    <th className=" text-start col-span-1 w-full">Contact</th>
-                    <th className="text-start">Partner Type</th>
-                    <th className="text-start">Sponsor Category</th>
-                    <th className="text-start">Exhibiton Hall</th>
-                    <th className="text-start">Booth</th>
-                  </tr>
-                )}
-              {loading && (
-                <tr className="w-full col-span-full h-[300px] flex items-center justify-center">
-                  <td>
-                    <LoaderAlt size={50} className="animate-spin" />
-                  </td>
-                </tr>
-              )}
-              {!loading &&
-                Array.isArray(partners) &&
-                partners?.length === 0 && (
-                  <tr>
+            <table className="w-full  rounded-lg ">
+              <thead className="w-full">
+                {!loading &&
+                  Array.isArray(partners) &&
+                  partners?.length > 0 && (
+                    <tr className="w-full rounded-t-lg grid grid-cols-7 text-sm font-semibold  items-center bg-gray-100 gap-3 px-3 py-4 ">
+                      <td className="text-start col-span-2 w-full">
+                        <label className=" w-full flex  relative partner-container">
+                          <input
+                            onChange={(e) => selectAllRow(e)}
+                            type="checkbox"
+                          />
+                          <span className="partner-checkmark"></span>
+                          <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
+                            Partner
+                          </p>
+                        </label>
+                      </td>
+                      <td className=" text-start col-span-1 w-full">Contact</td>
+                      <td className="text-start">Partner Type</td>
+                      <td className="text-start">Sponsor Category</td>
+                      <td className="text-start">Exhibiton Hall</td>
+                      <td className="text-start">Booth</td>
+                    </tr>
+                  )}
+              </thead>
+              <tbody className="w-full">
+                {loading && (
+                  <tr className="w-full col-span-full h-[300px] flex items-center justify-center">
                     <td>
-                      <EmptyCard
-                        width="100"
-                        height="100"
-                        text="No available partner for this event"
-                      />
+                      <LoaderAlt size={50} className="animate-spin" />
                     </td>
                   </tr>
                 )}
-              {!loading &&
-                Array.isArray(partners) &&
-                partners?.map((item, index) => (
-                  <PartnerWidget
-                    refetch={refetch}
-                    selectRowFn={selectRow}
-                    selectedRows={selectedRows}
-                    event={event}
-                    partners={partners}
-                    className={
-                      index === partners?.length - 1
-                        ? "border-b-0 border-x"
-                        : "border-b border-x"
-                    }
-                    item={item}
-                    key={`${item?.name}${index}`}
-                  />
-                ))}
+                {!loading &&
+                  Array.isArray(partners) &&
+                  partners?.length === 0 && (
+                    <tr>
+                      <td>
+                        <div className="w-full col-span-full items-center flex flex-col justify-center h-[300px]">
+                          <div className="flex items-center justify-center flex-col gap-y-2">
+                            <Image
+                            src="/images/epartner.png"
+                            width={400}
+                            height={400}
+                            className="w-[100px] h-[100px]"
+                            alt="partner"
+                            />
+                            <p className="text-[#717171] font-medium">
+                              This page is empty. Partners will appear here
+                            </p>
+                            <Button
+                              onClick={onClose}
+                              className="text-gray-50 bg-zikoro gap-x-2 h-11 sm:h-12 font-medium"
+                            >
+                              <PlusCircle size={22} />
+                              <p>Partner</p>
+                            </Button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                {!loading &&
+                  Array.isArray(partners) &&
+                  partners?.map((item, index) => (
+                    <PartnerWidget
+                      refetch={refetch}
+                      selectRowFn={selectRow}
+                      selectedRows={selectedRows}
+                      event={event}
+                      partners={partners}
+                      className={"border-b border-x"}
+                      item={item}
+                      key={`${item?.name}${index}`}
+                    />
+                  ))}
+              </tbody>
             </table>
           </div>
         </div>

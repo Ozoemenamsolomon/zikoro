@@ -6,10 +6,9 @@ import { Form, FormControl, FormField, FormItem, Input } from "..";
 import { HeaderTab } from "./_components";
 import { Search } from "@styled-icons/evil/Search";
 import { Gift } from "@styled-icons/bootstrap/Gift";
-import { usePartnersTab } from "@/context";
 import { Briefcase } from "@styled-icons/ionicons-outline/Briefcase";
 import { RecordCircle } from "@styled-icons/bootstrap/RecordCircle";
-import { PartnersEnum, TPartner } from "@/types";
+import { TPartner } from "@/types";
 import { Stamp } from "@styled-icons/fa-solid/Stamp";
 import { LocationOn } from "@styled-icons/material-outlined/LocationOn";
 import { Sponsors } from "./sponsors/Sponsors";
@@ -17,6 +16,7 @@ import { Exhibitors } from "./sponsors/Exhibitors";
 import { useFetchPartners } from "@/hooks";
 import { useState, useMemo, useEffect } from "react";
 import { DropDownCards } from "../published";
+import { useSearchParams } from "next/navigation";
 import _ from "lodash";
 import { cn } from "@/lib";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
@@ -26,13 +26,14 @@ type FormValue = {
 };
 
 export function Partners({ eventId }: { eventId: string }) {
-  const { active } = usePartnersTab();
   const [locations, selectedLocations] = useState<string[]>([]);
   const [industries, selectedIndustries] = useState<string[]>([]);
   const [isLocationDropDown, setShowLocationDropDown] = useState(false);
   const [isIndustryDropDown, setShowIndustryDropDown] = useState(false);
   const [isStamp, setIsStamp] = useState(false);
   const { data, loading, refetch } = useFetchPartners(eventId);
+  const search = useSearchParams();
+  const query = search.get("p");
   const [partnerData, setPartnerData] = useState<TPartner[] | undefined>(
     undefined
   );
@@ -179,7 +180,14 @@ export function Partners({ eventId }: { eventId: string }) {
     >
       <HeaderTab eventId={eventId} refetch={refetch} />
 
-      <div className="w-full flex flex-col justify-start items-start ">
+      <div
+        className={cn(
+          "w-full flex flex-col justify-start items-start ",
+          Array.isArray(partnerData || data) &&
+            (partnerData || data)?.length > 0 &&
+            "hidden"
+        )}
+      >
         <div className="parent-container relative w-full overflow-x-auto no-scrollbar">
           <div className="min-w-[800px] flex items-center justify-between p-4">
             <div className=" w-[90%] flex items-center">
@@ -279,10 +287,10 @@ export function Partners({ eventId }: { eventId: string }) {
         )}
       </div>
 
-      {active === PartnersEnum.SPONSORS_TAB && (
+      {query === "sponsors" && (
         <Sponsors sponsors={sponsors} loading={loading} />
       )}
-      {active === PartnersEnum.EXHIBITORS_TAB && (
+      {query === "exhibitors" && (
         <Exhibitors exhibitors={exhibitors} loading={loading} />
       )}
     </SideBarLayout>

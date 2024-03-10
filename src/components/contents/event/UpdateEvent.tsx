@@ -486,7 +486,7 @@ export default function UpdateEvent({
 
                 <div className="border col-span-full w-full border-[#f3f3f3] p-4 rounded-md space-y-5 pb-10">
                   <h5>Pricing</h5>
-                  <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-3">
+                  <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-3 sm:gap-10">
                     {fields.map((field, id) => (
                       <div
                         key={field.id}

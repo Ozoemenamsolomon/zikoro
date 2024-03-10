@@ -26,7 +26,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
     },
     {
       name: "Partners",
-      href: `/events/partners/${eventId}`,
+      href: `/events/partners/${eventId}?p=sponsors`,
     },
     {
       name: "Market Place",
@@ -56,7 +56,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
             return (
               <li
                 className={`pb-1 text-sm ${
-                  pathname.includes(href.split("/")[2])
+                  pathname.includes(`${href.split("/")[1]}/${href.split("/")[2]}`)
                     ? "text-zikoro border-b-2 border-zikoro font-medium"
                     : ""
                 }`}

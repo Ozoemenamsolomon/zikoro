@@ -414,6 +414,8 @@ export function SocialWallIcon() {
   );
 }
 
+
+
 export function RewardIcon() {
   return (
     <svg width="29" height="28" viewBox="0 0 29 28" fill="none">
