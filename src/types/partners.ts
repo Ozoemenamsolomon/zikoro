@@ -77,10 +77,3 @@ export interface PromotionalOfferType {
 
 
 }
-
-export interface Reward {
-  rewardTitle: string
-  image: string
-  quantity: string
-  pointNeeded: string
-}
