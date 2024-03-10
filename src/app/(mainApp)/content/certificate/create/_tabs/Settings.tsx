@@ -46,8 +46,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>(
     settings.canReceive.exceptions
       ? attendees.filter(({ id }) =>
-          settings.canReceive.exceptions?.includes(id)
-        )
+        settings.canReceive.exceptions?.includes(id)
+      )
       : []
   );
 
@@ -59,8 +59,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
     const updatedValue = Array.isArray(value)
       ? value
       : value && selectedAttendees.includes(value)
-      ? selectedAttendees.filter((item) => item !== value)
-      : [...selectedAttendees, value];
+        ? selectedAttendees.filter((item) => item !== value)
+        : [...selectedAttendees, value];
 
     setSelectedAttendees(updatedValue);
   };
@@ -82,7 +82,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
   return (
     <div ref={divRef} className="hide-scrollbar">
       <h4 className="text-lg text-gray-700 font-medium">Paper Format</h4>
-      <div className="space-y-2 text-gray-500 pt-2 pb-4">
+      <div className="space-y-4 text-gray-500 pt-2 pb-4">
         <div className="flex justify-between">
           <span className="font-medium text-sm">Size</span>
           <RadioGroup
@@ -124,7 +124,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
         <h4 className="text-gray-700 font-medium">
           Who should receive this certificate?
         </h4>
-        <div className="space-y-2 text-sm font-medium text-gray-500 pt-2 pb-4">
+        <div className="space-y-4 text-sm font-medium text-gray-500 pt-2 pb-4">
           <div>
             <div className="flex justify-between">
               <span>Event Attendees</span>
@@ -144,9 +144,26 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                 <DialogTrigger asChild>
                   <Button
                     variant={"ghost"}
-                    className="text-sm text-basePrimary font-medium flex gap-2 items-center p-0 mt-2 mb-4"
+                    className="text-sm font-medium flex flex-col items-start gap-1 p-0 mt-2 mb-4"
                   >
-                    <span>Select Exceptions</span>
+                    <span className="text-basePrimary flex gap-1">      <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      stroke-width="0"
+                      viewBox="0 0 1024 1024"
+                      height="1.5em"
+                      width="1.5em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path>
+                      <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+                    </svg> Exceptions</span>
+                    <i className="text-xs">
+                      {
+                        (selectedAttendees && selectedAttendees.length > 0) && selectedAttendees.length + " attendees will not receive this certificate"
+
+                      }
+                    </i>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="px-3 max-h-[500px] overflow-auto hide-scrollbar">
@@ -228,9 +245,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                   )
                 }
                 disabled={settings.criteria === 0}
-                className={`${
-                  settings.criteria > 0 ? "text-basePrimary" : "text-gray-500"
-                } disabled:opacity-70`}
+                className={`${settings.criteria > 0 ? "text-basePrimary" : "text-gray-500"
+                  } disabled:opacity-70`}
               >
                 <svg
                   stroke="currentColor"
@@ -257,9 +273,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                 }
                 disabled={settings.criteria === 100}
                 type="button"
-                className={`${
-                  settings.criteria < 100 ? "text-basePrimary" : "text-gray-500"
-                } disabled:opacity-70`}
+                className={`${settings.criteria < 100 ? "text-basePrimary" : "text-gray-500"
+                  } disabled:opacity-70`}
               >
                 <svg
                   stroke="currentColor"
@@ -314,7 +329,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
             </PopoverTrigger>
             <PopoverContent
               align="start"
-              className="flex w-auto flex-col space-y-2 p-2"
+              className="flex w-auto flex-col space-y-4 p-2"
             >
               <Select
                 onValueChange={(value) =>
@@ -390,7 +405,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
               </PopoverTrigger>
               <PopoverContent
                 align="start"
-                className="flex w-auto flex-col space-y-2 p-2"
+                className="flex w-auto flex-col space-y-4 p-2"
               >
                 <Select
                   onValueChange={(value) =>
@@ -422,7 +437,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           </div>
         )}
       </div>
-      <div className="space-y-2 pt-4 border-t-2 pb-12">
+      <div className="space-y-4 pt-4 border-t-2 pb-12">
         <Dialog>
           <DialogTrigger asChild>
             <Button className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-2">
