@@ -30,7 +30,7 @@ export default function SinglePublishedEvent({id}: {id:string}) {
           className="w-[100px] md:w-[150px] h-[30px] md:h-[40px]"
         />
 
-        <div className="mt-10 sm:mt-32 mx-auto  w-[95%] sm:w-[65%] lg:w-[90%] xl:w-[80%]">
+        <div className="mt-10 sm:mt-32 mx-auto  w-[98%] sm:w-[65%] lg:w-[90%] xl:w-[80%]">
           {eventDetail ? (
             <EventDetail event={eventDetail} />
           ) : (

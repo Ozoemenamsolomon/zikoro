@@ -83,6 +83,8 @@ export function HeroLayout({
     [publishedEvents]
   );
 
+  console.log({locationData, titleData})
+
   return (
     <div className="w-full h-full relative bg-gray-50">
       <div className="w-full p-2 sm:p-4 relative h-[250px] md:h-[350px] bg-gray-50 ">
@@ -111,11 +113,11 @@ export function HeroLayout({
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
-                    className="absolute top-8 right-0"
+                    className="absolute top-8 right-[-95px] md:right-0"
                   >
                     <button
-                      onClick={() => setDatePanel((prev) => !prev)}
-                      className="w-full h-full inset-0 z-[100] "
+                     onClick={() => setDatePanel((prev) => !prev)}
+                      className="w-full h-full fixed inset-0 z-[100] "
                     ></button>
                     <div
                       role="button"
@@ -136,7 +138,7 @@ export function HeroLayout({
               </button>
               <button
                 onClick={() => setShowLocationDropDown((prev) => !prev)}
-                className="flex relative items-center hover:text-zikoro w-full justify-center border-x px-4 text-gray-400  gap-x-2"
+                className="parent-container flex relative items-center hover:text-zikoro w-full justify-center border-x px-4 text-gray-400  gap-x-2"
               >
                 <LocationOn size={22} />
                 <p>Location </p>
