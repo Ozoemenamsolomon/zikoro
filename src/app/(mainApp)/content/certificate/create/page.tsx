@@ -41,6 +41,15 @@ import lz from "lzutf8";
 import { exportComponentAsPNG } from "react-component-export-image";
 import { useToPng } from "@hugocxl/react-to-image";
 import CertificateQRCode from "@/components/certificate/QRCode";
+import { useGetEvent } from "@/hooks/services/events";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const tabs = [
   {
@@ -168,6 +177,7 @@ const tabs = [
 ];
 
 const DEFAULT_FRAME_STATE: SerializedNodes = {
+  // @ts-ignore
   ROOT: {
     type: { resolvedName: "Container" },
     isCanvas: true,
@@ -403,10 +413,15 @@ const page = () => {
   const searchParams = useSearchParams();
 
   const certificateId = searchParams.get("certificateId");
+  const eventId = searchParams.get("eventId");
 
   const { certificate, isLoading: certificateIsLoading } = useGetCertificate({
     certificateId: certificateId || "0",
   });
+
+  const { event, isLoading: eventIsLoading } = useGetEvent({ eventId: parseInt(eventId || "0") })
+
+  console.log(event, "event")
 
   const [editableCertificate, setCertificate] = useState<TCertificate | null>(
     null
@@ -470,6 +485,7 @@ const page = () => {
     criteria: 100,
     canExpire: false,
     expiryDate: new Date(),
+    publishOn: event?.endDateTime || new Date(),
     skills: [],
   });
 
@@ -497,6 +513,13 @@ const page = () => {
     console.log(key + ": " + value);
     setSettings({ ...settings, [key]: value });
   };
+
+  useEffect(() => {
+    if (eventIsLoading || !event || !event.endDateTime) return;
+
+    editSettings("publishOn", new Date(event.endDateTime))
+  }, [event])
+
 
   const hashRef = useRef<string | SerializedNodes | undefined>();
 
@@ -575,47 +598,93 @@ const page = () => {
       enabled: state.options.enabled,
     }));
 
+    const [previewImg, setImg] = useState<string | null>(null)
+
+    const [{ data: previewPNG }, preview] = useToPng<HTMLDivElement>({
+      selector: "#certificate",
+      onSuccess: (data) => setImg(data)
+    });
+
+
     return (
-      <Button
-        disabled={isLoading}
-        className="flex gap-2"
-        variant={"ghost"}
-        onClick={() => {
-          const json = query.serialize();
-          hashRef.current = lz.encodeBase64(lz.compress(json));
-          console.log(lz.encodeBase64(lz.compress(json)), "what you see");
-          convert();
-        }}
-      >
-        {isLoading || imageIsUploading ? (
-          <div className="animate-spin">
-            <svg
-              stroke="currentColor"
-              fill="currentColor"
-              strokeWidth={0}
-              viewBox="0 0 1024 1024"
-              height="1em"
-              width="1em"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
-            </svg>
-          </div>
-        ) : (
-          <svg
-            stroke="currentColor"
-            fill="currentColor"
-            strokeWidth={0}
-            viewBox="0 0 1024 1024"
-            height="1em"
-            width="1em"
-            xmlns="http://www.w3.org/2000/svg"
+
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button
+            disabled={isLoading}
+            className="flex gap-2"
+            variant={"ghost"}
+            onClick={preview}
           >
-            <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z" />
-          </svg>
-        )}
-        <span>{isLoading || imageIsUploading ? "Saving..." : "Save"}</span>
-      </Button>
+            {isLoading || imageIsUploading ? (
+              <div className="animate-spin">
+                <svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  strokeWidth={0}
+                  viewBox="0 0 1024 1024"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
+                </svg>
+              </div>
+            ) : (
+              <svg
+                stroke="currentColor"
+                fill="currentColor"
+                strokeWidth={0}
+                viewBox="0 0 1024 1024"
+                height="1em"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z" />
+              </svg>
+            )}
+            <span>{isLoading || imageIsUploading ? "Saving..." : "Preview"}</span>
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="px-2 pt-6 z-[100] h-[90vh] overflow-auto no-scrollbar">
+          <DialogHeader className="px-3">
+            <DialogTitle>Preview</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-8">
+            <div>
+              {previewImg ? <img src={previewImg} /> :
+                <div className="h-[100px] w-full flex items-center justify-center">
+                  <div className="animate-spin">
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth={0}
+                      viewBox="0 0 1024 1024"
+                      height="2.5em"
+                      width="2.5em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
+                    </svg>
+                  </div>
+                </div>}
+            </div>
+            <DialogClose asChild>
+              <Button
+                onClick={() => {
+                  const json = query.serialize();
+                  hashRef.current = lz.encodeBase64(lz.compress(json));
+                  console.log(lz.encodeBase64(lz.compress(json)), "what you see");
+                  convert();
+                }}
+                className="bg-basePrimary w-full"
+              >
+                Save
+              </Button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
     );
   };
 

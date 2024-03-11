@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       }
 
       const { error } = await supabase.from("users").upsert(params);
-      if (error) throw error.code;
+      if (error) throw error;
 
       return NextResponse.json(
         { msg: "user created successfully" },
@@ -33,10 +33,7 @@ export async function POST(req: NextRequest) {
       console.error(error);
       return NextResponse.json(
         {
-          error:
-            error === "email error"
-              ? "Email already registered for this event"
-              : "An error occurred while making the request.",
+          error: "An error occurred while making the request.",
         },
         {
           status: 500,
@@ -85,9 +82,7 @@ export async function GET(req: NextRequest) {
 
   if (req.method === "GET") {
     try {
-      const { data, error, status } = await supabase
-        .from("users")
-        .select("*");
+      const { data, error, status } = await supabase.from("users").select("*");
 
       if (error) throw error;
 

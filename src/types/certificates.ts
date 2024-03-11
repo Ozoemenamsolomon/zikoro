@@ -28,6 +28,7 @@ export interface TCertificateSettings {
   canExpire: boolean;
   expiryDate: Date;
   skills: { color: string; value: string }[];
+  publishOn: Date;
 }
 
 export interface TCertificateDetails {
@@ -41,7 +42,7 @@ export interface TCertificate {
   eventId: number;
   certificateName: string;
   certficateDetails: TCertificateDetails;
-  certificateSettings?: TCertificateSettings;
+  certificateSettings: TCertificateSettings;
   cerificateUrl?: string;
   event?: TEvent;
   lastEdited: Date;

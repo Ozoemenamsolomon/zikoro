@@ -33,21 +33,19 @@ import { useGetAttendees } from "@/hooks/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import COLORTAG from "@/utils/colorTag";
+import { DateTimePicker } from "@/components/ui/date-time-picker/date-time-picker";
 
 const Settings = ({ settings, editSettings }: TabProps) => {
-  const [criteria, setCriteria] = useState<number>(0);
-  const [date, setDate] = React.useState<Date>();
   const [newSkill, setSkill] = React.useState<string>("");
   const [color, setColor] = React.useState<string>("");
 
   const { attendees, isLoading } = useGetAttendees();
 
-  console.log(settings.canReceive.exceptions);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>(
     settings.canReceive.exceptions
-      ? attendees.filter(({ id }) =>
-        id && settings.canReceive.exceptions?.includes(id)
-      )
+      ? attendees.filter(
+          ({ id }) => id && settings.canReceive.exceptions?.includes(id)
+        )
       : []
   );
 
@@ -59,8 +57,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
     const updatedValue = Array.isArray(value)
       ? value
       : value && selectedAttendees.includes(value)
-        ? selectedAttendees.filter((item) => item !== value)
-        : [...selectedAttendees, value];
+      ? selectedAttendees.filter((item) => item !== value)
+      : [...selectedAttendees, value];
 
     setSelectedAttendees(updatedValue);
   };
@@ -73,6 +71,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
   };
 
   const divRef = useRef<HTMLDivElement>(null);
+
+  console.log(settings.publishOn);
 
   useEffect(() => {
     if (!divRef) return;
@@ -146,23 +146,27 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                     variant={"ghost"}
                     className="text-sm font-medium flex flex-col items-start gap-1 p-0 mt-2 mb-4"
                   >
-                    <span className="text-basePrimary flex gap-1">      <svg
-                      stroke="currentColor"
-                      fill="currentColor"
-                      stroke-width="0"
-                      viewBox="0 0 1024 1024"
-                      height="1.5em"
-                      width="1.5em"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path>
-                      <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
-                    </svg> Exceptions</span>
+                    <span className="text-basePrimary flex gap-1">
+                      {" "}
+                      <svg
+                        stroke="currentColor"
+                        fill="currentColor"
+                        stroke-width="0"
+                        viewBox="0 0 1024 1024"
+                        height="1.5em"
+                        width="1.5em"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path>
+                        <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+                      </svg>{" "}
+                      Exceptions
+                    </span>
                     <i className="text-xs">
-                      {
-                        (selectedAttendees && selectedAttendees.length > 0) && selectedAttendees.length + " attendees will not receive this certificate"
-
-                      }
+                      {selectedAttendees &&
+                        selectedAttendees.length > 0 &&
+                        selectedAttendees.length +
+                          " attendees will not receive this certificate"}
                     </i>
                   </Button>
                 </DialogTrigger>
@@ -245,8 +249,9 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                   )
                 }
                 disabled={settings.criteria === 0}
-                className={`${settings.criteria > 0 ? "text-basePrimary" : "text-gray-500"
-                  } disabled:opacity-70`}
+                className={`${
+                  settings.criteria > 0 ? "text-basePrimary" : "text-gray-500"
+                } disabled:opacity-70`}
               >
                 <svg
                   stroke="currentColor"
@@ -273,8 +278,9 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                 }
                 disabled={settings.criteria === 100}
                 type="button"
-                className={`${settings.criteria < 100 ? "text-basePrimary" : "text-gray-500"
-                  } disabled:opacity-70`}
+                className={`${
+                  settings.criteria < 100 ? "text-basePrimary" : "text-gray-500"
+                } disabled:opacity-70`}
               >
                 <svg
                   stroke="currentColor"
@@ -294,7 +300,13 @@ const Settings = ({ settings, editSettings }: TabProps) => {
         </div>
       </div>
       <div className="pt-4 pb-2 border-t-2">
-        <div className="col-span-6 w-full rounded-md bg-background text-sm relative">
+        <DateTimePicker
+          defaultValue={settings.publishOn}
+          granularity={"minute"}
+          onSelect={(date: Date) => editSettings("publishOn", date)}
+          disabled={(date: Date) => date < new Date()}
+        />
+        {/* <div className="col-span-6 w-full rounded-md bg-background text-sm relative">
           <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
             Publish on
           </span>
@@ -320,8 +332,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                   <path d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zm0-448H184V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136z" />
                 </svg>
 
-                {settings.expiryDate ? (
-                  format(settings.expiryDate, "PPP")
+                {settings.publishOn ? (
+                  format(settings.publishOn, "PPP")
                 ) : (
                   <span>Pick a date</span>
                 )}
@@ -334,7 +346,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
               <Select
                 onValueChange={(value) =>
                   editSettings(
-                    "expiryDate",
+                    "publishOn",
                     addDays(new Date(), parseInt(value))
                   )
                 }
@@ -349,14 +361,15 @@ const Settings = ({ settings, editSettings }: TabProps) => {
               </Select>
               <div className="rounded-md border">
                 <Calendar
+                  // disabled={(date) => date < new Date()}
                   mode="single"
-                  selected={settings.expiryDate}
-                  onSelect={(date) => editSettings("expiryDate", date)}
+                  selected={settings.publishOn}
+                  onSelect={(date) => editSettings("publishOn", date)}
                 />
               </div>
             </PopoverContent>
           </Popover>
-        </div>
+        </div> */}
       </div>
       <div className="pt-4 border-t-2 space-y-4 pb-2">
         <div className="flex justify-between">
@@ -425,6 +438,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                 </Select>
                 <div className="rounded-md border">
                   <Calendar
+                    disabled={(date) => date < new Date()}
                     mode="single"
                     selected={settings.expiryDate}
                     onSelect={(date) => editSettings("expiryDate", date)}
