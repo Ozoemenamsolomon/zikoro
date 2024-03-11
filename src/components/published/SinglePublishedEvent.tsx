@@ -21,7 +21,7 @@ export default function SinglePublishedEvent({id}: {id:string}) {
         imageLink={"https://imagetolink.com/ib/9bs4n2aVoi.png"}
         eventId={id}
       />
-      <div className="w-full h-full bg-gray-50 fixed inset-0 overflow-y-auto p-4 sm:p-6">
+      <div className="w-full h-full bg-gray-50 fixed inset-0 overflow-y-auto p-3 sm:p-6">
         <Image
           src="/images/zikoro.png"
           alt="logo"
@@ -30,7 +30,7 @@ export default function SinglePublishedEvent({id}: {id:string}) {
           className="w-[100px] md:w-[150px] h-[30px] md:h-[40px]"
         />
 
-        <div className="mt-10 sm:mt-32 mx-auto  w-[98%] sm:w-[65%] lg:w-[90%] xl:w-[80%]">
+        <div className="mt-10 sm:mt-32 mx-auto  w-full sm:w-[65%] lg:w-[90%] xl:w-[80%]">
           {eventDetail ? (
             <EventDetail event={eventDetail} />
           ) : (
