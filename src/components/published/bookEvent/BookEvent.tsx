@@ -61,14 +61,14 @@ export function BookEvent({
   currency: string | undefined;
 }) {
   const [attendees, setAttendees] = useState<any[]>([]);
-  const pathname = usePathname()
+  const pathname = usePathname();
   const [chosenPrice, setChosenPrice] = useState<number | undefined>();
   const [code, setCode] = useState("");
   const [active, setActive] = useState(1);
   const [priceCategory, setPriceCategory] = useState<string | undefined>("");
   const [isPaymentModal, setOpenPaymentModal] = useState(false);
   const { sendTransactionDetail } = useTransactionDetail();
-  const [description, setDescription] = useState("")
+  const [description, setDescription] = useState("");
   const form = useForm<z.infer<typeof eventBookingValidationSchema>>({
     resolver: zodResolver(eventBookingValidationSchema),
     defaultValues: {
@@ -108,7 +108,7 @@ export function BookEvent({
       whatsappNumber: "",
       phoneNumber: "",
     });
-  }  
+  }
   function allowPayment(bool: boolean) {
     setOpenPaymentModal(bool);
   }
@@ -149,8 +149,6 @@ export function BookEvent({
     if (chosenPrice)
       return ((Number(chosenPrice - discount) * 5) / 100) * fields?.length;
   }, [fields, chosenPrice]);
-
- 
 
   // calculating total
   const total = useMemo(() => {
@@ -298,18 +296,19 @@ export function BookEvent({
               {`${startDate} - ${endDate}`}
             </h2>
 
-          {eventImage ?   <Image
-              className="w-full h-64 mt-3 rounded-lg object-cover"
-              src={eventImage}
-              alt="eventimage"
-              width={700}
-              height={700}
-            />
-            :
-            <div className="w-full mt-3 h-64 rounded-lg animate-pulse">
-              <div className="w-full h-full bg-gray-100"></div>
-            </div>
-}
+            {eventImage ? (
+              <Image
+                className="w-full h-64 mt-3 rounded-lg object-cover"
+                src={eventImage}
+                alt="eventimage"
+                width={700}
+                height={700}
+              />
+            ) : (
+              <div className="w-full mt-3 h-64 rounded-lg animate-pulse">
+                <div className="w-full h-full bg-gray-100"></div>
+              </div>
+            )}
             <div className="w-full border mt-3 border-gray-300 rounded-lg py-4 px-3">
               <h2 className="text-base sm:text-lg mb-3 font-semibold ">
                 Order Summary
@@ -380,15 +379,15 @@ export function BookEvent({
                             )}
                           >
                             {v?.discountPercentage &&
-                              v?.discountPercentage > 0 ? (
-                                <p
-                                  className={cn(
-                                    "w-9 absolute right-4 top-[-14px] h-7 rounded-[40%] px-2 flex items-center justify-center bg-gray-200 text-xs sm:text-mobile",
-                                    activeSelectedPrice(v?.attendeeType) &&
-                                      "bg-blue-50 text-zikoro"
-                                  )}
-                                >{`${v?.discountPercentage.toFixed(0)}%`}</p>
-                              ): null}
+                            v?.discountPercentage > 0 ? (
+                              <p
+                                className={cn(
+                                  "w-9 absolute right-4 top-[-14px] h-7 rounded-[40%] px-2 flex items-center justify-center bg-gray-200 text-xs sm:text-mobile",
+                                  activeSelectedPrice(v?.attendeeType) &&
+                                    "bg-blue-50 text-zikoro"
+                                )}
+                              >{`${v?.discountPercentage.toFixed(0)}%`}</p>
+                            ) : null}
 
                             {isDateGreaterThanToday(v?.validity) && (
                               <div className="w-full h-full absolute inset-0 bg-white/50"></div>
@@ -398,20 +397,23 @@ export function BookEvent({
                                 <p className="font-medium text-base">
                                   {v?.attendeeType}
                                 </p>
-                                <div className="flex items-center gap-x-1">
-                                <p className="text-xs sm:text-sm w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
-                                  {v?.description}
-                                </p>
-                                <button 
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  e.preventDefault()
-                                  setDescription(v?.description)
-                                }}
-                                className="text-xs sm:text-sm font-medium text-zikoro">
-                                  view more
-                                </button>
-                                </div>
+                                {v?.description && (
+                                  <div className="flex items-center gap-x-1">
+                                    <p className="text-xs sm:text-sm w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
+                                      {v?.description}
+                                    </p>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        e.preventDefault();
+                                        setDescription(v?.description);
+                                      }}
+                                      className="text-xs sm:text-sm font-medium text-zikoro"
+                                    >
+                                      view
+                                    </button>
+                                  </div>
+                                )}
                               </div>
                               <div className="flex flex-col items-end justify-end">
                                 <p className="font-medium text-base">{`${
@@ -495,7 +497,9 @@ export function BookEvent({
                   </div>
                 </div>
                 <Button
-                disabled={priceCategory === "" || pathname.includes("preview")}
+                  disabled={
+                    priceCategory === "" || pathname.includes("preview")
+                  }
                   type="submit"
                   onClick={() => setActive(2)}
                   className="h-14 w-full gap-x-2 bg-zikoro hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium"
@@ -737,20 +741,23 @@ export function BookEvent({
         />
       )}
 
-      {description !== "" && <DescriptionModal description={description} setDescription={setDescription}/>}
+      {description !== "" && (
+        <DescriptionModal
+          description={description}
+          setDescription={setDescription}
+        />
+      )}
     </>
   );
 }
 
-
 function DescriptionModal({
- description,
- setDescription
+  description,
+  setDescription,
 }: {
-  description:string
-  setDescription: React.Dispatch<React.SetStateAction<string>>
+  description: string;
+  setDescription: React.Dispatch<React.SetStateAction<string>>;
 }) {
- 
   return (
     <div
       role="button"
@@ -763,14 +770,17 @@ function DescriptionModal({
         className="w-[95%] sm:w-[450px] box-animation h-fit max-h-[85%] overflow-y-auto flex  flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4"
       >
         <div className="w-full flex items-end justify-end">
-          <Button   onClick={() => setDescription("")} className="px-1 h-fit w-fit">
+          <Button
+            onClick={() => setDescription("")}
+            className="px-1 h-fit w-fit"
+          >
             <CloseOutline size={22} />
           </Button>
         </div>
-    <p className="font-semibold">Description</p>
-    <div className="w-full flex-wrap flex items-start justify-start leading-7">
-    {description}
-    </div>
+        <p className="font-semibold">Description</p>
+        <div className="w-full flex-wrap flex items-start justify-start leading-7">
+          {description}
+        </div>
       </div>
     </div>
   );
