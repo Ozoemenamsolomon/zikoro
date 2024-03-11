@@ -463,9 +463,7 @@ const DialogDemo = ({
                         }
                       }}
                     />
-
                     <p className="">{`${percentage}%`}</p>
-
                     <PlusCircle
                       size={25}
                       color="#001FCC"
