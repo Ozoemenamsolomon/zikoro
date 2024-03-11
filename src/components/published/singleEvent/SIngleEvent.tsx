@@ -116,7 +116,6 @@ export function SingleEvent({
     showShareDropDown((prev) => !prev);
   }
 
-
   // conditonally adding comma to separate city and location
   const removeComma = useMemo(() => {
     return event?.eventCity === null || event?.eventCountry === null;
@@ -222,7 +221,10 @@ export function SingleEvent({
                   Icon={CalendarDateFill}
                   text={
                     <div className="flex items-center gap-x-2">
-                      <p>{`${startDate} – ${endDate}`}</p>
+                      <p className="flex items-center gap-x-1">
+                        {`${startDate} `}{" "}
+                        <span className="hidden md:block">{`- ${endDate}`}</span>
+                      </p>
                       {timeDifference && (
                         <p className="text-xs bg-gray-100 rounded-md p-2 ">
                           {timeDifference}
@@ -243,7 +245,7 @@ export function SingleEvent({
                   <p>
                     {`${event?.eventCity ?? ""}`}
                     {!removeComma && <span>,</span>}
-                    {`${event?.eventCountry ?? ""}`}
+                    {` ${event?.eventCountry ?? ""}`}
                   </p>
                 }
               />
@@ -319,7 +321,6 @@ export function SingleEvent({
                 </div>
               </div>
               <Button
-            
                 onClick={(e) => {
                   e.stopPropagation();
                   e.stopPropagation();
@@ -331,7 +332,7 @@ export function SingleEvent({
                 Book Now
               </Button>
               {!isAllSocialUnavailable && (
-                <div className="w-full flex flex-col justify-start items-start space-y-2 ">
+                <div className="w-full hidden flex-col justify-start items-start space-y-2 ">
                   <h3>Learn more about the event organizers</h3>
                   <div className="flex items-center gap-x-2">
                     <Link

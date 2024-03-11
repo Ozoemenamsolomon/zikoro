@@ -332,7 +332,7 @@ const DialogDemo = ({
             <span className="">Discount</span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="bg-white sm:max-w-[425px] py-8 px-10 max-h-[95vh]">
+        <DialogContent className="bg-white w-[95%] sm:max-w-[425px] py-6 sm:py-8 px-4 sm:px-10 max-h-[95vh]">
           <DialogHeader>
             <DialogTitle>
               <p className="text-[24px] font-medium">Create a discount</p>
@@ -452,7 +452,7 @@ const DialogDemo = ({
               ) : (
                 <div className="flex justify-between items-center mt-8">
                   <p className="text-base">Discount percentage</p>
-                  <div className="flex justify-between">
+                  <div className="flex items-center gap-x-1">
                     <MinusCircle
                       size={25}
                       color="gray"
@@ -463,17 +463,8 @@ const DialogDemo = ({
                         }
                       }}
                     />
-                    <div className="flex items-center -space-x-3">
-                      <input
-                        type="number"
-                        value={percentage}
-                        readOnly
-                        name="percentage"
-                        id="percentage"
-                        className="w-12 text-end"
-                      />
-                      <p className="mr-2">%</p>
-                    </div>
+
+                    <p className="">{`${percentage}%`}</p>
 
                     <PlusCircle
                       size={25}
@@ -487,7 +478,7 @@ const DialogDemo = ({
 
               <div className="flex justify-between items-center mt-4">
                 <p className="text-base">Quantity</p>
-                <div className="flex justify-between space-x-2">
+                <div className="flex items-center gap-x-2">
                   <MinusCircle
                     size={25}
                     color="gray"
