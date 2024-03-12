@@ -16,7 +16,7 @@ export default function Event() {
             </div>
             
             {/* body */}
-            <div className='pl-5 pr-5 shadow-xl rounded-md'>
+            <div className='pl-5 pr-5 border-[1px] border-gray-200 rounded-md'>
                 <p className='mt-5 font-semibold '> Product Con </p>
 
                     <div className='mt-6 flex gap-x-[10px] '>
@@ -29,7 +29,7 @@ export default function Event() {
                         <p className='text-xl font-normal'>Lagos, Nigeria</p>
                     </div>
 
-                    <div className='border-t-[1px] border-gray-400 pt-8 flex justify-between pb-[15px]'>
+                    <div className='border-t-[1px] border-gray-300 pt-8 flex justify-between pb-[15px]'>
                         <p className='text-base font-normal'>starting at</p>
                         <p className='text-xl font-medium'>₦ 500,000</p>
                     </div>

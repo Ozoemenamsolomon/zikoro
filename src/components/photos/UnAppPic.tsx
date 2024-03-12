@@ -3,7 +3,7 @@ import React, {useState } from "react"
 import Image from "next/image"
 import {IoIosCheckmarkCircle} from "react-icons/io"
 import {toast } from 'react-toastify';
-import { supabase } from "../utils/Utils"
+import { supabase } from "../../utils/Utils"
 
 type UnAppPicProps = {
         url: string,

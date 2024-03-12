@@ -1,8 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import Picture from "./ApprvPic"
-import { supabase } from "../utils/Utils"
-import {toast } from 'react-toastify';
+
 
 type DBEventPhoto = {
   id : number,
@@ -23,29 +22,29 @@ type DBEventPhoto = {
 
 export default function ApprovedPics(){
     const [images, setImages] = useState<DBEventPhoto[]|undefined>(undefined);
-    const [id, setId] = useState([]);
+
+    async function fetchImageUrls() {
+
+      fetch('/api/fetchImages/fetchApprovedImages', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+          // You might need additional headers like authorization if required
+        }
+      })
+        .then(response => response.json())
+        .then(data => setImages(data.data))
+        .catch(
+          error => console.error('Error:', error)
+        );
+    }
+
 
     useEffect(() => {
-        async function fetchImageUrls() {
-          try {
-            // Fetch the URLs from Supabase based on parameters
-            const { data, error } = await supabase
-              .from('eventPhotos')
-              .select()
-              .eq('photoStatus', 'approved').returns <DBEventPhoto[]>()
-    
-            if (error) {
-              throw error;
-            }    
-              setImages(data)
-
-          } catch (error) {
-
-          }
-        }
-    
+        
         fetchImageUrls();
       }, []);
+
     return (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
                       {images?.length ? (

@@ -3,13 +3,13 @@ import React, {useEffect, useState } from "react"
 import Image from "next/image"
 import {BsThreeDots} from "react-icons/bs"
 import {AiFillLike } from "react-icons/ai"
-import { Popover, PopoverContent, PopoverTrigger} from "../components/ui/popover"
-import { supabase } from "../utils/Utils"
+import { Popover, PopoverContent, PopoverTrigger} from "../ui/popover"
+import { supabase } from "../../utils/Utils"
 import {toast } from 'react-toastify';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../components/ui/alert-dialog"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog"
 import { TiWarningOutline } from "react-icons/ti";
 import FileSaver from "file-saver";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 
 type ApprvPicProps = {
     url: string,
@@ -99,7 +99,7 @@ export default function ApprvPic({url, id, like}: ApprvPicProps) {
     const [hoverActive, setHoverActive] = useState(false)
 
     return (
-                    <div className="relative " onMouseOver={() => setHoverActive(true)}  onMouseOut={() => setHoverActive(false)} >
+                    <div className="relative" onMouseOver={() => setHoverActive(true)}  onMouseOut={() => setHoverActive(false)} >
                       
                     <div className="absolute right-4 top-4 ">
 

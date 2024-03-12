@@ -1,10 +1,10 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react'
 import {CiCirclePlus} from "react-icons/ci"
-import {MdOutlineFullscreen} from "react-icons/md"
-import ApprovedPics from "@/components/ApprovedPics"
-import AwaitAppPics from "@/components/AwaitAppPics"
-import UnAppPics from "@/components/UnAppPics"
+// import {MdOutlineFullscreen} from "react-icons/md"
+import ApprovedPics from "@/components/photos/ApprovedPics"
+import AwaitAppPics from "@/components/photos/AwaitAppPics"
+import UnAppPics from "@/components/photos/UnAppPics"
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useAppContext } from '@/context'
@@ -14,7 +14,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, Di
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import FullScreenIcon from '@/components/svg/Fullscreen'
 import Image from "next/image"
-import FullScreenPics from "@/components/FullScreenPics"
+import FullScreenPics from "@/components/photos/FullScreenPics"
 import Toggler from '@/components/svg/Toggler'
 import TogglerBlue from '@/components/svg/TogglerBlue'
 import { BiExitFullscreen } from "react-icons/bi";
@@ -22,6 +22,7 @@ import {FiFile} from "react-icons/fi"
 import { supabase } from "@/utils/Utils"
 import {toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
+import {MobileBottomNav} from "@/components/MobileBottomNav"
 
 export default function Photos() {
     const links = [
@@ -195,8 +196,7 @@ export default function Photos() {
                     
                     {/* sub menu */}
                     <div className='bg-white pt-4 border-y-[1px] border-gray-100 mt-2'>
-                        <div className='hidden lg:flex justify-between p-2 mr-10 '>  
-                                {/* left */}
+                        <div className='hidden lg:block justify-between p-2  '>  
                             <div className='flex gap-12 text-gray-500 sticky top-0 pb-2 '>
                                     {
                                         links.map(({ name, href }) => { 
@@ -215,11 +215,12 @@ export default function Photos() {
                                     })
 
                                     }
-                            </div>
+                            </div>       
+                               
+                        </div>
+                    </div>
 
-                            {/* Right */}
-
-                                <div className='flex space-x-4 justify-between items-center'>
+                    <div className='mt-2 flex justify-end space-x-4 gap-x-4 items-center mr-0 lg:mr-10 mb-10'>
                                     <div onClick={openModal} className='flex bg-zikoroBlue items-center justify-center space-x-2  text-white py-1 px-2 rounded-md cursor-pointer '>
                                         <CiCirclePlus className='w-5 h-5'/>
                                         <p className=' text-base'>Photos</p>
@@ -254,7 +255,7 @@ export default function Photos() {
 
                                                            </div>
                                                                 {/* right */}
-                                                                    <div className=' relative w-9/12  '>
+                                                                    <div className=' relative w-9/12 h-screen  '>
                                                                     <motion.div
                                                                          initial={{ y: "100vh" }}
                                                                          animate={{ y: 0 }}
@@ -266,8 +267,7 @@ export default function Photos() {
                                                                     </motion.div>
                                                                        
                                                                         <div className="bg-black absolute rounded-full flex opacity-45 items-center justify-center w-8 h-8 top-4 right-8" onClick={close} >
-                                                                        <BiExitFullscreen fill="#ffffff" className="text-white" />
-
+                                                                           <BiExitFullscreen fill="#ffffff" className="text-white" />
                                                                         </div>      
                                                                     </div>
                                                             
@@ -281,9 +281,9 @@ export default function Photos() {
                                     { admin && 
                                             <Dialog>
                                                 <DialogTrigger>
-                                                    <IoSettingsOutline className='w-6 h-6 cursor-pointer'/>
+                                                    <IoSettingsOutline className='w-6 h-6 cursor-pointer hidden lg:inline'/>
                                                 </DialogTrigger>
-                                                <DialogContent className='hidden lg:inline'>
+                                                <DialogContent className=''>
                                                     <DialogHeader >
                                                         <DialogTitle className='text-2xl font-medium'>Photo Settings</DialogTitle>
                                                         
@@ -328,11 +328,6 @@ export default function Photos() {
                                                             <p className="text-sm font-light ">Show Powered By Zikoro</p>
                                                                 {
                                                                     zikoroText ? 
-
-                                                                    // <RiToggleFill className="text-3xl cursor-pointer" onClick={zikoroTextOffToggler} width={32} height={20} fill="#001FCC" /> 
-                                                                    // : 
-                                                                    // <RiToggleLine onClick={zikoroTextOnToggler} className="text-3xl cursor-pointer" width={32} height={20} />
-
                                                                     <div className="cursor-pointer" onClick={zikoroTextOffToggler}> 
                                                                         <TogglerBlue/>
                                                                     </div>
@@ -361,13 +356,9 @@ export default function Photos() {
                                 
                                 </div>
 
-                                
-                        </div>
-                    </div>
-
 
                     {/* Body */}                      
-                    <div className='max-w-[1120px] mx-6 '>
+                    <div className='mx-6 '>
                         <ApprovedPics />
                         { admin && 
                             <div>
@@ -378,6 +369,7 @@ export default function Photos() {
                         }
                         
                     </div>
+                    <MobileBottomNav/>
 
                 </div>
 

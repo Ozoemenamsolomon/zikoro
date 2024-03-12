@@ -11,7 +11,7 @@ export default function CategoryEventList() {
                 {/* header */}
                 <div className='flex justify-between'>
                         <p className='font-semibold text-3xl'>Browse By Category</p>
-                        <div onClick={()=> router.push('/events/events-categories')} className='flex gap-x-4 cursor-pointer items-center'>
+                        <div onClick={()=> router.push('/explore/events-categories')} className='flex gap-x-4 cursor-pointer items-center'>
                             <p className='bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-xl font-semibold'>See All</p>
                             <RightArrow />
                         </div>

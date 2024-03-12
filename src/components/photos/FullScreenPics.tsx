@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import FullScreenPic from "./FullScreenPic"
-import { supabase } from "../utils/Utils"
+import { supabase } from "../../utils/Utils"
 
 type FSPics = {
   id : number,
@@ -20,30 +20,24 @@ export default function ApprovedPics(){
 
     useEffect(() => {
         async function fetchImageUrls() {
-          try {
-            // Fetch the URLs from Supabase based on parameters
-            const { data, error } = await supabase
-              .from('eventPhotos')
-              .select()
-              .eq('photoStatus', 'approved').returns <FSPics[]>()
-    
-            if (error) {
-              throw error;
+          fetch('/api/fetchImages/fetchApprovedImages', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+              // You might need additional headers like authorization if required
             }
-    
-            if (data) {
-              setImages(data)
-            }
-
-          } catch (error) {
-
-          }
+          })
+            .then(response => response.json())
+            .then(data => setImages(data.data))
+            .catch(
+              error => console.error('Error:', error)
+            );
         }
     
         fetchImageUrls();
       }, []);
     return (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-0 ">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full 2xl:grid-cols-6 gap-0 ">
                       {images?.length ? (
                             images.map((image, index) => (
                                 <FullScreenPic key={index} url={image.photoUrl} />

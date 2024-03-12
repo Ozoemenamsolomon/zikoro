@@ -1,9 +1,9 @@
 "use client"
 import React from 'react'
-import Navbar from '@/components/index/Navbar'
-import Footer from '@/components/index/Footer'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import { Montserrat } from "next/font/google";
-import CityEvent from '@/components/index/CityEvent';
+import CityEvent from '@/components/explore/CityEvent';
 
 
 const montserrat = Montserrat({
@@ -41,13 +41,9 @@ export default function EventsCities() {
                                
                             </div>
 
-                            <div className='gap-5 flex justify-center items-center  pt-12 mx-aut'>
+                            <div className='gap-5 flex justify-center items-center pt-12'>
                                 <button className=' text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white'>
-                                    Next Page
-                                </button>
-
-                                <button  className='text-base text-zikoroBlue bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md '>
-                                    Prev Page
+                                    See more
                                 </button>
                             </div>
                     </div>
