@@ -27,10 +27,10 @@ export default function RootLayout({
   return (
     <>
       <main className="relative h-full bg-white" ref={divRef}>
-        <div className="fixed w-1/6 h-full top-0 left-0 border-r-2">
+        <div className="fixed w-1/6 h-full top-0 left-0 border-r-2 hidden md:block">
           <Sidebar />
         </div>
-        <section className="ml-[16.666667%]">
+        <section className="md:ml-[16.666667%] ml-0 h-full">
           <Topbar />
           <div className="">{children}</div>
         </section>

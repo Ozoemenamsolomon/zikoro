@@ -115,22 +115,26 @@ export const useGetAttendee = ({ attendeeId }: { attendeeId: string }) => {
   const [error, setError] = useState<boolean>(false);
 
   const getAttendee = async () => {
-    setLoading(true);
+    try {
+      setLoading(true);
+      const { data, status } = await getRequest<TAttendee>({
+        endpoint: `/attendees/${attendeeId}`,
+      });
 
-    const { data, status } = await getRequest<TAttendee>({
-      endpoint: `/attendees/${attendeeId}`,
-    });
-
-    setLoading(false);
-
-    if (status !== 200) return setError(true);
-
-    return setAttendee(data.data);
+      if (status !== 200) {
+        throw data;
+      }
+      setAttendee(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     getAttendee();
-  }, []);
+  }, [attendeeId]);
 
   return { attendee, isLoading, error, getAttendee };
 };

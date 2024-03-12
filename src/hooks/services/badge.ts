@@ -98,11 +98,11 @@ export const useGetBadge = ({
   return { badge, isLoading, error, getBadge };
 };
 
-export const useGetBadges = (): UseGetResult<
-  TBadge[],
-  "badges",
-  "getBadges"
-> => {
+export const useGetBadges = ({
+  eventId,
+}: {
+  eventId?: number;
+}): UseGetResult<TBadge[], "badges", "getBadges"> => {
   const [badges, setBadges] = useState<TBadge[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -112,7 +112,7 @@ export const useGetBadges = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<TBadge[]>({
-        endpoint: `/badge`,
+        endpoint: `/badge${eventId ? "?eventId=" + eventId : ""}`,
       });
 
       if (status !== 200) {

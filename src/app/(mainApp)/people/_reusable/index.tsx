@@ -46,10 +46,10 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   return (
     <section
-      className="relative h-fit border-t-[1px] border-[#F3F3F3] w-full grid grid-cols-10 overflow-hidden"
+      className="relative h-fit border-t-[1px] border-[#F3F3F3] w-full grid md:grid-cols-10 overflow-hidden"
       ref={divRef}
     >
-      <section className="col-span-3 border-r-[1px] border-[#F3F3F3] pt-2">
+      <section className="md:col-span-3 border-r-[1px] border-[#F3F3F3] pt-2">
         <FirstSection
           onOpen={onOpenAttendeeForm}
           onSelectAttendee={selectAttendee}
@@ -59,15 +59,16 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
           getAttendees={getAttendees}
         />
       </section>
+      <div className="hidden md:contents">
       {selectedAttendee ? (
         <>
-          <section className="col-span-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">
+          <section className="md:col-span-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">
             <SecondSection
               attendee={selectedAttendee}
               getAttendees={getAttendees}
             />
           </section>
-          <section className="flex flex-col col-span-3 pt-2">
+          <section className="flex flex-col md:col-span-3 pt-2">
             <ThirdSection attendee={selectedAttendee} />
           </section>
         </>
@@ -164,6 +165,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
           </p>
         </div>
       )}
+      </div>
       <AddAttendeeForm
         isOpen={attendeeFormIsOpen}
         onClose={onCloseAttendeeForm}

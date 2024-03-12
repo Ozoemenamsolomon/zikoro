@@ -194,7 +194,7 @@ export default function SecondSection({
   const flipCard = () => setFlipCard((prevFlip) => !prevFlip);
 
   return (
-    <>
+    <div className="h-fit space-y-4">
       <div
         ref={parentCardRef}
         className="bg-transparent w-full [perspective:1000px] h-[230px]"
@@ -207,7 +207,7 @@ export default function SecondSection({
         >
           <section className="absolute w-full h-full [backface-visibility:_hidden] top-0">
             <div
-              className="pt-8 pb-4 px-6 bg-gray-50 relative h-full"
+              className="pt-8 pb-4 px-2 md:px-6 bg-gray-50 relative h-full"
               ref={innerCardRef}
             >
               <img
@@ -217,7 +217,7 @@ export default function SecondSection({
               />
               <div className="flex justify-center gap-4">
                 <div className="flex-1 flex justify-center">
-                  <Avatar className="w-32 h-32">
+                  <Avatar className="w-16 md:w-32 h-16 md:h-32">
                     <AvatarImage
                       className="h-full w-full object-cover"
                       src={profilePicture}
@@ -791,21 +791,14 @@ export default function SecondSection({
               </span>
             </div>
           </DialogTrigger>
-          <DialogContent className="px-3">
+          <DialogContent className="px-3 h-">
             <DialogHeader>
               <DialogTitle>
                 <span className="capitalize">View Badge</span>
               </DialogTitle>
             </DialogHeader>
-            <div className="flex justify-center items-center flex-col gap-4">
-              <div className="w-[250px] h-[400px]" ref={targetRef}>
-                <AttendeeBadge attendee={attendee} />
-              </div>
-              <DialogClose asChild>
-                <Button className="bg-basePrimary w-full" onClick={toPDF}>
-                  Download badge
-                </Button>
-              </DialogClose>
+            <div className="space-y-4 h-[50vh]">
+              <AttendeeBadge attendee={attendee} />
             </div>
           </DialogContent>
         </Dialog>
@@ -1250,6 +1243,6 @@ export default function SecondSection({
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

@@ -34,7 +34,7 @@ import { TBadge } from "@/types/badge";
 const Badges = () => {
   const router = useRouter();
 
-  const { badges, isLoading, getBadges } = useGetBadges();
+  const { badges, isLoading, getBadges } = useGetBadges({});
 
   const { saveBadge, isLoading: badgeIsSaving } = useSaveBadge();
 
