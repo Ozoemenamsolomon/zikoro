@@ -1,8 +1,6 @@
-"use client";
-
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { X } from "@styled-icons/bootstrap/X";
+import { X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 

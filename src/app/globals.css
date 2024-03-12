@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 input::placeholder {
   color: #d6d6d6;
 }
@@ -319,7 +318,6 @@ option:hover {
 .ql-toolbar.ql-snow {
   border-radius: 8px 8px 0px 0px;
   border: 1px solid #d1d5db !important;
-  
 }
 
 .ql-editor.ql-blank::before {
@@ -528,62 +526,59 @@ div .react-datepicker__day--keyboard-selected:hover {
   @apply bg-zikoro;
 }
 
-div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-range, .react-datepicker__month-text--in-range, .react-datepicker__quarter-text--in-range, .react-datepicker__year-text--in-range) {
+div
+  .react-datepicker__day--in-selecting-range:not(
+    .react-datepicker__day--in-range,
+    .react-datepicker__month-text--in-range,
+    .react-datepicker__quarter-text--in-range,
+    .react-datepicker__year-text--in-range
+  ) {
   @apply bg-zikoro text-white;
 }
 
 .line-clamp {
   -webkit-line-clamp: 3;
-    overflow: hidden;
-    /* height: 4.5rem; */
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
+  overflow: hidden;
+  /* height: 4.5rem; */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 
 .line-clamp-one {
   -webkit-line-clamp: 1;
-    /* height: 4.5rem; */
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
+  /* height: 4.5rem; */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 
 .banner .slick-dots {
-  display:none;
- 
-  
-
+  display: none;
 }
 .banner .slick-dots li {
-  display:none;
- 
+  display: none;
 }
 
 .slider .slick-dots {
   position: absolute;
   bottom: 20px;
-  
-
 }
 .slider .slick-dots li {
   margin: 0px 7px;
   width: 8px;
   height: 8px;
- 
 }
-
 
 .slider .slick-dots li button:before {
   color: black;
   border: 1px solid grey;
-  border-radius:50%;
-  content: '';
-  width:10px;
-  height:10px;
+  border-radius: 50%;
+  content: "";
+  width: 10px;
+  height: 10px;
 }
 .slider .slick-dots li.slick-active button::before {
   background-color: black;
-  display:none;
-
+  display: none;
 }
 
 /*content partners**/
@@ -665,7 +660,7 @@ div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-ra
 }
 
 .innerhtml h1 {
- font-size: 2em;
+  font-size: 2em;
 }
 .innerhtml h2 {
   font-size: 1.5em;
@@ -703,7 +698,7 @@ div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-ra
 }
 
 .partner-scroll-style::-webkit-scrollbar {
- display: none;
+  display: none;
 }
 
 .partner-scroll-style:hover::-webkit-scrollbar {
@@ -739,4 +734,271 @@ div .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-ra
   font-size: 10px;
   font-weight: 400;
   color: #717171;
+}
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+
+  @font-face {
+    font-family: "DancingScript";
+    src: url("/fonts/DancingScript.ttf");
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  .roboto-thin {
+    font-family: "Roboto", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+  }
+
+  .roboto-light {
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  .roboto-regular {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .roboto-medium {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  .roboto-bold {
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  .roboto-black {
+    font-family: "Roboto", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+  }
+
+  .roboto-thin-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 100;
+    font-style: italic;
+  }
+
+  .roboto-light-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  .roboto-regular-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .roboto-medium-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: italic;
+  }
+
+  .roboto-bold-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  .roboto-black-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 900;
+    font-style: italic;
+  }
+
+  .inter {
+    font-family: "Inter", sans-serif;
+    font-style: normal;
+  }
+
+  .lato-thin {
+    font-family: "Lato", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+  }
+
+  .lato-light {
+    font-family: "Lato", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  .lato-regular {
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .lato-bold {
+    font-family: "Lato", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  .lato-black {
+    font-family: "Lato", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+  }
+
+  .lato-thin-italic {
+    font-family: "Lato", sans-serif;
+    font-weight: 100;
+    font-style: italic;
+  }
+
+  .lato-light-italic {
+    font-family: "Lato", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  .lato-regular-italic {
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .lato-bold-italic {
+    font-family: "Lato", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  .lato-black-italic {
+    font-family: "Lato", sans-serif;
+    font-weight: 900;
+    font-style: italic;
+  }
+}
+
+#search-input {
+  background: url("/images/tabler_search.svg");
+  background-repeat: no-repeat;
+  background-position: center left 10px;
+}
+
+#search-div {
+  width: fit-content;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  /* Adjust the width as needed */
+  width: 8px;
+  background-color: transparent;
+  transition: width 0.3s ease-in-out;
+  /* Added transition for smoother animation */
+}
+
+.hide-scrollbar:hover::-webkit-scrollbar {
+  width: 8px;
+  background-color: #eee;
+  /* Adjust the width as needed */
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  /* background-color: rgba(0, 0, 0, 0.2); */
+  background-color: transparent;
+}
+
+.hide-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #888;
+}
+
+.pulse {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.75;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }

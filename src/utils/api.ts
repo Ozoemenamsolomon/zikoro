@@ -38,11 +38,11 @@ export const getRequest = async <T>({
 export const postRequest = async <T>({
   endpoint,
   payload,
- // config,
-}: {
+}: // config,
+{
   endpoint: string;
   payload: any;
- // config?: InternalAxiosRequestConfig;
+  // config?: InternalAxiosRequestConfig;
 }): Promise<AxiosResponse<ApiResponse<T>>> => {
   return await Api.post<ApiResponse<T>>(endpoint, payload);
 };

@@ -35,3 +35,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# personal files
+tasks.txt
+
+# pnpm lock file
+.pnpm-lock.yaml
+.pnpm-lock.json

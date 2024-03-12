@@ -52,11 +52,13 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
       <div className="bg-white min-w-[900px] px-4 pt-2 h-max border-b">
         <ul className="flex justify-between text-gray-700">
           {links.map(({ name, href }) => {
-            console.log(href.split("/"))
+            console.log(href.split("/"));
             return (
               <li
                 className={`pb-1 text-sm ${
-                  pathname.includes(`${href.split("/")[1]}/${href.split("/")[2]}`)
+                  pathname.includes(
+                    `${href.split("/")[1]}/${href.split("/")[2]}`
+                  )
                     ? "text-zikoro border-b-2 border-zikoro font-medium"
                     : ""
                 }`}
