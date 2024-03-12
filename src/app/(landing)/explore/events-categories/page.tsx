@@ -1,9 +1,9 @@
 "use client"
 import React from 'react'
 import { Montserrat } from "next/font/google";
-import CategoryEvent from '@/components/index/CategoryEvent'
-import Navbar from '@/components/index/Navbar'
-import Footer from '@/components/index/Footer'
+import CategoryEvent from '@/components/explore/CategoryEvent'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 const montserrat = Montserrat({
     weight: [ '100', '300', '400', '500','600','700', '800'],
@@ -40,13 +40,9 @@ export default function EventsCategories() {
                                
                             </div>
 
-                            <div className='gap-5 flex justify-center items-center  pt-12 mx-aut'>
+                            <div className='gap-5 flex justify-center items-center pt-12'>
                                 <button className=' text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white'>
-                                    Next Page
-                                </button>
-
-                                <button  className='text-base text-zikoroBlue bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md '>
-                                    Prev Page
+                                    See more
                                 </button>
                             </div>
                     </div>

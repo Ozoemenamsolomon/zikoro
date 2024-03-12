@@ -11,7 +11,7 @@ export default function FeaturedEventList() {
                 {/* header */}
                 <div className='flex justify-between'>
                         <p className='font-semibold text-3xl'>Featured Events</p>
-                        <div onClick={()=> router.push('/events/featured-events')} className='flex gap-x-4 cursor-pointer items-center'>
+                        <div onClick={()=> router.push('/explore/featured-events')} className='flex gap-x-4 cursor-pointer items-center'>
                             <p className='bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-xl font-semibold'>See All</p>
                             <RightArrow />
                         </div>

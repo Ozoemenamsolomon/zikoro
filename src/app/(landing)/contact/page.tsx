@@ -1,8 +1,8 @@
 import React from "react"
-import Navbar from "@/components/index/Navbar"
-import Footer from "@/components/index/Footer"
-import ContactHeader from "@/components/index/ContactHeader"
-import ContactForm from "@/components/index/ContactForm"
+import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
+import ContactHeader from "@/components/contact/ContactHeader"
+import ContactForm from "@/components/contact/ContactForm"
 import { Montserrat } from "next/font/google";
 
 const montserrat = Montserrat({

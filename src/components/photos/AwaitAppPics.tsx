@@ -1,10 +1,10 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import Picture from "./AwaitAppPic"
-import Toggler from "./svg/Toggler"
-import TogglerBlue from "./svg/TogglerBlue"
+import Toggler from "../svg/Toggler"
+import TogglerBlue from "../svg/TogglerBlue"
 
-import { supabase } from "../utils/Utils"
+import { supabase } from "../../utils/Utils"
 import {toast } from 'react-toastify';
 
 type AwaitAppPicsProps = {
@@ -44,22 +44,18 @@ export default function AwaitAppPics(){
 
     useEffect(() => {
         async function fetchImageUrls() {
-          try {
-            // Fetch the URLs from Supabase based on parameters
-            const { data, error } = await supabase
-              .from('eventPhotos')
-              .select()
-              .eq('photoStatus', 'awaiting')
-    
-            if (error) {
-              throw error;
+          fetch('/api/fetchImages/fetchAwaitingImages', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+              // You might need additional headers like authorization if required
             }
-    
-            if (data) {
-             setImages(data)
-            }
-          } catch (error) {
-          }
+          })
+            .then(response => response.json())
+            .then(data => setImages(data.data))
+            .catch(
+              error => console.error('Error:', error)
+            );
         }
     
         fetchImageUrls();
@@ -86,7 +82,7 @@ export default function AwaitAppPics(){
                     </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-4">
                        
                         {images?.length ? (
                             images?.map((image, index) => (

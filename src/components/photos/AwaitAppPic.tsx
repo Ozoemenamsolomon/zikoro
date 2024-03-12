@@ -4,7 +4,7 @@ import Image from "next/image"
 import {IoIosCheckmarkCircle} from "react-icons/io"
 import {IoClose} from "react-icons/io5"
 import {toast } from 'react-toastify';
-import { supabase } from "../utils/Utils"
+import { supabase } from "../../utils/Utils"
 
 type AwaitAppPicsProps = {
   url: string,
@@ -47,11 +47,6 @@ export default function AwaitAppPic({url, id}: AwaitAppPicsProps){
           };
 
    
-
-        useEffect(() => {
-
-        }, [])
-
 
     return (
                 <div className="relative ">

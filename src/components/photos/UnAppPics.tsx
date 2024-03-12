@@ -1,7 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import Picture from "./UnAppPic"
-import { supabase } from "../utils/Utils"
 
 type UnAppPicsProps = {
   url: string,
@@ -20,23 +19,18 @@ export default function AwaitAppPics(){
 
     useEffect(() => {
         async function fetchImageUrls() {
-          try {
-            // Fetch the URLs from Supabase based on parameters
-            const { data, error } = await supabase
-              .from('eventPhotos')
-              .select()
-              .eq('photoStatus', 'rejected')
-    
-            if (error) {
-              throw error;
-            }
-    
-            if (data) {
-              setImages(data)
-            }
-          } catch (error) {
-
-          }
+            fetch('/api/fetchImages/fetchUnapprovedImages', {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json'
+                  // You might need additional headers like authorization if required
+                }
+              })
+                .then(response => response.json())
+                .then(data => setImages(data.data))
+                .catch(
+                  error => console.error('Error:', error)
+                );
         }
     
         fetchImageUrls();
