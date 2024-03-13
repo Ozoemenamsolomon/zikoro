@@ -52,7 +52,7 @@ const AttendeeBadge = ({ attendee }: { attendee: TAttendee }) => {
 
   return (
     <>
-      <div className="h-[40vh] flex flex-col gap-2 overflow-auto no-scrollbar space-y-2 py-4">
+      <div className="h-[60vh] flex flex-col gap-2 overflow-auto no-scrollbar space-y-2 py-4">
         <div className="relative">
           <label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
             Badge Name
@@ -92,7 +92,7 @@ const AttendeeBadge = ({ attendee }: { attendee: TAttendee }) => {
             </SelectContent>
           </Select>
         </div>
-        <div>
+        <div className="flex justify-center [&>*]:scale-75">
           <div
             className="relative w-4/5 h-fit space-y-6 text-black bg-no-repeat"
             style={{
@@ -119,8 +119,10 @@ const AttendeeBadge = ({ attendee }: { attendee: TAttendee }) => {
             >
               {selectedBadge && (
                 <Frame
-                  data={lz.decompress(
-                    lz.decodeBase64(selectedBadge.badgeDetails.craftHash)
+                  data={JSON.parse(
+                    lz.decompress(
+                      lz.decodeBase64(selectedBadge.badgeDetails.craftHash)
+                    )
                   )}
                 ></Frame>
               )}

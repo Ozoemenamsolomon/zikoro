@@ -797,7 +797,7 @@ export default function SecondSection({
                 <span className="capitalize">View Badge</span>
               </DialogTitle>
             </DialogHeader>
-            <div className="space-y-4 h-[50vh]">
+            <div className="space-y-4 h-[70vh]">
               <AttendeeBadge attendee={attendee} />
             </div>
           </DialogContent>
