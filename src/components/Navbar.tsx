@@ -1,7 +1,6 @@
 "use client"
 import { useRouter } from "next/navigation"
-import React, { useEffect } from 'react'
-import {useState} from "react"
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
 import Image from "next/image"
@@ -48,13 +47,28 @@ export default function Navbar() {
 
     const router = useRouter()
 
+    const [scrolling, setScrolling] = useState(false);
+
     useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 50) {
+              setScrolling(true);
+            } else {
+              setScrolling(false);
+            }
+          };
+      
+          window.addEventListener('scroll', handleScroll);
+
+          return () => {
+            window.removeEventListener('scroll', handleScroll);
+          }
 
     },[toggleMenuOff])
 
     return (
-        <div className='sticky top-0 z-auto '>
-            <nav className=" p-4 bg-white border-b-[2px] border-indigo-500 text-base ">
+        <div className='fixed w-full transition-all duration-300 top-0 z-10 '>
+            <nav className={` p-4 ${scrolling ? 'bg-white' : 'bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end'} border-b-[2px] border-indigo-500 text-base  `}>
 
                 <div className="container flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
                    {

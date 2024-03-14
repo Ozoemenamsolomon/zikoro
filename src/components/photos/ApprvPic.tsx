@@ -50,22 +50,32 @@ export default function ApprvPic({url, id, like}: ApprvPicProps) {
 
     //like functionality
     const likeFunc = async(imageId: number) => {
-        try {        
-            // Update the parameters for the specified image
-            const { error } = await supabase
-              .from('eventPhotos')
-              .update({"likes": like +1})
-              .eq('id', imageId);
-              setLikes(like +1)
+        // try {        
+        //     // Update the parameters for the specified image
+        //     const { error } = await supabase
+        //       .from('eventPhotos')
+        //       .update({"likes": like +1})
+        //       .eq('id', imageId);
+        //       setLikes(like +1)
 
-            if (error) {
-              throw error;
-            }
+        //     if (error) {
+        //       throw error;
+        //     }
 
-          } catch (error) {
-            toast.error(`Error Liking Photo`);
-          }
-        //changes the value of like between true and false
+        //   } catch (error) {
+        //     toast.error(`Error Liking Photo`);
+        //   }
+        
+
+
+        
+          //   fetch('/api/fetchImages/fetchApprovedImages/like', {
+          //   method: 'PATCH',
+          //   headers: {
+          //     'Content-Type': 'application/json'
+          //   }
+          // })
+
         setLiked(true)
     }
 

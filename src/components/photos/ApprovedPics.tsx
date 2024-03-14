@@ -23,25 +23,23 @@ type DBEventPhoto = {
 export default function ApprovedPics(){
     const [images, setImages] = useState<DBEventPhoto[]|undefined>(undefined);
 
-    async function fetchImageUrls() {
-
-      fetch('/api/fetchImages/fetchApprovedImages', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-          // You might need additional headers like authorization if required
-        }
-      })
-        .then(response => response.json())
-        .then(data => setImages(data.data))
-        .catch(
-          error => console.error('Error:', error)
-        );
-    }
-
-
     useEffect(() => {
-        
+        async function fetchImageUrls() {
+
+          fetch('/api/fetchImages/fetchApprovedImages', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+              // You might need additional headers like authorization if required
+            }
+          })
+            .then(response => response.json())
+            .then(data => setImages(data.data))
+            .catch(
+              error => console.error('Error:', error)
+            );
+        }
+    
         fetchImageUrls();
       }, []);
 
