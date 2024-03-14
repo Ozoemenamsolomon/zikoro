@@ -12,18 +12,18 @@ export default function EventHeader() {
     }
     return (
            <div className='hidden lg:block bg-gradient-overlay relative '>
-                <Image  src="/eventsBg.png" alt="Background" width={1662} height={1216}  className="object-cover" />
+                <Image  src="/eventsBg.png" alt="Background" width={1662} height={1216}  className="object-cover w-full" />
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="flex flex-col justify-between">
 
                         <p className="text-[64px] text-white text-center font-bold">Explore A Wide Range Of Events</p>
                         
-                        <div className='bg-white absolute bottom-0 mx-auto rounded-lg '>
+                        <div className='bg-white h-28 absolute bottom-0 mx-auto rounded-lg '>
 
-                            <form action="" className='px-12 py-10 pt-12 w-[1055px]  bg-white rounded-lg shadow-md '>
-                                <p className='text-2xl'>Find Events Easily</p>
+                            <form action="" className='px-12 py-10 pt-12 w-[1055px] h-[210px] bg-white rounded-lg shadow-md '>
+                                <p className='text-2xl font-normal'>Find Events Easily</p>
 
-                                <div className='pt-7 h-9 flex items-center w-full gap-x-4'>
+                                <div className='pt-7 h-9 mt-6 flex items-center w-full gap-x-4'>
 
                                     <div className='flex flex-2 gap-x-2 px-10 py-[6px] rounded-md bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end '>
                                         <Location/>

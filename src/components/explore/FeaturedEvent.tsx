@@ -7,7 +7,7 @@ import Location from '../svg/Location'
 export default function FeaturedEvent() {
    
     return (
-        <div className=''>
+        <div className='cursor-pointer'>
             {/* header */}
             <div className='relative '>
                 <Image className='object-cover' src="/event.png" alt="" width={294} height={264} />
