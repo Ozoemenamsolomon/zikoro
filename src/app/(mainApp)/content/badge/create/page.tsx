@@ -401,7 +401,7 @@ const page = () => {
     const [previewImg, setImg] = useState<string | null>(null);
 
     const [{ data: previewPNG }, preview] = useToPng<HTMLDivElement>({
-      selector: "#certificate",
+      selector: "#badge",
       onSuccess: (data) => setImg(data),
     });
 
