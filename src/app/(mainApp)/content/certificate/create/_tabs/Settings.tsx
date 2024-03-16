@@ -33,7 +33,7 @@ import { useGetAttendees } from "@/hooks/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import COLORTAG from "@/utils/colorTag";
-import { DateTimePicker } from "@/components/ui/date-time-picker/date-time-picker";
+// import { DateTimePicker } from "@/components/ui/date-time-picker/date-time-picker";
 
 const Settings = ({ settings, editSettings }: TabProps) => {
   const [newSkill, setSkill] = React.useState<string>("");
@@ -300,12 +300,12 @@ const Settings = ({ settings, editSettings }: TabProps) => {
         </div>
       </div>
       <div className="pt-4 pb-2 border-t-2">
-        <DateTimePicker
+        {/* <DateTimePicker
           defaultValue={settings.publishOn}
           granularity={"minute"}
           onSelect={(date: Date) => editSettings("publishOn", date)}
           disabled={(date: Date) => date < new Date()}
-        />
+        /> */}
         {/* <div className="col-span-6 w-full rounded-md bg-background text-sm relative">
           <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
             Publish on

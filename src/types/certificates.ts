@@ -61,4 +61,6 @@ export interface CertificateTemplate {
   certificateTemplate: string;
   category: string;
   figmaName: string;
+  colour: string;
+  category: string;
 }

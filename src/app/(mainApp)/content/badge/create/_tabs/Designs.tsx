@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import useSearch from "@/hooks/common/useSearch";
 import { useGetBadgeTemplates } from "@/hooks/services/badge";
 import { cn } from "@/lib/utils";
-import { BadgeTemplate } from "@/types/badge";
+import { BadgeTemplate, TBadgeTemplate } from "@/types/badge";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import React, { useEffect, useRef } from "react";
 import { TabProps } from "../page";
@@ -14,7 +14,7 @@ const Designs = ({ details, setValue }: TabProps) => {
 
   console.log(badgeTemplates);
 
-  const { searchTerm, searchedData, setSearchTerm } = useSearch<BadgeTemplate>({
+  const { searchTerm, searchedData, setSearchTerm } = useSearch<TBadgeTemplate>({
     data: badgeTemplates || [],
     accessorKey: ["templateName"],
   });

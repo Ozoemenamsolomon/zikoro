@@ -43,7 +43,7 @@ import { useGetAttendees } from "@/hooks/services/attendee";
 import { useSendMarketingEmail } from "@/hooks/services/marketing";
 import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSection";
 import { TAttendee } from "@/types/attendee";
-import TextEditor from "@/components/TextEditor";
+// import TextEditor from "@/components/TextEditor";
 
 const CreateEmailSchema = z
   .object({
@@ -365,7 +365,7 @@ const Create = () => {
           <span className="absolute top-0 -translate-y-1/2 right-4 text-gray-600 text-tiny px-1 z-10">
             Message
           </span>
-          <TextEditor onChange={setMessage} defaultValue={content} placeholder="enter message" />
+          {/* <TextEditor onChange={setMessage} defaultValue={content} placeholder="enter message" /> */}
         </div>
         <div className="flex gap-8 items-center">
           <FormField

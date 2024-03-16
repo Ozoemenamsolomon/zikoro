@@ -8,8 +8,8 @@ const People = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <section className="bg-white pt-4 space-y-4">
-        <nav className="px-1 flex justify-between items-center">
+      <section className="bg-white pt-4">
+        <nav className="px-1 flex justify-between items-center border-b pb-4">
           <ul className="flex gap-8 px-4">
             {ContentLinks.map(({ href, name }) => (
               <li
@@ -20,7 +20,7 @@ const People = ({ children }: { children: React.ReactNode }) => {
                     : "text-gray-700"
                 }`}
               >
-                <Link href={href}>{name}</Link>
+                <Link href={"/content/" + href}>{name}</Link>
               </li>
             ))}
           </ul>

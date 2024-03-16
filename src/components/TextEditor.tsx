@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
-import { Quill } from "react-quill";
-const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
+// import { Quill } from "react-quill";
+// const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 
 export default function TextEditor({
     onChange,
@@ -99,6 +99,8 @@ export default function TextEditor({
         onChange(content);
         console.log("newContent", content);
     };
+
+    return null
 
     return (
         <QuillEditor
