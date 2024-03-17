@@ -25,7 +25,7 @@ export default function EventHeader() {
 
                                 <div className='pt-7 h-9 mt-6 flex items-center w-full gap-x-4'>
 
-                                    <div className='flex flex-2 gap-x-2 px-10 py-[6px] rounded-md bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end '>
+                                    <div className='flex flex-2 gap-x-2 px-10 py-[6px] rounded-md '>
                                         <Location/>
                                         <p className='text-base text-semibold'>Lagos</p>
                                     </div>

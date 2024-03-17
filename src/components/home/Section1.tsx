@@ -1,4 +1,6 @@
 'use client'
+
+import React from 'react'
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 
@@ -7,7 +9,7 @@ export default function Section1() {
   const router = useRouter()
 
   return (
-    <div className=" pt-20 lg:pt-24 px-5">
+    <div className="mt-48 px-5 block">
         <div className="max-w-5xl mx-auto">
             <p className=" text-3xl lg:text-5xl font-bold gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-center">All-in-one event management platform for all kinds of events</p>
             <p className="max-w-full lg:max-w-3xl mx-auto text-center  text-base lg:text-2xl font-normal mt-5 lg:mt-10">Effortlessly sell multi-tier event tickets, engage your attendees, impress and deliver data-driven results to your event sponsors and exhibitors. It's easy to get started. And it's free. </p>   

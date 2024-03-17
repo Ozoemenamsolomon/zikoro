@@ -16,23 +16,21 @@ export default function AwaitAppPics(){
     const toggler = () => {
         setTogOn(!togOn)
     }
-
+    async function fetchImageUrls() {
+      fetch('/api/fetchImages/fetchUnapprovedImages', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+            // You might need additional headers like authorization if required
+          }
+        })
+          .then(response => response.json())
+          .then(data => setImages(data.data))
+          .catch(
+            error => console.error('Error:', error)
+          );
+  }
     useEffect(() => {
-        async function fetchImageUrls() {
-            fetch('/api/fetchImages/fetchUnapprovedImages', {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json'
-                  // You might need additional headers like authorization if required
-                }
-              })
-                .then(response => response.json())
-                .then(data => setImages(data.data))
-                .catch(
-                  error => console.error('Error:', error)
-                );
-        }
-    
         fetchImageUrls();
       }, []);
 
