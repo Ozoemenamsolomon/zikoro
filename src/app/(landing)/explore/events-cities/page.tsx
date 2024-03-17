@@ -16,7 +16,7 @@ const montserrat = Montserrat({
 export default function EventsCities() {
    
     return (
-        <div  className={`${montserrat.className} `}>
+        <div  className={`${montserrat.className} mt-48 `}>
             <Navbar/>
                 {/* header */}
                     <div className='px-5 lg:px-0 max-w-full lg:max-w-6xl mx-auto pb-12'>

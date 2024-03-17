@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   
     if (req.method === "GET") {
       try {
-        const { data, error, status } = await supabase
+        const { data, error, } = await supabase
         .from('eventPhotos')
         .select()
         .eq('photoStatus', 'approved')
