@@ -851,8 +851,8 @@ export default function SecondSection({
                         )
                     )
                     .map((eventCertificate) => (
-                      <DropdownMenuItem key={eventCertificate.id}>
-                        <DialogTrigger>
+                      <DialogTrigger asChild>
+                        <DropdownMenuItem key={eventCertificate.id}>
                           <button
                             // onClick={() => releaseCertificate(eventCertificate)}
                             onClick={() =>
@@ -861,8 +861,8 @@ export default function SecondSection({
                           >
                             {eventCertificate.certificateName}
                           </button>
-                        </DialogTrigger>
-                      </DropdownMenuItem>
+                        </DropdownMenuItem>
+                      </DialogTrigger>
                     ))}
                 </DropdownMenuContent>
               </DropdownMenu>

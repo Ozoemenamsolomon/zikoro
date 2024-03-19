@@ -70,7 +70,6 @@ export default function AddAttendeeForm({
     setValue,
     formState: { errors },
   } = form;
-  console.log(errors);
 
   const attendeeType = watch("attendeeType");
   const country = watch("country");
