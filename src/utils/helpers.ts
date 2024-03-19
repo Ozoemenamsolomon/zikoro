@@ -199,64 +199,47 @@ type Context = {
   organization: TOrganization;
 };
 
-export function replaceSpecialText(obj: any, context: Context): any {
-  console.log("replace func");
-  if (typeof obj === "string") {
-    console.log("string");
-    return obj.replaceAll(/#{(.*?)#}/g, (match) => {
-      const value = match.slice(2, -2);
-      console.log(value, "the value");
-      switch (value.trim()) {
-        case "first_name":
-          console.log(context.attendee.firstName);
-          return context.attendee.firstName;
-        case "last_name":
-          console.log(context.attendee.lastName);
-          return context.attendee.lastName;
-        case "attendee_email":
-          console.log(context.attendee.email);
-          return context.attendee.email;
-        case "attendee_job":
-          console.log(context.attendee.jobTitle);
-          return context.attendee.jobTitle || "";
-        case "attendee_position":
-          console.log(context.attendee.organization);
-          return context.attendee.organization || "";
-        case "attendee_id":
-          console.log(context.attendee.id);
-          return String(context.attendee.id);
-        case "event_name":
-          console.log(context.event.eventTitle);
-          return context.event.eventTitle;
-        case "city":
-          console.log(context.event.eventCity)
-          return context.event.eventCity || "";
-        case "country":
-          console.log(context.event.eventCountry)
-          return context.event.eventCountry || "";
-        case "start_date":
-          return context.event.startDateTime?.toLocaleDateString() || "";
-        case "end_date":
-          return context.event.endDateTime?.toLocaleDateString() || "";
-        case "organization_name":
-          return context.organization.organizationName;
-        case "organisation_logo":
-          return context.organization.organizationLogo || "";
-        default:
-          return match; // Return the original string if no matching value found
-      }
-    });
-  } else if (Array.isArray(obj)) {
-    console.log("arr");
-    return obj.map((item) => replaceSpecialText(item, context));
-  } else if (typeof obj === "object" && obj !== null) {
-    console.log("obj");
-    const newObj: any = {};
-    for (const key in obj) {
-      newObj[key] = replaceSpecialText(obj[key], context);
-    }
-    return newObj;
+export function replaceSpecialText(input: string, context: Context): string {
+  console.log(input, "this is the input");
+  const pattern = /#{(.*?)#}/g;
+
+  if (pattern.test(input)) {
+    console.log("String contains the pattern.");
   } else {
-    return obj;
+    console.log("String does not contain the pattern.");
   }
+
+  return input.replaceAll(/#{(.*?)#}/g, (match, value) => {
+    console.log(value);
+    switch (value.trim()) {
+      case "first_name":
+        return context.attendee.firstName;
+      case "last_name":
+        return context.attendee.lastName;
+      case "attendee_email":
+        return context.attendee.email;
+      case "attendee_job":
+        return context.attendee.jobTitle || "";
+      case "attendee_position":
+        return context.attendee.organization || "";
+      case "attendee_id":
+        return String(context.attendee.id);
+      case "event_name":
+        return context.event.eventTitle;
+      case "city":
+        return context.event.eventCity || "";
+      case "country":
+        return context.event.eventCountry || "";
+      case "start_date":
+        return context.event.startDateTime?.toLocaleDateString() || "";
+      case "end_date":
+        return context.event.endDateTime?.toLocaleDateString() || "";
+      case "organization_name":
+        return context.organization.organizationName;
+      case "organisation_logo":
+        return context.organization.organizationLogo || "";
+      default:
+        return match; // Return the original string if no matching value found
+    }
+  });
 }

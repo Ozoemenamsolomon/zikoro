@@ -243,7 +243,15 @@ export const useUpdateAttendeeCertificates = ({
   eventId,
 }: {
   eventId: number;
-}): useUpdateAttendeeCertificatesResult => {
+}): usePostResult<
+  {
+    certificateInfo: Partial<TAttendeeCertificate>;
+    attendeeInfo: { attendeeId?: number; attendeeEmail: string }[];
+    action: string;
+  },
+  "updateAttendeeCertificates",
+  TFullCertificate
+> => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -273,6 +281,10 @@ export const useUpdateAttendeeCertificates = ({
       toast({
         description: data.data?.msg,
       });
+
+      if (payload.action === "release") {
+        return data.data;
+      }
     } catch (error) {
       console.log(error);
       setError(true);

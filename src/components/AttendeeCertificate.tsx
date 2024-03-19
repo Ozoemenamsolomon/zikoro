@@ -66,7 +66,7 @@ const AttendeeCertificate = ({
 
   useEffect(() => {
     if (isLoading || organizationIsLoading || eventIsLoading) {
-      btnRef.current?.click();
+      return;
     }
 
     if (!certificate || !event || !organization) {
@@ -109,14 +109,16 @@ const AttendeeCertificate = ({
       certificate.certficateDetails &&
       certificate.certficateDetails.craftHash
     ) {
-      hashRef.current = lz.decompress(
-        lz.decodeBase64(
-          replaceSpecialText(certificate.certficateDetails.craftHash, {
-            attendee,
-            event,
-            organization,
-          })
-        )
+      const initData = lz.decompress(
+        lz.decodeBase64(certificate.certficateDetails.craftHash)
+      );
+
+      hashRef.current = JSON.parse(
+        replaceSpecialText(JSON.stringify(initData), {
+          attendee,
+          event,
+          organization,
+        })
       );
       console.log("hash set", hashRef.current);
     }
@@ -144,8 +146,8 @@ const AttendeeCertificate = ({
               style={{
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "100% 100%",
-                backgroundImage: !!certificate?.certficateDetails.background
-                  ? `url(${certificate?.certficateDetails.background})`
+                backgroundImage: !!certificate?.certficateDetails?.background
+                  ? `url(${certificate?.certficateDetails?.background})`
                   : "",
                 backgroundColor: "#fff",
                 width: "90%",

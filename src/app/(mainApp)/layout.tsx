@@ -30,10 +30,7 @@ export default function RootLayout({
         <div className="fixed w-1/6 h-full top-0 left-0 border-r-2 hidden md:block">
           <Sidebar />
         </div>
-        <section className="md:ml-[16.666667%] ml-0 h-full">
-          <Topbar />
-          <div className="">{children}</div>
-        </section>
+        <section className="md:ml-[16.666667%] ml-0 h-full">{children}</section>
       </main>
       <Toaster />
     </>

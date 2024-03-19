@@ -1,6 +1,7 @@
 import { TAttendee } from "@/types/attendee";
 import { SerializedNodes } from "@craftjs/core";
 import { TEvent } from "./events";
+import { TOrganization } from "./organization";
 
 export type TAttendeeCertificate = {
   id?: number;
@@ -51,6 +52,7 @@ export interface TCertificate {
 export type TFullCertificate = TAttendeeCertificate & {
   certificate: TCertificate;
   attendee: TAttendee;
+  event: TEvent & { organization: TOrganization };
 };
 
 export interface CertificateTemplate {
@@ -62,5 +64,4 @@ export interface CertificateTemplate {
   category: string;
   figmaName: string;
   colour: string;
-  category: string;
 }

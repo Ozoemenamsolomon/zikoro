@@ -117,7 +117,6 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   {/* <ShareSocial
-                  {/* <ShareSocial
                     url={`http:localhost:3000/verify/${certificateId}`}
                     socialTypes={[
                       "facebook",
@@ -130,7 +129,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <div
+            {/* <div
               className="bg-white w-3/4 space-y-6 text-black"
               ref={certificateRef}
             >
@@ -168,12 +167,12 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   </span>
                 </div>
                 <div className="space-y-2 mb-4 text-sm text-center w-full">
-                  {/* <p>
+                  <p>
                     Successfully completed the{" "}
                     {certificate?.certificate.TrainingDuration}-hour{" "}
                     {certificate?.CertificateName}, earning{" "}
                     {certificate?.certificate.cpdPoints} credits.{" "}
-                  </p> */}
+                  </p>
                   <p>
                     A program offered by{" "}
                     {
@@ -263,7 +262,8 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   alt={"design"}
                 />
               </div>
-            </div>
+            </div> */}
+            
           </div>
           <div className="flex-1 flex flex-col items-center justify-around gap-12 px-2">
             <div className="flex gap-4 w-3/4">
