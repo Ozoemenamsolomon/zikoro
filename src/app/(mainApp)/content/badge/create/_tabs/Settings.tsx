@@ -120,7 +120,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           </RadioGroup>
         </div>
       </div>
-      <div className="border-t-2 pb-2 pt-4">
+      <div className=" pb-2 pt-4">
         <h4 className="text-gray-700 font-medium">
           Who should receive this certificate?
         </h4>
