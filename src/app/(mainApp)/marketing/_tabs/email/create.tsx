@@ -43,7 +43,7 @@ import { useGetAttendees } from "@/hooks/services/attendee";
 import { useSendMarketingEmail } from "@/hooks/services/marketing";
 import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSection";
 import { TAttendee } from "@/types/attendee";
-// import TextEditor from "@/components/TextEditor";
+import TextEditor from "@/components/TextEditor";
 
 const CreateEmailSchema = z
   .object({
@@ -51,7 +51,7 @@ const CreateEmailSchema = z
     subject: z.string(),
     sender: z.string(),
     replyTo: z.string().optional(),
-    recipients: z.array(z.string().email()),
+    recipients: z.string(),
     content: z.string(),
     isScheduled: z.boolean(),
     schedule: z.date().optional(),
@@ -86,8 +86,8 @@ const Create = () => {
     const updatedValue = Array.isArray(value)
       ? value
       : value && selectedAttendees.includes(value)
-        ? selectedAttendees.filter((item) => item !== value)
-        : [...selectedAttendees, value];
+      ? selectedAttendees.filter((item) => item !== value)
+      : [...selectedAttendees, value];
 
     setSelectedAttendees(updatedValue);
   };
@@ -100,7 +100,7 @@ const Create = () => {
   const [sendTest, setSendTest] = useState<boolean>(false);
   const [testEmail, setTestEmail] = useState<string>("");
   const [recipientSource, setRecipientSource] = useState<"attendees" | "list">(
-    "list"
+    "attendees"
   );
 
   const { sendMarketingEmail, isLoading: sendEmailIsLoading } =
@@ -111,20 +111,29 @@ const Create = () => {
     defaultValues,
   });
 
-  const { watch, setValue } = form;
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+  } = form;
+
+  console.log(errors, "errors");
 
   const content = watch("content");
   const isScheduled = watch("isScheduled");
 
   useEffect(() => {
     if (recipientSource === "attendees")
-      setValue("recipients", attendees?.map(({ email }) => email) || []);
+      setValue(
+        "recipients",
+        attendees?.map(({ email }) => email).join("; ") || ""
+      );
   }, [recipientSource]);
 
   const setRecipients = () => {
     setValue(
       "recipients",
-      selectedAttendees.map(({ email }) => email)
+      selectedAttendees.map(({ email }) => email).join("; ")
     );
   };
 
@@ -140,7 +149,7 @@ const Create = () => {
         sendersName: data.sender,
         replyTo: data.replyTo,
         emailBody: data.content,
-        emailRecipient: data.recipients,
+        emailRecipient: data.recipients.split("; "),
       },
     });
   };
@@ -149,8 +158,6 @@ const Create = () => {
     console.log(content);
     setValue("content", content);
   };
-
-
 
   return (
     <Form {...form}>
@@ -212,7 +219,7 @@ const Create = () => {
                     type="string"
                     placeholder={"Enter subject"}
                     {...field}
-                    className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                    className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 !mt-0"
                   />
                 </InputOffsetLabel>
               )}
@@ -230,7 +237,7 @@ const Create = () => {
                     type="string"
                     {...field}
                     className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 mt-0"
-                    placeholder="enter organization name"
+                    placeholder="Enter your organization name"
                   />
                 </InputOffsetLabel>
               )}
@@ -245,6 +252,7 @@ const Create = () => {
                   <Input
                     type="string"
                     {...field}
+                    placeholder="Enter your reply to email address"
                     className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                   />
                 </InputOffsetLabel>
@@ -252,7 +260,7 @@ const Create = () => {
             />
           </div>
         </div>
-        <div className="space-y-4 border px-3 py-4">
+        <div className="space-y-4 px-3 py-4">
           {isLoading ? (
             <span className="font-medium text-gray-700">Loading...</span>
           ) : (
@@ -345,13 +353,12 @@ const Create = () => {
                   render={({ field }) => (
                     <InputOffsetLabel isRequired label={"Recipients"}>
                       <Input
+                        value={field.value}
                         type="string"
                         placeholder={
                           "Enter emails seperated by semi-colon seperated"
                         }
-                        onInput={(e) =>
-                          field.onChange(e.currentTarget.value.split(";"))
-                        }
+                        onInput={(e) => field.onChange(e.currentTarget.value)}
                         className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                       />
                     </InputOffsetLabel>
@@ -361,11 +368,15 @@ const Create = () => {
             </>
           )}
         </div>
-        <div className="w-full rounded-md border border-input bg-background text-sm relative">
-          <span className="absolute top-0 -translate-y-1/2 right-4 text-gray-600 text-tiny px-1 z-10">
+        <div className="w-full rounded-md border bg-background text-sm relative">
+          <span className="absolute top-0 -translate-y-1/2 right-4 text-gray-900 text-tiny px-1 z-10 bg-white">
             Message
           </span>
-          {/* <TextEditor onChange={setMessage} defaultValue={content} placeholder="enter message" /> */}
+          <TextEditor
+            onChange={setMessage}
+            defaultValue={content}
+            placeholder="Write message"
+          />
         </div>
         <div className="flex gap-8 items-center">
           <FormField

@@ -33,7 +33,8 @@ import { useGetAttendees } from "@/hooks/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import COLORTAG from "@/utils/colorTag";
-// import { DateTimePicker } from "@/components/ui/date-time-picker/date-time-picker";
+import { DateTimePicker } from "@/components/ui/date-time-picker/date-time-picker";
+import { parseAbsoluteToLocal } from "@internationalized/date";
 
 const Settings = ({ settings, editSettings }: TabProps) => {
   const [newSkill, setSkill] = React.useState<string>("");
@@ -79,6 +80,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
     calculateAndSetMaxHeight(divRef);
   }, []);
 
+  const [hideText, setHideText] = useState<boolean>(false);
+
   return (
     <div ref={divRef} className="hide-scrollbar">
       <h4 className="text-lg text-gray-700 font-medium">Paper Format</h4>
@@ -120,7 +123,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           </RadioGroup>
         </div>
       </div>
-      <div className="border-t-2 pb-2 pt-4">
+      <div className=" pb-2 pt-4">
         <h4 className="text-gray-700 font-medium">
           Who should receive this certificate?
         </h4>
@@ -140,7 +143,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
               />
             </div>
             {settings.canReceive.eventAttendees && (
-              <Dialog>
+              <Dialog onOpenChange={setHideText}>
                 <DialogTrigger asChild>
                   <Button
                     variant={"ghost"}
@@ -165,6 +168,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                     <i className="text-xs">
                       {selectedAttendees &&
                         selectedAttendees.length > 0 &&
+                        !hideText &&
                         selectedAttendees.length +
                           " attendees will not receive this certificate"}
                     </i>
@@ -234,7 +238,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
             />
           </div>
         </div>
-        <div className="pt-4 border-t-2">
+        <div className="pt-4">
           <div className="flex justify-between items-center">
             <span className="text-gray-500 font-medium text-sm">
               Attendance Criteria
@@ -299,13 +303,21 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           </div>
         </div>
       </div>
-      <div className="pt-4 pb-2 border-t-2">
-        {/* <DateTimePicker
-          defaultValue={settings.publishOn}
-          granularity={"minute"}
-          onSelect={(date: Date) => editSettings("publishOn", date)}
-          disabled={(date: Date) => date < new Date()}
-        /> */}
+      <div className="pt-4 pb-2">
+        <div className="relative">
+          <label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+            Publish Date
+          </label>
+          <DateTimePicker
+            defaultValue={parseAbsoluteToLocal(
+              settings.publishOn.toISOString()
+            )}
+            granularity={"minute"}
+            onSelect={(date: Date) => editSettings("publishOn", date)}
+            disabled={(date: Date) => date < new Date()}
+            hideTimeZone
+          />
+        </div>
         {/* <div className="col-span-6 w-full rounded-md bg-background text-sm relative">
           <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
             Publish on
@@ -371,7 +383,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           </Popover>
         </div> */}
       </div>
-      <div className="pt-4 border-t-2 space-y-4 pb-2">
+      <div className="pt-4  space-y-4 pb-2">
         <div className="flex justify-between">
           <span className="text-sm font-medium text-gray-500">Expires on</span>
           <Switch
@@ -449,7 +461,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           </div>
         )}
       </div>
-      <div className="space-y-4 pt-4 border-t-2 pb-12">
+      <div className="space-y-4 pt-4  pb-12">
         <Dialog>
           <DialogTrigger asChild>
             <Button className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-2">

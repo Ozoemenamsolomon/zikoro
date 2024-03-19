@@ -35,7 +35,7 @@ export default function InputOffsetLabel({
           {prepend}
         </div>
       )}
-      <FormControl>
+      <FormControl className="!mt-0">
         <div
           className={`${append ? "[&>*]:pl-8" : ""} ${
             prepend ? "[&>*]:pr-8" : ""

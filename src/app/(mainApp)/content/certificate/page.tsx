@@ -638,13 +638,55 @@ const Certificates = () => {
           There are no created certificates.
         </p>
 
-        <CreateButton alignSelf="flex-center" />
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+
+            router.push(`/content/certificate/create`);
+          }}
+          className="bg-basePrimary flex gap-4 items-center w-fit py-2"
+        >
+          <svg
+            stroke="currentColor"
+            fill="currentColor"
+            strokeWidth={0}
+            viewBox="0 0 1024 1024"
+            height="1.5em"
+            width="1.5em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z" />
+            <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z" />
+          </svg>
+          <span>Certificate</span>
+        </Button>
       </div>
     );
 
   return (
     <div className="flex flex-col gap-2 px-2 py-4">
-      <CreateButton />
+      <Button
+        onClick={(e) => {
+          e.stopPropagation();
+
+          router.push(`/content/certificate/create`);
+        }}
+        className="bg-basePrimary flex gap-4 items-center w-fit py-2 self-end"
+      >
+        <svg
+          stroke="currentColor"
+          fill="currentColor"
+          strokeWidth={0}
+          viewBox="0 0 1024 1024"
+          height="1.5em"
+          width="1.5em"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z" />
+          <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z" />
+        </svg>
+        <span>Certificate</span>
+      </Button>
       <div className="grid-cols-4 grid gap-4">
         {certificates?.map(
           ({
@@ -657,6 +699,12 @@ const Certificates = () => {
             lastEdited,
           }) => (
             <div className="relative h-full">
+              {certificateSettings?.publishOn &&
+                isPast(certificateSettings?.publishOn) && (
+                  <div className="absolute top-2 left-2 z-[2] bg-green-200 border-2 border-green-500 text-xs text-green-500 font-medium p-1 rounded">
+                    Published
+                  </div>
+                )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -700,7 +748,7 @@ const Certificates = () => {
                 className={`border rounded-md relative w-full h-full overflow-hidden ${
                   certificateSettings?.publishOn &&
                   isPast(certificateSettings?.publishOn)
-                    ? "border-red-500"
+                    ? "border-green-500"
                     : "border-gray-200"
                 }`}
                 onClick={() =>
