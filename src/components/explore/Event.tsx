@@ -10,8 +10,8 @@ export default function Event() {
     return (
         <div className=''>
             {/* header */}
-            <div className='relative '>
-                <Image className='object-cover' src="/event.png" alt="" width={294} height={264} />
+            <div className='relative'>
+                <Image className='object-cover w-full' src="/event.png" alt="" width={294} height={264} />
                 <p className='text-base font-medium text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end absolute left-4 top-2 py-[5px] px-[10px] rounded-lg'>Hybrid</p>
             </div>
             
