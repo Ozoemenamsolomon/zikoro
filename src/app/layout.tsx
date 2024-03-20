@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Inter, Heebo, Montserrat } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-import {AppWrapper} from "../context"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -25,10 +24,8 @@ export default function RootLayout({
     <UserProvider>
       <html lang="en" className="">
         <body className={`${inter.className} ${heebo.className}`}>
-              {/* <AppWrapper> */}
                 {children}
                 <ToastContainer/>
-              {/* </AppWrapper> */}
         </body>
       </html>
     

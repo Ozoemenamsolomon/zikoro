@@ -12,11 +12,11 @@ type DBEventPhoto = {
   "userEmail" : string,
   "photoStatus" : string,
   likes : number,
-  photoUrl : string
-// "likeUsers" json null,
-// "Reports" numeric null,
-// "ReportsUsers" json null,
-// photo text null,
+  photoUrl : string,
+  likeUsers: number,
+  Reports: number,
+  ReportsUsers: JSON,
+// photo text null
 }
 
 

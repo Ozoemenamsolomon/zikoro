@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/Navbar2";
 import Footer from "@/components/Footer";
 import EventHeader from "@/components/explore/EventHeader";
 import { Montserrat } from "next/font/google";
@@ -19,9 +19,7 @@ const montserrat = Montserrat({
 export default function Events() {
   return (
     <div className={`${montserrat.className} `}>
-      <div className="z-[100px]">
-        <Navbar />
-      </div>
+      <Navbar />
       <EventHeader />
       <EventList />
       <FeaturedEventList />

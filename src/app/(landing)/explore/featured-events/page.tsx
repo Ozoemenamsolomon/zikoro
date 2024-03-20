@@ -3,7 +3,11 @@ import React, { useState } from "react";
 import { Montserrat } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { FilterIcon, ArrowDownIcon } from "@/components/svg/Constants";
+import {
+  FilterIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
+} from "@/components/svg/Constants";
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
 
 const montserrat = Montserrat({
@@ -35,17 +39,25 @@ export default function FeaturedEvents() {
     "Charity",
   ];
 
-  const [selected, SetSelected] = useState(false);
+  // const [selected, SetSelected] = useState(false);
 
-  const onSelect = () => {
-    SetSelected(!selected);
+  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+
+  const [isEventDateUp, setEventDateUp] = useState(false);
+  const [isEventTypeUp, setEventTypeUp] = useState(false);
+  const [isCountryUp, setCountryUp] = useState(false);
+  const [isCityUp, setCityUp] = useState(false);
+  const [isPriceUp, setPriceUp] = useState(false);
+
+  const handleClick = (v: string) => {
+    setSelectedButton(v);
   };
 
   return (
-    <div className={`${montserrat.className} mt-48`}>
+    <div className={`${montserrat.className} `}>
       <Navbar />
       {/* header */}
-      <div className="px-5 lg:px-0 max-w-full lg:max-w-7xl mx-auto pb-12">
+      <div className="px-5 lg:px-0 max-w-full lg:max-w-7xl mx-auto mt-24 lg:mt-48 ">
         <div className="mt-24 text-center">
           <p className="text-[40px]  gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
             Featured Events
@@ -55,7 +67,7 @@ export default function FeaturedEvents() {
           </p>
         </div>
 
-        <div className="h-10 flex justify-between gap-x-3 max-w-xl mx-auto items-center mt-12">
+        <div className="h-[48px] flex justify-between gap-x-3 max-w-xl mx-auto items-center mt-12">
           <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-[500px] h-full">
             <input
               type="text"
@@ -68,79 +80,333 @@ export default function FeaturedEvents() {
             />
           </div>
 
-          <button className="bg-gradient-to-tr flex-1 from-custom-gradient-start to-custom-gradient-end text-white cursor-pointer px-5 py-2 rounded-lg">
+          <button className="bg-gradient-to-tr flex-1 from-custom-gradient-start to-custom-gradient-end text-white cursor-pointer px-5 py-[13px] text-base rounded-lg">
             {" "}
             Search
           </button>
         </div>
 
         {/* main section */}
-        <div className="flex flex-col lg:flex-row justify-between mt-[50px] pb-[50px] border-r-0 border-l-[1px] border-b-[1px] border-gray-400 border-collapse rounded-lg">
+        <div className="flex flex-col lg:flex-row justify-between mt-[50px]  border-r-0 border-l-[1px] border-gray-200 border-collapse rounded-none">
           {/* left */}
 
-          <div className="border-t-[1px] border-gray-400 rounded-l-lg w-full lg:w-3/12">
-            <div className="flex gap-x-3 py-[43px] px-8 border-b-[1px] border-gray-400">
+          <div className="border-t-[1px] border-r-[1px] border-collapse  border-gray-200  h-fit pb-12 w-full lg:w-3/12">
+            <div className="flex gap-x-3 py-[43px] px-8 border-b-[1px] border-gray-200">
               <FilterIcon />
               <p className="text-xl font-semibold"> Filters</p>
             </div>
 
             <div className="flex flex-col gap-y-12 mt-7">
               {/* 1st section */}
-              <div className="px-8 cursor-pointer ">
+              <div className="px-8 cursor-pointer">
                 <div className="flex justify-between items-center">
                   <p className="text-lg font-semibold">Event Type</p>
-                  <ArrowDownIcon />
+                  {isEventTypeUp ? (
+                    <div onClick={() => setEventTypeUp(!isEventTypeUp)}>
+                      <ArrowUpIcon />
+                    </div>
+                  ) : (
+                    <div onClick={() => setEventTypeUp(!isEventTypeUp)}>
+                      <ArrowDownIcon />
+                    </div>
+                  )}
                 </div>
+                {isEventTypeUp && (
+                  <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                    <button
+                      onClick={() => handleClick("hybrid")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "hybrid"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Hybrid
+                    </button>
+                    <button
+                      onClick={() => handleClick("onsite")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "onsite"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Onsite
+                    </button>
+                    <button
+                      onClick={() => handleClick("virtual")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "virtual"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Virtual
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* 2nd section */}
               <div className="px-8 cursor-pointer">
                 <div className="flex justify-between items-center">
                   <p className="text-lg  font-semibold">Event Date</p>
-                  <ArrowDownIcon />
-                </div>
-                  
-                    <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                        <button onClick={onSelect}  className={`py-4 px-5 text-base border-[1px] border-gray-400 rounded-lg ${selected?'bg-zikoroBlue text-white': 'bg-white text-black'}`}>Hybrid</button>
-                        <button onClick={onSelect}  className={`py-4 px-5 text-base border-[1px] border-gray-400 rounded-lg ${selected?'bg-zikoroBlue text-white': 'bg-white text-black'}`}>Hybrid</button>
-                        <button onClick={onSelect}  className={`py-4 px-5 text-base border-[1px] border-gray-400 rounded-lg ${selected?'bg-zikoroBlue text-white': 'bg-white text-black'}`}>Hybrid</button>
+                  {isEventDateUp ? (
+                    <div onClick={() => setEventDateUp(!isEventDateUp)}>
+                      <ArrowUpIcon />
                     </div>
-                  
+                  ) : (
+                    <div onClick={() => setEventDateUp(!isEventDateUp)}>
+                      <ArrowDownIcon />
+                    </div>
+                  )}
+                </div>
+                {isEventDateUp && (
+                  <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                    <button
+                      onClick={() => handleClick("today")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "today"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Today
+                    </button>
+                    <button
+                      onClick={() => handleClick("this-week")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "this-week"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      This Week
+                    </button>
+                    <button
+                      onClick={() => handleClick("this-month")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "this-month"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      This Month
+                    </button>
+                    <button
+                      onClick={() => handleClick("next-month")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "next-month"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Next Month
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* 3rd section */}
               <div className="px-8 cursor-pointer">
                 <div className="flex justify-between items-center">
                   <p className="text-lg font-semibold">Country</p>
-                  <ArrowDownIcon />
+                  {isCountryUp ? (
+                    <div onClick={() => setCountryUp(!isCountryUp)}>
+                      <ArrowUpIcon />
+                    </div>
+                  ) : (
+                    <div onClick={() => setCountryUp(!isCountryUp)}>
+                      <ArrowDownIcon />
+                    </div>
+                  )}
                 </div>
+                {isCountryUp && (
+                  <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                    <button
+                      onClick={() => handleClick("nigeria")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap  rounded-lg ${
+                        selectedButton === "nigeria"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Nigeria
+                    </button>
+                    <button
+                      onClick={() => handleClick("germany")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "germany"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Germany
+                    </button>
+                    <button
+                      onClick={() => handleClick("usa")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "usa"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      U.S.A
+                    </button>
+                    <button
+                      onClick={() => handleClick("uk")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "uk"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      U.K
+                    </button>
+                    <button
+                      onClick={() => handleClick("ghana")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "ghana"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Ghana
+                    </button>
+
+                    <button
+                      onClick={() => handleClick("canada")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "canada"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Canada
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* 4th section */}
               <div className="px-8 cursor-pointer">
                 <div className="flex justify-between items-center">
                   <p className="text-lg font-semibold">City</p>
-                  <ArrowDownIcon />
+                  {isCityUp ? (
+                    <div onClick={() => setCityUp(!isCityUp)}>
+                      <ArrowUpIcon />
+                    </div>
+                  ) : (
+                    <div onClick={() => setCityUp(!isCityUp)}>
+                      <ArrowDownIcon />
+                    </div>
+                  )}
                 </div>
+                {isCityUp && (
+                  <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                    <button
+                      onClick={() => handleClick("lagos")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "lagos"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Lagos
+                    </button>
+                    <button
+                      onClick={() => handleClick("abuja")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "abuja"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Abuja
+                    </button>
+                    <button
+                      onClick={() => handleClick("enugu")}
+                      className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "enugu"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Enugu
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* 5th section */}
               <div className="px-8 cursor-pointer">
                 <div className="flex justify-between items-center">
                   <p className="text-lg font-semibold">Price Range</p>
-                  <ArrowDownIcon />
+                  {isPriceUp ? (
+                    <div onClick={() => setPriceUp(!isPriceUp)}>
+                      <ArrowUpIcon />
+                    </div>
+                  ) : (
+                    <div onClick={() => setPriceUp(!isPriceUp)}>
+                      <ArrowDownIcon />
+                    </div>
+                  )}
                 </div>
+                {isPriceUp && (
+                  <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                    <button
+                      onClick={() => handleClick("free")}
+                      className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "free"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      Free
+                    </button>
+                    <button
+                      onClick={() => handleClick("1-10")}
+                      className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton === "1-10"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      1k -10k
+                    </button>
+                    <button
+                      onClick={() => handleClick("10-50")}
+                      className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap  rounded-lg ${
+                        selectedButton === "10-50"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      10k -50k
+                    </button>
+                    <button
+                      onClick={() => handleClick("50-100")}
+                      className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                        selectedButton == "50-100"
+                          ? "bg-zikoroBlue text-white"
+                          : "bg-white text-black"
+                      }`}
+                    >
+                      50k - 100k
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           {/* Right */}
-          <div className="border-l-[1px] border-t-[1px] border-gray-400 w-full lg:w-9/12 ">
+          <div className=" border-t-[1px] border-gray-200 border-r-[1px] w-full lg:w-9/12 ">
             {/* top */}
             <div className="flex">
-              <div className=" px-4 flex w-[950px] items-center overflow-x-auto scrollbar-hide py-7 gap-x-[10px]">
+              <div className=" px-4 flex w-[950px] items-center overflow-x-auto scrollbar-hide py-7 gap-x-[10px] ">
                 {eventCategories.map((eventCategory) => (
-                  <div className="py-[18px] px-5 t w-auto  cursor-pointer text-sm border-[1px] border-gray-400 rounded-lg whitespace-nowrap">
+                  <div className="py-[18px] px-5 t w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap">
                     {eventCategory}{" "}
                   </div>
                 ))}
@@ -148,14 +414,8 @@ export default function FeaturedEvents() {
             </div>
 
             {/* bottom */}
-            <div className="py-2 px-4 h-[900px] flex flex-col justify-start border-t-[1px] border-gray-400  items-center overflow-y-auto scrollbar-hide pt-8">
+            <div className="py-2 px-4 h-[900px] flex flex-col justify-start border-t-[1px] border-l-[1px] border-gray-200  items-center overflow-y-auto scrollbar-hide pt-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-                <FeaturedEvent />
-                <FeaturedEvent />
-                <FeaturedEvent />
-                <FeaturedEvent />
-                <FeaturedEvent />
-                <FeaturedEvent />
                 <FeaturedEvent />
                 <FeaturedEvent />
                 <FeaturedEvent />

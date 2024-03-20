@@ -15,7 +15,7 @@ export default function Section5() {
 
                         <div className='flex justify-center items-center text-white mt-12 pb-32 space-x-6'>
                                     <button onClick={() => router.push('/api/auth/login')} className='cursor-pointer bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-sm lg:text-base py-4 px-5 rounded-md border-[.5px] border-white'> Get Started</button>
-                                    <button className='cursor-pointer bg-transparent text-sm lg:text-base py-4 px-5 rounded-md border-[.5px]'> Contact Sales</button>
+                                    <button className='cursor-pointer bg-transparent text-sm lg:text-base py-4 px-5 rounded-md border-[.5px]' onClick={() => router.push('/contact')}> Contact Sales</button>
                         </div>
                     </div>
             </div>
