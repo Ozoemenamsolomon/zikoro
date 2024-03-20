@@ -31,6 +31,7 @@ import { Button } from "@/components/ui/button";
 import {
   useGetAttendeeCertificates,
   useGetEventCertificates,
+  useReleaseAttendeeCertificate,
   useUpdateAttendeeCertificates,
 } from "@/hooks/services/certificate";
 import SelectCertificateModal from "@/components/selectCertificateModal";
@@ -115,6 +116,9 @@ export default function SecondSection({
     eventId: 5,
   });
 
+  const { releaseAttendeeCertificate, isLoading } =
+    useReleaseAttendeeCertificate();
+
   useEffect(() => {
     getnote();
   }, [attendee]);
@@ -175,17 +179,24 @@ export default function SecondSection({
         },
       },
     });
-    await getAttendeeCertificates();
-    await getEventCertificates();
-    toast(
-      <div className="flex gap-2 text-tiny">
-        click to{" "}
-        <Link>
-          <span className="text-blue-500">View Certificate</span>
-        </Link>
-      </div>
-    );
-    router.push(`/verify/${certificate}`);
+    // await getAttendeeCertificates();
+    // await getEventCertificates();
+
+    const newAttendeeCertificate = await releaseAttendeeCertificate({
+      payload: {
+        eventId: eventCertificate.eventId,
+        attendeeId: id,
+        CertificateGroupId: eventCertificate.id,
+        attendeeEmail: email,
+        CertificateName: eventCertificate.certificateName,
+      },
+    });
+
+    console.log(newAttendeeCertificate);
+
+    if (newAttendeeCertificate) {
+      router.push(`/verify/${newAttendeeCertificate.certificateId}`);
+    }
   };
 
   const { toPDF, targetRef } = usePDF({

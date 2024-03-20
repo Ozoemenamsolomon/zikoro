@@ -35,6 +35,7 @@ import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import COLORTAG from "@/utils/colorTag";
 import { DateTimePicker } from "@/components/ui/date-time-picker/date-time-picker";
 import { parseAbsoluteToLocal } from "@internationalized/date";
+import { useToPng } from "@hugocxl/react-to-image";
 
 const Settings = ({ settings, editSettings }: TabProps) => {
   const [newSkill, setSkill] = React.useState<string>("");
@@ -310,7 +311,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           </label>
           <DateTimePicker
             defaultValue={parseAbsoluteToLocal(
-              settings.publishOn.toISOString()
+              settings.publishOn?.toISOString() || ""
             )}
             granularity={"minute"}
             onSelect={(date: Date) => editSettings("publishOn", date)}

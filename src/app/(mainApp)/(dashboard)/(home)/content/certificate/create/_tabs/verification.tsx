@@ -1,4 +1,3 @@
-import { Switch } from "@/components/ui/switch";
 import React from "react";
 import { TabProps } from "../page";
 import { useEditor } from "@craftjs/core";
@@ -25,7 +24,12 @@ const Verification = ({ details, setValue }: TabProps) => {
             ref &&
             connectors.create(
               ref,
-              <Text text={"Certificate ID: #{certificate_id#}"} isBold isItalic isNotEditable />
+              <Text
+                text={"Certificate ID: #{certificate_id#}"}
+                isBold
+                isItalic
+                isNotEditable
+              />
             )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
@@ -38,7 +42,12 @@ const Verification = ({ details, setValue }: TabProps) => {
             ref &&
             connectors.create(
               ref,
-              <Text text={"#{first_name#} #{last_name#}"} isBold isItalic isNotEditable />
+              <Text
+                text={"#{first_name#} #{last_name#}"}
+                isBold
+                isItalic
+                isNotEditable
+              />
             )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
@@ -51,7 +60,12 @@ const Verification = ({ details, setValue }: TabProps) => {
             ref &&
             connectors.create(
               ref,
-              <Text text={"www.zikoro.com/verify/#{verification_url#}"} isBold isItalic isNotEditable />
+              <Text
+                text={"www.zikoro.com/verify/#{certificate_id#}"}
+                isBold
+                isItalic
+                isNotEditable
+              />
             )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
@@ -62,7 +76,15 @@ const Verification = ({ details, setValue }: TabProps) => {
         <button
           ref={(ref) =>
             ref &&
-            connectors.create(ref, <Text text={"#{city#} #{country#}"} isBold isItalic isNotEditable />)
+            connectors.create(
+              ref,
+              <Text
+                text={"#{city#} #{country#}"}
+                isBold
+                isItalic
+                isNotEditable
+              />
+            )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
           data-cy="toolbox-qr-code"

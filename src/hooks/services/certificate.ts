@@ -299,6 +299,44 @@ export const useUpdateAttendeeCertificates = ({
   return { updateAttendeeCertificates, isLoading, error };
 };
 
+export const useReleaseAttendeeCertificate = (): usePostResult<
+  Partial<TAttendeeCertificate>,
+  "releaseAttendeeCertificate",
+  TAttendeeCertificate
+> => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const releaseAttendeeCertificate = async ({
+    payload,
+  }: {
+    payload: Partial<TAttendeeCertificate>;
+  }) => {
+    setLoading(true);
+    toast({
+      description: "releasing certificate...",
+    });
+    try {
+      const { data, status } = await postRequest<TAttendeeCertificate>({
+        endpoint: `/certificates/attendees/release`,
+        payload,
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: "Certificate released successfully",
+      });
+      return data.data;
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { releaseAttendeeCertificate, isLoading, error };
+};
+
 type UseGetAttendeeCertificatesResult = {
   attendeeCertificates: TAttendeeCertificate[];
   getAttendeeCertificates: () => Promise<void>;
@@ -410,6 +448,60 @@ type UseGetAttendeeCertificateResult = {
     isVerify?: boolean;
   }) => Promise<TFullCertificate | TFullCertificate[] | null>;
 } & RequestStatus;
+
+export const useVerifyAttendeeCertificate = ({
+  certificateId,
+}: {
+  certificateId: string;
+}): UseGetResult<
+  TFullCertificate,
+  "attendeeCertificate",
+  "verifyAttendeeCertificate"
+> => {
+  const [attendeeCertificate, setAttendeeCertificate] =
+    useState<TFullCertificate | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const verifyAttendeeCertificate = async () => {
+    try {
+      setLoading(true);
+      toast({ description: "verifying certificate..." });
+
+      const { data, status } = await getRequest<TFullCertificate>({
+        endpoint: `/certificates/attendees/verify/${certificateId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+
+      if (!data.data) {
+        toast({
+          description: "this certificate is not valid",
+          variant: "destructive",
+        });
+        setError(true);
+      }
+
+      setAttendeeCertificate(data.data);
+    } catch (error) {
+      setError(true);
+      toast({
+        description: "something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    verifyAttendeeCertificate();
+  }, []);
+
+  return { attendeeCertificate, isLoading, error, verifyAttendeeCertificate };
+};
 
 export const useGetAttendeeCertificate = (
   isSilent?: boolean

@@ -5,16 +5,29 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetAttendeeCertificate } from "@/hooks/services/certificate";
+import {
+  useGetAttendeeCertificate,
+  useVerifyAttendeeCertificate,
+} from "@/hooks/services/certificate";
 import { TFullCertificate } from "@/types/certificates";
 import { formatDateToHumanReadable } from "@/utils/date";
+import { SerializedNodes } from "@craftjs/core";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { exportComponentAsPNG } from "react-component-export-image";
+// import { exportComponentAsPNG } from "react-component-export-image";
 import QRCode from "react-qr-code";
+import { Container, SettingsPanel, Text } from "@/components/certificate";
+import CertificateQRCode from "@/components/certificate/QRCode";
+import { Image as ImageElement } from "@/components/certificate";
+import { replaceSpecialText } from "@/utils/helpers";
+import { Editor, Frame } from "@craftjs/core";
+import { toast } from "@/components/ui/use-toast";
+import lz from "lzutf8";
+import { useToPng } from "@hugocxl/react-to-image";
+
 // import { ShareSocial } from "react-share-social";
 
 const style = {
@@ -36,30 +49,18 @@ const style = {
 };
 
 const Page = ({ params }: { params: { certificateId: string } }) => {
-  const [certificate, setCertificate] = useState<TFullCertificate | null>(null);
-
   const certificateRef = useRef<HTMLDivElement | null>(null);
-
-  const { certificateId } = params;
-
-  const { getAttendeeCertificate, isLoading, error } =
-    useGetAttendeeCertificate();
 
   const router = useRouter();
 
-  const verify = async () => {
-    const verifiedCertificate = await getAttendeeCertificate({ certificateId });
+  const { certificateId } = params;
 
-    if (!verifiedCertificate) {
-      router.replace("/verify");
-    }
-
-    setCertificate(verifiedCertificate);
-  };
-
-  useEffect(() => {
-    verify();
-  }, []);
+  const {
+    attendeeCertificate: certificate,
+    isLoading,
+    error,
+    verifyAttendeeCertificate,
+  } = useVerifyAttendeeCertificate({ certificateId });
 
   const handleDownloadPdf = async () => {
     const element = certificateRef.current;
@@ -80,6 +81,89 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     );
   };
 
+  const [data, download] = useToPng<HTMLDivElement>({
+    selector: "#certificate",
+    onSuccess: (data) => {
+      console.log("downloading");
+      if (!certificate) return;
+      const link = document.createElement("a");
+      link.download = `${
+        certificate?.attendee.firstName + "_" + certificate?.attendee.lastName
+      }_${certificate?.CertificateName}.png`;
+      link.href = data;
+      link.click();
+    },
+  });
+
+  const hashRef = useRef<string | undefined>();
+
+  useEffect(() => {
+    if (isLoading) {
+      console.log("still loading");
+      return;
+    }
+
+    console.log("done loading", certificate);
+    if (!certificate) {
+      toast({
+        variant: "destructive",
+        description: "Certificate does not exist",
+      });
+      return; // Exit early after showing the toast
+    }
+
+    // if (
+    //   !attendee.id ||
+    //   (certificate.certificateSettings.canReceive.exceptions &&
+    //     certificate.certificateSettings.canReceive.exceptions.includes(
+    //       attendee.id
+    //     ))
+    // ) {
+    //   btnRef.current?.click();
+    //   toast({
+    //     variant: "destructive",
+    //     description: "Certificate cannot be released for this attendee",
+    //   });
+    //   return; // Exit early after showing the toast
+    // }
+
+    // if (
+    //   certificate.certificateSettings.publishOn &&
+    //   !isPast(new Date(certificate.certificateSettings.publishOn))
+    // ) {
+    //   btnRef.current?.click();
+    //   toast({
+    //     variant: "destructive",
+    //     description: "Certificate has not been published yet",
+    //   });
+    //   return; // Exit early after showing the toast
+    // }
+
+    console.log(certificate);
+
+    if (
+      certificate?.originalCertificate.certficateDetails &&
+      certificate?.originalCertificate.certficateDetails.craftHash
+    ) {
+      console.log("crafthash");
+      const initData = lz.decompress(
+        lz.decodeBase64(
+          certificate?.originalCertificate.certficateDetails.craftHash
+        )
+      );
+
+      hashRef.current = JSON.parse(
+        replaceSpecialText(JSON.stringify(initData), {
+          certificate,
+          attendee: certificate?.attendee,
+          event: certificate?.originalCertificate.event,
+          organization: certificate.originalCertificate.event.organization,
+        })
+      );
+      console.log("hash set", hashRef.current);
+    }
+  }, [isLoading]);
+
   return (
     <section className="min-h-screen flex justify-center gap-6 pt-20 pb-8">
       {!isLoading ? (
@@ -90,7 +174,8 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 Download PDF
               </Button>
               <Button
-                onClick={() => exportComponentAsPNG(certificateRef)}
+                // onClick={() => exportComponentAsPNG(certificateRef)}
+                onClick={download}
                 className="border-basePrimary border-2 text-basePrimary bg-transparent"
               >
                 Download PNG
@@ -263,7 +348,58 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                 />
               </div>
             </div> */}
-            
+            <Editor
+              enabled={false}
+              resolver={{
+                Text,
+                Container,
+                ImageElement,
+                QRCode,
+                CertificateQRCode,
+              }}
+            >
+              <div className="relative px-4">
+                <div className="w-full h-full absolute bg-transparent z-[100]" />
+                <div
+                  className="relative h-fit space-y-6 text-black bg-no-repeat"
+                  style={{
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "100% 100%",
+                    backgroundImage: !!certificate?.originalCertificate
+                      ?.certficateDetails?.background
+                      ? `url(${certificate?.originalCertificate?.certficateDetails?.background})`
+                      : "",
+                    backgroundColor: "#fff",
+                    height: "750px",
+                  }}
+                  id="certificate"
+                >
+                  {!isLoading ? (
+                    <>
+                      {hashRef.current && (
+                        <Frame data={hashRef.current}></Frame>
+                      )}
+                    </>
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center">
+                      <div className="animate-spin">
+                        <svg
+                          stroke="currentColor"
+                          fill="currentColor"
+                          strokeWidth={0}
+                          viewBox="0 0 1024 1024"
+                          height="2.5em"
+                          width="2.5em"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
+                        </svg>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Editor>
           </div>
           <div className="flex-1 flex flex-col items-center justify-around gap-12 px-2">
             <div className="flex gap-4 w-3/4">
@@ -316,7 +452,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   Issuing organization:{" "}
                   <b>
                     {
-                      certificate?.certificate?.event?.organization
+                      certificate?.originalCertificate?.event?.organization
                         ?.organizationName
                     }{" "}
                   </b>

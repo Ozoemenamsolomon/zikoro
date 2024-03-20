@@ -35,7 +35,7 @@ export interface TCertificateSettings {
 export interface TCertificateDetails {
   verification: { showId: boolean; showQRCode: boolean; showURL: boolean };
   background: string | null;
-  craftHash: string | SerializedNodes;
+  craftHash: string;
 }
 export interface TCertificate {
   id?: number;
@@ -50,9 +50,10 @@ export interface TCertificate {
 }
 
 export type TFullCertificate = TAttendeeCertificate & {
-  certificate: TCertificate;
+  originalCertificate: TCertificate & {
+    event: TEvent & { organization: TOrganization };
+  };
   attendee: TAttendee;
-  event: TEvent & { organization: TOrganization };
 };
 
 export interface CertificateTemplate {

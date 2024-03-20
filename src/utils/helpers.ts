@@ -1,4 +1,5 @@
 import { TAttendee } from "@/types/attendee";
+import { TAttendeeCertificate } from "@/types/certificates";
 import { TEvent } from "@/types/events";
 import { TOrganization } from "@/types/organization";
 import * as crypto from "crypto";
@@ -74,7 +75,8 @@ export function generateAlphanumericHash(length?: number): string {
 export function createHash(data: string): string {
   const hash = crypto.createHash("sha256");
   hash.update(data);
-  return hash.digest("hex");
+  const fullHash = hash.digest("hex");
+  return fullHash.substring(0, 8);
 }
 
 export function getProperty<T>(obj: T, key: keyof T): any {
@@ -194,6 +196,7 @@ export function base64ToFile(base64Data: string, fileName: string): File {
 }
 
 type Context = {
+  certificate: TAttendeeCertificate;
   attendee: TAttendee;
   event: TEvent;
   organization: TOrganization;
@@ -238,6 +241,8 @@ export function replaceSpecialText(input: string, context: Context): string {
         return context.organization.organizationName;
       case "organisation_logo":
         return context.organization.organizationLogo || "";
+      case "certificate_id":
+        return context.certificate.certificateId || "";
       default:
         return match; // Return the original string if no matching value found
     }
