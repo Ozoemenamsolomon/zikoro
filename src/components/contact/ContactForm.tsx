@@ -306,7 +306,7 @@ export default function ContactForm() {
     return (
         <div className='bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end mt-28'>
             <div className='max-w-5xl mx-auto pt-24 pb-24 '>
-                <div className='border-[1px]  border-white mx-2 lg:mx-0 py-7 px-2 lg:px-8 rounded-md lg:rounded-lg '>
+                <div className='border-[1px]  border-white mx-3 lg:mx-0 py-7 px-2 lg:px-8 rounded-md lg:rounded-lg '>
                     <form action="" method="post" className='pb-24 px-7' onSubmit={submitForm}>
                         <p className=' text-xl lg:text-2xl text-center lg:text-left text-white font-bold'>Contact Us</p>
 
@@ -320,7 +320,7 @@ export default function ContactForm() {
                         </div>
 
 
-                        <div className='flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-8'>
+                        <div className='flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-3 lg:mt-8'>
                             <select name="country" value={formData.country} onChange={handleChange} id="" className='w-full lg:w-1/2 h-12 bg-transparent rounded-md border-[1px] text-white text-base border-white px-4 outline-none '>
                                 <option disabled selected value="" className='bg-transparent text-black'>Select Country</option>
                                 {countryList.map((country) => 
@@ -334,7 +334,7 @@ export default function ContactForm() {
                         </div>
 
 
-                        <div className='flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-8'>
+                        <div className='flex flex-col gap-y-3 lg:gap-y-0 lg:flex-row space-x-0 lg:space-x-4 mt-3 lg:mt-8'>
                             <div className='w-full lg:w-1/2'>
                                 <input required type="email" onChange={handleChange} value={formData.email} name="email" id="" className='w-full h-12 text-base rounded-md border-[1px] border-white bg-transparent placeholder-white pl-3 outline-none text-white' placeholder='Email' />
                             </div>
@@ -389,7 +389,7 @@ export default function ContactForm() {
                             </select>
                         </div>
 
-                        <div className='flex space-x-4 mt-8 '>
+                        <div className='flex space-x-4 mt-3 lg:mt-8'>
                             <textarea name='comments' value={formData.comments} onChange={handleChange} required id="message" rows={9} className="block p-2.5 w-full text-sm text-white  bg-transparent placeholder-white rounded-md border border-gray-300 focus:outline-none " placeholder="Message"></textarea>
 
                         </div>
@@ -397,7 +397,7 @@ export default function ContactForm() {
                         {/* Button */}
 
                         <div className="mt-5 flex items-center justify-center mx-auto">
-                            <button type='submit' className="text-white font-montserrat text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 px-5 rounded-lg border-[1px] border-white ">Get Started For Free!</button>
+                            <button type='submit' className="text-white font-montserrat text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 px-5 rounded-lg border-[1px] border-white ">Submit</button>
                         </div>
                         <p className='text-[10px] mt-2 text-white text-center'>By clicking the button below, you consent to allow Zikoro to store and process your information by our Privacy Policy</p>
 

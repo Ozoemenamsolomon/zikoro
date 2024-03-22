@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 export default function EventList() {
   const router = useRouter();
   return (
-    <div className="mt-[150px] max-w-6xl mx-auto px-10 lg:px-0">
+    <div className="mt-[150px] max-w-6xl mx-auto px-3 lg:px-0">
       {/* header */}
       <div className="flex justify-between">
         <p className="font-semibold text-[20px] lg:text-[32px]">Lagos</p>

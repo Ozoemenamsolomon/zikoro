@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Calendar from "../svg/Calendar";
-import Location from "../svg/Location";
+import { LocationIcon1 } from "../svg/Constants";
 
 export default function FeaturedEvent() {
   return (
@@ -31,7 +31,7 @@ export default function FeaturedEvent() {
         </div>
 
         <div className="mt-[10px] flex gap-x-[10px] mb-8 ">
-          <Location />
+          <LocationIcon1 />
           <p className="text-xl font-normal">Lagos, Nigeria</p>
         </div>
 

@@ -72,10 +72,10 @@ export default function Footer() {
                  {/* 5th Column */}
                  <ul className='flex flex-col space-y-1 lg:space-y-4'>
                     <li className='text-[15px] lg:text-2xl font-bold cursor-pointer '>Legal</li>
-                    <li onClick={() => router.push('/terms-and-condition')} className='text-[13px] lg:text-base font-normal cursor-pointer pt-4 lg:pt-0'>Terms and Condition</li>
-                    <li  className='text-[13px] lg:text-base font-normal cursor-pointer'>Privacy Policy</li>
-                    <li className='text-[13px] lg:text-base font-normal cursor-pointer'>Refund Policy</li>
-                    <li className='text-[13px] lg:text-base font-normal cursor-pointer'>Cookies</li>
+                    <li onClick={() => router.push('/terms-and-condition#terms')} className='text-[13px] lg:text-base font-normal cursor-pointer pt-4 lg:pt-0'>Terms and Condition</li>
+                    <li onClick={() => router.push('/terms-and-condition#privacy-policy')} className='text-[13px] lg:text-base font-normal cursor-pointer'>Privacy Policy</li>
+                    <li onClick={() => router.push('/terms-and-condition#refund-policy')} className='text-[13px] lg:text-base font-normal cursor-pointer'>Refund Policy</li>
+                    <li onClick={() => router.push('/terms-and-condition#cookies')} className='text-[13px] lg:text-base font-normal cursor-pointer'>Cookies</li>
                 </ul>
 
             </div>
