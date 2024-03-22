@@ -73,7 +73,7 @@ export default function AwaitAppPics() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {images?.length ? (
           images?.map((image, index) => (
             <Picture key={index} id={image.id} url={image.photoUrl} />

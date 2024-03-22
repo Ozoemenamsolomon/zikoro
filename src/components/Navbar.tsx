@@ -64,7 +64,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <div className="fixed w-full transition-all duration-300 top-0 z-50  ">
+    <div className="fixed w-full transition-all duration-300 top-0 z-50 ">
       <nav
         className={` p-4 ${
           scrolling

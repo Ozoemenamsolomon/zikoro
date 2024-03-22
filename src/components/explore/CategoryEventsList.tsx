@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 export default function CategoryEventList() {
     const router = useRouter()
     return (
-            <div className='mt-[100px] max-w-6xl mx-auto pb-24 px-10 lg:px-0'>
+            <div className='mt-[100px] max-w-6xl mx-auto pb-24 px-3 lg:px-0'>
                 {/* header */}
                 <div className='flex justify-between'>
                         <p className='font-semibold text-[20px] lg:text-[32px]'>Browse By Category</p>
