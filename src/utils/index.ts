@@ -1,4 +1,4 @@
-export * from "./CountryCode"
+export * from "./countryCode"
 export * from "./convertStringToBigInt"
 export * from "./formatDate"
 export * from "./getFileUrl"

@@ -4,11 +4,7 @@ import "./globals.css";
 import { NetworkWrapper } from "@/components/wrappers";
 import { Toaster } from "react-hot-toast";
 import { TOASTER_PROPS } from "@/lib";
-import { metaGenerator } from "./meta";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-
-export const generateMetadata = async (): Promise<Metadata> =>
-  await metaGenerator();
 import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -40,7 +36,7 @@ export default function RootLayout({
             {children}
           </NetworkWrapper>
         </body>
-      </html>{" "}
+      </html>
     </UserProvider>
   );
 }

@@ -7,7 +7,7 @@ import { TAttendee } from "@/types/attendee";
 import React, { useEffect, useState } from "react";
 // import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
-import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
+import { MoreOptionsProps } from "@/app/(mainApp)/(dashboard)/people/_reusable/FirstSection";
 
 const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
   attendees,

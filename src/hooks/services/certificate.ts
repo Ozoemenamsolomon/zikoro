@@ -110,6 +110,82 @@ export const useGetCertificates = (): UseGetResult<
   return { certificates, isLoading, error, getCertificates };
 };
 
+type UseGetAttendeeCertificateResult = {
+  getAttendeeCertificate: ({
+    certificateId,
+    certificateGroupId,
+    isVerify,
+  }: {
+    certificateId?: string;
+    certificateGroupId?: number;
+    isVerify?: boolean;
+  }) => Promise<TFullCertificate | TFullCertificate[] | null>;
+} & RequestStatus;
+
+export const useGetAttendeeCertificate = (
+  isSilent?: boolean
+): UseGetAttendeeCertificateResult => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendeeCertificate = async ({
+    certificateId,
+    certificateGroupId,
+    isVerify = true,
+  }: {
+    certificateId?: string;
+    certificateGroupId?: number;
+    isVerify?: boolean;
+  }): Promise<TFullCertificate | TFullCertificate[] | null> => {
+    setLoading(true);
+
+    if (!isSilent) {
+      toast({
+        description: isVerify
+          ? "verifying certificate..."
+          : "getting certificate...",
+      });
+    }
+
+    try {
+      const { data, status } = await getRequest<
+        TFullCertificate | TFullCertificate[]
+      >({
+        endpoint: `/certificates/attendees?${
+          (certificateId && `certificateId=${certificateId}&`) || ""
+        }${
+          (certificateGroupId && `certificateGroupId=${certificateGroupId}`) ||
+          ""
+        }`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+
+      if (!data.data) {
+        if (isVerify) {
+          toast({
+            description: "this certificate is not valid",
+            variant: "destructive",
+          });
+        }
+        return null;
+      }
+
+      return data.data;
+    } catch (error) {
+      setError(true);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { isLoading, error, getAttendeeCertificate };
+};
+
+
 type UseGetEventCertificatesResult = {
   eventCertificates: TCertificate[];
   getEventCertificates: () => Promise<void>;
@@ -152,47 +228,9 @@ export const useGetEventCertificates = ({
   return { eventCertificates, isLoading, error, getEventCertificates };
 };
 
-type UseGetAttendeesCertificatesResult = {
-  attendeesCertificates: TAttendeeCertificate[];
-  getAttendeesCertificates: () => Promise<void>;
-} & RequestStatus;
 
-export const useGetAttendeesCertificates = ({
-  eventId,
-}: {
-  eventId: number;
-}): UseGetAttendeesCertificatesResult => {
-  const [attendeesCertificates, setAttendeesCertificates] = useState<
-    TAttendeeCertificate[]
-  >([]);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
 
-  const getAttendeesCertificates = async () => {
-    setLoading(true);
 
-    try {
-      const { data, status } = await getRequest<TAttendeeCertificate[]>({
-        endpoint: `/certificates/events/${eventId}/attendees`,
-      });
-
-      if (status !== 200) {
-        throw data;
-      }
-      setAttendeesCertificates(data.data);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getAttendeesCertificates();
-  }, [eventId]);
-
-  return { attendeesCertificates, isLoading, error, getAttendeesCertificates };
-};
 
 type useUpdateAttendeeCertificatesResult = {
   updateAttendeeCertificates: ({
@@ -442,4 +480,79 @@ export const useGetCertificateTemplates = (): UseGetResult<
     error,
     getCertificateTemplates,
   };
+};
+
+export const useDeleteCertificate = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const deleteCertificate = async ({
+    certificateId,
+  }: {
+    certificateId: number;
+  }) => {
+    setLoading(true);
+    toast({
+      description: "deleting certificate...",
+    });
+    try {
+      const { data, status } = await deleteRequest<TCertificate>({
+        endpoint: `/certificates/${certificateId}`,
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: "Certificate deleted successfully",
+      });
+      return data.data;
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { deleteCertificate, isLoading, error };
+};
+
+type UseGetAttendeesCertificatesResult = {
+  attendeesCertificates: TAttendeeCertificate[];
+  getAttendeesCertificates: () => Promise<void>;
+} & RequestStatus;
+
+export const useGetAttendeesCertificates = ({
+  eventId,
+}: {
+  eventId: number;
+}): UseGetAttendeesCertificatesResult => {
+  const [attendeesCertificates, setAttendeesCertificates] = useState<
+    TAttendeeCertificate[]
+  >([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendeesCertificates = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TAttendeeCertificate[]>({
+        endpoint: `/certificates/events/${eventId}/attendees`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setAttendeesCertificates(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendeesCertificates();
+  }, [eventId]);
+
+  return { attendeesCertificates, isLoading, error, getAttendeesCertificates };
 };

@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { organizationSchema } from "@/validations";
+import { organizationSchema } from "@/schemas";
 import { useCreateOrganisation } from "@/hooks";
 
 const orgType = ["Private", "Business"];

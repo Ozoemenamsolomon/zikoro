@@ -3,8 +3,7 @@ import { useNode } from "@craftjs/core";
 // import { Paper, FormControl, FormLabel } from "@material-ui/core";
 // import ColorPicker from "material-ui-color-picker";
 import React from "react";
-import { FormControl, FormLabel } from "../ui/form";
-import { Slider } from "../ui/slider";
+
 
 interface ContainerProps {
   className: string;

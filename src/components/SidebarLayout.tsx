@@ -14,11 +14,9 @@ import {
   CustomerCareIcon,
   EmailIcon,
   LogOutIcon,
-  SubscriptionFrame,
   WhatsappIcon,
 } from "@/constants";
 import { CircleUser } from "styled-icons/fa-solid";
-import { Topbar } from ".";
 import { getCookie, useValidateUser } from "@/hooks";
 
 export function SideBarLayout({
@@ -30,7 +28,7 @@ export function SideBarLayout({
   eventId,
   eventName,
 }: {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   isHomePage?: boolean;
   hasTopBar?: boolean;
@@ -66,26 +64,31 @@ export function SideBarLayout({
     setNav((nav) => !nav);
   }
 
-  return (
-    <>
-      <div
-        className={cn(
-          `w-full lg:w-[calc(100%-250px)] min-[1024px]:float-right right-0 z-50 fixed bg-white  border-gray-200 px-3 py-3 sm:py-4 sm:px-6 flex justify-between items-center `,
-          parentClassName
-        )}
-      >
-        {hasTopBar && <Topbar eventId={eventId} />}
-      </div>
-
-      <div
+  {
+    /*
+ <div
         className={cn(
           "lg:w-[calc(100%-250px)]  min-[1024px]:float-right px-2 sm:px-6 pt-16 pb-12 sm:pt-24 ",
           className
         )}
       >
-        {isHomePage && <HeaderWidget currentQuery={query} />}
+       
         {children}
       </div>
+       <div
+        className={cn(
+          `w-full lg:w-[calc(100%-250px)] min-[1024px]:float-right right-0 z-50 fixed bg-white  border-gray-200 px-3 py-3 sm:py-4 sm:px-6 flex justify-between items-center `,
+          parentClassName
+        )}
+      >
+        
+      </div>
+
+isHomePage && <HeaderWidget currentQuery={query} />*/
+  }
+
+  return (
+    <>
       <SideNavs
         isNav={isNav}
         close={onClose}

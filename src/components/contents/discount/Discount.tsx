@@ -26,58 +26,7 @@ import { ContentTopNav } from "../_components";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
 
-// const addDiscount = async (formData: FormData) => {
-//   "use server";
-//   const discountCode = formData.get("discountCode");
-//   const minQty = formData.get("minQty");
-//   const discountAmount = parseInt(formData.get("discountAmount") as string);
-//   const discountPercentage = formData.get("percentage");
-//   const validUntil = formData.get("validUntil");
-//   const quantity = formData.get("quantity");
-//   const status = true;
 
-//   if (
-//     !discountCode ||
-//     !minQty ||
-//     !discountAmount ||
-//     !discountPercentage ||
-//     !validUntil ||
-//     !quantity
-//   ) {
-//     return;
-//   }
-//   const { data, error } = await supabase.from("discount").insert([
-//     {
-//       discountCode: discountCode,
-//       minQty: minQty,
-//       discountAmount: discountAmount,
-//       discountPercentage: discountPercentage,
-//       validUntil: validUntil,
-//       quantity: quantity,
-//       status: status,
-//     },
-//   ]);
-//   if (error) {
-//     console.log(error);
-//     throw error;
-//   }
-//   if (data) {
-//     console.log(data, "discount added");
-//   }
-// };
-
-// const fetchDiscount = async () => {
-//   const { data, error } = await supabase.from("discount").select();
-//   if (error) {
-//     console.log(error);
-//     throw error;
-//   }
-//   if (data) {
-//     console.log(data);
-//     revalidatePath("/content/discount");
-//   }
-//   return data;
-// };
 
 export default function Discount({ eventId }: { eventId: string }) {
   const [discountData, setDiscountData] = useState<[]>([]);
@@ -144,13 +93,8 @@ export default function Discount({ eventId }: { eventId: string }) {
   };
 
   return (
-    <SideBarLayout
-      hasTopBar
-      className="px-0 sm:px-0 pt-14 sm:pt-14"
-      parentClassName="px-0 sm:px-0 py-0 sm:py-0 pt-3 sm:pt-4"
-      eventId={eventId}
-    >
-      <ContentTopNav eventId={eventId} />
+    <>
+    
       <div className="px-4">
         <div className="flex w-full items-end justify-end my-3">
           {Array.isArray(formattedData) && formattedData?.length > 0 && (
@@ -217,7 +161,7 @@ export default function Discount({ eventId }: { eventId: string }) {
           </div>
         </div>
       </div>
-    </SideBarLayout>
+    </>
   );
 }
 

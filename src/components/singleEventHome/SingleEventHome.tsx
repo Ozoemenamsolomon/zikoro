@@ -30,20 +30,19 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     slidesToScroll: 1,
   };
   return (
-    <SideBarLayout
-      hasTopBar
-      className="px-0 sm:px-0 pt-0 sm:pt-0"
-      parentClassName="px-0 sm:px-0 py-0 sm:py-0 pt-3 sm:pt-4"
-      eventId={eventId}
-      eventName={data?.eventTitle}
-    >
-      <div className="w-full grid grid-cols-1 md:grid-cols-7 items-start pt-14 ">
+    <>
+      <div className="w-full grid grid-cols-1 md:grid-cols-7 items-start ">
         <div className="w-full md:col-span-4 flex flex-col gap-y-4  items-start justify-start border-r">
           <div className={cn("w-full", active > 1 && "hidden sm:block")}>
             <EventSchedule event={data} />
           </div>
           {Array.isArray(partnersData) && partnersData?.length > 0 && (
-            <div className={cn("w-full grid grid-cols-8 sm:hidden items-center gap-2 justify-center", active > 1 && "hidden")}>
+            <div
+              className={cn(
+                "w-full grid grid-cols-8 sm:hidden items-center gap-2 justify-center",
+                active > 1 && "hidden"
+              )}
+            >
               <div className="w-full h-[89px] col-span-3 font-semibold flex items-center justify-center">
                 Sponsors
               </div>
@@ -75,6 +74,6 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
           />
         </div>
       </div>
-    </SideBarLayout>
+    </>
   );
 }

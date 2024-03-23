@@ -9,7 +9,7 @@ import {
   eventBookingValidationSchema,
   organizationSchema,
   newEventSchema,
-} from "@/validations";
+} from "@/schemas";
 import { Event, Organization } from "@/types";
 import _ from "lodash";
 import { postRequest } from "@/utils";

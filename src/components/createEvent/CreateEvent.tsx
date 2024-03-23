@@ -9,7 +9,7 @@ import {
   Button,
   ReactSelect,
 } from "@/components";
-import { newEventSchema } from "@/validations";
+import { newEventSchema } from "@/schemas";
 import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

@@ -82,8 +82,8 @@ export function PartnersList({
 
   return (
     <>
-      <div className="w-full  flex flex-col border-r">
-        <div className="flex p-3 items-center justify-between w-full">
+      <div className="w-full  flex flex-col">
+        <div className="flex py-3 items-center justify-between w-full">
           <div className="flex items-center gap-x-2">
             {selectedRows?.length > 0 && (
               <Button

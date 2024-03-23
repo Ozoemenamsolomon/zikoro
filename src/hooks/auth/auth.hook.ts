@@ -1,6 +1,6 @@
 "use client";
 
-import { loginSchema, registrationSchema } from "@/validations";
+import { loginSchema, registrationSchema } from "@/schemas";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";

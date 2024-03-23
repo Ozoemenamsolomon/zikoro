@@ -7,15 +7,15 @@ export function MarketPlaceTab({eventId}:{eventId?:string}) {
   const pathname = usePathname();
   const links = [
     {
-      href: `/events/market-place/${eventId}/jobs`,
+      href: `/event/market-place/${eventId}/jobs`,
       name: "Jobs",
     },
     {
-      href: `/events/market-place/${eventId}/offers`,
+      href: `/event/market-place/${eventId}/offers`,
       name: "Offers",
     },
     {
-      href: `/events/market-place/${eventId}/rewards`,
+      href: `/event/market-place/${eventId}/rewards`,
       name: "Rewards",
     },
   ];

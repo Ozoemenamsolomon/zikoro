@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { Form, FormField, Input, InputOffsetLabel, Button } from "@/components";
-import { loginSchema } from "@/validations";
+import { loginSchema } from "@/schemas";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";

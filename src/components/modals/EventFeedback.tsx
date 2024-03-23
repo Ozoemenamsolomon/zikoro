@@ -11,7 +11,7 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { cn } from "@/lib";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { eventFeedBackSchema } from "@/validations";
+import { eventFeedBackSchema } from "@/schemas";
 import { useEventFeedBack } from "@/hooks";
 
 export function EventFeedBack({

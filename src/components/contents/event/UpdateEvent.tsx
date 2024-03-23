@@ -25,7 +25,7 @@ import * as z from "zod";
 import {uploadFile} from "@/utils"
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { updateEventSchema } from "@/validations";
+import { updateEventSchema } from "@/schemas";
 import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
 import {
   Form,
@@ -205,13 +205,8 @@ export default function UpdateEvent({
 
   return (
     <DateAndTimeAdapter>
-      <SideBarLayout
-        hasTopBar
-        className="px-0 sm:px-0 pt-14 sm:pt-14"
-        parentClassName="px-0 sm:px-0 py-0 sm:py-0 pt-3 sm:pt-4"
-        eventId={eventId}
-      >
-        <ContentTopNav eventId={eventId} />
+      <>
+        
         {!loading ? (
           <Form {...form}>
             <form
@@ -672,7 +667,7 @@ export default function UpdateEvent({
             <LoaderAlt size={48} className="animate-spin" />
           </div>
         )}
-      </SideBarLayout>
+      </>
     </DateAndTimeAdapter>
   );
 }

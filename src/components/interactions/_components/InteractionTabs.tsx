@@ -21,7 +21,7 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
     },
     {
       name: "StampCard",
-      href: `/events/interaction/${eventId}/stamp-card`,
+      href: `/event/interaction/${eventId}/stamp-card`,
     },
     {
       name: "LeaderBoard",
@@ -32,7 +32,7 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
   return (
     <>
       <nav className="bg-white w-full flex overflow-x-auto items-center justify-between px-4 py-4 h-max border-b">
-        <ul className="flex gap-x-6 text-gray-700">
+        <ul className="flex gap-x-8 text-gray-700">
           {links.map(({ name, href }) => {
             return (
               <li

@@ -11,22 +11,14 @@ export function ContentPartners({ eventId }: { eventId: string }) {
 
   return (
     <BoxPositionProvider>
-      <SideBarLayout
-        hasTopBar
-        className="px-0 sm:px-0 pt-14 sm:pt-14"
-        parentClassName="px-0 sm:px-0 py-0 sm:py-0 pt-3 sm:pt-4"
-        eventId={eventId}
-      >
-     
-        <ContentTopNav eventId={eventId}/>
-
+      <div className="w-full px-4">
         <PartnersList
           eventId={eventId}
           partners={data}
           refetch={refetch}
           loading={loading}
         />
-      </SideBarLayout>
+      </div>
     </BoxPositionProvider>
   );
 }

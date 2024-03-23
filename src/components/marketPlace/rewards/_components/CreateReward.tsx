@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { rewardSchema } from "@/validations";
+import { rewardSchema } from "@/schemas";
 import { useCreateReward } from "@/hooks";
 import { uploadFile } from "@/utils";
 

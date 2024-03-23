@@ -3,7 +3,7 @@
 import { Form, FormField, Input, InputOffsetLabel, Button } from "@/components";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { hallSchema } from "@/validations";
+import { hallSchema } from "@/schemas";
 import { useCreateEventExhibitionHall } from "@/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";

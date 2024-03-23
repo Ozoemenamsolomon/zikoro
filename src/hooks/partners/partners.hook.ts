@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import * as z from "zod";
 import { Event, TPartner, PartnerJobType } from "@/types";
-import { partnerSchema } from "@/validations";
+import { partnerSchema } from "@/schemas";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
 

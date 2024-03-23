@@ -8,7 +8,7 @@ import { TPartner } from "@/types";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addBannerSchema } from "@/validations";
+import { addBannerSchema } from "@/schemas";
 import { useAddPartnerBanner } from "@/hooks";
 
 export function AddBanners({

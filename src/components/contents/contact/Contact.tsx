@@ -107,13 +107,8 @@ function Contact({ eventId }: { eventId: string }) {
   }, [logo]);
 
   return (
-    <SideBarLayout
-      hasTopBar
-      className="px-0 sm:px-0 pt-14 sm:pt-14"
-      parentClassName="px-0 sm:px-0 py-0 sm:py-0 pt-3 sm:pt-4"
-      eventId={eventId}
-    >
-      <ContentTopNav eventId={eventId} />
+    <>
+    
 
       <Form {...form}>
         <form
@@ -408,7 +403,7 @@ function Contact({ eventId }: { eventId: string }) {
           </div>
         </form>
       </Form>
-    </SideBarLayout>
+    </>
   );
 }
 

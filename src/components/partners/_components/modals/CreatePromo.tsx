@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown } from "@styled-icons/bootstrap/ChevronDown";
-import { offerCreationSchema } from "@/validations";
+import { offerCreationSchema } from "@/schemas";
 import { useAddPartnerPromo } from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";

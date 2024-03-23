@@ -11,8 +11,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/Form";
+import { Textarea } from "@/components/ui/Textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useUpdatenote } from "@/hooks/services/notes";
 

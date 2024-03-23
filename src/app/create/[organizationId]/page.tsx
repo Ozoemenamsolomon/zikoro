@@ -5,5 +5,6 @@ export default function Page({
 }: {
   params: { organizationId: string };
 }) {
+
   return <CreateEvent organizationId={organizationId} />;
 }

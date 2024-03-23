@@ -3,39 +3,39 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const Topbar = ({ eventId }: { eventId?: string }) => {
+const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
   const pathname = usePathname();
   //const currentLink = pathnames[pathnames.length - 2];
 
   const links = [
     {
       name: "Reception",
-      href: `/events/home/${eventId}`,
+      href: `/event/home/${eventId}`,
     },
     {
       name: "Contents",
-      href: `/events/content/${eventId}/info`,
+      href: `/event/content/${eventId}/info`,
     },
     {
       name: "People",
-      href: "/people/all",
+      href: `/event/people/all/${eventId}`,
     },
     {
       name: "Agenda",
-      href: "/agenda",
+      href: `/event/agenda/${eventId}`,
     },
     {
       name: "Partners",
-      href: `/events/partners/${eventId}?p=sponsors`,
+      href: `/event/partners/${eventId}?p=sponsors`,
     },
     {
       name: "Market Place",
-      href: `/events/market-place/${eventId}/jobs`,
+      href: `/event/market-place/${eventId}/jobs`,
     },
 
     {
       name: "Interactions",
-      href: `/events/interaction/${eventId}/stamp-card`,
+      href: `/event/interaction/${eventId}/stamp-card`,
     },
     {
       name: "Analytics",
@@ -52,7 +52,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
       <div className="bg-white min-w-[900px] px-4 pt-2 h-max border-b">
         <ul className="flex justify-between text-gray-700">
           {links.map(({ name, href }) => {
-            console.log(href.split("/"));
+           
             return (
               <li
                 className={`pb-1 text-sm ${

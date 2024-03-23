@@ -17,7 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components";
-import { registrationSchema } from "@/validations";
+import { registrationSchema } from "@/schemas";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@auth0/nextjs-auth0/client";
@@ -25,7 +25,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Eye } from "@styled-icons/feather/Eye";
 import { EyeOff } from "@styled-icons/feather/EyeOff";
-import { COUNTRY_CODE } from "@/utils";
+import {COUNTRY_CODE} from "@/utils"
 import { useOnboarding } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 

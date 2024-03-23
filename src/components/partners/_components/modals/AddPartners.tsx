@@ -22,7 +22,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { COUNTRY_CODE } from "@/utils";
-import { partnerSchema } from "@/validations";
+import { partnerSchema } from "@/schemas";
 import { AddSponsorLevel } from "@/components/contents/partners/_components";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";

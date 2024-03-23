@@ -11,28 +11,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/components/ui/Form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/Textarea";
 import { Camera, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useCreateAttendee } from "@/hooks/services/attendee";
 import { AttendeeSchema } from "@/schemas/attendee";
-import { TAttendee, TAttendeeType } from "@/types/attendee";
+import { TAttendee } from "@/types/attendee";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import COUNTRY_CODE from "@/utils/countryCode";
+import {COUNTRY_CODE} from "@/utils";
 import { attendeeTypeOptions } from "@/data/attendee";
-import { uploadFile, uploadFiles } from "@/utils/helpers";
+import { uploadFile } from "@/utils/helpers";
 
 export default function AddAttendeeForm({
   isOpen,

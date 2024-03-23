@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AuthLayout } from "@/components";
 import Image from "next/image";
 
 export const metadata: Metadata = {

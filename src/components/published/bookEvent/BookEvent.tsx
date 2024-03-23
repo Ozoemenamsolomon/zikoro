@@ -14,7 +14,7 @@ import { Payment } from "@/components/published";
 import { useFieldArray } from "react-hook-form";
 
 import { Form, FormField, Input, InputOffsetLabel } from "@/components";
-import { eventBookingValidationSchema } from "@/validations";
+import { eventBookingValidationSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { CloseOutline } from "styled-icons/evaicons-outline";
