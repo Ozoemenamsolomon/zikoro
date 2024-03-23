@@ -2,7 +2,7 @@
 import React from "react";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { Button } from "@/components/ui/button";
-import { Form, FormField } from "@/components/ui/Form";
+import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useCreateAffiliate } from "@/hooks/services/marketing";
 import { AffiliateSchema } from "@/schemas/marketing";
