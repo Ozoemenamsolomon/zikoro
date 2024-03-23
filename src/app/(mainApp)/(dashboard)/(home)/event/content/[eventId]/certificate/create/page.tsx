@@ -421,10 +421,10 @@ const page = () => {
   });
 
   const { event, isLoading: eventIsLoading } = useGetEvent({
-    eventId: parseInt(eventId || "0"),
+    eventId: Number(eventId),
   });
 
-  console.log(event, "event");
+  
 
   const [editableCertificate, setCertificate] = useState<TCertificate | null>(
     null
@@ -557,7 +557,7 @@ const page = () => {
 
       if (!hashRef.current) return;
 
-      console.log(editableCertificate);
+   //   console.log(editableCertificate);
       const newCertificate = await saveCertificate({
         payload: editableCertificate
           ? {
@@ -577,12 +577,12 @@ const page = () => {
               cerificateUrl: url,
             },
       });
-      console.log(newCertificate);
+    //  console.log(newCertificate);
 
       if (newCertificate) {
         setCertificate(newCertificate);
         router.push(
-          `event/content/${id}/certificate/create?certificateId=` + newCertificate.id
+          `event/content/${eventId}/certificate/create?certificateId=` + newCertificate.id
         );
       }
       setUploading(false);

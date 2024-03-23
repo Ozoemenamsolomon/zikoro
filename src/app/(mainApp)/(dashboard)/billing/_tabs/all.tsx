@@ -515,7 +515,7 @@ export default function All() {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 space-y-4 px-4 h-[500px] hide-scrollbar overflow-auto">
                 {columns
-                  .filter((column) => column?.id !== "select")
+                  .filter((column) => column?.accessorKey !== "select")
                   .map(({ header, accessorKey }) => (
                     <div
                       key={accessorKey}
@@ -531,7 +531,9 @@ export default function All() {
                         htmlFor="terms"
                         className="text-sm font-medium text-gray-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        {header}
+                       { <div dangerouslySetInnerHTML={{
+                          __html: header ? header : ""
+                        }}/>}
                       </label>
                     </div>
                   ))}
@@ -582,9 +584,8 @@ export default function All() {
         <div className="space-y-2 max-w-full">
           <DataTable<TEventTransaction>
             columns={columns.filter(
-              ({ accessorKey, id }) =>
-                shownColumns.includes(accessorKey) ||
-                (id && shownColumns.includes(id))
+              ({ accessorKey }) =>
+                shownColumns.includes(accessorKey)
             )}
             data={filteredData}
             rowSelection={rowSelection}
