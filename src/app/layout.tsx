@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
+import { TOASTER_PROPS } from "@/lib";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import Head from "next/head";
 
@@ -18,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <UserProvider>
-      <html lang="en" className="bg-basebody">
+      <html lang="en" className=" text-mobile sm:text-desktop">
         <Head>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -27,8 +29,11 @@ export default function RootLayout({
             rel="stylesheet"
           />
         </Head>
-        <body className={`${inter.className} h-screen relative`}>
-          {children}
+        <body className={`${inter.className}`}>
+       
+            <Toaster {...TOASTER_PROPS} />
+            {children}
+         
         </body>
       </html>
     </UserProvider>

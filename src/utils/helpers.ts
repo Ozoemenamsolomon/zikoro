@@ -1,6 +1,6 @@
 import { TAttendee } from "@/types/attendee";
 import { TAttendeeCertificate } from "@/types/certificates";
-import { TEvent } from "@/types/events";
+import { Event } from "@/types/events";
 import { TOrganization } from "@/types/organization";
 import * as crypto from "crypto";
 
@@ -198,7 +198,7 @@ export function base64ToFile(base64Data: string, fileName: string): File {
 type Context = {
   certificate: TAttendeeCertificate;
   attendee: TAttendee;
-  event: TEvent;
+  event: Event;
   organization: TOrganization;
 };
 
@@ -234,9 +234,9 @@ export function replaceSpecialText(input: string, context: Context): string {
       case "country":
         return context.event.eventCountry || "";
       case "start_date":
-        return context.event.startDateTime?.toLocaleDateString() || "";
+        return context.event.startDateTime || "";
       case "end_date":
-        return context.event.endDateTime?.toLocaleDateString() || "";
+        return context.event.endDateTime || "";
       case "organization_name":
         return context.organization.organizationName;
       case "organisation_logo":

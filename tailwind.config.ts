@@ -59,6 +59,8 @@ const config: Config = {
       },
       fontSize: {
         tiny: "10px",
+        mobile: "13px",
+        desktop: "15px",
       },
       borderRadius: {
         lg: "var(--radius)",
