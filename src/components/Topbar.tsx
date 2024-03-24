@@ -41,7 +41,6 @@ const links = [
     name: "Settings",
     href: "settings",
   },
-  
 ];
 
 const Topbar = () => {

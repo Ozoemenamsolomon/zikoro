@@ -1,13 +1,13 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -18,22 +18,25 @@ const config = {
       },
     },
     extend: {
-      gradientColorStops: theme => ({
-        'custom-gradient-start': '#001FCC',
-        'custom-gradient-end': '#9D00FF',
-        'custom-bg-gradient-start': '#001FCC19',
-        'custom-bg-gradient-end': '#9D00FF19',
+      gradientColorStops: (theme) => ({
+        "custom-gradient-start": "#001FCC",
+        "custom-gradient-end": "#9D00FF",
+        "custom-bg-gradient-start": "#001FCC19",
+        "custom-bg-gradient-end": "#9D00FF19",
       }),
       linearGradientDirections: {
         // Define your custom gradient direction
-        'top-right': 'to top right',
+        "top-right": "to top right",
       },
       linearGradientColors: (theme: (arg0: string) => any) => ({
-        'custom-gradient': [theme('colors.custom-gradient-start'), theme('colors.custom-gradient-end')],
+        "custom-gradient": [
+          theme("colors.custom-gradient-start"),
+          theme("colors.custom-gradient-end"),
+        ],
       }),
-     
-        colors: {
-        zikoroBlue: "hsl(var(--zblue))" ,
+
+      colors: {
+        zikoroBlue: "hsl(var(--zblue))",
         basebody: "#f3f3f3",
         basePrimary: "#001fcc",
         ticketColor: "#CFCFCF",
@@ -96,6 +99,6 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
+} satisfies Config;
 
-export default config
+export default config;
