@@ -225,7 +225,7 @@ export default function UpdateEvent({
                     onClick={(e) => {
                         e.preventDefault();
                       e.stopPropagation();
-                      window.open(`/event/${eventId}/content/preview`, '_blank')
+                      window.open(`/preview/${eventId}`, '_blank')
                    
                     }}
                     className="text-gray-50 bg-basePrimary gap-x-2"
