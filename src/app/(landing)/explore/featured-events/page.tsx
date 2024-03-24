@@ -26,7 +26,6 @@ export default function FeaturedEvents() {
   };
 
   const eventCategories = [
-    "Use cases",
     "Conferences",
     "Tradeshows & Exhibitions",
     "Seminars & Workshops",
@@ -69,7 +68,7 @@ export default function FeaturedEvents() {
           {/* header */}
           <div>
             {/* big screen */}
-            <div className="px-0 max-w-full lg:max-w-7xl mx-auto mt-24 lg:mt-48 hidden lg:block ">
+            <div className="px-0 max-w-full lg:max-w-7xl mx-auto mt-40 lg:mt-48 hidden lg:block ">
               <div className="mt-24 text-center">
                 <p className="text-[40px]  gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
                   Featured Events
@@ -453,7 +452,7 @@ export default function FeaturedEvents() {
             </div>
 
             {/* small screen */}
-            <div className="block lg:hidden px-3">
+            <div className="block lg:hidden px-3 mt-40 ">
               <div className="mt-24 ">
                 <p className=" text-center text-[24px] gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
                   Featured Events
@@ -463,8 +462,8 @@ export default function FeaturedEvents() {
                 </p>
 
                 <div className="">
-                  <div className="h-[48px] pt-[15px] flex justify-between gap-x-3 items-center">
-                    <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-[314px] h-full">
+                  <div className="h-[58px] pt-[15px] flex justify-between gap-x-3 items-center">
+                    <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-11/12 h-full">
                       <input
                         type="text"
                         value={searchBox}
@@ -843,6 +842,10 @@ export default function FeaturedEvents() {
                         </div>
                       )}
                     </div>
+
+                    <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] mx-3 px-5 rounded-md border border-white">
+                        See more
+                      </button>
                   </div>
           </div>
         </div>

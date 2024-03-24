@@ -13,19 +13,19 @@ export default function Navbar() {
   const links = [
     {
       name: "Features",
-      href: "/features",
+      href: "",
     },
     {
       name: "Use Cases",
-      href: "/use-cases",
+      href: "",
     },
     {
       name: "Resources",
-      href: "/resources",
+      href: "",
     },
     {
       name: "Pricing",
-      href: "/pricing",
+      href: "",
     },
     {
       name: "Contact Us",

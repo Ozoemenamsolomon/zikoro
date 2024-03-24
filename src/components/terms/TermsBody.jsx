@@ -319,66 +319,6 @@ export default function TermsBody() {
         </div>
 
         <div className="mt-[50px]">
-          <p className="text-xl lg:text-3xl font-bold ">4. USER REGISTRATION</p>
-          <p className="text-base lg:text-xl font-normal mt-6">
-            You may be required to register to use the Services. You agree to
-            keep your password confidential and will be responsible for all use
-            of your account and password. We reserve the right to remove,
-            reclaim, or change a username you select if we determine, in our
-            sole discretion, that such username is inappropriate, obscene, or
-            otherwise objectionable.
-          </p>
-        </div>
-
-        <div className="mt-[50px]">
-          <p className="text-xl lg:text-3xl font-bold ">4. USER REGISTRATION</p>
-          <p className="text-base lg:text-xl font-normal mt-6">
-            You may be required to register to use the Services. You agree to
-            keep your password confidential and will be responsible for all use
-            of your account and password. We reserve the right to remove,
-            reclaim, or change a username you select if we determine, in our
-            sole discretion, that such username is inappropriate, obscene, or
-            otherwise objectionable.
-          </p>
-        </div>
-
-        <div className="mt-[50px]">
-          <p className="text-xl lg:text-3xl font-bold ">4. USER REGISTRATION</p>
-          <p className="text-base lg:text-xl font-normal mt-6">
-            You may be required to register to use the Services. You agree to
-            keep your password confidential and will be responsible for all use
-            of your account and password. We reserve the right to remove,
-            reclaim, or change a username you select if we determine, in our
-            sole discretion, that such username is inappropriate, obscene, or
-            otherwise objectionable.
-          </p>
-        </div>
-
-        <div className="mt-[50px]">
-          <p className="text-xl lg:text-3xl font-bold ">4. USER REGISTRATION</p>
-          <p className="text-base lg:text-xl font-normal mt-6">
-            You may be required to register to use the Services. You agree to
-            keep your password confidential and will be responsible for all use
-            of your account and password. We reserve the right to remove,
-            reclaim, or change a username you select if we determine, in our
-            sole discretion, that such username is inappropriate, obscene, or
-            otherwise objectionable.
-          </p>
-        </div>
-
-        <div className="mt-[50px]">
-          <p className="text-xl lg:text-3xl font-bold ">4. USER REGISTRATION</p>
-          <p className="text-base lg:text-xl font-normal mt-6">
-            You may be required to register to use the Services. You agree to
-            keep your password confidential and will be responsible for all use
-            of your account and password. We reserve the right to remove,
-            reclaim, or change a username you select if we determine, in our
-            sole discretion, that such username is inappropriate, obscene, or
-            otherwise objectionable.
-          </p>
-        </div>
-
-        <div className="mt-[50px]">
           <p className="text-xl lg:text-3xl font-bold ">
             9. CONTRIBUTION LICENCE
           </p>
@@ -435,7 +375,7 @@ export default function TermsBody() {
 
         <div className="mt-[50px]">
           <p className="text-xl lg:text-3xl font-bold ">
-            10. USER REGISTRATION
+            10. GUIDELINES AND REVIEW
           </p>
           <p className="text-base lg:text-xl font-normal mt-6">
             We may provide you areas on the Services to leave reviews or
@@ -645,7 +585,7 @@ export default function TermsBody() {
 
         <div className="mt-[50px]">
           <p className="text-xl lg:text-3xl font-bold ">
-            17. USER REGISTRATION
+            17. TERM AND TERMINATION
           </p>
           <p className="text-base lg:text-xl font-normal mt-6">
             These Legal Terms shall remain in full force and effect while you

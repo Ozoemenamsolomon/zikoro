@@ -72,7 +72,7 @@ export default function Section3() {
                             <p className=" text-xl lg:text-2xl font-bold ">Facilitate connections that go beyond your event. </p>
 
                             <p className="pt-6  text-base font-light">Foster meaningful connections between event speakers and attendees well before the event begins. Leverage our platform to initiate engaging conversations and gain valuable insights through interactive polls, social walls, photos and discussion channels.</p>
-                            <button onClick={() => router.push('/api/auth/login')} className="text-white font-montserrat text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 px-5 rounded-lg mt-12 font-bold">Get Started for Free</button>
+                            <button onClick={() => router.push('/home')} className="text-white font-montserrat text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 px-5 rounded-lg mt-12 font-bold">Get Started for Free</button>
                         </div>
 
                     </div>

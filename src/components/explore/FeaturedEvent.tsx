@@ -22,7 +22,7 @@ export default function FeaturedEvent() {
       </div>
 
       {/* body */}
-      <div className="pl-5 pr-5 border-[1px] border-gray-200 rounded-md">
+      <div className="pl-5 pr-5 border-[1px] border-gray-200 ">
         <p className="mt-5 font-semibold "> Product Con </p>
 
         <div className="mt-6 flex gap-x-[10px] ">

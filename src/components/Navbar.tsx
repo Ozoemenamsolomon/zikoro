@@ -13,19 +13,19 @@ export default function Navbar() {
   const links = [
     {
       name: "Features",
-      href: "/features",
+      href: "",
     },
     {
       name: "Use Cases",
-      href: "/use-cases",
+      href: "",
     },
     {
       name: "Resources",
-      href: "/resources",
+      href: "",
     },
     {
       name: "Pricing",
-      href: "/pricing",
+      href: "",
     },
     {
       name: "Contact Us",
@@ -104,14 +104,14 @@ export default function Navbar() {
 
               <div className=" gap-4 hidden md:flex">
                 <button
-                  onClick={() => router.push("/api/auth/login")}
+                  onClick={() => router.push("/home")}
                   className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
                 >
                   Register
                 </button>
 
                 <button
-                  onClick={() => router.push("/api/auth/login")}
+                  onClick={() => router.push("/home")}
                   className="text-base text-blue-700 bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md "
                 >
                   Login
@@ -151,14 +151,14 @@ export default function Navbar() {
 
             <div className=" gap-5 flex justify-center items-center md:hidden pt-12">
               <button
-                onClick={() => router.push("/api/auth/login")}
+                onClick={() => router.push("/home")}
                 className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white"
               >
                 Register
               </button>
 
               <button
-                onClick={() => router.push("/api/auth/login")}
+                onClick={() => router.push("/home")}
                 className="text-base text-white bg-transparent border border-white py-[10px] px-5 rounded-md "
               >
                 Login
