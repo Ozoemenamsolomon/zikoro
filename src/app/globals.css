@@ -30,6 +30,8 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
+    --zblue: 231 100% 40%;
+
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
@@ -65,10 +67,9 @@
     --ring: 212.7 26.8% 83.9%;
   }
 
-
   @font-face {
     font-family: "DancingScript";
-    src: url('/fonts/DancingScript.ttf');
+    src: url("/fonts/DancingScript.ttf");
     font-weight: normal;
     font-style: normal;
   }
@@ -209,7 +210,6 @@
     font-weight: 900;
     font-style: italic;
   }
-
 }
 
 #search-input {
@@ -282,7 +282,7 @@
   height: 100%;
 }
 
-.quill>.ql-container>.ql-editor.ql-blank::before {
+.quill > .ql-container > .ql-editor.ql-blank::before {
   color: #d4d4d4;
 }
 

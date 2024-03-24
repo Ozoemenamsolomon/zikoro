@@ -54,7 +54,7 @@ const Text = ({
   textTransform,
   pageX,
   pageY,
-  isNotEditable=false,
+  isNotEditable = false,
 }: Textprops) => {
   const {
     connectors: { connect, drag },
