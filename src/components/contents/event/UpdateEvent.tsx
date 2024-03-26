@@ -32,7 +32,7 @@ import {
   ReactSelect,
 } from "@/components";
 import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
-import toast from "react-hot-toast";
+import { toast } from "@/components/ui/use-toast";
 import { TIME_ZONES } from "@/utils";
 
 interface ImageFile {
@@ -122,9 +122,11 @@ export default function UpdateEvent({
           Number(ticketQuantity) !== Number(values?.expectedParticipants)
       );
       if (isNotEqualPrice) {
-        toast.error(
-          "Number of expected participants must equal the ticket quantity"
-        );
+        toast({
+          variant: "destructive",
+          description:
+            "Number of expected participants must equal the ticket quantity",
+        });
         return;
       }
     }
@@ -314,7 +316,10 @@ export default function UpdateEvent({
                     render={({ field }) => (
                       <ReactSelect
                         placeHolder="Enter event timezone"
-                        defaultValue={{label:data?.eventTimeZone, value: data?.eventTimeZone}}
+                        defaultValue={{
+                          label: data?.eventTimeZone,
+                          value: data?.eventTimeZone,
+                        }}
                         {...form.register("eventTimeZone")}
                         options={formatZone}
                         label="Event Timezone"

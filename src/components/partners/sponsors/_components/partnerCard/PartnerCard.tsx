@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { TPartner } from "@/types";
+import { TExPartner } from "@/types";
 import { useMemo } from "react";
 
 import { Location } from "@styled-icons/fluentui-system-regular/Location";
 
-export function PartnerCard({ sponsor }: { sponsor: TPartner }) {
+export function PartnerCard({ sponsor }: { sponsor: TExPartner }) {
   const image = useMemo(() => {
     const regex = /^[https://]/;
     if (regex.test(sponsor.companyLogo)) {
@@ -59,10 +59,10 @@ export function PartnerCard({ sponsor }: { sponsor: TPartner }) {
             <Location size={16} className="text-[#717171]" />
             <p>{`${sponsor.city}, ${sponsor.country}`}</p>
           </div>
-          {sponsor.industry?.name !== undefined && (
+          {sponsor.industry !== undefined && (
             <div className="flex items-center gap-x-2">
               <IndustryIcon />
-              <p>{sponsor.industry?.name}</p>
+              <p>{sponsor.industry}</p>
             </div>
           )}
         </div>
@@ -73,7 +73,7 @@ export function PartnerCard({ sponsor }: { sponsor: TPartner }) {
               Hiring
             </button>
           )}
-          {sponsor?.offers?.length > 0 && (
+          {sponsor?.offers && (
             <button className="bg-[#F44444] bg-opacity-10 text-xs text-[#F44444] px-2 py-2 rounded-md">
               Promo
             </button>

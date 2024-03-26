@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -17,8 +17,6 @@ import { getRequest, postRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
 
 const supabase = createClientComponentClient();
-
-
 
 export const useGetEvents = (): UseGetResult<
   Event[],
@@ -100,7 +98,6 @@ export const useGetEvent = ({
   };
 };
 
-
 export function useCreateOrganisation() {
   const userData = getCookie("user");
   const [loading, setLoading] = useState(false);
@@ -111,18 +108,16 @@ export function useCreateOrganisation() {
     try {
       const { error, status } = await supabase
         .from("organization")
-        .upsert([{ ...values, 
-          organizationOwner: userData?.userEmail
-         }]);
+        .upsert([{ ...values, organizationOwner: userData?.userEmail }]);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         return;
       }
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        toast.success("Organisation created successfully");
+        toast({ description: "Organisation created successfully" });
       }
     } catch (error) {}
   }
@@ -134,7 +129,7 @@ export function useCreateOrganisation() {
 }
 
 export function useCreateEvent() {
-  const userData = getCookie("user")
+  const userData = getCookie("user");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -145,14 +140,14 @@ export function useCreateEvent() {
       const { data, error, status } = await supabase.from("events").upsert([
         {
           ...values,
-        email: userData?.userEmail,
-         createdBy: userData?.userEmail,
+          email: userData?.userEmail,
+          createdBy: userData?.userEmail,
           published: false,
         },
       ]);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
@@ -161,7 +156,7 @@ export function useCreateEvent() {
         setLoading(false);
 
         router.push(` /events/content/${values.eventAlias}/event`);
-        toast.success("Event created successfully");
+        toast({ description: "Event created successfully" });
       }
     } catch (error) {}
   }
@@ -189,7 +184,7 @@ export function useUpdateEvent() {
         .eq("id", eventId);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
@@ -197,7 +192,7 @@ export function useUpdateEvent() {
       if (status === 204 || status === 200) {
         setLoading(false);
 
-        toast.success("Event updated successfully");
+        toast({ description: "Event updated successfully" });
       }
     } catch (error) {}
   }
@@ -216,7 +211,7 @@ export function useUpdateEvent() {
         .eq("id", orgId);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
@@ -224,7 +219,7 @@ export function useUpdateEvent() {
       if (status === 204 || status === 200) {
         setLoading(false);
 
-        toast.success("Organization updated successfully");
+        toast({ description: "Organization updated successfully" });
       }
     } catch (error) {}
   }
@@ -248,7 +243,7 @@ export function useGetQueries(tableName: string) {
     setLoading(true);
     const { data, error } = await supabase.from(tableName).select("*");
     if (error) {
-      toast.error(error.message);
+      toast({ variant: "destructive", description: error.message });
       setLoading(false);
       return;
     }
@@ -282,7 +277,7 @@ export function useFetchSingleOrganization(id: string) {
         .single();
 
       if (fetchError) {
-        toast.error(fetchError.message);
+        toast({ variant: "destructive", description: fetchError.message });
         setLoading(false);
         return null;
       }
@@ -319,7 +314,7 @@ export function useFetchOrganizationEvents(id?: string | string[]) {
         .eq("organisationId", id);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return null;
       }
@@ -350,7 +345,7 @@ export function useDuplicateEvent() {
         .single();
 
       if (fetchError) {
-        toast.error(fetchError.message);
+        toast({ variant: "destructive", description: fetchError.message });
         setLoading(false);
         return null;
       }
@@ -370,13 +365,13 @@ export function useDuplicateEvent() {
         .single();
 
       if (insertError) {
-        toast.error(insertError.message);
+        toast({ variant: "destructive", description: insertError.message });
         setLoading(false);
         return null;
       }
 
       if (status === 201 || status === 200) {
-        toast.success("Event successfully duplicated");
+        toast({ description: "Event successfully duplicated" });
       }
 
       //return insertedEvent;
@@ -404,12 +399,12 @@ export function useDeleteEvent() {
         .eq("id", id);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         return false;
       }
 
       if (status === 204 || status === 200) {
-        toast.success("Event deleted successfully");
+        toast({ description: "Event deleted successfully" });
       }
     } catch (error) {
       setLoading(false);
@@ -453,7 +448,7 @@ export function useGetPublishedEvents(
         .range(startIndex, endIndex);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         setLoadingNextPage(false);
 
@@ -505,7 +500,7 @@ export function useFetchSingleEvent(id: string) {
         .single();
 
       if (fetchError) {
-        toast.error(fetchError.message);
+        toast({ variant: "destructive", description: fetchError.message });
         setLoading(false);
         return null;
       }
@@ -526,7 +521,7 @@ export function useFetchSingleEvent(id: string) {
 }
 
 export function useBookingEvent() {
-  const userData = getCookie("user")
+  const userData = getCookie("user");
   const [loading, setLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
 
@@ -546,7 +541,7 @@ export function useBookingEvent() {
           attendeeType: [attendants],
           registrationDate: new Date(),
           eventRegistrationRef: eventTransactionRef,
-        userEmail: userData?.email,
+          userEmail: userData?.email,
         };
       });
 
@@ -559,9 +554,9 @@ export function useBookingEvent() {
           error.message ===
           `duplicate key value violates unique constraint "attendees_email_key"`
         ) {
-          // toast.error("User has already registered for this event")
+          // toast({variant:"destructive",description:"User has already registered for this event")
         } else {
-          toast.error(error.message);
+          toast({ variant: "destructive", description: error.message });
         }
 
         setIsRegistered(true);
@@ -572,9 +567,10 @@ export function useBookingEvent() {
         setLoading(false);
         setIsRegistered(false);
         //  allowPayment(true);
-        toast.success(
-          "Attendees Information has been Captured. Proceed to Payment..."
-        );
+        toast({
+          description:
+            "Attendees Information has been Captured. Proceed to Payment...",
+        });
       }
     } catch (error) {
       setLoading(false);
@@ -590,7 +586,7 @@ export function useBookingEvent() {
 
 export function useTransactionDetail() {
   const [loading, setLoading] = useState(false);
-  const userData = getCookie("user")
+  const userData = getCookie("user");
   async function sendTransactionDetail(
     allowPayment: (bool: boolean) => void,
     values: any
@@ -599,7 +595,7 @@ export function useTransactionDetail() {
     try {
       const payload = {
         ...values,
-       userEmail: userData?.email,
+        userEmail: userData?.email,
         userId: userData?.id,
       };
 
@@ -610,14 +606,14 @@ export function useTransactionDetail() {
       } = await supabase.from("eventTransactions").upsert([{ ...payload }]);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         return;
       }
 
       if (status === 201 || status === 200) {
         setLoading(false);
         allowPayment(true);
-        // toast.success("Al");
+        // toast({description:"Al");
         //  console.log({successData})
       }
     } catch (error) {
@@ -647,21 +643,23 @@ export function useUpdateTransactionDetail() {
       });
       /**
        if (status !== 204) {
-       toast.error(error.message);
+       toast({variant:"destructive",description: error.message});
        return;
       }
     */
       if (status === 204 || status === 200) {
         setLoading(false);
         toggleSuccessModal(true);
-        toast.success("Transaction Successful");
+        toast({ description: "Transaction Successful" });
       }
     } catch (error: any) {
       /// console.log(error)
-      toast.error(
-        error?.response?.data?.error ||
-          "An error occurred while making the request."
-      );
+      toast({
+        variant: "destructive",
+        description:
+          error?.response?.data?.error ||
+          "An error occurred while making the request.",
+      });
       setLoading(false);
     }
   }
@@ -696,7 +694,10 @@ export function useRedeemDiscountCode() {
       // check if code exist
       let isDiscountCodeExist = data?.map((v) => v.discountCode).includes(code);
       if (!isDiscountCodeExist) {
-        toast.error("Discount code does not exist");
+        toast({
+          variant: "destructive",
+          description: "Discount code does not exist",
+        });
         setLoading(false);
         return;
       }
@@ -704,12 +705,15 @@ export function useRedeemDiscountCode() {
       let discount = data?.find((v) => v.discountCode === code);
       let isDiscountCodeValid = discount?.status;
       if (!isDiscountCodeValid) {
-        toast.error("Discount code has expired");
+        toast({
+          variant: "destructive",
+          description: "Discount code has expired",
+        });
         setLoading(false);
         return;
       }
 
-      toast.success("Discount code has been applied successfully");
+      toast({ description: "Discount code has been applied successfully" });
       // check the minQty
       if (isDiscountCodeValid) setMinAttendees(discount?.minQty);
 
@@ -775,14 +779,14 @@ export function useEventFeedBack() {
         .upsert([{ ...values }]);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        toast.success("Thanks... Your feedback has been recieved");
+        toast({ description: "Thanks... Your feedback has been recieved" });
       }
     } catch (error) {}
   }
@@ -795,7 +799,7 @@ export function useEventFeedBack() {
 
 export function useDiscount() {
   const [loading, setLoading] = useState(false);
-  const [updating, setUpdating] = useState(false)
+  const [updating, setUpdating] = useState(false);
 
   async function createDiscount(values: any) {
     try {
@@ -807,52 +811,46 @@ export function useDiscount() {
       ]);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
       if (status === 201 || status === 200) {
         setLoading(false);
-        toast.success("Discount created successfully");
+        toast({ description: "Discount created successfully" });
       }
     } catch (error) {}
   }
 
   async function updateDiscount(value: boolean, orgId: string) {
-      try {
-        const { data, error, status } = await supabase
+    try {
+      const { data, error, status } = await supabase
         .from("discount")
         .update({ status: value })
-        .eq("id",orgId);
+        .eq("id", orgId);
 
-        if (error) {
-          toast.error(error.message);
-          setUpdating(false);
-          return;
-        }
-        if (status === 204 || status === 200) {
-          setUpdating(false);
-          toast.success("Discount updated successfully");
-        }
+      if (error) {
+        toast({ variant: "destructive", description: error.message });
+        setUpdating(false);
+        return;
       }
-      catch(error) {
-
+      if (status === 204 || status === 200) {
+        setUpdating(false);
+        toast({ description: "Discount updated successfully" });
       }
+    } catch (error) {}
   }
-
 
   return {
     loading,
     updating,
     updateDiscount,
     createDiscount,
-
   };
 }
 
-
 export function useCreateReward() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   async function createReward(values: any) {
     setLoading(true);
 
@@ -862,13 +860,13 @@ export function useCreateReward() {
         .upsert([{ ...values }]);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         return;
       }
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        toast.success("Reward created successfully");
+        toast({ description: "Reward created successfully" });
       }
     } catch (error) {}
   }

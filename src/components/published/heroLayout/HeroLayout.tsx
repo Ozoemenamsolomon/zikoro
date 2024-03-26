@@ -83,7 +83,7 @@ export function HeroLayout({
     [publishedEvents]
   );
 
-  console.log({locationData, titleData})
+ 
 
   return (
     <div className="w-full h-full relative bg-gray-50">

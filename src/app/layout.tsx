@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "react-hot-toast";
-import { TOASTER_PROPS } from "@/lib";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import Head from "next/head";
 
@@ -29,12 +27,7 @@ export default function RootLayout({
             rel="stylesheet"
           />
         </Head>
-        <body className={`${inter.className}`}>
-       
-            <Toaster {...TOASTER_PROPS} />
-            {children}
-         
-        </body>
+        <body className={`${inter.className}`}>{children}</body>
       </html>
     </UserProvider>
   );

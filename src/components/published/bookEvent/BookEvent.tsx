@@ -24,7 +24,7 @@ import {
   useTransactionDetail,
   useRedeemDiscountCode,
 } from "@/hooks";
-import toast from "react-hot-toast";
+import { toast } from "@/components/ui/use-toast";
 import { Event } from "@/types";
 import { CheckCircleFill } from "styled-icons/bootstrap";
 import { usePathname } from "next/navigation";
@@ -174,9 +174,10 @@ export function BookEvent({
 
     // checking if the attendees number satisfy the minimum attendees required to use the event discount code
     if (minAttendees !== undefined && minAttendees !== fields?.length) {
-      toast.error(
-        `Discount code is valid for minimum of ${minAttendees} attendees`
-      );
+      toast({
+        variant: "destructive",
+        description: `Discount code is valid for minimum of ${minAttendees} attendees`,
+      });
       return;
     }
     setAttendees(values.attendeeApplication);

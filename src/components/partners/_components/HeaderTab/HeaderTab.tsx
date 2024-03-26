@@ -28,7 +28,7 @@ export function HeaderTab({
         <div className="flex items-center gap-x-3 sm:gap-x-8 text-sm">
           <Button
             onClick={() =>
-              router.push(`/events/partners/${eventId}?p=sponsors`)
+              router.push(`/event/${eventId}/partners?p=sponsors`)
             }
             className={cn(
               "bg-transparent",

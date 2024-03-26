@@ -3,7 +3,7 @@
 import { loginSchema, registrationSchema } from "@/schemas";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { toast } from "@/components/ui/use-toast";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { getUser } from "../../actions/users";
@@ -57,7 +57,7 @@ export function useOnboarding() {
       ]);
 
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive",description:error.message});
         setLoading(false);
         return;
       }
@@ -65,7 +65,7 @@ export function useOnboarding() {
       if (status === 201 || status === 200) {
         setLoading(false);
         router.push("/auth/login");
-        toast.success("Profile Updated successfully");
+        toast({description:"Profile Updated successfully"});
       }
     } catch (error) {}
   }
@@ -88,14 +88,14 @@ export function useLogin() {
       });
 
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive",description:error.message});
         setLoading(false);
         return;
       }
 
       if (data) {
       //  saveCookie("user", data);
-        toast.success("Sign In Successful");
+        toast({description:"Sign In Successful"});
         router.push("/");
       }
     } catch (error) {

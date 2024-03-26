@@ -7,7 +7,7 @@ import { CirclePicker } from "react-color";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import React, { useState } from "react";
 import { CreatedPreview } from "@/components/composables";
-import toast from "react-hot-toast";
+import { toast } from "@/components/ui/use-toast";
 import {
   useFetchCreatedEventIndustries,
   useCreateEventIndustry,
@@ -35,7 +35,7 @@ export function AddIndustry({
 
   async function onSubmit(value: FormValue) {
     if (industryColor === "" || value.name === undefined) {
-      toast.error("Pls, Select a Color or Name");
+      toast({variant:"destructive", description:"Pls, Select a Color or Name"});
       return;
     }
 

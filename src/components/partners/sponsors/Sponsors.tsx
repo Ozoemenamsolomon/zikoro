@@ -1,5 +1,5 @@
 import { PartnerCard } from "./_components";
-import { TPartner } from "@/types";
+import { TExPartner } from "@/types";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import Image from "next/image"
 import {Button} from "@/components"
@@ -9,7 +9,7 @@ export function Sponsors({
   sponsors,
   loading
 }: {
-  sponsors: TPartner[];
+  sponsors: TExPartner[];
   loading: boolean;
 }) {
 

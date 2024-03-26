@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import * as z from "zod";
 import { Event, TPartner, PartnerJobType } from "@/types";
 import { partnerSchema } from "@/schemas";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
+import { toast } from "@/components/ui/use-toast";
 
 const supabase = createClientComponentClient();
 
@@ -32,14 +32,14 @@ export function useAddPartners() {
         .upsert([{ ...payload }]);
 
       if (error) {
-        toast.error(error.message);
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        toast.success("Partners created successfully");
+        toast({description:"Partners created successfully"});
       }
     } catch (error) {
       return;
@@ -110,7 +110,7 @@ export function useCreateEventIndustry() {
           partnerIndustry: [...eventData?.partnerIndustry],
         };
         setLoading(false);
-        toast.error("Industry already exist");
+        toast({variant:"destructive",description: "Industry already exist"});
 
         return;
       }
@@ -129,14 +129,14 @@ export function useCreateEventIndustry() {
         .eq("id", eventId);
 
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive",description:error.message});
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Industry created successfully");
+        toast({description:"Industry created successfully"});
         setLoading(false);
       }
     } catch (error) {
@@ -166,7 +166,7 @@ export function useFetchCreatedEventIndustries(eventId: string) {
         .single();
 
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive", description:error.message});
 
         return null;
       }
@@ -200,7 +200,7 @@ export function useFetchSinglePartner(partnerId: string) {
         .single();
 
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive",description: error.message});
         return null;
       }
 
@@ -254,21 +254,21 @@ export function useAddPartnerBanner() {
         .eq("id", partnerId);
 
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive", description: error.message});
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Banners added successfully");
+        toast({description:"Banners added successfully"});
         setLoading(false);
       }
     } catch (error) {
       return;
     }
   }
-
+// variant:"destructive"
   return {
     addPartnerBanner,
     loading,
@@ -297,14 +297,14 @@ export function useAddPartnerJob() {
         .update([jobs])
         .eq("id", partnerId);
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive",description: error.message});
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Jobs added successfully");
+        toast({description:"Jobs added successfully"});
         setLoading(false);
       }
     } catch (error) {
@@ -349,14 +349,14 @@ export function useAddPartnerPromo() {
         .update([offers])
         .eq("id", partnerId);
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive",description: error.message});
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Offer added successfully");
+        toast({description:"Offer added successfully"});
         setLoading(false);
       }
     } catch (error) {
@@ -404,14 +404,14 @@ export function useCreateEventExhibitionHall() {
         .eq("id", eventId);
 
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive",description: error.message});
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Exhibition Hall created successfully");
+        toast({description:"Exhibition Hall created successfully"});
         setLoading(false);
       }
     } catch (error) {
@@ -452,7 +452,7 @@ export function useUpdateBooth() {
 
       if (status === 204 || status === 200) {
         //
-        if (value !== null) toast.success("Booth Number Updated");
+        if (value !== null) toast({description:"Booth Number Updated"});
       }
     } catch (error) {}
   }
@@ -481,7 +481,7 @@ export function useUpdateHall() {
 
       if (status === 204 || status === 200) {
         //
-        if (value !== null) toast.success("Exhibition Hall Updated");
+        if (value !== null) toast({description:"Exhibition Hall Updated"});
       }
     } catch (error) {}
   }
@@ -510,7 +510,7 @@ export function useUpdatePartnerType() {
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Partner Type Updated");
+        toast({description:"Partner Type Updated"});
       }
     } catch (error) {}
   }
@@ -539,7 +539,7 @@ export function useUpdateSponsor() {
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Sponsor Category Updated");
+        toast({description:"Sponsor Category Updated"});
       }
     } catch (error) {}
   }
@@ -603,12 +603,12 @@ export function useDeletePartner() {
 
     if (error) {
       setLoading(false);
-      toast.error(error.message);
+      toast({variant:"destructive",description: error.message});
       return;
     }
 
     if (status === 204) {
-      toast.success("Partner deleted successfully");
+      toast({description:"Partner deleted successfully"});
       setLoading(false);
       return;
     }
@@ -620,12 +620,12 @@ export function useDeletePartner() {
 
     if (error) {
       setLoading(false);
-      toast.error(error.message);
+      toast({variant:"destructive",description: error.message});
       return;
     }
 
     if (status === 204) {
-      toast.success("Partners deleted successfully");
+      toast({description:"Partners deleted successfully"});
       setLoading(false);
       return;
     }
@@ -663,14 +663,14 @@ export function useDeleteEventExhibitionHall(eventId: string) {
         .eq("id", eventId);
 
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive",description: error.message});
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Exhibition Hall deleted successfully");
+        toast({description:"Exhibition Hall deleted successfully"});
         setLoading(false);
       }
     } catch (error) {
@@ -695,14 +695,14 @@ export function useDeleteEventExhibitionHall(eventId: string) {
         .eq("id", eventId);
 
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive",description: error.message});
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Exhibition Hall deleted successfully");
+        toast({description:"Exhibition Hall deleted successfully"});
         setLoading(false);
       }
     } catch (error) {}
@@ -743,7 +743,7 @@ export function useAddSponsorsType() {
           .includes(payload.type);
 
         if (isLevelExist && levelData) {
-          toast.error("Sponsor Level already exist");
+          toast({variant:"destructive",description:"Sponsor Level already exist"});
 
           sponsorCategory = [...levelData];
 
@@ -765,14 +765,14 @@ export function useAddSponsorsType() {
         .eq("id", eventId);
 
       if (error) {
-        toast.error(error.message);
+        toast({variant:"destructive",description: error.message});
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast.success("Sponsor Type created successfully");
+        toast({description:"Sponsor Type created successfully"});
         // close();
         setLoading(false);
       }

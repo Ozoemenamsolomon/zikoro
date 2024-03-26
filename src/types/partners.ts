@@ -40,6 +40,32 @@ export enum PartnersEnum {
     whatsApp: string;
   
   }
+
+  export interface TExPartner {
+    banners: PartnerBannerType[];
+    boothNumber: string;
+    boothStaff: JSON;
+    city: string;
+    companyLogo: string;
+    companyName: string;
+    country: string;
+    stampIt: boolean;
+    created_at: string;
+    description: string;
+    email: string;
+    eventId: number;
+    eventName: string;
+    exhibitionHall: string;
+    id: number;
+    industry: string;
+    jobs: PartnerJobType[];
+    media: string;
+    partnerType: string;
+    phoneNumber: string;
+    offers: boolean;
+    website: string;
+    whatsApp: string;
+  }
   
   export interface PartnerJobType {
     jobTitle: string;
