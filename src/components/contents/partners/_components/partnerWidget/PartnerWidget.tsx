@@ -75,11 +75,11 @@ export function PartnerWidget({
       // get their booth numbers
       const boothNumbers = partnersWithHall.map((item) => {
         if (item?.boothNumber && Array.isArray(item?.boothNumber)) {
-          console.log(item?.boothNumber)
-          return item?.boothNumber[0]?.split(",")
+          console.log(item?.boothNumber);
+          return item?.boothNumber[0]?.split(",");
         }
       });
-      console.log({ddd:boothNumbers})
+      //  console.log({ddd:boothNumbers})
 
       const filterBoothNumber = boothNumbers
         .filter((v) => v !== undefined)
@@ -92,15 +92,13 @@ export function PartnerWidget({
 
       setBoothList(booths);
     }
-  }, [item?.exhibitionHall]);
-
+  }, [item?.exhibitionHall, partners]);
 
   async function handleSelectedHall(value: string) {
     // setSelectedHall(value);
+
     await updateHall(item?.id, value);
     refetch(); // fetch partners
-
-   
   }
 
   // check if any of partner hall has been deleted
@@ -126,25 +124,21 @@ export function PartnerWidget({
     })();
   }, [event]);
 
-  async function handleSelectedBooth(value: string) {
+  async function handleSelectedBooth(value: string[]) {
  
     await updateBooth(item?.id, value);
     refetch(); // fetch partners
-  
   }
 
   async function handleSelectedPartner(value: string) {
-
     await updatePartnerType(item?.id, value);
     refetch(); // fetch partners
-   
   }
 
   async function handleSelectedLevel(value: string) {
-   // setSelectedLevel(value);
+    // setSelectedLevel(value);
     await updateSponsorCategory(item?.id, value);
     refetch(); // fetch partners
-  
   }
 
   return (
@@ -179,8 +173,6 @@ export function PartnerWidget({
         </button>
       </td>
       <td>
-        
-
         <DropDownSelect
           handleChange={handleSelectedPartner}
           data={["Exhibitor", "Sponsor"]}
@@ -197,10 +189,7 @@ export function PartnerWidget({
 
       <td>
         {item?.partnerType.toLowerCase() === "sponsor" ? (
-          <DropDownSelect
-            handleChange={handleSelectedLevel}
-            data={levelList}
-          >
+          <DropDownSelect handleChange={handleSelectedLevel} data={levelList}>
             <button className="flex relative items-center gap-x-1">
               <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
                 {item?.sponsorCategory || " Select Level"}
@@ -214,21 +203,13 @@ export function PartnerWidget({
       </td>
 
       <td>
-        <DropDownSelect
-          handleChange={handleSelectedHall}
-          
-          data={hallList}
-        >
-          <button
-          
-            className="flex relative items-center gap-x-1"
-          >
+        <DropDownSelect handleChange={handleSelectedHall} data={hallList}>
+          <button className="flex relative items-center gap-x-1">
             <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
               {item?.exhibitionHall || " Select Hall"}
             </p>
             <ArrowIosDownward size={20} />
           </button>
-        
         </DropDownSelect>
       </td>
       <td>
@@ -238,10 +219,7 @@ export function PartnerWidget({
           data={boothList}
           className={item?.exhibitionHall ? "block" : "hidden"}
         >
-          <button
-           
-            className="flex items-center relative gap-x-1"
-          >
+          <button className="flex items-center relative gap-x-1">
             <p className="">{item?.boothNumber?.toString() || "0"}</p>
             <ArrowIosDownward size={20} />
           </button>

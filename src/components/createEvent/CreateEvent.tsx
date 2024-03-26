@@ -26,10 +26,6 @@ export default function CreateEvent({
 }: {
   organizationId: string;
 }) {
-  const [isStartDateOpen, setIsStartDateOpen] = useState<boolean>(false);
-  const [isEndDateOpen, setIsEndDateOpen] = useState<boolean>(false);
-  const [startDateValue, setStartDateValue] = useState<string | null>(null);
-  const [endDateValue, setEndDateValue] = useState<string | null>(null);
   const { createEvent, loading } = useCreateEvent();
   const { user } = useUser();
 
@@ -41,8 +37,6 @@ export default function CreateEvent({
     const eventAlias = uuidv4().replace(/-/g, "").substring(0, 20);
     await createEvent({
       ...values,
-      startDateTime: startDateValue,
-      endDateTime: endDateValue,
       eventAlias,
       organisationId: organizationId,
     });
@@ -87,50 +81,11 @@ export default function CreateEvent({
                 name="startDateTime"
                 render={() => (
                   <InputOffsetLabel label="Start date and time">
-                    <DateTimePicker
-                      open={isStartDateOpen}
-                      onOpen={() => setIsStartDateOpen(!isStartDateOpen)}
-                      onClose={() => setIsStartDateOpen(!isStartDateOpen)}
-                      value={startDateValue}
-                      onChange={(newValue) => {
-                        setStartDateValue(newValue);
-                      }}
-                      slotProps={{
-                        textField: {
-                          // required: true,
-                          placeholder: "Pick date and time",
-                          InputProps: {
-                            className: "flex flex-row-reverse text-sm",
-                            endAdornment: (
-                              <img
-                                src={"/date-time.svg"}
-                                alt="calendar-icon"
-                                width={25}
-                                height={25}
-                                className="cursor-pointer"
-                                onClick={() =>
-                                  setIsStartDateOpen(!isStartDateOpen)
-                                }
-                              />
-                            ),
-                          },
-                        },
-                      }}
-                      sx={{
-                        width: "100%",
-
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": {
-                            borderColor: "#f3f3f3",
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "#f3f3f3",
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "black",
-                          },
-                        },
-                      }}
+                    <Input
+                      placeholder="Enter event title"
+                      type="datetime-local"
+                      {...form.register("startDateTime")}
+                      className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
                     />
                   </InputOffsetLabel>
                 )}
@@ -140,48 +95,11 @@ export default function CreateEvent({
                 name="endDateTime"
                 render={({ field }) => (
                   <InputOffsetLabel label="End date and time">
-                    <DateTimePicker
-                      open={isEndDateOpen}
-                      onOpen={() => setIsEndDateOpen(!isEndDateOpen)}
-                      onClose={() => setIsEndDateOpen(!isEndDateOpen)}
-                      value={endDateValue}
-                      onChange={(newValue) => {
-                        setEndDateValue(newValue);
-                      }}
-                      slotProps={{
-                        textField: {
-                          // required: true,
-                          placeholder: "Pick date and time",
-                          InputProps: {
-                            className: "flex flex-row-reverse",
-                            endAdornment: (
-                              <img
-                                src={"/date-time.svg"}
-                                alt="calendar-icon"
-                                width={25}
-                                height={25}
-                                className="cursor-pointer"
-                                onClick={() => setIsEndDateOpen(!isEndDateOpen)}
-                              />
-                            ),
-                          },
-                        },
-                      }}
-                      sx={{
-                        width: "100%",
-
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": {
-                            borderColor: "#f3f3f3",
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "#f3f3f3",
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "black",
-                          },
-                        },
-                      }}
+                    <Input
+                      placeholder="Enter event title"
+                      type="datetime-local"
+                      {...form.register("endDateTime")}
+                      className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
                     />
                   </InputOffsetLabel>
                 )}

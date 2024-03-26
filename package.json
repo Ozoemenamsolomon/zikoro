@@ -88,6 +88,7 @@
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
     "use-undo": "^1.1.1",
+    "uuid": "^9.0.1",
     "xlsx": "^0.18.5",
     "zod": "^3.22.4"
   },

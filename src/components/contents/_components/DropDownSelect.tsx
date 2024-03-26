@@ -10,7 +10,7 @@ export function DropDownSelect({
   isMultiple,
 }: {
   data: string[] | number[] | undefined;
-  handleChange: (value: string) => Promise<void>;
+  handleChange: (value: string | string[]) => Promise<void>;
   children: React.ReactNode;
   className?: string;
   isMultiple?: boolean;
@@ -84,8 +84,12 @@ export function DropDownSelect({
       <span
         onClick={(e) => {
           e.stopPropagation();
-          
-          if (checkedValue?.length > 0) handleChange(checkedValue?.join(","));
+          console.log({ checkedValue });
+          if (!isMultiple && checkedValue?.length > 0)
+            handleChange(checkedValue?.join(","));
+          if (isMultiple && checkedValue?.length > 0)
+            handleChange(checkedValue);
+
           setOpen(false);
         }}
         className={cn(

@@ -63,7 +63,7 @@ export function EventDetailMobileTab({
           <p>Speakers</p>
         </button>
         <button
-          onClick={() => router.push(`/events/market-place/${eventId}/jobs`)}
+          onClick={() => router.push(`/event/${eventId}/market-place/jobs`)}
           className="flex flex-col gap-y-2 items-center justify-center"
         >
           <Bag size={22} />
@@ -71,7 +71,7 @@ export function EventDetailMobileTab({
         </button>
 
         <button
-          onClick={() => router.push(`/events/market-place/${eventId}/offers`)}
+          onClick={() => router.push(`/event/${eventId}/market-place/offers`)}
           className="flex flex-col gap-y-2 items-center justify-center"
         >
           <MarketingIcon color="#000000" />
@@ -116,7 +116,9 @@ export function EventDetailMobileTab({
       </div>
 
       <div className="sm:hidden w-full mb-8 grid grid-cols-3 gap-8 items-center justify-center">
-        <button className="flex flex-col gap-y-2 items-center justify-center">
+        <button 
+         onClick={() => router.push(`/event/${eventId}/interaction/stamp-card`)}
+        className="flex flex-col gap-y-2 items-center justify-center">
           <StampCardIcon />
           <p>StampCard</p>
         </button>

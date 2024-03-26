@@ -287,7 +287,7 @@ export default function UpdateEvent({
                             type="datetime-local"
                             defaultValue={data?.startDateTime}
                             {...form.register("startDateTime")}
-                            className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                            className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
                           />
                         </InputOffsetLabel>
                       )}

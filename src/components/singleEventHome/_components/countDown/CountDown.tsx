@@ -43,7 +43,7 @@ export function CountDown({ startDate }: { startDate: string }) {
   return (
     <div
       className={cn(
-        "w-full grid grid-cols-4 justify-center bg-[#FAFAFA] items-center py-6 px-6",
+        "w-full grid grid-cols-4 justify-center bg-[#FAFAFA] items-center py-4 sm:py-6 px-6",
         hasExpired && "hidden"
       )}
     >

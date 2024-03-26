@@ -3,16 +3,13 @@
 import { useGetQueries, saveCookie } from "@/hooks";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { useState, useMemo, useEffect } from "react";
-
-import {
-  Button,
-  Form,
-  ReactSelect,
-} from "@/components";
+import { OrganizationIcon } from "@/constants";
+import { Button, Form, ReactSelect } from "@/components";
 import { CreateOrganization } from "..";
 import { useParams, useRouter } from "next/navigation";
 import _ from "lodash";
 import { useForm } from "react-hook-form";
+import { cn } from "@/lib";
 
 type OrganizationListType = {
   label: string;
@@ -24,11 +21,12 @@ export function HeaderWidget({
   currentQuery: string | null;
 }) {
   const [isOpen, setOpen] = useState(false);
+
   const router = useRouter();
   const form = useForm({
     defaultValues: {
-      org:""
-    }
+      org: "",
+    },
   });
   const { id } = useParams();
   const { data: organizationList } = useGetQueries("organization");
@@ -73,10 +71,10 @@ export function HeaderWidget({
           </h2>
           <p className="text-gray-500"></p>
         </div>
-        <div className="flex items-center gap-x-3">
+        <div className="flex w-full sm:w-fit items-center gap-x-3">
           <Form {...form}>
             <form
-              className="w-[180px]"
+              className="w-[60%] sm:w-[180px]"
               //  onSubmit={form.handleSubmit(showOrganizationEvents)}
             >
               <ReactSelect
@@ -88,20 +86,27 @@ export function HeaderWidget({
             </form>
           </Form>
 
-          <Button
-            onClick={onClose}
-            className="bg-transparent border text-basePrimary hover:border-0 border-basePrimary transition-all transform duration-300 ease-in-out hover:text-gray-50 hover:bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
-          >
-            <PlusCircle size={22} />
-            <p>Organization</p>
-          </Button>
-          <Button
-            onClick={newEvent}
-            className="text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
-          >
-            <PlusCircle size={22} />
-            <p>Event</p>
-          </Button>
+          <div className="flex items-center gap-x-3 sm:gap-x-2">
+            <Button
+              onClick={onClose}
+              className="hidden sm:flex bg-transparent border text-basePrimary hover:border-0 border-basePrimary transition-all transform duration-300 ease-in-out hover:text-gray-50 hover:bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
+            >
+              <PlusCircle size={22} />
+              <p>Organization</p>
+            </Button>
+
+            <Button
+              onClick={newEvent}
+              className="  text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
+            >
+              <PlusCircle size={22} />
+              <p>Event</p>
+            </Button>
+            <button className="block sm:hidden" onClick={onClose}>
+              {" "}
+              <OrganizationIcon color={"#000000"} />
+            </button>
+          </div>
         </div>
       </div>
       {isOpen && <CreateOrganization close={onClose} />}

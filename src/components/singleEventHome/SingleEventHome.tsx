@@ -31,8 +31,8 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   };
   return (
     <>
-      <div className="w-full grid grid-cols-1 md:grid-cols-7 items-start ">
-        <div className="w-full md:col-span-4 flex flex-col gap-y-4  items-start justify-start border-r">
+      <div className="w-full grid grid-cols-1 md:grid-cols-7 items-center sm:items-start ">
+        <div className="w-full col-span-full md:col-span-4 flex flex-col gap-y-4  items-start justify-start border-r">
           <div className={cn("w-full", active > 1 && "hidden sm:block")}>
             <EventSchedule event={data} />
           </div>

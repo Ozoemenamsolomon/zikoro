@@ -26,7 +26,7 @@ export default function RootLayout({
 
   return (
     <>
-      <main className="relative h-full bg-white" ref={divRef}>
+      <main className="relative w-full h-full bg-white" ref={divRef}>
         <SideBarLayout />
 
         <div className="lg:w-[calc(100%-250px)]  min-[1024px]:float-right  pb-12  ">

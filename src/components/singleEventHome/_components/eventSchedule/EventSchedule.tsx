@@ -1,15 +1,14 @@
 "use client";
 
-import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
-import { Button } from "@/components";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
 import { AboutWidget } from "@/components/composables";
 import { CalendarDateFill } from "@styled-icons/bootstrap/CalendarDateFill";
 import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
 import { useMemo } from "react";
 import { Event } from "@/types";
-import { formatDate } from "@/utils";
+import { formatDate, formatTime } from "@/utils";
 import { CountDown } from "..";
 export function EventSchedule({ event }: { event: Event | null }) {
   const router = useRouter();
@@ -25,6 +24,10 @@ export function EventSchedule({ event }: { event: Event | null }) {
   const endDate = useMemo(
     () => formatDate(event?.endDateTime ?? "0"),
     [event?.endDateTime ?? "0"]
+  );
+  const startTime = useMemo(
+    () => formatTime(event?.startDateTime ?? "0"),
+    [event?.startDateTime ?? "0"]
   );
 
   return (
@@ -47,11 +50,20 @@ export function EventSchedule({ event }: { event: Event | null }) {
 
       <h1 className="px-4 font-semibold text-2xl">{event?.eventTitle ?? ""}</h1>
       {event && (
-        <div className="flex px-4 items-center justify-between w-full">
-          <AboutWidget
-            Icon={CalendarDateFill}
-            text={`${startDate} – ${endDate}`}
-          />
+        <div className="flex px-4 items-start justify-between w-full">
+          <div className="flex flex-col gap-y-1 items-start justify-start">
+            <AboutWidget
+              Icon={CalendarDateFill}
+              text={ <p className="flex items-center gap-x-1">
+              {`${startDate} `}{" "}
+              <span className="hidden md:block">{`- ${endDate}`}</span>
+            </p>}
+            />
+            <AboutWidget
+              Icon={TimeFive}
+              text={`${startTime} (${event?.eventTimeZone ?? ""})`}
+            />
+          </div>
           <AboutWidget
             Icon={LocationDot}
             text={

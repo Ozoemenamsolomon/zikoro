@@ -426,7 +426,7 @@ export function useCreateEventExhibitionHall() {
 }
 
 export function useUpdateBooth() {
-  async function updateBooth(partnerId: string, value: string | null) {
+  async function updateBooth(partnerId: string, value: string[] | null) {
     try {
       // Fetch the partner by ID
       const { data } = await supabase
@@ -437,17 +437,17 @@ export function useUpdateBooth() {
 
       const { boothNumber, ...restData } = data;
 
-      let booths = [];
+      let booths: string[] = [];
 
-      if (boothNumber === null) {
-        booths = [value];
-      } else {
-        booths = [...boothNumber, value];
+      if (boothNumber === null && value) {
+        booths = value;
+      } else if (value) {
+        booths = [...boothNumber, ...value];
       }
 
       const { error, status } = await supabase
         .from("eventPartners")
-        .update({ ...restData, boothNumber: value === null ? null : booths })
+        .update({ ...restData, boothNumber: value === null ? null : null })
         .eq("id", partnerId);
 
       if (status === 204 || status === 200) {
