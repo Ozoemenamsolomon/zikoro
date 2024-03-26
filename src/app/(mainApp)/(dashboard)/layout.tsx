@@ -1,8 +1,8 @@
 "use client";
 import Sidebar from "@/components/Sidebar";
-import Topbar from "@/components/Topbar";
 import { Toaster } from "@/components/ui/toaster";
 import { useLayoutEffect, useRef } from "react";
+import { SideBarLayout } from "../../components/SideBarLayout";
 
 export default function RootLayout({
   children,
@@ -26,11 +26,12 @@ export default function RootLayout({
 
   return (
     <>
-      <main className="relative h-full bg-white" ref={divRef}>
-        <div className="fixed w-1/6 h-full top-0 left-0 border-r-2 hidden md:block">
-          <Sidebar />
+      <main className="relative w-full h-full bg-white" ref={divRef}>
+        <SideBarLayout />
+
+        <div className="lg:w-[calc(100%-250px)]  min-[1024px]:float-right  pb-12  ">
+          {children}
         </div>
-        <section className="md:ml-[16.666667%] ml-0 h-full">{children}</section>
       </main>
       <Toaster />
     </>

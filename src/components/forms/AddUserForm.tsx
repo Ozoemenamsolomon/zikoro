@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import COUNTRY_CODE from "@/utils/countryCode";
+import {COUNTRY_CODE} from "@/utils/countryCode";
 import { uploadFile, uploadFiles } from "@/utils/helpers";
 
 export default function AddUserForm({

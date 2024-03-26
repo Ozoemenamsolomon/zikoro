@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  overflow-x: hidden;
+  height: 100%;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -288,7 +294,7 @@
 
 .ql-container.ql-snow {
   border: 1px solid #f3f3f3 !important;
-  height: 300px;
+  height: 400px;
   border-top: none;
   font-size: 14px;
   border-radius: 0px 0px 8px 8px;
@@ -308,3 +314,120 @@
   position: absolute;
   right: 15px;
 }
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
+.partner-scroll-style::-webkit-scrollbar {
+  display: none;
+}
+
+.partner-scroll-style:hover::-webkit-scrollbar {
+  width: 10px;
+  height: 6px;
+  display: block;
+}
+
+.partner-scroll-style::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  @apply bg-gray-300;
+}
+
+.partner-scroll-style::-webkit-scrollbar-track {
+  border-radius: 6px;
+  @apply bg-gray-100;
+}
+
+.line-clamp {
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  /* height: 4.5rem; */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.line-clamp-one {
+  -webkit-line-clamp: 1;
+  /* height: 4.5rem; */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.banner .slick-dots {
+  display: none;
+}
+.banner .slick-dots li {
+  display: none;
+}
+
+.slider .slick-dots {
+  position: absolute;
+  bottom: 20px;
+}
+.slider .slick-dots li {
+  margin: 0px 7px;
+  width: 8px;
+  height: 8px;
+}
+
+.slider .slick-dots li button:before {
+  color: black;
+  border: 1px solid grey;
+  border-radius: 50%;
+  content: "";
+  width: 10px;
+  height: 10px;
+}
+.slider .slick-dots li.slick-active button::before {
+  background-color: black;
+  display: none;
+}
+
+
+.innerhtml h1 {
+  font-size: 2em;
+}
+.innerhtml h2 {
+  font-size: 1.5em;
+}
+.innerhtml h3 {
+  font-size: 1.17em;
+}
+.innerhtml h4 {
+  font-size: 1em;
+}
+.innerhtml h5 {
+  font-size: 0.83em;
+}
+.innerhtml h6 {
+  font-size: 0.67em;
+}
+
+/* Unordered List */
+.innerhtml ul {
+  list-style-type: disc; /* Default filled circle */
+  padding-left: 2rem;
+}
+
+/* Ordered List */
+.innerhtml ol {
+  list-style-type: decimal; /* Default decimal numbers */
+  padding-left: 2rem;
+}
+.innerhtml ul li {
+  padding-bottom: 2rem;
+}
+
+.innerhtml ol li {
+  padding-bottom: 2rem;
+}
+

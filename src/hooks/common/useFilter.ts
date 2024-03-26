@@ -47,6 +47,7 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
               return pptyVal <= value;
             case "single":
               return value === pptyVal;
+            
             default:
               return value.some((elm: any) => pptyVal && pptyVal.includes(elm));
           }

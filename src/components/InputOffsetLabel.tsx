@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/form";
 import React from "react";
 
-export default function InputOffsetLabel({
+export function InputOffsetLabel({
   children,
   label,
   isRequired,
@@ -20,7 +20,7 @@ export default function InputOffsetLabel({
   prepend?: React.ReactNode;
 }) {
   return (
-    <FormItem className="relative">
+    <FormItem className="relative w-full">
       <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
         {label}
         {isRequired && <sup className="text-red-700">*</sup>}
