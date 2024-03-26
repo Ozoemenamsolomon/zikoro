@@ -190,7 +190,7 @@ export function AddPartners({
     <div
       role="button"
       onClick={close}
-      className="w-full h-full fixed z-[99999999]    inset-0 bg-black/50"
+      className="w-full h-full fixed z-[200]    inset-0 bg-black/50"
     >
       <div
         onClick={(e) => e.stopPropagation()}

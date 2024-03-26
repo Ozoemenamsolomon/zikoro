@@ -4,7 +4,7 @@ import { sendMail, phoneCall, whatsapp } from "@/utils";
 import { ArrowIosDownward } from "@styled-icons/evaicons-solid/ArrowIosDownward";
 import { Phone } from "@styled-icons/feather/Phone";
 import { cn } from "@/lib";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { DropDownSelect } from "@/components/contents/_components";
 import { Event } from "@/types";
 import {
@@ -32,15 +32,7 @@ export function PartnerWidget({
   selectedRows: number[];
   partners: any[];
 }) {
-  const [isHall, showHalls] = useState(false);
-  const [isBooth, showBooths] = useState(false);
-  const [isSponsorLevel, showSponsorDropDown] = useState(false);
-  const [selectedBooth, setSelectedBooth] = useState("");
-  const [selectedHall, setSelectedHall] = useState("");
-  const [selectedPartner, setSelectedPartner] = useState("");
-  const [selectedLevel, setSelectedLevel] = useState("");
   const [boothList, setBoothList] = useState<string[]>([]);
-  const [isPartnerType, showPartnerType] = useState(false);
   const { updateHall } = useUpdateHall();
   const { updateBooth } = useUpdateBooth();
   const { updatePartnerType } = useUpdatePartnerType();
@@ -83,44 +75,32 @@ export function PartnerWidget({
       // get their booth numbers
       const boothNumbers = partnersWithHall.map((item) => {
         if (item?.boothNumber && Array.isArray(item?.boothNumber)) {
-          return item?.boothNumber;
+          console.log(item?.boothNumber)
+          return item?.boothNumber[0]?.split(",")
         }
       });
+      console.log({ddd:boothNumbers})
 
       const filterBoothNumber = boothNumbers
         .filter((v) => v !== undefined)
         .flat();
 
-      // remove the boothNumber from the availabe booths
+      // remove the boothNumbers from the availabe booths
       const booths = numbers.filter(
         (number) => !filterBoothNumber.includes(number)
       );
 
       setBoothList(booths);
     }
-  }, [selectedHall, item?.exhibitionHall]);
+  }, [item?.exhibitionHall]);
 
-  function toggleBooths() {
-    showBooths((prev) => !prev);
-  }
-  function toggleHalls() {
-    showHalls((prev) => !prev);
-  }
-
-  function toggleLevelDropDown() {
-    showSponsorDropDown((prev) => !prev);
-  }
-
-  function togglePartnerType() {
-    showPartnerType((prev) => !prev);
-  }
 
   async function handleSelectedHall(value: string) {
-    setSelectedHall(value);
+    // setSelectedHall(value);
     await updateHall(item?.id, value);
     refetch(); // fetch partners
 
-    showHalls(false);
+   
   }
 
   // check if any of partner hall has been deleted
@@ -147,24 +127,24 @@ export function PartnerWidget({
   }, [event]);
 
   async function handleSelectedBooth(value: string) {
-    setSelectedBooth(value);
+ 
     await updateBooth(item?.id, value);
     refetch(); // fetch partners
-    showBooths(false);
+  
   }
 
   async function handleSelectedPartner(value: string) {
-    setSelectedPartner(value);
+
     await updatePartnerType(item?.id, value);
     refetch(); // fetch partners
-    showPartnerType(false);
+   
   }
 
   async function handleSelectedLevel(value: string) {
-    setSelectedLevel(value);
+   // setSelectedLevel(value);
     await updateSponsorCategory(item?.id, value);
     refetch(); // fetch partners
-    showSponsorDropDown(false);
+  
   }
 
   return (
@@ -179,7 +159,7 @@ export function PartnerWidget({
           checked={selectedRows.includes(item?.id)}
           onChange={() => selectRowFn(item?.id)}
           type="checkbox"
-          className="accent-basePrimary w-3 h-3"
+          className="accent-basePrimary w-4 h-4"
         />
 
         <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
@@ -199,88 +179,73 @@ export function PartnerWidget({
         </button>
       </td>
       <td>
-        <button
-          onClick={togglePartnerType}
-          className="flex relative items-center gap-x-1"
+        
+
+        <DropDownSelect
+          handleChange={handleSelectedPartner}
+          data={["Exhibitor", "Sponsor"]}
+          className="w-full"
         >
-          <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
-            {item?.partnerType || "Select Type"}
-          </p>
-          <ArrowIosDownward size={20} />
-          {isPartnerType && (
-            <DropDownSelect
-              handleChange={handleSelectedPartner}
-              currentValue={selectedPartner}
-              close={togglePartnerType}
-              data={["Exhibitor", "Sponsor"]}
-            />
-          )}
-        </button>
+          <button className="flex relative items-center gap-x-1">
+            <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
+              {item?.partnerType || "Select Type"}
+            </p>
+            <ArrowIosDownward size={20} />
+          </button>
+        </DropDownSelect>
       </td>
 
       <td>
         {item?.partnerType.toLowerCase() === "sponsor" ? (
-          <button
-            onClick={toggleLevelDropDown}
-            className="flex relative items-center gap-x-1"
+          <DropDownSelect
+            handleChange={handleSelectedLevel}
+            data={levelList}
           >
-            <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
-              {item?.sponsorCategory || " Select Level"}
-            </p>
-            <ArrowIosDownward size={20} />
-            {isSponsorLevel && (
-              <DropDownSelect
-                handleChange={handleSelectedLevel}
-                currentValue={selectedLevel}
-                close={toggleLevelDropDown}
-                data={levelList}
-              />
-            )}
-          </button>
+            <button className="flex relative items-center gap-x-1">
+              <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
+                {item?.sponsorCategory || " Select Level"}
+              </p>
+              <ArrowIosDownward size={20} />
+            </button>
+          </DropDownSelect>
         ) : (
           <p className="w-1 h-1"></p>
         )}
       </td>
 
       <td>
-        <button
-          onClick={toggleHalls}
-          className="flex relative items-center gap-x-1"
+        <DropDownSelect
+          handleChange={handleSelectedHall}
+          
+          data={hallList}
         >
-          <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
-            {item?.exhibitionHall || " Select Hall"}
-          </p>
-          <ArrowIosDownward size={20} />
-          {isHall && (
-            <DropDownSelect
-              handleChange={handleSelectedHall}
-              currentValue={selectedHall}
-              close={toggleHalls}
-              data={hallList}
-            />
-          )}
-        </button>
+          <button
+          
+            className="flex relative items-center gap-x-1"
+          >
+            <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
+              {item?.exhibitionHall || " Select Hall"}
+            </p>
+            <ArrowIosDownward size={20} />
+          </button>
+        
+        </DropDownSelect>
       </td>
       <td>
-        <button
-          onClick={() => {
-            if (!item?.exhibitionHall) return;
-
-            toggleBooths();
-          }}
-          className="flex items-center relative gap-x-1"
+        <DropDownSelect
+          handleChange={handleSelectedBooth}
+          isMultiple
+          data={boothList}
+          className={item?.exhibitionHall ? "block" : "hidden"}
         >
-          <p className="">{item?.boothNumber?.toString() || "0"}</p>
-          <ArrowIosDownward size={20} />
-          {isBooth && (
-            <DropDownSelect
-              handleChange={handleSelectedBooth}
-              currentValue={selectedBooth}
-              close={toggleBooths}
-              data={boothList}
-            />
-          )}
-        </button>
+          <button
+           
+            className="flex items-center relative gap-x-1"
+          >
+            <p className="">{item?.boothNumber?.toString() || "0"}</p>
+            <ArrowIosDownward size={20} />
+          </button>
+        </DropDownSelect>
       </td>
     </tr>
   );

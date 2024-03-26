@@ -143,7 +143,7 @@ export function PartnersList({
                           <input
                             onChange={(e) => selectAllRow(e)}
                             type="checkbox"
-                            className="accent-basePrimary w-3 h-3"
+                            className="accent-basePrimary w-4 h-4"
                           />
                           <span className="partner-checkmark"></span>
                           <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">

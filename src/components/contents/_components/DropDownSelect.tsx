@@ -1,52 +1,140 @@
 "use client";
 
-
-import { useEffect, useRef } from "react";
+import { useRef, useEffect, useState } from "react";
+import { cn } from "@/lib";
 export function DropDownSelect({
-  close,
   data,
   handleChange,
-  currentValue,
+  children,
+  className,
+  isMultiple,
 }: {
   data: string[] | number[] | undefined;
-  close: () => void;
   handleChange: (value: string) => Promise<void>;
-  currentValue: string | number;
+  children: React.ReactNode;
+  className?: string;
+  isMultiple?: boolean;
 }) {
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const [isOpen, setOpen] = useState(false);
+  const [position, setPosition] = useState({ X: 0, Y: 0 });
+  const [checkedValue, setCheckedValues] = useState<string[]>([]);
+  useEffect(() => {
+    function updateButtonLocation() {
+      if (buttonRef?.current) {
+        const rect = buttonRef?.current?.getBoundingClientRect();
+        setPosition({
+          X: Math.round(rect.x),
+          Y: Math.round(rect.y),
+        });
+      }
+    }
+    // initial button location
+    updateButtonLocation();
 
-  
+    // Update button location when the window is resized
+
+    window.addEventListener("scroll", updateButtonLocation);
+
+    let parentElement = buttonRef.current?.parentElement;
+    while (parentElement && parentElement !== document.documentElement) {
+      const overflowStyle = window.getComputedStyle(parentElement).overflow;
+      if (overflowStyle === "auto" || overflowStyle === "scroll") {
+        parentElement.addEventListener("scroll", updateButtonLocation);
+      }
+      parentElement = parentElement.parentElement;
+    }
+
+    return () => {
+      let currentParent = buttonRef.current?.parentElement;
+      while (currentParent && currentParent !== document.documentElement) {
+        const overflowStyle = window.getComputedStyle(currentParent).overflow;
+        if (overflowStyle === "auto" || overflowStyle === "scroll") {
+          currentParent.removeEventListener("scroll", updateButtonLocation);
+        }
+        currentParent = currentParent.parentElement;
+      }
+      window.addEventListener("scroll", updateButtonLocation);
+    };
+  }, [buttonRef]);
+
+  function onClose() {
+    setOpen((prev) => !prev);
+  }
+
+  function onchangeValue(value: string) {
+    if (checkedValue.includes(value)) {
+      setCheckedValues(checkedValue.filter((v) => v !== value));
+    } else {
+      if (isMultiple) {
+        setCheckedValues((prev) => [...prev, String(value)]);
+      } else {
+        setCheckedValues([String(value)]);
+      }
+    }
+  }
+
   return (
-    <div  className="absolute top-8 right-0">
-      <button className="relative-box w-full h-full z-[99999999] fixed inset-0 bg-black/10"></button>
-      <ul
-        role="button"
+    <button
+      ref={buttonRef}
+      onClick={onClose}
+      className={cn("w-fit relative", className)}
+    >
+      {children}
+      <span
+        onClick={(e) => {
+          e.stopPropagation();
+          
+          if (checkedValue?.length > 0) handleChange(checkedValue?.join(","));
+          setOpen(false);
+        }}
+        className={cn(
+          "w-full h-full inset-0 fixed z-[150px] hidden",
+          isOpen && "block"
+        )}
+      ></span>
+      <div
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="w-[200px] relative z-[99999999999] max-w-[250px] py-2 rounded-md shadow-md border border-gray-200  bg-white h-fit max-h-[300px] overflow-y-auto"
+        style={{
+          transform: `translate(${position.X}px, ${position.Y + 30}px)`,
+        }}
+        className={cn(
+          "transform hidden fixed left-0 z-[200] top-0",
+          isOpen && "block"
+        )}
       >
-        {data &&
-          data?.map((value, index) => (
-            <li className="w-full py-2 border-b">
-              <label
-                key={index}
-                className=" w-full flex  relative partner-container"
-              >
-                <input
-                  name="partner"
-                  value={value}
-                  checked={currentValue === String(value)}
-                  onChange={() => handleChange(String(value))}
-                  type="checkbox"
-                />
-                <span className="partner-checkmark"></span>
-                <p className="w-full text-start text-ellipsis whitespace-nowrap overflow-hidden">
-                  {value}
-                </p>
-              </label>
-            </li>
-          ))}
-      </ul>
-    </div>
+        <ul
+          role="button"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className="w-[200px] relative py-2 rounded-md shadow-md border border-gray-200  bg-white h-fit max-h-[250px] overflow-y-auto"
+        >
+          {data &&
+            data?.map((value, index) => (
+              <li className="w-full p-2 ">
+                <label
+                  key={index}
+                  className=" w-full relative text-sm flex items-center gap-x-2"
+                >
+                  <input
+                    name="partner"
+                    value={value}
+                    checked={checkedValue.includes(String(value))}
+                    onChange={() => onchangeValue(String(value))}
+                    type="checkbox"
+                    className="accent-basePrimary w-4 h-4"
+                  />
+                  <p className="w-full text-start text-ellipsis whitespace-nowrap overflow-hidden">
+                    {value}
+                  </p>
+                </label>
+              </li>
+            ))}
+        </ul>
+      </div>
+    </button>
   );
 }
