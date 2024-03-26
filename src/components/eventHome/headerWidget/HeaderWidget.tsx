@@ -25,7 +25,11 @@ export function HeaderWidget({
 }) {
   const [isOpen, setOpen] = useState(false);
   const router = useRouter();
-  const form = useForm({});
+  const form = useForm({
+    defaultValues: {
+      org:""
+    }
+  });
   const { id } = useParams();
   const { data: organizationList } = useGetQueries("organization");
 
@@ -77,7 +81,7 @@ export function HeaderWidget({
             >
               <ReactSelect
                 {...form.register("org")}
-                defaultValue={{ label: currentQuery, value: id }}
+                defaultValue={{ label: currentQuery, value: id } || ""}
                 options={formattedList}
                 placeHolder="Select Organization"
               />

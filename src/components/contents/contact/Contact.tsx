@@ -116,7 +116,7 @@ function Contact({ eventId }: { eventId: string }) {
           className="w-full"
           id="form"
         >
-          <div className="w-full p-4 flex items-end justify-end">
+           <div className="w-full p-4 flex items-center sm:items-end justify-start sm:justify-end">
           <div className="flex items-center gap-x-2">
                   <Button className="gap-x-2">
                     {loading && (

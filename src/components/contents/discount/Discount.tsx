@@ -1,6 +1,5 @@
 "use client";
 import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib";
@@ -78,7 +77,7 @@ export default function Discount({ eventId }: { eventId: string }) {
     <>
     
       <div className="px-4">
-        <div className="flex w-full items-end justify-end my-3">
+        <div className="flex w-full items-center sm:items-end justify-start sm:justify-end my-3">
           {Array.isArray(formattedData) && formattedData?.length > 0 && (
             <DialogDemo getDiscount={getDiscount} eventId={eventId} />
           )}
@@ -139,7 +138,7 @@ export default function Discount({ eventId }: { eventId: string }) {
                   getDiscount={getDiscount}
                 />
               ))}
-            <Separator />
+          
           </div>
         </div>
       </div>

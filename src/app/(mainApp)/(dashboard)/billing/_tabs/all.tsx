@@ -571,14 +571,16 @@ export default function All() {
             </button>
           </div>
         </div>
-        <Filter
-          className={`space-y-4 max-w-full`}
+      <div className="w-full overflow-x-auto no-scrollbar">
+      <Filter
+          className={`space-y-4 min-w-[1000px] w-full`}
           filters={filters.sort(
             (a, b) => (a.order || Infinity) - (b.order || Infinity)
           )}
           applyFilter={applyFilter}
           selectedFilters={selectedFilters}
-        />
+        />            
+      </div>
         <div className="space-y-2 max-w-full">
           <DataTable<TEventTransaction>
             columns={columns.filter(

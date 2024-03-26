@@ -21,7 +21,7 @@ export function DropDownCards({
   return (
     <>
       {
-        
+        <div className="absolute top-12 right-0">
           <div
             onClick={(e) => e.stopPropagation()}
             className="w-[200px] relative z-[120] rounded-lg  shadow bg-white flex flex-col"
@@ -31,7 +31,7 @@ export function DropDownCards({
                 key={value}
                 className=" w-full  p-2 border-b gap-x-2 flex items-center hover:bg-gray-50 relative "
               >
-                   <input
+                <input
                   type="checkbox"
                   className="accent-basePrimary h-3 w-3"
                   name={name}
@@ -40,12 +40,10 @@ export function DropDownCards({
                   onChange={() => handleRadioChange(value)}
                 />
                 <span className="text-[13px]">{value}</span>
-             
-                
               </label>
             ))}
           </div>
-       
+        </div>
       }
     </>
   );

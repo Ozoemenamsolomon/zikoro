@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+  overflow-x:hidden;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -288,7 +291,7 @@
 
 .ql-container.ql-snow {
   border: 1px solid #f3f3f3 !important;
-  height: 300px;
+  height: 400px;
   border-top: none;
   font-size: 14px;
   border-radius: 0px 0px 8px 8px;

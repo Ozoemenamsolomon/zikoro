@@ -18,7 +18,7 @@ import TextEditor from "@/components/TextEditor";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
-import {uploadFile} from "@/utils"
+import { uploadFile } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { updateEventSchema } from "@/schemas";
@@ -33,6 +33,7 @@ import {
 } from "@/components";
 import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
 import toast from "react-hot-toast";
+import { TIME_ZONES } from "@/utils";
 
 interface ImageFile {
   url: string | undefined;
@@ -52,6 +53,7 @@ export default function UpdateEvent({
   }: { data: any; loading: boolean; refetch: () => Promise<null | undefined> } =
     useFetchSingleEvent(eventId);
   const { loading: updating, update } = useUpdateEvent();
+
   const form = useForm<z.infer<typeof updateEventSchema>>({
     resolver: zodResolver(updateEventSchema),
     defaultValues: {
@@ -98,7 +100,7 @@ export default function UpdateEvent({
         locationType: data?.locationType,
         eventCountry: data?.eventCountry,
         pricing: data?.pricing,
-        eventTimeZone: data?.eventTimeZone
+        eventTimeZone: data?.eventTimeZone,
       });
       if (Array.isArray(data?.eventPoster)) {
         const formatData = data?.eventPoster?.map((v: any) => {
@@ -128,18 +130,17 @@ export default function UpdateEvent({
     }
     const posterUrl = eventPosterArr.map((v) => v.url);
 
-    let poster:string[] = []
+    let poster: string[] = [];
 
-    if (posterUrl.length > 0 ) {
-        posterUrl.map(async (value) => {
-          if (value && value.startsWith("http")) {
-            poster.push(value)
-          }
-          else if (value) {
-            const img  = await uploadFile(value, "image")
-            poster.push(img)
-          }
-        })
+    if (posterUrl.length > 0) {
+      posterUrl.map(async (value) => {
+        if (value && value.startsWith("http")) {
+          poster.push(value);
+        } else if (value) {
+          const img = await uploadFile(value, "image");
+          poster.push(img);
+        }
+      });
     }
     const payload = {
       ...values,
@@ -199,10 +200,22 @@ export default function UpdateEvent({
 
   // console.log(form.getValues());
 
+  const formatZone = useMemo(() => {
+    return TIME_ZONES.flatMap(({ zones }) => {
+      return zones.map(({ label, value }) => {
+        return {
+          label: `${label}  ${value}`,
+          value,
+        };
+      });
+    });
+  }, [TIME_ZONES]);
+
+  // console.log({formatZone})
+
   return (
     <DateAndTimeAdapter>
       <>
-        
         {!loading ? (
           <Form {...form}>
             <form
@@ -210,8 +223,7 @@ export default function UpdateEvent({
               className="w-full px-4 h-full "
               id="form"
             >
-              <div className="w-full py-4 flex items-end justify-end">
-           
+              <div className="w-full py-4 flex items-center sm:items-end justify-start sm:justify-end">
                 <div className="flex items-center gap-x-2">
                   <Button className="gap-x-2">
                     {updating && (
@@ -223,10 +235,9 @@ export default function UpdateEvent({
                   <Button
                     // type="submit"
                     onClick={(e) => {
-                        e.preventDefault();
+                      e.preventDefault();
                       e.stopPropagation();
-                      window.open(`/preview/${eventId}`, '_blank')
-                   
+                      window.open(`/preview/${eventId}`, "_blank");
                     }}
                     className="text-gray-50 bg-basePrimary gap-x-2"
                   >
@@ -301,15 +312,13 @@ export default function UpdateEvent({
                     control={form.control}
                     name="eventTimeZone"
                     render={({ field }) => (
-                      <InputOffsetLabel label="Event Timezone">
-                        <Input
-                          placeholder="Enter event timezone"
-                          type="text"
-                          defaultValue={data?.eventTimeZone}
-                          {...form.register("eventTimeZone")}
-                          className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                        />
-                      </InputOffsetLabel>
+                      <ReactSelect
+                        placeHolder="Enter event timezone"
+                        defaultValue={{label:data?.eventTimeZone, value: data?.eventTimeZone}}
+                        {...form.register("eventTimeZone")}
+                        options={formatZone}
+                        label="Event Timezone"
+                      />
                     )}
                   />
 

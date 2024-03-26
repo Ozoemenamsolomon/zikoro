@@ -95,6 +95,8 @@ export function Partners({ eventId }: { eventId: string }) {
     );
   }, [data, partnerData]);
 
+
+
   const exhibitors = useMemo(() => {
     return (partnerData || data).filter(
       (v) => v.partnerType.toLowerCase() === "exhibitor"

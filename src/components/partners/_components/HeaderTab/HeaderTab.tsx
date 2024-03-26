@@ -39,7 +39,7 @@ export function HeaderTab({
           </Button>
           <Button
             onClick={() =>
-              router.push(`/events/partners/${eventId}?p=exhibitors`)
+              router.push(`/event/${eventId}/partners?p=exhibitors`)
             }
             className={cn(
               "bg-transparent",

@@ -19,7 +19,7 @@ export const NavLinks = ({
   return (
     <ul className="flex flex-col gap-y-1 items-start h-[45vh] pb-32 overflow-hidden  no-scrollbar overflow-y-auto  justify-start w-full">
       {links.map(({ href, name, icon: Icon }, idx) => {
-        if (idx === links.length - 2) {
+        if (idx === links.length - 1) {
         
           return (
             <li

@@ -118,9 +118,9 @@ export function ExhibitionHall({
           <div className="w-full p-3">
             <div className=" rounded-lg w-full border">
               <div className="w-full grid gap-3 font-medium text-sm grid-cols-3 px-2 py-4 items-center bg-gray-100 rounded-t-lg">
-                <label className=" w-full flex  relative partner-container">
-                  <input onChange={(e) => selectAllRow(e)} type="checkbox" />
-                  <span className="partner-checkmark"></span>
+                <label className=" w-full flex  relative items-center gap-x-2">
+                  <input className="accent-basePrimary w-3 h-3" onChange={(e) => selectAllRow(e)} type="checkbox" />
+                 
                   <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
                     Hall Name
                   </p>
@@ -190,13 +190,14 @@ function ExhibitionHallWidget({
         className
       )}
     >
-      <label className="w-full flex  relative partner-container">
+      <label className="w-full flex items-center gap-x-2 relative partner-container">
         <input
           checked={selectedHall.includes(name)}
           onChange={() => selectRow(name)}
           type="checkbox"
+          className="accent-basePrimary w-3 h-3"
         />
-        <span className="partner-checkmark"></span>
+     
         <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
           {name}
         </p>
