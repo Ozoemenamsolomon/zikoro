@@ -87,7 +87,8 @@ export async function GET(req: NextRequest) {
     try {
       const { data, error, status } = await supabase
         .from("attendees")
-        .select("*");
+        .select("*")
+        .order("registrationDate", { ascending: false });
 
       if (error) throw error;
 

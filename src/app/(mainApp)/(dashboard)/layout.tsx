@@ -2,7 +2,7 @@
 import Sidebar from "@/components/Sidebar";
 import { Toaster } from "@/components/ui/toaster";
 import { useLayoutEffect, useRef } from "react";
-import { SideBarLayout } from "../../components/SideBarLayout";
+import { SideBarLayout } from "@/components/SideBarLayout";
 
 export default function RootLayout({
   children,
