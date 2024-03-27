@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import { TextEditor } from "@/components/TextEditor";
+
 
 export default function Create() {
   return (
@@ -10,15 +12,9 @@ export default function Create() {
           Create New Blog Post
         </p>
 
-        <div className="mt-[110px] bg-white flex-1 p-4 resize-none  ">
-          <div className="">header</div>
-          <textarea
-            name=""
-            id=""
-            rows={10}
-            className="w-full outline-none h-full"
-            placeholder="Type something..."
-          ></textarea>
+        <div className="mt-[110px] bg-white flex-1 p-4 resize-none">
+        {/* <TextEditor onChange={(e) => e} markdown="" /> */}
+        
         </div>
       </div>
     </div>
