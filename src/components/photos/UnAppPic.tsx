@@ -14,7 +14,7 @@
 //   const reApprove = async (imageId: number) => {
 // try {
 //         const response = await fetch(
-//           "/api/fetchImages/fetchUnapprovedImages/reApprove",
+//           "/api/photos/unapproved/reapprove",
 //           {
 //             method: "POST",
 //             headers: {

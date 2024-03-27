@@ -67,8 +67,7 @@ export default function Footer() {
                     <li className='text-[13px] lg:text-base font-normal cursor-pointer'>Affiliates</li>
                     <li className='text-[13px] lg:text-base font-normal cursor-pointer'>API</li>
                     <li className='text-[13px] lg:text-base font-normal cursor-pointer'>Help</li>
-                    <li className='text-[13px] lg:text-base font-normal cursor-pointer'>Blog</li>
-
+                    <li onClick={() => router.push('/blog/all')} className='text-[13px] lg:text-base font-normal cursor-pointer'>Blog</li>
                 </ul>
 
                  {/* 5th Column */}

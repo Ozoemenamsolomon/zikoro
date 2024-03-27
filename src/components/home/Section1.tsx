@@ -25,8 +25,8 @@ export default function Section1() {
        
 
         <div className="flex items-center justify-center mt-8">
-             <Image src="/section1.png" alt="" width={1240}  height={454} className="hidden lg:block"/>
-             <Image src="/section1.png" alt="" width={376}  height={138} className="block lg:hidden"/>
+             <Image src="/indexSection1.png" alt="" width={1240}  height={454} className="hidden lg:block"/>
+             <Image src="/indexSection1.png" alt="" width={376}  height={138} className="block lg:hidden"/>
         </div>
     </div>
   )

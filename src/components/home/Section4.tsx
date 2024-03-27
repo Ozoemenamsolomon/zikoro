@@ -24,8 +24,8 @@ export default function Section3() {
                         </div>
 
                         <div className="w-full lg:w-1/2 mt-12 lg:mt-0"> 
-                            <Image className="hidden md:block" src="/why1.png" alt="" width={561.68} height= {669}/>
-                            <Image className="block md:hidden" src="/why1.png" alt="" width={363.54} height= {433}/>
+                            <Image className="hidden md:block" src="/indexSection4a.png" alt="" width={561.68} height= {669}/>
+                            <Image className="block md:hidden" src="/indexSection4a.png" alt="" width={363.54} height= {433}/>
                         </div>
                     </div>
 
@@ -33,8 +33,8 @@ export default function Section3() {
                     <div className=" flex flex-col-reverse lg:flex-row items-center justify-center space-x-0 lg:space-x-16 mb-28 lg:mb-14">
 
                         <div className="w-full lg:w-1/2 mt-12 lg:mt-0"> 
-                            <Image className="hidden md:block" src="/why3.png" alt="" width={561.68} height= {669}/>
-                            <Image className="block md:hidden" src="/why3.png" alt="" width={363.54} height= {433}/>
+                            <Image className="hidden md:block" src="/indexSection4c.png" alt="" width={561.68} height= {669}/>
+                            <Image className="block md:hidden" src="/indexSection4c.png" alt="" width={363.54} height= {433}/>
                         </div>
                         <div className="w-full lg:w-1/2 text-left"> 
                             <p className=" text-xl lg:text-2xl font-bold ">Maximize your event ROI</p>
@@ -56,8 +56,8 @@ export default function Section3() {
                         </div>
 
                         <div className="w-full lg:w-1/2 mt-12 lg:mt-0"> 
-                            <Image className="hidden md:block" src="/why2.png" alt="" width={561.68} height= {669}/>
-                            <Image className="block md:hidden" src="/why2.png" alt="" width={363.54} height= {433}/>
+                            <Image className="hidden md:block" src="/indexSection4b.png" alt="" width={561.68} height= {669}/>
+                            <Image className="block md:hidden" src="/indexSection4b.png" alt="" width={363.54} height= {433}/>
                         </div>
                     </div>
 
@@ -65,8 +65,8 @@ export default function Section3() {
                     <div className=" flex flex-col-reverse lg:flex-row items-center justify-center space-x-0 lg:space-x-16 mb-28 lg:mb-14">
 
                         <div className="w-full lg:w-1/2 mt-12 lg:mt-0"> 
-                            <Image className="hidden md:block" src="/why4.png" alt="" width={561.68} height= {669}/>
-                            <Image className="block md:hidden" src="/why4.png" alt="" width={363.54} height= {433}/>
+                            <Image className="hidden md:block" src="/indexSection4d.png" alt="" width={561.68} height= {669}/>
+                            <Image className="block md:hidden" src="/indexSection4d.png" alt="" width={363.54} height= {433}/>
                         </div>
                         <div className="w-full lg:w-1/2 text-left"> 
                             <p className=" text-xl lg:text-2xl font-bold ">Facilitate connections that go beyond your event. </p>
@@ -87,8 +87,8 @@ export default function Section3() {
                         </div>
 
                         <div className="w-full lg:w-1/2 mt-12 lg:mt-0"> 
-                            <Image className="hidden md:block" src="/why5.png" alt="" width={561.68} height= {669}/>
-                            <Image className="block md:hidden" src="/why5.png" alt="" width={363.54} height= {433}/>
+                            <Image className="hidden md:block" src="/indexSection4e.png" alt="" width={561.68} height= {669}/>
+                            <Image className="block md:hidden" src="/indexSection4e.png" alt="" width={363.54} height= {433}/>
                         </div>
                     </div>
             </div>

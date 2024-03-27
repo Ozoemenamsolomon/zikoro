@@ -17,7 +17,7 @@
 //         setTogOn(!togOn)
 //     }
 //     async function fetchImageUrls() {
-//       fetch('/api/fetchImages/fetchUnapprovedImages', {
+//       fetch('/api/photos/unapproved', {
 //           method: 'GET',
 //           headers: {
 //             'Content-Type': 'application/json'

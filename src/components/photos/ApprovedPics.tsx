@@ -25,7 +25,7 @@
 
 //     async function fetchImageUrls() {
 
-//       fetch('/api/fetchImages/fetchApprovedImages', {
+//       fetch('/api/photos/approved', {
 //         method: 'GET',
 //         headers: {
 //           'Content-Type': 'application/json'

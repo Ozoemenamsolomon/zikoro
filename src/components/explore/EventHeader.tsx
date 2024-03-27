@@ -12,14 +12,14 @@ export default function EventHeader() {
   return (
     <div className="bg-gradient-overlay relative">
       <Image
-        src="/eventsBg.png"
+        src="/eventsBg.webp"
         alt="Background"
         width={1440}
         height={600}
         className="object-cover w-full h-[700px] hidden lg:block"
       />
       <Image
-        src="/eventsBg.png"
+        src="/eventsBg.webp"
         alt="Background"
         width={350}
         height={366}

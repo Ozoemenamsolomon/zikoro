@@ -7,19 +7,11 @@ import Features from "@/components/home/Features"
 import Section4 from "@/components/home/Section4"
 import Section5 from "@/components/home/Section5"
 import Footer from "@/components/Footer"
-import { Montserrat } from "next/font/google";
-
-const montserrat = Montserrat({
-  weight: ['100', '200','300', '400', '500','600', '700'],
-  subsets: ['latin'],
-  display:'swap',
-  fallback: ['Arial', 'sans-serif'],
-});
 
 
 export default function Home() {
   return (
-    <div className={`${montserrat.className} `}>
+    <div className=''>
         <Navbar/>
         <Section1/>
         <Section2/>

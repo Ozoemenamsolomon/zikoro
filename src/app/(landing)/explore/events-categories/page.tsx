@@ -1,21 +1,13 @@
 "use client"
 import React from 'react'
-import { Montserrat } from "next/font/google";
 import CategoryEvent from '@/components/explore/CategoryEvent'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
-const montserrat = Montserrat({
-    weight: [ '100', '300', '400', '500','600','700', '800'],
-    subsets: ['latin'],
-    display:'swap',
-    fallback: ['Arial', 'sans-serif'],
-  });
-
 export default function EventsCategories() {
    
     return (
-        <div  className={`${montserrat.className}`}>
+        <div  className=''>
             <Navbar/>
                 {/* header */}
                     <div className='px-1 lg:px-0 max-w-full lg:max-w-6xl mx-auto pb-12 mt-40 lg:mt-48'>
@@ -40,7 +32,7 @@ export default function EventsCategories() {
                                
                             </div>
 
-                            <div className='gap-5 flex justify-center items-center pt-12'>
+                            <div className='flex justify-center items-center mt-12'>
                                 <button className=' text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white'>
                                     See more
                                 </button>

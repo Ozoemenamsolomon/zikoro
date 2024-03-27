@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { Montserrat } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
@@ -11,12 +10,6 @@ import {
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
 import { CloseIcon } from "@/components/svg/Constants";
 
-const montserrat = Montserrat({
-  weight: ["100", "200", "400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-  fallback: ["Arial", "sans-serif"],
-});
 
 export default function FeaturedEvents() {
   const [searchBox, setSearchBox] = useState("");
@@ -60,7 +53,7 @@ export default function FeaturedEvents() {
   }
 
   return (
-    <div className={`${montserrat.className} `}>
+    <div className=''>
       {/* normal screen */}
       {!isFilterOpen && (
         <div>

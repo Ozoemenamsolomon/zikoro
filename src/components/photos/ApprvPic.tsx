@@ -52,7 +52,7 @@
 //   const del = async (imageId: number) => {
 //     try {
 //       const response = await fetch(
-//         "/api/fetchImages/fetchApprovedImages/deleteImage",
+//         "/api/photos/approved/delete",
 //         {
 //           method: "POST",
 //           headers: {
@@ -60,6 +60,21 @@
 //           },
 //           body: JSON.stringify({ imageId: imageId }),
 //         }
+//       );
+
+
+
+// const del = async (imageId: number) => {
+//     try {
+//       const response = await postRequest(
+//         {
+//             endpoint:  `/pictures/approved/delete`,
+//             payload: { image_id : imageId },
+//         }
+
+
+
+
 //       );
 
 //       if (response.ok) {
@@ -78,7 +93,7 @@
 //   const likeFunc = async (imageId: number) => {
 //     try {
 //       const response = await fetch(
-//         "/api/fetchImages/fetchApprovedImages/likeImage",
+//         "/api/photos/approved/like",
 //         {
 //           method: "POST",
 //           headers: {
@@ -111,7 +126,7 @@
 //   const reportImage = async (imageId: number) => {
 //     try {
 //       const response = await fetch(
-//         "/api/fetchImages/fetchApprovedImages/reportImage",
+//         "/api/photos/approved/report",
 //         {
 //           method: "POST",
 //           headers: {

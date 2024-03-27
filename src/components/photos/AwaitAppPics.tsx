@@ -28,7 +28,7 @@
 //   const autoApprove = async () => {
 //     toggler();
 
-//     fetch("/api/fetchImages/fetchAwaitingImages/autoApprove", {
+//     fetch("/api/photos/awaiting/autoapprove", {
 //       method: "POST",
 //       headers: {
 //         "Content-Type": "application/json",
@@ -38,7 +38,7 @@
 
 //   //Fetch Function
 //   async function fetchImageUrls() {
-//     fetch("/api/fetchImages/fetchAwaitingImages", {
+//     fetch("/api/photos/awaiting", {
 //       method: "GET",
 //       headers: {
 //         "Content-Type": "application/json",

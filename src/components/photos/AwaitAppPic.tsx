@@ -15,7 +15,7 @@
 //   const approve = async (imageId: number) => {
 //     try {
 //       const response = await fetch(
-//         "/api/fetchImages/fetchAwaitingImages/approvePhoto",
+//         "/api/photos/awaiting/approve",
 //         {
 //           method: "POST",
 //           headers: {
@@ -38,7 +38,7 @@
 //   const reject = async (imageId: number) => {
 //     try {
 //       const response = await fetch(
-//         "/api/fetchImages/fetchAwaitingImages/rejectPhoto",
+//         "/api/photos/awaiting/reject",
 //         {
 //           method: "POST",
 //           headers: {

@@ -1,14 +1,13 @@
-import React from "react"
+import React from "react";
 import "../globals.css";
 import type { Metadata } from "next";
 import { Inter, Heebo } from "next/font/google";
-import Sidebar from "../../components/Sidebar"
-import Topbar from "../../components/Topbar"
-import {AppWrapper} from "../../context"
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Sidebar from "../../components/Sidebar";
+import Topbar from "../../components/Topbar";
+import { PhotoModalWrapper } from "../../context";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-
 
 const inter = Inter({ subsets: ["latin"] });
 const heebo = Heebo({ subsets: ["latin"] });
@@ -30,16 +29,13 @@ export default function RootLayout({
           <Sidebar></Sidebar>
           <div className="flex-1">
             <Topbar></Topbar>
-              <AppWrapper>
-                {children}
-                <ToastContainer/>
-              </AppWrapper>
+            <PhotoModalWrapper>
+              {children}
+              <ToastContainer />
+            </PhotoModalWrapper>
           </div>
-          
         </body>
       </html>
-    
     </UserProvider>
   );
 }
-
