@@ -5,7 +5,6 @@ import {
   Form,
   FormField,
   Input,
-  InputOffsetLabel,
   Button,
   FormControl,
   FormItem,
@@ -25,9 +24,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { Eye } from "@styled-icons/feather/Eye";
 import { EyeOff } from "@styled-icons/feather/EyeOff";
-import {COUNTRY_CODE} from "@/utils"
+import { COUNTRY_CODE } from "@/utils";
 import { useOnboarding } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 export default function Page() {
   const { user } = useUser();
@@ -199,7 +199,8 @@ export default function Page() {
           <div className="flex items-center flex-wrap gap-x-2 text-[11px] sm:text-[13px] leading-5 w-full">
             {` By clicking on 'create account', you agree to`}{" "}
             <span className="text-basePrimary underline">{`Zikoro's Privacy Policy`}</span>{" "}
-            and <span className="text-basePrimary underline">Terms of Use.</span>
+            and{" "}
+            <span className="text-basePrimary underline">Terms of Use.</span>
           </div>
 
           <Button

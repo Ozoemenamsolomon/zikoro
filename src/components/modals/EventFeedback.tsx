@@ -4,7 +4,6 @@ import {
   Form,
   FormField,
   Textarea,
-  InputOffsetLabel,
   Button,
 } from "@/components";
 import { useForm } from "react-hook-form";
@@ -14,6 +13,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { eventFeedBackSchema } from "@/schemas";
 import { useEventFeedBack } from "@/hooks";
+import InputOffsetLabel from "../InputOffsetLabel";
 
 export function EventFeedBack({
   close,

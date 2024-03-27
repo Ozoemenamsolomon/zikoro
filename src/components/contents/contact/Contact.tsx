@@ -14,7 +14,6 @@ import {
   Form,
   FormField,
   Input,
-  InputOffsetLabel,
   Button,
   FormControl,
   FormItem,
@@ -24,6 +23,7 @@ import {
 } from "@/components";
 import { useForm } from "react-hook-form";
 import { useFetchSingleOrganization, getCookie, useUpdateEvent } from "@/hooks";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 function Contact({ eventId }: { eventId: string }) {
   const org = getCookie("currentOrganization");
