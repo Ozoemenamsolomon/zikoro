@@ -1,3 +1,4 @@
+"use client"
 import {
   TFilter,
   TFilterType,
