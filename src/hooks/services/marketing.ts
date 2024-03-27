@@ -1,3 +1,4 @@
+"use client"
 import { toast } from "@/components/ui/use-toast";
 import { TAffiliate, TAffiliateLink, TSentEmail } from "@/types/marketing";
 import { UseGetResult, usePostResult } from "@/types/request";

@@ -1,3 +1,4 @@
+"use client"
 import { toast } from "@/components/ui/use-toast";
 import { TAttendee } from "@/types/attendee";
 import {

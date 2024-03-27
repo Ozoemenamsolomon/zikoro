@@ -1,3 +1,4 @@
+"use client"
 import { toast } from "@/components/ui/use-toast";
 import { TBadgeTemplate, TBadge } from "@/types/badge";
 import { UseGetResult } from "@/types/request";
