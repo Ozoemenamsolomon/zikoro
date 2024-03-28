@@ -36,7 +36,8 @@ export type TFilterType =
   | "range"
   | "slider"
   | "dateSingle"
-  | "dateRange";
+  | "dateRange"
+  | "boolean";
 
 export type TOption = {
   label: string;

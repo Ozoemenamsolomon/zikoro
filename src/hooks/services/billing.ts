@@ -1,3 +1,4 @@
+"use client"
 import { toast } from "@/components/ui/use-toast";
 import { TEventTransaction } from "@/types/billing";
 import { RequestStatus } from "@/types/request";

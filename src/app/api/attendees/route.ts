@@ -8,19 +8,19 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      const { data, error: checkIfRegisteredError } = await supabase
-        .from("attendees")
-        .select("*")
-        .eq("email", params.email)
-        .eq("eventId", params.eventId)
-        .maybeSingle();
+      if (!params.id) {
+        const { data, error: checkIfRegisteredError } = await supabase
+          .from("attendees")
+          .select("*")
+          .eq("email", params.email)
+          .eq("eventId", params.eventId)
+          .maybeSingle();
 
-      if (checkIfRegisteredError) throw checkIfRegisteredError?.code;
-      if (data) throw "email error";
+        if (checkIfRegisteredError) throw checkIfRegisteredError?.code;
+        if (data) throw "email error";
+      }
 
-      const { error } = await supabase
-        .from("attendees")
-        .insert(params);
+      const { error } = await supabase.from("attendees").upsert(params);
       if (error) throw error.code;
 
       return NextResponse.json(
@@ -87,7 +87,8 @@ export async function GET(req: NextRequest) {
     try {
       const { data, error, status } = await supabase
         .from("attendees")
-        .select("*");
+        .select("*")
+        .order("registrationDate", { ascending: false });
 
       if (error) throw error;
 

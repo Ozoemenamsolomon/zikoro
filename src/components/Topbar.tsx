@@ -1,71 +1,73 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const links = [
-  {
-    name: "Content",
-    href: "content",
-  },
-  {
-    name: "People",
-    href: "people/all",
-  },
-  {
-    name: "Agenda",
-    href: "agenda",
-  },
-  {
-    name: "Partners",
-    href: "partners",
-  },
-  {
-    name: "Products",
-    href: "products",
-  },
-  {
-    name: "Interactions",
-    href: "interactions",
-  },
-  {
-    name: "Documents",
-    href: "documents",
-  },
-  {
-    name: "Analytics",
-    href: "analytics",
-  },
-  {
-    name: "Settings",
-    href: "settings",
-  },
-];
+const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
+  const pathname = usePathname();
+  //const currentLink = pathnames[pathnames.length - 2];
 
-const Topbar = () => {
-  const pathnames = usePathname().split("/");
-  const currentLink = pathnames[pathnames.length - 2];
+  const links = [
+    {
+      name: "Reception",
+      href: `${eventId}/home`,
+    },
+    {
+      name: "Contents",
+      href: `${eventId}/content/info`,
+    },
+    {
+      name: "People",
+      href: `${eventId}/people/all`,
+    },
+    {
+      name: "Agenda",
+      href: `${eventId}/agenda`,
+    },
+    {
+      name: "Partners",
+      href: `${eventId}/partners?p=sponsors`,
+    },
+    {
+      name: "Market Place",
+      href: `${eventId}/market-place/jobs`,
+    },
+
+    {
+      name: "Interactions",
+      href: `${eventId}/interaction/stamp-card`,
+    },
+    {
+      name: "Analytics",
+      href: `${eventId}/analytics`,
+    },
+    {
+      name: "Settings",
+      href: `${eventId}/settings`,
+    },
+  ];
 
   return (
-    <nav className="bg-white w-full sticky top-0 px-4 pt-4 h-max border-b-[1px]">
-      <ul className="flex justify-between text-gray-700">
-        {links.map(({ name, href }) => {
-          return (
-            <li
-              className={`pb-1 text-sm ${
-                currentLink === href
-                  ? "text-basePrimary border-b-2 border-basePrimary font-medium"
-                  : ""
-              }`}
-            >
-              <Link href={"/" + href}>{name}</Link>
-            </li>
-          );
-        })}
-      </ul>
+    <nav className="w-full overflow-x-auto no-scrollbar">
+      <div className="bg-white min-w-[900px] px-4 pt-2 h-max border-b">
+        <ul className="flex justify-between text-gray-700">
+          {links.map(({ name, href }) => {
+            return (
+              <li
+                className={`pb-1 text-sm ${
+                  pathname.includes(`${href.split("/")[1]}`)
+                    ? "text-basePrimary border-b-2 border-basePrimary font-medium"
+                    : ""
+                }`}
+              >
+                <Link href={`/event/${href}`}>{name}</Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </nav>
   );
 };
 
-export default Topbar;
+export { Topbar };

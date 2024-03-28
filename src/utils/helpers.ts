@@ -1,3 +1,7 @@
+import { TAttendee } from "@/types/attendee";
+import { TAttendeeCertificate } from "@/types/certificates";
+import { Event } from "@/types/events";
+import { TOrganization } from "@/types/organization";
 import * as crypto from "crypto";
 
 export function extractUniqueTypes<T>(
@@ -71,7 +75,8 @@ export function generateAlphanumericHash(length?: number): string {
 export function createHash(data: string): string {
   const hash = crypto.createHash("sha256");
   hash.update(data);
-  return hash.digest("hex");
+  const fullHash = hash.digest("hex");
+  return fullHash.substring(0, 8);
 }
 
 export function getProperty<T>(obj: T, key: keyof T): any {
@@ -188,4 +193,58 @@ export function base64ToFile(base64Data: string, fileName: string): File {
   const blob = new Blob([byteArray], { type: "image/png" });
 
   return new File([blob], fileName, { type: "image/png" });
+}
+
+type Context = {
+  certificate: TAttendeeCertificate;
+  attendee: TAttendee;
+  event: Event;
+  organization: TOrganization;
+};
+
+export function replaceSpecialText(input: string, context: Context): string {
+  console.log(input, "this is the input");
+  const pattern = /#{(.*?)#}/g;
+
+  if (pattern.test(input)) {
+    console.log("String contains the pattern.");
+  } else {
+    console.log("String does not contain the pattern.");
+  }
+
+  return input.replaceAll(/#{(.*?)#}/g, (match, value) => {
+    console.log(value);
+    switch (value.trim()) {
+      case "first_name":
+        return context.attendee.firstName;
+      case "last_name":
+        return context.attendee.lastName;
+      case "attendee_email":
+        return context.attendee.email;
+      case "attendee_job":
+        return context.attendee.jobTitle || "";
+      case "attendee_position":
+        return context.attendee.organization || "";
+      case "attendee_id":
+        return String(context.attendee.id);
+      case "event_name":
+        return context.event.eventTitle;
+      case "city":
+        return context.event.eventCity || "";
+      case "country":
+        return context.event.eventCountry || "";
+      case "start_date":
+        return context.event.startDateTime || "";
+      case "end_date":
+        return context.event.endDateTime || "";
+      case "organization_name":
+        return context.organization.organizationName;
+      case "organisation_logo":
+        return context.organization.organizationLogo || "";
+      case "certificate_id":
+        return context.certificate.certificateId || "";
+      default:
+        return match; // Return the original string if no matching value found
+    }
+  });
 }

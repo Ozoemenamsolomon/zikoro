@@ -1,3 +1,4 @@
+"use client"
 import { toast } from "@/components/ui/use-toast";
 import { TFavouriteContact } from "@/types/favourites";
 import { RequestStatus } from "@/types/request";

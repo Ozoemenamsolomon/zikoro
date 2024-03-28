@@ -1,3 +1,4 @@
+"use client"
 import { toast } from "@/components/ui/use-toast";
 import { TAttendee, TAttendeeEmailInvites } from "@/types/attendee";
 import { RequestStatus } from "@/types/request";
@@ -107,6 +108,36 @@ export const useGetAttendees = () => {
   }, []);
 
   return { attendees, isLoading, error, getAttendees };
+};
+
+export const useGetAttendee = ({ attendeeId }: { attendeeId: string }) => {
+  const [attendee, setAttendee] = useState<TAttendee | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendee = async () => {
+    try {
+      setLoading(true);
+      const { data, status } = await getRequest<TAttendee>({
+        endpoint: `/attendees/${attendeeId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setAttendee(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendee();
+  }, [attendeeId]);
+
+  return { attendee, isLoading, error, getAttendee };
 };
 
 export const useGetAttendeesWithTags = () => {

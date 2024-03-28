@@ -1,11 +1,21 @@
 "use client";
+
 import React from "react";
 import Link from "next/link";
-import { links } from "./Sidebar";
+import { links } from "@/constants";
 import { usePathname } from "next/navigation";
+import { cn } from "@/lib";
+import { Button } from "@/components";
 
-export const NavLinks = () => {
+export const NavLinks = ({
+  query,
+  id
+}: {
+  id: string | string[];
+  query: string | null;
+}) => {
   const pathname = usePathname();
+
   return (
     <div className="flex flex-col gap gap-4">
       {links.map(({ href, name, icon: Icon },i) => {
@@ -24,6 +34,6 @@ export const NavLinks = () => {
           </Link>
         );
       })}
-    </div>
+    </ul>
   );
 };

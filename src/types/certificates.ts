@@ -1,6 +1,7 @@
 import { TAttendee } from "@/types/attendee";
 import { SerializedNodes } from "@craftjs/core";
 import { TEvent } from "./events";
+import { TOrganization } from "./organization";
 
 export type TAttendeeCertificate = {
   id?: number;
@@ -22,11 +23,13 @@ export interface TCertificateSettings {
     trackAttendees: boolean;
     sessionAttendees: boolean;
     quizParticipants: boolean;
+    exceptions?: number[];
   };
   criteria: number;
   canExpire: boolean;
   expiryDate: Date;
-  skills: string[];
+  skills: { color: string; value: string }[];
+  publishOn: Date;
 }
 
 export interface TCertificateDetails {
@@ -40,13 +43,16 @@ export interface TCertificate {
   eventId: number;
   certificateName: string;
   certficateDetails: TCertificateDetails;
-  certificateSettings?: TCertificateSettings;
+  certificateSettings: TCertificateSettings;
   cerificateUrl?: string;
   event?: TEvent;
+  lastEdited: Date;
 }
 
 export type TFullCertificate = TAttendeeCertificate & {
-  certificate: TCertificate;
+  originalCertificate: TCertificate & {
+    event: TEvent & { organization: TOrganization };
+  };
   attendee: TAttendee;
 };
 
@@ -55,6 +61,8 @@ export interface CertificateTemplate {
   created_at: Date;
   templateName: string;
   templateUrl: string;
+  certificateTemplate: string;
   category: string;
   figmaName: string;
+  colour: string;
 }

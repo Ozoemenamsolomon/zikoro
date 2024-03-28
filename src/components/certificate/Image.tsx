@@ -54,7 +54,7 @@ const Image = ({ width, height, src, pageX, pageY }: ImageProps) => {
       <div
         ref={(ref) => ref && connect(ref)}
         onClick={() => selected && setEditable(true)}
-        className="cursor-move"
+        className="cursor-move w-fit h-fit"
       >
         <div
           style={{ width: width + "px", height: height + "px" }}
@@ -102,7 +102,8 @@ const ImageSettings = () => {
           className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-[50px] border-0"
           onInput={(e) => {
             setProp(
-              (props: ImageProps) => (props.width = parseInt(e.currentTarget.value)),
+              (props: ImageProps) =>
+                (props.width = parseInt(e.currentTarget.value)),
               500
             );
           }}
@@ -130,7 +131,8 @@ const ImageSettings = () => {
           className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-[50px] border-0"
           onInput={(e) => {
             setProp(
-              (props: ImageProps) => (props.height = parseInt(e.currentTarget.value)),
+              (props: ImageProps) =>
+                (props.height = parseInt(e.currentTarget.value)),
               500
             );
           }}

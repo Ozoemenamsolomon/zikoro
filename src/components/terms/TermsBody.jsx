@@ -319,6 +319,66 @@ export default function TermsBody() {
         </div>
 
         <div className="mt-[50px]">
+          <p className="text-xl lg:text-3xl font-bold ">4. USER REGISTRATION</p>
+          <p className="text-base lg:text-xl font-normal mt-6">
+            You may be required to register to use the Services. You agree to
+            keep your password confidential and will be responsible for all use
+            of your account and password. We reserve the right to remove,
+            reclaim, or change a username you select if we determine, in our
+            sole discretion, that such username is inappropriate, obscene, or
+            otherwise objectionable.
+          </p>
+        </div>
+
+        <div className="mt-[50px]">
+          <p className="text-xl lg:text-3xl font-bold ">4. USER REGISTRATION</p>
+          <p className="text-base lg:text-xl font-normal mt-6">
+            You may be required to register to use the Services. You agree to
+            keep your password confidential and will be responsible for all use
+            of your account and password. We reserve the right to remove,
+            reclaim, or change a username you select if we determine, in our
+            sole discretion, that such username is inappropriate, obscene, or
+            otherwise objectionable.
+          </p>
+        </div>
+
+        <div className="mt-[50px]">
+          <p className="text-xl lg:text-3xl font-bold ">4. USER REGISTRATION</p>
+          <p className="text-base lg:text-xl font-normal mt-6">
+            You may be required to register to use the Services. You agree to
+            keep your password confidential and will be responsible for all use
+            of your account and password. We reserve the right to remove,
+            reclaim, or change a username you select if we determine, in our
+            sole discretion, that such username is inappropriate, obscene, or
+            otherwise objectionable.
+          </p>
+        </div>
+
+        <div className="mt-[50px]">
+          <p className="text-xl lg:text-3xl font-bold ">4. USER REGISTRATION</p>
+          <p className="text-base lg:text-xl font-normal mt-6">
+            You may be required to register to use the Services. You agree to
+            keep your password confidential and will be responsible for all use
+            of your account and password. We reserve the right to remove,
+            reclaim, or change a username you select if we determine, in our
+            sole discretion, that such username is inappropriate, obscene, or
+            otherwise objectionable.
+          </p>
+        </div>
+
+        <div className="mt-[50px]">
+          <p className="text-xl lg:text-3xl font-bold ">4. USER REGISTRATION</p>
+          <p className="text-base lg:text-xl font-normal mt-6">
+            You may be required to register to use the Services. You agree to
+            keep your password confidential and will be responsible for all use
+            of your account and password. We reserve the right to remove,
+            reclaim, or change a username you select if we determine, in our
+            sole discretion, that such username is inappropriate, obscene, or
+            otherwise objectionable.
+          </p>
+        </div>
+
+        <div className="mt-[50px]">
           <p className="text-xl lg:text-3xl font-bold ">
             9. CONTRIBUTION LICENCE
           </p>
