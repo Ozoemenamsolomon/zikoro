@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { TextEditor } from "@/components/TextEditor";
+// import { TextEditor } from "@/components/TextEditor";
 
 
 export default function Create() {

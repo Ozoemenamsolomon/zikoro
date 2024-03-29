@@ -34,6 +34,6 @@ export const NavLinks = ({
           </Link>
         );
       })}
-    </ul>
+    </div>
   );
 };

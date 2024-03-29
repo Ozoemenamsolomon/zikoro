@@ -3,11 +3,11 @@ import "../globals.css";
 import type { Metadata } from "next";
 import { Inter, Heebo } from "next/font/google";
 import Sidebar from "../../components/Sidebar";
-import Topbar from "../../components/Topbar";
-import { PhotoModalWrapper } from "../../context";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
+import { PhotoModalWrapper } from "@/context/PhotoModalContext";
+import { Topbar } from "@/components";
 
 const inter = Inter({ subsets: ["latin"] });
 const heebo = Heebo({ subsets: ["latin"] });
@@ -28,7 +28,7 @@ export default function RootLayout({
         <body className={`${inter.className} ${heebo.className} flex`}>
           <Sidebar></Sidebar>
           <div className="flex-1">
-            <Topbar></Topbar>
+            <Topbar />
             <PhotoModalWrapper>
               {children}
               <ToastContainer />
