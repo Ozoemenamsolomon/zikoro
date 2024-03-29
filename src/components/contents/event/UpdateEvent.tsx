@@ -27,10 +27,11 @@ import {
   Form,
   FormField,
   Input,
-  InputOffsetLabel,
   Button,
   ReactSelect,
 } from "@/components";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
+
 import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
 import { TIME_ZONES } from "@/utils";

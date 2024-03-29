@@ -1,11 +1,7 @@
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
-import {
-  Form,
-  FormField,
-  Input,
-  InputOffsetLabel,
-  Button
-} from "@/components";
+import { Form, FormField, Input, Button } from "@/components";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
+
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -18,12 +14,12 @@ export function CreateReward({
   close,
   eventId,
   eventName,
-  refetch
+  refetch,
 }: {
   eventId: string;
   eventName?: string;
   close: () => void;
-  refetch:()=> Promise<any>
+  refetch: () => Promise<any>;
 }) {
   const form = useForm<z.infer<typeof rewardSchema>>({
     resolver: zodResolver(rewardSchema),
@@ -39,7 +35,7 @@ export function CreateReward({
       eventId,
       eventName,
     });
-    refetch()
+    refetch();
   }
   return (
     <div
