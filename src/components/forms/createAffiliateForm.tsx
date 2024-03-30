@@ -1,4 +1,6 @@
 // import { DialogClose } from "../ui/dialog";
+"use client"
+
 import React from "react";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { Button } from "@/components/ui/button";

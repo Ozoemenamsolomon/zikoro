@@ -1,3 +1,5 @@
+"use client"
+
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import {
   Form,
