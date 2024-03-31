@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { HexColorPicker } from "react-colorful";
 import { cn } from "@/lib/utils";
+import { dancingScript, inter, lato, roboto } from "@/utils/fonts";
 
 export interface Textprops {
   isBold?: boolean;
@@ -114,7 +115,6 @@ const Text = ({
             lineHeight: `${fontSize ? fontSize + 4 : 18}px`,
             textAlign,
             color,
-            fontFamily,
             fontWeight: isBold ? 600 : 400,
             fontStyle: isItalic ? "italic" : "normal",
             textDecoration: isUnderline ? "underline" : "none",
@@ -122,7 +122,10 @@ const Text = ({
             padding: "0px !important",
             width: "fit-content",
           }}
-          className={cn(selected && "border-2 border-sky-400 !p-0 w-fit")}
+          className={cn(
+            fontFamily,
+            selected && "border-2 border-sky-400 !p-0 w-fit"
+          )}
         />
       </div>
     </Draggable>
@@ -376,16 +379,17 @@ const TextSettings = () => {
                 setProp((props: Textprops) => (props.fontFamily = value))
               }
             >
-              <DropdownMenuRadioItem value="serif">Serif</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="sans-serif">
-                San-Serif
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="Roboto">
+              <DropdownMenuRadioItem value="">Serif</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value={roboto.className}>
                 Roboto
               </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="Inter">Inter</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="Lato">Lato</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="DancingScript">
+              <DropdownMenuRadioItem value={inter.className}>
+                Inter
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value={lato.className}>
+                Lato
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value={dancingScript.className}>
                 Dancing script
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
