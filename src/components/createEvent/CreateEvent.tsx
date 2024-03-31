@@ -19,6 +19,7 @@ import { COUNTRY_CODE } from "@/utils";
 import { useCreateEvent } from "@/hooks";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import InputOffsetLabel from "../InputOffsetLabel";
 
 export default function CreateEvent({
   organizationId,
