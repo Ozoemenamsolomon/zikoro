@@ -1,6 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
-import { Inter, Heebo } from "next/font/google";
+import { Inter, Heebo,  } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { ToastContainer } from "react-toastify";
