@@ -4,7 +4,7 @@ import { TAttendee, TAttendeeEmailInvites } from "@/types/attendee";
 import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
-
+import { getCookie } from "@/hooks";
 
 export const useCreateAttendee = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
