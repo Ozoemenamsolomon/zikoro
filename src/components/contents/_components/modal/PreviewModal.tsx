@@ -47,7 +47,7 @@ export function PreviewModal({ close, eventDetail }: {eventDetail?: Event; close
         <Form {...form}>
           <form className="flex items-start w-full flex-col gap-y-3">
             <p className="text-mobile sm:text-sm">{`Open link to preview ${
-              event?.eventName ?? ""
+              eventDetail?.eventTitle || event?.eventName || ""
             }`}</p>
             <FormField
               control={form.control}
@@ -80,7 +80,7 @@ export function PreviewModal({ close, eventDetail }: {eventDetail?: Event; close
             <div className="w-full flex mt-6 items-center justify-between">
               <p className="text-xs sm:text-sm flex flex-col items-start ">
                <span> Scan QRCode to preview</span>
-                <span className="font-semibold capitalize">{eventDetail?.eventTitle || event?.eventName ?? ""}</span>
+                <span className="font-semibold capitalize">{eventDetail?.eventTitle  || event?.eventName || ""}</span>
               </p>
               <QRCode
                 size={150}
