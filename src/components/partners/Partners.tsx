@@ -20,24 +20,16 @@ import { TExPartner } from "@/types";
 import { useFilter } from "@/hooks";
 import _ from "lodash";
 import { cn } from "@/lib";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 
 type FormValue = {
   search: string;
 };
 
 export function Partners({ eventId }: { eventId: string }) {
-  const [locations, selectedLocations] = useState<string[]>([]);
-  const [industries, selectedIndustries] = useState<string[]>([]);
-  const [isLocationDropDown, setShowLocationDropDown] = useState(false);
-  const [isIndustryDropDown, setShowIndustryDropDown] = useState(false);
-  const [isStamp, setIsStamp] = useState(false);
   const { data, loading, refetch } = useFetchPartners(eventId);
   const search = useSearchParams();
   const query = search.get("p");
-  const [partnerData, setPartnerData] = useState<TPartner[] | undefined>(
-    undefined
-  );
+ 
 
   const partnersFilter: TFilter<TExPartner>[] = [
     {

@@ -11,7 +11,6 @@ import { Download } from "@styled-icons/bootstrap/Download";
 import { Eye } from "@styled-icons/feather/Eye";
 import { Check2 } from "@styled-icons/bootstrap/Check2";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
-
 import { Camera } from "@styled-icons/feather/Camera";
 import { COUNTRY_CODE } from "@/utils";
 import TextEditor from "@/components/TextEditor";
@@ -34,6 +33,7 @@ import {
 import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
 import { TIME_ZONES } from "@/utils";
+import { PreviewModal } from "../_components/modal/PreviewModal";
 
 interface ImageFile {
   url: string | undefined;
@@ -53,7 +53,7 @@ export default function UpdateEvent({
   }: { data: any; loading: boolean; refetch: () => Promise<null | undefined> } =
     useFetchSingleEvent(eventId);
   const { loading: updating, update } = useUpdateEvent();
-
+  const [isOpen, setOpen] = useState(false)
   const form = useForm<z.infer<typeof updateEventSchema>>({
     resolver: zodResolver(updateEventSchema),
     defaultValues: {
@@ -68,6 +68,10 @@ export default function UpdateEvent({
       ],
     },
   });
+
+  function onClose() {
+    setOpen((prev) => !prev)
+  }
 
   const [eventPosterArr, setEventPosterArr] = useState([] as ImageFile[]);
   const { fields, append, remove } = useFieldArray({
@@ -239,7 +243,7 @@ export default function UpdateEvent({
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      window.open(`/preview/${eventId}`, "_blank");
+                     onClose()
                     }}
                     className="text-gray-50 bg-basePrimary gap-x-2"
                   >
@@ -677,6 +681,7 @@ export default function UpdateEvent({
             <LoaderAlt size={48} className="animate-spin" />
           </div>
         )}
+        {isOpen && <PreviewModal close={onClose}/>}
       </>
     </DateAndTimeAdapter>
   );

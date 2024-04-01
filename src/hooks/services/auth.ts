@@ -8,7 +8,6 @@ import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { getUser } from "../../actions/users";
 import Cookies from "js-cookie";
-import { redirect } from "next/navigation";
 import { UserProfile } from "@auth0/nextjs-auth0/client";
 import { useUser } from "@auth0/nextjs-auth0/client";
 
@@ -47,6 +46,7 @@ export function useOnboarding() {
     user: UserProfile | undefined
   ) {
     setLoading(true);
+   
     try {
       const { error, status } = await supabase.from("users").upsert([
         {
@@ -64,7 +64,7 @@ export function useOnboarding() {
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        router.push("/auth/login");
+        router.push("/api/auth/login");
         toast({description:"Profile Updated successfully"});
       }
     } catch (error) {}
@@ -110,6 +110,7 @@ export function useLogin() {
 
 export function useValidateUser() {
   const { user, error } = useUser();
+  const router = useRouter()
 
   // using this to redirect new users to onboarding
   // before modiifcation from the TL
@@ -118,7 +119,8 @@ export function useValidateUser() {
     async function verifyUser() {
       console.log({user})
       if (user && user?.isFirstLogin) {
-        redirect("/onboarding");
+       
+        router.push("/onboarding");
       } else if (user?.email) {
         const userDetails = await getUser(user.email);
         saveCookie("user", userDetails);

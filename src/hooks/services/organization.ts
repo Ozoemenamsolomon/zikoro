@@ -1,3 +1,5 @@
+"use client"
+
 import { TOrganization } from "@/types/organization";
 import { toast } from "@/components/ui/use-toast";
 import { getRequest, postRequest } from "@/utils/api";

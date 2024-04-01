@@ -205,7 +205,7 @@ export function BookEvent({
       attendees: fields?.length,
       discountValue: discount,
       referralSource: social,
-      code,
+      discountCode: code,
       currency,
       registrationCompleted: false,
       ticketCategory: priceCategory,
