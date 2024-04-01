@@ -1,4 +1,4 @@
-import { NavLinkType } from "@/types";
+import { AdminNavLinkType, NavLinkType } from "@/types";
 
 export function HomeIcon({ color }: { color: string }) {
   return (
@@ -414,8 +414,6 @@ export function SocialWallIcon() {
   );
 }
 
-
-
 export function RewardIcon() {
   return (
     <svg width="29" height="28" viewBox="0 0 29 28" fill="none">
@@ -599,7 +597,7 @@ export const links: NavLinkType[] = [
   {
     name: "Home",
     icon: HomeIcon,
-    href: "/",
+    href: "/home",
   },
   {
     name: "Events",
@@ -642,7 +640,6 @@ export const links: NavLinkType[] = [
     icon: OrganizationIcon,
     href: "/organization",
   },
-
 ];
 
 /**
@@ -652,3 +649,36 @@ export const links: NavLinkType[] = [
     href: "/events",
   },
  */
+export const adminLinks: AdminNavLinkType[] = [
+  {
+    name: "Events",
+    image: "/images/a_event.svg",
+    href: "events",
+  },
+  {
+    name: "Payout",
+    image: "/images/a_payout.svg",
+    href: "payout",
+  },
+
+  {
+    name: "Affliliate",
+    image: "/images/a_affiliate.svg",
+    href: "affiliate",
+  },
+  {
+    name: "Contacts",
+    image: "/images/a_contact.svg",
+    href: "contacts",
+  },
+  {
+    name: "Blog",
+    image: "/images/a_blog.svg",
+    href: "blog",
+  },
+  {
+    name: "Certificates",
+    image: "/images/a_certificate.svg",
+    href: "certificates",
+  },
+];

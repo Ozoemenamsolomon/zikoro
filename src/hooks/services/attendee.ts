@@ -4,6 +4,7 @@ import { TAttendee, TAttendeeEmailInvites } from "@/types/attendee";
 import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
+import {getCookie} from "@/hooks"
 
 export const useCreateAttendee = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -88,7 +89,7 @@ export const useGetAttendees = () => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-
+  const user = getCookie("user");
   const getAttendees = async () => {
     setLoading(true);
 
@@ -100,7 +101,9 @@ export const useGetAttendees = () => {
 
     if (status !== 200) return setError(true);
 
-    return setAttendees(data.data);
+    // 
+    const filtered = data?.data?.filter(({email}) => email === user?.email)
+    return setAttendees(filtered);
   };
 
   useEffect(() => {

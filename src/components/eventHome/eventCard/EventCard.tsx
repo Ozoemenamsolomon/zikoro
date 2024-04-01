@@ -9,18 +9,12 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { Users } from "@styled-icons/fa-solid/Users";
 import { Dot } from "@styled-icons/bootstrap/Dot";
 import { Edit } from "@styled-icons/boxicons-solid/Edit";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { AboutWidget, EventLocationType } from "@/components/composables";
 import { Event } from "@/types";
 import { DeleteEventModal } from "..";
-import {
-  formatDate,
-  formatTime,
-  dateFormatting,
-  COUNTRIES_CURRENCY,
-} from "@/utils";
-import { useDuplicateEvent } from "@/hooks";
-import { useRouter } from "next/navigation";
+import { useDuplicateEvent, useFormatEventData } from "@/hooks";
+import { saveCookie } from "@/hooks";
 
 export function EventCard({
   event,
@@ -30,68 +24,30 @@ export function EventCard({
   event: Event;
 }) {
   const [isAction, setAction] = useState(false);
-  const router = useRouter();
+  const {
+    startDate,
+    endDate,
+    startTime,
+    endTime,
+    currency,
+    removeComma,
+    createdAt,
+    price,
+  } = useFormatEventData(event);
 
   function onClose() {
     setAction((prev) => !prev);
   }
 
-  const startDate = useMemo(
-    () => formatDate(event?.startDateTime ?? "0"),
-    [event?.startDateTime ?? "0"]
-  );
-  const endDate = useMemo(
-    () => formatDate(event?.endDateTime ?? "0"),
-    [event?.endDateTime ?? "0"]
-  );
-
-  const startTime = useMemo(
-    () => formatTime(event?.startDateTime ?? "0"),
-    [event?.startDateTime ?? "0"]
-  );
-  const endTime = useMemo(
-    () => formatTime(event?.endDateTime ?? "0"),
-    [event?.endDateTime ?? "0"]
-  );
-
-  const createdAt = useMemo(
-    () => dateFormatting(event?.createdAt ?? "0"),
-    [event?.createdAt ?? "0"]
-  );
-
-  const removeComma = useMemo(() => {
-    return event.eventCity === null || event.eventCountry === null;
-  }, [event.eventCity, event.eventCountry]);
-
-  const currency = useMemo(() => {
-    if (event?.pricingCurrency) {
-      const symbol =
-        COUNTRIES_CURRENCY.find(
-          (v) => String(v.code) === String(event?.pricingCurrency)
-        )?.symbol || "₦";
-      return symbol;
-    }
-  }, [event?.pricingCurrency]);
-
-  const price = useMemo(() => {
-    if (Array.isArray(event?.pricing)) {
-      const prices = event?.pricing?.map(({ price }) => Number(price));
-      const standardPrice = prices.reduce((lowestPrice, currentPrice) => {
-        return currentPrice < lowestPrice ? currentPrice : lowestPrice;
-      }, prices[0]);
-
-      return Number(standardPrice)?.toLocaleString(undefined, {
-        maximumFractionDigits: 0,
-      });
-    } else {
-      return "";
-    }
-  }, [event?.pricing]);
+  function goToEvent() {
+    saveCookie("currentEvent", {eventId: event?.id, eventName: event?.eventTitle})
+    window.open(`/event/${event?.id}/content/info`, "_blank");
+  }
 
   return (
     <div
       role="button"
-      onClick={() => window.open(`/event/${event?.id}/content/info`, "_blank")}
+      onClick={goToEvent}
       className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4  w-full"
     >
       <div className="w-full flex items-center justify-between">

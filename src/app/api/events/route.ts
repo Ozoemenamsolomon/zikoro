@@ -2,14 +2,17 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest, ) {
   const supabase = createRouteHandlerClient({ cookies });
+
 
   if (req.method === "GET") {
     try {
+      
       const { data, error, status } = await supabase
         .from("events")
-        .select("*, organization!inner(*)");
+        .select("*, organization!inner(*)")
+      
 
       if (error) throw error;
 

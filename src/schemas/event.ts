@@ -5,13 +5,7 @@ export const attendeeValidationSchema = z.array(
     email: z
       .string()
       .email({ message: "Email must be a valid email" })
-      .refine(
-        (value) =>
-          value && /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/.test(value),
-        {
-          message: "Invalid email address",
-        }
-      ),
+    ,
     firstName: z.string().min(3, { message: "First Name is required" }),
     lastName: z.string().min(3, { message: "Last Name is required" }),
     phoneNumber: z
@@ -93,3 +87,13 @@ export const rewardSchema = z.object({
   quantity: z.string().min(1, { message: "Quantity is required" }),
   point: z.string().min(1, { message: "Point is required" }),
 });
+
+/**
+   .refine(
+        (value) =>
+          value && /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/.test(value),
+        {
+          message: "Invalid email address",
+        }
+      )
+ */

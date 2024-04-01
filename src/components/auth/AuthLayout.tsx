@@ -9,7 +9,7 @@ export function AuthLayout({ children, className, containerClassName }: { childr
       <div className={cn("w-[95%] sm:w-[500px] h-fit max-h-[85%] m-auto inset-0 absolute ", className)}>
         <div className="w-full flex items-center justify-center mb-4">
           <Image
-            src={"/images/zikoro.png"}
+            src={"/logo.png"}
             alt="logo"
             width={300}
             height={200}
