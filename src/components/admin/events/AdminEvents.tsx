@@ -14,7 +14,7 @@ import { Edit } from "@styled-icons/boxicons-solid/Edit";
 import { AboutWidget, EventLocationType } from "@/components/composables";
 import { Event } from "@/types";
 import { PreviewModal } from "../../contents/_components/modal/PreviewModal";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useFormatEventData } from "@/hooks";
 import { Download } from "@styled-icons/bootstrap/Download";
 import { Eye } from "@styled-icons/feather/Eye";
