@@ -34,7 +34,7 @@ export function SideBarLayout() {
   }
 
   // validate user
-  // useValidateUser();
+   useValidateUser();
 
   function onClose() {
     setNav((nav) => !nav);

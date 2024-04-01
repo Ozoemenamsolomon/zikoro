@@ -13,7 +13,7 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 export function UserCertificates() {
   const { certificates, isLoading } = useGetCertificates();
   return (
-    <div className="w-full xl:col-span-5 bg-white shadow rounded-lg pb-6">
+    <div className="w-full xl:col-span-5 h-full bg-white shadow rounded-lg pb-6">
       <h2 className="font-semibold text-base sm:text-lg p-4">Certificates</h2>
       <div className="w-full grid grid-cols-1 px-4 md:grid-cols-2 items-center gap-4  mt-3 ">
         {isLoading && 

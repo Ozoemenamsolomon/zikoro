@@ -19,8 +19,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { TriangleDown } from "@styled-icons/entypo/TriangleDown";
 import { getCookie } from "@/hooks";
+import {Event} from "@/types"
 
-export function PreviewModal({ close }: { close: () => void }) {
+export function PreviewModal({ close, eventDetail }: {eventDetail?: Event; close: () => void }) {
   const form = useForm({});
   const event = getCookie("currentEvent");
 
@@ -45,7 +46,7 @@ export function PreviewModal({ close }: { close: () => void }) {
         </div>
         <Form {...form}>
           <form className="flex items-start w-full flex-col gap-y-3">
-            <p className="text-mobile sm:text-sm">{`Open Link to Access ${
+            <p className="text-mobile sm:text-sm">{`Open link to preview ${
               event?.eventName ?? ""
             }`}</p>
             <FormField
@@ -58,9 +59,9 @@ export function PreviewModal({ close }: { close: () => void }) {
                   </FormLabel>
                   <div className="flex absolute top-3 right-3 items-center gap-x-2">
                     <CopyLink
-                      link={`${window.location.origin}/preview/${event?.eventId}`}
+                      link={`${window.location.origin}/preview/${eventDetail?.id ||event?.eventId }`}
                     />
-                    <Link target="_blank" href={`/preview/${event?.eventId}`}>
+                    <Link target="_blank" href={`/preview/${eventDetail?.id || event?.eventId}`}>
                       <ExternalLinkOutline size={16} />
                     </Link>
                   </div>
@@ -68,7 +69,7 @@ export function PreviewModal({ close }: { close: () => void }) {
                     <Input
                       type="text"
                       placeholder=""
-                      defaultValue={`${window.location.origin}/preview/${event?.eventId}`}
+                      defaultValue={`${window.location.origin}/preview/${eventDetail?.id || event?.eventId}`}
                       readOnly
                       className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
                     />
@@ -77,12 +78,13 @@ export function PreviewModal({ close }: { close: () => void }) {
               )}
             />
             <div className="w-full flex mt-6 items-center justify-between">
-              <p className="text-xs sm:text-sm">{`Scan QRCode to preview ${
-                event?.eventName ?? ""
-              }`}</p>
+              <p className="text-xs sm:text-sm flex flex-col items-start ">
+               <span> Scan QRCode to preview</span>
+                <span className="font-semibold capitalize">{eventDetail?.eventTitle || event?.eventName ?? ""}</span>
+              </p>
               <QRCode
                 size={150}
-                value={`${window.location.origin}/preview/${event?.eventId}`}
+                value={`${window.location.origin}/preview/${eventDetail?.id || event?.eventId}`}
               />
             </div>
 

@@ -13,6 +13,7 @@ import { Dot } from "@styled-icons/bootstrap/Dot";
 import { Edit } from "@styled-icons/boxicons-solid/Edit";
 import { AboutWidget, EventLocationType } from "@/components/composables";
 import { Event } from "@/types";
+import { PreviewModal } from "../../contents/_components/modal/PreviewModal";
 import { useMemo } from "react";
 import { useFormatEventData } from "@/hooks";
 import { Download } from "@styled-icons/bootstrap/Download";
@@ -30,14 +31,14 @@ export default function AdminEvents() {
   const query = search.get("e");
 
   const eventData = useMemo(() => {
-    if (query === "preview") {
+    if (query === "preview" || !query) {
       return data?.filter(({ published }) => !published);
     } else if (query === "published") {
       return data?.filter(({ published }) => published);
     } else {
       return data?.filter(({ published }) => !published);
     }
-  }, [data]);
+  }, [data, query]);
   return (
     <EventLayout>
       {loading && (
@@ -56,6 +57,7 @@ export default function AdminEvents() {
 }
 
 function EventCard({ event, query }: { event: Event; query: string | null }) {
+  const [isOpen, setOpen] = useState(false)
   const {
     startDate,
     endDate,
@@ -66,7 +68,12 @@ function EventCard({ event, query }: { event: Event; query: string | null }) {
     createdAt,
     price,
   } = useFormatEventData(event);
+
+  function onClose() {
+    setOpen((prev) =>!prev);
+  }
   return (
+    <>
     <div
       role="button"
       //   onClick={goToEvent}
@@ -152,7 +159,7 @@ function EventCard({ event, query }: { event: Event; query: string | null }) {
         <div className="py-4 w-full border-t  p-4 flex items-center gap-x-2">
           <Button
             // type="submit"
-
+            onClick={onClose}
             className="text-gray-50 bg-basePrimary gap-x-2"
           >
             <Eye size={22} />
@@ -173,5 +180,7 @@ function EventCard({ event, query }: { event: Event; query: string | null }) {
         </div>
       )}
     </div>
+    {isOpen && <PreviewModal close={onClose}  eventDetail={event}/>}
+    </>
   );
 }

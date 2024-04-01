@@ -22,7 +22,7 @@ export function UserEvents() {
   const now = new Date();
 
   const eventList = useMemo(() => {
-    if (registeredEvents && active === 1) {
+    if (registeredEvents && active === 2) {
       return registeredEvents?.filter((val) => {
         const eventDate = new Date(val?.startDateTime);
 
@@ -39,15 +39,15 @@ export function UserEvents() {
   const tab = [
     {
       id: 1,
-      title: "Past Events",
+      title: "Upcoming Events",
     },
     {
       id: 2,
-      title: "Upcoming Events",
+      title: "Past Events",
     },
   ];
   return (
-    <div className="w-full xl:col-span-3 bg-white rounded-lg border">
+    <div className="w-full xl:col-span-3 h-full bg-white rounded-lg border">
       <div className="w-full grid grid-cols-2 h-fit border-b items-center ">
         {tab?.map(({ title, id }) => (
           <Button
@@ -64,12 +64,12 @@ export function UserEvents() {
       </div>
       <div className="w-full flex flex-col p-4 gap-y-3">
       {isLoading && 
-        <div className="w-full col-span-full h-[300px] flex items-center justify-center">
+        <div className="w-full col-span-full h-[400px] flex items-center justify-center">
           <LoaderAlt size={24} className="animate-spin"/>
         </div>
         }
         {!isLoading &&  Array.isArray(registeredEvents) && registeredEvents?.length === 0 && 
-        <div className="w-full col-span-full h-[300px] flex items-center justify-center">
+        <div className="w-full col-span-full h-[400px] flex items-center justify-center">
         <p>- No Event -</p>
       </div>
         }

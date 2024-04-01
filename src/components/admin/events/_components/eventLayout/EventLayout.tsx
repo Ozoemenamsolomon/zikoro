@@ -7,7 +7,7 @@ export function EventLayout({ children }: { children: React.ReactNode }) {
     <div className="w-full">
       <RouteHeader
         header="Events"
-        description="See all events, preview, review and publish"
+        description="See all events, review, new and publish"
       />
       <EventTopNav />
       {children}

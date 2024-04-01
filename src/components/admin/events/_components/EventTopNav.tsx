@@ -10,7 +10,7 @@ export function EventTopNav() {
 
   const links = [
     {
-      name: "Preview",
+      name: "Review",
       query: `preview`,
     },
     {

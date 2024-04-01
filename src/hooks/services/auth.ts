@@ -64,8 +64,9 @@ export function useOnboarding() {
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        router.push("/api/auth/login");
         toast({description:"Profile Updated successfully"});
+        router.back();
+        
       }
     } catch (error) {}
   }
@@ -120,7 +121,7 @@ export function useValidateUser() {
       console.log({user})
       if (user && user?.isFirstLogin) {
        
-        router.push("/onboarding");
+     //   router.push("/onboarding");
       } else if (user?.email) {
         const userDetails = await getUser(user.email);
         saveCookie("user", userDetails);
