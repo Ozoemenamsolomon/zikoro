@@ -1,4 +1,5 @@
 "use client"
+
 import { toast } from "@/components/ui/use-toast";
 import { TAttendee } from "@/types/attendee";
 import {
@@ -10,6 +11,7 @@ import {
 import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
+import {getCookie} from "@/hooks"
 
 export const useSaveCertificate = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -608,3 +610,22 @@ export const useGetCertificateTemplates = (): UseGetResult<
     getCertificateTemplates,
   };
 };
+
+
+export function useGetUserCertificates() {
+ /**
+   const {certificates, isLoading} = useGetCertificates()
+  const user = getCookie("user")
+
+  const userCertificates = certificates?.map((certificate) => {
+const {attendeeEmail} = certificate
+    if (attendeeEmail === user?.email) {
+      return {
+        ...certificate
+      }
+    }
+    
+  })
+  */
+
+}

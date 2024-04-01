@@ -11,10 +11,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dot } from "@styled-icons/bootstrap/Dot";
 import {Bell} from "@styled-icons/feather/Bell"
+import { getCookie } from "@/hooks";
 
 
-export function MobileBottomNav({ eventId }: { eventId?: string,}) {
+export function MobileBottomNav({ toggleSideNav }: {  toggleSideNav:() => void }) {
   const pathname = usePathname();
+  const eventId = getCookie("eventId")
   return (
     <nav className="w-full flex sm:hidden items-center justify-between border-t z-[99999] px-4 py-2 fixed bottom-0 inset-x-0 bg-white">
      
@@ -27,10 +29,10 @@ export function MobileBottomNav({ eventId }: { eventId?: string,}) {
       
       <Link
         className="flex flex-col items-center justify-center"
-        href={"/"}
+        href={"/profile"}
       >
-        <UserIcon color={pathname === "/" ? "#001ffc" : "#000000"} />
-        <Dot size={10} color={pathname === "/" ? "#001ffc" : "#ffffff"} />
+        <UserIcon color={pathname.includes("profile") ? "#001ffc" : "#000000"} />
+        <Dot size={10} color={pathname.includes("profile") ? "#001ffc" : "#ffffff"} />
       </Link>
       <Link
         className="flex flex-col items-center justify-center"

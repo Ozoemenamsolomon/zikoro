@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
@@ -15,6 +15,13 @@ import _ from "lodash";
 import { getCookie } from "@/hooks";
 import { getRequest, postRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
+import { useGetAttendees } from "@/hooks";
+import {
+  formatDate,
+  formatTime,
+  COUNTRIES_CURRENCY,
+  dateFormatting,
+} from "@/utils";
 
 const supabase = createClientComponentClient();
 
@@ -32,12 +39,13 @@ export const useGetEvents = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<Event[]>({
-        endpoint: "events",
+        endpoint: `events`,
       });
 
       if (status !== 200) {
         throw data;
       }
+
       setEvents(data.data);
     } catch (error) {
       setError(true);
@@ -909,5 +917,100 @@ export function useFetchRewards(eventId: string | number) {
     data,
     loading,
     refetch: fetchRewards,
+  };
+}
+
+export function useFormatEventData(event: Event) {
+  const startDate = useMemo(
+    () => formatDate(event?.startDateTime ?? "0"),
+    [event?.startDateTime ?? "0"]
+  );
+  const endDate = useMemo(
+    () => formatDate(event?.endDateTime ?? "0"),
+    [event?.endDateTime ?? "0"]
+  );
+
+  const startTime = useMemo(
+    () => formatTime(event?.startDateTime ?? "0"),
+    [event?.startDateTime ?? "0"]
+  );
+  const endTime = useMemo(
+    () => formatTime(event?.endDateTime ?? "0"),
+    [event?.endDateTime ?? "0"]
+  );
+
+  const removeComma = useMemo(() => {
+    return event.eventCity === null || event.eventCountry === null;
+  }, [event.eventCity, event.eventCountry]);
+
+  const currency = useMemo(() => {
+    if (event?.pricingCurrency) {
+      const symbol =
+        COUNTRIES_CURRENCY.find(
+          (v) => String(v.code) === String(event?.pricingCurrency)
+        )?.symbol || "₦";
+      return symbol;
+    }
+  }, [event?.pricingCurrency]);
+
+  const createdAt = useMemo(
+    () => dateFormatting(event?.createdAt ?? "0"),
+    [event?.createdAt ?? "0"]
+  );
+
+  const price = useMemo(() => {
+    if (Array.isArray(event?.pricing)) {
+      const prices = event?.pricing?.map(({ price }) => Number(price));
+      const standardPrice = prices.reduce((lowestPrice, currentPrice) => {
+        return currentPrice < lowestPrice ? currentPrice : lowestPrice;
+      }, prices[0]);
+
+      return Number(standardPrice)?.toLocaleString(undefined, {
+        maximumFractionDigits: 0,
+      });
+    } else {
+      return "";
+    }
+  }, [event?.pricing]);
+
+  return {
+    startDate,
+    endDate,
+    startTime,
+    endTime,
+    currency,
+    removeComma,
+    createdAt,
+    price,
+  };
+}
+
+export function useAttenedeeEvents() {
+  const { events, isLoading } = useGetEvents();
+  const { attendees, isLoading: loading } = useGetAttendees();
+  const [registeredEvents, setRegisteredEvents] = useState<Event[] | undefined>(
+    []
+  );
+
+  useEffect(() => {
+    if (!loading && !isLoading) {
+      const mappedEventId = attendees?.map((attendee) =>
+        Number(attendee?.eventId)
+      );
+      const filtered = events?.filter((event) => {
+        // check if event ID in the attendees data and event ID in the events data correlate
+        const isRegistered = mappedEventId?.includes(event?.id);
+
+        return isRegistered;
+      });
+
+      setRegisteredEvents(filtered);
+    }
+  }, [loading, isLoading]);
+
+  return {
+    isLoading,
+    registeredEvents,
+    loading,
   };
 }
