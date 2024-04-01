@@ -1,12 +1,13 @@
 "use client";
 
-import { Form, FormField, Input, InputOffsetLabel, Button } from "@/components";
+import { Form, FormField, Input,  Button } from "@/components";
 import { useForm } from "react-hook-form";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useAddSponsorsType } from "@/hooks";
 import { nanoid } from "nanoid";
 import { CreatedPreview } from "@/components/composables";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 type FormValue = {
   type: string;

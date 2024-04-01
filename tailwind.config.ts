@@ -1,12 +1,14 @@
 import type { Config } from "tailwindcss";
 
-const config: Config = {
+const config = {
   darkMode: ["class"],
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
+  prefix: "",
   theme: {
     container: {
       center: true,
@@ -16,7 +18,25 @@ const config: Config = {
       },
     },
     extend: {
+      gradientColorStops: (theme) => ({
+        "custom-gradient-start": "#001FCC",
+        "custom-gradient-end": "#9D00FF",
+        "custom-bg-gradient-start": "#001FCC19",
+        "custom-bg-gradient-end": "#9D00FF19",
+      }),
+      linearGradientDirections: {
+        // Define your custom gradient direction
+        "top-right": "to top right",
+      },
+      linearGradientColors: (theme: (arg0: string) => any) => ({
+        "custom-gradient": [
+          theme("colors.custom-gradient-start"),
+          theme("colors.custom-gradient-end"),
+        ],
+      }),
+
       colors: {
+        zikoroBlue: "hsl(var(--zblue))",
         basebody: "#f3f3f3",
         basePrimary: "#001fcc",
         ticketColor: "#CFCFCF",
@@ -57,15 +77,13 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      fontSize: {
-        tiny: "10px",
-        mobile: "13px",
-        desktop: "15px",
-      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontSize: {
+        tiny: "10px",
       },
       keyframes: {
         "accordion-down": {
@@ -84,5 +102,6 @@ const config: Config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-};
+} satisfies Config;
+
 export default config;

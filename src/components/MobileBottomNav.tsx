@@ -6,7 +6,7 @@ import {
   HomeIcon,
   NotificationIcon,
   UserIcon,
-} from "@/constants";
+} from "@/components/svg/Constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dot } from "@styled-icons/bootstrap/Dot";
@@ -18,10 +18,10 @@ export function MobileBottomNav({ toggleSideNav }: {  toggleSideNav:() => void }
   const pathname = usePathname();
   const eventId = getCookie("eventId")
   return (
-    <nav className="w-full flex sm:hidden items-center justify-between border-t z-[99] px-4 py-2 fixed bottom-0 inset-x-0 bg-white">
+    <nav className="w-full flex sm:hidden items-center justify-between border-t z-[99999] px-4 py-2 fixed bottom-0 inset-x-0 bg-white">
      
      <button
-      onClick={toggleSideNav}
+      // onClick={toggleSideNav}
       className="flex flex-col items-center justify-center">
         <Hamburger color={pathname === "/" ? "#001ffc" : "#000000"} />
         <Dot size={10} color={pathname === "/" ? "#001ffc" : "#ffffff"} />
@@ -36,14 +36,14 @@ export function MobileBottomNav({ toggleSideNav }: {  toggleSideNav:() => void }
       </Link>
       <Link
         className="flex flex-col items-center justify-center"
-        href={`/event/${eventId}/home`}
+        href={`/events/home/${eventId}`}
       >
         <HomeIcon
-          color={pathname.includes("home") ? "#001ffc" : "#000000"}
+          color={pathname.includes("events/home") ? "#001ffc" : "#000000"}
         />
         <Dot
           size={10}
-          color={pathname.includes("home") ? "#001ffc" : "#ffffff"}
+          color={pathname.includes("events/home") ? "#001ffc" : "#ffffff"}
         />
       </Link>
       <Link

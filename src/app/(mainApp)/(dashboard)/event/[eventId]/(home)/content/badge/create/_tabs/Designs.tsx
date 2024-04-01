@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 import useSearch from "@/hooks/common/useSearch";
 import { useGetBadgeTemplates } from "@/hooks/services/badge";
 import { cn } from "@/lib/utils";
-import { BadgeTemplate, TBadgeTemplate } from "@/types/badge";
+import { TBadgeTemplate } from "@/types/badge";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import React, { useEffect, useRef } from "react";
 import { TabProps } from "../page";
@@ -14,10 +14,12 @@ const Designs = ({ details, setValue }: TabProps) => {
 
   console.log(badgeTemplates);
 
-  const { searchTerm, searchedData, setSearchTerm } = useSearch<TBadgeTemplate>({
-    data: badgeTemplates || [],
-    accessorKey: ["templateName"],
-  });
+  const { searchTerm, searchedData, setSearchTerm } = useSearch<TBadgeTemplate>(
+    {
+      data: badgeTemplates || [],
+      accessorKey: ["BadgeFigmaName", "BadgeTemplate", "BadgeUrl"],
+    }
+  );
 
   useEffect(() => {
     if (!divRef) return;
@@ -37,7 +39,7 @@ const Designs = ({ details, setValue }: TabProps) => {
       />
       <div className="grid grid-cols-2 gap-4 py-4" ref={divRef}>
         {badgeTemplates &&
-          badgeTemplates.map(({ BadgeUrl, BadgeTemplate }) => (
+          badgeTemplates.map(({ BadgeUrl, BadgeTemplate, BadgeFigmaName }) => (
             <button
               key={BadgeTemplate}
               onClick={() => setValue("background", BadgeUrl)}
@@ -48,7 +50,7 @@ const Designs = ({ details, setValue }: TabProps) => {
                   : "border-gray-200"
               )}
             >
-              <img src={BadgeTemplate} />
+              <img alt={BadgeFigmaName} src={BadgeTemplate} />
             </button>
           ))}
       </div>

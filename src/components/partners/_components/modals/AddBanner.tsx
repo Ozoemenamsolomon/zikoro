@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
-import { Form, FormField, Input, InputOffsetLabel, Button } from "@/components";
+import { Form, FormField, Input, Button } from "@/components";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
 import { TPartner } from "@/types";
@@ -10,6 +10,7 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addBannerSchema } from "@/schemas";
 import { useAddPartnerBanner } from "@/hooks";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 export function AddBanners({
   close,
@@ -42,12 +43,11 @@ export function AddBanners({
   }
 
   async function onSubmit(values: z.infer<typeof addBannerSchema>) {
-   
     await addPartnerBanner(partnerId, values.banners, partner);
 
     // console.log({ result });
     refetch();
-    close()
+    close();
   }
   return (
     <div

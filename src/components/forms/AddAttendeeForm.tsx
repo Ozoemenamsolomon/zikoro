@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import COUNTRY_CODE from "@/utils/countryCode";
+import { COUNTRY_CODE } from "@/utils/countryCode";
 import { attendeeTypeOptions } from "@/data/attendee";
 import { uploadFile, uploadFiles } from "@/utils/helpers";
 
@@ -54,7 +54,7 @@ export default function AddAttendeeForm({
     certificate: true,
     userEmail: "ubahyusuf484@gmail.com",
     attendeeType: ["attendee"],
-    eventId: 1234567890,
+    eventId: 5,
     country: "Nigeria",
   };
 

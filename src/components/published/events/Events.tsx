@@ -3,7 +3,7 @@
 import { Event } from "@/types";
 import { HeroLayout, SingleEvent } from "..";
 import { useState, useEffect } from "react";
-import { useEventFilterHook } from "@/context";
+import { useEventFilterHook } from "@/context/EventFilterContext";
 import { EmptyCard } from "@/components/composables";
 import { useSearchParams } from "next/navigation";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";

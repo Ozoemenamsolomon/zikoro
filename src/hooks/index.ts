@@ -1,3 +1,4 @@
+"use client"
 export * from "./common/useDisclose"
 export * from "./common/useFilter"
 export * from "./common/useSearch"

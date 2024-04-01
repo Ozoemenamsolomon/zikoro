@@ -1,9 +1,10 @@
+"use client"
+
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import {
   Form,
   FormField,
   Input,
-  InputOffsetLabel,
   Button,
   ReactSelect,
 } from "@/components";
@@ -13,6 +14,7 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { organizationSchema } from "@/schemas";
 import { useCreateOrganisation } from "@/hooks";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 const orgType = ["Private", "Business"];
 const pricingPlan = ["Free", "Lite", "Professional", "Business", "Enterprise"];

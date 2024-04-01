@@ -13,7 +13,7 @@ export interface TBadge {
 export interface TBadgeTemplate {
   id: number;
   created_at: string;
-  BadgeFigmaName?: string;
-  BadgeUrl?: string;
-  BadgeTemplate?: string;
+  BadgeFigmaName: string;
+  BadgeUrl: string;
+  BadgeTemplate: string;
 }

@@ -4,7 +4,6 @@ import {
   Form,
   FormField,
   Input,
-  InputOffsetLabel,
   Button,
   ReactSelect,
   Textarea,
@@ -38,6 +37,7 @@ import {
 } from "@/hooks";
 import { BoothStaffWidget } from "../../sponsors/_components";
 import { PartnerIndustry } from "@/types";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 export function AddPartners({
   close,

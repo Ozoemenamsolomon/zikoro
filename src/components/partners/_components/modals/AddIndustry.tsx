@@ -1,6 +1,7 @@
 "use client";
 
-import { Form, FormField, Input, InputOffsetLabel, Button } from "@/components";
+import { Form, FormField, Input, Button } from "@/components";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
 import { useForm } from "react-hook-form";
 import { CirclePicker } from "react-color";

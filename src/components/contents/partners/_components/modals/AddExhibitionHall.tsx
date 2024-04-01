@@ -1,6 +1,6 @@
 "use client";
 
-import { Form, FormField, Input, InputOffsetLabel, Button } from "@/components";
+import { Form, FormField, Input, Button } from "@/components";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { hallSchema } from "@/schemas";
@@ -8,15 +8,16 @@ import { useCreateEventExhibitionHall } from "@/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 export function AddExhibitionHall({
   close,
   eventId,
-  refetch
+  refetch,
 }: {
   eventId: string;
   close: () => void;
-  refetch: () => Promise<any>
+  refetch: () => Promise<any>;
 }) {
   const form = useForm<z.infer<typeof hallSchema>>({
     resolver: zodResolver(hallSchema),
@@ -25,8 +26,8 @@ export function AddExhibitionHall({
 
   async function onSubmit(values: z.infer<typeof hallSchema>) {
     await createExhibitionHall(eventId, values);
-    refetch()
-    close()
+    refetch();
+    close();
     form.reset();
   }
 

@@ -13,7 +13,7 @@ import { DropDownCards } from "..";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import "react-datepicker/dist/react-datepicker.css";
-import { useEventFilterHook } from "@/context";
+import { useEventFilterHook } from "@/context/EventFilterContext";
 // import { useGetPublishedEvents } from "../../../hooks/events/event.hook";
 
 export function HeroLayout({

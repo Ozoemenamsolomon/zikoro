@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/form";
 import React from "react";
 
-export function InputOffsetLabel({
+export default function InputOffsetLabel({
   children,
   label,
   isRequired,

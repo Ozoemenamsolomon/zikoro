@@ -35,7 +35,6 @@ import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import COLORTAG from "@/utils/colorTag";
 import { DateTimePicker } from "@/components/ui/date-time-picker/date-time-picker";
 import { parseAbsoluteToLocal } from "@internationalized/date";
-import { useToPng } from "@hugocxl/react-to-image";
 
 const Settings = ({ settings, editSettings }: TabProps) => {
   const [newSkill, setSkill] = React.useState<string>("");

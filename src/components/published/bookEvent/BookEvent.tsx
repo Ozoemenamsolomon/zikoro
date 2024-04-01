@@ -13,7 +13,7 @@ import { CircleMinus } from "styled-icons/fa-solid";
 import { Payment } from "@/components/published";
 import { useFieldArray } from "react-hook-form";
 
-import { Form, FormField, Input, InputOffsetLabel } from "@/components";
+import { Form, FormField, Input } from "@/components";
 import { eventBookingValidationSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -28,6 +28,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Event } from "@/types";
 import { CheckCircleFill } from "styled-icons/bootstrap";
 import { usePathname } from "next/navigation";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 export function BookEvent({
   close,
