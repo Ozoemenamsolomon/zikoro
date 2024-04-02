@@ -8,7 +8,7 @@ export default function F3() {
                     <defs>
                     <linearGradient id="paint0_linear_357_635" x1="0.5" y1="25" x2="40.5982" y2="25" gradientUnits="userSpaceOnUse">
                     <stop stopColor="#001FCC"/>
-                    <stop offset="1" stop-color="#9D00FF"/>
+                    <stop offset="1" stopColor="#9D00FF"/>
                     </linearGradient>
                     </defs>
                 </svg>

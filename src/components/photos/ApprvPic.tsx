@@ -62,8 +62,6 @@
 //         }
 //       );
 
-
-
 // const del = async (imageId: number) => {
 //     try {
 //       const response = await postRequest(
@@ -71,9 +69,6 @@
 //             endpoint:  `/pictures/approved/delete`,
 //             payload: { image_id : imageId },
 //         }
-
-
-
 
 //       );
 
