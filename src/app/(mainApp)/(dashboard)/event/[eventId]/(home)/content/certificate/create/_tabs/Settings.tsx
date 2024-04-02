@@ -309,9 +309,9 @@ const Settings = ({ settings, editSettings }: TabProps) => {
             Publish Date
           </label>
           <DateTimePicker
-            defaultValue={parseAbsoluteToLocal(
-              settings.publishOn?.toISOString() || ""
-            )}
+            // defaultValue={parseAbsoluteToLocal(
+            //   settings.publishOn?.toISOString() || ""
+            // )}
             granularity={"minute"}
             onSelect={(date: Date) => editSettings("publishOn", date)}
             disabled={(date: Date) => date < new Date()}
