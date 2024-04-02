@@ -63,7 +63,7 @@ const Certificates = () => {
     if (newCertificate) {
       console.log(newCertificate);
       router.push(
-        `/content/certificate/create?certificateId=${newCertificate.id}`
+        `certificate/create?certificateId=${newCertificate.id}`
       );
     }
   };
@@ -525,7 +525,7 @@ const Certificates = () => {
                   e.stopPropagation();
                   eventId &&
                     router.push(
-                      `/content/certificate/create?eventId=${eventId}`
+                      `certificate/create?eventId=${eventId}`
                     );
                 }}
                 className="bg-basePrimary w-full"
@@ -642,7 +642,7 @@ const Certificates = () => {
           onClick={(e) => {
             e.stopPropagation();
 
-            router.push(`/content/certificate/create`);
+            router.push(`certificate/create`);
           }}
           className="bg-basePrimary flex gap-4 items-center w-fit py-2"
         >
@@ -669,7 +669,7 @@ const Certificates = () => {
         onClick={(e) => {
           e.stopPropagation();
 
-          router.push(`/content/certificate/create`);
+          router.push(`certificate/create`);
         }}
         className="bg-basePrimary flex gap-4 items-center w-fit py-2 self-end"
       >
@@ -752,7 +752,7 @@ const Certificates = () => {
                     : "border-gray-200"
                 }`}
                 onClick={() =>
-                  router.push(`/content/certificate/create?certificateId=${id}`)
+                  router.push(`certificate/create?certificateId=${id}`)
                 }
               >
                 <div className="w-full h-[250px] overflow-hidden">
