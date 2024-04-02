@@ -75,7 +75,7 @@ export function PartnerWidget({
       // get their booth numbers
       const boothNumbers = partnersWithHall.map((item) => {
         if (item?.boothNumber && Array.isArray(item?.boothNumber)) {
-          console.log(item?.boothNumber);
+        //  console.log(item?.boothNumber);
           return item?.boothNumber[0]?.split(",");
         }
       });

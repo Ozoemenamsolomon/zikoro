@@ -79,7 +79,7 @@ export function HeaderWidget({
             >
               <ReactSelect
                 {...form.register("org")}
-                defaultValue={{ label: currentQuery, value: id } || ""}
+                defaultValue={currentQuery ? { label: currentQuery, value: id } : ""}
                 options={formattedList}
                 placeHolder="Select Organization"
               />

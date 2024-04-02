@@ -19,8 +19,8 @@ export default function RootLayout({
         <section className="ml-[16.666667%] border border-l-2">
           <Topbar />
           {/* <PhotoModalWrapper> */}
-            {children}
-            <ToastContainer />
+          {children}
+          <ToastContainer />
           {/* </PhotoModalWrapper> */}
         </section>
       </main>

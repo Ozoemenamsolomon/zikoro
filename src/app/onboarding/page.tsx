@@ -1,5 +1,4 @@
 "use client";
-
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -8,11 +7,7 @@ import {
   Button,
   FormControl,
   FormItem,
-  Select,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
+ ReactSelect,
   FormLabel,
   FormMessage,
 } from "@/components";
@@ -20,12 +15,9 @@ import { registrationSchema } from "@/schemas";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import Link from "next/link";
-import { useState } from "react";
-import { Eye } from "@styled-icons/feather/Eye";
-import { EyeOff } from "@styled-icons/feather/EyeOff";
-import { COUNTRY_CODE } from "@/utils";
-import { useOnboarding } from "@/hooks";
+import { useState,useMemo } from "react";
+import {COUNTRY_CODE} from "@/utils"
+import {  useOnboarding } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
@@ -40,7 +32,15 @@ export default function Page() {
     resolver: zodResolver(registrationSchema),
   });
 
+  const countriesList = useMemo(() => {
+    return COUNTRY_CODE.map((country) => ({
+      label: country.name,
+      value: country.name,
+    }));
+  }, [COUNTRY_CODE]);
+
   async function onSubmit(values: z.infer<typeof registrationSchema>) {
+  
     const payload: z.infer<typeof registrationSchema> = {
       ...values,
       whatsappNumber: whatsappCountryCode + values.whatsappNumber,
@@ -117,25 +117,12 @@ export default function Page() {
               name="country"
               render={({ field }) => (
                 <InputOffsetLabel label={"Country"}>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger className="border focus:border-gray-500 h-12">
-                      <SelectValue
-                        placeholder="Enter country"
-                        className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                      />
-                    </SelectTrigger>
-
-                    <SelectContent>
-                      {COUNTRY_CODE.map(({ name }) => (
-                        <SelectItem key={name} value={name}>
-                          {name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <ReactSelect
+                    {...field}
+                    placeHolder="Select the Country"
+                    label="Event Country"
+                    options={countriesList}
+                  />
                 </InputOffsetLabel>
               )}
             />

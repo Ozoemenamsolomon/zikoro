@@ -1,3 +1,5 @@
+"use client"
+
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { Button } from "@/components/ui/button";
 import {

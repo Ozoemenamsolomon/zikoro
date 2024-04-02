@@ -487,7 +487,7 @@ const page = () => {
     criteria: 100,
     canExpire: false,
     expiryDate: new Date(),
-    publishOn: event?.endDateTime || new Date(),
+    publishOn: new Date(event?.endDateTime || new Date()) || new Date(),
     skills: [],
   });
 
@@ -522,7 +522,7 @@ const page = () => {
     editSettings("publishOn", new Date(event.endDateTime));
   }, [event]);
 
-  const hashRef = useRef<string | SerializedNodes | undefined>();
+  const hashRef = useRef<string | undefined>();
 
   const [imageIsUploading, setUploading] = useState<boolean>(false);
   const [data, download] = useToPng<HTMLDivElement>({
@@ -627,7 +627,11 @@ const page = () => {
             <div className="!h-fit">
               {previewImg ? (
                 <div className="h-fit flex justify-center">
-                  <img className="h-[420px] w-[290px]" src={previewImg} />
+                  <img
+                    alt={"preview image for" + certificate?.certificateName}
+                    className="h-[420px] w-[290px]"
+                    src={previewImg}
+                  />
                 </div>
               ) : (
                 <div className="h-[100px] w-full flex items-center justify-center">

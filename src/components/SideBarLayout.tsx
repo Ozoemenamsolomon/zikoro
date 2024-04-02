@@ -19,7 +19,7 @@ import {
 import { CircleUser } from "styled-icons/fa-solid";
 import { getCookie, useValidateUser } from "@/hooks";
 
-export function SideBarLayout({ eventId }: { eventId?: string }) {
+export function SideBarLayout() {
   const [isNav, setNav] = useState(false);
   const param = useSearchParams();
   const [isOpen, setOpen] = useState(false);
@@ -34,7 +34,7 @@ export function SideBarLayout({ eventId }: { eventId?: string }) {
   }
 
   // validate user
-  useValidateUser();
+   useValidateUser();
 
   function onClose() {
     setNav((nav) => !nav);
@@ -51,7 +51,7 @@ export function SideBarLayout({ eventId }: { eventId?: string }) {
      
       />
       {isOpen && <EventFeedBack close={onShot} />}
-      <MobileBottomNav eventId={eventId} toggleSideNav={onClose} />
+      <MobileBottomNav toggleSideNav={onClose} />
     </>
   );
 }

@@ -25,8 +25,7 @@ const Page = () => {
     <section className="h-fit md:h-screen w-screen flex flex-col md:flex-row items-center justify-center gap-6 pt-8">
       <div className="flex-1 flex justify-center">
         <svg
-          width={window.innerWidth > 768 ? 350 : 150}
-          height={window.innerWidth > 768 ? 500 : 300}
+          className="w-[150px] h-[300px] lg:w-[350px] lg:h-[500px]"
           viewBox="0 0 444 598"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
