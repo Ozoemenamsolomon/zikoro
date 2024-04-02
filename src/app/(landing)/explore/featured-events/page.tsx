@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
@@ -32,7 +32,6 @@ export default function FeaturedEvents() {
     "Charity",
   ];
 
-  // const [selected, SetSelected] = useState(false);
 
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
 
@@ -51,6 +50,30 @@ export default function FeaturedEvents() {
   const clearFilterButton = () => {
     selectedButton === null
   }
+
+  //fetch events from database
+
+  type DBEventFeatured = {
+    // id: number;
+  };
+
+  const [data, setData] = useState<DBEventFeatured[] | undefined>(undefined);
+
+  async function fetchEventFeautured() {
+    fetch("/api/explore/featured", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error("Error:", error));
+  }
+
+  useEffect(() => {
+    fetchEventFeautured();
+  }, []);
 
   return (
     <div className=''>
