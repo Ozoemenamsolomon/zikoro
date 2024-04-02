@@ -1,12 +1,7 @@
 "use client";
 import React from "react";
-<<<<<<< HEAD
-// import { TextEditor } from "@/components/TextEditor";
-
-=======
 import TextEditor  from "@/components/TextEditor";
 import { useForm } from "react-hook-form";
->>>>>>> emma
 
 export default function Create() {
   const form = useForm<any>({});
