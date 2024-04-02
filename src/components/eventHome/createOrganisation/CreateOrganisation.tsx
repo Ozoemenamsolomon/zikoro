@@ -10,7 +10,7 @@ import {
 } from "@/components";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { organizationSchema } from "@/schemas";
 import { useCreateOrganisation } from "@/hooks";

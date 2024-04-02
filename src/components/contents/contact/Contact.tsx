@@ -1,14 +1,14 @@
 "use client";
-import { Download } from "@styled-icons/bootstrap/Download";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { Download } from "styled-icons/bootstrap";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useEffect, useState, useMemo } from "react";
 import { COUNTRY_CODE, uploadFile } from "@/utils";
 import { ContentTopNav } from "../_components";
 import { SideBarLayout } from "@/components";
-import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
-import { Camera } from "@styled-icons/feather/Camera";
-import { Eye } from "@styled-icons/feather/Eye";
-import { Check2 } from "@styled-icons/bootstrap/Check2";
+import { CloseCircle } from "styled-icons/ionicons-outline";
+import { Camera } from "styled-icons/feather";
+import { Eye } from "styled-icons/feather";
+import { Check2 } from "styled-icons/bootstrap";
 import Image from "next/image";
 import {
   Form,
