@@ -9,7 +9,7 @@ export default function RightArrow() {
                 <defs>
                 <linearGradient id="paint0_linear_534_403" x1="0" y1="9.5" x2="10.7229" y2="9.5" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#001FCC"/>
-                <stop offset="1" stop-color="#9D00FF"/>
+                <stop offset="1" stopColor="#9D00FF"/>
                 </linearGradient>
                 </defs>
             </svg>

@@ -1,11 +1,31 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import CityEvent from '@/components/explore/CityEvent';
 
 export default function EventsCities() {
-   
+    type DBEventCities = {
+        // id: number;
+      };
+
+      const [data, setData] = useState<DBEventCities[] | undefined>(undefined);
+
+      async function fetchEventCities() {
+        fetch("/api/explore/cities", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => console.log(data))
+          .catch((error) => console.error("Error:", error));
+      }
+    
+      useEffect(() => {
+        fetchEventCities();
+      }, []);
     return (
         <div  className=''>
             <Navbar/>

@@ -62,7 +62,7 @@ export default function PostId() {
           </div>
         </div>
 
-        <div className=" h-full lg:h-[1100px] lg:w-9/12  flex-col overscroll-y-hidden lg:overflow-y-auto scrollbar-hide  pb-0 lg:pb-[50px]">
+        <div className=" h-full lg:h-auto lg:w-9/12  flex-col overscroll-y-hidden lg:overflow-y-auto scrollbar-hide  pb-0 lg:pb-[50px]">
           <p className="font-normal text-base lg:text-xl mt-10">
             Lorem ipsum dolor sit amet consectetur. Fermentum bibendum viverra
             dictum senectus. Viverra ac dolor cursus non sed pellentesque
