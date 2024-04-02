@@ -1,6 +1,6 @@
 "use client";
 import Sidebar from "@/components/Sidebar";
-import Topbar from "@/components/Topbar";
+import {Topbar} from "@/components/Topbar";
 import { Toaster } from "@/components/ui/toaster";
 // import { PhotoModalWrapper } from "@/context/";
 import { ToastContainer } from "react-toastify";

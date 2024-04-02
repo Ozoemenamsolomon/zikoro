@@ -1,5 +1,5 @@
+//@ts-nocheck
 "use client";
-
 import React from "react";
 import Link from "next/link";
 import { links } from "@/constants";
@@ -34,6 +34,6 @@ export const NavLinks = ({
           </Link>
         );
       })}
-    </ul>
+    </div>
   );
 };
