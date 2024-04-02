@@ -84,7 +84,7 @@ export default function Navbar() {
                 height={35}
               />
 
-              <div className="hidden md:block">
+              <div className="hidden lg:block">
                 {links.map(({ name, href }, index) => {
                   return (
                     <Link
@@ -102,7 +102,7 @@ export default function Navbar() {
                 })}
               </div>
 
-              <div className=" gap-4 hidden md:flex">
+              <div className=" gap-4 hidden lg:flex">
                 <button
                   onClick={() => router.push("/api/auth/login")}
                   className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
@@ -118,7 +118,7 @@ export default function Navbar() {
                 </button>
               </div>
 
-              <div className="md:hidden">
+              <div className="lg:hidden">
                 <button className="text-black" onClick={toggleMenuOn}>
                   <ThreeLine />
                 </button>
@@ -130,7 +130,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-gradient-to-tr max-w-full h-screen px-5 from-custom-gradient-start to-custom-gradient-end pb-8 -mt-10 pt-8">
+        <div className="lg:hidden bg-gradient-to-tr max-w-full h-screen px-5 from-custom-gradient-start to-custom-gradient-end pb-8 -mt-10 pt-8">
           <div className="flex flex-col">
             <div
               className="flex justify-end items-end pb-10 "

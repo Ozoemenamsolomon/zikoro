@@ -16,7 +16,7 @@ export default function Footer() {
         <div className='pt-24 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end '>
             <div className=' max-w-6xl mx-auto px-5 lg:px-0'>
                 <div className='lg:flex lg:justify-center lg:items-center'>
-                    <Image className='hidden md:inline' src="/zikoroFooter.png" alt="" width={400} height={109} />
+                    <Image className='hidden lg:inline' src="/zikoroFooter.png" alt="" width={400} height={109} />
                     <Image className=' lg:hidden' src="/zikoroFooter.png" alt="" width={250} height={68} />
                 </div>
                     <p className='lg:text-center font-normal text-xs lg:text-xl mt-7'>2A Musari Apena Street, Ewu-Titan, off Labinjo Kalejaiye Street, <span className='inline lg:block'> Mafoluku, Oshodi, Lagos State, Nigeria </span> </p>
