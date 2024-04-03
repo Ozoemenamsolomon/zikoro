@@ -15,6 +15,8 @@ export type TAttendeeCertificate = {
   attendeeId: number;
 };
 
+type ValuePiece = Date | null;
+
 export interface TCertificateSettings {
   size: string;
   orientation: string;
@@ -29,7 +31,7 @@ export interface TCertificateSettings {
   canExpire: boolean;
   expiryDate: Date;
   skills: { color: string; value: string }[];
-  publishOn: Date | string;
+  publishOn: ValuePiece | [ValuePiece, ValuePiece];
 }
 
 export interface TCertificateDetails {

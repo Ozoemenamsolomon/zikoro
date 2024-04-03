@@ -10,7 +10,7 @@ import {
   organizationSchema,
   newEventSchema,
 } from "@/schemas";
-import { Event, Organization } from "@/types";
+import { Event, Organization, TEventTransactionDetail } from "@/types";
 import _ from "lodash";
 import { getCookie } from "@/hooks";
 import { getRequest, postRequest } from "@/utils/api";
@@ -141,16 +141,13 @@ export function useCreateEvent() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function createEvent(values: z.infer<typeof newEventSchema>) {
+  async function createEvent(values: Event) {
     setLoading(true);
 
     try {
       const { data, error, status } = await supabase.from("events").upsert([
         {
           ...values,
-          email: userData?.userEmail,
-          createdBy: userData?.userEmail,
-          published: false,
         },
       ]);
 
@@ -162,8 +159,8 @@ export function useCreateEvent() {
 
       if (status === 201 || status === 200) {
         setLoading(false);
-
-        router.push(` /events/content/${values.eventAlias}/event`);
+        console.log({ data });
+        // router.push(` /events/content/${values.eventAlias}/event`);
         toast({ description: "Event created successfully" });
       }
     } catch (error) {}
@@ -178,7 +175,7 @@ export function useCreateEvent() {
 export function useUpdateEvent() {
   const [loading, setLoading] = useState(false);
 
-  async function update(values: any, eventId: string) {
+  async function update(values: Partial<Event>, eventId: string) {
     setLoading(true);
 
     try {
@@ -634,6 +631,47 @@ export function useTransactionDetail() {
     loading,
   };
 }
+
+
+export function useGetEventTransactionDetail(eventRegistrationRef: string) {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<TEventTransactionDetail>({} as TEventTransactionDetail);
+
+  useEffect(() => {
+    fetchEventTransaction();
+  }, []);
+
+  async function fetchEventTransaction() {
+    try {
+      setLoading(true);
+      // Fetch the event by ID
+      const { data, error: fetchError } = await supabase
+        .from("eventTransactions")
+        .select("*")
+        .eq("eventRegistrationRef", eventRegistrationRef)
+        .single();
+
+      if (fetchError) {
+        toast({ variant: "destructive", description: fetchError.message });
+        setLoading(false);
+        return null;
+      }
+
+      setLoading(false);
+      setData(data);
+    } catch (error) {
+      setLoading(false);
+      return null;
+    }
+  }
+
+  return {
+    data,
+    loading,
+    refetch: fetchEventTransaction,
+  };
+}
+
 
 export function useUpdateTransactionDetail() {
   const [loading, setLoading] = useState(false);

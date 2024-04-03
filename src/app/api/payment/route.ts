@@ -9,6 +9,9 @@ export async function POST(req: NextRequest) {
   // intialize qrcode
   const QRCode = require("qrcode");
 
+  // intialize ics
+  const ics = require("ics");
+
   if (req.method === "POST") {
     try {
       const params = await req.json();
@@ -31,6 +34,7 @@ export async function POST(req: NextRequest) {
         amountPaid,
         attendeesDetails,
         paymentDate,
+        eventDate,
       } = params;
 
       const date = new Date(paymentDate);
@@ -46,24 +50,47 @@ export async function POST(req: NextRequest) {
         options
       ).format(date);
 
+      // convert date to ics format
+      const icsDateFormat = convertToICSFormat(eventDate);
+      //
+
       // get attendees names
-      const attendeesName: string[] = attendeesDetails.map(
+      const attendeesNames = attendeesDetails.map(
         (
-          { firstName, lastName }: { firstName: string; lastName: string },
+          {
+            firstName,
+            lastName,
+            email,
+          }: { firstName: string; lastName: string; email: string },
           index: number
         ) => {
-          if (
-            attendeesDetails.length > 1 &&
-            index === attendeesDetails.length - 1
-          ) {
-            return ` and ${firstName} ${lastName}`;
-          } else if (attendeesDetails.length === 1) {
-            return `${firstName} ${lastName}`;
-          } else {
-            return `${firstName} ${lastName}, `;
-          }
+          return {
+            name: `${firstName} ${lastName}`,
+            email,
+          };
         }
       );
+
+      // Create iCalendar event
+      const icsEvent = {
+        ...icsDateFormat,
+        title: event,
+        location: address,
+        attendees: attendeesNames,
+        // Add other event details as needed
+      };
+
+      // Generate iCalendar content
+      const { error: icsError, value: iCalendarContent }: any =
+        await new Promise((resolve) => {
+          ics.createEvent(icsEvent, (error: Error, value: string) => {
+            resolve({ error, value });
+          });
+        });
+
+      if (icsError) {
+        throw icsError;
+      }
 
       const { error, status } = await supabase
         .from("eventTransactions")
@@ -429,6 +456,13 @@ export async function POST(req: NextRequest) {
               ><a href="#" style="color: #001fcc; text-decoration: none;">Privacy Policy </a> | <a href="#" style="text-decoration: none; color: #001fcc">Terms and Conditions</a></div>
             </div>
               `,
+            attachments: [
+              {
+                filename: "event.ics",
+                content: iCalendarContent,
+                contentType: "text/calendar",
+              },
+            ],
           };
 
           await transporter.sendMail(mailData, function (err: any, info: any) {
@@ -468,3 +502,23 @@ export async function POST(req: NextRequest) {
     }
   }
 }
+
+const convertToICSFormat = (
+  dateTimeString: string
+): { start: number[]; duration: { hours: number; minutes: number } } => {
+  const dateTime = new Date(dateTimeString);
+
+  // Extract date components
+  const year = dateTime.getFullYear();
+  const month = dateTime.getMonth() + 1;
+  const day = dateTime.getDate();
+
+  // Extract time components
+  const hours = dateTime.getHours();
+  const minutes = dateTime.getMinutes();
+
+  return {
+    start: [year, month, day, hours, minutes],
+    duration: { hours: 6, minutes: 30 },
+  };
+};

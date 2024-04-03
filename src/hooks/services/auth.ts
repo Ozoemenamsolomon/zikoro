@@ -119,8 +119,9 @@ export function useValidateUser() {
   useEffect(() => {
     async function verifyUser() {
       console.log({user})
-      if (user && user?.isFirstLogin) {
-       
+      if (user && user?.isFirstLogin && user?.email) {
+        const userDetails = await getUser(user.email);
+        saveCookie("user", userDetails);
      //   router.push("/onboarding");
       } else if (user?.email) {
         const userDetails = await getUser(user.email);
