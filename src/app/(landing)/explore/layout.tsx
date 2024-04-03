@@ -8,7 +8,7 @@ const montserrat = Montserrat({
 });
 
 
-export default function LandingLayout({
+export default function ExploreLayout({
   children,
 }: {
   children: React.ReactNode;

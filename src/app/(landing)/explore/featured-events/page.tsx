@@ -6,9 +6,9 @@ import {
   FilterIcon,
   ArrowDownIcon,
   ArrowUpIcon,
-} from "@/components/svg/Constants";
+  CloseIcon
+} from "@/constants/icons";
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
-import { CloseIcon } from "@/components/svg/Constants";
 
 
 export default function FeaturedEvents() {

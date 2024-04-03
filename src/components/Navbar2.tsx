@@ -4,8 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import ThreeLine from "@/components/svg/ThreeLine";
-import Close from "@/components/svg/Close";
+import {ThreeLine, Close} from '@/constants/icons'
 
 export default function Navbar() {
   const pathname = usePathname();
