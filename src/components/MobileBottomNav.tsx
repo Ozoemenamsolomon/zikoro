@@ -6,7 +6,7 @@ import {
   HomeIcon,
   NotificationIcon,
   UserIcon,
-} from "@/components/Constants";
+} from "@/components/constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dot } from "@styled-icons/bootstrap/Dot";
