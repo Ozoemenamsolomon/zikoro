@@ -1,4 +1,4 @@
-import Navbar2 from "@/components/Navbar2";
+import Navbar from "@/components/Navbar";
 import BlogHeader from "@/components/blog/BlogHeader";
 import Footer from "@/components/Footer";
 import BlogNav from "@/components/blog/BlogNav";
@@ -19,7 +19,7 @@ export default function BlogLayout({
   return (
     <html>
       <body className={`${montserrat.className} `}>
-        <Navbar2 />
+        <Navbar />
         <BlogHeader />
         <BlogNav/>
         {children}
