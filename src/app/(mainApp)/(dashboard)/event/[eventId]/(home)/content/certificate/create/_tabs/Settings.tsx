@@ -33,8 +33,11 @@ import { useGetAttendees } from "@/hooks/services/attendee";
 import { TAttendee } from "@/types/attendee";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import COLORTAG from "@/utils/colorTag";
-import { DateTimePicker } from "@/components/ui/date-time-picker/date-time-picker";
 import { parseAbsoluteToLocal } from "@internationalized/date";
+import DateTimePicker from "react-datetime-picker";
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
 
 const Settings = ({ settings, editSettings }: TabProps) => {
   const [newSkill, setSkill] = React.useState<string>("");
@@ -309,14 +312,21 @@ const Settings = ({ settings, editSettings }: TabProps) => {
             Publish Date
           </label>
           <DateTimePicker
+            onChange={(date) => editSettings("publishOn", date)}
             defaultValue={parseAbsoluteToLocal(
-              settings.publishOn?.toISOString() || ""
+              new Date(
+                settings.publishOn?.toLocaleString() || ""
+              ).toISOString() || ""
             )}
+            hideTimeZone
+          />
+          {/* <DateTimePicker
+            disabled={(date) => date < new Date()}
             granularity={"minute"}
             onSelect={(date: Date) => editSettings("publishOn", date)}
             disabled={(date: Date) => date < new Date()}
             hideTimeZone
-          />
+          /> */}
         </div>
         {/* <div className="col-span-6 w-full rounded-md bg-background text-sm relative">
           <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
