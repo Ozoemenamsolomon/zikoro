@@ -35,9 +35,10 @@ import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import COLORTAG from "@/utils/colorTag";
 import { parseAbsoluteToLocal } from "@internationalized/date";
 import DateTimePicker from "react-datetime-picker";
-import 'react-datetime-picker/dist/DateTimePicker.css';
-import 'react-calendar/dist/Calendar.css';
-import 'react-clock/dist/Clock.css';
+import "react-datetime-picker/dist/DateTimePicker.css";
+import "react-calendar/dist/Calendar.css";
+import "react-clock/dist/Clock.css";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 const Settings = ({ settings, editSettings }: TabProps) => {
   const [newSkill, setSkill] = React.useState<string>("");
@@ -311,22 +312,13 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           <label className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
             Publish Date
           </label>
-          <DateTimePicker
-            onChange={(date) => editSettings("publishOn", date)}
-            defaultValue={parseAbsoluteToLocal(
-              new Date(
-                settings.publishOn?.toLocaleString() || ""
-              ).toISOString() || ""
-            )}
-            hideTimeZone
+          <Input
+            placeholder="Enter event title"
+            type="datetime-local"
+            defaultValue={settings.publishOn}
+            className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+            onInput={(date) => editSettings("publishOn", date)}
           />
-          {/* <DateTimePicker
-            disabled={(date) => date < new Date()}
-            granularity={"minute"}
-            onSelect={(date: Date) => editSettings("publishOn", date)}
-            disabled={(date: Date) => date < new Date()}
-            hideTimeZone
-          /> */}
         </div>
         {/* <div className="col-span-6 w-full rounded-md bg-background text-sm relative">
           <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
