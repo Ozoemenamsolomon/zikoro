@@ -86,7 +86,11 @@ const First = ({
             onChange={handleFileChange}
           />
         </div>
-        <button className="text-blue-300 text-xs flex gap-2 items-center">
+        <a
+          href={"/templates/attendees_templates.xlsx"}
+          download={"attendees_template.xlsx"}
+          className="text-blue-300 hover:text-blue-500 text-xs flex gap-2 items-center"
+        >
           <span>Download a sample template</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +104,7 @@ const First = ({
               fill="#2685CA"
             />
           </svg>
-        </button>
+        </a>
       </div>
       <Button
         onClick={readFile}

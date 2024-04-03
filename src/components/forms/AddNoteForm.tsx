@@ -17,6 +17,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useUpdatenote } from "@/hooks/services/notes";
+import { DialogClose } from "../ui/dialog";
 
 export default function AddNotesForm({
   attendeeEmail,
@@ -95,11 +96,11 @@ export default function AddNotesForm({
             </FormItem>
           )}
         />
-        {/* <DialogClose asChild>
+        <DialogClose asChild>
           <Button type="submit" className="bg-basePrimary w-full">
             Add Notes
           </Button>
-        </DialogClose> */}
+        </DialogClose>
       </form>
     </Form>
   );
