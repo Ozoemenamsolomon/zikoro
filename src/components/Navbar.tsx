@@ -67,8 +67,8 @@ export default function Navbar() {
       <nav
         className={` p-4 ${
           scrolling
-            ? "bg-white"
-            : "bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end"
+          ? "bg-white"
+          : "bg-white"
         } border-b-[2px] border-indigo-500 text-base  `}
       >
         <div className=" flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
