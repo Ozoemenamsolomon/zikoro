@@ -102,7 +102,7 @@ export const useGetAttendees = () => {
     if (status !== 200) return setError(true);
 
     // 
-    const filtered = data?.data?.filter(({email}) => email === user?.email)
+    const filtered = data?.data?.filter(({email}) => email === "preemidris1+user2@gmail.com")
     return setAttendees(filtered);
   };
 

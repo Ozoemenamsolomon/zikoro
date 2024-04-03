@@ -9,7 +9,7 @@ import { CreateOrganization } from "..";
 import { useParams, useRouter } from "next/navigation";
 import _ from "lodash";
 import { useForm } from "react-hook-form";
-import { cn } from "@/lib";
+import { toast } from "@/components/ui/use-toast";
 
 type OrganizationListType = {
   label: string;
@@ -59,6 +59,13 @@ export function HeaderWidget({
 
   function newEvent() {
     const org = formattedList.find((o) => o.label === currentQuery);
+    if (!org?.value) {
+      toast({
+        variant: "destructive",
+        description: "Pls Select an Organization",
+      });
+      return;
+    }
     router.push(`/create/${org?.value}`);
   }
 
@@ -79,7 +86,9 @@ export function HeaderWidget({
             >
               <ReactSelect
                 {...form.register("org")}
-                defaultValue={currentQuery ? { label: currentQuery, value: id } : ""}
+                defaultValue={
+                  currentQuery ? { label: currentQuery, value: id } : ""
+                }
                 options={formattedList}
                 placeHolder="Select Organization"
               />

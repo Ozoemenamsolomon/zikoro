@@ -1,13 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormField,
-  Input,
-  Button,
-  ReactSelect,
-} from "@/components";
+import { Form, FormField, Input, Button, ReactSelect } from "@/components";
 import { newEventSchema } from "@/schemas";
 import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
@@ -16,8 +10,7 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { useState, useMemo } from "react";
 import { COUNTRY_CODE } from "@/utils";
-import { useCreateEvent } from "@/hooks";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { useCreateEvent, getCookie } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import InputOffsetLabel from "../InputOffsetLabel";
 
@@ -34,11 +27,18 @@ export default function CreateEvent({
   });
 
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
+    const userData = getCookie("user");
     const eventAlias = uuidv4().replace(/-/g, "").substring(0, 20);
     await createEvent({
       ...values,
       eventAlias,
       organisationId: organizationId,
+      createdBy: userData?.email,
+      published: false,
+      eventStatus: "new",
+      eventStatusDetails: [
+        { createdAt: new Date().toISOString(), status: "new", user: userData?.email },
+      ],
     });
   }
 

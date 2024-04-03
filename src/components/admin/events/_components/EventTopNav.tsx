@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { cn } from "@/lib";
 import { usePathname, useSearchParams } from "next/navigation";
 
 export function EventTopNav() {
@@ -11,7 +12,7 @@ export function EventTopNav() {
   const links = [
     {
       name: "Review",
-      query: `preview`,
+      query: `review`,
     },
     {
       name: "New",
@@ -28,11 +29,14 @@ export function EventTopNav() {
         {links.map(({ name, query }) => {
           return (
             <li
-              className={`pb-1 text-sm ${
-                queryParam === query
-                  ? "text-basePrimary pb-2 border-b-2 border-basePrimary font-medium"
-                  : ""
-              }`}
+              className={cn(
+                `pb-1 text-sm`,
+                queryParam === query &&
+                  "text-basePrimary pb-2 border-b-2 border-basePrimary font-medium",
+                !queryParam &&
+                  name === "Review" &&
+                  "text-basePrimary pb-2 border-b-2 border-basePrimary font-medium"
+              )}
             >
               <Link href={`/admin/events?e=${query}`}>{name}</Link>
             </li>
