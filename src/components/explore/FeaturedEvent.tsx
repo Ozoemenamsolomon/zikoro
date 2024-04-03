@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import Calendar from "../svg/Calendar";
-import { LocationIcon1 } from "../svg/Constants";
+import { Calendar, LocationIcon1 } from '@/constants/icons';
 
 export default function FeaturedEvent() {
   return (

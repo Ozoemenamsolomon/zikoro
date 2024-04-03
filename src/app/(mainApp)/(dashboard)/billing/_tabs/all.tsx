@@ -516,7 +516,7 @@ export default function All() {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 space-y-4 px-4 h-[500px] hide-scrollbar overflow-auto">
                 {columns
-                  .filter(({}) => accessorKey)
+                  .filter(({ accessorKey }) => accessorKey)
                   .map(({ header, accessorKey }) => (
                     <div
                       key={accessorKey}

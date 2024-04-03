@@ -31,7 +31,7 @@ export interface TCertificateSettings {
   canExpire: boolean;
   expiryDate: Date;
   skills: { color: string; value: string }[];
-  publishOn: ValuePiece | [ValuePiece, ValuePiece];
+  publishOn: string;
 }
 
 export interface TCertificateDetails {

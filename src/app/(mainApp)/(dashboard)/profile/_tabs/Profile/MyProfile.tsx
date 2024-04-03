@@ -40,11 +40,11 @@ const MyProfile = () => {
   if (!user) return null;
 
   return (
-    <div className="grid grid-cols-10 border-t">
-      <div className="col-span-4">
+    <div className="grid md:grid-cols-10 border-t gap-y-8">
+      <div className="md:col-span-4">
         <UserProfile user={user} onOpen={onOpenUserForm} />
       </div>
-      <div className="col-span-6">
+      <div className="md:col-span-6">
         <UserContacts />
       </div>
       <AddUserForm

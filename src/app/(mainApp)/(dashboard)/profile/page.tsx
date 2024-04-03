@@ -54,20 +54,24 @@ const page = () => {
 
   return (
     <section className="bg-white space-y-6" ref={divRef || null}>
-      <Tabs defaultValue="profile">
-        <TabsList className="bg-transparent border-b px-4 pt-4 w-full flex justify-start">
-          {profileTabs.map((tab) => (
-            <TabsTrigger
-              key={tab.label}
-              className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none"
-              value={tab.value}
-            >
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      <Tabs defaultValue="profile" className="mt-0">
+        <div className="w-full overflow-x-auto no-scrollbar">
+          <div className="min-w-fit">
+            <TabsList className="bg-transparent border-b px-4 pt-4 w-full flex justify-start gap-8 mt-0">
+              {profileTabs.map((tab) => (
+                <TabsTrigger
+                  key={tab.label}
+                  className="data-[state=active]:shadow-none text-xs md:text-sm px-0 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none"
+                  value={tab.value}
+                >
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
+        </div>
         {profileTabs.map((tab) => (
-          <TabsContent value={tab.value} key={tab.label}>
+          <TabsContent value={tab.value} key={tab.label} className="mt-0">
             {tab.component}
           </TabsContent>
         ))}

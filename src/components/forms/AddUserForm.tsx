@@ -127,11 +127,11 @@ export default function AddUserForm({
     <Overlay
       isOpen={isOpen}
       onClose={onClose}
-      title={`${user ? "Update" : "Create"} User`}
+      title={`${user ? "Update" : "Create"} My Profile`}
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="flex gap-4 h-fit">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pb-12 md:pb-0">
+          <div className="flex gap-4 h-fit flex-col md:flex-row">
             <div className="flex-1">
               <FormField
                 control={form.control}
@@ -176,7 +176,7 @@ export default function AddUserForm({
               </InputOffsetLabel>
             )}
           />
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-col md:flex-row">
             <div className="flex-1">
               <FormField
                 control={form.control}
@@ -208,7 +208,7 @@ export default function AddUserForm({
               />
             </div>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-col md:flex-row">
             <div className="flex-1">
               <FormField
                 control={form.control}
@@ -253,7 +253,7 @@ export default function AddUserForm({
               />
             </div>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-col md:flex-row">
             <div className="flex-1">
               <FormField
                 control={form.control}

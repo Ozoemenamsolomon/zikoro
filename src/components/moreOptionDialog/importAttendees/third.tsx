@@ -4,6 +4,7 @@ import { THeaders } from "./";
 import { Button } from "@/components/ui/button";
 import { TAttendee } from "@/types/attendee";
 import { useUpdateAttendees } from "@/hooks/services/attendee";
+import { DialogClose } from "@/components/ui/dialog";
 
 const Third = ({
   data,
@@ -81,11 +82,11 @@ const Third = ({
           </tbody>
         </table>
       </div>
-      {/* <DialogClose asChild>
+      <DialogClose asChild>
         <Button className="bg-basePrimary w-full" onClick={submitAttendees}>
           Import Attendees
         </Button>
-      </DialogClose> */}
+      </DialogClose>
     </>
   );
 };
