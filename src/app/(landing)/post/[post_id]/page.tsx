@@ -1,10 +1,8 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import Facebook from "@/components/svg/Facebook";
-import X from "@/components/svg/X";
-import Linkedin from "@/components/svg/Linkedin";
-import Instagram from "@/components/svg/Instagram";
+import { Facebook, X, Linkedin, Instagram } from "@/constants/icons";
+
 import PostArticle from "@/components/blog/PostArticle";
 
 export default function PostId() {
@@ -62,7 +60,7 @@ export default function PostId() {
           </div>
         </div>
 
-        <div className=" h-full lg:h-auto lg:w-9/12  flex-col overscroll-y-hidden lg:overflow-y-auto scrollbar-hide  pb-0 lg:pb-[50px]">
+        <div className=" h-full lg:h-auto lg:w-9/12  flex-col  pb-0 lg:pb-[50px]">
           <p className="font-normal text-base lg:text-xl mt-10">
             Lorem ipsum dolor sit amet consectetur. Fermentum bibendum viverra
             dictum senectus. Viverra ac dolor cursus non sed pellentesque
@@ -134,11 +132,13 @@ export default function PostId() {
 
       {/* Footer Section */}
       <div className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24">
-            <p className="text-center text-xl lg:text-3xl font-semibold mt-14">Read More Articles</p>
-            <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
-                    <PostArticle/>
-                    <PostArticle/>
-            </div>
+        <p className="text-center text-xl lg:text-3xl font-semibold mt-14">
+          Read More Articles
+        </p>
+        <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
+          <PostArticle />
+          <PostArticle />
+        </div>
       </div>
     </div>
   );

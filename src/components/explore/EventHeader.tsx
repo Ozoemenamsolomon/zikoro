@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { LocationIcon1, LocationIcon2 } from "../svg/Constants";
+
 
 export default function EventHeader() {
   const [searchBox, setSearchBox] = useState("");
