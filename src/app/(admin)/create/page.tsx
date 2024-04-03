@@ -27,14 +27,13 @@ export default function Create() {
   };
 
   return (
-    <div className={` ${montserrat.className} flex bg-gray-200 gap-x-[40px] h-screen `}>
-      <div className="bg-white w-2/12"></div>
-      <div className="w-9/12 bg-gray-200 flex flex-col mt-20 ">
+    <div className={` ${montserrat.className}`}>
+      <div className="  flex flex-col px-10 pt-4 bg-gray-200 h-[calc(100%-64px)]  lg:h-[calc(100vh-130px)] ">
         <p className="text-3xl font-semibold bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text ">
           Create New Blog Post
         </p>
 
-        <div className="mt-[110px] bg-white flex-1 m-4 resize-none">
+        <div className="mt-[110px] bg-white flex-1 resize-none h-full mb-10 ">
           <TextEditor
             onChange={setMessage}
             defaultValue={content}
