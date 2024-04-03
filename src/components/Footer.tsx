@@ -1,10 +1,7 @@
 "use client"
 import React from 'react'
 import Image from "next/image"
-import Facebook from '@/components/svg/Facebook'
-import X from '@/components/svg/X'
-import Linkedin from '@/components/svg/Linkedin'
-import Instagram from '@/components/svg/Instagram'
+import {Facebook, X,Linkedin, Instagram} from '@/constants/icons'
 import { useRouter } from "next/navigation"
 
 

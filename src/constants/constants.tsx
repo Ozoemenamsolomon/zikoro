@@ -593,6 +593,7 @@ export function QAIcon() {
     </svg>
   );
 }
+
 export const links: NavLinkType[] = [
   {
     name: "Home",

@@ -1,9 +1,8 @@
 "use client";
 import React from "react";
 import Event from "./Event";
-import RightArrow from "../svg/RightArrow";
+import { RightArrow,  LocationIcon1 } from '@/constants/icons'
 import { useRouter } from "next/navigation";
-import { LocationIcon1, LocationIcon2, } from "../svg/Constants";
 
 export default function EventList() {
   const router = useRouter();
