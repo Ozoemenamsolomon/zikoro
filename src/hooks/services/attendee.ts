@@ -1,10 +1,10 @@
-"use client"
+"use client";
 import { toast } from "@/components/ui/use-toast";
 import { TAttendee, TAttendeeEmailInvites } from "@/types/attendee";
 import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
-import {getCookie} from "@/hooks"
+import { getCookie } from "@/hooks";
 
 export const useCreateAttendee = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -97,13 +97,14 @@ export const useGetAttendees = () => {
       endpoint: "/attendees",
     });
 
+    console.log(data, "attendees services");
+
     setLoading(false);
 
     if (status !== 200) return setError(true);
 
-    // 
-    const filtered = data?.data?.filter(({email}) => email === user?.email)
-    return setAttendees(filtered);
+    //
+    return setAttendees(data.data);
   };
 
   useEffect(() => {
