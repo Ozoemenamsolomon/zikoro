@@ -3,7 +3,7 @@
 import { useGetQueries, saveCookie } from "@/hooks";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { useState, useMemo, useEffect } from "react";
-import { OrganizationIcon } from "@/constants";
+import { OrganizationIcon } from "@/components/Constants";
 import { Button, Form, ReactSelect } from "@/components";
 import { CreateOrganization } from "..";
 import { useParams, useRouter } from "next/navigation";

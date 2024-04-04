@@ -1,4 +1,4 @@
-import { DoubleColumnIcon } from "@/constants";
+import { DoubleColumnIcon } from "@/components/Constants";
 import { StarFill } from "styled-icons/bootstrap";
 import { Verified } from "styled-icons/material";
 

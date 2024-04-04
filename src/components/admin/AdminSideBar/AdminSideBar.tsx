@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { adminLinks } from "@/constants";
+import { adminLinks } from "@/components/Constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib";

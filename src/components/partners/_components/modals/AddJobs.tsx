@@ -28,7 +28,7 @@ import {
   duration,
   qualification,
   workExperience,
-} from "@/constants";
+} from "@/components/Constants";
 import { useState } from "react";
 import { TPartner } from "@/types";
 import { cn } from "@/lib";

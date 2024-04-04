@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { InteractionLayout } from "../_components";
 import { Search } from "@styled-icons/evil/Search";
 import { Form, FormControl, FormField, FormItem, Input } from "@/components";
-import { ActiveStampCard, LightBulb } from "@/constants";
+import { ActiveStampCard, LightBulb } from "@/components/Constants";
 import { Stamp } from "@styled-icons/fa-solid/Stamp";
 import Image from "next/image";
 import { EmptyCard } from "@/components/composables";

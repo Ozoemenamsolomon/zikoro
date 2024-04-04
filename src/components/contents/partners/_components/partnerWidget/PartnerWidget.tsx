@@ -13,7 +13,7 @@ import {
   useUpdatePartnerType,
   useUpdateSponsor,
 } from "@/hooks";
-import { EmailIcon, WhatsappIcon } from "@/constants";
+import { EmailIcon, WhatsappIcon } from "@/components/Constants";
 
 export function PartnerWidget({
   item,

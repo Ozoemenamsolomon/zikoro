@@ -1,4 +1,4 @@
-import { EmptyIcon } from "@/constants";
+import { EmptyIcon } from "@/components/Constants";
 import { ReactNode } from "react";
 
 export function EmptyCard({

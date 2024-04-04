@@ -15,13 +15,13 @@ import _ from "lodash";
 import { getCookie } from "@/hooks";
 import { getRequest, postRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
-import { useGetAttendees } from "@/hooks";
 import {
   formatDate,
   formatTime,
   COUNTRIES_CURRENCY,
   dateFormatting,
 } from "@/utils";
+import { useGetAttendees } from "./attendee";
 
 const supabase = createClientComponentClient();
 

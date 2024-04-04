@@ -31,7 +31,7 @@ import {
   InstagramIcon,
   LinkedinIcon,
   TwitterIcon,
-} from "@/constants";
+} from "@/components/Constants";
 import { useState, useMemo } from "react";
 import { BookEvent } from "..";
 import { usePathname, useRouter } from "next/navigation";

@@ -8,7 +8,7 @@ import {
   InstagramIcon,
   LinkedinIcon,
   TwitterIcon,
-} from "@/constants";
+} from "@/components/Constants";
 import { useState } from "react";
 
 export function Speakers({
