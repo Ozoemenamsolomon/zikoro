@@ -4,8 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import ThreeLine from "@/components/svg/ThreeLine";
-import Close from "@/components/svg/Close";
+import {ThreeLine, Close} from '@/constants/icons';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -13,19 +12,19 @@ export default function Navbar() {
   const links = [
     {
       name: "Features",
-      href: "/features",
+      href: "",
     },
     {
       name: "Use Cases",
-      href: "/use-cases",
+      href: "",
     },
     {
       name: "Resources",
-      href: "/resources",
+      href: "",
     },
     {
       name: "Pricing",
-      href: "/pricing",
+      href: "",
     },
     {
       name: "Contact Us",
@@ -49,7 +48,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
+      if (window.scrollY > 5) {
         setScrolling(true);
       } else {
         setScrolling(false);
@@ -68,8 +67,8 @@ export default function Navbar() {
       <nav
         className={` p-4 ${
           scrolling
-            ? "bg-white"
-            : "bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end"
+          ? "bg-white"
+          : "bg-white"
         } border-b-[2px] border-indigo-500 text-base  `}
       >
         <div className=" flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
@@ -84,7 +83,7 @@ export default function Navbar() {
                 height={35}
               />
 
-              <div className="hidden md:block">
+              <div className="hidden lg:block">
                 {links.map(({ name, href }, index) => {
                   return (
                     <Link
@@ -102,23 +101,23 @@ export default function Navbar() {
                 })}
               </div>
 
-              <div className=" gap-4 hidden md:flex">
+              <div className=" gap-4 hidden lg:flex">
                 <button
-                  onClick={() => router.push("/api/auth/login")}
+                  onClick={() => router.push("/home")}
                   className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
                 >
                   Register
                 </button>
 
                 <button
-                  onClick={() => router.push("/api/auth/login")}
+                  onClick={() => router.push("/home")}
                   className="text-base text-blue-700 bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md "
                 >
                   Login
                 </button>
               </div>
 
-              <div className="md:hidden">
+              <div className="lg:hidden">
                 <button className="text-black" onClick={toggleMenuOn}>
                   <ThreeLine />
                 </button>
@@ -130,7 +129,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-gradient-to-tr max-w-full h-screen px-5 from-custom-gradient-start to-custom-gradient-end pb-8 -mt-10 pt-8">
+        <div className="lg:hidden bg-gradient-to-tr max-w-full h-screen px-5 from-custom-gradient-start to-custom-gradient-end pb-8 -mt-10 pt-8">
           <div className="flex flex-col">
             <div
               className="flex justify-end items-end pb-10 "
@@ -151,14 +150,14 @@ export default function Navbar() {
 
             <div className=" gap-5 flex justify-center items-center md:hidden pt-12">
               <button
-                onClick={() => router.push("/api/auth/login")}
+                onClick={() => router.push("/home")}
                 className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white"
               >
                 Register
               </button>
 
               <button
-                onClick={() => router.push("/api/auth/login")}
+                onClick={() => router.push("/home")}
                 className="text-base text-white bg-transparent border border-white py-[10px] px-5 rounded-md "
               >
                 Login

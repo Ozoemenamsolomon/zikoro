@@ -31,6 +31,8 @@
     --input: 214.3 31.8% 91.4%;
     --zblue: 231 100% 40%;
 
+    --zblue: 231 100% 40%;
+
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
@@ -111,6 +113,100 @@
   color: white;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
+#search-input {
+  background: url("/images/tabler_search.svg");
+  background-repeat: no-repeat;
+  background-position: center left 10px;
+}
+
+#search-div {
+  width: fit-content;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  /* Adjust the width as needed */
+  width: 8px;
+  background-color: transparent;
+  transition: width 0.3s ease-in-out;
+  /* Added transition for smoother animation */
+}
+
+.hide-scrollbar:hover::-webkit-scrollbar {
+  width: 8px;
+  background-color: #eee;
+  /* Adjust the width as needed */
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  /* background-color: rgba(0, 0, 0, 0.2); */
+  background-color: transparent;
+}
+
+.hide-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #888;
+}
+
+.pulse {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.75;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.quill {
+  width: 100%;
+  /* border-radius: 8px; */
+  margin-bottom: 3rem;
+}
+
+.quill .ql-editor {
+  height: 100%;
+}
+
+.quill>.ql-container>.ql-editor.ql-blank::before {
+  color: #d4d4d4;
+}
+
+.ql-container.ql-snow {
+  border: 1px solid #f3f3f3 !important;
+  height: 300px;
+  border-top: none;
+  font-size: 14px;
+  border-radius: 0px 0px 8px 8px;
+}
+
+.ql-toolbar.ql-snow {
+  border-radius: 8px 8px 0px 0px;
+  border: 1px solid #f3f3f3 !important;
+}
+
+.ql-editor.ql-blank::before {
+  color: rgba(0, 0, 0, 0.6);
+  content: attr(data-placeholder);
+  font-size: 14px;
+  left: 15px;
+  pointer-events: none;
+  position: absolute;
+  right: 15px;
+}
+

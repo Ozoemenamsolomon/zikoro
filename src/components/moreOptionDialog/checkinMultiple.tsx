@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import ViewAttendeesSection from "./viewAttendeesSection";
 import { isWithinTimeRange } from "@/utils/date";
 import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
+import { DialogClose } from "../ui/dialog";
 
 const checkinMultiple: React.FC<MoreOptionsProps> = ({
   attendees,
@@ -171,7 +172,7 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
       />
-      {/* <DialogClose asChild>
+      <DialogClose asChild>
         <Button
           disabled={selectedAttendees.length === 0 || !eventDate}
           className="bg-basePrimary w-full"
@@ -179,7 +180,7 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
         >
           Save
         </Button>
-      </DialogClose> */}
+      </DialogClose>
     </div>
   );
 };

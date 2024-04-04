@@ -1,8 +1,7 @@
 "use client"
 import React from 'react'
 import Image from "next/image"
-import Calendar from '../svg/Calendar'
-import { LocationIcon1 } from '../svg/Constants'
+import { Calendar, LocationIcon1 } from '@/constants/icons'
 
 
 export default function Event() {
@@ -16,7 +15,7 @@ export default function Event() {
             </div>
             
             {/* body */}
-            <div className='pl-5 pr-5 border-[1px] border-gray-200 rounded-md'>
+            <div className='pl-5 pr-5 border-[1px] border-gray-200 '>
                 <p className='mt-5 font-semibold '> Product Con </p>
 
                     <div className='mt-6 flex gap-x-[10px] '>

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { LocationIcon1, LocationIcon2 } from "../svg/Constants";
+
 
 export default function EventHeader() {
   const [searchBox, setSearchBox] = useState("");
@@ -10,22 +10,21 @@ export default function EventHeader() {
     setSearchBox(e.target.value);
   };
   return (
-    
     <div className="bg-gradient-overlay relative">
       <Image
-        src="/eventsBg.png"
+        src="/eventsBg.webp"
         alt="Background"
         width={1440}
         height={600}
-        className="object-cover w-full h-screen hidden lg:block"
+        className="object-cover w-full h-[700px] hidden lg:block"
       />
       <Image
-              src="/eventsBg.png"
-              alt="Background"
-              width={350}
-              height={366}
-              className="object-cover block h-[400px] w-full  lg:hidden"
-            />
+        src="/eventsBg.webp"
+        alt="Background"
+        width={350}
+        height={366}
+        className="object-cover block h-[400px] w-full  lg:hidden"
+      />
       <div className="absolute inset-0 flex items-center justify-center ">
         <div className="flex flex-col justify-between ">
           <p className="text-3xl lg:text-5xl text-white font-bold">
@@ -42,13 +41,13 @@ export default function EventHeader() {
               <p className="text-2xl font-normal">Find Events Easily</p>
 
               <div className="pt-7 h-9 mt-6 flex items-center w-full gap-x-4">
-                <div className="flex flex-2 gap-x-2 px-10 py-[6px] rounded-md">
+                {/* <div className="flex flex-2 gap-x-2 px-10 py-[6px] rounded-md">
                   <LocationIcon1 />
                   <p className="text-base text-semibold">Lagos</p>
-                </div>
+                </div> */}
 
                 <div className="h-[48px] flex justify-between gap-x-3 flex-1 items-center">
-                  <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-[680px] h-full">
+                  <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-full h-full">
                     <input
                       type="text"
                       value={searchBox}
@@ -71,34 +70,28 @@ export default function EventHeader() {
             {/* Small Form */}
             <form
               action=""
-              className="block lg:hidden px-[10px]  pt-5 w-[365px] h-[180px] bg-white rounded-lg shadow-md"
+              className="block lg:hidden px-[10px]  pt-5 w-11/12 h-[150px] bg-white rounded-lg shadow-md"
             >
-              <p className="text-[20px] font-normal text-center">
-                Find Events Easily
-              </p>
+              <p className="text-[20px] font-normal">Find Events Easily</p>
 
-              <div className="h-[48px] pt-[15px] flex justify-between gap-x-3 items-center">
-                <div className="flex gap-x-2 py-[6px] rounded-md items-center ">
-                  <LocationIcon2 />
-                  <p className="text-base text-semibold">Lagos</p>
-                </div>
-                <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-[274px] h-full">
+              <div className="h-[58px] pt-[15px] flex justify-between gap-x-3 items-center">
+                <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-full h-full">
                   <input
                     type="text"
                     value={searchBox}
                     name="searchBox"
                     id=""
                     onChange={handleChange}
-                    placeholder="search by event name, city, category"
-                    className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
+                    placeholder="Search by event name, city, category"
+                    className="pl-4 outline-none text-xs text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
                   />
                 </div>
-              </div>
 
-              <button className=" mt-[11px]  bg-gradient-to-tr flex from-custom-gradient-start to-custom-gradient-end text-white cursor-pointer text-base px-5 py-[10px] rounded-lg mx-auto">
-                {" "}
-                Search
-              </button>
+                <button className="   bg-gradient-to-tr flex from-custom-gradient-start to-custom-gradient-end text-white cursor-pointer text-base px-5 py-[10px] rounded-lg mx-auto">
+                  {" "}
+                  Search
+                </button>
+              </div>
             </form>
           </div>
         </div>

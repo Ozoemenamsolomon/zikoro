@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import AttendeeBadge from "@/components/AttendeeBadge";
 import { usePDF } from "react-to-pdf";
+import { DialogClose } from "@/components/ui/dialog";
 
 const Second = ({ selectedAttendees }: { selectedAttendees: TAttendee[] }) => {
   const parentRef = useRef<HTMLDivElement>(null);
@@ -57,7 +58,7 @@ const Second = ({ selectedAttendees }: { selectedAttendees: TAttendee[] }) => {
           {selectedAttendees.length} Attendee Badges Selected
         </span>
       </div>
-      {/* <DialogClose asChild>
+      <DialogClose asChild>
         <Button
           disabled={selectedAttendees.length === 0}
           className="bg-basePrimary w-full"
@@ -65,7 +66,7 @@ const Second = ({ selectedAttendees }: { selectedAttendees: TAttendee[] }) => {
         >
           Download all badges as PDF
         </Button>
-      </DialogClose> */}
+      </DialogClose>
     </>
   );
 };

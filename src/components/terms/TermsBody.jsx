@@ -435,7 +435,7 @@ export default function TermsBody() {
 
         <div className="mt-[50px]">
           <p className="text-xl lg:text-3xl font-bold ">
-            10. USER REGISTRATION
+            10. GUIDELINES AND REVIEW
           </p>
           <p className="text-base lg:text-xl font-normal mt-6">
             We may provide you areas on the Services to leave reviews or
@@ -645,7 +645,7 @@ export default function TermsBody() {
 
         <div className="mt-[50px]">
           <p className="text-xl lg:text-3xl font-bold ">
-            17. USER REGISTRATION
+            17. TERM AND TERMINATION
           </p>
           <p className="text-base lg:text-xl font-normal mt-6">
             These Legal Terms shall remain in full force and effect while you

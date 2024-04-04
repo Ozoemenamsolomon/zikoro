@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import CategoryEvent from './CategoryEvent'
-import RightArrow from '../svg/RightArrow'
+import {RightArrow} from '@/constants/icons'
 import { useRouter } from "next/navigation"
 
 export default function CategoryEventList() {

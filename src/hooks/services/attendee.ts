@@ -1,8 +1,10 @@
+"use client";
 import { toast } from "@/components/ui/use-toast";
 import { TAttendee, TAttendeeEmailInvites } from "@/types/attendee";
 import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
+import { getCookie } from "@/hooks";
 
 export const useCreateAttendee = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -87,7 +89,7 @@ export const useGetAttendees = () => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-
+  const user = getCookie("user");
   const getAttendees = async () => {
     setLoading(true);
 
@@ -95,10 +97,13 @@ export const useGetAttendees = () => {
       endpoint: "/attendees",
     });
 
+    console.log(data, "attendees services");
+
     setLoading(false);
 
     if (status !== 200) return setError(true);
 
+    //
     return setAttendees(data.data);
   };
 
@@ -107,6 +112,36 @@ export const useGetAttendees = () => {
   }, []);
 
   return { attendees, isLoading, error, getAttendees };
+};
+
+export const useGetAttendee = ({ attendeeId }: { attendeeId: string }) => {
+  const [attendee, setAttendee] = useState<TAttendee | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendee = async () => {
+    try {
+      setLoading(true);
+      const { data, status } = await getRequest<TAttendee>({
+        endpoint: `/attendees/${attendeeId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setAttendee(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendee();
+  }, [attendeeId]);
+
+  return { attendee, isLoading, error, getAttendee };
 };
 
 export const useGetAttendeesWithTags = () => {

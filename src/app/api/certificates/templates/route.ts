@@ -6,11 +6,11 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      // .select("*")
       const { data, error, status } = await supabase
         .from("certificateTemplate")
         .select("*");
 
+      console.log(data);
       if (error) throw error;
 
       return NextResponse.json(

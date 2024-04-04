@@ -1,10 +1,7 @@
 "use client"
 import React from 'react'
 import Image from "next/image"
-import Facebook from '@/components/svg/Facebook'
-import X from '@/components/svg/X'
-import Linkedin from '@/components/svg/Linkedin'
-import Instagram from '@/components/svg/Instagram'
+import {Facebook, X,Linkedin, Instagram} from '@/constants/icons'
 import { useRouter } from "next/navigation"
 
 
@@ -16,7 +13,7 @@ export default function Footer() {
         <div className='pt-24 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end '>
             <div className=' max-w-6xl mx-auto px-5 lg:px-0'>
                 <div className='lg:flex lg:justify-center lg:items-center'>
-                    <Image className='hidden md:inline' src="/zikoroFooter.png" alt="" width={400} height={109} />
+                    <Image className='hidden lg:inline' src="/zikoroFooter.png" alt="" width={400} height={109} />
                     <Image className=' lg:hidden' src="/zikoroFooter.png" alt="" width={250} height={68} />
                 </div>
                     <p className='lg:text-center font-normal text-xs lg:text-xl mt-7'>2A Musari Apena Street, Ewu-Titan, off Labinjo Kalejaiye Street, <span className='inline lg:block'> Mafoluku, Oshodi, Lagos State, Nigeria </span> </p>
@@ -66,16 +63,17 @@ export default function Footer() {
                     <li className='text-[13px] lg:text-base font-normal cursor-pointer'>FAQ</li>
                     <li className='text-[13px] lg:text-base font-normal cursor-pointer'>Affiliates</li>
                     <li className='text-[13px] lg:text-base font-normal cursor-pointer'>API</li>
-
+                    <li className='text-[13px] lg:text-base font-normal cursor-pointer'>Help</li>
+                    <li onClick={() => router.push('/blog/all')} className='text-[13px] lg:text-base font-normal cursor-pointer'>Blog</li>
                 </ul>
 
                  {/* 5th Column */}
                  <ul className='flex flex-col space-y-1 lg:space-y-4'>
                     <li className='text-[15px] lg:text-2xl font-bold cursor-pointer '>Legal</li>
-                    <li onClick={() => router.push('/terms-and-condition#terms')} className='text-[13px] lg:text-base font-normal cursor-pointer pt-4 lg:pt-0'>Terms and Condition</li>
-                    <li onClick={() => router.push('/terms-and-condition#privacy-policy')} className='text-[13px] lg:text-base font-normal cursor-pointer'>Privacy Policy</li>
-                    <li onClick={() => router.push('/terms-and-condition#refund-policy')} className='text-[13px] lg:text-base font-normal cursor-pointer'>Refund Policy</li>
-                    <li onClick={() => router.push('/terms-and-condition#cookies')} className='text-[13px] lg:text-base font-normal cursor-pointer'>Cookies</li>
+                    <li  className='text-[13px] lg:text-base font-normal cursor-pointer pt-4 lg:pt-0'>Terms and Condition</li>
+                    <li  className='text-[13px] lg:text-base font-normal cursor-pointer'>Privacy Policy</li>
+                    <li  className='text-[13px] lg:text-base font-normal cursor-pointer'>Refund Policy</li>
+                    <li  className='text-[13px] lg:text-base font-normal cursor-pointer'>Cookies</li>
                 </ul>
 
             </div>

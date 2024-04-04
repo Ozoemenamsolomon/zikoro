@@ -30,14 +30,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import COUNTRY_CODE from "@/utils/countryCode";
+import { COUNTRY_CODE } from "@/utils/countryCode";
 import { attendeeTypeOptions } from "@/data/attendee";
 import { uploadFile, uploadFiles } from "@/utils/helpers";
 
 export default function AddAttendeeForm({
+  attendee,
   isOpen,
   onClose,
+  getAttendee,
 }: {
+  getAttendee?: () => Promise<void>;
+  attendee?: TAttendee;
   isOpen: boolean;
   onClose: () => void;
 }) {
@@ -45,12 +49,12 @@ export default function AddAttendeeForm({
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
   const [whatsappCountryCode, setWhatsAppCountryCode] =
     useState<string>("+234");
-  const defaultValues: Partial<TAttendee> = {
+  const defaultValues: Partial<TAttendee> = attendee || {
     registrationDate: new Date().toISOString(),
     certificate: true,
     userEmail: "ubahyusuf484@gmail.com",
     attendeeType: ["attendee"],
-    eventId: "1234567890",
+    eventId: 5,
     country: "Nigeria",
   };
 
@@ -61,7 +65,11 @@ export default function AddAttendeeForm({
     defaultValues,
   });
 
-  const { watch, setValue } = form;
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+  } = form;
 
   const attendeeType = watch("attendeeType");
   const country = watch("country");
@@ -105,6 +113,7 @@ export default function AddAttendeeForm({
     };
 
     await createAttendee({ payload });
+    attendee && getAttendee && (await getAttendee());
   }
 
   const [profilePictureIsUploading, setProfilePictureUploading] =
@@ -130,7 +139,11 @@ export default function AddAttendeeForm({
   };
 
   return (
-    <Overlay isOpen={isOpen} onClose={onClose} title="Attendee">
+    <Overlay
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`${attendee ? "Update" : "Create"}Attendee`}
+    >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="flex gap-4 h-fit">
@@ -333,7 +346,9 @@ export default function AddAttendeeForm({
               {profilePictureIsUploading ? (
                 <span className="text-gray-500">Loading...</span>
               ) : profilePicture ? (
-                <span className="text-gray-500 truncate">{profilePicture}</span>
+                <span className="text-gray-500 truncate">
+                  Profile Uploaded successfully
+                </span>
               ) : (
                 <span className="text-gray-200">Select Image</span>
               )}
@@ -476,7 +491,11 @@ export default function AddAttendeeForm({
               </FormItem>
             )}
           />
-          <Button type="submit" className="bg-basePrimary w-full">
+          <Button
+            disabled={profilePictureIsUploading}
+            type="submit"
+            className="bg-basePrimary w-full"
+          >
             Save
           </Button>
         </form>

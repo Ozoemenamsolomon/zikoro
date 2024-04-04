@@ -3,6 +3,7 @@ import { TAttendee } from "@/types/attendee";
 import { TFavouriteContact } from "@/types/favourites";
 import { formatDate, isWithinTimeRange } from "@/utils/date";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 type AttendeeProps = {
   attendee: TAttendee;
@@ -23,6 +24,7 @@ const Attendee: React.FC<AttendeeProps> = ({
   toggleFavourites,
   favouriteIsLoading,
 }) => {
+  const router = useRouter();
   const {
     id,
     firstName,
@@ -90,10 +92,14 @@ const Attendee: React.FC<AttendeeProps> = ({
 
   return (
     <button
-      className={`w-full grid grid-cols-10 items-center gap-1.5 p-1.5 border-b-2 border-gray-100 ${
+      className={`w-full grid grid-cols-10 items-center gap-1.5 p-1.5 border-b border-gray-100 ${
         isSelected ? "bg-gray-100" : ""
       }`}
-      onClick={() => selectAttendee(attendee)}
+      onClick={() =>
+        window.innerWidth > 768
+          ? selectAttendee(attendee)
+          : router.push(`info/${id}`)
+      }
     >
       <div className="col-span-2">
         <div className="w-12 h-12 rounded-[50%] text-white bg-[#D9D9D9] flex justify-center items-center">
