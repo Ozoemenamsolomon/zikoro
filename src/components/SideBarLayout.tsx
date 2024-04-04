@@ -9,13 +9,12 @@ import { useSearchParams, useParams } from "next/navigation";
 import { EventFeedBack } from "./modals/EventFeedback";
 import { VipCrown2 } from "styled-icons/remix-fill";
 import { PersonFeedback } from "styled-icons/fluentui-system-filled";
-
 import {
   CustomerCareIcon,
   EmailIcon,
   LogOutIcon,
   WhatsappIcon,
-} from "@/constants";
+} from "@/components/constants";
 import { CircleUser } from "styled-icons/fa-solid";
 import { getCookie, useValidateUser } from "@/hooks";
 
