@@ -1,5 +1,4 @@
 "use client";
-
 import { cn } from "@/lib";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -10,50 +9,13 @@ import { EventFeedBack } from "./modals/EventFeedback";
 import { VipCrown2 } from "styled-icons/remix-fill";
 import { PersonFeedback } from "styled-icons/fluentui-system-filled";
 import {
-  CustomerCareIcon,
+  CustomerServiceIcon,
   EmailIcon,
   LogOutIcon,
   WhatsappIcon,
-} from "@/components/constants";
+} from "@/components/Constants";
 import { CircleUser } from "styled-icons/fa-solid";
 import { getCookie, useValidateUser } from "@/hooks";
-
-export function SideBarLayout() {
-  const [isNav, setNav] = useState(false);
-  const param = useSearchParams();
-  const [isOpen, setOpen] = useState(false);
-  const query = param.get("organization");
-
-  function onOpen() {
-    setOpen(true);
-  }
-
-  function onShot() {
-    setOpen(false);
-  }
-
-  // validate user
-   useValidateUser();
-
-  function onClose() {
-    setNav((nav) => !nav);
-  }
-
-  return (
-    <>
-      <SideNavs
-        isNav={isNav}
-        close={onClose}
-        onClose={onShot}
-        onOpen={onOpen}
-        query={query}
-     
-      />
-      {isOpen && <EventFeedBack close={onShot} />}
-      <MobileBottomNav toggleSideNav={onClose} />
-    </>
-  );
-}
 
 function SideNavs({
   close,
@@ -150,9 +112,7 @@ function SideNavs({
               <p className="text-black">Bilal</p>
             </div>
           </Link>
-          <button
-          onClick={onOpen}
-           className="flex gap-2 text-black">
+          <button onClick={onOpen} className="flex gap-2 text-black">
             <PersonFeedback className="w-6 h-6" />
             Give feedback
           </button>
@@ -188,7 +148,7 @@ function SideNavs({
           </Link>
           <div className="w-full flex items-center justify-between">
             <Button className="px-1 h-fit gap-x-2">
-              <CustomerCareIcon />
+              <CustomerServiceIcon />
               <span className="text-mobile sm:text-desktop">Support</span>
             </Button>
             <div className="flex items-center gap-x-2">
@@ -212,5 +172,41 @@ function SideNavs({
         </div>
       </div>
     </div>
+  );
+}
+
+export function SideBarLayout() {
+  const [isNav, setNav] = useState(false);
+  const param = useSearchParams();
+  const [isOpen, setOpen] = useState(false);
+  const query = param.get("organization");
+
+  function onOpen() {
+    setOpen(true);
+  }
+
+  function onShot() {
+    setOpen(false);
+  }
+
+  // validate user
+  useValidateUser();
+
+  function onClose() {
+    setNav((nav) => !nav);
+  }
+
+  return (
+    <>
+      <SideNavs
+        isNav={isNav}
+        close={onClose}
+        onClose={onShot}
+        onOpen={onOpen}
+        query={query}
+      />
+      {isOpen && <EventFeedBack close={onShot} />}
+      <MobileBottomNav toggleSideNav={onClose} />
+    </>
   );
 }
