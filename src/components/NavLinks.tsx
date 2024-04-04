@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { links } from "@/components/Constants";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib";
 import { Button } from "@/components";
+import { links } from "./Sidebar";
 
 export const NavLinks = ({
   query,
