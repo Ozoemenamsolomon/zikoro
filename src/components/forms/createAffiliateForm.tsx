@@ -11,6 +11,7 @@ import { AffiliateSchema } from "@/schemas/marketing";
 import { TAffiliate } from "@/types/marketing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { DialogClose } from "../ui/dialog";
 export default function CreateAffiliateForm() {
   const defaultValues: Partial<TAffiliate> = {
     organizationId: 4,
@@ -184,7 +185,7 @@ export default function CreateAffiliateForm() {
             </InputOffsetLabel>
           )}
         />
-        {/* <DialogClose asChild>
+        <DialogClose asChild>
           <Button
             disabled={isLoading}
             type="submit"
@@ -192,7 +193,7 @@ export default function CreateAffiliateForm() {
           >
             {isLoading ? "Please wait..." : "Create"}
           </Button>
-        </DialogClose> */}
+        </DialogClose>
       </form>
     </Form>
   );

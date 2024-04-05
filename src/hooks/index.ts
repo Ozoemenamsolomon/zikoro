@@ -2,7 +2,6 @@
 export * from "./common/useDisclose"
 export * from "./common/useFilter"
 export * from "./common/useSearch"
-export * from "./services/attendee"
 export * from "./services/badge"
 export * from "./services/billing"
 export * from "./services/certificate"

@@ -39,25 +39,24 @@ export default function Home() {
         <h2 className="font-semibold text-base sm:text-2xl">Welcome User</h2>
       </div>
       <div className="w-full px-2 sm:px-4 pt-40">
-    <div className="w-full overflow-x-auto no-scrollbar">
-    <div className="min-w-max gap-4 flex items-center">
-        {homeTab.map(({ title, href, subTitle, image }) => (
-          <ActionCard
-            key={title}
-            title={title}
-            href={href}
-            subTitle={subTitle}
-            image={image}
-          />
-        ))}
+        <div className="w-full overflow-x-auto no-scrollbar">
+          <div className="min-w-max gap-4 flex items-center">
+            {homeTab.map(({ title, href, subTitle, image }) => (
+              <ActionCard
+                key={title}
+                title={title}
+                href={href}
+                subTitle={subTitle}
+                image={image}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="w-full mt-4 sm:mt-6 h-full grid grid-cols-1 xl:grid-cols-8 gap-5 items-start">
+          <UserEvents />
+          <UserCertificates />
+        </div>
       </div>
-    </div>
-      <div className="w-full mt-4 sm:mt-6 h-full grid grid-cols-1 xl:grid-cols-8 gap-5 items-start">
-         <UserEvents/>    
-         <UserCertificates/>   
-      </div>
-      </div>
-     
     </>
   );
 }

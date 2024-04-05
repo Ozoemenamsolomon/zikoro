@@ -1,8 +1,6 @@
 "use client";
 import React from "react";
-import Timer from "../svg/Timer";
-import People from "../svg/People";
-import Database from "../svg/Database";
+import { Timer, People, Database } from "@/constants/icons";
 
 export default function Section3() {
   return (

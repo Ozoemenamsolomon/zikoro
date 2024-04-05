@@ -141,7 +141,7 @@ const Badges = () => {
 
         <Button
           className="bg-basePrimary flex gap-4 items-center"
-          onClick={() => router.push("/content/badge/create")}
+          onClick={() => router.push("create")}
         >
           <svg
             stroke="currentColor"
@@ -176,7 +176,7 @@ const Badges = () => {
 
     if (newBadge) {
       console.log(newBadge);
-      router.push(`/content/badge/create?badgeId=${newBadge.id}`);
+      router.push(`create?badgeId=${newBadge.id}`);
     }
   };
 
@@ -442,7 +442,7 @@ const Badges = () => {
     <div className="flex flex-col gap-2 px-2 py-4">
       <Button
         className="bg-basePrimary flex gap-4 items-center self-end w-fit py-2"
-        onClick={() => router.push("/content/badge/create")}
+        onClick={() => router.push("badge/create")}
       >
         <svg
           stroke="currentColor"
@@ -498,7 +498,7 @@ const Badges = () => {
             <button
               disabled={badgeIsSaving}
               className="border border-gray-200 rounded-md relative w-full h-full"
-              onClick={() => router.push(`/content/badge/create?badgeId=${id}`)}
+              onClick={() => router.push(`badge/create?badgeId=${id}`)}
             >
               <div className="w-full h-[250px] overflow-hidden">
                 <img className="object-fill" src={badgeUrl || ""} />
