@@ -1,3 +1,3 @@
 export * from "./icons"
-export * from "."
+export * from "./constants"
 export * from "./data"

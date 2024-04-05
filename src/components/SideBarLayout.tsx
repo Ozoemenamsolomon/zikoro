@@ -16,7 +16,6 @@ import {
   LogOutIcon,
   WhatsappIcon,
 } from "@/constants";
-import { CircleUser } from "styled-icons/fa-solid";
 import { getCookie, useValidateUser } from "@/hooks";
 
 export function SideBarLayout() {
