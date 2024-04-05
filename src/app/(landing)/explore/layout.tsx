@@ -7,15 +7,10 @@ const montserrat = Montserrat({
   fallback: ["Arial", "sans-serif"],
 });
 
-
 export default function ExploreLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body className={`${montserrat.className} `}> {children}</body>
-    </html>
-  );
+  return <section className={`${montserrat.className} `}> {children}</section>;
 }

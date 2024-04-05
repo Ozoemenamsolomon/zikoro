@@ -29,10 +29,11 @@ export default function Section2() {
         {!showIcon && (
           <div className="w-full h-full bg-black bg-opacity-75 z-50 flex justify-center items-center">
             <video
-              className="max-w-full max-h-full"
+              className="max-w-full max-h-full rounded-lg"
               controls
               autoPlay
               onEnded={handleVideoEnd}
+              style={{ minWidth: "100%", minHeight: "100%"}}
             >
               <source src="https://res.cloudinary.com/kachiozo/video/upload/v1712085642/ZIKORO/videos/Zikoro_video_ad_i1fzaf.mp4" type="video/mp4" />
               Your browser does not support the video tag.

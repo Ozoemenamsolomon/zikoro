@@ -59,7 +59,7 @@ export default function Footer() {
                  <ul className='flex flex-col space-y-1 lg:space-y-4'>
                     <li  className='text-[15px] lg:text-2xl font-bold cursor-pointer '>Resources</li>
                     <li onClick={() => router.push('/explore')} className='text-[13px] lg:text-base font-normal cursor-pointer pt-4 lg:pt-0'>Explore Events</li>
-                    <li className='text-[13px] lg:text-base font-normal cursor-pointer'>Verify Certificates</li>
+                    <li onClick={() => router.push('/verify')} className='text-[13px] lg:text-base font-normal cursor-pointer'>Verify Certificates</li>
                     <li className='text-[13px] lg:text-base font-normal cursor-pointer'>FAQ</li>
                     <li className='text-[13px] lg:text-base font-normal cursor-pointer'>Affiliates</li>
                     <li className='text-[13px] lg:text-base font-normal cursor-pointer'>API</li>
