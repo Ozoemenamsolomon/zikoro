@@ -49,7 +49,7 @@ export function EventDetailMobileTab({
     <div className="w-full  block sm:hidden">
       <div className="sm:hidden w-full mb-8 grid grid-cols-3 gap-8 items-center justify-center">
         <button
-          onClick={() => router.push(`/events/partners/${eventId}`)}
+          onClick={() => router.push(`/event/${eventId}/partners?p=sponsors`)}
           className="flex flex-col gap-y-2 items-center justify-center"
         >
           <Handshake size={22} />

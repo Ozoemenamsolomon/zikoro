@@ -3,7 +3,7 @@ export function formatDate(dateString: string): string {
   
     const options: Intl.DateTimeFormatOptions = {
       day: "numeric",
-      month: "long",
+      month: "short",
       year: "numeric",
     };
   

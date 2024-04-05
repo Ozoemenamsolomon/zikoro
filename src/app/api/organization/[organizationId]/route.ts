@@ -10,7 +10,7 @@ export async function POST(
   if (req.method === "POST") {
     try {
       const { organizationId } = params;
-      console.log(params);
+    //  console.log(params);
       const payload = await req.json();
 
       const { error } = await supabase
@@ -120,3 +120,5 @@ export async function GET(
 }
 
 export const dynamic = "force-dynamic";
+
+

@@ -2,12 +2,12 @@
 
 import { EventCards, EventHomeLayout } from ".";
 import { EmptyCard } from "../composables";
-import { useGetQueries } from "@/hooks";
+import { useGetUserHomePageEvents } from "@/hooks";
 
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 
 export default function EventHome() {
-  const { data: eventData, refetch, loading } = useGetQueries("events");
+  const { events: eventData, loading, refetch } = useGetUserHomePageEvents();
 
   return (
     <EventHomeLayout>

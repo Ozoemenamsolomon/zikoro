@@ -84,6 +84,8 @@ const config = {
       },
       fontSize: {
         tiny: "10px",
+        mobile:"13px",
+        desktop: "15px"
       },
       keyframes: {
         "accordion-down": {

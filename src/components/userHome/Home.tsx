@@ -24,7 +24,7 @@ export default function Home() {
       title: "Contact",
       subTitle: "View the contact you have created so far",
       image: "/images/contact.svg",
-      href: "/contact",
+      href: "",
     },
     {
       title: "Explore",

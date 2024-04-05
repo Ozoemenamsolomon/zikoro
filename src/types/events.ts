@@ -53,9 +53,10 @@ export interface Event {
   id: number;
   industry: string;
   instagram: string;
+  organisationId:string
   x: string;
   linkedin: string;
-  locationType: "Hybrid" | "Onsite" | "Virtual";
+  locationType: "Hybrid" | "Onsite" | "Virtual" | string;
   organisationLogo: string;
   organisationName: string;
   phoneNumber: string;

@@ -6,6 +6,7 @@ import { useGetUser } from "@/hooks/services/user";
 import React from "react";
 
 const MyProfile = () => {
+  
   const { user, isLoading, getUser } = useGetUser({
     userId: Number(13).toString(),
   });

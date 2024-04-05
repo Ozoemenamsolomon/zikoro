@@ -1,34 +1,16 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useFormatEventData } from "@/hooks";
 import Image from "next/image";
 import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
 import { AboutWidget } from "@/components/composables";
 import { CalendarDateFill } from "@styled-icons/bootstrap/CalendarDateFill";
 import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
-import { useMemo } from "react";
 import { Event } from "@/types";
-import { formatDate, formatTime } from "@/utils";
 import { CountDown } from "..";
 export function EventSchedule({ event }: { event: Event | null }) {
-  const router = useRouter();
-
-  const removeComma = useMemo(() => {
-    return event?.eventCity === null || event?.eventCountry === null;
-  }, [event?.eventCity, event?.eventCountry]);
-
-  const startDate = useMemo(
-    () => formatDate(event?.startDateTime ?? "0"),
-    [event?.startDateTime ?? "0"]
-  );
-  const endDate = useMemo(
-    () => formatDate(event?.endDateTime ?? "0"),
-    [event?.endDateTime ?? "0"]
-  );
-  const startTime = useMemo(
-    () => formatTime(event?.startDateTime ?? "0"),
-    [event?.startDateTime ?? "0"]
-  );
+  const { removeComma, startDate, endDate, startTime } =
+    useFormatEventData(event);
 
   return (
     <div className="w-full flex flex-col gap-y-4 items-start justify-start ">
@@ -54,14 +36,23 @@ export function EventSchedule({ event }: { event: Event | null }) {
           <div className="flex flex-col gap-y-1 items-start justify-start">
             <AboutWidget
               Icon={CalendarDateFill}
-              text={ <p className="flex items-center gap-x-1">
-              {`${startDate} `}{" "}
-              <span className="hidden md:block">{`- ${endDate}`}</span>
-            </p>}
+              text={
+                <p className="flex items-center gap-x-1">
+                  {`${startDate} `}{" "}
+                  <span className="hidden md:block">{`- ${endDate}`}</span>
+                </p>
+              }
             />
             <AboutWidget
               Icon={TimeFive}
-              text={`${startTime} (${event?.eventTimeZone ?? ""})`}
+              text={
+                <p className="flex items-center gap-x-1">
+                  {startTime}{" "}
+                  {event?.eventTimeZone && (
+                    <span>{`(${event?.eventTimeZone ?? ""})`}</span>
+                  )}
+                </p>
+              }
             />
           </div>
           <AboutWidget

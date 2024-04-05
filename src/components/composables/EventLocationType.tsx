@@ -1,7 +1,7 @@
 import { cn } from "@/lib";
 
 type EventLocationProp = {
-  locationType: "Hybrid" | "Onsite" | "Online" | "Virtual" | undefined;
+  locationType: "Hybrid" | "Onsite" | "Online" | "Virtual" | string | undefined;
   className?: string;
 };
 

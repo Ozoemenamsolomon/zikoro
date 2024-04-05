@@ -71,7 +71,7 @@ export function Payment({
   const user = getCookie("user");
   const config = paymentConfig({
     reference: data?.eventRegistrationRef,
-    email: user?.email!,
+    email: user?.userEmail!,
     amount: Number(parsedData?.total),
   });
 
@@ -278,7 +278,7 @@ function PaymentSuccess({
           <h1 className="text-lg font-bold sm:text-3xl">{eventTitle}</h1>
         </div>
 
-        <div className="grid grid-cols-2 gap-6 items-center w-full">
+        <div className="grid grid-cols-1 items-start md:grid-cols-2 gap-3 md:gap-6 md:items-center w-full">
           <div className="flex flex-col gap-y-2 items-start justify-start">
             <p className="font-semibold text-lg uppercase">Payment Info</p>
             <p>{userEmail}</p>

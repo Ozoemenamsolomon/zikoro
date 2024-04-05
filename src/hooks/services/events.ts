@@ -5,14 +5,10 @@ import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import {
-  eventBookingValidationSchema,
-  organizationSchema,
-  newEventSchema,
-} from "@/schemas";
+import { eventBookingValidationSchema, organizationSchema } from "@/schemas";
 import { Event, Organization, TEventTransactionDetail } from "@/types";
 import _ from "lodash";
-import { getCookie } from "@/hooks";
+import { getCookie, useGetOrganizations } from "@/hooks";
 import { getRequest, postRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
 import { useGetAttendees } from "@/hooks";
@@ -114,12 +110,24 @@ export function useCreateOrganisation() {
     setLoading(true);
 
     try {
-      const { error, status } = await supabase
-        .from("organization")
-        .upsert([{ ...values, organizationOwner: userData?.userEmail }]);
+      const { error, status } = await supabase.from("organization").upsert([
+        {
+          ...values,
+          organizationOwner: userData?.userEmail,
+          organizationOwnerId: userData?.id,
+          teamMembers: [
+            {
+              userId: userData?.id,
+              userEmail: userData?.userEmail,
+              userRole: "owner",
+            },
+          ],
+        },
+      ]);
 
       if (error) {
         toast({ variant: "destructive", description: error.message });
+        setLoading(false);
         return;
       }
 
@@ -136,12 +144,59 @@ export function useCreateOrganisation() {
   };
 }
 
-export function useCreateEvent() {
-  const userData = getCookie("user");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
-  async function createEvent(values: Event) {
+export function useGetUserHomePageEvents() {
+  const userData = getCookie("user");
+  const [userEvents, setUserEvents] = useState<Event[]>([] as Event[]);
+  const [loading, setLoading] = useState(true);
+  const {
+    organizations,
+    getOrganizations,
+    isLoading: orgLoading,
+  } = useGetOrganizations();
+  const { events, getEvents, isLoading } = useGetEvents();
+
+  async function refetch() {
+    getEvents();
+    getOrganizations();
+  }
+  useEffect(() => {
+    if (!isLoading && !orgLoading && events && organizations) {
+      setLoading(false);
+      // checking if the user is a team member of any of the organizations
+      // getting the organization id
+      const filteredOrganizations = organizations?.filter((organization) => {
+        return organization.teamMembers?.some(
+          ({ userEmail }) => userEmail === userData?.userEmail
+        );
+      });
+
+      const organizationIds = filteredOrganizations.map(({ id }) => id);
+
+      // getting events that matches those organization ids
+      const matchingEvents = events?.filter(({ organisationId }) => {
+        return organizationIds?.some((id) => id === Number(organisationId));
+      });
+
+      setUserEvents(matchingEvents);
+    }
+  }, [events, organizations]);
+
+  // returning the events
+
+  return {
+    events: userEvents,
+    loading,
+    refetch,
+  };
+}
+
+export function useCreateEvent() {
+  // const userData = getCookie("user");
+  const [loading, setLoading] = useState(false);
+   const router = useRouter();
+
+  async function createEvent(values: Partial<Event>) {
     setLoading(true);
 
     try {
@@ -159,8 +214,8 @@ export function useCreateEvent() {
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        console.log({ data });
-        // router.push(` /events/content/${values.eventAlias}/event`);
+        //   console.log({ data });
+         router.push(` /events`);
         toast({ description: "Event created successfully" });
       }
     } catch (error) {}
@@ -236,32 +291,7 @@ export function useUpdateEvent() {
   };
 }
 
-export function useGetQueries(tableName: string) {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<any[]>([]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  async function fetchData() {
-    setLoading(true);
-    const { data, error } = await supabase.from(tableName).select("*");
-    if (error) {
-      toast({ variant: "destructive", description: error.message });
-      setLoading(false);
-      return;
-    }
-    setData(data);
-    setLoading(false);
-  }
-
-  return {
-    refetch: fetchData,
-    loading,
-    data,
-  };
-}
 
 export function useFetchSingleOrganization(id: string) {
   const [loading, setLoading] = useState(false);
@@ -546,7 +576,7 @@ export function useBookingEvent() {
           attendeeType: [attendants],
           registrationDate: new Date(),
           eventRegistrationRef: eventTransactionRef,
-          userEmail: userData?.email,
+          userEmail: userData?.userEmail,
         };
       });
 
@@ -600,7 +630,7 @@ export function useTransactionDetail() {
     try {
       const payload = {
         ...values,
-        userEmail: userData?.email,
+        userEmail: userData?.userEmail,
         userId: userData?.id,
       };
 
@@ -632,10 +662,11 @@ export function useTransactionDetail() {
   };
 }
 
-
 export function useGetEventTransactionDetail(eventRegistrationRef: string) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<TEventTransactionDetail>({} as TEventTransactionDetail);
+  const [data, setData] = useState<TEventTransactionDetail>(
+    {} as TEventTransactionDetail
+  );
 
   useEffect(() => {
     fetchEventTransaction();
@@ -671,7 +702,6 @@ export function useGetEventTransactionDetail(eventRegistrationRef: string) {
     refetch: fetchEventTransaction,
   };
 }
-
 
 export function useUpdateTransactionDetail() {
   const [loading, setLoading] = useState(false);
@@ -958,7 +988,7 @@ export function useFetchRewards(eventId: string | number) {
   };
 }
 
-export function useFormatEventData(event: Event) {
+export function useFormatEventData(event: Event | null) {
   const startDate = useMemo(
     () => formatDate(event?.startDateTime ?? "0"),
     [event?.startDateTime ?? "0"]
@@ -978,8 +1008,8 @@ export function useFormatEventData(event: Event) {
   );
 
   const removeComma = useMemo(() => {
-    return event.eventCity === null || event.eventCountry === null;
-  }, [event.eventCity, event.eventCountry]);
+    return event?.eventCity === null || event?.eventCountry === null;
+  }, [event?.eventCity, event?.eventCountry]);
 
   const currency = useMemo(() => {
     if (event?.pricingCurrency) {

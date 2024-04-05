@@ -232,7 +232,7 @@ export default function UpdateEvent({
     const statusDetail = {
       createdAt: new Date().toISOString(),
       status: "review",
-      user: userData?.email,
+      user: userData?.userEmail,
     };
     await update(
       {
@@ -533,7 +533,7 @@ export default function UpdateEvent({
                         key={field.id}
                         className="w-full flex flex-col items-start gap-y-4 justify-start"
                       >
-                        <div className="flex items-center gap-x-2">
+                        <div className="flex text-sm items-center gap-x-2">
                           <p>{`Price Category ${id + 1}`}</p>
                           <button
                             onClick={() => remove(id)}

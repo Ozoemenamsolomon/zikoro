@@ -71,6 +71,7 @@ function SideNavs({
 }) {
   const { organizationId } = useParams();
   const organization = getCookie("currentOrganization");
+  const user = getCookie("user")
 
   return (
     <div
@@ -109,13 +110,13 @@ function SideNavs({
           <div className="w-full flex items-center gap-x-2 ">
             <Link
               href="https://www.zikoro.com"
-              className="text-mobile sm:text-desktop text-basePrimary font-medium hover:underline "
+              className="text-mobile sm:text-sm text-basePrimary font-medium hover:underline "
             >
               Try Zikoro!
             </Link>
           </div>
           {organization?.plan && (
-            <div className="my-1 w-full flex items-center gap-x-2 p-3 rounded-md bg-basePrimary/10">
+            <div className="my-1 w-full flex text-mobile sm:text-sm items-center gap-x-2 p-3 rounded-md bg-basePrimary/10">
               <div className="w-20 h-fit flex rounded-md flex-col items-center justify-center p-2 bg-[#eef0ff]">
                 <VipCrown2 size={12} className="text-basePrimary" />
                 <p className="text-basePrimary font-medium text-[8px] px-[2px] py-[1px] bg-basePrimary/10">
@@ -148,7 +149,7 @@ function SideNavs({
                 height={30}
                 className="w-[30px] h-[30px] rounded-full"
               />
-              <p className="text-black">Bilal</p>
+              <p className="text-black capitalize text-mobile sm:text-sm">{user?.firstName ?? "User"}</p>
             </div>
           </Link>
           <button

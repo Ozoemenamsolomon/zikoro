@@ -6,10 +6,12 @@ import { useState, useEffect } from "react";
 import { toast } from "@/components/ui/use-toast";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
-import { getUser } from "../../actions/users";
 import Cookies from "js-cookie";
 import { UserProfile } from "@auth0/nextjs-auth0/client";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { TUser } from "@/types/user";
+import {  getRequest } from "@/utils/api";
+
 
 const supabase = createClientComponentClient();
 export const saveCookie = (name: string, value: any) => {
@@ -132,3 +134,17 @@ export function useValidateUser() {
     verifyUser();
   }, [user]);
 }
+
+
+export const getUser = async (email: string) => {
+ 
+  const { data: user, error } = await supabase
+  .from("users")
+    .select("*")
+    .eq("userEmail", email)
+    .single();
+  if (error) {
+  //  console.log({error});
+  }
+  return user;
+};

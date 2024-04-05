@@ -77,7 +77,9 @@ export async function POST(req: NextRequest) {
         title: event,
         location: address,
         attendees: attendeesNames,
+        organizer:{name: organization, email: "me@gmail.com"}
         // Add other event details as needed
+        //  organizerContact?.email
       };
 
       // Generate iCalendar content
@@ -248,7 +250,7 @@ export async function POST(req: NextRequest) {
                 }</p>
               
                 <a
-                 href="#" 
+                 href="www.zikoro.com/profile" 
                 style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
                 >
                 Update Profile</a>
@@ -345,7 +347,7 @@ export async function POST(req: NextRequest) {
               alt="qrcode" />
             </div>
               <a
-              href="www.zikoro.com/events/${eventId}"
+              href="www.zikoro.com/event/${eventId}/home"
               style="max-width:600px; margin:0 auto;"
               >
               <button

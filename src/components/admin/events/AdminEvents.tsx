@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetQueries } from "@/hooks";
+import { useGetEvents } from "@/hooks";
 import { EventLayout } from "./_components";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { Button } from "@/components";
@@ -23,21 +23,20 @@ import { EmptyCard } from "../../composables";
 
 export default function AdminEvents() {
   const {
-    data,
-    refetch,
-    loading,
-  }: { data: Event[]; refetch: () => Promise<any>; loading: boolean } =
-    useGetQueries("events");
+    events,
+    getEvents:refetch,
+    isLoading: loading,
+  } =useGetEvents();
   const search = useSearchParams();
   const query = search.get("e");
 
   const eventData = useMemo(() => {
     if (query === "review" || !query) {
-      return data?.filter(({ eventStatus }) => eventStatus === "review");
+      return events?.filter(({ eventStatus }) => eventStatus === "review");
     } else {
-      return data?.filter(({ eventStatus }) => eventStatus === query);
+      return events?.filter(({ eventStatus }) => eventStatus === query);
     }
-  }, [data, query]);
+  }, [events, query]);
 
   return (
     <EventLayout>
@@ -97,11 +96,14 @@ function EventCard({
     const statusDetail = {
       createdAt: new Date().toISOString(),
       status: "published",
-      user: userData?.email,
+      user: userData?.userEmail,
     };
+
+    const {organization, ...remainingData}:any = event
     await update(
       {
-        ...event,
+        ...remainingData,
+        published:true,
         eventStatus: "published",
         eventStatusDetails:
           event?.eventStatusDetails && event?.eventStatusDetails !== null
@@ -203,7 +205,7 @@ function EventCard({
             </div>
           </div>
         </div>
-        {query === "review" && (
+        {!query || query === "review" && (
           <div className="py-4 w-full border-t  p-4 flex items-center gap-x-2">
             <Button
               // type="submit"

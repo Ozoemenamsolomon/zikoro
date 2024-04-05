@@ -409,10 +409,11 @@ export function BookEvent({
                 <div className="grid grid-cols-1 gap-6  items-center w-full">
                   {Array.isArray(pricingArray) &&
                     pricingArray &&
-                    pricingArray?.map((v) => {
+                    pricingArray?.map((v, index) => {
                       if (v) {
                         return (
                           <Button
+                          key={index}
                             onClick={(e) => {
                               e.stopPropagation();
                               selectedPrice(v?.price);
