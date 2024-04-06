@@ -1,3 +1,4 @@
+import Navbar from "@/components/Navbar";
 import BlogHeader from "@/components/blog/BlogHeader";
 import Footer from "@/components/Footer";
 import BlogNav from "@/components/blog/BlogNav";
@@ -22,6 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <section className={`${montserrat.className} `}>
+      <Navbar />
       <BlogHeader />
       <BlogNav />
       {children}

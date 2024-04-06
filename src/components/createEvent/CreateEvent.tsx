@@ -1,23 +1,16 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormField,
-  Input,
-  Button,
-  ReactSelect,
-} from "@/components";
+import { Form, FormField, Input, Button, ReactSelect } from "@/components";
 import { newEventSchema } from "@/schemas";
 import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
-import { useState, useMemo } from "react";
+import {  useMemo } from "react";
 import { COUNTRY_CODE } from "@/utils";
-import { useCreateEvent } from "@/hooks";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { useCreateEvent, getCookie } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import InputOffsetLabel from "../InputOffsetLabel";
 
@@ -28,17 +21,26 @@ export default function CreateEvent({
 }) {
   const { createEvent, loading } = useCreateEvent();
   const { user } = useUser();
+  
 
   const form = useForm<z.infer<typeof newEventSchema>>({
     resolver: zodResolver(newEventSchema),
   });
 
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
+    const userData = getCookie("user");
     const eventAlias = uuidv4().replace(/-/g, "").substring(0, 20);
     await createEvent({
       ...values,
+      expectedParticipants: Number(values?.expectedParticipants),
       eventAlias,
       organisationId: organizationId,
+      createdBy: userData?.userEmail,
+      published: false,
+      eventStatus: "new",
+      eventStatusDetails: [
+        { createdAt: new Date().toISOString(), status: "new", user: userData?.userEmail },
+      ],
     });
   }
 

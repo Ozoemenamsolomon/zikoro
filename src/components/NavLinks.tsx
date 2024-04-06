@@ -16,7 +16,7 @@ export const NavLinks = ({
   const pathname = usePathname();
 
   return (
-    <ul className="flex flex-col gap-y-1 items-start h-[45vh] pb-32 overflow-hidden  no-scrollbar overflow-y-auto  justify-start w-full">
+    <ul className="flex text-mobile sm:text-sm flex-col gap-y-1 items-start h-[45vh] pb-32 overflow-hidden  no-scrollbar overflow-y-auto  justify-start w-full">
     {links.map(({ href, name, icon: Icon }, idx) => {
       if (idx === links.length - 1) {
       
@@ -29,7 +29,7 @@ export const NavLinks = ({
               className={cn(
                 "p-3 px-4 flex  items-center justify-start gap-x-2  w-full",
                 pathname.includes(href) &&
-                  "text-basePrimary  bg-basePrimary border-l-4 border-basePrimary bg-opacity-10  "
+                  "text-basePrimary pl-4  bg-basePrimary border-l-4 border-basePrimary bg-opacity-10  "
               )}
             >
               {Icon && (
@@ -58,11 +58,11 @@ export const NavLinks = ({
                 ? `${href}/organization/${id}?organization=${query}`
                 : href
             }
-            target={href === "/live-events" ? "blank" : ""}
+            target={href === "/live-events" ? "_blank" : ""}
             className={cn(
               "p-3 pr-4 pl-4 flex  items-center gap-x-2  w-full",
               href === pathname &&
-                "text-basePrimary pl-2 pr-4  bg-basePrimary border-l-4 border-basePrimary bg-opacity-10  ",
+                "text-basePrimary pl-4 pr-4  bg-basePrimary border-l-4 border-basePrimary bg-opacity-10  ",
               query === null && href === "/live-events" && "hidden"
             )}
           >

@@ -57,7 +57,7 @@ export function PreviewModal({ close, eventDetail }: {eventDetail?: Event; close
                   <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
                     Link
                   </FormLabel>
-                  <div className="flex absolute top-3 right-3 items-center gap-x-2">
+                  <div className="flex absolute top-2 z-10 bg-white justify-center h-[60%] right-2 items-center gap-x-2">
                     <CopyLink
                       link={`${window.location.origin}/preview/${eventDetail?.id ||event?.eventId }`}
                     />

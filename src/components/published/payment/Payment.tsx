@@ -1,70 +1,78 @@
 "use client";
+
 import { Button } from "@/components";
 import { Lock } from "@styled-icons/fa-solid/Lock";
 import { PaystackButton } from "react-paystack";
 import { useState } from "react";
-import {OrganizerContact} from "@/types"
+import { OrganizerContact, TPayment } from "@/types";
 import { paymentConfig } from "@/hooks/common/usePayStackPayment";
-import { getCookie, useUpdateTransactionDetail } from "@/hooks";
+import {
+  getCookie,
+  useGetEventTransactionDetail,
+  useUpdateTransactionDetail,
+} from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { CheckCircleFill } from "@styled-icons/bootstrap/CheckCircleFill";
+import { useSearchParams } from "next/navigation";
 
+type QueryData = {
+  eventImage: string;
+  address: string;
+  startDate: string;
+  endDate: string;
+  organization: string;
+  eventLocation: string;
+  organizerContact: string;
+  amountPayable: string;
+  total: string;
+  processingFee: string;
+};
 export function Payment({
-  total,
-  discount,
-  eventImage,
-  count,
-  processingFee,
-  address,
-  amountPayable,
-  priceCategory,
-  organizerContact,
-  organization,
-  eventDate,
-  eventPrice,
-  currency,
-  eventLocation,
-  eventTitle,
-  startDate,
-  endDate,
-  allowPayment,
-  eventId,
-  attendeesDetails,
-  eventReference,
-  referralSource,
-  discountCode,
+  eventRegistrationRef,
 }: {
-  total?: number;
-  allowPayment: (bool: boolean) => void;
-  discount: number;
-  count: number;
-  currency: string | undefined;
-  processingFee?: number
-  amountPayable?:number
-  attendeesDetails: any[];
-  eventImage:string
-  eventPrice?: number;
-  startDate?: string;
-  endDate?: string;
-  organization?: string | null;
-  organizerContact: OrganizerContact
-  eventId?: number;
-  eventDate?: string;
-  priceCategory?: string;
-  eventTitle?: string;
-  eventLocation?: string;
-  eventReference: string;
-  address?:string
-  discountCode?: string;
-  referralSource?: string;
+  eventRegistrationRef: string;
 }) {
   const { sendTransactionDetail, loading } = useUpdateTransactionDetail();
   const [isSuccessModal, setSuccessModal] = useState(false);
+  const { data } = useGetEventTransactionDetail(eventRegistrationRef);
+  const query = useSearchParams();
+
+  const eventData: any = query.get("eventData");
+  const parsedData: QueryData = JSON.parse(eventData);
+  console.log({ parsedData });
+
+  /**
+   const {
+    total,
+    discount,
+    eventImage,
+    count,
+    processingFee,
+    address,
+    amountPayable,
+    priceCategory,
+    organizerContact,
+    organization,
+    eventDate,
+    eventPrice,
+    currency,
+    eventLocation,
+    eventTitle,
+    startDate,
+    endDate,
+    allowPayment,
+    eventId,
+    attendeesDetails,
+    eventReference,
+    referralSource,
+    discountCode,
+  } = parsedData;
+ */
   const user = getCookie("user");
   const config = paymentConfig({
-    reference: eventReference,
-    email: user?.user?.email!,
-    amount: total,
+    reference: data?.eventRegistrationRef,
+    email: user?.userEmail!,
+    amount: Number(parsedData?.total),
   });
 
   function toggleSuccessModal(bool: boolean) {
@@ -75,32 +83,32 @@ export function Payment({
     // console.log(reference);
 
     const payload = {
-      eventId,
-      eventImage,
-      eventRegistrationRef: eventReference,
+      eventId: data?.eventId,
+      eventImage: parsedData?.eventImage,
+      eventRegistrationRef: data?.eventRegistrationRef,
       paymentDate: new Date(),
       expiredAt: null,
-      amountPaid: total,
-      attendees: count,
-      discountValue: discount,
-      referralSource,
-      discountCode,
-      amountPayable,
-      processingFee,
-      address,
-      count,
-      currency,
-      organizerContact,
-      organization,
-      startDate,
-      endDate,
+      amountPaid: Number(parsedData?.total),
+      attendees: data?.attendees,
+      discountValue: data?.discountValue,
+      referralSource: data?.referralSource,
+      discountCode: data?.discountCode,
+      amountPayable: data?.amountPayable,
+      processingFee: Number(parsedData?.processingFee),
+      address: parsedData?.address,
+      count: data?.attendees,
+      currency: data?.currency,
+      organizerContact: JSON.parse(parsedData?.organizerContact),
+      organization: parsedData?.organization,
+      startDate: parsedData?.startDate,
+      endDate: parsedData?.endDate,
       registrationCompleted: reference.status === "success",
-      eventDate,
+      eventDate: data?.eventDate,
       payOutStatus: "new",
-      ticketCategory: priceCategory,
-      event: eventTitle,
-      attendeesDetails,
-      eventPrice,
+      ticketCategory: data?.ticketCategory,
+      event: data?.event,
+      attendeesDetails: data?.attendeesDetails,
+      eventPrice: data?.eventPrice,
     };
 
     //  console.log({ payload });
@@ -115,37 +123,38 @@ export function Payment({
     children: (
       <Button className="w-full sm:w-[405px] gap-x-2 bg-basePrimary text-gray-50 font-medium">
         <Lock size={22} />
-        <span>{`Pay ₦${total?.toLocaleString()}`}</span>
+        <span>{`Pay ₦${Number(parsedData?.total)?.toLocaleString()}`}</span>
       </Button>
     ),
     onSuccess: (reference: any) => handleSuccess(reference),
   };
   async function submit() {
     const payload = {
-      eventId,
-      eventRegistrationRef: eventReference,
+      eventId: data?.eventId,
+      eventImage: parsedData?.eventImage,
+      eventRegistrationRef: data?.eventRegistrationRef,
       paymentDate: new Date(),
       expiredAt: null,
-      eventImage,
-      amountPaid: total,
-      attendees: count,
-      discountValue: discount,
-      referralSource,
-      discountCode,
-      currency,
-      organizerContact,
-      organization,
-      count,
-      address,
-      startDate,
-      endDate,
- 
+      amountPaid: parsedData?.total,
+      attendees: data?.attendees,
+      discountValue: data?.discountValue,
+      referralSource: data?.referralSource,
+      discountCode: data?.discountCode,
+      amountPayable: data?.amountPayable,
+      processingFee: parsedData?.processingFee,
+      address: parsedData?.address,
+      count: data?.attendees,
+      currency: data?.currency,
+      organizerContact: JSON.parse(parsedData?.organizerContact),
+      organization: parsedData?.organization,
+      startDate: parsedData?.startDate,
+      endDate: parsedData?.endDate,
       registrationCompleted: true,
-      eventDate,
-      ticketCategory: priceCategory,
-      event: eventTitle,
-      attendeesDetails,
-      eventPrice,
+      eventDate: data?.eventDate,
+      ticketCategory: data?.ticketCategory,
+      event: data?.event,
+      attendeesDetails: data?.attendeesDetails,
+      eventPrice: data?.eventPrice,
     };
 
     //  console.log({ payload });
@@ -153,16 +162,10 @@ export function Payment({
     /// change to priceCategory after validity date has been adjusted
     await sendTransactionDetail(toggleSuccessModal, payload);
   }
+
   return (
     <>
       <div className="w-full h-full z-[200] bg-[#FAFAFA] fixed inset-0">
-        <Button
-          onClick={() => allowPayment(false)}
-          className="absolute top-4 left-4"
-        >
-          <CloseOutline size={24} />
-        </Button>
-
         <div className="w-[95%] m-auto box-animation sm:w-[439px] rounded-sm shadow inset-0 h-fit absolute gap-y-4 bg-white flex flex-col py-6 px-3 sm:px-4 items-start justify-start">
           <h3 className="text-base sm:text-xl font-medium mb-6">
             Order Summary
@@ -172,20 +175,24 @@ export function Payment({
             <h3>Orders</h3>
 
             <div className="flex items-center justify-between w-full">
-              <p>{`${count}x SubTotal`}</p>
-              {total && <p>{`₦${(total + discount)?.toLocaleString()}`}</p>}
+              <p>{`${data?.attendees}x SubTotal`}</p>
+              {parsedData?.total && (
+                <p>{`₦${(
+                  Number(parsedData?.total) + data?.discountValue
+                )?.toLocaleString()}`}</p>
+              )}
             </div>
             <div className="flex items-center justify-between w-full">
-              <p>{`${count}x Discount`}</p>
-              <p>{`-₦${discount?.toLocaleString()}`}</p>
+              <p>{`${data?.attendees}x Discount`}</p>
+              <p>{`-₦${data?.discountValue?.toLocaleString()}`}</p>
             </div>
             <div className="flex items-center justify-between w-full">
               <p>Total</p>
-              <p>{`₦${total?.toLocaleString()}`}</p>
+              <p>{`₦${Number(parsedData?.total || 0)?.toLocaleString()}`}</p>
             </div>
           </div>
           <div className="w-full flex items-center justify-center">
-            {total && total > 0 ? (
+            {Number(parsedData?.total) && Number(parsedData?.total) > 0 ? (
               <PaystackButton {...componentProps} />
             ) : (
               <Button
@@ -197,15 +204,6 @@ export function Payment({
               </Button>
             )}
           </div>
-          {/**
-         <Button
-          onClick={submit}
-          className="w-full gap-x-2 bg-basePrimary text-gray-50 font-medium"
-        >
-          <Lock size={22} />
-          <span>{`Pay ₦${total?.toLocaleString()}`}</span>
-        </Button>
-         */}
         </div>
       </div>
       {loading && (
@@ -219,14 +217,14 @@ export function Payment({
 
       {isSuccessModal && (
         <PaymentSuccess
-          location={eventLocation}
-          startDate={startDate}
-          endDate={endDate}
-          count={count}
+          location={parsedData?.eventLocation}
+          startDate={parsedData?.startDate}
+          endDate={parsedData?.endDate}
+          count={data?.attendees}
           toggleSuccessModal={toggleSuccessModal}
-          reference={eventReference}
-          eventTitle={eventTitle}
-          userEmail={user?.user?.email}
+          reference={data?.eventRegistrationRef}
+          eventTitle={data?.event}
+          userEmail={user?.email}
         />
       )}
     </>
@@ -280,7 +278,7 @@ function PaymentSuccess({
           <h1 className="text-lg font-bold sm:text-3xl">{eventTitle}</h1>
         </div>
 
-        <div className="grid grid-cols-2 gap-6 items-center w-full">
+        <div className="grid grid-cols-1 items-start md:grid-cols-2 gap-3 md:gap-6 md:items-center w-full">
           <div className="flex flex-col gap-y-2 items-start justify-start">
             <p className="font-semibold text-lg uppercase">Payment Info</p>
             <p>{userEmail}</p>
@@ -306,3 +304,13 @@ function PaymentSuccess({
     </div>
   );
 }
+
+/**
+         <Button
+          onClick={submit}
+          className="w-full gap-x-2 bg-basePrimary text-gray-50 font-medium"
+        >
+          <Lock size={22} />
+          <span>{`Pay ₦${total?.toLocaleString()}`}</span>
+        </Button>
+         */

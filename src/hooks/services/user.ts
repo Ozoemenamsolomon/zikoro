@@ -14,7 +14,7 @@ export const useGetUser = ({ userId }: { userId: string }) => {
   console.log(userId, "user id");
   const getUser = async () => {
     setLoading(true);
-    console.log(userId, "user id");
+   // console.log(userId, "user id");
     const { data, status } = await getRequest<TUser>({
       endpoint: `/users/${userId}`,
     });

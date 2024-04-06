@@ -49,8 +49,17 @@ export default function FeaturedEvent({
 
   // Extracting the date portion
   function extractDate(dateTimeString: string): string {
-    const date = new Date(dateTimeString);
-    return date.toISOString().split("T")[0]; // Extracting the date portion
+ 
+    try {
+      const date = new Date(dateTimeString);
+      if (isNaN(date.getTime())) {
+        throw new Error("Invalid date");
+      }
+      return date.toISOString().split("T")[0]; // Extracting the date portion
+    } catch (error) {
+      console.error("Error extracting date:", error);
+      return "Invalid Date";
+    }
   }
   const [date, setDate] = useState<string | null>(null);
 

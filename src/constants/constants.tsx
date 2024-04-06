@@ -1,4 +1,5 @@
 import { AdminNavLinkType, NavLinkType } from "@/types";
+import React from "react";
 
 export function HomeIcon({ color }: { color: string }) {
   return (
@@ -16,7 +17,7 @@ export function HomeIcon({ color }: { color: string }) {
 
 export function MarketingIcon({ color }: { color: string }) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width={24} height={24} viewBox="0 0 24 24" fill="none">
       <g id="promotion 1" clipPath="url(#clip0_11269_2883)">
         <path
           id="Vector"
@@ -46,12 +47,12 @@ export function MarketingIcon({ color }: { color: string }) {
         <path
           id="Vector_6"
           d="M18.4781 1.00377L17.9923 2.81505C17.9253 3.06517 18.0736 3.32207 18.3237 3.38927C18.5737 3.4561 18.8307 3.30815 18.8979 3.05785L19.3835 1.24657C19.4505 0.996446 19.3022 0.739366 19.0521 0.672349C18.8022 0.605333 18.5451 0.753648 18.4781 1.00377Z"
-          fill="black"
+          fill={color}
         />
       </g>
       <defs>
         <clipPath id="clip0_11269_2883">
-          <rect width="24" height="24" fill="white" />
+          <rect width={24} height={24} fill="white" />
         </clipPath>
       </defs>
     </svg>

@@ -1,9 +1,10 @@
-"use client"
+"use client";
 
 import { TOrganization } from "@/types/organization";
 import { toast } from "@/components/ui/use-toast";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
+import { getCookie } from "@/hooks";
 import { UseGetResult, usePostResult } from "@/types/request";
 
 export const useGetOrganizations = (): UseGetResult<
@@ -135,3 +136,29 @@ export const useUpdateOrganization = ({
 
   return { updateOrganization, isLoading, error };
 };
+
+export function useGetUserOrganizations() {
+  const userData = getCookie("user");
+  const [userOrganizations, setUserOrganizatiions] = useState<TOrganization[]>(
+    [] as TOrganization[]
+  );
+
+  const { organizations, isLoading: orgLoading } = useGetOrganizations();
+  // checking if thwe user is a team member of some organizations
+  useEffect(() => {
+    if (!orgLoading && organizations) {
+      const filteredOrganizations = organizations?.filter((organization) => {
+        return organization.teamMembers?.some(
+          ({ userEmail }) => userEmail === userData?.userEmail
+        );
+      });
+
+      setUserOrganizatiions(filteredOrganizations);
+    }
+  }, [organizations]);
+
+  //return data
+  return {
+    organizations: userOrganizations,
+  };
+}

@@ -22,9 +22,15 @@ export interface TOrganization {
   instagram: string | null;
   facebook: string | null;
   certificateAsset: TCertificateAsset | null;
+  teamMembers: TOrganizationTeamMember[];
 }
 
+type TOrganizationTeamMember = {
+  userId: string;
+  userEmail: string;
+  userRole: string;
+};
 export interface TCertificateAsset {
-  elements:  string[];
+  elements: string[];
   backgrounds: string[];
 }

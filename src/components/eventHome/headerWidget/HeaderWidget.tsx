@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetQueries, saveCookie } from "@/hooks";
+import { useGetUserOrganizations, saveCookie, getCookie } from "@/hooks";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { useState, useMemo, useEffect } from "react";
 import { OrganizationIcon } from "@/constants";
@@ -9,11 +9,11 @@ import { CreateOrganization } from "..";
 import { useParams, useRouter } from "next/navigation";
 import _ from "lodash";
 import { useForm } from "react-hook-form";
-import { cn } from "@/lib";
+import { toast } from "@/components/ui/use-toast";
 
 type OrganizationListType = {
   label: string;
-  value: string;
+  value: any;
 };
 export function HeaderWidget({
   currentQuery,
@@ -21,7 +21,7 @@ export function HeaderWidget({
   currentQuery: string | null;
 }) {
   const [isOpen, setOpen] = useState(false);
-
+  const user = getCookie("user")
   const router = useRouter();
   const form = useForm({
     defaultValues: {
@@ -29,7 +29,7 @@ export function HeaderWidget({
     },
   });
   const { id } = useParams();
-  const { data: organizationList } = useGetQueries("organization");
+  const { organizations: organizationList } = useGetUserOrganizations()
 
   function onClose() {
     setOpen(!isOpen);
@@ -47,7 +47,7 @@ export function HeaderWidget({
   const selectedOrg = form.watch("org");
   useEffect(() => {
     if (selectedOrg) {
-      const org = organizationList.find((o) => o.id === selectedOrg);
+      const org = organizationList.find((o) => String(o.id) === String(selectedOrg));
       saveCookie("currentOrganization", {
         id: org?.id,
         name: org?.organizationName,
@@ -59,6 +59,13 @@ export function HeaderWidget({
 
   function newEvent() {
     const org = formattedList.find((o) => o.label === currentQuery);
+    if (!org?.value) {
+      toast({
+        variant: "destructive",
+        description: "Pls Select an Organization",
+      });
+      return;
+    }
     router.push(`/create/${org?.value}`);
   }
 
@@ -66,8 +73,8 @@ export function HeaderWidget({
     <div>
       <div className="w-full mb-4 sm:mb-6 items-start flex-col gap-y-2 sm:items-center sm:flex-row sm:justify-between justify-start flex">
         <div className="flex flex-col gap-y-2 items-start justify-start">
-          <h2 className="font-semibold text-base sm:text-2xl">
-            {`Welcome, User`}
+          <h2 className="font-semibold capitalize text-base sm:text-2xl">
+            {`Welcome, ${user?.firstName ?? "User"}`}
           </h2>
           <p className="text-gray-500"></p>
         </div>
@@ -79,7 +86,9 @@ export function HeaderWidget({
             >
               <ReactSelect
                 {...form.register("org")}
-                defaultValue={currentQuery ? { label: currentQuery, value: id } : ""}
+                defaultValue={
+                  currentQuery ? { label: currentQuery, value: id } : ""
+                }
                 options={formattedList}
                 placeHolder="Select Organization"
               />

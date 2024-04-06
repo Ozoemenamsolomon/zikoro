@@ -31,6 +31,11 @@ export type PartnerIndustry = {
   color: string;
 };
 
+interface TEventStatusDetail {
+  createdAt: string;
+  status: string;
+  user: string;
+}
 export interface Event {
   createdAt: string;
   createdBy: string;
@@ -48,9 +53,10 @@ export interface Event {
   id: number;
   industry: string;
   instagram: string;
+  organisationId:string
   x: string;
   linkedin: string;
-  locationType: "Hybrid" | "Onsite" | "Virtual";
+  locationType: "Hybrid" | "Onsite" | "Virtual" | string;
   organisationLogo: string;
   organisationName: string;
   phoneNumber: string;
@@ -68,6 +74,8 @@ export interface Event {
   sponsorCategory: { type: string; id: string }[];
   eventAlias: string;
   eventTimeZone: string;
+  eventStatusDetails: TEventStatusDetail[];
+  eventStatus: string;
 }
 
 export interface PaymentConfigProps {
@@ -119,4 +127,69 @@ export interface Reward {
   point: string;
   eventId: string;
   eventName: string;
+}
+
+export interface TPayment {
+  total?: number;
+  allowPayment: (bool: boolean) => void;
+  discount: number;
+  count: number;
+  currency: string | undefined;
+  processingFee?: number;
+  amountPayable?: number;
+  attendeesDetails: any[];
+  eventImage: string;
+  eventPrice?: number;
+  startDate?: string;
+  endDate?: string;
+  organization?: string | null;
+  organizerContact: OrganizerContact;
+  eventId?: number;
+  eventDate?: string;
+  priceCategory?: string;
+  eventTitle?: string;
+  eventLocation?: string;
+  eventReference: string;
+  address?: string;
+  discountCode?: string;
+  referralSource?: string;
+}
+
+interface TAttendeeDetail {
+  email: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  whatsappNumber: string;
+}
+export interface TEventTransactionDetail {
+  affiliateCode: string;
+  affiliateCommission: string;
+  amountPaid: number;
+  amountPayable: number;
+  attendees: number;
+  attendeesDetails: TAttendeeDetail[];
+  created_at: string;
+  currency: string;
+  discountCode: string;
+  discountValue: number;
+  event: string;
+  eventDate: string;
+  eventId: number;
+  eventPrice: number;
+  eventRegistrationRef: string;
+  expiredAt: string;
+  id: number;
+  payOutDate: string;
+  payOutOption: string;
+  payOutRequestDate: string;
+  payOutRequestedBy: string;
+  payOutStatus: string;
+  paymentDate: string;
+  processingFee: string;
+  referralSource: string;
+  registrationCompleted: boolean;
+  ticketCategory: string;
+  userEmail: string;
+  userId: string;
 }

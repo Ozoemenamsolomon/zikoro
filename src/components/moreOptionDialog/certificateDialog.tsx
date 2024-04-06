@@ -19,6 +19,7 @@ import {
 import { TCertificate } from "@/types/certificates";
 // import { DialogClose } from "../ui/dialog";
 import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
+import { DialogClose } from "../ui/dialog";
 
 const CertificateDialog: React.FC<MoreOptionsProps> = ({
   attendees,
@@ -187,7 +188,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
       />
-      {/* <DialogClose asChild>
+      <DialogClose asChild>
         <Button
           disabled={
             selectedAttendees.length === 0 || !action || !selectedCertificate
@@ -197,7 +198,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         >
           Save
         </Button>
-      </DialogClose> */}
+      </DialogClose>
     </div>
   );
 };

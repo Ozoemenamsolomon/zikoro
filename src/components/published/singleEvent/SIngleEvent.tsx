@@ -36,7 +36,7 @@ import { useState, useMemo } from "react";
 import { BookEvent } from "..";
 import { usePathname, useRouter } from "next/navigation";
 import { Event, OrganizerContact } from "@/types";
-
+import {useFetchSingleOrganization, getCookie} from "@/hooks"
 export function SingleEvent({
   className,
   isDetail,
@@ -57,6 +57,8 @@ export function SingleEvent({
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
   const [isShareDropDown, showShareDropDown] = useState(false);
+  const org = getCookie("currentOrganization");
+  const { data, refetch } = useFetchSingleOrganization(org?.id);
 
   const router = useRouter();
 
@@ -100,16 +102,16 @@ export function SingleEvent({
 
   // call phone
   function phoneCall() {
-    window.open(`tel:${event?.phoneNumber}`, "_blank");
+    window.open(`tel:${data?.eventPhoneNumber}`, "_blank");
   }
   // chat on whatsapp
   function whatsapp() {
-    window.open(`https://wa.me/${event?.whatsappNumber}`, "_blank");
+    window.open(`https://wa.me/${data?.eventWhatsApp}`, "_blank");
   }
 
   // send mail
   function sendMail() {
-    window.open(`mailto:${event?.email}`, "_blank");
+    window.open(`mailto:${data?.organizationOwner}`, "_blank");
   }
 
   function toggleShareDropDown() {
@@ -121,22 +123,24 @@ export function SingleEvent({
     return event?.eventCity === null || event?.eventCountry === null;
   }, [event?.eventCity, event?.eventCountry]);
 
-  const isAllContactUnavailable = useMemo(() => {
+/**
+   const isAllContactUnavailable = useMemo(() => {
     return (
       event?.phoneNumber === null ||
       event?.whatsappNumber === null ||
       event?.email === null
     );
   }, [event?.phoneNumber, event?.whatsappNumber, event?.email]);
+ */
 
   const isAllSocialUnavailable = useMemo(() => {
     return (
-      event?.x === null &&
-      event?.instagram === null &&
-      event?.linkedin === null &&
-      event?.facebook === null
+      data?.x === null &&
+      data?.instagram === null &&
+      data?.linkedIn === null &&
+      data?.facebook === null
     );
-  }, [event?.x, event?.instagram, event?.linkedin, event?.facebook]);
+  }, [data?.x, data?.instagram, data?.linkedIn, data?.facebook]);
 
   // determingn the currerncy symbol
   const currency = useMemo(() => {
@@ -155,9 +159,9 @@ export function SingleEvent({
   }, [event?.expectedParticipants, event?.registered]);
 
   const organizerContact: OrganizerContact = {
-    whatsappNumber: event?.whatsappNumber,
-    phoneNumber: event?.phoneNumber,
-    email: event?.email,
+    whatsappNumber: data?.eventWhatsApp,
+    phoneNumber: data?.eventPhoneNumber,
+    email: data?.eventContactEmail,
   };
 
   const price = useMemo(() => {
@@ -385,10 +389,10 @@ export function SingleEvent({
                     <ActionModal
                       close={toggleShareDropDown}
                       eventId={eventId}
-                      x={"https://twitter.com"}
-                      linkedIn={"https://linkedIn.com"}
-                      facebook={"https://www.fb.com"}
-                      instagram={"https://www.instagram.com"}
+                      x={data?.x}
+                      linkedIn={data?.linkedIn}
+                      facebook={data?.facebook}
+                      instagram={data?.instagram}
                     />
                   )}
                 </Button>
@@ -451,11 +455,11 @@ function ActionModal({
   instagram,
   eventId,
 }: {
-  x: string;
-  facebook: string;
+  x?: string;
+  facebook?: string;
   eventId?: number;
-  instagram: string;
-  linkedIn: string;
+  instagram?: string;
+  linkedIn?: string;
   close: () => void;
 }) {
   return (
@@ -504,7 +508,7 @@ function ActionModal({
           </FacebookShareButton>
           <Link
             target="_blank"
-            href={instagram}
+            href={instagram ? instagram : ""}
             className={
               "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
             }

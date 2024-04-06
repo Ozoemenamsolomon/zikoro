@@ -6,5 +6,7 @@ import ReusablePeopleComponent from "../_reusable";
 export default function page() {
   const useGetAttendeesprops = useGetAttendees();
 
+  console.log(useGetAttendeesprops.attendees, "attendees");
+
   return <ReusablePeopleComponent {...useGetAttendeesprops} />;
 }

@@ -26,8 +26,7 @@ import {
 } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
 import { Event } from "@/types";
-import { CheckCircleFill } from "styled-icons/bootstrap";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 export function BookEvent({
@@ -63,11 +62,11 @@ export function BookEvent({
 }) {
   const [attendees, setAttendees] = useState<any[]>([]);
   const pathname = usePathname();
+  const router = useRouter();
   const [chosenPrice, setChosenPrice] = useState<number | undefined>();
   const [code, setCode] = useState("");
   const [active, setActive] = useState(1);
   const [priceCategory, setPriceCategory] = useState<string | undefined>("");
-  const [isPaymentModal, setOpenPaymentModal] = useState(false);
   const { sendTransactionDetail } = useTransactionDetail();
   const [description, setDescription] = useState("");
   const form = useForm<z.infer<typeof eventBookingValidationSchema>>({
@@ -110,14 +109,45 @@ export function BookEvent({
       phoneNumber: "",
     });
   }
-  function allowPayment(bool: boolean) {
-    setOpenPaymentModal(bool);
-  }
 
-  // memoized the reference to invoke once
-  const eventReference = useMemo(() => {
-    return nanoid();
-  }, [nanoid]);
+    // memoized the reference to invoke once
+    const eventReference = useMemo(() => {
+      return nanoid();
+    }, [nanoid]);
+
+    
+
+
+  /**
+    query: {
+          data: JSON.stringify({
+            eventDate,
+            eventImage,
+            allowPayment,
+            priceCategory,
+            eventTitle,
+            address,
+            startDate,
+            eventReference,
+            endDate,
+            attendeesDetails: attendees,
+            eventId,
+            organization,
+            organizerContact,
+            currency,
+            processingFee,
+            amountPayable: processingFee ? total - processingFee : total,
+            referralSource: social,
+            discountCode: code,
+            count: fields?.length,
+            eventLocation,
+            discount,
+            total,
+            eventPrice: chosenPrice,
+          }),
+        },
+   */
+
 
   const othersValue = form.watch("others");
   const aboutUsValue = form.watch("aboutUs");
@@ -130,6 +160,7 @@ export function BookEvent({
     others: othersValue,
   };
   let social: string | undefined;
+
 
   if (aboutUsValue === "others") {
     social = othersValue;
@@ -268,6 +299,24 @@ export function BookEvent({
     // setCode("")
   }
 
+  function allowPayment(bool: boolean) {
+    //  setOpenPaymentModal(bool);
+    if (bool) {
+      router.push(`/checkout/${eventReference}?eventData=${JSON.stringify({
+        eventImage,
+        address,
+        startDate,
+        endDate,
+        organization,
+        eventLocation,
+        total,
+        processingFee,
+        organizerContact:JSON.stringify(organizerContact),
+        amountPayable: processingFee ? total - processingFee : total,
+      })}`);
+    }
+  }
+
   return (
     <>
       <div
@@ -280,7 +329,7 @@ export function BookEvent({
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="w-[95%] sm:w-[65%] lg:w-[90%] m-auto  shadow-lg overflow-hidden xl:w-[80%] overflow-y-auto lg:overflow-hidden bg-white grid absolute inset-0  grid-cols-1 gap-2 lg:grid-cols-7 items-start h-[85%]  lg:h-[41rem] rounded-xl sm:rounded-2xl "
+          className="w-[95%] sm:w-[65%] lg:w-[90%] m-auto  shadow-lg overflow-hidden xl:w-[80%] overflow-y-auto lg:overflow-hidden bg-white grid absolute inset-0  grid-cols-1 gap-2 lg:grid-cols-7 items-start h-[85%]  lg:h-[40rem] rounded-xl sm:rounded-2xl "
         >
           <div className="absolute right-3 z-20 top-3 ">
             <Button
@@ -360,10 +409,11 @@ export function BookEvent({
                 <div className="grid grid-cols-1 gap-6  items-center w-full">
                   {Array.isArray(pricingArray) &&
                     pricingArray &&
-                    pricingArray?.map((v) => {
+                    pricingArray?.map((v, index) => {
                       if (v) {
                         return (
                           <Button
+                          key={index}
                             onClick={(e) => {
                               e.stopPropagation();
                               selectedPrice(v?.price);
@@ -521,7 +571,7 @@ export function BookEvent({
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className=" w-full flex flex-col items-start justify-start gap-y-3"
+                    className=" w-full  space-y-3"
                   >
                     <div className="w-full flex flex-col items-start justify-start gap-y-2">
                       <div className="flex items-center gap-x-10">
@@ -715,9 +765,19 @@ export function BookEvent({
           {/*** */}
         </div>
       </div>
-      {isPaymentModal && (
-        <Payment
-          eventDate={eventDate}
+
+      {description !== "" && (
+        <DescriptionModal
+          description={description}
+          setDescription={setDescription}
+        />
+      )}
+    </>
+  );
+}
+
+/**
+    eventDate={eventDate}
           eventImage={eventImage}
           allowPayment={allowPayment}
           priceCategory={priceCategory}
@@ -740,18 +800,7 @@ export function BookEvent({
           discount={discount}
           total={total}
           eventPrice={chosenPrice}
-        />
-      )}
-
-      {description !== "" && (
-        <DescriptionModal
-          description={description}
-          setDescription={setDescription}
-        />
-      )}
-    </>
-  );
-}
+ */
 
 function DescriptionModal({
   description,

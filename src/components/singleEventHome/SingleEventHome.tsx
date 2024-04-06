@@ -2,7 +2,6 @@
 
 import { useFetchSingleEvent, useFetchPartners } from "@/hooks";
 import { EventSchedule } from "./_components";
-import { SideBarLayout } from "..";
 import { EventDetailTabs } from "../composables";
 import { useState } from "react";
 import { cn } from "@/lib";

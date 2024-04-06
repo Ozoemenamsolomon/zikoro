@@ -1,11 +1,5 @@
 "use client";
 import { useState, useRef, useMemo, useEffect } from "react";
-import {
-  industryArray,
-  categories,
-  locationType,
-  pricingCurrency,
-} from "@/utils";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { Download } from "@styled-icons/bootstrap/Download";
 import { Eye } from "@styled-icons/feather/Eye";
@@ -22,19 +16,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { updateEventSchema } from "@/schemas";
 import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
-import {
-  Form,
-  FormField,
-  Input,
-  Button,
-  ReactSelect,
-} from "@/components";
+import { Form, FormField, Input, Button, ReactSelect } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
-import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
+import { useFetchSingleEvent, useUpdateEvent, getCookie } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
 import { TIME_ZONES } from "@/utils";
 import { PreviewModal } from "../_components/modal/PreviewModal";
+import {
+  industryArray,
+  categories,
+  locationType,
+  pricingCurrency,
+} from "../_components/utils";
+import { Event } from "@/types";
 
 interface ImageFile {
   url: string | undefined;
@@ -51,10 +46,14 @@ export default function UpdateEvent({
     data,
     loading,
     refetch,
-  }: { data: any; loading: boolean; refetch: () => Promise<null | undefined> } =
-    useFetchSingleEvent(eventId);
+  }: {
+    data: Event | null;
+    loading: boolean;
+    refetch: () => Promise<null | undefined>;
+  } = useFetchSingleEvent(eventId);
+  const [publishing, setIsPublishing] = useState(false);
   const { loading: updating, update } = useUpdateEvent();
-  const [isOpen, setOpen] = useState(false)
+  const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof updateEventSchema>>({
     resolver: zodResolver(updateEventSchema),
     defaultValues: {
@@ -71,7 +70,7 @@ export default function UpdateEvent({
   });
 
   function onClose() {
-    setOpen((prev) => !prev)
+    setOpen((prev) => !prev);
   }
 
   const [eventPosterArr, setEventPosterArr] = useState([] as ImageFile[]);
@@ -149,9 +148,10 @@ export default function UpdateEvent({
         }
       });
     }
-    const payload = {
+    const payload: any = {
       ...values,
       eventPoster: poster,
+      expectedParticipants: Number(values?.expectedParticipants),
     };
 
     // return;
@@ -218,8 +218,35 @@ export default function UpdateEvent({
     });
   }, [TIME_ZONES]);
 
-  // console.log({formatZone})
-
+  // update event
+  async function publishEvent() {
+    setIsPublishing(true);
+    const userData = getCookie("user");
+    if (data?.eventStatus === "review") {
+      toast({
+        variant:"destructive",
+        description: "Event Alreday Published"
+      })
+      return 
+    }
+    const statusDetail = {
+      createdAt: new Date().toISOString(),
+      status: "review",
+      user: userData?.userEmail,
+    };
+    await update(
+      {
+        ...data,
+        eventStatus: "review",
+        eventStatusDetails:
+          data?.eventStatusDetails && data?.eventStatusDetails !== null
+            ? [...data?.eventStatusDetails, statusDetail]
+            : [statusDetail],
+      },
+      eventId
+    );
+    setIsPublishing(false);
+  }
   return (
     <DateAndTimeAdapter>
       <>
@@ -233,7 +260,7 @@ export default function UpdateEvent({
               <div className="w-full py-4 flex items-center sm:items-end justify-start sm:justify-end">
                 <div className="flex items-center gap-x-2">
                   <Button className="gap-x-2">
-                    {updating && (
+                    {!publishing && updating && (
                       <LoaderAlt size={22} className="animate-spin" />
                     )}
                     <Check2 size={22} className="text-basePrimary" />
@@ -244,23 +271,27 @@ export default function UpdateEvent({
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                     onClose()
+                      onClose();
                     }}
-                    className="text-gray-50 bg-basePrimary gap-x-2"
+                    className="text-gray-50 bg-basePrimary gap-x-2 w-fit"
                   >
                     <Eye size={22} />
                     <p>Preview</p>
                   </Button>
                   <Button
                     onClick={(e) => {
-                      //   e.preventDefault();
+                      e.preventDefault();
                       e.stopPropagation();
+                      publishEvent();
                     }}
                     type="submit"
                     className="text-basePrimary border border-basePrimary gap-x-2"
                   >
                     <Download size={22} />
                     <p>Publish</p>
+                    {publishing && (
+                      <LoaderAlt size={22} className="animate-spin" />
+                    )}
                   </Button>
                 </div>
               </div>
@@ -502,7 +533,7 @@ export default function UpdateEvent({
                         key={field.id}
                         className="w-full flex flex-col items-start gap-y-4 justify-start"
                       >
-                        <div className="flex items-center gap-x-2">
+                        <div className="flex text-sm items-center gap-x-2">
                           <p>{`Price Category ${id + 1}`}</p>
                           <button
                             onClick={() => remove(id)}
@@ -682,7 +713,7 @@ export default function UpdateEvent({
             <LoaderAlt size={48} className="animate-spin" />
           </div>
         )}
-        {isOpen && <PreviewModal close={onClose}/>}
+        {isOpen && <PreviewModal close={onClose} />}
       </>
     </DateAndTimeAdapter>
   );

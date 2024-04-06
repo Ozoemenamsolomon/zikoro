@@ -42,7 +42,7 @@ export const ReactSelect = React.forwardRef<
   return (
     <div className="w-full relative 3rem">
       <label
-        className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1"
+        className="absolute font-semibold -top-2 z-30 right-4 bg-white text-gray-600 text-tiny px-1"
         htmlFor="select"
       >
         {label}

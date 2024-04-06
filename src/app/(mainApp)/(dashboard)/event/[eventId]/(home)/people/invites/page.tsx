@@ -25,6 +25,7 @@ import {
 } from "@/utils/helpers";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Users } from "lucide-react";
+import { useParams } from "next/navigation";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 import { Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
@@ -62,6 +63,7 @@ const inviteesFilters: TFilter<TInviteDetail>[] = [
 ];
 
 export default function Page() {
+  const { eventId } = useParams();
   const [invitees, setInvitees] = useState<Record<string, TInviteDetails>>({
     [generateAlphanumericHash(5)]: {
       email: "",
@@ -142,58 +144,66 @@ export default function Page() {
   }, [invitees]);
 
   return (
-    <section className="pt-2 pb-8 border-t-[1px] border-[#F3F3F3]">
-      <div className="space-y-6">
-        <h1 className="px-2 text-gray-900 text-lg font-medium">Invite</h1>
-        <div className="grid grid-cols-3 gap-4 px-2">
-          <div className="col-span-2 space-y-6">
+    <section className="pb-8 py-2 border-[#F3F3F3]">
+      <div className="space-y-4 md:space-y-6">
+        <h1 className="px-2 text-gray-900 md:text-lg font-medium">Invite</h1>
+        <div className="grid md:grid-cols-3 gap-x-4 gap-y-12 px-2">
+          <div className="md:col-span-2 space-y-4 md:space-y-6">
             <div className="space-y-4 text-gray-700">
-              <div className="flex justify-between w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
+              <div className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm relative">
                 <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Share link
                 </span>
-                <span>www.zikoro.com/events/1?source=link</span>
-                {hasCopiedText ? (
-                  <svg
-                    stroke="currentColor"
-                    fill="currentColor"
-                    strokeWidth={0}
-                    viewBox="0 0 24 24"
-                    height="1.25em"
-                    width="1.25em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M2.394 13.742L7.137 17.362 14.753 8.658 13.247 7.342 6.863 14.638 3.606 12.152zM21.753 8.658L20.247 7.342 13.878 14.621 13.125 14.019 11.875 15.581 14.122 17.379z" />
-                  </svg>
-                ) : (
-                  <button
-                    onClick={() =>
-                      copyToClipboard("www.zikoro.com/events/1?source=link")
-                    }
-                  >
-                    <Copy className="w-5 h-5 text-gray-700" />
-                  </button>
-                )}
+                <div className="flex gap-2 justify-between items-center overflow-hidden">
+                  <span className="truncate text-xs md:text-base">
+                    {window.location.host}/live-events/{eventId}?source=link
+                  </span>
+                  <span className="bg-white h-full flex items-center px-2">
+                    {hasCopiedText ? (
+                      <svg
+                        stroke="currentColor"
+                        fill="currentColor"
+                        strokeWidth={0}
+                        viewBox="0 0 24 24"
+                        height="1.25em"
+                        width="1.25em"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M2.394 13.742L7.137 17.362 14.753 8.658 13.247 7.342 6.863 14.638 3.606 12.152zM21.753 8.658L20.247 7.342 13.878 14.621 13.125 14.019 11.875 15.581 14.122 17.379z" />
+                      </svg>
+                    ) : (
+                      <button
+                        onClick={() =>
+                          copyToClipboard(
+                            `${window.location.host}/live-events/${eventId}?source=link`
+                          )
+                        }
+                      >
+                        <Copy className="w-5 h-5 text-gray-700" />
+                      </button>
+                    )}
+                  </span>
+                </div>
               </div>
-              <span className="text-tiny text-gray-600">
+              <span className="text-[8px] md:text-tiny text-gray-600">
                 Share your link with as many people as you want to invite to
                 your event.
               </span>
             </div>
             <form onSubmit={onSubmit} className="space-y-4">
-              <h1 className="text-gray-900 text-lg font-medium">
+              <h1 className="text-gray-900 md:text-lg font-medium">
                 Invite by email
               </h1>
               <div className="space-y-4">
                 {Object.entries(invitees).map(
                   ([key, { email, attendeeType }], index) => (
-                    <div className="grid grid-cols-12 gap-4">
-                      <div className="col-span-6 w-full rounded-md bg-background text-sm relative">
+                    <div className="grid md:grid-cols-12 gap-4">
+                      <div className="md:col-span-6 w-full rounded-md bg-background text-sm relative">
                         <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                           Email
                         </span>
                         <Input
-                          className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                          className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                           onInput={(e) =>
                             updateInvitee(key, { email: e.currentTarget.value })
                           }
@@ -201,7 +211,7 @@ export default function Page() {
                           required
                         />
                       </div>
-                      <div className="col-span-5 w-full rounded-md bg-background text-sm relative">
+                      <div className="md:col-span-5 w-full rounded-md bg-background text-sm relative">
                         <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                           Attendee Type
                         </span>
@@ -214,7 +224,7 @@ export default function Page() {
                         >
                           <SelectTrigger>
                             <SelectValue
-                              className="text-sm text-gray-200"
+                              className="text-tiny md:text-sm text-gray-200"
                               placeholder="select Attendee type"
                             />
                           </SelectTrigger>
@@ -275,7 +285,7 @@ export default function Page() {
                 <Textarea
                   value={message}
                   onInput={(e) => setMessage(e.currentTarget.value)}
-                  className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                  className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                   placeholder="Enter message"
                   required
                 />
@@ -285,33 +295,35 @@ export default function Page() {
               </Button>
             </form>
           </div>
-          {/* <Tabs defaultValue="link" className="bg-basebody rounded-sm w-full">
+          <Tabs defaultValue="link" className="bg-basebody rounded-sm w-full">
             <TabsList className="bg-transparent flex w-full !p-0">
               <TabsTrigger
-                className="flex-1 bg-white data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/20 border-2 data-[state=active]:border-basePrimary data-[state=active]:text-basePrimary rounded-none"
+                className="text-sm md:text-base flex-1 bg-white data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/20 border-2 data-[state=active]:border-basePrimary data-[state=active]:text-basePrimary rounded-none"
                 value="link"
               >
                 Link
               </TabsTrigger>
               <TabsTrigger
-                className="flex-1 bg-white data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/20 border-2 data-[state=active]:border-basePrimary data-[state=active]:text-basePrimary rounded-none"
+                className="text-sm md:text-base flex-1 bg-white data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/20 border-2 data-[state=active]:border-basePrimary data-[state=active]:text-basePrimary rounded-none"
                 value="email"
               >
                 Email
               </TabsTrigger>
             </TabsList>
             <div className="space-y-2 border-b-2 p-2">
-              <h2 className="text-gray-700 font-medium">Email Invites</h2>
+              <h2 className="text-gray-700 font-medium text-sm md:text-base">
+                Email Invites
+              </h2>
               <div className="flex gap-4 items-center text-gray-500 text-sm">
                 <Users className="w-5 h-5" />
-                <span>20/450 Invites pending</span>
+                <span>0/{data.length} Invites pending</span>
               </div>
               <div className="text-gray-300 flex justify-between text-sm">
-                <Filter
+                {/* <Filter
                   filters={filters}
                   applyFilter={applyFilter}
                   selectedFilters={selectedFilters}
-                />
+                /> */}
                 <div>
                   <Input
                     type="text"
@@ -326,29 +338,31 @@ export default function Page() {
               ref={divRef}
             >
               <TabsContent value="link">
-                {!isLoading &&
-                  filteredData.map(({ email, attendeeType }) => (
-                    <div className="flex items-center gap-4">
-                      <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
-                        YB
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-sm font-medium">{email}</span>
-                        <div className="flex gap-4 text-xs items-center">
-                          <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
-                            {attendeeType}
-                          </span>
-                          <span className="text-yellow-500">Pending</span>
+                <div className="space-y-4">
+                  {!isLoading &&
+                    data.map(({ email, attendeeType }) => (
+                      <div className="flex items-center gap-4">
+                        <div className="bg-gray-300 p-2 h-12 w-12 rounded-full text-white flex items-center justify-center">
+                          YB
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <span className="text-sm font-medium">{email}</span>
+                          <div className="flex gap-4 text-xs items-center">
+                            <span className="bg-sky-50 text-sky-500 p-1 rounded-md font-medium">
+                              {attendeeType}
+                            </span>
+                            <span className="text-yellow-500">Pending</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </TabsContent>
               <TabsContent value="invoices">
                 Change your password here.
               </TabsContent>
             </div>
-          </Tabs> */}
+          </Tabs>
         </div>
       </div>
     </section>

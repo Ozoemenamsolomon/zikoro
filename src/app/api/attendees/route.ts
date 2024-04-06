@@ -88,7 +88,10 @@ export async function GET(req: NextRequest) {
       const { data, error, status } = await supabase
         .from("attendees")
         .select("*")
+        .eq("eventId", 5)
         .order("registrationDate", { ascending: false });
+
+      console.log(data);
 
       if (error) throw error;
 

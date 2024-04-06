@@ -1,7 +1,7 @@
-import Home from "@/components/home/Home";
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+import Home from "@/components/userHome/Home";
+ import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 
-async function Page() {
+async  function Page() {
   return <Home />;
 }
 

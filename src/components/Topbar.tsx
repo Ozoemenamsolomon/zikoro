@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {useMemo} from "react";
+import {getCookie} from "@/hooks";
 
 const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
   const pathname = usePathname();
+  const user = getCookie("user")
   //const currentLink = pathnames[pathnames.length - 2];
 
   const links = [
@@ -47,14 +50,25 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
     },
   ];
 
+
+  const reformedLink = useMemo(() => {
+      return links.filter((link) => {
+        if (!user || !user?.userEmail) {
+          return String(link?.name) !== "Contents"
+        }
+
+        return true
+      })
+  },[user])
+
   return (
     <nav className="w-full overflow-x-auto no-scrollbar">
       <div className="bg-white min-w-[900px] px-4 pt-2 h-max border-b">
         <ul className="flex justify-between text-gray-700">
-          {links.map(({ name, href }) => {
+          {reformedLink.map(({ name, href }) => {
             return (
               <li
-                className={`pb-1 text-sm ${
+                className={`pb-1 text-xs md:text-sm ${
                   pathname.includes(`${href.split("/")[1]}`)
                     ? "text-basePrimary border-b-2 border-basePrimary font-medium"
                     : ""

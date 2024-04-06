@@ -6,7 +6,7 @@ import {
   HomeIcon,
   NotificationIcon,
   UserIcon,
-} from "@/components/Constants";
+} from "@/constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dot } from "@styled-icons/bootstrap/Dot";
@@ -21,7 +21,7 @@ export function MobileBottomNav({ toggleSideNav }: {  toggleSideNav:() => void }
     <nav className="w-full flex sm:hidden items-center justify-between border-t z-[99999] px-4 py-2 fixed bottom-0 inset-x-0 bg-white">
      
      <button
-      // onClick={toggleSideNav}
+       onClick={toggleSideNav}
       className="flex flex-col items-center justify-center">
         <Hamburger color={pathname === "/" ? "#001ffc" : "#000000"} />
         <Dot size={10} color={pathname === "/" ? "#001ffc" : "#ffffff"} />
