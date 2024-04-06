@@ -89,7 +89,6 @@ export const useGetAttendees = () => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const user = getCookie("user");
   const getAttendees = async () => {
     setLoading(true);
 

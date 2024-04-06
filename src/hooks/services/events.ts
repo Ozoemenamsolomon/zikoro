@@ -144,7 +144,6 @@ export function useCreateOrganisation() {
   };
 }
 
-
 export function useGetUserHomePageEvents() {
   const userData = getCookie("user");
   const [userEvents, setUserEvents] = useState<Event[]>([] as Event[]);
@@ -194,7 +193,7 @@ export function useGetUserHomePageEvents() {
 export function useCreateEvent() {
   // const userData = getCookie("user");
   const [loading, setLoading] = useState(false);
-   const router = useRouter();
+  const router = useRouter();
 
   async function createEvent(values: Partial<Event>) {
     setLoading(true);
@@ -215,7 +214,7 @@ export function useCreateEvent() {
       if (status === 201 || status === 200) {
         setLoading(false);
         //   console.log({ data });
-         router.push(` /events`);
+        router.push(` /events`);
         toast({ description: "Event created successfully" });
       }
     } catch (error) {}
@@ -290,8 +289,6 @@ export function useUpdateEvent() {
     loading,
   };
 }
-
-
 
 export function useFetchSingleOrganization(id: string) {
   const [loading, setLoading] = useState(false);
@@ -1055,6 +1052,7 @@ export function useFormatEventData(event: Event | null) {
 
 export function useAttenedeeEvents() {
   const { events, isLoading } = useGetEvents();
+  const user = getCookie("user");
   const { attendees, isLoading: loading } = useGetAttendees();
   const [registeredEvents, setRegisteredEvents] = useState<Event[] | undefined>(
     []
@@ -1062,7 +1060,11 @@ export function useAttenedeeEvents() {
 
   useEffect(() => {
     if (!loading && !isLoading) {
-      const mappedEventId = attendees?.map((attendee) =>
+      // filter attendees based on attendees email
+      const filteredEvents = attendees?.filter(({ userEmail }) => {
+        return userEmail === user?.userEmail;
+      });
+      const mappedEventId = filteredEvents?.map((attendee) =>
         Number(attendee?.eventId)
       );
       const filtered = events?.filter((event) => {
