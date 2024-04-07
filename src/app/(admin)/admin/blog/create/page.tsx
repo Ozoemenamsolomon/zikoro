@@ -21,12 +21,12 @@ export default function Create() {
 
   return (
     <div className=''>
-      <div className="  flex flex-col px-3 md:px-10 pt-28  h-[calc(100%-64px)]  lg:h-[calc(100vh-180px)] ">
-        <p className="text-3xl font-semibold bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text ">
+      <div className=" flex flex-col pl-3 lg:pl-10 pr-3 lg:pr-28 pt-28 ">
+        <p className="text-2xl lg:text-3xl font-semibold bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text ">
           Create New Blog Post
         </p>
 
-        <div className="mt-[110px] bg-white flex-1 resize-none h-fit mb-10 ">
+        <div className="mt-8 lg:mt-[60px] bg-white flex-1 resize-none h-fit mb-10 ">
           <TextEditor
             onChange={setMessage}
             defaultValue={content}

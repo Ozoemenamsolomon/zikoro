@@ -1225,3 +1225,88 @@ export function AdminBlogShareIcon() {
     </div>
   );
 }
+
+export function ThreeDotsIcon() {
+  return (
+    <div className="">
+      <svg
+        width="7"
+        height="28"
+        viewBox="0 0 7 28"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M3.80078 17C5.45764 17 6.80078 15.6569 6.80078 14C6.80078 12.3431 5.45764 11 3.80078 11C2.14393 11 0.800781 12.3431 0.800781 14C0.800781 15.6569 2.14393 17 3.80078 17Z"
+          fill="#0D0D0D"
+        />
+        <path
+          d="M3.80078 6.5C5.45764 6.5 6.80078 5.15685 6.80078 3.5C6.80078 1.84315 5.45764 0.5 3.80078 0.5C2.14393 0.5 0.800781 1.84315 0.800781 3.5C0.800781 5.15685 2.14393 6.5 3.80078 6.5Z"
+          fill="#0D0D0D"
+        />
+        <path
+          d="M3.80078 27.5C5.45764 27.5 6.80078 26.1569 6.80078 24.5C6.80078 22.8431 5.45764 21.5 3.80078 21.5C2.14393 21.5 0.800781 22.8431 0.800781 24.5C0.800781 26.1569 2.14393 27.5 3.80078 27.5Z"
+          fill="#0D0D0D"
+        />
+      </svg>
+    </div>
+  );
+}
+
+export function EyesIcon() {
+  return (
+    <div className="">
+      <svg
+        width="22"
+        height="16"
+        viewBox="0 0 22 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M10.8008 1.07715C6.13463 1.07715 2.18386 3.98176 0.800781 8.00023C2.18386 12.0187 6.13463 14.9233 10.8008 14.9233C15.4669 14.9233 19.4177 12.0187 20.8008 8.00023C19.4177 3.98176 15.4669 1.07715 10.8008 1.07715Z"
+          stroke="#1F1F1F"
+          stroke-miterlimit="10"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M10.7993 11.8466C12.9235 11.8466 14.6454 10.1246 14.6454 8.00045C14.6454 5.87628 12.9235 4.1543 10.7993 4.1543C8.67511 4.1543 6.95312 5.87628 6.95312 8.00045C6.95312 10.1246 8.67511 11.8466 10.7993 11.8466Z"
+          stroke="#1F1F1F"
+          stroke-miterlimit="10"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  );
+}
+
+export function SearchIcon() {
+  return (
+    <div className="">
+      <svg
+        width="25"
+        height="24"
+        viewBox="0 0 25 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11.5352 19C15.9534 19 19.5352 15.4183 19.5352 11C19.5352 6.58172 15.9534 3 11.5352 3C7.11688 3 3.53516 6.58172 3.53516 11C3.53516 15.4183 7.11688 19 11.5352 19Z"
+          stroke="black"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M21.5336 20.9999L17.1836 16.6499"
+          stroke="black"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+  );
+}

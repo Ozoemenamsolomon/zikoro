@@ -2,10 +2,13 @@
 import React from "react";
 import Image from "next/image";
 import { Facebook, X, Linkedin, Instagram } from "@/constants/icons";
-
+import { useRouter } from "next/router";
 import PostArticle from "@/components/blog/PostArticle";
 
 export default function PostId() {
+  const router = useRouter();
+  const { id } = router.query;
+  
   return (
     <div className="mt-[120px] lg:mt-[200px] px-3 lg:px-0">
       {/* header section */}
