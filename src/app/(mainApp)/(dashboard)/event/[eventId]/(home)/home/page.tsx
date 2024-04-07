@@ -9,3 +9,4 @@ interface PageProps {
 export default async function Page({ params: { eventId } }: PageProps) {
   return <SingleEventHome eventId={eventId} />;
 }
+

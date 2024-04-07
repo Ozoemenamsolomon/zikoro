@@ -10,9 +10,7 @@ import { nanoid } from "nanoid";
 import { isDateGreaterThanToday } from "@/utils";
 import { PlusCircleFill } from "styled-icons/bootstrap";
 import { CircleMinus } from "styled-icons/fa-solid";
-import { Payment } from "@/components/published";
 import { useFieldArray } from "react-hook-form";
-
 import { Form, FormField, Input } from "@/components";
 import { eventBookingValidationSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,7 +58,6 @@ export function BookEvent({
   eventLocation?: string;
   currency: string | undefined;
 }) {
-  const [attendees, setAttendees] = useState<any[]>([]);
   const pathname = usePathname();
   const router = useRouter();
   const [chosenPrice, setChosenPrice] = useState<number | undefined>();
@@ -110,44 +107,10 @@ export function BookEvent({
     });
   }
 
-    // memoized the reference to invoke once
-    const eventReference = useMemo(() => {
-      return nanoid();
-    }, [nanoid]);
-
-    
-
-
-  /**
-    query: {
-          data: JSON.stringify({
-            eventDate,
-            eventImage,
-            allowPayment,
-            priceCategory,
-            eventTitle,
-            address,
-            startDate,
-            eventReference,
-            endDate,
-            attendeesDetails: attendees,
-            eventId,
-            organization,
-            organizerContact,
-            currency,
-            processingFee,
-            amountPayable: processingFee ? total - processingFee : total,
-            referralSource: social,
-            discountCode: code,
-            count: fields?.length,
-            eventLocation,
-            discount,
-            total,
-            eventPrice: chosenPrice,
-          }),
-        },
-   */
-
+  // memoized the reference to invoke once
+  const eventReference = useMemo(() => {
+    return nanoid();
+  }, [nanoid]);
 
   const othersValue = form.watch("others");
   const aboutUsValue = form.watch("aboutUs");
@@ -160,7 +123,6 @@ export function BookEvent({
     others: othersValue,
   };
   let social: string | undefined;
-
 
   if (aboutUsValue === "others") {
     social = othersValue;
@@ -184,9 +146,15 @@ export function BookEvent({
 
   // calculating total
   const total = useMemo(() => {
-    if (computedPrice && processingFee)
+    if (computedPrice && processingFee && event?.attendeePayProcessingFee) {
       return computedPrice - discount + processingFee;
-    else {
+    } else if (
+      computedPrice &&
+      processingFee &&
+      !event?.attendeePayProcessingFee
+    ) {
+      return computedPrice - discount - processingFee;
+    } else {
       return 0;
     }
   }, [computedPrice, processingFee, discount]);
@@ -212,7 +180,7 @@ export function BookEvent({
       });
       return;
     }
-    setAttendees(values.attendeeApplication);
+
     await registerAttendees(eventReference, values, eventId, "attendee");
 
     // return if user is registered -- attendees data will not be sent to the eventTransaction table
@@ -302,18 +270,20 @@ export function BookEvent({
   function allowPayment(bool: boolean) {
     //  setOpenPaymentModal(bool);
     if (bool) {
-      router.push(`/checkout/${eventReference}?eventData=${JSON.stringify({
-        eventImage,
-        address,
-        startDate,
-        endDate,
-        organization,
-        eventLocation,
-        total,
-        processingFee,
-        organizerContact:JSON.stringify(organizerContact),
-        amountPayable: processingFee ? total - processingFee : total,
-      })}`);
+      router.push(
+        `/checkout/${eventReference}?eventData=${JSON.stringify({
+          eventImage,
+          address,
+          startDate,
+          endDate,
+          organization,
+          eventLocation,
+          total,
+          processingFee,
+          organizerContact: JSON.stringify(organizerContact),
+          amountPayable: processingFee ? total - processingFee : total,
+        })}`
+      );
     }
   }
 
@@ -413,7 +383,7 @@ export function BookEvent({
                       if (v) {
                         return (
                           <Button
-                          key={index}
+                            key={index}
                             onClick={(e) => {
                               e.stopPropagation();
                               selectedPrice(v?.price);
@@ -721,7 +691,7 @@ export function BookEvent({
                                   type="radio"
                                   {...field}
                                   value={value}
-                                  className="h-[20px] pt-3 w-[20px] mr-4"
+                                  className="h-[20px] pt-3 w-[20px] mr-4 accent-basePrimary"
                                 />
                                 <span className="capitalize">{value}</span>
                               </label>
