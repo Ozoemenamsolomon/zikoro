@@ -345,3 +345,30 @@ export const useGetAttendeesWithNotes = () => {
 
   return { attendees, isLoading, error, getAttendees };
 };
+
+
+export const useGetAllAttendees = () => {
+  const [attendees, setAttendees] = useState<TAttendee[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const getAttendees = async () => {
+    setLoading(true);
+
+    const { data, status } = await getRequest<TAttendee[]>({
+      endpoint: "/attendees/all",
+    });
+
+    setLoading(false);
+
+    if (status !== 200) return setError(true);
+
+    //
+    return setAttendees(data.data);
+  };
+
+  useEffect(() => {
+    getAttendees();
+  }, []);
+
+  return { attendees, isLoading, error, getAttendees };
+};

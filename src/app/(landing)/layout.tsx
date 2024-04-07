@@ -1,3 +1,5 @@
+import Navbar from "@/components/Navbar";
+import { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 
 const montserrat = Montserrat({
@@ -7,15 +9,20 @@ const montserrat = Montserrat({
   fallback: ["Arial", "sans-serif"],
 });
 
+export const metadata: Metadata = {
+  title: "Zikoro",
+  description: "",
+};
 
-export default function LandingLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${montserrat.className} `}> {children}</body>
-    </html>
+    <section lang="en">
+      {/* <Navbar /> */}
+      <div className={`${montserrat.className} `}> {children}</div>
+    </section>
   );
 }

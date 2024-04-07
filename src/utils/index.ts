@@ -1,5 +1,5 @@
 export * from "./formatDate"
 export * from "./getFileUrl"
-export * from "./utils"
+export * from "./util"
 export * from "./timezones"
 export * from "./countryCode"

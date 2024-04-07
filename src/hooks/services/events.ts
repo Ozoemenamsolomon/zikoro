@@ -11,7 +11,7 @@ import _ from "lodash";
 import { getCookie, useGetOrganizations } from "@/hooks";
 import { getRequest, postRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
-import { useGetAttendees } from "@/hooks";
+import { useGetAllAttendees } from "@/hooks";
 import {
   formatDate,
   formatTime,
@@ -1053,17 +1053,19 @@ export function useFormatEventData(event: Event | null) {
 export function useAttenedeeEvents() {
   const { events, isLoading } = useGetEvents();
   const user = getCookie("user");
-  const { attendees, isLoading: loading } = useGetAttendees();
+  const { attendees, isLoading: loading } = useGetAllAttendees();
   const [registeredEvents, setRegisteredEvents] = useState<Event[] | undefined>(
     []
   );
 
   useEffect(() => {
     if (!loading && !isLoading) {
+      console.log({attendees})
       // filter attendees based on attendees email
       const filteredEvents = attendees?.filter(({ userEmail }) => {
         return userEmail === user?.userEmail;
       });
+      console.log({filteredEvents})
       const mappedEventId = filteredEvents?.map((attendee) =>
         Number(attendee?.eventId)
       );

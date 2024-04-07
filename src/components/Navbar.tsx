@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import {ThreeLine, Close} from '@/constants/icons';
+import { ThreeLine, Close } from "@/constants/icons";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -66,9 +66,7 @@ export default function Navbar() {
     <div className="fixed w-full transition-all duration-300 top-0 z-50 ">
       <nav
         className={` p-4 ${
-          scrolling
-          ? "bg-white"
-          : "bg-white"
+          scrolling ? "bg-white" : "bg-white"
         } border-b-[2px] border-indigo-500 text-base  `}
       >
         <div className=" flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
@@ -84,10 +82,10 @@ export default function Navbar() {
               />
 
               <div className="hidden lg:block">
-                {links.map(({ name, href }, index) => {
+                {links.map(({ name, href }, i) => {
                   return (
                     <Link
-                      key={index}
+                      key={i}
                       href={href}
                       className={` ${
                         pathname === href
@@ -139,9 +137,9 @@ export default function Navbar() {
             </div>
 
             <div className="flex flex-col items-center text-white ">
-              {links.map(({ name, href }) => {
+              {links.map(({ name, href }, i) => {
                 return (
-                  <Link href={href} className="text-xl font-medium pb-7">
+                  <Link key={i} href={href} className="text-xl font-medium pb-7">
                     {name}
                   </Link>
                 );
