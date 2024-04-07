@@ -1,14 +1,18 @@
 import UserContacts from "@/components/UserContacts";
 import UserProfile from "@/components/UserProfile";
 import AddUserForm from "@/components/forms/AddUserForm";
+import { getCookie } from "@/hooks";
 import useDisclose from "@/hooks/common/useDisclose";
 import { useGetUser } from "@/hooks/services/user";
 import React from "react";
 
 const MyProfile = () => {
-  
+  const mainUser = getCookie("user");
+
+  console.log(mainUser);
+
   const { user, isLoading, getUser } = useGetUser({
-    userId: Number(13).toString(),
+    userId: Number(mainUser.id).toString(),
   });
 
   console.log(user);
