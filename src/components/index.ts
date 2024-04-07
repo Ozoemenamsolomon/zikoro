@@ -14,4 +14,5 @@ export * from "./Topbar"
 export * from "./footer/Footer"
 export * from "./custom_ui/scrollableCard/ScrollableCard"
 export * from "./ui/select"
-export * from "./auth/AuthLayout"
+export * from "./auth/AuthLayout";
+export * from "./custom_ui/portal/Portal"

@@ -53,7 +53,7 @@ export interface Event {
   id: number;
   industry: string;
   instagram: string;
-  organisationId:string
+  organisationId: string;
   x: string;
   linkedin: string;
   locationType: "Hybrid" | "Onsite" | "Virtual" | string;
@@ -76,6 +76,10 @@ export interface Event {
   eventTimeZone: string;
   eventStatusDetails: TEventStatusDetail[];
   eventStatus: string;
+  attendeePayProcessingFee: boolean;
+  explore: boolean;
+  eventAppAccess: string;
+  eventWebsiteSettings: { title: string; status: boolean }[];
 }
 
 export interface PaymentConfigProps {

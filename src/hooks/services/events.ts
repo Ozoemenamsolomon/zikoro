@@ -127,6 +127,7 @@ export function useCreateOrganisation() {
 
       if (error) {
         toast({ variant: "destructive", description: error.message });
+
         setLoading(false);
         return;
       }
@@ -134,6 +135,7 @@ export function useCreateOrganisation() {
       if (status === 201 || status === 200) {
         setLoading(false);
         toast({ description: "Organisation created successfully" });
+        window.location.reload()
       }
     } catch (error) {}
   }
@@ -1060,12 +1062,12 @@ export function useAttenedeeEvents() {
 
   useEffect(() => {
     if (!loading && !isLoading) {
-      console.log({attendees})
+     // console.log({attendees})
       // filter attendees based on attendees email
       const filteredEvents = attendees?.filter(({ userEmail }) => {
         return userEmail === user?.userEmail;
       });
-      console.log({filteredEvents})
+   //   console.log({filteredEvents})
       const mappedEventId = filteredEvents?.map((attendee) =>
         Number(attendee?.eventId)
       );

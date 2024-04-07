@@ -15,7 +15,7 @@ import useDisclose from "@/hooks/common/useDisclose";
 export function UserEvents() {
   const [active, setActive] = useState(1);
   const { registeredEvents, isLoading } = useAttenedeeEvents();
-  const { isOpen, onOpen } = useDisclose();
+  const { isOpen, onOpen, onClose } = useDisclose();
 
   const now = new Date();
 
@@ -94,7 +94,7 @@ export function UserEvents() {
         )}
       </div>
 
-      {isOpen && <AllDatas data={eventList} title={tab[active]?.title} />}
+      {isOpen && <AllDatas data={eventList} onClose={onClose} title={tab[active]?.title} />}
     </>
   );
 }
