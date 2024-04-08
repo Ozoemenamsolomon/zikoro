@@ -3,19 +3,12 @@ import UserProfile from "@/components/UserProfile";
 import AddUserForm from "@/components/forms/AddUserForm";
 import { getCookie } from "@/hooks";
 import useDisclose from "@/hooks/common/useDisclose";
-import { useGetUser } from "@/hooks/services/user";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import React from "react";
+import { TUser } from "@/types/user";
 
 const MyProfile = () => {
-  const mainUser = getCookie("user");
-
-  console.log(mainUser);
-
-  const { user, isLoading, getUser } = useGetUser({
-    userId: Number(mainUser.id).toString(),
-  });
-
-  console.log(user);
+  const { user, isLoading } = useUser();
 
   const {
     isOpen: userFormIsOpen,
@@ -44,10 +37,11 @@ const MyProfile = () => {
 
   if (!user) return null;
 
+  const zikoroUser = user?.zikoroUser as TUser;
   return (
     <div className="grid md:grid-cols-10 border-t gap-y-8">
       <div className="md:col-span-4">
-        <UserProfile user={user} onOpen={onOpenUserForm} />
+        <UserProfile user={zikoroUser} onOpen={onOpenUserForm} />
       </div>
       <div className="md:col-span-6">
         <UserContacts />
@@ -55,8 +49,7 @@ const MyProfile = () => {
       <AddUserForm
         isOpen={userFormIsOpen}
         onClose={onCloseUserForm}
-        user={user}
-        getUser={getUser}
+        user={zikoroUser}
       />
     </div>
   );

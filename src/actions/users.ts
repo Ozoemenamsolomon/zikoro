@@ -1,14 +1,9 @@
 "use server";
-// TODO: install and use supabase
-// import { createClient } from "@supabase/supabase-js";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-const supabase = createClientComponentClient();
+import { supabaseClient } from "@/lib/supabase";
 
 export const getUser = async (email: string) => {
-
-  console.log("email", email)
-  const { data: user, error } = await supabase
+  const { data: user, error } = await supabaseClient
     .from("users")
     .select("*")
     .eq("userEmail", email)

@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib";
-import { useState,  } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { Button, MobileBottomNav, NavLinks } from ".";
 import Link from "next/link";
@@ -16,7 +16,8 @@ import {
   LogOutIcon,
   WhatsappIcon,
 } from "@/constants";
-import { getCookie, useValidateUser, useLogOut } from "@/hooks";
+import { getCookie, useLogOut, useValidateUser } from "@/hooks";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 export function SideBarLayout() {
   const [isNav, setNav] = useState(false);
@@ -33,7 +34,7 @@ export function SideBarLayout() {
   }
 
   // validate user
-   useValidateUser();
+  useValidateUser();
 
   function onClose() {
     setNav((nav) => !nav);
@@ -47,7 +48,6 @@ export function SideBarLayout() {
         onClose={onShot}
         onOpen={onOpen}
         query={query}
-     
       />
       {isOpen && <EventFeedBack close={onShot} />}
       <MobileBottomNav toggleSideNav={onClose} />
@@ -70,8 +70,8 @@ function SideNavs({
 }) {
   const { organizationId } = useParams();
   const organization = getCookie("currentOrganization");
-  const user = getCookie("user")
-  const {logOut} = useLogOut()
+  const { user } = useUser();
+  const { logOut } = useLogOut();
 
   return (
     <div
@@ -149,12 +149,12 @@ function SideNavs({
                 height={30}
                 className="w-[30px] h-[30px] rounded-full"
               />
-              <p className="text-black capitalize text-mobile sm:text-sm">{user?.firstName ?? "User"}</p>
+              <p className="text-black capitalize text-mobile sm:text-sm">
+                {user?.name ?? "User"}
+              </p>
             </div>
           </Link>
-          <button
-          onClick={onOpen}
-           className="flex gap-2 text-black">
+          <button onClick={onOpen} className="flex gap-2 text-black">
             <PersonFeedback className="w-6 h-6" />
             Give feedback
           </button>
@@ -202,10 +202,7 @@ function SideNavs({
               </Button>
             </div>
           </div>
-          <button
-          onClick={logOut}
-            className="flex items-center h-fit gap-x-2"
-          >
+          <button onClick={logOut} className="flex items-center h-fit gap-x-2">
             <LogOutIcon />
             <span className="text-[#EC2D30] text-mobile sm:text-desktop">
               Log Out
