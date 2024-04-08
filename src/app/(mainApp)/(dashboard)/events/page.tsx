@@ -1,8 +1,8 @@
 import EventHome from "@/components/eventHome/EventHome";
-// import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 
-export default function Page() {
+async function Page() {
   return <EventHome />;
 }
 
-// withPageAuthRequired(Page, { returnTo: "/events" });
+ export default withPageAuthRequired(Page, { returnTo: "/events" });

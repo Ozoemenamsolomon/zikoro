@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Button, MobileBottomNav, NavLinks } from ".";
 import Link from "next/link";
@@ -200,12 +200,15 @@ function SideNavs({
               </Button>
             </div>
           </div>
-          <button onClick={logOut} className="flex items-center h-fit gap-x-2">
+          <Link
+            href="/api/auth/logout"
+            className="flex items-center h-fit gap-x-2"
+          >
             <LogOutIcon />
             <span className="text-[#EC2D30] text-mobile sm:text-desktop">
               Log Out
             </span>
-          </button>
+          </Link>
         </div>
       </div>
     </div>

@@ -150,15 +150,12 @@ export default function UpdateEvent({
     }
     const payload: any = {
       ...values,
-      eventPoster: poster[0],
+      eventPoster: poster,
       expectedParticipants: Number(values?.expectedParticipants),
     };
 
     // return;
-    if (poster?.length > 0) {
-      await update(payload, eventId);
-    }
- 
+    await update(payload, eventId);
     refetch();
   }
 
@@ -228,7 +225,7 @@ export default function UpdateEvent({
     if (data?.eventStatus === "review") {
       toast({
         variant:"destructive",
-        description: "Event Already Published"
+        description: "Event Alreday Published"
       })
       return 
     }
