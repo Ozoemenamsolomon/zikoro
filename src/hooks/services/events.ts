@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
@@ -20,6 +19,46 @@ import {
 } from "@/utils";
 
 const supabase = createClientComponentClient();
+
+export const useGetEvent = ({
+  eventId,
+}: {
+  eventId: number;
+}): UseGetResult<Event, "event", "getEvent"> => {
+  const [event, setEvent] = useState<Event | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getEvent = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<Event>({
+        endpoint: `events/${eventId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setEvent(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getEvent();
+  }, []);
+
+  return {
+    event,
+    isLoading,
+    error,
+    getEvent,
+  };
+};
 
 export const useGetEvents = (): UseGetResult<
   Event[],
@@ -62,46 +101,6 @@ export const useGetEvents = (): UseGetResult<
   };
 };
 
-export const useGetEvent = ({
-  eventId,
-}: {
-  eventId: number;
-}): UseGetResult<Event, "event", "getEvent"> => {
-  const [event, setEvent] = useState<Event | null>(null);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-
-  const getEvent = async () => {
-    setLoading(true);
-
-    try {
-      const { data, status } = await getRequest<Event>({
-        endpoint: `events/${eventId}`,
-      });
-
-      if (status !== 200) {
-        throw data;
-      }
-      setEvent(data.data);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getEvent();
-  }, []);
-
-  return {
-    event,
-    isLoading,
-    error,
-    getEvent,
-  };
-};
-
 export function useCreateOrganisation() {
   const userData = getCookie("user");
   const [loading, setLoading] = useState(false);
@@ -135,7 +134,7 @@ export function useCreateOrganisation() {
       if (status === 201 || status === 200) {
         setLoading(false);
         toast({ description: "Organisation created successfully" });
-        window.location.reload()
+        window.location.reload();
       }
     } catch (error) {}
   }
@@ -1062,12 +1061,12 @@ export function useAttenedeeEvents() {
 
   useEffect(() => {
     if (!loading && !isLoading) {
-     // console.log({attendees})
+      // console.log({attendees})
       // filter attendees based on attendees email
       const filteredEvents = attendees?.filter(({ userEmail }) => {
         return userEmail === user?.userEmail;
       });
-   //   console.log({filteredEvents})
+      //   console.log({filteredEvents})
       const mappedEventId = filteredEvents?.map((attendee) =>
         Number(attendee?.eventId)
       );

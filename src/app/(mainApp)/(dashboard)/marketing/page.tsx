@@ -8,6 +8,7 @@ type TMarketingTabs = {
   label: string;
   value: string;
   component: React.ReactNode;
+  disabled?: boolean;
 };
 
 const marketingTabs: TMarketingTabs[] = [
@@ -25,11 +26,13 @@ const marketingTabs: TMarketingTabs[] = [
     label: "SMS",
     value: "sms",
     component: <SMS />,
+    disabled: true,
   },
   {
     label: "Whatsapp",
     value: "whatsapp",
     component: <Whatsapp />,
+    disabled: true,
   },
 ];
 
@@ -58,6 +61,7 @@ const page = () => {
               key={tab.label}
               className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none"
               value={tab.value}
+              disabled={tab.disabled}
             >
               {tab.label}
             </TabsTrigger>

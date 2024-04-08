@@ -224,6 +224,9 @@ const Performance = () => {
 
   return (
     <section className="p-4 space-y-4">
+      <div className="w-full overflow-x-auto">
+        ]
+      </div>
       <div className="flex justify-end gap-4">
         <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md w-[200px]">
           <svg
