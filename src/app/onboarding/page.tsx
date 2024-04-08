@@ -7,33 +7,30 @@ import {
   Button,
   FormControl,
   FormItem,
-  ReactSelect,
+ ReactSelect,
   FormLabel,
   FormMessage,
 } from "@/components";
-import { onboardingSchema } from "@/schemas";
+import { registrationSchema } from "@/schemas";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useMemo } from "react";
-import { COUNTRY_CODE } from "@/utils";
-import { useSearchParams } from "next/navigation";
-import { useOnboarding } from "@/hooks";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { useState,useMemo } from "react";
+import {COUNTRY_CODE} from "@/utils"
+import {  useOnboarding } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 export default function Page() {
-  const search = useSearchParams();
+  const { user } = useUser();
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
   const [whatsappCountryCode, setWhatsAppCountryCode] =
     useState<string>("+234");
   const { loading, registration } = useOnboarding();
 
-  const form = useForm<z.infer<typeof onboardingSchema>>({
-    resolver: zodResolver(onboardingSchema),
+  const form = useForm<z.infer<typeof registrationSchema>>({
+    resolver: zodResolver(registrationSchema),
   });
-
-  const query = search.get("email");
-  const createdAt = search.get("createdAt");
 
   const countriesList = useMemo(() => {
     return COUNTRY_CODE.map((country) => ({
@@ -42,21 +39,25 @@ export default function Page() {
     }));
   }, [COUNTRY_CODE]);
 
-  async function onSubmit(values: z.infer<typeof onboardingSchema>) {
-    const payload: z.infer<typeof onboardingSchema> = {
+  async function onSubmit(values: z.infer<typeof registrationSchema>) {
+  
+    const payload: z.infer<typeof registrationSchema> = {
       ...values,
-      whatsappNumber: values.whatsappNumber
-        ? whatsappCountryCode + values.whatsappNumber
-        : "",
+      whatsappNumber: whatsappCountryCode + values.whatsappNumber,
       phoneNumber: phoneCountryCode + values.phoneNumber,
     };
-    await registration(payload, query, createdAt);
+    await registration(payload, user);
   }
 
   return (
     <>
       <div className="w-full flex flex-col gap-y-1 mb-6 items-start justify-start">
-        <h2 className="font-medium w-full text-center text-base sm:text-lg ">{`Welcome ${query} 👋`}</h2>
+        <h2 className="font-medium text-lg sm:text-xl">Welcome back 👋</h2>
+        <div className="text-mobile w-full text-gray-600">
+          You are logged in as
+          <span className="font-semibold ml-1">{user?.email}</span>. Kindly
+          update your profile to continue
+        </div>
       </div>
 
       <Form {...form}>
@@ -94,7 +95,7 @@ export default function Page() {
               )}
             />
           </div>
-      
+
           <div className="w-full grid grid-cols-2 items-center gap-2">
             <FormField
               control={form.control}

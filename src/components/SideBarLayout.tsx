@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Button, MobileBottomNav, NavLinks } from ".";
 import Link from "next/link";
@@ -16,8 +16,7 @@ import {
   LogOutIcon,
   WhatsappIcon,
 } from "@/constants";
-import { getCookie, useLogOut, useValidateUser } from "@/hooks";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { getCookie, useValidateUser } from "@/hooks";
 
 export function SideBarLayout() {
   const [isNav, setNav] = useState(false);
@@ -70,8 +69,7 @@ function SideNavs({
 }) {
   const { organizationId } = useParams();
   const organization = getCookie("currentOrganization");
-  const { user } = useUser();
-  const { logOut } = useLogOut();
+  const user = getCookie("user");
 
   return (
     <div
@@ -150,7 +148,7 @@ function SideNavs({
                 className="w-[30px] h-[30px] rounded-full"
               />
               <p className="text-black capitalize text-mobile sm:text-sm">
-                {user?.name ?? "User"}
+                {user?.firstName ?? "User"}
               </p>
             </div>
           </Link>
@@ -202,12 +200,15 @@ function SideNavs({
               </Button>
             </div>
           </div>
-          <button onClick={logOut} className="flex items-center h-fit gap-x-2">
+          <Link
+            href="/api/auth/logout"
+            className="flex items-center h-fit gap-x-2"
+          >
             <LogOutIcon />
             <span className="text-[#EC2D30] text-mobile sm:text-desktop">
               Log Out
             </span>
-          </button>
+          </Link>
         </div>
       </div>
     </div>

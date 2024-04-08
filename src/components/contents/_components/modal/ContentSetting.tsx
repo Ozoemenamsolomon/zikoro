@@ -125,7 +125,7 @@ export function ContentSetting({
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="w-[95%] max-h-[85%] overflow-y-auto max-w-2xl m-auto inset-0 absolute rounded-lg bg-white py-6 px-4 sm:px-6 shadow border border-gray-200"
+        className="w-[95%] max-h-[85%] overflow-y-auto max-w-2xl m-auto inset-0 absolute rounded-lg bg-white py-6 px-4 sm:px-6 shadow"
       >
         <div className="w-full flex items-center mb-6 justify-between">
           <h2 className="text-base sm:text-xl">Content Settings</h2>
