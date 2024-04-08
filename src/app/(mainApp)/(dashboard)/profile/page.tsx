@@ -61,7 +61,7 @@ const page = () => {
               {profileTabs.map((tab) => (
                 <TabsTrigger
                   key={tab.label}
-                  className="data-[state=active]:shadow-none text-xs md:text-sm px-0 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none"
+                  className="py-0 data-[state=active]:shadow-none text-xs md:text-sm lg:text-base px-0 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none"
                   value={tab.value}
                 >
                   {tab.label}

@@ -97,7 +97,7 @@ const Create = () => {
 
   const defaultValues: Partial<TCreateEmail> = {
     isScheduled: false,
-    content: "here",
+    content: "",
   };
 
   const [sendTest, setSendTest] = useState<boolean>(false);
@@ -168,7 +168,7 @@ const Create = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8 px-4 py-4"
       >
-        <div className="flex gap-4 h-fit">
+        <div className="flex flex-col md:flex-row gap-4 h-fit">
           <div className="flex-1">
             <FormField
               control={form.control}
@@ -229,7 +229,7 @@ const Create = () => {
             />
           </div>
         </div>
-        <div className="flex gap-4 h-fit">
+        <div className="flex flex-col md:flex-row gap-4 h-fit">
           <div className="flex-1">
             <FormField
               control={form.control}
@@ -371,7 +371,7 @@ const Create = () => {
             </>
           )}
         </div>
-        <div className="w-full rounded-md border bg-background text-sm relative">
+        <div className="w-full bg-background text-sm relative">
           <span className="absolute top-0 -translate-y-1/2 right-4 text-gray-900 text-tiny px-1 z-10 bg-white">
             Message
           </span>
@@ -381,7 +381,7 @@ const Create = () => {
             placeholder="Write message"
           />
         </div>
-        <div className="flex gap-8 items-center">
+        <div className="flex flex-col md:flex-row gap-8 md:items-center">
           <FormField
             control={form.control}
             name="isScheduled"
@@ -404,7 +404,7 @@ const Create = () => {
             control={form.control}
             name="schedule"
             render={({ field }) => (
-              <FormItem className="relative w-fit space-y-0">
+              <FormItem className="relative w-full md:w-fit space-y-0">
                 <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Send campaign on
                 </FormLabel>
@@ -416,7 +416,7 @@ const Create = () => {
                           disabled={!isScheduled}
                           variant={"outline"}
                           className={cn(
-                            "flex gap-4 items-center w-[300px] px-4 justify-start font-normal",
+                            "flex gap-4 items-center w-full max-w-[300px] px-4 justify-start font-normal",
                             !field.value && "text-muted-foreground"
                           )}
                         >
@@ -494,13 +494,13 @@ const Create = () => {
           </div>
         </div>
 
-        <div className="flex gap-8 items-center">
+        <div className="flex flex-col md:flex-row gap-y-4 gap-8 md:items-center">
           <div className="flex flex-row items-center gap-4 space-y-0 flex-[20%]">
             <div>
               <Switch
                 checked={sendTest}
                 onCheckedChange={setSendTest}
-                className="data-[state=checked]:bg-basePrimary    "
+                className="data-[state=checked]:bg-basePrimary"
               />
             </div>
             <span className="font-medium text-gray-700 text-sm">
