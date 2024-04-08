@@ -30,16 +30,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import {COUNTRY_CODE} from "@/utils/countryCode";
+import { COUNTRY_CODE } from "@/utils/countryCode";
 import { uploadFile, uploadFiles } from "@/utils/helpers";
 
 export default function AddUserForm({
   user,
   isOpen,
   onClose,
-  getUser,
 }: {
-  getUser?: () => Promise<void>;
   user?: TUser;
   isOpen: boolean;
   onClose: () => void;
@@ -98,7 +96,6 @@ export default function AddUserForm({
     };
 
     await createUser({ payload });
-    user && getUser && (await getUser());
   }
 
   const [profilePictureIsUploading, setProfilePictureUploading] =
@@ -130,7 +127,10 @@ export default function AddUserForm({
       title={`${user ? "Update" : "Create"} My Profile`}
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pb-12 md:pb-0">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6 pb-12 md:pb-0"
+        >
           <div className="flex gap-4 h-fit flex-col md:flex-row">
             <div className="flex-1">
               <FormField

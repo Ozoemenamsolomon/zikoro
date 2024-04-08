@@ -17,6 +17,7 @@ import {
   WhatsappIcon,
 } from "@/constants";
 import { getCookie, useValidateUser } from "@/hooks";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 export function SideBarLayout() {
   const [isNav, setNav] = useState(false);
@@ -70,7 +71,7 @@ function SideNavs({
 }) {
   const { organizationId } = useParams();
   const organization = getCookie("currentOrganization");
-  const user = getCookie("user")
+  const { user } = useUser();
 
   return (
     <div
@@ -148,12 +149,12 @@ function SideNavs({
                 height={30}
                 className="w-[30px] h-[30px] rounded-full"
               />
-              <p className="text-black capitalize text-mobile sm:text-sm">{user?.firstName ?? "User"}</p>
+              <p className="text-black capitalize text-mobile sm:text-sm">
+                {user?.name ?? "User"}
+              </p>
             </div>
           </Link>
-          <button
-          onClick={onOpen}
-           className="flex gap-2 text-black">
+          <button onClick={onOpen} className="flex gap-2 text-black">
             <PersonFeedback className="w-6 h-6" />
             Give feedback
           </button>
