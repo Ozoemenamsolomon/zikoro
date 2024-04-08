@@ -416,7 +416,7 @@ const Create = () => {
                           disabled={!isScheduled}
                           variant={"outline"}
                           className={cn(
-                            "flex gap-4 items-center w-full max-w-[300px] px-4 justify-start font-normal",
+                            "flex gap-4 items-center w-full px-4 justify-start font-normal",
                             !field.value && "text-muted-foreground"
                           )}
                         >

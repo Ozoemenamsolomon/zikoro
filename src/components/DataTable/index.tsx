@@ -59,8 +59,8 @@ export function DataTable<TData extends { id?: number }>({
 
   return (
     <div>
-      <div className="rounded-md border max-w-full">
-        <Table className="max-w-full">
+      <div className="rounded-md border min-w-max">
+        <Table className="min-w-max">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow

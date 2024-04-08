@@ -3,6 +3,12 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Email, SMS, Whatsapp, Affiliate } from "./_tabs";
 import { useRef, useState, useLayoutEffect } from "react";
+import {
+  ReadonlyURLSearchParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 
 type TMarketingTabs = {
   label: string;
@@ -52,9 +58,42 @@ const page = () => {
     div.style.minHeight = `${distanceToBottom}px`;
   }, []);
 
+  function updateSearchParam(
+    searchParams: ReadonlyURLSearchParams,
+    param: string,
+    value: string
+  ): URLSearchParams {
+    const currentSearchParams = new URLSearchParams(
+      Array.from(searchParams.entries())
+    );
+    currentSearchParams.set(param, value);
+
+    return currentSearchParams;
+  }
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathName = usePathname() || "/";
+
+  function handleTabChange(currentTab: string) {
+    if (searchParams?.entries()) {
+      const updatedSearchParams = updateSearchParam(
+        searchParams,
+        "tab1",
+        currentTab
+      );
+      router.push(`${pathName}?${updatedSearchParams.toString()}`, {
+        shallow: true,
+      });
+    }
+  }
+
   return (
     <section className="bg-white space-y-6" ref={divRef || null}>
-      <Tabs defaultValue="email">
+      <Tabs
+        onValueChange={(value) => handleTabChange(value)}
+        defaultValue="email"
+      >
         <TabsList className="bg-transparent border-b px-4 pt-4 w-full flex justify-start">
           {marketingTabs.map((tab) => (
             <TabsTrigger

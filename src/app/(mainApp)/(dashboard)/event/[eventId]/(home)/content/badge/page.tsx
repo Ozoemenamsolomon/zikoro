@@ -141,7 +141,7 @@ const Badges = () => {
 
         <Button
           className="bg-basePrimary flex gap-4 items-center"
-          onClick={() => router.push("create")}
+          onClick={() => router.push("badge/create")}
         >
           <svg
             stroke="currentColor"
