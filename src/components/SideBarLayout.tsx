@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib";
-import { useState, useEffect } from "react";
+import { useState,  } from "react";
 import Image from "next/image";
 import { Button, MobileBottomNav, NavLinks } from ".";
 import Link from "next/link";
@@ -16,7 +16,7 @@ import {
   LogOutIcon,
   WhatsappIcon,
 } from "@/constants";
-import { getCookie, useValidateUser } from "@/hooks";
+import { getCookie, useValidateUser, useLogOut } from "@/hooks";
 
 export function SideBarLayout() {
   const [isNav, setNav] = useState(false);
@@ -71,6 +71,7 @@ function SideNavs({
   const { organizationId } = useParams();
   const organization = getCookie("currentOrganization");
   const user = getCookie("user")
+  const {logOut} = useLogOut()
 
   return (
     <div
@@ -201,15 +202,15 @@ function SideNavs({
               </Button>
             </div>
           </div>
-          <Link
-            href="/api/auth/logout"
+          <button
+          onClick={logOut}
             className="flex items-center h-fit gap-x-2"
           >
             <LogOutIcon />
             <span className="text-[#EC2D30] text-mobile sm:text-desktop">
               Log Out
             </span>
-          </Link>
+          </button>
         </div>
       </div>
     </div>

@@ -27,6 +27,7 @@ export function CreateOrganization({ close }: { close: () => void }) {
 
   async function onSubmit(values: z.infer<typeof organizationSchema>) {
     await organisation(values);
+    close()
     form.reset({
       organizationName: "",
       organizationType: "",
