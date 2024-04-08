@@ -6,13 +6,12 @@ import {
   getSession,
   handleAuth,
   handleCallback,
-  handleLogin,
 } from "@auth0/nextjs-auth0";
 import { NextRequest, NextResponse } from "next/server";
 
-const afterCallback: AfterCallbackAppRoute = async (req, session) => {
+const afterCallback: AfterCallbackAppRoute = (req, session) => {
   if (!session.user.isFirstLogin) {
-    const user = await getUser(session.user.email);
+    const user = getUser(session.user.email);
     session.user.zikoroUser = user;
   }
 
@@ -24,7 +23,6 @@ export const GET = handleAuth({
     const res = await handleCallback(req, ctx, { afterCallback });
     const session = await getSession();
     if (session?.user.isFirstLogin) {
-      console.log("isFirstLogin");
       return NextResponse.redirect(
         `${process.env.AUTH0_BASE_URL}/onboarding`,
         res
@@ -32,9 +30,6 @@ export const GET = handleAuth({
     }
     return res;
   },
-  signup: handleLogin({
-    authorizationParams: { screen_hint: "signup" },
-  }),
 });
 
  */

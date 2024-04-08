@@ -16,8 +16,7 @@ import {
   LogOutIcon,
   WhatsappIcon,
 } from "@/constants";
-import { getCookie, useLogOut, useValidateUser } from "@/hooks";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { getCookie, useValidateUser } from "@/hooks";
 
 export function SideBarLayout() {
   const [isNav, setNav] = useState(false);
@@ -70,8 +69,7 @@ function SideNavs({
 }) {
   const { organizationId } = useParams();
   const organization = getCookie("currentOrganization");
-  const { user } = useUser();
-  const { logOut } = useLogOut();
+  const user = getCookie("user");
 
   return (
     <div
@@ -150,7 +148,7 @@ function SideNavs({
                 className="w-[30px] h-[30px] rounded-full"
               />
               <p className="text-black capitalize text-mobile sm:text-sm">
-                {user?.name ?? "User"}
+                {user?.firstName ?? "User"}
               </p>
             </div>
           </Link>

@@ -1,12 +1,11 @@
 "use client";
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useState, useLayoutEffect } from "react";
 import Profile from "./_tabs/Profile";
 import Security from "./_tabs/Security";
 import Organization from "./_tabs/Organization";
 import Notifications from "./_tabs/Notifications";
-import { withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 
 type TProfileTabs = {
   label: string;
@@ -81,4 +80,4 @@ const page = () => {
   );
 };
 
-export default withPageAuthRequired(page);
+export default page;
