@@ -1,5 +1,4 @@
-/**
- import { getUser } from "@/actions/users";
+import { getUser as getUser } from "@/actions/users";
 import {
   AfterCallbackAppRoute,
   AppRouteHandlerFnContext,
@@ -31,5 +30,3 @@ export const GET = handleAuth({
     return res;
   },
 });
-
- */
