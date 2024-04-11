@@ -12,7 +12,7 @@ export const loginSchema = z.object({
     .min(1, { message: "Password is required" }),
 });
 
-export const registrationSchema = z.object({
+export const onboardingSchema = z.object({
 
   firstName: z.string().min(1, { message: "Username is required" }),
   lastName: z.string().min(1, { message: "Username is required" }),
