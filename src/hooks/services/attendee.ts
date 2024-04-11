@@ -5,7 +5,6 @@ import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
 
-
 export const useCreateAttendee = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -85,7 +84,7 @@ export const useUpdateAttendees = () => {
   return { updateAttendees, isLoading, error };
 };
 
-export const useGetAttendees = () => {
+export const useGetAttendees = ({ eventId }: { eventId: string }) => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -93,7 +92,7 @@ export const useGetAttendees = () => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAttendee[]>({
-      endpoint: "/attendees",
+      endpoint: `/attendees?eventId=${eventId}`,
     });
 
     console.log(data, "attendees services");
@@ -345,7 +344,6 @@ export const useGetAttendeesWithNotes = () => {
 
   return { attendees, isLoading, error, getAttendees };
 };
-
 
 export const useGetAllAttendees = () => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);

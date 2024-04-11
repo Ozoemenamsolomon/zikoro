@@ -34,7 +34,6 @@ import { TAttendee } from "@/types/attendee";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
 import COLORTAG from "@/utils/colorTag";
 import { parseAbsoluteToLocal } from "@internationalized/date";
-import DateTimePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-calendar/dist/Calendar.css";
 import "react-clock/dist/Clock.css";

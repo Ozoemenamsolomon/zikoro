@@ -84,11 +84,15 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
 
   if (req.method === "GET") {
+    const { searchParams } = new URL(req.url);
+    const eventId = searchParams.get("eventId");
+
+    console.log(eventId);
     try {
       const { data, error, status } = await supabase
         .from("attendees")
         .select("*")
-        .eq("eventId", 5)
+        .eq("eventId", eventId)
         .order("registrationDate", { ascending: false });
 
       console.log(data);

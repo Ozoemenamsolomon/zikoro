@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import { COUNTRY_CODE } from "@/utils/countryCode";
 import { attendeeTypeOptions } from "@/data/attendee";
 import { uploadFile, uploadFiles } from "@/utils/helpers";
+import { useParams } from "next/navigation";
 
 export default function AddAttendeeForm({
   attendee,
@@ -46,6 +47,7 @@ export default function AddAttendeeForm({
   onClose: () => void;
 }) {
   const { toast } = useToast();
+  const { eventId } = useParams();
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
   const [whatsappCountryCode, setWhatsAppCountryCode] =
     useState<string>("+234");
@@ -54,7 +56,7 @@ export default function AddAttendeeForm({
     certificate: true,
     userEmail: "ubahyusuf484@gmail.com",
     attendeeType: ["attendee"],
-    eventId: 5,
+    eventId,
     country: "Nigeria",
   };
 
@@ -70,6 +72,8 @@ export default function AddAttendeeForm({
     setValue,
     formState: { errors },
   } = form;
+
+  console.log(errors);
 
   const attendeeType = watch("attendeeType");
   const country = watch("country");
@@ -101,6 +105,7 @@ export default function AddAttendeeForm({
   };
 
   async function onSubmit(data: z.infer<typeof AttendeeSchema>) {
+    console.log(data, "submit");
     onClose();
     const payload = {
       ...data,
