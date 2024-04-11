@@ -84,7 +84,13 @@ export const useUpdateAttendees = () => {
   return { updateAttendees, isLoading, error };
 };
 
-export const useGetAttendees = ({ eventId }: { eventId: string }) => {
+export const useGetAttendees = ({
+  eventId,
+  userId,
+}: {
+  eventId?: string;
+  userId?: string;
+}) => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -92,7 +98,9 @@ export const useGetAttendees = ({ eventId }: { eventId: string }) => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAttendee[]>({
-      endpoint: `/attendees?eventId=${eventId}`,
+      endpoint: `/attendees?${eventId ? "eventId=" + eventId : ""}${
+        userId ? "userId=" + userId : ""
+      }`,
     });
 
     console.log(data, "attendees services");

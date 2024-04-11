@@ -86,14 +86,19 @@ export async function GET(req: NextRequest) {
   if (req.method === "GET") {
     const { searchParams } = new URL(req.url);
     const eventId = searchParams.get("eventId");
+    const userId = searchParams.get("userId");
 
     console.log(eventId);
     try {
-      const { data, error, status } = await supabase
+      const query = supabase
         .from("attendees")
         .select("*")
-        .eq("eventId", eventId)
         .order("registrationDate", { ascending: false });
+
+      if (eventId) query.eq("eventId", eventId);
+      if (userId) query.eq("userId", userId);
+
+      const { data, error, status } = await query;
 
       console.log(data);
 

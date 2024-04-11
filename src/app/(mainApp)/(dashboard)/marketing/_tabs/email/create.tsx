@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
@@ -47,6 +47,7 @@ import { useSendMarketingEmail } from "@/hooks/services/marketing";
 import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSection";
 import { TAttendee } from "@/types/attendee";
 import TextEditor from "@/components/TextEditor";
+import { getCookie } from "@/hooks";
 
 const CreateEmailSchema = z
   .object({
@@ -81,7 +82,10 @@ const CreateEmailSchema = z
 type TCreateEmail = z.infer<typeof CreateEmailSchema>;
 
 const Create = () => {
-  const { attendees, getAttendees, isLoading } = useGetAttendees();
+  const user = getCookie("user");
+  const { attendees, getAttendees, isLoading } = useGetAttendees({
+    userId: user.id,
+  });
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
 
   type ValueType = TAttendee | TAttendee[];
