@@ -69,7 +69,7 @@ export interface Event {
   whatsappNumber: string;
   registered: string;
   partnerIndustry: PartnerIndustry[];
-  eventPoster: string[];
+  eventPoster: string;
   exhibitionHall: { name: string; capacity: string }[];
   sponsorCategory: { type: string; id: string }[];
   eventAlias: string;

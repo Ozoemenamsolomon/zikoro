@@ -20,14 +20,15 @@ export function AccessVerification({
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
   const { attendees, isLoading } = useGetAllAttendees();
+  const [notRegistered, setNotRegistered] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const { data, loading: singleEventLoading } = useFetchSingleEvent(id);
 
   useEffect(() => {
     if (data && !singleEventLoading) {
       // if (timeRemaining > 0 && timeRemaining < remainingTime) return;
-   //   const eventDateString = new Date(data?.startDateTime)?.toISOString();
-    //  const eventDateTime = new Date(eventDateString);
+      //   const eventDateString = new Date(data?.startDateTime)?.toISOString();
+      //  const eventDateTime = new Date(eventDateString);
       let daysBeforeEventDateTime: Date | undefined;
       if (data?.eventAppAccess !== "now") {
         daysBeforeEventDateTime = new Date(data?.eventAppAccess);
@@ -47,7 +48,6 @@ export function AccessVerification({
     if (!isLoading && user && !eventLoading && !singleEventLoading && data) {
       const appAccess = data?.eventAppAccess;
 
-      console.log("here");
       let remainder = remainingTime;
 
       let interval: NodeJS.Timeout | undefined;
@@ -67,7 +67,7 @@ export function AccessVerification({
           }
         }, 1000);
       }
-   
+
       // checked if the user is an attendee
       const isPresent = attendees?.some(
         ({ email, eventId }) => eventId === id && email === user?.userEmail
@@ -88,12 +88,13 @@ export function AccessVerification({
 
         return () => clearInterval(interval);
       } else {
-        router.back();
+        setNotRegistered(true);
+        // router.push("/login");
 
         return () => clearInterval(interval);
       }
 
-     // return () => clearInterval(interval);
+      // return () => clearInterval(interval);
     }
   }, [user, isLoading, eventLoading, singleEventLoading]);
 
@@ -144,6 +145,10 @@ export function AccessVerification({
               </div>
             </div>
           </div>
+        ) : notRegistered ? (
+          <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
+            <p>User is not a registered attendee for this event</p>
+          </div>
         ) : (
           <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
             <LoaderAlt size={30} className="animate-spin text-basePrimary" />
@@ -156,4 +161,3 @@ export function AccessVerification({
     </Portal>
   );
 }
-

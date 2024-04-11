@@ -41,7 +41,7 @@ export function EventCard({
 
   function goToEvent() {
     saveCookie("currentEvent", {eventId: event?.id, eventName: event?.eventTitle})
-    window.open(`/event/${event?.id}/content/info`, "_blank");
+    window.open(`/event/${event?.id}/content/info`);
   }
 
   return (

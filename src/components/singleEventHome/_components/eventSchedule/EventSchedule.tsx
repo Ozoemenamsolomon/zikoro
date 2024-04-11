@@ -14,11 +14,11 @@ export function EventSchedule({ event }: { event: Event | null }) {
 
   return (
     <div className="w-full flex flex-col gap-y-4 items-start justify-start ">
-      {Array.isArray(event?.eventPoster) && event?.eventPoster?.length > 0 ? (
+      {event?.eventPoster ? (
         <div className="w-full">
           <Image
             className="w-full h-28 sm:h-64 rounded-none object-cover"
-            src={event?.eventPoster[0]}
+            src={event?.eventPoster}
             alt="eventimage"
             width={700}
             height={700}

@@ -20,7 +20,7 @@ export function EventWidget({ event }: { event: Event }) {
         eventId: event?.id,
         eventName: event?.eventTitle,
       });
-      window.open(`/event/${event?.id}/content/info`, "_blank");
+      window.open(`/event/${event?.id}/home`);
     }
     return (
       <div
@@ -28,9 +28,9 @@ export function EventWidget({ event }: { event: Event }) {
         onClick={gotToEvent}
         className="w-full border border-gray-200 px-3 py-8 xl:py-3 rounded-lg flex items-center gap-x-3"
       >
-        {Array.isArray(event?.eventPoster) && event?.eventPoster?.length > 0 ? (
+        {event?.eventPoster ? (
           <Image
-            src={event?.eventPoster[0]}
+            src={event?.eventPoster}
             alt="logo"
             width={300}
             height={200}
