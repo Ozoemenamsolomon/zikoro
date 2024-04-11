@@ -198,10 +198,9 @@ export function SingleEvent({
           )}
           <div className="w-full grid grid-cols-1 h-fit gap-4 lg:grid-cols-8 items-start">
             <div className="w-full h-72 sm:h-[350px] lg:h-full flex lg:col-span-4 flex-col items-start justify-start">
-              {Array.isArray(event?.eventPoster) &&
-              event?.eventPoster?.length > 0 ? (
+              {event?.eventPoster  ? (
                 <Image
-                  src={event?.eventPoster[0]}
+                  src={event?.eventPoster}
                   alt="event-image"
                   width={600}
                   height={600}
@@ -413,11 +412,7 @@ export function SingleEvent({
           eventDate={event?.startDateTime}
           endDate={endDate}
           address={event?.eventAddress}
-          eventImage={
-            Array.isArray(event?.eventPoster)
-              ? event?.eventPoster[0]
-              : "/images/rect.png"
-          }
+          eventImage={event?.eventPoster}
           availableSlot={availableSlot}
           startDate={startDate}
           currency={currency}

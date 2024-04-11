@@ -276,7 +276,7 @@ export async function POST(req: NextRequest) {
                 "
               >
                 <p style="font-size: 14px; font-weight: 600; margin: 0; margin-bottom:2px;">
-                  Registration Type
+                 Ticket Type
                 </p>
                 <p style="color: #b4b4b4; font-size: 14px; margin: 0">${ticketCategory}</p>
               </div>

@@ -1,5 +1,5 @@
 "use client";
-import { useState,  useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { Download } from "@styled-icons/bootstrap/Download";
 import { Eye } from "@styled-icons/feather/Eye";
@@ -37,11 +37,7 @@ interface ImageFile {
   isValid: boolean;
 }
 
-export default function UpdateEvent({
-  eventId,
-}: {
-  eventId: string;
-}): JSX.Element {
+export default function UpdateEvent({ eventId }: { eventId: string }) {
   const {
     data,
     loading,
@@ -52,6 +48,7 @@ export default function UpdateEvent({
     refetch: () => Promise<null | undefined>;
   } = useFetchSingleEvent(eventId);
   const [publishing, setIsPublishing] = useState(false);
+  const [eventPosterArr, setEventPosterArr] = useState([] as ImageFile[]);
   const { loading: updating, update } = useUpdateEvent();
   const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof updateEventSchema>>({
@@ -73,7 +70,6 @@ export default function UpdateEvent({
     setOpen((prev) => !prev);
   }
 
-  const [eventPosterArr, setEventPosterArr] = useState([] as ImageFile[]);
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "pricing",
@@ -106,11 +102,10 @@ export default function UpdateEvent({
         pricing: data?.pricing,
         eventTimeZone: data?.eventTimeZone,
       });
-      if (Array.isArray(data?.eventPoster)) {
-        const formatData = data?.eventPoster?.map((v: any) => {
-          return { url: v, file: undefined, isValid: true };
-        });
-        setEventPosterArr(formatData);
+      if (data?.eventPoster) {
+        setEventPosterArr([
+          { url: data?.eventPoster, file: undefined, isValid: true },
+        ]);
       } else {
         setEventPosterArr([]);
       }
@@ -136,30 +131,42 @@ export default function UpdateEvent({
     }
     const posterUrl = eventPosterArr.map((v) => v.url);
 
-    let poster: string[] = [];
-
     if (posterUrl.length > 0) {
-      posterUrl.map(async (value) => {
-        if (value && value.startsWith("http")) {
-          poster.push(value);
-        } else if (value) {
-          const img = await uploadFile(value, "image");
-          poster.push(img);
-        }
+      const promise = posterUrl.map(async (value) => {
+        return new Promise( async (resolve) => {
+          if (value && value.startsWith("http")) {
+            resolve(value);
+          } else if (value) {
+            const img = await uploadFile(value, "image");
+            resolve(img);
+          }
+        });
       });
-    }
-    const payload: any = {
-      ...values,
-      eventPoster: poster[0],
-      expectedParticipants: Number(values?.expectedParticipants),
-    };
+      const response = await Promise.all(promise);
+      const payload: any = {
+        ...values,
+        eventPoster: response[0],
+        expectedParticipants: Number(values?.expectedParticipants),
+      };
 
-    // return;
-    if (poster?.length > 0) {
       await update(payload, eventId);
+      refetch();
+    } else {
+      const payload: any = {
+        ...values,
+
+        expectedParticipants: Number(values?.expectedParticipants),
+      };
+
+      // return;
+
+      await update(payload, eventId);
+      refetch();
     }
- 
-    refetch();
+
+    //   console.log("postera", posters)
+
+    //   return
   }
 
   const countriesList = useMemo(() => {
@@ -227,10 +234,10 @@ export default function UpdateEvent({
     const userData = getCookie("user");
     if (data?.eventStatus === "review") {
       toast({
-        variant:"destructive",
-        description: "Event Already Published"
-      })
-      return 
+        variant: "destructive",
+        description: "Event Already Published",
+      });
+      return;
     }
     const statusDetail = {
       createdAt: new Date().toISOString(),

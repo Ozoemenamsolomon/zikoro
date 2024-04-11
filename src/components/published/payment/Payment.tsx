@@ -299,7 +299,7 @@ function PaymentSuccess({
           </div>
         </div>
 
-        <p>Your will receive a confirmation email with details of the event.</p>
+        <p>Attendees will receive a confirmation email with details of the event.</p>
       </div>
     </div>
   );

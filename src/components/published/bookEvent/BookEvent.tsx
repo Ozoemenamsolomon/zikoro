@@ -47,7 +47,7 @@ export function BookEvent({
   eventDate?: string;
   endDate?: string;
   startDate?: string;
-  eventImage: string;
+  eventImage?: string;
   organizerContact: OrganizerContact;
   eventTitle?: string;
   organization?: string | null;
@@ -421,7 +421,7 @@ export function BookEvent({
                                 </p>
                                 {v?.description && (
                                   <div className="flex items-center gap-x-1">
-                                    <p className="text-xs sm:text-sm w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
+                                    <p className="text-xs text-start sm:text-sm w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
                                       {v?.description}
                                     </p>
                                     <button

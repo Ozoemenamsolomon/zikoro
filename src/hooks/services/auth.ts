@@ -7,16 +7,14 @@ import { toast } from "@/components/ui/use-toast";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { UserProfile } from "@auth0/nextjs-auth0/client";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { TUser } from "@/types/user";
 import { getRequest } from "@/utils/api";
+import { TAuthUser } from "@/types";
 
 const supabase = createClientComponentClient();
 export const saveCookie = (name: string, value: any) => {
   if (typeof value !== "string") {
-    const newVale = JSON.stringify(value);
-    Cookies.set(name, newVale);
+    const newValue = JSON.stringify(value);
+    Cookies.set(name, newValue);
   } else {
     Cookies.set(name, value);
   }
@@ -64,7 +62,7 @@ export function useOnboarding() {
         return;
       }
 
-      if (status === 201 || (status === 200 && email && email !== null)) {
+      if (status === 201 || status === 200) {
         await getUser(email);
         setLoading(false);
         toast({ description: "Profile Updated Successfully" });
@@ -91,24 +89,17 @@ export function useLogin() {
       });
 
       if (error) {
-        //  console.log("error", error?.status)
-        if (error?.status === 400) {
-          toast({
-            variant: "destructive",
-            description: "Invalid Login Credentials",
-          });
-        }
-        toast({ variant: "destructive", description: error.message });
+        // if (error?.message) toast({ variant: "destructive", description: error?.message });
+        alert(error?.message);
+
         setLoading(false);
         return;
       }
 
       if (data && data?.user?.email) {
         await getUser(data?.user?.email);
-       // console.log("user", data?.user?.email);
-        //  saveCookie("user", data);
         toast({ description: "Sign In Successful" });
-        // router.back();
+        router.push("/home");
         setLoading(false);
       }
     } catch (error) {
@@ -140,7 +131,8 @@ export function useValidateUser() {
   }, []);
 }
 
-export const getUser = async (email: string) => {
+export const getUser = async (email: string | null) => {
+  if (!email) return;
   const { data: user, error } = await supabase
     .from("users")
     .select("*")
@@ -164,24 +156,21 @@ export function useRegistration() {
         email: values.email,
         password: values.password,
         options: {
-          emailRedirectTo: `${location.origin}/auth/callback`,
+          emailRedirectTo: `${location.origin}/auth/callback/${values?.email}/${new Date().toISOString()}`,
         },
       });
 
       if (error) {
-        //  console.log("error", error?.status)
-
+        alert(error.message);
         toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
 
-      if (data && data?.user) {
+      if (data) {
         //  saveCookie("user", data);
         toast({ description: "Regsitration  Successful" });
-        router.push(
-          `/onboarding?email=${data?.user?.email}&createdAt=${data?.user?.created_at}`
-        );
+        router.push("/verify-email");
       }
     } catch (error) {
       setLoading(false);
@@ -193,17 +182,46 @@ export function useRegistration() {
   };
 }
 
+export function useLogOut() {
+  const router = useRouter();
 
-export async function useLogOut() {
-  const router = useRouter()
   async function logOut() {
-    await supabase.auth.signOut()
-    saveCookie("user", null)
-    router.push("/")
+    await supabase.auth.signOut();
+    saveCookie("user", null);
+    router.push("/");
   }
-  
 
-return {
-  logOut
+  return {
+    logOut,
+  };
 }
+
+export function useGetAuthUser() {
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<TAuthUser | null>(null);
+
+  const getUser = async () => {
+    setLoading(true);
+    try {
+      const { data, status } = await getRequest<TAuthUser>({
+        endpoint: `/auth/user`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+
+      setUser(data.data);
+      setLoading(false);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  return {
+    user,
+    loading,
+  };
 }
