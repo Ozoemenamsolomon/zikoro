@@ -4,7 +4,9 @@ import "./globals.css";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import "react-toastify/dist/ReactToastify.css";
 import Head from "next/head";
+import { Toaster } from "react-hot-toast";
 import { inter } from "@/utils/fonts";
+import { TOASTER_PROPS } from "@/lib";
 
 export const metadata: Metadata = {
   title: "Zikoro",
@@ -27,7 +29,10 @@ export default function RootLayout({
             rel="stylesheet"
           />
         </Head>
-        <body className={`${inter.className}`}>{children}</body>
+        <body className={`${inter.className}`}>
+          {children}
+          <Toaster {...TOASTER_PROPS} />
+        </body>
       </html>
     </UserProvider>
   );

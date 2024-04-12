@@ -38,6 +38,7 @@ import {
 import { BoothStaffWidget } from "../../sponsors/_components";
 import { PartnerIndustry } from "@/types";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
+import {getCookie} from "@/hooks"
 
 export function AddPartners({
   close,
@@ -49,9 +50,9 @@ export function AddPartners({
   close: () => void;
 }) {
   const [active, setActive] = useState(1);
+  const currentEvent = getCookie("currentEvent")
   const { loading, addPartners } = useAddPartners();
   const { attendees } = useFetchAttendees(eventId);
-  const { data } = useFetchSingleEvent(eventId);
   const { data: eventData, refetch } = useFetchCreatedEventIndustries(eventId);
 
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
@@ -67,7 +68,7 @@ export function AddPartners({
     // resolver: zodResolver(partnerSchema),
     defaultValues: {
       eventId,
-      eventName: data?.eventTitle,
+      eventName: currentEvent?.eventName,
     },
   });
 
@@ -135,9 +136,14 @@ export function AddPartners({
   // console.log({ industryValue });
   //  z.infer<typeof partnerSchema>
   async function onSubmit(values: any) {
-    const selectedIndustry = eventData?.partnerIndustry.find(
-      ({ name }) => name.toLowerCase() === values.industry
-    );
+    let selectedIndustry: PartnerIndustry | undefined
+
+    if (eventData?.partnerIndustry && values.industry) {
+      selectedIndustry = eventData?.partnerIndustry.find(
+        ({ name }) => name.toLowerCase() === values.industry
+      );
+    }
+    
 
     const payload: any = {
       ...values,

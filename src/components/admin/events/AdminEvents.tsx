@@ -13,6 +13,7 @@ import { Dot } from "@styled-icons/bootstrap/Dot";
 import { Edit } from "@styled-icons/boxicons-solid/Edit";
 import { AboutWidget, EventLocationType } from "@/components/composables";
 import { Event } from "@/types";
+import { PublishCard } from "@/components/composables";
 import { PreviewModal } from "../../contents/_components/modal/PreviewModal";
 import { useMemo, useState } from "react";
 import { useFormatEventData, useUpdateEvent, getCookie } from "@/hooks";
@@ -22,11 +23,7 @@ import { useSearchParams } from "next/navigation";
 import { EmptyCard } from "../../composables";
 
 export default function AdminEvents() {
-  const {
-    events,
-    getEvents:refetch,
-    isLoading: loading,
-  } =useGetEvents();
+  const { events, getEvents: refetch, isLoading: loading } = useGetEvents();
   const search = useSearchParams();
   const query = search.get("e");
 
@@ -75,6 +72,7 @@ function EventCard({
   query: string | null;
 }) {
   const { loading: updating, update } = useUpdateEvent();
+  const [isShowPublishModal, setShowPublishModal] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const {
     startDate,
@@ -99,11 +97,11 @@ function EventCard({
       user: userData?.userEmail,
     };
 
-    const {organization, ...remainingData}:any = event
+    const { organization, ...remainingData }: any = event;
     await update(
       {
         ...remainingData,
-        published:true,
+        published: true,
         eventStatus: "published",
         eventStatusDetails:
           event?.eventStatusDetails && event?.eventStatusDetails !== null
@@ -115,7 +113,11 @@ function EventCard({
     refetch();
   }
 
-  // geeting the publisher name
+  function showPublishModal() {
+    setShowPublishModal((prev) => !prev);
+  }
+
+  // get the publisher name
   const publisher: string | undefined = useMemo(() => {
     const publishedObj = event?.eventStatusDetails?.find(
       ({ status }) => status === "published"
@@ -205,36 +207,44 @@ function EventCard({
             </div>
           </div>
         </div>
-        {!query || query === "review" && (
-          <div className="py-4 w-full border-t  p-4 flex items-center gap-x-2">
-            <Button
-              // type="submit"
-              onClick={onClose}
-              className="text-gray-50 bg-basePrimary gap-x-2"
-            >
-              <Eye size={22} />
-              <p>Preview</p>
-            </Button>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                publishEvent();
-              }}
-              type="submit"
-              className="text-basePrimary border border-basePrimary gap-x-2"
-            >
-              <Download size={22} />
-              <p>Publish</p>
-              {updating && <LoaderAlt size={22} className="animate-spin" />}
-            </Button>
-          </div>
-        )}
+        {!query ||
+          (query === "review" && (
+            <div className="py-4 w-full border-t  p-4 flex items-center gap-x-2">
+              <Button
+                // type="submit"
+                onClick={onClose}
+                className="text-gray-50 bg-basePrimary gap-x-2"
+              >
+                <Eye size={22} />
+                <p>Preview</p>
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  showPublishModal();
+                }}
+                type="submit"
+                className="text-basePrimary border border-basePrimary gap-x-2"
+              >
+                <Download size={22} />
+                <p>Publish</p>
+              </Button>
+            </div>
+          ))}
         {query === "published" && (
           <div className="py-4 w-full border-t  p-4 flex items-center gap-x-2">
             <p className="text-gray-500">{`Published By ${publisher ?? ""}`}</p>
           </div>
         )}
       </div>
+      {isShowPublishModal && (
+        <PublishCard
+          asyncPublish={publishEvent}
+          close={showPublishModal}
+          loading={updating}
+          message={`Are you sure you want to publish this event?.`}
+        />
+      )}
       {isOpen && <PreviewModal close={onClose} eventDetail={event} />}
     </>
   );

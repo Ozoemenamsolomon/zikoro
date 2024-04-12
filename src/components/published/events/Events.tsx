@@ -5,10 +5,9 @@ import { HeroLayout, SingleEvent } from "..";
 import { useState, useEffect } from "react";
 import { useEventFilterHook } from "@/context/EventFilterContext";
 import { EmptyCard } from "@/components/composables";
-import { useSearchParams } from "next/navigation";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useGetPublishedEvents } from "@/hooks";
-
+import {getCookie} from "@/hooks"
 export function Events({ id }: { id: string }) {
   const { locations, startDate, titles, endDate, pagination } =
     useEventFilterHook();
@@ -19,9 +18,7 @@ export function Events({ id }: { id: string }) {
     isLastPage,
   } = useGetPublishedEvents(id, pagination.startIndex, pagination.endIndex);
   const [filteredEvents, setFilteredEvents] = useState<Event[] | null>(null);
-
-  const search = useSearchParams();
-  const query = search.get("organization");
+  const query = getCookie("currentOrganization");
 
   useEffect(() => {
     if (publishedEvents) {
@@ -71,7 +68,7 @@ export function Events({ id }: { id: string }) {
             key={event.id}
             event={event}
             eventId={event.id}
-            organization={query}
+            organization={query?.name}
             className="mb-6 sm:mb-10"
           />
         ))}

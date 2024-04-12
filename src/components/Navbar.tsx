@@ -5,8 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { ThreeLine, Close } from "@/constants/icons";
-
+import {getCookie} from "@/hooks"
 export default function Navbar() {
+  const user = getCookie("user");
   const pathname = usePathname();
 
   const links = [
@@ -101,14 +102,21 @@ export default function Navbar() {
 
               <div className=" gap-4 hidden lg:flex">
                 <button
-                  onClick={() => router.push("/home")}
+                  onClick={() => router.push("/register")}
                   className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
                 >
                   Register
                 </button>
 
                 <button
-                  onClick={() => router.push("/home")}
+                  onClick={() => {
+                    if (user) {
+                      router.push("/home")
+                    }
+                    else {
+                      router.push("/login")
+                    }
+                  }}
                   className="text-base text-blue-700 bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md "
                 >
                   Login

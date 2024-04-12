@@ -224,7 +224,7 @@ export function Payment({
           toggleSuccessModal={toggleSuccessModal}
           reference={data?.eventRegistrationRef}
           eventTitle={data?.event}
-          userEmail={user?.email}
+          userEmail={user?.userEmail}
         />
       )}
     </>

@@ -3,7 +3,7 @@
 import { loginSchema, onboardingSchema } from "@/schemas";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState, useEffect } from "react";
-import { toast } from "@/components/ui/use-toast";
+import  toast  from "react-hot-toast";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -57,7 +57,7 @@ export function useOnboarding() {
       ]);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error( error.message );
         setLoading(false);
         return;
       }
@@ -65,7 +65,7 @@ export function useOnboarding() {
       if (status === 201 || status === 200) {
         await getUser(email);
         setLoading(false);
-        toast({ description: "Profile Updated Successfully" });
+        toast.success( "Profile Updated Successfully" );
         router.push("/home");
       }
     } catch (error) {}
@@ -89,8 +89,8 @@ export function useLogin() {
       });
 
       if (error) {
-        // if (error?.message) toast({ variant: "destructive", description: error?.message });
-        alert(error?.message);
+         toast.error( error?.message );
+       
 
         setLoading(false);
         return;
@@ -98,7 +98,7 @@ export function useLogin() {
 
       if (data && data?.user?.email) {
         await getUser(data?.user?.email);
-        toast({ description: "Sign In Successful" });
+        toast.success("Sign In Successful" );
         router.push("/home");
         setLoading(false);
       }
@@ -161,15 +161,15 @@ export function useRegistration() {
       });
 
       if (error) {
-        alert(error.message);
-        toast({ variant: "destructive", description: error.message });
+       
+        toast.error(error.message );
         setLoading(false);
         return;
       }
 
       if (data) {
         //  saveCookie("user", data);
-        toast({ description: "Regsitration  Successful" });
+        toast.success("Regsitration  Successful" );
         router.push("/verify-email");
       }
     } catch (error) {

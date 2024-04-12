@@ -9,11 +9,7 @@ import { EmailOutline } from "styled-icons/evaicons-outline";
 import Image from "next/image";
 import { Button } from "@/components";
 import { Share } from "@styled-icons/bootstrap/Share";
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  LinkedinShareButton,
-} from "next-share";
+import { LinkedinShareButton } from "next-share";
 import { EventLocationType, AboutWidget } from "@/components/composables";
 import Link from "next/link";
 import { cn } from "@/lib";
@@ -36,7 +32,7 @@ import { useState, useMemo } from "react";
 import { BookEvent } from "..";
 import { usePathname, useRouter } from "next/navigation";
 import { Event, OrganizerContact } from "@/types";
-import {useFetchSingleOrganization, getCookie} from "@/hooks"
+import { useFetchSingleOrganization, getCookie } from "@/hooks";
 export function SingleEvent({
   className,
   isDetail,
@@ -123,7 +119,7 @@ export function SingleEvent({
     return event?.eventCity === null || event?.eventCountry === null;
   }, [event?.eventCity, event?.eventCountry]);
 
-/**
+  /**
    const isAllContactUnavailable = useMemo(() => {
     return (
       event?.phoneNumber === null ||
@@ -188,7 +184,7 @@ export function SingleEvent({
       >
         <div
           className={cn(
-            "w-full flex flex-col justify-start items-start overflow-hidden gap-y-4 bg-white rounded-2xl  shadow h-fit ",
+            "w-full flex flex-col justify-start items-start  gap-y-4 bg-white rounded-2xl  shadow h-fit ",
             isExpired && "relative",
             className
           )}
@@ -198,7 +194,7 @@ export function SingleEvent({
           )}
           <div className="w-full grid grid-cols-1 h-fit gap-4 lg:grid-cols-8 items-start">
             <div className="w-full h-72 sm:h-[350px] lg:h-full flex lg:col-span-4 flex-col items-start justify-start">
-              {event?.eventPoster  ? (
+              {event?.eventPoster ? (
                 <Image
                   src={event?.eventPoster}
                   alt="event-image"
@@ -254,9 +250,7 @@ export function SingleEvent({
               />
 
               <div className="w-full flex items-center gap-x-6 justify-start">
-                {(event?.phoneNumber !== null ||
-                  event?.whatsappNumber !== null ||
-                  event?.email !== null) && <h3>Speak with the Event Team</h3>}
+                <h3>Speak with the Event Team</h3>
 
                 <div className="flex items-center gap-x-2">
                   <Button
@@ -264,11 +258,7 @@ export function SingleEvent({
                       e.stopPropagation();
                       phoneCall();
                     }}
-                    disabled={event?.phoneNumber === null}
-                    className={cn(
-                      "text-black h-fit w-fit px-0",
-                      event?.phoneNumber === null && "hidden"
-                    )}
+                    className={cn("text-black h-fit w-fit px-0")}
                   >
                     <Telephone size={20} />
                   </Button>
@@ -278,11 +268,7 @@ export function SingleEvent({
                       e.stopPropagation();
                       whatsapp();
                     }}
-                    disabled={event?.whatsappNumber === null}
-                    className={cn(
-                      "text-black h-fit w-fit px-0",
-                      event?.whatsappNumber === null && "hidden"
-                    )}
+                    className={cn("text-black h-fit w-fit px-0")}
                   >
                     <Whatsapp size={22} />
                   </Button>
@@ -292,11 +278,7 @@ export function SingleEvent({
                       e.stopPropagation();
                       sendMail();
                     }}
-                    disabled={event?.email === null}
-                    className={cn(
-                      "text-black h-fit w-fit px-0",
-                      event?.email === null && "hidden"
-                    )}
+                    className={cn("text-black h-fit w-fit px-0")}
                   >
                     <EmailOutline size={22} />
                   </Button>
@@ -339,34 +321,34 @@ export function SingleEvent({
                   <h3>Learn more about the event organizers</h3>
                   <div className="flex items-center gap-x-2">
                     <Link
-                      href={event?.x ? event?.x : "/"}
-                      className={cn("block", event?.x === null && "hidden")}
+                      href={data?.x ? data?.x : "/"}
+                      className={cn("block", data?.x === null && "hidden")}
                     >
                       <TwitterIcon />
                     </Link>
                     <Link
-                      href={event?.linkedin ? event?.linkedin : "/"}
+                      href={data?.linkedIn ? data?.linkedIn : "/"}
                       className={cn(
                         "block",
-                        event?.linkedin === null && "hidden"
+                        data?.linkedIn === null && "hidden"
                       )}
                     >
                       <LinkedinIcon />
                     </Link>
                     <Link
-                      href={event?.facebook ? event?.facebook : "/"}
+                      href={data?.facebook ? data?.facebook : "/"}
                       className={cn(
                         "block",
-                        event?.facebook === null && "hidden"
+                        data?.facebook === null && "hidden"
                       )}
                     >
                       <FacebookIcon />
                     </Link>
                     <Link
-                      href={event?.instagram ? event?.instagram : "/"}
+                      href={data?.instagram ? data?.instagram : "/"}
                       className={cn(
                         "block",
-                        event?.instagram === null && "hidden"
+                        data?.instagram === null && "hidden"
                       )}
                     >
                       <InstagramIcon />
@@ -388,10 +370,6 @@ export function SingleEvent({
                     <ActionModal
                       close={toggleShareDropDown}
                       eventId={eventId}
-                      x={data?.x}
-                      linkedIn={data?.linkedIn}
-                      facebook={data?.facebook}
-                      instagram={data?.instagram}
                     />
                   )}
                 </Button>
@@ -423,7 +401,7 @@ export function SingleEvent({
             event?.eventCountry ?? ""
           }`}
           eventId={eventId}
-          organization={organization}
+          organization={org?.name}
         />
       )}
     </>
@@ -445,16 +423,13 @@ export function SingleEvent({
 */
 }
 
+// https://www.linkedin.com/sharing/share-offsite/?url=
 function ActionModal({
   close,
-  instagram,
   eventId,
 }: {
-  x?: string;
-  facebook?: string;
   eventId?: number;
   instagram?: string;
-  linkedIn?: string;
   close: () => void;
 }) {
   return (
@@ -466,19 +441,23 @@ function ActionModal({
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="flex relative z-[50]   flex-col py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
+          className="flex relative z-[50] flex-col py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
         >
-          <TwitterShareButton
-            url={`https://zikoro-copy.vercel.app/live-events/${eventId}`}
+          <button
+            onClick={() =>
+              window.open(
+                `https://twitter.com/intent/tweet?url=https://zikoro-git-integrate-ajax484s-projects.vercel.app/live-events/${eventId}`,
+                "_blank"
+              )
+            }
+            className="items-center flex px-2  h-10 w-full gap-x-2 justify-start text-xs"
           >
-            <button className="items-center flex px-2  h-10 w-full gap-x-2 justify-start text-xs">
-              <TwitterIcon />
-              <span>X</span>
-            </button>
-          </TwitterShareButton>
+            <TwitterIcon />
+            <span>X</span>
+          </button>
 
           <LinkedinShareButton
-            url={`https://zikoro-copy.vercel.app/live-events/${eventId}`}
+            url={`https://zikoro-git-integrate-ajax484s-projects.vercel.app/live-events/${eventId}`}
           >
             <button
               className={
@@ -489,23 +468,25 @@ function ActionModal({
               <span>LinkedIn</span>
             </button>
           </LinkedinShareButton>
-          <FacebookShareButton
-            url={`https://zikoro-copy.vercel.app/live-events/${eventId}`}
-          >
-            <button
-              className={
-                "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
-              }
-            >
-              <FacebookIcon />
-              <span>Facebook</span>
-            </button>
-          </FacebookShareButton>
-          <Link
-            target="_blank"
-            href={instagram ? instagram : ""}
+          <button
+            onClick={() =>
+              window.open(
+                `https://www.facebook.com/sharer/sharer.php?u=https://zikoro-git-integrate-ajax484s-projects.vercel.app/live-events/${eventId}`,
+                "_blank"
+              )
+            }
             className={
               "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
+            }
+          >
+            <FacebookIcon />
+            <span>Facebook</span>
+          </button>
+          <Link
+            target="_blank"
+            href={""}
+            className={
+              "items-center hidden h-10 gap-x-2 px-2  justify-start w-full  text-xs"
             }
           >
             <InstagramIcon />
