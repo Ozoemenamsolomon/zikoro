@@ -401,7 +401,7 @@ export function SingleEvent({
             event?.eventCountry ?? ""
           }`}
           eventId={eventId}
-          organization={organization}
+          organization={org?.name}
         />
       )}
     </>
