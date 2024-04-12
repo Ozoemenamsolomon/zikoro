@@ -466,8 +466,10 @@ export async function POST(req: NextRequest) {
           };
 
           await transporter.sendMail(mailData, function (err: any, info: any) {
-            if (err) throw err;
-            else console.log(info);
+            if (err) {
+              console.log(error);
+              throw err;
+            } else console.log(info);
           });
         }
       }
