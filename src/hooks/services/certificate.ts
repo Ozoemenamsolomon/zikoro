@@ -7,6 +7,7 @@ import {
   TAttendeeCertificate,
   TCertificate,
   TFullCertificate,
+  TIssuedCertificate
 } from "@/types/certificates";
 import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
@@ -611,10 +612,16 @@ export const useGetCertificateTemplates = (): UseGetResult<
   };
 };
 
+
+type UseGetAllEventAttendeeCertificatesResult = {
+  attendeeCertificates: TIssuedCertificate[];
+  getAttendeeCertificates: () => Promise<void>;
+} & RequestStatus;
+
 export const useGetAllEventAttendeesCertificates =
-  (): UseGetAttendeeCertificatesResult => {
+  (): UseGetAllEventAttendeeCertificatesResult => {
     const [attendeeCertificates, setAttendeeCertificates] = useState<
-      TAttendeeCertificate[]
+    TIssuedCertificate[]
     >([]);
     const [isLoading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
@@ -623,7 +630,7 @@ export const useGetAllEventAttendeesCertificates =
       setLoading(true);
 
       try {
-        const { data, status } = await getRequest<TAttendeeCertificate[]>({
+        const { data, status } = await getRequest<TIssuedCertificate[]>({
           endpoint: `/certificates/attendees/all`,
         });
 
@@ -647,7 +654,7 @@ export const useGetAllEventAttendeesCertificates =
 
 export function useGetUserCertificates() {
   const [userCertificates, setUserCertificates] = useState<
-    TAttendeeCertificate[]
+  TIssuedCertificate[]
   >([]);
   const { attendeeCertificates, isLoading } =
     useGetAllEventAttendeesCertificates();

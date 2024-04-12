@@ -1,5 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 export default function Page() {
+  const search = useSearchParams();
+  const message = search.get("message");
+  const content = search.get("content");
   return (
     <div className="w-full h-full inset-0 fixed">
       <div className="w-fit h-fit m-auto inset-0 absolute flex flex-col gap-y-2 items-center justify-center px-4">
@@ -11,13 +17,9 @@ export default function Page() {
           height={100}
         />
         <h1 className="font-semibold text-xl w-full text-center sm:text-3xl">
-          Verify your Email
+          {message ?? ""}
         </h1>
-        <p className="text-center w-full max-w-xl">
-          Thank you for signing up! An email has been sent to your registered
-          email address. Please check your inbox and follow the instructions to
-          verify your account.
-        </p>
+        <p className="text-center w-full max-w-xl">{content ?? ""}</p>
       </div>
     </div>
   );

@@ -15,6 +15,10 @@ export type TAttendeeCertificate = {
   attendeeId: number;
 };
 
+export type TIssuedCertificate = TAttendeeCertificate & {
+    certificate: TCertificate
+}
+
 type ValuePiece = Date | null;
 
 export interface TCertificateSettings {
