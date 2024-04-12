@@ -254,3 +254,61 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
 }
+
+.innerhtml h1 {
+  font-size: 2em;
+}
+.innerhtml h2 {
+  font-size: 1.5em;
+}
+.innerhtml h3 {
+  font-size: 1.17em;
+}
+.innerhtml h4 {
+  font-size: 1em;
+}
+.innerhtml h5 {
+  font-size: 0.83em;
+}
+.innerhtml h6 {
+  font-size: 0.67em;
+}
+
+/* Unordered List */
+.innerhtml ul {
+  list-style-type: disc; /* Default filled circle */
+  padding-left: 2rem;
+}
+
+/* Ordered List */
+.innerhtml ol {
+  list-style-type: decimal; /* Default decimal numbers */
+  padding-left: 2rem;
+}
+.innerhtml ul li {
+  padding-bottom: 2rem;
+}
+
+.innerhtml ol li {
+  padding-bottom: 2rem;
+}
+
+.partner-scroll-style::-webkit-scrollbar {
+  display: none;
+}
+
+.partner-scroll-style:hover::-webkit-scrollbar {
+  width: 10px;
+  height: 6px;
+  display: block;
+}
+
+.partner-scroll-style::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  @apply bg-gray-300;
+}
+
+.partner-scroll-style::-webkit-scrollbar-track {
+  border-radius: 6px;
+  @apply bg-gray-100;
+}

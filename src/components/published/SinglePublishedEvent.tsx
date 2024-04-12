@@ -7,12 +7,12 @@ import { Footer} from "@/components";
 import { useFetchSingleEvent } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { usePathname } from "next/navigation";
-
+import {useValidateUser} from "@/hooks"
 export default function SinglePublishedEvent({id}: {id:string}) {
   const { data: eventDetail } = useFetchSingleEvent(id);
   const pathname = usePathname()
-  console.log(id)
-
+ // console.log(id)
+ useValidateUser()
   return (
     <>
      

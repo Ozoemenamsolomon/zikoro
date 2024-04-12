@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import useDisclose from "@/hooks/common/useDisclose";
 import { ContentSetting } from ".";
+import { Settings } from "@styled-icons/feather/Settings";
 
 export function ContentTopNav({ eventId }: { eventId: string | string[] }) {
   const pathname = usePathname();
-  const {isOpen, onOpen, onClose} = useDisclose()
+  const { isOpen, onOpen, onClose } = useDisclose();
   const links = [
     {
       name: "Info",
@@ -36,42 +36,34 @@ export function ContentTopNav({ eventId }: { eventId: string | string[] }) {
     },
   ];
 
-
-
   return (
     <>
-     <div className="w-full overflow-x-auto no-scrollbar  p-4 text-base flex items-center gap-x-8 sm:justify-between text-[#3E404B] border-b border-basebody">
-      <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
-        {links.map(({ name, href }, index) => {
-          return (
-            <Link
-              href={`/event/${eventId}/content/${href}`}
-              key={index}
-              className={`pl-2 ${
-                pathname.includes(href) && "text-basePrimary"
-              }`}
-            >
-              {name}
-            </Link>
-          );
-        })}
+      <div className="w-full overflow-x-auto no-scrollbar  p-4 text-base flex items-center gap-x-8 sm:justify-between text-[#3E404B] border-b border-basebody">
+        <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
+          {links.map(({ name, href }, index) => {
+            return (
+              <Link
+                href={`/event/${eventId}/content/${href}`}
+                key={index}
+                className={`pl-2 ${
+                  pathname.includes(href) && "text-basePrimary"
+                }`}
+              >
+                {name}
+              </Link>
+            );
+          })}
+        </div>
+
+        <button
+          onClick={onOpen}
+          className="flex items-center justify-center rounded-full hover:bg-gray-100 p-1"
+        >
+          <Settings size={22} />
+        </button>
       </div>
 
-      <button
-      onClick={onOpen}
-      className="flex items-center justify-center rounded-full hover:bg-gray-100 p-1">
-        <Image
-          src="/settings.svg"
-          width={50}
-          height={50}
-          alt="settings"
-          className="w-5 h-5"
-        />
-      </button>
-    </div>
-
-    {isOpen && <ContentSetting onClose={onClose} eventId={eventId}/>}
+      {isOpen && <ContentSetting onClose={onClose} eventId={eventId} />}
     </>
-   
   );
 }

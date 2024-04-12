@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { toast } from "@/components/ui/use-toast";
 import { TAttendee } from "@/types/attendee";
@@ -11,7 +11,7 @@ import {
 import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
-import {getCookie} from "@/hooks"
+import { getCookie } from "@/hooks";
 
 export const useSaveCertificate = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -611,21 +611,62 @@ export const useGetCertificateTemplates = (): UseGetResult<
   };
 };
 
+export const useGetAllEventAttendeesCertificates =
+  (): UseGetAttendeeCertificatesResult => {
+    const [attendeeCertificates, setAttendeeCertificates] = useState<
+      TAttendeeCertificate[]
+    >([]);
+    const [isLoading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<boolean>(false);
+
+    const getAttendeeCertificates = async () => {
+      setLoading(true);
+
+      try {
+        const { data, status } = await getRequest<TAttendeeCertificate[]>({
+          endpoint: `/certificates/attendees/all`,
+        });
+
+        if (status !== 200) {
+          throw data;
+        }
+        setAttendeeCertificates(data.data);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    useEffect(() => {
+      getAttendeeCertificates();
+    }, []);
+
+    return { attendeeCertificates, isLoading, error, getAttendeeCertificates };
+  };
 
 export function useGetUserCertificates() {
- /**
-   const {certificates, isLoading} = useGetCertificates()
-  const user = getCookie("user")
+  const [userCertificates, setUserCertificates] = useState<
+    TAttendeeCertificate[]
+  >([]);
+  const { attendeeCertificates, isLoading } =
+    useGetAllEventAttendeesCertificates();
+  const user = getCookie("user");
 
-  const userCertificates = certificates?.map((certificate) => {
-const {attendeeEmail} = certificate
-    if (attendeeEmail === user?.email) {
-      return {
-        ...certificate
-      }
+  useEffect(() => {
+    if (!isLoading && user) {
+      const certificates = attendeeCertificates?.filter((certificate) => {
+        return certificate?.attendeeEmail === user?.userEmail;
+      });
+      setUserCertificates(certificates);
     }
-    
-  })
-  */
+  }, [isLoading]);
+  /**
 
+ */
+
+  return {
+    attendeeCertificates: userCertificates,
+    isLoading,
+  };
 }

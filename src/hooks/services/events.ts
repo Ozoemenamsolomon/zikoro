@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -12,6 +11,7 @@ import { getCookie, useGetOrganizations } from "@/hooks";
 import { getRequest, postRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
 import { useGetAllAttendees } from "@/hooks";
+import toast from "react-hot-toast";
 import {
   formatDate,
   formatTime,
@@ -126,7 +126,7 @@ export function useCreateOrganisation() {
       ]);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
 
         setLoading(false);
         return;
@@ -134,8 +134,8 @@ export function useCreateOrganisation() {
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        toast({ description: "Organisation created successfully" });
-        window.location.reload()
+        toast.success("Organisation created successfully");
+        window.location.reload();
       }
     } catch (error) {}
   }
@@ -208,7 +208,7 @@ export function useCreateEvent() {
       ]);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
         setLoading(false);
         return;
       }
@@ -217,7 +217,7 @@ export function useCreateEvent() {
         setLoading(false);
         //   console.log({ data });
         router.push(` /events`);
-        toast({ description: "Event created successfully" });
+        toast.success("Event created successfully");
       }
     } catch (error) {}
   }
@@ -245,7 +245,7 @@ export function useUpdateEvent() {
         .eq("id", eventId);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
         setLoading(false);
         return;
       }
@@ -253,7 +253,7 @@ export function useUpdateEvent() {
       if (status === 204 || status === 200) {
         setLoading(false);
 
-        toast({ description: "Event updated successfully" });
+        toast.success("Event updated successfully");
       }
     } catch (error) {}
   }
@@ -272,7 +272,7 @@ export function useUpdateEvent() {
         .eq("id", orgId);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
         setLoading(false);
         return;
       }
@@ -280,7 +280,7 @@ export function useUpdateEvent() {
       if (status === 204 || status === 200) {
         setLoading(false);
 
-        toast({ description: "Organization updated successfully" });
+        toast.success("Organization updated successfully");
       }
     } catch (error) {}
   }
@@ -311,7 +311,7 @@ export function useFetchSingleOrganization(id: string) {
         .single();
 
       if (fetchError) {
-        toast({ variant: "destructive", description: fetchError.message });
+        toast.error(fetchError.message);
         setLoading(false);
         return null;
       }
@@ -348,7 +348,7 @@ export function useFetchOrganizationEvents(id?: string | string[]) {
         .eq("organisationId", id);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
         setLoading(false);
         return null;
       }
@@ -379,7 +379,7 @@ export function useDuplicateEvent() {
         .single();
 
       if (fetchError) {
-        toast({ variant: "destructive", description: fetchError.message });
+        toast.error(fetchError.message);
         setLoading(false);
         return null;
       }
@@ -399,13 +399,13 @@ export function useDuplicateEvent() {
         .single();
 
       if (insertError) {
-        toast({ variant: "destructive", description: insertError.message });
+        toast.error(insertError.message);
         setLoading(false);
         return null;
       }
 
       if (status === 201 || status === 200) {
-        toast({ description: "Event successfully duplicated" });
+        toast.success("Event successfully duplicated");
       }
 
       //return insertedEvent;
@@ -433,12 +433,12 @@ export function useDeleteEvent() {
         .eq("id", id);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
         return false;
       }
 
       if (status === 204 || status === 200) {
-        toast({ description: "Event deleted successfully" });
+        toast.success("Event deleted successfully");
       }
     } catch (error) {
       setLoading(false);
@@ -482,7 +482,7 @@ export function useGetPublishedEvents(
         .range(startIndex, endIndex);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
         setLoading(false);
         setLoadingNextPage(false);
 
@@ -534,7 +534,7 @@ export function useFetchSingleEvent(id: string) {
         .single();
 
       if (fetchError) {
-        toast({ variant: "destructive", description: fetchError.message });
+        toast.error(fetchError.message);
         setLoading(false);
         return null;
       }
@@ -588,9 +588,9 @@ export function useBookingEvent() {
           error.message ===
           `duplicate key value violates unique constraint "attendees_email_key"`
         ) {
-          // toast({variant:"destructive",description:"User has already registered for this event")
+          // shadcnToast({variant:"destructive",description:"User has already registered for this event")
         } else {
-          toast({ variant: "destructive", description: error.message });
+          toast.error(error.message);
         }
 
         setIsRegistered(true);
@@ -601,10 +601,9 @@ export function useBookingEvent() {
         setLoading(false);
         setIsRegistered(false);
         //  allowPayment(true);
-        toast({
-          description:
-            "Attendees Information has been Captured. Proceed to Payment...",
-        });
+        toast.success(
+          "Attendees Information has been Captured. Proceed to Payment..."
+        );
       }
     } catch (error) {
       setLoading(false);
@@ -640,14 +639,14 @@ export function useTransactionDetail() {
       } = await supabase.from("eventTransactions").upsert([{ ...payload }]);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
         return;
       }
 
       if (status === 201 || status === 200) {
         setLoading(false);
         allowPayment(true);
-        // toast({description:"Al");
+        // shadcnToast({description:"Al");
         //  console.log({successData})
       }
     } catch (error) {
@@ -682,7 +681,7 @@ export function useGetEventTransactionDetail(eventRegistrationRef: string) {
         .single();
 
       if (fetchError) {
-        toast({ variant: "destructive", description: fetchError.message });
+        toast.error(fetchError.message);
         setLoading(false);
         return null;
       }
@@ -718,23 +717,21 @@ export function useUpdateTransactionDetail() {
       });
       /**
        if (status !== 204) {
-       toast({variant:"destructive",description: error.message});
+       shadcnToast({variant:"destructive",description: error.message});
        return;
       }
     */
       if (status === 204 || status === 200) {
         setLoading(false);
         toggleSuccessModal(true);
-        toast({ description: "Transaction Successful" });
+        toast.success("Transaction Successful");
       }
     } catch (error: any) {
       /// console.log(error)
-      toast({
-        variant: "destructive",
-        description:
-          error?.response?.data?.error ||
-          "An error occurred while making the request.",
-      });
+      toast.error(
+        error?.response?.data?.error ||
+          "An error occurred while making the request."
+      );
       setLoading(false);
     }
   }
@@ -769,10 +766,7 @@ export function useRedeemDiscountCode() {
       // check if code exist
       let isDiscountCodeExist = data?.map((v) => v.discountCode).includes(code);
       if (!isDiscountCodeExist) {
-        toast({
-          variant: "destructive",
-          description: "Discount code does not exist",
-        });
+        toast.error("Discount code does not exist");
         setLoading(false);
         return;
       }
@@ -780,15 +774,14 @@ export function useRedeemDiscountCode() {
       let discount = data?.find((v) => v.discountCode === code);
       let isDiscountCodeValid = discount?.status;
       if (!isDiscountCodeValid) {
-        toast({
-          variant: "destructive",
-          description: "Discount code has expired",
-        });
+        toast.error("Discount code has expired");
+
         setLoading(false);
         return;
       }
 
-      toast({ description: "Discount code has been applied successfully" });
+      toast.success("Discount code has been applied successfully");
+
       // check the minQty
       if (isDiscountCodeValid) setMinAttendees(discount?.minQty);
 
@@ -854,14 +847,15 @@ export function useEventFeedBack() {
         .upsert([{ ...values }]);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
+
         setLoading(false);
         return;
       }
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        toast({ description: "Thanks... Your feedback has been recieved" });
+        toast.success("Thanks... Your feedback has been recieved");
       }
     } catch (error) {}
   }
@@ -886,13 +880,14 @@ export function useDiscount() {
       ]);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
+
         setLoading(false);
         return;
       }
       if (status === 201 || status === 200) {
         setLoading(false);
-        toast({ description: "Discount created successfully" });
+        toast.success("Discount created successfully");
       }
     } catch (error) {}
   }
@@ -905,13 +900,14 @@ export function useDiscount() {
         .eq("id", orgId);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
+
         setUpdating(false);
         return;
       }
       if (status === 204 || status === 200) {
         setUpdating(false);
-        toast({ description: "Discount updated successfully" });
+        toast.success("Discount updated successfully");
       }
     } catch (error) {}
   }
@@ -935,13 +931,14 @@ export function useCreateReward() {
         .upsert([{ ...values }]);
 
       if (error) {
-        toast({ variant: "destructive", description: error.message });
+        toast.error(error.message);
+
         return;
       }
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        toast({ description: "Reward created successfully" });
+        toast.success("Reward created successfully");
       }
     } catch (error) {}
   }
@@ -1062,12 +1059,12 @@ export function useAttenedeeEvents() {
 
   useEffect(() => {
     if (!loading && !isLoading) {
-     // console.log({attendees})
+      // console.log({attendees})
       // filter attendees based on attendees email
-      const filteredEvents = attendees?.filter(({ userEmail }) => {
-        return userEmail === user?.userEmail;
+      const filteredEvents = attendees?.filter(({ email }) => {
+        return email === user?.userEmail;
       });
-   //   console.log({filteredEvents})
+      //   console.log({filteredEvents})
       const mappedEventId = filteredEvents?.map((attendee) =>
         Number(attendee?.eventId)
       );

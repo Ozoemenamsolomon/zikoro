@@ -18,6 +18,7 @@ import { updateEventSchema } from "@/schemas";
 import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
 import { Form, FormField, Input, Button, ReactSelect } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
+import { PublishCard } from "@/components/composables";
 
 import { useFetchSingleEvent, useUpdateEvent, getCookie } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
@@ -50,6 +51,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   const [publishing, setIsPublishing] = useState(false);
   const [eventPosterArr, setEventPosterArr] = useState([] as ImageFile[]);
   const { loading: updating, update } = useUpdateEvent();
+  const [isShowPublishModal, setShowPublishModal] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const form = useForm<z.infer<typeof updateEventSchema>>({
     resolver: zodResolver(updateEventSchema),
@@ -68,6 +70,9 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   function onClose() {
     setOpen((prev) => !prev);
+  }
+  function showPublishModal() {
+    setShowPublishModal((prev) => !prev);
   }
 
   const { fields, append, remove } = useFieldArray({
@@ -133,7 +138,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
     if (posterUrl.length > 0) {
       const promise = posterUrl.map(async (value) => {
-        return new Promise( async (resolve) => {
+        return new Promise(async (resolve) => {
           if (value && value.startsWith("http")) {
             resolve(value);
           } else if (value) {
@@ -292,16 +297,14 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      publishEvent();
+                      showPublishModal();
                     }}
                     type="submit"
                     className="text-basePrimary border border-basePrimary gap-x-2"
                   >
                     <Download size={22} />
                     <p>Publish</p>
-                    {publishing && (
-                      <LoaderAlt size={22} className="animate-spin" />
-                    )}
+                   
                   </Button>
                 </div>
               </div>
@@ -722,6 +725,15 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
           <div className="w-full h-[300px] flex items-center justify-center ">
             <LoaderAlt size={48} className="animate-spin" />
           </div>
+        )}
+        {isShowPublishModal && (
+          <PublishCard
+            asyncPublish={publishEvent}
+            close={showPublishModal}
+            loading={publishing}
+            message={` You are about to publish an event. You will be notified when the admin
+            approves it.`}
+          />
         )}
         {isOpen && <PreviewModal close={onClose} />}
       </>

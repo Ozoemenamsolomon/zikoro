@@ -1,7 +1,7 @@
 "use client";
 
-import { EventWidget } from "..";
-import { Event } from "@/types";
+import { EventWidget, CertificateWidget } from "..";
+import { Event, TAttendeeCertificate } from "@/types";
 
 export function AllDatas({
   data,
@@ -9,9 +9,12 @@ export function AllDatas({
   onClose,
 }: {
   title: string;
-  data?: Event[];
+  data?: Event[] | TAttendeeCertificate[];
   onClose: () => void;
 }) {
+  const isEventArray = (data: any[]): data is Event[] => {
+    return data.every((item) => typeof item === "object" && "id" in item);
+  };
   return (
     <div
       role="button"
@@ -26,8 +29,19 @@ export function AllDatas({
       >
         <h2 className="mb-4 font-semibold text-base sm:text-lg">{title}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-          {Array.isArray(data) &&
-            data?.map((event) => <EventWidget event={event} key={event?.id} />)}
+          {Array.isArray(data) && isEventArray(data)
+            ? data?.map((event) => (
+                <EventWidget
+                  event={event as Event}
+                  key={(event as Event)?.id}
+                />
+              ))
+            : data?.map((certificate) => (
+                <CertificateWidget
+                  certificate={certificate as TAttendeeCertificate}
+                  key={(certificate as TAttendeeCertificate)?.id}
+                />
+              ))}
         </div>
       </div>
     </div>

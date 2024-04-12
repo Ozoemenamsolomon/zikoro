@@ -15,6 +15,7 @@ import { Event } from "@/types";
 import { DeleteEventModal } from "..";
 import { useDuplicateEvent, useFormatEventData } from "@/hooks";
 import { saveCookie } from "@/hooks";
+import {cn} from "@/lib"
 
 export function EventCard({
   event,
@@ -40,7 +41,10 @@ export function EventCard({
   }
 
   function goToEvent() {
-    saveCookie("currentEvent", {eventId: event?.id, eventName: event?.eventTitle})
+    saveCookie("currentEvent", {
+      eventId: event?.id,
+      eventName: event?.eventTitle,
+    });
     window.open(`/event/${event?.id}/content/info`);
   }
 
@@ -188,6 +192,14 @@ function ActionModal({
           >
             {loading && <LoaderAlt size={12} className="animate-spin" />}
             <span>Duplicate</span>
+          </Button>
+          <Button
+            onClick={() => window.open(`/live-events/${id}`, "_blank")}
+            className={
+              cn("items-center hidden h-10 gap-x-2 hover:bg-gray-100 justify-start w-full  text-xs", isPublished && "flex")
+            }
+          >
+            <span>View Event</span>
           </Button>
         </div>
       </div>

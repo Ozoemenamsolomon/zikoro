@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { Form, FormField, Input, Button } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import {  registrationSchema } from "@/schemas";
+import {  loginSchema } from "@/schemas";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -16,11 +16,11 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
   const { loading, register } = useRegistration();
-  const form = useForm<z.infer<typeof registrationSchema>>({
-    resolver: zodResolver(registrationSchema),
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
   });
 
-  async function onSubmit(values: z.infer<typeof registrationSchema>) {
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
     await register(values);
   }
 
