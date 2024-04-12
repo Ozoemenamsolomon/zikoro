@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
         title: event,
         location: address,
         attendees: attendeesNames,
-        organizer: { name: organization, email: organizerContact?.email },
+        organizer: { name: organization, email: "me@gmail.com" },
         // Add other event details as needed
         //  organizerContact?.email
       };
