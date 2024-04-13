@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
         title: event,
         location: address,
         attendees: attendeesNames,
-        organizer:{name: organization, email: "me@gmail.com"}
+        organizer: { name: organization, email: organizerContact?.email },
         // Add other event details as needed
         //  organizerContact?.email
       };
@@ -165,14 +165,14 @@ export async function POST(req: NextRequest) {
           port: 465,
           secure: true,
           auth: {
-            user: "support@zikoro.com",
-            pass: "@OrthoEx.ng123",
+            user: process.env.NEXT_PUBLIC_EMAIL,
+            pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
           },
         });
 
         for (let attendee of registeredAttendees) {
           const mailData = {
-            from: `Zikoro <support@zikoro.com>`,
+            from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
             to: attendee.email,
             subject: `Confirmation to attend ${event}`,
             html: `
@@ -367,8 +367,6 @@ export async function POST(req: NextRequest) {
               border-radius: 6px;
               border: 0;
               "
-  
-             
             >
               <p style="margin:0; width:100%; text-align:center; color:white">Join Event</p>
             </button>

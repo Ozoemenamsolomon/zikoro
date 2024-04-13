@@ -1,22 +1,26 @@
 import {useMemo} from "react"
-import {TAttendeeCertificate} from "@/types"
+import {TIssuedCertificate} from "@/types"
 import {formatDate} from "@/utils"
 import { AboutWidget } from "@/components/composables";
 import Image from "next/image";
 import { Users } from "@styled-icons/heroicons-outline/Users";
 import { Check2 } from "@styled-icons/bootstrap/Check2";
 import { CheckmarkDone } from "styled-icons/ionicons-outline";
-export function CertificateWidget({ certificate }: { certificate: TAttendeeCertificate }) {
+export function CertificateWidget({ certificate }: { certificate: TIssuedCertificate }) {
   
     const createdAt = useMemo(() => {
         return formatDate(certificate?.created_at)
     },[certificate?.created_at])
     return (
       <div className="w-full">
-        {certificate?.certificateURL ? (
-          <div className="w-full h-[250px] rounded-t-lg animate-pulse">
-          <div className="w-full h-full bg-gray-200"></div>
-        </div>
+        {certificate?.certificate?.cerificateUrl ? (
+         <Image
+         src={certificate?.certificate?.cerificateUrl}
+         alt="certificate"
+         width={700}
+         height={600}
+         className="w-full h-[250px] rounded-t-lg object-cover"
+         />
         ) : (
           <div className="w-full h-[250px] rounded-t-lg animate-pulse">
             <div className="w-full h-full bg-gray-200"></div>

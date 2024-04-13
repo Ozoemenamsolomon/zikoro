@@ -3,7 +3,7 @@
 import { loginSchema, onboardingSchema } from "@/schemas";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState, useEffect } from "react";
-import  toast  from "react-hot-toast";
+import toast from "react-hot-toast";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -57,7 +57,7 @@ export function useOnboarding() {
       ]);
 
       if (error) {
-        toast.error( error.message );
+        toast.error(error.message);
         setLoading(false);
         return;
       }
@@ -65,7 +65,7 @@ export function useOnboarding() {
       if (status === 201 || status === 200) {
         await getUser(email);
         setLoading(false);
-        toast.success( "Profile Updated Successfully" );
+        toast.success("Profile Updated Successfully");
         router.push("/home");
       }
     } catch (error) {}
@@ -89,8 +89,7 @@ export function useLogin() {
       });
 
       if (error) {
-         toast.error( error?.message );
-       
+        toast.error(error?.message);
 
         setLoading(false);
         return;
@@ -98,7 +97,7 @@ export function useLogin() {
 
       if (data && data?.user?.email) {
         await getUser(data?.user?.email);
-        toast.success("Sign In Successful" );
+        toast.success("Sign In Successful");
         router.push("/home");
         setLoading(false);
       }
@@ -156,21 +155,24 @@ export function useRegistration() {
         email: values.email,
         password: values.password,
         options: {
-          emailRedirectTo: `${location.origin}/auth/callback/${values?.email}/${new Date().toISOString()}`,
+          emailRedirectTo: `${location.origin}/auth/callback/${
+            values?.email
+          }/${new Date().toISOString()}`,
         },
       });
 
       if (error) {
-       
-        toast.error(error.message );
+        toast.error(error.message);
         setLoading(false);
         return;
       }
 
       if (data) {
         //  saveCookie("user", data);
-        toast.success("Regsitration  Successful" );
-        router.push("/verify-email");
+        toast.success("Regsitration  Successful");
+        router.push(`/verify-email?message=Verify your Email&content= Thank you for signing up! An email has been sent to your registered
+        email address. Please check your inbox and follow the instructions to
+        verify your account.`);
       }
     } catch (error) {
       setLoading(false);
@@ -222,6 +224,80 @@ export function useGetAuthUser() {
 
   return {
     user,
+    loading,
+  };
+}
+
+/*
+ await supabase.auth.resetPasswordForEmail('hello@example.com', {
+  redirectTo: 'http://example.com/account/update-password',
+})
+
+
+ */
+
+export function useForgotPassword() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function forgotPassword(email: string) {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/update-password`,
+      });
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (data) {
+        //  saveCookie("user", data);
+
+        router.push(
+          `/verify-email?message=Reset Password&content=If the email you entered is registered, we've sent a password reset link to your inbox. Please check your email and follow the instructions to reset your password.`
+        );
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  }
+
+  return {
+    forgotPassword,
+    loading,
+  };
+}
+
+export function useUpdatePassword() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function updatePassword(password: string) {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.auth.updateUser({ password })
+
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (data) {
+        //  saveCookie("user", data);
+        toast.success("Password Reset Successfully");
+        router.push(`/login`);
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  }
+
+  return {
+    updatePassword,
     loading,
   };
 }

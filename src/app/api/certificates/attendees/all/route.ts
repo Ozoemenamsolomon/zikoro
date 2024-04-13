@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     try {
       const { data, error, status } = await supabase
         .from("attendeeCertificates")
-        .select("*");
+        .select("*, certificate!inner(*)");
 
       if (error) throw error;
 
