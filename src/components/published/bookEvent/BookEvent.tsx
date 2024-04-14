@@ -93,10 +93,6 @@ export function BookEvent({
     name: "attendeeApplication",
   });
 
-  const computedPrice = useMemo(() => {
-    if (chosenPrice) return chosenPrice * fields.length;
-  }, [chosenPrice, fields]);
-
   function appendAttendees() {
     append({
       firstName: "",
@@ -144,6 +140,14 @@ export function BookEvent({
       return ((Number(chosenPrice - discount) * 5) / 100) * fields?.length;
   }, [fields, chosenPrice]);
 
+  const computedPrice = useMemo(() => {
+    if (chosenPrice && event?.attendeePayProcessingFee) {
+      return chosenPrice * fields.length;
+    } else if (chosenPrice && processingFee) {
+      return chosenPrice * fields.length - processingFee;
+    }
+  }, [chosenPrice, fields, processingFee, event?.attendeePayProcessingFee]);
+
   // calculating total
   const total = useMemo(() => {
     if (computedPrice && processingFee && event?.attendeePayProcessingFee) {
@@ -153,11 +157,11 @@ export function BookEvent({
       processingFee &&
       !event?.attendeePayProcessingFee
     ) {
-      return computedPrice - discount - processingFee;
+      return computedPrice - discount + processingFee;
     } else {
       return 0;
     }
-  }, [computedPrice, processingFee, discount]);
+  }, [computedPrice, processingFee, discount, event?.attendeePayProcessingFee]);
 
   async function onSubmit(
     values: z.infer<typeof eventBookingValidationSchema>
@@ -181,7 +185,7 @@ export function BookEvent({
       return;
     }
 
-    await registerAttendees(eventReference, values, eventId, "attendee");
+    await registerAttendees(eventReference, values, eventId, priceCategory);
 
     // return if user is registered -- attendees data will not be sent to the eventTransaction table
     if (isRegistered) return;
@@ -369,9 +373,12 @@ export function BookEvent({
           {/*** */}
           {active === 1 && (
             <div className="w-full lg:col-span-4 flex flex-col gap-y-4 p-4 sm:p-6">
-              <div className="w-full flex items-center justify-center py-3 border-b">
+              <div className="w-full flex flex-col items-center justify-center py-3 border-b">
                 <p className="text-base sm:text-xl font-semibold">
                   Ticket Price
+                </p>
+                <p className="text-[11px] sm:text-[13px]">
+                  Select your preferred ticket type
                 </p>
               </div>
 
