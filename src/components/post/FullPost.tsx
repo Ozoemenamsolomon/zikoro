@@ -33,7 +33,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
       <div className="max-w-[982px] mx-auto flex flex-col gap-y-6 lg:gap-y-10 ">
         <div className="max-w-full lg:max-w-2xl lg:mx-auto flex flex-col gap-y-4 text-center ">
           <p className="text-indigo-600 text-[12px] lg:text-[15px] font-medium">
-            {data?.category}
+              Blog Category
           </p>
           <p className="capitalize text-2xl font-semibold lg:text-4xl ">
             {data?.title}
@@ -92,8 +92,8 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           Read More Articles
         </p>
         <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
-          {/* <PostArticle />
-          <PostArticle /> */}
+          <PostArticle />
+          <PostArticle />
         </div>
       </div>
     </div>
