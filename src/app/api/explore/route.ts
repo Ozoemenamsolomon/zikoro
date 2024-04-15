@@ -2,15 +2,29 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(req: any) {
   const supabase = createRouteHandlerClient({ cookies });
 
   if (req.method === "GET") {
+    // Get the query parameters from the request
+    const { eventCity } = req.query || { };
+            console.log(eventCity)
+
     try {
-      const { data, error } = await supabase
+      let eventsQuery = supabase
         .from("events")
         .select()
-        .eq("published", true);
+        .eq("published", true)
+        .limit(4);
+
+      // If query parameters are provided, apply filters
+      if (eventCity) {
+        console.log(eventCity)
+        eventsQuery = eventsQuery.gte("eventCity", eventCity);
+      }
+
+      // Fetch data from Superbase table 'events' based on query parameters
+      const { data, error } = await eventsQuery;
 
       if (error) throw error;
 

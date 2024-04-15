@@ -18,6 +18,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+  
   return (
     <UserProvider>
       <html lang="en" className=" text-mobile sm:text-desktop">
@@ -35,5 +37,5 @@ export default function RootLayout({
         </body>
       </html>
     </UserProvider>
-  );
+  )
 }

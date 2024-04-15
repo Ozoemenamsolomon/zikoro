@@ -2,15 +2,15 @@ import Navbar from "@/components/Navbar";
 import BlogHeader from "@/components/blog/BlogHeader";
 import Footer from "@/components/Footer";
 import BlogNav from "@/components/blog/BlogNav";
-import { Montserrat } from "next/font/google";
+// import { Montserrat } from "next/font/google";
 import { Metadata } from "next";
 
-const montserrat = Montserrat({
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-  display: "swap",
-  fallback: ["Arial", "sans-serif"],
-});
+// const montserrat = Montserrat({
+//   weight: ["100","200", "300", "400", "500", "600", "700", "800"],
+//   subsets: ["latin"],
+//   display: "swap",
+//   fallback: ["Arial", "sans-serif"],
+// });
 
 export const metadata: Metadata = {
   title: " Zikoro Blog",
@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className={`${montserrat.className} `}>
+    <section className="">
       <Navbar />
       <BlogHeader />
       <BlogNav />
