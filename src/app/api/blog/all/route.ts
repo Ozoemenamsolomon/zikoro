@@ -4,12 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
     const supabase = createRouteHandlerClient({ cookies });
+  
     if (req.method === "GET") {
       try {
-        const { data, error, status } = await supabase
-        .from('eventPhotos')
+        const { data, error, } = await supabase
+        .from('blog')
         .select()
-        .eq('photoStatus', 'rejected')
   
         if (error) throw error;
   

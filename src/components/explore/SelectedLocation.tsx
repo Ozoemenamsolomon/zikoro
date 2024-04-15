@@ -4,8 +4,8 @@ import Image from "next/image";
 import { Calendar, LocationIcon1 } from "@/constants/icons";
 import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 
-type FeaturedEventProps = {
-  id: string;
+type SelectedLocationProps = {
+  id: number;
   eventPoster: string;
   eventTitle: string;
   eventCity: string;
@@ -20,7 +20,7 @@ interface Price {
   price: number;
 }
 
-export default function FeaturedEvent({
+export default function SelectedLocation({
   id,
   eventPoster,
   eventTitle,
@@ -30,7 +30,7 @@ export default function FeaturedEvent({
   pricing,
   pricingCurrency,
   startDateTime,
-}: FeaturedEventProps) {
+}: SelectedLocationProps) {
   //extract the lowest price in the  array of prices.
   function getLowestPrice(prices: Price[]): number | string {
     if (!prices || prices.length === 0) {
@@ -51,7 +51,7 @@ export default function FeaturedEvent({
   const [lowestPrice, setLowestPrice] = useState<number | string>("Loading...");
   const [date, setDate] = useState<string | null>(null);
 
-  // Extracting the date only
+  // Extracting the date portion
   function extractDate(dateTimeString: string): string {
     try {
       const date = new Date(dateTimeString);
@@ -65,16 +65,18 @@ export default function FeaturedEvent({
     }
   }
 
-  //function that shows the event details
-  function goToEvent() {
-    window.open(`/live-events/${id}`, "_blank");
-  }
-
+  //use Effect
   useEffect(() => {
     setLowestPrice(getLowestPrice(pricing));
     const extractedDate = extractDate(startDateTime);
     setDate(extractedDate);
+    console.log(eventPoster);
   }, []);
+
+  //function that shows the event details
+  function goToEvent() {
+    window.open(`/live-events/${id}`, "_blank");
+  }
 
   return (
     <div className="cursor-pointer" onClick={goToEvent}>

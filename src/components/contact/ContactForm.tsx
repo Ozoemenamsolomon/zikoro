@@ -276,31 +276,6 @@ export default function ContactForm() {
   const submitForm = async (e: any) => {
     e.preventDefault();
     try {
-      //   const { data, error } = await supabase
-      //     .from("contactForm")
-      //     .insert([formData]);
-      //   if (error) {
-      //     throw error;
-      //   }
-      //   toast.success("Submitted Successfully:");
-      //   // Optionally, reset form fields after successful submission
-      //   setFormData({
-      //     firstName: "",
-      //     lastName: "",
-      //     city: "",
-      //     country: "",
-      //     email: "",
-      //     phoneNumber: "",
-      //     annualEvents: "",
-      //     attendees: "",
-      //     industry: "",
-      //     comments: "",
-      //   });
-      // } catch (error) {
-      //   toast.error(`Error submitting contact form: ${error}`);
-      //   console.log(`Error submitting contact form: ${error}`);
-      // }
-
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
@@ -335,7 +310,7 @@ export default function ContactForm() {
   return (
     <div className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end mt-28">
       <div className="max-w-5xl mx-auto pt-24 pb-24 ">
-        <div className="border-[1px]  border-white mx-3 lg:mx-0 py-7 px-2 lg:px-8 rounded-md lg:rounded-lg ">
+        <div className="border-[1px] border-white mx-3 lg:mx-0 py-7 px-2 lg:px-8 rounded-md lg:rounded-lg ">
           <form
             action=""
             method="post"

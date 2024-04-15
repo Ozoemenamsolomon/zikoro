@@ -1,14 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import FeaturedEvent from "./FeaturedEvent";
-import { RightArrow } from "@/constants/icons";
+import SelectedLocation from "./SelectedLocation";
+import { RightArrow, LocationIcon1 } from "@/constants/icons";
 import { useRouter } from "next/navigation";
 
-export default function FeaturedEventList() {
+export default function SelectedLocationList() {
   const router = useRouter();
 
-  type DBFeaturedEvent = {
-    id: string;
+  type DBSelectedLocation = {
+    id: number;
     eventPoster: string;
     eventTitle: string;
     eventCity: string;
@@ -20,12 +20,12 @@ export default function FeaturedEventList() {
   };
 
   //fetch events from database
-  const [eventData, setEventData] = useState<DBFeaturedEvent[] | undefined>(
+  const [eventData, setEventData] = useState<DBSelectedLocation[] | undefined>(
     undefined
   );
 
   async function fetchEventFeautured() {
-    fetch("/api/explore", {
+    fetch("/api/explore?eventCity=lagos", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -39,14 +39,15 @@ export default function FeaturedEventList() {
   useEffect(() => {
     fetchEventFeautured();
   }, []);
-  
+
   return (
-    <div className="mt-[100px] max-w-6xl mx-auto px-3 lg:px-0">
+    <div className="mt-[150px] max-w-6xl mx-auto px-3 lg:px-0">
       {/* header */}
       <div className="flex justify-between">
-        <p className="font-semibold text-[20px] lg:text-[32px]">
-          Featured Events
-        </p>
+        <div className="flex items-center gap-x-1 lg:gap-x-3">
+          <LocationIcon1 />
+          <p className="font-semibold text-[20px] lg:text-[32px]">Lagos</p>
+        </div>
         <div
           onClick={() => router.push("/explore/featured-events")}
           className="hidden lg:flex gap-x-4 cursor-pointer items-center"
@@ -58,10 +59,10 @@ export default function FeaturedEventList() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-5 lg:gap-y-0 mt-[50px] bg-white ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-0 md:gap-x-4 lg:gap-x-4 gap-y-5 lg:gap-y-0 mt-[10px] lg:mt-[50px] bg-white  ">
         {eventData?.length &&
           eventData?.map((event, index) => (
-            <FeaturedEvent
+            <SelectedLocation
               key={event.id}
               id = {event.id}
               eventPoster={event.eventPoster}
@@ -78,7 +79,7 @@ export default function FeaturedEventList() {
 
       <div
         onClick={() => router.push("/explore/featured-events")}
-        className="flex lg:hidden mt-[30px] justify-end gap-x-4 cursor-pointer items-center"
+        className=" justify-end mt-[30px] flex lg:hidden gap-x-4 cursor-pointer items-center"
       >
         <p className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-xl font-semibold">
           See All
