@@ -7,7 +7,9 @@ export async function GET(req: any) {
 
   if (req.method === "GET") {
     // Get the query parameters from the request
-    const { eventCity } = req.query || { };
+    const { searchParams } = new URL(req.url);
+    const eventCity = searchParams.get("eventCity");    
+
     try {
       let eventsQuery = supabase
         .from("events")
