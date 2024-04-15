@@ -17,7 +17,7 @@ export async function GET(req: any) {
 
       // If query parameters are provided, apply filters
       if (eventCity) {
-        eventsQuery = eventsQuery.gte("eventCity", eventCity);
+        eventsQuery = eventsQuery.eq("eventCity", eventCity);
       }
 
       // Fetch data from Superbase table 'events' based on query parameters
