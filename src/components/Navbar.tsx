@@ -104,7 +104,7 @@ export default function Navbar() {
                   onClick={() => router.push("/home")}
                   className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
                 >
-                  Register
+                  Sign up
                 </button>
 
                 <button
@@ -151,7 +151,7 @@ export default function Navbar() {
                 onClick={() => router.push("/home")}
                 className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white"
               >
-                Register
+                Sign up
               </button>
 
               <button

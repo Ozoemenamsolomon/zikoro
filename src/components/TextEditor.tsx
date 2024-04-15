@@ -6,14 +6,17 @@ import "react-quill/dist/quill.snow.css";
 // import { Quill } from "react-quill";
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 
+
 export default function TextEditor({
   onChange,
   defaultValue,
   placeholder,
+  isBlog,
 }: {
   onChange: (value: string) => void;
   defaultValue?: string;
   placeholder?: string;
+  isBlog ?:boolean
 }) {
   const CustomUndo = () => (
     <svg viewBox="0 0 18 18">
@@ -53,7 +56,38 @@ export default function TextEditor({
           },
         ],
         //  [{ align: [] }],
-        ["link"], // "image", "video"
+        ["link"], //  "video"
+        ["clean"],
+        ["undo", "redo"],
+
+        // ["imageResize", "imageTextAlternative"],
+      ],
+    },
+    history: {
+      delay: 500,
+      maxStack: 100,
+      userOnly: true,
+    },
+  };
+
+  const quillBlogModules = {
+    toolbar: {
+      container: [
+        ["bold", "italic", "underline", "strike"],
+        ["blockquote"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ script: "sub" }, { script: "super" }],
+        [{ indent: "-1" }, { indent: "+1" }],
+        //   [{ direction: "rtl" }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [{ color: [] }, { background: [] }],
+        [
+          {
+            font: [],
+          },
+        ],
+        //  [{ align: [] }],
+        ["link", "image",], //  "video"
         ["clean"],
         ["undo", "redo"],
 
@@ -107,7 +141,7 @@ export default function TextEditor({
       onChange={(e) => {
         handleEditorChange(e);
       }}
-      modules={quillModules}
+      modules={isBlog? quillBlogModules : quillModules }
       formats={quillFormats}
       theme="snow"
       placeholder={placeholder || "Enter description"}

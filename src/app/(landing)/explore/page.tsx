@@ -3,7 +3,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EventHeader from "@/components/explore/EventHeader";
-import EventList from "@/components/explore/EventList";
+import EventList from "@/components/explore/SelectedLocationList";
 import FeaturedEventList from "@/components/explore/FeaturedEventList";
 import CitiesEventList from "@/components/explore/CitiesEventList";
 import CategoryEventList from "@/components/explore/CategoryEventsList";
