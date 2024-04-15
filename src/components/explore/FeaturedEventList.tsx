@@ -9,7 +9,7 @@ export default function FeaturedEventList() {
 
   type DBFeaturedEvent = {
     id: string;
-    eventPoster: [];
+    eventPoster: string;
     eventTitle: string;
     eventCity: string;
     eventCountry: string;

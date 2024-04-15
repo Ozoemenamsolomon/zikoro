@@ -9,7 +9,7 @@ export default function SelectedLocationList() {
 
   type DBSelectedLocation = {
     id: number;
-    eventPoster: [];
+    eventPoster: string;
     eventTitle: string;
     eventCity: string;
     eventCountry: string;
