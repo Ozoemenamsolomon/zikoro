@@ -207,8 +207,7 @@ function EventCard({
             </div>
           </div>
         </div>
-        {!query ||
-          (query === "review" && (
+        {query === "review" && (
             <div className="py-4 w-full border-t  p-4 flex items-center gap-x-2">
               <Button
                 // type="submit"
@@ -230,7 +229,7 @@ function EventCard({
                 <p>Publish</p>
               </Button>
             </div>
-          ))}
+          )}
         {query === "published" && (
           <div className="py-4 w-full border-t  p-4 flex items-center gap-x-2">
             <p className="text-gray-500">{`Published By ${publisher ?? ""}`}</p>

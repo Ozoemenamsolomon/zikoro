@@ -562,7 +562,8 @@ export function useBookingEvent() {
     eventTransactionRef: string,
     values: z.infer<typeof eventBookingValidationSchema>,
     eventId?: number,
-    attendants?: string | null
+    attendants?: string | null,
+    ticketType?: string
   ) {
     const { attendeeApplication } = values;
 
@@ -572,6 +573,7 @@ export function useBookingEvent() {
           ...attendee,
           eventId,
           attendeeType: [attendants],
+          ticketType,
           registrationDate: new Date(),
           eventRegistrationRef: eventTransactionRef,
           userEmail: userData?.userEmail,
@@ -803,34 +805,6 @@ export function useRedeemDiscountCode() {
     minAttendees,
     discountAmount,
     discountPercentage,
-  };
-}
-
-export function useFetchAttendees(id: string) {
-  const [attendees, setAttendees] = useState<any[]>([]);
-
-  useEffect(() => {
-    fetchData();
-  }, [id]);
-  // Fetch the attendees for an event
-  async function fetchData() {
-    try {
-      const { data, error: fetchError } = await supabase
-        .from("attendees")
-        .select("*")
-        .eq("eventId", id);
-
-      if (fetchError) {
-        return null;
-      }
-
-      setAttendees(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  return {
-    attendees,
   };
 }
 
@@ -1084,4 +1058,3 @@ export function useAttenedeeEvents() {
     loading,
   };
 }
-

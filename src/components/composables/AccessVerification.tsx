@@ -26,9 +26,6 @@ export function AccessVerification({
 
   useEffect(() => {
     if (data && !singleEventLoading) {
-      // if (timeRemaining > 0 && timeRemaining < remainingTime) return;
-      //   const eventDateString = new Date(data?.startDateTime)?.toISOString();
-      //  const eventDateTime = new Date(eventDateString);
       let daysBeforeEventDateTime: Date | undefined;
       if (data?.eventAppAccess !== "now") {
         daysBeforeEventDateTime = new Date(data?.eventAppAccess);
@@ -88,9 +85,10 @@ export function AccessVerification({
 
         return () => clearInterval(interval);
       } else {
-        setNotRegistered(true);
+        if (!isPresent) setNotRegistered(true);
         // router.push("/login");
-
+        // pls remove after all the event have app access date on creation
+        if (isPresent) setLoading(false);
         return () => clearInterval(interval);
       }
 
@@ -110,54 +108,52 @@ export function AccessVerification({
   const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
   return (
-    <Portal>
-      <div
-        className={cn(
-          "w-full h-full inset-0 backdrop-blur-2xl fixed z-[5000] hidden",
-          loading && "block"
-        )}
-      >
-        {isLoadedAll && timeRemaining > 0 ? (
-          <div
-            className={cn(
-              " text-xs sm:text-sm items-center justify-center flex-col gap-y-3 m-auto absolute inset-0 h-fit w-fit flex"
-            )}
-          >
-            <p className="text-sm sm:text-lg font-light tracking-[0.5em]">
-              EVENT WILL BE ACCESSIBLE IN
-            </p>
-            <div className="flex items-center gap-x-3 sm:gap-x-4">
-              <div className="flex flex-col items-center justify-center">
-                <p className="font-semibold text-lg sm:text-3xl">{days}</p>
-                <p>Days</p>
-              </div>
-              <div className="flex flex-col items-center justify-center">
-                <p className="font-semibold text-lg sm:text-3xl">{hours}</p>
-                <p>Hours</p>
-              </div>
-              <div className="flex flex-col items-center justify-center">
-                <p className="font-semibold text-lg sm:text-3xl">{minutes}</p>
-                <p>Minutes</p>
-              </div>
-              <div className="flex flex-col items-center justify-center">
-                <p className="font-semibold text-lg sm:text-3xl">{seconds}</p>
-                <p>Seconds</p>
-              </div>
+    <div
+      className={cn(
+        "w-full h-full inset-0 backdrop-blur-2xl fixed z-[5000] hidden",
+        loading && "block"
+      )}
+    >
+      {isLoadedAll && timeRemaining > 0 ? (
+        <div
+          className={cn(
+            " text-xs sm:text-sm items-center justify-center flex-col gap-y-3 m-auto absolute inset-0 h-fit w-fit flex"
+          )}
+        >
+          <p className="text-sm sm:text-lg font-light tracking-[0.5em]">
+            EVENT WILL BE ACCESSIBLE IN
+          </p>
+          <div className="flex items-center gap-x-3 sm:gap-x-4">
+            <div className="flex flex-col items-center justify-center">
+              <p className="font-semibold text-lg sm:text-3xl">{days}</p>
+              <p>Days</p>
+            </div>
+            <div className="flex flex-col items-center justify-center">
+              <p className="font-semibold text-lg sm:text-3xl">{hours}</p>
+              <p>Hours</p>
+            </div>
+            <div className="flex flex-col items-center justify-center">
+              <p className="font-semibold text-lg sm:text-3xl">{minutes}</p>
+              <p>Minutes</p>
+            </div>
+            <div className="flex flex-col items-center justify-center">
+              <p className="font-semibold text-lg sm:text-3xl">{seconds}</p>
+              <p>Seconds</p>
             </div>
           </div>
-        ) : notRegistered ? (
-          <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
-            <p>User is not a registered attendee for this event</p>
-          </div>
-        ) : (
-          <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
-            <LoaderAlt size={30} className="animate-spin text-basePrimary" />
-            <p className="text-[13px] sm:text-sm">
-              Hold on. Wait a minute. Sth ain't right.
-            </p>
-          </div>
-        )}
-      </div>
-    </Portal>
+        </div>
+      ) : notRegistered ? (
+        <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
+          <p>User is not a registered attendee for this event</p>
+        </div>
+      ) : (
+        <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
+          <LoaderAlt size={30} className="animate-spin text-basePrimary" />
+          <p className="text-[13px] sm:text-sm">
+            Hold on. Wait a minute. Sth ain't right.
+          </p>
+        </div>
+      )}
+    </div>
   );
 }

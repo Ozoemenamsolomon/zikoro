@@ -21,7 +21,7 @@ export function AllDatas({
     <div
       role="button"
       onClick={onClose}
-      className="w-full h-full inset-0 z-[500] bg-white/30 fixed"
+      className="w-full h-full inset-0 z-[500] bg-white/50 fixed"
     >
       <div
         onClick={(e) => {

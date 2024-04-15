@@ -14,12 +14,12 @@ export function BoothStaffWidget({
   email,
   isAddingBoothStaff,
 }: {
-  image: string;
+  image?: string | null;
   name: string;
-  profession: string;
+  profession?: string | null;
   email: string;
   remove?: (email: string) => void;
-  company: string;
+  company?: string | null;
   isAddingBoothStaff?: boolean;
 }) {
   return (

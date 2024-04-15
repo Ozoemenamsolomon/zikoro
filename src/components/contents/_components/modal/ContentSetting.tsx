@@ -35,6 +35,7 @@ export function ContentSetting({
   const { data }: { data: Event | null; loading: boolean } =
     useFetchSingleEvent(eventId);
   const form = useForm<FormValue>({});
+  
   function formatDate(date: Date): string {
     return date.toISOString();
   }

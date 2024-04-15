@@ -11,7 +11,7 @@ import Slider from "react-slick";
 import Image from "next/image";
 
 export function SingleEventHome({ eventId }: { eventId: string }) {
-  const { data } = useFetchSingleEvent(eventId);
+  const { data, loading } = useFetchSingleEvent(eventId);
   const [active, setActive] = useState(1);
   const { data: partnersData } = useFetchPartners(eventId);
 
@@ -33,7 +33,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
       <div className="w-full grid grid-cols-1 md:grid-cols-7 items-center sm:items-start ">
         <div className="w-full col-span-full md:col-span-4 flex flex-col gap-y-4  items-start justify-start border-r">
           <div className={cn("w-full", active > 1 && "hidden sm:block")}>
-            <EventSchedule event={data} />
+            <EventSchedule event={data} loading={loading} />
           </div>
           {Array.isArray(partnersData) && partnersData?.length > 0 && (
             <div
@@ -52,13 +52,17 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
                 >
                   {partnersData.map(({ companyLogo }) => (
                     <div className="w-full h-[80px] relative ">
-                      <Image
-                        className="w-[100px] h-[40px] object-contain flex items-center inset-0 justify-center m-auto absolute"
-                        src={companyLogo}
-                        alt="logo"
-                        width={300}
-                        height={200}
-                      />
+                      {companyLogo ? (
+                        <Image
+                          className="w-[100px] h-[40px] object-contain flex items-center inset-0 justify-center m-auto absolute"
+                          src={companyLogo}
+                          alt="logo"
+                          width={300}
+                          height={200}
+                        />
+                      ) : (
+                        <div className="w-[100px] h-[40px] animate-pulse bg-gray-200"></div>
+                      )}
                     </div>
                   ))}
                 </Slider>
