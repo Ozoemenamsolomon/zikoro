@@ -17,7 +17,7 @@ type BlogPostProps = {
 };
 
 
-export default function PostArticle({id, title, createdAt, category, status, statusDetails, readingDuration, content, views, shares}: BlogPostProps) {
+export default function PostArticle() {
 
   // Extracting the date only
   function extractDate(dateTimeString: string): string {
@@ -36,10 +36,10 @@ export default function PostArticle({id, title, createdAt, category, status, sta
 
   const [date, setDate] = useState<string | null>(null);
 
-  useEffect(() => {
-    const extractedDate = extractDate(createdAt)
-    setDate(extractedDate);
-  }, []);
+  // useEffect(() => {
+  //   const extractedDate = extractDate(createdAt)
+  //   setDate(extractedDate);
+  // }, []);
 
 
   return (
@@ -65,10 +65,10 @@ export default function PostArticle({id, title, createdAt, category, status, sta
           Product Updates
         </p>
         <p className="capitalize font-semibold text-base lg:text-2xl ">
-          {title}
+          Events Planning And Management In Nigeria
         </p>
         <div className="flex uppercase mt-4 text-[12px] lg:text-[15px] font-normal ">
-          <p>{date} {" - "} </p>
+          <p>March 23 2024 {" - "} </p>
           <p>3 Min Read</p>
         </div>
       </div>
