@@ -12,7 +12,7 @@ import FeaturedEvent from "@/components/explore/FeaturedEvent";
 
 type DBFeaturedEvent = {
   id: string,
-  eventPoster: [];
+  eventPoster:string;
   eventTitle: string;
   eventCity: string;
   eventCountry: string;

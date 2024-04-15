@@ -8,8 +8,6 @@ export async function GET(req: any) {
   if (req.method === "GET") {
     // Get the query parameters from the request
     const { eventCity } = req.query || { };
-            console.log(eventCity)
-
     try {
       let eventsQuery = supabase
         .from("events")
@@ -19,7 +17,6 @@ export async function GET(req: any) {
 
       // If query parameters are provided, apply filters
       if (eventCity) {
-        console.log(eventCity)
         eventsQuery = eventsQuery.gte("eventCity", eventCity);
       }
 

@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Calendar, LocationIcon1 } from "@/constants/icons";
+import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 
 type SelectedLocationProps = {
   id: number;
-  eventPoster: [];
+  eventPoster: string;
   eventTitle: string;
   eventCity: string;
   eventCountry: string;
@@ -48,6 +49,7 @@ export default function SelectedLocation({
   }
 
   const [lowestPrice, setLowestPrice] = useState<number | string>("Loading...");
+  const [date, setDate] = useState<string | null>(null);
 
   // Extracting the date portion
   function extractDate(dateTimeString: string): string {
@@ -62,13 +64,13 @@ export default function SelectedLocation({
       return "Invalid Date";
     }
   }
-  const [date, setDate] = useState<string | null>(null);
 
   //use Effect
   useEffect(() => {
     setLowestPrice(getLowestPrice(pricing));
     const extractedDate = extractDate(startDateTime);
     setDate(extractedDate);
+    console.log(eventPoster);
   }, []);
 
   //function that shows the event details
@@ -82,8 +84,11 @@ export default function SelectedLocation({
       <div className="relative ">
         <Image
           className="object-cover w-full"
-          // src={`${eventPoster ? {eventPoster.toString()} :'/event.png'}`}
-          src="/postImage2.png"
+          src={
+            eventPoster && eventPoster.includes("/cloudinary")
+              ? eventPoster
+              : "/postImage2.png"
+          }
           alt=""
           width={294}
           height={264}
@@ -111,7 +116,10 @@ export default function SelectedLocation({
 
         <div className="border-t-[1px] border-gray-200 pt-8 flex justify-between pb-[15px]">
           <p className="text-base font-normal">starting at</p>
-          <p className="text-xl font-medium">₦{lowestPrice}</p>
+          <p className="text-xl font-medium">
+            {convertCurrencyCodeToSymbol(pricingCurrency)}
+            {lowestPrice}
+          </p>
         </div>
       </div>
     </div>
