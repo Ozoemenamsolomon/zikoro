@@ -70,8 +70,6 @@ export function AccessVerification({
         ({ email, eventId }) => eventId === id && email === user?.userEmail
       );
 
-  
-
       if (isEventIdPresent) {
         // user is a team member
         setLoading(false);
@@ -89,7 +87,8 @@ export function AccessVerification({
       } else {
         if (!isPresent) setNotRegistered(true);
         // router.push("/login");
-
+        // pls remove after all the event have app access date on creation
+        if (isPresent) setLoading(false);
         return () => clearInterval(interval);
       }
 

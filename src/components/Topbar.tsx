@@ -2,27 +2,25 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {useMemo, useEffect, useState} from "react";
-import {getCookie, useGetUserHomePageEvents} from "@/hooks";
+import { useMemo, useEffect, useState } from "react";
+import { getCookie, useGetUserHomePageEvents } from "@/hooks";
 import { AccessVerification } from "./composables";
 
 const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
   const pathname = usePathname();
-  const user = getCookie("user")
+  const user = getCookie("user");
   const { events, loading: eventLoading } = useGetUserHomePageEvents();
-  const [isIdPresent, setIsIdPresent] = useState(false)
+  const [isIdPresent, setIsIdPresent] = useState(false);
   //const currentLink = pathnames[pathnames.length - 2];
 
   useEffect(() => {
     if (events && !eventLoading) {
-        //checked if the eventid is present in the event array
-        const isEventIdPresent = events?.some(
-          ({ id }) => String(id) === eventId
-        );
-        
-        setIsIdPresent(isEventIdPresent)
+      //checked if the eventid is present in the event array
+      const isEventIdPresent = events?.some(({ id }) => String(id) === eventId);
+
+      setIsIdPresent(isEventIdPresent);
     }
-  },[events, eventLoading])
+  }, [events, eventLoading]);
   const links = [
     {
       name: "Reception",
@@ -63,42 +61,44 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
     },
   ];
 
-
   const reformedLink = useMemo(() => {
-      return links.filter((link) => {
-        if (!user || !user?.userEmail || !isIdPresent) {
-          return String(link?.name) !== "Contents"
-        }
+    return links.filter((link) => {
+      if (!user || !user?.userEmail || !isIdPresent) {
+        return String(link?.name) !== "Contents";
+      }
 
-        return true
-      })
-  },[user, isIdPresent])
+      return true;
+    });
+  }, [user, isIdPresent]);
 
   return (
     <>
-        <nav className="w-full overflow-x-auto no-scrollbar">
-      <div className="bg-white min-w-[900px] px-4 pt-2 h-max border-b">
-        <ul className="flex justify-between text-gray-700">
-          {reformedLink.map(({ name, href }) => {
-            return (
-              <li
-                className={`pb-1 text-xs md:text-sm ${
-                  pathname.includes(`${href.split("/")[1]}`)
-                    ? "text-basePrimary border-b-2 border-basePrimary font-medium"
-                    : ""
-                }`}
-              >
-                <Link href={`/event/${href}`}>{name}</Link>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </nav>
+      <nav className="w-full overflow-x-auto no-scrollbar">
+        <div className="bg-white min-w-[900px] px-4 pt-2 h-max border-b">
+          <ul className="flex justify-between text-gray-700">
+            {reformedLink.map(({ name, href }) => {
+              return (
+                <li
+                  className={`pb-1 text-xs md:text-sm ${
+                    pathname.includes(`${href.split("/")[1]}`)
+                      ? "text-basePrimary border-b-2 border-basePrimary font-medium"
+                      : ""
+                  }`}
+                >
+                  <Link href={`/event/${href}`}>{name}</Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </nav>
 
-  {/*  <AccessVerification eventLoading={eventLoading}  isEventIdPresent={isIdPresent} id={eventId}/> */}
+      <AccessVerification
+        eventLoading={eventLoading}
+        isEventIdPresent={isIdPresent}
+        id={eventId}
+      />
     </>
-
   );
 };
 
