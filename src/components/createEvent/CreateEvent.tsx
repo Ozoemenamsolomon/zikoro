@@ -8,7 +8,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
-import {  useMemo } from "react";
+import { useMemo } from "react";
 import { COUNTRY_CODE } from "@/utils";
 import { useCreateEvent, getCookie } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -21,14 +21,18 @@ export default function CreateEvent({
 }) {
   const { createEvent, loading } = useCreateEvent();
   const { user } = useUser();
-  
 
   const form = useForm<z.infer<typeof newEventSchema>>({
     resolver: zodResolver(newEventSchema),
   });
 
+  function formatDate(date: Date): string {
+    return date.toISOString();
+  }
+
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
     const userData = getCookie("user");
+    const today = new Date();
     const eventAlias = uuidv4().replace(/-/g, "").substring(0, 20);
     await createEvent({
       ...values,
@@ -38,8 +42,15 @@ export default function CreateEvent({
       createdBy: userData?.userEmail,
       published: false,
       eventStatus: "new",
+      eventAppAccess: formatDate(
+        new Date(today.getTime() - 24 * 60 * 60 * 1000)
+      ),
       eventStatusDetails: [
-        { createdAt: new Date().toISOString(), status: "new", user: userData?.userEmail },
+        {
+          createdAt: today.toISOString(),
+          status: "new",
+          user: userData?.userEmail,
+        },
       ],
     });
   }

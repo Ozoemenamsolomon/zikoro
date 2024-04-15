@@ -96,7 +96,7 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
       </div>
     </nav>
 
-    <AccessVerification eventLoading={eventLoading}  isEventIdPresent={isIdPresent} id={eventId}/>
+  {/*  <AccessVerification eventLoading={eventLoading}  isEventIdPresent={isIdPresent} id={eventId}/> */}
     </>
 
   );

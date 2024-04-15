@@ -57,7 +57,7 @@ function SideNav({ close, isNav }: { isNav: boolean; close: () => void }) {
               <li key={name} className="w-full">
                 <Link
                   href={`/admin/${href}`}
-                  target={href === "/live-events" ? "blank" : ""}
+                 
                   className={cn(
                     "p-3 pr-4 pl-4 flex  items-center gap-x-2  w-full",
                     pathname.includes(href) &&

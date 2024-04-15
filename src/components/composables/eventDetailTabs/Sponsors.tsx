@@ -33,7 +33,7 @@ export function Sponsors({
       <div className="  w-full grid grid-cols-1 sm:grid-cols-2 gap-2 items-start justify-start pb-4 px-4 sm:pb-6 sm:px-6">
         {loading && (
           <div className="w-full col-span-full h-[300px] flex items-center justify-center">
-            <LoaderAlt size={50} className="animate-spin" />
+            <LoaderAlt size={30} className="animate-spin" />
           </div>
         )}
         {!loading && Array.isArray(data) && data?.length === 0 && (

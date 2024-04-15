@@ -31,12 +31,11 @@ import { cn } from "@/lib";
 import { AddIndustry } from "..";
 import {
   useAddPartners,
-  useFetchAttendees,
   useFetchCreatedEventIndustries,
-  useFetchSingleEvent,
+  useGetEventAttendees,
 } from "@/hooks";
 import { BoothStaffWidget } from "../../sponsors/_components";
-import { PartnerIndustry } from "@/types";
+import { PartnerIndustry, TAttendee } from "@/types";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import {getCookie} from "@/hooks"
 
@@ -52,13 +51,13 @@ export function AddPartners({
   const [active, setActive] = useState(1);
   const currentEvent = getCookie("currentEvent")
   const { loading, addPartners } = useAddPartners();
-  const { attendees } = useFetchAttendees(eventId);
+  const { attendees } = useGetEventAttendees(eventId);
   const { data: eventData, refetch } = useFetchCreatedEventIndustries(eventId);
 
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
     "+234"
   );
-  const [selectedAttendees, setSelectedAttendees] = useState<any[]>([]);
+  const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
   const [whatsappCountryCode, setWhatsAppCountryCode] = useState<
     string | undefined
   >("+234");
@@ -76,16 +75,13 @@ export function AddPartners({
   const country = form.watch("country");
   const selectedBoothStaff = form.watch("boothStaff");
 
-  // memoized to minimize re-rendering
-  const attendeesEmail = useMemo(() => {
-    return selectedAttendees.map(({ email }) => email);
-  }, [selectedBoothStaff]);
+
 
   // adding boothStaff
   useEffect(() => {
     if (selectedBoothStaff) {
       // check if boothStaff has been selected
-      const isBoothStaffPresent = attendeesEmail.includes(selectedBoothStaff);
+      const isBoothStaffPresent = selectedAttendees?.some(({email} ) => email === selectedBoothStaff )
 
       // return if the staff is present
       if (isBoothStaffPresent) return;

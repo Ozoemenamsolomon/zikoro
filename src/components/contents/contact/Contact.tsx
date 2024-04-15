@@ -174,7 +174,7 @@ function Contact({ eventId }: { eventId: string }) {
                 )}
               />}
 
-              <div className="w-full grid grid-cols-2 items-center gap-4">
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-4">
                 <FormField
                   control={form.control}
                   name="eventPhoneNumber"

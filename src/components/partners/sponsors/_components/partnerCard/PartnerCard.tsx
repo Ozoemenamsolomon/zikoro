@@ -37,11 +37,11 @@ export function PartnerCard({ sponsor }: { sponsor: TExPartner }) {
       />
       <div className="w-full px-4 py-8  items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
         <div className="font-semibold flex capitalize flex-wrap text-black text-xl">
-          {sponsor.companyName}
+          {sponsor.companyName ?? ""}
         </div>
 
         <div className="flex flex-wrap  line-clamp text-sm w-full  items-start justify-start leading-6">
-          {sponsor.description}
+          {sponsor.description ?? ""}
         </div>
 
         {/**  */}
@@ -57,7 +57,7 @@ export function PartnerCard({ sponsor }: { sponsor: TExPartner }) {
         <div className="flex items-center gap-x-3">
           <div className="flex items-center gap-x-2">
             <Location size={16} className="text-[#717171]" />
-            <p>{`${sponsor.city}, ${sponsor.country}`}</p>
+            <p>{`${sponsor.city ?? "City"}, ${sponsor.country ?? "Country"}`}</p>
           </div>
           {sponsor.industry !== undefined && (
             <div className="flex items-center gap-x-2">

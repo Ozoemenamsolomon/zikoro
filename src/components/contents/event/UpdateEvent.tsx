@@ -325,7 +325,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                       </InputOffsetLabel>
                     )}
                   />
-                  <div className=" gap-4 w-full grid grid-cols-2 items-center relative">
+                  <div className=" gap-4 w-full grid grid-cols-1 sm:grid-cols-2 items-center relative">
                     <FormField
                       control={form.control}
                       name="startDateTime"
@@ -723,7 +723,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
           </Form>
         ) : (
           <div className="w-full h-[300px] flex items-center justify-center ">
-            <LoaderAlt size={48} className="animate-spin" />
+            <LoaderAlt size={30} className="animate-spin" />
           </div>
         )}
         {isShowPublishModal && (

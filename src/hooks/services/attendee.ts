@@ -5,7 +5,6 @@ import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
 
-
 export const useCreateAttendee = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -346,7 +345,6 @@ export const useGetAttendeesWithNotes = () => {
   return { attendees, isLoading, error, getAttendees };
 };
 
-
 export const useGetAllAttendees = () => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -371,4 +369,37 @@ export const useGetAllAttendees = () => {
   }, []);
 
   return { attendees, isLoading, error, getAttendees };
+};
+
+export const useGetEventAttendees = (eventId: string) => {
+  const [attendees, setAttendees] = useState<TAttendee[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const getAttendees = async () => {
+    try {
+      setLoading(true);
+
+      const { data, status } = await getRequest<TAttendee[]>({
+        endpoint: `/attendees/event/${eventId}`,
+      });
+
+      setLoading(false);
+
+      //
+      return setAttendees(data.data);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        description: error?.response?.data?.error,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendees();
+  }, []);
+
+  return { attendees, isLoading, getAttendees };
 };
