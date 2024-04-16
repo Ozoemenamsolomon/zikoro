@@ -25,7 +25,7 @@ export default function SelectedLocationList() {
   );
 
   async function fetchEventFeautured() {
-    fetch("/api/explore?eventCity=lagos", {
+    fetch("/api/explore?eventCity=Lagos", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export default function SelectedLocationList() {
           <p className="font-semibold text-[20px] lg:text-[32px]">Lagos</p>
         </div>
         <div
-          onClick={() => router.push("/explore/featured-events")}
+          // onClick={() => router.push("/explore/featured-events")}
           className="hidden lg:flex gap-x-4 cursor-pointer items-center"
         >
           <p className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-xl font-semibold">
