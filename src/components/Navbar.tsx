@@ -68,7 +68,7 @@ export default function Navbar() {
       <nav
         className={` p-4 ${
           scrolling ? "bg-white" : "bg-white"
-        } border-b-[2px] border-indigo-500 text-base  `}
+        } text-base  `}
       >
         <div className=" flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
           {!isOpen && (
