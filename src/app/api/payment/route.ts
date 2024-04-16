@@ -103,6 +103,8 @@ export async function POST(req: NextRequest) {
         throw error;
       }
 
+      let check = "testing this";
+
       if (status === 204 || status === 200) {
         // To  update the bookedSpot
 
@@ -157,7 +159,7 @@ export async function POST(req: NextRequest) {
           name: string;
           qrCode: string;
         }[] = await Promise.all(resolveAttendees);
-        //  console.log({ registeredAttendees });
+        console.log({ registeredAttendees });
         // sending email
         let nodemailer = require("nodemailer");
         const transporter = nodemailer.createTransport({
@@ -468,18 +470,23 @@ export async function POST(req: NextRequest) {
           await transporter.sendMail(mailData, function (err: any, info: any) {
             if (err) {
               console.log(error);
+              check += " error";
               throw err;
-            } else console.log(info);
+            } else {
+              check += " success";
+              console.log(info);
+              console.log(check);
+            }
           });
+          
+          return NextResponse.json(
+            { msg: "Transaction details updated successfully", check },
+            {
+              status: 200,
+            }
+          );
         }
       }
-
-      return NextResponse.json(
-        { msg: "Transaction details updated successfully" },
-        {
-          status: 200,
-        }
-      );
     } catch (error: any) {
       // console.error(error);
       return NextResponse.json(
