@@ -159,9 +159,9 @@ export async function POST(req: NextRequest) {
           name: string;
           qrCode: string;
         }[] = await Promise.all(resolveAttendees);
-        console.log({ registeredAttendees });
         // sending email
         let nodemailer = require("nodemailer");
+        console.log({ registeredAttendees });
         const transporter = nodemailer.createTransport({
           host: "smtp.zoho.com",
           port: 465,
@@ -173,6 +173,7 @@ export async function POST(req: NextRequest) {
         });
 
         for (let attendee of registeredAttendees) {
+          console.log(attendee);
           const mailData = {
             from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
             to: attendee.email,
@@ -476,21 +477,20 @@ export async function POST(req: NextRequest) {
               check += " success";
               console.log(info);
               console.log(check);
+              return NextResponse.json(
+                { msg: "Transaction details updated successfully", check },
+                {
+                  status: 200,
+                }
+              );
             }
           });
-          
-          return NextResponse.json(
-            { msg: "Transaction details updated successfully", check },
-            {
-              status: 200,
-            }
-          );
         }
       } else {
         throw "an error occured";
       }
     } catch (error: any) {
-      // console.error(error);
+      console.error(error);
       return NextResponse.json(
         {
           error: error.message,
