@@ -88,7 +88,7 @@ export default function CreateEvent({
                 </InputOffsetLabel>
               )}
             />
-            <div className="w-full grid grid-cols-2 items-center gap-2">
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
               <FormField
                 control={form.control}
                 name="startDateTime"
@@ -147,7 +147,7 @@ export default function CreateEvent({
                 </InputOffsetLabel>
               )}
             />
-            <div className="w-full grid grid-cols-2 items-center gap-2">
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
               <FormField
                 control={form.control}
                 name="eventCity"

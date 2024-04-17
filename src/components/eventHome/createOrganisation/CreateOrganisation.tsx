@@ -13,7 +13,7 @@ import * as z from "zod";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { organizationSchema } from "@/schemas";
-import { useCreateOrganisation } from "@/hooks";
+import { useCreateOrganisation, useGetUserOrganizations } from "@/hooks";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 const orgType = ["Private", "Business"];
@@ -24,6 +24,7 @@ export function CreateOrganization({ close }: { close: () => void }) {
     resolver: zodResolver(organizationSchema),
   });
   const { organisation, loading } = useCreateOrganisation();
+  const { getOrganizations } = useGetUserOrganizations()
 
   async function onSubmit(values: z.infer<typeof organizationSchema>) {
     await organisation(values);
@@ -32,6 +33,9 @@ export function CreateOrganization({ close }: { close: () => void }) {
       organizationType: "",
       subscriptionPlan: "",
     });
+    getOrganizations()
+    close()
+
   }
   return (
     <div

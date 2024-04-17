@@ -13,7 +13,7 @@ export const attendeeValidationSchema = z.array(
       .refine((value) => value && /^(\+\d{11,}|\d{11,})$/.test(value), {
         message: "Phone number must be at least 11 digits",
       }),
-    whatsappNumber: z.any()
+   
      
   })
 );

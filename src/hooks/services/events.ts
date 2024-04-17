@@ -133,8 +133,8 @@ export function useCreateOrganisation() {
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        toast({ description: "Organisation created successfully" });
-        window.location.reload();
+        toast.success("Organisation created successfully");
+       
       }
     } catch (error) {}
   }

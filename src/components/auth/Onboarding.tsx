@@ -24,8 +24,7 @@ import {useSearchParams} from "next/navigation"
 export default function Onboarding() {
     const search = useSearchParams()
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
-  const [whatsappCountryCode, setWhatsAppCountryCode] =
-    useState<string>("+234");
+
   const { loading, registration } = useOnboarding();
 
   const form = useForm<z.infer<typeof onboardingSchema>>({
@@ -46,9 +45,7 @@ export default function Onboarding() {
 
     const payload: z.infer<typeof onboardingSchema> = {
       ...values,
-      whatsappNumber: values.whatsappNumber
-        ? whatsappCountryCode + values.whatsappNumber
-        : "",
+     
       phoneNumber: phoneCountryCode + values.phoneNumber,
     };
     await registration(payload, query, createdAt);
@@ -68,7 +65,7 @@ export default function Onboarding() {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex items-start w-full flex-col gap-y-3"
         >
-          <div className="w-full grid grid-cols-2 items-center gap-2">
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
             <FormField
               control={form.control}
               name="firstName"
@@ -99,7 +96,7 @@ export default function Onboarding() {
             />
           </div>
 
-          <div className="w-full grid grid-cols-2 items-center gap-2">
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
             <FormField
               control={form.control}
               name="city"
@@ -130,7 +127,7 @@ export default function Onboarding() {
               )}
             />
           </div>
-          <div className="w-full grid grid-cols-2 items-center gap-4">
+          <div className="w-full grid grid-cols-1 items-center gap-4">
             <FormField
               control={form.control}
               name="phoneNumber"
@@ -141,7 +138,7 @@ export default function Onboarding() {
                   </FormLabel>
                   <input
                     type="text"
-                    className="!mt-0 text-sm absolute top-[35%]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
+                    className="!mt-0 text-sm absolute top-[40%]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
                     value={phoneCountryCode}
                     onChange={(e) => setPhoneCountryCode(e.target.value)}
                   />
@@ -158,32 +155,7 @@ export default function Onboarding() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="whatsappNumber"
-              render={({ field }) => (
-                <FormItem className="relative">
-                  <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-[10px] px-1">
-                    WhatsApp number
-                  </FormLabel>
-                  <input
-                    type="text"
-                    className="!mt-0 text-sm absolute top-[35%] left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
-                    value={whatsappCountryCode}
-                    onChange={(e) => setWhatsAppCountryCode(e.target.value)}
-                  />
-                  <FormControl>
-                    <Input
-                      className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
-                      placeholder="Enter whatsapp number"
-                      {...field}
-                      type="tel"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+       
           </div>
 
           <div className="flex items-center flex-wrap gap-x-2 text-[11px] sm:text-[13px] leading-5 w-full">

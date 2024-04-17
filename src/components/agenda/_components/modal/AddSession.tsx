@@ -7,20 +7,37 @@ import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { useForm } from "react-hook-form";
 import { activityType, sessionType } from "..";
 import { cn } from "@/lib";
-import { useGetEventAttendees } from "@/hooks";
+import { useGetEventAttendees, useFetchPartners } from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
-import { TAttendee } from "@/types";
+import { TAttendee, TPartner } from "@/types";
 
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 
-export function AddSession({ eventId }: { eventId: string }) {
+export function AddSession({ eventId, close }: {close:() => void; eventId: string }) {
   const { attendees } = useGetEventAttendees(eventId);
+  const { data }: { data: TPartner[] } = useFetchPartners(eventId);
   const [chosenModerators, setChosenModerators] = useState<TAttendee[]>([]);
   const [chosenSpeakers, setChosenSpeakers] = useState<TAttendee[]>([]);
+  const [chosenSponsors, setChosenSponsors] = useState<TPartner[]>([]);
   const form = useForm({});
 
   const selectedSpeaker = form.watch("speaker");
   const selectedModerator = form.watch("moderator");
+  const selectedSponsor = form.watch("sponsor");
+
+  // sponsor
+  const sponsors = useMemo(() => {
+    const filtered = data?.filter(({ partnerType }) => {
+      return partnerType === "sponsor";
+    });
+
+    return filtered?.map(({ companyName }) => {
+      return {
+        label: companyName,
+        value: companyName,
+      };
+    });
+  }, [data]);
   // moderators
   const moderators = useMemo(() => {
     const filtered = attendees?.filter(({ ticketType }) => {
@@ -89,6 +106,27 @@ export function AddSession({ eventId }: { eventId: string }) {
     }
   }, [selectedModerator]);
 
+  // adding sponsor
+  useEffect(() => {
+    if (selectedSponsor) {
+      // check if sponsor is already selected
+      const isSponsorAlreadyPresent = chosenSponsors?.some(
+        ({ companyName }) => companyName === selectedSponsor
+      );
+
+      // return if sponsor is already selected
+      if (isSponsorAlreadyPresent) return;
+
+      // get the speaker from the attendees array
+      const presentSponsor = data?.find(
+        ({ companyName }) => companyName === selectedSponsor
+      );
+
+      if (presentSponsor)
+        setChosenSponsors((prev) => [...prev, presentSponsor]);
+    }
+  }, [selectedSponsor]);
+
   // delete a  selected attendees
   function removeSpeaker(email: string) {
     setChosenSpeakers(chosenSpeakers.filter((v) => v.email !== email));
@@ -98,23 +136,33 @@ export function AddSession({ eventId }: { eventId: string }) {
     setChosenModerators(chosenModerators.filter((v) => v.email !== email));
   }
   return (
-    <div className="w-full h-full fixed inset-0 z-[300] bg-black/50">
-      <div className="py-6 px-4 w-[95%] max-w-2xl mx-auto rounded-lg bg-white absolute inset-x-0 mt-36 max-h-[85%] h-fit">
+    <div 
+    onClick={close}
+    role="button"
+
+    className="w-full h-full fixed inset-0 z-[300] bg-black/50">
+      <div 
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      className="py-6 px-4 w-[95%] max-w-2xl m-auto rounded-lg bg-white absolute inset-0 overflow-y-auto max-h-[85%] h-fit">
         <div className="flex mb-4 items-center justify-between w-full">
           <h2 className="font-semibold text-lg sm:text-2xl">Add Session</h2>
-          <Button>
+          <Button
+          onClick={close}
+          >
             <CloseOutline size={22} />
           </Button>
         </div>
 
         <Form {...form}>
-          <form className="flex items-start justify-start gap-y-3 w-full">
+          <form className="flex items-start flex-col justify-start gap-y-4 w-full">
             <div className="flex flex-col w-full items-start justify-start gap-y-1">
               <p className="text-xs text-gray-500 sm:text-[13px]">
                 Select the type of activity you are creating
               </p>
               <div className="w-full grid-cols-5 items-center grid ">
-                {activityType?.map((value, index) => (
+                {activityType?.map((value, index, arr) => (
                   <FormField
                     key={value}
                     control={form.control}
@@ -124,10 +172,11 @@ export function AddSession({ eventId }: { eventId: string }) {
                         className={cn(
                           "h-11 w-full border-y flex items-center justify-center border-gray-700",
                           index === 0
-                            ? "border-l border-r rounded-md"
+                            ? "border-l border-r rounded-l-md"
                             : "border-r",
+                            index === arr?.length - 1 && "rounded-r-md",
                           form.watch("activityType") === value &&
-                            "bg-basePrimary/20 border-basePrimary"
+                            "bg-basePrimary/20 border-basePrimary  "
                         )}
                       >
                         <span>{value}</span>
@@ -190,7 +239,7 @@ export function AddSession({ eventId }: { eventId: string }) {
                 Select Session Type
               </p>
               <div className="w-full grid-cols-5 items-center grid ">
-                {sessionType?.map((value, index) => (
+                {sessionType?.map((value, index, arr) => (
                   <FormField
                     key={value}
                     control={form.control}
@@ -200,10 +249,11 @@ export function AddSession({ eventId }: { eventId: string }) {
                         className={cn(
                           "h-11 w-full border-y flex items-center justify-center border-gray-700",
                           index === 0
-                            ? "border-l border-r rounded-md"
-                            : "border-r",
-                          form.watch("sessionType") === value &&
-                            "bg-basePrimary/20 border-basePrimary"
+                          ? "border-l border-r rounded-l-md"
+                          : "border-r",
+                          index === arr?.length - 1 && "rounded-r-md",
+                        form.watch("sessionType") === value &&
+                          "bg-basePrimary/20 border-basePrimary"
                         )}
                       >
                         <span>{value}</span>
@@ -289,23 +339,23 @@ export function AddSession({ eventId }: { eventId: string }) {
                   )
                 )}
             </div>
-              
+
             <FormField
               control={form.control}
               name="file"
               render={({ field }) => (
                 <InputOffsetLabel label=" File">
-                <Input
-                  type="file"
-                  accept="application/pdf,.docx,.doc"
-                  placeholder="File"
-                  {...form.register("file")}
-                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
-                />
-              </InputOffsetLabel>
+                  <Input
+                    type="file"
+                    accept="application/pdf,.docx,.doc"
+                    placeholder="File"
+                    {...form.register("file")}
+                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                  />
+                </InputOffsetLabel>
               )}
             />
-          
+
             <Button
               disabled={false}
               className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-basePrimary h-12 rounded-md text-gray-50 font-medium"

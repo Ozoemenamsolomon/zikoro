@@ -625,17 +625,17 @@ export const links: NavLinkType[] = [
   {
     name: "Notification",
     icon: NotificationOutlineIcon,
-    href: "/notifications",
+    href: "",
   },
   {
     name: "Notes",
     icon: NoteIcon,
-    href: "/notes",
+    href: "",
   },
   {
     name: "Analytics",
     icon: AnalyticsIcon,
-    href: "/analytics",
+    href: "",
   },
 
   {

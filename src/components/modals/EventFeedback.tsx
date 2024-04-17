@@ -50,9 +50,13 @@ export function EventFeedBack({
         className="w-[95%] sm:w-[500px] box-animation h-fit flex flex-col gap-y-6 rounded-lg bg-white m-auto absolute inset-0 py-6 px-3 sm:px-4"
       >
         <div className="w-full flex items-center justify-between">
+          <div className="flex flex-col items-start justify-start">
           <h2 className="font-medium text-lg sm:text-xl">
             Zikoro wants your feedback
           </h2>
+          <p className="text-xs sm:text-sm">Select a number and state your reason.</p>
+
+          </div>
           <Button onClick={close} className="px-1 h-fit w-fit">
             <CloseOutline size={22} />
           </Button>

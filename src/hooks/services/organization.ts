@@ -143,7 +143,7 @@ export function useGetUserOrganizations() {
     [] as TOrganization[]
   );
 
-  const { organizations, isLoading: orgLoading } = useGetOrganizations();
+  const { organizations, isLoading: orgLoading, getOrganizations } = useGetOrganizations();
   // checking if thwe user is a team member of some organizations
   useEffect(() => {
     if (!orgLoading && organizations) {
@@ -160,5 +160,6 @@ export function useGetUserOrganizations() {
   //return data
   return {
     organizations: userOrganizations,
+    getOrganizations
   };
 }
