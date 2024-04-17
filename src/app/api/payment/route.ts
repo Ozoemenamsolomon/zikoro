@@ -172,7 +172,7 @@ export async function POST(req: NextRequest) {
 
       const mailData = {
         from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
-        to: attendee.email,
+        to: registeredAttendees[0].email,
         subject: `Confirmation to attend ${event}`,
         html: `
           <div
