@@ -467,9 +467,8 @@ export async function POST(req: NextRequest) {
             // ],
           };
 
-          console.log({ attendee, mailData });
-
           await transporter.sendMail(mailData, function (err: any, info: any) {
+            console.log({ attendee, mailData });
             if (err) {
               console.log({ error });
               check += " error";
