@@ -470,6 +470,8 @@ export async function POST(req: NextRequest) {
             else console.log(info);
           });
         }
+      } else {
+        throw "an error occured";
       }
 
       return NextResponse.json(
