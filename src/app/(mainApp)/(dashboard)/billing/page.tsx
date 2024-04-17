@@ -5,7 +5,7 @@ import All from "./_tabs/all";
 
 export default function page() {
   return (
-    <section className="bg-white p-4 space-y-6">
+    <section className="bg-white p-2 md:p-4 space-y-6">
       <Tabs defaultValue="all" className="">
         <TabsList className="bg-transparent">
           <TabsTrigger

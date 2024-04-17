@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { toast } from "@/components/ui/use-toast";
 import { TAffiliate, TAffiliateLink, TSentEmail } from "@/types/marketing";
@@ -15,6 +15,7 @@ export const useSendMarketingEmail = (): usePostResult<
 
   const sendMarketingEmail = async ({ payload }: { payload: TSentEmail }) => {
     setLoading(true);
+    console.log(payload, "data");
     toast({
       description: "sending email...",
     });

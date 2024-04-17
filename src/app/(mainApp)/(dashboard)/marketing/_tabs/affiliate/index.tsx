@@ -24,7 +24,7 @@ const Affiliate = () => {
           className="py-3 data-[state=active]:shadow-none px-4 data-[state=active]:bg-transparent data-[state=active]:text-basePrimary rounded-none"
           value="affiliates"
         >
-          affiliates
+          Affiliates
         </TabsTrigger>
       </TabsList>
       <TabsContent value="create">

@@ -70,6 +70,7 @@ function SideNavs({
   const { organizationId } = useParams();
   const organization = getCookie("currentOrganization");
   const user = getCookie("user");
+  console.log(user);
 
   return (
     <div

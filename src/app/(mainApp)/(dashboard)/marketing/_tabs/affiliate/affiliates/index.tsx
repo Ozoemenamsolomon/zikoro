@@ -84,7 +84,7 @@ const Affiliates = () => {
           className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8 w-full"
         />
       </div>
-      <div className="space-y-2 max-w-full">
+      <div className="space-y-2 w-full overflow-auto">
         <DataTable<TAffiliate>
           columns={columns}
           data={searchedData}
