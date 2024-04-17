@@ -173,7 +173,6 @@ export async function POST(req: NextRequest) {
         });
 
         for (let attendee of registeredAttendees) {
-          console.log({ attendee });
           const mailData = {
             from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
             to: attendee.email,
@@ -467,6 +466,8 @@ export async function POST(req: NextRequest) {
             //   },
             // ],
           };
+
+          console.log({ attendee, mailData });
 
           await transporter.sendMail(mailData, function (err: any, info: any) {
             if (err) {
