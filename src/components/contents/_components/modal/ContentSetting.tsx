@@ -145,7 +145,7 @@ export function ContentSetting({
               }
               checked={processingFeeStatus}
               disabled={loading}
-              className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary w-[28px] sm:w-[32px] h-[20px] sm:h-[22px]"
+              className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary "
             />
             <div className="flex flex-col items-start w-full col-span-11 justify-start gap-y-1">
               <h2 className="text-base sm:text-xl">
@@ -163,7 +163,7 @@ export function ContentSetting({
               onClick={() => form.setValue("explore", !exploreStatus)}
               checked={exploreStatus}
               disabled={loading}
-              className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary w-[28px] sm:w-[32px] h-[20px] sm:h-[22px]"
+              className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary "
             />
             <div className="flex flex-col col-span-11 w-full items-start justify-start gap-y-1">
               <h2 className="text-base sm:text-xl">
@@ -208,7 +208,7 @@ export function ContentSetting({
                     e.preventDefault();
                     handleChange(title);
                   }}
-                  className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary w-[28px] sm:w-[32px] h-[20px] sm:h-[22px]"
+                  className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
                   checked={status}
                 />
                 <p>{title}</p>
