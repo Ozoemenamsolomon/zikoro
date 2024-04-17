@@ -2,33 +2,34 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-type UpdateLikesRequestBody = {
-  imageId: string;
+type PostBlogRequestBody = {
+  blogContent: null;
+  blogTitle: string;
 };
 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
 
   if (req.method === "POST") {
-    const body = await req.json() as UpdateLikesRequestBody | null;
+    const body = (await req.json()) as PostBlogRequestBody | null;
 
     if (!body) {
       return NextResponse.json({ error: "Invalid request body" });
     }
 
-    const { imageId } = body;
+    const { blogTitle, blogContent } = body;
 
     try {
-      const { error } = await supabase
-      .from("eventPhotos")
-        .update({ photoStatus: "rejected" })
-        .eq("id", imageId);
+      const { data, error } = await supabase.from('blog').insert({
+        title: blogTitle,
+        content: blogContent
+      });
 
       if (error) {
         throw error;
       }
 
-      return NextResponse.json({ message: "Rejected successfully." });
+      return NextResponse.json({ message: "Saved successfully." });
     } catch (error) {
       return NextResponse.json({ error: "Internal server error." });
     }

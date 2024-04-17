@@ -11,8 +11,8 @@ import {
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
 
 type DBFeaturedEvent = {
-  id: number,
-  eventPoster: [];
+  id: string,
+  eventPoster:string;
   eventTitle: string;
   eventCity: string;
   eventCountry: string;
@@ -67,6 +67,7 @@ export default function FeaturedEvents() {
   );
 
   async function fetchEventFeautured() {
+    //fetch featured events
     fetch("/api/explore/featured", {
       method: "GET",
       headers: {
@@ -454,6 +455,7 @@ export default function FeaturedEvents() {
                         eventData?.map((event, index) => (
                           <FeaturedEvent
                             key={event.id}
+                            id = {event.id}
                             eventPoster={event.eventPoster}
                             eventTitle={event.eventTitle}
                             eventCity={event.eventCity}
@@ -527,6 +529,7 @@ export default function FeaturedEvents() {
                       eventData?.map((event, index) => (
                         <FeaturedEvent
                           key={event.id}
+                          id ={event.id}
                           eventPoster={event.eventPoster}
                           eventTitle={event.eventTitle}
                           eventCity={event.eventCity}

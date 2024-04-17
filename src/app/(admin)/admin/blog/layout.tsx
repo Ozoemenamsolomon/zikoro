@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { Montserrat } from "next/font/google";
 
 const montserrat = Montserrat({
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
+  weight: ["100","200", "300", "400", "500", "600", "700", "800"],
   subsets: ["latin"],
   display: "swap",
   fallback: ["Arial", "sans-serif"],
@@ -22,10 +22,10 @@ export default function RootLayout({
       name: "Dashboard",
       href: "/admin/blog/dashboard",
     },
-    {
-      name: "Categories",
-      href: "/admin/blog/categories",
-    },
+    // {
+    //   name: "Categories",
+    //   href: "/admin/blog/categories",
+    // },
     {
       name: "Create New Post",
       href: "/admin/blog/create",
@@ -45,15 +45,15 @@ export default function RootLayout({
       <main  className={`${montserrat.className} `}>
         {/* Nav */}
         <nav className="w-full fixed top-0 ">
-          <div className="bg-white min-w-[900px] px-10 py-5 h-max border-b">
+          <div className="bg-white min-w-0 lg:min-w-[900px] px-3 lg:px-10 py-5 h-max border-b overflow-x-auto lg:overflow-x-hidden no-scrollbar">
             <ul className="flex gap-x-16 text-gray-700">
               {links.map(({ name, href }, index) => {
                 return (
                   <li
                     key={index}
-                    className={` text-sm ${
+                    className={`text-[12px] lg:text-sm whitespace-nowrap pr-3 lg:pr-0 ${
                       pathname === href
-                        ? "text-basePrimary border-b-2 border-basePrimary font-medium"
+                        ? "text-basePrimary border-b-2 border-basePrimary font-medium "
                         : ""
                     }`}
                   >
