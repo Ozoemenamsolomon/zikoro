@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
         });
 
         for (let attendee of registeredAttendees) {
-          console.log(attendee);
+          console.log({ attendee });
           const mailData = {
             from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
             to: attendee.email,
@@ -470,13 +470,13 @@ export async function POST(req: NextRequest) {
 
           await transporter.sendMail(mailData, function (err: any, info: any) {
             if (err) {
-              console.log(error);
+              console.log({ error });
               check += " error";
               throw err;
             } else {
               check += " success";
-              console.log(info);
-              console.log(check);
+              console.log({ info });
+              console.log({ check });
               return NextResponse.json(
                 { msg: "Transaction details updated successfully", check },
                 {
@@ -490,7 +490,7 @@ export async function POST(req: NextRequest) {
         throw "an error occured";
       }
     } catch (error: any) {
-      console.error(error);
+      console.error({ error });
       return NextResponse.json(
         {
           error: error.message,
