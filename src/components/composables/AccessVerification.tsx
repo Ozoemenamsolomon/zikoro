@@ -150,7 +150,7 @@ export function AccessVerification({
         <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
           <LoaderAlt size={30} className="animate-spin text-basePrimary" />
           <p className="text-[13px] sm:text-sm">
-            Hold on. Wait a minute. Sth ain't right.
+            Verifying that you can access this page...
           </p>
         </div>
       )}

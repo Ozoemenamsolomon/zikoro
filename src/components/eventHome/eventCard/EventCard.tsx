@@ -13,7 +13,7 @@ import { useState } from "react";
 import { AboutWidget, EventLocationType } from "@/components/composables";
 import { Event } from "@/types";
 import { DeleteEventModal } from "..";
-import { useDuplicateEvent, useFormatEventData } from "@/hooks";
+import { getCookie, useDuplicateEvent, useFormatEventData } from "@/hooks";
 import { saveCookie } from "@/hooks";
 import {cn} from "@/lib"
 
@@ -154,7 +154,10 @@ function ActionModal({
   id: number;
 }) {
   const { duplicateEvent, loading } = useDuplicateEvent();
+  const org = getCookie("currentOrganization")
   const [isDeleteModal, openDeleteModal] = useState(false);
+
+  console.log("org", org)
 
   function onClose() {
     openDeleteModal((prev) => !prev);
@@ -196,7 +199,7 @@ function ActionModal({
           <Button
             onClick={() => window.open(`/live-events/${id}`, "_blank")}
             className={
-              cn("items-center hidden h-10 gap-x-2 hover:bg-gray-100 justify-start w-full  text-xs", isPublished && "flex")
+              cn("items-center hidden h-10 gap-x-2 hover:bg-gray-100 justify-start w-full  text-xs", isPublished && org?.id && "flex")
             }
           >
             <span>View Event</span>

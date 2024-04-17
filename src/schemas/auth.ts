@@ -19,11 +19,6 @@ export const onboardingSchema = z.object({
   phoneNumber: z.string().refine((value) => value && /^\d{10,}$/.test(value), {
     message: "Phone number must be at least 10 digits",
   }),
-  whatsappNumber: z
-    .string()
-    .refine((value) => value && /^\d{10,}$/.test(value), {
-      message: "Phone number must be at least 10 digits",
-    }),
   city: z.string().min(1, { message: "City is required" }),
   country: z.string().min(1, { message: "Country is required" }),
 });

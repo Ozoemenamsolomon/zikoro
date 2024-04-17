@@ -75,7 +75,7 @@ export function BookEvent({
           lastName: "",
           phoneNumber: "",
           email: "",
-          whatsappNumber: "",
+          
         },
       ],
     },
@@ -98,8 +98,8 @@ export function BookEvent({
       firstName: "",
       lastName: "",
       email: "",
-      whatsappNumber: "",
-      phoneNumber: "",
+     phoneNumber:""
+    
     });
   }
 
@@ -592,7 +592,7 @@ export function BookEvent({
                       <div className="flex flex-col mb-4 items-start justify-start">
                         <p className="text-xs">Fee:</p>
                         <h2 className="text-base sm:text-xl font-semibold">
-                          {`₦${computedPrice?.toLocaleString()}`}
+                          {`₦${computedPrice?.toLocaleString()}` || "Free"}
                         </h2>
                       </div>
                       {fields.map((attendee, index) => (
@@ -666,24 +666,7 @@ export function BookEvent({
                                 )}
                               />
                             </div>
-                            <div className="w-full grid grid-cols-1 items-center gap-4">
-                              <FormField
-                                control={form.control}
-                                name={
-                                  `attendeeApplication.${index}.whatsappNumber` as const
-                                }
-                                render={({ field }) => (
-                                  <InputOffsetLabel label={"Whatsapp Number"}>
-                                    <Input
-                                      placeholder="+2345656432"
-                                      type="tel"
-                                      {...field}
-                                      className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                                    />
-                                  </InputOffsetLabel>
-                                )}
-                              />
-                            </div>
+                         
                           </div>
                         </div>
                       ))}
