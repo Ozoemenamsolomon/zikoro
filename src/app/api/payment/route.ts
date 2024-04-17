@@ -477,18 +477,19 @@ export async function POST(req: NextRequest) {
               check += " success";
               console.log({ info });
               console.log({ check });
-              return NextResponse.json(
-                { msg: "Transaction details updated successfully", check },
-                {
-                  status: 200,
-                }
-              );
             }
           });
         }
       } else {
         throw "an error occured";
       }
+
+      return NextResponse.json(
+        { msg: "Transaction details updated successfully", check },
+        {
+          status: 200,
+        }
+      );
     } catch (error: any) {
       console.error({ error });
       return NextResponse.json(
