@@ -32,11 +32,17 @@ export function About({
   };
 
   const showPreview = useMemo(() => {
-    return true
+    if (event && event?.eventWebsiteSettings) {
+      return event?.eventWebsiteSettings[event?.eventWebsiteSettings?.length - 1]
+      ?.status;
+    }
+    else {
+      return true
+    }
+   
   }, [event]);
 /**
-  event?.eventWebsiteSettings[event?.eventWebsiteSettings?.length - 1]
-      ?.status;
+  
  */
   return (
     <div

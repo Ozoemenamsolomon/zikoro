@@ -21,7 +21,7 @@ export function EventDetail({ event }: { event: Event }) {
         useDiv={true}
         eventId={event.id}
         imageClassName={"rounded-t-2xl rounded-tr-none sm:rounded-tl-2xl sm:rounded-l-none"}
-        className="w-full bg-none  overflow-hidden shadow-none"
+        className="w-full bg-none  shadow-none"
       />
 
       <EventDetailTabs

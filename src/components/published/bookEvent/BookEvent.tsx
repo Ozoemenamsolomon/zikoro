@@ -592,7 +592,7 @@ export function BookEvent({
                       <div className="flex flex-col mb-4 items-start justify-start">
                         <p className="text-xs">Fee:</p>
                         <h2 className="text-base sm:text-xl font-semibold">
-                          {`₦${total?.toLocaleString()}` || "Free"}
+                          {Number(total) > 0 ? `₦${total?.toLocaleString()}` : "Free"}
                         </h2>
                       </div>
                       {fields.map((attendee, index) => (

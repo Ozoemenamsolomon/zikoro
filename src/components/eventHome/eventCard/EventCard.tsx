@@ -16,6 +16,7 @@ import { DeleteEventModal } from "..";
 import { getCookie, useDuplicateEvent, useFormatEventData } from "@/hooks";
 import { saveCookie } from "@/hooks";
 import {cn} from "@/lib"
+import { useRouter } from "next/navigation";
 
 export function EventCard({
   event,
@@ -25,6 +26,7 @@ export function EventCard({
   event: Event;
 }) {
   const [isAction, setAction] = useState(false);
+  const router = useRouter()
   const {
     startDate,
     endDate,
@@ -45,7 +47,7 @@ export function EventCard({
       eventId: event?.id,
       eventName: event?.eventTitle,
     });
-    window.open(`/event/${event?.id}/content/info`);
+  router.push(`/event/${event?.id}/content/info`);
   }
 
   return (

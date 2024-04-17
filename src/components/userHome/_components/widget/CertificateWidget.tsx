@@ -12,7 +12,10 @@ export function CertificateWidget({ certificate }: { certificate: TIssuedCertifi
         return formatDate(certificate?.created_at)
     },[certificate?.created_at])
     return (
-      <div className="w-full">
+      <div 
+      onClick={() => window.open(certificate?.certificateURL, "_blank")}
+      role="button"
+      className="w-full">
         {certificate?.certificate?.cerificateUrl ? (
          <Image
          src={certificate?.certificate?.cerificateUrl}
