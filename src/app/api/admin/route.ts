@@ -2,17 +2,26 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+type AdminRequestBody = {
+  adminId: number;
+};
+
 export async function GET(req: NextRequest) {
-    
   const supabase = createRouteHandlerClient({ cookies });
 
   if (req.method === "GET") {
+    const body = (await req.json()) as AdminRequestBody | null;
+
+    if (!body) {
+      return NextResponse.json({ error: "Invalid request body" });
+    }
+
+    const { adminId } = body;
     try {
       const { data, error } = await supabase
-        .from("events")
-        .select("eventCity")
-        .eq("published", true)
-        .eq('explore', true)
+        .from("blog")
+        .select()
+        .eq("id", adminId);
 
       if (error) throw error;
 

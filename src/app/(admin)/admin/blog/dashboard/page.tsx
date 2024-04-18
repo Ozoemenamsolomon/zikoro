@@ -7,7 +7,7 @@ import {
   SearchIcon,
   AdminBlogCalendarIcon
 } from "@/constants/icons";
-import AdminPublishedBlog from "@/components/blog/AdminPublishedBlog";
+import AdminPublishedBlog from "@/components/blog/AdminBlogTemplate";
 
 export default function Create() {
   const [searchBox, setSearchBox] = useState("");
@@ -94,7 +94,7 @@ export default function Create() {
 
       {/* section 2 */}
       <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[52px] lg:mt-[100px] bg-white">
-          <AdminPublishedBlog/>
+          <AdminPublishedBlog />
       </section>
     </div>
   );

@@ -45,7 +45,7 @@ export default function RootLayout({
       <main  className={`${montserrat.className} `}>
         {/* Nav */}
         <nav className="w-full fixed top-0 ">
-          <div className="bg-white min-w-0 lg:min-w-[900px] px-3 lg:px-10 py-5 h-max border-b overflow-x-auto lg:overflow-x-hidden no-scrollbar">
+          <div className="bg-white min-w-0 lg:min-w-[900px] px-3 lg:px-10 pt-5  h-max border-b overflow-x-auto lg:overflow-x-hidden no-scrollbar">
             <ul className="flex gap-x-16 text-gray-700">
               {links.map(({ name, href }, index) => {
                 return (
@@ -53,7 +53,7 @@ export default function RootLayout({
                     key={index}
                     className={`text-[12px] lg:text-sm whitespace-nowrap pr-3 lg:pr-0 ${
                       pathname === href
-                        ? "text-basePrimary border-b-2 border-basePrimary font-medium "
+                        ? "text-basePrimary pb-5 border-b-2 border-basePrimary font-medium "
                         : ""
                     }`}
                   >

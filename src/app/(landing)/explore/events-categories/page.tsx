@@ -5,11 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export default function EventsCategories() {
-  type DBEventCategories = {
-    // id: number;
-  };
-
-  const [data, setData] = useState<DBEventCategories[] | undefined>(undefined);
+  const [data, setData] = useState<any[]>([]);
 
   async function fetchEventCategories() {
     fetch("/api/explore/categories", {
@@ -19,13 +15,15 @@ export default function EventsCategories() {
       },
     })
       .then((response) => response.json())
-      .then((data) => console.log(data))
+      .then((data) => setData(data.data))
       .catch((error) => console.error("Error:", error));
   }
 
   useEffect(() => {
     fetchEventCategories();
   }, []);
+
+  const renderedCategories = new Set(); // Set to store rendered categories
 
   return (
     <div className="">
@@ -43,17 +41,28 @@ export default function EventsCategories() {
 
         {/* Events categories */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-5 lg:gap-y-12 mt-12 lg:mt-24 px-[10px] lg:px-0">
-          <CategoryEvent />
-          <CategoryEvent />
-          <CategoryEvent />
-          <CategoryEvent />
-          <CategoryEvent />
-          <CategoryEvent />
-          <CategoryEvent />
-          <CategoryEvent />
-          <CategoryEvent />
-          <CategoryEvent />
-          <CategoryEvent />
+          {data?.length &&
+            data?.map((category, index) => {
+              if (
+                category.eventCategory &&
+                !renderedCategories.has(category.eventCategory)
+              ) {
+                renderedCategories.add(category.eventCategory); // Add category to renderedCategories set
+                return (
+                  <CategoryEvent
+                    key={index}
+                    categoryName={category.eventCategory}
+                    categoryCount={
+                      category.eventCategory.length
+                        ? category.eventCategory.length
+                        : 0
+                    }
+                  />
+                );
+              } else {
+                return null; // Render nothing if category has already been rendered
+              }
+            })}
         </div>
 
         <div className="flex justify-center items-center mt-12">

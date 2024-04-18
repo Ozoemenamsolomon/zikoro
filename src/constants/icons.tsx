@@ -475,8 +475,8 @@ export function CloseIcon() {
 export function LocationIcon1() {
   return (
     <svg
-      width="22"
-      height="25"
+      width="20"
+      height="20"
       viewBox="0 0 22 25"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -545,8 +545,8 @@ export function Calendar() {
   return (
     <div className="">
       <svg
-        width="23"
-        height="25"
+        width="20"
+        height="20"
         viewBox="0 0 23 25"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
