@@ -564,7 +564,8 @@ export function useBookingEvent() {
     values: z.infer<typeof eventBookingValidationSchema>,
     eventId?: number,
     attendants?: string | null,
-    ticketType?: string
+    ticketType?: string,
+    paymentLink?:string
   ) {
     const { attendeeApplication } = values;
 
@@ -576,6 +577,7 @@ export function useBookingEvent() {
           attendeeType: [attendants],
           ticketType,
           registrationDate: new Date(),
+          paymentLink,
           eventRegistrationRef: eventTransactionRef,
           userEmail: userData?.userEmail,
         };
@@ -958,7 +960,7 @@ export function useFetchRewards(eventId: string | number) {
   };
 }
 
-export function useFormatEventData(event: Event | null) {
+export function useFormatEventData(event?: Event | null) {
   const startDate = useMemo(
     () => formatDate(event?.startDateTime ?? "0"),
     [event?.startDateTime ?? "0"]

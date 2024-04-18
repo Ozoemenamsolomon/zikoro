@@ -29,15 +29,18 @@ export function BoothStaffWidget({
         isAddingBoothStaff && "hover:bg-gray-100 relative rounded-md p-2"
       )}
     >
-      <Image
+     <div className="flex flex-col gap-y-1 items-center justify-center">
+     <Image
         alt="staff"
         width={120}
         height={120}
         className="w-12 h-12 rounded-full "
         src={image || "/b92cf7b1b06acc1b9a0759b6f97724c349488816.webp"}
       />
-      <div className="flex text-sm flex-col items-start justify-start">
-        <p className="font-medium">{name || "John Doe"}</p>
+      <p className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-1 rounded-md">Moderator</p>
+     </div>
+      <div className="flex text-xs sm:text-[13px] flex-col items-start justify-start">
+        <p className="font-medium ">{name || "John Doe"}</p>
         <p className="text-[#717171]">{profession || "Data Analyst"}</p>
         <p className="text-[#717171]">{company || "Oracle"}</p>
       </div>

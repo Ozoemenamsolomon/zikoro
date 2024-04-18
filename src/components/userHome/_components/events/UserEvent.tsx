@@ -71,7 +71,7 @@ export function UserEvents() {
             Array.isArray(eventList) &&
             eventList?.length === 0 && (
               <div className="w-full col-span-full h-[400px] flex items-center justify-center">
-                <p> No Event </p>
+                <p className="font-semibold"> No Event </p>
               </div>
             )}
 
@@ -94,7 +94,13 @@ export function UserEvents() {
         )}
       </div>
 
-      {isOpen && <AllDatas data={eventList} onClose={onClose} title={tab[active]?.title} />}
+      {isOpen && (
+        <AllDatas
+          data={eventList}
+          onClose={onClose}
+          title={tab[active]?.title}
+        />
+      )}
     </>
   );
 }

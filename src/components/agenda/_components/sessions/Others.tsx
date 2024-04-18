@@ -8,12 +8,13 @@ import { CalendarCheck } from "@styled-icons/bootstrap/CalendarCheck";
 import { SessionCard } from "..";
 import { Button } from "@/components";
 import { CheckmarkDone } from "@styled-icons/ionicons-solid/CheckmarkDone";
+import {TFAgenda} from "@/types"
 
-export function Others({ title }: { title: string }) {
+export function Others({ data, className }: {className?:string; data: TFAgenda}) {
   return (
-    <SessionCard>
+    <SessionCard className={className}>
       <div className="w-full md:col-span-8 flex flex-col items-start justify-start gap-y-2">
-        <p className="font-semibold text-lg sm:text-3xl">{title}</p>
+        <p className="font-semibold text-lg sm:text-3xl">{data.session[0]?.title ?? ""}</p>
         <div className="flex items-center gap-x-3">
           <Button className="h-fit w-fit px-0">
             <CalendarCheck className="text-basePrimary" size={20} />

@@ -13,4 +13,4 @@ export * from "./partners"
 export * from "./global"
 export * from "./marketing"
 export * from "./moreOptions"
-
+export * from "./agenda"

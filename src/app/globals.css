@@ -324,3 +324,29 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+
+
+
+.agenda-slider .slick-dots {
+  position: absolute;
+  bottom: -2px;
+}
+.agenda-slider .slick-dots li {
+  margin: 0px 7px;
+  width: 8px;
+  height: 8px;
+}
+
+.agenda-slider .slick-dots li button:before {
+  color: black;
+  border: 1px solid #0001fc;
+  border-radius: 50%;
+  content: "";
+  width: 10px;
+  height: 10px;
+}
+.agenda-slider .slick-dots li.slick-active button::before {
+  background-color: #0001fc;
+ 
+}

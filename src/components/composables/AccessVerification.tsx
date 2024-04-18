@@ -70,8 +70,6 @@ export function AccessVerification({
         ({ email, eventId }) => Number(eventId) === Number(id) && email === user?.userEmail
       );
 
-    
-
       if (isEventIdPresent) {
         // user is a team member
         setLoading(false);

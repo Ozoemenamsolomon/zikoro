@@ -20,6 +20,7 @@ export const industryType = [
     "Environment & Waste",
     "Logistics & Transportation",
     "Home & Office",
+    "Religion",
     "Security & Defense",
     "Travel & Tourism",
     "Telecommunication",

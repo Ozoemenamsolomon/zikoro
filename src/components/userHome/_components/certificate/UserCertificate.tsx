@@ -20,7 +20,7 @@ export function UserCertificates() {
         }
         {!isLoading &&  Array.isArray(attendeeCertificates) && attendeeCertificates?.length === 0 && 
         <div className="w-full col-span-full h-[300px] flex items-center justify-center">
-        <p>- No Certificate -</p>
+        <p className="font-semibold">No Certificate</p>
       </div>
         }
         {!isLoading && Array.isArray(attendeeCertificates) &&

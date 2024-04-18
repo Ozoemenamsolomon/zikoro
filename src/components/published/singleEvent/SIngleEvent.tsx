@@ -32,15 +32,13 @@ import { useState, useMemo } from "react";
 import { BookEvent } from "..";
 import { usePathname, useRouter } from "next/navigation";
 import { Event, OrganizerContact } from "@/types";
-import { useFetchSingleOrganization, getCookie } from "@/hooks";
+import { useFetchSingleOrganization, getCookie, useFormatEventData } from "@/hooks";
 export function SingleEvent({
   className,
   isDetail,
   event,
   useDiv = false,
-  organization,
   eventId,
-  imageClassName,
 }: {
   isDetail?: boolean;
   className?: string;
@@ -53,9 +51,10 @@ export function SingleEvent({
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
   const [isShareDropDown, showShareDropDown] = useState(false);
+  const pathname = usePathname()
   const org = getCookie("currentOrganization");
+  const {startDate,endDate, startTime, endTime } = useFormatEventData(event)
   const { data, refetch } = useFetchSingleOrganization(org?.id);
-
   const router = useRouter();
 
   function onClose() {
@@ -63,23 +62,7 @@ export function SingleEvent({
     setOpen((prev) => !prev);
   }
 
-  const startDate = useMemo(
-    () => formatDate(event?.startDateTime ?? "0"),
-    [event?.startDateTime ?? "0"]
-  );
-  const endDate = useMemo(
-    () => formatDate(event?.endDateTime ?? "0"),
-    [event?.endDateTime ?? "0"]
-  );
 
-  const startTime = useMemo(
-    () => formatTime(event?.startDateTime ?? "0"),
-    [event?.startDateTime ?? "0"]
-  );
-  const endTime = useMemo(
-    () => formatTime(event?.endDateTime ?? "0"),
-    [event?.endDateTime ?? "0"]
-  );
 
   const createdAt = useMemo(
     () => dateFormatting(event?.createdAt ?? "0"),
@@ -119,15 +102,7 @@ export function SingleEvent({
     return event?.eventCity === null || event?.eventCountry === null;
   }, [event?.eventCity, event?.eventCountry]);
 
-  /**
-   const isAllContactUnavailable = useMemo(() => {
-    return (
-      event?.phoneNumber === null ||
-      event?.whatsappNumber === null ||
-      event?.email === null
-    );
-  }, [event?.phoneNumber, event?.whatsappNumber, event?.email]);
- */
+
 
   const isAllSocialUnavailable = useMemo(() => {
     return (
@@ -252,7 +227,7 @@ export function SingleEvent({
               <div className="w-full flex items-center gap-x-6 justify-start">
                 <h3>Speak with the Event Team</h3>
 
-                <div className="flex items-center gap-x-2">
+                <div className={cn("flex items-center gap-x-2", pathname.includes("preview") && "hidden")}>
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();

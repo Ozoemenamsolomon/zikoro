@@ -75,7 +75,6 @@ export function BookEvent({
           lastName: "",
           phoneNumber: "",
           email: "",
-          
         },
       ],
     },
@@ -98,8 +97,7 @@ export function BookEvent({
       firstName: "",
       lastName: "",
       email: "",
-     phoneNumber:""
-    
+      phoneNumber: "",
     });
   }
 
@@ -162,72 +160,6 @@ export function BookEvent({
       return 0;
     }
   }, [computedPrice, processingFee, discount, event?.attendeePayProcessingFee]);
-
-  async function onSubmit(
-    values: z.infer<typeof eventBookingValidationSchema>
-  ) {
-    // maually checking for "others"
-    if (values.aboutUs === "others" && !values.others) {
-      form.setError("others", {
-        type: "manual",
-        message: 'Please provide a value for "Others"',
-      });
-
-      return; /// stop submission
-    }
-
-    // checking if the attendees number satisfy the minimum attendees required to use the event discount code
-    if (minAttendees !== undefined && minAttendees !== fields?.length) {
-      toast({
-        variant: "destructive",
-        description: `Discount code is valid for minimum of ${minAttendees} attendees`,
-      });
-      return;
-    }
-
-    await registerAttendees(
-      eventReference,
-      values,
-      eventId,
-      "attendees",
-      priceCategory
-    );
-
-    // return if user is registered -- attendees data will not be sent to the eventTransaction table
-    if (isRegistered) return;
-
-    // todays date
-    const today = new Date();
-
-    // Calculate the date for the next 7 days
-    const nextSevenDays = new Date(today);
-    nextSevenDays.setDate(today.getDate() + 7);
-
-    // Format the result as a string in the specified format
-    const formattedNextSevenDays = nextSevenDays.toISOString();
-
-    const payload = {
-      eventId,
-      eventRegistrationRef: eventReference,
-      paymentDate: today,
-      expiredAt: formattedNextSevenDays,
-      amountPaid: total,
-      attendees: fields?.length,
-      discountValue: discount,
-      referralSource: social,
-      discountCode: code,
-      currency,
-      registrationCompleted: false,
-      ticketCategory: priceCategory,
-      eventDate,
-      event: eventTitle,
-      eventPrice: chosenPrice,
-      attendeesDetails: values.attendeeApplication,
-    };
-
-    //
-    await sendTransactionDetail(allowPayment, payload);
-  }
 
   /// restructure pricing array
   const pricingArray = useMemo(() => {
@@ -295,6 +227,88 @@ export function BookEvent({
         })}`
       );
     }
+  }
+
+  async function onSubmit(
+    values: z.infer<typeof eventBookingValidationSchema>
+  ) {
+    // maually checking for "others"
+    if (values.aboutUs === "others" && !values.others) {
+      form.setError("others", {
+        type: "manual",
+        message: 'Please provide a value for "Others"',
+      });
+
+      return; /// stop submission
+    }
+
+    // checking if the attendees number satisfy the minimum attendees required to use the event discount code
+    if (minAttendees !== undefined && minAttendees !== fields?.length) {
+      toast({
+        variant: "destructive",
+        description: `Discount code is valid for minimum of ${minAttendees} attendees`,
+      });
+      return;
+    }
+
+    const paymentLink = `${
+      window.location.origin
+    }/checkout/${eventReference}?eventData=${JSON.stringify({
+      eventImage,
+      address,
+      startDate,
+      endDate,
+      organization,
+      eventLocation,
+      total,
+      processingFee,
+      organizerContact: JSON.stringify(organizerContact),
+      amountPayable: processingFee ? total - processingFee : total,
+    })}`;
+
+    await registerAttendees(
+      eventReference,
+      values,
+      eventId,
+      "attendees",
+      priceCategory,
+      paymentLink
+    );
+
+    // return if user is registered -- attendees data will not be sent to the eventTransaction table
+    if (isRegistered) return;
+
+    // todays date
+    const today = new Date();
+
+    // Calculate the date for the next 7 days
+    const nextSevenDays = new Date(today);
+    nextSevenDays.setDate(today.getDate() + 7);
+
+    // Format the result as a string in the specified format
+    const formattedNextSevenDays = nextSevenDays.toISOString();
+
+    const payload = {
+      eventId,
+      eventRegistrationRef: eventReference,
+      paymentDate: today,
+      expiredAt: formattedNextSevenDays,
+      amountPaid: total,
+      attendees: fields?.length,
+      discountValue: discount || "none",
+      referralSource: social,
+      discountCode: code || "none",
+      currency,
+      registrationCompleted: false,
+      ticketCategory: priceCategory,
+      eventDate,
+      event: eventTitle,
+      eventPrice: chosenPrice,
+      attendeesDetails: values.attendeeApplication,
+    };
+
+    //
+    await sendTransactionDetail(allowPayment, payload);
   }
 
   return (
@@ -550,7 +564,7 @@ export function BookEvent({
               <div className="w-full flex items-center justify-center py-3 border-b">
                 <p className="text-base sm:text-xl font-semibold">Checkout</p>
               </div>
-              <div className="w-full lg:h-[510px] pb-24 no-scrollbar lg:overflow-y-auto">
+              <div className="w-full lg:h-[510px] pb-24 pt-4 no-scrollbar lg:overflow-y-auto">
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -592,7 +606,9 @@ export function BookEvent({
                       <div className="flex flex-col mb-4 items-start justify-start">
                         <p className="text-xs">Fee:</p>
                         <h2 className="text-base sm:text-xl font-semibold">
-                          {Number(total) > 0 ? `₦${total?.toLocaleString()}` : "Free"}
+                          {Number(total) > 0
+                            ? `₦${total?.toLocaleString()}`
+                            : "Free"}
                         </h2>
                       </div>
                       {fields.map((attendee, index) => (
@@ -666,7 +682,6 @@ export function BookEvent({
                                 )}
                               />
                             </div>
-                         
                           </div>
                         </div>
                       ))}
