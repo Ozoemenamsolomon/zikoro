@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -72,7 +72,9 @@ const Create = () => {
   const { createAffiliateLink, isLoading: createLinkIsLoading } =
     useCreateAffiliateLink();
 
-  const { watch } = form;
+  const { watch, getValues } = form;
+
+  console.log(getValues(), "default values");
 
   const commissionType = watch("commissionType");
 
@@ -125,7 +127,7 @@ const Create = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-2 gap-6"
+          className="grid md:grid-cols-2 gap-6"
         >
           {/* first column */}
           <section className="space-y-6">
@@ -155,7 +157,10 @@ const Create = () => {
                                 ? "Select affiliate"
                                 : "Loading..."
                             }
-                            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-full"
+                            className={cn(
+                              "placeholder:text-sm w-full",
+                              !field.value ? "text-gray-200" : "text-gray-700"
+                            )}
                           />
                         </SelectTrigger>
                       </FormControl>
@@ -203,7 +208,10 @@ const Create = () => {
                             placeholder={
                               !eventsIsLoading ? "Select event" : "Loading..."
                             }
-                            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-full"
+                            className={cn(
+                              "placeholder:text-sm w-full",
+                              !field.value ? "text-gray-200" : "text-gray-700"
+                            )}
                           />
                         </SelectTrigger>
                       </FormControl>
@@ -243,7 +251,10 @@ const Create = () => {
                         <SelectTrigger>
                           <SelectValue
                             placeholder="Select schedule"
-                            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-full"
+                            className={cn(
+                              "placeholder:text-sm w-full",
+                              !field.value ? "text-gray-200" : "text-gray-700"
+                            )}
                           />
                         </SelectTrigger>
                       </FormControl>
@@ -381,7 +392,9 @@ const Create = () => {
                     <Input
                       type="number"
                       placeholder={"Enter amount"}
-                      onInput={(e) => field.onChange(parseInt(e.currentTarget.value))}
+                      onInput={(e) =>
+                        field.onChange(parseInt(e.currentTarget.value))
+                      }
                       className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                     />
                   </InputOffsetLabel>
@@ -450,7 +463,10 @@ const Create = () => {
                         <SelectTrigger>
                           <SelectValue
                             placeholder="Select goal"
-                            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 w-full"
+                            className={cn(
+                              "placeholder:text-sm w-full",
+                              !field.value ? "text-gray-200" : "text-gray-700"
+                            )}
                           />
                         </SelectTrigger>
                       </FormControl>

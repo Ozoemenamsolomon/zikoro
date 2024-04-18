@@ -8,7 +8,7 @@ import { toast } from "@/components/ui/use-toast";
 
 const page = () => {
   const router = useRouter();
-  const { attendeeId } = useParams();
+  const { attendeeId, eventId } = useParams();
   console.log(attendeeId);
 
   const { attendee, isLoading, getAttendee } = useGetAttendee({

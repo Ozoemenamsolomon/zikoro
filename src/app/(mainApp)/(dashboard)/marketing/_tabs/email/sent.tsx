@@ -145,7 +145,7 @@ const Sent = () => {
         applyFilter={applyFilter}
         selectedFilters={selectedFilters}
       />
-      <div className="space-y-2 max-w-full">
+      <div className="space-y-2 w-full overflow-auto">
         <DataTable<TSentEmail>
           columns={columns}
           data={filteredData}

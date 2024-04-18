@@ -40,6 +40,8 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
+      console.log(params, "email")
+
       const { emailCategory, subject, sendersName, emailBody, emailRecipient } =
         params;
 
@@ -62,6 +64,7 @@ export async function POST(req: NextRequest) {
       };
 
       await transporter.sendMail(mailData, function (err: any, info: any) {
+        console.log(params, "params");
         if (err) throw err;
         else console.log(info);
       });

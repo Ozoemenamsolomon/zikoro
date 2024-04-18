@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import * as z from "zod";
@@ -20,6 +19,46 @@ import {
 } from "@/utils";
 
 const supabase = createClientComponentClient();
+
+export const useGetEvent = ({
+  eventId,
+}: {
+  eventId: number;
+}): UseGetResult<Event, "event", "getEvent"> => {
+  const [event, setEvent] = useState<Event | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getEvent = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<Event>({
+        endpoint: `events/${eventId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setEvent(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getEvent();
+  }, []);
+
+  return {
+    event,
+    isLoading,
+    error,
+    getEvent,
+  };
+};
 
 export const useGetEvents = (): UseGetResult<
   Event[],
@@ -59,46 +98,6 @@ export const useGetEvents = (): UseGetResult<
     isLoading,
     error,
     getEvents,
-  };
-};
-
-export const useGetEvent = ({
-  eventId,
-}: {
-  eventId: number;
-}): UseGetResult<Event, "event", "getEvent"> => {
-  const [event, setEvent] = useState<Event | null>(null);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-
-  const getEvent = async () => {
-    setLoading(true);
-
-    try {
-      const { data, status } = await getRequest<Event>({
-        endpoint: `events/${eventId}`,
-      });
-
-      if (status !== 200) {
-        throw data;
-      }
-      setEvent(data.data);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getEvent();
-  }, []);
-
-  return {
-    event,
-    isLoading,
-    error,
-    getEvent,
   };
 };
 

@@ -3,11 +3,18 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Email, SMS, Whatsapp, Affiliate } from "./_tabs";
 import { useRef, useState, useLayoutEffect } from "react";
+import {
+  ReadonlyURLSearchParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 
 type TMarketingTabs = {
   label: string;
   value: string;
   component: React.ReactNode;
+  disabled?: boolean;
 };
 
 const marketingTabs: TMarketingTabs[] = [
@@ -25,11 +32,13 @@ const marketingTabs: TMarketingTabs[] = [
     label: "SMS",
     value: "sms",
     component: <SMS />,
+    disabled: true,
   },
   {
     label: "Whatsapp",
     value: "whatsapp",
     component: <Whatsapp />,
+    disabled: true,
   },
 ];
 
@@ -49,15 +58,49 @@ const page = () => {
     div.style.minHeight = `${distanceToBottom}px`;
   }, []);
 
+  function updateSearchParam(
+    searchParams: ReadonlyURLSearchParams,
+    param: string,
+    value: string
+  ): URLSearchParams {
+    const currentSearchParams = new URLSearchParams(
+      Array.from(searchParams.entries())
+    );
+    currentSearchParams.set(param, value);
+
+    return currentSearchParams;
+  }
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathName = usePathname() || "/";
+
+  function handleTabChange(currentTab: string) {
+    if (searchParams?.entries()) {
+      const updatedSearchParams = updateSearchParam(
+        searchParams,
+        "tab1",
+        currentTab
+      );
+      router.push(`${pathName}?${updatedSearchParams.toString()}`, {
+        shallow: true,
+      });
+    }
+  }
+
   return (
     <section className="bg-white space-y-6" ref={divRef || null}>
-      <Tabs defaultValue="email">
+      <Tabs
+        onValueChange={(value) => handleTabChange(value)}
+        defaultValue="email"
+      >
         <TabsList className="bg-transparent border-b px-4 pt-4 w-full flex justify-start">
           {marketingTabs.map((tab) => (
             <TabsTrigger
               key={tab.label}
               className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none"
               value={tab.value}
+              disabled={tab.disabled}
             >
               {tab.label}
             </TabsTrigger>
