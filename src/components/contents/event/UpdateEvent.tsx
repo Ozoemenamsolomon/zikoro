@@ -121,15 +121,18 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   async function onSubmit(values: z.infer<typeof updateEventSchema>) {
     // console.log(values);
     if (values.pricing?.length > 0) {
-      const isNotEqualPrice = values?.pricing?.some(
-        ({ ticketQuantity }) =>
-          Number(ticketQuantity) !== Number(values?.expectedParticipants)
+      const totalTicketQuantity = values.pricing.reduce(
+        (sum, { ticketQuantity }) => {
+          return sum + Number(ticketQuantity);
+        },
+        0
       );
-      if (isNotEqualPrice) {
+
+      if (totalTicketQuantity !== Number(values?.expectedParticipants)) {
         toast({
           variant: "destructive",
           description:
-            "Number of expected participants must equal the ticket quantity",
+            "The sum of ticket quantities must equal the expected participants",
         });
         return;
       }
@@ -304,7 +307,6 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                   >
                     <Download size={22} />
                     <p>Publish</p>
-                   
                   </Button>
                 </div>
               </div>
@@ -596,7 +598,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                             <InputOffsetLabel label="Description">
                               <Input
                                 type="text"
-                                placeholder="Enter the Price"
+                                placeholder="Enter the Ticket Description"
                                 {...form.register(
                                   `pricing.${id}.description` as const
                                 )}
@@ -629,7 +631,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                             render={({ field }) => (
                               <InputOffsetLabel label="Validity">
                                 <Input
-                                  type="date"
+                                  type="datetime-local"
                                   placeholder="Enter the Date"
                                   {...form.register(
                                     `pricing.${id}.validity` as const

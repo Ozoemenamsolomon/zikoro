@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   };
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
-      <div className="relative w-full bg-[#F9FAFF] min-h-screen">
+      <div className="relative w-full h-full">
        {children}
       </div>
     );

@@ -28,7 +28,7 @@ export default function AdminEvents() {
   const query = search.get("e");
 
   const eventData = useMemo(() => {
-    if (query === "review" || !query) {
+    if (query === "review" || query === null) {
       return events?.filter(({ eventStatus }) => eventStatus === "review");
     } else {
       return events?.filter(({ eventStatus }) => eventStatus === query);
@@ -39,7 +39,7 @@ export default function AdminEvents() {
     <EventLayout>
       {loading && (
         <div className="w-full h-[300px] flex items-center justify-center">
-          <LoaderAlt size={50} className="animate-spin" />
+          <LoaderAlt size={30} className="animate-spin" />
         </div>
       )}
       {!loading && Array.isArray(eventData) && eventData?.length === 0 && (
@@ -207,32 +207,33 @@ function EventCard({
             </div>
           </div>
         </div>
-        {query === "review" && (
-            <div className="py-4 w-full border-t  p-4 flex items-center gap-x-2">
-              <Button
-                // type="submit"
-                onClick={onClose}
-                className="text-gray-50 bg-basePrimary gap-x-2"
-              >
-                <Eye size={22} />
-                <p>Preview</p>
-              </Button>
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  showPublishModal();
-                }}
-                type="submit"
-                className="text-basePrimary border border-basePrimary gap-x-2"
-              >
-                <Download size={22} />
-                <p>Publish</p>
-              </Button>
-            </div>
-          )}
-        {query === "published" && (
+        {(query === "review" || query === null) && (
           <div className="py-4 w-full border-t  p-4 flex items-center gap-x-2">
-            <p className="text-gray-500">{`Published By ${publisher ?? ""}`}</p>
+            <Button
+              // type="submit"
+              onClick={onClose}
+              className="text-gray-50 bg-basePrimary gap-x-2"
+            >
+              <Eye size={22} />
+              <p>Preview</p>
+            </Button>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                showPublishModal();
+              }}
+              type="submit"
+              className="text-basePrimary border border-basePrimary gap-x-2"
+            >
+              <Download size={22} />
+              <p>Publish</p>
+            </Button>
+          </div>
+        )}
+        {query === "published" && (
+          <div className="py-4 w-full border-t flex-col  p-4 flex items-start justify-start gap-x-2">
+            <p>Published By</p>
+            <p className="text-gray-500 w-full text-ellipsis overflow-hidden whitespace-nowrap">{` ${publisher ?? ""}`}</p>
           </div>
         )}
       </div>

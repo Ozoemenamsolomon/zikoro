@@ -295,7 +295,7 @@ export function BookEvent({
       expiredAt: formattedNextSevenDays,
       amountPaid: total,
       attendees: fields?.length,
-      discountValue: discount || "none",
+      discountValue: discount,
       referralSource: social,
       discountCode: code || "none",
       currency,

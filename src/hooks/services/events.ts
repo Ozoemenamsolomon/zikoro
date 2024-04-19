@@ -4,9 +4,14 @@ import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { eventBookingValidationSchema, organizationSchema } from "@/schemas";
-import { Event, Organization, TEventTransactionDetail } from "@/types";
+import {
+  Event,
+  Organization,
+  TAttendee,
+  TEventTransactionDetail,
+} from "@/types";
 import _ from "lodash";
-import { getCookie, useGetOrganizations } from "@/hooks";
+import { getCookie, useGetOrganizations, useUpdateAttendees } from "@/hooks";
 import { getRequest, postRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
 import { useGetAllAttendees } from "@/hooks";
@@ -134,7 +139,6 @@ export function useCreateOrganisation() {
       if (status === 201 || status === 200) {
         setLoading(false);
         toast.success("Organisation created successfully");
-       
       }
     } catch (error) {}
   }
@@ -384,7 +388,11 @@ export function useDuplicateEvent() {
       }
 
       // Create a new event with the same data
-      const newEvent = { ...originalEvent, published: false };
+      const newEvent = {
+        ...originalEvent,
+        eventTitle: (originalEvent.eventTitle += " (D)"),
+        published: false,
+      };
       delete newEvent.id; // delete the id
 
       // Insert the new event into the events table
@@ -564,7 +572,7 @@ export function useBookingEvent() {
     eventId?: number,
     attendants?: string | null,
     ticketType?: string,
-    paymentLink?:string
+    paymentLink?: string
   ) {
     const { attendeeApplication } = values;
 
@@ -577,6 +585,7 @@ export function useBookingEvent() {
           ticketType,
           registrationDate: new Date(),
           paymentLink,
+          registrationCompleted: false,
           eventRegistrationRef: eventTransactionRef,
           userEmail: userData?.userEmail,
         };
@@ -705,6 +714,7 @@ export function useGetEventTransactionDetail(eventRegistrationRef: string) {
 }
 
 export function useUpdateTransactionDetail() {
+  const { updateAttendees, isLoading } = useUpdateAttendees();
   const [loading, setLoading] = useState(false);
 
   async function sendTransactionDetail(
@@ -712,19 +722,33 @@ export function useUpdateTransactionDetail() {
     payload: any
   ) {
     setLoading(true);
-
+    // eventId  eventRegistrationRef
     try {
       const { data, status } = await postRequest({
         endpoint: "/payment",
         payload,
       });
-      /**
-       if (status !== 204) {
-       shadcnToast({variant:"destructive",description: error.message});
-       return;
-      }
-    */
+
       if (status === 204 || status === 200) {
+        const { data: attendees, status } = await getRequest<TAttendee[]>({
+          endpoint: `/attendees/event/${payload?.eventId}`,
+        });
+
+        const registeredAttendee = attendees?.data
+          ?.filter((attendee) => {
+            return (
+              attendee?.eventRegistrationRef === payload?.eventRegistrationRef
+            );
+          })
+          .map((value) => {
+            return {
+              ...value,
+              registrationCompleted: true,
+            };
+          });
+
+        await updateAttendees({ payload: registeredAttendee });
+
         setLoading(false);
         toggleSuccessModal(true);
         toast.success("Transaction Successful");

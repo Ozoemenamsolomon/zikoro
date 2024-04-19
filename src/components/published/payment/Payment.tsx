@@ -39,35 +39,8 @@ export function Payment({
 
   const eventData: any = query.get("eventData");
   const parsedData: QueryData = JSON.parse(eventData);
-  console.log({ parsedData });
+ // console.log({ parsedData });
 
-  /**
-   const {
-    total,
-    discount,
-    eventImage,
-    count,
-    processingFee,
-    address,
-    amountPayable,
-    priceCategory,
-    organizerContact,
-    organization,
-    eventDate,
-    eventPrice,
-    currency,
-    eventLocation,
-    eventTitle,
-    startDate,
-    endDate,
-    allowPayment,
-    eventId,
-    attendeesDetails,
-    eventReference,
-    referralSource,
-    discountCode,
-  } = parsedData;
- */
   const user = getCookie("user");
   const config = paymentConfig({
     reference: data?.eventRegistrationRef,
