@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib";
 import { LiveView } from "@/constants";
 
@@ -5,12 +7,13 @@ export function SessionCard({
   children,
   isOther,
   isLive,
-  className
+
+  className,
 }: {
   isLive?: boolean;
   isOther?: boolean;
   children: React.ReactNode;
-  className?:string
+  className?: string;
 }) {
   return (
     <div

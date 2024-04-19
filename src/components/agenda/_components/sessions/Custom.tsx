@@ -17,8 +17,9 @@ import { cn } from "@/lib";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import {TFAgenda} from "@/types"
-
+import { TFAgenda } from "@/types";
+import { getCookie } from "@/hooks";
+import {useRouter} from "next/navigation"
 export function Custom({
   data,
   className,
@@ -26,6 +27,8 @@ export function Custom({
   className?: string;
   data: TFAgenda;
 }) {
+  const event = getCookie("currentEvent");
+  const router = useRouter()
   //max-w-[400px]
 
   const settings = {
@@ -34,6 +37,7 @@ export function Custom({
     autoplay: true,
     fade: false,
     speed: 400,
+    delay: 5000,
     slidesToShow: 1,
     slidesToScroll: 1,
   };
@@ -44,8 +48,10 @@ export function Custom({
     <SessionCard isOther isLive className={className}>
       <div className="w-full md:col-span-8 ">
         <Comp className="w-full agenda-slider h-full z-4" {...settings}>
-          {data?.session?.map(({title}, index) => (
+          {data?.session?.map(({ title }, index) => (
             <div
+              role="button"
+              onClick={() => router.push(`/event/127/agenda/1`)}
               key={index}
               className={cn(
                 "flex border-0 flex-col w-full  p-3 rounded-xl items-start justify-start "
