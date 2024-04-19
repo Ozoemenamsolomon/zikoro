@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { toast } from "@/components/ui/use-toast";
 import { TEventTransaction } from "@/types/billing";
@@ -13,8 +13,12 @@ type UseGetEventTransactionsResult = {
 
 export const useGetEventTransactions = ({
   userId,
+  registrationCompleted,
+  payOutStatus,
 }: {
-  userId: number;
+  userId?: number;
+  registrationCompleted?: number;
+  payOutStatus?: number;
 }): UseGetEventTransactionsResult => {
   const [eventTransactions, setEventTransactions] = useState<
     TEventTransaction[]
@@ -27,7 +31,11 @@ export const useGetEventTransactions = ({
 
     try {
       const { data, status } = await getRequest<TEventTransaction[]>({
-        endpoint: `/billing/${userId}`,
+        endpoint: `/billing?${userId ? "userId=" + userId + "&" : ""}${
+          registrationCompleted
+            ? "registrationCompleted=" + registrationCompleted + "&"
+            : ""
+        }${payOutStatus ? "payOutStatus=" + payOutStatus + "&" : ""}`,
       });
 
       if (status !== 200) {
