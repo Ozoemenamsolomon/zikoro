@@ -116,21 +116,7 @@ export function AddPartners({
     }
   }, [country]);
 
-  /**
-   useEffect(() => {
-    if (selectedIndustry !== null) {
-      form.setValue("industry", selectedIndustry.name);
-    }
-  }, [selectedIndustry]);
-  // FN to select an industry
-  function handleSelected(name: string, color: string) {
-    setSelectedIndustry({ name, color });
-  }
 
- */
-  //  const industryValue = form.watch("industry");
-  // console.log({ industryValue });
-  //  z.infer<typeof partnerSchema>
   async function onSubmit(values: any) {
     let selectedIndustry: PartnerIndustry | undefined
 
@@ -451,6 +437,7 @@ export function AddPartners({
                 <p>Industry</p>
               </Button>
             </div>
+
             <div className="w-full grid grid-cols-2 items-center gap-2">
               <FormField
                 control={form.control}

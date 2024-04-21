@@ -13,8 +13,8 @@ import {TFAgenda} from "@/types"
 export function Others({ data, className }: {className?:string; data: TFAgenda}) {
   return (
     <SessionCard className={className}>
-      <div className="w-full md:col-span-8 flex flex-col items-start justify-start gap-y-2">
-        <p className="font-semibold text-lg sm:text-3xl">{data.session[0]?.title ?? ""}</p>
+      <div className="w-full md:col-span-6 lg:col-span-8 flex flex-col items-start justify-start gap-y-2">
+        <p className="font-semibold text-lg sm:text-3xl">{data.session[0]?.sessionTitle ?? ""}</p>
         <div className="flex items-center gap-x-3">
           <Button className="h-fit w-fit px-0">
             <CalendarCheck className="text-basePrimary" size={20} />
