@@ -36,11 +36,13 @@ export const columns: ColumnDef<IPayOut>[] = [
   },
   {
     accessorKey: "requestedBy",
-    header: "Paid by",
+    header: "Requested by",
 
-    cell: ({ row }) => (
+    cell: ({ row }) => {
+      // const user = row.original.
+      return (
       <div className="truncate">{row.getValue("requestedBy")}</div>
-    ),
+    )},
   },
   {
     accessorKey: "Amount",

@@ -6,9 +6,27 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      const { data, error, status } = await supabase
-        .from("payOut")
-        .select("*, users!inner(*)");
+      const { searchParams } = new URL(req.url);
+      const userId = searchParams.get("userId");
+      const payOutStatus = searchParams.get("payOutStatus");
+      const registrationCompleted = searchParams.get("registrationCompleted");
+
+      console.log(registrationCompleted);
+
+      const query = supabase
+        .from("eventTransactions")
+        .select("*, events!inner(*)");
+
+      if (userId) query.eq("userId", userId);
+      if (registrationCompleted)
+        query.eq(
+          "registrationCompleted",
+          parseInt(registrationCompleted) === 1 ? true : false
+        );
+      if (payOutStatus && parseInt(payOutStatus) === 1)
+        query.neq("payOutStatus", "new");
+
+      const { data, error, status } = await query;
 
       if (error) throw error;
 

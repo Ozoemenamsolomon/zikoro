@@ -1,3 +1,4 @@
+import { TUser } from ".";
 import { TAttendee } from "./attendee";
 
 export type TEventTransaction = {
@@ -39,4 +40,5 @@ export interface IPayOut {
   Amount: number;
   paidAt?: Date | null;
   requestedBy: string;
+  user: TUser;
 }
