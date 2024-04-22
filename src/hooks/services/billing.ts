@@ -1,8 +1,8 @@
 "use client";
 
 import { toast } from "@/components/ui/use-toast";
-import { TEventTransaction } from "@/types/billing";
-import { RequestStatus } from "@/types/request";
+import { IPayOut, TEventTransaction } from "@/types/billing";
+import { RequestStatus, UseGetResult } from "@/types/request";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
@@ -105,7 +105,11 @@ export const useGetAttendeeEventTransactions = ({
 };
 
 type useRequestPayOutResult = {
-  requestPayOut: ({ payload }: { payload: string[] }) => Promise<void>;
+  requestPayOut: ({
+    payload,
+  }: {
+    payload: { transactionId: string[]; amount: number };
+  }) => Promise<void>;
 } & RequestStatus;
 
 export const useRequestPayOut = ({
@@ -116,7 +120,11 @@ export const useRequestPayOut = ({
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const requestPayOut = async ({ payload }: { payload: string[] }) => {
+  const requestPayOut = async ({
+    payload,
+  }: {
+    payload: { transactionId: string[]; amount: number };
+  }) => {
     setLoading(true);
     toast({
       description: "requesting payout...",
@@ -139,4 +147,51 @@ export const useRequestPayOut = ({
   };
 
   return { requestPayOut, isLoading, error };
+};
+
+export const useGetPayOuts = ({
+  userId,
+}: {
+  userId: string;
+}): UseGetResult<IPayOut[], "payOuts", "getPayOuts"> => {
+  const [payOuts, setPayOuts] = useState<IPayOut[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  console.log("here");
+
+  const getPayOuts = async () => {
+    setLoading(true);
+    console.log("here");
+    try {
+      console.log("here");
+      const { data, status } = await getRequest<IPayOut[]>({
+        endpoint: `/billing/${userId}/payout`,
+      });
+
+      console.log(data);
+
+      if (status !== 200) {
+        throw data;
+      }
+      setPayOuts(data.data);
+    } catch (error) {
+      console.log(error);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log("here");
+    getPayOuts();
+  }, []);
+
+  return {
+    payOuts,
+    isLoading,
+    error,
+    getPayOuts,
+  };
 };

@@ -301,9 +301,10 @@ export default function All() {
   ]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const user = getCookie("user");
+  console.log(user);
   const { eventTransactions, isLoading, getEventTransactions } =
     useGetEventTransactions({
-      userId: user.id,
+      userId: user.id || 0,
     });
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =

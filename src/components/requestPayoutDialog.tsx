@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useRequestPayOut } from "@/hooks/services/billing";
 import { DialogClose } from "./ui/dialog";
+import { getCookie } from "@/hooks";
 
 interface RequestPayoutDialogProps {
   selectedRows: TEventTransaction[];
@@ -15,15 +16,16 @@ const RequestPayoutDialog = ({
   getEventTransactions,
 }: RequestPayoutDialogProps) => {
   const totalRevenue = selectedRows.reduce(
-    (acc, { amountPaid }) => amountPaid + acc,
+    (acc, { amountPaid }) => (amountPaid ? amountPaid + acc : amountPaid),
     0
   );
   const totalProcessingFee = selectedRows.reduce(
-    (acc, { processingFee }) => processingFee + acc,
+    (acc, { processingFee }) => (processingFee ? processingFee + acc : acc),
     0
   );
   const totalAffiliateCommission = selectedRows.reduce(
-    (acc, { affliateCommission }) => affliateCommission + acc,
+    (acc, { affliateCommission }) =>
+      affliateCommission ? affliateCommission + acc : acc,
     0
   );
 
@@ -32,10 +34,15 @@ const RequestPayoutDialog = ({
     0
   );
 
-  const { requestPayOut } = useRequestPayOut({ userId: 1 });
+  const user = getCookie("user");
+
+  const { requestPayOut } = useRequestPayOut({ userId: user.id });
 
   const onRequestPayOut = async () => {
-    const payload = selectedRows.map(({ id }) => id.toString());
+    const payload = {
+      transactionId: selectedRows.map(({ id }) => id.toString()),
+      amount: totalRevenue - totalProcessingFee - totalAffiliateCommission,
+    };
     await requestPayOut({ payload });
     await getEventTransactions();
   };
@@ -70,7 +77,9 @@ const RequestPayoutDialog = ({
                   {row.attendees}
                 </td>
                 <td className="py-2 px-4 border-b text-gray-500 text-tiny text-center">
-                  {row.amountPaid - row.processingFee - row.affliateCommission}
+                  {row.amountPaid -
+                    (row.processingFee || 0) -
+                    (row.affliateCommission || 0)}
                 </td>
               </tr>
             ))}
