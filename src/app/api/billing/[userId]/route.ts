@@ -10,11 +10,13 @@ export async function GET(
   if (req.method === "GET") {
     try {
       const { userId } = params;
+      const { searchParams } = new URL(req.url);
+      const userEmail = searchParams.get("userEmail");
 
       const { data, error } = await supabase
         .from("events")
         .select("id")
-        .eq("createdBy", userId);
+        .eq("createdBy", userEmail);
 
       if (error) throw error;
 
