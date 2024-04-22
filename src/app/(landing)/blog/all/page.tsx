@@ -13,15 +13,16 @@ type DBBlogAll = {
   content: JSON;
   views: number;
   shares: JSON;
+  tags: [];
+  headerImageUrl: string;
 };
-
 
 export default function All() {
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
 
   //fetch blog posts
   async function fetchBlogPost() {
-    fetch("/api/blog/all", {
+    fetch("/api/blog/published", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +35,7 @@ export default function All() {
 
   useEffect(() => {
     fetchBlogPost();
-  }, []);
+  }, [blogData]);
 
   return (
     <div>
@@ -53,6 +54,8 @@ export default function All() {
               content={blogPost.content}
               views={blogPost.views}
               shares={blogPost.shares}
+              tags={blogPost.tags}
+              headerImageUrl={blogPost.headerImageUrl}
             />
           ))}
       </div>

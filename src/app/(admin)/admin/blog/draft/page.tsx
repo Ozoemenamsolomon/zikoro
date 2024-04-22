@@ -1,14 +1,58 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AdminBlogCalendarIcon } from "@/constants/icons";
 import AdminPublishedBlog from "@/components/blog/AdminBlogTemplate";
 
+type DBBlogAll = {
+  id: number;
+  title: string;
+  created_at: string;
+  category: JSON;
+  status: string;
+  statusDetails: JSON;
+  readingDuration: number;
+  content: JSON;
+  views: number;
+  shares: number;
+  tags: [];
+  headerImageUrl: string;
+};
+
 export default function Create() {
-  const [searchBox, setSearchBox] = useState("");
+  const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
+  const [formData, setFormData] = useState({
+    category: "",
+  });
+
+  const categories = [
+    "All",
+    "Event tips",
+    "Product Updates",
+    "Guides and Tutorial",
+    "Case Study",
+  ];
 
   const handleChange = (e: any) => {
-    setSearchBox(e.target.value);
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
+
+  //fetch blog posts
+  async function fetchBlogPost() {
+    fetch("/api/blog/drafts", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setBlogData(data.data))
+      .catch((error) => console.error("Error:", error));
+  }
+
+  useEffect(() => {
+    fetchBlogPost();
+  }, [blogData]);
 
   return (
     <div className=" pl-3 lg:pl-10 pr-3 lg:pr-28 pt-16 lg:pt-20  ">
@@ -21,25 +65,56 @@ export default function Create() {
           </div>
 
           <select
-            name="industry"
+            name="category"
+            value={formData.category}
             onChange={handleChange}
-            value=""
-            id=""
-            className="w-full lg:w-[180px] h-[44px] bg-transparent rounded-lg border-[1px] text-base border-indigo-600 px-4 outline-none"
+            // required
+            className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none"
           >
-            <option disabled selected value="" className="">
-              Category
+            <option
+              disabled
+              selected
+              value=""
+              className="bg-transparent text-gray-400 "
+            >
+              Select Category
             </option>
-            <option value="Conferences" className="bg-transparent text-black">
-              Conferences
-            </option>
+            {categories.map((category, index) => (
+              <option
+                key={index}
+                value={category}
+                className="bg-transparent text-black text-[15px]"
+              >
+                {" "}
+                {category}{" "}
+              </option>
+            ))}
           </select>
         </div>
       </section>
 
       {/* section 2 */}
-      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px] bg-white">
-        <AdminPublishedBlog draft={true} />
+      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px] bg-white ">
+        {blogData?.length &&
+          blogData?.map((blogPost, index) => (
+            <AdminPublishedBlog
+              scheduled={false}
+              draft={true}
+              key={blogPost.id}
+              id={blogPost.id}
+              title={blogPost.title}
+              createdAt={blogPost.created_at}
+              category={blogPost.category}
+              status={blogPost.status}
+              statusDetails={blogPost.statusDetails}
+              readingDuration={blogPost.readingDuration}
+              content={blogPost.content}
+              views={blogPost.views}
+              shares={blogPost.shares}
+              tags={blogPost.tags}
+              headerImageUrl={blogPost.headerImageUrl}
+            />
+          ))}
       </section>
     </div>
   );

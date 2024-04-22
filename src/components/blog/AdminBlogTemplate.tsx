@@ -16,9 +16,11 @@ type BlogPostProps = {
   readingDuration: number;
   content: JSON;
   views: number;
-  shares: JSON;
+  shares: number;
   draft: boolean;
   scheduled: boolean;
+  headerImageUrl: string;
+  tags: string[];
 };
 
 export default function AdminBlogTemplate({
@@ -34,6 +36,8 @@ export default function AdminBlogTemplate({
   shares,
   draft,
   scheduled,
+  headerImageUrl,
+  tags,
 }: BlogPostProps) {
   // Extracting the date only
   function extractDate(dateTimeString: string): string {
@@ -57,27 +61,27 @@ export default function AdminBlogTemplate({
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row gap-x-0 md:gap-x-8 lg:gap-x-10  cursor-pointer gap-y-6 lg:gap-y-0 px-3 lg:px-10 items-center py-10">
+    <div className="flex flex-col md:flex-row gap-x-0 md:gap-x-8 lg:gap-x-10 gap-y-6 lg:gap-y-0 px-3 lg:px-10 items-center py-10">
       <Image
-        src="/postImage2.png"
-        alt=""
-        height={240}
-        width={367}
-        className="hidden lg:block rounded-lg w-fit "
-      />
-      <Image
-        src="/postImage2.png"
+        src={headerImageUrl ? headerImageUrl : "/postImage2.png"}
         alt=""
         height={240}
         width={524}
-        className="block lg:hidden rounded-lg w-fit"
+        className="hidden lg:block rounded-lg w-[524px] h-[240px] object-cover"
+      />
+      <Image
+        src={headerImageUrl ? headerImageUrl : "/postImage2.png"}
+        alt=""
+        height={240}
+        width={367}
+        className="block lg:hidden rounded-lg w-[367px] h-[240px]"
       />
 
       <div className="flex flex-col justify-center ">
         <div className="flex lg:flex-col items-center ">
           <div className="">
             <div className="flex justify-between">
-              <p className="text-indigo-700 capitalize font-medium text-xs lg:text-base">
+              <p className="text-indigo-700 capitalize font-medium text-lg">
                 Product Updates
               </p>
 
@@ -98,29 +102,32 @@ export default function AdminBlogTemplate({
             <p className="capitalize font-semibold text-base lg:text-2xl ">
               {title}
             </p>
-            <div className="flex uppercase mt-4 text-[12px] lg:text-[15px] font-normal ">
-              <p>
-                {date} {" - "}{" "}
-              </p>
-              <p>3 Min Read</p>
-            </div>
+
+            {!draft && !scheduled && (
+              <div className="flex uppercase mt-4 text-[12px] lg:text-[15px] font-normal ">
+                <p>
+                  {date} {" - "}{" "}
+                </p>
+                <p>3 Min Read</p>
+              </div>
+            )}
 
             {!draft && !scheduled && (
               <div className="flex gap-x-10 mt-4 text-[12px] lg:text-[15px] font-normal ">
                 <div className="flex items-center gap-x-2">
                   <AdminBlogViewIcon2 />
-                  <p className="">1k Views</p>
+                  <p className="">{views} Views</p>
                 </div>
 
                 <div className="flex items-center gap-x-2">
                   <AdminBlogShareIcon2 />
-                  <p className="">1k Shares</p>
+                  <p className="">{shares} Shares</p>
                 </div>
               </div>
             )}
 
             {draft && (
-              <div className="flex gap-x-10 mt-4 text-[12px] lg:text-[15px] font-normal ">
+              <div className="flex gap-x-3 mt-4 text-sm font-normal ">
                 <p className="font-medium">
                   Last Updated:{" "}
                   <span className="font-normal uppercase">
@@ -132,12 +139,10 @@ export default function AdminBlogTemplate({
             )}
 
             {scheduled && (
-              <div className="flex gap-x-10 mt-4 text-[12px] lg:text-[15px] font-normal ">
+              <div className="flex gap-x-3 mt-4 text-sm font-normal ">
                 <p className="font-medium">
                   Scheduled For:{" "}
-                  <span className="font-normal uppercase">
-                    March 23 2024 {" "}
-                  </span>
+                  <span className="font-normal uppercase">March 23 2024 </span>
                 </p>
                 <p className=" uppercase">1:19 PM</p>
               </div>

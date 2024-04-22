@@ -11,8 +11,8 @@ import {
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
 
 type DBFeaturedEvent = {
-  id: string,
-  eventPoster:string;
+  id: string;
+  eventPoster: string;
   eventTitle: string;
   eventCity: string;
   eventCountry: string;
@@ -122,11 +122,10 @@ export default function FeaturedEvents() {
               </div>
 
               {/* main section */}
-              <div className="flex flex-col lg:flex-row justify-between mt-[50px]  border-r-0 border-l-[1px] border-gray-200 border-collapse rounded-none">
+              <div className="flex flex-col lg:flex-row justify-between mt-[50px] border-l-[1px] border-gray-200 rounded-none">
                 {/* left */}
-
-                <div className="border-t-[1px]  border-collapse  border-gray-200  h-full pb-12 w-full lg:w-3/12">
-                  <div className="flex gap-x-3 py-[43px] px-8 border-b-[1px] border-r-[1px] border-gray-200">
+                <div className="border-t-[1px] border-gray-200 h-full pb-12 w-full lg:w-3/12 ">
+                  <div className="flex gap-x-3 py-[43px] px-[30px] border-b-[1px] border-gray-200">
                     <FilterIcon />
                     <p className="text-xl font-semibold"> Filters</p>
                   </div>
@@ -436,12 +435,15 @@ export default function FeaturedEvents() {
                 </div>
 
                 {/* Right */}
-                <div className=" border-t-[1px] border-gray-200 border-r-[1px] w-full lg:w-9/12 ">
+                <div className=" border-t-[1px] border-gray-200 border-l-[1px] border-r-[1px] w-full lg:w-9/12 py-[3px] ">
                   {/* top */}
                   <div className="flex">
                     <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] ">
                       {eventCategories.map((eventCategory, i) => (
-                        <div key={i} className="py-[18px] px-5 t w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap">
+                        <div
+                          key={i}
+                          className="py-[18px] px-5 t w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap"
+                        >
                           {eventCategory}{" "}
                         </div>
                       ))}
@@ -449,13 +451,13 @@ export default function FeaturedEvents() {
                   </div>
 
                   {/* bottom */}
-                  <div className="py-2 px-4 h-[1485px] flex flex-col justify-start border-t-[1px] border-l-[1px] border-gray-200  items-center overflow-y-auto no-scrollbar pt-8 pb-0 lg:pb-[50px]">
+                  <div className="py-2 px-4 h-[1485px] flex flex-col justify-start border-t-[1px] border-gray-200  items-center overflow-y-auto no-scrollbar pt-8 pb-0 lg:pb-[50px]">
                     <div className="grid grid-cols-3 gap-4 mt-8 ">
-                      {eventData?.length && (
+                      {eventData?.length &&
                         eventData?.map((event, index) => (
                           <FeaturedEvent
                             key={event.id}
-                            id = {event.id}
+                            id={event.id}
                             eventPoster={event.eventPoster}
                             eventTitle={event.eventTitle}
                             eventCity={event.eventCity}
@@ -465,8 +467,7 @@ export default function FeaturedEvents() {
                             pricingCurrency={event.pricingCurrency}
                             startDateTime={event.startDateTime}
                           />
-                        ))
-                      )}
+                        ))}
                     </div>
 
                     <div className="gap-5 flex justify-center items-center pt-12">
@@ -516,7 +517,10 @@ export default function FeaturedEvents() {
                 <div className="mt-7">
                   <div className=" px-4 flex w-auto items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] border-y-[1px] border-gray-200 ">
                     {eventCategories.map((eventCategory, i) => (
-                      <div key={i} className="py-[18px] px-5 w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap">
+                      <div
+                        key={i}
+                        className="py-[18px] px-5 w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap"
+                      >
                         {eventCategory}{" "}
                       </div>
                     ))}
@@ -525,11 +529,11 @@ export default function FeaturedEvents() {
 
                 <div className="flex flex-col items-center mt-16 mb-20 ">
                   <div className="grid grid-cols-1 gap-4 w-full ">
-                    {eventData?.length && (
+                    {eventData?.length &&
                       eventData?.map((event, index) => (
                         <FeaturedEvent
                           key={event.id}
-                          id ={event.id}
+                          id={event.id}
                           eventPoster={event.eventPoster}
                           eventTitle={event.eventTitle}
                           eventCity={event.eventCity}
@@ -539,8 +543,7 @@ export default function FeaturedEvents() {
                           pricingCurrency={event.pricingCurrency}
                           startDateTime={event.startDateTime}
                         />
-                      ))
-                    )}
+                      ))}
                   </div>
 
                   <div className=" flex justify-center items-center pt-12">

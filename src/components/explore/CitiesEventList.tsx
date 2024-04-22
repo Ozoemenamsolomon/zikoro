@@ -25,7 +25,7 @@ export default function CitiesEventList() {
   }, []);
 
   const renderedCities = new Set(); // Set to store rendered cities
-
+  let renderedCityCount = 0;
 
   return (
     <div className="mt-[100px] max-w-6xl mx-auto px-3 lg:px-0">
@@ -46,21 +46,26 @@ export default function CitiesEventList() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-5 lg:gap-y-0 gap-x-4 mt-[50px] bg-white ">
-      {data?.length &&
-            data.map((city, index) => {
-              if (city.eventCity && !renderedCities.has(city.eventCity)) {
-                renderedCities.add(city.eventCity); // Add city to renderedCities set
-                return (
-                  <CityEvent
-                    key={index}
-                    cityName={city.eventCity}
-                    cityCount={city.eventCity.length}
-                  />
-                );
-              } else {
-                return null; // Render nothing if city has already been rendered
-              }
-            })}
+        {data?.length &&
+          data.map((city, index) => {
+            if (
+              city.eventCity &&
+              !renderedCities.has(city.eventCity) &&
+              renderedCityCount < 4 // Check if we've rendered less than 4 unique cities
+            ) {
+              renderedCities.add(city.eventCity); // Add city to renderedCities set
+              renderedCityCount++; // Increment the rendered city count
+              return (
+                <CityEvent
+                  key={index}
+                  cityName={city.eventCity}
+                  cityCount={city.eventCity.length}
+                />
+              );
+            } else {
+              return null; // Render nothing if city has already been rendered or we've already rendered 4 unique cities
+            }
+          })}
       </div>
 
       <div

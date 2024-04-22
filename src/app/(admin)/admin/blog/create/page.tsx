@@ -4,7 +4,7 @@ import TextEditor from "@/components/TextEditor";
 import { useForm } from "react-hook-form";
 import { UploadIcon } from "@/constants/icons";
 import { getCookie } from "@/hooks";
-import { toast } from "@/components/ui/use-toast";
+import toast from "react-hot-toast";
 
 export default function Create() {
   const form = useForm<any>({});
@@ -13,16 +13,33 @@ export default function Create() {
     setValue,
     formState: { errors },
   } = form;
-  const [searchBox, setSearchBox] = useState("");
   const content = watch("content");
 
   const [formData, setFormData] = useState({
     title: "",
     category: "",
     tags: "",
-    content: null,
-    headerImageUrl: "",
+    content: [],
+    readingDuration: 3,
+    statusDetail: JSON,
   });
+  const [file, setFile] = useState<any>(null);
+  const [headerImageUrl, setHeaderImageUrl] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
+  const categories = [
+    "All",
+    "Event tips",
+    "Product Updates",
+    "Guides and Tutorial",
+    "Case Study",
+  ];
+
+  const tags = [
+    "Event Planning",
+    "Attendee Management",
+    "Event Commerce",
+    "Event Partnership ",
+  ];
 
   const setMessage = (content: string) => {
     setValue("content", content);
@@ -37,12 +54,40 @@ export default function Create() {
     window.open("/admin/blog/dashboard", "_self");
   }
 
+  const handleUpdateStaus = (newStatus: string) => {
+    setStatus(newStatus);
+  };
+
+  const addImage = (e: any) => {
+    setFile(e.target.files[0]);
+  };
+
+  const uploadImage = async () => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "w5xbik6z");
+    formData.append("folder", "ZIKORO");
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/kachiozo/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setHeaderImageUrl(data.secure_url);
+        toast.success("Image Uploaded");
+      }
+    } catch (error) {
+      toast.error(`Error uploading image: ${error}`);
+    }
+  };
+
   const submitBlogPost = async (e: any) => {
     e.preventDefault();
-    const blogContent = content;
-    const blogTitle = searchBox;
-    const user = getCookie("user");
-
     try {
       const response = await fetch("/api/blog/add", {
         method: "POST",
@@ -50,55 +95,50 @@ export default function Create() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          blogContent: blogContent,
-          blogTitle: blogTitle,
+          title: formData.title,
+          category: formData.category,
+          headerImageUrl: headerImageUrl,
+          tags: formData.tags,
+          readingDuration: formData.readingDuration,
+          status: status,
+          content: content
+          // statusDetail: formData.statusDetail,
         }),
       });
 
       if (response.ok) {
-        toast({ variant: "destructive", description: "Post Uploaded" });
+        toast.success(
+          `${status == "draft" ? "Saved to draft" : "Post Published"}`
+        );
         goToDashboard();
+        
       } else {
-        throw new Error("Message Not Sent ");
+        throw new Error("Post Not Published ");
       }
     } catch (error) {
-      toast({ variant: "destructive", description: `${error}` });
+      toast.error(`${error}`);
       console.log(`Error submitting blog ${error}`);
     }
   };
 
-  const categories = [
-    "Conferences",
-    "Tradeshows & Exhibitions",
-    "Seminars & Workshops",
-    "Careers",
-    "Education",
-    "Culture & Arts",
-    "Celebrations",
-    "Celebrations",
-    "Sports",
-    "Job Fairs",
-    "Festivals",
-    "Charity",
-  ];
-
   return (
     <div className="">
       <div className=" flex flex-col pl-3 lg:pl-10 pr-3 lg:pr-28 pt-28 ">
-        <p className="text-2xl lg:text-3xl font-semibold bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text ">
+        <p className="text-3xl font-semibold bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text ">
           Create New Blog Post
         </p>
 
         <section className="mt-4 lg:mt-6 ">
           <form onSubmit={submitBlogPost}>
-            <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center">
-              <div className=" rounded-xl shadow-sm w-full lg:w-[620px]  ">
+            <input type="hidden" name="status" value={status} />
+            <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center gap-x-0 lg:gap-x-4">
+              <div className=" rounded-xl shadow-sm w-full lg:w-8/12  ">
                 {/* 570 width */}
                 <div className="px-3 bg-transparent rounded-xl flex items-center ">
                   <input
                     type="text"
-                    value={searchBox}
-                    name="searchBox"
+                    value={formData.title}
+                    name="title"
                     id=""
                     onChange={handleChange}
                     placeholder="Enter Blog Title"
@@ -109,22 +149,23 @@ export default function Create() {
               </div>
 
               <select
-                name="industry"
-                // onChange={handleChange}
-                value=""
-                id=""
-                className="w-full lg:w-[180px] h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                // required
+                className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none"
               >
                 <option
                   disabled
                   selected
-                  value={formData.category}
+                  value=""
                   className="bg-transparent text-gray-400 "
                 >
                   Select Category
                 </option>
-                {categories.map((category) => (
+                {categories.map((category, index) => (
                   <option
+                    key={index}
                     value={category}
                     className="bg-transparent text-black text-[15px]"
                   >
@@ -135,59 +176,78 @@ export default function Create() {
               </select>
 
               <select
-                name="industry"
-                // onChange={handleChange}
-                value=""
-                id=""
-                className="w-full lg:w-[180px] h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none"
+                name="tags"
+                onChange={handleChange}
+                value={formData.tags}
+                className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none"
+                required
               >
-                <option disabled selected value="" className="">
+                <option
+                  disabled
+                  selected
+                  value=""
+                  className="bg-transparent text-gray-400"
+                >
                   Add Tags
                 </option>
 
-                <option
-                  value="Conferences"
-                  className="bg-transparent text-black"
-                >
-                  Conferences
-                </option>
+                {tags.map((tag, index) => (
+                  <option
+                    value={tag}
+                    key={index}
+                    className="bg-transparent text-black text-[15px]"
+                  >
+                    {" "}
+                    {tag}{" "}
+                  </option>
+                ))}
               </select>
             </div>
 
-            <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center">
-              <div className=" rounded-xl w-full lg:w-[300px]  ">
-                {/* 570 width */}
-                <div className="px-0 lg:px-3 bg-transparent rounded-xl ">
+            <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center gap-x-0 lg:gap-x-4">
+              <div className=" rounded-xl w-full lg:w-5/12 ">
+                <div className="px-0 lg:px-3 bg-transparent rounded-xl flex items-center justify-center ">
                   <input
                     type="file"
                     id=""
-                    className="pl-4 outline-none text-sm text-gray-600 bg-transparent h-[44px] w-full"
+                    onChange={addImage}
+                    className=" pt-3 outline-none text-sm text-gray-600 bg-transparent h-[44px] w-1/2 lg:w-full"
                     required
                   />
+                  <div
+                    onClick={uploadImage}
+                    className=" cursor-pointer flex lg:hidden  gap-x-5 lg:gap-x-2 items-center"
+                  >
+                    <UploadIcon />
+                  </div>
                 </div>
               </div>
 
-              <div className=" cursor-pointer flex gap-x-5 lg:gap-x-2 items-center">
-                <p className="text-sm">Upload Post Image</p>
+              <div
+                onClick={uploadImage}
+                className=" cursor-pointer gap-x-5 lg:gap-x-2 items-center w-1/12 hidden lg:flex "
+              >
                 <UploadIcon />
               </div>
 
               <button
-                className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px] w-full lg:w-[180px] h-[44px] rounded-lg"
+                onClick={() => handleUpdateStaus("draft")}
+                className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px] w-full lg:w-2/12 h-[44px] rounded-lg"
                 type="submit"
               >
                 Save to draft
               </button>
 
               <button
-                className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px]  w-full lg:w-[180px] h-[44px] rounded-lg"
+                className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px]  w-full lg:w-2/12 h-[44px] rounded-lg"
                 type="submit"
               >
                 Preview
               </button>
 
               <button
-                className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-[180px] h-[44px] rounded-lg font-medium text-[15px]"
+                onClick={() => handleUpdateStaus("publish")}
+                className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px]"
                 type="submit"
               >
                 Publish

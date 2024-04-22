@@ -26,8 +26,8 @@ export default function CategoryEventList() {
   }, []);
 
   const renderedCategories = new Set(); // Set to store rendered categories
+  let renderedCategoryCount = 0;
 
-  
   return (
     <div className="mt-[100px] max-w-6xl mx-auto pb-24 px-3 lg:px-0">
       {/* header */}
@@ -51,9 +51,11 @@ export default function CategoryEventList() {
           data?.map((category, index) => {
             if (
               category.eventCategory &&
-              !renderedCategories.has(category.eventCategory)
+              !renderedCategories.has(category.eventCategory) &&
+              renderedCategoryCount < 4 // Check if we've rendered less than 4 unique categories
             ) {
               renderedCategories.add(category.eventCategory); // Add category to renderedCategories set
+              renderedCategoryCount++; // Increment the rendered category count
               return (
                 <CategoryEvent
                   key={index}
@@ -61,12 +63,12 @@ export default function CategoryEventList() {
                   categoryCount={
                     category.eventCategory.length
                       ? category.eventCategory.length
-                      : 0
+                      : ""
                   }
                 />
               );
             } else {
-              return null; // Render nothing if category has already been rendered
+              return null; // Render nothing if category has already been rendered or we've already rendered 4 unique categories
             }
           })}
       </div>
