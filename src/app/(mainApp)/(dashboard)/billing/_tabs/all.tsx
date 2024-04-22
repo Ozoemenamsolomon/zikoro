@@ -304,7 +304,7 @@ export default function All() {
   console.log(user);
   const { eventTransactions, isLoading, getEventTransactions } =
     useGetEventTransactions({
-      userEmail: user.userEmail || "",
+      userId: user?.id || 0,
     });
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =

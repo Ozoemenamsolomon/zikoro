@@ -33,9 +33,9 @@ export const useGetEventTransactions = ({
 
     try {
       const { data, status } = await getRequest<TEventTransaction[]>({
-        endpoint: `/billing?${userId ? "userId=" + userId + "&" : ""}${
-          userEmail ? "userEmail=" + userEmail + "&" : ""
-        }${
+        endpoint: `/billing/${userId}?${
+          userId ? "userId=" + userId + "&" : ""
+        }${userEmail ? "userEmail=" + userEmail + "&" : ""}${
           registrationCompleted
             ? "registrationCompleted=" + registrationCompleted + "&"
             : ""

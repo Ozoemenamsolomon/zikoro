@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
         .select("*, events!inner(*)");
 
       if (userId) query.eq("userId", userId);
-      if (userEmail) query.eq("events.email", userEmail);
+      if (userId) query.eq("events.email", userEmail);
       if (registrationCompleted)
         query.eq(
           "registrationCompleted",
