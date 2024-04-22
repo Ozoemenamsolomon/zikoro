@@ -190,7 +190,7 @@ const PAYOUT_TABS = [
 export default function page() {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const user = getCookie("user");
-  const { payOuts, isLoading } = useGetPayOuts({ userId: user.id || 0 });
+  const { payOuts, isLoading } = useGetPayOuts({ userId: user?.id || 0 });
 
   console.log(payOuts);
 
