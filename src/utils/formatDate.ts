@@ -125,3 +125,50 @@ export function formatDate(dateString: string): string {
     const formatter = new Intl.DateTimeFormat('en-US', options);
     return formatter.format(date);
   }
+
+
+  export function generateDateRange(startDate: string, endDate: string) {
+    
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+   
+    const dateRange: Array<{ date: string; formattedDate: string }> = [];
+
+    
+    function formatDate(date: Date): string {
+        // Get the day, month, and year parts
+        const day = date.getDate();
+        const month = date.toLocaleString("en-GB", { month: "long" });
+        const year = date.getFullYear();
+
+        // Get the weekday (e.g., Fri, Sat)
+        const weekday = date.toLocaleString("en-GB", { weekday: "short" });
+
+        // Return the formatted date string
+        return `${day} ${weekday}, ${month} ${year}`;
+    }
+
+    
+    let currentDate = new Date(start);
+
+   
+    while (currentDate <= end) {
+        // Create an object for the current date with both date formats
+        const dateObj = {
+            date: currentDate.toISOString(),
+            formattedDate: formatDate(currentDate),
+        };
+
+        // Add the date object to the array
+        dateRange.push(dateObj);
+
+        // Increment the current date by one day
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Return the array of date range objects
+    return dateRange;
+}
+
+

@@ -5,22 +5,29 @@ import { useSearchParams } from "next/navigation";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { Button } from "..";
 import { cn } from "@/lib";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Printer } from "@styled-icons/evaicons-solid/Printer";
 import { ScanDash } from "@styled-icons/fluentui-system-regular/ScanDash";
 import { Others, Custom, AddSession, FullScreenView } from "./_components";
+import { useFetchSingleEvent } from "@/hooks";
+import { generateDateRange } from "@/utils";
 export default function Agenda({ eventId }: { eventId: string }) {
-  const [activeDate, setActiveDate] = useState(0);
+  const [activeDate, setActiveDate] = useState("");
   const [isOpen, setOpen] = useState(false);
+  const { data } = useFetchSingleEvent(eventId);
   const [isFullScreen, setFullScreen] = useState(false);
   const search = useSearchParams();
   const queryParam = search.get("a");
 
-  const eventDateRange = [
-    "20 Wed, November 2023",
-    "21 Thur, November 2023",
-    "22 Fri, November 2023",
-  ];
+  const dateRange = useMemo(() => {
+    if (data) {
+      const genDate = generateDateRange(data?.startDateTime, data?.endDateTime);
+      setActiveDate(genDate[0]?.date);
+      return genDate;
+    } else {
+      return [];
+    }
+  }, [data]);
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -53,26 +60,28 @@ export default function Agenda({ eventId }: { eventId: string }) {
 
           <Button
             onClick={onClose}
-            className="  text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
+            className={cn(" text-gray-50 bg-basePrimary hidden gap-x-2 h-11 sm:h-12 font-medium", activeDate && "flex")}
           >
             <PlusCircle size={22} />
             <p>Session</p>
           </Button>
         </div>
         <div className="w-full no-scrollbar mt-8 overflow-x-auto">
-          <div className="w-full flex items-center border-b px-4  gap-x-8">
-            {eventDateRange.map((val, index) => (
-              <button
-                onClick={() => setActiveDate(index)}
-                className={cn(
-                  "pb-3 text-gray-400  text-base sm:text-lg",
-                  activeDate === index &&
-                    "border-basePrimary border-b-2 text-basePrimary"
-                )}
-              >
-                {val}
-              </button>
-            ))}
+          <div className="min-w-max flex items-center border-b px-4  gap-x-8">
+            {Array.isArray(dateRange) &&
+              dateRange?.map((val, index) => (
+                <button
+                  key={val?.date}
+                  onClick={() => setActiveDate(val?.date)}
+                  className={cn(
+                    "pb-3 text-gray-400  text-base sm:text-lg",
+                    activeDate === val?.date &&
+                      "border-basePrimary border-b-2 text-basePrimary"
+                  )}
+                >
+                  {val?.formattedDate}
+                </button>
+              ))}
           </div>
         </div>
         <div className="w-full flex items-end p-4 justify-end gap-x-2">
@@ -86,32 +95,32 @@ export default function Agenda({ eventId }: { eventId: string }) {
 
         <div className="w-full p-2 sm:p-4 grid grid-cols-1 items-center gap-8">
           <Others
-            data={{ timeStamp: "Today", session: [{ title: "Registration" }] }}
+            data={{ timeStamp: "Today", session: [{ sessionTitle: "Registration" }] }}
           />
           <Others
-            data={{ timeStamp: "Today", session: [{ title: "Launch" }] }}
+            data={{ timeStamp: "Today", session: [{ sessionTitle: "Launch" }] }}
           />
           <Custom
             data={{
               timeStamp: "Today",
-              session: [{ title: "Introduction to Software Engineering" }],
+              session: [{ sessionTitle: "Introduction to Software Engineering" }],
             }}
           />
           <Others
-            data={{ timeStamp: "Today", session: [{ title: "Break" }] }}
+            data={{ timeStamp: "Today", session: [{ sessionTitle: "Break" }] }}
           />
           <Custom
             data={{
               timeStamp: "Today",
               session: [
-                { title: "Introduction to Software Engineering" },
-                { title: "Basics of Mechatronics" },
+                { sessionTitle: "Introduction to Software Engineering" },
+                { sessionTitle: "Basics of Mechatronics" },
               ],
             }}
           />
         </div>
       </div>
-      {isOpen && <AddSession close={onClose} eventId={eventId} />}
+      {isOpen && <AddSession eventStartDate={activeDate} close={onClose} eventId={eventId} event={data}/>}
       {isFullScreen && <FullScreenView close={toggleFullScreenMode} />}
     </>
   );

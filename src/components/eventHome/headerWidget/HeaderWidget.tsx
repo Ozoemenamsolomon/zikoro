@@ -9,7 +9,6 @@ import { CreateOrganization } from "..";
 import { useParams, useRouter } from "next/navigation";
 import _ from "lodash";
 import { useForm } from "react-hook-form";
-import { toast } from "@/components/ui/use-toast";
 
 type OrganizationListType = {
   label: string;
@@ -58,15 +57,8 @@ export function HeaderWidget({
   }, [selectedOrg]);
 
   function newEvent() {
-    const org = formattedList.find((o) => o.label === currentQuery);
-    if (!org?.value) {
-      toast({
-        variant: "destructive",
-        description: "Pls Select an Organization",
-      });
-      return;
-    }
-    router.push(`/create/${org?.value}`);
+  
+    router.push(`/create`);
   }
 
   return (

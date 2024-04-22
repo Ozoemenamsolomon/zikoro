@@ -28,6 +28,8 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
+
+  const Comp = Array.isArray(partnersData) && partnersData?.length > 1 ? Slider : "div"
   return (
     <>
       <div className="w-full grid grid-cols-1 md:grid-cols-7 items-center sm:items-start ">
@@ -46,7 +48,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
                 Sponsors
               </div>
               <div className="w-full col-span-5 block sm:hidden">
-                <Slider
+                <Comp
                   className="banner z-[4] h-[89px] block w-full"
                   {...settings}
                 >
@@ -65,7 +67,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
                       )}
                     </div>
                   ))}
-                </Slider>
+                </Comp>
               </div>
             </div>
           )}

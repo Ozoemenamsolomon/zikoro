@@ -6,21 +6,23 @@ import { newEventSchema } from "@/schemas";
 import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { useMemo } from "react";
 import { COUNTRY_CODE } from "@/utils";
-import { useCreateEvent, getCookie } from "@/hooks";
+import { useCreateEvent, getCookie, useGetUserOrganizations } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import InputOffsetLabel from "../InputOffsetLabel";
+import _ from "lodash"
 
-export default function CreateEvent({
-  organizationId,
-}: {
-  organizationId: string;
-}) {
+type OrganizationListType = {
+  label: string;
+  value: any;
+};
+
+export default function CreateEvent() {
   const { createEvent, loading } = useCreateEvent();
-  const { user } = useUser();
+  const { organizations: organizationList } = useGetUserOrganizations()
+
 
   const form = useForm<z.infer<typeof newEventSchema>>({
     resolver: zodResolver(newEventSchema),
@@ -29,6 +31,14 @@ export default function CreateEvent({
   function formatDate(date: Date): string {
     return date.toISOString();
   }
+  const formattedList: OrganizationListType[] = useMemo(() => {
+    const restructuredList = organizationList?.map(
+      ({ id, organizationName }) => {
+        return { value: id, label: organizationName };
+      }
+    );
+    return _.uniqBy(restructuredList, "value");
+  }, [organizationList]);
 
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
     const userData = getCookie("user");
@@ -38,7 +48,7 @@ export default function CreateEvent({
       ...values,
       expectedParticipants: Number(values?.expectedParticipants),
       eventAlias,
-      organisationId: organizationId,
+    
       createdBy: userData?.userEmail,
       published: false,
       eventStatus: "new",
@@ -88,6 +98,18 @@ export default function CreateEvent({
                 </InputOffsetLabel>
               )}
             />
+             <FormField
+                control={form.control}
+                name="organizationId"
+                render={({ field }) => (
+                  <ReactSelect
+                    {...field}
+                    placeHolder="Select an Organization"
+                    label="Organization"
+                    options={formattedList}
+                  />
+                )}
+              />
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
               <FormField
                 control={form.control}

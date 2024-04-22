@@ -6,4 +6,4 @@ export * from "./marketing"
 export * from "./moreoptions"
 export * from "./partners"
 export * from "./tags"
- 
+ export * from "./agenda"

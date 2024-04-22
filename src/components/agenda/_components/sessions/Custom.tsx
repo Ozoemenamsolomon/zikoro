@@ -46,9 +46,9 @@ export function Custom({
 
   return (
     <SessionCard isOther isLive className={className}>
-      <div className="w-full md:col-span-8 ">
+      <div className="w-full md:col-span-6 lg:col-span-8 ">
         <Comp className="w-full agenda-slider h-full z-4" {...settings}>
-          {data?.session?.map(({ title }, index) => (
+          {data?.session?.map(({ sessionTitle }, index) => (
             <div
               role="button"
               onClick={() => router.push(`/event/127/agenda/1`)}
@@ -58,7 +58,7 @@ export function Custom({
               )}
             >
               <h2 className="text-base w-full mb-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
-                {title ?? ""}
+                {sessionTitle ?? ""}
               </h2>
               <div className="w-full grid grid-cols-2 mb-2  gap-3">
                 {[1, 2, 3, 4].map((_) => (

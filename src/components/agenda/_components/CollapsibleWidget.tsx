@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components";
+import { cn } from "@/lib";
 import { EditOutline } from "@styled-icons/evaicons-outline/EditOutline";
 import { NavigateNext } from "@styled-icons/material-rounded/NavigateNext";
 import { Children, useState } from "react";
@@ -18,7 +19,7 @@ export function CollapsibleWidget({
     setVisibility((prev) => !prev);
   };
   return (
-    <section className="flex flex-col w-full h-auto transform ease-in-out transition-all duration-500 min-h-max">
+    <section className="flex flex-col w-full  min-h-max">
       <div className="w-full flex items-center justify-between px-3 py-3 border-y ">
         <p className="font-semibold text-base sm:text-xl">{title}</p>
         <div className="flex items-center gap-x-2">
@@ -36,7 +37,16 @@ export function CollapsibleWidget({
           </Button>
         </div>
       </div>
-      {isVisible && <>{children}</>}
+      {isVisible && (
+        <div
+          className={cn(
+            "h-0 w-full transform ease-in-out transition-all duration-500",
+            isVisible && "h-fit"
+          )}
+        >
+          {children}
+        </div>
+      )}
     </section>
   );
 }
