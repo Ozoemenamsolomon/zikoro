@@ -136,7 +136,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
       </div>
 
       {/* Footer Section */}
-      <div className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24">
+      <div className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24 mt-44">
         <p className="text-center text-xl lg:text-3xl font-semibold mt-14">
           Read More Articles
         </p>
