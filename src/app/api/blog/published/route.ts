@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
         const { data, error, } = await supabase
         .from('blog')
         .select()
+        .eq( 'status', 'publish' )
   
         if (error) throw error;
   

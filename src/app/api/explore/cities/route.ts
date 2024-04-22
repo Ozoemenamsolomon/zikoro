@@ -10,7 +10,9 @@ export async function GET(req: NextRequest) {
     try {
       const { data, error } = await supabase
         .from("events")
-        .select("eventCity");
+        .select("eventCity")
+        .eq("published", true)
+        .eq('explore', true)
 
       if (error) throw error;
 

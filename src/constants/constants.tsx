@@ -677,7 +677,7 @@ export const adminLinks: AdminNavLinkType[] = [
   {
     name: "Blog",
     image: "/images/a_blog.svg",
-    href: "blog/dashboard",
+    href: "blog",
   },
   {
     name: "Certificates",
