@@ -74,7 +74,7 @@ export default function BlogPost({
         alt=""
         height={240}
         width={367}
-        className="block lg:hidden rounded-lg w-[367px] h-[240px]"
+        className="block lg:hidden rounded-lg w-full object-cover h-[260px]"
       />
 
       <div className="flex flex-col justify-center ">
