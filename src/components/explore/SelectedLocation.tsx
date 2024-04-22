@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Calendar, LocationIcon1 } from "@/constants/icons";
 import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
+import { getLowestPrice } from "@/utils/getLowestPrice";
+import { addCommasToPrice } from "@/utils/priceSeprator";
 
 type SelectedLocationProps = {
   id: number;
@@ -16,9 +18,9 @@ type SelectedLocationProps = {
   startDateTime: string;
 };
 
-interface Price {
-  price: number;
-}
+// interface Price {
+//   price: number;
+// }
 
 export default function SelectedLocation({
   id,
@@ -31,46 +33,61 @@ export default function SelectedLocation({
   pricingCurrency,
   startDateTime,
 }: SelectedLocationProps) {
-  //extract the lowest price in the  array of prices.
-  function getLowestPrice(prices: Price[]): number | string {
-    if (!prices || prices.length === 0) {
-      return "Free"; // Return 'Free' if prices array is empty or undefined
-    }
-
-    let lowestPrice: number = prices[0].price; // Initialize lowest price with the first element
-
-    for (let i = 1; i < prices.length; i++) {
-      if (prices[i].price < lowestPrice) {
-        lowestPrice = prices[i].price;
-      }
-    }
-
-    return lowestPrice;
-  }
-
-  const [lowestPrice, setLowestPrice] = useState<number | string>("Loading...");
+  const [lowestPrice, setLowestPrice] = useState<any>("Loading...");
   const [date, setDate] = useState<string | null>(null);
+  const [currencySymbol, setCurrencySymbol] = useState<string | null>(null);
 
-  // Extracting the date portion
-  function extractDate(dateTimeString: string): string {
+  // Extracting the date and convert to string
+  function extractAndFormatDate(dateTimeString: string): string {
     try {
       const date = new Date(dateTimeString);
       if (isNaN(date.getTime())) {
         throw new Error("Invalid date");
       }
-      return date.toISOString().split("T")[0]; // Extracting the date portion
+      const formattedDate: string = formatDate(date);
+      return formattedDate;
     } catch (error) {
       console.error("Error extracting date:", error);
       return "Invalid Date";
     }
   }
 
+  function formatDate(date: Date): string {
+    const year: number = date.getFullYear();
+    const month: number = date.getMonth() + 1; // Month is zero-based, so add 1
+    const day: number = date.getDate();
+
+    const monthNames: string[] = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    const formattedDate: string = `${day} ${monthNames[month - 1]} ${year}`;
+
+    return formattedDate;
+  }
+
   //use Effect
   useEffect(() => {
+    //extract the lowest price
     setLowestPrice(getLowestPrice(pricing));
-    const extractedDate = extractDate(startDateTime);
+
+    //extract date
+    const extractedDate = extractAndFormatDate(startDateTime);
     setDate(extractedDate);
-    console.log(eventPoster);
+
+    //convert currency shortCode to currencySymbol
+    setCurrencySymbol(convertCurrencyCodeToSymbol(pricingCurrency));
   }, []);
 
   //function that shows the event details
@@ -93,32 +110,34 @@ export default function SelectedLocation({
           width={294}
           height={264}
         />
-        <p className="text-base font-medium text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end absolute left-4 top-2 py-[5px] px-[10px] rounded-lg">
+        <p className="text-sm font-medium text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end absolute left-4 top-2 py-[5px] px-[10px] rounded-lg">
           {locationType}
         </p>
       </div>
 
       {/* body */}
       <div className="pl-5 pr-5 border-[1px] border-gray-200 ">
-        <p className="mt-5 font-semibold truncate"> {eventTitle} </p>
+        <p className="mt-5 font-semibold text-lg truncate"> {eventTitle} </p>
 
         <div className="mt-6 flex gap-x-[10px] ">
           <Calendar />
-          <p className="text-xl font-normal"> {date} </p>
+          <p className="text-sm font-normal"> {date} </p>
         </div>
 
         <div className="mt-[10px] flex gap-x-[10px] mb-8 ">
           <LocationIcon1 />
-          <p className="text-xl font-normal truncate">
+          <p className="text-sm font-normal truncate">
             {eventCity} ,<span> {eventCountry}</span>{" "}
           </p>
         </div>
 
         <div className="border-t-[1px] border-gray-200 pt-8 flex justify-between pb-[15px]">
-          <p className="text-base font-normal">starting at</p>
-          <p className="text-xl font-medium">
-            {convertCurrencyCodeToSymbol(pricingCurrency)}
-            {lowestPrice}
+          <p className="text-sm font-normal">starting at</p>
+          <p className="text-sm font-medium">
+            {lowestPrice != "Free" && currencySymbol}
+            {lowestPrice != "Free"
+              ? addCommasToPrice(lowestPrice)
+              : lowestPrice}
           </p>
         </div>
       </div>

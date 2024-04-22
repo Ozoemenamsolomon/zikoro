@@ -15,6 +15,7 @@ export async function GET(req: any) {
         .from("events")
         .select()
         .eq("published", true)
+        .eq('explore', true)
         .limit(4);
 
       // If query parameters are provided, apply filters
