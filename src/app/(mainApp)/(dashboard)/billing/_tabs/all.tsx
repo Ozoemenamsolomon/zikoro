@@ -304,7 +304,7 @@ export default function All() {
   console.log(user);
   const { eventTransactions, isLoading, getEventTransactions } =
     useGetEventTransactions({
-      userId: user.id || 0,
+      userEmail: user.userEmail || "",
     });
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
@@ -312,6 +312,8 @@ export default function All() {
       data: eventTransactions,
       dataFilters: eventTransactionsFilter,
     });
+
+  console.log(eventTransactions);
 
   const totalRevenue = filteredData.reduce(
     (acc, { amountPaid }) => (amountPaid || 0) + acc,
@@ -501,8 +503,8 @@ export default function All() {
             </Dialog>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="bg-white border-[1px] border-basePrimary text-basePrimary flex gap-2 items-center w-fit px-4">
-                  <span>More Column Options</span>{" "}
+                <Button className="bg-white border-[1px] border-basePrimary text-basePrimary hover:bg-basePrimary hover:text-white flex gap-2 items-center w-fit px-4">
+                  <span>More Column Options</span> \
                   <AngleDown className="w-5 h-5" />
                 </Button>
               </DropdownMenuTrigger>

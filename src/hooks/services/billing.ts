@@ -12,11 +12,13 @@ type UseGetEventTransactionsResult = {
 } & RequestStatus;
 
 export const useGetEventTransactions = ({
+  userEmail,
   userId,
   registrationCompleted,
   payOutStatus,
 }: {
   userId?: number;
+  userEmail?: string;
   registrationCompleted?: number;
   payOutStatus?: number;
 }): UseGetEventTransactionsResult => {
@@ -32,6 +34,8 @@ export const useGetEventTransactions = ({
     try {
       const { data, status } = await getRequest<TEventTransaction[]>({
         endpoint: `/billing?${userId ? "userId=" + userId + "&" : ""}${
+          userEmail ? "userEmail=" + userEmail + "&" : ""
+        }${
           registrationCompleted
             ? "registrationCompleted=" + registrationCompleted + "&"
             : ""
