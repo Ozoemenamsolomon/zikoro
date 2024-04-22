@@ -363,17 +363,6 @@ export default function All() {
         : [...prevShown, accessorKey]
     );
 
-  useEffect(() => {
-    console.log("default set currency");
-    applyFilter(
-      "currency",
-      "Currency",
-      "NGN",
-      (transaction, currency) => transaction.currency === currency,
-      "single"
-    );
-  }, []);
-
   return (
     <section className="space-y-6 max-w-full">
       <div className="w-full overflow-auto no-scrollbar">

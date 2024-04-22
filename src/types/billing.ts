@@ -40,5 +40,5 @@ export interface IPayOut {
   Amount: number;
   paidAt?: Date | null;
   requestedBy: string;
-  user: TUser;
+  users: TUser;
 }

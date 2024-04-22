@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { IPayOut } from "@/types/billing";
 import { convertDateFormat } from "@/utils/date";
 import { ColumnDef } from "@tanstack/react-table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const columns: ColumnDef<IPayOut>[] = [
   {
@@ -39,10 +40,23 @@ export const columns: ColumnDef<IPayOut>[] = [
     header: "Requested by",
 
     cell: ({ row }) => {
-      // const user = row.original.
+      const user = row.original.users;
+
+      if (!user) return <div>N/A</div>;
+
       return (
-      <div className="truncate">{row.getValue("requestedBy")}</div>
-    )},
+        <div className="space-y-1">
+          <span className="text-xs font-medium text-gray-500">
+            {user?.firstName + " " + user?.lastName}
+            <div className="text-gray-500 flex no-wrap">
+              <span className="flex-[70%] truncate">
+                {user.userEmail || "N/A"}
+              </span>
+            </div>
+          </span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "Amount",
