@@ -7,7 +7,7 @@ import {
   useSaveCertificate,
 } from "@/hooks/services/certificate";
 import { compareAsc, format, isPast } from "date-fns";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import {
   DropdownMenu,
@@ -35,7 +35,11 @@ import { TCertificate } from "@/types/certificates";
 const Certificates = () => {
   const router = useRouter();
 
-  const { certificates, isLoading, getCertificates } = useGetCertificates();
+  const { eventId } = useParams();
+
+  const { certificates, isLoading, getCertificates } = useGetCertificates({
+    eventId,
+  });
 
   const { saveCertificate, isLoading: certificateIsSaving } =
     useSaveCertificate();
@@ -62,9 +66,7 @@ const Certificates = () => {
 
     if (newCertificate) {
       console.log(newCertificate);
-      router.push(
-        `certificate/create?certificateId=${newCertificate.id}`
-      );
+      router.push(`certificate/create?certificateId=${newCertificate.id}`);
     }
   };
 
@@ -524,9 +526,7 @@ const Certificates = () => {
                 onClick={(e) => {
                   e.stopPropagation();
                   eventId &&
-                    router.push(
-                      `certificate/create?eventId=${eventId}`
-                    );
+                    router.push(`certificate/create?eventId=${eventId}`);
                 }}
                 className="bg-basePrimary w-full"
               >

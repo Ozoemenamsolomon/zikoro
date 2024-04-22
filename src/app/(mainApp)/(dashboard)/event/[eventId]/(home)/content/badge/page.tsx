@@ -6,7 +6,7 @@ import {
   useSaveBadge,
 } from "@/hooks/services/badge";
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import {
   DropdownMenu,
@@ -34,7 +34,9 @@ import { TBadge } from "@/types/badge";
 const Badges = () => {
   const router = useRouter();
 
-  const { badges, isLoading, getBadges } = useGetBadges({});
+  const { eventId } = useParams();
+
+  const { badges, isLoading, getBadges } = useGetBadges({ eventId });
 
   const { saveBadge, isLoading: badgeIsSaving } = useSaveBadge();
 

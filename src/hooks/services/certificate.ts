@@ -7,7 +7,7 @@ import {
   TAttendeeCertificate,
   TCertificate,
   TFullCertificate,
-  TIssuedCertificate
+  TIssuedCertificate,
 } from "@/types/certificates";
 import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
@@ -112,11 +112,11 @@ export const useGetCertificate = ({
   return { certificate, isLoading, error, getCertificate };
 };
 
-export const useGetCertificates = (): UseGetResult<
-  TCertificate[],
-  "certificates",
-  "getCertificates"
-> => {
+export const useGetCertificates = ({
+  eventId,
+}: {
+  eventId?: number;
+}): UseGetResult<TCertificate[], "certificates", "getCertificates"> => {
   const [certificates, setCertificates] = useState<TCertificate[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -126,7 +126,7 @@ export const useGetCertificates = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<TCertificate[]>({
-        endpoint: `/certificates`,
+        endpoint: `/certificates${eventId ? "?eventId=" + eventId : ""}`,
       });
 
       if (status !== 200) {
@@ -612,7 +612,6 @@ export const useGetCertificateTemplates = (): UseGetResult<
   };
 };
 
-
 type UseGetAllEventAttendeeCertificatesResult = {
   attendeeCertificates: TIssuedCertificate[];
   getAttendeeCertificates: () => Promise<void>;
@@ -621,7 +620,7 @@ type UseGetAllEventAttendeeCertificatesResult = {
 export const useGetAllEventAttendeesCertificates =
   (): UseGetAllEventAttendeeCertificatesResult => {
     const [attendeeCertificates, setAttendeeCertificates] = useState<
-    TIssuedCertificate[]
+      TIssuedCertificate[]
     >([]);
     const [isLoading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
@@ -654,7 +653,7 @@ export const useGetAllEventAttendeesCertificates =
 
 export function useGetUserCertificates() {
   const [userCertificates, setUserCertificates] = useState<
-  TIssuedCertificate[]
+    TIssuedCertificate[]
   >([]);
   const { attendeeCertificates, isLoading } =
     useGetAllEventAttendeesCertificates();
