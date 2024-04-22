@@ -6,18 +6,23 @@ import { newEventSchema } from "@/schemas";
 import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { useMemo } from "react";
 import { COUNTRY_CODE } from "@/utils";
 import { useCreateEvent, getCookie, useGetUserOrganizations } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import InputOffsetLabel from "../InputOffsetLabel";
+import _ from "lodash"
+
+type OrganizationListType = {
+  label: string;
+  value: any;
+};
 
 export default function CreateEvent() {
   const { createEvent, loading } = useCreateEvent();
   const { organizations: organizationList } = useGetUserOrganizations()
-  const { user } = useUser();
+
 
   const form = useForm<z.infer<typeof newEventSchema>>({
     resolver: zodResolver(newEventSchema),
