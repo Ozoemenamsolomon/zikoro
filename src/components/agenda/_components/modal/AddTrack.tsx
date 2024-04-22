@@ -9,10 +9,8 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import React, { useState } from "react";
 import { CreatedPreview } from "@/components/composables";
 import { toast } from "@/components/ui/use-toast";
-import {
-  useFetchCreatedEventIndustries,
-  useCreateEventIndustry,
-} from "@/hooks";
+import { useUpdateEvent } from "@/hooks";
+
 
 type FormValue = {
   name: string;
@@ -25,15 +23,20 @@ type TrackType = {
 export function AddTrack({
   setActive,
   close,
+  eventId,
+  sessionTrack
 }: {
   close: () => void;
   setActive: React.Dispatch<React.SetStateAction<number>>;
+  eventId:string;
+  sessionTrack: any
 }) {
   const form = useForm<FormValue>();
   const [trackColor, settrackColor] = useState<string>("");
   const [createdTracks, setCreatedTracks] = useState<TrackType[]>([]);
+  const {loading, update: addSessionTrack} = useUpdateEvent()
   //  const { loading, createEventIndustry } = useCreateEventIndustry();
-  //  const { data, refetch } = useFetchCreatedEventIndustries(eventId);
+
 
   async function onSubmit(value: FormValue) {
     if (trackColor === "" || value.name === undefined) {
@@ -43,7 +46,8 @@ export function AddTrack({
       });
       return;
     }
-
+  //  const sessionTrack;
+   // await addSessionTrack()
     /**
      await createEventIndustry(data, eventId, {
       name: value.name,

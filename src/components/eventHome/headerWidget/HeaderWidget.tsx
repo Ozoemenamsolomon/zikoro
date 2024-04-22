@@ -58,15 +58,8 @@ export function HeaderWidget({
   }, [selectedOrg]);
 
   function newEvent() {
-    const org = formattedList.find((o) => o.label === currentQuery);
-    if (!org?.value) {
-      toast({
-        variant: "destructive",
-        description: "Pls Select an Organization",
-      });
-      return;
-    }
-    router.push(`/create/${org?.value}`);
+  
+    router.push(`/create`);
   }
 
   return (

@@ -80,6 +80,7 @@ export interface Event {
   explore: boolean;
   eventAppAccess: string;
   eventWebsiteSettings: { title: string; status: boolean }[];
+  sessionTrack: {name: string; color: string}[]
 }
 
 export interface PaymentConfigProps {

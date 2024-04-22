@@ -45,7 +45,7 @@ export default function Home() {
         }`}</h2>
       </div>
       <div className="w-full px-2 sm:px-4 pt-40">
-        <div className="w-full overflow-x-auto no-scrollbar">
+        <div className="w-full py-4 overflow-x-auto no-scrollbar">
           <div className="min-w-max gap-4 flex items-center">
             {homeTab.map(({ title, href, subTitle, image }) => (
               <ActionCard
@@ -58,7 +58,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="w-full mt-4 sm:mt-6 h-full grid grid-cols-1 xl:grid-cols-8 gap-5 items-start">
+        <div className="w-full mt-3 h-full grid grid-cols-1 xl:grid-cols-8 gap-5 items-start">
           <UserEvents />
           <UserCertificates />
         </div>

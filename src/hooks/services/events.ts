@@ -16,6 +16,7 @@ import { getRequest, postRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
 import { useGetAllAttendees } from "@/hooks";
 import toast from "react-hot-toast";
+import { v4 as uuidv4 } from "uuid";
 import {
   formatDate,
   formatTime,
@@ -386,10 +387,11 @@ export function useDuplicateEvent() {
         setLoading(false);
         return null;
       }
-
+      const eventAlias = uuidv4().replace(/-/g, "").substring(0, 20);
       // Create a new event with the same data
       const newEvent = {
         ...originalEvent,
+        eventAlias,
         eventTitle: (originalEvent.eventTitle += " (D)"),
         published: false,
       };

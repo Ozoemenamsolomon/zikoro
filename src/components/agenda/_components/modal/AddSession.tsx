@@ -14,16 +14,19 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sessionSchema } from "@/schemas";
 import Image from "next/image";
+import { Event } from "@/types";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 export function AddSession({
   eventId,
   eventStartDate,
   close,
+  event
 }: {
   close: () => void;
   eventId: string;
   eventStartDate: string;
+  event: Event | null
 }) {
   const { attendees } = useGetEventAttendees(eventId);
   const { data }: { data: TPartner[] } = useFetchPartners(eventId);
@@ -505,7 +508,7 @@ export function AddSession({
           </Form>
         </div>
       </div>
-      {active === 2 && <AddTrack close={close} setActive={setActive} />}
+      {active === 2 && <AddTrack close={close} eventId={eventId} sessionTrack={event?.sessionTrack} setActive={setActive} />}
     </>
   );
 }

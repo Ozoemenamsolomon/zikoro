@@ -10,16 +10,13 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { useMemo } from "react";
 import { COUNTRY_CODE } from "@/utils";
-import { useCreateEvent, getCookie } from "@/hooks";
+import { useCreateEvent, getCookie, useGetUserOrganizations } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import InputOffsetLabel from "../InputOffsetLabel";
 
-export default function CreateEvent({
-  organizationId,
-}: {
-  organizationId: string;
-}) {
+export default function CreateEvent() {
   const { createEvent, loading } = useCreateEvent();
+  const { organizations: organizationList } = useGetUserOrganizations()
   const { user } = useUser();
 
   const form = useForm<z.infer<typeof newEventSchema>>({
@@ -29,6 +26,14 @@ export default function CreateEvent({
   function formatDate(date: Date): string {
     return date.toISOString();
   }
+  const formattedList: OrganizationListType[] = useMemo(() => {
+    const restructuredList = organizationList?.map(
+      ({ id, organizationName }) => {
+        return { value: id, label: organizationName };
+      }
+    );
+    return _.uniqBy(restructuredList, "value");
+  }, [organizationList]);
 
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
     const userData = getCookie("user");
@@ -38,7 +43,7 @@ export default function CreateEvent({
       ...values,
       expectedParticipants: Number(values?.expectedParticipants),
       eventAlias,
-      organisationId: organizationId,
+    
       createdBy: userData?.userEmail,
       published: false,
       eventStatus: "new",
@@ -88,6 +93,18 @@ export default function CreateEvent({
                 </InputOffsetLabel>
               )}
             />
+             <FormField
+                control={form.control}
+                name="organizationId"
+                render={({ field }) => (
+                  <ReactSelect
+                    {...field}
+                    placeHolder="Select an Organization"
+                    label="Organization"
+                    options={formattedList}
+                  />
+                )}
+              />
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
               <FormField
                 control={form.control}

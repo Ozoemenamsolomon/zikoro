@@ -120,7 +120,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
           />
         </div>
       </div>
-      {isOpen && <AddSession eventStartDate={activeDate} close={onClose} eventId={eventId} />}
+      {isOpen && <AddSession eventStartDate={activeDate} close={onClose} eventId={eventId} event={data}/>}
       {isFullScreen && <FullScreenView close={toggleFullScreenMode} />}
     </>
   );

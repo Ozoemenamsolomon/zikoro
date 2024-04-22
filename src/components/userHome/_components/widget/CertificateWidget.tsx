@@ -13,7 +13,7 @@ export function CertificateWidget({ certificate }: { certificate: TIssuedCertifi
     },[certificate?.created_at])
     return (
       <div 
-      onClick={() => window.open(certificate?.certificateURL, "_blank")}
+      onClick={() => window.open(`https://${certificate?.certificateURL}`, "_blank")}
       role="button"
       className="w-full">
         {certificate?.certificate?.cerificateUrl ? (
