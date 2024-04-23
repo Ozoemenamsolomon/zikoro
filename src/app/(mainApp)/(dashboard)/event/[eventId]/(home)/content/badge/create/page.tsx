@@ -9,7 +9,7 @@ import {
 } from "@craftjs/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import {
@@ -228,6 +228,7 @@ const page = () => {
   const divRef = useRef<HTMLDivElement>(null);
   const badgeDivRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { eventId } = useParams();
 
   const searchParams = useSearchParams();
 
@@ -368,7 +369,7 @@ const page = () => {
               lastEdited: new Date(),
             }
           : {
-              eventId: 5,
+              eventId: Number(eventId) || 0,
               badgeDetails: { ...details, craftHash: hashRef.current },
               badgeSettings: settings,
               badgeBackground: details.background || "",
