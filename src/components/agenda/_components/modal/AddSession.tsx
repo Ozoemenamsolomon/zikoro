@@ -6,10 +6,15 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { useForm } from "react-hook-form";
 import { AddTrack, activityType, sessionType } from "..";
+import { CloseCircle } from "@styled-icons/evaicons-solid/CloseCircle";
 import { cn } from "@/lib";
-import { useGetEventAttendees, useFetchPartners } from "@/hooks";
+import {
+  useGetEventAttendees,
+  useFetchPartners,
+  useCreateAgenda,
+} from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
-import { TAttendee, TPartner } from "@/types";
+import { TAttendee, TPartner, TAgenda } from "@/types";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sessionSchema } from "@/schemas";
@@ -17,6 +22,16 @@ import Image from "next/image";
 import { Event } from "@/types";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { nanoid } from "nanoid";
+import { formatFileSize, uploadFile } from "@/utils";
+import { FilePdf } from "@styled-icons/fa-regular/FilePdf";
+
+type TSessionFile<T> = {
+  size: string;
+  file: T;
+  name: string;
+  id: string;
+};
 export function AddSession({
   eventId,
   eventStartDate,
@@ -32,9 +47,13 @@ export function AddSession({
 }) {
   const { attendees } = useGetEventAttendees(eventId);
   const { data }: { data: TPartner[] } = useFetchPartners(eventId);
+  const { createAgenda, isLoading } = useCreateAgenda();
+  const [loading, setLoading] = useState(false)
   const [chosenModerators, setChosenModerators] = useState<TAttendee[]>([]);
   const [chosenSpeakers, setChosenSpeakers] = useState<TAttendee[]>([]);
   const [chosenSponsors, setChosenSponsors] = useState<TPartner[]>([]);
+  const [chosenFiles, setChosenFiles] = useState<TSessionFile<File>[]>([]);
+  const [isNotSameDay, setIsNotSameDay] = useState(false);
   const [active, setActive] = useState(1);
   const form = useForm<z.infer<typeof sessionSchema>>({
     resolver: zodResolver(sessionSchema),
@@ -46,9 +65,11 @@ export function AddSession({
   const selectedSpeaker = form.watch("sessionSpeakers");
   const selectedModerator = form.watch("sessionModerators");
   const selectedSponsor = form.watch("sessionSponsors");
+  const addedFile = form.watch("sessionFiles");
+  const startTime = form.watch("startDateTime");
+  const endTime = form.watch("endDateTime");
   const activity = form.watch("activity");
   const locationType = form.watch("sessionType");
-
 
   // set other activity
   useEffect(() => {
@@ -60,7 +81,7 @@ export function AddSession({
   // sponsor
   const sponsors = useMemo(() => {
     const filtered = data?.filter(({ partnerType }) => {
-      return partnerType === "sponsor";
+      return partnerType === "Sponsor";
     });
 
     return filtered?.map(({ companyName }) => {
@@ -73,7 +94,7 @@ export function AddSession({
   // moderators
   const moderators = useMemo(() => {
     const filtered = attendees?.filter(({ ticketType }) => {
-      return ticketType === "moderator";
+      return ticketType === "Moderator";
     });
     return filtered?.map(({ firstName, lastName, email }) => {
       return {
@@ -86,7 +107,7 @@ export function AddSession({
   // speakers
   const speakers = useMemo(() => {
     const filtered = attendees?.filter(({ ticketType }) => {
-      return ticketType === "speaker";
+      return ticketType === "Speaker";
     });
     return filtered?.map(({ firstName, lastName, email }) => {
       return {
@@ -113,9 +134,8 @@ export function AddSession({
   // start date
   useEffect(() => {
     if (eventStartDate) {
-      form.reset({
-        startDateTime: eventStartDate.split(".")[0],
-      });
+      form.setValue("startDateTime", eventStartDate);
+      form.setValue("endDateTime", eventStartDate);
     }
   }, [eventStartDate]);
 
@@ -182,6 +202,25 @@ export function AddSession({
     }
   }, [selectedSponsor]);
 
+  //sessionFiles
+  useEffect(() => {
+    if (addedFile?.length > 0) {
+      const pdfFile: FileList = addedFile;
+      for (let i = 0; i < pdfFile.length; i++) {
+        let file = pdfFile[i];
+        setChosenFiles((prev) => [
+          ...prev,
+          {
+            name: file?.name,
+            file: file,
+            size: formatFileSize(file.size),
+            id: nanoid(),
+          },
+        ]);
+      }
+    }
+  }, [addedFile]);
+
   // delete a  selected attendees
   function removeSpeaker(email: string) {
     setChosenSpeakers(chosenSpeakers.filter((v) => v.email !== email));
@@ -191,9 +230,61 @@ export function AddSession({
     setChosenModerators(chosenModerators.filter((v) => v.email !== email));
   }
 
-  async function onSubmit(values: z.infer<typeof sessionSchema>) {
-    console.log({ values }, eventId);
+  // remove selected file
+  function removeFile(id: string) {
+    setChosenFiles(chosenFiles.filter((v) => v.id !== id));
   }
+
+  async function onSubmit(values: z.infer<typeof sessionSchema>) {
+    if (isNotSameDay) return;
+
+    let files: TSessionFile<string>[] = [];
+    setLoading(true)
+    if (chosenFiles?.length > 0) {
+      const promise = chosenFiles?.map((item) => {
+        const { file, ...restItems } = item;
+        return new Promise(async (resolve) => {
+          if (typeof file === "string") {
+            resolve({ ...restItems, file });
+          } else {
+            const fileString = await uploadFile(file, "pdf");
+            resolve({ ...restItems, file: fileString });
+          }
+        });
+      });
+
+      const result: any[] = await Promise.all(promise);
+
+      files = result;
+    }
+    const { sessionSponsors, ...restData } = values;
+    const payload: TAgenda = {
+      ...restData,
+      sessionModerators: chosenModerators,
+      sessionSpeakers: chosenSpeakers,
+      //  sessionSponsors: chosenSponsors,
+      sessionFiles: files,
+      eventId,
+    };
+    // console.log("tile", payload)
+    // return
+    await createAgenda({ payload });
+    setLoading(false)
+  }
+
+  //
+  useEffect(() => {
+    if (startTime && endTime) {
+      const start = startTime.split("T")[0];
+      const end = endTime.split("T")[0];
+      if (start !== end) {
+        setIsNotSameDay(true);
+      } else {
+        setIsNotSameDay(false);
+      }
+    }
+  }, [startTime, endTime]);
+
   return (
     <>
       <div
@@ -275,7 +366,7 @@ export function AddSession({
                         <Input
                           placeholder=""
                           type="datetime-local"
-                          defaultValue={eventStartDate?.split(".")[0]}
+                          //defaultValue={eventStartDate}
                           {...form.register("startDateTime")}
                           className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
                         />
@@ -298,6 +389,14 @@ export function AddSession({
                     </InputOffsetLabel>
                   )}
                 />
+                <p
+                  className={cn(
+                    "w-full text-xs col-span-full text-gray-500",
+                    isNotSameDay && "text-red-500"
+                  )}
+                >
+                  NB: Start and End time must be in the same day
+                </p>
               </div>
               {activity === "Custom" && (
                 <>
@@ -433,6 +532,7 @@ export function AddSession({
                           email,
                           jobTitle,
                           profilePicture,
+                          ticketType,
                         }) => (
                           <BoothStaffWidget
                             key={email}
@@ -442,6 +542,7 @@ export function AddSession({
                             name={`${firstName} ${lastName}`}
                             company={organization}
                             profession={jobTitle}
+                            ticketType={ticketType}
                             isAddingBoothStaff
                           />
                         )
@@ -470,6 +571,7 @@ export function AddSession({
                           email,
                           jobTitle,
                           profilePicture,
+                          ticketType,
                         }) => (
                           <BoothStaffWidget
                             key={email}
@@ -479,6 +581,7 @@ export function AddSession({
                             name={`${firstName} ${lastName}`}
                             company={organization}
                             profession={jobTitle}
+                            ticketType={ticketType}
                             isAddingBoothStaff
                           />
                         )
@@ -517,7 +620,8 @@ export function AddSession({
                       <InputOffsetLabel label=" File">
                         <Input
                           type="file"
-                          accept="application/pdf,.docx,.doc"
+                          multiple
+                          accept="application/pdf"
                           placeholder="File"
                           {...form.register("sessionFiles")}
                           className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
@@ -525,14 +629,45 @@ export function AddSession({
                       </InputOffsetLabel>
                     )}
                   />
+
+                  <div className="w-full grid grid-cols-2 gap-4 items-center">
+                    {Array.isArray(chosenFiles) &&
+                      chosenFiles?.map((item) => (
+                        <div
+                          key={item?.id}
+                          className="w-full group border relative rounded-lg p-3 flex items-start justify-start gap-x-2"
+                        >
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              removeFile(item?.id);
+                            }}
+                            className="sm:hidden block sm:group-hover:block w-fit h-fit px-0 absolute right-1 top-1 text-black"
+                          >
+                            <CloseCircle size={20} />
+                          </Button>
+
+                          <FilePdf size={25} className="text-red-500" />
+                          <div className="space-y-1">
+                            <p className="text-[13px] sm:text-sm text-gray-500">
+                              {item?.name}
+                            </p>
+                            <p className="text-[11px] sm:text-xs text-gray-400">
+                              {item?.size}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
                 </>
               )}
 
               <Button
-                disabled={false}
+                disabled={loading}
                 className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-basePrimary h-12 rounded-md text-gray-50 font-medium"
               >
-                {"" && <LoaderAlt size={22} className="animate-spin" />}
+                {loading && <LoaderAlt size={22} className="animate-spin" />}
                 <span>Save</span>
               </Button>
             </form>

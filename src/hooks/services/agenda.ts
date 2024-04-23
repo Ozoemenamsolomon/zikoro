@@ -76,7 +76,7 @@ export const useUpdateAgenda = () => {
   return { updateAgenda, isLoading };
 };
 
-export const useGetAgendas = () => {
+export const useGetAgendas = (eventId: string) => {
   const [agendas, setAgendas] = useState<TAgenda[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
@@ -84,7 +84,7 @@ export const useGetAgendas = () => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAgenda[]>({
-      endpoint: `/agenda`,
+      endpoint: `/agenda/${eventId}`,
     });
 
     setLoading(false);

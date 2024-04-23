@@ -1,3 +1,13 @@
+import { TAttendee, TPartner } from ".";
+
+
+
+type TSessionFile<T> = {
+  size: string;
+  file: T;
+  name: string;
+  id: string;
+};
 export interface TAgenda {
   sessionTitle: string;
   id?: number;
@@ -9,9 +19,10 @@ export interface TAgenda {
   sessionType?: string;
   sessionVenue?: string;
   sessionUrl?: string;
-  sessionSpeakers?: JSON;
-  sessionModerators?: JSON;
-  sessionFiles?: string;
+  sessionSpeakers?: TAttendee[];
+  sessionModerators?: TAttendee[];
+  sessionSponsors?: TPartner[];
+  sessionFiles?: TSessionFile<string>[];
   sessionViews?: number;
   sessionViewsDetails?: JSON;
   sessionCheckin?: string;

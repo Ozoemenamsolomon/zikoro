@@ -8,9 +8,11 @@ import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 export function Exhibitors({
   exhibitors,
   loading,
+  eventId
 }: {
   exhibitors: TExPartner[];
   loading: boolean;
+  eventId: string;
 }) {
   return (
     <div className="w-full h-full grid md:grid-cols-2 xl:grid-cols-3 mt-6 items-center gap-6 px-4">
@@ -46,7 +48,7 @@ export function Exhibitors({
       {!loading &&
         exhibitors.length > 0 &&
         exhibitors.map((sponsor) => (
-          <PartnerCard key={sponsor.id} sponsor={sponsor} />
+          <PartnerCard key={sponsor.id} eventId={eventId} sponsor={sponsor} />
         ))}
     </div>
   );

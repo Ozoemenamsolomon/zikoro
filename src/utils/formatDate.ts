@@ -156,7 +156,7 @@ export function formatDate(dateString: string): string {
     while (currentDate <= end) {
         // Create an object for the current date with both date formats
         const dateObj = {
-            date: currentDate.toISOString(),
+            date: currentDate.toISOString()?.split(".")[0],
             formattedDate: formatDate(currentDate),
         };
 

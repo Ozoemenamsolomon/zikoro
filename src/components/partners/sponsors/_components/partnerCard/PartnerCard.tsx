@@ -7,7 +7,7 @@ import { useMemo } from "react";
 
 import { Location } from "@styled-icons/fluentui-system-regular/Location";
 
-export function PartnerCard({ sponsor }: { sponsor: TExPartner }) {
+export function PartnerCard({ sponsor, eventId }: {eventId: string; sponsor: TExPartner }) {
   const image = useMemo(() => {
     const regex = /^[https://]/;
     if (regex.test(sponsor.companyLogo)) {
@@ -20,7 +20,7 @@ export function PartnerCard({ sponsor }: { sponsor: TExPartner }) {
   // console.log(sponsor.industry?.name);
   return (
     <Link
-      href={`/events/partner/${sponsor.id}`}
+      href={`/event/${eventId}/partner/${sponsor.id}`}
       className=" border  h-full border-gray-100 relative rounded-lg overflow-hidden bg-white flex flex-col gap-y-2 items-start justify-start"
     >
       {sponsor.stampIt && (

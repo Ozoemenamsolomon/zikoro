@@ -126,7 +126,9 @@ export function AboutSession() {
       <CollapsibleWidget title="File">
         <div className="w-full px-3 py-4 grid grid-cols-2 items-center gap-4">
           {[1, 2, 3, 4].map((_) => (
-            <div className="w-full border rounded-lg p-3 flex items-start justify-start gap-x-2">
+            <div 
+            key={_}
+            className="w-full border rounded-lg p-3 flex items-start justify-start gap-x-2">
               <FilePdf size={25} className="text-red-500" />
               <div className="space-y-1">
                 <p className="text-[13px] sm:text-sm text-gray-500">

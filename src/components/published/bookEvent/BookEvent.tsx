@@ -504,7 +504,9 @@ export function BookEvent({
                                 )}
                               >
                                 {v?.validity ? (
-                                  <p className="text-xs sm:text-mobile">{`Valid till ${v?.validity}`}</p>
+                                  <p className="text-xs sm:text-mobile">{`Valid till ${
+                                    v?.validity?.split("T")[0]
+                                  } ${v?.validity?.split("T")[1]}`}</p>
                                 ) : (
                                   <p className="w-1 h-1"></p>
                                 )}
