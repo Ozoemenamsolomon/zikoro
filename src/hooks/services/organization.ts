@@ -1,5 +1,4 @@
 "use client";
-
 import { TOrganization } from "@/types/organization";
 import { toast } from "@/components/ui/use-toast";
 import { getRequest, postRequest } from "@/utils/api";
@@ -47,17 +46,11 @@ export const useGetOrganizations = (): UseGetResult<
   };
 };
 
-type UseGetOrganizationResult = UseGetResult<
-  TOrganization,
-  "organization",
-  "getOrganization"
->;
-
 export const useGetOrganization = ({
   organizationId,
 }: {
   organizationId: number;
-}): UseGetOrganizationResult => {
+}): UseGetResult<TOrganization, "organization", "getOrganization"> => {
   const [organization, setOrganization] = useState<TOrganization | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -143,7 +136,11 @@ export function useGetUserOrganizations() {
     [] as TOrganization[]
   );
 
-  const { organizations, isLoading: orgLoading, getOrganizations } = useGetOrganizations();
+  const {
+    organizations,
+    isLoading: orgLoading,
+    getOrganizations,
+  } = useGetOrganizations();
   // checking if thwe user is a team member of some organizations
   useEffect(() => {
     if (!orgLoading && organizations) {
@@ -160,6 +157,6 @@ export function useGetUserOrganizations() {
   //return data
   return {
     organizations: userOrganizations,
-    getOrganizations
+    getOrganizations,
   };
 }
