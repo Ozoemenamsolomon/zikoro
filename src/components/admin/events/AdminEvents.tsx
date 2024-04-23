@@ -233,7 +233,9 @@ function EventCard({
         {query === "published" && (
           <div className="py-4 w-full border-t flex-col  p-4 flex items-start justify-start gap-x-2">
             <p>Published By</p>
-            <p className="text-gray-500 w-full text-ellipsis overflow-hidden whitespace-nowrap">{` ${publisher ?? ""}`}</p>
+            <p className="text-gray-500 w-full text-ellipsis overflow-hidden whitespace-nowrap">{` ${
+              publisher ?? ""
+            }`}</p>
           </div>
         )}
       </div>
