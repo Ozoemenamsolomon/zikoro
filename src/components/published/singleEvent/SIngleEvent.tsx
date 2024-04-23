@@ -168,7 +168,7 @@ export function SingleEvent({
             <div className="w-full h-full inset-0 absolute z-10 bg-white/50"></div>
           )}
           <div className="w-full grid grid-cols-1 h-fit gap-4 lg:grid-cols-8 items-start">
-            <div className="w-full h-72 sm:h-[350px] lg:h-full flex lg:col-span-4 flex-col items-start justify-start">
+            <div className="w-full h-72 sm:h-[350px] lg:h-[400px] flex lg:col-span-4 flex-col items-start justify-start">
               {event?.eventPoster ? (
                 <Image
                   src={event?.eventPoster}
@@ -176,7 +176,7 @@ export function SingleEvent({
                   width={600}
                   height={600}
                   className={cn(
-                    "w-full h-full rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl object-cover"
+                    "w-full h-72 sm:h-[350px] lg:h-[400px] rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl object-cover"
                   )}
                 />
               ) : (

@@ -11,7 +11,6 @@ import { CreatedPreview } from "@/components/composables";
 import { toast } from "@/components/ui/use-toast";
 import { useUpdateEvent } from "@/hooks";
 
-
 type FormValue = {
   name: string;
 };
@@ -24,19 +23,19 @@ export function AddTrack({
   setActive,
   close,
   eventId,
-  sessionTrack
+  sessionTrack,
+  refetch,
 }: {
   close: () => void;
   setActive: React.Dispatch<React.SetStateAction<number>>;
-  eventId:string;
-  sessionTrack: any
+  eventId: string;
+  sessionTrack?: TrackType[];
+  refetch: () => Promise<any>;
 }) {
   const form = useForm<FormValue>();
   const [trackColor, settrackColor] = useState<string>("");
-  const [createdTracks, setCreatedTracks] = useState<TrackType[]>([]);
-  const {loading, update: addSessionTrack} = useUpdateEvent()
+  const { loading, update: addSessionTrack } = useUpdateEvent();
   //  const { loading, createEventIndustry } = useCreateEventIndustry();
-
 
   async function onSubmit(value: FormValue) {
     if (trackColor === "" || value.name === undefined) {
@@ -46,8 +45,13 @@ export function AddTrack({
       });
       return;
     }
-  //  const sessionTrack;
-   // await addSessionTrack()
+    const payload =
+      Array.isArray(sessionTrack) && sessionTrack.length > 0
+        ? [...sessionTrack, { name: value?.name, color: trackColor }]
+        : [{ name: value?.name, color: trackColor }];
+
+    await addSessionTrack({ sessionTrack: payload }, eventId);
+    refetch();
     /**
      await createEventIndustry(data, eventId, {
       name: value.name,
@@ -61,18 +65,21 @@ export function AddTrack({
     refetch();
    */
 
-    setCreatedTracks((prev) => [
+    /**
+     setCreatedTracks((prev) => [
       ...prev,
       { name: value.name, color: trackColor },
     ]);
+    */
   }
 
   // FN to remove from the list of industries
 
-  function remove(id: number) {
-    const updatedList = createdTracks.filter((_, index) => index !== id);
+  async function remove(id: number) {
+    const updatedList = sessionTrack?.filter((_, index) => index !== id);
 
-    setCreatedTracks(updatedList);
+    await addSessionTrack({ sessionTrack: updatedList }, eventId);
+    refetch();
   }
 
   return (
@@ -126,18 +133,17 @@ export function AddTrack({
                 circleSize={36}
               />
             </div>
-            {Array.isArray(createdTracks) && createdTracks?.length > 0 && (
+            {Array.isArray(sessionTrack) && sessionTrack?.length > 0 && (
               <div className="w-full flex flex-col gap-y-4 items-start justify-start">
                 <h3>Your Created Tracks</h3>
 
                 <div className="w-full flex flex-wrap items-center gap-4">
-                  {Array.isArray(createdTracks) &&
-                    createdTracks.map(({ name, color }) => (
+                  {Array.isArray(sessionTrack) &&
+                    sessionTrack.map(({ name, color }, index) => (
                       <CreatedPreview
                         key={name}
                         name={name}
-                        //  remove={remove}
-
+                        remove={() => remove(index)}
                         color={color}
                       />
                     ))}
@@ -146,10 +152,10 @@ export function AddTrack({
             )}
             <Button
               type="submit"
-              disabled={false}
+              disabled={loading}
               className="mt-4 h-12 w-full gap-x-2 bg-basePrimary text-gray-50 font-medium"
             >
-              {"" && <LoaderAlt size={22} className="animate-spin" />}
+              {loading && <LoaderAlt size={22} className="animate-spin" />}
               <span>Create Track</span>
             </Button>
           </form>

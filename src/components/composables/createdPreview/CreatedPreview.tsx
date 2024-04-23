@@ -4,7 +4,7 @@ import { cn } from "@/lib";
 import { CheckCircleFill } from "@styled-icons/bootstrap/CheckCircleFill";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 
-export function CreatedPreview({ color, name }: { color?: string; name: string }) {
+export function CreatedPreview({ color, name, remove }: { remove?:() => Promise<void>; color?: string; name: string }) {
     const rgba = useMemo(
       (alpha = 0.1) => {
       if (color) {
@@ -32,18 +32,24 @@ export function CreatedPreview({ color, name }: { color?: string; name: string }
         <span className="font-medium capitalize"> {name}</span>
         <div
           className="absolute top-[-14px] right-[-13px]"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation()
+            e.preventDefault()
+          }}
         >
           {"" === name ? (
             <button
               onClick={(e) => {
                 e.stopPropagation();
+                e.preventDefault()
               }}
             >
               <CheckCircleFill className="text-basePrimary" size={16} />
             </button>
           ) : (
-            <button className="rounded-full p-1 bg-gray-100 flex items-center justify-center">
+            <button 
+            onClick={remove}
+            className="rounded-full p-1 bg-gray-100 flex items-center justify-center">
               <CloseOutline className="text-[#717171]" size={16} />
             </button>
           )}

@@ -14,7 +14,7 @@ import { generateDateRange } from "@/utils";
 export default function Agenda({ eventId }: { eventId: string }) {
   const [activeDate, setActiveDate] = useState("");
   const [isOpen, setOpen] = useState(false);
-  const { data } = useFetchSingleEvent(eventId);
+  const { data, refetch } = useFetchSingleEvent(eventId);
   const [isFullScreen, setFullScreen] = useState(false);
   const search = useSearchParams();
   const queryParam = search.get("a");
@@ -120,7 +120,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
           />
         </div>
       </div>
-      {isOpen && <AddSession eventStartDate={activeDate} close={onClose} eventId={eventId} event={data}/>}
+      {isOpen && <AddSession refetch={refetch} eventStartDate={activeDate} close={onClose} eventId={eventId} event={data}/>}
       {isFullScreen && <FullScreenView close={toggleFullScreenMode} />}
     </>
   );

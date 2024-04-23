@@ -2,19 +2,17 @@ import * as z from "zod";
 
 export const attendeeValidationSchema = z.array(
   z.object({
-    email: z
-      .string()
-      .email({ message: "Email must be a valid email" })
-    ,
+    email: z.string().email({ message: "Email must be a valid email" }),
     firstName: z.string().min(3, { message: "First Name is required" }),
     lastName: z.string().min(3, { message: "Last Name is required" }),
     phoneNumber: z
       .string()
-      .refine((value) => value && /^(\+\d{11,}|\d{11,})$/.test(value), {
-        message: "Phone number must be at least 11 digits",
+      .refine((value) => value && /^\d{11,}$/.test(value.replace(/\D/g, "")), {
+        message: "Phone number must be at least 11 digits long",
+      })
+      .refine((value) => value && /^\+\d{1,3}/.test(value), {
+        message: "Phone number must include start with a country code",
       }),
-   
-     
   })
 );
 
@@ -44,7 +42,7 @@ export const newEventSchema = z.object({
   eventCity: z.string(),
   eventAlias: z.any(),
   eventCountry: z.string(),
-  organizationId: z.string().min(2, { message: "Organization is required" }),
+  organisationId: z.string().min(2, { message: "Organization is required" }),
 });
 
 const eventPricing = z.array(

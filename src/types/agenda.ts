@@ -16,6 +16,7 @@ export interface TAgenda {
   sessionViewsDetails?: JSON;
   sessionCheckin?: string;
   sessionCheckinDetails?: JSON;
+  eventId?:string;
 }
 
 export interface TFAgenda {

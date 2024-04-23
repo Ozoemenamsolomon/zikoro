@@ -34,7 +34,7 @@ export default function CreateEvent() {
   const formattedList: OrganizationListType[] = useMemo(() => {
     const restructuredList = organizationList?.map(
       ({ id, organizationName }) => {
-        return { value: id, label: organizationName };
+        return { value: String(id), label: organizationName };
       }
     );
     return _.uniqBy(restructuredList, "value");
@@ -48,7 +48,6 @@ export default function CreateEvent() {
       ...values,
       expectedParticipants: Number(values?.expectedParticipants),
       eventAlias,
-    
       createdBy: userData?.userEmail,
       published: false,
       eventStatus: "new",
@@ -100,7 +99,7 @@ export default function CreateEvent() {
             />
              <FormField
                 control={form.control}
-                name="organizationId"
+                name="organisationId"
                 render={({ field }) => (
                   <ReactSelect
                     {...field}

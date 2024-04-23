@@ -2,7 +2,7 @@ export const activityType = [
   "Custom",
   "Registration",
   "Breakfast",
-  "Launch",
+  "Lunch",
   "Dinner",
 ];
 

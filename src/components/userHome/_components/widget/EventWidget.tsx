@@ -9,8 +9,10 @@ import Image from "next/image";
 import { saveCookie } from "@/hooks";
 import {useFormatEventData} from "@/hooks"
 import { Event } from "@/types";
+import { useRouter } from "next/navigation";
 
 export function EventWidget({ event }: { event: Event }) {
+  const router = useRouter()
    
     const { startDate, endDate, startTime, endTime, removeComma } =
       useFormatEventData(event);
@@ -20,7 +22,7 @@ export function EventWidget({ event }: { event: Event }) {
         eventId: event?.id,
         eventName: event?.eventTitle,
       });
-      window.open(`/event/${event?.id}/home`);
+      router.push(`/event/${event?.id}/home`);
     }
     return (
       <div

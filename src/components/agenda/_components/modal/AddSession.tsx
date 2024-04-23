@@ -21,12 +21,14 @@ export function AddSession({
   eventId,
   eventStartDate,
   close,
-  event
+  event,
+  refetch,
 }: {
   close: () => void;
   eventId: string;
   eventStartDate: string;
-  event: Event | null
+  event: Event | null;
+  refetch: () => Promise<any>;
 }) {
   const { attendees } = useGetEventAttendees(eventId);
   const { data }: { data: TPartner[] } = useFetchPartners(eventId);
@@ -46,6 +48,14 @@ export function AddSession({
   const selectedSponsor = form.watch("sessionSponsors");
   const activity = form.watch("activity");
   const locationType = form.watch("sessionType");
+
+
+  // set other activity
+  useEffect(() => {
+    if (activity !== "Custom") {
+      form.setValue("sessionTitle", activity);
+    }
+  }, [activity]);
 
   // sponsor
   const sponsors = useMemo(() => {
@@ -85,6 +95,20 @@ export function AddSession({
       };
     });
   }, [attendees]);
+
+  // session tracks
+  const formattedSessions = useMemo(() => {
+    if (Array.isArray(event?.sessionTrack) && event?.sessionTrack?.length > 0) {
+      return event?.sessionTrack?.map(({ name }) => {
+        return {
+          value: name,
+          label: name,
+        };
+      });
+    } else {
+      return [];
+    }
+  }, [event?.sessionTrack]);
 
   // start date
   useEffect(() => {
@@ -166,6 +190,10 @@ export function AddSession({
   function removeModerator(email: string) {
     setChosenModerators(chosenModerators.filter((v) => v.email !== email));
   }
+
+  async function onSubmit(values: z.infer<typeof sessionSchema>) {
+    console.log({ values }, eventId);
+  }
   return (
     <>
       <div
@@ -190,7 +218,10 @@ export function AddSession({
           </div>
 
           <Form {...form}>
-            <form className="flex items-start flex-col justify-start gap-y-4 w-full">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex items-start flex-col justify-start gap-y-4 w-full"
+            >
               <div className="flex flex-col w-full items-start justify-start gap-y-1">
                 <p className="text-xs text-gray-500 sm:text-[13px]">
                   Select the type of activity you are creating
@@ -278,8 +309,8 @@ export function AddSession({
                         <ReactSelect
                           {...form.register("Track")}
                           placeHolder="Select Track"
-                          label="Industry"
-                          options={[]}
+                          label="Track"
+                          options={formattedSessions}
                         />
                       )}
                     />
@@ -508,7 +539,15 @@ export function AddSession({
           </Form>
         </div>
       </div>
-      {active === 2 && <AddTrack close={close} eventId={eventId} sessionTrack={event?.sessionTrack} setActive={setActive} />}
+      {active === 2 && (
+        <AddTrack
+          close={close}
+          refetch={refetch}
+          eventId={eventId}
+          sessionTrack={event?.sessionTrack}
+          setActive={setActive}
+        />
+      )}
     </>
   );
 }

@@ -551,7 +551,11 @@ export function BookEvent({
                   }
                   type="submit"
                   onClick={() => setActive(2)}
-                  className="h-14 w-full gap-x-2 bg-basePrimary hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium"
+                  className={cn(
+                    "h-14 w-full gap-x-2 bg-basePrimary hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium",
+                    (priceCategory === "" || pathname.includes("preview")) &&
+                      "bg-gray-200 text-black"
+                  )}
                 >
                   <span>Continue</span>
                 </Button>
