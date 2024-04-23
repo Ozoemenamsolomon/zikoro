@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Facebook, X, Linkedin, Instagram } from "@/constants/icons";
 import PostArticle from "@/components/blog/PostArticle";
 import { useFetchBlogPost } from "@/hooks/services/post";
+
 type DBBlogPost = {
   id: number;
   title: string;
@@ -15,6 +16,8 @@ type DBBlogPost = {
   content: string;
   views: number;
   shares: JSON;
+  tags: [];
+  headerImageUrl: string;
 };
 
 export default function FullPost({ postId }: { postId: string }): JSX.Element {
@@ -27,27 +30,73 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     refetch: () => Promise<null | undefined>;
   } = useFetchBlogPost(postId);
 
+  // Extracting the date only
+  function extractAndFormatDate(dateTimeString: any): any {
+    try {
+      const date = new Date(dateTimeString);
+      if (isNaN(date.getTime())) {
+        throw new Error("Invalid date");
+      }
+      const formattedDate: string = formatDate(date);
+      return formattedDate;
+    } catch (error) {
+      console.error("Error extracting date:", error);
+      return "Invalid Date";
+    }
+  }
+
+  function formatDate(date: Date): string {
+    const year: number = date.getFullYear();
+    const month: number = date.getMonth() + 1; // Month is zero-based, so add 1
+    const day: number = date.getDate();
+
+    const monthNames: string[] = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    const formattedDate: string = `${day} ${monthNames[month - 1]} ${year}`;
+    return formattedDate;
+  }
+
   return (
-    <div className="mt-[120px] lg:mt-[200px] px-3 lg:px-0">
+    <div className="mt-[120px] lg:mt-[200px] px-3 lg:px-0 ">
       {/* header section */}
-      <div className="max-w-[982px] mx-auto flex flex-col gap-y-6 lg:gap-y-10 ">
+      <div className="mzx-w-full lg:max-w-[982px] mx-auto flex flex-col gap-y-6 lg:gap-y-10 ">
         <div className="max-w-full lg:max-w-2xl lg:mx-auto flex flex-col gap-y-4 text-center ">
           <p className="text-indigo-600 text-[12px] lg:text-[15px] font-medium">
-              Blog Category
+            Blog Category
           </p>
           <p className="capitalize text-2xl font-semibold lg:text-4xl ">
             {data?.title}
           </p>
           <p className="uppercase text-gray-400">
-            {data?.created_at} - <span>3 mins read </span>
+            {extractAndFormatDate(data?.created_at)} - <span>3 mins read </span>
           </p>
         </div>
         <Image
-          src="/default.png"
+          src={data?.headerImageUrl ? data?.headerImageUrl : "/postImage2.png"}
           alt=""
           width={982}
           height={450}
-          className=""
+          className="w-[982px] h-[450px] object-cover hidden lg:block"
+        />
+          <Image
+          src={data?.headerImageUrl ? data?.headerImageUrl : "/postImage2.png"}
+          alt=""
+          width={335}
+          height={160}
+          className="w-full h-[160px] object-cover block lg:hidden"
         />
       </div>
 
@@ -81,13 +130,13 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           </div>
         </div>
 
-        <div className=" h-full lg:h-auto lg:w-9/12  flex-col  pb-0 lg:pb-[50px]">
+        <div className=" h-full lg:h-auto w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px]">
           <div dangerouslySetInnerHTML={{ __html: data?.content ?? "" }} />
         </div>
       </div>
 
       {/* Footer Section */}
-      <div className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24">
+      <div className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24 mt-44">
         <p className="text-center text-xl lg:text-3xl font-semibold mt-14">
           Read More Articles
         </p>

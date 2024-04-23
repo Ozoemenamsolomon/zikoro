@@ -14,6 +14,8 @@ type DBBlogPost = {
     content: string;
     views: number;
     shares: JSON;
+    tags: [],
+    headerImageUrl: string,
   };
 
 export function useFetchBlogPost(id: string) {

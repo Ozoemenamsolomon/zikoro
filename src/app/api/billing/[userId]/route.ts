@@ -1,25 +1,37 @@
+import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
-    
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { userId: string } }
+) {
   const supabase = createRouteHandlerClient({ cookies });
-
   if (req.method === "GET") {
     try {
+      const { userId } = params;
+      const { searchParams } = new URL(req.url);
+      const userEmail = searchParams.get("userEmail");
+
       const { data, error } = await supabase
         .from("events")
-        .select("eventCity")
-        .eq("published", true)
-        .eq('explore', true)
+        .select("id")
+        .eq("createdBy", userEmail);
 
       if (error) throw error;
 
+      const { data: secondData, error: secondError } = await supabase
+        .from("eventTransactions")
+        .select("*, events!inner(*)")
+        .in(
+          "eventId",
+          data.map(({ id }) => id)
+        );
+
+      if (secondError) throw secondError;
+
       return NextResponse.json(
-        {
-          data,
-        },
+        { data: secondData },
         {
           status: 200,
         }
@@ -39,3 +51,5 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
+
+export const dynamic = "force-dynamic";

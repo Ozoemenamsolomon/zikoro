@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { generateAlphanumericHash } from "@/utils/helpers";
 
 export async function POST(
   req: NextRequest,
@@ -12,16 +13,29 @@ export async function POST(
       const { userId } = params;
       const payload = await req.json();
 
+      const payOutRef = "ZKR-" + generateAlphanumericHash(12);
+
       const { error } = await supabase
         .from("eventTransactions")
         .update({
           payOutStatus: "requested",
           payOutRequestDate: new Date().toISOString(),
-          payOutRequestedBy: "ubahyusuf484@gmail.com",
+          payOutRequestedBy: userId,
+          payoutReference: payOutRef,
         })
-        .in("id", payload);
+        .in("id", payload.transactionId);
 
       if (error) throw error;
+
+      const { error: secondError } = await supabase.from("payOut").insert({
+        payOutStatus: "requested",
+        requestedBy: userId,
+        payOutRef,
+        Amount: payload.amount,
+      });
+
+      if (secondError) throw error;
+
       return NextResponse.json(
         { msg: "payout requested successfully" },
         {

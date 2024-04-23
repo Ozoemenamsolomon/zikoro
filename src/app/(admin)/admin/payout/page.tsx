@@ -12,8 +12,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetEventTransactions } from "@/hooks/services/billing";
-import { TEventTransaction } from "@/types/billing";
+import { useGetPayOuts } from "@/hooks/services/billing";
+import { IPayOut } from "@/types/billing";
 import { extractUniqueTypes } from "@/utils/helpers";
 import { useEffect, useState } from "react";
 import { AngleDown } from "styled-icons/fa-solid";
@@ -29,17 +29,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { RowSelectionState } from "@tanstack/react-table";
-import RequestPayoutDialog from "@/components/requestPayoutDialog";
 import { toast } from "@/components/ui/use-toast";
 import { DataTable } from "@/components/DataTable";
 import { getCookie } from "@/hooks";
 import { Bold, Italic, Underline } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
+const payOutsFilter: TFilter<TPayOut>[] = [
   {
-    label: "Event",
-    accessor: "event",
+    label: "requested by",
+    accessor: "requestedBy",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +58,7 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
     order: 1,
   },
   {
-    label: "Trans. Date",
+    label: "request Date",
     accessor: "created_at",
     icon: (
       <svg
@@ -113,7 +112,7 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
   },
   {
     label: "Amount",
-    accessor: "amountPaid",
+    accessor: "Amount",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +136,7 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
   },
   {
     label: "Payout Date",
-    accessor: "payOutDate",
+    accessor: "paidAt",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -154,114 +153,6 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
     ),
     type: "dateRange",
     order: 8,
-  },
-  {
-    label: "Reg. Status",
-    accessor: "registrationCompleted",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={21}
-        height={20}
-        viewBox="0 0 21 20"
-        fill="none"
-      >
-        <g clipPath="url(#clip0_11614_15267)">
-          <path
-            d="M20.4402 10C20.4402 10.9245 20.323 11.8099 20.0886 12.6562C19.8542 13.5026 19.519 14.3001 19.0828 15.0488C18.6466 15.7975 18.1257 16.4714 17.5203 17.0703C16.9148 17.6693 16.2377 18.1901 15.489 18.6328C14.7403 19.0755 13.9428 19.4108 13.0964 19.6387C12.2501 19.8665 11.3647 19.987 10.4402 20C9.51571 20 8.63029 19.8828 7.78394 19.6484C6.93758 19.4141 6.14006 19.0788 5.39136 18.6426C4.64266 18.2064 3.96883 17.6855 3.36987 17.0801C2.77091 16.4746 2.25008 15.7975 1.80737 15.0488C1.36466 14.3001 1.02938 13.5026 0.801514 12.6562C0.573649 11.8099 0.453206 10.9245 0.440186 10C0.440186 9.08203 0.557373 8.19661 0.791748 7.34375C1.02612 6.49089 1.36141 5.69336 1.79761 4.95117C2.23381 4.20898 2.75464 3.53516 3.36011 2.92969C3.96558 2.32422 4.64266 1.80339 5.39136 1.36719C6.14006 0.93099 6.93758 0.595703 7.78394 0.361328C8.63029 0.126953 9.51571 0.00651042 10.4402 0C11.3582 0 12.2436 0.117188 13.0964 0.351562C13.9493 0.585938 14.7468 0.921224 15.489 1.35742C16.2312 1.79362 16.905 2.31445 17.5105 2.91992C18.116 3.52539 18.6368 4.20247 19.073 4.95117C19.5092 5.69987 19.8445 6.4974 20.0789 7.34375C20.3132 8.1901 20.4337 9.07552 20.4402 10ZM10.4402 18.75C11.241 18.75 12.0125 18.6458 12.7546 18.4375C13.4968 18.2292 14.1934 17.9362 14.8445 17.5586C15.4955 17.181 16.088 16.722 16.6218 16.1816C17.1557 15.6413 17.6114 15.0521 17.989 14.4141C18.3666 13.776 18.6628 13.0794 18.8777 12.3242C19.0925 11.569 19.1967 10.7943 19.1902 10C19.1902 9.19922 19.086 8.42773 18.8777 7.68555C18.6694 6.94336 18.3764 6.24674 17.9988 5.5957C17.6212 4.94466 17.1622 4.35221 16.6218 3.81836C16.0815 3.28451 15.4923 2.82878 14.8542 2.45117C14.2162 2.07357 13.5196 1.77734 12.7644 1.5625C12.0092 1.34766 11.2345 1.24349 10.4402 1.25C9.63289 1.25 8.85815 1.35417 8.11597 1.5625C7.37378 1.77083 6.68042 2.0638 6.03589 2.44141C5.39136 2.81901 4.79891 3.27799 4.25854 3.81836C3.71818 4.35872 3.26245 4.94792 2.89136 5.58594C2.52026 6.22396 2.22404 6.92057 2.00269 7.67578C1.78133 8.43099 1.67716 9.20573 1.69019 10C1.69019 10.8073 1.79435 11.582 2.00269 12.3242C2.21102 13.0664 2.50399 13.7598 2.88159 14.4043C3.2592 15.0488 3.71818 15.6413 4.25854 16.1816C4.79891 16.722 5.3881 17.1777 6.02612 17.5488C6.66414 17.9199 7.36076 18.2161 8.11597 18.4375C8.87117 18.6589 9.64592 18.763 10.4402 18.75ZM10.4402 13.75C10.7983 13.75 11.1466 13.7012 11.4851 13.6035C11.8236 13.5059 12.1427 13.3594 12.4421 13.1641C12.7416 12.9688 13.0053 12.7441 13.2332 12.4902C13.461 12.2363 13.6596 11.9401 13.8289 11.6016L14.9617 12.1484C14.7533 12.5846 14.4929 12.9785 14.1804 13.3301C13.8679 13.6816 13.5131 13.9811 13.116 14.2285C12.7188 14.4759 12.2957 14.6647 11.8464 14.7949C11.3972 14.9251 10.9285 14.9935 10.4402 15C9.72404 15 9.04045 14.8535 8.3894 14.5605C7.73836 14.2676 7.17196 13.8509 6.69019 13.3105V15H5.44019V11.25H9.19019V12.5H7.64722C7.99878 12.8906 8.4187 13.1966 8.90698 13.418C9.39526 13.6393 9.90633 13.75 10.4402 13.75ZM14.1902 6.68945V5H15.4402V8.75H11.6902V7.5H13.2332C12.8816 7.10938 12.4617 6.80339 11.9734 6.58203C11.4851 6.36068 10.974 6.25 10.4402 6.25C10.0821 6.25 9.73381 6.29883 9.39526 6.39648C9.05672 6.49414 8.73771 6.64062 8.43823 6.83594C8.13875 7.03125 7.87508 7.25586 7.64722 7.50977C7.41935 7.76367 7.22078 8.0599 7.05151 8.39844L5.9187 7.85156C6.12703 7.41536 6.38745 7.02148 6.69995 6.66992C7.01245 6.31836 7.36727 6.01888 7.7644 5.77148C8.16154 5.52409 8.58472 5.33529 9.03394 5.20508C9.48315 5.07487 9.9519 5.00651 10.4402 5C11.1563 5 11.8399 5.14648 12.491 5.43945C13.142 5.73242 13.7084 6.14909 14.1902 6.68945Z"
-            fill="#717171"
-          />
-        </g>
-        <defs>
-          <clipPath id="clip0_11614_15267">
-            <rect
-              width={20}
-              height={20}
-              fill="white"
-              transform="translate(0.440186)"
-            />
-          </clipPath>
-        </defs>
-      </svg>
-    ),
-    options: [
-      { label: "Paid", value: 2 },
-      { label: "Free", value: 1 },
-      { label: "Not Paid", value: 0 },
-    ],
-    order: 4,
-    onFilter: (
-      transaction: TEventTransaction,
-      registrationCompleted: number[]
-    ) => {
-      console.log(transaction.registrationCompleted, registrationCompleted);
-      return registrationCompleted.some((status) =>
-        status === 0
-          ? !transaction.registrationCompleted
-          : status === 1
-          ? transaction.registrationCompleted && transaction.amountPaid === 0
-          : transaction.registrationCompleted && transaction.amountPaid > 0
-      );
-    },
-  },
-  {
-    label: "Ticket Category",
-    accessor: "ticketCategory",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={21}
-        height={20}
-        viewBox="0 0 21 20"
-        fill="none"
-      >
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M10.5166 1.04297H10.6032C11.3524 1.04297 11.9766 1.04297 12.4716 1.10964C12.9949 1.17964 13.4674 1.33464 13.8466 1.7138C14.2266 2.0938 14.3816 2.5663 14.4516 3.0888C14.5016 3.45547 14.5141 3.89214 14.5174 4.39714C15.0574 4.41464 15.5391 4.44714 15.9674 4.5038C16.9441 4.63547 17.7349 4.91214 18.3591 5.53547C18.9824 6.15964 19.2591 6.95047 19.3907 7.92713C19.5182 8.87713 19.5182 10.0896 19.5182 11.6213V11.7146C19.5182 13.2463 19.5182 14.4596 19.3907 15.4088C19.2591 16.3855 18.9824 17.1763 18.3591 17.8005C17.7349 18.4238 16.9441 18.7005 15.9674 18.8321C15.0174 18.9596 13.8049 18.9596 12.2732 18.9596H8.84656C7.3149 18.9596 6.10156 18.9596 5.1524 18.8321C4.17573 18.7005 3.3849 18.4238 2.76073 17.8005C2.1374 17.1763 1.86073 16.3855 1.72906 15.4088C1.60156 14.4588 1.60156 13.2463 1.60156 11.7146V11.6213C1.60156 10.0896 1.60156 8.8763 1.72906 7.92713C1.86073 6.95047 2.1374 6.15964 2.76073 5.53547C3.3849 4.91214 4.17573 4.63547 5.1524 4.5038C5.63366 4.44421 6.11759 4.40862 6.6024 4.39714C6.60573 3.89214 6.61906 3.45547 6.66823 3.0888C6.73823 2.5663 6.89323 2.0938 7.2724 1.7138C7.6524 1.33464 8.1249 1.18047 8.6474 1.10964C9.14323 1.04297 9.76823 1.04297 10.5166 1.04297ZM7.85323 4.37797C8.16823 4.3763 8.49906 4.3763 8.84656 4.3763H12.2732C12.6207 4.3763 12.9516 4.3763 13.2666 4.37797C13.2632 3.90297 13.2516 3.54464 13.2132 3.25547C13.1607 2.8713 13.0716 2.7063 12.9632 2.59797C12.8549 2.48964 12.6899 2.40047 12.3049 2.34797C11.9032 2.29464 11.3632 2.29297 10.5599 2.29297C9.75656 2.29297 9.21656 2.29464 8.81406 2.3488C8.4299 2.40047 8.2649 2.48964 8.15656 2.5988C8.04823 2.70714 7.95906 2.8713 7.90656 3.25547C7.86823 3.5438 7.85656 3.90214 7.85323 4.37797ZM5.31823 5.74297C4.4799 5.85547 3.99656 6.06714 3.64323 6.41964C3.29156 6.77214 3.0799 7.25547 2.9674 8.0938C2.8524 8.94964 2.85073 10.0788 2.85073 11.668C2.85073 13.2571 2.8524 14.3863 2.9674 15.243C3.0799 16.0805 3.29156 16.5638 3.64406 16.9163C3.99656 17.2688 4.4799 17.4805 5.31823 17.593C6.1749 17.708 7.30323 17.7096 8.8924 17.7096H12.2257C13.8149 17.7096 14.9441 17.708 15.8007 17.593C16.6382 17.4805 17.1216 17.2688 17.4741 16.9163C17.8266 16.5638 18.0382 16.0805 18.1507 15.2421C18.2657 14.3863 18.2674 13.2571 18.2674 11.668C18.2674 10.0788 18.2657 8.95047 18.1507 8.09297C18.0382 7.25547 17.8266 6.77214 17.4741 6.41964C17.1216 6.06714 16.6382 5.85547 15.7999 5.74297C14.9441 5.62797 13.8149 5.6263 12.2257 5.6263H8.8924C7.30323 5.6263 6.17573 5.62797 5.31823 5.74297ZM10.5599 7.70964C10.7257 7.70964 10.8846 7.77548 11.0018 7.89269C11.119 8.0099 11.1849 8.16887 11.1849 8.33464V8.34297C12.0924 8.5713 12.8516 9.28714 12.8516 10.2788C12.8516 10.4446 12.7857 10.6035 12.6685 10.7207C12.5513 10.838 12.3923 10.9038 12.2266 10.9038C12.0608 10.9038 11.9018 10.838 11.7846 10.7207C11.6674 10.6035 11.6016 10.4446 11.6016 10.2788C11.6016 9.9588 11.2466 9.51547 10.5599 9.51547C9.87323 9.51547 9.51823 9.9588 9.51823 10.2788C9.51823 10.5988 9.87323 11.043 10.5599 11.043C11.7141 11.043 12.8516 11.843 12.8516 13.0571C12.8516 14.0488 12.0924 14.7638 11.1849 14.993V15.0013C11.1849 15.1671 11.119 15.326 11.0018 15.4432C10.8846 15.5605 10.7257 15.6263 10.5599 15.6263C10.3941 15.6263 10.2352 15.5605 10.118 15.4432C10.0007 15.326 9.9349 15.1671 9.9349 15.0013V14.993C9.0274 14.7646 8.26823 14.0488 8.26823 13.0571C8.26823 12.8914 8.33408 12.7324 8.45129 12.6152C8.5685 12.498 8.72747 12.4321 8.89323 12.4321C9.05899 12.4321 9.21796 12.498 9.33517 12.6152C9.45238 12.7324 9.51823 12.8914 9.51823 13.0571C9.51823 13.3771 9.87323 13.8205 10.5599 13.8205C11.2466 13.8205 11.6016 13.3771 11.6016 13.0571C11.6016 12.7371 11.2466 12.293 10.5599 12.293C9.40573 12.293 8.26823 11.493 8.26823 10.2788C8.26823 9.28714 9.0274 8.5713 9.9349 8.34297V8.33464C9.9349 8.16887 10.0007 8.0099 10.118 7.89269C10.2352 7.77548 10.3941 7.70964 10.5599 7.70964Z"
-          fill="#717171"
-        />
-      </svg>
-    ),
-    type: "multiple",
-    optionsFromData: true,
-    order: 2,
-  },
-  {
-    label: "Discount code",
-    accessor: "discountCode",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width={16}
-        height={16}
-        viewBox="0 0 16 16"
-        fill="none"
-      >
-        <g clipPath="url(#clip0_11614_15279)">
-          <path
-            d="M5.17259 10.8289L10.8869 5.11465M6.66287 1.14208C7.0491 0.827823 7.53181 0.65625 8.02973 0.65625C8.52765 0.65625 9.01036 0.827823 9.39659 1.14208L9.77716 1.45179L10.2606 1.37408C10.7523 1.2949 11.2562 1.38761 11.6876 1.63658C12.1189 1.88555 12.4512 2.27557 12.6286 2.74093L12.8023 3.19808L13.2606 3.37293C13.7262 3.5501 14.1164 3.88235 14.3656 4.3137C14.6148 4.74504 14.7077 5.2491 14.6286 5.74093L14.5509 6.22436L14.8594 6.60493C15.1737 6.99116 15.3453 7.47387 15.3453 7.97179C15.3453 8.46971 15.1737 8.95243 14.8594 9.33865L14.5509 9.71922L14.6286 10.2026C14.7078 10.6943 14.6151 11.1983 14.3661 11.6296C14.1171 12.0609 13.7271 12.3933 13.2617 12.5706L12.8046 12.7455L12.6297 13.2026C12.4524 13.668 12.12 14.058 11.6887 14.307C11.2574 14.556 10.7534 14.6487 10.2617 14.5695L9.7783 14.4918L9.39773 14.8015C9.01151 15.1158 8.52879 15.2873 8.03087 15.2873C7.53295 15.2873 7.05024 15.1158 6.66402 14.8015L6.28345 14.4929L5.80002 14.5695C5.30833 14.6487 4.80437 14.556 4.37305 14.307C3.94173 14.058 3.60939 13.668 3.43202 13.2026L3.25716 12.7455L2.80002 12.5706C2.33465 12.3933 1.94463 12.0609 1.69566 11.6296C1.44669 11.1983 1.35399 10.6943 1.43316 10.2026L1.51087 9.71922L1.20116 9.33865C0.886905 8.95243 0.715332 8.46971 0.715332 7.97179C0.715332 7.47387 0.886905 6.99116 1.20116 6.60493L1.50973 6.22436L1.43316 5.74093C1.35391 5.24938 1.44645 4.74554 1.6952 4.31424C1.94395 3.88293 2.33372 3.55051 2.79887 3.37293L3.25602 3.19922L3.43087 2.74093C3.60804 2.27535 3.94029 1.88508 4.37164 1.6359C4.80298 1.38671 5.30704 1.29384 5.79887 1.37293L6.2823 1.45065L6.66287 1.14208Z"
-            stroke="#717171"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M5.74404 6.25614C5.89559 6.25614 6.04093 6.19593 6.1481 6.08877C6.25526 5.98161 6.31546 5.83626 6.31546 5.68471C6.31546 5.53316 6.25526 5.38781 6.1481 5.28065C6.04093 5.17349 5.89559 5.11328 5.74404 5.11328C5.59248 5.11328 5.44714 5.17349 5.33998 5.28065C5.23281 5.38781 5.17261 5.53316 5.17261 5.68471C5.17261 5.83626 5.23281 5.98161 5.33998 6.08877C5.44714 6.19593 5.59248 6.25614 5.74404 6.25614ZM10.3155 10.8276C10.467 10.8276 10.6124 10.7674 10.7195 10.6602C10.8267 10.553 10.8869 10.4077 10.8869 10.2561C10.8869 10.1046 10.8267 9.95924 10.7195 9.85208C10.6124 9.74491 10.467 9.68471 10.3155 9.68471C10.1639 9.68471 10.0186 9.74491 9.9114 9.85208C9.80424 9.95924 9.74404 10.1046 9.74404 10.2561C9.74404 10.4077 9.80424 10.553 9.9114 10.6602C10.0186 10.7674 10.1639 10.8276 10.3155 10.8276Z"
-            stroke="#717171"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </g>
-        <defs>
-          <clipPath id="clip0_11614_15279">
-            <rect width={16} height={16} fill="white" />
-          </clipPath>
-        </defs>
-      </svg>
-    ),
-    optionsFromData: true,
-    type: "multiple",
-    order: 9,
   },
   {
     label: "Currency",
@@ -297,59 +188,19 @@ const PAYOUT_TABS = [
 ];
 
 export default function page() {
-  const [shownColumns, setShownColumns] = useState<string[]>([
-    "select",
-    "event",
-    "userEmail",
-    "eventRegistrationRef",
-    "created_at",
-    "attendees",
-    "amountPaid",
-  ]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const user = getCookie("user");
-  const { eventTransactions, isLoading, getEventTransactions } =
-    useGetEventTransactions({
-      registrationCompleted: 1,
-      payOutStatus: 1,
-    });
+  const { payOuts, isLoading } = useGetPayOuts({ userId: user?.id || 0 });
 
-  console.log(eventTransactions);
+  console.log(payOuts);
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
-    useFilter<TEventTransaction>({
-      data: eventTransactions,
-      dataFilters: eventTransactionsFilter,
+    useFilter<IPayOut>({
+      data: payOuts,
+      dataFilters: payOutsFilter,
     });
 
-  const totalRevenue = filteredData.reduce(
-    (acc, { amountPaid }) => (amountPaid || 0) + acc,
-    0
-  );
-
-  const totalWallet = filteredData
-    .filter(({ payOutStatus }) => payOutStatus !== "Paid")
-    .reduce(
-      (acc, { amountPaid, affliateCommission, processingFee }) =>
-        (amountPaid || 0) -
-        (processingFee || 0) -
-        (affliateCommission || 0) +
-        acc,
-      0
-    );
-
-  const totalAffiliateCommission = eventTransactions.reduce(
-    (acc, { affliateCommission }) => acc + (affliateCommission || 0),
-    0
-  );
-  const totalAttendees = filteredData.reduce(
-    (acc, { attendees }) => attendees + acc,
-    0
-  );
-  const currency =
-    selectedFilters.find(({ key }) => key === "currency")?.value ?? "NGN";
-
-  // console.log(filteredData, eventTransactions);
+  // console.log(filteredData, payOuts);
 
   useEffect(() => {
     if (isLoading) return;
@@ -357,14 +208,11 @@ export default function page() {
     filters
       .filter((filter) => filter.optionsFromData)
       .forEach(({ accessor }) => {
-        setOptions(
-          accessor,
-          extractUniqueTypes<TEventTransaction>(eventTransactions, accessor)
-        );
+        setOptions(accessor, extractUniqueTypes<TPayOut>(payOuts, accessor));
       });
   }, [isLoading]);
 
-  // console.log(eventTransactions);
+  // console.log(payOuts);
 
   const onChange = (accessorKey: string) =>
     setShownColumns((prevShown) =>
@@ -402,97 +250,6 @@ export default function page() {
         </ToggleGroup>
       </header>
       <section className="space-y-6 max-w-full px-4">
-        <div className="w-full overflow-auto no-scrollbar">
-          <div className="flex md:justify-end gap-4">
-            <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md min-w-[200px]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={33}
-                height={32}
-                viewBox="0 0 33 32"
-                fill="none"
-              >
-                <path
-                  d="M22.8003 4.39922C22.8003 4.08096 22.9268 3.77573 23.1518 3.55069C23.3769 3.32565 23.6821 3.19922 24.0003 3.19922H28.0003C28.3186 3.19922 28.6238 3.32565 28.8489 3.55069C29.0739 3.77573 29.2003 4.08096 29.2003 4.39922V8.39922C29.2003 8.71748 29.0739 9.0227 28.8489 9.24775C28.6238 9.47279 28.3186 9.59922 28.0003 9.59922C27.6821 9.59922 27.3769 9.47279 27.1518 9.24775C26.9268 9.0227 26.8003 8.71748 26.8003 8.39922V7.29522L19.6483 14.4472C19.4233 14.6719 19.1183 14.7982 18.8003 14.7982C18.4823 14.7982 18.1773 14.6719 17.9523 14.4472L14.0003 10.4952L7.24834 17.2472C7.13848 17.3651 7.006 17.4597 6.8588 17.5253C6.71161 17.5909 6.5527 17.6261 6.39158 17.629C6.23046 17.6318 6.07041 17.6022 5.92099 17.5418C5.77157 17.4815 5.63583 17.3916 5.52188 17.2777C5.40793 17.1637 5.3181 17.028 5.25775 16.8786C5.19739 16.7292 5.16775 16.5691 5.1706 16.408C5.17344 16.2469 5.20871 16.088 5.27429 15.9408C5.33988 15.7936 5.43444 15.6611 5.55234 15.5512L13.1523 7.95122C13.3773 7.7265 13.6823 7.60027 14.0003 7.60027C14.3183 7.60027 14.6233 7.7265 14.8483 7.95122L18.8003 11.9032L25.1043 5.59922H24.0003C23.6821 5.59922 23.3769 5.47279 23.1518 5.24775C22.9268 5.0227 22.8003 4.71748 22.8003 4.39922ZM6.40034 22.3992C6.7186 22.3992 7.02383 22.5256 7.24887 22.7507C7.47392 22.9757 7.60034 23.281 7.60034 23.5992V27.5992C7.60034 27.9175 7.47392 28.2227 7.24887 28.4477C7.02383 28.6728 6.7186 28.7992 6.40034 28.7992C6.08208 28.7992 5.77686 28.6728 5.55182 28.4477C5.32677 28.2227 5.20034 27.9175 5.20034 27.5992V23.5992C5.20034 23.281 5.32677 22.9757 5.55182 22.7507C5.77686 22.5256 6.08208 22.3992 6.40034 22.3992ZM14.0003 18.7992C14.0003 18.481 13.8739 18.1757 13.6489 17.9507C13.4238 17.7256 13.1186 17.5992 12.8003 17.5992C12.4821 17.5992 12.1769 17.7256 11.9518 17.9507C11.7268 18.1757 11.6003 18.481 11.6003 18.7992V27.5992C11.6003 27.9175 11.7268 28.2227 11.9518 28.4477C12.1769 28.6728 12.4821 28.7992 12.8003 28.7992C13.1186 28.7992 13.4238 28.6728 13.6489 28.4477C13.8739 28.2227 14.0003 27.9175 14.0003 27.5992V18.7992ZM19.2003 20.7992C19.5186 20.7992 19.8238 20.9256 20.0489 21.1507C20.2739 21.3757 20.4003 21.681 20.4003 21.9992V27.5992C20.4003 27.9175 20.2739 28.2227 20.0489 28.4477C19.8238 28.6728 19.5186 28.7992 19.2003 28.7992C18.8821 28.7992 18.5769 28.6728 18.3518 28.4477C18.1268 28.2227 18.0003 27.9175 18.0003 27.5992V21.9992C18.0003 21.681 18.1268 21.3757 18.3518 21.1507C18.5769 20.9256 18.8821 20.7992 19.2003 20.7992ZM26.8003 15.5992C26.8003 15.281 26.6739 14.9757 26.4489 14.7507C26.2238 14.5256 25.9186 14.3992 25.6003 14.3992C25.2821 14.3992 24.9769 14.5256 24.7518 14.7507C24.5268 14.9757 24.4003 15.281 24.4003 15.5992V27.5992C24.4003 27.9175 24.5268 28.2227 24.7518 28.4477C24.9769 28.6728 25.2821 28.7992 25.6003 28.7992C25.9186 28.7992 26.2238 28.6728 26.4489 28.4477C26.6739 28.2227 26.8003 27.9175 26.8003 27.5992V15.5992Z"
-                  fill="#001FCC"
-                />
-              </svg>
-              <span className="text-gray-700 font-medium">Revenue</span>
-              <span className="text-gray-900 font-semibold text-2xl">
-                {currency}
-                {new Intl.NumberFormat().format(totalRevenue)}
-              </span>
-              <div className="text-tiny text-green-500 flex items-center gap-1.5 p-1 rounded bg-green-50 w-fit">
-                <span className="font-medium capitalize">
-                  Wallet: {currency}
-                  {new Intl.NumberFormat().format(totalWallet)}
-                </span>
-              </div>
-            </div>
-            <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md min-w-[200px]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={33}
-                height={32}
-                viewBox="0 0 33 32"
-                fill="none"
-              >
-                <path
-                  d="M4.40039 13.3333V10.6667C4.40039 9.95942 4.68134 9.28115 5.18144 8.78105C5.68154 8.28095 6.35981 8 7.06706 8H9.73372M4.40039 13.3333C6.17772 13.3333 9.73372 12.2667 9.73372 8M4.40039 13.3333V18.6667M9.73372 8H23.0671M4.40039 18.6667V21.3333C4.40039 22.0406 4.68134 22.7189 5.18144 23.219C5.68154 23.719 6.35981 24 7.06706 24H9.73372M4.40039 18.6667C6.17772 18.6667 9.73372 19.7333 9.73372 24M28.4004 13.3333V10.6667C28.4004 9.95942 28.1194 9.28115 27.6193 8.78105C27.1192 8.28095 26.441 8 25.7337 8H23.0671M28.4004 13.3333C26.6231 13.3333 23.0671 12.2667 23.0671 8M28.4004 13.3333V18.6667M28.4004 18.6667V21.3333C28.4004 22.0406 28.1194 22.7189 27.6193 23.219C27.1192 23.719 26.441 24 25.7337 24H23.0671M28.4004 18.6667C26.6231 18.6667 23.0671 19.7333 23.0671 24M23.0671 24H9.73372"
-                  stroke="#001FCC"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M16.4003 18.6654C17.8731 18.6654 19.067 17.4715 19.067 15.9987C19.067 14.5259 17.8731 13.332 16.4003 13.332C14.9275 13.332 13.7336 14.5259 13.7336 15.9987C13.7336 17.4715 14.9275 18.6654 16.4003 18.6654Z"
-                  stroke="#001FCC"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="text-gray-700 font-medium">
-                Affiliate Commission
-              </span>
-              <span className="text-gray-900 font-semibold text-2xl">
-                {currency}
-                {new Intl.NumberFormat().format(totalAffiliateCommission)}
-              </span>
-            </div>
-            <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md min-w-[200px]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={33}
-                height={32}
-                viewBox="0 0 33 32"
-                fill="none"
-              >
-                <g clipPath="url(#clip0_12577_7050)">
-                  <path
-                    d="M25.7336 22.668V25.3346H9.73364V22.668C9.73364 22.668 9.73364 17.3346 17.7336 17.3346C25.7336 17.3346 25.7336 22.668 25.7336 22.668ZM21.7336 10.668C21.7336 9.87685 21.499 9.10349 21.0595 8.44569C20.62 7.78789 19.9953 7.2752 19.2644 6.97245C18.5335 6.6697 17.7292 6.59049 16.9533 6.74483C16.1774 6.89917 15.4646 7.28013 14.9052 7.83954C14.3458 8.39895 13.9648 9.11169 13.8105 9.88761C13.6562 10.6635 13.7354 11.4678 14.0381 12.1987C14.3409 12.9296 14.8536 13.5543 15.5114 13.9938C16.1692 14.4334 16.9425 14.668 17.7336 14.668C18.7945 14.668 19.8119 14.2465 20.5621 13.4964C21.3122 12.7463 21.7336 11.7288 21.7336 10.668ZM26.0003 17.4146C26.7291 18.087 27.3167 18.8979 27.7288 19.7999C28.1409 20.7018 28.3692 21.6768 28.4003 22.668V25.3346H32.4003V22.668C32.4003 22.668 32.4003 18.068 26.0003 17.4146ZM24.4003 6.66797C23.9975 6.66821 23.5971 6.73119 23.2136 6.85464C23.9937 7.97326 24.412 9.30421 24.412 10.668C24.412 12.0317 23.9937 13.3627 23.2136 14.4813C23.5971 14.6048 23.9975 14.6677 24.4003 14.668C25.4612 14.668 26.4786 14.2465 27.2287 13.4964C27.9789 12.7463 28.4003 11.7288 28.4003 10.668C28.4003 9.6071 27.9789 8.58969 27.2287 7.83954C26.4786 7.0894 25.4612 6.66797 24.4003 6.66797ZM10.187 11.8946L11.7336 13.7746L5.40031 20.108L1.73364 16.108L3.28031 14.5613L5.40031 16.668L10.187 11.8946Z"
-                    fill="#001FCC"
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_12577_7050">
-                    <rect
-                      width={32}
-                      height={32}
-                      fill="white"
-                      transform="translate(0.400391)"
-                    />
-                  </clipPath>
-                </defs>
-              </svg>
-              <span className="text-gray-700 font-medium">Attendees</span>
-              <span className="text-gray-900 font-semibold text-2xl">
-                {totalAttendees}
-              </span>
-            </div>
-          </div>
-        </div>
-
         <div className="space-y-4">
           <div className="flex justify-between md:items-end flex-col md:flex-row gap-y-2">
             <span className="text-gray-500 font-medium text-sm">
@@ -500,7 +257,7 @@ export default function page() {
               Transactions selected
             </span>
             <div className="flex gap-0 md:gap-4 justify-between md:justify-start">
-              <Dialog
+              {/* <Dialog
                 onOpenChange={(newOpen) => {
                   console.log(
                     filteredData.filter(({ id }) => rowSelection[id]).length ===
@@ -535,11 +292,11 @@ export default function page() {
                     selectedRows={filteredData.filter(
                       ({ id }) => rowSelection[id]
                     )}
-                    getEventTransactions={getEventTransactions}
+                    getPayOuts={getPayOuts}
                   />
                 </DialogContent>
-              </Dialog>
-              <DropdownMenu>
+              </Dialog> */}
+              {/* <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="bg-white border-[1px] border-basePrimary text-basePrimary flex gap-2 items-center w-fit px-4">
                     <span>More Column Options</span>{" "}
@@ -569,7 +326,7 @@ export default function page() {
                       </div>
                     ))}
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu> */}
               <button>
                 <svg
                   width="24"
@@ -615,22 +372,18 @@ export default function page() {
           />
 
           <div className="space-y-2 max-w-full overflow-auto">
-            <DataTable<TEventTransaction>
-              columns={columns.filter(
-                ({ accessorKey, id }) =>
-                  shownColumns.includes(accessorKey) ||
-                  (id && shownColumns.includes(id))
-              )}
+            <DataTable<IPayOut>
+              columns={columns}
               data={filteredData.filter(
                 ({ payOutStatus }) => payOutStatus === currentTab
               )}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}
-              canSelectRow={(row) => row?.original?.payOutStatus === "requested"}
+              canSelectRow={(row) => true}
               rowStyle={{
                 display: "grid",
                 gridTemplateColumns: `auto 1.5fr repeat(${
-                  shownColumns.length - 2
+                  columns.length - 2
                 }, minmax(0, 1fr))`,
               }}
             />

@@ -8,16 +8,18 @@ export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
       const userId = searchParams.get("userId");
+      const userEmail = searchParams.get("userEmail");
       const payOutStatus = searchParams.get("payOutStatus");
       const registrationCompleted = searchParams.get("registrationCompleted");
 
-      console.log(registrationCompleted);
+      console.log(userEmail);
 
       const query = supabase
         .from("eventTransactions")
         .select("*, events!inner(*)");
 
       if (userId) query.eq("userId", userId);
+      if (userId) query.eq("events.email", userEmail);
       if (registrationCompleted)
         query.eq(
           "registrationCompleted",

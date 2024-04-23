@@ -13,6 +13,8 @@ type BlogPostProps = {
   content: JSON;
   views: number;
   shares: JSON;
+  tags: [];
+  headerImageUrl: string;
 };
 
 export default function BlogPost({
@@ -26,6 +28,8 @@ export default function BlogPost({
   content,
   views,
   shares,
+  tags,
+  headerImageUrl,
 }: BlogPostProps) {
   // Extracting the date only
   function extractDate(dateTimeString: string): string {
@@ -59,18 +63,18 @@ export default function BlogPost({
       className="flex flex-col md:flex-row gap-x-0 md:gap-x-8 lg:gap-x-16  cursor-pointer gap-y-6 lg:gap-y-0 px-3 lg:px-0"
     >
       <Image
-        src="/default.png"
+        src={headerImageUrl ? headerImageUrl : "/postImage2.png"}
         alt=""
         height={240}
         width={524}
-        className="hidden lg:block rounded-lg w-fit"
+        className="hidden lg:block rounded-lg w-[524px] h-[240px] object-cover"
       />
       <Image
-        src="/default.png"
+        src={headerImageUrl ? headerImageUrl : "/postImage2.png"}
         alt=""
         height={240}
-        width={524}
-        className="block lg:hidden rounded-lg w-fit"
+        width={367}
+        className="block lg:hidden rounded-lg w-full object-cover h-[260px]"
       />
 
       <div className="flex flex-col justify-center ">
@@ -80,12 +84,12 @@ export default function BlogPost({
         <p className="capitalize font-semibold text-base lg:text-3xl ">
           {title}
         </p>
-        <div className="flex uppercase mt-4 text-[12px] lg:text-[15px] font-normal ">
+        <div className="flex gap-x-2 uppercase mt-4 text-[12px] lg:text-[15px] font-normal ">
           <p>
             {date}
-            {" - "}{" "}
+            {" - "}
           </p>
-          <p>3 Min Read</p>
+          <p>{readingDuration}Min Read</p>
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { ThreeLine, Close } from "@/constants/icons";
-import {getCookie} from "@/hooks"
+import { getCookie } from "@/hooks";
 export default function Navbar() {
   const user = getCookie("user");
   const pathname = usePathname();
@@ -66,9 +66,7 @@ export default function Navbar() {
   return (
     <div className="fixed w-full transition-all duration-300 top-0 z-50 ">
       <nav
-        className={` p-4 ${
-          scrolling ? "bg-white" : "bg-white"
-        } border-b-[2px] border-indigo-500 text-base  `}
+        className={` p-4 ${scrolling ? "bg-white" : "bg-white"} text-base  `}
       >
         <div className=" flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
           {!isOpen && (
@@ -111,10 +109,9 @@ export default function Navbar() {
                 <button
                   onClick={() => {
                     if (user) {
-                      router.push("/home")
-                    }
-                    else {
-                      router.push("/login")
+                      router.push("/home");
+                    } else {
+                      router.push("/login");
                     }
                   }}
                   className="text-base text-blue-700 bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md "
@@ -147,7 +144,11 @@ export default function Navbar() {
             <div className="flex flex-col items-center text-white ">
               {links.map(({ name, href }, i) => {
                 return (
-                  <Link key={i} href={href} className="text-xl font-medium pb-7">
+                  <Link
+                    key={i}
+                    href={href}
+                    className="text-xl font-medium pb-7"
+                  >
                     {name}
                   </Link>
                 );
