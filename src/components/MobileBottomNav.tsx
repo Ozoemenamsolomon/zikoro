@@ -16,7 +16,7 @@ import { getCookie } from "@/hooks";
 
 export function MobileBottomNav({ toggleSideNav }: {  toggleSideNav:() => void }) {
   const pathname = usePathname();
-  const eventId = getCookie("eventId")
+  const event = getCookie("currentEvent")
   return (
     <nav className="w-full flex sm:hidden items-center justify-between border-t z-[99999] px-4 py-2 fixed bottom-0 inset-x-0 bg-white">
      
@@ -36,22 +36,22 @@ export function MobileBottomNav({ toggleSideNav }: {  toggleSideNav:() => void }
       </Link>
       <Link
         className="flex flex-col items-center justify-center"
-        href={`/events/home/${eventId}`}
+        href={`/event/${event?.eventId}/home`}
       >
         <HomeIcon
-          color={pathname.includes("events/home") ? "#001ffc" : "#000000"}
+          color={pathname.includes("home") ? "#001ffc" : "#000000"}
         />
         <Dot
           size={10}
-          color={pathname.includes("events/home") ? "#001ffc" : "#ffffff"}
+          color={pathname.includes("home") ? "#001ffc" : "#ffffff"}
         />
       </Link>
       <Link
         className="flex flex-col items-center justify-center"
-        href={"/"}
+        href={`/event/${event?.eventId}/agenda`}
       >
-        <AgendaIcon color={pathname === "/" ? "#001ffc" : "#000000"} />
-        <Dot size={10} color={pathname === "/" ? "#001ffc" : "#ffffff"} />
+        <AgendaIcon color={pathname.includes("agenda") ? "#001ffc" : "#000000"} />
+        <Dot size={10} color={pathname.includes("agenda") ? "#001ffc" : "#ffffff"} />
       </Link>
       <Link
         className="flex flex-col items-center justify-center"

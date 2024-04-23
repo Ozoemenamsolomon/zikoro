@@ -79,7 +79,7 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
             {reformedLink.map(({ name, href }) => {
               return (
                 <li
-                  className={`pb-1 text-xs md:text-sm ${
+                  className={`pb-1 text-sm ${
                     pathname.includes(`${href.split("/")[1]}`)
                       ? "text-basePrimary border-b-2 border-basePrimary font-medium"
                       : ""
