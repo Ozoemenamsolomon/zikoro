@@ -43,7 +43,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
   const [newSkill, setSkill] = React.useState<string>("");
   const [color, setColor] = React.useState<string>("");
 
-  const { attendees, isLoading } = useGetAttendees();
+  const { attendees, isLoading } = useGetAttendees({});
 
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>(
     settings.canReceive.exceptions
