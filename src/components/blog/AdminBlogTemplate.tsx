@@ -77,11 +77,11 @@ export default function AdminBlogTemplate({
         className="block lg:hidden rounded-lg w-[367px] h-[240px]"
       />
 
-      <div className="flex flex-col justify-center ">
-        <div className="flex lg:flex-col items-center ">
-          <div className="">
-            <div className="flex justify-between">
-              <p className="text-indigo-700 capitalize font-medium text-lg">
+      <div className="flex flex-col justify-center w-full lg:w-fit px-4 ">
+        <div className="flex lg:flex-col items-center  juustify-between ">
+          <div className="w-full">
+            <div className="flex justify-between mb-4">
+              <p className="text-indigo-700 capitalize font-medium text-sm">
                 Product Updates
               </p>
 
@@ -99,12 +99,10 @@ export default function AdminBlogTemplate({
               )}
             </div>
 
-            <p className="capitalize font-semibold text-base lg:text-2xl ">
-              {title}
-            </p>
+            <p className="capitalize font-semibold text-lg ">{title}</p>
 
             {!draft && !scheduled && (
-              <div className="flex uppercase mt-4 text-[12px] lg:text-[15px] font-normal ">
+              <div className="flex uppercase mt-2 text-[12px] lg:text-[15px] font-normal ">
                 <p>
                   {date} {" - "}{" "}
                 </p>
@@ -113,7 +111,7 @@ export default function AdminBlogTemplate({
             )}
 
             {!draft && !scheduled && (
-              <div className="flex gap-x-10 mt-4 text-[12px] lg:text-[15px] font-normal ">
+              <div className="flex gap-x-10 mt-2 text-[12px] lg:text-[15px] font-normal ">
                 <div className="flex items-center gap-x-2">
                   <AdminBlogViewIcon2 />
                   <p className="">{views} Views</p>
@@ -127,7 +125,7 @@ export default function AdminBlogTemplate({
             )}
 
             {draft && (
-              <div className="flex gap-x-3 mt-4 text-sm font-normal ">
+              <div className="flex gap-x-3 mt-2 text-sm font-normal ">
                 <p className="font-medium">
                   Last Updated:{" "}
                   <span className="font-normal uppercase">
@@ -139,7 +137,7 @@ export default function AdminBlogTemplate({
             )}
 
             {scheduled && (
-              <div className="flex gap-x-3 mt-4 text-sm font-normal ">
+              <div className="flex gap-x-3 mt-2 text-sm font-normal ">
                 <p className="font-medium">
                   Scheduled For:{" "}
                   <span className="font-normal uppercase">March 23 2024 </span>
