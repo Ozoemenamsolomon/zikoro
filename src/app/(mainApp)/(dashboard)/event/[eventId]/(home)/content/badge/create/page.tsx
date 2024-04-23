@@ -381,7 +381,7 @@ const page = () => {
 
       if (newBadge) {
         setBadge(newBadge);
-        router.push("/badge/create?badgeId=" + newBadge.id);
+        router.push("badge/create?badgeId=" + newBadge.id);
       }
       setUploading(false);
     },

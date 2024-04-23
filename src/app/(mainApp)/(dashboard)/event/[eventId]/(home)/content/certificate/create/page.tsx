@@ -581,7 +581,7 @@ const page = () => {
       if (newCertificate) {
         setCertificate(newCertificate);
         router.push(
-          "/certificate/create?certificateId=" + newCertificate.id
+          "certificate/create?certificateId=" + newCertificate.id
         );
       }
       setUploading(false);
