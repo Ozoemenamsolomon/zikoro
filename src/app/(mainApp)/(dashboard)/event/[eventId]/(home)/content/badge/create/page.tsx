@@ -581,17 +581,19 @@ const page = () => {
         <section className="grid grid-cols-10">
           <div className="col-span-4 max-h-full overflow-auto">
             <Tabs defaultValue="designs" className="flex h-full">
-              <TabsList className="bg-transparent flex flex-col [justify-content:_unset_!important] gap-2 p-0 border-r rounded-none flex-[20%] h-full">
-                {tabs.map(({ label, value, icon }) => (
-                  <TabsTrigger
-                    className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/5 data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none flex flex-col gap-1 w-full"
-                    value={value}
-                  >
-                    {icon}
-                    <span className="capitalize">{label}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+              <div className="border-r h-full">
+                <TabsList className="bg-transparent flex flex-col [justify-content:_unset_!important] gap-2 p-0 rounded-none flex-[20%] h-full">
+                  {tabs.map(({ label, value, icon }) => (
+                    <TabsTrigger
+                      className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/5 data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none flex flex-col gap-1 w-full"
+                      value={value}
+                    >
+                      {icon}
+                      <span className="capitalize">{label}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
               {tabs.map(({ label, value, Component }) => (
                 <TabsContent
                   value={value}
