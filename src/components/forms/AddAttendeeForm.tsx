@@ -132,7 +132,8 @@ export default function AddAttendeeForm({
       whatsappNumber: data.whatsappNumber
         ? whatsappCountryCode + data.whatsappNumber
         : "N/A",
-      eventId,
+      eventId: Array.isArray(eventId) ? eventId[0] : eventId,
+
       userId: user.id,
     };
 
@@ -316,7 +317,6 @@ export default function AddAttendeeForm({
                       onInput={(e) =>
                         setPhoneCountryCode(e.currentTarget.value)
                       }
-                      maxLength={4}
                     />
                     <FormControl>
                       <Input
@@ -348,7 +348,6 @@ export default function AddAttendeeForm({
                       onInput={(e) =>
                         setWhatsAppCountryCode(e.currentTarget.value)
                       }
-                      maxLength={4}
                       maxLength={4}
                     />
                     <FormControl>
@@ -397,7 +396,7 @@ export default function AddAttendeeForm({
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
+          {/* <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
             <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
               Attendee Type
             </span>
@@ -421,7 +420,7 @@ export default function AddAttendeeForm({
             <span className="text-tiny font-medium text-gray-500">
               You can assign multiple roles to the attendee
             </span>
-          </div>
+          </div> */}
           <FormField
             control={form.control}
             name="bio"
