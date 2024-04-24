@@ -5,6 +5,7 @@ import React from "react";
 import ThirdSection from "../../_reusable/ThirdSection";
 import SecondSection from "../../_reusable/SecondSection";
 import { toast } from "@/components/ui/use-toast";
+import { useGetEvent } from "@/hooks";
 
 const page = () => {
   const router = useRouter();
@@ -13,6 +14,10 @@ const page = () => {
 
   const { attendee, isLoading, getAttendee } = useGetAttendee({
     attendeeId,
+  });
+
+  const { event, isLoading: eventIsLoading } = useGetEvent({
+    eventId: Array.isArray(eventId) ? eventId[0] : eventId,
   });
 
   console.log(attendee);
@@ -24,7 +29,7 @@ const page = () => {
 
   return (
     <div>
-      {!isLoading && attendee ? (
+      {!isLoading && attendee && !eventIsLoading ? (
         <div className="space-y-6">
           <section className="md:col-span-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">
             <SecondSection attendee={attendee} />
