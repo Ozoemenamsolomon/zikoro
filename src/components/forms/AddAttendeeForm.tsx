@@ -49,6 +49,8 @@ export default function AddAttendeeForm({
 }) {
   const { toast } = useToast();
   const { eventId } = useParams();
+  const user = getCookie("user");
+
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>(
     attendee ? attendee.phoneNumber.slice(0, 3) : "+234"
   );
