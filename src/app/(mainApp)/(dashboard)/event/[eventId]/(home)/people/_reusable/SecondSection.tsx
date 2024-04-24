@@ -207,9 +207,9 @@ export default function SecondSection({
 
     console.log(newAttendeeCertificate);
 
-    if (newAttendeeCertificate) {
-      router.push(`/verify/${newAttendeeCertificate.certificateId}`);
-    }
+    // if (newAttendeeCertificate) {
+    //   router.push(`/verify/${newAttendeeCertificate.certificateId}`);
+    // }
   };
 
   const { toPDF, targetRef } = usePDF({
