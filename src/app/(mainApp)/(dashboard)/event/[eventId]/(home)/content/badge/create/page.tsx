@@ -9,7 +9,7 @@ import {
 } from "@craftjs/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import {
@@ -228,6 +228,7 @@ const page = () => {
   const divRef = useRef<HTMLDivElement>(null);
   const badgeDivRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { eventId } = useParams();
 
   const searchParams = useSearchParams();
 
@@ -368,7 +369,7 @@ const page = () => {
               lastEdited: new Date(),
             }
           : {
-              eventId: 5,
+              eventId: Number(eventId) || 0,
               badgeDetails: { ...details, craftHash: hashRef.current },
               badgeSettings: settings,
               badgeBackground: details.background || "",
@@ -381,7 +382,7 @@ const page = () => {
 
       if (newBadge) {
         setBadge(newBadge);
-        router.push("/content/badge/create?badgeId=" + newBadge.id);
+        router.push("create?badgeId=" + newBadge.id);
       }
       setUploading(false);
     },
@@ -581,17 +582,19 @@ const page = () => {
         <section className="grid grid-cols-10">
           <div className="col-span-4 max-h-full overflow-auto">
             <Tabs defaultValue="designs" className="flex h-full">
-              <TabsList className="bg-transparent flex flex-col [justify-content:_unset_!important] gap-2 p-0 border-r rounded-none flex-[20%] h-full">
-                {tabs.map(({ label, value, icon }) => (
-                  <TabsTrigger
-                    className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/5 data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none flex flex-col gap-1 w-full"
-                    value={value}
-                  >
-                    {icon}
-                    <span className="capitalize">{label}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+              <div className="border-r h-full">
+                <TabsList className="bg-transparent flex flex-col [justify-content:_unset_!important] gap-2 p-0 rounded-none flex-[20%] h-full">
+                  {tabs.map(({ label, value, icon }) => (
+                    <TabsTrigger
+                      className="data-[state=active]:shadow-none px-4 data-[state=active]:bg-basePrimary/5 data-[state=active]:border-b-2 data-[state=active]:border-b-basePrimary data-[state=active]:text-basePrimary rounded-none flex flex-col gap-1 w-full"
+                      value={value}
+                    >
+                      {icon}
+                      <span className="capitalize">{label}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
               {tabs.map(({ label, value, Component }) => (
                 <TabsContent
                   value={value}

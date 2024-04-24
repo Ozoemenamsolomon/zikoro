@@ -102,7 +102,7 @@ export const useGetBadge = ({
 export const useGetBadges = ({
   eventId,
 }: {
-  eventId?: number;
+  eventId?: string;
 }): UseGetResult<TBadge[], "badges", "getBadges"> => {
   const [badges, setBadges] = useState<TBadge[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);

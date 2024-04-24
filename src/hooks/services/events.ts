@@ -11,7 +11,7 @@ import {
   TEventTransactionDetail,
 } from "@/types";
 import _ from "lodash";
-import { getCookie, useGetOrganizations, useUpdateAttendees } from "@/hooks";
+import { getCookie, useUpdateAttendees } from "@/hooks";
 import { getRequest, postRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
 import { useGetAllAttendees } from "@/hooks";
@@ -23,6 +23,7 @@ import {
   COUNTRIES_CURRENCY,
   dateFormatting,
 } from "@/utils";
+import { useGetOrganizations } from "./organization";
 
 const supabase = createClientComponentClient();
 
