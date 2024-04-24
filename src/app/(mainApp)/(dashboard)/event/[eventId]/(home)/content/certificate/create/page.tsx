@@ -421,7 +421,7 @@ const page = () => {
 
   const { event, isLoading: eventIsLoading } = useGetEvent({
     eventId: parseInt(eventId || "0"),
-  });
+  });+
 
   console.log(event, "event");
 
