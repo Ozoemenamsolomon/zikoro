@@ -32,7 +32,11 @@ const page = () => {
       {!isLoading && attendee && !eventIsLoading ? (
         <div className="space-y-6">
           <section className="md:col-span-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">
-            <SecondSection attendee={attendee} />
+            <SecondSection
+              event={event}
+              eventIsLoading={eventIsLoading}
+              attendee={attendee}
+            />
           </section>
           <section className="flex flex-col md:col-span-3 pt-2">
             <ThirdSection attendee={attendee} />
