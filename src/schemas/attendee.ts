@@ -6,7 +6,6 @@ export const checkinSchema = z.object({
 });
 
 export const AttendeeSchema = z.object({
-  id: z.number().optional(),
   registrationDate: z.string(),
   userEmail: z.string().email(),
   firstName: z.string().min(2, {
