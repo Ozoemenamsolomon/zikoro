@@ -6,7 +6,6 @@ export const checkinSchema = z.object({
 });
 
 export const AttendeeSchema = z.object({
-  id: z.number().optional(),
   registrationDate: z.string(),
   userEmail: z.string().email(),
   firstName: z.string().min(2, {
@@ -31,15 +30,8 @@ export const AttendeeSchema = z.object({
   linkedin: z.string().nullable().optional(),
   instagram: z.string().nullable().optional(),
   facebook: z.string().nullable().optional(),
-  certificate: z.boolean(),
   profilePicture: z.string().nullable().optional(),
   attendeeType: z.array(z.string()).nullable(),
-  eventId: z.string(),
-  checkin: z.array(checkinSchema).optional(),
-  badge: z.string().optional(),
-  ticketType: z.string().optional(),
-  eventRegistrationRef: z.string().optional(),
-  userId: z.number().optional(),
 
   // TODO: @ajax484 please correct this type
   tags: z.array(z.string()).optional(),

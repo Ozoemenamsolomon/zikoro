@@ -172,6 +172,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
       <AddAttendeeForm
         isOpen={attendeeFormIsOpen}
         onClose={onCloseAttendeeForm}
+        getAttendee={getAttendees}
       />
     </section>
   );

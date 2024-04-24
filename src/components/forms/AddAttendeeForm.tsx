@@ -34,6 +34,7 @@ import { COUNTRY_CODE } from "@/utils/countryCode";
 import { attendeeTypeOptions } from "@/data/attendee";
 import { uploadFile, uploadFiles } from "@/utils/helpers";
 import { useParams } from "next/navigation";
+import { getCookie } from "@/hooks";
 
 export default function AddAttendeeForm({
   attendee,
@@ -51,12 +52,13 @@ export default function AddAttendeeForm({
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
   const [whatsappCountryCode, setWhatsAppCountryCode] =
     useState<string>("+234");
+
+  const user = getCookie("user");
+
   const defaultValues: Partial<TAttendee> = attendee || {
     registrationDate: new Date().toISOString(),
-    certificate: true,
-    userEmail: "ubahyusuf484@gmail.com",
+    userEmail: user.userEmail,
     attendeeType: ["attendee"],
-    eventId,
     country: "Nigeria",
   };
 
@@ -115,6 +117,8 @@ export default function AddAttendeeForm({
       whatsappNumber: data.whatsappNumber
         ? whatsappCountryCode + data.whatsappNumber
         : "N/A",
+      eventId,
+      userId: user.id,
     };
 
     await createAttendee({ payload });
@@ -291,6 +295,7 @@ export default function AddAttendeeForm({
                       onInput={(e) =>
                         setPhoneCountryCode(e.currentTarget.value)
                       }
+                      maxLength={4}
                     />
                     <FormControl>
                       <Input
@@ -322,6 +327,7 @@ export default function AddAttendeeForm({
                       onInput={(e) =>
                         setWhatsAppCountryCode(e.currentTarget.value)
                       }
+                      maxLength={4}
                     />
                     <FormControl>
                       <Input
