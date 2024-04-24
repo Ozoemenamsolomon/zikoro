@@ -43,14 +43,18 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
 import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
 import useDisclose from "@/hooks/common/useDisclose";
-import { getCookie } from "@/hooks";
+import { getCookie, useGetEvent } from "@/hooks";
 
 export default function SecondSection({
   attendee,
   getAttendees,
+  eventIsLoading,
+  event,
 }: {
   attendee: TAttendee;
   getAttendees?: () => Promise<void>;
+  eventIsLoading: boolean;
+  event: Event;
 }) {
   const router = useRouter();
   const {
@@ -235,7 +239,9 @@ export default function SecondSection({
 
   // const [certificateId, setCertificateId] = useState<string>("");
 
-  return (
+  console.log(event.createdBy);
+
+  return eventIsLoading ? null : (
     <div className="h-fit space-y-4">
       <div
         ref={parentCardRef}
@@ -251,9 +257,13 @@ export default function SecondSection({
             <div className="relative z-[1000]">
               <div className="absolute top-2 right-4">
                 <button
-                  disabled={email !== user.userEmail}
                   onClick={onOpenattendeeForm}
-                  className="text-gray-700"
+                  className={`text-gray-700 ${
+                    email === user.userEmail ||
+                    event.createdBy === user.userEmail
+                      ? ""
+                      : "hidden"
+                  }`}
                 >
                   <svg
                     stroke="currentColor"

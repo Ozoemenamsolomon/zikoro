@@ -8,6 +8,8 @@ import { useRef, useState, useLayoutEffect } from "react";
 import FirstSection from "./FirstSection";
 import SecondSection from "./SecondSection";
 import ThirdSection from "./ThirdSection";
+import { useGetEvent } from "@/hooks";
+import { useParams } from "next/navigation";
 
 interface ReusablePeopleComponentProps {
   attendees: TAttendee[];
@@ -35,6 +37,12 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   const selectAttendee = (attendee: TAttendee) => setSelectedAttendee(attendee);
 
   const divRef = useRef<HTMLDivElement>(null);
+
+  const { eventId } = useParams();
+
+  const { event, isLoading: eventIsLoading } = useGetEvent({
+    eventId: Array.isArray(eventId) ? eventId[0] : eventId,
+  });
 
   useLayoutEffect(() => {
     const div = divRef.current;
@@ -68,6 +76,8 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
               <SecondSection
                 attendee={selectedAttendee}
                 getAttendees={getAttendees}
+                eventIsLoading={eventIsLoading}
+                event={event}
               />
             </section>
             <section className="flex flex-col md:col-span-3 pt-2">
