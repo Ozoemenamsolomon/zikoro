@@ -242,7 +242,7 @@ export async function POST(req: NextRequest) {
             "
           >
             <p style="font-size: 14px; font-weight: 600; margin: 0; margin-bottom:2px;">
-              registeredAttendees[0] Name
+              Registered Attendee
             </p>
             <p style="color: #b4b4b4; font-size: 14px; margin: 0;">${
               registeredAttendees[0]?.name
@@ -397,9 +397,11 @@ export async function POST(req: NextRequest) {
               "
             >
               <p style="font-size: 14px; color: #b4b4b4; width: 50%;">${count}x ${ticketCategory} Ticket</p>
-              <p style="font-size: 14px;  width: 50%; text-align: end;">${currency}${Number(
-          amountPaid
-        )?.toLocaleString()}</p>
+              <p style="font-size: 14px;  width: 50%; text-align: end;">${
+                amountPaid > 0
+                  ? "NGN" + Number(amountPaid)?.toLocaleString()
+                  : "Free"
+              }</p>
             </div>
           </div>
     

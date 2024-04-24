@@ -52,16 +52,21 @@ export default function AddAttendeeForm({
   const user = getCookie("user");
 
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>(
-    attendee ? attendee.phoneNumber.slice(0, 3) : "+234"
+    attendee && attendee.phoneNumber
+      ? attendee.phoneNumber?.slice(0, 3)
+      : "+234"
   );
   const [whatsappCountryCode, setWhatsAppCountryCode] = useState<string>(
-    attendee ? attendee.whatsappNumber.slice(0, 3) : "+234"
+    attendee && attendee.whatsappNumber
+      ? attendee.whatsappNumber?.slice(0, 3)
+      : "+234"
   );
   const defaultValues: Partial<TAttendee> = attendee
     ? {
         ...attendee,
-        phoneNumber: attendee.phoneNumber.substring(4),
-        whatsappNumber: attendee.whatsappNumber.substring(4),
+        phoneNumber: attendee.phoneNumber && attendee.phoneNumber.substring(4),
+        whatsappNumber:
+          attendee.whatsappNumber && attendee.whatsappNumber.substring(4),
       }
     : {
         registrationDate: new Date().toISOString(),
