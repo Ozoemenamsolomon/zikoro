@@ -9,10 +9,11 @@ import { useState, useMemo } from "react";
 import { Printer } from "@styled-icons/evaicons-solid/Printer";
 import { ScanDash } from "@styled-icons/fluentui-system-regular/ScanDash";
 import { Others, Custom, AddSession, FullScreenView } from "./_components";
-import { useFetchSingleEvent } from "@/hooks";
+import { useFetchSingleEvent, useGetAgendas } from "@/hooks";
 import { generateDateRange } from "@/utils";
 export default function Agenda({ eventId }: { eventId: string }) {
   const [activeDate, setActiveDate] = useState("");
+  const {agendas} = useGetAgendas(eventId)
   const [isOpen, setOpen] = useState(false);
   const { data, refetch } = useFetchSingleEvent(eventId);
   const [isFullScreen, setFullScreen] = useState(false);
@@ -60,7 +61,10 @@ export default function Agenda({ eventId }: { eventId: string }) {
 
           <Button
             onClick={onClose}
-            className={cn(" text-gray-50 bg-basePrimary hidden gap-x-2 h-11 sm:h-12 font-medium", activeDate && "flex")}
+            className={cn(
+              " text-gray-50 bg-basePrimary hidden gap-x-2 h-11 sm:h-12 font-medium",
+              activeDate && "flex"
+            )}
           >
             <PlusCircle size={22} />
             <p>Session</p>
@@ -95,7 +99,10 @@ export default function Agenda({ eventId }: { eventId: string }) {
 
         <div className="w-full p-2 sm:p-4 grid grid-cols-1 items-center gap-8">
           <Others
-            data={{ timeStamp: "Today", session: [{ sessionTitle: "Registration" }] }}
+            data={{
+              timeStamp: "Today",
+              session: [{ sessionTitle: "Registration" }],
+            }}
           />
           <Others
             data={{ timeStamp: "Today", session: [{ sessionTitle: "Launch" }] }}
@@ -103,7 +110,9 @@ export default function Agenda({ eventId }: { eventId: string }) {
           <Custom
             data={{
               timeStamp: "Today",
-              session: [{ sessionTitle: "Introduction to Software Engineering" }],
+              session: [
+                { sessionTitle: "Introduction to Software Engineering" },
+              ],
             }}
           />
           <Others
@@ -120,7 +129,15 @@ export default function Agenda({ eventId }: { eventId: string }) {
           />
         </div>
       </div>
-      {isOpen && <AddSession refetch={refetch} eventStartDate={activeDate} close={onClose} eventId={eventId} event={data}/>}
+      {isOpen && (
+        <AddSession
+          refetch={refetch}
+          eventStartDate={activeDate}
+          close={onClose}
+          eventId={eventId}
+          event={data}
+        />
+      )}
       {isFullScreen && <FullScreenView close={toggleFullScreenMode} />}
     </>
   );

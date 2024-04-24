@@ -7,10 +7,12 @@ import {PlusCircle} from "@styled-icons/bootstrap/PlusCircle"
 
 export function Sponsors({
   sponsors,
-  loading
+  loading,
+  eventId
 }: {
   sponsors: TExPartner[];
   loading: boolean;
+  eventId:string;
 }) {
 
   return (
@@ -46,7 +48,7 @@ export function Sponsors({
       {!loading &&
         sponsors.length > 0 &&
         sponsors.map((sponsor) => (
-          <PartnerCard key={sponsor.id} sponsor={sponsor} />
+          <PartnerCard key={sponsor.id} eventId={eventId} sponsor={sponsor} />
         ))}
     </div>
   );

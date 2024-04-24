@@ -272,10 +272,10 @@ export function Partners({ eventId }: { eventId: string }) {
       </div>
 
       {query === "sponsors" && (
-        <Sponsors sponsors={sponsors} loading={loading} />
+        <Sponsors eventId={eventId} sponsors={sponsors} loading={loading} />
       )}
       {query === "exhibitors" && (
-        <Exhibitors exhibitors={exhibitors} loading={loading} />
+        <Exhibitors eventId={eventId} exhibitors={exhibitors} loading={loading} />
       )}
     </>
   );
