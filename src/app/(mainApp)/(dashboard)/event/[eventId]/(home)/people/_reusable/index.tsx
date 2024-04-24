@@ -67,6 +67,8 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
           attendees={attendees}
           isLoading={isLoading}
           getAttendees={getAttendees}
+          eventIsLoading={eventIsLoading}
+          event={event}
         />
       </section>
       <div className="hidden md:contents">

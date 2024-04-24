@@ -20,17 +20,16 @@ export const saveCookie = (name: string, value: any) => {
   }
 };
 
-export const getCookie = (name: string) => {
-  let value;
-  const jsonString = Cookies.get(name);
+export const getCookie = <T = any>(name: string): T | undefined => {
+  let value: T | undefined;
 
   try {
+    const jsonString = Cookies.get(name);
     if (typeof jsonString === "string") {
-      const jsonObject = JSON.parse(jsonString);
-      value = jsonObject;
+      value = JSON.parse(jsonString) as T;
     }
   } catch (error) {
-    value = jsonString;
+    console.error("Error parsing cookie:", error);
   }
 
   return value;
@@ -278,7 +277,7 @@ export function useUpdatePassword() {
   async function updatePassword(password: string) {
     try {
       setLoading(true);
-      const { data, error } = await supabase.auth.updateUser({ password })
+      const { data, error } = await supabase.auth.updateUser({ password });
 
       if (error) {
         toast.error(error.message);

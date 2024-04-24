@@ -568,7 +568,7 @@ const page = () => {
               lastEdited: new Date(),
             }
           : {
-              eventId: 5,
+              eventId,
               certficateDetails: { ...details, craftHash: hashRef.current },
               certificateSettings: settings,
               certificateName,

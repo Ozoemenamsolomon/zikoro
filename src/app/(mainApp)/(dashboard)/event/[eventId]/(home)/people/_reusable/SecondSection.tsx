@@ -30,6 +30,7 @@ import { usePDF } from "react-to-pdf";
 import { Button } from "@/components/ui/button";
 import {
   useGetAttendeeCertificates,
+  useGetCertificates,
   useGetEventCertificates,
   useReleaseAttendeeCertificate,
   useUpdateAttendeeCertificates,
@@ -117,10 +118,11 @@ export default function SecondSection({
   console.log(attendeeCertificates, "attendee certificates");
 
   const {
-    eventCertificates,
+    certificates: eventCertificates,
     isLoading: getEventCertificatesIsLoading,
-    getEventCertificates,
-  } = useGetEventCertificates({ eventId: 5 });
+  } = useGetCertificates({
+    eventId,
+  });
   console.log(eventCertificates, "event certificates");
 
   const { updateAttendeeCertificates } = useUpdateAttendeeCertificates({
@@ -259,10 +261,7 @@ export default function SecondSection({
                 <button
                   onClick={onOpenattendeeForm}
                   className={`text-gray-700 ${
-                    email === user.userEmail ||
-                    event.createdBy === user.userEmail
-                      ? ""
-                      : "hidden"
+                    email === user.userEmail ? "" : "hidden"
                   }`}
                 >
                   <svg
@@ -701,30 +700,33 @@ export default function SecondSection({
         </button>
       </div>
       <section className="space-y-6 p-4 pt-0">
-        <div className="flex justify-between items-center">
-          <span className="text-tiny font-medium text-gray-500">
-            Added {format(new Date(registrationDate), "dd MMMM, yyyy")}
-          </span>
-          <div className="flex gap-1 items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              height="15"
-              viewBox="0 0 20 20"
-              fill="none"
-            >
-              <path
-                d="M18.125 8.75C18.2908 8.75 18.4497 8.68415 18.5669 8.56694C18.6842 8.44973 18.75 8.29076 18.75 8.125V5C18.75 4.66848 18.6183 4.35054 18.3839 4.11612C18.1495 3.8817 17.8315 3.75 17.5 3.75H2.5C2.16848 3.75 1.85054 3.8817 1.61612 4.11612C1.3817 4.35054 1.25 4.66848 1.25 5V8.125C1.25 8.29076 1.31585 8.44973 1.43306 8.56694C1.55027 8.68415 1.70924 8.75 1.875 8.75C2.20652 8.75 2.52446 8.8817 2.75888 9.11612C2.9933 9.35054 3.125 9.66848 3.125 10C3.125 10.3315 2.9933 10.6495 2.75888 10.8839C2.52446 11.1183 2.20652 11.25 1.875 11.25C1.70924 11.25 1.55027 11.3158 1.43306 11.4331C1.31585 11.5503 1.25 11.7092 1.25 11.875V15C1.25 15.3315 1.3817 15.6495 1.61612 15.8839C1.85054 16.1183 2.16848 16.25 2.5 16.25H17.5C17.8315 16.25 18.1495 16.1183 18.3839 15.8839C18.6183 15.6495 18.75 15.3315 18.75 15V11.875C18.75 11.7092 18.6842 11.5503 18.5669 11.4331C18.4497 11.3158 18.2908 11.25 18.125 11.25C17.7935 11.25 17.4755 11.1183 17.2411 10.8839C17.0067 10.6495 16.875 10.3315 16.875 10C16.875 9.66848 17.0067 9.35054 17.2411 9.11612C17.4755 8.8817 17.7935 8.75 18.125 8.75ZM17.5 12.4188V15H13.125V13.125H11.875V15H2.5V12.4188C3.035 12.2789 3.50854 11.9657 3.84651 11.528C4.18449 11.0903 4.36782 10.553 4.36782 10C4.36782 9.44703 4.18449 8.90966 3.84651 8.472C3.50854 8.03434 3.035 7.72108 2.5 7.58125V5H11.875V6.875H13.125V5H17.5V7.58125C16.965 7.72108 16.4915 8.03434 16.1535 8.472C15.8155 8.90966 15.6322 9.44703 15.6322 10C15.6322 10.553 15.8155 11.0903 16.1535 11.528C16.4915 11.9657 16.965 12.2789 17.5 12.4188Z"
-                fill="#15161B"
-              />
-              <path
-                d="M11.875 8.125H13.125V11.875H11.875V8.125Z"
-                fill="#15161B"
-              />
-            </svg>
-            <span className=" text-sm text-ash">{ticketType}</span>
-          </div>
-        </div>
+        {user &&
+          (event?.createdBy === user.userEmail || email === user.userEmail) && (
+            <div className="flex justify-between items-center">
+              <span className="text-tiny font-medium text-gray-500">
+                Added {format(new Date(registrationDate), "dd MMMM, yyyy")}
+              </span>
+              <div className="flex gap-1 items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <path
+                    d="M18.125 8.75C18.2908 8.75 18.4497 8.68415 18.5669 8.56694C18.6842 8.44973 18.75 8.29076 18.75 8.125V5C18.75 4.66848 18.6183 4.35054 18.3839 4.11612C18.1495 3.8817 17.8315 3.75 17.5 3.75H2.5C2.16848 3.75 1.85054 3.8817 1.61612 4.11612C1.3817 4.35054 1.25 4.66848 1.25 5V8.125C1.25 8.29076 1.31585 8.44973 1.43306 8.56694C1.55027 8.68415 1.70924 8.75 1.875 8.75C2.20652 8.75 2.52446 8.8817 2.75888 9.11612C2.9933 9.35054 3.125 9.66848 3.125 10C3.125 10.3315 2.9933 10.6495 2.75888 10.8839C2.52446 11.1183 2.20652 11.25 1.875 11.25C1.70924 11.25 1.55027 11.3158 1.43306 11.4331C1.31585 11.5503 1.25 11.7092 1.25 11.875V15C1.25 15.3315 1.3817 15.6495 1.61612 15.8839C1.85054 16.1183 2.16848 16.25 2.5 16.25H17.5C17.8315 16.25 18.1495 16.1183 18.3839 15.8839C18.6183 15.6495 18.75 15.3315 18.75 15V11.875C18.75 11.7092 18.6842 11.5503 18.5669 11.4331C18.4497 11.3158 18.2908 11.25 18.125 11.25C17.7935 11.25 17.4755 11.1183 17.2411 10.8839C17.0067 10.6495 16.875 10.3315 16.875 10C16.875 9.66848 17.0067 9.35054 17.2411 9.11612C17.4755 8.8817 17.7935 8.75 18.125 8.75ZM17.5 12.4188V15H13.125V13.125H11.875V15H2.5V12.4188C3.035 12.2789 3.50854 11.9657 3.84651 11.528C4.18449 11.0903 4.36782 10.553 4.36782 10C4.36782 9.44703 4.18449 8.90966 3.84651 8.472C3.50854 8.03434 3.035 7.72108 2.5 7.58125V5H11.875V6.875H13.125V5H17.5V7.58125C16.965 7.72108 16.4915 8.03434 16.1535 8.472C15.8155 8.90966 15.6322 9.44703 15.6322 10C15.6322 10.553 15.8155 11.0903 16.1535 11.528C16.4915 11.9657 16.965 12.2789 17.5 12.4188Z"
+                    fill="#15161B"
+                  />
+                  <path
+                    d="M11.875 8.125H13.125V11.875H11.875V8.125Z"
+                    fill="#15161B"
+                  />
+                </svg>
+                <span className=" text-sm text-ash">{ticketType}</span>
+              </div>
+            </div>
+          )}
         <div className="flex gap-4 justify-evenly">
           {phoneNumber && (
             <div className="flex-1 flex flex-col gap-2 items-center justify-center">
@@ -793,106 +795,123 @@ export default function SecondSection({
               Schedule Appointment
             </span>
           </div>
-          <div className="rounded border p-2 space-y-2">
-            <span className="text-xs text-gray-700 font-medium">
-              {checkin && checkin.length > 0
-                ? checkin.filter((elm) => elm.checkin).length + "x check-ins"
-                : "Not checked in on any date"}
-            </span>
-            {checkin && checkin.length > 0 && (
-              <ul className="space-y-0.5">
-                {checkin.map(({ date }) => (
-                  <li className="flex gap-1 text-xs text-[#717171]">
-                    <div className="text-basePrimary">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1.5em"
-                        height="1.5em"
-                        viewBox="0 0 21 20"
-                        fill="none"
-                      >
-                        <path
-                          d="M7.16667 10.4041L10.7025 13.94L17.7725 6.86914M3 10.4041L6.53583 13.94M13.6067 6.86914L10.9167 9.58331"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                    <span>{format(new Date(date), "dd.MMM.yyyy")}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          {(event?.createdBy === user.userEmail ||
+            email === user.userEmail) && (
+            <div className="rounded border p-2 space-y-2">
+              <span className="text-xs text-gray-700 font-medium">
+                {checkin && checkin.length > 0
+                  ? checkin.filter((elm) => elm.checkin).length + "x check-ins"
+                  : "Not checked in on any date"}
+              </span>
+              {checkin && checkin.length > 0 && (
+                <ul className="space-y-0.5">
+                  {checkin.map(({ date }) => (
+                    <li className="flex gap-1 text-xs text-[#717171]">
+                      <div className="text-basePrimary">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1.5em"
+                          height="1.5em"
+                          viewBox="0 0 21 20"
+                          fill="none"
+                        >
+                          <path
+                            d="M7.16667 10.4041L10.7025 13.94L17.7725 6.86914M3 10.4041L6.53583 13.94M13.6067 6.86914L10.9167 9.58331"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      <span>{format(new Date(date), "dd.MMM.yyyy")}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
         </div>
       </section>
-      <section className="flex justify-between items-center border-y-[1px] border-gray-200 p-2">
-        <h3 className="text-lg text-greyBlack font-semibold">Credentials</h3>
-        {!attendeeCertificatesIsLoading ? (
-          attendeeCertificates.length > 0 && (
+      {user &&
+        (event?.createdBy === user.userEmail || email === user.userEmail) && (
+          <section className="flex justify-between items-center border-y-[1px] border-gray-200 p-2">
+            <h3 className="text-lg text-greyBlack font-semibold">
+              Credentials
+            </h3>
+            {!attendeeCertificatesIsLoading ? (
+              attendeeCertificates.length > 0 &&
+              user &&
+              event?.createdBy === user.userEmail && (
+                <Dialog>
+                  <DialogTrigger>
+                    <span className="  text-sm text-[#001FCC] ">
+                      Recall certificate
+                    </span>
+                  </DialogTrigger>
+                  <DialogContent className="px-3">
+                    <DialogHeader>
+                      <DialogTitle>
+                        <span className="capitalize">Select Certificate</span>
+                      </DialogTitle>
+                    </DialogHeader>
+                    <SelectCertificateModal
+                      certificates={attendeeCertificates}
+                      action={"recall"}
+                      attendeeId={id}
+                      getAttendeeCertificates={getAttendeeCertificates}
+                    />
+                  </DialogContent>
+                </Dialog>
+              )
+            ) : (
+              <p className="px-2 text-sm font-medium text-gray-500">
+                Loading...
+              </p>
+            )}
+          </section>
+        )}
+      <section className="flex justify-between items-center px-2">
+        {user &&
+          (event?.createdBy === user.userEmail || email === user.userEmail) && (
             <Dialog>
               <DialogTrigger>
-                <span className="  text-sm text-[#001FCC] ">
-                  Recall certificate
-                </span>
+                <div className=" flex flex-col items-center gap-2 w-fit">
+                  <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="25"
+                      height="24"
+                      viewBox="0 0 25 24"
+                      fill="none"
+                    >
+                      <path
+                        d="M15.8926 18L16.0659 21.5156L12.5099 19.0444L8.93392 21.518L9.1074 18H7.60557L7.34673 23.25H9.06667L12.5079 20.8697L15.9332 23.25H17.6532L17.3944 18H15.8926ZM19.9723 7.26163L19.8694 5.0091L17.9703 3.79377L16.7547 1.89444L14.5022 1.79132L12.5 0.754395L10.4978 1.79155L8.24523 1.89468L7.02967 3.79377L5.13053 5.0091L5.02768 7.26163L3.99048 9.26385L5.02768 11.2661L5.13081 13.5186L7.02967 14.7339L8.24504 16.6333L10.4976 16.7362L12.5 17.7733L14.5022 16.7362L16.7547 16.6333L17.9701 14.7339L19.8694 13.5188L19.9723 11.2663L21.0095 9.26404L19.9723 7.26163ZM18.4889 10.8686L18.4062 12.674L16.884 13.648L15.9099 15.1703L14.1045 15.2528L12.5 16.084L10.8953 15.2528L9.08987 15.1703L8.11581 13.648L6.59373 12.674L6.51128 10.8686L5.67967 9.26385L6.51109 7.65941L6.59373 5.85379L8.11581 4.87972L9.08987 3.3575L10.8953 3.275L12.5 2.44372L14.1047 3.27496L15.9101 3.35746L16.8842 4.87968L18.4062 5.85379L18.4887 7.65918L19.3203 9.26385L18.4889 10.8686Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                  <span className=" text-[#3E404B] font-semibold text-xs">
+                    View badge
+                  </span>
+                </div>
               </DialogTrigger>
-              <DialogContent className="px-3">
+              <DialogContent className="px-3 h-">
                 <DialogHeader>
                   <DialogTitle>
-                    <span className="capitalize">Select Certificate</span>
+                    <span className="capitalize">View Badge</span>
                   </DialogTitle>
                 </DialogHeader>
-                <SelectCertificateModal
-                  certificates={attendeeCertificates}
-                  action={"recall"}
-                  attendeeId={id}
-                  getAttendeeCertificates={getAttendeeCertificates}
-                />
+                <div className="space-y-4 h-[70vh]">
+                  <AttendeeBadge attendee={attendee} />
+                </div>
               </DialogContent>
             </Dialog>
-          )
-        ) : (
-          <p className="px-2 text-sm font-medium text-gray-500">Loading...</p>
-        )}
-      </section>
-      <section className="flex justify-between items-center px-2">
-        <Dialog>
-          <DialogTrigger>
-            <div className=" flex flex-col items-center gap-2 w-fit">
-              <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="25"
-                  height="24"
-                  viewBox="0 0 25 24"
-                  fill="none"
-                >
-                  <path
-                    d="M15.8926 18L16.0659 21.5156L12.5099 19.0444L8.93392 21.518L9.1074 18H7.60557L7.34673 23.25H9.06667L12.5079 20.8697L15.9332 23.25H17.6532L17.3944 18H15.8926ZM19.9723 7.26163L19.8694 5.0091L17.9703 3.79377L16.7547 1.89444L14.5022 1.79132L12.5 0.754395L10.4978 1.79155L8.24523 1.89468L7.02967 3.79377L5.13053 5.0091L5.02768 7.26163L3.99048 9.26385L5.02768 11.2661L5.13081 13.5186L7.02967 14.7339L8.24504 16.6333L10.4976 16.7362L12.5 17.7733L14.5022 16.7362L16.7547 16.6333L17.9701 14.7339L19.8694 13.5188L19.9723 11.2663L21.0095 9.26404L19.9723 7.26163ZM18.4889 10.8686L18.4062 12.674L16.884 13.648L15.9099 15.1703L14.1045 15.2528L12.5 16.084L10.8953 15.2528L9.08987 15.1703L8.11581 13.648L6.59373 12.674L6.51128 10.8686L5.67967 9.26385L6.51109 7.65941L6.59373 5.85379L8.11581 4.87972L9.08987 3.3575L10.8953 3.275L12.5 2.44372L14.1047 3.27496L15.9101 3.35746L16.8842 4.87968L18.4062 5.85379L18.4887 7.65918L19.3203 9.26385L18.4889 10.8686Z"
-                    fill="black"
-                  />
-                </svg>
-              </div>
-              <span className=" text-[#3E404B] font-semibold text-xs">
-                View badge
-              </span>
-            </div>
-          </DialogTrigger>
-          <DialogContent className="px-3 h-">
-            <DialogHeader>
-              <DialogTitle>
-                <span className="capitalize">View Badge</span>
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 h-[70vh]">
-              <AttendeeBadge attendee={attendee} />
-            </div>
-          </DialogContent>
-        </Dialog>
+          )}
         {!getEventCertificatesIsLoading &&
           eventCertificates &&
+          user &&
+          event?.createdBy === user.userEmail &&
           eventCertificates.some(
             (eventCertificate) =>
               !attendeeCertificates.some(
@@ -945,46 +964,49 @@ export default function SecondSection({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-        {!attendeeCertificatesIsLoading && attendeeCertificates.length > 0 && (
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div className=" flex flex-col items-center gap-2 w-fit">
-                <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M9 5.5C9 5.36739 9.05268 5.24021 9.14645 5.14645C9.24021 5.05268 9.36739 5 9.5 5H14.5C14.6326 5 14.7598 5.05268 14.8536 5.14645C14.9473 5.24021 15 5.36739 15 5.5C15 5.63261 14.9473 5.75979 14.8536 5.85355C14.7598 5.94732 14.6326 6 14.5 6H9.5C9.36739 6 9.24021 5.94732 9.14645 5.85355C9.05268 5.75979 9 5.63261 9 5.5ZM7.5 8C7.36739 8 7.24021 8.05268 7.14645 8.14645C7.05268 8.24021 7 8.36739 7 8.5C7 8.63261 7.05268 8.75979 7.14645 8.85355C7.24021 8.94732 7.36739 9 7.5 9H16.5C16.6326 9 16.7598 8.94732 16.8536 8.85355C16.9473 8.75979 17 8.63261 17 8.5C17 8.36739 16.9473 8.24021 16.8536 8.14645C16.7598 8.05268 16.6326 8 16.5 8H7.5ZM7 10.5C7 10.3674 7.05268 10.2402 7.14645 10.1464C7.24021 10.0527 7.36739 10 7.5 10H16.5C16.6326 10 16.7598 10.0527 16.8536 10.1464C16.9473 10.2402 17 10.3674 17 10.5C17 10.6326 16.9473 10.7598 16.8536 10.8536C16.7598 10.9473 16.6326 11 16.5 11H7.5C7.36739 11 7.24021 10.9473 7.14645 10.8536C7.05268 10.7598 7 10.6326 7 10.5ZM7.5 12C7.36739 12 7.24021 12.0527 7.14645 12.1464C7.05268 12.2402 7 12.3674 7 12.5C7 12.6326 7.05268 12.7598 7.14645 12.8536C7.24021 12.9473 7.36739 13 7.5 13H16.5C16.6326 13 16.7598 12.9473 16.8536 12.8536C16.9473 12.7598 17 12.6326 17 12.5C17 12.3674 16.9473 12.2402 16.8536 12.1464C16.7598 12.0527 16.6326 12 16.5 12H7.5Z"
-                      fill="black"
-                    />
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M19 18C19 18.5304 18.7893 19.0391 18.4142 19.4142C18.0391 19.7893 17.5304 20 17 20H15.5V22L14 21.25L12.5 22V20H7C6.46957 20 5.96086 19.7893 5.58579 19.4142C5.21071 19.0391 5 18.5304 5 18V4C5 3.46957 5.21071 2.96086 5.58579 2.58579C5.96086 2.21071 6.46957 2 7 2H17C17.5304 2 18.0391 2.21071 18.4142 2.58579C18.7893 2.96086 19 3.46957 19 4V18ZM7 3C6.73478 3 6.48043 3.10536 6.29289 3.29289C6.10536 3.48043 6 3.73478 6 4V18C6 18.2652 6.10536 18.5196 6.29289 18.7071C6.48043 18.8946 6.73478 19 7 19H12.5V17.823C12.2454 17.5343 12.0795 17.1783 12.0223 16.7977C11.965 16.4171 12.0188 16.0281 12.1771 15.6772C12.3355 15.3264 12.5917 15.0288 12.915 14.82C13.2384 14.6112 13.6151 14.5001 14 14.5001C14.3849 14.5001 14.7616 14.6112 15.085 14.82C15.4083 15.0288 15.6645 15.3264 15.8229 15.6772C15.9812 16.0281 16.035 16.4171 15.9777 16.7977C15.9205 17.1783 15.7546 17.5343 15.5 17.823V19H17C17.2652 19 17.5196 18.8946 17.7071 18.7071C17.8946 18.5196 18 18.2652 18 18V4C18 3.73478 17.8946 3.48043 17.7071 3.29289C17.5196 3.10536 17.2652 3 17 3H7ZM14.5 18.437C14.172 18.5215 13.828 18.5215 13.5 18.437V20.382L14 20.132L14.5 20.382V18.437ZM14 17.5C14.2652 17.5 14.5196 17.3946 14.7071 17.2071C14.8946 17.0196 15 16.7652 15 16.5C15 16.2348 14.8946 15.9804 14.7071 15.7929C14.5196 15.6054 14.2652 15.5 14 15.5C13.7348 15.5 13.4804 15.6054 13.2929 15.7929C13.1054 15.9804 13 16.2348 13 16.5C13 16.7652 13.1054 17.0196 13.2929 17.2071C13.4804 17.3946 13.7348 17.5 14 17.5Z"
-                      fill="black"
-                    />
-                  </svg>
+        {!attendeeCertificatesIsLoading &&
+          attendeeCertificates.length > 0 &&
+          user &&
+          (event?.createdBy === user.userEmail || email === user.userEmail) && (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <div className=" flex flex-col items-center gap-2 w-fit">
+                  <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        d="M9 5.5C9 5.36739 9.05268 5.24021 9.14645 5.14645C9.24021 5.05268 9.36739 5 9.5 5H14.5C14.6326 5 14.7598 5.05268 14.8536 5.14645C14.9473 5.24021 15 5.36739 15 5.5C15 5.63261 14.9473 5.75979 14.8536 5.85355C14.7598 5.94732 14.6326 6 14.5 6H9.5C9.36739 6 9.24021 5.94732 9.14645 5.85355C9.05268 5.75979 9 5.63261 9 5.5ZM7.5 8C7.36739 8 7.24021 8.05268 7.14645 8.14645C7.05268 8.24021 7 8.36739 7 8.5C7 8.63261 7.05268 8.75979 7.14645 8.85355C7.24021 8.94732 7.36739 9 7.5 9H16.5C16.6326 9 16.7598 8.94732 16.8536 8.85355C16.9473 8.75979 17 8.63261 17 8.5C17 8.36739 16.9473 8.24021 16.8536 8.14645C16.7598 8.05268 16.6326 8 16.5 8H7.5ZM7 10.5C7 10.3674 7.05268 10.2402 7.14645 10.1464C7.24021 10.0527 7.36739 10 7.5 10H16.5C16.6326 10 16.7598 10.0527 16.8536 10.1464C16.9473 10.2402 17 10.3674 17 10.5C17 10.6326 16.9473 10.7598 16.8536 10.8536C16.7598 10.9473 16.6326 11 16.5 11H7.5C7.36739 11 7.24021 10.9473 7.14645 10.8536C7.05268 10.7598 7 10.6326 7 10.5ZM7.5 12C7.36739 12 7.24021 12.0527 7.14645 12.1464C7.05268 12.2402 7 12.3674 7 12.5C7 12.6326 7.05268 12.7598 7.14645 12.8536C7.24021 12.9473 7.36739 13 7.5 13H16.5C16.6326 13 16.7598 12.9473 16.8536 12.8536C16.9473 12.7598 17 12.6326 17 12.5C17 12.3674 16.9473 12.2402 16.8536 12.1464C16.7598 12.0527 16.6326 12 16.5 12H7.5Z"
+                        fill="black"
+                      />
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M19 18C19 18.5304 18.7893 19.0391 18.4142 19.4142C18.0391 19.7893 17.5304 20 17 20H15.5V22L14 21.25L12.5 22V20H7C6.46957 20 5.96086 19.7893 5.58579 19.4142C5.21071 19.0391 5 18.5304 5 18V4C5 3.46957 5.21071 2.96086 5.58579 2.58579C5.96086 2.21071 6.46957 2 7 2H17C17.5304 2 18.0391 2.21071 18.4142 2.58579C18.7893 2.96086 19 3.46957 19 4V18ZM7 3C6.73478 3 6.48043 3.10536 6.29289 3.29289C6.10536 3.48043 6 3.73478 6 4V18C6 18.2652 6.10536 18.5196 6.29289 18.7071C6.48043 18.8946 6.73478 19 7 19H12.5V17.823C12.2454 17.5343 12.0795 17.1783 12.0223 16.7977C11.965 16.4171 12.0188 16.0281 12.1771 15.6772C12.3355 15.3264 12.5917 15.0288 12.915 14.82C13.2384 14.6112 13.6151 14.5001 14 14.5001C14.3849 14.5001 14.7616 14.6112 15.085 14.82C15.4083 15.0288 15.6645 15.3264 15.8229 15.6772C15.9812 16.0281 16.035 16.4171 15.9777 16.7977C15.9205 17.1783 15.7546 17.5343 15.5 17.823V19H17C17.2652 19 17.5196 18.8946 17.7071 18.7071C17.8946 18.5196 18 18.2652 18 18V4C18 3.73478 17.8946 3.48043 17.7071 3.29289C17.5196 3.10536 17.2652 3 17 3H7ZM14.5 18.437C14.172 18.5215 13.828 18.5215 13.5 18.437V20.382L14 20.132L14.5 20.382V18.437ZM14 17.5C14.2652 17.5 14.5196 17.3946 14.7071 17.2071C14.8946 17.0196 15 16.7652 15 16.5C15 16.2348 14.8946 15.9804 14.7071 15.7929C14.5196 15.6054 14.2652 15.5 14 15.5C13.7348 15.5 13.4804 15.6054 13.2929 15.7929C13.1054 15.9804 13 16.2348 13 16.5C13 16.7652 13.1054 17.0196 13.2929 17.2071C13.4804 17.3946 13.7348 17.5 14 17.5Z"
+                        fill="black"
+                      />
+                    </svg>
+                  </div>
+                  <span className=" text-[#3E404B] font-semibold text-xs">
+                    View certificate
+                  </span>
                 </div>
-                <span className=" text-[#3E404B] font-semibold text-xs">
-                  View certificate
-                </span>
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="py-4 min-w-[200px]">
-              {attendeeCertificates.map((certificate) => (
-                <DropdownMenuItem key={certificate.id}>
-                  <Link href={`/verify/${certificate.certificateId}`}>
-                    {certificate.CertificateName}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="py-4 min-w-[200px]">
+                {attendeeCertificates.map((certificate) => (
+                  <DropdownMenuItem key={certificate.id}>
+                    <Link href={`/verify/${certificate.certificateId}`}>
+                      {certificate.CertificateName}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
       </section>
       <section className="space-y-4 border-t-[1px] border-gray-200 pt-2">
         <h3 className="px-2 pb-2 border-b-[1px] border-gray-200 text-lg text-greyBlack font-semibold">
