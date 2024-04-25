@@ -9,7 +9,7 @@ import {
 } from "@craftjs/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import {
@@ -413,17 +413,16 @@ const page = () => {
   const searchParams = useSearchParams();
 
   const certificateId = searchParams.get("certificateId");
-  const eventId = searchParams.get("eventId");
 
+  const { eventId } = useParams();
   const { certificate, isLoading: certificateIsLoading } = useGetCertificate({
     certificateId: certificateId || "0",
   });
 
   const { event, isLoading: eventIsLoading } = useGetEvent({
-    eventId: parseInt(eventId || "0"),
+    eventId: parseInt(Array.isArray(eventId) ? eventId[0] : eventId),
   });
-
-  console.log(event, "event");
+  console.log(event, eventId, "event");
 
   const [editableCertificate, setCertificate] = useState<TCertificate | null>(
     null
@@ -568,7 +567,7 @@ const page = () => {
               lastEdited: new Date(),
             }
           : {
-              eventId: 5,
+              eventId,
               certficateDetails: { ...details, craftHash: hashRef.current },
               certificateSettings: settings,
               certificateName,
@@ -580,9 +579,7 @@ const page = () => {
 
       if (newCertificate) {
         setCertificate(newCertificate);
-        router.push(
-          "create?certificateId=" + newCertificate.id
-        );
+        router.push("create?certificateId=" + newCertificate.id);
       }
       setUploading(false);
     },

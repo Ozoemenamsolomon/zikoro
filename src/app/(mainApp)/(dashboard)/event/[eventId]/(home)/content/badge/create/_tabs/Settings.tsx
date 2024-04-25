@@ -40,14 +40,14 @@ const Settings = ({ settings, editSettings }: TabProps) => {
   const [newSkill, setSkill] = React.useState<string>("");
   const [color, setColor] = React.useState<string>("");
 
-  const { attendees, isLoading } = useGetAttendees();
+  const { attendees, isLoading } = useGetAttendees({});
 
   console.log(settings.canReceive.exceptions);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>(
     settings.canReceive.exceptions
       ? attendees.filter(({ id }) =>
-        settings.canReceive.exceptions?.includes(id)
-      )
+          settings.canReceive.exceptions?.includes(id)
+        )
       : []
   );
 
@@ -59,8 +59,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
     const updatedValue = Array.isArray(value)
       ? value
       : value && selectedAttendees.includes(value)
-        ? selectedAttendees.filter((item) => item !== value)
-        : [...selectedAttendees, value];
+      ? selectedAttendees.filter((item) => item !== value)
+      : [...selectedAttendees, value];
 
     setSelectedAttendees(updatedValue);
   };
@@ -146,23 +146,27 @@ const Settings = ({ settings, editSettings }: TabProps) => {
                     variant={"ghost"}
                     className="text-sm font-medium flex flex-col items-start gap-1 p-0 mt-2 mb-4"
                   >
-                    <span className="text-basePrimary flex gap-1">      <svg
-                      stroke="currentColor"
-                      fill="currentColor"
-                      stroke-width="0"
-                      viewBox="0 0 1024 1024"
-                      height="1.5em"
-                      width="1.5em"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path>
-                      <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
-                    </svg> Exceptions</span>
+                    <span className="text-basePrimary flex gap-1">
+                      {" "}
+                      <svg
+                        stroke="currentColor"
+                        fill="currentColor"
+                        stroke-width="0"
+                        viewBox="0 0 1024 1024"
+                        height="1.5em"
+                        width="1.5em"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path>
+                        <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+                      </svg>{" "}
+                      Exceptions
+                    </span>
                     <i className="text-xs">
-                      {
-                        (selectedAttendees && selectedAttendees.length > 0) && selectedAttendees.length + " attendees will not receive this badge"
-
-                      }
+                      {selectedAttendees &&
+                        selectedAttendees.length > 0 &&
+                        selectedAttendees.length +
+                          " attendees will not receive this badge"}
                     </i>
                   </Button>
                 </DialogTrigger>

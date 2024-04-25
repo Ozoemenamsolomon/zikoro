@@ -28,7 +28,7 @@ export default function RootLayout({
       <main className="relative w-full h-full bg-white" ref={divRef}>
         <SideBarLayout />
 
-        <div className="lg:w-[calc(100%-250px)]  min-[1024px]:float-right  pb-12  ">
+        <div className="lg:w-[calc(100%-250px)] min-[1024px]:float-right">
           {children}
         </div>
       </main>

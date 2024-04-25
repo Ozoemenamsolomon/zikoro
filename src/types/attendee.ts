@@ -11,7 +11,9 @@ export type TAttendee = z.infer<typeof AttendeeSchema> & {
   id?: number;
   eventRegistrationRef?: string;
   ticketType?: string;
-  paymentLink?:string
+  paymentLink?: string;
+  checkin?: (typeof checkinSchema)[];
+  badge?: string;
 };
 
 export type TAttendeeNote = z.infer<typeof attendeeNoteSchema>;

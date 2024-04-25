@@ -1,4 +1,5 @@
 import { useUpdateAttendees } from "@/hooks/services/attendee";
+import { Event, TUser } from "@/types";
 import { TAttendee } from "@/types/attendee";
 import { TFavouriteContact } from "@/types/favourites";
 import { formatDate, isWithinTimeRange } from "@/utils/date";
@@ -13,6 +14,8 @@ type AttendeeProps = {
   favourites: TFavouriteContact | null;
   toggleFavourites: (id: number, isFavourite: boolean) => Promise<void>;
   favouriteIsLoading: boolean;
+  event: Event;
+  user: TUser;
 };
 
 const Attendee: React.FC<AttendeeProps> = ({
@@ -23,6 +26,8 @@ const Attendee: React.FC<AttendeeProps> = ({
   favourites,
   toggleFavourites,
   favouriteIsLoading,
+  event,
+  user,
 }) => {
   const router = useRouter();
   const {
@@ -117,7 +122,7 @@ const Attendee: React.FC<AttendeeProps> = ({
           <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
             {`${jobTitle ? jobTitle + ", " : ""}${organization || ""}`}
           </span>
-          {recentCheckin && (
+          {user && event?.createdBy === user.userEmail && recentCheckin && (
             <div className="flex gap-1 text-tiny text-[#717171]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -214,6 +219,8 @@ const Attendee: React.FC<AttendeeProps> = ({
         <button
           onClick={toggleCheckin}
           className={`text-[8px] flex items-center gap-0.5 ${
+            user && event?.createdBy === user.userEmail ? "" : "hidden"
+          } ${
             recentCheckin && isWithinTimeRange(recentCheckin.date, null)
               ? "text-basePrimary"
               : "text-gray-700"
