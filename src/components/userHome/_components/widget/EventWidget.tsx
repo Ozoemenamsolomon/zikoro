@@ -22,7 +22,7 @@ export function EventWidget({ event }: { event: Event }) {
         eventId: event?.id,
         eventName: event?.eventTitle,
       });
-      router.push(`/event/${event?.id}/home`);
+      router.push(`/event/${event?.eventAlias}/home`);
     }
     return (
       <div

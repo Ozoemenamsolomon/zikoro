@@ -247,7 +247,7 @@ export function useUpdateEvent() {
             ...values,
           },
         ])
-        .eq("id", eventId);
+        .eq("eventAlias", eventId);
 
       if (error) {
         toast.error(error.message);
@@ -525,7 +525,7 @@ export function useGetPublishedEvents(
   };
 }
 
-export function useFetchSingleEvent(id: string) {
+export function useFetchSingleEvent(eventId: string) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Event | null>(null);
 
@@ -540,7 +540,7 @@ export function useFetchSingleEvent(id: string) {
       const { data, error: fetchError } = await supabase
         .from("events")
         .select("*")
-        .eq("id", id)
+        .eq("eventAlias", eventId)
         .single();
 
       if (fetchError) {
@@ -572,7 +572,7 @@ export function useBookingEvent() {
   async function registerAttendees(
     eventTransactionRef: string,
     values: z.infer<typeof eventBookingValidationSchema>,
-    eventId?: number,
+    eventId?: string,
     attendants?: string | null,
     ticketType?: string,
     paymentLink?: string
@@ -1068,11 +1068,11 @@ export function useAttenedeeEvents() {
       });
       //   console.log({filteredEvents})
       const mappedEventId = filteredEvents?.map((attendee) =>
-        Number(attendee?.eventId)
+        String(attendee?.eventId)
       );
       const filtered = events?.filter((event) => {
         // check if event ID in the attendees data and event ID in the events data correlate
-        const isRegistered = mappedEventId?.includes(event?.id);
+        const isRegistered = mappedEventId?.includes(event?.eventAlias);
 
         return isRegistered;
       });

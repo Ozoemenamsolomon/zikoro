@@ -43,7 +43,7 @@ export function BookEvent({
   eventTitle,
   eventLocation,
 }: {
-  eventId?: number;
+  eventId?: string;
   eventDate?: string;
   endDate?: string;
   startDate?: string;
@@ -494,7 +494,7 @@ export function BookEvent({
                                 </div>
                                   )*/}
                             </div>
-                            <div className="flex items-center justify-between w-full">
+                            <div className="flex items-end mt-2 justify-between w-full">
                               <div
                                 className={cn(
                                   "  flex flex-col justify-start rounded-md items-start",
@@ -511,12 +511,18 @@ export function BookEvent({
                                   <p className="w-1 h-1"></p>
                                 )}
                               </div>
-
-                              {availableSlot > 0 && (
+                               <div className="flex flex-col items-end justify-end gap-y-2">
+                               {availableSlot > 0 && (
                                 <p className="text-red-600 bg-red-100 text-xs p-2 rounded-md">
                                   {` ${availableSlot} slots left`}
                                 </p>
                               )}
+                               <div className="flex items-center gap-x-3">
+                                <p className={cn("text-gray-500 text-sm italic", activeSelectedPrice(v?.attendeeType) &&
+                                "text-basePrimary font-medium")}>Select</p>
+                               </div>
+                                </div>   
+                              
                             </div>
                           </Button>
                         );

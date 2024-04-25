@@ -67,13 +67,13 @@ export function Events({ id }: { id: string }) {
           <SingleEvent
             key={event.id}
             event={event}
-            eventId={event.id}
+            eventId={event.eventAlias}
             organization={query?.name}
             className="mb-6 sm:mb-10"
           />
         ))}
       {!loading && filteredEvents?.length === 0 && (
-        <EmptyCard text={`No event for ${query} organization`} />
+        <EmptyCard text={`No event for ${query?.name} organization`} />
       )}
     </HeroLayout>
   );

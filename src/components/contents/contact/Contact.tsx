@@ -3,8 +3,6 @@ import { Download } from "styled-icons/bootstrap";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useEffect, useState, useMemo } from "react";
 import { COUNTRY_CODE, uploadFile } from "@/utils";
-import { ContentTopNav } from "../_components";
-import { SideBarLayout } from "@/components";
 import { CloseCircle } from "styled-icons/ionicons-outline";
 import { Camera } from "styled-icons/feather";
 import { Eye } from "styled-icons/feather";
@@ -46,14 +44,18 @@ function Contact({ eventId }: { eventId: string }) {
 
   async function onSubmit(values: any) {
     //  console.log({ values });
-    let logoUrl = "";
+   
 
+   const promise = new Promise(async (resolve) => {
     if (typeof values.organizationLogo === "string") {
-      logoUrl = values.organizationLogo;
+      resolve(values.organizationLogo)
     } else {
       const img = await uploadFile(values.organizationLogo[0], "image");
-      logoUrl = img;
+      resolve(img);
     }
+   })
+   let logoUrl =  await promise
+   
     const payload = {
       ...values,
       organizationLogo: logoUrl,
@@ -63,7 +65,7 @@ function Contact({ eventId }: { eventId: string }) {
     };
     // console.log({ payload });
 
-    await updateOrg(values, org?.id);
+    await updateOrg(payload, org?.id);
     refetch();
   }
 
@@ -76,6 +78,7 @@ function Contact({ eventId }: { eventId: string }) {
         eventPhoneNumber: data?.eventPhoneNumber,
         eventWhatsApp: data?.eventWhatsApp,
         eventContactEmail: data?.eventContactEmail,
+        organizationLogo: data?.organizationLogo,
         x: data?.x,
         linkedIn: data?.linkedIn,
         facebook: data?.facebook,
@@ -144,7 +147,7 @@ function Contact({ eventId }: { eventId: string }) {
                       e.stopPropagation();
                     }}
                     type="submit"
-                    className="text-basePrimary border border-basePrimary gap-x-2"
+                    className="hidden text-basePrimary border border-basePrimary gap-x-2"
                   >
                     <Download size={22} />
                     <p>Publish</p>
@@ -288,7 +291,10 @@ function Contact({ eventId }: { eventId: string }) {
                       alt="image"
                     />
                     <button
-                      onClick={() => form.setValue("logo", null)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        e.preventDefault()
+                        form.setValue("organizationLogo", null)}}
                       className="absolute top-2 right-2 bg-black rounded-full text-white w-6 h-6 flex items-center justify-center"
                     >
                       <CloseCircle size={16} />

@@ -126,7 +126,7 @@ export function useCreateEventIndustry() {
       const { data, error, status } = await supabase
         .from("events")
         .update([partnerIndustry])
-        .eq("id", eventId);
+        .eq("eventAlias", eventId);
 
       if (error) {
         toast({variant:"destructive",description:error.message});
@@ -162,7 +162,7 @@ export function useFetchCreatedEventIndustries(eventId: string) {
       const { data, error, status } = await supabase
         .from("events")
         .select("*")
-        .eq("id", eventId)
+        .eq("eventAlias", eventId)
         .single();
 
       if (error) {
@@ -382,7 +382,7 @@ export function useCreateEventExhibitionHall() {
       const { data } = await supabase
         .from("events")
         .select("*")
-        .eq("id", eventId)
+        .eq("eventAlias", eventId)
         .single();
 
       const { exhibitionHall: hall, ...restData } = data;
@@ -401,7 +401,7 @@ export function useCreateEventExhibitionHall() {
       const { error, status } = await supabase
         .from("events")
         .update({ ...restData, exhibitionHall })
-        .eq("id", eventId);
+        .eq("eventAlias", eventId);
 
       if (error) {
         toast({variant:"destructive",description: error.message});
@@ -648,7 +648,7 @@ export function useDeleteEventExhibitionHall(eventId: string) {
       const { data } = await supabase
         .from("events")
         .select("*")
-        .eq("id", eventId)
+        .eq("eventAlias", eventId)
         .single();
 
       const { exhibitionHall: hall, ...restData } = data;
@@ -660,7 +660,7 @@ export function useDeleteEventExhibitionHall(eventId: string) {
       const { error, status } = await supabase
         .from("events")
         .update({ ...restData, exhibitionHall: filteredHall })
-        .eq("id", eventId);
+        .eq("eventAlias", eventId);
 
       if (error) {
         toast({variant:"destructive",description: error.message});
@@ -684,7 +684,7 @@ export function useDeleteEventExhibitionHall(eventId: string) {
       const { data } = await supabase
         .from("events")
         .select("*")
-        .eq("id", eventId)
+        .eq("eventAlias", eventId)
         .single();
 
       const { exhibitionHall: hall, ...restData } = data;
@@ -692,7 +692,7 @@ export function useDeleteEventExhibitionHall(eventId: string) {
       const { error, status } = await supabase
         .from("events")
         .update({ ...restData, exhibitionHall: [] })
-        .eq("id", eventId);
+        .eq("eventAlias", eventId);
 
       if (error) {
         toast({variant:"destructive",description: error.message});
@@ -729,7 +729,7 @@ export function useAddSponsorsType() {
       const { data } = await supabase
         .from("events")
         .select("*")
-        .eq("id", eventId)
+        .eq("eventAlias", eventId)
         .single();
 
       const { sponsorCategory: type, ...restData } = data;
@@ -762,7 +762,7 @@ export function useAddSponsorsType() {
       const { error, status } = await supabase
         .from("events")
         .update({ ...restData, sponsorCategory })
-        .eq("id", eventId);
+        .eq("eventAlias", eventId);
 
       if (error) {
         toast({variant:"destructive",description: error.message});

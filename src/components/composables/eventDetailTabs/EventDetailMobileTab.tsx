@@ -1,9 +1,7 @@
 "use client";
 
-import { User } from "@styled-icons/feather/User";
 import { Bag } from "@styled-icons/bootstrap/Bag";
 import { Handshake } from "@styled-icons/fa-regular/Handshake";
-import { Speaker2 } from "@styled-icons/fluentui-system-regular/Speaker2";
 import { useRouter } from "next/navigation";
 import {
   MarketingIcon,
@@ -46,7 +44,7 @@ export function EventDetailMobileTab({
     slidesToScroll: 1,
   };
   return (
-    <div className="w-full  block sm:hidden">
+    <div className="w-full pb-24 block sm:hidden">
       <div className="sm:hidden w-full mb-8 grid grid-cols-3 gap-8 items-center justify-center">
         <button
           onClick={() => router.push(`/event/${eventId}/partners?p=sponsors`)}

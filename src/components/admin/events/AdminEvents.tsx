@@ -108,7 +108,7 @@ function EventCard({
             ? [...event?.eventStatusDetails, statusDetail]
             : [statusDetail],
       },
-      String(event?.id)
+      String(event?.eventAlias)
     );
     refetch();
   }

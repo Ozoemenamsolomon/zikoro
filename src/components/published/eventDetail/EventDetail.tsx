@@ -19,7 +19,7 @@ export function EventDetail({ event }: { event: Event }) {
         organization={event.organisationName}
         event={event}
         useDiv={true}
-        eventId={event.id}
+        eventId={event.eventAlias}
         imageClassName={"rounded-t-2xl rounded-tr-none sm:rounded-tl-2xl sm:rounded-l-none"}
         className="w-full bg-none  shadow-none"
       />
