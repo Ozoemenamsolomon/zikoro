@@ -15,9 +15,20 @@ export async function GET(
       const { data, error, status } = await supabase
         .from("agenda")
         .select("*")
-        .eq("id", agendaId);
+        .eq("id", agendaId)
+        .single()
 
       // console.log(data);
+      if (error) {
+        return NextResponse.json(
+          {
+            error,
+          },
+          {
+            status: 400,
+          }
+        );
+      }
 
       if (error) throw error;
 

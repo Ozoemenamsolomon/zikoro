@@ -182,3 +182,17 @@ export function formatDate(dateString: string): string {
 }
 
 
+export function formatLongDate(dateString: string): string {
+  const date = new Date(dateString)
+     // Get the day, month, and year parts
+     const day = date.getDate();
+     const month = date.toLocaleString("en-GB", { month: "long" });
+     const year = date.getFullYear();
+
+     // Get the weekday (e.g., Fri, Sat)
+     const weekday = date.toLocaleString("en-GB", { weekday: "long" });
+
+     // Return the formatted date string
+     return `${day} ${weekday}, ${month} ${year}`;
+}
+

@@ -1,9 +1,9 @@
 import SingleAgenda from "@/components/agenda/SingleAgenda";
 
 export default function Page({
-  params: { agendaId },
+  params: { agendaId, eventId },
 }: {
-  params: { agendaId: string };
+  params: { agendaId: string; eventId: string; };
 }) {
-  return <SingleAgenda agendaId={agendaId} />;
+  return <SingleAgenda agendaId={agendaId} eventId={eventId} />;
 }
