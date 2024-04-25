@@ -17,11 +17,12 @@ export function Duplicate({ session, refetch }: {refetch?: ()=> Promise<any>; se
   return (
     <>
       <Button
+       disabled={isLoading}
         onClick={(e) => {
           e.stopPropagation();
           update();
         }}
-        className="h-fit w-fit px-0"
+        className="h-fit gap-x-2 w-fit px-0"
       >
         <Copy size={20} />
         {isLoading && <LoaderAlt size={10} className="animate-spin" />}

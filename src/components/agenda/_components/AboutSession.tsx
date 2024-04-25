@@ -10,7 +10,8 @@ import { CollapsibleWidget, Duplicate, Edit, Deletes } from ".";
 import { FilePdf } from "@styled-icons/fa-regular/FilePdf";
 import Image from "next/image";
 import { TAgenda, Event } from "@/types";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
+import { getCookie, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 export function AboutSession({
@@ -22,6 +23,8 @@ export function AboutSession({
   refetch?: () => Promise<any>;
   agenda: TAgenda | null;
 }) {
+  const user = getCookie("user");
+  const { updateAgenda } = useUpdateAgenda();
   const isLive = useMemo(() => {
     if (agenda) {
       return isEventLive(agenda?.startDateTime, agenda?.endDateTime);
@@ -48,6 +51,39 @@ export function AboutSession({
     }
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      if (agenda) {
+        if (
+          Array.isArray(agenda?.sessionViewsDetails) &&
+          agenda?.sessionViewsDetails?.length > 0
+        ) {
+          // checking if the current user has viewed the agenda, when the length of agenda is greater than zero
+          const isPresent = agenda?.sessionViewsDetails?.some(
+            ({ id }) => String(id) === String(user?.id)
+          );
+          if (!isPresent) {
+            // when user has not viewed
+            const payload = {
+              ...agenda,
+              sessionViews: Number(agenda?.sessionViews) + 1,
+              sessionViewsDetails: [...agenda?.sessionViewsDetails, user],
+            };
+
+            await updateAgenda({ payload });
+          }
+        } else {
+          const payload = {
+            ...agenda,
+            sessionViews: 1,
+            sessionViewsDetails: [user],
+          };
+          await updateAgenda({ payload });
+        }
+      }
+    })();
+  }, [agenda]);
+
   return (
     <>
       {agenda && event && (
@@ -65,7 +101,7 @@ export function AboutSession({
               <Deletes agendaId={agenda?.id} refetch={refetch} />
               <Button className="h-fit  gap-x-2 w-fit px-0">
                 <Eye size={20} />
-                <p className="text-xs sm:text-sm text-gray-500">0</p>
+                <p className="text-xs sm:text-sm text-gray-500">{agenda?.sessionViews ?? "0"}</p>
               </Button>
               <Button className="h-fit gap-x-2 w-fit px-0">
                 <Star size={20} />
@@ -117,7 +153,12 @@ export function AboutSession({
               Aldus PageMaker including versions of Lorem Ipsum.
             </div>
           </section>
-          <CollapsibleWidget title="Speakers" session={agenda} event={event} refetch={refetch}>
+          <CollapsibleWidget
+            title="Speakers"
+            session={agenda}
+            event={event}
+            refetch={refetch}
+          >
             <div className="w-full px-3 py-4 grid grid-cols-3 items-center gap-4">
               {Array.isArray(agenda?.sessionSpeakers) &&
                 agenda?.sessionSpeakers?.length === 0 && (
@@ -139,7 +180,12 @@ export function AboutSession({
                 ))}
             </div>
           </CollapsibleWidget>
-          <CollapsibleWidget title="Moderator" session={agenda} event={event} refetch={refetch}>
+          <CollapsibleWidget
+            title="Moderator"
+            session={agenda}
+            event={event}
+            refetch={refetch}
+          >
             <div className="w-full px-3 py-4 grid grid-cols-3 items-center gap-4">
               {Array.isArray(agenda?.sessionModerators) &&
                 agenda?.sessionModerators?.length === 0 && (
@@ -161,7 +207,12 @@ export function AboutSession({
                 ))}
             </div>
           </CollapsibleWidget>
-          <CollapsibleWidget title="Sponsors" session={agenda} event={event} refetch={refetch}>
+          <CollapsibleWidget
+            title="Sponsors"
+            session={agenda}
+            event={event}
+            refetch={refetch}
+          >
             <div className="w-full px-3 py-4 grid grid-cols-4 items-center gap-4">
               {Array.isArray(agenda?.sessionSponsors) &&
                 agenda?.sessionSponsors?.length === 0 && (
@@ -181,7 +232,12 @@ export function AboutSession({
                 ))}
             </div>
           </CollapsibleWidget>
-          <CollapsibleWidget title="File" session={agenda} event={event} refetch={refetch}>
+          <CollapsibleWidget
+            title="File"
+            session={agenda}
+            event={event}
+            refetch={refetch}
+          >
             <div className="w-full px-3 py-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 items-center gap-4">
               {Array.isArray(agenda?.sessionFiles) &&
                 agenda?.sessionFiles?.length === 0 && (

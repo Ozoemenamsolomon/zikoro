@@ -9,24 +9,28 @@ import { useState, useMemo } from "react";
 import { Printer } from "@styled-icons/evaicons-solid/Printer";
 import { ScanDash } from "@styled-icons/fluentui-system-regular/ScanDash";
 import { Custom, AddSession, FullScreenView } from "./_components";
-import { getCookie, useFetchSingleEvent, useGetSessionAgendas } from "@/hooks";
+import { getCookie, useFetchSingleEvent, useGetAllAttendees, useGetSessionAgendas } from "@/hooks";
 import { generateDateRange } from "@/utils";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useRouter } from "next/navigation";
 export default function Agenda({ eventId }: { eventId: string }) {
   const router = useRouter();
   const currentEvent = getCookie("currentEvent");
+  const user = getCookie("user");
   const search = useSearchParams();
+  const queryParam = search.get("a");
+  const {attendees} = useGetAllAttendees()
   const [isOpen, setOpen] = useState(false);
   const { data, refetch, loading } = useFetchSingleEvent(eventId);
   const [isFullScreen, setFullScreen] = useState(false);
   const activeDateQuery = search.get("date");
   const { sessionAgendas, fetching, refetchSession } = useGetSessionAgendas(
     eventId,
-    activeDateQuery || currentEvent?.startDate
+    activeDateQuery || currentEvent?.startDate,
+    queryParam
   );
 
-  const queryParam = search.get("a");
+ 
 
   const dateRange = useMemo(() => {
     if (data) {
@@ -45,6 +49,13 @@ export default function Agenda({ eventId }: { eventId: string }) {
   function toggleFullScreenMode() {
     setFullScreen((prev) => !prev);
   }
+
+  const attendeeId = useMemo(() => {
+    return attendees?.find(
+      ({ email, eventId :id }) =>
+        Number(id) === Number(eventId) && email === user?.userEmail
+    )?.id;
+  }, [attendees]);
 
  // console.log("sesson", sessionAgendas);
 
@@ -138,6 +149,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
                   sessionAgenda={sessionAgenda}
                   refetchSession={refetchSession}
                   event={data}
+                  attendeeId={attendeeId}
                 />
               );
             })}

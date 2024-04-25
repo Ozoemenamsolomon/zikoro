@@ -1,6 +1,6 @@
 "use client";
 import { toast } from "@/components/ui/use-toast";
-import { TAgenda, TSessionAgenda } from "@/types";
+import { TAgenda, TSessionAgenda, TReview, TMyAgenda } from "@/types";
 import {
   postRequest,
   patchRequest,
@@ -165,9 +165,18 @@ export const useDeleteAgenda = () => {
   return { deleteAgenda, isLoading };
 };
 
-export const useGetSessionAgendas = (eventId: string, date: string) => {
+export const useGetSessionAgendas = (
+  eventId: string,
+  date: string,
+  query: string | null
+) => {
   const [sessionAgendas, setSessionAgendas] = useState<TSessionAgenda[]>([]);
   const { agendas, isLoading, getAgendas } = useGetAgendas(eventId);
+  const {
+    myAgendas,
+    isLoading: loadingMyAgenda,
+    getMyAgendas,
+  } = useGetMyAgendas();
   const { data, loading, refetch } = useFetchSingleEvent(eventId);
   const [fetching, setFetching] = useState(true);
 
@@ -180,17 +189,24 @@ export const useGetSessionAgendas = (eventId: string, date: string) => {
   }
 
   async function refetchSession() {
-    await getAgendas();
-    await refetch();
+    await Promise.all([getAgendas(), refetch(), getMyAgendas()]);
   }
   // get the events
   useEffect(() => {
-    if (!loading && !isLoading) {
+    if (!loading && !isLoading && !loadingMyAgenda) {
       setFetching(false);
+
+      const formattedAgendas = myAgendas?.map(({ agenda }) => {
+        return {
+          ...agenda,
+        };
+      });
+
+      const toFilterArray = query === "my-agenda" ? formattedAgendas : agendas;
 
       const activeDate = date || data?.startDateTime;
       const sortedActiveDateAgendas = sortAgendasByStartDateTime(
-        agendas?.filter(
+        toFilterArray?.filter(
           ({ startDateTime }) =>
             startDateTime?.split("T")[0] === activeDate?.split("T")[0]
         )
@@ -225,4 +241,106 @@ export const useGetSessionAgendas = (eventId: string, date: string) => {
     refetchSession,
     fetching,
   };
+};
+
+export const useSendReview = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const sendReview = async ({ payload }: { payload: TReview }) => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await postRequest({
+        endpoint: "/agenda/review",
+        payload,
+      });
+
+      if (status !== 201)
+        return toast({
+          description: (data.data as { error: string }).error,
+          variant: "destructive",
+        });
+
+      toast({
+        description: "Review Sent successfully",
+      });
+      return data;
+    } catch (error: any) {
+      // console.log({ error });
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { sendReview, isLoading };
+};
+
+export const useCreateMyAgenda = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const createMyAgenda = async ({
+    payload,
+  }: {
+    payload: Partial<TMyAgenda>;
+  }) => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await postRequest({
+        endpoint: "/agenda/myagenda",
+        payload,
+      });
+
+      if (status !== 201)
+        return toast({
+          description: (data.data as { error: string }).error,
+          variant: "destructive",
+        });
+
+      toast({
+        description: "Agenda added successfully",
+      });
+      return data;
+    } catch (error: any) {
+      // console.log({ error });
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createMyAgenda, isLoading };
+};
+
+export const useGetMyAgendas = () => {
+  const [myAgendas, setMyAgendas] = useState<TMyAgenda[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const getMyAgendas = async () => {
+    setLoading(true);
+
+    const { data, status } = await getRequest<TMyAgenda[]>({
+      endpoint: `/agenda/myagenda`,
+    });
+
+    setLoading(false);
+
+    if (status !== 200) return;
+
+    //
+    return setMyAgendas(data.data);
+  };
+
+  useEffect(() => {
+    getMyAgendas();
+  }, []);
+
+  return { myAgendas, isLoading, getMyAgendas };
 };

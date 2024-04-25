@@ -1,6 +1,6 @@
 "use client";
 import { FullScreenMinimize } from "@styled-icons/fluentui-system-regular/FullScreenMinimize";
-import { Button} from "@/components";
+import { Button } from "@/components";
 import { NavigateNext } from "@styled-icons/material-rounded/NavigateNext";
 import { NavigateBefore } from "@styled-icons/material-rounded/NavigateBefore";
 import { Custom } from "..";
@@ -8,7 +8,7 @@ import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
 import { LiveView } from "@/constants";
 import { TSessionAgenda } from "@/types";
-import {isEventLive} from "@/utils"
+import { isEventLive } from "@/utils";
 
 export function FullScreenView({
   close,
@@ -18,21 +18,37 @@ export function FullScreenView({
   close: () => void;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const currentTime = new Date();
   useEffect(() => {
-    const interval = setInterval(() => {
+    const currentAgenda = sessionAgendas?.filter(
+      (_, index) => currentIndex === index
+    );
+    const startDate = new Date(currentAgenda[0]?.timeStamp?.start);
+    const endDate = new Date(currentAgenda[0]?.timeStamp?.end);
+
+    if (currentTime >= startDate && currentTime <= endDate) {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % sessionAgendas?.length);
+    }
+
+    /**
+     const interval = setInterval(() => {
+    
     }, 30000000);
     return () => clearInterval(interval);
-  }, [currentIndex, sessionAgendas?.length]);
+    */
+  }, [currentIndex, sessionAgendas?.length, currentTime]);
 
+  const isLive = useMemo(() => {
+    const currentAgenda = sessionAgendas?.filter(
+      (_, index) => currentIndex === index
+    );
+    return isEventLive(
+      currentAgenda[0]?.timeStamp?.start,
+      currentAgenda[0]?.timeStamp?.end
+    );
+  }, [currentIndex, sessionAgendas]);
 
-  const isLive  = useMemo(() => {
-  const currentAgenda = sessionAgendas
-  ?.filter((_, index) => currentIndex === index)
-  return isEventLive(currentAgenda[0]?.timeStamp?.start, currentAgenda[0]?.timeStamp?.end)
-
-  },[currentIndex, sessionAgendas])
-  
   return (
     <>
       <div className="w-screen min-h-screen fixed inset-0 z-[600] bg-white ">
@@ -77,12 +93,13 @@ export function FullScreenView({
               </div>
             ))}
         </div>
-       {isLive && <div className="hidden items-center gap-x-2 mx-auto absolute right-[25%] bottom-2 px-4 w-fit justify-center h-12 rounded-lg text-[11px] sm:text-xs bg-basePrimary text-gray-50">
-          <LiveView />
-          <p>Live</p>
-        </div>}
+        {isLive && (
+          <div className="hidden items-center gap-x-2 mx-auto absolute right-[25%] bottom-2 px-4 w-fit justify-center h-12 rounded-lg text-[11px] sm:text-xs bg-basePrimary text-gray-50">
+            <LiveView />
+            <p>Live</p>
+          </div>
+        )}
       </div>
     </>
   );
 }
-

@@ -1,4 +1,4 @@
-import { TAttendee, TPartner } from ".";
+import { TAttendee, TPartner, TUser } from ".";
 
 
 
@@ -24,7 +24,7 @@ export interface TAgenda {
   sessionSponsors: TPartner[];
   sessionFiles: TSessionFile<string>[];
   sessionViews: number;
-  sessionViewsDetails: JSON;
+  sessionViewsDetails: TUser[];
   sessionCheckin: string;
   sessionCheckinDetails: JSON;
   eventId:string;
@@ -33,4 +33,18 @@ export interface TAgenda {
 export interface TSessionAgenda {
   timeStamp: {start: string; end: string;};
   sessions: TAgenda[];
+}
+
+
+export interface TReview {
+    rating: number;
+    comments: string;
+    sessionId?:number;
+    attendeeId?:number;
+}
+
+export interface TMyAgenda {
+  sessionId: number;
+  attendeeId: number;
+  agenda: TAgenda
 }

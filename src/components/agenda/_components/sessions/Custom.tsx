@@ -2,8 +2,7 @@
 
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import { Eye } from "@styled-icons/feather/Eye";
-import { CalendarCheck } from "@styled-icons/bootstrap/CalendarCheck";
-import { SessionCard, Deletes, Duplicate, Edit } from "..";
+import { SessionCard, Deletes, Duplicate, Edit,AddToMyAgenda } from "..";
 import { Button } from "@/components";
 import { CheckmarkDone } from "@styled-icons/ionicons-solid/CheckmarkDone";
 import { Star } from "@styled-icons/bootstrap/Star";
@@ -21,12 +20,14 @@ export function Custom({
   sessionAgenda,
   className,
   refetchSession,
-  event
+  event,
+  attendeeId
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
   refetchSession?: () => Promise<any>;
-  event?: Event | null
+  event?: Event | null;
+  attendeeId?:number
 }) {
   
 
@@ -52,6 +53,7 @@ export function Custom({
               session={session}
               key={index}
               event={event}
+              attendeeId={attendeeId}
               refetchSession={refetchSession}
             />
           ))}
@@ -64,11 +66,13 @@ export function Custom({
 function Widget({
   session,
   refetchSession,
-  event
+  event,
+  attendeeId
 }: {
   session: TAgenda;
   event?: Event | null;
   refetchSession?: () => Promise<any>;
+  attendeeId?: number
 }) {
   const router = useRouter();
 
@@ -142,9 +146,7 @@ function Widget({
             </button>
           )}
           <div className="flex items-center gap-x-2">
-            <Button className="h-fit w-fit px-0">
-              <CalendarCheck className="text-basePrimary" size={20} />
-            </Button>
+          <AddToMyAgenda attendeeId={attendeeId} sessionId={session?.id}/>
 
             <div className="flex items-center gap-x-2">
               <Button className="h-fit w-fit px-0">
@@ -160,7 +162,7 @@ function Widget({
           <Deletes agendaId={session?.id} refetch={refetchSession} />
           <Button className="h-fit  gap-x-2 w-fit px-0">
             <Eye size={20} />
-            <p className="text-xs sm:text-sm text-gray-500">0</p>
+            <p className="text-xs sm:text-sm text-gray-500">{session?.sessionViews ?? "0"}</p>
           </Button>
           <Button className="h-fit gap-x-2 w-fit px-0">
             <Star size={20} />
