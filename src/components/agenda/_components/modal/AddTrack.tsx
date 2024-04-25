@@ -30,7 +30,7 @@ export function AddTrack({
   setActive: React.Dispatch<React.SetStateAction<number>>;
   eventId: string;
   sessionTrack?: TrackType[];
-  refetch: () => Promise<any>;
+  refetch?: () => Promise<any>;
 }) {
   const form = useForm<FormValue>();
   const [trackColor, settrackColor] = useState<string>("");
@@ -51,7 +51,7 @@ export function AddTrack({
         : [{ name: value?.name, color: trackColor }];
 
     await addSessionTrack({ sessionTrack: payload }, eventId);
-    refetch();
+    if (refetch) refetch();
     /**
      await createEventIndustry(data, eventId, {
       name: value.name,
@@ -79,7 +79,7 @@ export function AddTrack({
     const updatedList = sessionTrack?.filter((_, index) => index !== id);
 
     await addSessionTrack({ sessionTrack: updatedList }, eventId);
-    refetch();
+    if (refetch) refetch();
   }
 
   return (

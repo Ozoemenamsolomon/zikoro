@@ -8,10 +8,12 @@ import { useForm } from "react-hook-form";
 import { AddTrack, activityType, sessionType } from "..";
 import { CloseCircle } from "@styled-icons/evaicons-solid/CloseCircle";
 import { cn } from "@/lib";
+import { Portal } from "@/components";
 import {
   useGetEventAttendees,
   useFetchPartners,
   useCreateAgenda,
+  useUpdateAgenda,
 } from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { TAttendee, TPartner, TAgenda } from "@/types";
@@ -38,23 +40,29 @@ export function AddSession({
   close,
   event,
   refetch,
+  session,
 }: {
   close: () => void;
   eventId: string;
-  eventStartDate: string;
-  event: Event | null;
-  refetch: () => Promise<any>;
+  eventStartDate?: string;
+  event?: Event | null;
+  refetch?: () => Promise<any>;
+  session?: TAgenda;
 }) {
   const { attendees } = useGetEventAttendees(eventId);
   const { data }: { data: TPartner[] } = useFetchPartners(eventId);
-  const { createAgenda, isLoading } = useCreateAgenda();
-  const [loading, setLoading] = useState(false)
+  const { createAgenda } = useCreateAgenda();
+  const { updateAgenda } = useUpdateAgenda();
+  const [loading, setLoading] = useState(false);
   const [chosenModerators, setChosenModerators] = useState<TAttendee[]>([]);
   const [chosenSpeakers, setChosenSpeakers] = useState<TAttendee[]>([]);
   const [chosenSponsors, setChosenSponsors] = useState<TPartner[]>([]);
-  const [chosenFiles, setChosenFiles] = useState<TSessionFile<File>[]>([]);
+  const [chosenFiles, setChosenFiles] = useState<TSessionFile<File | string>[]>(
+    []
+  );
   const [isNotSameDay, setIsNotSameDay] = useState(false);
   const [active, setActive] = useState(1);
+
   const form = useForm<z.infer<typeof sessionSchema>>({
     resolver: zodResolver(sessionSchema),
     defaultValues: {
@@ -239,7 +247,7 @@ export function AddSession({
     if (isNotSameDay) return;
 
     let files: TSessionFile<string>[] = [];
-    setLoading(true)
+    setLoading(true);
     if (chosenFiles?.length > 0) {
       const promise = chosenFiles?.map((item) => {
         const { file, ...restItems } = item;
@@ -257,21 +265,23 @@ export function AddSession({
 
       files = result;
     }
-    const { sessionSponsors, ...restData } = values;
-    const payload: TAgenda = {
-      ...restData,
+
+    const payload: Partial<TAgenda> = {
+      ...values,
       sessionModerators: chosenModerators,
       sessionSpeakers: chosenSpeakers,
-      //  sessionSponsors: chosenSponsors,
+      sessionSponsors: chosenSponsors,
       sessionFiles: files,
       eventId,
     };
     // console.log("tile", payload)
     // return
-    await createAgenda({ payload });
-    setLoading(false)
+    const asyncFn = session?.id ? updateAgenda : createAgenda;
+    await asyncFn({ payload });
+    setLoading(false);
   }
 
+ 
   //
   useEffect(() => {
     if (startTime && endTime) {
@@ -285,8 +295,37 @@ export function AddSession({
     }
   }, [startTime, endTime]);
 
+  // to update
+  useEffect(() => {
+    if (session) {
+      form.reset({
+        sessionTitle: session?.sessionTitle,
+        startDateTime: session?.startDateTime,
+        endDateTime: session?.endDateTime,
+        activity: session?.activity,
+        sessionType: session?.sessionType,
+        sessionUrl: session?.sessionUrl ?? "",
+        sessionVenue: session?.sessionVenue ?? "",
+        Track: session?.Track ?? "",
+      });
+
+      if (Array.isArray(session?.sessionSpeakers)) {
+        setChosenSpeakers(session?.sessionSpeakers);
+      }
+      if (Array.isArray(session?.sessionModerators)) {
+        setChosenModerators(session?.sessionModerators);
+      }
+      if (Array.isArray(session?.sessionSponsors)) {
+        setChosenSponsors(session?.sessionSponsors);
+      }
+      if (Array.isArray(session?.sessionFiles)) {
+        setChosenFiles(session?.sessionFiles);
+      }
+    }
+  }, [session]);
+
   return (
-    <>
+    <Portal>
       <div
         onClick={close}
         role="button"
@@ -408,6 +447,10 @@ export function AddSession({
                         <ReactSelect
                           {...form.register("Track")}
                           placeHolder="Select Track"
+                          defaultValue={{
+                            value: session?.Track,
+                            label: session?.Track,
+                          }}
                           label="Track"
                           options={formattedSessions}
                         />
@@ -683,6 +726,6 @@ export function AddSession({
           setActive={setActive}
         />
       )}
-    </>
+    </Portal>
   );
 }

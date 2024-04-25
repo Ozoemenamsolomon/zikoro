@@ -13,15 +13,28 @@ import { CalendarCheck } from "@styled-icons/bootstrap/CalendarCheck";
 import { CollapsibleWidget } from ".";
 import { FilePdf } from "@styled-icons/fa-regular/FilePdf";
 import Image from "next/image";
+import {TAgenda} from "@/types"
+import { useMemo } from "react";
+import { isEventLive } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
-export function AboutSession() {
+export function AboutSession({agenda, refetch}:{refetch:() => Promise<any>; agenda: TAgenda | null}) {
+  
+  const isLive = useMemo(() => {
+    if (agenda) {
+      return isEventLive(agenda?.startDateTime, agenda?.endDateTime)
+    }
+    else {
+      return false
+    }
+},[agenda?.startDateTime, agenda?.endDateTime])
+  
   return (
     <div className="w-full lg:col-span-5 border-r">
       <div className="w-full h-48 sm:h-[16rem] bg-gray-200 animate-pulse"></div>
       <div className="w-full p-4 mb-2 flex flex-col lg:flex-row items-start lg:items-center gap-2 justify-start lg:justify-between">
-        <p className="text-xs text-gray-50 bg-basePrimary rounded-md  p-2 ">
+       {isLive && <p className="text-xs text-gray-50 bg-basePrimary rounded-md  p-2 ">
           Happening Now
-        </p>
+        </p>}
         <div className="flex items-center px-4 gap-x-2">
           <Button className="h-fit w-fit px-0">
             <EditOutline size={20} />

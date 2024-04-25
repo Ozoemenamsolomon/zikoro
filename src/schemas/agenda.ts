@@ -6,7 +6,7 @@ export const sessionSchema = z.object({
   startDateTime: z.string(),
   endDateTime: z.string(),
   Track: z.any(),
-  sessionType: z.string(),
+  sessionType: z.any(),
   sessionSponsors: z.any(),
   sessionUrl: z.any(),
   sessionSpeakers: z.any(),
