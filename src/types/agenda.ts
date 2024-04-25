@@ -46,5 +46,5 @@ export interface TReview {
 export interface TMyAgenda {
   sessionId: number;
   attendeeId: number;
-  agenda: TAgenda
+
 }

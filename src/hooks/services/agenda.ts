@@ -196,11 +196,9 @@ export const useGetSessionAgendas = (
     if (!loading && !isLoading && !loadingMyAgenda) {
       setFetching(false);
 
-      const formattedAgendas = myAgendas?.map(({ agenda }) => {
-        return {
-          ...agenda,
-        };
-      });
+      const formattedAgendas = agendas?.filter(({id}) => {
+        return myAgendas?.some(({sessionId}) => Number(sessionId) === Number(id))
+      })
 
       const toFilterArray = query === "my-agenda" ? formattedAgendas : agendas;
 

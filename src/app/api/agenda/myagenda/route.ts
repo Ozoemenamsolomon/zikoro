@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
   if (req.method === "GET") {
     try {
       const { data, error, status } = await supabase
-        .from("myagenda")
+        .from("myAgenda")
         .select("*");
 
       // console.log(data);
