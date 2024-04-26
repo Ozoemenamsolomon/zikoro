@@ -154,7 +154,7 @@ export function SingleEvent({
     <>
       <Comp
         disabled={isExpired}
-        onClick={() => router.push(`/live-events/${event?.id}`)}
+        onClick={() => router.push(`/live-events/${event?.eventAlias}`)}
         className={cn("w-full h-fit")}
       >
         <div
