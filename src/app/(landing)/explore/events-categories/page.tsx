@@ -6,7 +6,9 @@ import Footer from "@/components/Footer";
 
 export default function EventsCategories() {
   const [data, setData] = useState<any[]>([]);
+  const [showMore, setShowMore] = useState(false);
 
+  //feftch categories
   async function fetchEventCategories() {
     fetch("/api/explore/categories", {
       method: "GET",
@@ -18,6 +20,11 @@ export default function EventsCategories() {
       .then((data) => setData(data.data))
       .catch((error) => console.error("Error:", error));
   }
+
+  //see more function
+  const handleSeeMoreClick = () => {
+    setShowMore(true);
+  };
 
   useEffect(() => {
     fetchEventCategories();
@@ -42,7 +49,11 @@ export default function EventsCategories() {
         {/* Events categories */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-5 lg:gap-y-12 mt-12 lg:mt-24 px-[10px] lg:px-0">
           {data?.length &&
-            data?.map((category, index) => {
+            (showMore ? data : data.slice(0, 20)).map((category, index) => {
+              // Count the number of occurrences of the current city in the data array
+              const categoryCount = data.filter(
+                (c) => c.eventCategory === category.eventCategory
+              ).length;
               if (
                 category.eventCategory &&
                 !renderedCategories.has(category.eventCategory)
@@ -52,11 +63,7 @@ export default function EventsCategories() {
                   <CategoryEvent
                     key={index}
                     categoryName={category.eventCategory}
-                    categoryCount={
-                      category.eventCategory.length
-                        ? category.eventCategory.length
-                        : 0
-                    }
+                    categoryCount={categoryCount}
                   />
                 );
               } else {
@@ -65,11 +72,13 @@ export default function EventsCategories() {
             })}
         </div>
 
-        <div className="flex justify-center items-center mt-12">
-          <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white">
-            See more
-          </button>
-        </div>
+        {data && data.length > 12 && !showMore && (
+          <div className=" flex justify-center items-center mt-12 ">
+            <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white">
+              See more
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Footer */}

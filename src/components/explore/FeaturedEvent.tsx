@@ -47,7 +47,7 @@ export default function FeaturedEvent({
       return "Invalid Date";
     }
   }
-
+    //FORMAT DATE INTO STRINGS
   function formatDate(date: Date): string {
     const year: number = date.getFullYear();
     const month: number = date.getMonth() + 1; // Month is zero-based, so add 1
@@ -95,17 +95,17 @@ export default function FeaturedEvent({
       {/* header */}
       <div className="relative ">
         <Image
-          className="object-cover w-full"
+          className="object-cover w-full lg:w-[294px] h-[150px]"
           src={
-            eventPoster && eventPoster.includes("/cloudinary")
+            eventPoster && eventPoster.includes("res.cloudinary.com")
               ? eventPoster
               : "/postImage2.png"
           }
           alt=""
           width={294}
-          height={264}
+          height={150}
         />
-        <p className="text-sm font-medium text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end absolute left-4 top-2 py-[5px] px-[10px] rounded-lg">
+        <p className="text-sm font-medium text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end absolute left-4 top-2 py-[5px] px-[10px] rounded-lg ">
           {locationType}
         </p>
       </div>
@@ -122,13 +122,13 @@ export default function FeaturedEvent({
         <div className="mt-[10px] flex gap-x-[10px] mb-8 items-center">
           <LocationIcon1 />
           <p className="text-sm font-normal truncate">
-            {eventCity} ,<span> {eventCountry}</span>{" "}
+            {eventCity},<span> {eventCountry}</span>
           </p>
         </div>
 
         <div className="border-t-[1px] border-gray-200 pt-8 flex justify-between pb-[15px]">
           <p className="text-sm font-normal">starting at</p>
-          <p className="text-sm font-medium">
+          <p className="text-base font-semibold">
             {lowestPrice != "Free" && currencySymbol}
             {lowestPrice != "Free"
               ? addCommasToPrice(lowestPrice)

@@ -48,25 +48,26 @@ export default function Navbar() {
   const [scrolling, setScrolling] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 5) {
-        setScrolling(true);
-      } else {
-        setScrolling(false);
-      }
-    };
+    // const handleScroll = () => {
+    //   if (window.scrollY > 5) {
+    //     setScrolling(true);
+    //   } else {
+    //     setScrolling(false);
+    //   }
+    // };
 
-    window.addEventListener("scroll", handleScroll);
+    // window.addEventListener("scroll", handleScroll);
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    // return () => {
+    //   window.removeEventListener("scroll", handleScroll);
+    // };
   }, []);
 
   return (
     <div className="fixed w-full transition-all duration-300 top-0 z-50 ">
       <nav
-        className={` p-4 ${scrolling ? "bg-white" : "bg-white"} text-base  `}
+        // className={` p-4 ${scrolling ? "bg-white" : "bg-white"} text-base  `}
+        className=' p-4 bg-white text-base'
       >
         <div className=" flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
           {!isOpen && (

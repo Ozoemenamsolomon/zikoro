@@ -49,6 +49,11 @@ export default function CategoryEventList() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-x-4 gap-y-5 lg:gap-y-0 mt-[50px] bg-white ">
         {data?.length &&
           data?.map((category, index) => {
+            // Count the number of occurrences of the current city in the data array
+            const categoryCount = data.filter(
+              (c) => c.eventCategory === category.eventCategory
+            ).length;
+
             if (
               category.eventCategory &&
               !renderedCategories.has(category.eventCategory) &&
@@ -60,11 +65,7 @@ export default function CategoryEventList() {
                 <CategoryEvent
                   key={index}
                   categoryName={category.eventCategory}
-                  categoryCount={
-                    category.eventCategory.length
-                      ? category.eventCategory.length
-                      : ""
-                  }
+                  categoryCount={categoryCount}
                 />
               );
             } else {

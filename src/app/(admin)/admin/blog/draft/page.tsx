@@ -7,7 +7,7 @@ type DBBlogAll = {
   id: number;
   title: string;
   created_at: string;
-  category: JSON;
+  category: string;
   status: string;
   statusDetails: JSON;
   readingDuration: number;
@@ -25,7 +25,6 @@ export default function Create() {
   });
 
   const categories = [
-    "All",
     "Event tips",
     "Product Updates",
     "Guides and Tutorial",
@@ -68,7 +67,6 @@ export default function Create() {
             name="category"
             value={formData.category}
             onChange={handleChange}
-            // required
             className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none"
           >
             <option

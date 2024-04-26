@@ -67,7 +67,7 @@ export default function PostArticle() {
         <p className="capitalize font-semibold text-base lg:text-2xl ">
           Events Planning And Management In Nigeria
         </p>
-        <div className="flex uppercase mt-4 text-[12px] lg:text-[15px] font-normal ">
+        <div className="flex uppercase mt-4 text-[12px] lg:text-[15px] font-light ">
           <p>27th March 2024 {" - "} </p>
           <p>3 Min Read</p>
         </div>

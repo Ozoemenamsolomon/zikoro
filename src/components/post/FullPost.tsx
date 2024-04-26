@@ -4,6 +4,12 @@ import Image from "next/image";
 import { Facebook, X, Linkedin, Instagram } from "@/constants/icons";
 import PostArticle from "@/components/blog/PostArticle";
 import { useFetchBlogPost } from "@/hooks/services/post";
+import {
+  shareOnFacebook,
+  shareOnInstagram,
+  shareOnLinkedin,
+  shareOnTwitter,
+} from "@/utils/shareOnSocial";
 
 type DBBlogPost = {
   id: number;
@@ -35,7 +41,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     try {
       const date = new Date(dateTimeString);
       if (isNaN(date.getTime())) {
-        throw new Error("Invalid date");
+        // throw new Error("Invalid date");
       }
       const formattedDate: string = formatDate(date);
       return formattedDate;
@@ -69,13 +75,36 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     return formattedDate;
   }
 
+  //share functionality
+  const [articleUrl] = useState<string>(
+    `https://zikoro-git-integrate-ajax484s-projects.vercel.app/live-events/${postId}`
+  );
+  const handleShareOnFacebook = () => {
+    shareOnFacebook(articleUrl);
+  };
+
+  const handleShareOnTwitter = () => {
+    shareOnTwitter(articleUrl, postId);
+  };
+
+  const handleShareOnInstagram = () => {
+    shareOnInstagram();
+  };
+
+  const handleShareOnLinkedin = () => {
+    shareOnLinkedin(articleUrl, postId);
+  };
+
+
+
+
   return (
     <div className="mt-[120px] lg:mt-[200px] px-3 lg:px-0 ">
       {/* header section */}
       <div className="mzx-w-full lg:max-w-[982px] mx-auto flex flex-col gap-y-6 lg:gap-y-10 ">
         <div className="max-w-full lg:max-w-2xl lg:mx-auto flex flex-col gap-y-4 text-center ">
           <p className="text-indigo-600 text-[12px] lg:text-[15px] font-medium">
-            Blog Category
+            {data?.category}
           </p>
           <p className="capitalize text-2xl font-semibold lg:text-4xl ">
             {data?.title}
@@ -91,7 +120,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           height={450}
           className="w-[982px] h-[450px] object-cover hidden lg:block"
         />
-          <Image
+        <Image
           src={data?.headerImageUrl ? data?.headerImageUrl : "/postImage2.png"}
           alt=""
           width={335}
@@ -122,15 +151,23 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           <div className="mt-8">
             <p className="text-xl font-medium">Share This Article</p>
             <div className="flex gap-x-[14px] mt-4">
-              <X />
-              <Facebook />
-              <Instagram />
-              <Linkedin />
+              <div className="cursor-pointer" onClick={handleShareOnTwitter}>
+                <X />
+              </div>
+              <div className="cursor-pointer" onClick={handleShareOnFacebook}>
+                <Facebook />
+              </div>
+              <div className="cursor-pointer" onClick={handleShareOnInstagram}>
+                <Instagram />
+              </div>
+              <div  className="cursor-pointer" onClick={handleShareOnLinkedin}>
+                <Linkedin />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className=" h-full lg:h-auto w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px]">
+        <div className=" h-full lg:h-screen overflow-y-hidden lg:overflow-y-auto  w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px]">
           <div dangerouslySetInnerHTML={{ __html: data?.content ?? "" }} />
         </div>
       </div>
