@@ -737,7 +737,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
             approves it.`}
           />
         )}
-        {isOpen && <PreviewModal close={onClose} />}
+        {isOpen && <PreviewModal close={onClose} eventDetail={data} />}
       </>
     </DateAndTimeAdapter>
   );

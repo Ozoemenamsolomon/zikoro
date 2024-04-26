@@ -46,8 +46,9 @@ export function EventCard({
     saveCookie("currentEvent", {
       eventId: event?.id,
       eventName: event?.eventTitle,
+      startDate: event?.startDateTime
     });
-  router.push(`/event/${event?.id}/content/info`);
+  router.push(`/event/${event?.eventAlias}/content/info`);
   }
 
   return (

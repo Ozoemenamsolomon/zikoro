@@ -48,7 +48,7 @@ export default function CreateEvent() {
       ...values,
       expectedParticipants: Number(values?.expectedParticipants),
       eventAlias,
-      createdBy: userData?.userEmail,
+      createdBy: userData?.id,
       published: false,
       eventStatus: "new",
       eventAppAccess: formatDate(

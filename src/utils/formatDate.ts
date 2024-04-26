@@ -131,7 +131,15 @@ export function formatDate(dateString: string): string {
     
     const start = new Date(startDate);
     const end = new Date(endDate);
+    
+     // Calculate the difference between the local time zone and UTC
+     const timeZoneOffset = start.getTimezoneOffset() * 60 * 1000;
 
+      // Adjust start and end dates to UTC for consistent comparisons
+  const startDateTime =   start.setTime(start.getTime() - timeZoneOffset);
+  const endDateTime =  end.setTime(end.getTime() - timeZoneOffset);
+    const  currentStartDate = new Date(startDateTime)
+    const currentEndDate = new Date(endDateTime)
    
     const dateRange: Array<{ date: string; formattedDate: string }> = [];
 
@@ -150,10 +158,12 @@ export function formatDate(dateString: string): string {
     }
 
     
-    let currentDate = new Date(start);
+    let currentDate = new Date(currentStartDate);
 
    
-    while (currentDate <= end) {
+   
+   
+    while (currentDate <= currentEndDate) {
         // Create an object for the current date with both date formats
         const dateObj = {
             date: currentDate.toISOString()?.split(".")[0],
@@ -171,4 +181,18 @@ export function formatDate(dateString: string): string {
     return dateRange;
 }
 
+
+export function formatLongDate(dateString: string): string {
+  const date = new Date(dateString)
+     // Get the day, month, and year parts
+     const day = date.getDate();
+     const month = date.toLocaleString("en-GB", { month: "long" });
+     const year = date.getFullYear();
+
+     // Get the weekday (e.g., Fri, Sat)
+     const weekday = date.toLocaleString("en-GB", { weekday: "long" });
+
+     // Return the formatted date string
+     return `${day} ${weekday}, ${month} ${year}`;
+}
 

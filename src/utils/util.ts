@@ -18,3 +18,14 @@ export function sendMail(mail?: string) {
   window.open(`mailto:${mail}`, "_blank");
 }
 
+
+export function isEventLive(startTime: string, endTime: string): boolean {
+  const startDate = new Date(startTime);
+  const endDate = new Date(endTime);
+
+  const currentDate = new Date();
+
+  const isLive = currentDate >= startDate && currentDate <= endDate;
+
+  return isLive;
+}

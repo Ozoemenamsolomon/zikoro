@@ -15,8 +15,6 @@ import Link from "next/link";
 import { cn } from "@/lib";
 import { Users } from "@styled-icons/fa-solid/Users";
 import {
-  formatDate,
-  formatTime,
   dateFormatting,
   calculateTimeDifference,
   hasTimeElapsed,
@@ -33,6 +31,7 @@ import { BookEvent } from "..";
 import { usePathname, useRouter } from "next/navigation";
 import { Event, OrganizerContact } from "@/types";
 import { useFetchSingleOrganization, getCookie, useFormatEventData } from "@/hooks";
+import { toast } from "@/components/ui/use-toast";
 export function SingleEvent({
   className,
   isDetail,
@@ -44,17 +43,18 @@ export function SingleEvent({
   className?: string;
   event?: Event;
   organization?: string | null;
-  eventId?: number;
+  eventId?: string;
   useDiv?: boolean;
   imageClassName?: string;
 }) {
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
+  const user = getCookie("user")
   const [isShareDropDown, showShareDropDown] = useState(false);
   const pathname = usePathname()
   const org = getCookie("currentOrganization");
   const {startDate,endDate, startTime, endTime } = useFormatEventData(event)
-  const { data, refetch } = useFetchSingleOrganization(org?.id);
+  const { data } = useFetchSingleOrganization(org?.id);
   const router = useRouter();
 
   function onClose() {
@@ -284,6 +284,10 @@ export function SingleEvent({
                 onClick={(e) => {
                   e.stopPropagation();
                   e.stopPropagation();
+                  if (!user) {
+                    toast({variant:"destructive",description:"Login is required"})
+                    return
+                  }
 
                   onClose();
                 }}
@@ -351,7 +355,7 @@ export function SingleEvent({
                 {!isDetail && (
                   <Link
                     className="text-basePrimary "
-                    href={`/live-events/${event?.id}`}
+                    href={`/live-events/${event?.eventAlias}`}
                   >{`Read more >>`}</Link>
                 )}
               </div>
@@ -403,7 +407,7 @@ function ActionModal({
   close,
   eventId,
 }: {
-  eventId?: number;
+  eventId?: string;
   instagram?: string;
   close: () => void;
 }) {

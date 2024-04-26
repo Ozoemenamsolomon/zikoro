@@ -2,16 +2,22 @@
 
 import { Button } from "@/components";
 import { cn } from "@/lib";
-import { EditOutline } from "@styled-icons/evaicons-outline/EditOutline";
 import { NavigateNext } from "@styled-icons/material-rounded/NavigateNext";
-import { Children, useState } from "react";
-import { Title } from "styled-icons/material";
+import { useState } from "react";
+import {Edit} from "."
+import {TAgenda, Event} from "@/types"
 export function CollapsibleWidget({
   children,
   title,
+  session,
+  event,
+  refetch
 }: {
   children: React.ReactNode;
   title: string;
+  session: TAgenda; 
+  event?: Event | null;
+  refetch?: () => Promise<any>;
 }) {
   const [isVisible, setVisibility] = useState(false);
 
@@ -24,9 +30,7 @@ export function CollapsibleWidget({
         <p className="font-semibold text-base sm:text-xl">{title}</p>
         <div className="flex items-center gap-x-2">
           <p>{title}</p>
-          <Button className="w-fit h-fit px-1">
-            <EditOutline size={20} />
-          </Button>
+          <Edit session={session} event={event} refetch={refetch} />
           <Button onClick={toggleVisibility} className="w-fit h-fit px-1">
             <NavigateNext
               className={`transform transition-all duration-300 ease-in-out ${

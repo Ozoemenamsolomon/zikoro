@@ -8,22 +8,34 @@ import { cn } from "@/lib";
 import { useState, useMemo } from "react";
 import { Printer } from "@styled-icons/evaicons-solid/Printer";
 import { ScanDash } from "@styled-icons/fluentui-system-regular/ScanDash";
-import { Others, Custom, AddSession, FullScreenView } from "./_components";
-import { useFetchSingleEvent, useGetAgendas } from "@/hooks";
+import { Custom, AddSession, FullScreenView } from "./_components";
+import { getCookie, useFetchSingleEvent, useGetAllAttendees, useGetSessionAgendas } from "@/hooks";
 import { generateDateRange } from "@/utils";
+import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { useRouter } from "next/navigation";
 export default function Agenda({ eventId }: { eventId: string }) {
-  const [activeDate, setActiveDate] = useState("");
-  const {agendas} = useGetAgendas(eventId)
-  const [isOpen, setOpen] = useState(false);
-  const { data, refetch } = useFetchSingleEvent(eventId);
-  const [isFullScreen, setFullScreen] = useState(false);
+  const router = useRouter();
+  const currentEvent = getCookie("currentEvent");
+  const user = getCookie("user");
   const search = useSearchParams();
   const queryParam = search.get("a");
+  const {attendees} = useGetAllAttendees()
+  const [isOpen, setOpen] = useState(false);
+  const { data, refetch, loading } = useFetchSingleEvent(eventId);
+  const [isFullScreen, setFullScreen] = useState(false);
+  const activeDateQuery = search.get("date");
+  const { sessionAgendas, fetching, refetchSession } = useGetSessionAgendas(
+    eventId,
+    activeDateQuery || currentEvent?.startDate,
+    queryParam
+  );
+
+ 
 
   const dateRange = useMemo(() => {
     if (data) {
       const genDate = generateDateRange(data?.startDateTime, data?.endDateTime);
-      setActiveDate(genDate[0]?.date);
+      // setActiveDate(genDate[0]?.date);
       return genDate;
     } else {
       return [];
@@ -37,6 +49,15 @@ export default function Agenda({ eventId }: { eventId: string }) {
   function toggleFullScreenMode() {
     setFullScreen((prev) => !prev);
   }
+
+  const attendeeId = useMemo(() => {
+    return attendees?.find(
+      ({ email, eventId :id }) =>
+        Number(id) === Number(eventId) && email === user?.userEmail
+    )?.id;
+  }, [attendees]);
+
+ // console.log("sesson", sessionAgendas);
 
   return (
     <>
@@ -63,7 +84,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
             onClick={onClose}
             className={cn(
               " text-gray-50 bg-basePrimary hidden gap-x-2 h-11 sm:h-12 font-medium",
-              activeDate && "flex"
+              (activeDateQuery || currentEvent?.startDate) && "flex"
             )}
           >
             <PlusCircle size={22} />
@@ -76,10 +97,14 @@ export default function Agenda({ eventId }: { eventId: string }) {
               dateRange?.map((val, index) => (
                 <button
                   key={val?.date}
-                  onClick={() => setActiveDate(val?.date)}
+                  onClick={() => {
+                    router.push(`/event/${eventId}/agenda?date=${val?.date}`);
+                    refetchSession();
+                  }}
                   className={cn(
                     "pb-3 text-gray-400  text-base sm:text-lg",
-                    activeDate === val?.date &&
+                    (activeDateQuery || currentEvent?.startDate) ===
+                      val?.date &&
                       "border-basePrimary border-b-2 text-basePrimary"
                   )}
                 >
@@ -88,57 +113,63 @@ export default function Agenda({ eventId }: { eventId: string }) {
               ))}
           </div>
         </div>
-        <div className="w-full flex items-end p-4 justify-end gap-x-2">
-          <Button className="px-0 w-fit h-fit ">
-            <Printer size={20} />
-          </Button>
-          <Button onClick={toggleFullScreenMode} className="px-0 w-fit h-fit ">
-            <ScanDash size={20} />
-          </Button>
-        </div>
+        {Array.isArray(sessionAgendas) && sessionAgendas?.length > 0 && (
+          <div className="w-full flex items-end p-4 justify-end gap-x-2">
+            <Button className="px-0 w-fit h-fit ">
+              <Printer size={20} />
+            </Button>
+            <Button
+              onClick={toggleFullScreenMode}
+              className="px-0 w-fit h-fit "
+            >
+              <ScanDash size={20} />
+            </Button>
+          </div>
+        )}
 
         <div className="w-full p-2 sm:p-4 grid grid-cols-1 items-center gap-8">
-          <Others
-            data={{
-              timeStamp: "Today",
-              session: [{ sessionTitle: "Registration" }],
-            }}
-          />
-          <Others
-            data={{ timeStamp: "Today", session: [{ sessionTitle: "Launch" }] }}
-          />
-          <Custom
-            data={{
-              timeStamp: "Today",
-              session: [
-                { sessionTitle: "Introduction to Software Engineering" },
-              ],
-            }}
-          />
-          <Others
-            data={{ timeStamp: "Today", session: [{ sessionTitle: "Break" }] }}
-          />
-          <Custom
-            data={{
-              timeStamp: "Today",
-              session: [
-                { sessionTitle: "Introduction to Software Engineering" },
-                { sessionTitle: "Basics of Mechatronics" },
-              ],
-            }}
-          />
+          {fetching && (
+            <div className="w-full col-span-full h-[20rem] flex items-center justify-center">
+              <LoaderAlt size={30} className="animate-spin" />
+            </div>
+          )}
+          {!fetching &&
+            Array.isArray(sessionAgendas) &&
+            sessionAgendas?.length === 0 && (
+              <div className="w-full col-span-full h-[20rem] flex items-center justify-center">
+                <p className="font-semibold">No Agenda</p>
+              </div>
+            )}
+          {!fetching &&
+            Array.isArray(sessionAgendas) &&
+            sessionAgendas?.map((sessionAgenda) => {
+              return (
+                <Custom
+                  key={`${sessionAgenda?.timeStamp?.start}${sessionAgenda?.timeStamp?.end}`}
+                  sessionAgenda={sessionAgenda}
+                  refetchSession={refetchSession}
+                  event={data}
+                  attendeeId={attendeeId}
+                />
+              );
+            })}
         </div>
       </div>
       {isOpen && (
         <AddSession
           refetch={refetch}
-          eventStartDate={activeDate}
+          eventStartDate={activeDateQuery || currentEvent?.startDate}
           close={onClose}
           eventId={eventId}
           event={data}
         />
       )}
-      {isFullScreen && <FullScreenView close={toggleFullScreenMode} />}
+      {isFullScreen && (
+        <FullScreenView
+          close={toggleFullScreenMode}
+          sessionAgendas={sessionAgendas}
+        />
+      )}
     </>
   );
 }
