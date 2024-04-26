@@ -1065,12 +1065,12 @@ export function useAttenedeeEvents() {
     if (!loading && !isLoading) {
       // console.log({attendees})
       // filter attendees based on attendees email
-      const filteredEvents = attendees?.filter(({ email }) => {
+      const filteredAttendees = attendees?.filter(({ email }) => {
         return email === user?.userEmail;
       });
-      //   console.log({filteredEvents})
-      const mappedEventId = filteredEvents?.map((attendee) =>
-        String(attendee?.eventId)
+      //   console.log({filteredAttendees})
+      const mappedEventId = filteredAttendees?.map((attendee) =>
+        String(attendee?.eventAlias)
       );
       const filtered = events?.filter((event) => {
         // check if event ID in the attendees data and event ID in the events data correlate
