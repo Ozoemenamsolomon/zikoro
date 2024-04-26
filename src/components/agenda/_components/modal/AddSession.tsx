@@ -268,6 +268,7 @@ export function AddSession({
 
     const payload: Partial<TAgenda> = {
       ...values,
+      Track: values?.Track || "No Track",
       sessionModerators: chosenModerators,
       sessionSpeakers: chosenSpeakers,
       sessionSponsors: chosenSponsors,
@@ -307,7 +308,7 @@ export function AddSession({
         sessionType: session?.sessionType,
         sessionUrl: session?.sessionUrl ?? "",
         sessionVenue: session?.sessionVenue ?? "",
-        Track: session?.Track ?? "",
+        Track: session?.Track ?? "No Track",
       });
 
       if (Array.isArray(session?.sessionSpeakers)) {
@@ -435,7 +436,7 @@ export function AddSession({
                     isNotSameDay && "text-red-500"
                   )}
                 >
-                  NB: Start and End time must be in the same day
+                 Start and End time must be the same day
                 </p>
               </div>
               {activity === "Custom" && (
