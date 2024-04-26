@@ -45,6 +45,7 @@ export function EventCard({
   function goToEvent() {
     saveCookie("currentEvent", {
       eventId: event?.id,
+      eventAlias: event?.eventAlias,
       eventName: event?.eventTitle,
       startDate: event?.startDateTime
     });

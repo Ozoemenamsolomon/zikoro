@@ -17,7 +17,7 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
     if (events && !eventLoading) {
       //checked if the eventid is present in the event array
       const isEventIdPresent = events?.some(({ eventAlias }) => eventAlias === eventId);
-
+      console.log("eevents", events)
       setIsIdPresent(isEventIdPresent);
     }
   }, [events, eventLoading]);
@@ -61,13 +61,19 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
     },
   ];
 
+  const hideFromAttendee = ["Contents", "Analytics", "Settings"]
+  const set = new Set(hideFromAttendee)
+  console.log('eeee',isIdPresent)
   const reformedLink = useMemo(() => {
     return links.filter((link) => {
       if (!user || !user?.userEmail || !isIdPresent) {
-        return String(link?.name) !== "Contents";
+        return  !set.has(String(link?.name));
+      }
+      else {
+        return links
       }
 
-      return true;
+     
     });
   }, [user, isIdPresent]);
 

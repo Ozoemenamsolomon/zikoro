@@ -36,7 +36,7 @@ export function MobileBottomNav({ toggleSideNav }: {  toggleSideNav:() => void }
       </Link>
       <Link
         className="flex flex-col items-center justify-center"
-        href={`/event/${event?.eventId}/home`}
+        href={`/event/${event?.eventAlias}/home`}
       >
         <HomeIcon
           color={pathname.includes("home") ? "#001ffc" : "#000000"}
@@ -48,7 +48,7 @@ export function MobileBottomNav({ toggleSideNav }: {  toggleSideNav:() => void }
       </Link>
       <Link
         className="flex flex-col items-center justify-center"
-        href={`/event/${event?.eventId}/agenda`}
+        href={`/event/${event?.eventAlias}/agenda`}
       >
         <AgendaIcon color={pathname.includes("agenda") ? "#001ffc" : "#000000"} />
         <Dot size={10} color={pathname.includes("agenda") ? "#001ffc" : "#ffffff"} />

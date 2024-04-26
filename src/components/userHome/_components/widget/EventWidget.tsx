@@ -19,8 +19,10 @@ export function EventWidget({ event }: { event: Event }) {
   
     function gotToEvent() {
       saveCookie("currentEvent", {
+        eventAlias: event?.eventAlias,
         eventId: event?.id,
         eventName: event?.eventTitle,
+        startDate: event?.startDateTime
       });
       router.push(`/event/${event?.eventAlias}/home`);
     }

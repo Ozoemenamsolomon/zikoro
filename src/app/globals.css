@@ -358,6 +358,3 @@ input[type=number] {
   aspect-ratio: unset;
 }
 
-.player div[data-media-provider] #player .html5-video-player .html5-video-container video {
-  width: 100px !important;
-}

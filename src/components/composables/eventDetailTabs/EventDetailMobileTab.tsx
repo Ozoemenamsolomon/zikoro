@@ -76,11 +76,15 @@ export function EventDetailMobileTab({
           <p>Offers</p>
         </button>
 
-        <button className="flex flex-col gap-y-2 items-center justify-center">
+        <button
+         onClick={() => router.push(`/event/${eventId}/people/all`)}
+        className="flex flex-col gap-y-2 items-center justify-center">
           <AttendeesIcon />
           <p>Attendees</p>
         </button>
-        <button className="flex flex-col gap-y-2 items-center justify-center">
+        <button 
+         onClick={() => router.push(`/event/${eventId}/agenda`)}
+        className="flex flex-col gap-y-2 items-center justify-center">
           <MobileAgendaIcon />
           <p>Agenda</p>
         </button>

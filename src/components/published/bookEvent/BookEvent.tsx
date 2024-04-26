@@ -269,7 +269,7 @@ export function BookEvent({
     await registerAttendees(
       eventReference,
       values,
-       String(event?.id),
+      String(event?.id),
       eventId,
       "attendees",
       priceCategory,
@@ -513,18 +513,24 @@ export function BookEvent({
                                   <p className="w-1 h-1"></p>
                                 )}
                               </div>
-                               <div className="flex flex-col items-end justify-end gap-y-2">
-                               {availableSlot > 0 && (
-                                <p className="text-red-600 bg-red-100 text-xs p-2 rounded-md">
-                                  {` ${availableSlot} slots left`}
-                                </p>
-                              )}
-                               <div className="flex items-center gap-x-3">
-                                <p className={cn("text-gray-500 text-sm italic", activeSelectedPrice(v?.attendeeType) &&
-                                "text-basePrimary font-medium")}>Select</p>
-                               </div>
-                                </div>   
-                              
+                              <div className="flex flex-col items-end justify-end gap-y-2">
+                                {availableSlot > 0 && (
+                                  <p className="text-red-600 bg-red-100 text-xs p-2 rounded-md">
+                                    {` ${availableSlot} slots left`}
+                                  </p>
+                                )}
+                                <div className="flex items-center gap-x-3">
+                                  <p
+                                    className={cn(
+                                      "text-gray-500 text-sm italic",
+                                      activeSelectedPrice(v?.attendeeType) &&
+                                        "text-basePrimary font-medium"
+                                    )}
+                                  >
+                                    Select
+                                  </p>
+                                </div>
+                              </div>
                             </div>
                           </Button>
                         );
@@ -538,21 +544,26 @@ export function BookEvent({
                   }}
                   className="w-full flex flex-col gap-y-2 items-start justify-start"
                 >
-                  <div className="w-full flex items-center ">
-                    <input
-                      type="text"
-                      value={code}
-                      onChange={(e) => setCode(e.target.value)}
-                      placeholder="Enter a valid discount code"
-                      className="bg-transparent h-14 rounded-l-md px-3 outline-none placeholder:text-gray-300 border border-gray-300 w-[75%]"
-                    />
-                    <Button
-                      disabled={code === ""}
-                      onClick={redeem}
-                      className="h-14 text-white rounded-r-md rounded-l-none bg-gray-500 font-medium px-0 w-[25%]"
-                    >
-                      {loading ? "Verifying..." : "Redeem"}
-                    </Button>
+                  <div className="w-full space-y-1">
+                    <div className="w-full flex items-center ">
+                      <input
+                        type="text"
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        placeholder="Enter a valid discount code"
+                        className="bg-transparent h-14 rounded-l-md px-3 outline-none placeholder:text-gray-300 border border-gray-300 w-[75%]"
+                      />
+                      <Button
+                        disabled={code === ""}
+                        onClick={redeem}
+                        className="h-14 text-white rounded-r-md rounded-l-none bg-gray-500 font-medium px-0 w-[25%]"
+                      >
+                        {loading ? "Verifying..." : "Redeem"}
+                      </Button>
+                    </div>
+                    <p className="text-tiny text-gray-500">
+                      Discount code is case sensitive
+                    </p>
                   </div>
                 </div>
                 <Button
