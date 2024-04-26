@@ -16,7 +16,7 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
   useEffect(() => {
     if (events && !eventLoading) {
       //checked if the eventid is present in the event array
-      const isEventIdPresent = events?.some(({ id }) => String(id) === eventId);
+      const isEventIdPresent = events?.some(({ eventAlias }) => eventAlias === eventId);
 
       setIsIdPresent(isEventIdPresent);
     }

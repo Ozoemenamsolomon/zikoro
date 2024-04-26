@@ -25,8 +25,8 @@ export function Engagement({
 
   const attendeeId = useMemo(() => {
     return attendees?.find(
-      ({ email, eventId }) =>
-        Number(eventId) === Number(id) && email === user?.userEmail
+      ({ email, eventAlias }) =>
+      eventAlias=== id && email === user?.userEmail
     )?.id;
   }, [attendees]);
   return (

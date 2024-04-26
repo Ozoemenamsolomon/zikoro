@@ -65,7 +65,7 @@ export function useFetchPartners(eventId: string | number) {
       const { data, error: fetchError } = await supabase
         .from("eventPartners")
         .select("*")
-        .eq("eventId", eventId);
+        .eq("eventAlias", eventId);
 
       if (fetchError) {
         setLoading(false);

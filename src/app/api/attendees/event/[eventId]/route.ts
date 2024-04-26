@@ -14,7 +14,7 @@ export async function GET(
       const { data, error, status } = await supabase
         .from("attendees")
         .select("*")
-        .eq("eventId", eventId);
+        .eq("eventAlias", eventId);
 
         if (error) {
             return NextResponse.json(

@@ -67,7 +67,7 @@ export function AccessVerification({
 
       // checked if the user is an attendee
       const isPresent = attendees?.some(
-        ({ email, eventId }) => Number(eventId) === Number(id) && email === user?.userEmail
+        ({ email, eventAlias }) => eventAlias === id && email === user?.userEmail
       );
 
       if (isEventIdPresent) {

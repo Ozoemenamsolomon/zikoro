@@ -44,18 +44,21 @@ function Contact({ eventId }: { eventId: string }) {
 
   async function onSubmit(values: any) {
     //  console.log({ values });
-   
 
-   const promise = new Promise(async (resolve) => {
-    if (typeof values.organizationLogo === "string") {
-      resolve(values.organizationLogo)
-    } else {
-      const img = await uploadFile(values.organizationLogo[0], "image");
-      resolve(img);
+    let logoUrl:any  = "";
+
+    if (values?.organizationLogo) {
+      const promise = new Promise(async (resolve) => {
+        if (typeof values.organizationLogo === "string") {
+          resolve(values.organizationLogo);
+        } else {
+          const img = await uploadFile(values.organizationLogo[0], "image");
+          resolve(img);
+        }
+      });
+      logoUrl = await promise;
     }
-   })
-   let logoUrl =  await promise
-   
+
     const payload = {
       ...values,
       organizationLogo: logoUrl,
@@ -111,71 +114,65 @@ function Contact({ eventId }: { eventId: string }) {
 
   return (
     <>
-    
-
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full"
           id="form"
         >
-           <div className="w-full p-4 flex items-center sm:items-end justify-start sm:justify-end">
-          <div className="flex items-center gap-x-2">
-                  <Button className="gap-x-2">
-                    {loading && (
-                      <LoaderAlt size={22} className="animate-spin" />
-                    )}
-                    <Check2 size={22} className="text-basePrimary" />
-                    <p>Save</p>
-                  </Button>
-                  <Button
-                    // type="submit"
-                    onClick={(e) => {
-                        e.preventDefault();
-                      e.stopPropagation();
-                      window.open(`/events/content/${eventId}/preview`, '_blank')
-                   
-                    }}
-                    className="text-gray-50 bg-basePrimary gap-x-2"
-                  >
-                    <Eye size={22} />
-                    <p>Preview</p>
-                  </Button>
-                  <Button
-                    onClick={(e) => {
-                      //   e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                    type="submit"
-                    className="hidden text-basePrimary border border-basePrimary gap-x-2"
-                  >
-                    <Download size={22} />
-                    <p>Publish</p>
-                  </Button>
-                </div>
-          
+          <div className="w-full p-4 flex items-center sm:items-end justify-start sm:justify-end">
+            <div className="flex items-center gap-x-2">
+              <Button className="gap-x-2">
+                {loading && <LoaderAlt size={22} className="animate-spin" />}
+                <Check2 size={22} className="text-basePrimary" />
+                <p>Save</p>
+              </Button>
+              <Button
+                // type="submit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.open(`/events/content/${eventId}/preview`, "_blank");
+                }}
+                className="text-gray-50 bg-basePrimary gap-x-2"
+              >
+                <Eye size={22} />
+                <p>Preview</p>
+              </Button>
+              <Button
+                onClick={(e) => {
+                  //   e.preventDefault();
+                  e.stopPropagation();
+                }}
+                type="submit"
+                className="hidden text-basePrimary border border-basePrimary gap-x-2"
+              >
+                <Download size={22} />
+                <p>Publish</p>
+              </Button>
+            </div>
           </div>
           {/* <button>Click</button> */}
           <div className="grid grid-cols-1 md:grid-cols-2 mb-10 gap-6 px-4">
             <div className="py-4 space-y-10">
-       
-
-         {data &&     <FormField
-                control={form.control}
-                name="country"
-                render={({ field }) => (
-                  <ReactSelect
-                    {...form.register("country")}
-                    defaultValue={{
-                      value: data?.country,
-                      label: data?.country,
-                    }}
-                    placeHolder="Select the Country"
-                    label="Country"
-                    options={countriesList}
-                  />
-                )}
-              />}
+              {data && (
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <ReactSelect
+                      {...form.register("country")}
+                      defaultValue={{
+                        value: data?.country,
+                        label: data?.country,
+                      }}
+                      placeHolder="Select the Country"
+                      label="Country"
+                      options={countriesList}
+                    />
+                  )}
+                />
+              )}
 
               <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-4">
                 <FormField
@@ -292,9 +289,10 @@ function Contact({ eventId }: { eventId: string }) {
                     />
                     <button
                       onClick={(e) => {
-                        e.stopPropagation()
-                        e.preventDefault()
-                        form.setValue("organizationLogo", null)}}
+                        e.stopPropagation();
+                        e.preventDefault();
+                        form.setValue("organizationLogo", null);
+                      }}
                       className="absolute top-2 right-2 bg-black rounded-full text-white w-6 h-6 flex items-center justify-center"
                     >
                       <CloseCircle size={16} />

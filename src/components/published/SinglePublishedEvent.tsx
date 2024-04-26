@@ -12,7 +12,7 @@ export default function SinglePublishedEvent({id}: {id:string}) {
   const { data: eventDetail } = useFetchSingleEvent(id);
   const pathname = usePathname()
  // console.log(id)
- useValidateUser()
+// useValidateUser()
   return (
     <>
      
@@ -35,7 +35,7 @@ export default function SinglePublishedEvent({id}: {id:string}) {
           )}
 
         {!pathname.includes("preview") &&  <Link
-            href={`/live-events/organization/${id}`}
+            href={`/live-events/organization/${eventDetail?.organisationId}`}
             className="flex mt-10 sm:mt-20 hover:underline items-center gap-x-2 text-basePrimary text-sm"
           >
             <span>See All Events</span>
