@@ -12,6 +12,10 @@ export const useCreateAttendee = () => {
   const createAttendee = async ({ payload }: { payload: TAttendee }) => {
     setLoading(true);
 
+    toast({
+      description: "Creating attendee...",
+    });
+
     try {
       const { data, status } = await postRequest({
         endpoint: "/attendees",

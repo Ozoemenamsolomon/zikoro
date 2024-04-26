@@ -5,23 +5,33 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
+    console.log("here");
     try {
       const params = await req.json();
+
+      console.log(params.eventId);
 
       if (!params.id) {
         const { data, error: checkIfRegisteredError } = await supabase
           .from("attendees")
           .select("*")
           .eq("email", params.email)
-          .eq("eventId", params.eventId)
+          .eq("eventAlias", params.eventId)
           .maybeSingle();
+
+        console.log(checkIfRegisteredError);
 
         if (checkIfRegisteredError) throw checkIfRegisteredError?.code;
         if (data) throw "email error";
       }
 
-      const { error } = await supabase.from("attendees").upsert(params);
-      if (error) throw error.code;
+      const { error } = await supabase
+        .from("attendees")
+        .upsert({ ...params, eventAlias: params.eventId });
+      if (error) {
+        console.log(error);
+        throw error.code;
+      }
 
       return NextResponse.json(
         { msg: "attendee created successfully" },
@@ -30,9 +40,10 @@ export async function POST(req: NextRequest) {
         }
       );
     } catch (error) {
-      console.error(error);
+      console.error(error, "error");
       return NextResponse.json(
         {
+          err: JSON.stringify(error),
           error:
             error === "email error"
               ? "Email already registered for this event"
