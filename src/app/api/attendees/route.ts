@@ -95,7 +95,9 @@ export async function GET(req: NextRequest) {
         .select("*")
         .order("registrationDate", { ascending: false });
 
-      if (eventId) query.eq("eventId", eventId);
+      console.log(eventId);
+
+      if (eventId) query.eq("eventAlias", eventId);
       if (userId) query.eq("userId", userId);
 
       const { data, error, status } = await query;

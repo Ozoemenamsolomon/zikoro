@@ -42,6 +42,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const { event, isLoading: eventIsLoading } = useGetEvent({
     eventId: Array.isArray(eventId) ? eventId[0] : eventId,
+    isAlias: true
   });
 
   useLayoutEffect(() => {

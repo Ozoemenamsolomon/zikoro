@@ -87,10 +87,15 @@ export async function GET(
 
   if (req.method === "GET") {
     try {
+      const { searchParams } = new URL(req.url);
+      const isAlias = searchParams.get("isAlias");
+
+      console.log(isAlias, eventId);
+
       const { data, error, status } = await supabase
         .from("events")
         .select("*, organization!inner(*)")
-        .eq("id", eventId)
+        .eq(isAlias === "1" ? "eventAlias" : "id", eventId)
         .maybeSingle();
 
       if (error) throw error;

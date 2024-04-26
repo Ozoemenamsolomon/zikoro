@@ -312,7 +312,7 @@ export default function FirstSection({
     <>
       <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2">
         <h1 className="font-semibold leading-normal text-greyBlack ">People</h1>
-        {user && event?.createdBy === user.userEmail && (
+        {user && event?.createdBy === user.id && (
           <div className="flex gap-4 items-center">
             <button onClick={onOpen}>
               <svg
@@ -428,7 +428,7 @@ export default function FirstSection({
             />
           </svg>
         </div>
-        {user && event?.createdBy === user.userEmail && (
+        {user && String(event?.createdBy) === String(user.id) && (
           <button className="flex flex-col gap-1" onClick={toggleShowFilter}>
             <svg
               xmlns="http://www.w3.org/2000/svg"

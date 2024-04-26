@@ -241,7 +241,11 @@ export default function SecondSection({
 
   // const [certificateId, setCertificateId] = useState<string>("");
 
-  console.log(event.createdBy);
+  console.log(
+    event?.createdBy,
+    String(user.id),
+    String(event?.createdBy) === String(user.id)
+  );
 
   return eventIsLoading ? null : (
     <div className="h-fit space-y-4">
@@ -701,7 +705,8 @@ export default function SecondSection({
       </div>
       <section className="space-y-6 p-4 pt-0">
         {user &&
-          (event?.createdBy === user.userEmail || email === user.userEmail) && (
+          (String(event?.createdBy) === String(user.id) ||
+            email === user.userEmail) && (
             <div className="flex justify-between items-center">
               <span className="text-tiny font-medium text-gray-500">
                 Added {format(new Date(registrationDate), "dd MMMM, yyyy")}
@@ -795,7 +800,7 @@ export default function SecondSection({
               Schedule Appointment
             </span>
           </div>
-          {(event?.createdBy === user.userEmail ||
+          {(String(event?.createdBy) === String(user.id) ||
             email === user.userEmail) && (
             <div className="rounded border p-2 space-y-2">
               <span className="text-xs text-gray-700 font-medium">
@@ -834,7 +839,7 @@ export default function SecondSection({
         </div>
       </section>
       {user &&
-        (event?.createdBy === user.userEmail || email === user.userEmail) && (
+        (String(event?.createdBy) === String(user.id) || email === user.userEmail) && (
           <section className="flex justify-between items-center border-y-[1px] border-gray-200 p-2">
             <h3 className="text-lg text-greyBlack font-semibold">
               Credentials
@@ -842,7 +847,7 @@ export default function SecondSection({
             {!attendeeCertificatesIsLoading ? (
               attendeeCertificates.length > 0 &&
               user &&
-              event?.createdBy === user.userEmail && (
+              String(event?.createdBy) === String(user.id) && (
                 <Dialog>
                   <DialogTrigger>
                     <span className="  text-sm text-[#001FCC] ">
@@ -873,7 +878,8 @@ export default function SecondSection({
         )}
       <section className="flex justify-between items-center px-2">
         {user &&
-          (event?.createdBy === user.userEmail || email === user.userEmail) && (
+          (String(event?.createdBy) === String(user.id) ||
+            email === user.userEmail) && (
             <Dialog>
               <DialogTrigger>
                 <div className=" flex flex-col items-center gap-2 w-fit">
@@ -911,7 +917,7 @@ export default function SecondSection({
         {!getEventCertificatesIsLoading &&
           eventCertificates &&
           user &&
-          event?.createdBy === user.userEmail &&
+          String(event?.createdBy) === String(user.id) &&
           eventCertificates.some(
             (eventCertificate) =>
               !attendeeCertificates.some(
@@ -967,7 +973,8 @@ export default function SecondSection({
         {!attendeeCertificatesIsLoading &&
           attendeeCertificates.length > 0 &&
           user &&
-          (event?.createdBy === user.userEmail || email === user.userEmail) && (
+          (String(event?.createdBy) === String(user.id) ||
+            email === user.userEmail) && (
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <div className=" flex flex-col items-center gap-2 w-fit">

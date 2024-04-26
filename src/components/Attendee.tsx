@@ -122,7 +122,7 @@ const Attendee: React.FC<AttendeeProps> = ({
           <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
             {`${jobTitle ? jobTitle + ", " : ""}${organization || ""}`}
           </span>
-          {user && event?.createdBy === user.userEmail && recentCheckin && (
+          {user && String(event?.createdBy) === String(user.id) && recentCheckin && (
             <div className="flex gap-1 text-tiny text-[#717171]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -219,7 +219,7 @@ const Attendee: React.FC<AttendeeProps> = ({
         <button
           onClick={toggleCheckin}
           className={`text-[8px] flex items-center gap-0.5 ${
-            user && event?.createdBy === user.userEmail ? "" : "hidden"
+            user && String(event?.createdBy) === String(user.id) ? "" : "hidden"
           } ${
             recentCheckin && isWithinTimeRange(recentCheckin.date, null)
               ? "text-basePrimary"
