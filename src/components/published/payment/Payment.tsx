@@ -11,7 +11,6 @@ import {
   useGetEventTransactionDetail,
   useUpdateTransactionDetail,
 } from "@/hooks";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { CheckCircleFill } from "@styled-icons/bootstrap/CheckCircleFill";
 import { useSearchParams } from "next/navigation";
 
@@ -57,6 +56,7 @@ export function Payment({
 
     const payload = {
       eventId: data?.eventId,
+      eventAlias: data?.eventAlias,
       eventImage: parsedData?.eventImage,
       eventRegistrationRef: data?.eventRegistrationRef,
       paymentDate: new Date(),
@@ -104,6 +104,7 @@ export function Payment({
   async function submit() {
     const payload = {
       eventId: data?.eventId,
+      eventAlias: data?.eventAlias,
       eventImage: parsedData?.eventImage,
       eventRegistrationRef: data?.eventRegistrationRef,
       paymentDate: new Date(),
