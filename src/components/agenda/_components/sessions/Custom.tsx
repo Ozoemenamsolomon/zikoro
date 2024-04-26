@@ -21,11 +21,13 @@ export function Custom({
   className,
   refetchSession,
   event,
+  refetchEvent,
   attendeeId
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
   refetchSession?: () => Promise<any>;
+  refetchEvent?: () => Promise<any>;
   event?: Event | null;
   attendeeId?:number
 }) {
@@ -54,6 +56,7 @@ export function Custom({
               key={index}
               event={event}
               attendeeId={attendeeId}
+              refetchEvent={refetchEvent}
               refetchSession={refetchSession}
             />
           ))}
@@ -67,12 +70,14 @@ function Widget({
   session,
   refetchSession,
   event,
-  attendeeId
+  attendeeId,
+  refetchEvent
 }: {
   session: TAgenda;
   event?: Event | null;
   refetchSession?: () => Promise<any>;
-  attendeeId?: number
+  attendeeId?: number;
+  refetchEvent?: () => Promise<any>;
 }) {
   const router = useRouter();
 
@@ -104,7 +109,7 @@ function Widget({
         role="button"
         onClick={() => {
           if (isClickable) {
-            router.push(`/event/${event?.id}/agenda/${session?.id}`);
+            router.push(`/event/${event?.eventAlias}/agenda/${session?.id}`);
           }
         }}
         className={cn(
@@ -157,7 +162,7 @@ function Widget({
           </div>
         </div>
         <div className="flex items-center mb-2  gap-x-2">
-          <Edit session={session} event={event} refetch={refetchSession} />
+          <Edit session={session} event={event} refetch={refetchSession} refetchEvent={refetchEvent}/>
           <Duplicate session={session} refetch={refetchSession} />
           <Deletes agendaId={session?.id} refetch={refetchSession} />
           <Button className="h-fit  gap-x-2 w-fit px-0">

@@ -60,7 +60,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
     )?.id;
   }, [attendees]);
 
-  // console.log("sesson", sessionAgendas);
+   console.log("sesson", fetching);
 
   return (
     <>
@@ -152,6 +152,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
                   sessionAgenda={sessionAgenda}
                   refetchSession={refetchSession}
                   event={data}
+                  refetchEvent={refetch}
                   attendeeId={attendeeId}
                 />
               );
@@ -163,6 +164,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
           refetch={refetch}
           eventStartDate={activeDateQuery || currentEvent?.startDate}
           close={onClose}
+          refetchSession={refetchSession}
           eventId={eventId}
           event={data}
         />

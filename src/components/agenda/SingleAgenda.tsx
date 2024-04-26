@@ -11,7 +11,7 @@ export default function SingleAgenda({
   eventId: string;
   agendaId: string;
 }) {
-  const { data, loading } = useFetchSingleEvent(eventId);
+  const { data, loading, refetch } = useFetchSingleEvent(eventId);
   const { attendees, isLoading: fetching } = useGetAllAttendees();
   const { agenda, isLoading, getAgenda } = useGetAgenda({ agendaId });
   return (
@@ -23,7 +23,7 @@ export default function SingleAgenda({
       )}
       {!loading && !isLoading && !fetching && (
         <>
-          <AboutSession agenda={agenda} event={data} refetch={getAgenda} />
+          <AboutSession agenda={agenda} event={data} refetch={refetch} refetchSession={getAgenda} />
           <Engagement attendees={attendees} id={eventId} agenda={agenda} />
         </>
       )}

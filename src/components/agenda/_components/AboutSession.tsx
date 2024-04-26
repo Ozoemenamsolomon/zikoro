@@ -11,6 +11,7 @@ import { FilePdf } from "@styled-icons/fa-regular/FilePdf";
 import Image from "next/image";
 import { TAgenda, Event } from "@/types";
 import { useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { getCookie, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
@@ -18,12 +19,15 @@ export function AboutSession({
   agenda,
   event,
   refetch,
+  refetchSession,
 }: {
   event: Event | null;
   refetch?: () => Promise<any>;
+  refetchSession?: () => Promise<any>;
   agenda: TAgenda | null;
 }) {
   const user = getCookie("user");
+  const router = useRouter();
   const { updateAgenda } = useUpdateAgenda();
   const isLive = useMemo(() => {
     if (agenda) {
@@ -96,12 +100,19 @@ export function AboutSession({
               </p>
             )}
             <div className="flex items-center px-4 gap-x-2">
-              <Edit session={agenda} event={event} refetch={refetch} />
+              <Edit
+                session={agenda}
+                event={event}
+                refetch={refetchSession}
+                refetchEvent={refetch}
+              />
               <Duplicate session={agenda} refetch={refetch} />
               <Deletes agendaId={agenda?.id} refetch={refetch} />
               <Button className="h-fit  gap-x-2 w-fit px-0">
                 <Eye size={20} />
-                <p className="text-xs sm:text-sm text-gray-500">{agenda?.sessionViews ?? "0"}</p>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  {agenda?.sessionViews ?? "0"}
+                </p>
               </Button>
               <Button className="h-fit gap-x-2 w-fit px-0">
                 <Star size={20} />
@@ -130,7 +141,10 @@ export function AboutSession({
               {agenda?.Track ?? ""}
             </button>
             {agenda?.sessionUrl && (
-              <button className="flex items-center gap-x-2">
+              <button
+                onClick={() => router.push(agenda?.sessionUrl, "_blank")}
+                className="flex items-center gap-x-2"
+              >
                 <Link size={18} />
                 <p className="text-xs">Join Live Event</p>
               </button>

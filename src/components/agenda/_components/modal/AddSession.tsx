@@ -41,12 +41,14 @@ export function AddSession({
   event,
   refetch,
   session,
+  refetchSession
 }: {
   close: () => void;
   eventId: string;
   eventStartDate?: string;
   event?: Event | null;
   refetch?: () => Promise<any>;
+  refetchSession?: () => Promise<any>;
   session?: TAgenda;
 }) {
   const { attendees } = useGetEventAttendees(eventId);
@@ -281,6 +283,8 @@ export function AddSession({
     const asyncFn = session?.id ? updateAgenda : createAgenda;
     await asyncFn({ payload });
     setLoading(false);
+   if (refetchSession) refetchSession()
+    close()
   }
 
  

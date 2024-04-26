@@ -9,10 +9,12 @@ export function Edit({
   session,
   event,
   refetch,
+  refetchEvent
 }: {
   event?: Event | null;
   session: TAgenda;
   refetch?: () => Promise<any>;
+  refetchEvent?: () => Promise<any>;
 }) {
   const [isOpen, setOpen] = useState(false);
 
@@ -38,7 +40,8 @@ export function Edit({
           session={session}
           eventId={session?.eventId}
           close={onClose}
-          refetch={refetch}
+          refetch={refetchEvent}
+          refetchSession={refetch}
         />
       )}
     </>

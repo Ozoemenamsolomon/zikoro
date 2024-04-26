@@ -143,7 +143,7 @@ export const useDeleteAgenda = () => {
 
     try {
       const { data, status } = await deleteRequest<TAgenda>({
-        endpoint: `/agenda/${agendaId}`,
+        endpoint: `/agenda/delete/${agendaId}`,
       });
 
       if (status !== 201) throw data.data;
@@ -190,9 +190,11 @@ export const useGetSessionAgendas = (
 
   async function refetchSession() {
     await Promise.all([getAgendas(), refetch(), getMyAgendas()]);
+    setFetching(true)
+    fetchData()
   }
-  // get the events
-  useEffect(() => {
+
+  function fetchData() {
     if (!loading && !isLoading && !loadingMyAgenda) {
       setFetching(false);
 
@@ -232,6 +234,10 @@ export const useGetSessionAgendas = (
 
       setSessionAgendas(result);
     }
+  }
+  // get the events
+  useEffect(() => {
+    fetchData()
   }, [agendas, data, loading, isLoading]);
 
   return {

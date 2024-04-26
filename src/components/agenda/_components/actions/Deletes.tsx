@@ -21,6 +21,7 @@ export function Deletes({
   async function deletes() {
     await deleteAgenda({ agendaId });
     if (refetch) refetch();
+    onClose();
   }
   return (
     <>
@@ -29,6 +30,7 @@ export function Deletes({
           e.stopPropagation();
           onClose();
         }}
+        disabled={isLoading}
         className="h-fit text-red-500 w-fit px-0"
       >
         <DeleteOutline size={22} />
