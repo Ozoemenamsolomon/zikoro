@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
       const date = new Date(paymentDate);
       // format Date
-      
+
       const options: Intl.DateTimeFormatOptions = {
         year: "numeric",
         month: "2-digit",
@@ -458,13 +458,13 @@ export async function POST(req: NextRequest) {
           ><a href="#" style="color: #001fcc; text-decoration: none;">Privacy Policy </a> | <a href="#" style="text-decoration: none; color: #001fcc">Terms and Conditions</a></div>
         </div>
           `,
-        // attachments: [
-        //   {
-        //     filename: "event.ics",
-        //     content: iCalendarContent,
-        //     contentType: "text/calendar",
-        //   },
-        // ],
+        attachments: [
+          {
+            filename: "event.ics",
+            content: iCalendarContent,
+            contentType: "text/calendar",
+          },
+        ],
       };
 
       await transporter.sendMail(mailData, function (err: any, info: any) {
