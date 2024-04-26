@@ -6,6 +6,7 @@ import CityEvent from "@/components/explore/CityEvent";
 
 export default function EventsCities() {
   const [data, setData] = useState<any[]>([]);
+  const [showMore, setShowMore] = useState(false);
 
   async function fetchEventCities() {
     fetch("/api/explore/cities", {
@@ -18,6 +19,11 @@ export default function EventsCities() {
       .then((data) => setData(data.data))
       .catch((error) => console.error("Error:", error));
   }
+
+  //see more function
+  const handleSeeMoreClick = () => {
+    setShowMore(true);
+  };
 
   useEffect(() => {
     fetchEventCities();
@@ -38,18 +44,22 @@ export default function EventsCities() {
             Discover exciting events in different cities across the globe
           </p>
         </div>
-
         {/* Events categories */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-5 lg:gap-y-12 mt-12 lg:mt-24 px-2 lg:px-0">
           {data?.length &&
-            data.map((city, index) => {
+            (showMore ? data : data.slice(0, 20)).map((city, index) => {
+              // Count the number of occurrences of the current city in the data array
+              const cityCount = data.filter(
+                (c) => c.eventCity === city.eventCity
+              ).length;
+
               if (city.eventCity && !renderedCities.has(city.eventCity)) {
                 renderedCities.add(city.eventCity); // Add city to renderedCities set
                 return (
                   <CityEvent
                     key={index}
                     cityName={city.eventCity}
-                    cityCount={city.eventCity.length}
+                    cityCount={cityCount}
                   />
                 );
               } else {
@@ -57,12 +67,14 @@ export default function EventsCities() {
               }
             })}
         </div>
-
-        <div className=" flex justify-center items-center mt-12 ">
-          <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white">
-            See more
-          </button>
-        </div>
+        
+        {data && data.length > 12 && !showMore && (
+          <div className=" flex justify-center items-center mt-12 ">
+            <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white">
+              See more
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Footer */}

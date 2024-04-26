@@ -23,9 +23,13 @@ export default function SelectedLocationList() {
   const [eventData, setEventData] = useState<DBSelectedLocation[] | undefined>(
     undefined
   );
+  const [showMore, setShowMore] = useState(false);
+  const [location, setLocation] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   async function fetchEventFeautured() {
-    fetch("/api/explore?eventCity=Lagos", {
+    fetch(`/api/explore?eventCity=${location}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -36,8 +40,47 @@ export default function SelectedLocationList() {
       .catch((error) => console.error("Error:", error));
   }
 
+  const fetchLocation = async () => {
+    try {
+      if (typeof window !== "undefined" && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position: GeolocationPosition) => {
+            try {
+              console.log(position.coords.latitude)
+              const response = await fetch(
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${process.env.GOOGLE_API_KEY}`
+              );
+              const data = await response.json();
+              console.log(data)
+              if (data.status === "OK") {
+                setLocation(data.results[0].formatted_address);
+              } else {
+                setError("Unable to fetch location");
+              }
+            } catch (error) {
+              setError("Error fetching location");
+            } finally {
+              setLoading(false);
+            }
+          },
+          (error: GeolocationPositionError) => {
+            setError(`Error: ${error.message}`);
+            setLoading(false);
+          }
+        );
+      } else {
+        setError("Geolocation is not supported by your browser");
+        setLoading(false);
+      }
+    } catch (error) {
+      setError("Error detecting location");
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchEventFeautured();
+    fetchLocation();
   }, []);
 
   return (
@@ -46,7 +89,17 @@ export default function SelectedLocationList() {
       <div className="flex justify-between">
         <div className="flex items-center gap-x-1 lg:gap-x-3">
           <LocationIcon1 />
-          <p className="font-semibold text-[20px] lg:text-[32px]">Lagos</p>
+          <div className="font-semibold text-[20px] lg:text-[32px]">
+            {loading ? (
+              <p>Loading...</p>
+            ) : error ? (
+              <p>{error}</p>
+            ) : location ? (
+              <p className="">
+                {location}
+              </p>
+            ) : null}
+          </div>
         </div>
         <div
           // onClick={() => router.push("/explore/featured-events")}
@@ -61,10 +114,10 @@ export default function SelectedLocationList() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-0 md:gap-x-4 lg:gap-x-4 gap-y-5 lg:gap-y-0 mt-[10px] lg:mt-[50px] bg-white  ">
         {eventData?.length &&
-          eventData?.map((event, index) => (
+          (showMore ? eventData : eventData.slice(0, 20)).map((event) => (
             <SelectedLocation
               key={event.id}
-              id = {event.id}
+              id={event.id}
               eventPoster={event.eventPoster}
               eventTitle={event.eventTitle}
               eventCity={event.eventCity}
@@ -77,15 +130,17 @@ export default function SelectedLocationList() {
           ))}
       </div>
 
-      <div
-        onClick={() => router.push("/explore/featured-events")}
-        className=" justify-end mt-[30px] flex lg:hidden gap-x-4 cursor-pointer items-center"
-      >
-        <p className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-xl font-semibold">
-          See All
-        </p>
-        <RightArrow />
-      </div>
+      {eventData && eventData.length > 12 && !showMore && (
+        <div
+          onClick={() => router.push("/explore/featured-events")}
+          className=" justify-end mt-[30px] flex lg:hidden gap-x-4 cursor-pointer items-center"
+        >
+          <p className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-xl font-semibold">
+            See All
+          </p>
+          <RightArrow />
+        </div>
+      )}
     </div>
   );
 }
