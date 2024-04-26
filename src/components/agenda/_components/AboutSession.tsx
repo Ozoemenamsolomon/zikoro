@@ -10,11 +10,13 @@ import { CollapsibleWidget, Duplicate, Edit, Deletes } from ".";
 import { FilePdf } from "@styled-icons/fa-regular/FilePdf";
 import Image from "next/image";
 import { TAgenda, Event } from "@/types";
+import {Player} from "@/components/composables"
 import { useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
+
 export function AboutSession({
   agenda,
   event,
@@ -92,7 +94,19 @@ export function AboutSession({
     <>
       {agenda && event && (
         <div className="w-full lg:col-span-5 border-r">
-          <div className="w-full h-48 sm:h-[16rem] bg-gray-200 animate-pulse"></div>
+         {agenda?.sessionUrl ?
+         <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem]">
+            <Player
+            src={agenda?.sessionUrl}
+            thumbnail={event?.eventPoster}
+            title={agenda?.sessionTitle}
+            autoPlay
+            load={"eager"}
+            streamType={"live"}
+            />
+         </div>
+         :
+         <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem] bg-gray-200 animate-pulse"></div>}
           <div className="w-full p-4 mb-2 flex flex-col lg:flex-row items-start lg:items-center gap-2 justify-start lg:justify-between">
             {isLive && (
               <p className="text-xs text-gray-50 bg-basePrimary rounded-md  p-2 ">

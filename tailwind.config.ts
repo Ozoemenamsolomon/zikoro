@@ -84,8 +84,8 @@ const config = {
       },
       fontSize: {
         tiny: "10px",
-        mobile:"13px",
-        desktop: "15px"
+        mobile: "13px",
+        desktop: "15px",
       },
       keyframes: {
         "accordion-down": {
@@ -101,10 +101,12 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-    
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@vidstack/react/tailwind.cjs"),
+  ],
 } satisfies Config;
 
 export default config;

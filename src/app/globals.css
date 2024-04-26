@@ -350,3 +350,14 @@ input[type=number] {
   background-color: #0001fc;
  
 }
+
+.player {
+  width: 100%;
+  @apply h-48 sm:h-[25rem] lg:h-[16rem] object-cover;
+
+  aspect-ratio: unset;
+}
+
+.player div[data-media-provider] #player .html5-video-player .html5-video-container video {
+  width: 100px !important;
+}
