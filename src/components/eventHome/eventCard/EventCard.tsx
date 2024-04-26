@@ -76,6 +76,7 @@ export function EventCard({
                 refetch={refetch}
                 close={onClose}
                 id={event?.id}
+                alias={event?.eventAlias}
               />
             )}
           </Button>
@@ -150,17 +151,19 @@ function ActionModal({
   id,
   refetch,
   isPublished,
+  alias
 }: {
   refetch: () => Promise<any>;
   close: () => void;
   isPublished: boolean;
   id: number;
+  alias: string;
 }) {
   const { duplicateEvent, loading } = useDuplicateEvent();
   const org = getCookie("currentOrganization")
   const [isDeleteModal, openDeleteModal] = useState(false);
 
-  console.log("org", org)
+ // console.log("org", org)
 
   function onClose() {
     openDeleteModal((prev) => !prev);
@@ -200,7 +203,7 @@ function ActionModal({
             <span>Duplicate</span>
           </Button>
           <Button
-            onClick={() => window.open(`/live-events/${id}`, "_blank")}
+            onClick={() => window.open(`/live-events/${alias}`, "_blank")}
             className={
               cn("items-center hidden h-10 gap-x-2 hover:bg-gray-100 justify-start w-full  text-xs", isPublished && org?.id && "flex")
             }

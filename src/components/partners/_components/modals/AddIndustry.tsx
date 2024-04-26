@@ -107,6 +107,7 @@ export function AddIndustry({
                 </InputOffsetLabel>
               )}
             />
+            {/** */}
             <div
               onClick={(e) => {
                 e.stopPropagation();
@@ -121,6 +122,7 @@ export function AddIndustry({
                 circleSize={36}
               />
             </div>
+            {/** */}
             {Array.isArray(data?.partnerIndustry) &&
               data?.partnerIndustry?.length > 0 && (
                 <div className="w-full flex flex-col gap-y-4 items-start justify-start">

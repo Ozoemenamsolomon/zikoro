@@ -197,4 +197,5 @@ export interface TEventTransactionDetail {
   ticketCategory: string;
   userEmail: string;
   userId: string;
+  eventAlias: string;
 }

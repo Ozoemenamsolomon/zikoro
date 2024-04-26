@@ -11,6 +11,7 @@ type TSessionFile<T> = {
 export interface TAgenda {
   sessionTitle: string;
   id: number;
+  eventAlias: string;
   created_at: string;
   activity: string;
   startDateTime: string;

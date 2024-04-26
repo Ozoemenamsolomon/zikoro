@@ -15,7 +15,7 @@ export async function GET(
       const { data, error, status } = await supabase
         .from("agenda")
         .select("*")
-        .eq("eventId", eventId);
+        .eq("eventAlias", eventId);
 
       // console.log(data);
 

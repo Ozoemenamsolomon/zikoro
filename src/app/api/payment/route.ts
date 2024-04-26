@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
       const {
         currency,
         eventId,
+        eventAlias,
         ticketCategory,
         event,
         eventRegistrationRef,
@@ -347,7 +348,7 @@ export async function POST(req: NextRequest) {
           alt="qrcode" />
         </div>
           <a
-          href="www.zikoro.com/event/${eventId}/home"
+          href="www.zikoro.com/event/${eventAlias}/home"
           style="max-width:600px; margin:0 auto;"
           >
           <button
@@ -506,9 +507,9 @@ export async function POST(req: NextRequest) {
   }
 
   // Function to generate QR code
-  async function generateQRCode(eventId: string) {
+  async function generateQRCode(user: string) {
     try {
-      return await QRCode.toDataURL(eventId.toString());
+      return await QRCode.toDataURL(user.toString());
     } catch (error) {
       throw new Error("Error generating QR code: " + error);
     }

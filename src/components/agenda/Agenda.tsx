@@ -9,7 +9,12 @@ import { useState, useMemo } from "react";
 import { Printer } from "@styled-icons/evaicons-solid/Printer";
 import { ScanDash } from "@styled-icons/fluentui-system-regular/ScanDash";
 import { Custom, AddSession, FullScreenView } from "./_components";
-import { getCookie, useFetchSingleEvent, useGetAllAttendees, useGetSessionAgendas } from "@/hooks";
+import {
+  getCookie,
+  useFetchSingleEvent,
+  useGetAllAttendees,
+  useGetSessionAgendas,
+} from "@/hooks";
 import { generateDateRange } from "@/utils";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useRouter } from "next/navigation";
@@ -19,9 +24,9 @@ export default function Agenda({ eventId }: { eventId: string }) {
   const user = getCookie("user");
   const search = useSearchParams();
   const queryParam = search.get("a");
-  const {attendees} = useGetAllAttendees()
+  const { attendees } = useGetAllAttendees();
   const [isOpen, setOpen] = useState(false);
-  const { data, refetch, loading } = useFetchSingleEvent(eventId);
+  const { data, refetch } = useFetchSingleEvent(eventId);
   const [isFullScreen, setFullScreen] = useState(false);
   const activeDateQuery = search.get("date");
   const { sessionAgendas, fetching, refetchSession } = useGetSessionAgendas(
@@ -29,8 +34,6 @@ export default function Agenda({ eventId }: { eventId: string }) {
     activeDateQuery || currentEvent?.startDate,
     queryParam
   );
-
- 
 
   const dateRange = useMemo(() => {
     if (data) {
@@ -52,12 +55,12 @@ export default function Agenda({ eventId }: { eventId: string }) {
 
   const attendeeId = useMemo(() => {
     return attendees?.find(
-      ({ email, eventId :id }) =>
-        Number(id) === Number(eventId) && email === user?.userEmail
+      ({ email, eventAlias }) =>
+      eventAlias === eventId && email === user?.userEmail
     )?.id;
   }, [attendees]);
 
- // console.log("sesson", sessionAgendas);
+  // console.log("sesson", sessionAgendas);
 
   return (
     <>
