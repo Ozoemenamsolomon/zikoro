@@ -573,6 +573,7 @@ export function useBookingEvent() {
     eventTransactionRef: string,
     values: z.infer<typeof eventBookingValidationSchema>,
     eventId?: string,
+    eventAlias?:string,
     attendants?: string | null,
     ticketType?: string,
     paymentLink?: string
@@ -584,6 +585,7 @@ export function useBookingEvent() {
         return {
           ...attendee,
           eventId,
+          eventAlias,
           attendeeType: [attendants],
           ticketType,
           registrationDate: new Date(),

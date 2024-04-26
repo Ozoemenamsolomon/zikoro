@@ -269,6 +269,7 @@ export function BookEvent({
     await registerAttendees(
       eventReference,
       values,
+       String(event?.id),
       eventId,
       "attendees",
       priceCategory,
@@ -289,7 +290,8 @@ export function BookEvent({
     const formattedNextSevenDays = nextSevenDays.toISOString();
 
     const payload = {
-      eventId,
+      eventId: event?.id,
+      eventAlias: eventId,
       eventRegistrationRef: eventReference,
       paymentDate: today,
       expiredAt: formattedNextSevenDays,
