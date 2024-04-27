@@ -257,7 +257,7 @@ const DialogDemo = ({
             <span className="">Discount</span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="bg-white w-[95%] sm:max-w-[425px] py-6 sm:py-8 px-4 sm:px-10 max-h-[95vh]">
+        <DialogContent className="bg-white w-[95%] sm:max-w-[650px] py-6 sm:py-8 px-4 sm:px-10 max-h-[95vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               <p className="text-[24px] font-medium">Create a discount</p>
