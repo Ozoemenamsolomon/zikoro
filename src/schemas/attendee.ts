@@ -19,13 +19,14 @@ export const AttendeeSchema = z.object({
   organization: z.string().optional(),
   city: z.string().optional(),
   country: z.string().optional(),
-  website: z.string().optional(),
+  websiteUrl: z.string().optional(),
   phoneNumber: z
     .string()
     .length(10, { message: "phone number must be 10 digits" }),
   whatsappNumber: z
     .string()
-    .length(10, { message: "whatsapp number must be 10 digits" }),
+    .length(10, { message: "whatsapp number must be 10 digits" })
+    .optional(),
   bio: z.string().optional(),
   x: z.string().optional(),
   linkedin: z.string().optional(),
@@ -34,7 +35,6 @@ export const AttendeeSchema = z.object({
   profilePicture: z.string().optional(),
   attendeeType: z.array(z.string()),
   eventId: z.string(),
-  checkin: z.array(checkinSchema).optional(),
   badge: z.string().optional(),
   ticketType: z.string().optional(),
   eventRegistrationRef: z.string().optional(),

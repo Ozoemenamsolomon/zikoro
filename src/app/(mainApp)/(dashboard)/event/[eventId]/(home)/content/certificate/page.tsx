@@ -701,7 +701,7 @@ const Certificates = () => {
             <div className="relative h-full">
               {certificateSettings?.publishOn &&
                 isPast(certificateSettings?.publishOn) && (
-                  <div className="absolute top-2 left-2 z-[2] bg-green-200 border-2 border-green-500 text-xs text-green-500 font-medium p-1 rounded">
+                  <div className="absolute top-2 left-2 z-[10] bg-green-200 border-2 border-green-500 text-xs text-green-500 font-medium p-1 rounded">
                     Published
                   </div>
                 )}
@@ -709,7 +709,7 @@ const Certificates = () => {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="bg-black/10 p-2 absolute top-2 right-2 z-[2]"
+                    className="bg-black/10 p-2 absolute top-2 right-2 z-[10]"
                   >
                     <svg
                       stroke="currentColor"
@@ -741,9 +741,9 @@ const Certificates = () => {
               </DropdownMenu>
               <button
                 disabled={
-                  certificateIsSaving ||
-                  (certificateSettings?.publishOn &&
-                    isPast(certificateSettings?.publishOn))
+                  !!certificateIsSaving ||
+                  (!!certificateSettings?.publishOn &&
+                    !!isPast(certificateSettings?.publishOn))
                 }
                 className={`border rounded-md relative w-full h-full overflow-hidden ${
                   certificateSettings?.publishOn &&

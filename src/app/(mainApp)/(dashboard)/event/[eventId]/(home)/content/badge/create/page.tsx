@@ -382,7 +382,7 @@ const page = () => {
 
       if (newBadge) {
         setBadge(newBadge);
-        router.push("create?badgeId=" + newBadge.id);
+        router.push("create/redirect?badgeId=" + newBadge.id);
       }
       setUploading(false);
     },

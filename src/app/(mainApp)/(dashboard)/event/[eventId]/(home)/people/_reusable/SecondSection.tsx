@@ -82,6 +82,7 @@ export default function SecondSection({
     id,
     ticketType,
     registrationDate,
+    websiteUrl,
   } = attendee;
 
   console.log(attendee);
@@ -535,7 +536,7 @@ export default function SecondSection({
                       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                     </svg>
                     <span className="text-gray-500 text-xs md:text-sm truncate">
-                      www.orthoex.ng
+                      {websiteUrl}
                     </span>
                   </div>
                 }
@@ -839,7 +840,8 @@ export default function SecondSection({
         </div>
       </section>
       {user &&
-        (String(event?.createdBy) === String(user.id) || email === user.userEmail) && (
+        (String(event?.createdBy) === String(user.id) ||
+          email === user.userEmail) && (
           <section className="flex justify-between items-center border-y-[1px] border-gray-200 p-2">
             <h3 className="text-lg text-greyBlack font-semibold">
               Credentials
