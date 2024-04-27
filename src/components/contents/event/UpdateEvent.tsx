@@ -264,6 +264,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       eventId
     );
     setIsPublishing(false);
+    showPublishModal()
   }
   return (
     <DateAndTimeAdapter>
@@ -277,7 +278,9 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
             >
               <div className="w-full py-4 flex items-center sm:items-end justify-start sm:justify-end">
                 <div className="flex items-center gap-x-2">
-                  <Button className="gap-x-2">
+                  <Button
+                  disabled={!publishing && updating}
+                  className="gap-x-2">
                     {!publishing && updating && (
                       <LoaderAlt size={22} className="animate-spin" />
                     )}

@@ -36,6 +36,7 @@ export function PublishCard({
 
         <div className="self-end flex items-center gap-x-2">
           <Button
+           disabled={loading}
             onClick={close}
             className=" font-medium border text-basePrimary border-basePrimary w-fit"
           >
@@ -43,6 +44,7 @@ export function PublishCard({
           </Button>
 
           <Button
+            disabled={loading}
             onClick={asyncPublish}
             className="bg-basePrimary w-fit text-gray-50 gap-x-2 font-medium "
           >
