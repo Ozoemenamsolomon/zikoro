@@ -19,12 +19,12 @@ export function ExhibitionHall({
   eventId,
   partners,
   close,
-  refetchSingleEvent
+  refetchSingleEvent,
 }: {
   partners: any[];
   eventId: string;
   close: () => void;
-  refetchSingleEvent: () => Promise<null | undefined>
+  refetchSingleEvent: () => Promise<null | undefined>;
 }) {
   const { data, loading, refetch } = useFetchSingleEvent(eventId);
   const [selectedHall, setSelectedHall] = useState<string[]>([]);
@@ -36,12 +36,11 @@ export function ExhibitionHall({
 
   // format exhibition hall array
   const formatExhibitionHall: TExhibitonHall[] | undefined = useMemo(() => {
-    if (data) {
+    if (Array.isArray(data?.exhibitionHall) && data?.exhibitionHall?.length > 0) {
       return data.exhibitionHall.map((item) => {
         let totalSeat = 0;
         partners.forEach((partner) => {
           if (partner.exhibitionHall === item.name && partner?.boothNumber) {
-            
             totalSeat += partner?.boothNumber?.length;
           }
         });
@@ -49,6 +48,9 @@ export function ExhibitionHall({
       });
 
       // exhibitionHall;
+    }
+    else {
+      return []
     }
   }, [data, partners]);
 
@@ -75,11 +77,11 @@ export function ExhibitionHall({
     if (selectedHall?.length === formatExhibitionHall?.length) {
       await deleteAll();
       refetch();
-      refetchSingleEvent()
+      refetchSingleEvent();
     } else {
       await deleteExhibitionHall(selectedHall);
       refetch();
-      refetchSingleEvent()
+      refetchSingleEvent();
     }
     // empty the selected array
     setSelectedHall([]);
@@ -119,8 +121,12 @@ export function ExhibitionHall({
             <div className=" rounded-lg w-full border">
               <div className="w-full grid gap-3 font-medium text-sm grid-cols-3 px-2 py-4 items-center bg-gray-100 rounded-t-lg">
                 <label className=" w-full flex  relative items-center gap-x-2">
-                  <input className="accent-basePrimary w-3 h-3" onChange={(e) => selectAllRow(e)} type="checkbox" />
-                 
+                  <input
+                    className="accent-basePrimary w-3 h-3"
+                    onChange={(e) => selectAllRow(e)}
+                    type="checkbox"
+                  />
+
                   <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
                     Hall Name
                   </p>
@@ -197,7 +203,7 @@ function ExhibitionHallWidget({
           type="checkbox"
           className="accent-basePrimary w-3 h-3"
         />
-     
+
         <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
           {name}
         </p>
