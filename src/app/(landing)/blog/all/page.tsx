@@ -6,7 +6,7 @@ type DBBlogAll = {
   id: number;
   title: string;
   created_at: string;
-  category: JSON;
+  category: string;
   status: string;
   statusDetails: JSON;
   readingDuration: number;

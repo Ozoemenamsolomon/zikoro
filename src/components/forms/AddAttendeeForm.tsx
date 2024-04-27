@@ -40,9 +40,9 @@ export default function AddAttendeeForm({
   attendee,
   isOpen,
   onClose,
-  refresh,
+  action,
 }: {
-  refresh?: () => Promise<void>;
+  action: (payload: Partial<TAttendee>) => Promise<void>;
   attendee?: TAttendee;
   isOpen: boolean;
   onClose: () => void;
@@ -70,14 +70,13 @@ export default function AddAttendeeForm({
       }
     : {
         registrationDate: new Date().toISOString(),
-        certificate: true,
         userEmail: "ubahyusuf484@gmail.com",
         attendeeType: ["attendee"],
         eventId: Array.isArray(eventId) ? eventId[0] : eventId,
         country: "Nigeria",
+        ticketType: "in-house",
+        registrationCompleted: true,
       };
-
-  const { createAttendee, isLoading, error } = useCreateAttendee();
 
   const form = useForm<TAttendee>({
     resolver: zodResolver(AttendeeSchema),
@@ -123,7 +122,6 @@ export default function AddAttendeeForm({
 
   async function onSubmit(data: z.infer<typeof AttendeeSchema>) {
     console.log(data, "submit");
-    onClose();
     const payload = {
       ...data,
       phoneNumber: data.phoneNumber
@@ -137,8 +135,8 @@ export default function AddAttendeeForm({
       userId: user.id,
     };
 
-    await createAttendee({ payload });
-    attendee && refresh && (await refresh());
+    onClose();
+    await action(payload);
   }
 
   const [profilePictureIsUploading, setProfilePictureUploading] =

@@ -29,8 +29,10 @@ const supabase = createClientComponentClient();
 
 export const useGetEvent = ({
   eventId,
+  isAlias = false,
 }: {
-  eventId: number;
+  eventId?: number;
+  isAlias?: boolean;
 }): UseGetResult<Event, "event", "getEvent"> => {
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -41,7 +43,7 @@ export const useGetEvent = ({
 
     try {
       const { data, status } = await getRequest<Event>({
-        endpoint: `events/${eventId}`,
+        endpoint: `events/${eventId}?isAlias=${isAlias ? 1 : 0}`,
       });
 
       if (status !== 200) {

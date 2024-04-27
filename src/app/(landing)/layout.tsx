@@ -9,10 +9,10 @@ const montserrat = Montserrat({
   fallback: ["Arial", "sans-serif"],
 });
 
-export const metadata: Metadata = {
-  title: "Zikoro",
-  description: "",
-};
+// export const metadata: Metadata = {
+//   title: "Zikoro",
+//   description: "",
+// };
 
 export default function RootLayout({
   children,

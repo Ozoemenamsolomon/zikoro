@@ -13,7 +13,7 @@ type DBBlogAll = {
   id: number;
   title: string;
   created_at: string;
-  category: JSON;
+  category: string;
   status: string;
   statusDetails: JSON;
   readingDuration: number;
@@ -33,7 +33,6 @@ export default function Create() {
   });
 
   const categories = [
-    "All",
     "Event tips",
     "Product Updates",
     "Guides and Tutorial",
@@ -45,6 +44,7 @@ export default function Create() {
     setFormData({ ...formData, [name]: value });
   };
 
+  
   //fetch blog posts
   async function fetchBlogPost() {
     fetch("/api/blog/published", {
@@ -101,8 +101,8 @@ export default function Create() {
           category{" "}
         </p>
 
-        <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6">
-          <div className=" p-1 border-[1px] border-indigo-600 rounded-xl w-full lg:w-[650px]  ">
+        <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between gap-x-0 lg:gap-x-10 mt-6">
+          <div className=" p-1 border-[1px] border-indigo-600 rounded-xl w-full lg:w-8/12  ">
             <div className="px-3 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl flex items-center h-[34px] ">
               <SearchIcon />
               <input
@@ -117,7 +117,7 @@ export default function Create() {
             </div>
           </div>
 
-          <div className="flex p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-[180px] items-center justify-between h-[44px] ">
+          <div className="flex p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-2/12 items-center justify-between h-[44px] ">
             <p>Date Published</p>
             <AdminBlogCalendarIcon />
           </div>
@@ -152,7 +152,7 @@ export default function Create() {
       </section>
 
       {/* section 2 */}
-      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[52px] lg:mt-[100px] bg-white">
+      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] 2xl:max-w-auto mx-auto mt-[52px] lg:mt-[100px] bg-white">
         {blogData?.length &&
           blogData?.map((blogPost, index) => (
             <AdminPublishedBlog

@@ -24,6 +24,14 @@ type DBFeaturedEvent = {
 
 export default function FeaturedEvents() {
   const [searchBox, setSearchBox] = useState("");
+  const [showMore, setShowMore] = useState(false);
+  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+  const [isEventDateUp, setEventDateUp] = useState(false);
+  const [isEventTypeUp, setEventTypeUp] = useState(false);
+  const [isCountryUp, setCountryUp] = useState(false);
+  const [isCityUp, setCityUp] = useState(false);
+  const [isPriceUp, setPriceUp] = useState(false);
+  const [isFilterOpen, setFilterOpen] = useState(false);
 
   const handleChange = (e: any) => {
     setSearchBox(e.target.value);
@@ -43,20 +51,16 @@ export default function FeaturedEvents() {
     "Charity",
   ];
 
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
-
-  const [isEventDateUp, setEventDateUp] = useState(false);
-  const [isEventTypeUp, setEventTypeUp] = useState(false);
-  const [isCountryUp, setCountryUp] = useState(false);
-  const [isCityUp, setCityUp] = useState(false);
-  const [isPriceUp, setPriceUp] = useState(false);
-
   const handleClick = (v: string) => {
     setSelectedButton(v);
   };
 
-  const [isFilterOpen, setFilterOpen] = useState(false);
+  //see more function
+  const handleSeeMoreClick = () => {
+    setShowMore(true);
+  };
 
+  //clear filter button
   const clearFilterButton = () => {
     selectedButton === null;
   };
@@ -65,9 +69,9 @@ export default function FeaturedEvents() {
   const [eventData, setEventData] = useState<DBFeaturedEvent[] | undefined>(
     undefined
   );
+  //fetch featured events
 
   async function fetchEventFeautured() {
-    //fetch featured events
     fetch("/api/explore/featured", {
       method: "GET",
       headers: {
@@ -450,31 +454,38 @@ export default function FeaturedEvents() {
                     </div>
                   </div>
 
-                  {/* bottom */}
-                  <div className="py-2 px-4 h-[1485px] flex flex-col justify-start border-t-[1px] border-gray-200  items-center overflow-y-auto no-scrollbar pt-8 pb-0 lg:pb-[50px]">
+                  {/* bottom h-[1485px] */}
+                  <div className="py-2 px-4 h-auto flex flex-col justify-start border-t-[1px] border-gray-200  items-center overflow-y-auto no-scrollbar pt-8 pb-0 lg:pb-[50px]">
                     <div className="grid grid-cols-3 gap-4 mt-8 ">
-                      {eventData?.length &&
-                        eventData?.map((event, index) => (
-                          <FeaturedEvent
-                            key={event.id}
-                            id={event.id}
-                            eventPoster={event.eventPoster}
-                            eventTitle={event.eventTitle}
-                            eventCity={event.eventCity}
-                            eventCountry={event.eventCountry}
-                            locationType={event.locationType}
-                            pricing={event.pricing}
-                            pricingCurrency={event.pricingCurrency}
-                            startDateTime={event.startDateTime}
-                          />
-                        ))}
+                      {eventData &&
+                        (showMore ? eventData : eventData.slice(0, 20)).map(
+                          (event, index) => (
+                            <FeaturedEvent
+                              key={event.id}
+                              id={event.id}
+                              eventPoster={event.eventPoster}
+                              eventTitle={event.eventTitle}
+                              eventCity={event.eventCity}
+                              eventCountry={event.eventCountry}
+                              locationType={event.locationType}
+                              pricing={event.pricing}
+                              pricingCurrency={event.pricingCurrency}
+                              startDateTime={event.startDateTime}
+                            />
+                          )
+                        )}
                     </div>
 
-                    <div className="gap-5 flex justify-center items-center pt-12">
-                      <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white">
-                        See more
-                      </button>
-                    </div>
+                    {eventData && eventData.length > 20 && !showMore && (
+                      <div className="flex justify-center items-center pt-12">
+                        <button
+                          onClick={handleSeeMoreClick}
+                          className="text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white"
+                        >
+                          See more
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -529,28 +540,35 @@ export default function FeaturedEvents() {
 
                 <div className="flex flex-col items-center mt-16 mb-20 ">
                   <div className="grid grid-cols-1 gap-4 w-full ">
-                    {eventData?.length &&
-                      eventData?.map((event, index) => (
-                        <FeaturedEvent
-                          key={event.id}
-                          id={event.id}
-                          eventPoster={event.eventPoster}
-                          eventTitle={event.eventTitle}
-                          eventCity={event.eventCity}
-                          eventCountry={event.eventCountry}
-                          locationType={event.locationType}
-                          pricing={event.pricing}
-                          pricingCurrency={event.pricingCurrency}
-                          startDateTime={event.startDateTime}
-                        />
-                      ))}
+                    {eventData &&
+                      (showMore ? eventData : eventData.slice(0, 20)).map(
+                        (event, index) => (
+                          <FeaturedEvent
+                            key={event.id}
+                            id={event.id}
+                            eventPoster={event.eventPoster}
+                            eventTitle={event.eventTitle}
+                            eventCity={event.eventCity}
+                            eventCountry={event.eventCountry}
+                            locationType={event.locationType}
+                            pricing={event.pricing}
+                            pricingCurrency={event.pricingCurrency}
+                            startDateTime={event.startDateTime}
+                          />
+                        )
+                      )}
                   </div>
 
-                  <div className=" flex justify-center items-center pt-12">
-                    <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white">
-                      See more
-                    </button>
-                  </div>
+                  {eventData && eventData.length > 20 && !showMore && (
+                    <div className="flex justify-center items-center pt-12">
+                      <button
+                        onClick={handleSeeMoreClick}
+                        className="text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white"
+                      >
+                        See more
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

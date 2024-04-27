@@ -48,6 +48,11 @@ export default function CitiesEventList() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-5 lg:gap-y-0 gap-x-4 mt-[50px] bg-white ">
         {data?.length &&
           data.map((city, index) => {
+            // Count the number of occurrences of the current city in the data array
+            const cityCount = data.filter(
+              (c) => c.eventCity === city.eventCity
+            ).length;
+
             if (
               city.eventCity &&
               !renderedCities.has(city.eventCity) &&
@@ -55,11 +60,13 @@ export default function CitiesEventList() {
             ) {
               renderedCities.add(city.eventCity); // Add city to renderedCities set
               renderedCityCount++; // Increment the rendered city count
+              // Count occurrences of the current city
+
               return (
                 <CityEvent
                   key={index}
                   cityName={city.eventCity}
-                  cityCount={city.eventCity.length}
+                  cityCount={cityCount}
                 />
               );
             } else {

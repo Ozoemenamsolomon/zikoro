@@ -8,7 +8,7 @@ import { useRef, useState, useLayoutEffect } from "react";
 import FirstSection from "./FirstSection";
 import SecondSection from "./SecondSection";
 import ThirdSection from "./ThirdSection";
-import { useGetEvent } from "@/hooks";
+import { useCreateAttendee, useGetEvent } from "@/hooks";
 import { useParams } from "next/navigation";
 
 interface ReusablePeopleComponentProps {
@@ -42,6 +42,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const { event, isLoading: eventIsLoading } = useGetEvent({
     eventId: Array.isArray(eventId) ? eventId[0] : eventId,
+    isAlias: true,
   });
 
   useLayoutEffect(() => {
@@ -53,6 +54,8 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     // Set the maximum height of the div
     div.style.height = `${distanceToBottom}px`;
   }, []);
+
+  const { createAttendee } = useCreateAttendee();
 
   return (
     <section
@@ -184,7 +187,11 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
       <AddAttendeeForm
         isOpen={attendeeFormIsOpen}
         onClose={onCloseAttendeeForm}
-        getAttendee={getAttendees}
+        refresh={getAttendees}
+        action={async (payload: Partial<TAttendee>) => {
+          await createAttendee({ payload });
+          await getAttendees();
+        }}
       />
     </section>
   );

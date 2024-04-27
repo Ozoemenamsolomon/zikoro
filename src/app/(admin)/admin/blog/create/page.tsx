@@ -5,6 +5,15 @@ import { useForm } from "react-hook-form";
 import { UploadIcon } from "@/constants/icons";
 import { getCookie } from "@/hooks";
 import toast from "react-hot-toast";
+import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function Create() {
   const form = useForm<any>({});
@@ -27,19 +36,18 @@ export default function Create() {
   const [headerImageUrl, setHeaderImageUrl] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const categories = [
-    "All",
     "Event tips",
     "Product Updates",
     "Guides and Tutorial",
     "Case Study",
   ];
 
-  const tags = [
-    "Event Planning",
-    "Attendee Management",
-    "Event Commerce",
-    "Event Partnership ",
-  ];
+  // const tags = [
+  //   "Event Planning",
+  //   "Attendee Management",
+  //   "Event Commerce",
+  //   "Event Partnership ",
+  // ];
 
   const setMessage = (content: string) => {
     setValue("content", content);
@@ -86,6 +94,10 @@ export default function Create() {
     }
   };
 
+  const preview = () => {
+    alert("emma");
+  };
+
   const submitBlogPost = async (e: any) => {
     e.preventDefault();
     try {
@@ -101,7 +113,7 @@ export default function Create() {
           tags: formData.tags,
           readingDuration: formData.readingDuration,
           status: status,
-          content: content
+          content: content,
           // statusDetail: formData.statusDetail,
         }),
       });
@@ -111,7 +123,6 @@ export default function Create() {
           `${status == "draft" ? "Saved to draft" : "Post Published"}`
         );
         goToDashboard();
-        
       } else {
         throw new Error("Post Not Published ");
       }
@@ -153,12 +164,11 @@ export default function Create() {
                 value={formData.category}
                 onChange={handleChange}
                 // required
-                className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none"
+                className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none  hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer"
               >
                 <option
                   disabled
-                  selected
-                  value=""
+                  defaultValue=""
                   className="bg-transparent text-gray-400 "
                 >
                   Select Category
@@ -174,34 +184,11 @@ export default function Create() {
                   </option>
                 ))}
               </select>
-
-              <select
-                name="tags"
-                onChange={handleChange}
-                value={formData.tags}
-                className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none"
-                required
-              >
-                <option
-                  disabled
-                  selected
-                  value=""
-                  className="bg-transparent text-gray-400"
-                >
-                  Add Tags
-                </option>
-
-                {tags.map((tag, index) => (
-                  <option
-                    value={tag}
-                    key={index}
-                    className="bg-transparent text-black text-[15px]"
-                  >
-                    {" "}
-                    {tag}{" "}
-                  </option>
-                ))}
-              </select>
+              
+              <div className=" flex items-center px-4 rounded-lg h-[44px] border-[1px] border-indigo-600 hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gap-x-2 w-full lg:w-2/12 text-[15px] font-medium cursor-pointer">
+                <PlusCircle size={22} />
+                <p>Tag</p>
+              </div>
             </div>
 
             <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center gap-x-0 lg:gap-x-4">
@@ -240,7 +227,7 @@ export default function Create() {
 
               <button
                 className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px]  w-full lg:w-2/12 h-[44px] rounded-lg"
-                type="submit"
+                onClick={preview}
               >
                 Preview
               </button>

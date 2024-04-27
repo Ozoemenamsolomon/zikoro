@@ -31,7 +31,6 @@ export const AttendeeSchema = z.object({
   linkedin: z.string().optional(),
   instagram: z.string().optional(),
   facebook: z.string().optional(),
-  certificate: z.boolean(),
   profilePicture: z.string().optional(),
   attendeeType: z.array(z.string()),
   eventId: z.string(),

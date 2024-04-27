@@ -6,7 +6,7 @@ type BlogPostProps = {
   id: number;
   title: string;
   createdAt: string;
-  category: JSON;
+  category: string;
   status: string;
   statusDetails: JSON;
   readingDuration: number;
@@ -31,30 +31,61 @@ export default function BlogPost({
   tags,
   headerImageUrl,
 }: BlogPostProps) {
+
+  const [date, setDate] = useState<string | null>(null);
+
   // Extracting the date only
-  function extractDate(dateTimeString: string): string {
+  function extractAndFormatDate(dateTimeString: string): string {
     try {
       const date = new Date(dateTimeString);
       if (isNaN(date.getTime())) {
         throw new Error("Invalid date");
       }
-      return date.toISOString().split("T")[0]; // Extracting the date portion
+      const formattedDate: string = formatDate(date);
+      return formattedDate;
     } catch (error) {
       console.error("Error extracting date:", error);
       return "Invalid Date";
     }
   }
 
-  const [date, setDate] = useState<string | null>(null);
+  //FORMAT DATE INTO STRINGS
+  function formatDate(date: Date): string {
+    const year: number = date.getFullYear();
+    const month: number = date.getMonth() + 1; // Month is zero-based, so add 1
+    const day: number = date.getDate();
 
-  //function that shows the event details
+    const monthNames: string[] = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    const formattedDate: string = `${day} ${monthNames[month - 1]} ${year}`;
+
+    return formattedDate;
+  }
+
+
+  //function that shows the blog post
   function goToPost() {
     window.open(`/post/${id}`, "_blank");
   }
 
   useEffect(() => {
-    const extractedDate = extractDate(createdAt);
-    setDate(extractedDate);
+     //extract date
+     const extractedDate = extractAndFormatDate(createdAt);
+
+     setDate(extractedDate);
   }, []);
 
   return (
@@ -74,17 +105,17 @@ export default function BlogPost({
         alt=""
         height={240}
         width={367}
-        className="block lg:hidden rounded-lg w-full object-cover h-[260px]"
+        className="block lg:hidden rounded-lg w-full object-cover h-[160px]"
       />
 
       <div className="flex flex-col justify-center ">
         <p className="text-indigo-700 capitalize font-medium text-xs lg:text-base">
-          Product Updates
+          {category}
         </p>
-        <p className="capitalize font-semibold text-lg ">
+        <p className="capitalize font-semibold text-lg lg:text-3xl mt-2 lg:mt-4">
           {title}
         </p>
-        <div className="flex gap-x-2 uppercase mt-1 lg:mt-2 text-sm font-normal ">
+        <div className="flex gap-x-2 uppercase mt-2 lg:mt-4 text-[12px] lg:text-base font-light ">
           <p>
             {date}
             {" - "}

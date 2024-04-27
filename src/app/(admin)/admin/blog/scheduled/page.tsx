@@ -7,7 +7,7 @@ type DBBlogAll = {
   id: number;
   title: string;
   created_at: string;
-  category: JSON;
+  category: string;
   status: string;
   statusDetails: JSON;
   readingDuration: number;
@@ -25,7 +25,6 @@ export default function Create() {
   });
 
   const categories = [
-    "All",
     "Event tips",
     "Product Updates",
     "Guides and Tutorial",
