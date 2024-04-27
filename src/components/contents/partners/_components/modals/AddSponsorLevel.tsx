@@ -1,10 +1,10 @@
 "use client";
 
-import { Form, FormField, Input,  Button } from "@/components";
+import { Form, FormField, Input, Button } from "@/components";
 import { useForm } from "react-hook-form";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
-import { useAddSponsorsType } from "@/hooks";
+import { useUpdateEvent } from "@/hooks";
 import { nanoid } from "nanoid";
 import { CreatedPreview } from "@/components/composables";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
@@ -18,24 +18,42 @@ export function AddSponsorLevel({
   eventId,
   setActive,
   sponsorLevels,
+  refetch,
 }: {
   eventId: string;
   close: () => void;
   setActive: React.Dispatch<React.SetStateAction<number>>;
-
+  refetch: () => Promise<any>;
   sponsorLevels: { id: string; type: string }[] | undefined;
 }) {
   const form = useForm<FormValue>({});
-  const { loading, addSponsors } = useAddSponsorsType();
+  const { loading, update: addSponsors } = useUpdateEvent();
 
   async function onSubmit(values: FormValue) {
-    const payload = {
-      ...values,
-      id: nanoid(),
-    };
-    await addSponsors(sponsorLevels, close, eventId, payload);
+    const payload =
+      Array.isArray(sponsorLevels) && sponsorLevels.length > 0
+        ? [...sponsorLevels, { ...values, id: nanoid() }]
+        : [{ ...values, id: nanoid() }];
+
+    await addSponsors(
+      { sponsorCategory: payload },
+      eventId,
+      "Category Added Successfully"
+    );
 
     form.reset();
+    refetch();
+  }
+
+  async function remove(index: string) {
+    const updatedList = sponsorLevels?.filter(({ id }) => id !== index);
+
+    await addSponsors(
+      { sponsorCategory: updatedList },
+      eventId,
+      "Category Deleted Successfully"
+    );
+    refetch();
   }
 
   return (
@@ -85,12 +103,11 @@ export function AddSponsorLevel({
 
               <div className="w-full flex flex-wrap items-center gap-4">
                 {Array.isArray(sponsorLevels) &&
-                  sponsorLevels.map(({ type }) => (
+                  sponsorLevels.map(({ type, id }) => (
                     <CreatedPreview
                       key={type}
                       name={type}
-                      //  remove={remove}
-
+                      remove={() => remove(id)}
                       color={"#000000"}
                     />
                   ))}

@@ -18,10 +18,7 @@ import {
   SelectItem,
 } from "@/components";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { COUNTRY_CODE } from "@/utils";
-import { partnerSchema } from "@/schemas";
 import { AddSponsorLevel } from "@/components/contents/partners/_components";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -31,7 +28,7 @@ import { cn } from "@/lib";
 import { AddIndustry } from "..";
 import {
   useAddPartners,
-  useFetchCreatedEventIndustries,
+  useFetchSingleEvent,
   useGetEventAttendees,
 } from "@/hooks";
 import { BoothStaffWidget } from "../../sponsors/_components";
@@ -52,7 +49,7 @@ export function AddPartners({
   const currentEvent = getCookie("currentEvent")
   const { loading, addPartners } = useAddPartners();
   const { attendees } = useGetEventAttendees(eventId);
-  const { data: eventData, refetch } = useFetchCreatedEventIndustries(eventId);
+  const { data: eventData, refetch } = useFetchSingleEvent(eventId);
 
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
     "+234"
@@ -66,7 +63,7 @@ export function AddPartners({
   const form = useForm<any>({
     // resolver: zodResolver(partnerSchema),
     defaultValues: {
-      eventId,
+      eventAlias: eventId,
       eventName: currentEvent?.eventName,
     },
   });
@@ -129,6 +126,7 @@ export function AddPartners({
 
     const payload: any = {
       ...values,
+      eventId:String( eventData?.id),
       whatsApp: whatsappCountryCode + values.whatsApp,
       phoneNumber: phoneCountryCode + values.phoneNumber,
       boothStaff: selectedAttendees,
@@ -523,6 +521,7 @@ export function AddPartners({
         sponsorLevels={eventData?.sponsorCategory}
         close={close}
         setActive={setActive}
+        refetch={refetch}
         />
       )}
     </div>

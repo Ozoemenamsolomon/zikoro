@@ -236,7 +236,7 @@ export function useCreateEvent() {
 export function useUpdateEvent() {
   const [loading, setLoading] = useState(false);
 
-  async function update(values: Partial<Event>, eventId: string) {
+  async function update(values: Partial<Event>, eventId: string, message?:any) {
     setLoading(true);
 
     try {
@@ -258,7 +258,7 @@ export function useUpdateEvent() {
       if (status === 204 || status === 200) {
         setLoading(false);
 
-        toast.success("Event updated successfully");
+        toast.success(message || "Event updated successfully");
       }
     } catch (error) {}
   }

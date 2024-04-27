@@ -7,12 +7,14 @@ import { v4 as uuidv4 } from "uuid";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { COUNTRY_CODE } from "@/utils";
+import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { useCreateEvent, getCookie, useGetUserOrganizations } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import InputOffsetLabel from "../InputOffsetLabel";
-import _ from "lodash"
+import _ from "lodash";
+import { CreateOrganization } from "../eventHome";
 
 type OrganizationListType = {
   label: string;
@@ -21,8 +23,8 @@ type OrganizationListType = {
 
 export default function CreateEvent() {
   const { createEvent, loading } = useCreateEvent();
-  const { organizations: organizationList } = useGetUserOrganizations()
-
+  const { organizations: organizationList } = useGetUserOrganizations();
+  const [isOpen, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof newEventSchema>>({
     resolver: zodResolver(newEventSchema),
@@ -64,6 +66,10 @@ export default function CreateEvent() {
     });
   }
 
+  function onClose() {
+    setOpen((prev) => !prev);
+  }
+
   const countriesList = useMemo(() => {
     return COUNTRY_CODE.map((country) => ({
       label: country.name,
@@ -97,7 +103,8 @@ export default function CreateEvent() {
                 </InputOffsetLabel>
               )}
             />
-             <FormField
+            <div className="w-full flex items-center gap-x-2">
+              <FormField
                 control={form.control}
                 name="organisationId"
                 render={({ field }) => (
@@ -109,6 +116,18 @@ export default function CreateEvent() {
                   />
                 )}
               />
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
+                className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
+              >
+                <PlusCircle size={22} />
+                <p>Organization</p>
+              </Button>
+            </div>
+
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
               <FormField
                 control={form.control}
@@ -222,17 +241,10 @@ export default function CreateEvent() {
               {loading && <LoaderAlt size={22} className="animate-spin" />}
               <span>Create Event</span>
             </Button>
-
-            {/**
-           <div className="w-full flex items-center gap-x-1 justify-center">
-            <p>Already have an account?</p>
-            <Link href="/login" className="text-basePrimary font-medium">
-              Sign in
-            </Link>
-          </div>
-         */}
           </form>
         </Form>
+
+        {isOpen && <CreateOrganization close={onClose} />}
       </>
     </DateAndTimeAdapter>
   );

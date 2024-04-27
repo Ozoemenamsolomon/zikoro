@@ -714,7 +714,8 @@ export function useDeleteEventExhibitionHall(eventId: string) {
     deleteAll,
   };
 }
-
+/**
+ 
 export function useAddSponsorsType() {
   const [loading, setLoading] = useState(false);
 
@@ -786,3 +787,5 @@ export function useAddSponsorsType() {
     loading,
   };
 }
+
+ */

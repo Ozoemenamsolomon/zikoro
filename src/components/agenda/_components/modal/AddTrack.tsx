@@ -73,7 +73,7 @@ export function AddTrack({
     */
   }
 
-  // FN to remove from the list of industries
+  // FN to remove from the list of tracks
 
   async function remove(id: number) {
     const updatedList = sessionTrack?.filter((_, index) => index !== id);

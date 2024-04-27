@@ -36,6 +36,7 @@ export const jobSchema = z.object({
 
 export const partnerSchema = z.object({
   eventId: z.string(),
+  eventAlias: z.string(),
   companyLogo: z.any(),
   media: z.any(),
   eventName: z.string().min(1, { message: "Event Name is required" }),

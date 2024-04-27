@@ -10,8 +10,9 @@ import React, { useState } from "react";
 import { CreatedPreview } from "@/components/composables";
 import { toast } from "@/components/ui/use-toast";
 import {
-  useFetchCreatedEventIndustries,
   useCreateEventIndustry,
+  useFetchSingleEvent,
+  useUpdateEvent,
 } from "@/hooks";
 
 type FormValue = {
@@ -31,25 +32,37 @@ export function AddIndustry({
   const form = useForm<FormValue>();
   const [industryColor, setIndustryColor] = useState<string>("");
   // const [createdIndustry, setCreatedIndustry] = useState<IndustryType[]>([]);
-  const { loading, createEventIndustry } = useCreateEventIndustry();
-  const { data, refetch } = useFetchCreatedEventIndustries(eventId);
-
+  // const { loading, createEventIndustry } = useCreateEventIndustry();
+  const { data, refetch } = useFetchSingleEvent(eventId);
+  const { loading, update: createEventIndustry } = useUpdateEvent();
   async function onSubmit(value: FormValue) {
     if (industryColor === "" || value.name === undefined) {
-      toast({variant:"destructive", description:"Pls, Select a Color or Name"});
+      toast({
+        variant: "destructive",
+        description: "Pls, Select a Color or Name",
+      });
       return;
     }
 
-    await createEventIndustry(data, eventId, {
-      name: value.name,
-      color: industryColor,
-    });
+    const payload =
+      Array.isArray(data?.partnerIndustry) && data?.partnerIndustry.length > 0
+        ? [
+            ...data?.partnerIndustry,
+            { name: value?.name, color: industryColor },
+          ]
+        : [{ name: value?.name, color: industryColor }];
+    await createEventIndustry(
+      { partnerIndustry: payload },
+      eventId,
+      "Industry Created Successfully"
+    );
 
     form.reset({
       name: "",
     });
     setIndustryColor("");
     refetch();
+  //  close();
 
     /*
      setCreatedIndustry((prev) => [
@@ -60,13 +73,14 @@ export function AddIndustry({
   }
 
   // FN to remove from the list of industries
-  /**
-   function remove(id: number) {
-    const updatedList = createdIndustry.filter((_, index) => index !== id);
+  async function remove(id: number) {
+    const updatedList = data?.partnerIndustry?.filter(
+      (_, index) => index !== id
+    );
 
-    setCreatedIndustry(updatedList);
+    await createEventIndustry({ partnerIndustry: updatedList }, eventId, "Industries Updated Successfully");
+    refetch();
   }
- */
 
   return (
     <div
@@ -130,12 +144,11 @@ export function AddIndustry({
 
                   <div className="w-full flex flex-wrap items-center gap-4">
                     {Array.isArray(data?.partnerIndustry) &&
-                      data?.partnerIndustry.map(({ name, color }) => (
+                      data?.partnerIndustry.map(({ name, color }, index) => (
                         <CreatedPreview
                           key={name}
                           name={name}
-                          //  remove={remove}
-
+                          remove={() => remove(index)}
                           color={color}
                         />
                       ))}
