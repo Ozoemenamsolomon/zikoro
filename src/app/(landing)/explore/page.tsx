@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EventHeader from "@/components/explore/EventHeader";
@@ -9,12 +9,14 @@ import CitiesEventList from "@/components/explore/CitiesEventList";
 import CategoryEventList from "@/components/explore/CategoryEventsList";
 
 export default function Events() {
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
-    <div className=''>
+    <div className="">
       <Navbar />
-      <EventHeader />
-      <EventList />
-      <FeaturedEventList />
+      <EventHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <EventList  searchQuery={searchQuery} />
+      <FeaturedEventList searchQuery={searchQuery}  />
       <CitiesEventList />
       <CategoryEventList />
       <Footer />

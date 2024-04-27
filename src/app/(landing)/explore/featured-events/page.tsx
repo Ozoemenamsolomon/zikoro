@@ -20,10 +20,11 @@ type DBFeaturedEvent = {
   pricing: [];
   pricingCurrency: string;
   startDateTime: string;
+  expectedParticipants: number;
+  registered: number;
 };
 
 export default function FeaturedEvents() {
-  const [searchBox, setSearchBox] = useState("");
   const [showMore, setShowMore] = useState(false);
   const [selectedButton, setSelectedButton] = useState<string | null>(null);
   const [isEventDateUp, setEventDateUp] = useState(false);
@@ -32,10 +33,24 @@ export default function FeaturedEvents() {
   const [isCityUp, setCityUp] = useState(false);
   const [isPriceUp, setPriceUp] = useState(false);
   const [isFilterOpen, setFilterOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [eventData, setEventData] = useState<DBFeaturedEvent[] | undefined>(
+    undefined
+  );
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const handleChange = (e: any) => {
-    setSearchBox(e.target.value);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
   };
+
+  const filteredEvents = eventData?.filter((event) => {
+    // Filter by event title, city, or category
+    return (
+      event.eventTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.eventCity.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
 
   const eventCategories = [
     "Conferences",
@@ -65,11 +80,11 @@ export default function FeaturedEvents() {
     selectedButton === null;
   };
 
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+  };
+
   //fetch events from database
-  const [eventData, setEventData] = useState<DBFeaturedEvent[] | undefined>(
-    undefined
-  );
-  //fetch featured events
 
   async function fetchEventFeautured() {
     fetch("/api/explore/featured", {
@@ -110,9 +125,8 @@ export default function FeaturedEvents() {
                 <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-[500px] h-full">
                   <input
                     type="text"
-                    value={searchBox}
+                    value={searchQuery}
                     name="searchBox"
-                    id=""
                     onChange={handleChange}
                     placeholder="search by event name, city, category"
                     className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
@@ -457,23 +471,26 @@ export default function FeaturedEvents() {
                   {/* bottom h-[1485px] */}
                   <div className="py-2 px-4 h-auto flex flex-col justify-start border-t-[1px] border-gray-200  items-center overflow-y-auto no-scrollbar pt-8 pb-0 lg:pb-[50px]">
                     <div className="grid grid-cols-3 gap-4 mt-8 ">
-                      {eventData &&
-                        (showMore ? eventData : eventData.slice(0, 20)).map(
-                          (event, index) => (
-                            <FeaturedEvent
-                              key={event.id}
-                              id={event.id}
-                              eventPoster={event.eventPoster}
-                              eventTitle={event.eventTitle}
-                              eventCity={event.eventCity}
-                              eventCountry={event.eventCountry}
-                              locationType={event.locationType}
-                              pricing={event.pricing}
-                              pricingCurrency={event.pricingCurrency}
-                              startDateTime={event.startDateTime}
-                            />
-                          )
-                        )}
+                      {filteredEvents &&
+                        (showMore
+                          ? filteredEvents
+                          : filteredEvents.slice(0, 20)
+                        ).map((event, index) => (
+                          <FeaturedEvent
+                            key={event.id}
+                            id={event.id}
+                            eventPoster={event.eventPoster}
+                            eventTitle={event.eventTitle}
+                            eventCity={event.eventCity}
+                            eventCountry={event.eventCountry}
+                            locationType={event.locationType}
+                            pricing={event.pricing}
+                            pricingCurrency={event.pricingCurrency}
+                            startDateTime={event.startDateTime}
+                            expectedParticipants={event.expectedParticipants}
+                            registered={event.registered}
+                          />
+                        ))}
                     </div>
 
                     {eventData && eventData.length > 20 && !showMore && (
@@ -506,9 +523,8 @@ export default function FeaturedEvents() {
                     <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-11/12 h-full">
                       <input
                         type="text"
-                        value={searchBox}
+                        value={searchQuery}
                         name="searchBox"
-                        id=""
                         onChange={handleChange}
                         placeholder="search by event name, city, category"
                         className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
@@ -540,23 +556,26 @@ export default function FeaturedEvents() {
 
                 <div className="flex flex-col items-center mt-16 mb-20 ">
                   <div className="grid grid-cols-1 gap-4 w-full ">
-                    {eventData &&
-                      (showMore ? eventData : eventData.slice(0, 20)).map(
-                        (event, index) => (
-                          <FeaturedEvent
-                            key={event.id}
-                            id={event.id}
-                            eventPoster={event.eventPoster}
-                            eventTitle={event.eventTitle}
-                            eventCity={event.eventCity}
-                            eventCountry={event.eventCountry}
-                            locationType={event.locationType}
-                            pricing={event.pricing}
-                            pricingCurrency={event.pricingCurrency}
-                            startDateTime={event.startDateTime}
-                          />
-                        )
-                      )}
+                    {filteredEvents &&
+                      (showMore
+                        ? filteredEvents
+                        : filteredEvents.slice(0, 20)
+                      ).map((event, index) => (
+                        <FeaturedEvent
+                          key={event.id}
+                          id={event.id}
+                          eventPoster={event.eventPoster}
+                          eventTitle={event.eventTitle}
+                          eventCity={event.eventCity}
+                          eventCountry={event.eventCountry}
+                          locationType={event.locationType}
+                          pricing={event.pricing}
+                          pricingCurrency={event.pricingCurrency}
+                          startDateTime={event.startDateTime}
+                          expectedParticipants={event.expectedParticipants}
+                          registered={event.registered}
+                        />
+                      ))}
                   </div>
 
                   {eventData && eventData.length > 20 && !showMore && (

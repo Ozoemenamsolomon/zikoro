@@ -5,6 +5,8 @@ import { Calendar, LocationIcon1 } from "@/constants/icons";
 import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 import { getLowestPrice } from "@/utils/getLowestPrice";
 import { addCommasToPrice } from "@/utils/priceSeprator";
+import checkDateEqualToday from "@/utils/checkDateEqualToday";
+import checkEventFull from "@/utils/checkEventFull";
 
 type SelectedLocationProps = {
   id: number;
@@ -16,6 +18,8 @@ type SelectedLocationProps = {
   pricing: [];
   pricingCurrency: string;
   startDateTime: string;
+  expectedParticipants: number;
+  registered: number;
 };
 
 export default function SelectedLocation({
@@ -28,10 +32,14 @@ export default function SelectedLocation({
   pricing,
   pricingCurrency,
   startDateTime,
+  expectedParticipants,
+  registered,
 }: SelectedLocationProps) {
   const [lowestPrice, setLowestPrice] = useState<any>("Loading...");
   const [date, setDate] = useState<string | null>(null);
   const [currencySymbol, setCurrencySymbol] = useState<string | null>(null);
+  const [soldOut, setSoldOut] = useState<boolean>(false);
+  const [elasped, setElapsed] = useState<boolean>(false);
 
   // Extracting the date and convert to string
   function extractAndFormatDate(dateTimeString: string): string {
@@ -84,6 +92,20 @@ export default function SelectedLocation({
 
     //convert currency shortCode to currencySymbol
     setCurrencySymbol(convertCurrencyCodeToSymbol(pricingCurrency));
+
+    //check date and time
+    if (checkDateEqualToday(date)) {
+      setElapsed(true);
+    } else {
+      setElapsed(false);
+    }
+
+    //check if sold out
+    if (checkEventFull(expectedParticipants, registered)) {
+      setSoldOut(true);
+    } else {
+      setSoldOut(false);
+    }
   }, []);
 
   //function that shows the event details
@@ -109,6 +131,18 @@ export default function SelectedLocation({
         <p className="text-sm font-medium text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end absolute left-4 top-2 py-[5px] px-[10px] rounded-lg">
           {locationType}
         </p>
+
+        {soldOut && (
+          <p className="text-sm font-medium text-white bg-green-500 absolute right-2 top-2 py-[5px] px-[10px] rounded-lg ">
+            Sold Out
+          </p>
+        )}
+
+        {elasped && (
+          <p className="text-sm font-medium text-white bg-red-500 absolute right-28 top-2 py-[5px] px-[10px] rounded-lg ">
+            Elapsed
+          </p>
+        )}
       </div>
 
       {/* body */}
