@@ -20,7 +20,7 @@ export function HeaderWidget({
   currentQuery: string | null;
 }) {
   const [isOpen, setOpen] = useState(false);
-  const user = getCookie("user")
+  const user = getCookie("user");
   const router = useRouter();
   const form = useForm({
     defaultValues: {
@@ -28,7 +28,7 @@ export function HeaderWidget({
     },
   });
   const { id } = useParams();
-  const { organizations: organizationList } = useGetUserOrganizations()
+  const { organizations: organizationList } = useGetUserOrganizations();
 
   function onClose() {
     setOpen(!isOpen);
@@ -46,7 +46,9 @@ export function HeaderWidget({
   const selectedOrg = form.watch("org");
   useEffect(() => {
     if (selectedOrg) {
-      const org = organizationList.find((o) => String(o.id) === String(selectedOrg));
+      const org = organizationList.find(
+        (o) => String(o.id) === String(selectedOrg)
+      );
       saveCookie("currentOrganization", {
         id: org?.id,
         name: org?.organizationName,
@@ -54,10 +56,19 @@ export function HeaderWidget({
       });
       router.push(`/events/${org?.id}?organization=${org?.organizationName}`);
     }
-  }, [selectedOrg]);
+    else if (Array.isArray(formattedList) && formattedList?.length > 0 ) {
+      const org = organizationList.find(
+        (o) => String(o.id) === String(formattedList[0]?.value)
+      );
+      saveCookie("currentOrganization", {
+        id: org?.id,
+        name: org?.organizationName,
+        plan: org?.subscriptionPlan,
+      }); 
+    }
+  }, [selectedOrg, formattedList]);
 
   function newEvent() {
-  
     router.push(`/create`);
   }
 
@@ -76,14 +87,21 @@ export function HeaderWidget({
               className="w-[60%] sm:w-[180px]"
               //  onSubmit={form.handleSubmit(showOrganizationEvents)}
             >
-              <ReactSelect
-                {...form.register("org")}
-                defaultValue={
-                  currentQuery ? { label: currentQuery, value: id } : ""
-                }
-                options={formattedList}
-                placeHolder="Select Organization"
-              />
+              {Array.isArray(formattedList) && formattedList?.length > 0 && (
+                <ReactSelect
+                  {...form.register("org")}
+                  defaultValue={
+                    currentQuery
+                      ? { label: currentQuery, value: id }
+                      : {
+                          label: formattedList[0]?.label,
+                          value: formattedList[0]?.value,
+                        }
+                  }
+                  options={formattedList}
+                  placeHolder="Select Organization"
+                />
+              )}
             </form>
           </Form>
 

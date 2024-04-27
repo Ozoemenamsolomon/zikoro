@@ -181,7 +181,7 @@ export function useGetUserHomePageEvents() {
 
       // getting events that matches those organization ids
       const matchingEvents = events?.filter(({ organisationId }) => {
-        return organizationIds?.some((id) => id === Number(organisationId));
+        return Number(organisationId) === Number(organizationIds[0]);
       });
 
       setUserEvents(matchingEvents);
@@ -236,7 +236,11 @@ export function useCreateEvent() {
 export function useUpdateEvent() {
   const [loading, setLoading] = useState(false);
 
-  async function update(values: Partial<Event>, eventId: string, message?:any) {
+  async function update(
+    values: Partial<Event>,
+    eventId: string,
+    message?: any
+  ) {
     setLoading(true);
 
     try {
@@ -573,7 +577,7 @@ export function useBookingEvent() {
     eventTransactionRef: string,
     values: z.infer<typeof eventBookingValidationSchema>,
     eventId?: string,
-    eventAlias?:string,
+    eventAlias?: string,
     attendants?: string | null,
     ticketType?: string,
     paymentLink?: string
