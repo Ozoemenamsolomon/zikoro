@@ -67,7 +67,7 @@ export interface Event {
   startDateTime: string;
   trainingDuration: string;
   whatsappNumber: string;
-  registered: string;
+  registered: number;
   partnerIndustry: PartnerIndustry[];
   eventPoster: string;
   exhibitionHall: { name: string; capacity: string }[];

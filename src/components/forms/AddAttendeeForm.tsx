@@ -522,7 +522,7 @@ export default function AddAttendeeForm({
           />
           <FormField
             control={form.control}
-            name="website"
+            name="websiteUrl"
             render={({ field }) => (
               <FormItem className="relative">
                 <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">

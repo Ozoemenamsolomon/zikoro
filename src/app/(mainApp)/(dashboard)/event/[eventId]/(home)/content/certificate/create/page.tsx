@@ -50,6 +50,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { addDays, addMonths } from "date-fns";
 
 const tabs = [
   {
@@ -486,7 +487,9 @@ const page = () => {
     criteria: 100,
     canExpire: false,
     expiryDate: new Date(),
-    publishOn: new Date(event?.endDateTime || new Date()) || new Date(),
+    publishOn: event?.endDateTime
+      ? new Date(event?.endDateTime)
+      : addMonths(new Date(), 1),
     skills: [],
   });
 
@@ -577,11 +580,12 @@ const page = () => {
       });
       console.log(newCertificate);
 
+      setUploading(false);
+
       if (newCertificate) {
         setCertificate(newCertificate);
-        router.push("create?certificateId=" + newCertificate.id);
+        router.push("create/redirect/?certificateId=" + newCertificate.id);
       }
-      setUploading(false);
     },
   });
 
@@ -729,7 +733,7 @@ const page = () => {
           <Button
             className="flex gap-2"
             variant={"ghost"}
-            onClick={() => router.back()}
+            onClick={() => router.push("../")}
           >
             <svg
               stroke="currentColor"

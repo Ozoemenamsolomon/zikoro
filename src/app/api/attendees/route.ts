@@ -28,10 +28,31 @@ export async function POST(req: NextRequest) {
       const { error } = await supabase
         .from("attendees")
         .upsert({ ...params, eventAlias: params.eventId });
+
       if (error) {
         console.log(error);
         throw error.code;
       }
+
+      const { data: event, error: eventSelectError } = await supabase
+        .from("events")
+        .select("registered")
+        .eq("eventAlias", params.eventId)
+        .maybeSingle();
+
+      if (eventSelectError || !event) {
+        console.log(eventSelectError);
+        throw eventSelectError.code;
+      }
+
+      console.log(event.registered);
+
+      const { error: eventError } = await supabase
+        .from("events")
+        .update({ registered: event.registered + 1 })
+        .eq("eventAlias", params.eventId);
+
+      if (eventError) throw eventError.code;
 
       return NextResponse.json(
         { msg: "attendee created successfully" },
