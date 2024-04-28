@@ -6,6 +6,7 @@ import { useState } from "react";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { Eye } from "@styled-icons/evil/Eye";
 import { Button } from "@/components";
+import {TPartner} from "@/types"
 import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
 
 import { cn } from "@/lib";
@@ -17,7 +18,7 @@ export function PartnersList({
   refetch,
 }: {
   refetch: () => Promise<any>;
-  partners: any[];
+  partners: TPartner[];
   loading: boolean;
   eventId: string;
 }) {
@@ -77,8 +78,6 @@ export function PartnersList({
     setSelectedRows([]);
   }
 
-  /**** */
-
   return (
     <>
       <div className="w-full  flex flex-col">
@@ -129,7 +128,7 @@ export function PartnersList({
               "pb-3 w-full",
               Array.isArray(partners) &&
                 partners?.length > 0 &&
-                "min-w-[1000px]"
+                "min-w-[1200px]"
             )}
           >
             <table className="w-full  rounded-lg ">
@@ -137,7 +136,7 @@ export function PartnersList({
                 {!loading &&
                   Array.isArray(partners) &&
                   partners?.length > 0 && (
-                    <tr className="w-full rounded-t-lg grid grid-cols-7 text-sm font-semibold  items-center bg-gray-100 gap-3 px-3 py-4 ">
+                    <tr className="w-full rounded-t-lg grid grid-cols-8 text-sm font-semibold  items-center bg-gray-100 gap-3 px-3 py-4 ">
                       <td className="text-start col-span-2 w-full">
                         <label className=" w-full flex  relative items-center gap-x-2">
                           <input
@@ -156,6 +155,7 @@ export function PartnersList({
                       <td className="text-start">Sponsor Category</td>
                       <td className="text-start">Exhibiton Hall</td>
                       <td className="text-start">Booth</td>
+                      <td className="text-start">StampCard</td>
                     </tr>
                   )}
               </thead>
@@ -207,7 +207,7 @@ export function PartnersList({
                       partners={partners}
                       className={"border-b border-x"}
                       item={item}
-                      key={`${item?.name}${index}`}
+                      key={`${item?.companyName}${index}`}
                     />
                   ))}
               </tbody>

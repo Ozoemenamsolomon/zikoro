@@ -4,14 +4,16 @@ import { sendMail, phoneCall, whatsapp } from "@/utils";
 import { ArrowIosDownward } from "@styled-icons/evaicons-solid/ArrowIosDownward";
 import { Phone } from "@styled-icons/feather/Phone";
 import { cn } from "@/lib";
+import { Switch } from "@/components/ui/switch";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { DropDownSelect } from "@/components/contents/_components";
-import { Event } from "@/types";
+import { Event, TPartner } from "@/types";
 import {
   useUpdateHall,
   useUpdateBooth,
   useUpdatePartnerType,
   useUpdateSponsor,
+  useUpdatePartners,
 } from "@/hooks";
 import { EmailIcon, WhatsappIcon } from "@/constants";
 
@@ -25,16 +27,18 @@ export function PartnerWidget({
   partners,
 }: {
   className: string;
-  item: any;
+  item: TPartner;
   refetch: () => Promise<any>;
   event: Event | null;
   selectRowFn: (value: number) => void;
   selectedRows: number[];
-  partners: any[];
+  partners: TPartner[];
 }) {
   const [boothList, setBoothList] = useState<string[]>([]);
+  const [status, setStatus] = useState(item?.stampIt)
   const { updateHall } = useUpdateHall();
-  const { updateBooth } = useUpdateBooth();
+  const {update, loading} = useUpdatePartners()
+  const { updateBooth } = useUpdateBooth()
   const { updatePartnerType } = useUpdatePartnerType();
   const { updateSponsorCategory } = useUpdateSponsor();
 
@@ -141,10 +145,16 @@ export function PartnerWidget({
     refetch(); // fetch partners
   }
 
+  async function submit(bol: boolean) {
+    setStatus(bol) 
+    await update( {stampIt: bol}, item?.id)
+    refetch()
+  }
+
   return (
     <tr
       className={cn(
-        "w-full grid grid-cols-7 text-sm items-center gap-3 p-3 ",
+        "w-full grid grid-cols-8 text-sm items-center gap-3 p-3 ",
         className
       )}
     >
@@ -224,6 +234,12 @@ export function PartnerWidget({
             <ArrowIosDownward size={20} />
           </button>
         </DropDownSelect>
+      </td>
+      <td>
+        <Switch
+        className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+        disabled={loading}
+        checked={status} onClick={() => submit(!item?.stampIt)} />
       </td>
     </tr>
   );

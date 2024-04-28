@@ -54,7 +54,7 @@ export function useAddPartners() {
 
 export function useFetchPartners(eventId: string | number) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<TPartner[]>([]);
   useEffect(() => {
     fetchPartners();
   }, []);
@@ -85,6 +85,35 @@ export function useFetchPartners(eventId: string | number) {
     loading,
     refetch: fetchPartners,
   };
+}
+
+export function useUpdatePartners() {
+  const [loading, setLoading] = useState(false)
+
+  async function update(payload: Partial<TPartner>, partnerId: number) {
+
+    const { error, status } = await supabase
+    .from("eventPartners")
+    .update([{...payload}])
+    .eq("id", partnerId);
+
+  if (error) {
+    toast({variant:"destructive", description: error.message});
+    setLoading(false);
+    return;
+  }
+
+  if (status === 204 || status === 200) {
+    //
+    toast({description:"Partner Updated successfully"});
+    setLoading(false);
+  }
+
+  }
+
+  return {
+    update, loading
+  }
 }
 
 export function useCreateEventIndustry() {
@@ -426,7 +455,7 @@ export function useCreateEventExhibitionHall() {
 }
 
 export function useUpdateBooth() {
-  async function updateBooth(partnerId: string, value: string[] | null) {
+  async function updateBooth(partnerId: number, value: string[] | null) {
     try {
       // Fetch the partner by ID
       const { data } = await supabase
@@ -463,7 +492,7 @@ export function useUpdateBooth() {
 }
 
 export function useUpdateHall() {
-  async function updateHall(partnerId: string, value: string | null) {
+  async function updateHall(partnerId: number, value: string | null) {
     try {
       // Fetch the partner by ID
       const { data } = await supabase
@@ -492,7 +521,7 @@ export function useUpdateHall() {
 }
 
 export function useUpdatePartnerType() {
-  async function updatePartnerType(partnerId: string, value: string) {
+  async function updatePartnerType(partnerId: number, value: string) {
     try {
       // Fetch the partner by ID
       const { data } = await supabase
@@ -521,7 +550,7 @@ export function useUpdatePartnerType() {
 }
 
 export function useUpdateSponsor() {
-  async function updateSponsorCategory(partnerId: string, value: string) {
+  async function updateSponsorCategory(partnerId: number, value: string) {
     try {
       // Fetch the partner by ID
       const { data } = await supabase

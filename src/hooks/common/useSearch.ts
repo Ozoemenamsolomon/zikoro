@@ -1,6 +1,6 @@
 "use client"
 import React from "react";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 
 type StringKeys<T> = {
   [K in keyof T]: T[K] extends string ? K : never;

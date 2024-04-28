@@ -603,7 +603,7 @@ export function useBookingEvent() {
       });
 
       const { error, status } = await supabase
-        .from("attendees")
+        .from("attendee")
         .upsert([...attendees]);
 
       if (error) {

@@ -85,7 +85,7 @@ export function EventDetailTabs({
     <>
       {!isEventDetailPage && active === 1 && event && (
         <EventDetailMobileTab
-          eventId={String(event.id)}
+          eventId={String(event.eventAlias)}
           changeActiveState={changeActiveState}
         />
       )}

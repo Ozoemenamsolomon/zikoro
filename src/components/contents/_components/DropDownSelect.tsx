@@ -10,7 +10,7 @@ export function DropDownSelect({
   isMultiple,
 }: {
   data: string[] | number[] | undefined;
-  handleChange: (value: string | string[]) => Promise<void>;
+  handleChange: (value: any) => Promise<void>;
   children: React.ReactNode;
   className?: string;
   isMultiple?: boolean;

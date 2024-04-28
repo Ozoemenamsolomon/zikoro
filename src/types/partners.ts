@@ -38,6 +38,7 @@ export enum PartnersEnum {
     offers: PromotionalOfferType[];
     website: string;
     whatsApp: string;
+    sponsorCategory: string;
   
   }
 

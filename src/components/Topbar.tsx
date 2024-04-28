@@ -16,8 +16,10 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
   useEffect(() => {
     if (events && !eventLoading) {
       //checked if the eventid is present in the event array
-      const isEventIdPresent = events?.some(({ eventAlias }) => eventAlias === eventId);
- 
+      const isEventIdPresent = events?.some(
+        ({ eventAlias }) => eventAlias === eventId
+      );
+
       setIsIdPresent(isEventIdPresent);
     }
   }, [events, eventLoading]);
@@ -61,19 +63,16 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
     },
   ];
 
-  const hideFromAttendee = ["Contents", "Analytics", "Settings"]
-  const set = new Set(hideFromAttendee)
- 
+  const hideFromAttendee = ["Contents", "Analytics", "Settings"];
+  const set = new Set(hideFromAttendee);
+
   const reformedLink = useMemo(() => {
     return links.filter((link) => {
       if (!user || !user?.userEmail || !isIdPresent) {
-        return  !set.has(String(link?.name));
+        return !set.has(String(link?.name));
+      } else {
+        return links;
       }
-      else {
-        return links
-      }
-
-     
     });
   }, [user, isIdPresent]);
 
@@ -83,10 +82,14 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
         <div className="bg-white min-w-[900px] px-4 pt-2 h-max border-b">
           <ul className="flex justify-between text-gray-700">
             {reformedLink.map(({ name, href }) => {
+              //  console.log(href.split("/")[1].split("?"))
               return (
                 <li
                   className={`pb-1 text-sm ${
-                    pathname.includes(`${href.split("/")[1]}`)
+                    pathname.includes(
+                      `${href.split("/")[1].split("?")[0]}` ||
+                        `${href.split("/")[1]}`
+                    )
                       ? "text-basePrimary border-b-2 border-basePrimary font-medium"
                       : ""
                   }`}
@@ -98,14 +101,13 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
           </ul>
         </div>
       </nav>
-        {/**
+      {/**
           <AccessVerification
         eventLoading={eventLoading}
         isEventIdPresent={isIdPresent}
         id={eventId}
       />
-         */}    
-     
+         */}
     </>
   );
 };

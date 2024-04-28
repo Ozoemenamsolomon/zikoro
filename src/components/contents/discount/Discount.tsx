@@ -190,7 +190,7 @@ const DiscountList: React.FC<{
       <li>{quantity}</li>
       <li>
         <Switch
-          className={`data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary w-[32px] h-[22px]`}
+          className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
           disabled={updating}
           onClick={() => submit(!status)}
           checked={

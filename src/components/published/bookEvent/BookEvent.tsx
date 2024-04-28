@@ -27,6 +27,21 @@ import { Event } from "@/types";
 import { usePathname, useRouter } from "next/navigation";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
+type TChosenAttendee = {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  ticketType: string;
+  id: number;
+  price: number;
+};
+
+type TChosenTicket = {
+  ticketType: string;
+  price: number;
+  count: number;
+};
 export function BookEvent({
   close,
   event,
@@ -65,6 +80,7 @@ export function BookEvent({
   const [active, setActive] = useState(1);
   const [priceCategory, setPriceCategory] = useState<string | undefined>("");
   const { sendTransactionDetail } = useTransactionDetail();
+  const [chosenAttendee, setChosenAttendee] = useState<TChosenAttendee[]>([]);
   const [description, setDescription] = useState("");
   const form = useForm<z.infer<typeof eventBookingValidationSchema>>({
     resolver: zodResolver(eventBookingValidationSchema),
@@ -124,27 +140,49 @@ export function BookEvent({
     social = aboutUsValue;
   }
 
+  const chosenAttendeesTicket = useMemo(() => {
+    return formatTicketPrice(chosenAttendee);
+  }, [chosenAttendee]);
+
   // calculating  the discount
   const discount = useMemo(() => {
+    const totalTicketPrice = chosenAttendeesTicket?.reduce(
+      (curr, { price }) => curr + price,
+      0
+    );
     return discountAmount !== null
       ? Number(discountAmount) * fields?.length
-      : ((Number(chosenPrice) * Number(discountPercentage)) / 100) *
+      : ((Number(totalTicketPrice) * Number(discountPercentage)) / 100) *
           fields?.length;
-  }, [fields, chosenPrice, discountAmount, discountPercentage]);
+  }, [fields, chosenAttendeesTicket, discountAmount, discountPercentage]);
 
   // calculating the processing Fee
   const processingFee = useMemo(() => {
-    if (chosenPrice)
-      return ((Number(chosenPrice - discount) * 5) / 100) * fields?.length;
-  }, [fields, chosenPrice]);
+    if (chosenAttendeesTicket?.length > 0) {
+      const totalTicketPrice = chosenAttendeesTicket?.reduce(
+        (curr, { price }) => curr + price,
+        0
+      );
+      return ((Number(totalTicketPrice - discount) * 5) / 100) * fields?.length;
+    }
+  }, [fields, chosenAttendeesTicket]);
 
   const computedPrice = useMemo(() => {
-    if (chosenPrice && event?.attendeePayProcessingFee) {
-      return chosenPrice * fields.length;
-    } else if (chosenPrice && processingFee) {
-      return chosenPrice * fields.length - processingFee;
+    const totalTicketPrice = chosenAttendeesTicket?.reduce(
+      (curr, { price }) => curr + price,
+      0
+    );
+    if (totalTicketPrice && event?.attendeePayProcessingFee) {
+      return totalTicketPrice;
+    } else if (totalTicketPrice && processingFee) {
+      return totalTicketPrice - processingFee;
     }
-  }, [chosenPrice, fields, processingFee, event?.attendeePayProcessingFee]);
+  }, [
+    chosenAttendeesTicket,
+    fields,
+    processingFee,
+    event?.attendeePayProcessingFee,
+  ]);
 
   // calculating total
   const total = useMemo(() => {
@@ -177,7 +215,7 @@ export function BookEvent({
             description,
             discountPrice,
             price: Number(price),
-            ticketQuantity: Number(ticketQuantity) - Number(event?.registered),
+            ticketQuantity,
             discountPercentage: discountPrice
               ? ((Number(price) - Number(discountPrice)) / Number(price)) * 100
               : null,
@@ -313,6 +351,67 @@ export function BookEvent({
     await sendTransactionDetail(allowPayment, payload);
   }
 
+  function addChosenAttendee(ticketType: string, price: number, id: number) {
+    const update = {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      ticketType,
+      id,
+      price,
+    };
+    setChosenAttendee((prev) => [...prev, update]);
+  }
+  function removeChosenAttendee(id: number) {
+    setChosenAttendee((prev) => prev.filter((attendee) => attendee.id !== id));
+  }
+
+  function selectedAttendeesLength(index: number) {
+    const result = chosenAttendee?.filter(({ id }) => id === index)?.length;
+
+    return result;
+  }
+
+  // console.log({ chosenAttendee });
+
+  function formatTicketPrice(attendees: TChosenAttendee[]): TChosenTicket[] {
+    // init a Map to hold the sum of prices for each ticketType
+    const ticketPriceMap = new Map<string, { count: number; price: number }>();
+
+    attendees.forEach((attendee) => {
+      const ticketType = attendee.ticketType;
+      const price = attendee.price;
+
+      if (ticketPriceMap.has(ticketType)) {
+        const data = ticketPriceMap.get(ticketType)!;
+
+        ticketPriceMap.set(ticketType, {
+          price: (data.price += price),
+          count: (data.count += 1),
+        }); // If ticketType is already in the map, add the price to the sum
+      } else {
+        ticketPriceMap.set(ticketType, { price, count: 1 }); // If ticketType is not in the map, initialize a new price
+      }
+    });
+
+    const result: TChosenTicket[] = [];
+    // iterate through the [ticketType , {count price}] pair
+    const iterator = ticketPriceMap.entries();
+    let entry = iterator.next();
+
+    // Process each entry from the map
+    while (!entry.done) {
+      const [ticketType, data] = entry.value;
+      result.push({ ticketType, price: data.price, count: data.count });
+      entry = iterator.next(); // Move to the next entry
+    }
+
+    return result;
+  }
+
+  // console.log(chosenAttendeesTicket);
+
   return (
     <>
       <div
@@ -335,7 +434,7 @@ export function BookEvent({
               <CloseOutline size={28} />
             </Button>
           </div>
-          <div className="w-full flex flex-col gap-y-3 lg:col-span-3 p-4 sm:p-6 h-full px-3 bg-gray-100">
+          <div className="w-full lg:h-[40rem]  no-scrollbar lg:overflow-y-auto  flex flex-col gap-y-3 lg:col-span-3 p-4 sm:p-6 h-full px-3 bg-gray-100">
             <h2 className="text-lg sm:text-xl font-semibold">
               {`${eventTitle}`}
             </h2>
@@ -361,15 +460,22 @@ export function BookEvent({
                 Order Summary
               </h2>
 
-              <div className=" flex items-center  justify-between w-full">
-                <p>{`${fields.length}x People Attending:`}</p>
-                {computedPrice ? (
-                  <p> {`₦${computedPrice?.toLocaleString()}`}</p>
-                ) : (
-                  <p>---</p>
-                )}
-              </div>
-              <div className=" flex items-center justify-between w-full">
+              {Array.isArray(chosenAttendeesTicket) &&
+                chosenAttendeesTicket?.map((item, index) => (
+                  <div
+                    key={index}
+                    className=" flex items-center text-sm capitalize justify-between w-full"
+                  >
+                    <p>{`${item?.count}x ${item?.ticketType}:`}</p>
+                    {item?.price > 0 ? (
+                      <p> {`₦${item?.price?.toLocaleString()}`}</p>
+                    ) : (
+                      <p>---</p>
+                    )}
+                  </div>
+                ))}
+
+              <div className=" flex items-center text-sm justify-between w-full">
                 <p>{`${fields.length}x Discount:`}</p>
                 {discount > 0 ? (
                   <p> {`- ₦${discount?.toLocaleString()}`}</p>
@@ -377,7 +483,7 @@ export function BookEvent({
                   <p>---</p>
                 )}
               </div>
-              <div className=" flex items-center justify-between w-full">
+              <div className=" flex items-center text-sm justify-between w-full">
                 <p>{`${fields.length}x Processing fee:`}</p>
                 {processingFee ? (
                   <p> {`₦${processingFee?.toLocaleString()}`}</p>
@@ -395,13 +501,20 @@ export function BookEvent({
           {/*** */}
           {active === 1 && (
             <div className="w-full lg:col-span-4 flex flex-col gap-y-4 p-4 sm:p-6">
-              <div className="w-full flex flex-col items-center justify-center py-3 border-b">
-                <p className="text-base sm:text-xl font-semibold">
-                  Ticket Price
-                </p>
-                <p className="text-[11px] sm:text-[13px]">
-                  Select your preferred ticket type
-                </p>
+              <div className=" flex w-full items-end justify-between py-3 border-b">
+                <div className="flex flex-col items-start justify-start">
+                  <p className="text-base sm:text-xl font-semibold">
+                    Ticket Price
+                  </p>
+                  <p className="text-[11px] sm:text-[13px]">
+                    Select your preferred ticket type
+                  </p>
+                </div>
+                {availableSlot > 0 && (
+                  <p className="text-red-600 bg-red-100 text-xs p-2 rounded-md">
+                    {` ${availableSlot} slots left`}
+                  </p>
+                )}
               </div>
 
               <div className="w-full lg:h-[510px] pb-24 space-y-5 no-scrollbar lg:overflow-y-auto">
@@ -415,15 +528,15 @@ export function BookEvent({
                             key={index}
                             onClick={(e) => {
                               e.stopPropagation();
-                              selectedPrice(v?.price);
-                              selectedPriceCategory(v?.attendeeType);
+                              // selectedPrice(v?.price);
+                              // selectedPriceCategory(v?.attendeeType);
                             }}
                             disabled={isDateGreaterThanToday(v?.validity)}
                             className={cn(
                               "flex flex-col group relative rounded-lg mt-3 items-start justify-between  border p-4 h-[7.5rem] w-full",
                               isDateGreaterThanToday(v?.validity)
                                 ? ""
-                                : "hover:border-basePrimary border-black",
+                                : "hover:border-basePrimary border-gray-500",
 
                               activeSelectedPrice(v?.attendeeType) &&
                                 "border-basePrimary"
@@ -444,7 +557,7 @@ export function BookEvent({
                               <div className="w-full h-full absolute inset-0 bg-white/50"></div>
                             )}
                             <div className="flex items-center justify-between w-full">
-                              <div className="flex flex-col items-start justrify-start">
+                              <div className="flex flex-col items-start justify-start">
                                 <p className="font-medium text-base">
                                   {v?.attendeeType}
                                 </p>
@@ -514,21 +627,43 @@ export function BookEvent({
                                 )}
                               </div>
                               <div className="flex flex-col items-end justify-end gap-y-2">
-                                {availableSlot > 0 && (
-                                  <p className="text-red-600 bg-red-100 text-xs p-2 rounded-md">
-                                    {` ${availableSlot} slots left`}
-                                  </p>
-                                )}
                                 <div className="flex items-center gap-x-3">
-                                  <p
+                                  <Button
+                                    disabled={
+                                      selectedAttendeesLength(index) === 0
+                                    }
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      e.preventDefault();
+                                      removeChosenAttendee(index);
+                                    }}
                                     className={cn(
-                                      "text-gray-500 text-sm italic",
-                                      activeSelectedPrice(v?.attendeeType) &&
-                                        "text-basePrimary font-medium"
+                                      "px-0 h-fit w-fit text-gray-400",
+                                      selectedAttendeesLength(index) > 0 &&
+                                        "text-basePrimary"
                                     )}
                                   >
-                                    Select
-                                  </p>
+                                    <CircleMinus size={22} />
+                                  </Button>
+                                  <span className="text-xs font-medium">
+                                    {selectedAttendeesLength(index)}
+                                  </span>
+                                  <Button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      e.preventDefault();
+                                      addChosenAttendee(
+                                        v?.attendeeType,
+                                        v?.price,
+                                        index
+                                      );
+                                    }}
+                                    className={cn(
+                                      "px-0 h-fit w-fit text-basePrimary"
+                                    )}
+                                  >
+                                    <PlusCircleFill size={22} />
+                                  </Button>
                                 </div>
                               </div>
                             </div>
@@ -567,15 +702,12 @@ export function BookEvent({
                   </div>
                 </div>
                 <Button
-                  disabled={
-                    priceCategory === "" || pathname.includes("preview")
-                  }
+                  disabled={pathname.includes("preview")}
                   type="submit"
                   onClick={() => setActive(2)}
                   className={cn(
                     "h-14 w-full gap-x-2 bg-basePrimary hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium",
-                    (priceCategory === "" || pathname.includes("preview")) &&
-                      "bg-gray-200 text-black"
+                    pathname.includes("preview") && "bg-gray-200 text-black"
                   )}
                 >
                   <span>Continue</span>
