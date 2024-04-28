@@ -578,10 +578,9 @@ export function useBookingEvent() {
   async function registerAttendees(
     eventTransactionRef: string,
     values: z.infer<typeof eventBookingValidationSchema>,
-    eventId?: string,
+    eventId?: number,
     eventAlias?: string,
     attendants?: string | null,
-    ticketType?: string,
     paymentLink?: string
   ) {
     const { attendeeApplication } = values;
@@ -593,7 +592,6 @@ export function useBookingEvent() {
           eventId,
           eventAlias,
           attendeeType: [attendants],
-          ticketType,
           registrationDate: new Date(),
           paymentLink,
           registrationCompleted: false,

@@ -4,6 +4,7 @@ export const attendeeValidationSchema = z.array(
   z.object({
     email: z.string().email({ message: "Email must be a valid email" }),
     firstName: z.string().min(3, { message: "First Name is required" }),
+    ticketType: z.string(),
     lastName: z.string().min(3, { message: "Last Name is required" }),
     phoneNumber: z
       .string()

@@ -3,7 +3,7 @@
 import { Button } from "@/components";
 import { cn } from "@/lib";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { nanoid } from "nanoid";
@@ -26,15 +26,15 @@ import { toast } from "@/components/ui/use-toast";
 import { Event } from "@/types";
 import { usePathname, useRouter } from "next/navigation";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-
+import { ArrowBack } from "@styled-icons/material-outlined/ArrowBack";
 type TChosenAttendee = {
   firstName: string;
   lastName: string;
   phoneNumber: string;
   email: string;
   ticketType: string;
-  id: number;
   price: number;
+  id: number;
 };
 
 type TChosenTicket = {
@@ -75,7 +75,7 @@ export function BookEvent({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [chosenPrice, setChosenPrice] = useState<number | undefined>();
+ // const [chosenPrice, setChosenPrice] = useState<number | undefined>();
   const [code, setCode] = useState("");
   const [active, setActive] = useState(1);
   const [priceCategory, setPriceCategory] = useState<string | undefined>("");
@@ -84,16 +84,7 @@ export function BookEvent({
   const [description, setDescription] = useState("");
   const form = useForm<z.infer<typeof eventBookingValidationSchema>>({
     resolver: zodResolver(eventBookingValidationSchema),
-    defaultValues: {
-      attendeeApplication: [
-        {
-          firstName: "",
-          lastName: "",
-          phoneNumber: "",
-          email: "",
-        },
-      ],
-    },
+    defaultValues: {},
   });
   const { registerAttendees, isRegistered } = useBookingEvent();
   const {
@@ -107,15 +98,6 @@ export function BookEvent({
     control: form.control,
     name: "attendeeApplication",
   });
-
-  function appendAttendees() {
-    append({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-    });
-  }
 
   // memoized the reference to invoke once
   const eventReference = useMemo(() => {
@@ -151,10 +133,9 @@ export function BookEvent({
       0
     );
     return discountAmount !== null
-      ? Number(discountAmount) * fields?.length
-      : ((Number(totalTicketPrice) * Number(discountPercentage)) / 100) *
-          fields?.length;
-  }, [fields, chosenAttendeesTicket, discountAmount, discountPercentage]);
+      ? Number(discountAmount) 
+      : ((Number(totalTicketPrice) * Number(discountPercentage)) / 100)
+  }, [ chosenAttendeesTicket, discountAmount, discountPercentage]);
 
   // calculating the processing Fee
   const processingFee = useMemo(() => {
@@ -163,9 +144,9 @@ export function BookEvent({
         (curr, { price }) => curr + price,
         0
       );
-      return ((Number(totalTicketPrice - discount) * 5) / 100) * fields?.length;
+      return ((Number(totalTicketPrice - discount) * 5) / 100) 
     }
-  }, [fields, chosenAttendeesTicket]);
+  }, [ chosenAttendeesTicket]);
 
   const computedPrice = useMemo(() => {
     const totalTicketPrice = chosenAttendeesTicket?.reduce(
@@ -173,13 +154,12 @@ export function BookEvent({
       0
     );
     if (totalTicketPrice && event?.attendeePayProcessingFee) {
-      return totalTicketPrice;
+      return totalTicketPrice ;
     } else if (totalTicketPrice && processingFee) {
       return totalTicketPrice - processingFee;
     }
   }, [
     chosenAttendeesTicket,
-    fields,
     processingFee,
     event?.attendeePayProcessingFee,
   ]);
@@ -226,13 +206,17 @@ export function BookEvent({
     }
   }, [event?.pricing, discountAmount, discountPercentage]);
 
-  function activeSelectedPrice(selected: string | undefined) {
+  /**
+     function activeSelectedPrice(selected: string | undefined) {
     return selected === priceCategory;
   }
-  function selectedPrice(value: number | undefined) {
+     function selectedPrice(value: number | undefined) {
     setChosenPrice(value);
   }
-
+    activeSelectedPrice(v?.attendeeType) &&
+                                "border-basePrimary"
+ activeSelectedPrice(v?.attendeeType) &&
+                                    "bg-blue-50 text-basePrimary"
   function selectedPriceCategory(value: string | undefined) {
     if (priceCategory === undefined && priceCategory !== value) {
       setPriceCategory(undefined);
@@ -240,6 +224,7 @@ export function BookEvent({
       setPriceCategory(value);
     }
   }
+   */
 
   /// verifying and redeeming a discount code'
   async function redeem() {
@@ -303,14 +288,13 @@ export function BookEvent({
       organizerContact: JSON.stringify(organizerContact),
       amountPayable: processingFee ? total - processingFee : total,
     })}`;
-
+   
     await registerAttendees(
       eventReference,
       values,
-      String(event?.id),
+      event?.id,
       eventId,
-      "attendees",
-      priceCategory,
+      "attendee",
       paymentLink
     );
 
@@ -340,10 +324,12 @@ export function BookEvent({
       discountCode: code || "none",
       currency,
       registrationCompleted: false,
-      ticketCategory: priceCategory,
       eventDate,
       event: eventTitle,
-      eventPrice: chosenPrice,
+      eventPrice:chosenAttendeesTicket?.reduce(
+        (curr, { price }) => curr + price,
+        0
+      ),
       attendeesDetails: values.attendeeApplication,
     };
 
@@ -358,17 +344,34 @@ export function BookEvent({
       email: "",
       phoneNumber: "",
       ticketType,
-      id,
       price,
+      id,
     };
     setChosenAttendee((prev) => [...prev, update]);
+   
   }
   function removeChosenAttendee(id: number) {
-    setChosenAttendee((prev) => prev.filter((attendee) => attendee.id !== id));
+    setChosenAttendee((prev) => prev.filter((attendee) => attendee?.id !== id));
+    
   }
 
-  function selectedAttendeesLength(index: number) {
-    const result = chosenAttendee?.filter(({ id }) => id === index)?.length;
+  useEffect(() => {
+    if (chosenAttendee?.length > 0) {
+      const attendee = chosenAttendee.map(({firstName, lastName, phoneNumber,email, ticketType}) => {
+        return {
+          firstName, lastName, phoneNumber, ticketType, email
+        }
+      })
+      form.reset({
+        attendeeApplication: attendee
+      })
+    }
+  },[chosenAttendee])
+
+  function selectedAttendeesLength(id: number) {
+    const result = chosenAttendee?.filter(
+      (attendee) => attendee?.id === id
+    )?.length;
 
     return result;
   }
@@ -536,19 +539,14 @@ export function BookEvent({
                               "flex flex-col group relative rounded-lg mt-3 items-start justify-between  border p-4 h-[7.5rem] w-full",
                               isDateGreaterThanToday(v?.validity)
                                 ? ""
-                                : "hover:border-basePrimary border-gray-500",
-
-                              activeSelectedPrice(v?.attendeeType) &&
-                                "border-basePrimary"
+                                : "hover:border-basePrimary border-gray-300"
                             )}
                           >
                             {v?.discountPercentage &&
                             v?.discountPercentage > 0 ? (
                               <p
                                 className={cn(
-                                  "w-9 absolute right-4 top-[-14px] h-7 rounded-[40%] px-2 flex items-center justify-center bg-gray-200 text-xs sm:text-mobile",
-                                  activeSelectedPrice(v?.attendeeType) &&
-                                    "bg-blue-50 text-basePrimary"
+                                  "w-9 absolute right-4 top-[-14px] h-7 rounded-[40%] px-2 flex items-center justify-center bg-gray-200 text-xs sm:text-mobile"
                                 )}
                               >{`${v?.discountPercentage.toFixed(0)}%`}</p>
                             ) : null}
@@ -718,8 +716,15 @@ export function BookEvent({
           {/** */}
           {active === 2 && (
             <div className="w-full lg:col-span-4 flex-col gap-y-4 p-4 sm:p-6">
-              <div className="w-full flex items-center justify-center py-3 border-b">
+              <div className="w-full flex items-center justify-between py-3 border-b">
+                <Button
+                  onClick={() => setActive(1)}
+                  className="px-0 w-fit h-fit"
+                >
+                  <ArrowBack size={20} />
+                </Button>
                 <p className="text-base sm:text-xl font-semibold">Checkout</p>
+                <p className="w-1 h-1"></p>
               </div>
               <div className="w-full lg:h-[510px] pb-24 pt-4 no-scrollbar lg:overflow-y-auto">
                 <Form {...form}>
@@ -728,7 +733,7 @@ export function BookEvent({
                     className=" w-full  space-y-3"
                   >
                     <div className="w-full flex flex-col items-start justify-start gap-y-2">
-                      <div className="flex items-center gap-x-10">
+                      <div className="hidden items-center gap-x-10">
                         <p className="font-medium">People Attending</p>
                         <div className="flex items-center gap-x-3">
                           <Button
@@ -736,7 +741,7 @@ export function BookEvent({
                             onClick={(e) => {
                               e.stopPropagation();
                               e.preventDefault();
-                              remove(fields.length - 1);
+                              // remove(fields.length - 1);
                             }}
                             className={cn(
                               "px-1 h-fit w-fit text-gray-400",
@@ -752,7 +757,7 @@ export function BookEvent({
                             onClick={(e) => {
                               e.stopPropagation();
                               e.preventDefault();
-                              appendAttendees();
+                              //  appendAttendees();
                             }}
                             className={cn("px-1 h-fit w-fit text-basePrimary")}
                           >
@@ -774,7 +779,9 @@ export function BookEvent({
                           className="w-full flex flex-col gap-y-3"
                         >
                           <div className="w-full flex flex-col gap-y-2 items-start justify-start">
-                            <h2>{`Attendee ${index + 1}`}</h2>
+                            <h2>{`Attendee ${index + 1}: ${
+                              attendee?.ticketType
+                            }`}</h2>
                             <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-4">
                               <FormField
                                 control={form.control}

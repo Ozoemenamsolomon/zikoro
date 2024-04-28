@@ -50,7 +50,12 @@ export async function PATCH(req: NextRequest) {
 
       const { error } = await supabase
         .from("agenda")
-        .upsert(params, { onConflict: "id" });
+        .update([
+          {
+            ...params,
+          },
+        ])
+        .eq("id", params?.id);
       if (error) throw error;
       return NextResponse.json(
         { msg: "agenda updated successfully" },
@@ -73,5 +78,3 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
-
-
