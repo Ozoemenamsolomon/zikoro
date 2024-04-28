@@ -9,7 +9,8 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      console.log(params.eventId);
+      console.log(params);
+      console.log(params.id);
 
       if (!params.id) {
         const { data, error: checkIfRegisteredError } = await supabase
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
           .eq("eventAlias", params.eventId)
           .maybeSingle();
 
-        console.log(checkIfRegisteredError);
+        console.log(checkIfRegisteredError, data);
 
         if (checkIfRegisteredError) throw checkIfRegisteredError?.code;
         if (data) throw "email error";

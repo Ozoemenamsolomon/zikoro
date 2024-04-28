@@ -69,13 +69,8 @@ export default function AddAttendeeForm({
           attendee.whatsappNumber && attendee.whatsappNumber.substring(4),
       }
     : {
-        registrationDate: new Date().toISOString(),
-        userEmail: "ubahyusuf484@gmail.com",
         attendeeType: ["attendee"],
-        eventId: Array.isArray(eventId) ? eventId[0] : eventId,
         country: "Nigeria",
-        ticketType: "in-house",
-        registrationCompleted: true,
       };
 
   const form = useForm<TAttendee>({
@@ -88,6 +83,22 @@ export default function AddAttendeeForm({
     setValue,
     formState: { errors },
   } = form;
+
+  useEffect(() => {
+    if (!attendee) return form.reset();
+
+    form.reset({
+      ...attendee,
+      phoneNumber: attendee.phoneNumber && attendee.phoneNumber.substring(4),
+      whatsappNumber:
+        attendee.whatsappNumber && attendee.whatsappNumber.substring(4),
+    });
+
+    setPhoneCountryCode(attendee.phoneNumber?.slice(0, 3));
+    setWhatsAppCountryCode(
+      attendee.whatsappNumber ? attendee.whatsappNumber?.slice(0, 3) : "+234"
+    );
+  }, [attendee]);
 
   console.log(errors);
 
@@ -122,7 +133,7 @@ export default function AddAttendeeForm({
 
   async function onSubmit(data: z.infer<typeof AttendeeSchema>) {
     console.log(data, "submit");
-    const payload = {
+    const payload: TAttendee = {
       ...data,
       phoneNumber: data.phoneNumber
         ? phoneCountryCode + data.phoneNumber
@@ -131,9 +142,16 @@ export default function AddAttendeeForm({
         ? whatsappCountryCode + data.whatsappNumber
         : "N/A",
       eventId: Array.isArray(eventId) ? eventId[0] : eventId,
-
+      ticketType: "in-house",
+      registrationCompleted: true,
       userId: user.id,
+      userEmail: user.userEmail,
+      registrationDate: new Date().toISOString(),
     };
+
+    if (attendee) {
+      payload.id = attendee.id;
+    }
 
     onClose();
     await action(payload);

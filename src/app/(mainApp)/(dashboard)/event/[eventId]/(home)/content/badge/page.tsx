@@ -469,7 +469,7 @@ const Badges = () => {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="bg-black/10 p-2 absolute top-2 right-2 z-[2]"
+                  className="bg-white/80 p-2 absolute top-2 right-2 z-[2]"
                 >
                   <svg
                     stroke="currentColor"

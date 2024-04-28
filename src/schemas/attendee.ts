@@ -6,20 +6,18 @@ export const checkinSchema = z.object({
 });
 
 export const AttendeeSchema = z.object({
-  registrationDate: z.string(),
-  userEmail: z.string().email(),
   firstName: z.string().min(2, {
-    message: "email must be at least 2 characters.",
+    message: "first name must be at least 2 characters.",
   }),
   lastName: z.string().min(2, {
-    message: "email must be at least 2 characters.",
+    message: "last name must be at least 2 characters.",
   }),
   email: z.string().email(),
-  jobTitle: z.string().optional(),
-  organization: z.string().optional(),
-  city: z.string().optional(),
-  country: z.string().optional(),
-  websiteUrl: z.string().optional(),
+  jobTitle: z.string().optional().nullable(),
+  organization: z.string().optional().nullable(),
+  city: z.string().optional().nullable(),
+  country: z.string().optional().nullable(),
+  websiteUrl: z.string().optional().nullable(),
   phoneNumber: z
     .string()
     .length(10, { message: "phone number must be 10 digits" }),
@@ -27,22 +25,13 @@ export const AttendeeSchema = z.object({
     .string()
     .length(10, { message: "whatsapp number must be 10 digits" })
     .optional(),
-  bio: z.string().optional(),
-  x: z.string().optional(),
-  linkedin: z.string().optional(),
-  instagram: z.string().optional(),
-  facebook: z.string().optional(),
-  profilePicture: z.string().optional(),
+  bio: z.string().optional().nullable(),
+  x: z.string().optional().nullable(),
+  linkedin: z.string().optional().nullable(),
+  instagram: z.string().optional().nullable(),
+  facebook: z.string().optional().nullable(),
+  profilePicture: z.string().optional().nullable(),
   attendeeType: z.array(z.string()),
-  eventId: z.string(),
-  badge: z.string().optional(),
-  ticketType: z.string().optional(),
-  eventRegistrationRef: z.string().optional(),
-  userId: z.number().optional(),
-
-  // TODO: @ajax484 please correct this type
-  tags: z.array(z.string()).optional(),
-  favourite: z.boolean().optional(),
 });
 
 export const attendeeNoteSchema = z.object({

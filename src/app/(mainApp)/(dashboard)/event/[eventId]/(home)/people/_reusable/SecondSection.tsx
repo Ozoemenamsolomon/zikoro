@@ -44,7 +44,7 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
 import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
 import useDisclose from "@/hooks/common/useDisclose";
-import { getCookie, useGetEvent } from "@/hooks";
+import { getCookie, useCreateAttendee, useGetEvent } from "@/hooks";
 
 export default function SecondSection({
   attendee,
@@ -248,6 +248,8 @@ export default function SecondSection({
     String(event?.createdBy) === String(user.id)
   );
 
+  const { createAttendee } = useCreateAttendee();
+
   return eventIsLoading ? null : (
     <div className="h-fit space-y-4">
       <div
@@ -264,9 +266,15 @@ export default function SecondSection({
             <div className="relative z-[1000]">
               <div className="absolute top-2 right-4">
                 <button
-                  onClick={onOpenattendeeForm}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpenattendeeForm();
+                  }}
                   className={`text-gray-700 ${
-                    email === user.userEmail ? "" : "hidden"
+                    (user && String(event?.createdBy) === String(user.id)) ||
+                    user.userEmail === email
+                      ? ""
+                      : "hidden"
                   }`}
                 >
                   <svg
@@ -1383,7 +1391,11 @@ export default function SecondSection({
         isOpen={attendeeFormIsOpen}
         onClose={onCloseAttendeeForm}
         attendee={attendee}
-        getAttendee={getAttendees}
+        refresh={getAttendees}
+        action={async (payload: Partial<TAttendee>) => {
+          await createAttendee({ payload });
+          await getAttendees();
+        }}
       />
     </div>
   );
