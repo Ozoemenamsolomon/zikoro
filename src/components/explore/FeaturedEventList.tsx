@@ -9,6 +9,7 @@ type DBFeaturedEvent = {
   eventPoster: string;
   eventTitle: string;
   eventCity: string;
+  eventAlias: string;
   eventCountry: string;
   locationType: string;
   pricing: [];
@@ -81,6 +82,7 @@ export default function FeaturedEventList({ searchQuery }: selectedEventProps) {
               id={event.id}
               eventPoster={event.eventPoster}
               eventTitle={event.eventTitle}
+              eventAlias ={event.eventAlias}
               eventCity={event.eventCity}
               eventCountry={event.eventCountry}
               locationType={event.locationType}

@@ -14,6 +14,7 @@ type FeaturedEventProps = {
   eventTitle: string;
   eventCity: string;
   eventCountry: string;
+  eventAlias:string;
   locationType: string;
   pricing: [];
   pricingCurrency: string;
@@ -28,6 +29,7 @@ export default function FeaturedEvent({
   eventTitle,
   eventCity,
   eventCountry,
+  eventAlias,
   locationType,
   pricing,
   pricingCurrency,
@@ -81,7 +83,7 @@ export default function FeaturedEvent({
 
   //function that shows the event details
   function goToEvent() {
-    window.open(`/live-events/${id}`, "_blank");
+    window.open(`/live-events/${eventAlias}`, "_blank");
   }
 
   //useEffect

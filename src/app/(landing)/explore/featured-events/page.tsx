@@ -16,6 +16,7 @@ type DBFeaturedEvent = {
   eventTitle: string;
   eventCity: string;
   eventCountry: string;
+  eventAlias: string;
   locationType: string;
   pricing: [];
   pricingCurrency: string;
@@ -483,6 +484,7 @@ export default function FeaturedEvents() {
                             eventTitle={event.eventTitle}
                             eventCity={event.eventCity}
                             eventCountry={event.eventCountry}
+                            eventAlias = {event.eventAlias}
                             locationType={event.locationType}
                             pricing={event.pricing}
                             pricingCurrency={event.pricingCurrency}
@@ -567,6 +569,7 @@ export default function FeaturedEvents() {
                           eventPoster={event.eventPoster}
                           eventTitle={event.eventTitle}
                           eventCity={event.eventCity}
+                          eventAlias={event.eventAlias}
                           eventCountry={event.eventCountry}
                           locationType={event.locationType}
                           pricing={event.pricing}

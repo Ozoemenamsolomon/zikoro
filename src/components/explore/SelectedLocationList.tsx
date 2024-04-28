@@ -4,16 +4,16 @@ import SelectedLocation from "./SelectedLocation";
 import { RightArrow, LocationIcon1 } from "@/constants/icons";
 import { useRouter } from "next/navigation";
 
-
 type selectedEventProps = {
-  searchQuery: string ; 
-}
+  searchQuery: string;
+};
 
 type DBSelectedLocation = {
   id: number;
   eventPoster: string;
   eventTitle: string;
   eventCity: string;
+  eventAlias: string;
   eventCountry: string;
   locationType: string;
   pricing: [];
@@ -23,9 +23,9 @@ type DBSelectedLocation = {
   registered: number;
 };
 
-
-export default function SelectedLocationList({searchQuery}:selectedEventProps ) {
-
+export default function SelectedLocationList({
+  searchQuery,
+}: selectedEventProps) {
   const router = useRouter();
   const [eventData, setEventData] = useState<DBSelectedLocation[] | undefined>(
     undefined
@@ -35,7 +35,7 @@ export default function SelectedLocationList({searchQuery}:selectedEventProps ) 
   const [error, setError] = useState<string | null>(null);
 
   async function fetchEventFeautured() {
-    fetch(`/api/explore?eventCity=Ibadan`, {
+    fetch(`/api/explore?eventCountry=Nigeria`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -83,7 +83,6 @@ export default function SelectedLocationList({searchQuery}:selectedEventProps ) 
   //     setLoading(false);
   //   }
   // };
-  
 
   //filter event
   const filteredEvents = eventData?.filter((event) => {
@@ -91,10 +90,8 @@ export default function SelectedLocationList({searchQuery}:selectedEventProps ) 
     return (
       event.eventTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       event.eventCity.toLowerCase().includes(searchQuery.toLowerCase())
-   );
+    );
   });
-
-
 
   useEffect(() => {
     fetchEventFeautured();
@@ -115,7 +112,7 @@ export default function SelectedLocationList({searchQuery}:selectedEventProps ) 
             ) : location ? (
               <p className="">{location}</p>
             ) : null} */}
-            Ibadan
+            Nigeria
           </div>
         </div>
 
@@ -141,13 +138,14 @@ export default function SelectedLocationList({searchQuery}:selectedEventProps ) 
               eventPoster={event.eventPoster}
               eventTitle={event.eventTitle}
               eventCity={event.eventCity}
+              eventAlias={event.eventAlias}
               eventCountry={event.eventCountry}
               locationType={event.locationType}
               pricing={event.pricing}
               pricingCurrency={event.pricingCurrency}
               startDateTime={event.startDateTime}
               expectedParticipants={event.expectedParticipants}
-              registered = {event.registered}
+              registered={event.registered}
             />
           ))}
       </div>
