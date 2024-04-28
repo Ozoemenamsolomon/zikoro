@@ -140,7 +140,7 @@ function Widget({
               ))}
           </div>
         )}
-        <div className="flex items-center gap-x-2 mb-2 ">
+        <div className="flex items-center gap-x-3 mb-2 ">
           {session?.sessionType && (
             <EventLocationType locationType={session?.sessionType ?? ""} />
           )}

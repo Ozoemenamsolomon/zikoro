@@ -194,10 +194,10 @@ export const useGetSessionAgendas = (
     fetchData()
   }
 
-  function fetchData() {
+  async function fetchData() {
     if (!loading && !isLoading && !loadingMyAgenda) {
-      setFetching(false);
-
+    
+      console.log("first")
       const formattedAgendas = agendas?.filter(({id}) => {
         return myAgendas?.some(({sessionId}) => Number(sessionId) === Number(id))
       })
@@ -212,27 +212,44 @@ export const useGetSessionAgendas = (
         )
       );
 
+      console.log("second")
+
       const agendaGroups: { [key: string]: TSessionAgenda } = {};
 
-      sortedActiveDateAgendas.forEach((agenda) => {
-        const key = `${agenda.startDateTime}-${agenda.endDateTime}`;
-
-        if (!agendaGroups[key]) {
-          agendaGroups[key] = {
-            timeStamp: {
-              start: agenda.startDateTime,
-              end: agenda.endDateTime,
-            },
-            sessions: [],
-          };
-        }
-
-        agendaGroups[key].sessions.push(agenda);
+      const promises = sortedActiveDateAgendas.map((agenda) => {
+          return new Promise( async (resolve) => {
+              const key = `${agenda.startDateTime}-${agenda.endDateTime}`;
+              if (!agendaGroups[key]) {
+                  agendaGroups[key] = {
+                      timeStamp: {
+                          start: agenda.startDateTime,
+                          end: agenda.endDateTime,
+                      },
+                      sessions: [],
+                  };
+              }
+      
+              console.log("third");
+              agendaGroups[key].sessions.push(agenda);
+      
+              // Resolve the promise to signal that processing for this agenda is complete
+              resolve(agendaGroups[key]);
+          });
       });
-
-      const result = Object.values(agendaGroups);
-
-      setSessionAgendas(result);
+      
+      // Use Promise.all to wait for all agenda processing to complete
+     await  Promise.all(promises)
+          .then(() => {
+              const result = Object.values(agendaGroups);
+              // Do something with the result, such as updating state
+              console.log("forth");
+              setSessionAgendas(result);
+              setFetching(false);
+      
+       
+    })
+    //  setSessionAgendas(result);
+     // setFetching(false);
     }
   }
   // get the events

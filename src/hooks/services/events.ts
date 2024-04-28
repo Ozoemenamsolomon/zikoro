@@ -601,7 +601,7 @@ export function useBookingEvent() {
       });
 
       const { error, status } = await supabase
-        .from("attendee")
+        .from("attendees")
         .upsert([...attendees]);
 
       if (error) {

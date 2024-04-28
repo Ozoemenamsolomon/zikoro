@@ -700,12 +700,12 @@ export function BookEvent({
                   </div>
                 </div>
                 <Button
-                  disabled={pathname.includes("preview")}
+                  disabled={chosenAttendee?.length === 0 ||pathname.includes("preview")}
                   type="submit"
                   onClick={() => setActive(2)}
                   className={cn(
                     "h-14 w-full gap-x-2 bg-basePrimary hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium",
-                    pathname.includes("preview") && "bg-gray-200 text-black"
+                    (chosenAttendee?.length === 0 || pathname.includes("preview")) && "bg-gray-200 text-black"
                   )}
                 >
                   <span>Continue</span>

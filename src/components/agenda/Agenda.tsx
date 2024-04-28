@@ -65,7 +65,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
     )?.id;
   }, [attendees]);
 
-  console.log("sesson", fetching);
+  console.log("sesson", fetching,);
 
   return (
     <>

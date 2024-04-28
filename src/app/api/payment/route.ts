@@ -469,15 +469,15 @@ export async function POST(req: NextRequest) {
       };
 
       await transporter.sendMail(mailData, function (err: any, info: any) {
-        console.log({ attendee: registeredAttendees[0], mailData });
+      //  console.log({ attendee: registeredAttendees[0], mailData });
         if (err) {
-          console.log({ error });
+        //  console.log({ error });
           check += " error";
           throw err;
         } else {
           check += " success";
-          console.log({ info });
-          console.log({ check });
+        //  console.log({ info });
+         // console.log({ check });
         }
       });
 
