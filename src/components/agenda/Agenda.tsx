@@ -14,6 +14,7 @@ import {
   useFetchSingleEvent,
   useGetAllAttendees,
   useGetSessionAgendas,
+  useCheckTeamMember
 } from "@/hooks";
 import { generateDateRange } from "@/utils";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -27,6 +28,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
   const { attendees } = useGetAllAttendees();
   const [isOpen, setOpen] = useState(false);
   const { data, refetch } = useFetchSingleEvent(eventId);
+  const {isIdPresent} =useCheckTeamMember({eventId})
   const [isFullScreen, setFullScreen] = useState(false);
   const activeDateQuery = search.get("date");
   const { sessionAgendas, fetching, refetchSession } = useGetSessionAgendas(
@@ -45,6 +47,9 @@ export default function Agenda({ eventId }: { eventId: string }) {
     }
   }, [data]);
 
+
+
+
   function onClose() {
     setOpen((prev) => !prev);
   }
@@ -56,16 +61,16 @@ export default function Agenda({ eventId }: { eventId: string }) {
   const attendeeId = useMemo(() => {
     return attendees?.find(
       ({ email, eventAlias }) =>
-      eventAlias === eventId && email === user?.userEmail
+        eventAlias === eventId && email === user?.userEmail
     )?.id;
   }, [attendees]);
 
-   console.log("sesson", fetching);
+  console.log("sesson", fetching);
 
   return (
     <>
       <div>
-        <div className="w-full overflow-x-auto no-scrollbar  p-4 text-base flex items-center gap-x-8 sm:justify-between text-[#3E404B] border-b border-basebody">
+        <div className="w-full overflow-x-auto no-scrollbar  p-4 text-base flex items-center gap-x-8 sm:justify-between text-[#3E404B]">
           <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
             <Link
               href={`/event/${eventId}/agenda`}
@@ -152,6 +157,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
                   sessionAgenda={sessionAgenda}
                   refetchSession={refetchSession}
                   event={data}
+                  isIdPresent={isIdPresent}
                   refetchEvent={refetch}
                   attendeeId={attendeeId}
                 />
@@ -173,6 +179,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
         <FullScreenView
           close={toggleFullScreenMode}
           sessionAgendas={sessionAgendas}
+          eventId={eventId}
         />
       )}
     </>

@@ -23,6 +23,7 @@ const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
       setIsIdPresent(isEventIdPresent);
     }
   }, [events, eventLoading]);
+  
   const links = [
     {
       name: "Reception",

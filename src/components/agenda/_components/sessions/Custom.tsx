@@ -22,14 +22,16 @@ export function Custom({
   refetchSession,
   event,
   refetchEvent,
-  attendeeId
+  attendeeId,
+  isIdPresent
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
   refetchSession?: () => Promise<any>;
   refetchEvent?: () => Promise<any>;
   event?: Event | null;
-  attendeeId?:number
+  attendeeId?:number;
+  isIdPresent: boolean;
 }) {
   
 
@@ -58,6 +60,7 @@ export function Custom({
               attendeeId={attendeeId}
               refetchEvent={refetchEvent}
               refetchSession={refetchSession}
+              isIdPresent={isIdPresent}
             />
           ))}
         </Comp>
@@ -71,13 +74,15 @@ function Widget({
   refetchSession,
   event,
   attendeeId,
-  refetchEvent
+  refetchEvent,
+  isIdPresent
 }: {
   session: TAgenda;
   event?: Event | null;
   refetchSession?: () => Promise<any>;
   attendeeId?: number;
   refetchEvent?: () => Promise<any>;
+  isIdPresent:boolean;
 }) {
   const router = useRouter();
 
@@ -150,18 +155,13 @@ function Widget({
               {session?.Track ?? ""}
             </button>
           )}
-          <div className="flex items-center gap-x-2">
+          <div className="flex items-center gap-x-3">
           <AddToMyAgenda attendeeId={attendeeId} sessionId={session?.id}/>
 
-            <div className="flex items-center gap-x-2">
-              <Button className="h-fit w-fit px-0">
-                <CheckmarkDone className="" size={18} />
-              </Button>
-              <p className="text-xs sm:text-sm">Check-in</p>
-            </div>
+           
           </div>
         </div>
-        <div className="flex items-center mb-2  gap-x-2">
+     {isIdPresent &&   <div className="flex items-center mb-2  gap-x-2">
           <Edit session={session} event={event} refetch={refetchSession} refetchEvent={refetchEvent}/>
           <Duplicate session={session} refetch={refetchSession} />
           <Deletes agendaId={session?.id} refetch={refetchSession} />
@@ -176,7 +176,13 @@ function Widget({
               <p>Reviews</p>
             </div>
           </Button>
-        </div>
+          <div className="flex items-center gap-x-2">
+              <Button className="h-fit w-fit px-0">
+                <CheckmarkDone className="" size={18} />
+              </Button>
+              <p className="text-xs sm:text-sm">Check-in</p>
+            </div>
+        </div>}
         {Array.isArray(session?.sessionSponsors) &&
           session?.sessionSponsors?.length > 0 && (
             <div className="w-full flex flex-col mb-2  items-start justify-start gap-y-2">

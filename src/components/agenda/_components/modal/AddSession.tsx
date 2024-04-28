@@ -1,6 +1,6 @@
 "use client";
 
-import { Form, FormField, Input, Button, ReactSelect } from "@/components";
+import { Form, FormField, Input, Button, ReactSelect, Textarea } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
@@ -102,11 +102,8 @@ export function AddSession({
     });
   }, [data]);
   // moderators
-  const moderators = useMemo(() => {
-    const filtered = attendees?.filter(({ ticketType }) => {
-      return ticketType === "Moderator";
-    });
-    return filtered?.map(({ firstName, lastName, email }) => {
+  const formattedAttendees = useMemo(() => {
+    return attendees?.map(({ firstName, lastName, email }) => {
       return {
         label: `${firstName} ${lastName}`,
         value: email,
@@ -114,7 +111,8 @@ export function AddSession({
     });
   }, [attendees]);
 
-  // speakers
+ /**
+   // speakers
   const speakers = useMemo(() => {
     const filtered = attendees?.filter(({ ticketType }) => {
       return ticketType === "Speaker";
@@ -126,6 +124,7 @@ export function AddSession({
       };
     });
   }, [attendees]);
+  */
 
   // session tracks
   const formattedSessions = useMemo(() => {
@@ -443,6 +442,20 @@ export function AddSession({
                  Start and End time must be the same day
                 </p>
               </div>
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <InputOffsetLabel label="Description">
+                    <Textarea
+                      placeholder="Enter the description"
+                      {...form.register("description")}
+                      className="placeholder:text-sm  focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    ></Textarea>
+                  </InputOffsetLabel>
+                )}
+              />
               {activity === "Custom" && (
                 <>
                   <div className="w-full flex items-center gap-x-2">
@@ -566,7 +579,7 @@ export function AddSession({
                         {...form.register("sessionSpeakers")}
                         placeHolder="Select Speaker"
                         label="Speaker"
-                        options={speakers}
+                        options={formattedAttendees}
                       />
                     )}
                   />
@@ -606,7 +619,7 @@ export function AddSession({
                         {...form.register("sessionModerators")}
                         placeHolder="Select Moderator"
                         label="Moderator"
-                        options={moderators}
+                        options={formattedAttendees}
                       />
                     )}
                   />

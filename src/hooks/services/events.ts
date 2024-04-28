@@ -1095,3 +1095,27 @@ export function useAttenedeeEvents() {
     loading,
   };
 }
+
+
+export function useCheckTeamMember({eventId}:{eventId: string}) {
+  const [isIdPresent, setIsIdPresent] = useState(false);
+  const { events, loading: eventLoading } = useGetUserHomePageEvents();
+
+
+  useEffect(() => {
+    if (events && !eventLoading) {
+      //checked if the eventid is present in the event array
+      const isEventIdPresent = events?.some(
+        ({ eventAlias }) => eventAlias === eventId
+      );
+
+      setIsIdPresent(isEventIdPresent);
+    }
+  }, [events, eventLoading]);
+
+
+  return {
+    isIdPresent
+  }
+
+}
