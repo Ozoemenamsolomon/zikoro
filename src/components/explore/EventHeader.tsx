@@ -3,12 +3,17 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 
-export default function EventHeader() {
-  const [searchBox, setSearchBox] = useState("");
+interface SearchComponentProps {
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<string>; //Assuming setSearchQuery is a dispatcher for strings
+}
 
-  const handleChange = (e: any) => {
-    setSearchBox(e.target.value);
+export default function EventHeader({ searchQuery, setSearchQuery} : SearchComponentProps) {
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
   };
+
   return (
     <div className="bg-gradient-overlay relative">
       <Image
@@ -50,7 +55,7 @@ export default function EventHeader() {
                   <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-full h-full">
                     <input
                       type="text"
-                      value={searchBox}
+                      value={searchQuery}
                       name="searchBox"
                       id=""
                       onChange={handleChange}
@@ -78,7 +83,7 @@ export default function EventHeader() {
                 <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-full h-full">
                   <input
                     type="text"
-                    value={searchBox}
+                    value={searchQuery}
                     name="searchBox"
                     id=""
                     onChange={handleChange}
