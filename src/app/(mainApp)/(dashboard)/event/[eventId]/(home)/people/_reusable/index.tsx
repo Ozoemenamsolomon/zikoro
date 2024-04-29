@@ -83,6 +83,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
                 getAttendees={getAttendees}
                 eventIsLoading={eventIsLoading}
                 event={event}
+                onOpen={onOpenAttendeeForm}
               />
             </section>
             <section className="flex flex-col md:col-span-3 pt-2">
@@ -192,6 +193,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
           await createAttendee({ payload });
           await getAttendees();
         }}
+        attendee={selectedAttendee}
       />
     </section>
   );

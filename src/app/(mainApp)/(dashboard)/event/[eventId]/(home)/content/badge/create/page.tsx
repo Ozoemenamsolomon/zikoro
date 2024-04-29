@@ -42,6 +42,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useGetEvent } from "@/hooks";
 
 const tabs = [
   {
@@ -230,6 +231,10 @@ const page = () => {
   const router = useRouter();
   const { eventId } = useParams();
 
+  const { event, isLoading: eventIsLoading } = useGetEvent({
+    eventId: parseInt(Array.isArray(eventId) ? eventId[0] : eventId),
+  });
+
   const searchParams = useSearchParams();
 
   const badgeId = searchParams.get("badgeId");
@@ -369,7 +374,7 @@ const page = () => {
               lastEdited: new Date(),
             }
           : {
-              eventId: Number(eventId) || 0,
+              eventId,
               badgeDetails: { ...details, craftHash: hashRef.current },
               badgeSettings: settings,
               badgeBackground: details.background || "",
@@ -526,7 +531,7 @@ const page = () => {
           <Button
             className="flex gap-2"
             variant={"ghost"}
-            onClick={() => router.back()}
+            onClick={() => router.push("../badge")}
           >
             <svg
               stroke="currentColor"

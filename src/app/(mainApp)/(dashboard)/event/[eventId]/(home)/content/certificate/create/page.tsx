@@ -733,7 +733,7 @@ const page = () => {
           <Button
             className="flex gap-2"
             variant={"ghost"}
-            onClick={() => router.push("../")}
+            onClick={() => router.push("../certificate")}
           >
             <svg
               stroke="currentColor"
