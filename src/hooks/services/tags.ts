@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { toast } from "@/components/ui/use-toast";
 import { RequestStatus } from "@/types/request";
@@ -178,7 +178,11 @@ type UseGetAttendeesTagsResult = {
   getAttendeesTags: () => Promise<void>;
 } & RequestStatus;
 
-export const useGetAttendeesTags = (): UseGetAttendeesTagsResult => {
+export const useGetAttendeesTags = ({
+  userId,
+}: {
+  userId: number;
+}): UseGetAttendeesTagsResult => {
   const [attendeesTags, setTags] = useState<TAttendeeTags[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -188,7 +192,7 @@ export const useGetAttendeesTags = (): UseGetAttendeesTagsResult => {
 
     try {
       const { data, status } = await getRequest<TAttendeeTags[]>({
-        endpoint: `/attendees/tags`,
+        endpoint: `/attendees/tags/${userId}`,
       });
 
       if (status !== 200) throw data;

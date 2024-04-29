@@ -7,6 +7,8 @@ import { TAttendee } from "@/types/attendee";
 import { useGetAttendeeEventTransactions } from "@/hooks/services/billing";
 import { formatDate, isWithinTimeRange } from "@/utils/date";
 import { useEffect } from "react";
+import { getCookie } from "@/hooks";
+import { TUser } from "@/types";
 
 interface RewardData {
   imgSrc: string;
@@ -18,9 +20,10 @@ interface RewardData {
 
 export default function ThirdSection({ attendee }: { attendee: TAttendee }) {
   const { eventRegistrationRef } = attendee;
+  const user = getCookie<TUser>("user");
   const { attendeeEventTransactions, isLoading, getAttendeeEventTransactions } =
     useGetAttendeeEventTransactions({
-      userId: 10,
+      userId: user ? user.id : 0,
       eventRegistrationRef,
     });
 

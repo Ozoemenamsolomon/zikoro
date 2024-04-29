@@ -14,43 +14,45 @@ import React, { useEffect, useState } from "react";
 // import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
 import { isWithinTimeRange } from "@/utils/date";
-import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
 import { DialogClose } from "../ui/dialog";
+import { eachDayOfInterval, format, isSameDay } from "date-fns";
+import { MoreOptionsProps } from "@/app/(mainApp)/(dashboard)/event/[eventId]/(home)/people/_reusable/FirstSection";
 
 const checkinMultiple: React.FC<MoreOptionsProps> = ({
   attendees,
   getAttendees,
   attendeesTags,
   favourites,
+  event,
 }) => {
   console.log(attendeesTags);
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
-  const [eventDate, setEventDate] = useState<Date>(new Date("01/07/2024"));
+  const [eventDate, setEventDate] = useState<string | null>(null);
   const [action, setAction] = useState<"checkin" | "undo">("checkin");
 
   useEffect(() => {
+    console.log("here");
+    if (!eventDate) return;
+    console.log("here");
+
+    console.log(eventDate);
+
     setMappedAttendees(
       attendees.filter(({ checkin }) => {
-        return action === "checkin"
-          ? !checkin ||
-              !checkin.some((entry) => {
-                console.log(
-                  entry.date,
-                  eventDate,
-                  isWithinTimeRange(entry.date, eventDate.toISOString())
-                );
-                return (
-                  isWithinTimeRange(entry.date, eventDate.toISOString()) &&
-                  entry.checkin
-                );
-              })
-          : checkin?.some(
-              (entry) =>
-                isWithinTimeRange(entry.date, eventDate.toISOString()) &&
-                entry.checkin
-            ) || false;
+        if (action === "checkin") {
+          return (
+            !checkin ||
+            !checkin.some((entry) => isSameDay(eventDate, entry.date))
+          );
+        } else {
+          return (
+            (checkin &&
+              checkin?.some((entry) => isSameDay(eventDate, entry.date))) ||
+            false
+          );
+        }
       })
     );
   }, [attendees, eventDate, action]);
@@ -70,26 +72,27 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
   };
 
   const onSubmit = async () => {
-    let newDate = new Date(eventDate);
-    newDate.setHours(12, 0, 0, 0);
+    if (!eventDate) return;
+
+    const newDate = new Date(eventDate);
     console.log(eventDate, newDate);
+
     const payload = selectedAttendees.map((attendee) => {
-      const newCheckin = !attendee.checkin
-        ? [{ date: newDate.toISOString(), checkin: true }]
-        : action === "checkin"
-        ? [
-            ...(attendee.checkin ?? []),
-            { date: newDate.toISOString(), checkin: true },
-          ]
-        : (attendee.checkin ?? []).filter(
-            ({ date }) => !isWithinTimeRange(eventDate.toISOString(), date)
-          );
+      const existingCheckin = attendee.checkin || [];
+      const newCheckin =
+        action === "checkin"
+          ? [...existingCheckin, { date: newDate, checkin: true }]
+          : existingCheckin.filter(({ date }) => !isSameDay(newDate, date));
 
       return {
         ...attendee,
-        checkin: newCheckin,
+        checkin: newCheckin.length
+          ? newCheckin
+          : [{ date: newDate, checkin: true }],
       };
     });
+
+    console.log(payload, action);
 
     await updateAttendees({ payload });
     await getAttendees();
@@ -151,17 +154,19 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
             />
           </svg>
         </div>
-        <Select
-          onValueChange={(value) => setEventDate(new Date(value))}
-          defaultValue={"01/07/2024"}
-        >
+        <Select onValueChange={(value) => setEventDate(value)}>
           <SelectTrigger className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-12 w-full">
             <SelectValue placeholder="Select Event Date" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={"01/07/2024"}>07/01/2024</SelectItem>
-            <SelectItem value={"01/08/2024"}>08/01/2024</SelectItem>
-            <SelectItem value={"01/09/2024"}>09/01/2024</SelectItem>
+            {eachDayOfInterval({
+              start: event?.startDateTime,
+              end: event?.endDateTime,
+            }).map((date) => (
+              <SelectItem value={date.toISOString()}>
+                {format(date, "PPP")}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>

@@ -119,7 +119,7 @@ const Attendee: React.FC<AttendeeProps> = ({
         <Avatar className="w-12 h-12">
           <AvatarImage
             className="h-full w-full object-cover"
-            src={profilePicture}
+            src={profilePicture ?? ""}
           />
           <AvatarFallback>
             <span className="uppercase">{firstName[0] + lastName[0]}</span>
