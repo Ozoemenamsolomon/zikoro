@@ -24,7 +24,8 @@ export const AttendeeSchema = z.object({
   whatsappNumber: z
     .string()
     .length(10, { message: "whatsapp number must be 10 digits" })
-    .optional(),
+    .optional()
+    .nullable(),
   bio: z.string().optional().nullable(),
   x: z.string().optional().nullable(),
   linkedin: z.string().optional().nullable(),
