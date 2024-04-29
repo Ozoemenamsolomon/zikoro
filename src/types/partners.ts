@@ -16,7 +16,7 @@ export enum PartnersEnum {
   
   export interface TPartner {
     banners: PartnerBannerType[];
-    boothNumber: string;
+    boothNumber: string[];
     boothStaff: JSON;
     city: string;
     companyLogo: string;

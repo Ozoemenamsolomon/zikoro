@@ -71,6 +71,7 @@ export function PartnerWidget({
         { length: Number(hallBoothNumber) },
         (_, index) => String(index + 1)
       );
+     
       // get all partners with the exhibition hall
       const partnersWithHall = partners.filter(
         ({ exhibitionHall }) => exhibitionHall === hall
@@ -78,11 +79,16 @@ export function PartnerWidget({
 
       // get their booth numbers
       const boothNumbers = partnersWithHall.map((item) => {
-        if (item?.boothNumber && Array.isArray(item?.boothNumber)) {
-        //  console.log(item?.boothNumber);
-          return item?.boothNumber[0]?.split(",");
+        if (Array.isArray(item?.boothNumber)) {
+     
+          return item?.boothNumber;
+        }
+        else {
+          return []
         }
       });
+
+     
       //  console.log({ddd:boothNumbers})
 
       const filterBoothNumber = boothNumbers

@@ -17,7 +17,7 @@ export function AuthLayout({ children, className, containerClassName }: { childr
           />
         </div>
 
-        <div className="flex flex-col w-full reg-scroll-style overflow-y-auto no-scrollbar  rounded-lg h-fit max-h-[85%] bg-white shadow py-7 px-3 sm:px-4">
+        <div className="flex flex-col w-full bg-white rounded-lg h-fit  shadow py-7 px-3 sm:px-4">
           {children}
         </div>
       </div>

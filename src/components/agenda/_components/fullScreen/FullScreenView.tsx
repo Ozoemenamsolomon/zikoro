@@ -94,6 +94,7 @@ export function FullScreenView({
                   className={"w-[87vw]"}
                   isIdPresent={isIdPresent}
                   isOrganizer={isOrganizer}
+                  isFullScreen
                 />
               </div>
             ))}

@@ -24,7 +24,8 @@ export function Custom({
   refetchEvent,
   attendeeId,
   isIdPresent,
-  isOrganizer
+  isOrganizer,
+  isFullScreen
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
@@ -34,6 +35,7 @@ export function Custom({
   attendeeId?:number;
   isIdPresent: boolean;
   isOrganizer:boolean;
+  isFullScreen?:boolean
 }) {
   
 
@@ -64,6 +66,7 @@ export function Custom({
               refetchSession={refetchSession}
               isIdPresent={isIdPresent}
               isOrganizer={isOrganizer}
+              isFullScreen={isFullScreen}
             />
           ))}
         </Comp>
@@ -79,7 +82,8 @@ function Widget({
   attendeeId,
   refetchEvent,
   isIdPresent,
-  isOrganizer
+  isOrganizer,
+  isFullScreen
 }: {
   session: TAgenda;
   event?: Event | null;
@@ -88,6 +92,7 @@ function Widget({
   refetchEvent?: () => Promise<any>;
   isIdPresent:boolean;
   isOrganizer:boolean;
+  isFullScreen?:boolean;
 }) {
   const router = useRouter();
 
@@ -168,7 +173,7 @@ function Widget({
            
           </div>
         </div>
-     {(isIdPresent || isOrganizer) &&   <div className="flex items-center mb-2  gap-x-2">
+     {!isFullScreen && (isIdPresent || isOrganizer) &&   <div className="flex items-center mb-2  gap-x-2">
           <Edit session={session} event={event} refetch={refetchSession} refetchEvent={refetchEvent}/>
           <Duplicate session={session} refetch={refetchSession} />
           <Deletes agendaId={session?.id} refetch={refetchSession} />
