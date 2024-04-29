@@ -267,17 +267,29 @@ export function AddSession({
       files = result;
     }
 
-    const payload: Partial<TAgenda> = {
+    const payload: Partial<TAgenda> = session?.id ? {
+      ...session,
       ...values,
       Track: values?.Track || "No Track",
       sessionModerators: chosenModerators,
       sessionSpeakers: chosenSpeakers,
       sessionSponsors: chosenSponsors,
+    
+      sessionFiles: files,
+      eventAlias: event?.eventAlias,
+      eventId: String(event?.id),
+    } :{
+      ...values,
+      Track: values?.Track || "No Track",
+      sessionModerators: chosenModerators,
+      sessionSpeakers: chosenSpeakers,
+      sessionSponsors: chosenSponsors,
+    
       sessionFiles: files,
       eventAlias: event?.eventAlias,
       eventId: String(event?.id),
     };
-    // console.log("tile", payload)
+     // console.log("tile", payload)
     // return
     const asyncFn = session?.id ? updateAgenda : createAgenda;
     await asyncFn({ payload });
@@ -303,11 +315,13 @@ export function AddSession({
   // to update
   useEffect(() => {
     if (session) {
+     
       form.reset({
         sessionTitle: session?.sessionTitle,
         startDateTime: session?.startDateTime,
         endDateTime: session?.endDateTime,
         activity: session?.activity,
+        description: session?.description,
         sessionType: session?.sessionType,
         sessionUrl: session?.sessionUrl ?? "",
         sessionVenue: session?.sessionVenue ?? "",

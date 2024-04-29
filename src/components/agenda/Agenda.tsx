@@ -13,7 +13,7 @@ import {
   getCookie,
   useFetchSingleEvent,
   useGetAllAttendees,
-  useGetSessionAgendas,
+  useGetAgendas,
   useCheckTeamMember
 } from "@/hooks";
 import { generateDateRange } from "@/utils";
@@ -31,11 +31,12 @@ export default function Agenda({ eventId }: { eventId: string }) {
   const {isIdPresent} =useCheckTeamMember({eventId})
   const [isFullScreen, setFullScreen] = useState(false);
   const activeDateQuery = search.get("date");
-  const { sessionAgendas, fetching, refetchSession } = useGetSessionAgendas(
+  const { agendas:sessionAgendas, isLoading:fetching, getAgendas:refetchSession } = useGetAgendas(
     eventId,
     activeDateQuery || currentEvent?.startDate,
     queryParam
   );
+  
 
   const dateRange = useMemo(() => {
     if (data) {
@@ -65,7 +66,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
     )?.id;
   }, [attendees]);
 
-  console.log("sesson", fetching,);
+ // console.log("sesson", fetching,);
 
   return (
     <>
@@ -73,13 +74,13 @@ export default function Agenda({ eventId }: { eventId: string }) {
         <div className="w-full overflow-x-auto no-scrollbar  p-4 text-base flex items-center gap-x-8 sm:justify-between text-[#3E404B]">
           <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
             <Link
-              href={`/event/${eventId}/agenda`}
+              href={`/event/${eventId}/agenda?date=${ activeDateQuery || currentEvent?.startDate}`}
               className={`pl-2 ${!queryParam && "text-basePrimary"}`}
             >
               Agenda
             </Link>
             <Link
-              href={`/event/${eventId}/agenda?a=my-agenda`}
+              href={`/event/${eventId}/agenda?date=${ activeDateQuery || currentEvent?.startDate}&a=my-agenda`}
               className={`pl-2 ${
                 queryParam?.includes("agenda") && "text-basePrimary"
               }`}
@@ -106,8 +107,8 @@ export default function Agenda({ eventId }: { eventId: string }) {
                 <button
                   key={val?.date}
                   onClick={() => {
-                    router.push(`/event/${eventId}/agenda?date=${val?.date}`);
-                    refetchSession();
+                    router.push(`/event/${eventId}/agenda?date=${val?.date}&a=${queryParam}`);
+                   // refetchSession();
                   }}
                   className={cn(
                     "pb-3 text-gray-400  text-base sm:text-lg",

@@ -32,7 +32,6 @@ export function Edit({
       >
         <EditOutline size={20} />
       </Button>
-
       {isOpen && (
         <AddSession
           event={event}

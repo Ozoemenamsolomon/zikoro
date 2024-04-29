@@ -12,6 +12,7 @@ export interface TAgenda {
   sessionTitle: string;
   id: number;
   eventAlias: string;
+  description:string;
   created_at: string;
   activity: string;
   startDateTime: string;

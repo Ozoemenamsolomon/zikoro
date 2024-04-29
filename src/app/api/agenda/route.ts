@@ -56,6 +56,14 @@ export async function PATCH(req: NextRequest) {
           },
         ])
         .eq("id", params?.id);
+
+        if (error ) {
+          return NextResponse.json({
+            error: error?.message
+          },{
+            status: 400
+          })
+        }
       if (error) throw error;
       return NextResponse.json(
         { msg: "agenda updated successfully" },
