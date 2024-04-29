@@ -34,7 +34,6 @@ const config = {
           theme("colors.custom-gradient-end"),
         ],
       }),
-
       colors: {
         zikoroBlue: "hsl(var(--zblue))",
         basebody: "#f3f3f3",

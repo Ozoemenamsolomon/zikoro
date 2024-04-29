@@ -41,6 +41,7 @@ import { TFavouriteContact } from "@/types/favourites";
 import { TFilter } from "@/types/filter";
 import { Event, TUser } from "@/types";
 import { getCookie } from "@/hooks";
+import { eachDayOfInterval, format, isSameDay } from "date-fns";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -111,15 +112,17 @@ const attendeeFilter: TFilter<TAttendee>[] = [
       { label: "08/01/2024", value: "01/08/2024" },
       { label: "09/01/2024", value: "01/09/2024" },
     ],
-    onFilter: (attendee: TAttendee, date: string[]) => {
-      return date.some(
-        (compareDate) =>
-          attendee.checkin &&
-          attendee.checkin.find(({ date }) => {
-            return isWithinTimeRange(date, compareDate);
-          })
-      );
-    },
+    onFilter: (attendee: TAttendee, compareDate: Date[]) =>
+      !!attendee.checkin &&
+      attendee.checkin.some(({ date }) => {
+        console.log(
+          date,
+          compareDate[0],
+          isSameDay(compareDate[0], date),
+          typeof compareDate
+        );
+        return isSameDay(compareDate[0], date);
+      }),
     type: "multiple",
   },
 ];
@@ -219,9 +222,9 @@ export default function FirstSection({
     const payload = favourites
       ? { ...favourites, attendees: newFavouriteAttendees }
       : {
-          userId: 10,
-          userEmail: "ubahyusuf484@gmail.com",
-          eventId: "1234567890",
+          userId: user?.id,
+          userEmail: user?.userEmail,
+          eventId: parseInt(event.id),
           attendees: newFavouriteAttendees,
         };
 
@@ -259,7 +262,7 @@ export default function FirstSection({
   // }, [attendees, sortOrder, searchTerm]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || eventIsLoading || !event) return;
 
     filters
       .filter((filter) => filter.optionsFromData)
@@ -270,8 +273,19 @@ export default function FirstSection({
         );
       });
 
-      setOptions("checkin", )
-  }, [isLoading]);
+    console.log(event?.startDateTime);
+
+    setOptions(
+      "checkin",
+      eachDayOfInterval({
+        start: event?.startDateTime,
+        end: event?.endDateTime,
+      }).map((date) => ({
+        label: format(date, "PPP"),
+        value: date,
+      }))
+    );
+  }, [isLoading, eventIsLoading]);
 
   const toggleSort = () => {
     let newOrder: TSortorder;
