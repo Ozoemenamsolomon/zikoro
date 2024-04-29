@@ -90,11 +90,13 @@ export function AddSession({
 
   // sponsor
   const sponsors = useMemo(() => {
-    const filtered = data?.filter(({ partnerType }) => {
+ /**
+   const filtered = data?.filter(({ partnerType }) => {
       return partnerType === "Sponsor";
     });
+  */
 
-    return filtered?.map(({ companyName }) => {
+    return data?.map(({ companyName }) => {
       return {
         label: companyName,
         value: companyName,

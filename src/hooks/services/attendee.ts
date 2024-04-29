@@ -381,6 +381,7 @@ export const useGetAllAttendees = () => {
   }, []);
 
   return { attendees, isLoading, error, getAttendees };
+  
 };
 
 export const useGetEventAttendees = (eventId: string) => {

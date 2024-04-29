@@ -1095,7 +1095,7 @@ export function useAttenedeeEvents() {
 }
 
 
-export function useCheckTeamMember({eventId}:{eventId: string}) {
+export function useCheckTeamMember({eventId}:{eventId?: string}) {
   const [isIdPresent, setIsIdPresent] = useState(false);
   const { events, loading: eventLoading } = useGetUserHomePageEvents();
 

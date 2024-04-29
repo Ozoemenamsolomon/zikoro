@@ -2,27 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, useEffect, useState } from "react";
-import { getCookie, useGetUserHomePageEvents } from "@/hooks";
+import { useMemo } from "react";
+import { getCookie, useCheckTeamMember } from "@/hooks";
 import { AccessVerification } from "./composables";
 
-const Topbar = ({ eventId }: { eventId?: string | string[] }) => {
+const Topbar = ({ eventId }: { eventId?: string | any }) => {
   const pathname = usePathname();
-  const user = getCookie("user");
-  const { events, loading: eventLoading } = useGetUserHomePageEvents();
-  const [isIdPresent, setIsIdPresent] = useState(false);
-  //const currentLink = pathnames[pathnames.length - 2];
+  const user = getCookie("user")
+  const {isIdPresent} =useCheckTeamMember({eventId})
 
-  useEffect(() => {
-    if (events && !eventLoading) {
-      //checked if the eventid is present in the event array
-      const isEventIdPresent = events?.some(
-        ({ eventAlias }) => eventAlias === eventId
-      );
 
-      setIsIdPresent(isEventIdPresent);
-    }
-  }, [events, eventLoading]);
   
   const links = [
     {
