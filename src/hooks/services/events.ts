@@ -14,7 +14,7 @@ import _ from "lodash";
 import { getCookie, useUpdateAttendees } from "@/hooks";
 import { getRequest, postRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
-import { useGetAllAttendees } from "@/hooks";
+import { useGetAllAttendees, useGetEventAttendees } from "@/hooks";
 import toast from "react-hot-toast";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -970,7 +970,7 @@ export function useFetchRewards(eventId: string | number) {
       const { data, error: fetchError } = await supabase
         .from("rewards")
         .select("*")
-        .eq("eventId", eventId);
+        .eq("eventAlias", eventId);
 
       if (fetchError) {
         setLoading(false);
@@ -1094,11 +1094,9 @@ export function useAttenedeeEvents() {
   };
 }
 
-
-export function useCheckTeamMember({eventId}:{eventId?: string}) {
+export function useCheckTeamMember({ eventId }: { eventId?: string }) {
   const [isIdPresent, setIsIdPresent] = useState(false);
   const { events, loading: eventLoading } = useGetUserHomePageEvents();
-
 
   useEffect(() => {
     if (events && !eventLoading) {
@@ -1111,9 +1109,37 @@ export function useCheckTeamMember({eventId}:{eventId?: string}) {
     }
   }, [events, eventLoading]);
 
+  return {
+    isIdPresent,
+  };
+}
+
+export function useVerifyUserAccess(eventId: string) {
+  const { attendees, isLoading } = useGetAllAttendees();
+  const { attendees: eventAttendees, isLoading: loading } =
+    useGetEventAttendees(eventId);
+  const [attendeeId, setAttendeeId] = useState<number | undefined>();
+  const [isOrganizer, setIsOrganizer] = useState(false);
+  const user = getCookie("user");
+
+  useEffect(() => {
+    if (!loading && !isLoading) {
+      const atId = attendees?.find(
+        ({ email, eventAlias }) =>
+          eventAlias === eventId && email === user?.userEmail
+      )?.id;
+      setAttendeeId(atId);
+
+      const isPresent = eventAttendees?.some(
+        ({ attendeeType, id }) =>
+          id === atId && attendeeType.includes("organizer")
+      );
+      setIsOrganizer(isPresent);
+    }
+  }, [attendees, eventAttendees, loading, isLoading]);
 
   return {
-    isIdPresent
-  }
-
+    attendeeId,
+    isOrganizer,
+  };
 }

@@ -21,6 +21,7 @@ import { useAddPartnerPromo } from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useState } from "react";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { TPartner } from "@/types";
 import { cn } from "@/lib";
 
@@ -32,7 +33,7 @@ export function CreatePromo({
 }: {
   partnerId: string;
   partner: TPartner | null;
-  refetch: () => Promise<null | undefined>;
+  refetch: () => Promise<any>;
   close: () => void;
 }) {
   const { loading, addPromo } = useAddPartnerPromo();

@@ -14,8 +14,9 @@ import {
   useFetchSingleEvent,
   useGetAllAttendees,
   useGetAgendas,
+  useVerifyUserAccess,
   useCheckTeamMember,
-  useGetEventAttendees,
+ // useGetEventAttendees,
 } from "@/hooks";
 import { generateDateRange } from "@/utils";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -26,10 +27,11 @@ export default function Agenda({ eventId }: { eventId: string }) {
   const user = getCookie("user");
   const search = useSearchParams();
   const queryParam = search.get("a");
-  const { attendees } = useGetAllAttendees();
+  const {attendeeId, isOrganizer} = useVerifyUserAccess(eventId)
+  const { attendees } = useGetAllAttendees(); //
   const [isOpen, setOpen] = useState(false);
   const { data, refetch } = useFetchSingleEvent(eventId);
-  const { attendees: eventAttendees } = useGetEventAttendees(eventId);
+ // const { attendees: eventAttendees } = useGetEventAttendees(eventId); //
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const [isFullScreen, setFullScreen] = useState(false);
   const activeDateQuery = search.get("date");
@@ -61,7 +63,8 @@ export default function Agenda({ eventId }: { eventId: string }) {
     setFullScreen((prev) => !prev);
   }
 
-  const attendeeId = useMemo(() => {
+/**
+   const attendeeId = useMemo(() => {
     return attendees?.find(
       ({ email, eventAlias }) =>
         eventAlias === eventId && email === user?.userEmail
@@ -78,6 +81,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
       return false;
     }
   }, [eventAttendees, attendees, attendeeId]);
+ */
 
   // console.log("sesson", fetching,);
 

@@ -15,7 +15,7 @@ export function RewardCard({ reward }: { reward: Reward }) {
 
   return (
     <>
-      <div className="w-full h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
+      <div className="w-full text-sm h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
         <div className="relative w-full h-40 sm:h-56 rounded-t-md overflow-hidden">
           <Image
             src={reward?.image}
@@ -36,7 +36,7 @@ export function RewardCard({ reward }: { reward: Reward }) {
         <div className="w-full flex flex-col px-3 items-start justify-start">
           <div className="flex items-center gap-x-3">
           <p className="font-semibold">{`QTY: ${reward?.quantity ?? "0"}`}</p>
-            <p className="font-semibold text-gray-400 line-through">
+            <p className=" text-gray-400 ">
               0 redeemed
             </p>
           </div>
