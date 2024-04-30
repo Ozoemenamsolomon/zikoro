@@ -132,6 +132,7 @@ export interface MoreOptionsProps {
   getAttendees: () => Promise<void>;
   attendeesTags: TAttendeeTags[];
   favourites?: TFavouriteContact;
+  event: Event;
 }
 
 type TMoreOptions = {
@@ -181,6 +182,7 @@ export default function FirstSection({
   eventIsLoading: boolean;
   event: Event;
 }) {
+  const user = getCookie<TUser>("user");
   const divRef = useRef<HTMLDivElement>(null);
   const {
     filteredData: mappedAttendees,
@@ -202,15 +204,17 @@ export default function FirstSection({
     favourites,
     getFavourites,
     isLoading: favouriteIsLoading,
-  } = useGetFavourites({ userId: 10 });
+  } = useGetFavourites({ userId: user ? user.id : 0 });
 
   const {
     attendeesTags,
     isLoading: attendeesTagsIsLoading,
     getAttendeesTags,
-  } = useGetAttendeesTags();
+  } = useGetAttendeesTags({ userId: user ? user.id : 0 });
 
-  const { updateFavourites } = useUpdateFavourites({ userId: 10 });
+  const { updateFavourites } = useUpdateFavourites({
+    userId: user ? user.id : 0,
+  });
 
   const toggleFavourites = async (id: number, isFavourite: boolean) => {
     const newFavouriteAttendees = !favourites
@@ -224,7 +228,7 @@ export default function FirstSection({
       : {
           userId: user?.id,
           userEmail: user?.userEmail,
-          eventId: parseInt(event.id),
+          eventId: String(event.id),
           attendees: newFavouriteAttendees,
         };
 
@@ -322,8 +326,6 @@ export default function FirstSection({
     XLSX.writeFile(workbook, "attendees.xlsx");
   };
 
-  const user = getCookie<TUser>("user");
-
   return (
     <>
       <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2">
@@ -404,6 +406,7 @@ export default function FirstSection({
                     getAttendees={getAttendees}
                     attendeesTags={attendeesTags}
                     favourites={favourites ? favourites : undefined}
+                    event={event}
                   />
                 )}
               </DialogContent>

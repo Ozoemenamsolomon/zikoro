@@ -10,6 +10,7 @@ export const tagsSchema = z.object({
   created_at: z.date().optional(),
   userEmail: z.string(),
   tags: z.array(tagSchema),
+  userId: z.number(),
 });
 
 export const attendeeTagsSchema = z.object({
