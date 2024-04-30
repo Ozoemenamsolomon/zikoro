@@ -140,7 +140,7 @@ export const useGetAgenda = ({ agendaId }: { agendaId: string }) => {
 export const useDeleteAgenda = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const deleteAgenda = async ({ agendaId }: { agendaId: number }) => {
+  const deleteAgenda = async ({ agendaId }: { agendaId: string }) => {
     setLoading(true);
 
     try {

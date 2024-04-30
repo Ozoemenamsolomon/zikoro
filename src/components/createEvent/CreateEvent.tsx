@@ -3,12 +3,12 @@
 import { useForm } from "react-hook-form";
 import { Form, FormField, Input, Button, ReactSelect } from "@/components";
 import { newEventSchema } from "@/schemas";
-import { v4 as uuidv4 } from "uuid";
+
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { useMemo, useState } from "react";
-import { COUNTRY_CODE } from "@/utils";
+import { COUNTRY_CODE, generateAlias } from "@/utils";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { useCreateEvent, getCookie, useGetUserOrganizations } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -45,7 +45,7 @@ export default function CreateEvent() {
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
     const userData = getCookie("user");
     const today = new Date();
-    const eventAlias = uuidv4().replace(/-/g, "").substring(0, 20);
+    const eventAlias = generateAlias();
     await createEvent({
       ...values,
       expectedParticipants: Number(values?.expectedParticipants),
@@ -120,7 +120,7 @@ export default function CreateEvent() {
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  onClose()
+                  onClose();
                 }}
                 className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
               >
