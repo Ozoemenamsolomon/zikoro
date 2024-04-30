@@ -1,6 +1,6 @@
 import { TLink } from "@/components/Sidebar";
 
-export const PeopleLinks: TLink[] & { hideFromAttendee?: boolean } = [
+export const PeopleLinks: (TLink & { hideFromAttendee?: boolean })[] = [
   { name: "All", href: "all" },
   {
     name: "released certificates",

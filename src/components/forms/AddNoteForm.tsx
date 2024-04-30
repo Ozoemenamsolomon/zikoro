@@ -39,8 +39,8 @@ export default function AddNotesForm({
   const defaultValues: Partial<TAttendeeNote> = !!note
     ? note
     : {
-        eventId: typeof EventId === "string" ? eventId : eventId[0],
-        attendeeEmail: "ubahyusuf484@gmail.com",
+        eventId: typeof eventId === "string" ? eventId : eventId[0],
+        attendeeEmail: user?.userEmail,
         userId: user ? user.id : 0,
       };
 
