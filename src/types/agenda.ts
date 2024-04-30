@@ -30,6 +30,7 @@ export interface TAgenda {
   sessionCheckin: string;
   sessionCheckinDetails: JSON;
   eventId:string;
+  sessionAlias:string;
 }
 
 export interface TSessionAgenda {
@@ -48,5 +49,6 @@ export interface TReview {
 export interface TMyAgenda {
   sessionId: number;
   attendeeId: number;
+  sessionAlias: string;
 
 }

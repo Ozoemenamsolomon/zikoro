@@ -168,7 +168,7 @@ function Widget({
             </button>
           )}
           <div className="flex items-center gap-x-3">
-          <AddToMyAgenda attendeeId={attendeeId} sessionId={session?.id}/>
+          <AddToMyAgenda attendeeId={attendeeId} sessionAlias={session?.sessionAlias}/>
 
            
           </div>
@@ -176,7 +176,7 @@ function Widget({
      {!isFullScreen && (isIdPresent || isOrganizer) &&   <div className="flex items-center mb-2  gap-x-2">
           <Edit session={session} event={event} refetch={refetchSession} refetchEvent={refetchEvent}/>
           <Duplicate session={session} refetch={refetchSession} />
-          <Deletes agendaId={session?.id} refetch={refetchSession} />
+          <Deletes agendaId={session?.sessionAlias} refetch={refetchSession} />
           <Button className="h-fit  gap-x-2 w-fit px-0">
             <Eye size={20} />
             <p className="text-xs sm:text-sm text-gray-500">{session?.sessionViews ?? "0"}</p>

@@ -3,16 +3,17 @@ import { Button } from "@/components";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useCreateMyAgenda } from "@/hooks";
 export function AddToMyAgenda({
-  sessionId,
   attendeeId,
+  sessionAlias
 }: {
-  sessionId: number;
+ 
+  sessionAlias: string;
   attendeeId?: number;
 }) {
   const { createMyAgenda, isLoading } = useCreateMyAgenda();
 
   async function add() {
-    await createMyAgenda({ payload: { sessionId, attendeeId } });
+    await createMyAgenda({ payload: { sessionAlias, attendeeId } });
   }
   
   return (

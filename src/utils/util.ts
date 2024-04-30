@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 // call phone
 export function phoneCall(number?: string) {
   window.open(`tel:${number}`, "_blank");
@@ -29,3 +31,10 @@ export function isEventLive(startTime: string, endTime: string): boolean {
 
   return isLive;
 }
+
+
+export function generateAlias():string {
+const alias = uuidv4().replace(/-/g, "").substring(0, 20);
+
+  return alias
+} 

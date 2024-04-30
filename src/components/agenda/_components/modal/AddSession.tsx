@@ -25,7 +25,7 @@ import { Event } from "@/types";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { nanoid } from "nanoid";
-import { formatFileSize, uploadFile } from "@/utils";
+import { formatFileSize, generateAlias, uploadFile } from "@/utils";
 import { FilePdf } from "@styled-icons/fa-regular/FilePdf";
 
 type TSessionFile<T> = {
@@ -269,6 +269,8 @@ export function AddSession({
       files = result;
     }
 
+    const sessionAlias = generateAlias()
+
     const payload: Partial<TAgenda> = session?.id ? {
       ...session,
       ...values,
@@ -276,7 +278,6 @@ export function AddSession({
       sessionModerators: chosenModerators,
       sessionSpeakers: chosenSpeakers,
       sessionSponsors: chosenSponsors,
-    
       sessionFiles: files,
       eventAlias: event?.eventAlias,
       eventId: String(event?.id),
@@ -286,8 +287,8 @@ export function AddSession({
       sessionModerators: chosenModerators,
       sessionSpeakers: chosenSpeakers,
       sessionSponsors: chosenSponsors,
-    
       sessionFiles: files,
+      sessionAlias,
       eventAlias: event?.eventAlias,
       eventId: String(event?.id),
     };

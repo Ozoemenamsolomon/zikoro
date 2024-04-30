@@ -13,7 +13,7 @@ export async function DELETE(
         const { data, error, status } = await supabase
           .from("agenda")
           .delete()
-          .eq("id", agendaId);
+          .eq("sessionAlias", agendaId);
   
         if (error) {
           return NextResponse.json(

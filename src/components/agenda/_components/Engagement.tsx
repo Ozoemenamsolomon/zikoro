@@ -44,7 +44,7 @@ export function Engagement({
         {rating > 0 ? (
           <ReviewComment
             rating={rating}
-            sessionId={agenda?.id}
+            sessionAlias={agenda?.sessionAlias}
             attendeeId={attendeeId}
           />
         ) : (
@@ -85,10 +85,10 @@ type FormValue = {
 };
 function ReviewComment({
   rating,
-  sessionId,
+  sessionAlias,
   attendeeId,
 }: {
-  sessionId?: number;
+  sessionAlias?: string;
   rating: number;
   attendeeId?: number;
 }) {
@@ -100,7 +100,7 @@ function ReviewComment({
     const payload = {
       ...values,
       rating,
-      sessionId,
+      sessionAlias,
       attendeeId,
     };
     await sendReview({ payload });

@@ -9,7 +9,7 @@ export function Deletes({
   agendaId,
   refetch,
 }: {
-  agendaId: number;
+  agendaId: string;
   refetch?: () => Promise<any>;
 }) {
   const [isDelete, setDelete] = useState(false);

@@ -8,7 +8,9 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      const { error } = await supabase.from("agenda").upsert(params);
+      const { sessionModerators, sessionSpeakers, sessionSponsors } = params;
+
+      const { error, data } = await supabase.from("agenda").upsert(params);
 
       if (error) {
         return NextResponse.json(
@@ -18,10 +20,15 @@ export async function POST(req: NextRequest) {
           }
         );
       }
+      
+   //  for (let moderato)
+   //if (Array.isArray(sessionModerators) && sessionModerators.length > 0) {
+    // sessionModerators
+   //}
       if (error) throw error;
 
       return NextResponse.json(
-        { msg: "Agenda created successfully" },
+        { msg: "Agenda created successfully", data },
         {
           status: 201,
         }
@@ -57,13 +64,16 @@ export async function PATCH(req: NextRequest) {
         ])
         .eq("id", params?.id);
 
-        if (error ) {
-          return NextResponse.json({
-            error: error?.message
-          },{
-            status: 400
-          })
-        }
+      if (error) {
+        return NextResponse.json(
+          {
+            error: error?.message,
+          },
+          {
+            status: 400,
+          }
+        );
+      }
       if (error) throw error;
       return NextResponse.json(
         { msg: "agenda updated successfully" },
