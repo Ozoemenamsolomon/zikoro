@@ -170,7 +170,6 @@ export default function FirstSection({
   getAttendees,
   onSelectAttendee,
   selectedAttendee,
-  eventIsLoading,
   event,
 }: {
   onOpen: () => void;
@@ -179,7 +178,6 @@ export default function FirstSection({
   getAttendees: () => Promise<void>;
   onSelectAttendee: (attendee: TAttendee) => void;
   selectedAttendee: TAttendee;
-  eventIsLoading: boolean;
   event: Event;
 }) {
   const user = getCookie<TUser>("user");
@@ -266,7 +264,7 @@ export default function FirstSection({
   // }, [attendees, sortOrder, searchTerm]);
 
   useEffect(() => {
-    if (isLoading || eventIsLoading || !event) return;
+    if (isLoading || !event) return;
 
     filters
       .filter((filter) => filter.optionsFromData)
@@ -289,7 +287,7 @@ export default function FirstSection({
         value: date,
       }))
     );
-  }, [isLoading, eventIsLoading]);
+  }, [isLoading]);
 
   const toggleSort = () => {
     let newOrder: TSortorder;

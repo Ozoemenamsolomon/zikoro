@@ -1,6 +1,12 @@
 "use client";
 import { toast } from "@/components/ui/use-toast";
-import { TAgenda, TSessionAgenda, TReview, TMyAgenda } from "@/types";
+import {
+  TAgenda,
+  TSessionAgenda,
+  TReview,
+  TMyAgenda,
+  UseGetResult,
+} from "@/types";
 import {
   postRequest,
   patchRequest,
@@ -77,8 +83,11 @@ export const useUpdateAgenda = () => {
   return { updateAgenda, isLoading };
 };
 
-export const useGetAgendas = (eventId: string, date: string,
-  query: string | null) => {
+export const useGetAgendas = (
+  eventId: string,
+  date?: string,
+  query?: string | null
+) => {
   const [agendas, setAgendas] = useState<TSessionAgenda[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
@@ -87,7 +96,9 @@ export const useGetAgendas = (eventId: string, date: string,
     setLoading(true);
 
     const { data, status } = await getRequest<TSessionAgenda[]>({
-      endpoint: `/agenda/${eventId}?date=${date}&query=${query}`,
+      endpoint: `/agenda/${eventId}?${date ? "date=" + date : ""}&${
+        query ? "query=" + query : ""
+      }`,
     });
 
     setLoading(false);
@@ -103,6 +114,47 @@ export const useGetAgendas = (eventId: string, date: string,
   }, [eventId, date, query]);
 
   return { agendas, isLoading, getAgendas };
+};
+
+export const useGetEventAgendas = ({
+  eventId,
+}: {
+  eventId: string;
+}): UseGetResult<TAgenda[], "eventAgendas", "getEventAgendas"> => {
+  const [eventAgendas, setEventAgendas] = useState<TAgenda[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getEventAgendas = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TAgenda[]>({
+        endpoint: `events/${eventId}/agendas`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+
+      setEventAgendas(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getEventAgendas();
+  }, []);
+
+  return {
+    eventAgendas,
+    isLoading,
+    error,
+    getEventAgendas,
+  };
 };
 
 export const useGetAgenda = ({ agendaId }: { agendaId: string }) => {
