@@ -12,19 +12,19 @@ export default function BlogNav() {
     },
     {
       name: "Event Tips",
-      href: "",
+      href: "/blog/event-tips",
     },
     {
       name: "Product Update",
-      href: "",
+      href: "/blog/product-update",
     },
     {
       name: "Guides And Tutorials",
-      href: "",
+      href: "/blog/guides",
     },
     {
       name: "Case Study",
-      href: "",
+      href: "/blog/case-study",
     },
   ];
 

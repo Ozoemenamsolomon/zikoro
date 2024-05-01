@@ -2,18 +2,9 @@
 import React, { useState } from "react";
 import TextEditor from "@/components/TextEditor";
 import { useForm } from "react-hook-form";
-import { UploadIcon } from "@/constants/icons";
-import { getCookie } from "@/hooks";
 import toast from "react-hot-toast";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { AddTag } from "@/components/blog/modal/AddTag";
 
 export default function Create() {
   const form = useForm<any>({});
@@ -24,30 +15,25 @@ export default function Create() {
   } = form;
   const content = watch("content");
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     title: "",
     category: "",
-    tags: "",
+    tags: [],
     content: [],
-    readingDuration: 3,
-    statusDetail: JSON,
+    readingDuration: "",
+    statusDetail: {},
   });
   const [file, setFile] = useState<any>(null);
   const [headerImageUrl, setHeaderImageUrl] = useState<string>("");
   const [status, setStatus] = useState<string>("");
-  const categories = [
-    "Event tips",
-    "Product Updates",
-    "Guides and Tutorial",
-    "Case Study",
-  ];
+  const [tagModalOpen, setTagModalOpen] = useState<boolean>(false);
 
-  // const tags = [
-  //   "Event Planning",
-  //   "Attendee Management",
-  //   "Event Commerce",
-  //   "Event Partnership ",
-  // ];
+  const categories = [
+    { name: "Event tips", value: "event" },
+    { name: "Product Updates", value: "product" },
+    { name: "Guides and Tutorial", value: "guide" },
+    { name: "Case Study", value: "case" },
+  ];
 
   const setMessage = (content: string) => {
     setValue("content", content);
@@ -70,6 +56,13 @@ export default function Create() {
     setFile(e.target.files[0]);
   };
 
+  const addNewTags = (tags: string[]) => {
+    setFormData({ ...formData, tags });
+    setTagModalOpen(false);
+  };
+
+
+  //upload image
   const uploadImage = async () => {
     const formData = new FormData();
     formData.append("file", file);
@@ -98,8 +91,10 @@ export default function Create() {
     alert("emma");
   };
 
+  //create a function that accept strinds and color
   const submitBlogPost = async (e: any) => {
     e.preventDefault();
+    await uploadImage();
     try {
       const response = await fetch("/api/blog/add", {
         method: "POST",
@@ -163,7 +158,7 @@ export default function Create() {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                // required
+                required
                 className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none  hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer"
               >
                 <option
@@ -176,45 +171,46 @@ export default function Create() {
                 {categories.map((category, index) => (
                   <option
                     key={index}
-                    value={category}
+                    value={category.value}
                     className="bg-transparent text-black text-[15px]"
                   >
                     {" "}
-                    {category}{" "}
+                    {category.name}{" "}
                   </option>
                 ))}
               </select>
-              
-              <div className=" flex items-center px-4 rounded-lg h-[44px] border-[1px] border-indigo-600 hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gap-x-2 w-full lg:w-2/12 text-[15px] font-medium cursor-pointer">
+
+              <div
+                onClick={() => setTagModalOpen(true)}
+                className=" flex items-center px-4 rounded-lg h-[44px] border-[1px] border-indigo-600 hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gap-x-2 w-full lg:w-2/12 text-[15px] font-medium cursor-pointer"
+              >
                 <PlusCircle size={22} />
                 <p>Tag</p>
               </div>
             </div>
-
+            {/* second section */}
             <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center gap-x-0 lg:gap-x-4">
-              <div className=" rounded-xl w-full lg:w-5/12 ">
-                <div className="px-0 lg:px-3 bg-transparent rounded-xl flex items-center justify-center ">
-                  <input
-                    type="file"
-                    id=""
-                    onChange={addImage}
-                    className=" pt-3 outline-none text-sm text-gray-600 bg-transparent h-[44px] w-1/2 lg:w-full"
-                    required
-                  />
-                  <div
-                    onClick={uploadImage}
-                    className=" cursor-pointer flex lg:hidden  gap-x-5 lg:gap-x-2 items-center"
-                  >
-                    <UploadIcon />
-                  </div>
-                </div>
+              <div className="px-0 lg:px-3 bg-transparent rounded-xl shadow-sm  w-full lg:w-3/12 items-center justify-center ">
+                <input
+                  type="file"
+                  id=""
+                  onChange={addImage}
+                  className=" pt-3 outline-none text-base text-gray-600 bg-transparent h-[44px] w-full"
+                  required
+                />
               </div>
 
-              <div
-                onClick={uploadImage}
-                className=" cursor-pointer gap-x-5 lg:gap-x-2 items-center w-1/12 hidden lg:flex "
-              >
-                <UploadIcon />
+              <div className="px-0 lg:px-3 bg-transparent shadow-sm  rounded-xl w-full lg:w-3/12">
+                <input
+                  type="text"
+                  id=""
+                  name="duration"
+                  onChange={handleChange}
+                  placeholder="Reading Duration"
+                  className=" pl-4 outline-none text-base text-gray-600 bg-transparent h-[44px] w-full"
+                  value={formData.readingDuration}
+                  required
+                />
               </div>
 
               <button
@@ -252,6 +248,7 @@ export default function Create() {
           </form>
         </section>
       </div>
+      {tagModalOpen && <AddTag updateTags={addNewTags} />}
     </div>
   );
 }

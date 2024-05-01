@@ -19,8 +19,8 @@ export default function BlogHeader() {
         height={252}
         className="object-cover block h-[300px] w-full lg:hidden"
       />
-      <div className="absolute inset-0 flex items-center justify-center px-6 lg:px-0 ">
-        <div className="flex flex-col justify-between text-center ">
+      <div className="absolute inset-0 flex items-center justify-center px-6 lg:px-0  ">
+        <div className="flex flex-col justify-between text-center pt-16 lg:pt-0 ">
           <p className="text-2xl lg:text-5xl text-white font-bold">
             Welcome to Zikoro blog
           </p>

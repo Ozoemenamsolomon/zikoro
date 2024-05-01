@@ -2,14 +2,15 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-
 interface SearchComponentProps {
   searchQuery: string;
   setSearchQuery: React.Dispatch<string>; //Assuming setSearchQuery is a dispatcher for strings
 }
 
-export default function EventHeader({ searchQuery, setSearchQuery} : SearchComponentProps) {
-
+export default function EventHeader({
+  searchQuery,
+  setSearchQuery,
+}: SearchComponentProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
@@ -37,7 +38,7 @@ export default function EventHeader({ searchQuery, setSearchQuery} : SearchCompo
             <span className="block lg:inline">Range Of Events</span>
           </p>
 
-          <div className=" h-4 absolute   bottom-0 left-0 right-0 flex items-center justify-center  ">
+          <div className=" h-4 absolute  bottom-0 left-0 right-0 flex items-center justify-center  ">
             {/* Big Form */}
             <form
               action=""
@@ -46,12 +47,7 @@ export default function EventHeader({ searchQuery, setSearchQuery} : SearchCompo
               <p className="text-2xl font-normal">Find Events Easily</p>
 
               <div className="pt-7 h-9 mt-6 flex items-center w-full gap-x-4">
-                {/* <div className="flex flex-2 gap-x-2 px-10 py-[6px] rounded-md">
-                  <LocationIcon1 />
-                  <p className="text-base text-semibold">Lagos</p>
-                </div> */}
-
-                <div className="h-[48px] flex justify-between gap-x-3 flex-1 items-center">
+                <div className="h-[48px] flex flex-1">
                   <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-full h-full">
                     <input
                       type="text"
@@ -63,11 +59,6 @@ export default function EventHeader({ searchQuery, setSearchQuery} : SearchCompo
                       className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
                     />
                   </div>
-
-                  <button className="bg-gradient-to-tr flex-1 from-custom-gradient-start to-custom-gradient-end text-white cursor-pointer px-5 text-base py-[13px] rounded-lg">
-                    {" "}
-                    Search
-                  </button>
                 </div>
               </div>
             </form>
@@ -79,7 +70,7 @@ export default function EventHeader({ searchQuery, setSearchQuery} : SearchCompo
             >
               <p className="text-[20px] font-normal">Find Events Easily</p>
 
-              <div className="h-[58px] pt-[15px] flex justify-between gap-x-3 items-center">
+              <div className="h-[58px] pt-[15px] items-center">
                 <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-full h-full">
                   <input
                     type="text"
@@ -91,11 +82,6 @@ export default function EventHeader({ searchQuery, setSearchQuery} : SearchCompo
                     className="pl-4 outline-none text-xs text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
                   />
                 </div>
-
-                <button className="   bg-gradient-to-tr flex from-custom-gradient-start to-custom-gradient-end text-white cursor-pointer text-base px-5 py-[10px] rounded-lg mx-auto">
-                  {" "}
-                  Search
-                </button>
               </div>
             </form>
           </div>
