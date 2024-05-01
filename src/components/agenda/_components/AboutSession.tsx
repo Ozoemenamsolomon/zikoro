@@ -16,17 +16,21 @@ import { useRouter } from "next/navigation";
 import { getCookie, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
-import Link from "next/link"
+import Link from "next/link";
 export function AboutSession({
   agenda,
   event,
   refetch,
   refetchSession,
+  isIdPresent,
+  isOrganizer,
 }: {
   event: Event | null;
   refetch?: () => Promise<any>;
   refetchSession?: () => Promise<any>;
   agenda: TAgenda | null;
+  isIdPresent: boolean;
+  isOrganizer: boolean;
 }) {
   const user = getCookie("user");
   const router = useRouter();
@@ -94,7 +98,7 @@ export function AboutSession({
     <>
       {agenda && event && (
         <div className="w-full lg:col-span-5 border-r">
-          {agenda?.sessionUrl ? (
+          {agenda?.sessionUrl && (
             <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem]">
               <Player
                 src={agenda?.sessionUrl}
@@ -105,40 +109,9 @@ export function AboutSession({
                 streamType={"live"}
               />
             </div>
-          ) : (
-            <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem] bg-gray-200 animate-pulse"></div>
           )}
-          <div className="w-full p-4 mb-2 flex flex-col lg:flex-row items-start lg:items-center gap-2 justify-start lg:justify-between">
-            {isLive && (
-              <p className="text-xs text-gray-50 bg-basePrimary rounded-md  p-2 ">
-                Happening Now
-              </p>
-            )}
-            <div className="flex items-center px-4 gap-x-2">
-              <Edit
-                session={agenda}
-                event={event}
-                refetch={refetchSession}
-                refetchEvent={refetch}
-              />
-              <Duplicate session={agenda} refetch={refetch} />
-              <Deletes agendaId={agenda?.sessionAlias} refetch={refetch} />
-              <Button className="h-fit  gap-x-2 w-fit px-0">
-                <Eye size={20} />
-                <p className="text-xs sm:text-sm text-gray-500">
-                  {agenda?.sessionViews ?? "0"}
-                </p>
-              </Button>
-              <Button className="h-fit gap-x-2 w-fit px-0">
-                <Star size={20} />
-                <div className="text-gray-500 flex items-center text-xs sm:text-sm gap-x-1">
-                  <p>4.5 .</p>
-                  <p>Reviews</p>
-                </div>
-              </Button>
-            </div>
-          </div>
-          <h2 className="text-base px-4 w-full mb-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
+         
+          <h2 className="text-base px-4 w-full my-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
             {agenda?.sessionTitle ?? ""}
           </h2>
           <p className="mb-2 px-4 text-gray-500 text-[13px]">
@@ -167,8 +140,40 @@ export function AboutSession({
               </button>
             )}
           </div>
+          <div className="w-full p-4 mb-2 flex flex-col lg:flex-row items-start lg:items-center gap-2 justify-start lg:justify-between">
+            {isLive && (
+              <p className="text-xs text-gray-50 bg-basePrimary rounded-md  p-2 ">
+                Happening Now
+              </p>
+            )}
+            {(isIdPresent || isOrganizer) && (
+              <div className="flex items-center px-4 gap-x-2">
+                <Edit
+                  session={agenda}
+                  event={event}
+                  refetch={refetchSession}
+                  refetchEvent={refetch}
+                />
+                <Duplicate session={agenda} refetch={refetch} />
+                <Deletes agendaId={agenda?.sessionAlias} refetch={refetch} />
+                <Button className="h-fit  gap-x-2 w-fit px-0">
+                  <Eye size={20} />
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    {agenda?.sessionViews ?? "0"}
+                  </p>
+                </Button>
+                <Button className="h-fit gap-x-2 w-fit px-0">
+                  <Star size={20} />
+                  <div className="text-gray-500 flex items-center text-xs sm:text-sm gap-x-1">
+                    <p>4.5 .</p>
+                    <p>Reviews</p>
+                  </div>
+                </Button>
+              </div>
+            )}
+          </div>
 
-          <section className="w-full flex flex-col  pb-2">
+          <section className="w-full flex flex-col border-b pb-2">
             <div className="w-full px-3 py-3 border-y flex items-center justify-between">
               <p className="font-semibold text-base sm:text-xl">
                 Session Description
@@ -197,7 +202,7 @@ export function AboutSession({
                     company={"DND"}
                     image={attendee?.profilePicture || null}
                     name={`${attendee?.firstName} ${attendee?.lastName}`}
-                    profession={attendee?.jobTitle ??"Job"}
+                    profession={attendee?.jobTitle ?? "Job"}
                     email={attendee?.email ?? ""}
                     key={index}
                   />
@@ -223,9 +228,8 @@ export function AboutSession({
                     company={"DND"}
                     image={attendee?.profilePicture || null}
                     name={`${attendee?.firstName} ${attendee?.lastName}`}
-                    profession={attendee?.jobTitle ??"Job"}
+                    profession={attendee?.jobTitle ?? "Job"}
                     email={attendee?.email ?? ""}
-                    
                     key={index}
                   />
                 ))}
@@ -272,8 +276,8 @@ export function AboutSession({
               {Array.isArray(agenda?.sessionFiles) &&
                 agenda?.sessionFiles.map((item) => (
                   <Link
-                  target="_blank"
-                  href={item?.file}
+                    target="_blank"
+                    href={item?.file}
                     key={item?.id}
                     className="w-full group border relative rounded-lg p-3 flex items-start justify-start gap-x-2"
                   >

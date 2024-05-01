@@ -87,7 +87,7 @@ export default function CreateEvent() {
       onClick={() => router.back()}
       className="absolute text-gray-500 left-3 top-4 text-mobile sm:text-sm">
         <NavigateBefore size={18}/>
-        <p>Go Back</p>
+        <p>Back</p>
       </Button>
     <div className="w-[95%] sm:w-[550px] py-6 h-fit mx-auto ">
       <div className="w-full flex items-center justify-center mb-4">

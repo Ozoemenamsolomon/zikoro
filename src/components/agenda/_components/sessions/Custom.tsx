@@ -141,7 +141,7 @@ function Widget({
             {Array.isArray(mergedSM) &&
               mergedSM.map((attendee, index) => (
                 <BoothStaffWidget
-                  company={"DND"}
+                  company={""}
                   image={attendee?.profilePicture || null}
                   name={`${attendee?.firstName} ${attendee?.lastName}`}
                   profession={attendee?.jobTitle ??"Job"}
@@ -167,13 +167,21 @@ function Widget({
               {session?.Track ?? ""}
             </button>
           )}
-          <div className="flex items-center gap-x-3">
+          <div
+          onClick={(e) => {
+            e.stopPropagation()
+          }}
+          className="flex items-center gap-x-3">
           <AddToMyAgenda attendeeId={attendeeId} sessionAlias={session?.sessionAlias}/>
 
            
           </div>
         </div>
-     {!isFullScreen && (isIdPresent || isOrganizer) &&   <div className="flex items-center mb-2  gap-x-2">
+     {!isFullScreen && (isIdPresent || isOrganizer) &&   <div
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
+     className="flex items-center mb-2  gap-x-2">
           <Edit session={session} event={event} refetch={refetchSession} refetchEvent={refetchEvent}/>
           <Duplicate session={session} refetch={refetchSession} />
           <Deletes agendaId={session?.sessionAlias} refetch={refetchSession} />

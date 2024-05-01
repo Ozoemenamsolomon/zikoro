@@ -1,6 +1,13 @@
 "use client";
 
-import { Form, FormField, Input, Button, ReactSelect, Textarea } from "@/components";
+import {
+  Form,
+  FormField,
+  Input,
+  Button,
+  ReactSelect,
+  Textarea,
+} from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
@@ -41,7 +48,7 @@ export function AddSession({
   event,
   refetch,
   session,
-  refetchSession
+  refetchSession,
 }: {
   close: () => void;
   eventId: string;
@@ -90,13 +97,11 @@ export function AddSession({
 
   // sponsor
   const sponsors = useMemo(() => {
- /**
-   const filtered = data?.filter(({ partnerType }) => {
-      return partnerType === "Sponsor";
+    const filtered = data?.filter(({ companyLogo }) => {
+      return companyLogo;
     });
-  */
 
-    return data?.map(({ companyName }) => {
+    return filtered?.map(({ companyName }) => {
       return {
         label: companyName,
         value: companyName,
@@ -104,7 +109,7 @@ export function AddSession({
     });
   }, [data]);
   // moderators
-  console.log(attendees, data)
+
   const formattedAttendees = useMemo(() => {
     return attendees?.map(({ firstName, lastName, email }) => {
       return {
@@ -114,7 +119,7 @@ export function AddSession({
     });
   }, [attendees]);
 
- /**
+  /**
    // speakers
   const speakers = useMemo(() => {
     const filtered = attendees?.filter(({ ticketType }) => {
@@ -270,40 +275,41 @@ export function AddSession({
       files = result;
     }
 
-    const sessionAlias = generateAlias()
-   
-    const payload: Partial<TAgenda> = session?.id ? {
-      ...session,
-      ...values,
-      Track: values?.Track || "No Track",
-      sessionModerators: chosenModerators,
-      sessionSpeakers: chosenSpeakers,
-      sessionSponsors: chosenSponsors,
-      sessionFiles: files,
-      sessionAlias,
-      eventAlias: event?.eventAlias,
-      eventId: String(event?.id),
-    } :{
-      ...values,
-      Track: values?.Track || "No Track",
-      sessionModerators: chosenModerators,
-      sessionSpeakers: chosenSpeakers,
-      sessionSponsors: chosenSponsors,
-      sessionFiles: files,
-      sessionAlias,
-      eventAlias: event?.eventAlias,
-      eventId: String(event?.id),
-    };
-     // console.log("tile", payload)
+    const sessionAlias = generateAlias();
+
+    const payload: Partial<TAgenda> = session?.id
+      ? {
+          ...session,
+          ...values,
+          Track: values?.Track || "No Track",
+          sessionModerators: chosenModerators,
+          sessionSpeakers: chosenSpeakers,
+          sessionSponsors: chosenSponsors,
+          sessionFiles: files,
+          sessionAlias,
+          eventAlias: event?.eventAlias,
+          eventId: String(event?.id),
+        }
+      : {
+          ...values,
+          Track: values?.Track || "No Track",
+          sessionModerators: chosenModerators,
+          sessionSpeakers: chosenSpeakers,
+          sessionSponsors: chosenSponsors,
+          sessionFiles: files,
+          sessionAlias,
+          eventAlias: event?.eventAlias,
+          eventId: String(event?.id),
+        };
+    // console.log("tile", payload)
     // return
     const asyncFn = session?.id ? updateAgenda : createAgenda;
     await asyncFn({ payload });
     setLoading(false);
-   if (refetchSession) refetchSession()
-    close()
+    if (refetchSession) refetchSession();
+    close();
   }
 
- 
   //
   useEffect(() => {
     if (startTime && endTime) {
@@ -320,7 +326,6 @@ export function AddSession({
   // to update
   useEffect(() => {
     if (session) {
-     
       form.reset({
         sessionTitle: session?.sessionTitle,
         startDateTime: session?.startDateTime,
@@ -458,7 +463,7 @@ export function AddSession({
                     isNotSameDay && "text-red-500"
                   )}
                 >
-                 Start and End time must be the same day
+                  Start and End time must be the same day
                 </p>
               </div>
 
@@ -613,7 +618,6 @@ export function AddSession({
                           email,
                           jobTitle,
                           profilePicture,
-                         
                         }) => (
                           <BoothStaffWidget
                             key={email}
@@ -623,7 +627,6 @@ export function AddSession({
                             name={`${firstName} ${lastName}`}
                             company={organization}
                             profession={jobTitle}
-                            
                             isAddingBoothStaff
                           />
                         )
@@ -652,7 +655,6 @@ export function AddSession({
                           email,
                           jobTitle,
                           profilePicture,
-                          
                         }) => (
                           <BoothStaffWidget
                             key={email}
@@ -662,7 +664,6 @@ export function AddSession({
                             name={`${firstName} ${lastName}`}
                             company={organization}
                             profession={jobTitle}
-                           
                             isAddingBoothStaff
                           />
                         )
@@ -681,6 +682,9 @@ export function AddSession({
                       />
                     )}
                   />
+                  <p className="w-full text-xs col-span-full text-gray-500">
+                    Only sponsors with logo will appear here
+                  </p>
                   <div className="w-full flex flex-wrap items-start gap-4">
                     {Array.isArray(chosenSponsors) &&
                       chosenSponsors.map(({ companyLogo, companyName }) => (

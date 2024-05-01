@@ -142,6 +142,7 @@ export function AddPartners({
 
     const video: any = await promiseVideo;
     
+  
 
     const payload: Partial<TPartner> = partner?.id
       ? {
@@ -167,8 +168,8 @@ export function AddPartners({
         };
 
    // console.log(payload);
-   // setLoading(false);
-   // return;
+    // setLoading(false);
+    // return;
     const asynQuery = partner?.id ? update : addPartners;
     await asynQuery(payload);
     setLoading(false);
