@@ -14,7 +14,7 @@ import {
   deleteRequest,
 } from "@/utils/api";
 import { useState, useEffect } from "react";
-import { useFetchSingleEvent } from "@/hooks";
+
 
 export const useCreateAgenda = () => {
   const [isLoading, setLoading] = useState<boolean>(false);

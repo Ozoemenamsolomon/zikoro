@@ -8,11 +8,9 @@ import { AccessVerification } from "./composables";
 
 const Topbar = ({ eventId }: { eventId?: string | any }) => {
   const pathname = usePathname();
-  const user = getCookie("user")
-  const {isIdPresent} =useCheckTeamMember({eventId})
+  const user = getCookie("user");
+  const { isIdPresent } = useCheckTeamMember({ eventId });
 
-
-  
   const links = [
     {
       name: "Reception",
@@ -77,8 +75,8 @@ const Topbar = ({ eventId }: { eventId?: string | any }) => {
                 <li
                   className={`pb-1 text-sm ${
                     pathname.includes(
-                      `${href.split("/")[1].split("?")[0]}` ||
-                        `${href.split("/")[1]}`
+                      `${href.split("/")[1]}` ||
+                        `${href.split("/")[1].split("?")[0]}`
                     )
                       ? "text-basePrimary border-b-2 border-basePrimary font-medium"
                       : ""

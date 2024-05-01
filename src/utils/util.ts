@@ -53,3 +53,5 @@ export const formatReviewNumber = (number: number):string => {
   const shortValue = (number / Math.pow(1000, suffixNum)).toFixed(1);
   return shortValue + suffixes[suffixNum];
 };
+
+export const deploymentUrl = 'https://zikoro-git-integrate-ajax484s-projects.vercel.app'

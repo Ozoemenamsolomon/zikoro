@@ -163,7 +163,7 @@ export function PartnersList({
                 {loading && (
                   <tr className="w-full col-span-full h-[300px] flex items-center justify-center">
                     <td>
-                      <LoaderAlt size={50} className="animate-spin" />
+                      <LoaderAlt size={30} className="animate-spin" />
                     </td>
                   </tr>
                 )}

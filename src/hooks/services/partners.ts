@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import * as z from "zod";
 import { Event, TPartner, PartnerJobType } from "@/types";
-import { partnerSchema } from "@/schemas";
+import { postRequest, patchRequest } from "@/utils/api";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
 import { toast } from "@/components/ui/use-toast";
@@ -14,35 +13,40 @@ const supabase = createClientComponentClient();
 export function useAddPartners() {
   const [loading, setLoading] = useState(false);
 
-  async function addPartners(values: z.infer<typeof partnerSchema>) {
+  async function addPartners(values: Partial<TPartner>) {
     setLoading(true);
-
-    const image = await uploadFile(values.companyLogo[0], "image");
-    const video = await uploadFile(values.media[0], "video");
+  
+   
 
     const payload = {
       ...values,
-      companyLogo: image,
-      media: video,
+     
     };
 
     try {
-      const { error, status } = await supabase
-        .from("eventPartners")
-        .upsert([{ ...payload }]);
+      const { data, status } = await postRequest({
+        endpoint: "/partner",
+        payload,
+      });
 
-      if (error) {
-        toast({ variant: "destructive", description: error.message });
-        setLoading(false);
-        return;
-      }
+      if (status !== 201)
+        return toast({
+          description: (data.data as { error: string }).error,
+          variant: "destructive",
+        });
 
-      if (status === 201 || status === 200) {
-        setLoading(false);
-        toast({ description: "Partners created successfully" });
-      }
-    } catch (error) {
-      return;
+      toast({
+        description: "Partner created successfully",
+      });
+      return data;
+    } catch (error: any) {
+      // console.log({ error });
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -90,21 +94,29 @@ export function useFetchPartners(eventId: string | number) {
 export function useUpdatePartners() {
   const [loading, setLoading] = useState(false);
 
-  async function update(payload: Partial<TPartner>, partnerId: number) {
-    const { error, status } = await supabase
-      .from("eventPartners")
-      .update([{ ...payload }])
-      .eq("id", partnerId);
+  async function update(payload: Partial<TPartner>) {
+   
+    try {
 
-    if (error) {
-      toast({ variant: "destructive", description: error.message });
-      setLoading(false);
-      return;
-    }
 
-    if (status === 204 || status === 200) {
-      //
-      toast({ description: "Partner Updated successfully" });
+
+      const { data, status } = await patchRequest<TPartner>({
+        endpoint: "/partner",
+        payload,
+      });
+
+      if (status !== 200) throw data;
+
+      toast({
+        description: "Partner Updated successfully",
+      });
+      return data;
+    } catch (error: any) {
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
       setLoading(false);
     }
   }

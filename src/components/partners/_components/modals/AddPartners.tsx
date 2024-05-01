@@ -11,14 +11,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Select,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
 } from "@/components";
 import { useForm } from "react-hook-form";
-import { COUNTRY_CODE } from "@/utils";
+import { COUNTRY_CODE, uploadFile } from "@/utils";
 import { AddSponsorLevel } from "@/components/contents/partners/_components";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -30,27 +25,31 @@ import {
   useAddPartners,
   useFetchSingleEvent,
   useGetEventAttendees,
+  useUpdatePartners,
 } from "@/hooks";
 import { BoothStaffWidget } from "../../sponsors/_components";
-import { PartnerIndustry, TAttendee } from "@/types";
+import { PartnerIndustry, TAttendee, TPartner } from "@/types";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import {getCookie} from "@/hooks"
+import { getCookie } from "@/hooks";
 
 export function AddPartners({
   close,
   eventId,
+  partner,
   refetchPartners,
 }: {
   eventId: string;
-  refetchPartners: () => Promise<null | undefined>;
+  refetchPartners: () => Promise<any>;
+  partner?: TPartner;
   close: () => void;
 }) {
   const [active, setActive] = useState(1);
-  const currentEvent = getCookie("currentEvent")
-  const { loading, addPartners } = useAddPartners();
+  const currentEvent = getCookie("currentEvent");
+  const { addPartners } = useAddPartners();
   const { attendees } = useGetEventAttendees(eventId);
   const { data: eventData, refetch } = useFetchSingleEvent(eventId);
-
+  const { update } = useUpdatePartners();
+  const [loading, setLoading] = useState(false);
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
     "+234"
   );
@@ -71,14 +70,16 @@ export function AddPartners({
   //
   const country = form.watch("country");
   const selectedBoothStaff = form.watch("boothStaff");
-
-
+  const companyImage = form.watch("companyLogo");
+  const companyVideo = form.watch("media");
 
   // adding boothStaff
   useEffect(() => {
     if (selectedBoothStaff) {
       // check if boothStaff has been selected
-      const isBoothStaffPresent = selectedAttendees?.some(({email} ) => email === selectedBoothStaff )
+      const isBoothStaffPresent = selectedAttendees?.some(
+        ({ email }) => email === selectedBoothStaff
+      );
 
       // return if the staff is present
       if (isBoothStaffPresent) return;
@@ -113,27 +114,64 @@ export function AddPartners({
     }
   }, [country]);
 
-
   async function onSubmit(values: any) {
-    let selectedIndustry: PartnerIndustry | undefined
+    setLoading(true);
+ 
+    const promise = new Promise(async (resolve) => {
+      if (typeof values?.companyLogo === "string") {
+        resolve(values?.companyLogo);
+      } else if (values?.companyLogo && values?.companyLogo[0]) {
+        const img = await uploadFile(values?.companyLogo[0], "img");
+        resolve(img);
+      } else {
+        resolve(null);
+      }
+    });
+    const image: any = await promise;
 
-    if (eventData?.partnerIndustry && values.industry) {
-      selectedIndustry = eventData?.partnerIndustry.find(
-        ({ name }) => name.toLowerCase() === values.industry
-      );
-    }
+    const promiseVideo = new Promise(async (resolve) => {
+      if (typeof values?.media === "string") {
+        resolve(values?.media);
+      } else if (values?.media && values?.media[0]) {
+        const vid = await uploadFile(values?.media[0], "img");
+        resolve(vid);
+      } else {
+        resolve(null);
+      }
+    });
+
+    const video: any = await promiseVideo;
     
 
-    const payload: any = {
-      ...values,
-      eventId:String( eventData?.id),
-      whatsApp: whatsappCountryCode + values.whatsApp,
-      phoneNumber: phoneCountryCode + values.phoneNumber,
-      boothStaff: selectedAttendees,
-      industry: selectedIndustry,
-    };
+    const payload: Partial<TPartner> = partner?.id
+      ? {
+          ...partner,
+          ...values,
+          eventId: String(eventData?.id),
+          eventAlias: eventData?.eventAlias,
+          whatsApp: whatsappCountryCode + values.whatsApp,
+          phoneNumber: phoneCountryCode + values.phoneNumber,
+          boothStaff: selectedAttendees,
+          companyLogo: image,
+          media: video,
+        }
+      : {
+          ...values,
+          eventId: String(eventData?.id),
+          eventAlias: eventData?.eventAlias,
+          whatsApp: whatsappCountryCode + values.whatsApp,
+          phoneNumber: phoneCountryCode + values.phoneNumber,
+          boothStaff: selectedAttendees,    
+          companyLogo: image,
+          media: video,
+        };
 
-    await addPartners(payload);
+   // console.log(payload);
+   // setLoading(false);
+   // return;
+    const asynQuery = partner?.id ? update : addPartners;
+    await asynQuery(payload);
+    setLoading(false);
     refetchPartners();
     close();
   }
@@ -172,6 +210,57 @@ export function AddPartners({
     );
   }, [eventData?.sponsorCategory]);
 
+  ///
+ // console.log("mm", partner);
+  useEffect(() => {
+    if (partner) {
+      form.reset({
+        partnerType: partner?.partnerType,
+        sponsorCategory: partner?.sponsorCategory,
+        companyName: partner?.companyName,
+        phoneNumber: partner?.phoneNumber,
+        whatsApp: partner?.whatsApp,
+        email: partner?.email,
+        companyLogo: partner?.companyLogo,
+        media: partner?.media,
+        description: partner?.description,
+        city: partner?.city,
+        country: partner?.country,
+        industry: partner?.industry,
+        website: partner?.website,
+      });
+
+      setSelectedAttendees(partner?.boothStaff);
+    }
+  }, [partner]);
+
+  const countriesList = useMemo(() => {
+    return COUNTRY_CODE.map((country) => ({
+      label: country.name,
+      value: country.name,
+    }));
+  }, [COUNTRY_CODE]);
+
+  const formatImage = useMemo(() => {
+    if (typeof companyImage === "string") {
+      return companyImage;
+    } else if (companyImage && companyImage[0]) {
+      return URL.createObjectURL(companyImage[0]);
+    } else {
+      return null;
+    }
+  }, [companyImage]);
+
+  const formatVideo = useMemo(() => {
+    if (typeof companyVideo === "string") {
+      return companyVideo;
+    } else if (companyVideo && companyVideo[0]) {
+      return URL.createObjectURL(companyVideo[0]);
+    } else {
+      return null;
+    }
+  }, [companyVideo]);
+
   return (
     <div
       role="button"
@@ -203,8 +292,16 @@ export function AddPartners({
               name="partnerType"
               render={({ field }) => (
                 <ReactSelect
-                  {...field}
+                  {...form.register("partnerType")}
                   placeHolder="Enter the Employment Type"
+                  defaultValue={
+                    partner
+                      ? {
+                          value: partner?.partnerType,
+                          label: partner?.partnerType,
+                        }
+                      : ""
+                  }
                   label="Partner Type"
                   options={[
                     { label: "Sponsor", value: "Sponsor" },
@@ -220,8 +317,16 @@ export function AddPartners({
                   name="sponsorCategory"
                   render={({ field }) => (
                     <ReactSelect
-                      {...field}
+                      {...form.register("sponsorCategory")}
                       placeHolder="Select Sponsor Category"
+                      defaultValue={
+                        partner
+                          ? {
+                              value: partner?.sponsorCategory,
+                              label: partner?.sponsorCategory,
+                            }
+                          : ""
+                      }
                       label="Sponsor Category"
                       options={formattedSponsorCategoryList || []}
                     />
@@ -249,7 +354,7 @@ export function AddPartners({
                   <Input
                     type="text"
                     placeholder="Enter the Company Name"
-                    {...field}
+                    {...form.register("companyName")}
                     className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                   />
                 </InputOffsetLabel>
@@ -274,7 +379,7 @@ export function AddPartners({
                       <Input
                         className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
                         placeholder="Enter Phone Number"
-                        {...field}
+                        {...form.register("phoneNumber")}
                         type="tel"
                       />
                     </FormControl>
@@ -301,7 +406,7 @@ export function AddPartners({
                       <Input
                         className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
                         placeholder="Enter Whatsapp Number"
-                        {...field}
+                        {...form.register("whatsApp")}
                         type="tel"
                       />
                     </FormControl>
@@ -318,7 +423,7 @@ export function AddPartners({
                   <Input
                     type="text"
                     placeholder="Enter the Email Address"
-                    {...field}
+                    {...form.register("email")}
                     className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                   />
                 </InputOffsetLabel>
@@ -344,6 +449,16 @@ export function AddPartners({
                 Selected file should not be bigger than 2MB
               </p>
             </div>
+
+            {formatImage && (
+              <div className="w-[100px] h-[100px]">
+                <img
+                  src={formatImage}
+                  className="w-full h-full object-cover"
+                  alt=""
+                />
+              </div>
+            )}
             <div className="w-full flex flex-col items-start justify-start gap-y-1">
               <InputOffsetLabel label="Media">
                 <Input
@@ -360,6 +475,17 @@ export function AddPartners({
               </p>
             </div>
 
+            {formatVideo && (
+              <div className="w-[150px] h-[150px]">
+                <video
+                  src={formatVideo}
+                  muted
+                  controls
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+
             <FormField
               control={form.control}
               name="description"
@@ -367,7 +493,7 @@ export function AddPartners({
                 <InputOffsetLabel label="Description">
                   <Textarea
                     placeholder="Enter the Description"
-                    {...field}
+                    {...form.register("description")}
                     className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                   ></Textarea>
                 </InputOffsetLabel>
@@ -416,7 +542,15 @@ export function AddPartners({
                 name="industry"
                 render={({ field }) => (
                   <ReactSelect
-                    {...field}
+                    {...form.register("industry")}
+                    defaultValue={
+                      partner 
+                        ? {
+                            value: partner?.industry,
+                            label: partner?.industry,
+                          }
+                        : ""
+                    }
                     placeHolder="Select Industry"
                     label="Industry"
                     options={formattedIndustriesList || []}
@@ -445,7 +579,7 @@ export function AddPartners({
                     <Input
                       type="text"
                       placeholder="Enter City"
-                      {...field}
+                      {...form.register("city")}
                       className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                     />
                   </InputOffsetLabel>
@@ -456,27 +590,20 @@ export function AddPartners({
                 control={form.control}
                 name="country"
                 render={({ field }) => (
-                  <InputOffsetLabel label={"Country"}>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <SelectTrigger className="border focus:border-gray-500 h-12">
-                        <SelectValue
-                          placeholder="Enter country"
-                          className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                        />
-                      </SelectTrigger>
-
-                      <SelectContent>
-                        {COUNTRY_CODE.map(({ name }) => (
-                          <SelectItem key={name} value={name}>
-                            {name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </InputOffsetLabel>
+                  <ReactSelect
+                    {...form.register("country")}
+                    defaultValue={
+                      partner
+                        ? {
+                            value: partner?.country,
+                            label: partner?.country,
+                          }
+                        : ""
+                    }
+                    placeHolder="Select the Country"
+                    label="Country"
+                    options={countriesList}
+                  />
                 )}
               />
             </div>
@@ -489,7 +616,7 @@ export function AddPartners({
                   <Input
                     type="text"
                     placeholder="Enter the Website"
-                    {...field}
+                    {...form.register("website")}
                     className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                   />
                 </InputOffsetLabel>
@@ -517,11 +644,11 @@ export function AddPartners({
       )}
       {active === 3 && (
         <AddSponsorLevel
-        eventId={eventId}
-        sponsorLevels={eventData?.sponsorCategory}
-        close={close}
-        setActive={setActive}
-        refetch={refetch}
+          eventId={eventId}
+          sponsorLevels={eventData?.sponsorCategory}
+          close={close}
+          setActive={setActive}
+          refetch={refetch}
         />
       )}
     </div>

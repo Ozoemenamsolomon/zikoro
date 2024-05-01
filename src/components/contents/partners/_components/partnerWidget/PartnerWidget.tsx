@@ -5,7 +5,7 @@ import { ArrowIosDownward } from "@styled-icons/evaicons-solid/ArrowIosDownward"
 import { Phone } from "@styled-icons/feather/Phone";
 import { cn } from "@/lib";
 import { Switch } from "@/components/ui/switch";
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { DropDownSelect } from "@/components/contents/_components";
 import { Event, TPartner } from "@/types";
 import {
@@ -16,6 +16,7 @@ import {
   useUpdatePartners,
 } from "@/hooks";
 import { EmailIcon, WhatsappIcon } from "@/constants";
+import { AddPartners } from "@/components/partners/_components";
 
 export function PartnerWidget({
   item,
@@ -35,12 +36,17 @@ export function PartnerWidget({
   partners: TPartner[];
 }) {
   const [boothList, setBoothList] = useState<string[]>([]);
-  const [status, setStatus] = useState(item?.stampIt)
+  const [status, setStatus] = useState(item?.stampIt);
   const { updateHall } = useUpdateHall();
-  const {update, loading} = useUpdatePartners()
-  const { updateBooth } = useUpdateBooth()
+  const { update, loading } = useUpdatePartners();
+  const { updateBooth } = useUpdateBooth();
   const { updatePartnerType } = useUpdatePartnerType();
   const { updateSponsorCategory } = useUpdateSponsor();
+  const [isOpen, setOpen] = useState(false)
+
+  function onClose() {
+    setOpen((prev) =>!prev);
+  }
 
   // format hall list
   const hallList = useMemo(() => {
@@ -71,7 +77,7 @@ export function PartnerWidget({
         { length: Number(hallBoothNumber) },
         (_, index) => String(index + 1)
       );
-     
+
       // get all partners with the exhibition hall
       const partnersWithHall = partners.filter(
         ({ exhibitionHall }) => exhibitionHall === hall
@@ -80,15 +86,12 @@ export function PartnerWidget({
       // get their booth numbers
       const boothNumbers = partnersWithHall.map((item) => {
         if (Array.isArray(item?.boothNumber)) {
-     
           return item?.boothNumber;
-        }
-        else {
-          return []
+        } else {
+          return [];
         }
       });
 
-     
       //  console.log({ddd:boothNumbers})
 
       const filterBoothNumber = boothNumbers
@@ -135,7 +138,6 @@ export function PartnerWidget({
   }, [event]);
 
   async function handleSelectedBooth(value: string[]) {
- 
     await updateBooth(item?.id, value);
     refetch(); // fetch partners
   }
@@ -152,13 +154,17 @@ export function PartnerWidget({
   }
 
   async function submit(bol: boolean) {
-    setStatus(bol) 
-    await update( {stampIt: bol}, item?.id)
-    refetch()
+    setStatus(bol);
+    await update({ ...item, stampIt: bol });
+    refetch();
   }
 
   return (
-    <tr
+    <>
+      <tr
+      onClick={onClose}
+    role="button"
+
       className={cn(
         "w-full grid grid-cols-8 text-sm items-center gap-3 p-3 ",
         className
@@ -176,7 +182,11 @@ export function PartnerWidget({
           {item?.companyName}
         </p>
       </label>
-      <td className="flex items-center gap-x-2 ">
+      <td
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
+      className="flex items-center gap-x-2 ">
         <button onClick={() => sendMail(item?.email)}>
           <EmailIcon />
         </button>
@@ -188,7 +198,9 @@ export function PartnerWidget({
           <Phone size={22} />
         </button>
       </td>
-      <td>
+      <td onClick={(e) => {
+        e.stopPropagation()
+      }}>
         <DropDownSelect
           handleChange={handleSelectedPartner}
           data={["Exhibitor", "Sponsor"]}
@@ -203,7 +215,11 @@ export function PartnerWidget({
         </DropDownSelect>
       </td>
 
-      <td>
+      <td
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
+      >
         {item?.partnerType.toLowerCase() === "sponsor" ? (
           <DropDownSelect handleChange={handleSelectedLevel} data={levelList}>
             <button className="flex relative items-center gap-x-1">
@@ -218,7 +234,11 @@ export function PartnerWidget({
         )}
       </td>
 
-      <td>
+      <td
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
+      >
         <DropDownSelect handleChange={handleSelectedHall} data={hallList}>
           <button className="flex relative items-center gap-x-1">
             <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
@@ -228,7 +248,11 @@ export function PartnerWidget({
           </button>
         </DropDownSelect>
       </td>
-      <td>
+      <td
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
+      >
         <DropDownSelect
           handleChange={handleSelectedBooth}
           isMultiple
@@ -236,17 +260,28 @@ export function PartnerWidget({
           className={item?.exhibitionHall ? "block" : "hidden"}
         >
           <button className="flex items-center relative gap-x-1">
-            <p className="">{item?.boothNumber?.toString() || "0"}</p>
+            <p className="flex flex-wrap items-start justify-start max-w-[100px]">
+              {item?.boothNumber?.toString() || "0"}
+            </p>
             <ArrowIosDownward size={20} />
           </button>
         </DropDownSelect>
       </td>
-      <td>
+      <td
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
+      >
         <Switch
-        className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
-        disabled={loading}
-        checked={status} onClick={() => submit(!item?.stampIt)} />
+          className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+          disabled={loading}
+          checked={status}
+          onClick={() => submit(!item?.stampIt)}
+        />
       </td>
     </tr>
+    {isOpen && event && <AddPartners refetchPartners={refetch} close={onClose} eventId={event?.eventAlias} partner={item}/>}
+    </>
+  
   );
 }

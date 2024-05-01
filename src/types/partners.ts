@@ -1,3 +1,5 @@
+import {TAttendee} from "@/types"
+
 export enum PartnersEnum {
     SPONSORS_TAB = 1,
     EXHIBITORS_TAB,
@@ -17,7 +19,7 @@ export enum PartnersEnum {
   export interface TPartner {
     banners: PartnerBannerType[];
     boothNumber: string[];
-    boothStaff: JSON;
+    boothStaff: TAttendee[];
     city: string;
     companyLogo: string;
     companyName: string;
@@ -30,7 +32,7 @@ export enum PartnersEnum {
     eventName: string;
     exhibitionHall: string;
     id: number;
-    industry: { name: string; color: string };
+    industry: string;
     jobs: PartnerJobType[];
     media: string;
     partnerType: string;
@@ -39,6 +41,7 @@ export enum PartnersEnum {
     website: string;
     whatsApp: string;
     sponsorCategory: string;
+    eventAlias: string;
   
   }
 
@@ -66,6 +69,7 @@ export enum PartnersEnum {
     offers: boolean;
     website: string;
     whatsApp: string;
+    eventAlias: string;
   }
   
   export interface PartnerJobType {

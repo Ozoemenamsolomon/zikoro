@@ -86,14 +86,14 @@ export function DropDownSelect({
       <span
         onClick={(e) => {
           e.stopPropagation();
-          console.log({ checkedValue });
+         // console.log({ checkedValue });
           if (!isMultiple && checkedValue?.length > 0) {
         
             handleChange(checkedValue?.join(","));
           }
 
           if (isMultiple && checkedValue?.length > 0) {
-            console.log("is Multiple")
+         //   console.log("is Multiple")
             handleChange(checkedValue);
           }
 

@@ -1,7 +1,7 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-
+import { deploymentUrl } from "@/utils";
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
@@ -25,12 +25,12 @@ export async function POST(req: NextRequest) {
           }
         );
       }
-
       if (Array.isArray(sessionModerators) && sessionModerators.length > 0) {
         const updatedModerators = sessionModerators?.map((moderator) => {
           if (Array.isArray(moderator?.moderatingAt)) {
             // add to the existing session if it is not present
             // check if session is already present and update
+
             const presentSession = moderator?.moderatingAt?.session?.find(
               ({ sessionAlias }: { sessionAlias: string }) =>
                 sessionAlias === params?.sessionAlias
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
                 ...filterModerators,
                 {
                   session: restData,
-                  sessionLink: `${window.location.origin}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                  sessionLink: `${deploymentUrl}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
                 },
               ],
             };
@@ -60,12 +60,176 @@ export async function POST(req: NextRequest) {
               moderatingAt: [
                 {
                   session: restData,
-                  sessionLink: `${window.location.origin}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                  sessionLink: `${deploymentUrl}/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
                 },
               ],
             };
           }
         });
+
+        for (let attendee of updatedModerators) {
+          const { error: moderatorError, status } = await supabase
+            .from("attendees")
+            .update([
+              {
+                ...attendee,
+              },
+            ])
+            .eq("id", attendee?.id);
+
+       //   console.log("ddddd", status);
+
+          const { data: aa } = await supabase.from("attendees").select("*");
+
+          if (moderatorError) {
+            return NextResponse.json(
+              {
+                error: moderatorError?.message,
+              },
+              {
+                status: 400,
+              }
+            );
+          }
+        }
+
+        // console.log("updated",updatedModerators)
+      }
+
+      if (Array.isArray(sessionSpeakers) && sessionSpeakers.length > 0) {
+        const updatedSpeakers = sessionSpeakers?.map((speaker) => {
+          if (Array.isArray(speaker?.speakingAt)) {
+            // add to the existing session if it is not present
+            // check if session is already present and update
+
+            const presentSession = speaker?.speakingAt?.session?.find(
+              ({ sessionAlias }: { sessionAlias: string }) =>
+                sessionAlias === params?.sessionAlias
+            )?.sessionAlias;
+            const filterSpeakers = speaker?.speakingAt?.filter((s: any) => {
+              return s.session?.map(
+                ({ sessionAlias }: { sessionAlias: string }) =>
+                  sessionAlias !== presentSession
+              );
+            });
+
+            return {
+              ...speaker,
+              speakingAt: [
+                ...filterSpeakers,
+                {
+                  session: restData,
+                  sessionLink: `${deploymentUrl}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                },
+              ],
+            };
+          } else {
+            return {
+              ...speaker,
+              speakingAt: [
+                {
+                  session: restData,
+                  sessionLink: `${deploymentUrl}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                },
+              ],
+            };
+          }
+        });
+
+        for (let attendee of updatedSpeakers) {
+          const { error: speakerError, status } = await supabase
+            .from("attendees")
+            .update([
+              {
+                ...attendee,
+              },
+            ])
+            .eq("id", attendee?.id);
+
+          // console.log('ddddd', status)
+
+          if (speakerError) {
+            return NextResponse.json(
+              {
+                error: speakerError?.message,
+              },
+              {
+                status: 400,
+              }
+            );
+          }
+        }
+
+        // console.log("updated",updatedModerators)
+      }
+
+      if (Array.isArray(sessionSponsors) && sessionSponsors.length > 0) {
+        const updatedSponsors = sessionSponsors?.map((sponsor) => {
+          if (Array.isArray(sponsor?.sponsoredSession)) {
+            // add to the existing session if it is not present
+            // check if session is already present and update
+
+            const presentSession = sponsor?.sponsoredSession?.session?.find(
+              ({ sessionAlias }: { sessionAlias: string }) =>
+                sessionAlias === params?.sessionAlias
+            )?.sessionAlias;
+            const filtersponsors = sponsor?.sponsoredSession?.filter(
+              (s: any) => {
+                return s.session?.map(
+                  ({ sessionAlias }: { sessionAlias: string }) =>
+                    sessionAlias !== presentSession
+                );
+              }
+            );
+
+            return {
+              ...sponsor,
+              sponsoredSession: [
+                ...filtersponsors,
+                {
+                  session: restData,
+                  sessionLink: `${deploymentUrl}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                },
+              ],
+            };
+          } else {
+            return {
+              ...sponsor,
+              sponsoredSession: [
+                {
+                  session: restData,
+                  sessionLink: `${deploymentUrl}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                },
+              ],
+            };
+          }
+        });
+
+        for (let partner of updatedSponsors) {
+          const { error: sponsorError, status } = await supabase
+            .from("eventPartners")
+            .update([
+              {
+                ...partner,
+              },
+            ])
+            .eq("id", partner?.id);
+
+          // console.log('ddddd', status)
+
+          if (sponsorError) {
+            return NextResponse.json(
+              {
+                error: sponsorError?.message,
+              },
+              {
+                status: 400,
+              }
+            );
+          }
+        }
+
+        // console.log("updated",updatedModerators)
       }
 
       if (error) throw error;
@@ -151,7 +315,7 @@ export async function PATCH(req: NextRequest) {
                 ...filterModerators,
                 {
                   session: restData,
-                  sessionLink: `https://zikoro-git-integrate-ajax484s-projects.vercel.app/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                  sessionLink: `${deploymentUrl}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
                 },
               ],
             };
@@ -161,7 +325,7 @@ export async function PATCH(req: NextRequest) {
               moderatingAt: [
                 {
                   session: restData,
-                  sessionLink: `https://zikoro-git-integrate-ajax484s-projects.vercel.app/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                  sessionLink: `${deploymentUrl}/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
                 },
               ],
             };
@@ -178,7 +342,7 @@ export async function PATCH(req: NextRequest) {
             ])
             .eq("id", attendee?.id);
 
-          console.log("ddddd", status);
+       //   console.log("ddddd", status);
 
           const { data: aa } = await supabase.from("attendees").select("*");
 
@@ -220,7 +384,7 @@ export async function PATCH(req: NextRequest) {
                 ...filterSpeakers,
                 {
                   session: restData,
-                  sessionLink: `https://zikoro-git-integrate-ajax484s-projects.vercel.app/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                  sessionLink: `${deploymentUrl}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
                 },
               ],
             };
@@ -230,7 +394,7 @@ export async function PATCH(req: NextRequest) {
               speakingAt: [
                 {
                   session: restData,
-                  sessionLink: `https://zikoro-git-integrate-ajax484s-projects.vercel.app/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                  sessionLink: `${deploymentUrl}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
                 },
               ],
             };
@@ -289,7 +453,7 @@ export async function PATCH(req: NextRequest) {
                 ...filtersponsors,
                 {
                   session: restData,
-                  sessionLink: `https://zikoro-git-integrate-ajax484s-projects.vercel.app/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                  sessionLink: `${deploymentUrl}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
                 },
               ],
             };
@@ -299,7 +463,7 @@ export async function PATCH(req: NextRequest) {
               sponsoredSession: [
                 {
                   session: restData,
-                  sessionLink: `https://zikoro-git-integrate-ajax484s-projects.vercel.app/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
+                  sessionLink: `${deploymentUrl}/event/${params?.eventAlias}/agenda/${params?.sessionAlias}`,
                 },
               ],
             };
