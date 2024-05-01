@@ -24,6 +24,7 @@ export function CollapsibleWidget({
   const toggleVisibility = () => {
     setVisibility((prev) => !prev);
   };
+  
   return (
     <section className="flex flex-col w-full  min-h-max">
       <div className="w-full flex items-center justify-between px-3 py-3 border-y ">

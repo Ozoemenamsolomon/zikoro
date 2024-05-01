@@ -10,7 +10,7 @@ import { CollapsibleWidget, Duplicate, Edit, Deletes } from ".";
 import { FilePdf } from "@styled-icons/fa-regular/FilePdf";
 import Image from "next/image";
 import { TAgenda, Event } from "@/types";
-import {Player} from "@/components/composables"
+import { Player } from "@/components/composables";
 import { useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie, useUpdateAgenda } from "@/hooks";
@@ -94,19 +94,20 @@ export function AboutSession({
     <>
       {agenda && event && (
         <div className="w-full lg:col-span-5 border-r">
-         {agenda?.sessionUrl ?
-         <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem]">
-            <Player
-            src={agenda?.sessionUrl}
-            thumbnail={event?.eventPoster}
-            title={agenda?.sessionTitle}
-            autoPlay
-            load={"eager"}
-            streamType={"live"}
-            />
-         </div>
-         :
-         <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem] bg-gray-200 animate-pulse"></div>}
+          {agenda?.sessionUrl ? (
+            <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem]">
+              <Player
+                src={agenda?.sessionUrl}
+                thumbnail={event?.eventPoster}
+                title={agenda?.sessionTitle}
+                autoPlay
+                load={"eager"}
+                streamType={"live"}
+              />
+            </div>
+          ) : (
+            <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem] bg-gray-200 animate-pulse"></div>
+          )}
           <div className="w-full p-4 mb-2 flex flex-col lg:flex-row items-start lg:items-center gap-2 justify-start lg:justify-between">
             {isLive && (
               <p className="text-xs text-gray-50 bg-basePrimary rounded-md  p-2 ">
@@ -121,7 +122,7 @@ export function AboutSession({
                 refetchEvent={refetch}
               />
               <Duplicate session={agenda} refetch={refetch} />
-              <Deletes agendaId={agenda?.id} refetch={refetch} />
+              <Deletes agendaId={agenda?.sessionAlias} refetch={refetch} />
               <Button className="h-fit  gap-x-2 w-fit px-0">
                 <Eye size={20} />
                 <p className="text-xs sm:text-sm text-gray-500">
@@ -144,7 +145,9 @@ export function AboutSession({
             {` ${agendaDate ?? ""} ${agendaTime ?? ""}`}
           </p>
           <div className="flex px-4 items-center flex-wrap gap-3 mb-2 ">
-            <EventLocationType locationType={agenda?.sessionType ?? ""} />
+            {agenda?.sessionType && (
+              <EventLocationType locationType={agenda?.sessionType ?? ""} />
+            )}
             {agenda?.sessionVenue && (
               <div className="flex items-center gap-x-1">
                 <LocationPin size={20} />
@@ -172,13 +175,7 @@ export function AboutSession({
               </p>
             </div>
             <div className="items-start text-[13px] sm:text-sm text-gray-600 px-3 py-4 justify-start flex w-full flex-wrap">
-              when an unknown printer took a galley of type and scrambled it to
-              make a type specimen book. It has survived not only five
-              centuries, but also the leap into electronic typesetting,
-              remaining essentially unchanged. It was popularised in the 1960s
-              with the release of Letraset sheets containing Lorem Ipsum
-              passages, and more recently with desktop publishing software like
-              Aldus PageMaker including versions of Lorem Ipsum.
+              {agenda?.description ?? ""}
             </div>
           </section>
           <CollapsibleWidget
@@ -198,11 +195,10 @@ export function AboutSession({
                 agenda?.sessionSpeakers.map((attendee, index) => (
                   <BoothStaffWidget
                     company={"DND"}
-                    image={null}
+                    image={attendee?.profilePicture || null}
                     name={`${attendee?.firstName} ${attendee?.lastName}`}
-                    profession={"Manager"}
+                    profession={attendee?.jobTitle ??"Job"}
                     email={attendee?.email ?? ""}
-                    ticketType={attendee?.ticketType ?? "Attendee"}
                     key={index}
                   />
                 ))}
@@ -225,11 +221,11 @@ export function AboutSession({
                 agenda?.sessionModerators.map((attendee, index) => (
                   <BoothStaffWidget
                     company={"DND"}
-                    image={null}
+                    image={attendee?.profilePicture || null}
                     name={`${attendee?.firstName} ${attendee?.lastName}`}
-                    profession={"Manager"}
+                    profession={attendee?.jobTitle ??"Job"}
                     email={attendee?.email ?? ""}
-                    ticketType={attendee?.ticketType ?? "Attendee"}
+                    
                     key={index}
                   />
                 ))}

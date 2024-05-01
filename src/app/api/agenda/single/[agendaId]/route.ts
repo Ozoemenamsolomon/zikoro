@@ -15,7 +15,7 @@ export async function GET(
       const { data, error, status } = await supabase
         .from("agenda")
         .select("*")
-        .eq("id", agendaId)
+        .eq("sessionAlias", agendaId)
         .single()
 
       // console.log(data);

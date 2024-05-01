@@ -126,7 +126,7 @@ function Widget({
         role="button"
         onClick={() => {
           if (session?.description) {
-            router.push(`/event/${event?.eventAlias}/agenda/${session?.id}`);
+            router.push(`/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`);
           }
         }}
         className={cn(
@@ -142,11 +142,11 @@ function Widget({
               mergedSM.map((attendee, index) => (
                 <BoothStaffWidget
                   company={"DND"}
-                  image={null}
+                  image={attendee?.profilePicture || null}
                   name={`${attendee?.firstName} ${attendee?.lastName}`}
-                  profession={"Manager"}
+                  profession={attendee?.jobTitle ??"Job"}
                   email={attendee?.email ?? ""}
-                  ticketType={attendee?.ticketType ?? "Attendee"}
+                 
                   key={index}
                 />
               ))}

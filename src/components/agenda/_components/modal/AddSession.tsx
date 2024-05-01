@@ -104,6 +104,7 @@ export function AddSession({
     });
   }, [data]);
   // moderators
+  console.log(attendees, data)
   const formattedAttendees = useMemo(() => {
     return attendees?.map(({ firstName, lastName, email }) => {
       return {
@@ -270,7 +271,7 @@ export function AddSession({
     }
 
     const sessionAlias = generateAlias()
-
+   
     const payload: Partial<TAgenda> = session?.id ? {
       ...session,
       ...values,
@@ -279,6 +280,7 @@ export function AddSession({
       sessionSpeakers: chosenSpeakers,
       sessionSponsors: chosenSponsors,
       sessionFiles: files,
+      sessionAlias,
       eventAlias: event?.eventAlias,
       eventId: String(event?.id),
     } :{
@@ -611,7 +613,7 @@ export function AddSession({
                           email,
                           jobTitle,
                           profilePicture,
-                          ticketType,
+                         
                         }) => (
                           <BoothStaffWidget
                             key={email}
@@ -621,7 +623,7 @@ export function AddSession({
                             name={`${firstName} ${lastName}`}
                             company={organization}
                             profession={jobTitle}
-                            ticketType={ticketType}
+                            
                             isAddingBoothStaff
                           />
                         )
@@ -650,7 +652,7 @@ export function AddSession({
                           email,
                           jobTitle,
                           profilePicture,
-                          ticketType,
+                          
                         }) => (
                           <BoothStaffWidget
                             key={email}
@@ -660,7 +662,7 @@ export function AddSession({
                             name={`${firstName} ${lastName}`}
                             company={organization}
                             profession={jobTitle}
-                            ticketType={ticketType}
+                           
                             isAddingBoothStaff
                           />
                         )

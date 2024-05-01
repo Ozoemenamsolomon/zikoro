@@ -37,7 +37,7 @@ export function Edit({
           event={event}
           eventStartDate={event?.startDateTime}
           session={session}
-          eventId={session?.eventId}
+          eventId={session?.eventAlias}
           close={onClose}
           refetch={refetchEvent}
           refetchSession={refetch}
