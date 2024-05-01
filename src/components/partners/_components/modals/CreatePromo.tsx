@@ -134,7 +134,7 @@ export function CreatePromo({
                     type="date"
                     placeholder="Enter the Job Title"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className="inline-flex placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -216,7 +216,7 @@ export function CreatePromo({
                 </InputOffsetLabel>
               )}
             />
-            <div className="w-full flex flex-col items-start justify-start gap-y-2">
+            <div className="w-full flex text-mobile sm:text-sm flex-col items-start justify-start gap-y-2">
               <p className="mb-4">How do you want to redeem this offer?</p>
 
               <div className="flex items-center gap-x-4">
@@ -231,7 +231,7 @@ export function CreatePromo({
                           type="radio"
                           {...field}
                           value={value}
-                          className="h-[20px] pt-3 w-[20px] mr-4"
+                          className="accent-basePrimary h-[20px] pt-3 w-[20px] mr-4"
                         />
                         <span className="capitalize">{value}</span>
                       </label>

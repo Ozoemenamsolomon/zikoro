@@ -19,7 +19,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown } from "@styled-icons/bootstrap/ChevronDown";
 import { jobSchema } from "@/schemas";
-import { useAddPartnerJob } from "@/hooks";
+import { useAddPartnerJob, useUpdatePartners } from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import {
@@ -44,20 +44,38 @@ export function AddJob({
   refetch: () => Promise<null | undefined>;
   close: () => void;
 }) {
-  const { loading, addPartnerJob } = useAddPartnerJob();
+  //const { loading, addPartnerJob } = useAddPartnerJob();
   const [currencyCode, setcurrencyCode] = useState("NGN");
+  const { update, loading } = useUpdatePartners();
   const form = useForm<z.infer<typeof jobSchema>>({
     resolver: zodResolver(jobSchema),
   });
 
   async function onSubmit(values: z.infer<typeof jobSchema>) {
-    const payload = {
-      ...values,
-      partnerId,
-      currencyCode,
-      companyName: partner ? partner?.companyName : "",
-    };
-    await addPartnerJob(partnerId, payload, partner);
+    const jobs =
+      Array.isArray(partner?.jobs) && partner?.jobs?.length > 0
+        ? [
+            ...partner?.jobs,
+            {
+              ...values,
+              partnerId,
+              currencyCode,
+              companyName: partner ? partner?.companyName : "",
+            },
+          ]
+        : [
+            {
+              ...values,
+              partnerId,
+              currencyCode,
+              companyName: partner ? partner?.companyName : "",
+            },
+          ];
+      const payload = {
+        ...partner,
+        jobs
+      }
+    await update(payload);
     refetch();
     close();
   }
@@ -253,20 +271,81 @@ export function AddJob({
                 />
               )}
             />
-            <FormField
-              control={form.control}
-              name="applicationLink"
-              render={({ field }) => (
-                <InputOffsetLabel label="Application Link">
-                  <Input
-                    type="text"
-                    placeholder="Enter the Application Link"
-                    {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+
+            <div className="w-full flex text-mobile sm:text-sm flex-col items-start justify-start gap-y-2">
+              <p className="mb-4">
+                How do you want applicants to apply for this job?
+              </p>
+
+              <div className="flex items-center gap-x-4">
+                {["whatsapp", "email", "url"].map((value) => (
+                  <FormField
+                    key={value}
+                    control={form.control}
+                    name="applicationMode"
+                    render={({ field }) => (
+                      <label className="flex items-center">
+                        <input
+                          type="radio"
+                          {...field}
+                          value={value}
+                          className="accent-basePrimary h-[20px] pt-3 w-[20px] mr-4"
+                        />
+                        <span className="capitalize">{value}</span>
+                      </label>
+                    )}
                   />
-                </InputOffsetLabel>
+                ))}
+              </div>
+
+              {form.watch("applicationMode") === "url" && (
+                <FormField
+                  control={form.control}
+                  name="applicationLink"
+                  render={({ field }) => (
+                    <InputOffsetLabel label="URL">
+                      <Input
+                        placeholder="Enter Product Url"
+                        {...field}
+                        className="placeholder:text-sm h-12 w-full focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
               )}
-            />
+              {form.watch("applicationMode") === "whatsapp" && (
+                <FormField
+                  control={form.control}
+                  name="whatsApp"
+                  render={({ field }) => (
+                    <InputOffsetLabel label="whatsApp">
+                      <Input
+                        placeholder="Enter Whatsapp Number"
+                        type="tel"
+                        {...field}
+                        className="placeholder:text-sm h-12 w-full focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+              )}
+              {form.watch("applicationMode") === "email" && (
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <InputOffsetLabel label="Email Address">
+                      <Input
+                        placeholder="Enter Email Address"
+                        type="email"
+                        {...field}
+                        className="placeholder:text-sm h-12 w-full focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+              )}
+            </div>
             <Button
               disabled={loading}
               className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-basePrimary h-12 rounded-md text-gray-50 font-medium"

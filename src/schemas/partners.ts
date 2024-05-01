@@ -17,21 +17,42 @@ export const addBannerSchema = z.object({
 
 export const jobSchema = z.object({
   jobTitle: z.string().min(3, { message: "Title is required" }),
-  applicationLink: z
-    .string()
-    .min(3, { message: "Application Link is required" }),
   maxSalary: z.string().min(3, { message: "Max. Salary is required" }),
   minSalary: z.string().min(3, { message: "Min. Salary is required" }),
   salaryDuration: z.string().min(3, { message: "Salary Duration is required" }),
   flexibility: z.string().min(3, { message: "Flexibility Type is required" }),
   description: z.string().min(3, { message: "Job Description is required" }),
   city: z.string().min(3, { message: "City is required" }),
+  applicationMode: z.enum(["whatsapp", "email", "url"]),
   country: z.string().min(3, { message: "Country is required" }),
   employmentType: z.string().min(3, { message: "Employment Type is required" }),
   experienceLevel: z
     .string()
     .min(3, { message: "Experience Level is required" }),
   qualification: z.string().min(3, { message: "Qualification is required" }),
+  applicationLink: z
+    .string()
+    .refine((value) => value !== undefined && value.trim() !== "", {
+      message: "Please provide a url",
+    })
+    .optional(),
+  whatsApp: z
+    .string()
+    .refine((value) => value !== undefined && value.trim() !== "", {
+      message: "Please provide a url",
+    })
+    .optional(),
+  email: z
+    .string()
+    .email({ message: "Email must be a valid email" })
+    .refine(
+      (value) =>
+        value && /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/.test(value),
+      {
+        message: "Invalid email address",
+      }
+    )
+    .optional(),
 });
 
 export const partnerSchema = z.object({
@@ -75,13 +96,10 @@ export const hallSchema = z.object({
   capacity: z.string().min(1, { message: "Hall Capacity is required" }),
 });
 
-
 export const offerCreationSchema = z.object({
   serviceTitle: z.string().min(3, { message: "Title is required" }),
   productImage: z.any(),
-  endDate: z
-    .string()
-    .min(3, { message: "Application Link is required" }),
+  endDate: z.string().min(3, { message: "Application Link is required" }),
   productPrice: z.string().min(3, { message: "Max. Salary is required" }),
   productPromo: z.string().min(3, { message: "Min. Salary is required" }),
   offerDetails: z.string().min(3, { message: "Offer Details is required" }),
@@ -93,13 +111,13 @@ export const offerCreationSchema = z.object({
       message: "Please provide a url",
     })
     .optional(),
-    whatsApp: z
+  whatsApp: z
     .string()
     .refine((value) => value !== undefined && value.trim() !== "", {
       message: "Please provide a url",
     })
     .optional(),
-    email: z
+  email: z
     .string()
     .email({ message: "Email must be a valid email" })
     .refine(
@@ -110,5 +128,4 @@ export const offerCreationSchema = z.object({
       }
     )
     .optional(),
-
-})
+});

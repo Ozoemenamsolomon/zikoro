@@ -27,7 +27,10 @@ export function CollapsibleWidget({
   
   return (
     <section className="flex flex-col w-full  min-h-max">
-      <div className="w-full flex items-center justify-between px-3 py-3 border-y ">
+      <div 
+      role="button"
+      onClick={toggleVisibility}
+      className="w-full flex items-center justify-between px-3 py-3 border-y ">
         <p className="font-semibold text-base sm:text-xl">{title}</p>
         <div className="flex items-center gap-x-2">
           <p>{title}</p>

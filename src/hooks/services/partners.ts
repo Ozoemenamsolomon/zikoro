@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Event, TPartner, PartnerJobType } from "@/types";
-import { postRequest, patchRequest } from "@/utils/api";
+import { postRequest, patchRequest, getRequest } from "@/utils/api";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
 import { toast } from "@/components/ui/use-toast";
@@ -66,18 +66,17 @@ export function useFetchPartners(eventId: string | number) {
   async function fetchPartners() {
     setLoading(true);
     try {
-      const { data, error: fetchError } = await supabase
-        .from("eventPartners")
-        .select("*")
-        .eq("eventAlias", eventId);
+     
+      const {data: result, status} = await getRequest<TPartner[]>({
+        endpoint: `/partner/${eventId}`
+      })
 
-      if (fetchError) {
-        setLoading(false);
-        return null;
-      }
+      setLoading(false)
 
-      setData(data);
-      setLoading(false);
+      if (status !== 200 ) return
+
+      return setData(result.data)
+
     } catch (error) {
       setLoading(false);
       //  console.log(error);
@@ -97,8 +96,6 @@ export function useUpdatePartners() {
   async function update(payload: Partial<TPartner>) {
    
     try {
-
-
 
       const { data, status } = await patchRequest<TPartner>({
         endpoint: "/partner",

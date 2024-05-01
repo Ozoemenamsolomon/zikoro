@@ -5,7 +5,7 @@ import { Whatsapp } from "@styled-icons/remix-fill/Whatsapp";
 import { World } from "@styled-icons/boxicons-regular/World";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
 import { Email } from "@styled-icons/evaicons-solid/Email";
-import { BoothStaffWidget, JobWidget, SponsoredSessionWidget } from "..";
+import { BoothStaffWidget, Edit, JobWidget, SponsoredSessionWidget } from "..";
 import Image from "next/image";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { Location } from "@styled-icons/fluentui-system-regular/Location";
@@ -23,7 +23,7 @@ export function AboutPartner({
   partnerId,
 }: {
   partnerId: string;
-  refetch: () => Promise<null | undefined>;
+  refetch: () => Promise<any>;
   partner: TPartner | null;
 }) {
   const router = useRouter();
@@ -66,7 +66,7 @@ export function AboutPartner({
           </div>
 
           <div className="w-full h-64 sm:h-[20.5rem] lg:h-[20.5rem] overflow-hidden">
-            {partner?.media && (
+            {partner?.media ? 
               <video
                 height={500}
                 width={1000}
@@ -76,7 +76,10 @@ export function AboutPartner({
               >
                 <source src={partner?.media} type="video/mp4" />
               </video>
-            )}
+            
+          :
+          <div className="w-full h-full bg-gray-200 animate-pulse"></div>
+          }
           </div>
 
           <div className="w-full px-3 mt-4 flex items-center justify-between ">
@@ -130,9 +133,7 @@ export function AboutPartner({
             <p className="font-semibold text-base sm:text-xl">
               Company Description
             </p>
-            <Button className="w-fit h-fit px-1">
-              <EditOutline size={22} />
-            </Button>
+            <Edit partner={partner} refetch={refetch}/>
           </div>
           <div className="items-start px-3 py-4 justify-start flex w-full flex-col gap-y-2">
             <p className="mb-4 font-semibold text-base sm:text-xl">
@@ -146,10 +147,10 @@ export function AboutPartner({
                 <Location size={16} className="text-[#717171]" />
                 <p>{`${partner?.city}, ${partner?.country}`}</p>
               </div>
-              {partner?.industry?.name && (
+              {partner?.industry && (
                 <div className="flex items-center gap-x-2">
                   <IndustryIcon />
-                  <p>{partner?.industry?.name}</p>
+                  <p>{partner?.industry}</p>
                 </div>
               )}
             </div>
@@ -181,9 +182,7 @@ export function AboutPartner({
         <section className="w-full flex flex-col  pb-2 border-b">
           <div className="w-full px-3 py-3 border-b flex items-center justify-between">
             <p className="font-semibold text-base sm:text-xl">Booth Staff</p>
-            <Button className="w-fit h-fit px-1">
-              <EditOutline size={22} />
-            </Button>
+            <Edit partner={partner} refetch={refetch}/>
           </div>
           <div className="w-full px-3 py-4 grid grid-cols-3 items-center gap-4">
             {Array.isArray(partner?.boothStaff) &&

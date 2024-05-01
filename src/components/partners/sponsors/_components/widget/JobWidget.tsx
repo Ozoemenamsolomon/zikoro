@@ -46,7 +46,7 @@ export function JobWidget({ job, className }: { job: PartnerJobType, className:s
         {`${job.description ?? ""}`}
       </p>
 
-      <div className="flex text-[#717171] items-center text-mobile mt-1 gap-x-3">
+      <div className="flex text-[#717171] items-start justify-start text-mobile mt-1 flex-wrap gap-3">
         <div className="flex items-center gap-x-2">
           <Location size={16} className="text-[#717171]" />
           <p>{`${job.city}, ${job.country}`}</p>

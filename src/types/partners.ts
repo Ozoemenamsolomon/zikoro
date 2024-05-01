@@ -48,7 +48,7 @@ export enum PartnersEnum {
   export interface TExPartner {
     banners: PartnerBannerType[];
     boothNumber: string;
-    boothStaff: JSON;
+    boothStaff: TAttendee[];
     city: string;
     companyLogo: string;
     companyName: string;
@@ -74,7 +74,7 @@ export enum PartnersEnum {
   
   export interface PartnerJobType {
     jobTitle: string;
-    applicationLink: string;
+    applicationLink?: string;
     maxSalary: string;
     minSalary: string;
     salaryDuration: string;
@@ -88,6 +88,9 @@ export enum PartnersEnum {
     currencyCode: string;
     partnerId: string;
     companyName:string
+    applicationMode:string;
+    email?:string;
+    whatsApp?:string;
   }
   
   export interface PromotionalOfferType {
