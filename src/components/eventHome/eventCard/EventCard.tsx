@@ -15,7 +15,7 @@ import { Event } from "@/types";
 import { DeleteEventModal } from "..";
 import { getCookie, useDuplicateEvent, useFormatEventData } from "@/hooks";
 import { saveCookie } from "@/hooks";
-import {cn} from "@/lib"
+import { cn } from "@/lib";
 import { useRouter } from "next/navigation";
 
 export function EventCard({
@@ -26,7 +26,7 @@ export function EventCard({
   event: Event;
 }) {
   const [isAction, setAction] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   const {
     startDate,
     endDate,
@@ -47,9 +47,10 @@ export function EventCard({
       eventId: event?.id,
       eventAlias: event?.eventAlias,
       eventName: event?.eventTitle,
-      startDate: event?.startDateTime
+      startDate: event?.startDateTime,
     });
-  router.push(`/event/${event?.eventAlias}/content/info`);
+    saveCookie("event", event);
+    router.push(`/event/${event?.eventAlias}/content/info`);
   }
 
   return (
@@ -152,7 +153,7 @@ function ActionModal({
   id,
   refetch,
   isPublished,
-  alias
+  alias,
 }: {
   refetch: () => Promise<any>;
   close: () => void;
@@ -161,10 +162,10 @@ function ActionModal({
   alias: string;
 }) {
   const { duplicateEvent, loading } = useDuplicateEvent();
-  const org = getCookie("currentOrganization")
+  const org = getCookie("currentOrganization");
   const [isDeleteModal, openDeleteModal] = useState(false);
 
- // console.log("org", org)
+  // console.log("org", org)
 
   function onClose() {
     openDeleteModal((prev) => !prev);
@@ -205,9 +206,10 @@ function ActionModal({
           </Button>
           <Button
             onClick={() => window.open(`/live-events/${alias}`, "_blank")}
-            className={
-              cn("items-center hidden h-10 gap-x-2 hover:bg-gray-100 justify-start w-full  text-xs", isPublished && org?.id && "flex")
-            }
+            className={cn(
+              "items-center hidden h-10 gap-x-2 hover:bg-gray-100 justify-start w-full  text-xs",
+              isPublished && org?.id && "flex"
+            )}
           >
             <span>View Event</span>
           </Button>
