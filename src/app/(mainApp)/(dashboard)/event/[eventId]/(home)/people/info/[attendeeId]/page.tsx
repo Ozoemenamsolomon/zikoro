@@ -1,11 +1,14 @@
 "use client";
-import { useGetAttendee } from "@/hooks/services/attendee";
+import { useCreateAttendee, useGetAttendee } from "@/hooks/services/attendee";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 import ThirdSection from "../../_reusable/ThirdSection";
 import SecondSection from "../../_reusable/SecondSection";
 import { toast } from "@/components/ui/use-toast";
-import { useGetEvent } from "@/hooks";
+import { getCookie, useGetEvent, useGetEventAgendas } from "@/hooks";
+import useDisclose from "@/hooks/common/useDisclose";
+import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
+import { TAttendee } from "@/types";
 
 const page = () => {
   const router = useRouter();
@@ -16,11 +19,24 @@ const page = () => {
     attendeeId,
   });
 
-  const { event, isLoading: eventIsLoading } = useGetEvent({
-    eventId: Array.isArray(eventId) ? eventId[0] : eventId,
-  });
+  const {
+    isOpen: attendeeFormIsOpen,
+    onOpen: onOpenAttendeeForm,
+    onClose: onCloseAttendeeForm,
+  } = useDisclose();
 
+  const event = getCookie("event");
+
+  const {
+    eventAgendas,
+    isLoading: eventAgendasIsLoading,
+    getEventAgendas,
+  } = useGetEventAgendas({
+    eventId: event.id,
+  });
   console.log(attendee);
+
+  const { createAttendee } = useCreateAttendee();
 
   //   if (!isLoading && !attendee) {
   //     toast({ variant: "destructive", description: "attendee does not exist" });
@@ -29,13 +45,16 @@ const page = () => {
 
   return (
     <div>
-      {!isLoading && attendee && !eventIsLoading ? (
+      {!isLoading && attendee ? (
         <div className="space-y-6">
           <section className="md:col-span-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">
             <SecondSection
+              onOpen={onOpenAttendeeForm}
               event={event}
-              eventIsLoading={eventIsLoading}
               attendee={attendee}
+              eventAgendas={eventAgendas}
+              eventAgendasIsLoading={eventAgendasIsLoading}
+              getAttendees={getAttendee}
             />
           </section>
           <section className="flex flex-col md:col-span-3 pt-2">
@@ -59,6 +78,16 @@ const page = () => {
           </div>
         </div>
       )}
+      <AddAttendeeForm
+        isOpen={attendeeFormIsOpen}
+        onClose={onCloseAttendeeForm}
+        refresh={getAttendee}
+        action={async (payload: Partial<TAttendee>) => {
+          await createAttendee({ payload });
+          await getAttendee();
+        }}
+        attendee={attendee}
+      />
     </div>
   );
 };
