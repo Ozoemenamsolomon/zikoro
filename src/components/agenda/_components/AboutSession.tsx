@@ -4,29 +4,33 @@ import { Button } from "@/components";
 import { Eye } from "@styled-icons/feather/Eye";
 import { Star } from "@styled-icons/bootstrap/Star";
 import { EventLocationType } from "@/components/composables";
-import { Link } from "@styled-icons/octicons/Link";
+import { Link2Outline } from "@styled-icons/evaicons-outline/Link2Outline";
 import { LocationPin } from "@styled-icons/entypo/LocationPin";
 import { CollapsibleWidget, Duplicate, Edit, Deletes } from ".";
 import { FilePdf } from "@styled-icons/fa-regular/FilePdf";
 import Image from "next/image";
 import { TAgenda, Event } from "@/types";
-import {Player} from "@/components/composables"
+import { Player } from "@/components/composables";
 import { useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
-
+import Link from "next/link";
 export function AboutSession({
   agenda,
   event,
   refetch,
   refetchSession,
+  isIdPresent,
+  isOrganizer,
 }: {
   event: Event | null;
   refetch?: () => Promise<any>;
   refetchSession?: () => Promise<any>;
   agenda: TAgenda | null;
+  isIdPresent: boolean;
+  isOrganizer: boolean;
 }) {
   const user = getCookie("user");
   const router = useRouter();
@@ -94,57 +98,29 @@ export function AboutSession({
     <>
       {agenda && event && (
         <div className="w-full lg:col-span-5 border-r">
-         {agenda?.sessionUrl ?
-         <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem]">
-            <Player
-            src={agenda?.sessionUrl}
-            thumbnail={event?.eventPoster}
-            title={agenda?.sessionTitle}
-            autoPlay
-            load={"eager"}
-            streamType={"live"}
-            />
-         </div>
-         :
-         <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem] bg-gray-200 animate-pulse"></div>}
-          <div className="w-full p-4 mb-2 flex flex-col lg:flex-row items-start lg:items-center gap-2 justify-start lg:justify-between">
-            {isLive && (
-              <p className="text-xs text-gray-50 bg-basePrimary rounded-md  p-2 ">
-                Happening Now
-              </p>
-            )}
-            <div className="flex items-center px-4 gap-x-2">
-              <Edit
-                session={agenda}
-                event={event}
-                refetch={refetchSession}
-                refetchEvent={refetch}
+          {agenda?.sessionUrl && (
+            <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem]">
+              <Player
+                src={agenda?.sessionUrl}
+                thumbnail={event?.eventPoster}
+                title={agenda?.sessionTitle}
+                autoPlay
+                load={"eager"}
+                streamType={"live"}
               />
-              <Duplicate session={agenda} refetch={refetch} />
-              <Deletes agendaId={agenda?.id} refetch={refetch} />
-              <Button className="h-fit  gap-x-2 w-fit px-0">
-                <Eye size={20} />
-                <p className="text-xs sm:text-sm text-gray-500">
-                  {agenda?.sessionViews ?? "0"}
-                </p>
-              </Button>
-              <Button className="h-fit gap-x-2 w-fit px-0">
-                <Star size={20} />
-                <div className="text-gray-500 flex items-center text-xs sm:text-sm gap-x-1">
-                  <p>4.5 .</p>
-                  <p>Reviews</p>
-                </div>
-              </Button>
             </div>
-          </div>
-          <h2 className="text-base px-4 w-full mb-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
+          )}
+         
+          <h2 className="text-base px-4 w-full my-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
             {agenda?.sessionTitle ?? ""}
           </h2>
           <p className="mb-2 px-4 text-gray-500 text-[13px]">
             {` ${agendaDate ?? ""} ${agendaTime ?? ""}`}
           </p>
           <div className="flex px-4 items-center flex-wrap gap-3 mb-2 ">
-            <EventLocationType locationType={agenda?.sessionType ?? ""} />
+            {agenda?.sessionType && (
+              <EventLocationType locationType={agenda?.sessionType ?? ""} />
+            )}
             {agenda?.sessionVenue && (
               <div className="flex items-center gap-x-1">
                 <LocationPin size={20} />
@@ -159,26 +135,52 @@ export function AboutSession({
                 onClick={() => router.push(agenda?.sessionUrl, "_blank")}
                 className="flex items-center gap-x-2"
               >
-                <Link size={18} />
+                <Link2Outline size={18} />
                 <p className="text-xs">Join Live Event</p>
               </button>
             )}
           </div>
+          <div className="w-full p-4 mb-2 flex flex-col lg:flex-row items-start lg:items-center gap-2 justify-start lg:justify-between">
+            {isLive && (
+              <p className="text-xs text-gray-50 bg-basePrimary rounded-md  p-2 ">
+                Happening Now
+              </p>
+            )}
+            {(isIdPresent || isOrganizer) && (
+              <div className="flex items-center px-4 gap-x-2">
+                <Edit
+                  session={agenda}
+                  event={event}
+                  refetch={refetchSession}
+                  refetchEvent={refetch}
+                />
+                <Duplicate session={agenda} refetch={refetch} />
+                <Deletes agendaId={agenda?.sessionAlias} refetch={refetch} />
+                <Button className="h-fit  gap-x-2 w-fit px-0">
+                  <Eye size={20} />
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    {agenda?.sessionViews ?? "0"}
+                  </p>
+                </Button>
+                <Button className="h-fit gap-x-2 w-fit px-0">
+                  <Star size={20} />
+                  <div className="text-gray-500 flex items-center text-xs sm:text-sm gap-x-1">
+                    <p>4.5 .</p>
+                    <p>Reviews</p>
+                  </div>
+                </Button>
+              </div>
+            )}
+          </div>
 
-          <section className="w-full flex flex-col  pb-2">
+          <section className="w-full flex flex-col border-b pb-2">
             <div className="w-full px-3 py-3 border-y flex items-center justify-between">
               <p className="font-semibold text-base sm:text-xl">
                 Session Description
               </p>
             </div>
             <div className="items-start text-[13px] sm:text-sm text-gray-600 px-3 py-4 justify-start flex w-full flex-wrap">
-              when an unknown printer took a galley of type and scrambled it to
-              make a type specimen book. It has survived not only five
-              centuries, but also the leap into electronic typesetting,
-              remaining essentially unchanged. It was popularised in the 1960s
-              with the release of Letraset sheets containing Lorem Ipsum
-              passages, and more recently with desktop publishing software like
-              Aldus PageMaker including versions of Lorem Ipsum.
+              {agenda?.description ?? ""}
             </div>
           </section>
           <CollapsibleWidget
@@ -198,11 +200,10 @@ export function AboutSession({
                 agenda?.sessionSpeakers.map((attendee, index) => (
                   <BoothStaffWidget
                     company={"DND"}
-                    image={null}
+                    image={attendee?.profilePicture || null}
                     name={`${attendee?.firstName} ${attendee?.lastName}`}
-                    profession={"Manager"}
+                    profession={attendee?.jobTitle ?? "Job"}
                     email={attendee?.email ?? ""}
-                    ticketType={attendee?.ticketType ?? "Attendee"}
                     key={index}
                   />
                 ))}
@@ -225,11 +226,10 @@ export function AboutSession({
                 agenda?.sessionModerators.map((attendee, index) => (
                   <BoothStaffWidget
                     company={"DND"}
-                    image={null}
+                    image={attendee?.profilePicture || null}
                     name={`${attendee?.firstName} ${attendee?.lastName}`}
-                    profession={"Manager"}
+                    profession={attendee?.jobTitle ?? "Job"}
                     email={attendee?.email ?? ""}
-                    ticketType={attendee?.ticketType ?? "Attendee"}
                     key={index}
                   />
                 ))}
@@ -275,7 +275,9 @@ export function AboutSession({
                 )}
               {Array.isArray(agenda?.sessionFiles) &&
                 agenda?.sessionFiles.map((item) => (
-                  <div
+                  <Link
+                    target="_blank"
+                    href={item?.file}
                     key={item?.id}
                     className="w-full group border relative rounded-lg p-3 flex items-start justify-start gap-x-2"
                   >
@@ -288,7 +290,7 @@ export function AboutSession({
                         {item?.size}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 ))}
             </div>
           </CollapsibleWidget>

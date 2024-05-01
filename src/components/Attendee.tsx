@@ -2,9 +2,9 @@ import { useUpdateAttendees } from "@/hooks/services/attendee";
 import { Event, TUser } from "@/types";
 import { TAttendee } from "@/types/attendee";
 import { TFavouriteContact } from "@/types/favourites";
-import { formatDate, isWithinTimeRange } from "@/utils/date";
-import { format } from "date-fns";
+import { format, isToday, isWithinInterval } from "date-fns";
 import { useRouter } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type AttendeeProps = {
   attendee: TAttendee;
@@ -39,6 +39,7 @@ const Attendee: React.FC<AttendeeProps> = ({
     registrationDate,
     attendeeType,
     checkin,
+    profilePicture,
   } = attendee;
 
   const isFavourite =
@@ -56,27 +57,35 @@ const Attendee: React.FC<AttendeeProps> = ({
       return prev.date > current.date && current.checkin ? prev : current;
     });
 
+  const checkCheckin = recentCheckin && isToday(recentCheckin?.date);
+
   const toggleCheckin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
 
-    const isCheckedInToday =
-      recentCheckin && isWithinTimeRange(recentCheckin.date, null);
+    if (
+      !isWithinInterval(new Date(), {
+        start: event.startDateTime,
+        end: event.endDateTime,
+      })
+    )
+      return;
+
+    const isCheckedInToday = recentCheckin && isToday(recentCheckin?.date);
     const newDate = new Date();
-    newDate.setHours(12, 0, 0, 0);
 
     const updatedCheckin = checkin
-      ? recentCheckin && isWithinTimeRange(recentCheckin.date, null)
+      ? recentCheckin && isToday(recentCheckin?.date)
         ? checkin.filter((elm) => elm !== recentCheckin)
         : [
             ...checkin,
             {
-              date: newDate.toDateString(),
+              date: newDate,
               checkin: true,
             },
           ]
       : [
           {
-            date: newDate.toDateString(),
+            date: newDate,
             checkin: true,
           },
         ];
@@ -86,7 +95,7 @@ const Attendee: React.FC<AttendeeProps> = ({
     await updateAttendees({
       payload,
       message: `Attendee ${
-        recentCheckin && isWithinTimeRange(recentCheckin.date, null)
+        recentCheckin && isToday(recentCheckin?.date)
           ? "unchecked"
           : "checked in"
       } successfully`,
@@ -107,12 +116,15 @@ const Attendee: React.FC<AttendeeProps> = ({
       }
     >
       <div className="col-span-2">
-        <div className="w-12 h-12 rounded-[50%] text-white bg-[#D9D9D9] flex justify-center items-center">
-          {" "}
-          <span className="text-sm uppercase">
-            {firstName[0] + lastName[0]}
-          </span>
-        </div>
+        <Avatar className="w-12 h-12">
+          <AvatarImage
+            className="h-full w-full object-cover"
+            src={profilePicture ?? ""}
+          />
+          <AvatarFallback>
+            <span className="uppercase">{firstName[0] + lastName[0]}</span>
+          </AvatarFallback>
+        </Avatar>
       </div>
       <div className="col-span-6">
         <div className="justify-start items-start flex flex-col gap-1 min-w-full">
@@ -122,26 +134,28 @@ const Attendee: React.FC<AttendeeProps> = ({
           <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
             {`${jobTitle ? jobTitle + ", " : ""}${organization || ""}`}
           </span>
-          {user && String(event?.createdBy) === String(user.id) && recentCheckin && (
-            <div className="flex gap-1 text-tiny text-[#717171]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="1.5em"
-                height="1.5em"
-                viewBox="0 0 21 20"
-                fill="none"
-              >
-                <path
-                  d="M7.16667 10.4041L10.7025 13.94L17.7725 6.86914M3 10.4041L6.53583 13.94M13.6067 6.86914L10.9167 9.58331"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span>{format(recentCheckin.date, "dd . MM . yyyy")}</span>
-            </div>
-          )}
+          {user &&
+            String(event?.createdBy) === String(user.id) &&
+            recentCheckin && (
+              <div className="flex gap-1 text-tiny text-[#717171]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="1.5em"
+                  height="1.5em"
+                  viewBox="0 0 21 20"
+                  fill="none"
+                >
+                  <path
+                    d="M7.16667 10.4041L10.7025 13.94L17.7725 6.86914M3 10.4041L6.53583 13.94M13.6067 6.86914L10.9167 9.58331"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span>{format(recentCheckin.date, "dd . MM . yyyy")}</span>
+              </div>
+            )}
           <div className="flex gap-1.5 flex-wrap w-fit">
             {attendeeType &&
               (!Array.isArray(attendeeType) ? (
@@ -219,12 +233,15 @@ const Attendee: React.FC<AttendeeProps> = ({
         <button
           onClick={toggleCheckin}
           className={`text-[8px] flex items-center gap-0.5 ${
-            user && String(event?.createdBy) === String(user.id) ? "" : "hidden"
-          } ${
-            recentCheckin && isWithinTimeRange(recentCheckin.date, null)
-              ? "text-basePrimary"
-              : "text-gray-700"
-          }`}
+            user &&
+            String(event?.createdBy) === String(user.id) &&
+            isWithinInterval(new Date(), {
+              start: event.startDateTime,
+              end: event.endDateTime,
+            })
+              ? ""
+              : "hidden"
+          } ${checkCheckin ? "text-basePrimary" : "text-gray-700"}`}
         >
           <div className="flex-1">
             <svg
@@ -243,11 +260,7 @@ const Attendee: React.FC<AttendeeProps> = ({
               />
             </svg>
           </div>
-          <span>
-            {recentCheckin && isWithinTimeRange(recentCheckin.date, null)
-              ? "undo"
-              : "Check-in"}
-          </span>
+          <span>{checkCheckin ? "undo" : "Check-in"}</span>
         </button>
       </div>
     </button>

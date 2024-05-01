@@ -18,7 +18,7 @@ export function SponsoredSessionWidget({
   return (
     <div
       className={cn(
-        "w-full flex items-center  py-4 border-b justify-between",
+        "w-full flex items-center text-mobile sm:text-sm  py-4 border-b justify-between",
         className
       )}
     >

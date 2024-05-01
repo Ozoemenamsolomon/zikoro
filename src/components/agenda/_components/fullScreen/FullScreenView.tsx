@@ -8,20 +8,20 @@ import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
 import { LiveView } from "@/constants";
 import { TSessionAgenda } from "@/types";
-import {useCheckTeamMember} from "@/hooks"
 import { isEventLive } from "@/utils";
 
 export function FullScreenView({
   close,
   sessionAgendas,
-  eventId
+  isIdPresent,
+  isOrganizer
 }: {
   sessionAgendas: TSessionAgenda[];
   close: () => void;
-  eventId: string
+  isIdPresent: boolean;
+  isOrganizer: boolean;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const {isIdPresent} =useCheckTeamMember({eventId})
   const currentTime = new Date();
   useEffect(() => {
     const currentAgenda = sessionAgendas?.filter(
@@ -93,6 +93,8 @@ export function FullScreenView({
                   sessionAgenda={sessionAgenda}
                   className={"w-[87vw]"}
                   isIdPresent={isIdPresent}
+                  isOrganizer={isOrganizer}
+                  isFullScreen
                 />
               </div>
             ))}

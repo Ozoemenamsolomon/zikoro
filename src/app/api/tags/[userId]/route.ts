@@ -12,6 +12,8 @@ export async function POST(
       const { userId } = params;
       const payload = await req.json();
 
+      console.log(payload);
+
       const { error } = await supabase
         .from("tags")
         .upsert(payload, { onConflict: "id" });
@@ -47,14 +49,17 @@ export async function GET(
     try {
       const { userId } = params;
 
+      console.log(userId);
+
       const { data, error, status } = await supabase
         .from("tags")
         .select("*")
         .eq("userId", userId)
         .maybeSingle();
 
-      if (error) throw error;
+      console.log(data);
 
+      if (error) throw error;
 
       return NextResponse.json(
         { data },

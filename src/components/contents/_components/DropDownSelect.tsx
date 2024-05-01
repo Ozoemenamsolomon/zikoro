@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { cn } from "@/lib";
+
 export function DropDownSelect({
   data,
   handleChange,
@@ -67,6 +68,7 @@ export function DropDownSelect({
       setCheckedValues(checkedValue.filter((v) => v !== value));
     } else {
       if (isMultiple) {
+        console.log('vvvv',value)
         setCheckedValues((prev) => [...prev, String(value)]);
       } else {
         setCheckedValues([String(value)]);
@@ -84,11 +86,16 @@ export function DropDownSelect({
       <span
         onClick={(e) => {
           e.stopPropagation();
-          console.log({ checkedValue });
-          if (!isMultiple && checkedValue?.length > 0)
+         // console.log({ checkedValue });
+          if (!isMultiple && checkedValue?.length > 0) {
+        
             handleChange(checkedValue?.join(","));
-          if (isMultiple && checkedValue?.length > 0)
+          }
+
+          if (isMultiple && checkedValue?.length > 0) {
+         //   console.log("is Multiple")
             handleChange(checkedValue);
+          }
 
           setOpen(false);
         }}

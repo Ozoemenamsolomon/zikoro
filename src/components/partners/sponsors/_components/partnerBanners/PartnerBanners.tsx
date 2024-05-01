@@ -36,6 +36,11 @@ export function PartnerBanners({
     slidesToScroll: 1,
   };
 
+  const Comp =
+    Array.isArray(partner?.banners) && partner?.banners?.length > 1
+      ? Slider
+      : "div";
+
   return (
     <>
       {
@@ -47,10 +52,7 @@ export function PartnerBanners({
               <PlusCircle size={24} />
             </Button>
           </div>
-          <Slider
-            className=" z-[4] slider  p-2 h-full   sm:block "
-            {...settings}
-          >
+          <Comp className=" z-[4] slider  p-2 h-full   sm:block " {...settings}>
             {Array.isArray(partner?.banners) &&
               partner?.banners.map(({ file, link }, idx) => (
                 <Link href={link} target="blank">
@@ -63,7 +65,7 @@ export function PartnerBanners({
                   />
                 </Link>
               ))}
-          </Slider>
+          </Comp>
         </div>
       }
 

@@ -5,7 +5,7 @@ import { getCookie, useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib";
-import { Portal } from "..";
+
 export function AccessVerification({
   id,
   eventLoading,

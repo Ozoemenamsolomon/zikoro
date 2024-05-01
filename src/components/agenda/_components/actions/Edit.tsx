@@ -32,13 +32,12 @@ export function Edit({
       >
         <EditOutline size={20} />
       </Button>
-
       {isOpen && (
         <AddSession
           event={event}
           eventStartDate={event?.startDateTime}
           session={session}
-          eventId={session?.eventId}
+          eventId={session?.eventAlias}
           close={onClose}
           refetch={refetchEvent}
           refetchSession={refetch}

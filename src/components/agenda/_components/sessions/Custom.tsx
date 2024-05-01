@@ -23,7 +23,9 @@ export function Custom({
   event,
   refetchEvent,
   attendeeId,
-  isIdPresent
+  isIdPresent,
+  isOrganizer,
+  isFullScreen
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
@@ -32,6 +34,8 @@ export function Custom({
   event?: Event | null;
   attendeeId?:number;
   isIdPresent: boolean;
+  isOrganizer:boolean;
+  isFullScreen?:boolean
 }) {
   
 
@@ -61,6 +65,8 @@ export function Custom({
               refetchEvent={refetchEvent}
               refetchSession={refetchSession}
               isIdPresent={isIdPresent}
+              isOrganizer={isOrganizer}
+              isFullScreen={isFullScreen}
             />
           ))}
         </Comp>
@@ -75,7 +81,9 @@ function Widget({
   event,
   attendeeId,
   refetchEvent,
-  isIdPresent
+  isIdPresent,
+  isOrganizer,
+  isFullScreen
 }: {
   session: TAgenda;
   event?: Event | null;
@@ -83,10 +91,12 @@ function Widget({
   attendeeId?: number;
   refetchEvent?: () => Promise<any>;
   isIdPresent:boolean;
+  isOrganizer:boolean;
+  isFullScreen?:boolean;
 }) {
   const router = useRouter();
 
-  const isClickable = useMemo(() => {
+  const isAddedAttendee = useMemo(() => {
     if (
       Array.isArray(session?.sessionSpeakers) &&
       Array.isArray(session?.sessionModerators)
@@ -100,8 +110,10 @@ function Widget({
     }
   }, [session]);
 
+
+
   const mergedSM = useMemo(() => {
-    if (isClickable) {
+    if (isAddedAttendee) {
       return [...session?.sessionSpeakers, ...session?.sessionModerators];
     } else {
       return [];
@@ -113,8 +125,8 @@ function Widget({
       <div
         role="button"
         onClick={() => {
-          if (isClickable) {
-            router.push(`/event/${event?.eventAlias}/agenda/${session?.id}`);
+          if (session?.description) {
+            router.push(`/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`);
           }
         }}
         className={cn(
@@ -124,17 +136,17 @@ function Widget({
         <h2 className="text-base w-full mb-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
           {session?.sessionTitle ?? ""}
         </h2>
-        {isClickable && (
+        {isAddedAttendee && (
           <div className="w-full grid grid-cols-2 sm:grid-cols-3 mb-2  gap-3">
             {Array.isArray(mergedSM) &&
               mergedSM.map((attendee, index) => (
                 <BoothStaffWidget
-                  company={"DND"}
-                  image={null}
+                  company={""}
+                  image={attendee?.profilePicture || null}
                   name={`${attendee?.firstName} ${attendee?.lastName}`}
-                  profession={"Manager"}
+                  profession={attendee?.jobTitle ??"Job"}
                   email={attendee?.email ?? ""}
-                  ticketType={attendee?.ticketType ?? "Attendee"}
+                 
                   key={index}
                 />
               ))}
@@ -155,16 +167,24 @@ function Widget({
               {session?.Track ?? ""}
             </button>
           )}
-          <div className="flex items-center gap-x-3">
-          <AddToMyAgenda attendeeId={attendeeId} sessionId={session?.id}/>
+          <div
+          onClick={(e) => {
+            e.stopPropagation()
+          }}
+          className="flex items-center gap-x-3">
+          <AddToMyAgenda attendeeId={attendeeId} sessionAlias={session?.sessionAlias}/>
 
            
           </div>
         </div>
-     {isIdPresent &&   <div className="flex items-center mb-2  gap-x-2">
+     {!isFullScreen && (isIdPresent || isOrganizer) &&   <div
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
+     className="flex items-center mb-2  gap-x-2">
           <Edit session={session} event={event} refetch={refetchSession} refetchEvent={refetchEvent}/>
           <Duplicate session={session} refetch={refetchSession} />
-          <Deletes agendaId={session?.id} refetch={refetchSession} />
+          <Deletes agendaId={session?.sessionAlias} refetch={refetchSession} />
           <Button className="h-fit  gap-x-2 w-fit px-0">
             <Eye size={20} />
             <p className="text-xs sm:text-sm text-gray-500">{session?.sessionViews ?? "0"}</p>

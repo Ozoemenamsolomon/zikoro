@@ -5,6 +5,8 @@ import { Calendar, LocationIcon1 } from "@/constants/icons";
 import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 import { getLowestPrice } from "@/utils/getLowestPrice";
 import { addCommasToPrice } from "@/utils/priceSeprator";
+import checkDateEqualToday from "@/utils/checkDateEqualToday";
+import checkEventFull from "@/utils/checkEventFull";
 
 type FeaturedEventProps = {
   id: string;
@@ -12,10 +14,13 @@ type FeaturedEventProps = {
   eventTitle: string;
   eventCity: string;
   eventCountry: string;
+  eventAlias:string;
   locationType: string;
   pricing: [];
   pricingCurrency: string;
   startDateTime: string;
+  expectedParticipants: number;
+  registered: number;
 };
 
 export default function FeaturedEvent({
@@ -24,14 +29,19 @@ export default function FeaturedEvent({
   eventTitle,
   eventCity,
   eventCountry,
+  eventAlias,
   locationType,
   pricing,
   pricingCurrency,
   startDateTime,
+  expectedParticipants,
+  registered,
 }: FeaturedEventProps) {
   const [lowestPrice, setLowestPrice] = useState<any>("Loading...");
   const [date, setDate] = useState<string | null>(null);
   const [currencySymbol, setCurrencySymbol] = useState<string | null>(null);
+  const [soldOut, setSoldOut] = useState<boolean>(false);
+  const [elasped, setElapsed] = useState<boolean>(false);
 
   // Extracting the date only
   function extractAndFormatDate(dateTimeString: string): string {
@@ -47,7 +57,7 @@ export default function FeaturedEvent({
       return "Invalid Date";
     }
   }
-    //FORMAT DATE INTO STRINGS
+  //FORMAT DATE INTO STRINGS
   function formatDate(date: Date): string {
     const year: number = date.getFullYear();
     const month: number = date.getMonth() + 1; // Month is zero-based, so add 1
@@ -67,17 +77,16 @@ export default function FeaturedEvent({
       "Nov",
       "Dec",
     ];
-
     const formattedDate: string = `${day} ${monthNames[month - 1]} ${year}`;
-
     return formattedDate;
   }
 
   //function that shows the event details
   function goToEvent() {
-    window.open(`/live-events/${id}`, "_blank");
+    window.open(`/live-events/${eventAlias}`, "_blank");
   }
 
+  //useEffect
   useEffect(() => {
     //extract the lowest price
     setLowestPrice(getLowestPrice(pricing));
@@ -88,6 +97,20 @@ export default function FeaturedEvent({
 
     //convert currency shortCode to currencySymbol
     setCurrencySymbol(convertCurrencyCodeToSymbol(pricingCurrency));
+
+    //check date and time
+    if (checkDateEqualToday(date)) {
+      setElapsed(true);
+    } else {
+      setElapsed(false);
+    }
+
+    //check if sold out
+    if (checkEventFull(expectedParticipants, registered)) {
+      setSoldOut(true);
+    } else {
+      setSoldOut(false);
+    }
   }, []);
 
   return (
@@ -108,6 +131,18 @@ export default function FeaturedEvent({
         <p className="text-sm font-medium text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end absolute left-4 top-2 py-[5px] px-[10px] rounded-lg ">
           {locationType}
         </p>
+
+        {soldOut && (
+          <p className="text-sm font-medium text-white bg-green-500 absolute right-2 top-2 py-[5px] px-[10px] rounded-lg ">
+            Sold Out
+          </p>
+        )}
+
+        {elasped && (
+          <p className="text-sm font-medium text-white bg-red-500 absolute right-28 top-2 py-[5px] px-[10px] rounded-lg ">
+            Elapsed
+          </p>
+        )}
       </div>
 
       {/* body */}

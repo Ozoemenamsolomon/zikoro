@@ -18,7 +18,7 @@ export function Exhibitors({
     <div className="w-full h-full grid md:grid-cols-2 xl:grid-cols-3 mt-6 items-center gap-6 px-4">
       {loading && (
         <div className="w-full col-span-full h-[300px] flex items-center justify-center">
-          <LoaderAlt size={50} className="animate-spin" />
+          <LoaderAlt size={30} className="animate-spin" />
         </div>
       )}
       {!loading && exhibitors.length === 0 && (

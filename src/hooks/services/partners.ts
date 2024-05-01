@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import * as z from "zod";
 import { Event, TPartner, PartnerJobType } from "@/types";
-import { partnerSchema } from "@/schemas";
+import { postRequest, patchRequest, getRequest } from "@/utils/api";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
 import { toast } from "@/components/ui/use-toast";
@@ -14,35 +13,40 @@ const supabase = createClientComponentClient();
 export function useAddPartners() {
   const [loading, setLoading] = useState(false);
 
-  async function addPartners(values: z.infer<typeof partnerSchema>) {
+  async function addPartners(values: Partial<TPartner>) {
     setLoading(true);
-
-    const image = await uploadFile(values.companyLogo[0], "image");
-    const video = await uploadFile(values.media[0], "video");
+  
+   
 
     const payload = {
       ...values,
-      companyLogo: image,
-      media: video,
+     
     };
 
     try {
-      const { error, status } = await supabase
-        .from("eventPartners")
-        .upsert([{ ...payload }]);
+      const { data, status } = await postRequest({
+        endpoint: "/partner",
+        payload,
+      });
 
-      if (error) {
-        toast({ variant: "destructive", description: error.message });
-        setLoading(false);
-        return;
-      }
+      if (status !== 201)
+        return toast({
+          description: (data.data as { error: string }).error,
+          variant: "destructive",
+        });
 
-      if (status === 201 || status === 200) {
-        setLoading(false);
-        toast({description:"Partners created successfully"});
-      }
-    } catch (error) {
-      return;
+      toast({
+        description: "Partner created successfully",
+      });
+      return data;
+    } catch (error: any) {
+      // console.log({ error });
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -62,18 +66,17 @@ export function useFetchPartners(eventId: string | number) {
   async function fetchPartners() {
     setLoading(true);
     try {
-      const { data, error: fetchError } = await supabase
-        .from("eventPartners")
-        .select("*")
-        .eq("eventAlias", eventId);
+     
+      const {data: result, status} = await getRequest<TPartner[]>({
+        endpoint: `/partner/${eventId}`
+      })
 
-      if (fetchError) {
-        setLoading(false);
-        return null;
-      }
+      setLoading(false)
 
-      setData(data);
-      setLoading(false);
+      if (status !== 200 ) return
+
+      return setData(result.data)
+
     } catch (error) {
       setLoading(false);
       //  console.log(error);
@@ -88,32 +91,37 @@ export function useFetchPartners(eventId: string | number) {
 }
 
 export function useUpdatePartners() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  async function update(payload: Partial<TPartner>, partnerId: number) {
+  async function update(payload: Partial<TPartner>) {
+   
+    try {
 
-    const { error, status } = await supabase
-    .from("eventPartners")
-    .update([{...payload}])
-    .eq("id", partnerId);
+      const { data, status } = await patchRequest<TPartner>({
+        endpoint: "/partner",
+        payload,
+      });
 
-  if (error) {
-    toast({variant:"destructive", description: error.message});
-    setLoading(false);
-    return;
-  }
+      if (status !== 200) throw data;
 
-  if (status === 204 || status === 200) {
-    //
-    toast({description:"Partner Updated successfully"});
-    setLoading(false);
-  }
-
+      toast({
+        description: "Partner Updated successfully",
+      });
+      return data;
+    } catch (error: any) {
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return {
-    update, loading
-  }
+    update,
+    loading,
+  };
 }
 
 export function useCreateEventIndustry() {
@@ -139,7 +147,10 @@ export function useCreateEventIndustry() {
           partnerIndustry: [...eventData?.partnerIndustry],
         };
         setLoading(false);
-        toast({variant:"destructive",description: "Industry already exist"});
+        toast({
+          variant: "destructive",
+          description: "Industry already exist",
+        });
 
         return;
       }
@@ -158,14 +169,14 @@ export function useCreateEventIndustry() {
         .eq("eventAlias", eventId);
 
       if (error) {
-        toast({variant:"destructive",description:error.message});
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast({description:"Industry created successfully"});
+        toast({ description: "Industry created successfully" });
         setLoading(false);
       }
     } catch (error) {
@@ -195,7 +206,7 @@ export function useFetchCreatedEventIndustries(eventId: string) {
         .single();
 
       if (error) {
-        toast({variant:"destructive", description:error.message});
+        toast({ variant: "destructive", description: error.message });
 
         return null;
       }
@@ -229,7 +240,7 @@ export function useFetchSinglePartner(partnerId: string) {
         .single();
 
       if (error) {
-        toast({variant:"destructive",description: error.message});
+        toast({ variant: "destructive", description: error.message });
         return null;
       }
 
@@ -283,21 +294,21 @@ export function useAddPartnerBanner() {
         .eq("id", partnerId);
 
       if (error) {
-        toast({variant:"destructive", description: error.message});
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast({description:"Banners added successfully"});
+        toast({ description: "Banners added successfully" });
         setLoading(false);
       }
     } catch (error) {
       return;
     }
   }
-// variant:"destructive"
+  // variant:"destructive"
   return {
     addPartnerBanner,
     loading,
@@ -326,14 +337,14 @@ export function useAddPartnerJob() {
         .update([jobs])
         .eq("id", partnerId);
       if (error) {
-        toast({variant:"destructive",description: error.message});
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast({description:"Jobs added successfully"});
+        toast({ description: "Jobs added successfully" });
         setLoading(false);
       }
     } catch (error) {
@@ -378,14 +389,14 @@ export function useAddPartnerPromo() {
         .update([offers])
         .eq("id", partnerId);
       if (error) {
-        toast({variant:"destructive",description: error.message});
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast({description:"Offer added successfully"});
+        toast({ description: "Offer added successfully" });
         setLoading(false);
       }
     } catch (error) {
@@ -433,14 +444,14 @@ export function useCreateEventExhibitionHall() {
         .eq("eventAlias", eventId);
 
       if (error) {
-        toast({variant:"destructive",description: error.message});
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast({description:"Exhibition Hall created successfully"});
+        toast({ description: "Exhibition Hall created successfully" });
         setLoading(false);
       }
     } catch (error) {
@@ -470,18 +481,20 @@ export function useUpdateBooth() {
 
       if (boothNumber === null && value) {
         booths = value;
+      } else if (boothNumber && value === null) {
+        booths = boothNumber;
       } else if (value) {
         booths = [...boothNumber, ...value];
       }
 
       const { error, status } = await supabase
         .from("eventPartners")
-        .update({ ...restData, boothNumber: value === null ? null : null })
+        .update({ ...restData, boothNumber: booths })
         .eq("id", partnerId);
 
       if (status === 204 || status === 200) {
         //
-        if (value !== null) toast({description:"Booth Number Updated"});
+        if (value !== null) toast({ description: "Booth Number Updated" });
       }
     } catch (error) {}
   }
@@ -510,7 +523,7 @@ export function useUpdateHall() {
 
       if (status === 204 || status === 200) {
         //
-        if (value !== null) toast({description:"Exhibition Hall Updated"});
+        if (value !== null) toast({ description: "Exhibition Hall Updated" });
       }
     } catch (error) {}
   }
@@ -539,7 +552,7 @@ export function useUpdatePartnerType() {
 
       if (status === 204 || status === 200) {
         //
-        toast({description:"Partner Type Updated"});
+        toast({ description: "Partner Type Updated" });
       }
     } catch (error) {}
   }
@@ -568,7 +581,7 @@ export function useUpdateSponsor() {
 
       if (status === 204 || status === 200) {
         //
-        toast({description:"Sponsor Category Updated"});
+        toast({ description: "Sponsor Category Updated" });
       }
     } catch (error) {}
   }
@@ -632,12 +645,12 @@ export function useDeletePartner() {
 
     if (error) {
       setLoading(false);
-      toast({variant:"destructive",description: error.message});
+      toast({ variant: "destructive", description: error.message });
       return;
     }
 
     if (status === 204) {
-      toast({description:"Partner deleted successfully"});
+      toast({ description: "Partner deleted successfully" });
       setLoading(false);
       return;
     }
@@ -649,12 +662,12 @@ export function useDeletePartner() {
 
     if (error) {
       setLoading(false);
-      toast({variant:"destructive",description: error.message});
+      toast({ variant: "destructive", description: error.message });
       return;
     }
 
     if (status === 204) {
-      toast({description:"Partners deleted successfully"});
+      toast({ description: "Partners deleted successfully" });
       setLoading(false);
       return;
     }
@@ -692,14 +705,14 @@ export function useDeleteEventExhibitionHall(eventId: string) {
         .eq("eventAlias", eventId);
 
       if (error) {
-        toast({variant:"destructive",description: error.message});
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast({description:"Exhibition Hall deleted successfully"});
+        toast({ description: "Exhibition Hall deleted successfully" });
         setLoading(false);
       }
     } catch (error) {
@@ -724,14 +737,14 @@ export function useDeleteEventExhibitionHall(eventId: string) {
         .eq("eventAlias", eventId);
 
       if (error) {
-        toast({variant:"destructive",description: error.message});
+        toast({ variant: "destructive", description: error.message });
         setLoading(false);
         return;
       }
 
       if (status === 204 || status === 200) {
         //
-        toast({description:"Exhibition Hall deleted successfully"});
+        toast({ description: "Exhibition Hall deleted successfully" });
         setLoading(false);
       }
     } catch (error) {}

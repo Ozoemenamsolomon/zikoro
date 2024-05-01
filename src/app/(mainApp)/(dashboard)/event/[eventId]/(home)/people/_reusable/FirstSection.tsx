@@ -41,6 +41,7 @@ import { TFavouriteContact } from "@/types/favourites";
 import { TFilter } from "@/types/filter";
 import { Event, TUser } from "@/types";
 import { getCookie } from "@/hooks";
+import { eachDayOfInterval, format, isSameDay } from "date-fns";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -111,15 +112,17 @@ const attendeeFilter: TFilter<TAttendee>[] = [
       { label: "08/01/2024", value: "01/08/2024" },
       { label: "09/01/2024", value: "01/09/2024" },
     ],
-    onFilter: (attendee: TAttendee, date: string[]) => {
-      return date.some(
-        (compareDate) =>
-          attendee.checkin &&
-          attendee.checkin.find(({ date }) => {
-            return isWithinTimeRange(date, compareDate);
-          })
-      );
-    },
+    onFilter: (attendee: TAttendee, compareDate: Date[]) =>
+      !!attendee.checkin &&
+      attendee.checkin.some(({ date }) => {
+        console.log(
+          date,
+          compareDate[0],
+          isSameDay(compareDate[0], date),
+          typeof compareDate
+        );
+        return isSameDay(compareDate[0], date);
+      }),
     type: "multiple",
   },
 ];
@@ -129,6 +132,7 @@ export interface MoreOptionsProps {
   getAttendees: () => Promise<void>;
   attendeesTags: TAttendeeTags[];
   favourites?: TFavouriteContact;
+  event: Event;
 }
 
 type TMoreOptions = {
@@ -166,7 +170,6 @@ export default function FirstSection({
   getAttendees,
   onSelectAttendee,
   selectedAttendee,
-  eventIsLoading,
   event,
 }: {
   onOpen: () => void;
@@ -175,9 +178,9 @@ export default function FirstSection({
   getAttendees: () => Promise<void>;
   onSelectAttendee: (attendee: TAttendee) => void;
   selectedAttendee: TAttendee;
-  eventIsLoading: boolean;
   event: Event;
 }) {
+  const user = getCookie<TUser>("user");
   const divRef = useRef<HTMLDivElement>(null);
   const {
     filteredData: mappedAttendees,
@@ -199,15 +202,17 @@ export default function FirstSection({
     favourites,
     getFavourites,
     isLoading: favouriteIsLoading,
-  } = useGetFavourites({ userId: 10 });
+  } = useGetFavourites({ userId: user ? user.id : 0 });
 
   const {
     attendeesTags,
     isLoading: attendeesTagsIsLoading,
     getAttendeesTags,
-  } = useGetAttendeesTags();
+  } = useGetAttendeesTags({ userId: user ? user.id : 0 });
 
-  const { updateFavourites } = useUpdateFavourites({ userId: 10 });
+  const { updateFavourites } = useUpdateFavourites({
+    userId: user ? user.id : 0,
+  });
 
   const toggleFavourites = async (id: number, isFavourite: boolean) => {
     const newFavouriteAttendees = !favourites
@@ -219,9 +224,9 @@ export default function FirstSection({
     const payload = favourites
       ? { ...favourites, attendees: newFavouriteAttendees }
       : {
-          userId: 10,
-          userEmail: "ubahyusuf484@gmail.com",
-          eventId: "1234567890",
+          userId: user?.id,
+          userEmail: user?.userEmail,
+          eventId: String(event.id),
           attendees: newFavouriteAttendees,
         };
 
@@ -259,7 +264,7 @@ export default function FirstSection({
   // }, [attendees, sortOrder, searchTerm]);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !event) return;
 
     filters
       .filter((filter) => filter.optionsFromData)
@@ -270,7 +275,18 @@ export default function FirstSection({
         );
       });
 
-      setOptions("checkin", )
+    console.log(event?.startDateTime);
+
+    setOptions(
+      "checkin",
+      eachDayOfInterval({
+        start: event?.startDateTime,
+        end: event?.endDateTime,
+      }).map((date) => ({
+        label: format(date, "PPP"),
+        value: date,
+      }))
+    );
   }, [isLoading]);
 
   const toggleSort = () => {
@@ -307,8 +323,6 @@ export default function FirstSection({
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     XLSX.writeFile(workbook, "attendees.xlsx");
   };
-
-  const user = getCookie<TUser>("user");
 
   return (
     <>
@@ -390,6 +404,7 @@ export default function FirstSection({
                     getAttendees={getAttendees}
                     attendeesTags={attendeesTags}
                     favourites={favourites ? favourites : undefined}
+                    event={event}
                   />
                 )}
               </DialogContent>
@@ -422,7 +437,7 @@ export default function FirstSection({
             className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8 w-full"
             value={searchTerm}
           />
-          <div className="absolute right-2 top-[25%] flex justify-center items-center">
+          <div className="absolute top-1/2 right-0 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center">
             {searchTerm === "" ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -439,7 +454,7 @@ export default function FirstSection({
             ) : (
               <button
                 onClick={() => setSearchTerm("")}
-                className="text-xl font-extrabold text-gray-500"
+                className="text-lg md:text-xl font-extrabold text-gray-300 w-[24px] h-[24px] flex items-center justify-center"
               >
                 x
               </button>

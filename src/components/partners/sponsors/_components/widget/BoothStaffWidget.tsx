@@ -13,7 +13,6 @@ export function BoothStaffWidget({
   remove,
   email,
   isAddingBoothStaff,
-  ticketType,
 }: {
   image?: string | null;
   name: string;
@@ -22,7 +21,7 @@ export function BoothStaffWidget({
   remove?: (email: string) => void;
   company?: string | null;
   isAddingBoothStaff?: boolean;
-  ticketType?: string;
+ 
 }) {
   return (
     <div
@@ -39,14 +38,12 @@ export function BoothStaffWidget({
           className="w-12 h-12 rounded-full "
           src={image || "/b92cf7b1b06acc1b9a0759b6f97724c349488816.webp"}
         />
-        <p className="bg-[#20A0D8] bg-opacity-10 text-tiny text-[#20A0D8] px-2 py-1 rounded-md">
-          {ticketType ?? "Attendee"}
-        </p>
+      
       </div>
       <div className="flex text-tiny sm:text-xs flex-col items-start justify-start">
-        <p className="font-medium capitalize">{name || "John Doe"}</p>
-        <p className="text-[#717171]">{profession || "Data Analyst"}</p>
-        <p className="text-[#717171]">{company || "Oracle"}</p>
+        <p className="font-medium capitalize">{name || ""}</p>
+        <p className="text-[#717171]">{profession || ""}</p>
+        <p className="text-[#717171]">{company || ""}</p>
       </div>
 
       {isAddingBoothStaff && (

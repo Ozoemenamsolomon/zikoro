@@ -4,14 +4,17 @@ import { MarketPlaceLayout } from "../_components";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { Button } from "@/components";
 import { useState } from "react";
-import { useFetchSingleEvent, useFetchRewards } from "@/hooks";
+import { useFetchSingleEvent, useFetchRewards, useVerifyUserAccess, useCheckTeamMember } from "@/hooks";
 import { CreateReward, RewardCard } from "./_components";
 import { EmptyCard } from "@/components/composables";
 import { Loader2 } from "styled-icons/remix-fill";
 import { Reward } from "@/types";
+import { cn } from "@/lib";
 export default function Rewards({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
   const { data: singleEvent } = useFetchSingleEvent(eventId);
+  const {isOrganizer} = useVerifyUserAccess(eventId)
+  const {isIdPresent} = useCheckTeamMember({eventId})
   const {
     data,
     loading,
@@ -28,7 +31,7 @@ export default function Rewards({ eventId }: { eventId: string }) {
       <div className="flex items-end w-full justify-end px-4">
         <Button
           onClick={onClose}
-          className="text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
+          className={cn("text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium block", (isIdPresent || isOrganizer) && "flex")}
         >
           <PlusCircle size={22} />
           <p>Rewards</p>

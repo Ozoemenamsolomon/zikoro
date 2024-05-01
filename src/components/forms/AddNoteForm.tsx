@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -18,6 +18,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useUpdatenote } from "@/hooks/services/notes";
 import { DialogClose } from "../ui/dialog";
+import { getCookie } from "@/hooks";
+import { TUser } from "@/types";
+import { useParams } from "next/navigation";
 
 export default function AddNotesForm({
   attendeeEmail,
@@ -30,13 +33,15 @@ export default function AddNotesForm({
   note: TAttendeeNote;
   getnote: () => Promise<void>;
 }) {
+  const user = getCookie<TUser>("user");
+  const { eventId } = useParams();
   console.log(attendeeEmail);
   const defaultValues: Partial<TAttendeeNote> = !!note
     ? note
     : {
-        eventId: "1234567890",
-        attendeeEmail: "ubahyusuf484@gmail.com",
-        userId: 10,
+        eventId: typeof eventId === "string" ? eventId : eventId[0],
+        attendeeEmail: user?.userEmail,
+        userId: user ? user.id : 0,
       };
 
   const { updatenote, isLoading, error } = useUpdatenote({

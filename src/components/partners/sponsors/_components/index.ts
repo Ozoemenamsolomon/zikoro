@@ -6,3 +6,4 @@ export * from "./widget/BoothStaffWidget";
 export * from "./widget/JobWidget";
 export * from "./widget/SponsoredSessionWidget";
 export * from "./widget/FlexibilityType";
+export * from "./actions/Edit"

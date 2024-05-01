@@ -8,7 +8,12 @@ import { useRef, useState, useLayoutEffect } from "react";
 import FirstSection from "./FirstSection";
 import SecondSection from "./SecondSection";
 import ThirdSection from "./ThirdSection";
-import { useCreateAttendee, useGetEvent } from "@/hooks";
+import {
+  getCookie,
+  useCreateAttendee,
+  useGetEvent,
+  useGetEventAgendas,
+} from "@/hooks";
 import { useParams } from "next/navigation";
 
 interface ReusablePeopleComponentProps {
@@ -31,6 +36,8 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   } = useDisclose();
 
   console.log(attendees, "attendees");
+  const user = getCookie("user");
+  const event = getCookie("event");
 
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee>(null);
 
@@ -38,11 +45,12 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const divRef = useRef<HTMLDivElement>(null);
 
-  const { eventId } = useParams();
-
-  const { event, isLoading: eventIsLoading } = useGetEvent({
-    eventId: Array.isArray(eventId) ? eventId[0] : eventId,
-    isAlias: true,
+  const {
+    eventAgendas,
+    isLoading: eventAgendasIsLoading,
+    getEventAgendas,
+  } = useGetEventAgendas({
+    eventId: event.id,
   });
 
   useLayoutEffect(() => {
@@ -70,7 +78,6 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
           attendees={attendees}
           isLoading={isLoading}
           getAttendees={getAttendees}
-          eventIsLoading={eventIsLoading}
           event={event}
         />
       </section>
@@ -81,9 +88,10 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
               <SecondSection
                 attendee={selectedAttendee}
                 getAttendees={getAttendees}
-                eventIsLoading={eventIsLoading}
                 event={event}
                 onOpen={onOpenAttendeeForm}
+                eventAgendas={eventAgendas}
+                eventAgendasIsLoading={eventAgendasIsLoading}
               />
             </section>
             <section className="flex flex-col md:col-span-3 pt-2">

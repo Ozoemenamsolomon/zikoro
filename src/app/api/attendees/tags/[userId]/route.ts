@@ -1,41 +1,26 @@
+import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { agendaId: string } }
+  { params }: { params: { userId: string } }
 ) {
   const supabase = createRouteHandlerClient({ cookies });
-
   if (req.method === "GET") {
-   const {agendaId} = params
-
+    const { userId } = params;
     try {
       const { data, error, status } = await supabase
-        .from("agenda")
+        .from("attendeeTags")
         .select("*")
-        .eq("sessionAlias", agendaId)
-        .single()
-
-      // console.log(data);
-      if (error) {
-        return NextResponse.json(
-          {
-            error,
-          },
-          {
-            status: 400,
-          }
-        );
-      }
+        .eq("userId", userId);
 
       if (error) throw error;
 
+      console.log(data);
+
       return NextResponse.json(
-        {
-          data,
-        },
+        { data },
         {
           status: 200,
         }

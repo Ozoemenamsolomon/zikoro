@@ -1,6 +1,12 @@
 "use client";
 import { toast } from "@/components/ui/use-toast";
-import { TAgenda, TSessionAgenda, TReview, TMyAgenda } from "@/types";
+import {
+  TAgenda,
+  TSessionAgenda,
+  TReview,
+  TMyAgenda,
+  UseGetResult,
+} from "@/types";
 import {
   postRequest,
   patchRequest,
@@ -8,7 +14,7 @@ import {
   deleteRequest,
 } from "@/utils/api";
 import { useState, useEffect } from "react";
-import { useFetchSingleEvent } from "@/hooks";
+
 
 export const useCreateAgenda = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -77,15 +83,22 @@ export const useUpdateAgenda = () => {
   return { updateAgenda, isLoading };
 };
 
-export const useGetAgendas = (eventId: string) => {
-  const [agendas, setAgendas] = useState<TAgenda[]>([]);
+export const useGetAgendas = (
+  eventId: string,
+  date?: string,
+  query?: string | null
+) => {
+  const [agendas, setAgendas] = useState<TSessionAgenda[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
+  // console.log({date})
   const getAgendas = async () => {
     setLoading(true);
 
-    const { data, status } = await getRequest<TAgenda[]>({
-      endpoint: `/agenda/${eventId}`,
+    const { data, status } = await getRequest<TSessionAgenda[]>({
+      endpoint: `/agenda/${eventId}?${date ? "date=" + date : ""}&${
+        query ? "query=" + query : ""
+      }`,
     });
 
     setLoading(false);
@@ -98,9 +111,50 @@ export const useGetAgendas = (eventId: string) => {
 
   useEffect(() => {
     getAgendas();
-  }, []);
+  }, [eventId, date, query]);
 
   return { agendas, isLoading, getAgendas };
+};
+
+export const useGetEventAgendas = ({
+  eventId,
+}: {
+  eventId: string;
+}): UseGetResult<TAgenda[], "eventAgendas", "getEventAgendas"> => {
+  const [eventAgendas, setEventAgendas] = useState<TAgenda[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getEventAgendas = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TAgenda[]>({
+        endpoint: `events/${eventId}/agendas`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+
+      setEventAgendas(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getEventAgendas();
+  }, []);
+
+  return {
+    eventAgendas,
+    isLoading,
+    error,
+    getEventAgendas,
+  };
 };
 
 export const useGetAgenda = ({ agendaId }: { agendaId: string }) => {
@@ -138,7 +192,7 @@ export const useGetAgenda = ({ agendaId }: { agendaId: string }) => {
 export const useDeleteAgenda = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const deleteAgenda = async ({ agendaId }: { agendaId: number }) => {
+  const deleteAgenda = async ({ agendaId }: { agendaId: string }) => {
     setLoading(true);
 
     try {
@@ -165,7 +219,8 @@ export const useDeleteAgenda = () => {
   return { deleteAgenda, isLoading };
 };
 
-export const useGetSessionAgendas = (
+/**
+ export const useGetSessionAgendas = (
   eventId: string,
   date: string,
   query: string | null
@@ -263,6 +318,7 @@ export const useGetSessionAgendas = (
     fetching,
   };
 };
+ */
 
 export const useSendReview = () => {
   const [isLoading, setLoading] = useState<boolean>(false);

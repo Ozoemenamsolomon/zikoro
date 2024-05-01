@@ -8,7 +8,7 @@ export async function GET(req: any) {
   if (req.method === "GET") {
     // Get the query parameters from the request
     const { searchParams } = new URL(req.url);
-    const eventCity = searchParams.get("eventCity");    
+    const eventCountry = searchParams.get("eventCountry");    
 
     try {
       let eventsQuery = supabase
@@ -19,8 +19,8 @@ export async function GET(req: any) {
         .limit(4);
 
       // If query parameters are provided, apply filters
-      if (eventCity) {
-        eventsQuery = eventsQuery.eq("eventCity", eventCity);
+      if (eventCountry) {
+        eventsQuery = eventsQuery.eq("eventCountry", eventCountry);
       }
 
       // Fetch data from Superbase table 'events' based on query parameters

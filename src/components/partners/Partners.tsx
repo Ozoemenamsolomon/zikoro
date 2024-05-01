@@ -1,18 +1,15 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { Button } from "..";
-import { Form, FormControl, FormField, FormItem, Input } from "..";
+
+import {  Input } from "..";
 import { HeaderTab } from "./_components";
 import Filter from "@/components/Filter";
 import { Search } from "@styled-icons/evil/Search";
 import useSearch from "@/hooks/common/useSearch";
-import { TPartner } from "@/types";
 import { Sponsors } from "./sponsors/Sponsors";
 import { Exhibitors } from "./sponsors/Exhibitors";
 import { useFetchPartners } from "@/hooks";
 import { useState, useMemo, useEffect } from "react";
-import { DropDownCards } from "../published";
 import { useSearchParams } from "next/navigation";
 import { extractUniqueTypes } from "@/utils/helpers";
 import { TFilter } from "@/types/filter";
@@ -21,9 +18,7 @@ import { useFilter } from "@/hooks";
 import _ from "lodash";
 import { cn } from "@/lib";
 
-type FormValue = {
-  search: string;
-};
+
 
 export function Partners({ eventId }: { eventId: string }) {
   const { data, loading, refetch } = useFetchPartners(eventId);
@@ -60,27 +55,6 @@ export function Partners({ eventId }: { eventId: string }) {
       optionsFromData: true,
       type: "multiple",
       order: 1,
-    },
-    {
-      label: "Company Name",
-      accessor: "companyName",
-      icon: (
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M14.3587 7.30703H15.642V6.0237H14.3587V7.30703ZM14.3587 10.6404H15.642V9.35703H14.3587V10.6404ZM14.3587 13.9737H15.642V12.6904H14.3587V13.9737ZM13.3337 16.6654V15.832H17.5003V4.16536H9.48783V5.9887L8.65449 5.38953V3.33203H18.3337V16.6654H13.3337ZM1.66699 16.6654V9.58203L6.66699 6.0237L11.667 9.58203V16.6654H7.72533V12.9154H5.60866V16.6654H1.66699ZM2.50033 15.832H4.77533V12.082H8.55866V15.832H10.8337V9.9987L6.66699 7.07203L2.50033 9.9987V15.832Z"
-            fill="#D6D6D6"
-          />
-        </svg>
-      ),
-      optionsFromData: true,
-      type: "multiple",
-      order: 2,
     },
     {
       label: "Exhibition Hall",
@@ -192,7 +166,8 @@ export function Partners({ eventId }: { eventId: string }) {
       return {
         ...value,
         offers: value?.offers?.length > 0,
-        industry: value?.industry?.name,
+        industry: value?.industry,
+        boothNumber: String(value?.boothNumber?.length)
       };
     });
   }, [data]);

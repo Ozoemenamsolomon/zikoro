@@ -12,7 +12,7 @@ export function HeaderTab({
   refetch,
 }: {
   eventId: string;
-  refetch: () => Promise<null | undefined>;
+  refetch: () => Promise<any>;
 }) {
   const [isOpen, setOpen] = useState(false);
   const search = useSearchParams();

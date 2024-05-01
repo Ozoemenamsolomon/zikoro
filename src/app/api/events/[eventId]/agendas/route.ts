@@ -4,31 +4,21 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { agendaId: string } }
+  { params }: { params: { eventId: number } }
 ) {
+  const { eventId } = params;
   const supabase = createRouteHandlerClient({ cookies });
 
   if (req.method === "GET") {
-   const {agendaId} = params
-
     try {
+      const { searchParams } = new URL(req.url);
+
       const { data, error, status } = await supabase
         .from("agenda")
         .select("*")
-        .eq("sessionAlias", agendaId)
-        .single()
+        .eq("eventId", eventId);
 
-      // console.log(data);
-      if (error) {
-        return NextResponse.json(
-          {
-            error,
-          },
-          {
-            status: 400,
-          }
-        );
-      }
+      console.log(data);
 
       if (error) throw error;
 

@@ -24,14 +24,20 @@ export function CollapsibleWidget({
   const toggleVisibility = () => {
     setVisibility((prev) => !prev);
   };
+
+  //  onClick={toggleVisibility}
+  
   return (
     <section className="flex flex-col w-full  min-h-max">
-      <div className="w-full flex items-center justify-between px-3 py-3 border-y ">
+      <div 
+      role="button"
+      onClick={toggleVisibility}
+      className="w-full flex items-center justify-between px-3 py-3 border-b ">
         <p className="font-semibold text-base sm:text-xl">{title}</p>
         <div className="flex items-center gap-x-2">
           <p>{title}</p>
           <Edit session={session} event={event} refetch={refetch} />
-          <Button onClick={toggleVisibility} className="w-fit h-fit px-1">
+          <Button className="w-fit h-fit px-1">
             <NavigateNext
               className={`transform transition-all duration-300 ease-in-out ${
                 isVisible ? "-rotate-90" : "rotate-90"

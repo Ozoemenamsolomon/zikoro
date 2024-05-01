@@ -13,8 +13,10 @@ import {
   getCookie,
   useFetchSingleEvent,
   useGetAllAttendees,
-  useGetSessionAgendas,
-  useCheckTeamMember
+  useGetAgendas,
+  useVerifyUserAccess,
+  useCheckTeamMember,
+ // useGetEventAttendees,
 } from "@/hooks";
 import { generateDateRange } from "@/utils";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -25,13 +27,19 @@ export default function Agenda({ eventId }: { eventId: string }) {
   const user = getCookie("user");
   const search = useSearchParams();
   const queryParam = search.get("a");
-  const { attendees } = useGetAllAttendees();
+  const {attendeeId, isOrganizer} = useVerifyUserAccess(eventId)
+  const { attendees } = useGetAllAttendees(); //
   const [isOpen, setOpen] = useState(false);
   const { data, refetch } = useFetchSingleEvent(eventId);
-  const {isIdPresent} =useCheckTeamMember({eventId})
+ // const { attendees: eventAttendees } = useGetEventAttendees(eventId); //
+  const { isIdPresent } = useCheckTeamMember({ eventId });
   const [isFullScreen, setFullScreen] = useState(false);
   const activeDateQuery = search.get("date");
-  const { sessionAgendas, fetching, refetchSession } = useGetSessionAgendas(
+  const {
+    agendas: sessionAgendas,
+    isLoading: fetching,
+    getAgendas: refetchSession,
+  } = useGetAgendas(
     eventId,
     activeDateQuery || currentEvent?.startDate,
     queryParam
@@ -47,9 +55,6 @@ export default function Agenda({ eventId }: { eventId: string }) {
     }
   }, [data]);
 
-
-
-
   function onClose() {
     setOpen((prev) => !prev);
   }
@@ -58,14 +63,27 @@ export default function Agenda({ eventId }: { eventId: string }) {
     setFullScreen((prev) => !prev);
   }
 
-  const attendeeId = useMemo(() => {
+/**
+   const attendeeId = useMemo(() => {
     return attendees?.find(
       ({ email, eventAlias }) =>
         eventAlias === eventId && email === user?.userEmail
     )?.id;
   }, [attendees]);
 
-  console.log("sesson", fetching,);
+  const isOrganizer = useMemo(() => {
+    if (attendeeId && eventAttendees) {
+      return eventAttendees?.some(
+        ({ attendeeType, id }) =>
+          id === attendeeId && attendeeType.includes("organizer")
+      );
+    } else {
+      return false;
+    }
+  }, [eventAttendees, attendees, attendeeId]);
+ */
+
+  // console.log("sesson", fetching,);
 
   return (
     <>
@@ -73,13 +91,17 @@ export default function Agenda({ eventId }: { eventId: string }) {
         <div className="w-full overflow-x-auto no-scrollbar  p-4 text-base flex items-center gap-x-8 sm:justify-between text-[#3E404B]">
           <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
             <Link
-              href={`/event/${eventId}/agenda`}
+              href={`/event/${eventId}/agenda?date=${
+                activeDateQuery || currentEvent?.startDate
+              }`}
               className={`pl-2 ${!queryParam && "text-basePrimary"}`}
             >
               Agenda
             </Link>
             <Link
-              href={`/event/${eventId}/agenda?a=my-agenda`}
+              href={`/event/${eventId}/agenda?date=${
+                activeDateQuery || currentEvent?.startDate
+              }&a=my-agenda`}
               className={`pl-2 ${
                 queryParam?.includes("agenda") && "text-basePrimary"
               }`}
@@ -106,8 +128,10 @@ export default function Agenda({ eventId }: { eventId: string }) {
                 <button
                   key={val?.date}
                   onClick={() => {
-                    router.push(`/event/${eventId}/agenda?date=${val?.date}`);
-                    refetchSession();
+                    router.push(
+                      `/event/${eventId}/agenda?date=${val?.date}&a=${queryParam}`
+                    );
+                    // refetchSession();
                   }}
                   className={cn(
                     "pb-3 text-gray-400  text-base sm:text-lg",
@@ -158,6 +182,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
                   refetchSession={refetchSession}
                   event={data}
                   isIdPresent={isIdPresent}
+                  isOrganizer={isOrganizer}
                   refetchEvent={refetch}
                   attendeeId={attendeeId}
                 />
@@ -179,7 +204,8 @@ export default function Agenda({ eventId }: { eventId: string }) {
         <FullScreenView
           close={toggleFullScreenMode}
           sessionAgendas={sessionAgendas}
-          eventId={eventId}
+          isIdPresent={isIdPresent}
+          isOrganizer={isOrganizer}
         />
       )}
     </>

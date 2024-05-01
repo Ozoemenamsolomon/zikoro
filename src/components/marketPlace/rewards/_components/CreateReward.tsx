@@ -32,10 +32,11 @@ export function CreateReward({
     await createReward({
       ...values,
       image: img,
-      eventId,
+      eventAlias: eventId,
       eventName,
     });
     refetch();
+    close()
   }
   return (
     <div
