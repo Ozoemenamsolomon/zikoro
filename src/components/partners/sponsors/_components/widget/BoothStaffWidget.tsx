@@ -41,9 +41,9 @@ export function BoothStaffWidget({
       
       </div>
       <div className="flex text-tiny sm:text-xs flex-col items-start justify-start">
-        <p className="font-medium capitalize">{name || "John Doe"}</p>
-        <p className="text-[#717171]">{profession || "Data Analyst"}</p>
-        <p className="text-[#717171]">{company || "Oracle"}</p>
+        <p className="font-medium capitalize">{name || ""}</p>
+        <p className="text-[#717171]">{profession || ""}</p>
+        <p className="text-[#717171]">{company || ""}</p>
       </div>
 
       {isAddingBoothStaff && (

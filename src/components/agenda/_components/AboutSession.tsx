@@ -4,7 +4,7 @@ import { Button } from "@/components";
 import { Eye } from "@styled-icons/feather/Eye";
 import { Star } from "@styled-icons/bootstrap/Star";
 import { EventLocationType } from "@/components/composables";
-import { Link } from "@styled-icons/octicons/Link";
+import { Link2Outline } from "@styled-icons/evaicons-outline/Link2Outline";
 import { LocationPin } from "@styled-icons/entypo/LocationPin";
 import { CollapsibleWidget, Duplicate, Edit, Deletes } from ".";
 import { FilePdf } from "@styled-icons/fa-regular/FilePdf";
@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { getCookie, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
-
+import Link from "next/link"
 export function AboutSession({
   agenda,
   event,
@@ -162,7 +162,7 @@ export function AboutSession({
                 onClick={() => router.push(agenda?.sessionUrl, "_blank")}
                 className="flex items-center gap-x-2"
               >
-                <Link size={18} />
+                <Link2Outline size={18} />
                 <p className="text-xs">Join Live Event</p>
               </button>
             )}
@@ -271,7 +271,9 @@ export function AboutSession({
                 )}
               {Array.isArray(agenda?.sessionFiles) &&
                 agenda?.sessionFiles.map((item) => (
-                  <div
+                  <Link
+                  target="_blank"
+                  href={item?.file}
                     key={item?.id}
                     className="w-full group border relative rounded-lg p-3 flex items-start justify-start gap-x-2"
                   >
@@ -284,7 +286,7 @@ export function AboutSession({
                         {item?.size}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 ))}
             </div>
           </CollapsibleWidget>

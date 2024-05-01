@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="bg-[#EEF0FF] fixed overflow-y-auto w-full h-full">
-      <div className="w-[95%] sm:w-[500px] py-6 h-fit mx-auto ">
+      <div className="w-[95%] sm:w-[550px] py-6 h-fit mx-auto ">
         <div className="w-full flex items-center justify-center mb-4">
           <Image
             src={"/logo.png"}

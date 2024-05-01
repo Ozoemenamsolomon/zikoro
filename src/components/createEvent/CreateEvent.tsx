@@ -3,10 +3,9 @@
 import { useForm } from "react-hook-form";
 import { Form, FormField, Input, Button, ReactSelect } from "@/components";
 import { newEventSchema } from "@/schemas";
-
+import Image from "next/image"
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { useMemo, useState } from "react";
 import { COUNTRY_CODE, generateAlias } from "@/utils";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
@@ -14,7 +13,9 @@ import { useCreateEvent, getCookie, useGetUserOrganizations } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import InputOffsetLabel from "../InputOffsetLabel";
 import _ from "lodash";
+import { useRouter } from "next/navigation";
 import { CreateOrganization } from "../eventHome";
+import { NavigateBefore } from "@styled-icons/material-outlined/NavigateBefore";
 
 type OrganizationListType = {
   label: string;
@@ -23,6 +24,7 @@ type OrganizationListType = {
 
 export default function CreateEvent() {
   const { createEvent, loading } = useCreateEvent();
+  const router = useRouter()
   const { organizations: organizationList } = useGetUserOrganizations();
   const [isOpen, setOpen] = useState(false);
 
@@ -78,8 +80,27 @@ export default function CreateEvent() {
   }, [COUNTRY_CODE]);
 
   return (
-    <DateAndTimeAdapter>
-      <>
+   <>
+    <div className="bg-[#EEF0FF] fixed overflow-y-auto w-full h-full">
+
+      <Button 
+      onClick={() => router.back()}
+      className="absolute text-gray-500 left-3 top-4 text-mobile sm:text-sm">
+        <NavigateBefore size={18}/>
+        <p>Go Back</p>
+      </Button>
+    <div className="w-[95%] sm:w-[550px] py-6 h-fit mx-auto ">
+      <div className="w-full flex items-center justify-center mb-4">
+        <Image
+          src={"/logo.png"}
+          alt="logo"
+          width={300}
+          height={200}
+          className="w-[150px] h-[40px]"
+        />
+      </div>
+
+      <div className="flex flex-col w-full  rounded-lg h-fit  bg-white shadow py-7 px-3 sm:px-4">
         <div className="w-full flex flex-col gap-y-1 mb-6 items-start justify-start">
           <h2 className="font-medium text-lg sm:text-xl">Create New Event</h2>
         </div>
@@ -245,8 +266,12 @@ export default function CreateEvent() {
           </form>
         </Form>
 
+        </div>
+      </div>
+    </div>
+
         {isOpen && <CreateOrganization close={onClose} />}
       </>
-    </DateAndTimeAdapter>
+    
   );
 }

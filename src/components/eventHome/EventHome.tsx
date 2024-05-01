@@ -16,13 +16,12 @@ export default function EventHome() {
           <LoaderAlt size={30} className="animate-spin" />
         </div>
       )}
+      
       {!loading && eventData.length > 0 && (
         <EventCards refetch={refetch} events={eventData} />
       )}
       {!loading && eventData?.length === 0 && (
-        <EmptyCard
-          text={`You have not added any event. Start by creating an organization`}
-        />
+        <EmptyCard text={`You have not added any event.`} />
       )}
     </EventHomeLayout>
   );
