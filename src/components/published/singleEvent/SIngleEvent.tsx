@@ -135,6 +135,7 @@ export function SingleEvent({
     email: data?.eventContactEmail,
   };
 
+
   const price = useMemo(() => {
     if (Array.isArray(event?.pricing)) {
       const prices = event?.pricing?.map(({ price }) => Number(price));
@@ -167,8 +168,10 @@ export function SingleEvent({
           {isExpired && (
             <div className="w-full h-full inset-0 absolute z-10 bg-white/50"></div>
           )}
-          <div className="w-full grid grid-cols-1 h-fit gap-4 lg:grid-cols-8 items-start">
-            <div className="w-full h-72 sm:h-[350px] lg:h-[400px] flex lg:col-span-4 flex-col items-start justify-start">
+          <div className={cn("w-full grid grid-cols-1 h-fit gap-4 lg:grid-cols-8 items-start", isDetail && "lg:grid-cols-1")}>
+            <div className={cn("w-full h-72 sm:h-[350px] lg:h-[400px] flex lg:col-span-4 flex-col items-start justify-start",
+            isDetail && "sm:h-[400px] lg:h-[500px]"
+            )}>
               {event?.eventPoster ? (
                 <Image
                   src={event?.eventPoster}
@@ -176,7 +179,8 @@ export function SingleEvent({
                   width={600}
                   height={600}
                   className={cn(
-                    "w-full h-72 sm:h-[350px] lg:h-[400px] rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl object-cover"
+                    "w-full h-72 sm:h-[350px] lg:h-[400px] rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl object-cover",
+                    isDetail && "sm:h-[400px] lg:h-[500px]"
                   )}
                 />
               ) : (
@@ -186,7 +190,7 @@ export function SingleEvent({
               )}
             </div>
             {/** */}
-            <div className="w-full lg:col-span-4 flex flex-col gap-y-3 py-4 px-4 sm:px-10 sm:py-6 items-start justify-start">
+            <div className={cn("w-full lg:col-span-4 flex flex-col gap-y-3 py-4 px-4 sm:px-10 sm:py-6 items-start justify-start", isDetail && " lg:col-span-1 max-w-2xl")}>
               <p className="text-base text-start w-full  sm:text-2xl font-medium  ">
                 {event?.eventTitle}
               </p>

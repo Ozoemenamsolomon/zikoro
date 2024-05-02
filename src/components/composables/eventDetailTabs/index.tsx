@@ -101,7 +101,7 @@ export function EventDetailTabs({
             key={title}
             onClick={() => setActiveTab(id + 1)}
             className={cn(
-              "px-2 py-2 h-fit bg-transparent rounded-none text-sm sm:text-xl font-medium text-gray-500 hidden",
+              "px-2 py-2 h-fit bg-transparent rounded-none text-sm sm:text-base font-medium text-gray-500 hidden",
               active === id + 1 &&
                 "border-b-2 border-basePrimary text-basePrimary",
               status && "block"
