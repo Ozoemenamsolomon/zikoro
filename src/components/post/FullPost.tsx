@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Facebook, X, Linkedin, Instagram } from "@/constants/icons";
 import PostArticle from "@/components/blog/PostArticle";
@@ -10,6 +10,8 @@ import {
   shareOnLinkedin,
   shareOnTwitter,
 } from "@/utils/shareOnSocial";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type DBBlogPost = {
   id: number;
@@ -35,6 +37,10 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     loading: boolean;
     refetch: () => Promise<null | undefined>;
   } = useFetchBlogPost(postId);
+
+  //for side bar links
+  const router = useRouter();
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Extracting the date only
   function extractAndFormatDate(dateTimeString: any): any {
@@ -95,93 +101,154 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     shareOnLinkedin(articleUrl, postId);
   };
 
+  //useEffect
 
+  useEffect(() => {
+    const handleAnchorClick = (e: MouseEvent) => {
+      e.preventDefault();
+      const targetId = (e.target as HTMLAnchorElement).getAttribute("href");
+      if (targetId) {
+        const targetElement = document.getElementById(targetId.slice(1));
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: "smooth" });
+          // router.push(`#${targetId.slice(1)}`, undefined, { shallow: true });
+          router.push(`#${targetId.slice(1)}`, { shallow: true });
+        }
+      }
+    };
 
+    const contentDiv = contentRef.current;
+    if (contentDiv) {
+      contentDiv.addEventListener("click", handleAnchorClick);
+      return () => {
+        contentDiv.removeEventListener("click", handleAnchorClick);
+      };
+    }
+  }, [router]);
+
+  const headings = data?.content.match(/<h[1-6](.*?)>(.*?)<\/h[1-6]>/g) || [];
 
   return (
-    <div className="mt-[120px] lg:mt-[200px] px-3 lg:px-0 ">
-      {/* header section */}
-      <div className="mzx-w-full lg:max-w-[982px] mx-auto flex flex-col gap-y-6 lg:gap-y-10 ">
-        <div className="max-w-full lg:max-w-2xl lg:mx-auto flex flex-col gap-y-4 text-center ">
-          <p className="text-indigo-600 text-[12px] lg:text-[15px] font-medium">
-            {data?.category}
-          </p>
-          <p className="capitalize text-2xl font-semibold lg:text-4xl ">
-            {data?.title}
-          </p>
-          <p className="uppercase text-gray-400">
-            {extractAndFormatDate(data?.created_at)} - <span>3 mins read </span>
-          </p>
-        </div>
-        <Image
-          src={data?.headerImageUrl ? data?.headerImageUrl : "/postImage2.png"}
-          alt=""
-          width={982}
-          height={450}
-          className="w-[982px] h-[450px] object-cover hidden lg:block"
-        />
-        <Image
-          src={data?.headerImageUrl ? data?.headerImageUrl : "/postImage2.png"}
-          alt=""
-          width={335}
-          height={160}
-          className="w-full h-[160px] object-cover block lg:hidden"
-        />
-      </div>
-
-      {/* body section */}
-      <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-28 lg:mb-20 ">
-        {/* Left */}
-        <div className="hidden lg:inline h-full pb-12 w-full flex-col  lg:w-3/12">
-          {/* section links */}
-          <div className="flex-col">
-            {/* Top */}
-            <p className="text-xl font-semibold">On This Page</p>
-            {/* Links */}
-            <p className="text-base font-normal mt-8">
-              Lorem ipsum dolor sit amet consectetur. Vitae sollicitudin tellus{" "}
-            </p>
-
-            <p className="text-base font-normal mt-8">
-              Lorem ipsum dolor sit amet consectetur. Vitae sollicitudin tellus{" "}
-            </p>
+    <>
+      {data && (
+        <div className="mt-[120px] lg:mt-[200px] px-3 lg:px-0 ">
+          {/* header section */}
+          <div className="mzx-w-full lg:max-w-[982px] mx-auto flex flex-col gap-y-6 lg:gap-y-10 ">
+            <div className="max-w-full lg:max-w-2xl lg:mx-auto flex flex-col gap-y-2 text-center ">
+              <p className="text-indigo-600 text-[12px] lg:text-[15px] font-medium">
+                {data?.category}
+              </p>
+              <p className="capitalize text-2xl font-semibold lg:text-4xl ">
+                {data?.title}
+              </p>
+              <p className="uppercase text-gray-400">
+                {extractAndFormatDate(data?.created_at)} -{" "}
+                <span>{data?.readingDuration} mins read </span>
+              </p>
+            </div>
+            <Image
+              src={
+                data?.headerImageUrl ? data?.headerImageUrl : "/postImage2.png"
+              }
+              alt=""
+              width={982}
+              height={450}
+              className="w-[982px] h-[450px] object-cover hidden lg:block"
+            />
+            <Image
+              src={
+                data?.headerImageUrl ? data?.headerImageUrl : "/postImage2.png"
+              }
+              alt=""
+              width={335}
+              height={160}
+              className="w-full h-[160px] object-cover block lg:hidden"
+            />
           </div>
 
-          {/* Share Buttons */}
-          <div className="mt-8">
-            <p className="text-xl font-medium">Share This Article</p>
-            <div className="flex gap-x-[14px] mt-4">
-              <div className="cursor-pointer" onClick={handleShareOnTwitter}>
-                <X />
+          {/* body section */}
+          <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-28 lg:mb-20 ">
+            {/* Left */}
+            <div className="hidden lg:inline h-full pb-12 w-full flex-col  lg:w-3/12">
+              {/* section links */}
+              <div className="flex-col">
+                {/* Top */}
+                <p className="text-xl font-semibold">On This Page</p>
+                {/* Links */}
+                {/* <p className="text-base font-normal mt-8">
+                    Lorem ipsum dolor sit amet consectetur. Vitae sollicitudin tellus{" "}
+                  </p> */}
+
+                {headings.map((heading, index) => {
+                  const id = `section-${index}`;
+                  return (
+                    <div key={id} id={id}>
+                      <Link href={`#${id}`}>
+                        <div className="text-base font-semibold mt-8">
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: heading ?? "",
+                            }}
+                          />
+                        </div>
+                      </Link>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="cursor-pointer" onClick={handleShareOnFacebook}>
-                <Facebook />
+
+              {/* Share Buttons */}
+              <div className="mt-8">
+                <p className="text-xl font-medium">Share This Article</p>
+                <div className="flex gap-x-[14px] mt-4">
+                  <div
+                    className="cursor-pointer"
+                    onClick={handleShareOnTwitter}
+                  >
+                    <X />
+                  </div>
+                  <div
+                    className="cursor-pointer"
+                    onClick={handleShareOnFacebook}
+                  >
+                    <Facebook />
+                  </div>
+                  <div
+                    className="cursor-pointer"
+                    onClick={handleShareOnInstagram}
+                  >
+                    <Instagram />
+                  </div>
+                  <div
+                    className="cursor-pointer"
+                    onClick={handleShareOnLinkedin}
+                  >
+                    <Linkedin />
+                  </div>
+                </div>
               </div>
-              <div className="cursor-pointer" onClick={handleShareOnInstagram}>
-                <Instagram />
-              </div>
-              <div  className="cursor-pointer" onClick={handleShareOnLinkedin}>
-                <Linkedin />
-              </div>
+            </div>
+
+            <div
+              ref={contentRef}
+              className=" h-fit lg:h-fit overflow-y-hidden lg:overflow-y-auto  w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px]"
+            >
+              <div dangerouslySetInnerHTML={{ __html: data?.content ?? "" }} />
+            </div>
+          </div>
+
+          {/* Footer Section */}
+          <div className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24 mt-44">
+            <p className="text-center text-xl lg:text-3xl font-semibold mt-14">
+              Read More Articles
+            </p>
+            <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
+              <PostArticle />
+              <PostArticle />
             </div>
           </div>
         </div>
-
-        <div className=" h-full lg:h-screen overflow-y-hidden lg:overflow-y-auto  w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px]">
-          <div dangerouslySetInnerHTML={{ __html: data?.content ?? "" }} />
-        </div>
-      </div>
-
-      {/* Footer Section */}
-      <div className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24 mt-44">
-        <p className="text-center text-xl lg:text-3xl font-semibold mt-14">
-          Read More Articles
-        </p>
-        <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
-          <PostArticle />
-          <PostArticle />
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
