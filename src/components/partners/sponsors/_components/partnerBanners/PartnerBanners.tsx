@@ -52,6 +52,10 @@ export function PartnerBanners({
               <PlusCircle size={24} />
             </Button>
           </div>
+          {partner?.banners === null || (Array.isArray(partner?.banners) && partner?.banners?.length === 0) && <div className="w-full h-[50px] flex items-center justify-center">
+          <p>No Added Banners</p>
+
+          </div> }
           <Comp className=" z-[4] slider  p-2 h-full   sm:block " {...settings}>
             {Array.isArray(partner?.banners) &&
               partner?.banners.map(({ file, link }, idx) => (

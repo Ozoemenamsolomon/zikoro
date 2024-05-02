@@ -25,13 +25,17 @@ export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
     <>
       <div className="w-full h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
         <div className="relative w-full h-40 sm:h-56 rounded-t-md overflow-hidden">
-          <Image
-            src={offer?.productImage ? offer?.productImage : ""}
-            alt="product"
-            width={600}
-            height={600}
-            className="w-full rounded-t-md h-[180px] sm:h-56"
-          />
+          {offer?.productImage ? (
+            <Image
+              src={offer?.productImage || ""}
+              alt="product"
+              width={600}
+              height={600}
+              className="w-full rounded-t-md h-[180px] sm:h-56"
+            />
+          ) : (
+            <div className="w-full rounded-t-md h-[180px] sm:h-56 bg-gray-200 animate-pulse"></div>
+          )}
           <span className="absolute text-white text-xs bg-basePrimary px-2 py-1 rounded-bl-lg top-0 right-0">
             {`${formatDiscount?.toFixed(0)}%`}
           </span>
@@ -80,7 +84,7 @@ export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
             Get Offer
           </button>
           <p className="font-semibold text-zinc-700 text-sm">
-            Discount code: 534rewfw
+            Discount code: {offer?.voucherCode ?? ""}
           </p>{" "}
         </div>
       </div>
@@ -181,8 +185,8 @@ function OfferCardModal({
               Get Offer
             </button>
             <p className="font-semibold text-zinc-700 text-sm">
-              Discount code: 534rewfw
-            </p>{" "}
+            Discount code: {offer?.voucherCode ?? ""}
+          </p>{" "}
           </div>
         </div>
       </div>

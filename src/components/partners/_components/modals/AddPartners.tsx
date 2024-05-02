@@ -116,12 +116,13 @@ export function AddPartners({
 
   async function onSubmit(values: any) {
     setLoading(true);
- 
+    console.log("vv", values);
     const promise = new Promise(async (resolve) => {
       if (typeof values?.companyLogo === "string") {
         resolve(values?.companyLogo);
-      } else if (values?.companyLogo && values?.companyLogo[0]) {
-        const img = await uploadFile(values?.companyLogo[0], "img");
+      } else if (values?.companyLogo && values?.companyLogo?.length > 0) {
+        const img = await uploadFile(values?.companyLogo[0], "image");
+        console.log(img);
         resolve(img);
       } else {
         resolve(null);
@@ -132,8 +133,8 @@ export function AddPartners({
     const promiseVideo = new Promise(async (resolve) => {
       if (typeof values?.media === "string") {
         resolve(values?.media);
-      } else if (values?.media && values?.media[0]) {
-        const vid = await uploadFile(values?.media[0], "img");
+      } else if (values?.media && values?.media?.length > 0) {
+        const vid = await uploadFile(values?.media[0], "video");
         resolve(vid);
       } else {
         resolve(null);
@@ -141,8 +142,6 @@ export function AddPartners({
     });
 
     const video: any = await promiseVideo;
-    
-  
 
     const payload: Partial<TPartner> = partner?.id
       ? {
@@ -162,14 +161,10 @@ export function AddPartners({
           eventAlias: eventData?.eventAlias,
           whatsApp: whatsappCountryCode + values.whatsApp,
           phoneNumber: phoneCountryCode + values.phoneNumber,
-          boothStaff: selectedAttendees,    
+          boothStaff: selectedAttendees,
           companyLogo: image,
           media: video,
         };
-
-   // console.log(payload);
-    // setLoading(false);
-    // return;
     const asynQuery = partner?.id ? update : addPartners;
     await asynQuery(payload);
     setLoading(false);
@@ -212,7 +207,7 @@ export function AddPartners({
   }, [eventData?.sponsorCategory]);
 
   ///
- // console.log("mm", partner);
+  // console.log("mm", partner);
   useEffect(() => {
     if (partner) {
       form.reset({
@@ -545,7 +540,7 @@ export function AddPartners({
                   <ReactSelect
                     {...form.register("industry")}
                     defaultValue={
-                      partner 
+                      partner
                         ? {
                             value: partner?.industry,
                             label: partner?.industry,

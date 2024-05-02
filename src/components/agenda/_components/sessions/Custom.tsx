@@ -2,7 +2,7 @@
 
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import { Eye } from "@styled-icons/feather/Eye";
-import { SessionCard, Deletes, Duplicate, Edit,AddToMyAgenda } from "..";
+import { SessionCard, Deletes, Duplicate, Edit, AddToMyAgenda } from "..";
 import { Button } from "@/components";
 import { CheckmarkDone } from "@styled-icons/ionicons-solid/CheckmarkDone";
 import { Star } from "@styled-icons/bootstrap/Star";
@@ -25,20 +25,18 @@ export function Custom({
   attendeeId,
   isIdPresent,
   isOrganizer,
-  isFullScreen
+  isFullScreen,
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
   refetchSession?: () => Promise<any>;
   refetchEvent?: () => Promise<any>;
   event?: Event | null;
-  attendeeId?:number;
+  attendeeId?: number;
   isIdPresent: boolean;
-  isOrganizer:boolean;
-  isFullScreen?:boolean
+  isOrganizer: boolean;
+  isFullScreen?: boolean;
 }) {
-  
-
   const settings = {
     dots: true,
     infinite: true,
@@ -53,7 +51,11 @@ export function Custom({
   const Comp = sessionAgenda?.sessions?.length > 1 ? Slider : "div";
 
   return (
-    <SessionCard timeStamp={sessionAgenda?.timeStamp} isGreaterThanOne={sessionAgenda?.sessions?.length > 1} className={className}>
+    <SessionCard
+      timeStamp={sessionAgenda?.timeStamp}
+      isGreaterThanOne={sessionAgenda?.sessions?.length > 1}
+      className={className}
+    >
       <div className="w-full md:col-span-6 lg:col-span-8 ">
         <Comp className="w-full agenda-slider h-full z-4" {...settings}>
           {sessionAgenda?.sessions?.map((session, index) => (
@@ -83,16 +85,16 @@ function Widget({
   refetchEvent,
   isIdPresent,
   isOrganizer,
-  isFullScreen
+  isFullScreen,
 }: {
   session: TAgenda;
   event?: Event | null;
   refetchSession?: () => Promise<any>;
   attendeeId?: number;
   refetchEvent?: () => Promise<any>;
-  isIdPresent:boolean;
-  isOrganizer:boolean;
-  isFullScreen?:boolean;
+  isIdPresent: boolean;
+  isOrganizer: boolean;
+  isFullScreen?: boolean;
 }) {
   const router = useRouter();
 
@@ -110,8 +112,6 @@ function Widget({
     }
   }, [session]);
 
-
-
   const mergedSM = useMemo(() => {
     if (isAddedAttendee) {
       return [...session?.sessionSpeakers, ...session?.sessionModerators];
@@ -126,7 +126,9 @@ function Widget({
         role="button"
         onClick={() => {
           if (session?.description) {
-            router.push(`/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`);
+            router.push(
+              `/event/${event?.eventAlias}/agenda/${session?.sessionAlias}`
+            );
           }
         }}
         className={cn(
@@ -144,9 +146,8 @@ function Widget({
                   company={""}
                   image={attendee?.profilePicture || null}
                   name={`${attendee?.firstName} ${attendee?.lastName}`}
-                  profession={attendee?.jobTitle ??"Job"}
+                  profession={attendee?.jobTitle ?? "Job"}
                   email={attendee?.email ?? ""}
-                 
                   key={index}
                 />
               ))}
@@ -168,41 +169,56 @@ function Widget({
             </button>
           )}
           <div
-          onClick={(e) => {
-            e.stopPropagation()
-          }}
-          className="flex items-center gap-x-3">
-          <AddToMyAgenda attendeeId={attendeeId} sessionAlias={session?.sessionAlias}/>
-
-           
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="flex items-center gap-x-3"
+          >
+            <AddToMyAgenda
+              attendeeId={attendeeId}
+              sessionAlias={session?.sessionAlias}
+            />
           </div>
         </div>
-     {!isFullScreen && (isIdPresent || isOrganizer) &&   <div
-      onClick={(e) => {
-        e.stopPropagation()
-      }}
-     className="flex items-center mb-2  gap-x-2">
-          <Edit session={session} event={event} refetch={refetchSession} refetchEvent={refetchEvent}/>
-          <Duplicate session={session} refetch={refetchSession} />
-          <Deletes agendaId={session?.sessionAlias} refetch={refetchSession} />
-          <Button className="h-fit  gap-x-2 w-fit px-0">
-            <Eye size={20} />
-            <p className="text-xs sm:text-sm text-gray-500">{session?.sessionViews ?? "0"}</p>
-          </Button>
-          <Button className="hidden h-fit gap-x-2 w-fit px-0">
-            <Star size={20} />
-            <div className="text-gray-500 flex items-center text-xs sm:text-sm gap-x-1">
-              <p>4.5 .</p>
-              <p>Reviews</p>
-            </div>
-          </Button>
-          <div className="flex items-center gap-x-2">
+        {!isFullScreen && (isIdPresent || isOrganizer) && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="flex items-center mb-2  gap-x-2"
+          >
+            <Edit
+              session={session}
+              event={event}
+              refetch={refetchSession}
+              refetchEvent={refetchEvent}
+            />
+            <Duplicate session={session} refetch={refetchSession} />
+            <Deletes
+              agendaId={session?.sessionAlias}
+              refetch={refetchSession}
+            />
+            <Button className="h-fit  gap-x-2 w-fit px-0">
+              <Eye size={20} />
+              <p className="text-xs sm:text-sm text-gray-500">
+                {session?.sessionViews ?? "0"}
+              </p>
+            </Button>
+            <Button className="hidden h-fit gap-x-2 w-fit px-0">
+              <Star size={20} />
+              <div className="text-gray-500 flex items-center text-xs sm:text-sm gap-x-1">
+                <p>4.5 .</p>
+                <p>Reviews</p>
+              </div>
+            </Button>
+            <div className="flex items-center gap-x-2">
               <Button className="h-fit w-fit px-0">
                 <CheckmarkDone className="" size={18} />
               </Button>
               <p className="text-xs sm:text-sm">Check-in</p>
             </div>
-        </div>}
+          </div>
+        )}
         {Array.isArray(session?.sessionSponsors) &&
           session?.sessionSponsors?.length > 0 && (
             <div className="w-full flex flex-col mb-2  items-start justify-start gap-y-2">

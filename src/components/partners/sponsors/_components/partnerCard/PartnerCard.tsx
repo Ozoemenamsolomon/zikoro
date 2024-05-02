@@ -28,13 +28,16 @@ export function PartnerCard({ sponsor, eventId }: {eventId: string; sponsor: TEx
           StampCard
         </button>
       )}
-      <Image
+    {image ?  <Image
         src={image}
         alt="sponsor-logo"
         width={300}
         height={100}
         className="w-36 pl-4 pt-8 lg:w-[6rem] xl:w-32 h-[70px]"
-      />
+      />  
+    :
+    <div  className="w-36 pl-4 pt-8 lg:w-[6rem] xl:w-32 h-[70px] animate-pulse bg-gray-200"></div>
+    }
       <div className="w-full px-4 py-8  items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
         <div className="font-semibold flex capitalize flex-wrap text-black text-xl">
           {sponsor.companyName ?? ""}
@@ -51,7 +54,7 @@ export function PartnerCard({ sponsor, eventId }: {eventId: string; sponsor: TEx
               !!sponsor.exhibitionHall && ","
             }`}</p>
           )}
-          {sponsor.boothNumber && <p>{`Booth ${sponsor.boothNumber}`}</p>}
+          {sponsor.boothNumber && <p>{`Booth ${sponsor.boothNumber || ""}`}</p>}
         </div>
 
         <div className="flex items-center gap-x-3">

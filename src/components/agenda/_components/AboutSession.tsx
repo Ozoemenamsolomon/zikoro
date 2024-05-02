@@ -60,7 +60,7 @@ export function AboutSession({
     } else {
       return "";
     }
-  }, []);
+  }, [agenda?.startDateTime]);
 
   useEffect(() => {
     (async () => {
