@@ -437,7 +437,7 @@ export default function FirstSection({
             className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8 w-full"
             value={searchTerm}
           />
-          <div className="absolute right-2 top-[25%] flex justify-center items-center">
+          <div className="absolute top-1/2 right-0 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center">
             {searchTerm === "" ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -454,7 +454,7 @@ export default function FirstSection({
             ) : (
               <button
                 onClick={() => setSearchTerm("")}
-                className="text-xl font-extrabold text-gray-500"
+                className="text-lg md:text-xl font-extrabold text-gray-300 w-[24px] h-[24px] flex items-center justify-center"
               >
                 x
               </button>
