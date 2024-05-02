@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { Button } from "..";
 import { cn } from "@/lib";
@@ -12,7 +12,6 @@ import { Custom, AddSession, FullScreenView } from "./_components";
 import {
   getCookie,
   useFetchSingleEvent,
-  useGetAllAttendees,
   useGetAgendas,
   useVerifyUserAccess,
   useCheckTeamMember,
@@ -21,13 +20,20 @@ import {
 import { generateDateRange } from "@/utils";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useRouter } from "next/navigation";
-export default function Agenda({ eventId }: { eventId: string }) {
+export default function Agenda({
+  eventId,
+  isReception,
+}: {
+  eventId: string;
+  isReception?: boolean;
+}) {
   const router = useRouter();
+  const pathname = usePathname();
   const currentEvent = getCookie("currentEvent");
   const search = useSearchParams();
   const queryParam = search.get("a");
   const { attendeeId, isOrganizer } = useVerifyUserAccess(eventId);
- // const { attendees } = useGetAllAttendees(); //
+  // const { attendees } = useGetAllAttendees(); //
   const [isOpen, setOpen] = useState(false);
   const { data, refetch } = useFetchSingleEvent(eventId);
   // const { attendees: eventAttendees } = useGetEventAttendees(eventId); //
@@ -87,41 +93,43 @@ export default function Agenda({ eventId }: { eventId: string }) {
   return (
     <>
       <div>
-        <div className="w-full overflow-x-auto no-scrollbar  p-4 text-base flex items-center gap-x-8 sm:justify-between text-[#3E404B]">
-          <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
-            <Link
-              href={`/event/${eventId}/agenda?date=${
-                activeDateQuery || currentEvent?.startDate
-              }`}
-              className={`pl-2 ${!queryParam && "text-basePrimary"}`}
-            >
-              Agenda
-            </Link>
-            <Link
-              href={`/event/${eventId}/agenda?date=${
-                activeDateQuery || currentEvent?.startDate
-              }&a=my-agenda`}
-              className={`pl-2 ${
-                queryParam?.includes("agenda") && "text-basePrimary"
-              }`}
-            >
-              My Agenda
-            </Link>
-          </div>
+        {!isReception && (
+          <div className="w-full overflow-x-auto no-scrollbar  p-4 text-base flex items-center gap-x-8 sm:justify-between text-[#3E404B]">
+            <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
+              <Link
+                href={`/event/${eventId}/agenda?date=${
+                  activeDateQuery || currentEvent?.startDate
+                }`}
+                className={`pl-2 ${queryParam === null && "text-basePrimary"}`}
+              >
+                Agenda
+              </Link>
+              <Link
+                href={`/event/${eventId}/agenda?date=${
+                  activeDateQuery || currentEvent?.startDate
+                }&a=my-agenda`}
+                className={`pl-2 ${
+                  queryParam?.includes("agenda") && "text-basePrimary"
+                }`}
+              >
+                My Agenda
+              </Link>
+            </div>
 
-          <Button
-            onClick={onClose}
-            className={cn(
-              " text-gray-50 bg-basePrimary hidden gap-x-2 h-11 sm:h-12 font-medium",
-              (isIdPresent || isOrganizer) &&
-                (activeDateQuery || currentEvent?.startDate) &&
-                "flex"
-            )}
-          >
-            <PlusCircle size={22} />
-            <p>Session</p>
-          </Button>
-        </div>
+            <Button
+              onClick={onClose}
+              className={cn(
+                " text-gray-50 bg-basePrimary hidden gap-x-2 h-11 sm:h-12 font-medium",
+                (isIdPresent || isOrganizer) &&
+                  (activeDateQuery || currentEvent?.startDate) &&
+                  "flex"
+              )}
+            >
+              <PlusCircle size={22} />
+              <p>Session</p>
+            </Button>
+          </div>
+        )}
         <div className="w-full no-scrollbar mt-8 overflow-x-auto">
           <div className="min-w-max flex items-center border-b px-4  gap-x-8">
             {Array.isArray(dateRange) &&
@@ -130,7 +138,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
                   key={val?.date}
                   onClick={() => {
                     router.push(
-                      `/event/${eventId}/agenda?date=${val?.date}&a=${queryParam}`
+                      `${pathname}?date=${val?.date}&a=${queryParam}`
                     );
                     // refetchSession();
                   }}
@@ -149,7 +157,12 @@ export default function Agenda({ eventId }: { eventId: string }) {
         {(isIdPresent || isOrganizer) &&
           Array.isArray(sessionAgendas) &&
           sessionAgendas?.length > 0 && (
-            <div className="w-full flex items-end p-4 justify-end gap-x-2">
+            <div
+              className={cn(
+                "w-full flex items-end p-4 justify-end gap-x-2 ",
+                isReception && "hidden"
+              )}
+            >
               <Button className="px-0 w-fit h-fit ">
                 <Printer size={20} />
               </Button>
@@ -171,7 +184,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
           {!fetching &&
             Array.isArray(sessionAgendas) &&
             sessionAgendas?.length === 0 && (
-              <div className="w-full col-span-full h-[20rem] flex items-center justify-center">
+              <div className="w-full col-span-full h-[18rem] flex items-center justify-center">
                 <p className="font-semibold">No Agenda</p>
               </div>
             )}
@@ -186,6 +199,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
                   event={data}
                   isIdPresent={isIdPresent}
                   isOrganizer={isOrganizer}
+                  isReception={isReception}
                   refetchEvent={refetch}
                   attendeeId={attendeeId}
                 />

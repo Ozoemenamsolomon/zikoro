@@ -4,7 +4,7 @@ import { Button } from "@/components";
 import { cn } from "@/lib";
 import { Event, EventDetailTab } from "@/types";
 
-import { About, Speakers, Sponsors, Agenda } from "..";
+import { About, Speakers, Sponsors, EventAgendas } from "..";
 import { EventDetailMobileTab } from "./EventDetailMobileTab";
 import { useEffect, useState } from "react";
 
@@ -124,7 +124,7 @@ export function EventDetailTabs({
         eventId={String(event.eventAlias)}
         changeMajorActiveState={changeActiveState} />
       )}
-      {active === EventDetailTab.AGENDA_TAB && <Agenda />}
+      {active === EventDetailTab.AGENDA_TAB && event && <EventAgendas eventId={String(event?.eventAlias)} />}
       {active === EventDetailTab.EXIHIBITORS_TAB && event && (
         <Sponsors event={event} changeMajorActiveState={changeActiveState} />
       )}

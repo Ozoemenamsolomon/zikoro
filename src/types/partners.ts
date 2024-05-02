@@ -72,6 +72,7 @@ export enum PartnersEnum {
     website: string;
     whatsApp: string;
     eventAlias: string;
+    partnerAlias:string;
   }
   
   export interface PartnerJobType {

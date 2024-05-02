@@ -26,6 +26,7 @@ export function Custom({
   isIdPresent,
   isOrganizer,
   isFullScreen,
+  isReception
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
@@ -36,6 +37,7 @@ export function Custom({
   isIdPresent: boolean;
   isOrganizer: boolean;
   isFullScreen?: boolean;
+  isReception?:boolean
 }) {
   const settings = {
     dots: true,
@@ -55,6 +57,7 @@ export function Custom({
       timeStamp={sessionAgenda?.timeStamp}
       isGreaterThanOne={sessionAgenda?.sessions?.length > 1}
       className={className}
+      isReception={isReception}
     >
       <div className="w-full md:col-span-6 lg:col-span-8 ">
         <Comp className="w-full agenda-slider h-full z-4" {...settings}>

@@ -56,7 +56,7 @@ export function useAddPartners() {
   };
 }
 
-export function useFetchPartners(eventId: string | number) {
+export function useFetchPartners(eventId: string) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<TPartner[]>([]);
   useEffect(() => {
@@ -238,7 +238,7 @@ export function useFetchSinglePartner(partnerId: string) {
       const { data, error, status } = await supabase
         .from("eventPartners")
         .select("*")
-        .eq("id", partnerId)
+        .eq("partnerAlias", partnerId)
         .single();
 
       if (error) {
@@ -297,7 +297,7 @@ export function useAddPartnerBanner() {
       const { error, status } = await supabase
         .from("eventPartners")
         .update([banners])
-        .eq("id", partnerId);
+        .eq("partnerAlias", partnerId);
 
       if (error) {
         toast({ variant: "destructive", description: error.message });
@@ -341,7 +341,7 @@ export function useAddPartnerJob() {
       const { error, status } = await supabase
         .from("eventPartners")
         .update([jobs])
-        .eq("id", partnerId);
+        .eq("partnerAlias", partnerId);
       if (error) {
         toast({ variant: "destructive", description: error.message });
         setLoading(false);
@@ -393,7 +393,7 @@ export function useAddPartnerPromo() {
       const { error, status } = await supabase
         .from("eventPartners")
         .update([offers])
-        .eq("id", partnerId);
+        .eq("partnerAlias", partnerId);
       if (error) {
         toast({ variant: "destructive", description: error.message });
         setLoading(false);
@@ -478,7 +478,7 @@ export function useUpdateBooth() {
       const { data } = await supabase
         .from("eventPartners")
         .select("*")
-        .eq("id", partnerId)
+        .eq("partnerAlias", partnerId)
         .single();
 
       const { boothNumber, ...restData } = data;
@@ -496,7 +496,7 @@ export function useUpdateBooth() {
       const { error, status } = await supabase
         .from("eventPartners")
         .update({ ...restData, boothNumber: booths })
-        .eq("id", partnerId);
+        .eq("partnerAlias", partnerId);
 
       if (status === 204 || status === 200) {
         //
@@ -511,13 +511,13 @@ export function useUpdateBooth() {
 }
 
 export function useUpdateHall() {
-  async function updateHall(partnerId: number, value: string | null) {
+  async function updateHall(partnerId: string, value: string | null) {
     try {
       // Fetch the partner by ID
       const { data } = await supabase
         .from("eventPartners")
         .select("*")
-        .eq("id", partnerId)
+        .eq("partnerAlias", partnerId)
         .single();
 
       const { exhibitionHall, ...restData } = data;
@@ -525,7 +525,7 @@ export function useUpdateHall() {
       const { error, status } = await supabase
         .from("eventPartners")
         .update({ ...restData, exhibitionHall: value })
-        .eq("id", partnerId);
+        .eq("partnerAlias", partnerId);
 
       if (status === 204 || status === 200) {
         //
@@ -540,13 +540,13 @@ export function useUpdateHall() {
 }
 
 export function useUpdatePartnerType() {
-  async function updatePartnerType(partnerId: number, value: string) {
+  async function updatePartnerType(partnerId: string, value: string) {
     try {
       // Fetch the partner by ID
       const { data } = await supabase
         .from("eventPartners")
         .select("*")
-        .eq("id", partnerId)
+        .eq("partnerAlias", partnerId)
         .single();
 
       const { partnerType, ...restData } = data;
@@ -554,7 +554,7 @@ export function useUpdatePartnerType() {
       const { error, status } = await supabase
         .from("eventPartners")
         .update({ ...restData, partnerType: value })
-        .eq("id", partnerId);
+        .eq("partnerAlias", partnerId);
 
       if (status === 204 || status === 200) {
         //
@@ -569,13 +569,13 @@ export function useUpdatePartnerType() {
 }
 
 export function useUpdateSponsor() {
-  async function updateSponsorCategory(partnerId: number, value: string) {
+  async function updateSponsorCategory(partnerId: string, value: string) {
     try {
       // Fetch the partner by ID
       const { data } = await supabase
         .from("eventPartners")
         .select("*")
-        .eq("id", partnerId)
+        .eq("partnerAlias", partnerId)
         .single();
 
       const { sponsorCategory, ...restData } = data;
@@ -583,7 +583,7 @@ export function useUpdateSponsor() {
       const { error, status } = await supabase
         .from("eventPartners")
         .update({ ...restData, sponsorCategory: value })
-        .eq("id", partnerId);
+        .eq("partnerAlias", partnerId);
 
       if (status === 204 || status === 200) {
         //
@@ -597,7 +597,7 @@ export function useUpdateSponsor() {
   };
 }
 
-export function useFetchPartnersJob(eventId: string | number) {
+export function useFetchPartnersJob(eventId: string) {
   const { data, loading } = useFetchPartners(eventId);
 
   let allPartnersJob: any[] = [];
@@ -618,7 +618,7 @@ export function useFetchPartnersJob(eventId: string | number) {
   };
 }
 
-export function useFetchPartnersOffers(eventId: string | number) {
+export function useFetchPartnersOffers(eventId: string) {
   const { data, loading } = useFetchPartners(eventId);
 
   let allPartnersOffers: any[] = [];
@@ -642,12 +642,12 @@ export function useFetchPartnersOffers(eventId: string | number) {
 export function useDeletePartner() {
   const [loading, setLoading] = useState(false);
 
-  async function deletes(ids: number[]) {
+  async function deletes(ids: string[]) {
     setLoading(true);
     const { error, status } = await supabase
       .from("eventPartners")
       .delete()
-      .in("id", ids);
+      .in("partnerAlias", ids);
 
     if (error) {
       setLoading(false);

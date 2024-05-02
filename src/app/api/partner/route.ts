@@ -97,7 +97,7 @@ export async function PATCH(req: NextRequest) {
             ...params,
           },
         ])
-        .eq("id", params?.id);
+        .eq("partnerAlias", params?.partnerAlias);
 
       if (error) {
         return NextResponse.json(

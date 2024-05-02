@@ -20,7 +20,7 @@ export function PartnerCard({ sponsor, eventId }: {eventId: string; sponsor: TEx
   // console.log(sponsor.industry?.name);
   return (
     <Link
-      href={`/event/${eventId}/partner/${sponsor.id}`}
+      href={`/event/${eventId}/partner/${sponsor.partnerAlias}`}
       className=" border  h-full border-gray-100 relative rounded-lg overflow-hidden bg-white flex flex-col gap-y-2 items-start justify-start"
     >
       {sponsor.stampIt && (
