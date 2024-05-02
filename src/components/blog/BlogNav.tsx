@@ -12,19 +12,19 @@ export default function BlogNav() {
     },
     {
       name: "Event Tips",
-      href: "",
+      href: "/blog/event-tips",
     },
     {
       name: "Product Update",
-      href: "",
+      href: "/blog/product-update",
     },
     {
       name: "Guides And Tutorials",
-      href: "",
+      href: "/blog/guides",
     },
     {
       name: "Case Study",
-      href: "",
+      href: "/blog/case-study",
     },
   ];
 
@@ -36,10 +36,10 @@ export default function BlogNav() {
             <Link
               key={index}
               href={href}
-              className={` ${
+              className={`uppercase ${
                 pathname === href
                   ? "text-zikoroBlue"
-                  : "text-[15px] font-normal py-5 uppercase"
+                  : "text-[15px] font-normal py-5 "
               }`}
             >
               {name}

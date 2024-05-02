@@ -4,13 +4,11 @@ const checkDateEqualToday = (dateString: string | null): boolean => {
   }
 
   const today = new Date();
-  const date = new Date(dateString);
+  const dateOnlyString = dateString.split('T')[0]; // Extracting date portion only
+  const date = new Date(dateOnlyString);
 
-  return (
-    date.getFullYear() === today.getFullYear() &&
-    date.getMonth() === today.getMonth() &&
-    date.getDate() === today.getDate()
-  );
+  // Compare the provided date with today's date
+  return date < today;
 };
 
 export default checkDateEqualToday;

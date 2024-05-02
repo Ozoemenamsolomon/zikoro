@@ -12,7 +12,7 @@ export function Jobs({ eventId }: { eventId: string }) {
       <div className="w-full grid grid-cols-1 p-2 sm:p-4 sm:grid-cols-2 items-center gap-4">
       {loading && (
           <div className="w-full col-span-full h-[60vh] flex items-center justify-center">
-            <Loader2 size={50} className="animate-spin" />
+            <Loader2 size={30} className="animate-spin" />
           </div>
         )}
           {!loading && jobs && jobs.length === 0 && (

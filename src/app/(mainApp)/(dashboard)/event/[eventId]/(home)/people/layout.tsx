@@ -22,6 +22,8 @@ const People = ({ children }: { children: React.ReactNode }) => {
     isAlias: true,
   });
 
+  console.log(event);
+
   console.log(
     String(event?.createdBy),
     String(user.id),

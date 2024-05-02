@@ -31,10 +31,10 @@ export async function POST(req: NextRequest) {
             // add to the existing session if it is not present
             // check if session is already present and update
 
-            const presentSession = moderator?.moderatingAt?.session?.find(
-              ({ sessionAlias }: { sessionAlias: string }) =>
-                sessionAlias === params?.sessionAlias
-            )?.sessionAlias;
+            const presentSession = moderator?.moderatingAt?.find(
+              (value: any) =>
+                value?.session?.sessionAlias === params?.sessionAlias
+            )?.session?.sessionAlias;
             const filterModerators = moderator?.moderatingAt?.filter(
               (s: any) => {
                 return s.session?.map(
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
             ])
             .eq("id", attendee?.id);
 
-       //   console.log("ddddd", status);
+          //   console.log("ddddd", status);
 
           const { data: aa } = await supabase.from("attendees").select("*");
 
@@ -102,10 +102,10 @@ export async function POST(req: NextRequest) {
             // add to the existing session if it is not present
             // check if session is already present and update
 
-            const presentSession = speaker?.speakingAt?.session?.find(
-              ({ sessionAlias }: { sessionAlias: string }) =>
-                sessionAlias === params?.sessionAlias
-            )?.sessionAlias;
+            const presentSession = speaker?.speakingAt?.find(
+              (value: any) =>
+                value?.session?.sessionAlias === params?.sessionAlias
+            )?.session?.sessionAlias;
             const filterSpeakers = speaker?.speakingAt?.filter((s: any) => {
               return s.session?.map(
                 ({ sessionAlias }: { sessionAlias: string }) =>
@@ -169,10 +169,10 @@ export async function POST(req: NextRequest) {
             // add to the existing session if it is not present
             // check if session is already present and update
 
-            const presentSession = sponsor?.sponsoredSession?.session?.find(
-              ({ sessionAlias }: { sessionAlias: string }) =>
-                sessionAlias === params?.sessionAlias
-            )?.sessionAlias;
+            const presentSession = sponsor?.sponsoredSession?.find(
+              (value: any) =>
+                value?.session?.sessionAlias === params?.sessionAlias
+            )?.session?.sessionAlias;
             const filtersponsors = sponsor?.sponsoredSession?.filter(
               (s: any) => {
                 return s.session?.map(
@@ -342,7 +342,7 @@ export async function PATCH(req: NextRequest) {
             ])
             .eq("id", attendee?.id);
 
-       //   console.log("ddddd", status);
+          //   console.log("ddddd", status);
 
           const { data: aa } = await supabase.from("attendees").select("*");
 

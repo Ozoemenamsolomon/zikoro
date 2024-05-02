@@ -9,7 +9,7 @@ import useSearch from "@/hooks/common/useSearch";
 import { Sponsors } from "./sponsors/Sponsors";
 import { Exhibitors } from "./sponsors/Exhibitors";
 import { useFetchPartners } from "@/hooks";
-import { useState, useMemo, useEffect } from "react";
+import { useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { extractUniqueTypes } from "@/utils/helpers";
 import { TFilter } from "@/types/filter";

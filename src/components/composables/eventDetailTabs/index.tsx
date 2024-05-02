@@ -4,7 +4,7 @@ import { Button } from "@/components";
 import { cn } from "@/lib";
 import { Event, EventDetailTab } from "@/types";
 
-import { About, Speakers, Sponsors, Agenda } from "..";
+import { About, Speakers, Sponsors, EventAgendas } from "..";
 import { EventDetailMobileTab } from "./EventDetailMobileTab";
 import { useEffect, useState } from "react";
 
@@ -101,7 +101,7 @@ export function EventDetailTabs({
             key={title}
             onClick={() => setActiveTab(id + 1)}
             className={cn(
-              "px-2 py-2 h-fit bg-transparent rounded-none text-sm sm:text-xl font-medium text-gray-500 hidden",
+              "px-2 py-2 h-fit bg-transparent rounded-none text-sm sm:text-base font-medium text-gray-500 hidden",
               active === id + 1 &&
                 "border-b-2 border-basePrimary text-basePrimary",
               status && "block"
@@ -119,10 +119,12 @@ export function EventDetailTabs({
           className={aboutClassName}
         />
       )}
-      {active === EventDetailTab.SPEAKERS_TAB && (
-        <Speakers changeMajorActiveState={changeActiveState} />
+      {active === EventDetailTab.SPEAKERS_TAB && event &&(
+        <Speakers
+        eventId={String(event.eventAlias)}
+        changeMajorActiveState={changeActiveState} />
       )}
-      {active === EventDetailTab.AGENDA_TAB && <Agenda />}
+      {active === EventDetailTab.AGENDA_TAB && event && <EventAgendas eventId={String(event?.eventAlias)} />}
       {active === EventDetailTab.EXIHIBITORS_TAB && event && (
         <Sponsors event={event} changeMajorActiveState={changeActiveState} />
       )}

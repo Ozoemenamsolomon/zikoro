@@ -46,12 +46,40 @@ export function AddJob({
 }) {
   //const { loading, addPartnerJob } = useAddPartnerJob();
   const [currencyCode, setcurrencyCode] = useState("NGN");
-  const { update, loading } = useUpdatePartners();
+  const { update} = useUpdatePartners();
+  const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof jobSchema>>({
     resolver: zodResolver(jobSchema),
   });
 
   async function onSubmit(values: z.infer<typeof jobSchema>) {
+    setLoading(true)
+     // maually checking
+     if (values.applicationMode === "url" && !values.applicationLink) {
+      form.setError("applicationLink", {
+        type: "manual",
+        message: "Please Provide a Url",
+      });
+
+      return; /// stop submission
+    }
+    if (values.applicationMode === "whatsapp" && !values.whatsApp) {
+      form.setError("whatsApp", {
+        type: "manual",
+        message: "Please Provide a whatsApp Number",
+      });
+
+      return; /// stop submission
+    }
+    if (values.applicationMode === "email" && !values.email) {
+      form.setError("email", {
+        type: "manual",
+        message: "Please Provide an Email Address",
+      });
+
+      return; /// stop submission
+    }
+  
     const jobs =
       Array.isArray(partner?.jobs) && partner?.jobs?.length > 0
         ? [
@@ -76,6 +104,7 @@ export function AddJob({
         jobs
       }
     await update(payload);
+    setLoading(false)
     refetch();
     close();
   }

@@ -24,6 +24,7 @@ export const useSaveCertificate = () => {
       description: "saving certificate...",
     });
     try {
+      console.log(payload);
       const { data, status } = await postRequest<TCertificate>({
         endpoint: "/certificates",
         payload,

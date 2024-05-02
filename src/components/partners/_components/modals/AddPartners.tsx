@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components";
 import { useForm } from "react-hook-form";
-import { COUNTRY_CODE, uploadFile } from "@/utils";
+import { COUNTRY_CODE, uploadFile, generateAlias } from "@/utils";
 import { AddSponsorLevel } from "@/components/contents/partners/_components";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -116,12 +116,13 @@ export function AddPartners({
 
   async function onSubmit(values: any) {
     setLoading(true);
- 
+    console.log("vv", values);
     const promise = new Promise(async (resolve) => {
       if (typeof values?.companyLogo === "string") {
         resolve(values?.companyLogo);
-      } else if (values?.companyLogo && values?.companyLogo[0]) {
-        const img = await uploadFile(values?.companyLogo[0], "img");
+      } else if (values?.companyLogo && values?.companyLogo?.length > 0) {
+        const img = await uploadFile(values?.companyLogo[0], "image");
+        console.log(img);
         resolve(img);
       } else {
         resolve(null);
@@ -132,8 +133,8 @@ export function AddPartners({
     const promiseVideo = new Promise(async (resolve) => {
       if (typeof values?.media === "string") {
         resolve(values?.media);
-      } else if (values?.media && values?.media[0]) {
-        const vid = await uploadFile(values?.media[0], "img");
+      } else if (values?.media && values?.media?.length > 0) {
+        const vid = await uploadFile(values?.media[0], "video");
         resolve(vid);
       } else {
         resolve(null);
@@ -141,9 +142,8 @@ export function AddPartners({
     });
 
     const video: any = await promiseVideo;
-    
-  
 
+    const partnerAlias = generateAlias()
     const payload: Partial<TPartner> = partner?.id
       ? {
           ...partner,
@@ -154,6 +154,7 @@ export function AddPartners({
           phoneNumber: phoneCountryCode + values.phoneNumber,
           boothStaff: selectedAttendees,
           companyLogo: image,
+          partnerAlias, //remobve
           media: video,
         }
       : {
@@ -162,14 +163,11 @@ export function AddPartners({
           eventAlias: eventData?.eventAlias,
           whatsApp: whatsappCountryCode + values.whatsApp,
           phoneNumber: phoneCountryCode + values.phoneNumber,
-          boothStaff: selectedAttendees,    
+          boothStaff: selectedAttendees,
           companyLogo: image,
+          partnerAlias,
           media: video,
         };
-
-   // console.log(payload);
-    // setLoading(false);
-    // return;
     const asynQuery = partner?.id ? update : addPartners;
     await asynQuery(payload);
     setLoading(false);
@@ -212,7 +210,7 @@ export function AddPartners({
   }, [eventData?.sponsorCategory]);
 
   ///
- // console.log("mm", partner);
+  // console.log("mm", partner);
   useEffect(() => {
     if (partner) {
       form.reset({
@@ -240,7 +238,7 @@ export function AddPartners({
       label: country.name,
       value: country.name,
     }));
-  }, [COUNTRY_CODE]);
+  }, []);
 
   const formatImage = useMemo(() => {
     if (typeof companyImage === "string") {
@@ -545,7 +543,7 @@ export function AddPartners({
                   <ReactSelect
                     {...form.register("industry")}
                     defaultValue={
-                      partner 
+                      partner
                         ? {
                             value: partner?.industry,
                             label: partner?.industry,

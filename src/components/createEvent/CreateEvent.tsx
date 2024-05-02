@@ -77,7 +77,7 @@ export default function CreateEvent() {
       label: country.name,
       value: country.name,
     }));
-  }, [COUNTRY_CODE]);
+  }, []);
 
   return (
    <>

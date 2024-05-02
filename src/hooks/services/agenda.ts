@@ -356,6 +356,38 @@ export const useSendReview = () => {
   return { sendReview, isLoading };
 };
 
+export const useGetReviews = ({agendaId}:{agendaId?: number}) => {
+  const [rating, setRating] = useState<string>("0");
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const getRating = async () => {
+    try {
+      setLoading(true);
+      const { data, status } = await getRequest<string>({
+        endpoint: `/agenda/review/${agendaId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setRating(data.data);
+    } catch (error: any) {
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getRating();
+  }, [agendaId]);
+
+  return { rating, isLoading, getRating };
+
+}
 export const useCreateMyAgenda = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
 

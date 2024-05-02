@@ -10,7 +10,6 @@ import Image from "next/image";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { Location } from "@styled-icons/fluentui-system-regular/Location";
 import { PhoneCall } from "@styled-icons/boxicons-solid/PhoneCall";
-import { EditOutline } from "@styled-icons/evaicons-outline/EditOutline";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { EmptyCard } from "@/components/composables";
@@ -21,10 +20,12 @@ export function AboutPartner({
   partner,
   refetch,
   partnerId,
+  isHaveAccess
 }: {
   partnerId: string;
   refetch: () => Promise<any>;
   partner: TPartner | null;
+  isHaveAccess: boolean;
 }) {
   const router = useRouter();
   const [isAddJob, setAddJob] = useState(false);
@@ -65,8 +66,8 @@ export function AboutPartner({
             </div>
           </div>
 
-          <div className="w-full h-64 sm:h-[20.5rem] lg:h-[20.5rem] overflow-hidden">
-            {partner?.media ? 
+          {partner?.media && (
+            <div className="w-full h-64 sm:h-[20.5rem] lg:h-[20.5rem] overflow-hidden">
               <video
                 height={500}
                 width={1000}
@@ -76,11 +77,8 @@ export function AboutPartner({
               >
                 <source src={partner?.media} type="video/mp4" />
               </video>
-            
-          :
-          <div className="w-full h-full bg-gray-200 animate-pulse"></div>
-          }
-          </div>
+            </div>
+          )}
 
           <div className="w-full px-3 mt-4 flex items-center justify-between ">
             <Image
@@ -91,6 +89,36 @@ export function AboutPartner({
               height={90}
             />
 
+            
+          </div>
+        </section>
+
+        <section className="w-full flex flex-col  pb-2 border-b">
+          <div className="w-full px-3 py-3 border-b flex items-center justify-between">
+            <p className="font-semibold text-base sm:text-xl">
+              Company Description
+            </p>
+           {isHaveAccess && <Edit partner={partner} refetch={refetch} />}
+          </div>
+          <div className="items-start px-3 py-4 justify-start flex w-full flex-col gap-y-2">
+            <p className="mb-4 font-semibold text-base sm:text-xl">
+              {partner?.companyName ?? ""}
+            </p>
+            <div className="w-full flex flex-col items-start justify-start leading-5 text-mobile sm:text-sm text-[#717171]">
+              {partner?.description ?? ""}
+            </div>
+            <div className="flex text-[#717171] text-sm items-center mt-1 gap-x-3">
+              <div className="flex items-center gap-x-2">
+                <Location size={16} className="text-[#717171]" />
+                <p>{`${partner?.city}, ${partner?.country}`}</p>
+              </div>
+              {partner?.industry && (
+                <div className="flex items-center gap-x-2">
+                  <IndustryIcon />
+                  <p>{partner?.industry}</p>
+                </div>
+              )}
+            </div>
             <div className="flex items-center gap-x-2">
               {partner?.phoneNumber !== null && (
                 <Button
@@ -125,35 +153,6 @@ export function AboutPartner({
                 </Button>
               )}
             </div>
-          </div>
-        </section>
-
-        <section className="w-full flex flex-col  pb-2 border-b">
-          <div className="w-full px-3 py-3 border-b flex items-center justify-between">
-            <p className="font-semibold text-base sm:text-xl">
-              Company Description
-            </p>
-            <Edit partner={partner} refetch={refetch}/>
-          </div>
-          <div className="items-start px-3 py-4 justify-start flex w-full flex-col gap-y-2">
-            <p className="mb-4 font-semibold text-base sm:text-xl">
-              {partner?.companyName ?? ""}
-            </p>
-            <div className="w-full flex flex-col items-start justify-start leading-6 text-[#717171]">
-              {partner?.description ?? ""}
-            </div>
-            <div className="flex text-[#717171] text-sm items-center mt-1 gap-x-3">
-              <div className="flex items-center gap-x-2">
-                <Location size={16} className="text-[#717171]" />
-                <p>{`${partner?.city}, ${partner?.country}`}</p>
-              </div>
-              {partner?.industry && (
-                <div className="flex items-center gap-x-2">
-                  <IndustryIcon />
-                  <p>{partner?.industry}</p>
-                </div>
-              )}
-            </div>
             <div></div>
           </div>
         </section>
@@ -165,24 +164,32 @@ export function AboutPartner({
             </p>
           </div>
           <div className="items-start pt-4 justify-start flex w-full flex-col px-3">
-            {[1, 2, 3].map((_, idx) => (
-              <SponsoredSessionWidget
-                title="Resin Mould"
-                date="20 Nov 2002"
-                time="2:00PM - 3:00PM"
-                className={
-                  idx === [1, 2, 3].length - 1 ? "border-b-0" : "border-b"
-                }
-                key={_}
-              />
-            ))}
+            {(!partner?.sponsoredSession ||
+              (Array.isArray(partner?.sponsoredSession) &&
+                partner?.sponsoredSession?.length === 0)) && (
+              <div className="w-full flex items-center h-[50px] justify-center ">
+                <p className="font-semibold text-mobile sm:text-sm">
+                  No Sponsored Session
+                </p>
+              </div>
+            )}
+            {Array.isArray(partner?.sponsoredSession) &&
+              partner?.sponsoredSession.map((sponsored, idx) => (
+                <SponsoredSessionWidget
+                  sponsored={sponsored}
+                  className={
+                    idx === [1, 2, 3].length - 1 ? "border-b-0" : "border-b"
+                  }
+                  key={idx}
+                />
+              ))}
           </div>
         </section>
 
         <section className="w-full flex flex-col  pb-2 border-b">
           <div className="w-full px-3 py-3 border-b flex items-center justify-between">
             <p className="font-semibold text-base sm:text-xl">Booth Staff</p>
-            <Edit partner={partner} refetch={refetch}/>
+          {isHaveAccess &&  <Edit partner={partner} refetch={refetch} />}
           </div>
           <div className="w-full px-3 py-4 grid grid-cols-3 items-center gap-4">
             {Array.isArray(partner?.boothStaff) &&
@@ -203,13 +210,15 @@ export function AboutPartner({
           <div className="w-full px-3 py-3 border-b flex items-center justify-between">
             <p className="font-semibold text-base sm:text-xl">Jobs</p>
 
-            <Button onClick={onOpen} className="px-1 h-fit w-fitf">
+          {isHaveAccess &&  <Button onClick={onOpen} className="px-1 h-fit w-fitf">
               <PlusCircle size={24} />
-            </Button>
+            </Button>}
           </div>
           <div className="w-full px-3 py-4 grid grid-cols-1 items-center gap-6">
-            {partner?.jobs === null && (
-              <EmptyCard height="80" width="82" text="No available Job" />
+            {partner?.jobs === null || (Array.isArray(partner?.jobs) && partner?.jobs?.length === 0) && (
+              <div className="w-full flex col-span-full items-center justify-center h-[50px]">
+                <p className="font-semibold text-mobile sm:text-sm">No available Job</p>
+              </div>
             )}
             {Array.isArray(partner?.jobs) &&
               partner?.jobs.map((job, index) => (

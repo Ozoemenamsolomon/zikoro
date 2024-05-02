@@ -1,4 +1,4 @@
-import {TAttendee} from "@/types"
+import {TAttendee, TAgenda} from "@/types"
 
 export enum PartnersEnum {
     SPONSORS_TAB = 1,
@@ -15,6 +15,7 @@ export enum PartnersEnum {
     link: string;
   }
   
+
   
   export interface TPartner {
     banners: PartnerBannerType[];
@@ -42,7 +43,8 @@ export enum PartnersEnum {
     whatsApp: string;
     sponsorCategory: string;
     eventAlias: string;
-  
+    sponsoredSession: {session: TAgenda, sessionLink: string}[];
+    partnerAlias:string;
   }
 
   export interface TExPartner {
@@ -70,6 +72,7 @@ export enum PartnersEnum {
     website: string;
     whatsApp: string;
     eventAlias: string;
+    partnerAlias:string;
   }
   
   export interface PartnerJobType {

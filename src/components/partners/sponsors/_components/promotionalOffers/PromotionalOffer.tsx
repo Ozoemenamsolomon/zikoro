@@ -10,10 +10,12 @@ export function PromotionalOffer({
   partner,
   partnerId,
   refetch,
+  isHaveAccess
 }: {
   partner: TPartner | null;
   refetch: () => Promise<null | undefined>;
   partnerId: string;
+  isHaveAccess: boolean;
 }) {
   const [isOpen, setOpen] = useState(false);
 
@@ -26,9 +28,9 @@ export function PromotionalOffer({
         <div className="flex p-3 border-y items-center justify-between w-full">
           <p className="font-medium">Promotional Offers</p>
 
-          <Button onClick={onClose} className="px-1 h-fit w-fit">
+         {isHaveAccess && <Button onClick={onClose} className="px-1 h-fit w-fit">
             <PlusCircle size={24} />
-          </Button>
+          </Button>}
         </div>
 
         <Offers  data={partner?.offers}/>

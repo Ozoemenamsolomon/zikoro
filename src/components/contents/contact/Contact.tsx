@@ -40,7 +40,7 @@ function Contact({ eventId }: { eventId: string }) {
       label: country.name,
       value: country.name,
     }));
-  }, [COUNTRY_CODE]);
+  }, []);
 
   async function onSubmit(values: any) {
     //  console.log({ values });

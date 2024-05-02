@@ -1,30 +1,73 @@
 "use client";
 
-import { SideBarLayout } from "@/components";
+import { useSearchParams } from "next/navigation";
 import { AboutPartner, PartnerBanners, PromotionalOffer } from "./_components";
-import { HeaderTab } from "../_components";
+import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 // import { TPartner } from "@/types";
-import { useFetchSinglePartner } from "@/hooks";
+import {
+  getCookie,
+  useFetchSinglePartner,
+  useVerifyUserAccess,
+  useGetEventAttendees,
+} from "@/hooks";
+import { useMemo } from "react";
 
 export function PartnerDetails({ partnerId }: { partnerId: string }) {
-  const { data, refetch } = useFetchSinglePartner(partnerId);
+  const { data, refetch, loading } = useFetchSinglePartner(partnerId);
+  const user = getCookie("user");
+  const search = useSearchParams();
+  const id: any = search.get("event");
+  const owner = search.get("email");
+  const { attendeeId } = useVerifyUserAccess(id);
+  const { attendees: eventAttendees, isLoading } = useGetEventAttendees(id);
+
+  const isHaveAccess = useMemo(() => {
+    if (data?.email === user?.userEmail) {
+      return true;
+    } else if (Array.isArray(eventAttendees)) {
+      const filteredStaffsId = Array.isArray(data?.boothStaff)
+        ? data?.boothStaff?.map(({ id }) => id)
+        : [];
+      const filteredAttendee = eventAttendees?.filter((value) =>
+        filteredStaffsId.includes(Number(value?.id))
+      );
+
+      return filteredAttendee?.some(({ id }) => id === Number(attendeeId));
+    } else {
+      return false;
+    }
+  }, [eventAttendees, owner, isLoading, data, loading]);
+  
   return (
     <>
-      <div className="w-full grid grid-cols-1 lg:grid-cols-8 items-start">
-        <AboutPartner partner={data} partnerId={partnerId} refetch={refetch} />
-        <div className="lg:col-span-3  flex flex-col gap-y-2 items-start justify-start w-full">
-          <PartnerBanners
-            partner={data}
-            refetch={refetch}
-            partnerId={partnerId}
-          />
-          <PromotionalOffer
-            partner={data}
-            refetch={refetch}
-            partnerId={partnerId}
-          />
+      {loading || isLoading ? (
+        <div className="w-full h-[300px] flex items-center justify-center">
+          <LoaderAlt className="animate-spin" size={30} />
         </div>
-      </div>
+      ) : (
+        <div className="w-full grid grid-cols-1 lg:grid-cols-8 items-start pb-20">
+          <AboutPartner
+            isHaveAccess={isHaveAccess}
+            partner={data}
+            partnerId={partnerId}
+            refetch={refetch}
+          />
+          <div className="lg:col-span-3  flex flex-col gap-y-2 items-start justify-start w-full">
+            <PartnerBanners
+              isHaveAccess={isHaveAccess}
+              partner={data}
+              refetch={refetch}
+              partnerId={partnerId}
+            />
+            <PromotionalOffer
+              isHaveAccess={isHaveAccess}
+              partner={data}
+              refetch={refetch}
+              partnerId={partnerId}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 }

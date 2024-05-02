@@ -314,75 +314,11 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           <Input
             placeholder="Enter event title"
             type="datetime-local"
-            defaultValue={settings.publishOn}
+            value={new Date(settings.publishOn)}
             className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
             onInput={(date) => editSettings("publishOn", date)}
           />
         </div>
-        {/* <div className="col-span-6 w-full rounded-md bg-background text-sm relative">
-          <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-            Publish on
-          </span>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-full flex gap-2 items-center justify-start text-left font-normal",
-                  !settings.expiryDate && "text-muted-foreground"
-                )}
-              >
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  strokeWidth={0}
-                  viewBox="0 0 1024 1024"
-                  height="1.5em"
-                  width="1.5em"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M712 304c0 4.4-3.6 8-8 8h-56c-4.4 0-8-3.6-8-8v-48H384v48c0 4.4-3.6 8-8 8h-56c-4.4 0-8-3.6-8-8v-48H184v136h656V256H712v48z" />
-                  <path d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zm0-448H184V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136z" />
-                </svg>
-
-                {settings.publishOn ? (
-                  format(settings.publishOn, "PPP")
-                ) : (
-                  <span>Pick a date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              align="start"
-              className="flex w-auto flex-col space-y-4 p-2"
-            >
-              <Select
-                onValueChange={(value) =>
-                  editSettings(
-                    "publishOn",
-                    addDays(new Date(), parseInt(value))
-                  )
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="0">Now</SelectItem>
-                  <SelectItem value="365">End of event</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="rounded-md border">
-                <Calendar
-                  // disabled={(date) => date < new Date()}
-                  mode="single"
-                  selected={settings.publishOn}
-                  onSelect={(date) => editSettings("publishOn", date)}
-                />
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div> */}
       </div>
       <div className="pt-4  space-y-4 pb-2">
         <div className="flex justify-between">

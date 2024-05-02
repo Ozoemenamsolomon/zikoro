@@ -67,10 +67,10 @@ export default function EventsCities() {
               }
             })}
         </div>
-        
+
         {data && data.length > 12 && !showMore && (
           <div className=" flex justify-center items-center mt-12 ">
-            <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white">
+            <button onClick={handleSeeMoreClick} className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white">
               See more
             </button>
           </div>

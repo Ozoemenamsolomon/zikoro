@@ -26,6 +26,9 @@ type DBBlogAll = {
 
 export default function Create() {
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
+  const [totalViews, setTotalViews] = useState<number>(0);
+  const [totalShares, setTotalShares] = useState<number>(0);
+  const [totalPosts, setTotalPosts] = useState<number>(0);
 
   const [formData, setFormData] = useState({
     category: "",
@@ -44,32 +47,46 @@ export default function Create() {
     setFormData({ ...formData, [name]: value });
   };
 
-  
-  //fetch blog posts
-  async function fetchBlogPost() {
-    fetch("/api/blog/published", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setBlogData(data.data))
-      .catch((error) => console.error("Error:", error));
-  }
+  useEffect(() => {
+    //fetch blog posts
+    async function fetchBlogPost() {
+      fetch("/api/blog/published", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => setBlogData(data.data))
+        .catch((error) => console.error("Error:", error));
+    }
+    fetchBlogPost();
+  }, []);
 
   useEffect(() => {
-    fetchBlogPost();
+    if (blogData) {
+      // Calculate total views
+      const totalViews = blogData.reduce((acc, post) => acc + post.views, 0);
+      setTotalViews(totalViews);
+
+      // Calculate total shares
+      const totalShares = blogData.reduce((acc, post) => acc + post.shares, 0);
+      setTotalShares(totalShares);
+
+      // Total number of blog posts
+      const totalPosts = blogData.length;
+      setTotalPosts(totalPosts);
+    }
   }, [blogData]);
 
   return (
-    <div className=" pl-3 lg:pl-10 pr-3 lg:pr-28  ">
+    <div className=" pl-3 lg:pl-10 pr-3 lg:pr-28 pb-7 lg:pb-10  ">
       {/* Header */}
       <div className="flex pt-28 pb-[44px] gap-x-10 overflow-x-auto lg:overflow-x-hidden no-scrollbar">
         <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg ">
           <AdminBlogPostIcon />
           <div className="flex flex-col">
-            <p className="text-2xl font-semibold">32</p>
+            <p className="text-2xl font-semibold">{totalPosts}</p>
             <p className="text-base font-normal">Blog Posts</p>
           </div>
         </div>
@@ -77,7 +94,7 @@ export default function Create() {
         <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg ">
           <AdminBlogViewIcon />
           <div className="flex flex-col">
-            <p className="text-2xl font-semibold">13.2K</p>
+            <p className="text-2xl font-semibold">{totalViews}</p>
             <p className="text-base font-normal">Total Visits</p>
           </div>
         </div>
@@ -85,7 +102,7 @@ export default function Create() {
         <div className="flex py-6 px-[57px] gap-x-7 bg-white border-[1px] border-gray-200 rounded-lg ">
           <AdminBlogShareIcon />
           <div className="flex flex-col">
-            <p className="text-2xl font-semibold">50</p>
+            <p className="text-2xl font-semibold">{totalShares}</p>
             <p className="text-base font-normal">Share</p>
           </div>
         </div>
@@ -153,7 +170,8 @@ export default function Create() {
 
       {/* section 2 */}
       <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] 2xl:max-w-auto mx-auto mt-[52px] lg:mt-[100px] bg-white">
-        {blogData?.length &&
+        {blogData &&
+          blogData?.length > 0 &&
           blogData?.map((blogPost, index) => (
             <AdminPublishedBlog
               scheduled={false}

@@ -13,7 +13,7 @@ import { TAgenda, Event } from "@/types";
 import { Player } from "@/components/composables";
 import { useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getCookie, useUpdateAgenda } from "@/hooks";
+import { getCookie, useGetReviews, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import Link from "next/link";
@@ -34,6 +34,7 @@ export function AboutSession({
 }) {
   const user = getCookie("user");
   const router = useRouter();
+  const { rating } = useGetReviews({ agendaId: agenda?.id });
   const { updateAgenda } = useUpdateAgenda();
   const isLive = useMemo(() => {
     if (agenda) {
@@ -59,7 +60,7 @@ export function AboutSession({
     } else {
       return "";
     }
-  }, []);
+  }, [agenda?.startDateTime]);
 
   useEffect(() => {
     (async () => {
@@ -110,7 +111,7 @@ export function AboutSession({
               />
             </div>
           )}
-         
+
           <h2 className="text-base px-4 w-full my-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
             {agenda?.sessionTitle ?? ""}
           </h2>
@@ -165,7 +166,7 @@ export function AboutSession({
                 <Button className="h-fit gap-x-2 w-fit px-0">
                   <Star size={20} />
                   <div className="text-gray-500 flex items-center text-xs sm:text-sm gap-x-1">
-                    <p>4.5 .</p>
+                    <p>{rating}</p>
                     <p>Reviews</p>
                   </div>
                 </Button>

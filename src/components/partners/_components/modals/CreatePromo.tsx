@@ -17,10 +17,11 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown } from "@styled-icons/bootstrap/ChevronDown";
 import { offerCreationSchema } from "@/schemas";
-import { useAddPartnerPromo } from "@/hooks";
+import {  useUpdatePartners } from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useState } from "react";
+import {uploadFile} from "@/utils"
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { TPartner } from "@/types";
 import { cn } from "@/lib";
@@ -36,13 +37,15 @@ export function CreatePromo({
   refetch: () => Promise<any>;
   close: () => void;
 }) {
-  const { loading, addPromo } = useAddPartnerPromo();
   const [currencyCode, setcurrencyCode] = useState("NGN");
+  const { update } = useUpdatePartners();
+  const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof offerCreationSchema>>({
     resolver: zodResolver(offerCreationSchema),
   });
 
   async function onSubmit(values: z.infer<typeof offerCreationSchema>) {
+    setLoading(true)
     // maually checking
     if (values.redeem === "url" && !values.url) {
       form.setError("url", {
@@ -68,13 +71,38 @@ export function CreatePromo({
 
       return; /// stop submission
     }
-    const payload = {
-      ...values,
-      partnerId,
-      currencyCode,
-      companyName: partner ? partner?.companyName : "",
+   
+    const image = await uploadFile(values?.productImage[0], "image")
+   
+    const promo: any =
+      Array.isArray(partner?.offers) && partner?.offers?.length > 0
+        ? [
+            ...partner?.offers,
+            {
+              ...values,
+              partnerId,
+              currencyCode,
+              productImage: image,
+              companyName: partner ? partner?.companyName : "",
+            },
+          ]
+        : [
+            {
+              ...values,
+              partnerId,
+              currencyCode,
+              productImage: image,
+              companyName: partner ? partner?.companyName : "",
+            },
+          ];
+    const payload: Partial<TPartner> = {
+      ...partner,
+      offers: promo,
     };
-    await addPromo(partnerId, payload, partner);
+   
+
+    await update(payload);
+    setLoading(false)
     refetch();
     close();
   }
@@ -145,7 +173,7 @@ export function CreatePromo({
               render={({ field }) => (
                 <FormItem className="relative w-full h-fit">
                   <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                    Product Price
+                    Actual Price
                   </FormLabel>
                   <CurrencyDropDown
                     currencyCode={currencyCode}
@@ -154,7 +182,7 @@ export function CreatePromo({
                   <FormControl>
                     <Input
                       className="h-12 placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-16"
-                      placeholder="min"
+                      placeholder="Actual Price"
                       {...field}
                       type="number"
                     />
@@ -169,7 +197,7 @@ export function CreatePromo({
               render={({ field }) => (
                 <FormItem className="relative w-full h-fit">
                   <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                    Product Promo
+                    Promo Price
                   </FormLabel>
                   <CurrencyDropDown
                     currencyCode={currencyCode}
@@ -178,7 +206,7 @@ export function CreatePromo({
                   <FormControl>
                     <Input
                       className="h-12 placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-16"
-                      placeholder="max"
+                      placeholder="Promo Price"
                       {...field}
                       type="number"
                     />
@@ -322,7 +350,7 @@ function CurrencyDropDown({
     >
       <p>{currencyCode}</p>
 
-      <ChevronDown size={16} />
+      <ChevronDown size={12} />
       <div className="absolute left-0 top-10 w-full">
         {isOpen && (
           <button
