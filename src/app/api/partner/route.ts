@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
 <p>We are delighted to confirm your registration to exhibit at <strong>${params?.eventName}</strong> as one of our esteemed event partners. </p>
 
-<p>To complete your registration and set up your virtual booth, please click on the following link: ${deploymentUrl}</p>
+<p>To complete your registration and set up your virtual booth, please click on the following link: ${deploymentUrl}/event/${params?.eventAlias}/partner/${params?.partnerAlias} </p>
 
 <p>This link will guide you through the necessary steps to finalize your registration and provide all the details required to set up your booth at the event.</p>
 

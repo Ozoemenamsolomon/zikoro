@@ -15,10 +15,12 @@ export function PartnerBanners({
   partner,
   partnerId,
   refetch,
+  isHaveAccess
 }: {
   partner: TPartner | null;
   refetch: () => Promise<null | undefined>;
   partnerId: string;
+  isHaveAccess: boolean;
 }) {
   const [isOpen, setOpen] = useState(false);
 
@@ -48,9 +50,9 @@ export function PartnerBanners({
           <div className="flex p-3 border-b items-center justify-between w-full">
             <p className="font-medium">Banners</p>
 
-            <Button onClick={onClose} className="px-1 h-fit w-fit">
+          {isHaveAccess &&  <Button onClick={onClose} className="px-1 h-fit w-fit">
               <PlusCircle size={24} />
-            </Button>
+            </Button>}
           </div>
           {partner?.banners === null || (Array.isArray(partner?.banners) && partner?.banners?.length === 0) && <div className="w-full h-[50px] flex items-center justify-center">
           <p>No Added Banners</p>

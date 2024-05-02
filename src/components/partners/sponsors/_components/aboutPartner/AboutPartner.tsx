@@ -20,10 +20,12 @@ export function AboutPartner({
   partner,
   refetch,
   partnerId,
+  isHaveAccess
 }: {
   partnerId: string;
   refetch: () => Promise<any>;
   partner: TPartner | null;
+  isHaveAccess: boolean;
 }) {
   const router = useRouter();
   const [isAddJob, setAddJob] = useState(false);
@@ -96,7 +98,7 @@ export function AboutPartner({
             <p className="font-semibold text-base sm:text-xl">
               Company Description
             </p>
-            <Edit partner={partner} refetch={refetch} />
+           {isHaveAccess && <Edit partner={partner} refetch={refetch} />}
           </div>
           <div className="items-start px-3 py-4 justify-start flex w-full flex-col gap-y-2">
             <p className="mb-4 font-semibold text-base sm:text-xl">
@@ -187,7 +189,7 @@ export function AboutPartner({
         <section className="w-full flex flex-col  pb-2 border-b">
           <div className="w-full px-3 py-3 border-b flex items-center justify-between">
             <p className="font-semibold text-base sm:text-xl">Booth Staff</p>
-            <Edit partner={partner} refetch={refetch} />
+          {isHaveAccess &&  <Edit partner={partner} refetch={refetch} />}
           </div>
           <div className="w-full px-3 py-4 grid grid-cols-3 items-center gap-4">
             {Array.isArray(partner?.boothStaff) &&
@@ -208,9 +210,9 @@ export function AboutPartner({
           <div className="w-full px-3 py-3 border-b flex items-center justify-between">
             <p className="font-semibold text-base sm:text-xl">Jobs</p>
 
-            <Button onClick={onOpen} className="px-1 h-fit w-fitf">
+          {isHaveAccess &&  <Button onClick={onOpen} className="px-1 h-fit w-fitf">
               <PlusCircle size={24} />
-            </Button>
+            </Button>}
           </div>
           <div className="w-full px-3 py-4 grid grid-cols-1 items-center gap-6">
             {partner?.jobs === null || (Array.isArray(partner?.jobs) && partner?.jobs?.length === 0) && (

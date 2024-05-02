@@ -119,8 +119,10 @@ export function EventDetailTabs({
           className={aboutClassName}
         />
       )}
-      {active === EventDetailTab.SPEAKERS_TAB && (
-        <Speakers changeMajorActiveState={changeActiveState} />
+      {active === EventDetailTab.SPEAKERS_TAB && event &&(
+        <Speakers
+        eventId={String(event.eventAlias)}
+        changeMajorActiveState={changeActiveState} />
       )}
       {active === EventDetailTab.AGENDA_TAB && <Agenda />}
       {active === EventDetailTab.EXIHIBITORS_TAB && event && (

@@ -225,12 +225,14 @@ export function useFetchCreatedEventIndustries(eventId: string) {
 
 export function useFetchSinglePartner(partnerId: string) {
   const [data, setData] = useState<TPartner | null>(null);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     fetchSinglePartner();
   }, []);
 
   async function fetchSinglePartner() {
+    setLoading(true)
     try {
       // Fetch the partner by ID
       const { data, error, status } = await supabase
@@ -250,11 +252,15 @@ export function useFetchSinglePartner(partnerId: string) {
     } catch (error) {
       return null;
     }
+    finally {
+      setLoading(false)
+    }
   }
 
   return {
     data,
     refetch: fetchSinglePartner,
+    loading
   };
 }
 

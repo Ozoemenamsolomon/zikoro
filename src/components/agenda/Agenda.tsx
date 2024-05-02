@@ -27,7 +27,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
   const search = useSearchParams();
   const queryParam = search.get("a");
   const { attendeeId, isOrganizer } = useVerifyUserAccess(eventId);
-  const { attendees } = useGetAllAttendees(); //
+ // const { attendees } = useGetAllAttendees(); //
   const [isOpen, setOpen] = useState(false);
   const { data, refetch } = useFetchSingleEvent(eventId);
   // const { attendees: eventAttendees } = useGetEventAttendees(eventId); //
