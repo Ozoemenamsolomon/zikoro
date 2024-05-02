@@ -36,7 +36,7 @@ export default function Onboarding() {
       label: country.name,
       value: country.name,
     }));
-  }, [COUNTRY_CODE]);
+  }, []);
 
   const query = search.get("email")
   const createdAt = search.get("createdAt")

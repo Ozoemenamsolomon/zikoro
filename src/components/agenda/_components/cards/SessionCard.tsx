@@ -9,10 +9,12 @@ export function SessionCard({
   children,
   timeStamp,
   className,
+  isGreaterThanOne
 }: {
   children: React.ReactNode;
   timeStamp: { start: string; end: string };
   className?: string;
+  isGreaterThanOne?:boolean;
 }) {
   const startTime = useMemo(() => {
     return formatTime(timeStamp?.start || "0");
@@ -33,8 +35,13 @@ export function SessionCard({
       )}
     >
       {isLive && (
-        <p className="text-[11px] text-gray-50 bg-basePrimary absolute top-[0.1px] rounded-tl-xl left-0 p-2 ">
+        <p className="text-[8px]  sm:text-[11px] text-gray-50 bg-basePrimary absolute top-[0.1px] rounded-tl-xl left-0 p-2 ">
           Happening Now
+        </p>
+      )}
+       {isGreaterThanOne && (
+        <p className="text-[8px] sm:text-[11px] text-gray-50 bg-basePrimary absolute top-[0.1px] rounded-tr-xl right-0 p-2 ">
+          Multi Track
         </p>
       )}
       {isLive && (
@@ -43,7 +50,7 @@ export function SessionCard({
           <p>Live</p>
         </div>
       )}
-      <div className="flex flex-col md:col-span-2 w-full pr-6 border-b-2 border-r-0 md:border-b-0 md:border-r-2 border-basePrimary items-start justify-start gap-y-1">
+      <div className="flex flex-col md:col-span-2 pb-3 md:pb-0 w-full pr-6 border-b-2 border-r-0 md:border-b-0 md:border-r-2 border-basePrimary items-start justify-start gap-y-1">
         <p className="font-semibold text-lg sm:text-[1.6rem]">{startTime}</p>
         <p className="font-normal text-sm sm:text-base">{endTime}</p>
       </div>

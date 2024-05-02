@@ -240,7 +240,7 @@ export function AddPartners({
       label: country.name,
       value: country.name,
     }));
-  }, [COUNTRY_CODE]);
+  }, []);
 
   const formatImage = useMemo(() => {
     if (typeof companyImage === "string") {

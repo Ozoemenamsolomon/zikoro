@@ -53,7 +53,7 @@ export function Custom({
   const Comp = sessionAgenda?.sessions?.length > 1 ? Slider : "div";
 
   return (
-    <SessionCard timeStamp={sessionAgenda?.timeStamp} className={className}>
+    <SessionCard timeStamp={sessionAgenda?.timeStamp} isGreaterThanOne={sessionAgenda?.sessions?.length > 1} className={className}>
       <div className="w-full md:col-span-6 lg:col-span-8 ">
         <Comp className="w-full agenda-slider h-full z-4" {...settings}>
           {sessionAgenda?.sessions?.map((session, index) => (
@@ -189,7 +189,7 @@ function Widget({
             <Eye size={20} />
             <p className="text-xs sm:text-sm text-gray-500">{session?.sessionViews ?? "0"}</p>
           </Button>
-          <Button className="h-fit gap-x-2 w-fit px-0">
+          <Button className="hidden h-fit gap-x-2 w-fit px-0">
             <Star size={20} />
             <div className="text-gray-500 flex items-center text-xs sm:text-sm gap-x-1">
               <p>4.5 .</p>

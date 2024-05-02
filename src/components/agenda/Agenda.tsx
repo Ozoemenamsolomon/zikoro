@@ -16,7 +16,7 @@ import {
   useGetAgendas,
   useVerifyUserAccess,
   useCheckTeamMember,
- // useGetEventAttendees,
+  // useGetEventAttendees,
 } from "@/hooks";
 import { generateDateRange } from "@/utils";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -24,14 +24,13 @@ import { useRouter } from "next/navigation";
 export default function Agenda({ eventId }: { eventId: string }) {
   const router = useRouter();
   const currentEvent = getCookie("currentEvent");
-  const user = getCookie("user");
   const search = useSearchParams();
   const queryParam = search.get("a");
-  const {attendeeId, isOrganizer} = useVerifyUserAccess(eventId)
+  const { attendeeId, isOrganizer } = useVerifyUserAccess(eventId);
   const { attendees } = useGetAllAttendees(); //
   const [isOpen, setOpen] = useState(false);
   const { data, refetch } = useFetchSingleEvent(eventId);
- // const { attendees: eventAttendees } = useGetEventAttendees(eventId); //
+  // const { attendees: eventAttendees } = useGetEventAttendees(eventId); //
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const [isFullScreen, setFullScreen] = useState(false);
   const activeDateQuery = search.get("date");
@@ -63,7 +62,7 @@ export default function Agenda({ eventId }: { eventId: string }) {
     setFullScreen((prev) => !prev);
   }
 
-/**
+  /**
    const attendeeId = useMemo(() => {
     return attendees?.find(
       ({ email, eventAlias }) =>
@@ -114,7 +113,9 @@ export default function Agenda({ eventId }: { eventId: string }) {
             onClick={onClose}
             className={cn(
               " text-gray-50 bg-basePrimary hidden gap-x-2 h-11 sm:h-12 font-medium",
-              (activeDateQuery || currentEvent?.startDate) && "flex"
+              (isIdPresent || isOrganizer) &&
+                (activeDateQuery || currentEvent?.startDate) &&
+                "flex"
             )}
           >
             <PlusCircle size={22} />
@@ -145,21 +146,23 @@ export default function Agenda({ eventId }: { eventId: string }) {
               ))}
           </div>
         </div>
-        {Array.isArray(sessionAgendas) && sessionAgendas?.length > 0 && (
-          <div className="w-full flex items-end p-4 justify-end gap-x-2">
-            <Button className="px-0 w-fit h-fit ">
-              <Printer size={20} />
-            </Button>
-            <Button
-              onClick={toggleFullScreenMode}
-              className="px-0 w-fit h-fit "
-            >
-              <ScanDash size={20} />
-            </Button>
-          </div>
-        )}
+        {(isIdPresent || isOrganizer) &&
+          Array.isArray(sessionAgendas) &&
+          sessionAgendas?.length > 0 && (
+            <div className="w-full flex items-end p-4 justify-end gap-x-2">
+              <Button className="px-0 w-fit h-fit ">
+                <Printer size={20} />
+              </Button>
+              <Button
+                onClick={toggleFullScreenMode}
+                className="px-0 w-fit h-fit "
+              >
+                <ScanDash size={20} />
+              </Button>
+            </div>
+          )}
 
-        <div className="w-full p-2 sm:p-4 grid grid-cols-1 items-center gap-8">
+        <div className="w-full p-2 sm:p-4 grid grid-cols-1 items-center gap-8 pb-20">
           {fetching && (
             <div className="w-full col-span-full h-[20rem] flex items-center justify-center">
               <LoaderAlt size={30} className="animate-spin" />

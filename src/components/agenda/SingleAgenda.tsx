@@ -17,7 +17,7 @@ export default function SingleAgenda({
   const {attendeeId, isOrganizer} = useVerifyUserAccess(eventId)
   const { agenda, isLoading, getAgenda } = useGetAgenda({ agendaId });
   return (
-    <div className="w-full grid grid-cols-1 lg:grid-cols-8 items-start gap-3">
+    <div className="w-full grid grid-cols-1 lg:grid-cols-8 pb-20 items-start gap-3">
       {(loading || isLoading || fetching) && (
         <div className="w-full col-span-full h-[300px] flex items-center justify-center">
           <LoaderAlt className="animate-spin" size={30} />

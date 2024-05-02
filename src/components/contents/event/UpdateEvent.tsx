@@ -182,7 +182,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       label: country.name,
       value: country.name,
     }));
-  }, [COUNTRY_CODE]);
+  }, []);
 
   function handleChange(value: any) {
     form.setValue("description", value);
