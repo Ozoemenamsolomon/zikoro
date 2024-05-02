@@ -140,7 +140,7 @@ export default function AdminBlogTemplate({
       <div className="flex flex-col justify-center w-full lg:w-1/2 px-4 ">
         <div className="flex lg:flex-col items-center  juustify-between ">
           <div className="w-full">
-            <div className="flex justify-between mb-4">
+            <div className="flex justify-between mb-2">
               <p className="text-indigo-700 capitalize font-medium text-xs lg:text-base">
                 {category}
               </p>
@@ -168,7 +168,7 @@ export default function AdminBlogTemplate({
                 <p>
                   {date} {" - "}
                 </p>
-                <p>3 Min Read</p>
+                <p>{readingDuration} Min Read</p>
               </div>
             )}
 
@@ -226,7 +226,7 @@ export default function AdminBlogTemplate({
                     onClick={goToPost}
                     className="py-1 text-xs lowercase cursor-pointer hover:text-indigo-700"
                   >
-                    View
+                    {status == "publish" ? "view" : "preview"}
                   </li>
 
                   <li
@@ -235,15 +235,6 @@ export default function AdminBlogTemplate({
                   >
                     Delete
                   </li>
-
-                  {status == "publish" && (
-                    <li
-                      // onClick={}
-                      className="py-1 text-xs lowercase cursor-pointer hover:text-indigo-700"
-                    >
-                      Unpublish
-                    </li>
-                  )}
                 </ul>
               </PopoverContent>
             </Popover>
@@ -268,7 +259,7 @@ export default function AdminBlogTemplate({
                 onClick={goToPost}
                 className="py-1 text-xs lowercase cursor-pointer hover:text-indigo-700"
               >
-                View
+                {status == "publish" ? "view" : "preview"}
               </li>
 
               <li
@@ -277,15 +268,6 @@ export default function AdminBlogTemplate({
               >
                 Delete
               </li>
-
-              {status == "publish" && (
-                <li
-                  // onClick={}
-                  className="py-1 text-xs lowercase cursor-pointer hover:text-indigo-700"
-                >
-                  Unpublish
-                </li>
-              )}
             </ul>
           </PopoverContent>
         </Popover>

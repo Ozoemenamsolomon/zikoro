@@ -112,15 +112,15 @@ export default function BlogPost({
         <p className="text-indigo-700 capitalize font-medium text-xs lg:text-base">
           {category}
         </p>
-        <p className="capitalize font-semibold text-lg lg:text-3xl mt-2 lg:mt-4">
+        <p className="capitalize font-semibold text-lg lg:text-3xl mt-2">
           {title}
         </p>
-        <div className="flex gap-x-2 uppercase mt-2 lg:mt-4 text-[12px] lg:text-base font-light ">
+        <div className="flex gap-x-2 uppercase mt-2 text-[12px] lg:text-base font-light ">
           <p>
             {date}
             {" - "}
           </p>
-          <p>{readingDuration}Min Read</p>
+          <p>{readingDuration} Min Read</p>
         </div>
       </div>
     </div>

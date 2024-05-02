@@ -184,7 +184,13 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                   return (
                     <div key={id} id={id}>
                       <Link href={`#${id}`}>
-                        <p className="text-base font-normal mt-8">{heading}</p>
+                        <div className="text-base font-semibold mt-8">
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: heading ?? "",
+                            }}
+                          />
+                        </div>
                       </Link>
                     </div>
                   );

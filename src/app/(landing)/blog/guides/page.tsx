@@ -23,7 +23,7 @@ export default function All() {
 
   //fetch blog posts
   async function fetchBlogPost() {
-    fetch("/api/blog/guide", {
+    fetch("/api/blog/guides", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
