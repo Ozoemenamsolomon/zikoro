@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components";
 import { useForm } from "react-hook-form";
-import { COUNTRY_CODE, uploadFile } from "@/utils";
+import { COUNTRY_CODE, uploadFile, generateAlias } from "@/utils";
 import { AddSponsorLevel } from "@/components/contents/partners/_components";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -143,6 +143,7 @@ export function AddPartners({
 
     const video: any = await promiseVideo;
 
+    const partnerAlias = generateAlias()
     const payload: Partial<TPartner> = partner?.id
       ? {
           ...partner,
@@ -153,6 +154,7 @@ export function AddPartners({
           phoneNumber: phoneCountryCode + values.phoneNumber,
           boothStaff: selectedAttendees,
           companyLogo: image,
+          partnerAlias, //remobve
           media: video,
         }
       : {
@@ -163,6 +165,7 @@ export function AddPartners({
           phoneNumber: phoneCountryCode + values.phoneNumber,
           boothStaff: selectedAttendees,
           companyLogo: image,
+          partnerAlias,
           media: video,
         };
     const asynQuery = partner?.id ? update : addPartners;

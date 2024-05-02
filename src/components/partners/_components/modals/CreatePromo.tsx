@@ -17,7 +17,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown } from "@styled-icons/bootstrap/ChevronDown";
 import { offerCreationSchema } from "@/schemas";
-import { useAddPartnerPromo, useUpdatePartners } from "@/hooks";
+import {  useUpdatePartners } from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useState } from "react";
@@ -71,8 +71,6 @@ export function CreatePromo({
 
       return; /// stop submission
     }
-   
-
    
     const image = await uploadFile(values?.productImage[0], "image")
    

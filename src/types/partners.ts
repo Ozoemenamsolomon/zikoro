@@ -43,7 +43,8 @@ export enum PartnersEnum {
     whatsApp: string;
     sponsorCategory: string;
     eventAlias: string;
-    sponsoredSession: {session: TAgenda, sessionLink: string}[]
+    sponsoredSession: {session: TAgenda, sessionLink: string}[];
+    partnerAlias:string;
   }
 
   export interface TExPartner {

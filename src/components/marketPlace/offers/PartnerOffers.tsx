@@ -80,7 +80,7 @@ export function PartnerOffers({ eventId }: { eventId: string }) {
       </div>
       {loading && (
         <div className="w-full col-span-full h-[60vh] flex items-center justify-center">
-          <Loader2 size={50} className="animate-spin" />
+          <Loader2 size={30} className="animate-spin" />
         </div>
       )}
       {!loading &&
