@@ -14,7 +14,8 @@ type FeaturedEventProps = {
   eventTitle: string;
   eventCity: string;
   eventCountry: string;
-  eventAlias:string;
+  eventCategory: string;
+  eventAlias: string;
   locationType: string;
   pricing: [];
   pricingCurrency: string;
@@ -29,6 +30,7 @@ export default function FeaturedEvent({
   eventTitle,
   eventCity,
   eventCountry,
+  eventCategory,
   eventAlias,
   locationType,
   pricing,
@@ -41,7 +43,7 @@ export default function FeaturedEvent({
   const [date, setDate] = useState<string | null>(null);
   const [currencySymbol, setCurrencySymbol] = useState<string | null>(null);
   const [soldOut, setSoldOut] = useState<boolean>(false);
-  const [elasped, setElapsed] = useState<boolean>(false);
+  const [elapsed, setElapsed] = useState<boolean>(false);
 
   // Extracting the date only
   function extractAndFormatDate(dateTimeString: string): string {
@@ -99,7 +101,7 @@ export default function FeaturedEvent({
     setCurrencySymbol(convertCurrencyCodeToSymbol(pricingCurrency));
 
     //check date and time
-    if (checkDateEqualToday(date)) {
+    if (checkDateEqualToday(startDateTime)) {
       setElapsed(true);
     } else {
       setElapsed(false);
@@ -113,8 +115,15 @@ export default function FeaturedEvent({
     }
   }, []);
 
+
+
   return (
-    <div className="cursor-pointer" onClick={goToEvent}>
+    <div
+      className={`cursor-pointer relative ${
+        elapsed || soldOut ? "opacity-50" : ""
+      }`}
+      onClick={goToEvent}
+    >
       {/* header */}
       <div className="relative ">
         <Image
@@ -138,8 +147,8 @@ export default function FeaturedEvent({
           </p>
         )}
 
-        {elasped && (
-          <p className="text-sm font-medium text-white bg-red-500 absolute right-28 top-2 py-[5px] px-[10px] rounded-lg ">
+        {elapsed && (
+          <p className="text-sm font-medium text-white bg-red-500 absolute left-4 top-2 py-[5px] px-[10px] rounded-lg ">
             Elapsed
           </p>
         )}

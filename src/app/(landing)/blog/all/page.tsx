@@ -19,6 +19,7 @@ type DBBlogAll = {
 
 export default function All() {
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
+  const [showMore, setShowMore] = useState(false);
 
   //fetch blog posts
   async function fetchBlogPost() {
@@ -33,38 +34,52 @@ export default function All() {
       .catch((error) => console.error("Error:", error));
   }
 
+  //see more function
+  const handleSeeMoreClick = () => {
+    setShowMore(true);
+  };
+
   useEffect(() => {
     fetchBlogPost();
   }, [blogData]);
 
   return (
-    <div>
-      <div className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[52px] lg:mt-[100px]">
-        {blogData?.length &&
-          blogData?.map((blogPost, index) => (
-            <BlogPost
-              key={blogPost.id}
-              id={blogPost.id}
-              title={blogPost.title}
-              createdAt={blogPost.created_at}
-              category={blogPost.category}
-              status={blogPost.status}
-              statusDetails={blogPost.statusDetails}
-              readingDuration={blogPost.readingDuration}
-              content={blogPost.content}
-              views={blogPost.views}
-              shares={blogPost.shares}
-              tags={blogPost.tags}
-              headerImageUrl={blogPost.headerImageUrl}
-            />
-          ))}
-      </div>
+    <>
+      {blogData && blogData.length > 0 && (
+        <div className="my-[48px] lg:my-[80px]">
+          <div className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[52px] lg:mt-[100px]">
+            {blogData?.length &&
+              blogData?.map((blogPost, index) => (
+                <BlogPost
+                  key={blogPost.id}
+                  id={blogPost.id}
+                  title={blogPost.title}
+                  createdAt={blogPost.created_at}
+                  category={blogPost.category}
+                  status={blogPost.status}
+                  statusDetails={blogPost.statusDetails}
+                  readingDuration={blogPost.readingDuration}
+                  content={blogPost.content}
+                  views={blogPost.views}
+                  shares={blogPost.shares}
+                  tags={blogPost.tags}
+                  headerImageUrl={blogPost.headerImageUrl}
+                />
+              ))}
+          </div>
 
-      <div className=" flex justify-center items-center my-[48px] lg:my-[80px]">
-        <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white">
-          See more
-        </button>
-      </div>
-    </div>
+          {blogData && blogData.length > 10 && !showMore && (
+            <div className=" flex justify-center items-center ">
+              <button
+                onClick={handleSeeMoreClick}
+                className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white"
+              >
+                See more
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </>
   );
 }

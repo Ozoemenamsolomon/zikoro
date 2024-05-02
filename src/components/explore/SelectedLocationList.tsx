@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import SelectedLocation from "./SelectedLocation";
 import { RightArrow, LocationIcon1 } from "@/constants/icons";
 import { useRouter } from "next/navigation";
+import LoadingSpinner from "../LoadingSpinner";
 
 type selectedEventProps = {
   searchQuery: string;
@@ -12,6 +13,7 @@ type DBSelectedLocation = {
   id: number;
   eventPoster: string;
   eventTitle: string;
+  eventCategory: string;
   eventCity: string;
   eventAlias: string;
   eventCountry: string;
@@ -31,7 +33,6 @@ export default function SelectedLocationList({
     undefined
   );
   const [location, setLocation] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   async function fetchEventFeautured() {
@@ -89,7 +90,8 @@ export default function SelectedLocationList({
     // Filter by event title, city, or category
     return (
       event.eventTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.eventCity.toLowerCase().includes(searchQuery.toLowerCase())
+      event.eventCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.eventCategory.toLowerCase().includes(searchQuery.toLowerCase())
     );
   });
 
@@ -99,68 +101,73 @@ export default function SelectedLocationList({
   }, []);
 
   return (
-    <div className="mt-[150px] max-w-6xl mx-auto px-3 lg:px-0">
-      {/* header */}
-      <div className="flex justify-between">
-        <div className="flex items-center gap-x-1 lg:gap-x-3">
-          <LocationIcon1 />
-          <div className="font-semibold text-[20px] lg:text-[32px]">
-            {/* {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p>{error}</p>
-            ) : location ? (
-              <p className="">{location}</p>
-            ) : null} */}
-            Nigeria
+    <>
+      {eventData && eventData.length > 0 && (
+        <div className="mt-[150px] max-w-6xl mx-auto px-3 lg:px-0">
+          {/* header */}
+          <div className="flex justify-between">
+            <div className="flex items-center gap-x-1 lg:gap-x-3">
+              <LocationIcon1 />
+              <div className="font-semibold text-[20px] lg:text-[32px]">
+                {/* {loading ? (
+                 <p>Loading...</p>
+               ) : error ? (
+                 <p>{error}</p>
+               ) : location ? (
+                 <p className="">{location}</p>
+               ) : null} */}
+                Nigeria
+              </div>
+            </div>
+
+            {eventData && eventData.length > 4 && (
+              <div
+                // onClick={() => router.push("/explore/featured-events")}
+                className="hidden lg:flex gap-x-4 cursor-pointer items-center"
+              >
+                <p className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-xl font-semibold">
+                  See All
+                </p>
+                <RightArrow />
+              </div>
+            )}
           </div>
-        </div>
 
-        {eventData && eventData.length > 4 && (
-          <div
-            // onClick={() => router.push("/explore/featured-events")}
-            className="hidden lg:flex gap-x-4 cursor-pointer items-center"
-          >
-            <p className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-xl font-semibold">
-              See All
-            </p>
-            <RightArrow />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-0 md:gap-x-4 lg:gap-x-4 gap-y-5 lg:gap-y-0 mt-[10px] lg:mt-[50px] bg-white  ">
+            {filteredEvents?.length &&
+              filteredEvents.map((event, index) => (
+                <SelectedLocation
+                  key={event.id}
+                  id={event.id}
+                  eventPoster={event.eventPoster}
+                  eventTitle={event.eventTitle}
+                  eventCity={event.eventCity}
+                  eventAlias={event.eventAlias}
+                  eventCountry={event.eventCountry}
+                  eventCategory={event.eventCategory}
+                  locationType={event.locationType}
+                  pricing={event.pricing}
+                  pricingCurrency={event.pricingCurrency}
+                  startDateTime={event.startDateTime}
+                  expectedParticipants={event.expectedParticipants}
+                  registered={event.registered}
+                />
+              ))}
           </div>
-        )}
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-0 md:gap-x-4 lg:gap-x-4 gap-y-5 lg:gap-y-0 mt-[10px] lg:mt-[50px] bg-white  ">
-        {filteredEvents?.length &&
-          filteredEvents.map((event, index) => (
-            <SelectedLocation
-              key={event.id}
-              id={event.id}
-              eventPoster={event.eventPoster}
-              eventTitle={event.eventTitle}
-              eventCity={event.eventCity}
-              eventAlias={event.eventAlias}
-              eventCountry={event.eventCountry}
-              locationType={event.locationType}
-              pricing={event.pricing}
-              pricingCurrency={event.pricingCurrency}
-              startDateTime={event.startDateTime}
-              expectedParticipants={event.expectedParticipants}
-              registered={event.registered}
-            />
-          ))}
-      </div>
-
-      {eventData && eventData.length > 4 && (
-        <div
-          onClick={() => router.push("/explore/featured-events")}
-          className=" justify-end mt-[30px] flex lg:hidden gap-x-4 cursor-pointer items-center"
-        >
-          <p className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-xl font-semibold">
-            See All
-          </p>
-          <RightArrow />
+          {eventData && eventData.length > 4 && (
+            <div
+              onClick={() => router.push("/explore/featured-events")}
+              className=" justify-end mt-[30px] flex lg:hidden gap-x-4 cursor-pointer items-center"
+            >
+              <p className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-xl font-semibold">
+                See All
+              </p>
+              <RightArrow />
+            </div>
+          )}
         </div>
       )}
-    </div>
+    </>
   );
 }

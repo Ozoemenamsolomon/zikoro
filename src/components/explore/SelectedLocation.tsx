@@ -14,6 +14,7 @@ type SelectedLocationProps = {
   eventTitle: string;
   eventCity: string;
   eventCountry: string;
+  eventCategory: string;
   eventAlias: string;
   locationType: string;
   pricing: [];
@@ -29,6 +30,7 @@ export default function SelectedLocation({
   eventTitle,
   eventCity,
   eventCountry,
+  eventCategory,
   eventAlias,
   locationType,
   pricing,
@@ -41,7 +43,7 @@ export default function SelectedLocation({
   const [date, setDate] = useState<string | null>(null);
   const [currencySymbol, setCurrencySymbol] = useState<string | null>(null);
   const [soldOut, setSoldOut] = useState<boolean>(false);
-  const [elasped, setElapsed] = useState<boolean>(false);
+  const [elapsed, setElapsed] = useState<boolean>(false);
 
   // Extracting the date and convert to string
   function extractAndFormatDate(dateTimeString: string): string {
@@ -83,6 +85,11 @@ export default function SelectedLocation({
     return formattedDate;
   }
 
+   //function that shows the event details
+   function goToEvent() {
+    window.open(`/live-events/${eventAlias}`, "_blank");
+  }
+
   //use Effect
   useEffect(() => {
     //extract the lowest price
@@ -96,7 +103,7 @@ export default function SelectedLocation({
     setCurrencySymbol(convertCurrencyCodeToSymbol(pricingCurrency));
 
     //check date and time
-    if (checkDateEqualToday(date)) {
+    if (checkDateEqualToday(startDateTime)) {
       setElapsed(true);
     } else {
       setElapsed(false);
@@ -110,13 +117,10 @@ export default function SelectedLocation({
     }
   }, []);
 
-  //function that shows the event details
-  function goToEvent() {
-    window.open(`/live-events/${eventAlias}`, "_blank");
-  }
+ 
 
   return (
-    <div className="cursor-pointer" onClick={goToEvent}>
+    <div className={`cursor-pointer relative ${elapsed || soldOut ? "opacity-50" : ""}`} onClick={goToEvent}>
       {/* header */}
       <div className="relative ">
         <Image
@@ -140,8 +144,8 @@ export default function SelectedLocation({
           </p>
         )}
 
-        {elasped && (
-          <p className="text-sm font-medium text-white bg-red-500 absolute right-28 top-2 py-[5px] px-[10px] rounded-lg ">
+        {elapsed && (
+          <p className="text-sm font-medium text-white bg-red-500 absolute left-4 top-2 py-[5px] px-[10px] rounded-lg ">
             Elapsed
           </p>
         )}

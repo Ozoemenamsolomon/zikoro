@@ -54,7 +54,7 @@ export default function Create() {
   }, [blogData]);
 
   return (
-    <div className=" pl-3 lg:pl-10 pr-3 lg:pr-28 pt-16 lg:pt-20  ">
+    <div className=" pl-3 lg:pl-10 pr-3 lg:pr-28 pt-16 lg:pt-20 pb-7 lg:pb-10  ">
       {/* Section1 */}
       <section className="">
         <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row gap-x-0 md:gap-x-6 mt-6">
@@ -92,8 +92,9 @@ export default function Create() {
       </section>
 
       {/* section 2 */}
-      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px] bg-white ">
-        {blogData?.length &&
+      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px]  bg-white ">
+        {blogData &&
+          blogData?.length > 0 &&
           blogData?.map((blogPost, index) => (
             <AdminPublishedBlog
               scheduled={false}
