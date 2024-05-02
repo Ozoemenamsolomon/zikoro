@@ -75,20 +75,18 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
     if (!eventDate) return;
 
     const newDate = new Date(eventDate);
-    console.log(eventDate, newDate);
+    console.log(eventDate, newDate, isSameDay(eventDate, newDate));
 
     const payload = selectedAttendees.map((attendee) => {
       const existingCheckin = attendee.checkin || [];
       const newCheckin =
         action === "checkin"
-          ? [...existingCheckin, { date: newDate, checkin: true }]
+          ? [...(existingCheckin ?? []), { date: newDate, checkin: true }]
           : existingCheckin.filter(({ date }) => !isSameDay(newDate, date));
 
       return {
         ...attendee,
-        checkin: newCheckin.length
-          ? newCheckin
-          : [{ date: newDate, checkin: true }],
+        checkin: newCheckin,
       };
     });
 

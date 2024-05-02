@@ -37,7 +37,7 @@ import {
 } from "@/hooks/services/certificate";
 import SelectCertificateModal from "@/components/selectCertificateModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { format } from "date-fns";
+import { format, isPast } from "date-fns";
 import AttendeeCertificate from "@/components/AttendeeCertificate";
 import { TCertificate } from "@/types/certificates";
 import { useParams, useRouter } from "next/navigation";
@@ -220,7 +220,7 @@ export default function SecondSection({
 
     const newAttendeeCertificate = await releaseAttendeeCertificate({
       payload: {
-        eventId: eventCertificate.eventId,
+        eventAlias: eventCertificate.eventId,
         attendeeId: id,
         CertificateGroupId: eventCertificate.id,
         attendeeEmail: email,
@@ -326,7 +326,7 @@ export default function SecondSection({
               )}
               <div className="flex justify-center gap-4 h-full">
                 <div className="flex-1 flex justify-center">
-                  <Avatar className="w-16 md:w-32 h-16 md:h-32">
+                  <Avatar className="w-32 h-32">
                     <AvatarImage
                       className="h-full w-full object-cover"
                       src={profilePicture}
@@ -987,7 +987,8 @@ export default function SecondSection({
                         (attendeecertificate) =>
                           eventCertificate.id ===
                           attendeecertificate.CertificateGroupId
-                      )
+                      ) &&
+                      isPast(eventCertificate.certificateSettings.publishOn)
                   )
                   .map((eventCertificate) => (
                     <DropdownMenuItem key={eventCertificate.id}>

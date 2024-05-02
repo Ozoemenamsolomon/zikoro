@@ -20,6 +20,8 @@ import { TCertificate } from "@/types/certificates";
 // import { DialogClose } from "../ui/dialog";
 import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
 import { DialogClose } from "../ui/dialog";
+import { useParams } from "next/navigation";
+import { isPast } from "date-fns";
 
 const CertificateDialog: React.FC<MoreOptionsProps> = ({
   attendees,
@@ -34,20 +36,22 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
   const [selectedCertificate, setSelectedCertificate] =
     useState<TCertificate>();
 
+  const { eventId } = useParams();
+
   const {
     attendeesCertificates,
     isLoading: attendeesCertificateisLoading,
     getAttendeesCertificates,
-  } = useGetAttendeesCertificates({ eventId: 1234567890 });
+  } = useGetAttendeesCertificates({ eventId });
 
   const {
     eventCertificates,
     isLoading: eventCertificateisLoading,
     getEventCertificates,
-  } = useGetEventCertificates({ eventId: 1234567890 });
+  } = useGetEventCertificates({ eventId });
 
   const { updateAttendeeCertificates } = useUpdateAttendeeCertificates({
-    eventId: 1234567890,
+    eventId,
   });
 
   console.log(attendeesCertificates, "attendees certificate");
@@ -111,7 +115,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         action,
         attendeeInfo: editedSelectedAttendees,
         certificateInfo: {
-          eventId: 1234567890,
+          eventAlias: eventId,
           CertificateGroupId: selectedCertificate.id,
           CertificateName: selectedCertificate.certificateName,
         },
@@ -170,14 +174,18 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
           </SelectTrigger>
           <SelectContent>
             {eventCertificates &&
-              eventCertificates.map(
-                ({ id, certificateName }) =>
-                  id && (
-                    <SelectItem value={id?.toString()}>
-                      {certificateName}
-                    </SelectItem>
-                  )
-              )}
+              eventCertificates
+                .filter(({ certificateSettings: { publishOn } }) =>
+                  isPast(publishOn)
+                )
+                .map(
+                  ({ id, certificateName }) =>
+                    id && (
+                      <SelectItem value={id?.toString()}>
+                        {certificateName}
+                      </SelectItem>
+                    )
+                )}
           </SelectContent>
         </Select>
       </div>
