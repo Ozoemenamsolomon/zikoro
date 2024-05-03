@@ -2,6 +2,7 @@ export interface TBadge {
   id?: number;
   created_at?: string;
   eventId: number;
+  eventAlias: string;
   badgeName: string;
   badgeDetails: any;
   badgeSettings: any;

@@ -9,11 +9,15 @@ export async function GET(req: NextRequest) {
       const { searchParams } = new URL(req.url);
       const eventId = searchParams.get("eventId");
 
-      const query = supabase.from("badge").select("*");
+      const query = supabase
+        .from("badge")
+        .select("*, event:events!inner(*, organization!inner(*))");
 
-      if (eventId) query.eq("eventId", eventId);
+      if (eventId) query.eq("eventAlias", eventId);
 
       const { data, error, status } = await query;
+
+      console.log(data, eventId);
 
       if (error) throw error;
 

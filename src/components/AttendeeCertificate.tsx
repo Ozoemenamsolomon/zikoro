@@ -17,7 +17,7 @@ import lz from "lzutf8";
 import { toast } from "./ui/use-toast";
 import { isPast } from "date-fns";
 import { useGetOrganization } from "@/hooks/services/organization";
-import { useGetEvent } from "@/hooks/services/events";
+import { useGetEvent } from "@/hooks";
 import { replaceSpecialText } from "@/utils/helpers";
 
 const AttendeeCertificate = ({
