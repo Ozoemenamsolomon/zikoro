@@ -5,7 +5,7 @@ import {
   useGetAttendeeCertificate,
   useGetCertificates,
   useSaveCertificate,
-} from "@/hooks/services/certificate";
+} from "@/hooks";
 import { compareAsc, format, isPast } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";

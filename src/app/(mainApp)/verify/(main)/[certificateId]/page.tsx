@@ -22,6 +22,14 @@ import { Editor, Frame } from "@craftjs/core";
 import { toast } from "@/components/ui/use-toast";
 import lz from "lzutf8";
 import { useToPng } from "@hugocxl/react-to-image";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  TwitterIcon,
+} from "@/constants";
+import { LinkedinShareButton } from "next-share";
+import Link from "next/link";
 
 // import { ShareSocial } from "react-share-social";
 
@@ -45,6 +53,12 @@ const style = {
 
 const Page = ({ params }: { params: { certificateId: string } }) => {
   const certificateRef = useRef<HTMLDivElement | null>(null);
+
+  const [isShareDropDown, showShareDropDown] = useState(false);
+
+  function toggleShareDropDown() {
+    showShareDropDown((prev) => !prev);
+  }
 
   const router = useRouter();
 
@@ -175,7 +189,36 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
               >
                 Download PNG
               </Button>
-              <DropdownMenu>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleShareDropDown();
+                }}
+                className="border-basePrimary border-2 text-basePrimary bg-transparent"
+              >
+                <svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  strokeWidth={0}
+                  viewBox="0 0 24 24"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle fill="none" cx="17.5" cy="18.5" r="1.5" />
+                  <circle fill="none" cx="5.5" cy="11.5" r="1.5" />
+                  <circle fill="none" cx="17.5" cy="5.5" r="1.5" />
+                  <path d="M5.5,15c0.91,0,1.733-0.358,2.357-0.93l6.26,3.577C14.048,17.922,14,18.204,14,18.5c0,1.93,1.57,3.5,3.5,3.5 s3.5-1.57,3.5-3.5S19.43,15,17.5,15c-0.91,0-1.733,0.358-2.357,0.93l-6.26-3.577c0.063-0.247,0.103-0.502,0.108-0.768l6.151-3.515 C15.767,8.642,16.59,9,17.5,9C19.43,9,21,7.43,21,5.5S19.43,2,17.5,2S14,3.57,14,5.5c0,0.296,0.048,0.578,0.117,0.853L8.433,9.602 C7.808,8.64,6.729,8,5.5,8C3.57,8,2,9.57,2,11.5S3.57,15,5.5,15z M17.5,17c0.827,0,1.5,0.673,1.5,1.5S18.327,20,17.5,20 S16,19.327,16,18.5S16.673,17,17.5,17z M17.5,4C18.327,4,19,4.673,19,5.5S18.327,7,17.5,7S16,6.327,16,5.5S16.673,4,17.5,4z M5.5,10C6.327,10,7,10.673,7,11.5S6.327,13,5.5,13S4,12.327,4,11.5S4.673,10,5.5,10z" />
+                </svg>
+                <h3 className="font-medium ">Share this Event</h3>
+                {isShareDropDown && (
+                  <ActionModal
+                    close={toggleShareDropDown}
+                    url={certificate?.certificateURL}
+                  />
+                )}
+              </Button>
+              {/* <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="border-basePrimary border-2 text-basePrimary bg-transparent flex gap-2 items-center">
                     <svg
@@ -196,7 +239,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  {/* <ShareSocial
+                  <ShareSocial
                     url={`http:localhost:3000/verify/${certificateId}`}
                     socialTypes={[
                       "facebook",
@@ -205,9 +248,9 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
                       "linkedin",
                     ]}
                     style={style}
-                  /> */}
+                  />
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu> */}
             </div>
             <Editor
               enabled={false}
@@ -377,3 +420,75 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
 };
 
 export default Page;
+
+function ActionModal({
+  close,
+  url,
+}: {
+  url?: string;
+  instagram?: string;
+  close: () => void;
+}) {
+  return (
+    <>
+      <div className="absolute left-0 top-10  w-48">
+        <Button className="fixed inset-0 bg-none h-full w-full z-[100"></Button>
+        <div
+          role="button"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className="flex relative z-[50] flex-col py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
+        >
+          <button
+            onClick={() =>
+              window.open(
+                `https://twitter.com/intent/tweet?url=${url}`,
+                "_blank"
+              )
+            }
+            className="items-center flex px-2  h-10 w-full gap-x-2 justify-start text-xs"
+          >
+            <TwitterIcon />
+            <span>X</span>
+          </button>
+
+          <LinkedinShareButton url={url}>
+            <button
+              className={
+                "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
+              }
+            >
+              <LinkedinIcon />
+              <span>LinkedIn</span>
+            </button>
+          </LinkedinShareButton>
+          <button
+            onClick={() =>
+              window.open(
+                `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+                "_blank"
+              )
+            }
+            className={
+              "items-center h-10 gap-x-2 px-2 flex justify-start w-full  text-xs"
+            }
+          >
+            <FacebookIcon />
+            <span>Facebook</span>
+          </button>
+          <Link
+            target="_blank"
+            href={""}
+            className={
+              "items-center hidden h-10 gap-x-2 px-2  justify-start w-full  text-xs"
+            }
+          >
+            <InstagramIcon />
+            <span>Instagram</span>
+          </Link>
+        </div>
+      </div>
+    </>
+  );
+}
