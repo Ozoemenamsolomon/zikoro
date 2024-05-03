@@ -34,7 +34,7 @@ export function AboutSession({
 }) {
   const user = getCookie("user");
   const router = useRouter();
-  const { rating } = useGetReviews({ agendaId: agenda?.id });
+  const { rating, getRating } = useGetReviews();
   const { updateAgenda } = useUpdateAgenda();
   const isLive = useMemo(() => {
     if (agenda) {
@@ -61,6 +61,14 @@ export function AboutSession({
       return "";
     }
   }, [agenda?.startDateTime]);
+
+  useEffect(() => {
+    (async () => {
+      if (agenda) {
+        getRating({ agendaId: agenda?.id });
+      }
+    })();
+  }, [agenda]);
 
   useEffect(() => {
     (async () => {

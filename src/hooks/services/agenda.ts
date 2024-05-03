@@ -356,11 +356,11 @@ export const useSendReview = () => {
   return { sendReview, isLoading };
 };
 
-export const useGetReviews = ({agendaId}:{agendaId?: number}) => {
+export const useGetReviews = () => {
   const [rating, setRating] = useState<string>("0");
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const getRating = async () => {
+  const getRating = async ({agendaId}:{agendaId: number}) => {
     try {
       setLoading(true);
       const { data, status } = await getRequest<string>({
@@ -381,9 +381,6 @@ export const useGetReviews = ({agendaId}:{agendaId?: number}) => {
     }
   };
 
-  useEffect(() => {
-    getRating();
-  }, [agendaId]);
 
   return { rating, isLoading, getRating };
 
