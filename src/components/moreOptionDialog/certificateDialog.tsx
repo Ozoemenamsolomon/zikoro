@@ -18,10 +18,10 @@ import {
 } from "@/hooks/services/certificate";
 import { TCertificate } from "@/types/certificates";
 // import { DialogClose } from "../ui/dialog";
-import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
 import { DialogClose } from "../ui/dialog";
 import { useParams } from "next/navigation";
 import { isPast } from "date-fns";
+import { MoreOptionsProps } from "@/app/(mainApp)/(dashboard)/event/[eventId]/(home)/people/_reusable/FirstSection";
 
 const CertificateDialog: React.FC<MoreOptionsProps> = ({
   attendees,

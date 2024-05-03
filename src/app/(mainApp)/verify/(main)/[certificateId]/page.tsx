@@ -5,13 +5,8 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  useGetAttendeeCertificate,
-  useVerifyAttendeeCertificate,
-} from "@/hooks/services/certificate";
-import { TFullCertificate } from "@/types/certificates";
+import { useVerifyAttendeeCertificate } from "@/hooks";
 import { formatDateToHumanReadable } from "@/utils/date";
-import { SerializedNodes } from "@craftjs/core";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import Image from "next/image";
@@ -371,7 +366,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
           </div>
         </>
       ) : !isLoading && !certificate ? (
-        <div>this certificate dos not exist</div>
+        <div>this certificate does not exist</div>
       ) : (
         <div className="flex items-center justify-center h-screen">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
