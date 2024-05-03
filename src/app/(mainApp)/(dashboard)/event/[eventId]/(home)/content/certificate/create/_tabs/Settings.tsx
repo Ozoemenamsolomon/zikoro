@@ -314,7 +314,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           <Input
             placeholder="Enter event title"
             type="datetime-local"
-            value={new Date(settings.publishOn)}
+            value={new Date(settings.publishOn).toISOString()}
             className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
             onInput={(date) => editSettings("publishOn", date)}
           />

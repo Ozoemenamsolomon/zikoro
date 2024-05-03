@@ -7,6 +7,7 @@ export type TAttendeeCertificate = {
   id?: number;
   created_at: string;
   eventId: number;
+  eventAlias: string;
   attendeeEmail: string;
   certificateId: string;
   CertificateGroupId: number;
@@ -16,8 +17,8 @@ export type TAttendeeCertificate = {
 };
 
 export type TIssuedCertificate = TAttendeeCertificate & {
-    certificate: TCertificate
-}
+  certificate: TCertificate;
+};
 
 type ValuePiece = Date | null;
 
