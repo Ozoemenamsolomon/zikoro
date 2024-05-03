@@ -37,12 +37,12 @@ const First = ({
         }) as any[][];
         console.log(jsonData);
 
-        if (jsonData[0].length > 5) {
+        if (jsonData[0].length >= 4) {
           setExcelResult(jsonData);
           setStep(1);
         } else {
           toast({
-            description: "There should be at least five columns",
+            description: "There should be at least four columns: first name, last name, email, phone number",
             variant: "destructive",
           });
         }

@@ -157,9 +157,14 @@ const Second = ({
           </div>
         ))}
       </div>
-      <Button type="submit" className="bg-basePrimary w-full">
-        Continue
-      </Button>
+      <div className="flex gap-4">
+        <Button onClick={() => setStep(1)} className="bg-basePrimary w-full">
+          Back
+        </Button>
+        <Button type="submit" className="bg-basePrimary w-full">
+          Continue
+        </Button>
+      </div>
     </form>
   );
 };

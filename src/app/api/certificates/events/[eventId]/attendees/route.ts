@@ -13,28 +13,28 @@ export async function GET(
       const { eventId } = params;
 
       const {
-        data: certificateData,
+        data,
         error: certificateError,
         status,
       } = await supabase
         .from("attendeeCertificates")
         .select("*")
-        .eq("eventId", eventId);
+        .eq("eventAlias", eventId);
 
-      console.log(certificateData);
+      console.log(data);
 
       if (certificateError) throw certificateError;
 
-      const attendeeIds = new Set(
-        certificateData.flatMap(({ attendeeId }) => [].concat(attendeeId))
-      );
+      // const attendeeIds = new Set(
+      //   certificateData.flatMap(({ attendeeId }) => [].concat(attendeeId))
+      // );
 
-      const { data, error } = await supabase
-        .from("attendees")
-        .select("*")
-        .in("id", Array.from(attendeeIds));
+      // const { data, error } = await supabase
+      //   .from("attendees")
+      //   .select("*")
+      //   .in("id", Array.from(attendeeIds));
 
-      if (error) throw error;
+      // if (error) throw error;
 
       return NextResponse.json(
         { data },
