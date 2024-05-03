@@ -44,7 +44,6 @@ const Third = ({
 
       Array.from(headers).forEach(([key, value]) => {
         const rowValue = headerMap.get(value);
-        if (!rowValue) return;
         attendee[key.value] = row[rowValue];
       });
 
@@ -57,9 +56,10 @@ const Third = ({
   };
 
   const showRow = (value: any, row: any[]) => {
+    if (!value) return;
     const rowValue = headerMap.get(value);
-    console.log(value, rowValue);
-    return !!rowValue && row[rowValue];
+    console.log(value, rowValue, row[rowValue]);
+    return row[rowValue];
   };
 
   console.log(data, Array.from(headerMap));

@@ -2,10 +2,13 @@
 import { useGetAttendeesWithFavourites } from "@/hooks/services/attendee";
 import { HeartFill } from "styled-icons/bootstrap";
 import ReusablePeopleComponent from "../_reusable";
+import { getCookie } from "@/hooks";
+import { TUser } from "@/types";
 
 export default function page() {
+  const user = getCookie<TUser>("user");
   const { attendees, isLoading, error, getAttendees } =
-    useGetAttendeesWithFavourites();
+    useGetAttendeesWithFavourites({ userId: user.id });
 
   if (attendees.length === 0 || isLoading)
     return (
