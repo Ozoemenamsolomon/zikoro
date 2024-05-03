@@ -22,7 +22,7 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
   return (
     <>
       {eventDetail ? (
-        <div className="w-full h-full bg-gray-50  overflow-y-auto ">
+        <div className="w-full h-full bg-gray-50 fixed overflow-y-auto ">
           <div className="w-full bg-white px-4 sm:px-6 py-4">
             <Image
               src={data?.organizationLogo || "/logo.png"}
