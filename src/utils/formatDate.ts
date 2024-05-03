@@ -154,7 +154,7 @@ export function formatDate(dateString: string): string {
         const weekday = date.toLocaleString("en-GB", { weekday: "short" });
 
         // Return the formatted date string
-        return `${day} ${weekday}, ${month} ${year}`;
+        return `${weekday} ${day}, ${month} ${year}`;
     }
 
     

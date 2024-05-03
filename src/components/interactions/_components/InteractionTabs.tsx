@@ -31,7 +31,7 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
 
   return (
     <>
-      <nav className="bg-white w-full flex overflow-x-auto items-center justify-between px-4 py-4 h-max border-b">
+      <nav className="bg-white w-full flex overflow-x-auto no-scrollbar items-center justify-between px-4 py-4 h-max border-b">
         <ul className="flex gap-x-9 text-gray-700">
           {links.map(({ name, href }) => {
             return (
@@ -40,7 +40,7 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
                   pathname.includes(href) ? "text-basePrimary  font-medium" : ""
                 }`}
               >
-                <Link href={`/event/${eventId}/interaction/${href}`}>{name}</Link>
+                <Link href={`/event/${eventId}/interaction/${href}`} className="whitespace-nowrap">{name}</Link>
               </li>
             );
           })}

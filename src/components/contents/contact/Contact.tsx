@@ -45,7 +45,7 @@ function Contact({ eventId }: { eventId: string }) {
   async function onSubmit(values: any) {
     //  console.log({ values });
 
-    let logoUrl:any  = "";
+    let logoUrl: any = "";
 
     if (values?.organizationLogo) {
       const promise = new Promise(async (resolve) => {
@@ -126,29 +126,6 @@ function Contact({ eventId }: { eventId: string }) {
                 {loading && <LoaderAlt size={22} className="animate-spin" />}
                 <Check2 size={22} className="text-basePrimary" />
                 <p>Save</p>
-              </Button>
-              <Button
-                // type="submit"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.open(`/events/content/${eventId}/preview`, "_blank");
-                }}
-                className="text-gray-50 bg-basePrimary gap-x-2"
-              >
-                <Eye size={22} />
-                <p>Preview</p>
-              </Button>
-              <Button
-                onClick={(e) => {
-                  //   e.preventDefault();
-                  e.stopPropagation();
-                }}
-                type="submit"
-                className="hidden text-basePrimary border border-basePrimary gap-x-2"
-              >
-                <Download size={22} />
-                <p>Publish</p>
               </Button>
             </div>
           </div>

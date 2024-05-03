@@ -149,7 +149,7 @@ function Widget({
                   company={""}
                   image={attendee?.profilePicture || null}
                   name={`${attendee?.firstName} ${attendee?.lastName}`}
-                  profession={attendee?.jobTitle ?? "Job"}
+                  profession={attendee?.jobTitle ?? ""}
                   email={attendee?.email ?? ""}
                   key={index}
                 />

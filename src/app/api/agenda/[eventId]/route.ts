@@ -12,7 +12,7 @@ interface TAgenda {
   endDateTime: string;
   Track: string;
   sessionType: string;
-  description:string;
+  description: string;
   sessionVenue: string;
   sessionUrl: string;
   sessionSpeakers: any[];

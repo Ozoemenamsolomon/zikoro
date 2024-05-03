@@ -381,9 +381,7 @@ export const useGetReviews = () => {
     }
   };
 
-
   return { rating, isLoading, getRating };
-
 }
 export const useCreateMyAgenda = () => {
   const [isLoading, setLoading] = useState<boolean>(false);

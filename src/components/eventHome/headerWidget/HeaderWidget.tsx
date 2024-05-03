@@ -53,6 +53,7 @@ export function HeaderWidget({
         id: org?.id,
         name: org?.organizationName,
         plan: org?.subscriptionPlan,
+        email: org?.eventContactEmail
       });
       router.push(`/events/${org?.id}?organization=${org?.organizationName}`);
     }
@@ -64,6 +65,7 @@ export function HeaderWidget({
         id: org?.id,
         name: org?.organizationName,
         plan: org?.subscriptionPlan,
+        email: org?.eventContactEmail
       }); 
     }
   }, [selectedOrg, formattedList]);

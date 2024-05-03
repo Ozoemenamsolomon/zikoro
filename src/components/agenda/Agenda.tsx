@@ -100,7 +100,7 @@ export default function Agenda({
                 href={`/event/${eventId}/agenda?date=${
                   activeDateQuery || currentEvent?.startDate
                 }`}
-                className={`pl-2 ${queryParam === null && "text-basePrimary"}`}
+                className={`pl-2 ${(!queryParam || queryParam === null) && "text-basePrimary"}`}
               >
                 Agenda
               </Link>

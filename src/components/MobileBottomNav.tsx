@@ -14,7 +14,7 @@ import {Bell} from "@styled-icons/feather/Bell"
 import { getCookie } from "@/hooks";
 
 
-export function MobileBottomNav({ toggleSideNav }: {  toggleSideNav:() => void }) {
+export function MobileBottomNav({ toggleSideNav, isHaveEvent }: {isHaveEvent?:boolean;  toggleSideNav:() => void }) {
   const pathname = usePathname();
   const event = getCookie("currentEvent")
   return (

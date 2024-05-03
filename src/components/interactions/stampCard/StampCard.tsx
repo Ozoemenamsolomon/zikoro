@@ -42,7 +42,7 @@ export default function StampCard({ eventId }: { eventId: string }) {
       const filtered = data.filter((partner) => {
         const isPresent =
           value.search.length === 0 ||
-          partner.exhibtionHall
+          partner.exhibitionHall
             .toLowerCase()
             .includes(value.search.toLowerCase());
 

@@ -27,6 +27,8 @@ import { Event } from "@/types";
 import { usePathname, useRouter } from "next/navigation";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { ArrowBack } from "@styled-icons/material-outlined/ArrowBack";
+import {formatTime, formatDate} from "@/utils"
+
 type TChosenAttendee = {
   firstName: string;
   lastName: string;
@@ -255,6 +257,16 @@ export function BookEvent({
   async function onSubmit(
     values: z.infer<typeof eventBookingValidationSchema>
   ) {
+
+      // maually checking
+      if (!values.aboutUs) {
+        form.setError("aboutUs", {
+          type: "manual",
+          message: "Please Select an Option",
+        });
+  
+        return; /// stop submission
+      }
     // maually checking for "others"
     if (values.aboutUs === "others" && !values.others) {
       form.setError("others", {
@@ -618,8 +630,8 @@ export function BookEvent({
                               >
                                 {v?.validity ? (
                                   <p className="text-xs sm:text-mobile">{`Valid till ${
-                                    v?.validity?.split("T")[0]
-                                  } ${v?.validity?.split("T")[1]}`}</p>
+                                    formatDate(v?.validity || "0")
+                                  } ${formatTime(v?.validity || "0")}`}</p>
                                 ) : (
                                   <p className="w-1 h-1"></p>
                                 )}
@@ -853,7 +865,7 @@ export function BookEvent({
 
                     <div className="w-full flex flex-col items-start justify-start gap-y-2">
                       <p className="mb-4">How do you hear about us?</p>
-
+                      {form.formState?.errors?.aboutUs?.message &&  <p className="text-xs  text-red-500">{form.formState.errors.aboutUs?.message}</p>}           
                       {["instagram", "facebook", "x", "linkedIn", "others"].map(
                         (value) => (
                           <FormField
@@ -874,6 +886,7 @@ export function BookEvent({
                           />
                         )
                       )}
+                   
                     </div>
                     {form.watch("aboutUs") === "others" && (
                       <FormField

@@ -83,7 +83,7 @@ export const useGetEvents = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<Event[]>({
-        endpoint: `events`,
+        endpoint: `/events`,
       });
 
       if (status !== 200) {

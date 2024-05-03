@@ -154,7 +154,6 @@ export function AddPartners({
           phoneNumber: phoneCountryCode + values.phoneNumber,
           boothStaff: selectedAttendees,
           companyLogo: image,
-          partnerAlias, //remobve
           media: video,
         }
       : {

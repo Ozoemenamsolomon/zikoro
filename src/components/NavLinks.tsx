@@ -9,9 +9,11 @@ import { Button } from "@/components";
 export const NavLinks = ({
   query,
   id,
+  isHaveEvent
 }: {
   id: string | string[];
   query: string | null;
+  isHaveEvent?:boolean;
 }) => {
   const pathname = usePathname();
 

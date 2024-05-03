@@ -53,8 +53,8 @@ export function SessionCard({
           <p>Live</p>
         </div>
       )}
-      <div className={cn("flex flex-col md:col-span-2 pb-3 md:pb-0 w-full pr-6 border-b-2 border-r-0 md:border-b-0 md:border-r-2 border-basePrimary items-start justify-start gap-y-1",
-       isReception && " md:col-span-full  md:pb-3 w-full  md:border-b-2 md:border-r-0")}>
+      <div className={cn("flex flex-col md:col-span-2 pb-3 md:pb-0 w-fit md:w-full md:pr-6 border-b-2 border-r-0 md:border-b-0 md:border-r-2 border-basePrimary items-start justify-start gap-y-1",
+       isReception && " md:col-span-full  md:pb-3 w-fit md:pr-0 md:border-b-2 md:border-r-0")}>
         <p className="font-semibold text-lg sm:text-[1.6rem]">{startTime}</p>
         <p className="font-normal text-sm sm:text-base">{endTime}</p>
       </div>

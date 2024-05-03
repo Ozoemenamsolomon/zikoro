@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { Button, MobileBottomNav, NavLinks } from ".";
 import Link from "next/link";
@@ -16,13 +16,22 @@ import {
   LogOutIcon,
   WhatsappIcon,
 } from "@/constants";
-import { getCookie, useValidateUser } from "@/hooks";
+import { getCookie, useGetEvents, useValidateUser } from "@/hooks";
 
 export function SideBarLayout() {
   const [isNav, setNav] = useState(false);
   const param = useSearchParams();
   const [isOpen, setOpen] = useState(false);
   const query = param.get("organization");
+  const {events} = useGetEvents()
+  const user =  getCookie("user")
+  
+  // get events
+  const isHaveEvent = useMemo(() => {
+    return events?.some(({createdBy}) => createdBy === String(user?.id))
+  },[events])
+
+
 
   function onOpen() {
     setOpen(true);
@@ -47,9 +56,10 @@ export function SideBarLayout() {
         onClose={onShot}
         onOpen={onOpen}
         query={query}
+        isHaveEvent={isHaveEvent}
       />
       {isOpen && <EventFeedBack close={onShot} />}
-      <MobileBottomNav toggleSideNav={onClose} />
+      <MobileBottomNav toggleSideNav={onClose} isHaveEvent={isHaveEvent} />
     </>
   );
 }
@@ -60,12 +70,14 @@ function SideNavs({
   query,
   onClose,
   onOpen,
+  isHaveEvent
 }: {
   close: () => void;
   onClose: () => void;
   isNav: boolean;
   query: string | null;
   onOpen: () => void;
+  isHaveEvent?:boolean
 }) {
   const { organizationId } = useParams();
   const organization = getCookie("currentOrganization");
@@ -103,7 +115,7 @@ function SideNavs({
             className="w-[150px] h-[40px] mx-4"
           />
           {/**nav links */}
-          <NavLinks query={query} id={organizationId} />
+          <NavLinks isHaveEvent={isHaveEvent} query={query} id={organizationId} />
         </div>
         <div className="flex items-start justify-start w-full flex-col gap-4 border-t p-4 border-basebody">
           <div className="w-full flex items-center gap-x-2 ">

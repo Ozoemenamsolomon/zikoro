@@ -4,10 +4,9 @@ import { Button } from "@/components";
 import { Lock } from "@styled-icons/fa-solid/Lock";
 import { PaystackButton } from "react-paystack";
 import { useState } from "react";
-import { OrganizerContact, TPayment } from "@/types";
+// import { OrganizerContact, TPayment } from "@/types";
 import { paymentConfig } from "@/hooks/common/usePayStackPayment";
 import {
-  getCookie,
   useGetEventTransactionDetail,
   useUpdateTransactionDetail,
 } from "@/hooks";
@@ -38,12 +37,12 @@ export function Payment({
 
   const eventData: any = query.get("eventData");
   const parsedData: QueryData = JSON.parse(eventData);
- // console.log({ parsedData });
+  // console.log({ parsedData });
 
-  const user = getCookie("user");
+ // const user = getCookie("user");
   const config = paymentConfig({
     reference: data?.eventRegistrationRef,
-    email: user?.userEmail!,
+    email: Array.isArray(data?.attendeesDetails) ?  data?.attendeesDetails[0]?.email : "",
     amount: Number(parsedData?.total),
   });
 
@@ -149,20 +148,20 @@ export function Payment({
             <h3>Orders</h3>
 
             <div className="flex items-center justify-between w-full">
-              <p>{`${data?.attendees}x SubTotal`}</p>
+              <p>{`${data?.attendees ?? "0"}x SubTotal`}</p>
               {parsedData?.total && (
                 <p>{`₦${(
                   Number(parsedData?.total) + data?.discountValue
-                )?.toLocaleString()}`}</p>
+                )?.toLocaleString() ?? 0}`}</p>
               )}
             </div>
             <div className="flex items-center justify-between w-full">
-              <p>{`${data?.attendees}x Discount`}</p>
-              <p>{`-₦${data?.discountValue?.toLocaleString()}`}</p>
+              <p>{`${data?.attendees ?? "0"}x Discount`}</p>
+              <p>{`-₦${data?.discountValue?.toLocaleString() ?? 0}`}</p>
             </div>
             <div className="flex items-center justify-between w-full">
               <p>Total</p>
-              <p>{`₦${Number(parsedData?.total || 0)?.toLocaleString()}`}</p>
+              <p>{`₦${Number(parsedData?.total || 0)?.toLocaleString() ?? 0}`}</p>
             </div>
           </div>
           <div className="w-full flex items-center justify-center">
@@ -198,7 +197,7 @@ export function Payment({
           toggleSuccessModal={toggleSuccessModal}
           reference={data?.eventRegistrationRef}
           eventTitle={data?.event}
-          userEmail={user?.userEmail}
+          userEmail={""}
         />
       )}
     </>
@@ -252,14 +251,14 @@ function PaymentSuccess({
           <h1 className="text-lg font-bold sm:text-3xl">{eventTitle}</h1>
         </div>
 
-        <div className="grid grid-cols-1 items-start md:grid-cols-2 gap-3 md:gap-6 md:items-center w-full">
-          <div className="flex flex-col gap-y-2 items-start justify-start">
+        <div className="grid grid-cols-1 items-start  gap-3  w-full">
+          <div className="hidden flex-col gap-y-2 items-start justify-start">
             <p className="font-semibold text-lg uppercase">Payment Info</p>
             <p>{userEmail}</p>
           </div>
           <div className="flex flex-col gap-y-2 items-start justify-start">
             <p className="font-semibold text-lg uppercase">
-              Number of Participants
+              Number of Attendees
             </p>
             <p>{count}</p>
           </div>
@@ -273,7 +272,9 @@ function PaymentSuccess({
           </div>
         </div>
 
-        <p>Attendees will receive a confirmation email with details of the event.</p>
+        <p>
+          Attendees will receive a confirmation email with details of the event.
+        </p>
       </div>
     </div>
   );
