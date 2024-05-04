@@ -469,15 +469,15 @@ export async function POST(req: NextRequest) {
       };
 
       await transporter.sendMail(mailData, function (err: any, info: any) {
-      //  console.log({ attendee: registeredAttendees[0], mailData });
+        //  console.log({ attendee: registeredAttendees[0], mailData });
         if (err) {
-        //  console.log({ error });
+          //  console.log({ error });
           check += " error";
           throw err;
         } else {
           check += " success";
-        //  console.log({ info });
-         // console.log({ check });
+          //  console.log({ info });
+          // console.log({ check });
         }
       });
 
@@ -505,18 +505,18 @@ export async function POST(req: NextRequest) {
   } else {
     return NextResponse.json({ error: "Method not allowed" });
   }
+}
 
-  // Function to generate QR code
-  async function generateQRCode(user: string) {
-    try {
-      return await QRCode.toDataURL(user.toString());
-    } catch (error) {
-      throw new Error("Error generating QR code: " + error);
-    }
+// Function to generate QR code
+export async function generateQRCode(user: string) {
+  try {
+    return await QRCode.toDataURL(user.toString());
+  } catch (error) {
+    throw new Error("Error generating QR code: " + error);
   }
 }
 
-const convertToICSFormat = (
+export const convertToICSFormat = (
   dateTimeString: string
 ): { start: number[]; duration: { hours: number; minutes: number } } => {
   const dateTime = new Date(dateTimeString);

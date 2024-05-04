@@ -209,7 +209,7 @@ export default function SecondSection({
           },
         ],
         certificateInfo: {
-          eventId: eventCertificate.eventId,
+          eventAlias: eventCertificate.eventId,
           CertificateGroupId: eventCertificate.id,
           CertificateName: eventCertificate.certificateName,
         },
@@ -229,6 +229,8 @@ export default function SecondSection({
     });
 
     console.log(newAttendeeCertificate);
+
+    await getAttendeeCertificates();
 
     // if (newAttendeeCertificate) {
     //   router.push(`/verify/${newAttendeeCertificate.certificateId}`);
@@ -994,7 +996,6 @@ export default function SecondSection({
                     <DropdownMenuItem key={eventCertificate.id}>
                       <button
                         onClick={() => releaseCertificate(eventCertificate)}
-                        // onClick={() => setCertificateId(eventCertificate.id)}
                       >
                         {eventCertificate.certificateName}
                       </button>

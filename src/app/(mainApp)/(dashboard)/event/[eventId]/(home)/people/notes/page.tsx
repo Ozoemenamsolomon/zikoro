@@ -1,11 +1,14 @@
-"use client"
+"use client";
 import React from "react";
 import { useGetAttendeesWithNotes } from "@/hooks/services/attendee";
 import ReusablePeopleComponent from "../_reusable";
+import { TUser } from "@/types";
+import { getCookie } from "@/hooks";
 
 export default function page() {
+  const user = getCookie<TUser>("user");
   const { attendees, isLoading, error, getAttendees } =
-    useGetAttendeesWithNotes();
+    useGetAttendeesWithNotes({ userId: user.id });
 
   if (attendees.length === 0 || isLoading)
     return (

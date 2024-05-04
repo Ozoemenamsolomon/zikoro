@@ -374,7 +374,7 @@ const page = () => {
               lastEdited: new Date(),
             }
           : {
-              eventId,
+              eventAlias: eventId,
               badgeDetails: { ...details, craftHash: hashRef.current },
               badgeSettings: settings,
               badgeBackground: details.background || "",

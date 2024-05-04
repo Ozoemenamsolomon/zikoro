@@ -2,10 +2,13 @@
 import React from "react";
 import ReusablePeopleComponent from "../_reusable";
 import { useGetAttendeesWithCertificates } from "@/hooks/services/attendee";
+import useEventStore from "@/store/globalEventStore";
 
 export default function page() {
+  const currentEvent = useEventStore((state) => state.event);
+
   const { attendees, isLoading, error, getAttendees } =
-    useGetAttendeesWithCertificates();
+    useGetAttendeesWithCertificates({ eventId: currentEvent.eventAlias });
 
   if (attendees.length === 0 || isLoading)
     return (

@@ -18,9 +18,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import lz from "lzutf8";
+import useEventStore from "@/store/globalEventStore";
+import { replaceSpecialText } from "@/utils/helpers";
 
 const AttendeeBadge = ({ attendee }: { attendee: TAttendee }) => {
-  const { badges, isLoading } = useGetBadges({ eventId: 5 });
+  const currentEvent = useEventStore((state) => state.event);
+  const { badges, isLoading } = useGetBadges({
+    eventId: currentEvent?.eventAlias,
+  });
 
   const [selectedBadge, setBadge] = useState<TBadge | null>(null);
 
@@ -40,8 +45,17 @@ const AttendeeBadge = ({ attendee }: { attendee: TAttendee }) => {
 
   useEffect(() => {
     if (!selectedBadge) return;
-    hashRef.current = lz.decompress(
+    const initData = lz.decompress(
       lz.decodeBase64(selectedBadge.badgeDetails.craftHash)
+    );
+
+    hashRef.current = JSON.parse(
+      replaceSpecialText(JSON.stringify(initData), {
+        selectedBadge,
+        attendee,
+        event: currentEvent,
+        organization: selectedBadge.event.organization,
+      })
     );
     console.log(
       "hash set",
@@ -117,68 +131,7 @@ const AttendeeBadge = ({ attendee }: { attendee: TAttendee }) => {
             id="badge"
           >
             {!isLoading ? (
-              <>
-                {hashRef.current && (
-                  <Frame
-                    data={{
-                      ROOT: {
-                        type: { resolvedName: "Container" },
-                        isCanvas: true,
-                        props: {
-                          className: "px-12 h-full w-full",
-                          "data-cy": "root-container",
-                        },
-                        displayName: "Container",
-                        custom: {},
-                        hidden: false,
-                        nodes: ["fwxI1M2zXh", "gP2wtYjklF"],
-                        linkedNodes: {},
-                      },
-                      fwxI1M2zXh: {
-                        type: { resolvedName: "Text" },
-                        isCanvas: false,
-                        props: {
-                          text: "heading",
-                          fontSize: 50,
-                          isBold: true,
-                          isItalic: false,
-                          color: "#ffffff",
-                          isUnderline: false,
-                          tagName: "h1",
-                          textAlign: "center",
-                          textTransform: "uppercase",
-                          pageX: 32,
-                          pageY: 89,
-                          isNotEditable: false,
-                        },
-                        displayName: "Text",
-                        custom: {},
-                        parent: "ROOT",
-                        hidden: false,
-                        nodes: [],
-                        linkedNodes: {},
-                      },
-                      gP2wtYjklF: {
-                        type: { resolvedName: "BadgeQRCode" },
-                        isCanvas: false,
-                        props: {
-                          url: "this",
-                          size: 128,
-                          color: "#00000",
-                          pageX: 88,
-                          pageY: 146,
-                        },
-                        displayName: "CertificateQRCode",
-                        custom: {},
-                        parent: "ROOT",
-                        hidden: false,
-                        nodes: [],
-                        linkedNodes: {},
-                      },
-                    }}
-                  ></Frame>
-                )}
-              </>
+              <>{hashRef.current && <Frame data={hashRef.current}></Frame>}</>
             ) : (
               <div className="h-full w-full flex items-center justify-center">
                 <div className="animate-spin">

@@ -14,8 +14,7 @@ import {
   useGetEvent,
   useGetEventAgendas,
 } from "@/hooks";
-import { useParams } from "next/navigation";
-import { useEventContext } from "../../eventContext";
+import useEventStore from "@/store/globalEventStore";
 
 interface ReusablePeopleComponentProps {
   attendees: TAttendee[];
@@ -38,10 +37,9 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   console.log(attendees, "attendees");
   const user = getCookie("user");
-  const event = getCookie("event");
-  const { event: evente, eventIsLoading, getEvent } = useEventContext();
+  const event = useEventStore((state) => state.event);
 
-  console.log(evente);
+  console.log(event);
 
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee>(null);
 
@@ -54,7 +52,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     isLoading: eventAgendasIsLoading,
     getEventAgendas,
   } = useGetEventAgendas({
-    eventId: event.id,
+    eventId: event?.id || 0,
   });
 
   useLayoutEffect(() => {

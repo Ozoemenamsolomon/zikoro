@@ -41,7 +41,7 @@ import lz from "lzutf8";
 import { exportComponentAsPNG } from "react-component-export-image";
 import { useToPng } from "@hugocxl/react-to-image";
 import CertificateQRCode from "@/components/certificate/QRCode";
-import { useGetEvent } from "@/hooks/services/events";
+import { useGetEvent } from "@/hooks";
 import {
   Dialog,
   DialogClose,

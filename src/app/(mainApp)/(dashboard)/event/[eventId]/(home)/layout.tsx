@@ -1,12 +1,16 @@
 "use client";
 
 import { Topbar } from "@/components";
-import { saveCookie, useGetEvent } from "@/hooks";
+import { getCookie, saveCookie, useGetEvent } from "@/hooks";
+import useEventStore from "@/store/globalEventStore";
+import { Event } from "@/types";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { eventId } = useParams();
+  // const currentEvent = useEventStore((state) => state.event);
+  const setEvent = useEventStore((state) => state.setEvent);
 
   const { event, getEvent, isLoading } = useGetEvent({
     eventId,
@@ -14,10 +18,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    console.log("here");
     if (isLoading || !event) return;
-    console.log(event.createdBy);
-    saveCookie("event", event);
+    setEvent(event);
   }, [isLoading, eventId]);
 
   return (
@@ -26,11 +28,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Topbar eventId={eventId} />
       </div>
 
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="w-full h-full pt-12">{children}</div>
-      )}
+      <div className="w-full h-full pt-12">
+        {isLoading ? <p>Loading...</p> : children}
+      </div>
     </div>
   );
 }

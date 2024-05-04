@@ -46,7 +46,7 @@ export async function GET(
         .from("attendeeCertificates")
         .select("*")
         .eq("attendeeId", attendeeId)
-        .eq("eventId", eventId);
+        .eq("eventAlias", eventId);
 
       if (error) throw error;
 
@@ -88,7 +88,7 @@ export async function POST(
         .from("attendeeCertificates")
         .delete()
         .eq("attendeeId", attendeeId)
-        .eq("eventId", eventId)
+        .eq("eventAlias", eventId)
         .in("CertificateGroupId", certificateIds);
 
       if (error) throw error;
