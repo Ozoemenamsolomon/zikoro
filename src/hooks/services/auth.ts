@@ -154,9 +154,7 @@ export function useRegistration() {
         email: values.email,
         password: values.password,
         options: {
-          emailRedirectTo: `${location.origin}/auth/callback/${
-            values?.email
-          }/${new Date().toISOString()}`,
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback/${values?.email}/${new Date().toISOString()}`,
         },
       });
 
