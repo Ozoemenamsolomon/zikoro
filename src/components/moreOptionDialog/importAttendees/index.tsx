@@ -3,7 +3,7 @@ import First from "./first";
 import Second from "./second";
 import Third from "./third";
 import { TAttendee } from "@/types/attendee";
-import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
+import { MoreOptionsProps } from "@/app/(mainApp)/(dashboard)/event/[eventId]/(home)/people/_reusable/FirstSection";
 
 export type THeaders = {
   firstName: number | null;
@@ -241,6 +241,8 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
           excelHeaders={excelResult[0]}
           data={excelResult.filter((row, index) => index > 0)}
           headers={headers}
+          getAttendees={getAttendees}
+          setStep={setStep}
           getAttendees={getAttendees}
         />
       )}
