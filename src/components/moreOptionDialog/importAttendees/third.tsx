@@ -1,9 +1,9 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { THeaders } from "./";
 // import { DialogClose } from "../../ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TAttendee } from "@/types/attendee";
-import { useUpdateAttendees } from "@/hooks/services/attendee";
+import { useUploadAttendees } from "@/hooks/services/attendee";
 import { DialogClose } from "@/components/ui/dialog";
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
@@ -14,6 +14,7 @@ const Third = ({
   headers,
   getAttendees,
   excelHeaders,
+  setStep
 }: {
   data: any[][];
   excelHeaders: any[];
@@ -22,11 +23,12 @@ const Third = ({
     any
   >;
   getAttendees: () => Promise<void>;
+  setStep: Dispatch<SetStateAction<number>>;
 }) => {
   const headerMap = new Map(
     excelHeaders.map((header, index) => [header, index])
   );
-  const { updateAttendees } = useUpdateAttendees();
+  const { uploadAttendees } = useUploadAttendees();
 
   const user = getCookie<TUser>("user");
   const event = useEventStore((state) => state.event);
@@ -51,7 +53,7 @@ const Third = ({
     });
 
     console.log(payload);
-    await updateAttendees({ payload });
+    await uploadAttendees({ payload });
     await getAttendees();
   };
 

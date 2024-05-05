@@ -47,10 +47,12 @@ import useDisclose from "@/hooks/common/useDisclose";
 import {
   getCookie,
   useCreateAttendee,
+  useGetBadges,
   useGetEvent,
   useGetEventAgendas,
 } from "@/hooks";
 import { TAgenda } from "@/types";
+import SlideToReveal from "@/components/SlideToReveal";
 
 export default function SecondSection({
   attendee,
@@ -129,6 +131,12 @@ export default function SecondSection({
     useUpdateAttendeeTags({
       attendeeId: id,
     });
+
+  const { badges, isLoading: badgeIsLoading } = useGetBadges({
+    eventId: event.eventAlias,
+  });
+
+  const [selectedBadge, setBadge] = useState<TBadge | null>(null);
 
   const {
     attendeeCertificates,
@@ -274,20 +282,29 @@ export default function SecondSection({
 
   const { createAttendee } = useCreateAttendee();
 
+  const sliderBtnRef = useRef<HTMLButtonElement>(null);
+
   return (
     <div className="h-fit space-y-4">
       <div
         ref={parentCardRef}
-        className="bg-transparent w-full [perspective:1000px] h-[230px]"
+        className="bg-transparent w-full [perspective:1000px] h-[250px]"
       >
-        <button
-          onClick={flipCard}
+        <div
           className={`relative w-full h-full text-center duration-700 transition-transform [transform-style:_preserve-3d] ${
             cardIsFlipped ? "[transform:_rotateY(180deg)]" : ""
           }`}
         >
           <section className="absolute w-full h-full [backface-visibility:_hidden] top-0">
             <div className="relative z-[1000]">
+              <div className="absolute top-0 left-0">
+                <button
+                  onClick={flipCard}
+                  className="bg-gray-200 [border-bottom-right-radius:75%] p-4 text-xs font-medium text-gray-700"
+                >
+                  Flip
+                </button>
+              </div>
               <div className="absolute top-2 right-4">
                 <button
                   onClick={(e) => {
@@ -482,11 +499,23 @@ export default function SecondSection({
                 </span>
               </div> */}
                   </div>
+                  <SlideToReveal action={() => console.log("hello world")} />
                 </div>
               </div>
             </div>
           </section>
           <section className="[transform:_rotateY(180deg)] absolute [backface-visibility:_hidden] top-0 h-full w-full bg-gray-50 flex gap-2">
+            <div className="relative z-[1000]">
+              <div className="absolute top-0 left-0">
+                <button
+                  onClick={flipCard}
+                  className="bg-gray-200  [border-top-right-radius:75%]
+                  [border-bottom-right-radius:75%] p-4 text-xs font-medium text-gray-700"
+                >
+                  Flip
+                </button>
+              </div>
+            </div>
             <div className="pt-8 pb-4 px-2 md:px-6 grid md:grid-cols-2 md:justify-center md:items-center gap-2 md:gap-8 w-full">
               <div className="flex flex-col gap-4 flex-1 h-full col-span-1">
                 {phoneNumber && (
@@ -734,7 +763,7 @@ export default function SecondSection({
               </div>
             </div>
           </section>
-        </button>
+        </div>
       </div>
       <section className="space-y-6 p-4 pt-0">
         {user &&
@@ -911,40 +940,56 @@ export default function SecondSection({
           </section>
         )}
       <section className="flex justify-between items-center px-2">
-        {user &&
+        {!badgeIsLoading &&
+          badges.length > 0 &&
+          user &&
           (String(event?.createdBy) === String(user.id) ||
             email === user.userEmail) && (
             <Dialog>
-              <DialogTrigger>
-                <div className=" flex flex-col items-center gap-2 w-fit">
-                  <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="25"
-                      height="24"
-                      viewBox="0 0 25 24"
-                      fill="none"
-                    >
-                      <path
-                        d="M15.8926 18L16.0659 21.5156L12.5099 19.0444L8.93392 21.518L9.1074 18H7.60557L7.34673 23.25H9.06667L12.5079 20.8697L15.9332 23.25H17.6532L17.3944 18H15.8926ZM19.9723 7.26163L19.8694 5.0091L17.9703 3.79377L16.7547 1.89444L14.5022 1.79132L12.5 0.754395L10.4978 1.79155L8.24523 1.89468L7.02967 3.79377L5.13053 5.0091L5.02768 7.26163L3.99048 9.26385L5.02768 11.2661L5.13081 13.5186L7.02967 14.7339L8.24504 16.6333L10.4976 16.7362L12.5 17.7733L14.5022 16.7362L16.7547 16.6333L17.9701 14.7339L19.8694 13.5188L19.9723 11.2663L21.0095 9.26404L19.9723 7.26163ZM18.4889 10.8686L18.4062 12.674L16.884 13.648L15.9099 15.1703L14.1045 15.2528L12.5 16.084L10.8953 15.2528L9.08987 15.1703L8.11581 13.648L6.59373 12.674L6.51128 10.8686L5.67967 9.26385L6.51109 7.65941L6.59373 5.85379L8.11581 4.87972L9.08987 3.3575L10.8953 3.275L12.5 2.44372L14.1047 3.27496L15.9101 3.35746L16.8842 4.87968L18.4062 5.85379L18.4887 7.65918L19.3203 9.26385L18.4889 10.8686Z"
-                        fill="black"
-                      />
-                    </svg>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <div className=" flex flex-col items-center gap-2 w-fit">
+                    <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex items-center justify-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="25"
+                        height="24"
+                        viewBox="0 0 25 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M15.8926 18L16.0659 21.5156L12.5099 19.0444L8.93392 21.518L9.1074 18H7.60557L7.34673 23.25H9.06667L12.5079 20.8697L15.9332 23.25H17.6532L17.3944 18H15.8926ZM19.9723 7.26163L19.8694 5.0091L17.9703 3.79377L16.7547 1.89444L14.5022 1.79132L12.5 0.754395L10.4978 1.79155L8.24523 1.89468L7.02967 3.79377L5.13053 5.0091L5.02768 7.26163L3.99048 9.26385L5.02768 11.2661L5.13081 13.5186L7.02967 14.7339L8.24504 16.6333L10.4976 16.7362L12.5 17.7733L14.5022 16.7362L16.7547 16.6333L17.9701 14.7339L19.8694 13.5188L19.9723 11.2663L21.0095 9.26404L19.9723 7.26163ZM18.4889 10.8686L18.4062 12.674L16.884 13.648L15.9099 15.1703L14.1045 15.2528L12.5 16.084L10.8953 15.2528L9.08987 15.1703L8.11581 13.648L6.59373 12.674L6.51128 10.8686L5.67967 9.26385L6.51109 7.65941L6.59373 5.85379L8.11581 4.87972L9.08987 3.3575L10.8953 3.275L12.5 2.44372L14.1047 3.27496L15.9101 3.35746L16.8842 4.87968L18.4062 5.85379L18.4887 7.65918L19.3203 9.26385L18.4889 10.8686Z"
+                          fill="black"
+                        />
+                      </svg>
+                    </div>
+                    <span className=" text-[#3E404B] font-semibold text-xs">
+                      View badge
+                    </span>
                   </div>
-                  <span className=" text-[#3E404B] font-semibold text-xs">
-                    View badge
-                  </span>
-                </div>
-              </DialogTrigger>
-              <DialogContent className="px-3 h-">
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="py-4 min-w-[200px]">
+                  {badges.map((badge) => (
+                    <DialogTrigger>
+                      <DropdownMenuItem key={badge.id}>
+                        <button
+                          className="w-full"
+                          onClick={() => setBadge(badge)}
+                        >
+                          {badge.badgeName}
+                        </button>
+                      </DropdownMenuItem>
+                    </DialogTrigger>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DialogContent className="px-3 h-[70vh]">
                 <DialogHeader>
                   <DialogTitle>
                     <span className="capitalize">View Badge</span>
                   </DialogTitle>
                 </DialogHeader>
-                <div className="space-y-4 h-[70vh]">
-                  <AttendeeBadge attendee={attendee} />
-                </div>
+                <AttendeeBadge attendee={attendee} badge={selectedBadge} />
               </DialogContent>
             </Dialog>
           )}
@@ -1210,6 +1255,7 @@ export default function SecondSection({
               <AddAttendeeTagForm
                 attendeeEmail={attendee?.email}
                 attendeeId={attendee?.id}
+                getAttendeeTags={getAttendeeTags}
               />
             </DialogContent>
           </Dialog>

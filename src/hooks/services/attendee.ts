@@ -90,6 +90,47 @@ export const useUpdateAttendees = () => {
   return { updateAttendees, isLoading, error };
 };
 
+export const useUploadAttendees = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const uploadAttendees = async ({
+    payload,
+    message,
+  }: {
+    payload: Partial<TAttendee>[];
+    message?: string;
+  }) => {
+    setLoading(true);
+    toast({
+      description: "Uploading attendees...",
+    });
+
+    try {
+      const { data, status } = await postRequest<TAttendee[]>({
+        endpoint: "/attendees/upload",
+        payload,
+      });
+
+      if (status !== 200) throw data;
+
+      toast({
+        description: message || "Attendee uploaded successfully",
+      });
+      return data;
+    } catch (error) {
+      setError(true);
+      toast({
+        description: "something went wrong, try again later",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { uploadAttendees, isLoading, error };
+};
+
 export const useGetAttendees = ({
   eventId,
   userId,

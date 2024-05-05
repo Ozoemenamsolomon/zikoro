@@ -25,9 +25,11 @@ import { useParams } from "next/navigation";
 export default function AddAttendeeTagForm({
   attendeeEmail,
   attendeeId,
+  getAttendeeTags,
 }: {
   attendeeEmail: string;
   attendeeId: number;
+  getAttendeeTags: () => Promise<void>;
 }) {
   const user = getCookie<TUser>("user");
   const { eventId } = useParams();
@@ -75,6 +77,7 @@ export default function AddAttendeeTagForm({
     console.log(payload, "on the front side");
     await updateAttendeeTags({ payload });
     await getTags();
+    await getAttendeeTags();
   }
 
   async function removeTag(tag: TTag) {

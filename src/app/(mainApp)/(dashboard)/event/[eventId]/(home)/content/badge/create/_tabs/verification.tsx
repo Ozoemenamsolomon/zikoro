@@ -25,7 +25,30 @@ const Verification = ({ details, setValue }: TabProps) => {
             ref &&
             connectors.create(
               ref,
-              <Text text={"#{first_name#} #{last_name#}"} isBold isItalic isNotEditable />
+              <Text
+                text={"Certificate ID: #{_id#}"}
+                isBold
+                isItalic
+                isNotEditable
+              />
+            )
+          }
+          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          data-cy="toolbox-qr-code"
+        >
+          Drag to add Certificate Id
+        </button>
+        <button
+          ref={(ref) =>
+            ref &&
+            connectors.create(
+              ref,
+              <Text
+                text={"#{first_name#} #{last_name#}"}
+                isBold
+                isItalic
+                isNotEditable
+              />
             )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
@@ -62,7 +85,10 @@ const Verification = ({ details, setValue }: TabProps) => {
         <button
           ref={(ref) =>
             ref &&
-            connectors.create(ref, <Text text={"#{profession#}"} isBold isItalic isNotEditable />)
+            connectors.create(
+              ref,
+              <Text text={"#{profession#}"} isBold isItalic isNotEditable />
+            )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
           data-cy="toolbox-qr-code"
@@ -72,7 +98,10 @@ const Verification = ({ details, setValue }: TabProps) => {
         <button
           ref={(ref) =>
             ref &&
-            connectors.create(ref, <Text text={"#{attendee_role#}"} isBold isItalic isNotEditable />)
+            connectors.create(
+              ref,
+              <Text text={"#{attendee_role#}"} isBold isItalic isNotEditable />
+            )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
           data-cy="toolbox-qr-code"
@@ -82,7 +111,10 @@ const Verification = ({ details, setValue }: TabProps) => {
         <button
           ref={(ref) =>
             ref &&
-            connectors.create(ref, <Text text={"#{event_name#}"} isBold isItalic isNotEditable />)
+            connectors.create(
+              ref,
+              <Text text={"#{event_name#}"} isBold isItalic isNotEditable />
+            )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
           data-cy="toolbox-qr-code"
@@ -92,7 +124,15 @@ const Verification = ({ details, setValue }: TabProps) => {
         <button
           ref={(ref) =>
             ref &&
-            connectors.create(ref, <Text text={"#{organization_name#}"} isBold isItalic isNotEditable />)
+            connectors.create(
+              ref,
+              <Text
+                text={"#{organization_name#}"}
+                isBold
+                isItalic
+                isNotEditable
+              />
+            )
           }
           className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
           data-cy="toolbox-qr-code"

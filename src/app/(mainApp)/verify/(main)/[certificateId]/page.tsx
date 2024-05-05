@@ -163,7 +163,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
 
       hashRef.current = JSON.parse(
         replaceSpecialText(JSON.stringify(initData), {
-          certificate,
+          asset: certificate,
           attendee: certificate?.attendee,
           event: certificate?.originalCertificate.event,
           organization: certificate.originalCertificate.event.organization,

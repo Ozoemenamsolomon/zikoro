@@ -1,3 +1,4 @@
+import { TBadge } from "@/types";
 import { TAttendee } from "@/types/attendee";
 import { TAttendeeCertificate } from "@/types/certificates";
 import { Event } from "@/types/events";
@@ -196,7 +197,7 @@ export function base64ToFile(base64Data: string, fileName: string): File {
 }
 
 type Context = {
-  certificate: TAttendeeCertificate;
+  asset: TAttendeeCertificate | TBadge;
   attendee: TAttendee;
   event: Event;
   organization: TOrganization;
@@ -242,7 +243,7 @@ export function replaceSpecialText(input: string, context: Context): string {
       case "organisation_logo":
         return context.organization.organizationLogo || "";
       case "certificate_id":
-        return context.certificate.certificateId || "";
+        return context.asset?.certificateId || "";
       default:
         return match; // Return the original string if no matching value found
     }
