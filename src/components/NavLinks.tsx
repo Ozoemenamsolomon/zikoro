@@ -5,21 +5,35 @@ import { links } from "@/constants";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib";
 import { Button } from "@/components";
+import { useMemo } from "react";
+import { HomeIcon } from "@/constants";
 
 export const NavLinks = ({
   query,
   id,
-  isHaveEvent
+  isHaveEvent,
 }: {
   id: string | string[];
   query: string | null;
-  isHaveEvent?:boolean;
+  isHaveEvent?: boolean;
 }) => {
   const pathname = usePathname();
 
+  const navs = useMemo(() => {
+    return isHaveEvent
+      ? links
+      : [
+          {
+            name: "Home",
+            icon: HomeIcon,
+            href: "/home",
+          },
+        ];
+  }, [isHaveEvent]);
+
   return (
     <ul className="flex text-mobile sm:text-sm flex-col gap-y-1 items-start h-[30vh] sm:h-[45vh] pb-32 overflow-hidden  no-scrollbar overflow-y-auto  justify-start w-full">
-      {links.map(({ href, name, icon: Icon }, idx) => {
+      {navs.map(({ href, name, icon: Icon }, idx) => {
         if (idx === links.length - 1) {
           return (
             <li

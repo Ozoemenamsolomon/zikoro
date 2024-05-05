@@ -24,15 +24,17 @@ export function SideBarLayout() {
 
   const [isOpen, setOpen] = useState(false);
   const query = param.get("organization");
-  const {events} = useGetEvents()
-  const user =  getCookie("user")
-  
+  const { events } = useGetEvents();
+  const user = getCookie("user");
+
   // get events
   const isHaveEvent = useMemo(() => {
-    return events?.some(({createdBy}) => createdBy === String(user?.id))
-  },[events])
-
-
+    return (
+      Array.isArray(events) &&
+      events?.filter(({ createdBy }) => Number(createdBy) === Number(user?.id))
+        ?.length > 0
+    );
+  }, [events]);
 
   function onOpen() {
     setOpen(true);
@@ -57,7 +59,6 @@ export function SideBarLayout() {
         onClose={onShot}
         onOpen={onOpen}
         query={query}
-
         isHaveEvent={isHaveEvent}
       />
       {isOpen && <EventFeedBack close={onShot} />}
@@ -72,19 +73,19 @@ function SideNavs({
   query,
   onClose,
   onOpen,
-  isHaveEvent
+  isHaveEvent,
 }: {
   close: () => void;
   onClose: () => void;
   isNav: boolean;
   query: string | null;
   onOpen: () => void;
-  isHaveEvent?:boolean
+  isHaveEvent?: boolean;
 }) {
   const { organizationId } = useParams();
   const organization = getCookie("currentOrganization");
   const user = getCookie("user");
-  const {logOut} = useLogOut()
+  const { logOut } = useLogOut();
 
   return (
     <div
@@ -117,7 +118,11 @@ function SideNavs({
             className="w-[150px] h-[40px] mx-4"
           />
           {/**nav links */}
-          <NavLinks isHaveEvent={isHaveEvent} query={query} id={organizationId} />
+          <NavLinks
+            isHaveEvent={isHaveEvent}
+            query={query}
+            id={organizationId}
+          />
         </div>
         <div className="flex items-start justify-start w-full flex-col gap-4 border-t p-4 border-basebody">
           <div className="w-full flex items-center gap-x-2 ">
@@ -215,10 +220,7 @@ function SideNavs({
               </Button>
             </div>
           </div>
-          <button
-           onClick={logOut}
-            className="flex items-center h-fit gap-x-2"
-          >
+          <button onClick={logOut} className="flex items-center h-fit gap-x-2">
             <LogOutIcon />
             <span className="text-[#EC2D30] text-mobile sm:text-desktop">
               Log Out

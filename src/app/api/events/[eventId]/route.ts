@@ -86,7 +86,7 @@ export async function PATCH(req: NextRequest) {
         html: `<div>
      
 
-      Hi [Event Creator's Name],
+     <p> Hi [Event Creator's Name],</p>
       
      <p> Great news! Your event is officially live, and attendees can now register using the following link: [Insert Registration Link]</p>
       
