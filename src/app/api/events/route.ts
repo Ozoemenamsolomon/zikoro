@@ -11,8 +11,17 @@ export async function GET(req: NextRequest, ) {
       
       const { data, error, status } = await supabase
         .from("events")
-        .select("*, organization!inner(*)")
-      
+        .select("*, organization!inner(*), users!inner(*)")
+        if (error) {
+          return NextResponse.json(
+            {
+              error: error?.message,
+            },
+            {
+              status: 400,
+            }
+          );
+        }
 
       if (error) throw error;
 

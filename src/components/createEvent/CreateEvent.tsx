@@ -159,7 +159,7 @@ export default function CreateEvent() {
                     className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
                   >
                     <PlusCircle size={22} />
-                    <p>Organization</p>
+                    <p>Workspace</p>
                   </Button>
                 </div>
 

@@ -13,6 +13,15 @@ export async function POST(req: NextRequest) {
         .from("eventPartners")
         .upsert(params);
 
+        if (error) {
+          return NextResponse.json(
+            { error: error.message },
+            {
+              status: 400,
+            }
+          );
+        }
+
       let nodemailer = require("nodemailer");
       const transporter = nodemailer.createTransport({
         host: "smtp.zoho.com",
@@ -51,14 +60,7 @@ export async function POST(req: NextRequest) {
         else console.log(info);
       });
 
-      if (error) {
-        return NextResponse.json(
-          { error: error.message },
-          {
-            status: 400,
-          }
-        );
-      }
+  
 
       if (error) throw error;
 
