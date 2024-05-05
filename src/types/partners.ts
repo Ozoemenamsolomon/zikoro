@@ -64,7 +64,7 @@ export enum PartnersEnum {
     exhibitionHall: string;
     id: number;
     industry: string;
-    jobs: PartnerJobType[];
+    jobs: boolean;
     media: string;
     partnerType: string;
     phoneNumber: string;

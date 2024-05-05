@@ -1,7 +1,6 @@
 "use client";
 
-
-import {  Input } from "..";
+import { Input } from "..";
 import { HeaderTab } from "./_components";
 import Filter from "@/components/Filter";
 import { Search } from "@styled-icons/evil/Search";
@@ -18,13 +17,10 @@ import { useFilter } from "@/hooks";
 import _ from "lodash";
 import { cn } from "@/lib";
 
-
-
 export function Partners({ eventId }: { eventId: string }) {
   const { data, loading, refetch } = useFetchPartners(eventId);
   const search = useSearchParams();
   const query = search.get("p");
- 
 
   const partnersFilter: TFilter<TExPartner>[] = [
     {
@@ -106,9 +102,44 @@ export function Partners({ eventId }: { eventId: string }) {
           </defs>
         </svg>
       ),
-      optionsFromData: true,
-      type: "boolean",
+      options: [
+        { label: "Yes", value: true },
+        { label: "No", value: false },
+      ],
+      onFilter: (partner: TExPartner, isOffer: boolean) => {
+        return partner?.offers === isOffer;
+      },
+      type: "single",
       order: 4,
+    },
+    {
+      label: "Job",
+      accessor: "jobs",
+      icon: (
+        <svg
+          width="21"
+          height="20"
+          viewBox="0 0 21 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M10.3545 1.04297H10.4411C11.1903 1.04297 11.8145 1.04297 12.3095 1.10964C12.8328 1.17964 13.3053 1.33464 13.6845 1.7138C14.0645 2.0938 14.2195 2.5663 14.2895 3.0888C14.3395 3.45547 14.352 3.89214 14.3553 4.39714C14.8953 4.41464 15.377 4.44714 15.8053 4.5038C16.782 4.63547 17.5728 4.91214 18.197 5.53547C18.8203 6.15964 19.097 6.95047 19.2286 7.92713C19.3561 8.87713 19.3561 10.0896 19.3561 11.6213V11.7146C19.3561 13.2463 19.3561 14.4596 19.2286 15.4088C19.097 16.3855 18.8203 17.1763 18.197 17.8005C17.5728 18.4238 16.782 18.7005 15.8053 18.8321C14.8553 18.9596 13.6428 18.9596 12.1111 18.9596H8.68445C7.15279 18.9596 5.93945 18.9596 4.99029 18.8321C4.01362 18.7005 3.22279 18.4238 2.59862 17.8005C1.97529 17.1763 1.69862 16.3855 1.56695 15.4088C1.43945 14.4588 1.43945 13.2463 1.43945 11.7146V11.6213C1.43945 10.0896 1.43945 8.8763 1.56695 7.92713C1.69862 6.95047 1.97529 6.15964 2.59862 5.53547C3.22279 4.91214 4.01362 4.63547 4.99029 4.5038C5.47155 4.44421 5.95548 4.40862 6.44029 4.39714C6.44362 3.89214 6.45695 3.45547 6.50612 3.0888C6.57612 2.5663 6.73112 2.0938 7.11029 1.7138C7.49029 1.33464 7.96279 1.18047 8.48529 1.10964C8.98112 1.04297 9.60612 1.04297 10.3545 1.04297ZM7.69112 4.37797C8.00612 4.3763 8.33695 4.3763 8.68445 4.3763H12.1111C12.4586 4.3763 12.7895 4.3763 13.1045 4.37797C13.1011 3.90297 13.0895 3.54464 13.0511 3.25547C12.9986 2.8713 12.9095 2.7063 12.8011 2.59797C12.6928 2.48964 12.5278 2.40047 12.1428 2.34797C11.7411 2.29464 11.2011 2.29297 10.3978 2.29297C9.59445 2.29297 9.05445 2.29464 8.65195 2.3488C8.26779 2.40047 8.10279 2.48964 7.99445 2.5988C7.88612 2.70714 7.79695 2.8713 7.74445 3.25547C7.70612 3.5438 7.69445 3.90214 7.69112 4.37797ZM5.15612 5.74297C4.31779 5.85547 3.83445 6.06714 3.48112 6.41964C3.12945 6.77214 2.91779 7.25547 2.80529 8.0938C2.69029 8.94964 2.68862 10.0788 2.68862 11.668C2.68862 13.2571 2.69029 14.3863 2.80529 15.243C2.91779 16.0805 3.12945 16.5638 3.48195 16.9163C3.83445 17.2688 4.31779 17.4805 5.15612 17.593C6.01279 17.708 7.14112 17.7096 8.73029 17.7096H12.0636C13.6528 17.7096 14.782 17.708 15.6386 17.593C16.4761 17.4805 16.9595 17.2688 17.312 16.9163C17.6645 16.5638 17.8761 16.0805 17.9886 15.2421C18.1036 14.3863 18.1053 13.2571 18.1053 11.668C18.1053 10.0788 18.1036 8.95047 17.9886 8.09297C17.8761 7.25547 17.6645 6.77214 17.312 6.41964C16.9595 6.06714 16.4761 5.85547 15.6378 5.74297C14.782 5.62797 13.6528 5.6263 12.0636 5.6263H8.73029C7.14112 5.6263 6.01362 5.62797 5.15612 5.74297ZM10.3978 7.70964C10.5635 7.70964 10.7225 7.77548 10.8397 7.89269C10.9569 8.0099 11.0228 8.16887 11.0228 8.33464V8.34297C11.9303 8.5713 12.6895 9.28714 12.6895 10.2788C12.6895 10.4446 12.6236 10.6035 12.5064 10.7207C12.3892 10.838 12.2302 10.9038 12.0645 10.9038C11.8987 10.9038 11.7397 10.838 11.6225 10.7207C11.5053 10.6035 11.4395 10.4446 11.4395 10.2788C11.4395 9.9588 11.0845 9.51547 10.3978 9.51547C9.71112 9.51547 9.35612 9.9588 9.35612 10.2788C9.35612 10.5988 9.71112 11.043 10.3978 11.043C11.552 11.043 12.6895 11.843 12.6895 13.0571C12.6895 14.0488 11.9303 14.7638 11.0228 14.993V15.0013C11.0228 15.1671 10.9569 15.326 10.8397 15.4432C10.7225 15.5605 10.5635 15.6263 10.3978 15.6263C10.232 15.6263 10.0731 15.5605 9.95584 15.4432C9.83863 15.326 9.77279 15.1671 9.77279 15.0013V14.993C8.86529 14.7646 8.10612 14.0488 8.10612 13.0571C8.10612 12.8914 8.17197 12.7324 8.28918 12.6152C8.40639 12.498 8.56536 12.4321 8.73112 12.4321C8.89688 12.4321 9.05585 12.498 9.17306 12.6152C9.29027 12.7324 9.35612 12.8914 9.35612 13.0571C9.35612 13.3771 9.71112 13.8205 10.3978 13.8205C11.0845 13.8205 11.4395 13.3771 11.4395 13.0571C11.4395 12.7371 11.0845 12.293 10.3978 12.293C9.24362 12.293 8.10612 11.493 8.10612 10.2788C8.10612 9.28714 8.86529 8.5713 9.77279 8.34297V8.33464C9.77279 8.16887 9.83863 8.0099 9.95584 7.89269C10.0731 7.77548 10.232 7.70964 10.3978 7.70964Z"
+            fill="#D6D6D6"
+          />
+        </svg>
+      ),
+      options: [
+        { label: "Yes", value: true },
+        { label: "No", value: false },
+      ],
+      onFilter: (partner: TExPartner, isJobs: boolean) => {
+        return partner?.jobs === isJobs;
+      },
+      type: "single",
+      order: 7,
     },
     {
       label: "StampCard",
@@ -132,9 +163,16 @@ export function Partners({ eventId }: { eventId: string }) {
           />
         </svg>
       ),
-      optionsFromData: true,
-      type: "boolean",
+      options: [
+        { label: "Yes", value: true },
+        { label: "No", value: false },
+      ],
+      onFilter: (partner: TExPartner, isStamp: boolean) => {
+        console.log("partner", partner?.stampIt, isStamp);
+        return partner?.stampIt === isStamp;
+      },
       order: 5,
+      type: "single",
     },
     {
       label: "Industry",
@@ -165,9 +203,13 @@ export function Partners({ eventId }: { eventId: string }) {
     return data?.map((value) => {
       return {
         ...value,
-        offers: value?.offers?.length > 0,
+        stampIt: value?.stampIt || false,
+        offers: Array.isArray(value?.offers)
+          ? value?.offers?.length > 0
+          : false,
         industry: value?.industry,
-        boothNumber: String(value?.boothNumber?.length)
+        jobs: Array.isArray(value?.jobs) ? value?.jobs?.length > 0 : false,
+        boothNumber: String(value?.boothNumber?.length),
       };
     });
   }, [data]);
@@ -219,7 +261,7 @@ export function Partners({ eventId }: { eventId: string }) {
         )}
       >
         <div className="parent-container relative w-full overflow-x-auto no-scrollbar">
-          <div className={`min-w-[800px] flex items-start justify-between p-4`}>
+          <div className={`min-w-[950px] flex items-start justify-between p-4`}>
             <Filter
               className={"w-[80%] space-y-2 "}
               filters={filters.sort(
@@ -250,9 +292,12 @@ export function Partners({ eventId }: { eventId: string }) {
         <Sponsors eventId={eventId} sponsors={sponsors} loading={loading} />
       )}
       {query === "exhibitors" && (
-        <Exhibitors eventId={eventId} exhibitors={exhibitors} loading={loading} />
+        <Exhibitors
+          eventId={eventId}
+          exhibitors={exhibitors}
+          loading={loading}
+        />
       )}
     </>
   );
 }
-
