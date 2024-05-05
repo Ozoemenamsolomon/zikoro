@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, ) {
       
       const { data, error, status } = await supabase
         .from("events")
-        .select("*, organization!inner(*), users!inner(*)")
+        .select("*, organization!inner(*)")
         if (error) {
           return NextResponse.json(
             {
