@@ -11,7 +11,7 @@ export function Duplicate({ session, refetch }: {refetch?: ()=> Promise<any>; se
   const { createAgenda, isLoading } = useCreateAgenda();
 
   async function update() {
-    const { id, sessionAlias: alias, ...restData } = session;
+    const { id, sessionAlias: alias, isMyAgenda, ...restData } = session;
     const sessionAlias = generateAlias()
     await createAgenda({ payload: {...restData, sessionAlias }});
    if (refetch) refetch()

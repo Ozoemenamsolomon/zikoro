@@ -19,7 +19,7 @@ import InputOffsetLabel from "@/components/InputOffsetLabel";
 const orgType = ["Private", "Business"];
 const pricingPlan = ["Free", "Lite", "Professional", "Business", "Enterprise"];
 
-export function CreateOrganization({ close }: { close: () => void }) {
+export function CreateOrganization({ close, refetch }: {refetch?:() => Promise<any>; close: () => void }) {
   const form = useForm<z.infer<typeof organizationSchema>>({
     resolver: zodResolver(organizationSchema),
   });
@@ -34,6 +34,7 @@ export function CreateOrganization({ close }: { close: () => void }) {
       subscriptionPlan: "",
     });
     getOrganizations()
+    if(refetch) refetch()
     close()
 
   }
@@ -50,7 +51,7 @@ export function CreateOrganization({ close }: { close: () => void }) {
       >
         <div className="w-full flex items-center justify-between">
           <h2 className="font-medium text-lg sm:text-xl">
-            Create an Organization
+            Create a Workspace
           </h2>
           <Button onClick={close} className="px-1 h-fit w-fit">
             <CloseOutline size={22} />

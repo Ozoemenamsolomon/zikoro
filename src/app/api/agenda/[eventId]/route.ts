@@ -24,6 +24,7 @@ interface TAgenda {
   sessionCheckin: string;
   sessionCheckinDetails: JSON;
   eventId: string;
+  isMyAgenda: boolean;
 }
 
 interface TSessionAgenda {
@@ -95,13 +96,16 @@ export async function GET(
         );
       }
 
-      const formattedAgendas = agendas?.filter(({ id }) => {
+      const formattedAgendas = agendas?.filter(({ sessionAlias: id }) => {
         return myAgendas?.some(
-          ({ sessionId }) => Number(sessionId) === Number(id)
+          ({ sessionAlias }) => String(sessionAlias) === String(id)
         );
       });
 
       const toFilterArray = query === "my-agenda" ? formattedAgendas : agendas;
+      const myAgendaSessionIds = formattedAgendas?.map(
+        ({ sessionAlias }) => sessionAlias
+      );
 
       const activeDate = date || event?.startDateTime;
       const filteredAgenda = toFilterArray?.filter(
@@ -129,7 +133,10 @@ export async function GET(
           };
         }
 
-        agendaGroups[key].sessions.push(agenda);
+        agendaGroups[key].sessions.push({
+          ...agenda,
+          isMyAgenda: myAgendaSessionIds.includes(agenda?.sessionAlias),
+        });
       });
 
       const result = Object.values(agendaGroups);

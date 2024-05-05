@@ -277,9 +277,15 @@ export function AddSession({
 
     const sessionAlias = generateAlias();
 
+    let sessionData: any;
+    if (session) {
+      const { isMyAgenda, ...restData } = session;
+      sessionData = restData;
+    }
+
     const payload: Partial<TAgenda> = session?.id
       ? {
-          ...session,
+          ...sessionData,
           ...values,
           Track: values?.Track || "No Track",
           sessionModerators: chosenModerators,

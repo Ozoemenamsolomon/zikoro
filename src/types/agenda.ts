@@ -29,6 +29,7 @@ export interface TAgenda {
   eventId: string;
   eventAlias: string;
   sessionAlias: string;
+  isMyAgenda:boolean;
 }
 
 export interface TSessionAgenda {
@@ -41,6 +42,7 @@ export interface TReview {
   comments: string;
   sessionId?: number;
   attendeeId?: number;
+  eventAlias?:string
 }
 
 export interface TMyAgenda {

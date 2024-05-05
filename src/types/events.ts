@@ -125,6 +125,10 @@ export interface Organization {
   tiktok: string;
 }
 
+export type TOrgEvent = Event & {
+  organization: Organization
+  }
+  
 export interface Reward {
   rewardTitle: string;
   image: string;

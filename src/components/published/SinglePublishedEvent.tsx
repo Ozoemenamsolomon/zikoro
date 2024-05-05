@@ -7,18 +7,24 @@ import { Footer } from "@/components";
 import {
   useFetchSingleEvent,
   useFetchSingleOrganization,
-  getCookie,
 } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { usePathname } from "next/navigation";
 import { SingleEvent } from "@/components/published";
+import  {useEffect} from "react"
 export default function SinglePublishedEvent({ id }: { id: string }) {
   const { data: eventDetail } = useFetchSingleEvent(id);
-  const org = getCookie("currentOrganization");
-  const { data } = useFetchSingleOrganization(org?.id);
+  const { data, refetch } = useFetchSingleOrganization(eventDetail?.organization?.id);
   const pathname = usePathname();
   // console.log(id)
   // useValidateUser()
+
+  useEffect(() =>{
+    if (eventDetail?.organization) {
+      refetch()
+    }
+
+  },[eventDetail])
   return (
     <>
       {eventDetail ? (

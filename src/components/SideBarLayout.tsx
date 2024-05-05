@@ -16,11 +16,12 @@ import {
   LogOutIcon,
   WhatsappIcon,
 } from "@/constants";
-import { getCookie, useGetEvents, useValidateUser } from "@/hooks";
+import { getCookie, useGetEvents, useLogOut, useValidateUser } from "@/hooks";
 
 export function SideBarLayout() {
   const [isNav, setNav] = useState(false);
   const param = useSearchParams();
+
   const [isOpen, setOpen] = useState(false);
   const query = param.get("organization");
   const {events} = useGetEvents()
@@ -56,6 +57,7 @@ export function SideBarLayout() {
         onClose={onShot}
         onOpen={onOpen}
         query={query}
+
         isHaveEvent={isHaveEvent}
       />
       {isOpen && <EventFeedBack close={onShot} />}
@@ -82,7 +84,7 @@ function SideNavs({
   const { organizationId } = useParams();
   const organization = getCookie("currentOrganization");
   const user = getCookie("user");
-  console.log(user);
+  const {logOut} = useLogOut()
 
   return (
     <div
@@ -213,15 +215,15 @@ function SideNavs({
               </Button>
             </div>
           </div>
-          <Link
-            href="/api/auth/logout"
+          <button
+           onClick={logOut}
             className="flex items-center h-fit gap-x-2"
           >
             <LogOutIcon />
             <span className="text-[#EC2D30] text-mobile sm:text-desktop">
               Log Out
             </span>
-          </Link>
+          </button>
         </div>
       </div>
     </div>

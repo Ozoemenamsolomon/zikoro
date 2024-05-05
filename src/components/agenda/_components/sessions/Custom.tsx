@@ -179,7 +179,9 @@ function Widget({
           >
             <AddToMyAgenda
               attendeeId={attendeeId}
+              isMyAgenda={session?.isMyAgenda}
               sessionAlias={session?.sessionAlias}
+              refetch={refetchSession}
             />
           </div>
         </div>

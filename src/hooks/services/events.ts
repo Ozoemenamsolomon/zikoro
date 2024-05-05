@@ -9,10 +9,11 @@ import {
   Organization,
   TAttendee,
   TEventTransactionDetail,
+  TOrgEvent
 } from "@/types";
 import _ from "lodash";
 import { getCookie, useUpdateAttendees } from "@/hooks";
-import { getRequest, postRequest } from "@/utils/api";
+import { getRequest, postRequest, patchRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
 import { useGetAllAttendees, useGetEventAttendees } from "@/hooks";
 import toast from "react-hot-toast";
@@ -70,11 +71,11 @@ export const useGetEvent = ({
 };
 
 export const useGetEvents = (): UseGetResult<
-  Event[],
+  TOrgEvent[],
   "events",
   "getEvents"
 > => {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<TOrgEvent[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -82,7 +83,7 @@ export const useGetEvents = (): UseGetResult<
     setLoading(true);
 
     try {
-      const { data, status } = await getRequest<Event[]>({
+      const { data, status } = await getRequest<TOrgEvent[]>({
         endpoint: `/events`,
       });
 
@@ -269,6 +270,8 @@ export function useUpdateEvent() {
     } catch (error) {}
   }
 
+
+  
   async function updateOrg(values: any, orgId: string) {
     setLoading(true);
 
@@ -303,7 +306,37 @@ export function useUpdateEvent() {
   };
 }
 
-export function useFetchSingleOrganization(id: string) {
+
+export function usePublishEvent  () {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const publishEvent = async ({ payload, eventId, email }: { payload: Partial<Event>, eventId:string; email:string }) => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await patchRequest<Event>({
+        endpoint: `/events/${eventId}?email=${email}`,
+        payload,
+      });
+
+      if (status !== 200) throw data;
+
+      toast(
+        "Agenda Published"
+  );
+      return data;
+    } catch (error: any) {
+      toast( error?.response?.data?.error
+  );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { publishEvent, isLoading };
+};
+
+export function useFetchSingleOrganization(id?: number) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Organization | null>(null);
 
@@ -312,6 +345,7 @@ export function useFetchSingleOrganization(id: string) {
   }, []);
 
   async function fecthSingleOrg() {
+    if (!id) return
     try {
       setLoading(true);
       // Fetch the event by ID
@@ -533,7 +567,7 @@ export function useGetPublishedEvents(
 
 export function useFetchSingleEvent(eventId: string) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Event | null>(null);
+  const [data, setData] = useState<TOrgEvent | null>(null);
 
   useEffect(() => {
     fetchSingleEvent();
@@ -545,7 +579,7 @@ export function useFetchSingleEvent(eventId: string) {
       // Fetch the event by ID
       const { data, error: fetchError } = await supabase
         .from("events")
-        .select("*")
+        .select("*, organization!inner(*)")
         .eq("eventAlias", eventId)
         .single();
 

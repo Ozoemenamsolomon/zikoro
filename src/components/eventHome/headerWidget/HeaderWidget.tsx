@@ -113,7 +113,7 @@ export function HeaderWidget({
               className="hidden sm:flex bg-transparent border text-basePrimary hover:border-0 border-basePrimary transition-all transform duration-300 ease-in-out hover:text-gray-50 hover:bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
             >
               <PlusCircle size={22} />
-              <p>Organization</p>
+              <p>Workspace</p>
             </Button>
 
             <Button

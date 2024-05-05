@@ -383,6 +383,38 @@ export const useGetReviews = () => {
 
   return { rating, isLoading, getRating };
 }
+
+export const useGetEventReviews = (eventId?:string) => {
+  const [reviews, setReviews] = useState<TReview[]>([])
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    getRating()
+  },[eventId])
+  const getRating = async () => {
+    if (!eventId) return 
+    try {
+      setLoading(true);
+      const { data, status } = await getRequest<TReview[]>({
+        endpoint: `/agenda/review/event/${eventId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setReviews(data.data);
+    } catch (error: any) {
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { reviews, isLoading, getRating };
+}
 export const useCreateMyAgenda = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
 

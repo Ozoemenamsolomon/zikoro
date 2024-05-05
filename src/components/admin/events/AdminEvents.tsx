@@ -12,11 +12,11 @@ import { Users } from "@styled-icons/fa-solid/Users";
 import { Dot } from "@styled-icons/bootstrap/Dot";
 import { Edit } from "@styled-icons/boxicons-solid/Edit";
 import { AboutWidget, EventLocationType } from "@/components/composables";
-import { Event } from "@/types";
+import { TOrgEvent } from "@/types";
 import { PublishCard } from "@/components/composables";
 import { PreviewModal } from "../../contents/_components/modal/PreviewModal";
 import { useMemo, useState } from "react";
-import { useFormatEventData, useUpdateEvent, getCookie } from "@/hooks";
+import { useFormatEventData, usePublishEvent, getCookie } from "@/hooks";
 import { Download } from "@styled-icons/bootstrap/Download";
 import { Eye } from "@styled-icons/feather/Eye";
 import { useSearchParams } from "next/navigation";
@@ -68,10 +68,10 @@ function EventCard({
   refetch,
 }: {
   refetch: () => Promise<any>;
-  event: Event;
+  event: TOrgEvent;
   query: string | null;
 }) {
-  const { loading: updating, update } = useUpdateEvent();
+  const { isLoading: updating, publishEvent: update } = usePublishEvent();
   const [isShowPublishModal, setShowPublishModal] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const {
@@ -98,8 +98,8 @@ function EventCard({
     };
 
     const { organization, ...remainingData }: any = event;
-    await update(
-      {
+    await update({
+      payload: {
         ...remainingData,
         published: true,
         eventStatus: "published",
@@ -108,8 +108,10 @@ function EventCard({
             ? [...event?.eventStatusDetails, statusDetail]
             : [statusDetail],
       },
-      String(event?.eventAlias)
-    );
+      eventId: String(event?.eventAlias),
+      email: event?.organization?.eventContactEmail
+
+    });
     refetch();
   }
 

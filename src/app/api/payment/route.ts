@@ -3,11 +3,14 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+
+ // intialize qrcode
+ const QRCode = require("qrcode");
+ 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
 
-  // intialize qrcode
-  const QRCode = require("qrcode");
+ 
 
   // intialize ics
   const ics = require("ics");
