@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-
+import axios from "axios"
 // call phone
 export function phoneCall(number?: string) {
   window.open(`tel:${number}`, "_blank");
@@ -54,4 +54,42 @@ export const formatReviewNumber = (number: number):string => {
   return shortValue + suffixes[suffixNum];
 };
 
+
+interface GeocodeResponse {
+  results: Array<{
+    geometry: {
+      location: {
+        lat: number;
+        lng: number;
+      };
+    };
+  }>;
+  status: string;
+}
+
+
+export const geocodeAddress = async (address: string): Promise<{ lat: number; lng: number }> => {
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; 
+
+  const response = await axios.get<GeocodeResponse>(
+    `https://maps.googleapis.com/maps/api/geocode/json`,
+    {
+      params: {
+        address,
+        key: googleMapsApiKey,
+      },
+    }
+  );
+
+  if (response.data.status !== "OK") {
+    throw new Error("Failed to geocode address");
+  }
+
+  const { lat, lng } = response.data.results[0].geometry.location;
+  return { lat, lng };
+};
+
+
 export const deploymentUrl = 'https://www.zikoro.com'
+
+

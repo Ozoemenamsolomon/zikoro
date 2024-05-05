@@ -42,6 +42,7 @@ export interface TReview {
   comments: string;
   sessionId?: number;
   attendeeId?: number;
+  eventAlias?:string
 }
 
 export interface TMyAgenda {

@@ -46,6 +46,7 @@ export function Engagement({
             rating={rating}
             sessionAlias={agenda?.sessionAlias}
             attendeeId={attendeeId}
+            eventId={id}
           />
         ) : (
           <div className="w-full flex flex-col p-6 items-start justify-start gap-y-2">
@@ -87,10 +88,12 @@ function ReviewComment({
   rating,
   sessionAlias,
   attendeeId,
+  eventId
 }: {
   sessionAlias?: string;
   rating: number;
   attendeeId?: number;
+  eventId?:string
 }) {
   const form = useForm<FormValue>({});
   const { sendReview, isLoading } = useSendReview();
@@ -102,6 +105,7 @@ function ReviewComment({
       rating,
       sessionAlias,
       attendeeId,
+      eventAlias: eventId 
     };
     await sendReview({ payload });
     setSend(true);

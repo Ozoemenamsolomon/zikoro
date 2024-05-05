@@ -1,21 +1,34 @@
+"use client";
+
 import { DoubleColumnIcon } from "@/constants";
 import { StarFill } from "styled-icons/bootstrap";
+import { Star } from "@styled-icons/bootstrap/Star";
 import { Verified } from "styled-icons/material";
+import { TReview } from "@/types";
+import { cn } from "@/lib";
 
-export function FeedBackCard() {
+export function FeedBackCard({ review }: { review: TReview }) {
   return (
     <div className="w-[95%] items-start justify-start sm:w-[415px] flex flex-col gap-y-3 py-12 px-6 rounded-lg shadow bg-white">
       <DoubleColumnIcon />
       <p className="leading-6 items-start justify-start w-full flex flex-col">
-        Lorem ipsum dolor sit amet consectetur. Nunc sit sed nisi sed sit et
-        arcu quis senectus ac proin.
+        {review?.comments ?? ""}
       </p>
       <div className="flex items-center gap-x-3">
-        <StarFill size={20} className="text-yellow-500" />
-        <StarFill size={20} className="text-yellow-500" />
-        <StarFill size={20} className="text-yellow-500" />
-        <StarFill size={20} className="text-yellow-500" />
-        <StarFill size={20} className="text-yellow-500" />
+        {[1, 2, 3, 4, 5].map((v, index) => (
+          <div
+            key={index}
+            className={cn(
+              index + 1 <= Number(review?.rating) && "text-yellow-500"
+            )}
+          >
+            {index + 1 <= review?.rating ? (
+              <StarFill size={20} />
+            ) : (
+              <Star size={40} />
+            )}
+          </div>
+        ))}
       </div>
 
       <div className="items-start justify-start w-full flex flex-col">
