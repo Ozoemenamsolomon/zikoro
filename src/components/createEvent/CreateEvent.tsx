@@ -33,7 +33,7 @@ type OrganizationListType = {
 export default function CreateEvent() {
   const { createEvent, loading } = useCreateEvent();
   const router = useRouter();
-  const { organizations: organizationList } = useGetUserOrganizations();
+  const { organizations: organizationList, getOrganizations } = useGetUserOrganizations();
   const [isOpen, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof newEventSchema>>({
@@ -288,7 +288,7 @@ export default function CreateEvent() {
         </div>
       </div>
 
-      {isOpen && <CreateOrganization close={onClose} />}
+      {isOpen && <CreateOrganization close={onClose} refetch={getOrganizations} />}
     </>
   );
 }

@@ -190,7 +190,7 @@ export function SingleEvent({
               )}
             </div>
             {/** */}
-            <div className={cn("w-full lg:col-span-4 flex flex-col gap-y-3 py-4 px-4 sm:px-10 sm:py-6 items-start justify-start", isDetail && " lg:col-span-1 max-w-2xl")}>
+            <div className={cn("w-full lg:col-span-4 flex flex-col gap-y-3 py-4 px-4 sm:px-10 sm:py-6 items-start justify-start", isDetail && "mx-auto lg:col-span-1 max-w-2xl")}>
               <p className="text-base text-start w-full  sm:text-2xl font-medium  ">
                 {event?.eventTitle}
               </p>
@@ -288,10 +288,7 @@ export function SingleEvent({
                 onClick={(e) => {
                   e.stopPropagation();
                   e.stopPropagation();
-                  if (!user) {
-                    toast({variant:"destructive",description:"Login is required"})
-                    return
-                  }
+              
 
                   onClose();
                 }}

@@ -7,18 +7,44 @@ export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     try {
       const params = await req.json();
+      const { sessionAlias: alias } = params;
 
-      const { error } = await supabase.from("myAgenda").upsert(params);
+      const {
+        data: allMyAgendas,
+        error: fetchError,
+        status,
+      } = await supabase.from("myAgenda").select("*");
 
-      if (error) {
-        return NextResponse.json(
-          { error: error.message },
-          {
-            status: 400,
-          }
-        );
+      if (
+        Array.isArray(allMyAgendas) &&
+        allMyAgendas?.some(({ sessionAlias }) => sessionAlias === alias)
+      ) {
+        const { error: deleteError } = await supabase
+          .from("myAgenda")
+          .delete()
+          .eq("sessionAlias", alias);
+
+        if (deleteError) {
+          return NextResponse.json(
+            { error: deleteError.message },
+            {
+              status: 400,
+            }
+          );
+        }
+      } else {
+        const { error } = await supabase.from("myAgenda").upsert(params);
+
+        if (error) {
+          return NextResponse.json(
+            { error: error.message },
+            {
+              status: 400,
+            }
+          );
+        }
+        if (error) throw error;
       }
-      if (error) throw error;
 
       return NextResponse.json(
         { msg: "Agenda added successfully" },

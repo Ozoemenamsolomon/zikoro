@@ -5,13 +5,13 @@ import { Event, TIssuedCertificate } from "@/types";
 import { Button } from "@/components";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 
-export function AllDatas({
+export function AllDatas<T>({
   data,
   title,
   onClose,
 }: {
   title: string;
-  data?: Event[] | TIssuedCertificate[];
+  data?: T[];
   onClose: () => void;
 }) {
   const isEventArray = (data: any[]): data is Event[] => {

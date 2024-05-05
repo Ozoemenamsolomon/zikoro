@@ -45,6 +45,7 @@ export function AddPartners({
 }) {
   const [active, setActive] = useState(1);
   const currentEvent = getCookie("currentEvent");
+  const org = getCookie("currentOrganization");
   const { addPartners } = useAddPartners();
   const { attendees } = useGetEventAttendees(eventId);
   const { data: eventData, refetch } = useFetchSingleEvent(eventId);
@@ -148,6 +149,7 @@ export function AddPartners({
       ? {
           ...partner,
           ...values,
+          organizerEmail: org?.email,
           eventId: String(eventData?.id),
           eventAlias: eventData?.eventAlias,
           whatsApp: whatsappCountryCode + values.whatsApp,

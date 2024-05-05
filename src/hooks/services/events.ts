@@ -9,6 +9,7 @@ import {
   Organization,
   TAttendee,
   TEventTransactionDetail,
+  TOrgEvent
 } from "@/types";
 import _ from "lodash";
 import { getCookie, useUpdateAttendees } from "@/hooks";
@@ -303,7 +304,7 @@ export function useUpdateEvent() {
   };
 }
 
-export function useFetchSingleOrganization(id: string) {
+export function useFetchSingleOrganization(id?: number) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Organization | null>(null);
 
@@ -312,6 +313,7 @@ export function useFetchSingleOrganization(id: string) {
   }, []);
 
   async function fecthSingleOrg() {
+    if (!id) return
     try {
       setLoading(true);
       // Fetch the event by ID
@@ -533,7 +535,7 @@ export function useGetPublishedEvents(
 
 export function useFetchSingleEvent(eventId: string) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Event | null>(null);
+  const [data, setData] = useState<TOrgEvent | null>(null);
 
   useEffect(() => {
     fetchSingleEvent();
@@ -545,7 +547,7 @@ export function useFetchSingleEvent(eventId: string) {
       // Fetch the event by ID
       const { data, error: fetchError } = await supabase
         .from("events")
-        .select("*")
+        .select("*, organization!inner(*)")
         .eq("eventAlias", eventId)
         .single();
 

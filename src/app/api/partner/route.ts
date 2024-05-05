@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
 <p>This link will guide you through the necessary steps to finalize your registration and provide all the details required to set up your booth at the event.</p>
 
-<p>If you encounter any issues or have any questions during the registration process, please do not hesitate to contact our team at [Event Contact Information].</p>
+<p>If you encounter any issues or have any questions during the registration process, please do not hesitate to contact our team at ${params?.organizerEmail}.</p>
 
 <p>Thank you once again for your participation. We are eagerly looking forward to seeing you at <strong>${params?.eventName}</strong>!</p>
 

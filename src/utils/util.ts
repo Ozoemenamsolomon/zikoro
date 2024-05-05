@@ -54,4 +54,4 @@ export const formatReviewNumber = (number: number):string => {
   return shortValue + suffixes[suffixNum];
 };
 
-export const deploymentUrl = 'https://zikoro-git-integrate-ajax484s-projects.vercel.app'
+export const deploymentUrl = 'https://www.zikoro.com'

@@ -45,6 +45,7 @@ export enum PartnersEnum {
     eventAlias: string;
     sponsoredSession: {session: TAgenda, sessionLink: string}[];
     partnerAlias:string;
+    organizerEmail:string;
   }
 
   export interface TExPartner {

@@ -29,6 +29,7 @@ export interface TAgenda {
   eventId: string;
   eventAlias: string;
   sessionAlias: string;
+  isMyAgenda:boolean;
 }
 
 export interface TSessionAgenda {

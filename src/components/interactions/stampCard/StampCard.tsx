@@ -38,7 +38,7 @@ export default function StampCard({ eventId }: { eventId: string }) {
   // filter by partner's name
   function onSubmit(value: FormValue) {
     // console.log(value);
-    if (data) {
+    if (Array.isArray(data)) {
       const filtered = data.filter((partner) => {
         const isPresent =
           value.search.length === 0 ||
@@ -54,7 +54,7 @@ export default function StampCard({ eventId }: { eventId: string }) {
   }
 
   useEffect(() => {
-    if (active) {
+    if (active && Array.isArray(data)) {
       const filtered = data.filter((partner) => {
         return partner?.stampIt;
       });
@@ -63,7 +63,7 @@ export default function StampCard({ eventId }: { eventId: string }) {
     } else {
       setPartnerData(undefined);
     }
-  }, [active]);
+  }, [active, data]);
   return (
     <InteractionLayout eventId={eventId}>
       <div className="w-full px-4 flex flex-col sm:flex-row gap-2 items-start md:items-center justify-start md:justify-between py-3">
@@ -125,31 +125,35 @@ export default function StampCard({ eventId }: { eventId: string }) {
         )}
 
         {Array.isArray(partnerData || data) &&
-          (partnerData || data).map(
-            ({ stampIt, exhibitionHall, boothNumber,companyLogo, eventId }) => (
-              <div
-                key={eventId}
-                className="w-full h-52 rounded-lg border p-3 flex flex-col gap-y-2"
-              >
+          (partnerData || data).map((partner) => (
+            <div
+              key={eventId}
+              className="w-full h-52 overflow-hiddenF rounded-lg border p-3 flex flex-col gap-y-2"
+            >
+              {partner?.companyLogo ? (
                 <Image
-                  src={companyLogo}
+                  src={partner?.companyLogo}
                   width={300}
                   height={300}
                   className="w-full h-24 object-contain"
                   alt="partner-logo"
                 />
-                <p className="text-mobile text-gray-600">{`${
-                  exhibitionHall ? `${exhibitionHall},` : ""
-                } Booth ${boothNumber ? boothNumber?.toString() : ""}`}</p>
+              ) : (
+                <div className="w-full h-27 animate-pulse bg-gray-300"></div>
+              )}
+              <p className="text-mobile text-gray-600">{`${
+                partner?.exhibitionHall ? `${partner?.exhibitionHall},` : ""
+              } Booth ${
+                partner?.boothNumber ? partner?.boothNumber?.toString() : ""
+              }`}</p>
 
-                {stampIt ? (
-                  <ActiveStampCard />
-                ) : (
-                  <p className="w-[50px] h-[50px]"></p>
-                )}
-              </div>
-            )
-          )}
+              {partner?.stampIt ? (
+                <ActiveStampCard />
+              ) : (
+                <p className="w-[50px] h-[50px]"></p>
+              )}
+            </div>
+          ))}
       </div>
     </InteractionLayout>
   );
