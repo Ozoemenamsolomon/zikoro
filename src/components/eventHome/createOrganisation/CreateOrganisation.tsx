@@ -110,7 +110,7 @@ export function CreateOrganization({ close, refetch }: {refetch?:() => Promise<a
               className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-basePrimary h-12 rounded-md text-gray-50 font-medium"
             >
               {loading && <LoaderAlt size={22} className="animate-spin" />}
-              <span>Create Organization</span>
+              <span>Create Workspace</span>
             </Button>
           </form>
         </Form>
