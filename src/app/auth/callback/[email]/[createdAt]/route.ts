@@ -7,6 +7,8 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { email: string; createdAt: string } }
 ) {
+
+
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const { email, createdAt } = params;
