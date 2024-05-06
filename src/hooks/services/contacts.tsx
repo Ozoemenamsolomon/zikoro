@@ -1,11 +1,11 @@
 import { toast } from "@/components/ui/use-toast";
-import { usePostResult } from "@/types";
-import { postRequest } from "@/utils/api";
-import { useState } from "react";
+import { UseGetResult, usePostResult } from "@/types";
+import { getRequest, postRequest } from "@/utils/api";
+import { useEffect, useState } from "react";
 
 type RequestContactPayload = Pick<
   ContactRequest,
-  "senderUserId" | "receiverUserId"
+  "senderUserEmail" | "receiverUserEmail"
 >;
 
 export const useRequestContact = (): usePostResult<
@@ -48,4 +48,50 @@ export const useRequestContact = (): usePostResult<
   };
 
   return { requestContact, isLoading, error };
+};
+
+export const useGetUserContactRequests = ({
+  userEmail,
+}: {
+  userEmail: string;
+}): UseGetResult<
+  ContactRequest[],
+  "userContactRequests",
+  "getUserContactRequests"
+> => {
+  const [userContactRequests, setUserContactRequests] = useState<
+    ContactRequest[]
+  >([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getUserContactRequests = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<ContactRequest[]>({
+        endpoint: `/contacts/request?userEmail=${userEmail}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setUserContactRequests(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getUserContactRequests();
+  }, []);
+
+  return {
+    userContactRequests,
+    isLoading,
+    error,
+    getUserContactRequests,
+  };
 };

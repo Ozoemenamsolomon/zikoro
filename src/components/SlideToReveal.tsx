@@ -39,8 +39,8 @@ const SlideToReveal: React.FC<{ action: () => void }> = ({ action }) => {
       id="well"
       className="relative p-0.5 h-fit rounded-3xl bg-basePrimary/20 select-none transition-opacity"
     >
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <h2 className="text-white font-medium text-center text-tiny">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full">
+        <h2 className="text-white font-medium text-center text-tiny w-full">
           Slide to Exchange Contacts
         </h2>
       </div>

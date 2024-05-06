@@ -49,7 +49,7 @@ const MyProfile = () => {
         <UserProfile user={user} onOpen={onOpenUserForm} />
       </div>
       <div className="md:col-span-6">
-        <UserContacts />
+        <UserContacts user={user} />
       </div>
       <AddUserForm
         isOpen={userFormIsOpen}
