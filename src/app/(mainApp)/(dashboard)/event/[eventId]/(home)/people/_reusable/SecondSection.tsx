@@ -339,8 +339,8 @@ export default function SecondSection({
                   clsBtnRef.current?.click();
                   await requestContact({
                     payload: {
-                      senderUserId: user.id,
-                      receiverUserId: id,
+                      senderUserEmail: user.userEmail,
+                      receiverUserEmail: email,
                     },
                   });
                 }}
