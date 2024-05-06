@@ -30,7 +30,7 @@ import {
   locationType,
   pricingCurrency,
 } from "../_components/utils";
-import { Event } from "@/types";
+import { TOrgEvent } from "@/types";
 
 interface ImageFile {
   url: string | undefined;
@@ -44,7 +44,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     loading,
     refetch,
   }: {
-    data: Event | null;
+    data: TOrgEvent | null;
     loading: boolean;
     refetch: () => Promise<null | undefined>;
   } = useFetchSingleEvent(eventId);
@@ -238,6 +238,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   // update event
   async function publishEvent() {
+    if (!data) return
     setIsPublishing(true);
     const userData = getCookie("user");
     if (data?.eventStatus === "review") {
@@ -252,9 +253,10 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       status: "review",
       user: userData?.userEmail,
     };
+    const {organization, ...restData} = data
     await update(
       {
-        ...data,
+        ...restData,
         eventStatus: "review",
         eventStatusDetails:
           data?.eventStatusDetails && data?.eventStatusDetails !== null
