@@ -69,7 +69,7 @@ export function CreateOrganization({ close, refetch }: {refetch?:() => Promise<a
                 <InputOffsetLabel label="Name">
                   <Input
                     type="text"
-                    placeholder="Enter Organization Name"
+                    placeholder="Enter Workspace Name"
                     {...field}
                     className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
                   />
@@ -82,11 +82,11 @@ export function CreateOrganization({ close, refetch }: {refetch?:() => Promise<a
               render={({ field }) => (
                 <ReactSelect
                   {...form.register("organizationType")}
-                  label="Organization Type"
+                  label="Workspace Type"
                   options={orgType.map((value) => {
                     return { value, label: value };
                   })}
-                  placeHolder="Select Organization"
+                  placeHolder="Select Workspace"
                 />
               )}
             />

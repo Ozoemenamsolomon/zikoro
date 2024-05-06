@@ -14,7 +14,7 @@ export async function GET(
     try {
       const { data, error } = await supabase
         .from("sessionReviews")
-        .select("*")
+        .select("*, attendees!inner(*)")
         .eq("eventAlias", eventId);
 
       if (error) {

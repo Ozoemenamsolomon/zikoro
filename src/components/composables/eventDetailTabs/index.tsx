@@ -91,9 +91,9 @@ export function EventDetailTabs({
       )}
       <div
         className={cn(
-          "sm:flex hidden px-4  w-full sm:px-6 items-center gap-x-2 my-4 border-b sm:my-6 sm:gap-x-6",
+          "sm:flex hidden px-4  w-full sm:px-6 items-center gap-x-2 mb-4 border-b sm:mb-6 sm:gap-x-6",
           className,
-          isEventDetailPage && "flex"
+          isEventDetailPage && "flex bg-white justify-center pt-2 border-y"
         )}
       >
         {selectedTabs.map(({ title, status }, id) => (
@@ -104,7 +104,8 @@ export function EventDetailTabs({
               "px-2 py-2 h-fit bg-transparent rounded-none text-sm sm:text-base font-medium text-gray-500 hidden",
               active === id + 1 &&
                 "border-b-2 border-basePrimary text-basePrimary",
-              status && "block"
+              status && "block",
+            
             )}
           >
             {title}
@@ -112,7 +113,8 @@ export function EventDetailTabs({
         ))}
       </div>
 
-      {active === EventDetailTab.ABOUT_TAB && (
+<div className={cn("", isEventDetailPage && "mx-auto p-3 sm:p-6 bg-white mt-4 rounded-lg py-3 sm:mt-6 w-full sm:w-[65%] lg:w-[90%] xl:w-[80%]")}>
+{active === EventDetailTab.ABOUT_TAB && (
         <About
           isEventDetailPage={isEventDetailPage}
           event={event}
@@ -128,6 +130,8 @@ export function EventDetailTabs({
       {active === EventDetailTab.EXIHIBITORS_TAB && event && (
         <Sponsors event={event} changeMajorActiveState={changeActiveState} />
       )}
+</div>
+
     </>
   );
 }

@@ -12,7 +12,7 @@ export function EventDetail({ event }: { event: Event }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow ">
+    <div className=" ">
     
       <EventDetailTabs
         active={active}

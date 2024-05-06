@@ -105,7 +105,15 @@ export async function POST(req: NextRequest) {
         .eq("eventRegistrationRef", params.eventRegistrationRef);
 
       if (firstError) {
-        throw firstError;
+        return NextResponse.json(
+          {
+            error: firstError.message,
+          },
+          {
+            status: 400,
+          }
+        );
+        //throw firstError;
       }
 
       let check = "testing this";
@@ -129,6 +137,17 @@ export async function POST(req: NextRequest) {
         .from("events")
         .update({ ...originalEvent, registered })
         .eq("id", params.eventId);
+
+        if (error) {
+          return NextResponse.json(
+            {
+              error: error.message,
+            },
+            {
+              status: 400,
+            }
+          );
+        }
 
       // create attendee arraY
       const resolveAttendees = attendeesDetails.map(

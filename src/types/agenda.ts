@@ -45,6 +45,10 @@ export interface TReview {
   eventAlias?:string
 }
 
+export type TFeedBack = TReview & {
+  attendees: TAttendee
+}
+
 export interface TMyAgenda {
   sessionId: number;
   attendeeId: number;

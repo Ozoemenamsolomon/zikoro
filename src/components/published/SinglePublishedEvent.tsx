@@ -45,13 +45,13 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
             useDiv={true}
             eventId={eventDetail?.eventAlias}
             imageClassName={
-              "rounded-t-none rounded-tr-none sm:rounded-tl-none sm:rounded-l-none"
+              "rounded-t-none sm:rounded-l-none rounded-tr-none sm:rounded-tl-none sm:rounded-l-none"
             }
             className="w-full bg-none  shadow-none"
             
           />
 
-          <div className=" mx-auto p-3 sm:p-6 w-full sm:w-[65%] lg:w-[90%] xl:w-[80%]">
+          <div className=" ">
             <EventDetail event={eventDetail} />
 
             {!pathname.includes("preview") && (

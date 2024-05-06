@@ -6,6 +6,7 @@ import {
   TReview,
   TMyAgenda,
   UseGetResult,
+  TFeedBack
 } from "@/types";
 import {
   postRequest,
@@ -385,7 +386,7 @@ export const useGetReviews = () => {
 }
 
 export const useGetEventReviews = (eventId?:string) => {
-  const [reviews, setReviews] = useState<TReview[]>([])
+  const [reviews, setReviews] = useState<TFeedBack[]>([])
   const [isLoading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -395,7 +396,7 @@ export const useGetEventReviews = (eventId?:string) => {
     if (!eventId) return 
     try {
       setLoading(true);
-      const { data, status } = await getRequest<TReview[]>({
+      const { data, status } = await getRequest<TFeedBack[]>({
         endpoint: `/agenda/review/event/${eventId}`,
       });
 

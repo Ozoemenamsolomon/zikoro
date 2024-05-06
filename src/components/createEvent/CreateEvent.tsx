@@ -142,8 +142,8 @@ export default function CreateEvent() {
                       <FormItem className="w-full relative">
                         <ReactSelect
                           {...field}
-                          placeHolder="Select an Organization"
-                          label="Organization"
+                          placeHolder="Select a Workspace"
+                          label="Workspace"
                           options={formattedList}
                         />
                         <FormMessage />

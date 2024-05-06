@@ -38,6 +38,7 @@ export function SingleEvent({
   event,
   useDiv = false,
   eventId,
+  imageClassName
 }: {
   isDetail?: boolean;
   className?: string;
@@ -180,7 +181,8 @@ export function SingleEvent({
                   height={600}
                   className={cn(
                     "w-full h-72 sm:h-[350px] lg:h-[400px] rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl object-cover",
-                    isDetail && "sm:h-[400px] lg:h-[500px]"
+                    isDetail && "sm:h-[400px] lg:h-[500px]",
+                    imageClassName
                   )}
                 />
               ) : (

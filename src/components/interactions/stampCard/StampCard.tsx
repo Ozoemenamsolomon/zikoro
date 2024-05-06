@@ -128,7 +128,7 @@ export default function StampCard({ eventId }: { eventId: string }) {
           (partnerData || data).map((partner) => (
             <div
               key={eventId}
-              className="w-full h-52 overflow-hiddenF rounded-lg border p-3 flex flex-col gap-y-2"
+              className="w-full h-52 overflow-hidden rounded-lg border p-3 flex flex-col gap-y-2"
             >
               {partner?.companyLogo ? (
                 <Image
@@ -141,6 +141,9 @@ export default function StampCard({ eventId }: { eventId: string }) {
               ) : (
                 <div className="w-full h-27 animate-pulse bg-gray-300"></div>
               )}
+              <p className="font-semibold w-full text-ellipsis overflow-hidden whitespace-nowrap">
+                {partner?.companyName ?? ""}
+              </p>
               <p className="text-mobile text-gray-600">{`${
                 partner?.exhibitionHall ? `${partner?.exhibitionHall},` : ""
               } Booth ${
