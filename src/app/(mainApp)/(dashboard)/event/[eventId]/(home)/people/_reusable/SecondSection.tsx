@@ -53,6 +53,7 @@ import {
 } from "@/hooks";
 import { TAgenda } from "@/types";
 import SlideToReveal from "@/components/SlideToReveal";
+import { useRequestContact } from "@/hooks/services/contacts";
 
 export default function SecondSection({
   attendee,
@@ -282,10 +283,80 @@ export default function SecondSection({
 
   const { createAttendee } = useCreateAttendee();
 
-  const sliderBtnRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState<boolean>(false);
+
+  const clsBtnRef = useRef<HTMLButtonElement>(null);
+
+  const { requestContact, isLoading: requestingContact } = useRequestContact();
 
   return (
     <div className="h-fit space-y-4">
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          {" "}
+          <DialogHeader>
+            <DialogTitle>
+              <span className="capitalize">
+                Request Contact Information of {firstName + " " + lastName}
+              </span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex flex-col gap-4 items-center py-4">
+              <svg
+                width={57}
+                height={50}
+                viewBox="0 0 57 50"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M55.6998 41.0225L33.8373 3.05501C33.2909 2.12482 32.511 1.35356 31.5748 0.817663C30.6385 0.281767 29.5785 -0.000152588 28.4998 -0.000152588C27.421 -0.000152588 26.361 0.281767 25.4247 0.817663C24.4885 1.35356 23.7086 2.12482 23.1623 3.05501L1.29975 41.0225C0.774092 41.9222 0.49707 42.9455 0.49707 43.9875C0.49707 45.0295 0.774092 46.0528 1.29975 46.9525C1.83908 47.8883 2.61768 48.6638 3.55566 49.1993C4.49363 49.7349 5.55721 50.0112 6.63725 50H50.3623C51.4414 50.0103 52.504 49.7336 53.441 49.1981C54.378 48.6626 55.1558 47.8876 55.6948 46.9525C56.2212 46.0532 56.4991 45.0302 56.4999 43.9882C56.5008 42.9462 56.2247 41.9227 55.6998 41.0225ZM52.2323 44.95C52.0417 45.2751 51.768 45.5437 51.4394 45.7282C51.1108 45.9127 50.7391 46.0065 50.3623 46H6.63725C6.26044 46.0065 5.88868 45.9127 5.56008 45.7282C5.23147 45.5437 4.95784 45.2751 4.76725 44.95C4.59461 44.6577 4.50355 44.3245 4.50355 43.985C4.50355 43.6455 4.59461 43.3123 4.76725 43.02L26.6298 5.05251C26.8242 4.72894 27.0991 4.4612 27.4276 4.27532C27.7562 4.08944 28.1273 3.99175 28.5048 3.99175C28.8822 3.99175 29.2533 4.08944 29.5819 4.27532C29.9104 4.4612 30.1853 4.72894 30.3798 5.05251L52.2423 43.02C52.4134 43.3132 52.5027 43.6469 52.501 43.9864C52.4992 44.3258 52.4064 44.6586 52.2323 44.95ZM26.4998 30V20C26.4998 19.4696 26.7105 18.9609 27.0855 18.5858C27.4606 18.2107 27.9693 18 28.4998 18C29.0302 18 29.5389 18.2107 29.914 18.5858C30.289 18.9609 30.4998 19.4696 30.4998 20V30C30.4998 30.5304 30.289 31.0392 29.914 31.4142C29.5389 31.7893 29.0302 32 28.4998 32C27.9693 32 27.4606 31.7893 27.0855 31.4142C26.7105 31.0392 26.4998 30.5304 26.4998 30ZM31.4998 39C31.4998 39.5934 31.3238 40.1734 30.9942 40.6667C30.6645 41.1601 30.196 41.5446 29.6478 41.7716C29.0996 41.9987 28.4964 42.0581 27.9145 41.9424C27.3325 41.8266 26.798 41.5409 26.3784 41.1213C25.9589 40.7018 25.6732 40.1672 25.5574 39.5853C25.4416 39.0033 25.5011 38.4001 25.7281 37.852C25.9552 37.3038 26.3397 36.8352 26.833 36.5056C27.3264 36.176 27.9064 36 28.4998 36C29.2954 36 30.0585 36.3161 30.6211 36.8787C31.1837 37.4413 31.4998 38.2044 31.4998 39Z"
+                  fill="#001FCC"
+                />
+              </svg>
+              <div className="text-gray-800 font-medium flex flex-col gap-2 text-center">
+                <span>
+                  Are you sure you want to exchange the contact information of{" "}
+                  {firstName + " " + lastName} (your contact information would
+                  be shared with them as well)?
+                </span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  clsBtnRef.current?.click();
+                }}
+                className="border-2 bg-white border-basePrimary text-basePrimary w-full"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  clsBtnRef.current?.click();
+                  await requestContact({
+                    payload: {
+                      senderUserId: user.id,
+                      receiverUserId: id,
+                    },
+                  });
+                }}
+                className="bg-basePrimary w-full"
+              >
+                Request
+              </Button>
+            </div>
+          </div>
+          <DialogClose asChild>
+            <button className="hidden" ref={clsBtnRef}>
+              close
+            </button>
+          </DialogClose>
+        </DialogContent>
+      </Dialog>
       <div
         ref={parentCardRef}
         className="bg-transparent w-full [perspective:1000px] h-[250px]"
@@ -305,7 +376,11 @@ export default function SecondSection({
                   Flip
                 </button>
               </div>
-              <div className="absolute top-2 right-4">
+              <div
+                className={`absolute top-2 right-4 ${
+                  cardIsFlipped ? "hidden" : ""
+                }`}
+              >
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -459,47 +534,18 @@ export default function SecondSection({
                         </svg>
                       </div>
                     }
-                    {/* <div className="flex-1 flex flex-col gap-2 items-center justify-center">
-                <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="25"
-                    height="24"
-                    viewBox="0 0 25 24"
-                    fill="none"
-                  >
-                    <g clip-path="url(#clip0_11643_35897)">
-                      <path
-                        d="M22.0836 4.00008H19.4169V6.00008C19.4169 6.19268 19.379 6.3834 19.3053 6.56135C19.2316 6.73929 19.1235 6.90097 18.9873 7.03717C18.8512 7.17336 18.6895 7.28139 18.5115 7.3551C18.3336 7.42881 18.1429 7.46674 17.9503 7.46674C17.7576 7.46674 17.5669 7.42881 17.389 7.3551C17.211 7.28139 17.0494 7.17336 16.9132 7.03717C16.777 6.90097 16.6689 6.73929 16.5952 6.56135C16.5215 6.3834 16.4836 6.19268 16.4836 6.00008V4.00008H8.71692V6.00008C8.71692 6.38906 8.5624 6.76211 8.28734 7.03717C8.01229 7.31222 7.63924 7.46674 7.25025 7.46674C6.86127 7.46674 6.48822 7.31222 6.21316 7.03717C5.93811 6.76211 5.78359 6.38906 5.78359 6.00008V4.00008H3.11692C2.95827 3.99827 2.80087 4.0283 2.65402 4.08838C2.50718 4.14847 2.37387 4.23739 2.262 4.34989C2.15012 4.4624 2.06193 4.59619 2.00266 4.74336C1.94339 4.89054 1.91424 5.0481 1.91692 5.20674V20.1267C1.91427 20.2826 1.94235 20.4374 1.99955 20.5824C2.05675 20.7274 2.14195 20.8597 2.25029 20.9718C2.35863 21.0838 2.48799 21.1734 2.63096 21.2355C2.77394 21.2975 2.92774 21.3308 3.08359 21.3334H22.0836C22.2394 21.3308 22.3932 21.2975 22.5362 21.2355C22.6792 21.1734 22.8085 21.0838 22.9169 20.9718C23.0252 20.8597 23.1104 20.7274 23.1676 20.5824C23.2248 20.4374 23.2529 20.2826 23.2503 20.1267V5.20674C23.2529 5.0509 23.2248 4.89607 23.1676 4.75108C23.1104 4.60609 23.0252 4.47379 22.9169 4.36174C22.8085 4.24968 22.6792 4.16007 22.5362 4.09802C22.3932 4.03596 22.2394 4.00268 22.0836 4.00008ZM7.25025 17.3334H5.91692V16.0001H7.25025V17.3334ZM7.25025 14.0001H5.91692V12.6667H7.25025V14.0001ZM7.25025 10.6667H5.91692V9.33341H7.25025V10.6667ZM11.2503 17.3334H9.91692V16.0001H11.2503V17.3334ZM11.2503 14.0001H9.91692V12.6667H11.2503V14.0001ZM11.2503 10.6667H9.91692V9.33341H11.2503V10.6667ZM15.2503 17.3334H13.9169V16.0001H15.2503V17.3334ZM15.2503 14.0001H13.9169V12.6667H15.2503V14.0001ZM15.2503 10.6667H13.9169V9.33341H15.2503V10.6667ZM19.2503 17.3334H17.9169V16.0001H19.2503V17.3334ZM19.2503 14.0001H17.9169V12.6667H19.2503V14.0001ZM19.2503 10.6667H17.9169V9.33341H19.2503V10.6667Z"
-                        fill="#15161B"
-                      />
-                      <path
-                        d="M7.25016 6.66634C7.42697 6.66634 7.59654 6.5961 7.72157 6.47108C7.84659 6.34605 7.91683 6.17649 7.91683 5.99967V1.99967C7.91683 1.82286 7.84659 1.65329 7.72157 1.52827C7.59654 1.40325 7.42697 1.33301 7.25016 1.33301C7.07335 1.33301 6.90378 1.40325 6.77876 1.52827C6.65373 1.65329 6.5835 1.82286 6.5835 1.99967V5.99967C6.5835 6.17649 6.65373 6.34605 6.77876 6.47108C6.90378 6.5961 7.07335 6.66634 7.25016 6.66634Z"
-                        fill="#15161B"
-                      />
-                      <path
-                        d="M17.9169 6.66634C18.0937 6.66634 18.2633 6.5961 18.3883 6.47108C18.5133 6.34605 18.5836 6.17649 18.5836 5.99967V1.99967C18.5836 1.82286 18.5133 1.65329 18.3883 1.52827C18.2633 1.40325 18.0937 1.33301 17.9169 1.33301C17.7401 1.33301 17.5705 1.40325 17.4455 1.52827C17.3205 1.65329 17.2502 1.82286 17.2502 1.99967V5.99967C17.2502 6.17649 17.3205 6.34605 17.4455 6.47108C17.5705 6.5961 17.7401 6.66634 17.9169 6.66634Z"
-                        fill="#15161B"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_11643_35897">
-                        <rect
-                          width="24"
-                          height="24"
-                          fill="white"
-                          transform="translate(0.583496)"
-                        />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                </div>
-                <span className=" text-xs text-[#3E404B] font-semibold text-center">
-                  Schedule Appointment
-                </span>
-              </div> */}
                   </div>
-                  <SlideToReveal action={() => console.log("hello world")} />
+                  {!(
+                    (user && String(event?.createdBy) === String(user.id)) ||
+                    user.userEmail === email
+                  ) && (
+                    <SlideToReveal
+                      action={() => {
+                        console.log("drag");
+                        setOpen(true);
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -509,14 +555,13 @@ export default function SecondSection({
               <div className="absolute top-0 left-0">
                 <button
                   onClick={flipCard}
-                  className="bg-gray-200  [border-top-right-radius:75%]
-                  [border-bottom-right-radius:75%] p-4 text-xs font-medium text-gray-700"
+                  className="bg-gray-200 [border-bottom-right-radius:75%] p-4 text-xs font-medium text-gray-700"
                 >
                   Flip
                 </button>
               </div>
             </div>
-            <div className="pt-8 pb-4 px-2 md:px-6 grid md:grid-cols-2 md:justify-center md:items-center gap-2 md:gap-8 w-full">
+            <div className="pt-12 pb-4 px-2 md:px-6 grid md:grid-cols-2 md:justify-center md:items-center gap-2 md:gap-8 w-full">
               <div className="flex flex-col gap-4 flex-1 h-full col-span-1">
                 {phoneNumber && (
                   <div className="flex gap-1 items-center">

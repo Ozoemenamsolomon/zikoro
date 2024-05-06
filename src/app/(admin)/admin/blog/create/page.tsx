@@ -76,7 +76,7 @@ export default function Create() {
 
     try {
       const res = await fetch(
-        `https://api.cloudinary.com/v1_1/kachiozo/image/upload`,
+        `https://api.cloudinary.com/v1_1/zikoro/image/upload`,
         {
           method: "POST",
           body: formData,

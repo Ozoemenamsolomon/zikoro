@@ -23,11 +23,12 @@ const SlideToReveal: React.FC<{ action: () => void }> = ({ action }) => {
             slider.getBoundingClientRect().right <
             well.getBoundingClientRect().right - 3
           ) {
-            console.log("not there yet");
-            slider.style.left = "0px";
+            console.log("drag not there yet");
           } else {
-            console.log("there!");
+            console.log("drag there!");
+            action();
           }
+          slider.style.left = "0px";
         },
       }
     );
@@ -36,7 +37,7 @@ const SlideToReveal: React.FC<{ action: () => void }> = ({ action }) => {
   return (
     <div
       id="well"
-      className="relative p-0.5 h-fit rounded-3xl bg-basePrimary/50 select-none transition-opacity"
+      className="relative p-0.5 h-fit rounded-3xl bg-basePrimary/20 select-none transition-opacity"
     >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <h2 className="text-white font-medium text-center text-tiny">
