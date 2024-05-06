@@ -15,7 +15,7 @@ export async function uploadFile(file: File | string, type: string) {
 
   try {
     const response = await fetch(
-      `https://api.cloudinary.com/v1_1/kachiozo/${
+      `https://api.cloudinary.com/v1_1/zikoro/${
         type === "pdf" ? "raw" : type
       }/upload`,
       {
