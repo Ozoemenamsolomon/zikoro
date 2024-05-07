@@ -65,7 +65,7 @@ export default function FeaturedEventList({ searchQuery }: selectedEventProps) {
           {/* header */}
           <div className="flex justify-between">
             <p className="font-semibold text-[20px] lg:text-[32px]">
-              All Events
+              Browse Events
             </p>
             <div
               onClick={() => router.push("/explore/featured-events")}

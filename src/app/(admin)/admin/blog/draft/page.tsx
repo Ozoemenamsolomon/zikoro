@@ -25,10 +25,10 @@ export default function Create() {
   });
 
   const categories = [
-    "Event tips",
-    "Product Updates",
-    "Guides and Tutorial",
-    "Case Study",
+    { name: "Event tips", value: "event" },
+    { name: "Product Updates", value: "product" },
+    { name: "Guides and Tutorial", value: "guide" },
+    { name: "Case Study", value: "case" },
   ];
 
   const handleChange = (e: any) => {
@@ -80,11 +80,11 @@ export default function Create() {
             {categories.map((category, index) => (
               <option
                 key={index}
-                value={category}
+                value={category.value}
                 className="bg-transparent text-black text-[15px]"
               >
                 {" "}
-                {category}{" "}
+                {category.name}{" "}
               </option>
             ))}
           </select>

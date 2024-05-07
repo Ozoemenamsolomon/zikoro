@@ -25,10 +25,10 @@ export default function Create() {
   });
 
   const categories = [
-    "Event tips",
-    "Product Updates",
-    "Guides and Tutorial",
-    "Case Study",
+    { name: "Event tips", value: "event" },
+    { name: "Product Updates", value: "product" },
+    { name: "Guides and Tutorial", value: "guide" },
+    { name: "Case Study", value: "case" },
   ];
 
   const handleChange = (e: any) => {
@@ -81,11 +81,11 @@ export default function Create() {
             {categories.map((category, index) => (
               <option
                 key={index}
-                value={category}
+                value={category.value}
                 className="bg-transparent text-black text-[15px]"
               >
                 {" "}
-                {category}{" "}
+                {category.name}{" "}
               </option>
             ))}
           </select>
@@ -94,7 +94,8 @@ export default function Create() {
 
       {/* section 2 */}
       <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px] bg-white">
-        {blogData && blogData?.length > 0  &&
+        {blogData &&
+          blogData?.length > 0 &&
           blogData?.map((blogPost, index) => (
             <AdminPublishedBlog
               draft={false}
