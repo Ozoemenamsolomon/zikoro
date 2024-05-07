@@ -135,7 +135,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           {/* header section */}
           <div className="mzx-w-full lg:max-w-[982px] mx-auto flex flex-col gap-y-6 lg:gap-y-10 ">
             <div className="max-w-full lg:max-w-2xl lg:mx-auto flex flex-col gap-y-2 text-center ">
-              <p className="text-indigo-600 text-[12px] lg:text-[15px] font-medium">
+              <p className="text-indigo-600 text-[12px] lg:text-[15px] font-medium uppercase">
                 {data?.category}
               </p>
               <p className="capitalize text-2xl font-semibold lg:text-4xl ">

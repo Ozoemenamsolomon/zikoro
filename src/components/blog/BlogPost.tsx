@@ -78,7 +78,7 @@ export default function BlogPost({
 
   //function that shows the blog post
   function goToPost() {
-    window.open(`/post/${id}`, "_blank");
+    window.open(`/post/${id}`, "_self");
   }
 
   useEffect(() => {

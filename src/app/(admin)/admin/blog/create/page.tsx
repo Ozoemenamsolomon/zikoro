@@ -5,8 +5,13 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { AddTag } from "@/components/blog/modal/AddTag";
+import { useRouter } from "next/navigation";
 
 export default function Create() {
+  const [file, setFile] = useState<any>(null);
+  const [status, setStatus] = useState<string>("");
+  const [tagModalOpen, setTagModalOpen] = useState<boolean>(false);
+  const router = useRouter();
   const form = useForm<any>({
     // Add validation rule for content field
     criteriaMode: "all",
@@ -31,9 +36,6 @@ export default function Create() {
     readingDuration: "",
     statusDetail: {},
   });
-  const [file, setFile] = useState<any>(null);
-  const [status, setStatus] = useState<string>("");
-  const [tagModalOpen, setTagModalOpen] = useState<boolean>(false);
 
   const categories = [
     { name: "Event tips", value: "event" },
@@ -68,6 +70,7 @@ export default function Create() {
     setTagModalOpen(false);
   };
 
+  //Upload Image Function
   const uploadImage = async () => {
     const formData = new FormData();
     formData.append("file", file);
@@ -96,10 +99,38 @@ export default function Create() {
     }
   };
 
+  //Upload preview post Function
   const preview = () => {
-    alert("emma");
+    if (!content) {
+      toast.error("Please write your blog content");
+      return;
+    }
+
+    if (!content) {
+      toast.error("Please write your blog content");
+      return; // Return early if content is empty
+    }
+
+    // Upload image
+    uploadImage().then((headerImageUrl) => {
+      // Fetch request
+      return;
+      window.open(
+        `/post/preview?blog=${JSON.stringify({
+          title: formData.title,
+          category: formData.category,
+          tags: formData.tags,
+          readingDuration: formData.readingDuration,
+          status: status,
+          content: content,
+          created_at: Date.now(),
+        })}`,
+        "_blank"
+      );
+    });
   };
 
+  //submit post function
   const submitBlogPost = async (e: any) => {
     e.preventDefault();
     if (!content) {
@@ -220,7 +251,7 @@ export default function Create() {
 
               <div className="px-0 lg:px-3 bg-transparent shadow-sm  rounded-xl w-full lg:w-2/12">
                 <input
-                  type="text"
+                  type="number"
                   name="readingDuration"
                   onChange={handleChange}
                   placeholder="Reading Duration"
@@ -239,9 +270,12 @@ export default function Create() {
               </button>
 
               <button
-                disabled
                 className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px]  w-full lg:w-2/12 h-[44px] rounded-lg cursor-pointer"
-                onClick={preview}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  preview();
+                }}
               >
                 Preview
               </button>

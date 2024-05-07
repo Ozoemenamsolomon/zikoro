@@ -472,7 +472,7 @@ export function useCreateEventExhibitionHall() {
 }
 
 export function useUpdateBooth() {
-  async function updateBooth(partnerId: number, value: string[] | null) {
+  async function updateBooth(partnerId: string, value: string[] | null) {
     try {
       // Fetch the partner by ID
       const { data } = await supabase
@@ -642,12 +642,12 @@ export function useFetchPartnersOffers(eventId: string) {
 export function useDeletePartner() {
   const [loading, setLoading] = useState(false);
 
-  async function deletes(ids: string[]) {
+  async function deletes(ids: number[]) {
     setLoading(true);
     const { error, status } = await supabase
       .from("eventPartners")
       .delete()
-      .in("partnerAlias", ids);
+      .in("id", ids);
 
     if (error) {
       setLoading(false);
