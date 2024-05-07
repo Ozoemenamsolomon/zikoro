@@ -47,21 +47,22 @@ export default function Create() {
     setFormData({ ...formData, [name]: value });
   };
 
+  //fetch blog posts
+  async function fetchBlogPost() {
+    fetch("/api/blog/published", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setBlogData(data.data))
+      .catch((error) => console.error("Error:", error));
+  }
+
   useEffect(() => {
-    //fetch blog posts
-    async function fetchBlogPost() {
-      fetch("/api/blog/published", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => setBlogData(data.data))
-        .catch((error) => console.error("Error:", error));
-    }
     fetchBlogPost();
-  }, []);
+  }, [blogData]);
 
   useEffect(() => {
     if (blogData) {

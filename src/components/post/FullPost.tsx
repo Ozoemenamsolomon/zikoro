@@ -13,6 +13,21 @@ import {
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+type DBSimilarPost = {
+  id: number;
+  title: string;
+  created_at: string;
+  category: string;
+  status: string;
+  statusDetails: JSON;
+  readingDuration: number;
+  content: JSON;
+  views: number;
+  shares: JSON;
+  tags: [];
+  headerImageUrl: string;
+};
+
 type DBBlogPost = {
   id: number;
   title: string;
@@ -38,6 +53,9 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     refetch: () => Promise<null | undefined>;
   } = useFetchBlogPost(postId);
 
+  const [similarPosts, setSimilarPosts] = useState<DBSimilarPost[]>([]);
+  const [postTag, setPostTag] = useState<any>([]);
+
   //for side bar links
   const router = useRouter();
   const contentRef = useRef<HTMLDivElement>(null);
@@ -57,6 +75,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     }
   }
 
+  //formatDate
   function formatDate(date: Date): string {
     const year: number = date.getFullYear();
     const month: number = date.getMonth() + 1; // Month is zero-based, so add 1
@@ -83,7 +102,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
   //share functionality
   const [articleUrl] = useState<string>(
-    `https://zikoro-git-integrate-ajax484s-projects.vercel.app/live-events/${postId}`
+    `https://www.zikoro.com/live-events/${postId}`
   );
   const handleShareOnFacebook = () => {
     shareOnFacebook(articleUrl);
@@ -100,9 +119,10 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   const handleShareOnLinkedin = () => {
     shareOnLinkedin(articleUrl, postId);
   };
+  //share
+  //ID and
 
   //useEffect
-
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
       e.preventDefault();
@@ -124,16 +144,38 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
         contentDiv.removeEventListener("click", handleAnchorClick);
       };
     }
+
+    if (data) {
+      setPostTag(data.tags);
+    }
+
+    const fetchTags = async () => {
+      try {
+        const response = await fetch(`/api/blog/tags?tags=statusFinance`, {
+          method: "GET",
+        });
+        if (response.ok) {
+          const data = await response.json(); // Parse response body
+          console.log(data); // Access parsed response data
+        } else {
+          throw new Error("Failed to fetch similar posts");
+        }
+      } catch (error) {
+        console.error("Error fetching similar posts:", error);
+      }
+    };
+
+    fetchTags();
   }, [router]);
 
-  const headings = data?.content.match(/<h[1-6](.*?)>(.*?)<\/h[1-6]>/g) || [];
+  const headings = data?.content.match(/<h[3](.*?)>(.*?)<\/h[3]>/g) || [];
 
   return (
     <>
       {data && (
         <div className="mt-[120px] lg:mt-[200px] px-3 lg:px-0 ">
           {/* header section */}
-          <div className="mzx-w-full lg:max-w-[982px] mx-auto flex flex-col gap-y-6 lg:gap-y-10 ">
+          <div className="max-w-full lg:max-w-[982px] mx-auto flex flex-col gap-y-6 lg:gap-y-10 ">
             <div className="max-w-full lg:max-w-2xl lg:mx-auto flex flex-col gap-y-2 text-center ">
               <p className="text-indigo-600 text-[12px] lg:text-[15px] font-medium uppercase">
                 {data?.category}
@@ -175,9 +217,6 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                 {/* Top */}
                 <p className="text-xl font-semibold">On This Page</p>
                 {/* Links */}
-                {/* <p className="text-base font-normal mt-8">
-                    Lorem ipsum dolor sit amet consectetur. Vitae sollicitudin tellus{" "}
-                  </p> */}
 
                 {headings.map((heading, index) => {
                   const id = `section-${index}`;
@@ -243,8 +282,26 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
               Read More Articles
             </p>
             <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
-              <PostArticle />
-              <PostArticle />
+              {similarPosts &&
+                similarPosts.length > 0 &&
+                // similarPosts.slice(0, 2) &&
+                similarPosts.map((post) => (
+                  <PostArticle
+                    key={post.id}
+                    id={post.id}
+                    title={post.title}
+                    createdAt={post.created_at}
+                    category={post.category}
+                    status={post.status}
+                    statusDetails={post.statusDetails}
+                    readingDuration={post.readingDuration}
+                    content={post.content}
+                    views={post.views}
+                    shares={post.shares}
+                    tags={post.tags}
+                    headerImageUrl={post.headerImageUrl}
+                  />
+                ))}
             </div>
           </div>
         </div>
