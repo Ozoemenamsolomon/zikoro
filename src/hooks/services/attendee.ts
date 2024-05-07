@@ -112,10 +112,10 @@ export const useUploadAttendees = () => {
         payload,
       });
 
-      if (status !== 200) throw data;
+      if (status !== 201) throw data;
 
       toast({
-        description: message || "Attendee uploaded successfully",
+        description: "Attendee uploaded successfully",
       });
       return data;
     } catch (error) {

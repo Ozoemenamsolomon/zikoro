@@ -4,17 +4,19 @@ import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
 import useDisclose from "@/hooks/common/useDisclose";
 import { TAttendee } from "@/types/attendee";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
-import { useRef, useState, useLayoutEffect } from "react";
+import { useRef, useState, useLayoutEffect, useMemo } from "react";
 import FirstSection from "./FirstSection";
 import SecondSection from "./SecondSection";
 import ThirdSection from "./ThirdSection";
 import {
   getCookie,
   useCreateAttendee,
+  useFetchPartners,
   useGetEvent,
   useGetEventAgendas,
 } from "@/hooks";
 import useEventStore from "@/store/globalEventStore";
+import { TExPartner } from "@/types";
 
 interface ReusablePeopleComponentProps {
   attendees: TAttendee[];
@@ -67,6 +69,31 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const { createAttendee } = useCreateAttendee();
 
+  const { data, loading, refetch } = useFetchPartners(event?.eventAlias || 0);
+
+  console.log(data);
+
+  const formatPartners: TExPartner[] = useMemo(() => {
+    return data?.map((value) => {
+      return {
+        ...value,
+        stampIt: value?.stampIt || false,
+        offers: Array.isArray(value?.offers)
+          ? value?.offers?.length > 0
+          : false,
+        industry: value?.industry,
+        jobs: Array.isArray(value?.jobs) ? value?.jobs?.length > 0 : false,
+        boothNumber: String(value?.boothNumber?.length),
+      };
+    });
+  }, [data]);
+
+  const sponsors = useMemo(() => {
+    return formatPartners.filter(
+      (v) => v.partnerType.toLowerCase() === "sponsor"
+    );
+  }, [data]);
+
   return (
     <section
       className="relative h-fit md:border-t-[1px] border-[#F3F3F3] w-full grid md:grid-cols-10 overflow-hidden"
@@ -97,7 +124,12 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
               />
             </section>
             <section className="flex flex-col md:col-span-3 pt-2">
-              <ThirdSection attendee={selectedAttendee} />
+              <ThirdSection
+                attendee={selectedAttendee}
+                event={event}
+                sponsors={sponsors}
+                loading={loading}
+              />
             </section>
           </>
         ) : (
