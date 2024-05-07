@@ -6,17 +6,7 @@ import {
   ThreeDotsIcon,
 } from "@/constants/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
+import { useRouter } from "next/navigation";
 
 type BlogPostProps = {
   id: number;
@@ -107,15 +97,12 @@ export default function AdminBlogTemplate({
 
   //function that delete post
   function deletePost() {
-    window.open(`/post/${id}`, "_blank");
+    // window.open(`/post/${id}`, "_blank");
   }
-
-  //function that unPublish post
-  function unPublishPost() {}
 
   //function that edit post
   function editPost() {
-    window.open(`/post/${id}`, "_blank");
+    window.open(`/post/${id}/edit`, "_blank");
   }
 
   return (
@@ -190,11 +177,9 @@ export default function AdminBlogTemplate({
               <div className="flex gap-x-3 mt-2 text-sm font-normal ">
                 <p className="font-medium">
                   Last Updated:{" "}
-                  <span className="font-normal uppercase">
-                    March 23 2024 -{" "}
-                  </span>
+                  <span className="font-normal uppercase">{date} - </span>
                 </p>
-                <p className=" uppercase">3 Min Read</p>
+                <p className=" uppercase">{readingDuration} Min Read</p>
               </div>
             )}
 
@@ -202,7 +187,7 @@ export default function AdminBlogTemplate({
               <div className="flex gap-x-3 mt-2 text-sm font-normal ">
                 <p className="font-medium">
                   Scheduled For:{" "}
-                  <span className="font-normal uppercase">March 23 2024 </span>
+                  <span className="font-normal uppercase">{date}</span>
                 </p>
                 <p className=" uppercase">1:19 PM</p>
               </div>
@@ -216,7 +201,7 @@ export default function AdminBlogTemplate({
               <PopoverContent className="w-24 mr-4 text-center">
                 <ul>
                   <li
-                    // onClick={}
+                    onClick={editPost}
                     className="py-1 text-xs lowercase cursor-pointer hover:text-indigo-700"
                   >
                     Edit
@@ -249,7 +234,7 @@ export default function AdminBlogTemplate({
           <PopoverContent className="w-24 mr-4 text-center">
             <ul>
               <li
-                // onClick={}
+                onClick={editPost}
                 className="py-1 text-xs lowercase cursor-pointer hover:text-indigo-700"
               >
                 Edit
