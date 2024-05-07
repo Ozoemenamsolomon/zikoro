@@ -1,0 +1,99 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { userId: string } }
+) {
+  const supabase = createRouteHandlerClient({ cookies });
+  if (req.method === "POST") {
+    try {
+      const payload = await req.json();
+
+      const { error } = await supabase
+        .from("contactRequest")
+        .insert({ ...payload, status: "pending" });
+      console.log(error);
+      if (error) throw error;
+      return NextResponse.json(
+        { msg: "contact requested successfully" },
+        {
+          status: 201,
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json(
+        {
+          error: "An error occurred while making the request.",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+  } else {
+    return NextResponse.json({ error: "Method not allowed" });
+  }
+}
+
+export async function GET(req: NextRequest) {
+  const supabase = createRouteHandlerClient({ cookies });
+  if (req.method === "GET") {
+    try {
+      const { searchParams } = new URL(req.url);
+      const userEmail = searchParams.get("userEmail");
+
+      const query = supabase
+        .from("contactRequest")
+        .select("*")
+        .eq("senderUserEmail", userEmail);
+
+      const { data, error, status } = await query;
+
+      console.log(data, userEmail);
+
+      if (error) throw error;
+
+      const mappedData = await Promise.all(
+        data.map(async (item) => {
+          const { data: senderData, error: senderError } = await supabase
+            .from("users")
+            .select("*")
+            .eq("userEmail", item.senderUserEmail)
+            .maybeSingle();
+
+          console.log(senderData, item);
+
+          if (senderError) throw senderError;
+
+          return { ...item, sender: senderData };
+        })
+      );
+
+      console.log(mappedData);
+
+      return NextResponse.json(
+        { data: mappedData },
+        {
+          status: 200,
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json(
+        {
+          error: "An error occurred while making the request.",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+  } else {
+    return NextResponse.json({ error: "Method not allowed" });
+  }
+}
+
+export const dynamic = "force-dynamic";

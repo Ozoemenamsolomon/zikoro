@@ -41,7 +41,7 @@ export default function Section2() {
               style={{ minWidth: "100%", minHeight: "100%" }}
             >
               <source
-                src="https://res.cloudinary.com/kachiozo/video/upload/v1712085642/ZIKORO/videos/Zikoro_video_ad_i1fzaf.mp4"
+                src="https://res.cloudinary.com/zikoro/video/upload/v1712085642/ZIKORO/videos/Zikoro_video_ad_i1fzaf.mp4"
                 type="video/mp4"
               />
               Your browser does not support the video tag.

@@ -156,14 +156,14 @@ export async function uploadFile(
 ): Promise<{ url: string | null; error: any | null }> {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("cloud_name", "kachiozo");
+  formData.append("cloud_name", "zikoro");
   formData.append("upload_preset", "w5xbik6z");
   formData.append("folder", "ZIKORO");
   type === "video" && formData.append("resource_type", "video");
 
   try {
     const response = await fetch(
-      `https://api.cloudinary.com/v1_1/kachiozo/${type}/upload`,
+      `https://api.cloudinary.com/v1_1/zikoro/${type}/upload`,
       {
         method: "POST",
         body: formData,

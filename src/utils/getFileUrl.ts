@@ -1,7 +1,7 @@
 export async function uploadFile(file: File | string, type: string) {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("cloud_name", "kachiozo");
+  formData.append("cloud_name", "zikoro");
   formData.append("upload_preset", "w5xbik6z");
   formData.append("folder", "ZIKORO");
   if (type === "video") {
