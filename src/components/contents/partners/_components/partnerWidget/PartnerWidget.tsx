@@ -110,7 +110,7 @@ export function PartnerWidget({
   async function handleSelectedHall(value: string) {
     // setSelectedHall(value);
 
-    await updateHall(item?.id, value);
+    await updateHall(item?.partnerAlias, value);
     refetch(); // fetch partners
   }
 
@@ -129,8 +129,8 @@ export function PartnerWidget({
         );
         // when the hall is not available then, remove it from this partner data
         if (!isHallPresent) {
-          await updateBooth(item?.id, null);
-          await updateHall(item?.id, null);
+          await updateBooth(item?.partnerAlias, null);
+          await updateHall(item?.partnerAlias, null);
           refetch(); // fetch partners
         }
       }
@@ -138,18 +138,18 @@ export function PartnerWidget({
   }, [event]);
 
   async function handleSelectedBooth(value: string[]) {
-    await updateBooth(item?.id, value);
+    await updateBooth(item?.partnerAlias, value);
     refetch(); // fetch partners
   }
 
   async function handleSelectedPartner(value: string) {
-    await updatePartnerType(item?.id, value);
+    await updatePartnerType(item?.partnerAlias, value);
     refetch(); // fetch partners
   }
 
   async function handleSelectedLevel(value: string) {
     // setSelectedLevel(value);
-    await updateSponsorCategory(item?.id, value);
+    await updateSponsorCategory(item?.partnerAlias, value);
     refetch(); // fetch partners
   }
 
@@ -170,7 +170,11 @@ export function PartnerWidget({
         className
       )}
     >
-      <label className="col-span-2 w-full flex  relative items-center gap-x-2">
+      <label 
+      onClick={(e) => {
+        e.stopPropagation()
+      }}
+      className="col-span-2 w-full flex  relative items-center gap-x-2">
         <input
           checked={selectedRows.includes(item?.id)}
           onChange={() => selectRowFn(item?.id)}
@@ -187,14 +191,20 @@ export function PartnerWidget({
         e.stopPropagation()
       }}
       className="flex items-center gap-x-2 ">
-        <button onClick={() => sendMail(item?.email)}>
+        <button
+        className={cn("hidden", item?.email && "block")}
+        onClick={() => sendMail(item?.email)}>
           <EmailIcon />
         </button>
-        <button onClick={() => whatsapp(item?.whatsApp)}>
+        <button
+           className={cn("hidden", item?.whatsApp && "block")}
+         onClick={() => whatsapp(item?.whatsApp)}>
           {" "}
           <WhatsappIcon />
         </button>
-        <button onClick={() => phoneCall(item?.phoneNumber)}>
+        <button 
+           className={cn("hidden", item?.phoneNumber && "block")}
+        onClick={() => phoneCall(item?.phoneNumber)}>
           <Phone size={22} />
         </button>
       </td>
