@@ -8,6 +8,8 @@ import {
   AdminBlogCalendarIcon,
 } from "@/constants/icons";
 import AdminPublishedBlog from "@/components/blog/AdminBlogTemplate";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 type DBBlogAll = {
   id: number;
@@ -29,6 +31,11 @@ export default function Create() {
   const [totalViews, setTotalViews] = useState<number>(0);
   const [totalShares, setTotalShares] = useState<number>(0);
   const [totalPosts, setTotalPosts] = useState<number>(0);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+  };
 
   const [formData, setFormData] = useState({
     category: "",
@@ -47,21 +54,22 @@ export default function Create() {
     setFormData({ ...formData, [name]: value });
   };
 
+  //fetch blog posts
+  async function fetchBlogPost() {
+    fetch("/api/blog/published", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setBlogData(data.data))
+      .catch((error) => console.error("Error:", error));
+  }
+
   useEffect(() => {
-    //fetch blog posts
-    async function fetchBlogPost() {
-      fetch("/api/blog/published", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => setBlogData(data.data))
-        .catch((error) => console.error("Error:", error));
-    }
     fetchBlogPost();
-  }, []);
+  }, [blogData]);
 
   useEffect(() => {
     if (blogData) {
@@ -134,9 +142,14 @@ export default function Create() {
             </div>
           </div>
 
-          <div className="flex p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-2/12 items-center justify-between h-[44px] ">
-            <p>Date Published</p>
+          <div className="flex cursor-pointer p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-2/12 items-center justify-between h-[44px] ">
             <AdminBlogCalendarIcon />
+            <DatePicker
+              selected={selectedDate}
+              onChange={handleDateChange}
+              dateFormat="dd/MM/yyyy" // customize date format
+              className="w-28 cursor-pointer bg-transparent outline-none"
+            />
           </div>
 
           <select

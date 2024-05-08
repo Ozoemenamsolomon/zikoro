@@ -6,7 +6,7 @@ import {
   ThreeDotsIcon,
 } from "@/constants/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type BlogPostProps = {
   id: number;
@@ -80,7 +80,6 @@ export default function AdminBlogTemplate({
     ];
 
     const formattedDate: string = `${day} ${monthNames[month - 1]} ${year}`;
-
     return formattedDate;
   }
 
@@ -96,9 +95,24 @@ export default function AdminBlogTemplate({
   }
 
   //function that delete post
-  function deletePost() {
-    // window.open(`/post/${id}`, "_blank");
-  }
+  const deletePost = async (imageId: number) => {
+    try {
+      const response = await fetch("/api/blog/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+      if (response.ok) {
+        toast.success("Post Deleted");
+      } else {
+        throw new Error("Failed to delete post");
+      }
+    } catch (error) {
+      console.log(`Error Deleting Post`);
+    }
+  };
 
   //function that edit post
   function editPost() {
@@ -215,7 +229,7 @@ export default function AdminBlogTemplate({
                   </li>
 
                   <li
-                    // onClick={}
+                    onClick={() => deletePost(id)}
                     className="py-1 text-xs lowercase cursor-pointer hover:text-indigo-700"
                   >
                     Delete
@@ -248,7 +262,7 @@ export default function AdminBlogTemplate({
               </li>
 
               <li
-                // onClick={}
+                onClick={() => deletePost(id)}
                 className="py-1 text-xs lowercase cursor-pointer hover:text-indigo-700"
               >
                 Delete

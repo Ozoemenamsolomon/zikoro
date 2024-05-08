@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { AdminBlogCalendarIcon } from "@/constants/icons";
 import AdminPublishedBlog from "@/components/blog/AdminBlogTemplate";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 type DBBlogAll = {
   id: number;
@@ -23,6 +25,7 @@ export default function Create() {
   const [formData, setFormData] = useState({
     category: "",
   });
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const categories = [
     { name: "Event tips", value: "event" },
@@ -34,6 +37,10 @@ export default function Create() {
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
   };
 
   //fetch blog posts
@@ -58,9 +65,14 @@ export default function Create() {
       {/* Section1 */}
       <section className="">
         <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row gap-x-0 md:gap-x-6 mt-6">
-          <div className="flex p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-[180px] items-center justify-between h-[44px] ">
-            <p>Date Published</p>
+          <div className="flex cursor-pointer p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-2/12 items-center justify-between h-[44px] ">
             <AdminBlogCalendarIcon />
+            <DatePicker
+              selected={selectedDate}
+              onChange={handleDateChange}
+              dateFormat="dd/MM/yyyy" // customize date format
+              className="w-28 cursor-pointer bg-transparent outline-none"
+            />
           </div>
 
           <select

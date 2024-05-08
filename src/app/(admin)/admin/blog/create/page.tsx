@@ -53,10 +53,6 @@ export default function Create() {
     setFormData({ ...formData, [name]: value });
   };
 
-  function goToDashboard() {
-    window.open("/admin/blog/dashboard", "_self");
-  }
-
   const handleUpdateStaus = (newStatus: string) => {
     setStatus(newStatus);
   };
@@ -113,13 +109,12 @@ export default function Create() {
 
     // Upload image
     uploadImage().then((headerImageUrl) => {
-      // Fetch request
-      return;
       window.open(
         `/post/preview?blog=${JSON.stringify({
           title: formData.title,
           category: formData.category,
           tags: formData.tags,
+          headerImageUrl: headerImageUrl,
           readingDuration: formData.readingDuration,
           status: status,
           content: content,
@@ -127,6 +122,7 @@ export default function Create() {
         })}`,
         "_blank"
       );
+      return;
     });
   };
 
@@ -168,7 +164,13 @@ export default function Create() {
           toast.success(
             `${status === "draft" ? "Saved to draft" : "Post Published"}`
           );
-          goToDashboard();
+          if (status == "draft") {
+            window.open("/admin/blog/draft", "_self");
+          } else if (status == "schedule") {
+            window.open("/admin/blog/scheduled", "_self");
+          } else {
+            window.open("/admin/blog/dashboard", "_self");
+          }
         } else {
           throw new Error("Post Not Published ");
         }
