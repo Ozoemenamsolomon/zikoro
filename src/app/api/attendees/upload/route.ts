@@ -21,20 +21,22 @@ export async function POST(req: NextRequest) {
       const { data: event, error: eventSelectError } = await supabase
         .from("events")
         .select("registered")
-        .eq("eventAlias", params[0].eventId)
+        .eq("eventAlias", params[0].eventAlias)
         .maybeSingle();
 
-      if (eventSelectError || !event) {
+      if (eventSelectError) {
         console.log(eventSelectError);
         throw eventSelectError.code;
       }
+
+      if (!event) throw "event not found";
 
       console.log(event.registered);
 
       const { data: currentEvent, error: eventError } = await supabase
         .from("events")
         .update({ registered: event.registered + params.length })
-        .eq("eventAlias", params[0].eventId)
+        .eq("eventAlias", params[0].eventAlias)
         .select("*, organization!inner(*)")
         .maybeSingle();
 
@@ -64,7 +66,7 @@ export async function POST(req: NextRequest) {
 
       const ics = require("ics");
 
-      const date = new Date(params.registrationDate);
+      const date = new Date(params[0].registrationDate);
       // format Date
       console.log(date);
 
@@ -90,12 +92,10 @@ export async function POST(req: NextRequest) {
         ...icsDateFormat,
         title: eventTitle,
         location: eventAddress,
-        attendees: [
-          {
-            name: `${params.firstName} ${params.lastName}`,
-            email: params.email,
-          },
-        ],
+        attendees: params.map((attendee: TAttendee) => ({
+          name: `${attendee.firstName} ${attendee.lastName}`,
+          email: attendee.email,
+        })),
         organizer: {
           name: organisationName,
           email: currentEvent.organization.eventContactEmail,
@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
           // Send email to individual recipient
           await transporter.sendMail({
             from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
-            to: params.email,
+            to: attendee.email,
             subject: `Confirmation to attend ${eventTitle}`,
             html: `
             <div
