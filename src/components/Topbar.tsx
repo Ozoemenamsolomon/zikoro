@@ -57,16 +57,12 @@ const Topbar = ({ eventId }: { eventId?: string | any }) => {
   const reformedLink = useMemo(() => {
     return links.filter((link) => {
       if (!user || !user?.userEmail || !isIdPresent) {
-       
         return !set.has(String(link?.name));
       } else {
-     
         return links;
       }
     });
   }, [user, isIdPresent]);
-
-  console.log("idp", isIdPresent)
 
   return (
     <>
@@ -75,13 +71,13 @@ const Topbar = ({ eventId }: { eventId?: string | any }) => {
           <ul className="flex justify-between text-gray-700">
             {reformedLink.map(({ name, href }) => {
               //  console.log(href.split("/")[1].split("?"))
+              const path = href.includes("?")
+                ? href.split("/")[1].split("?")[0]
+                : href.split("/")[1];
               return (
                 <li
                   className={`pb-1 text-sm ${
-                    pathname.includes(
-                      `${href.split("/")[1]}` ||
-                        `${href.split("/")[1].split("?")[0]}`
-                    )
+                    pathname.includes(path)
                       ? "text-basePrimary border-b-2 border-basePrimary font-medium"
                       : ""
                   }`}

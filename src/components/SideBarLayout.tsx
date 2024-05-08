@@ -17,7 +17,7 @@ import {
   WhatsappIcon,
 } from "@/constants";
 import { getCookie, useGetEvents, useLogOut, useValidateUser } from "@/hooks";
-
+import { sendMail, whatsapp } from "@/utils";
 export function SideBarLayout() {
   const [isNav, setNav] = useState(false);
   const param = useSearchParams();
@@ -212,10 +212,14 @@ function SideNavs({
               <span className="text-mobile sm:text-desktop">Support</span>
             </Button>
             <div className="flex items-center gap-x-2">
-              <Button className="px-0 h-fit">
+              <Button
+              onClick={() => whatsapp('+2347041497076') }
+              className="px-0 h-fit">
                 <WhatsappIcon />
               </Button>
-              <Button className="px-0 h-fit">
+              <Button
+              onClick={() => sendMail("admin@zikoro.com")}
+              className="px-0 h-fit">
                 <EmailIcon />
               </Button>
             </div>

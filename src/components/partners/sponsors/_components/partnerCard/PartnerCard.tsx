@@ -7,7 +7,13 @@ import { useMemo } from "react";
 
 import { Location } from "@styled-icons/fluentui-system-regular/Location";
 
-export function PartnerCard({ sponsor, eventId }: {eventId: string; sponsor: TExPartner }) {
+export function PartnerCard({
+  sponsor,
+  eventId,
+}: {
+  eventId: string;
+  sponsor: TExPartner;
+}) {
   const image = useMemo(() => {
     const regex = /^[https://]/;
     if (regex.test(sponsor.companyLogo)) {
@@ -28,16 +34,17 @@ export function PartnerCard({ sponsor, eventId }: {eventId: string; sponsor: TEx
           StampCard
         </button>
       )}
-    {image ?  <Image
-        src={image}
-        alt="sponsor-logo"
-        width={300}
-        height={100}
-        className="w-36 pl-4 pt-8 lg:w-[6rem] xl:w-32 h-[70px]"
-      />  
-    :
-    <div  className="w-36 pl-4 pt-8 lg:w-[6rem] xl:w-32 h-[70px] animate-pulse bg-gray-200"></div>
-    }
+      {image ? (
+        <Image
+          src={image}
+          alt="sponsor-logo"
+          width={300}
+          height={100}
+          className="pl-4 pt-8 w-fit h-24 object-contain"
+        />
+      ) : (
+        <div className="w-36 pl-4 pt-8 lg:w-[6rem] xl:w-32 h-[70px] animate-pulse bg-gray-200"></div>
+      )}
       <div className="w-full px-4 py-8  items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
         <div className="font-semibold flex capitalize flex-wrap text-black text-xl">
           {sponsor.companyName ?? ""}
@@ -60,7 +67,9 @@ export function PartnerCard({ sponsor, eventId }: {eventId: string; sponsor: TEx
         <div className="flex items-center gap-x-3">
           <div className="flex items-center gap-x-2">
             <Location size={16} className="text-[#717171]" />
-            <p>{`${sponsor.city ?? "City"}, ${sponsor.country ?? "Country"}`}</p>
+            <p>{`${sponsor.city ?? "City"}, ${
+              sponsor.country ?? "Country"
+            }`}</p>
           </div>
           {sponsor.industry !== undefined && (
             <div className="flex items-center gap-x-2">
@@ -71,7 +80,7 @@ export function PartnerCard({ sponsor, eventId }: {eventId: string; sponsor: TEx
         </div>
 
         <div className="flex items-center gap-x-6">
-          {sponsor?.jobs?.length > 0 && (
+          {sponsor?.jobs && (
             <button className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
               Hiring
             </button>

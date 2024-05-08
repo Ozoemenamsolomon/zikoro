@@ -331,7 +331,7 @@ input[type=number] {
 
 .agenda-slider .slick-dots {
   position: absolute;
-  bottom: -2px;
+  bottom: -20px;
 }
 .agenda-slider .slick-dots li {
   margin: 0px 7px;

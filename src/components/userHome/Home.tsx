@@ -58,7 +58,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="w-full mt-3 h-full grid grid-cols-1 xl:grid-cols-8 gap-5 items-start">
+        <div className="pb-20 w-full mt-3 h-full grid grid-cols-1 xl:grid-cols-8 gap-5 items-start">
           <UserEvents />
           <UserCertificates />
         </div>

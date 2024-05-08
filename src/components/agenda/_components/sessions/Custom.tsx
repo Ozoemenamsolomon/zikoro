@@ -57,6 +57,7 @@ export function Custom({
       timeStamp={sessionAgenda?.timeStamp}
       isGreaterThanOne={sessionAgenda?.sessions?.length > 1}
       className={className}
+     
       isReception={isReception}
     >
       <div className="w-full md:col-span-6 lg:col-span-8 ">
@@ -135,7 +136,8 @@ function Widget({
           }
         }}
         className={cn(
-          "flex border-0 flex-col w-full  p-3 rounded-xl items-start justify-start "
+          "flex border-0 flex-col w-full  p-3 rounded-xl items-start justify-start ",
+          session.isMyAgenda && "bg-gray-50 border rounded-lg "
         )}
       >
         <h2 className="text-base w-full mb-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">

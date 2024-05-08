@@ -15,7 +15,7 @@ export function AllDatas<T>({
   onClose: () => void;
 }) {
   const isEventArray = (data: any[]): data is Event[] => {
-    return data.every((item) => typeof item === "object" && "id" in item);
+    return data.every((item) => typeof item === "object" && "eventTitle" in item);
   };
   return (
     <div

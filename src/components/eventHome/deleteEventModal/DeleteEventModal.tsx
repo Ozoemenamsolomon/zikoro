@@ -8,7 +8,7 @@ import { EmailOutline } from "styled-icons/evaicons-outline";
 import { Whatsapp } from "styled-icons/remix-fill";
 import {CloseOutline} from "@styled-icons/evaicons-outline/CloseOutline"
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
-
+import { sendMail, whatsapp } from "@/utils";
 export function DeleteEventModal({
   close,
   id,
@@ -60,22 +60,27 @@ export function DeleteEventModal({
               </p>
 
               <div className="flex items-center gap-x-2">
-                <Link
+                <button
                   className="text-basePrimary rounded-lg px-4 w-fit gap-x-2 flex items-center justify-center bg-transparent h-12 border border-basePrimary"
-                  target="blank"
-                  href="/"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    sendMail("+2347041497076")
+                  }}
+                
                 >
                   <EmailOutline size={22} />
                   <span>Email</span>
-                </Link>
-                <Link
+                </button>
+                <button
                   className="text-basePrimary px-4 rounded-lg flex items-center justify-center w-fit bg-transparent h-12 gap-x-2 border border-basePrimary"
-                  target="blank"
-                  href="/"
+              onClick={(e) => {
+                e.stopPropagation()
+                whatsapp("+2347041497076")
+              }}
                 >
                   <Whatsapp size={22} />
                   <span>WhatsApp</span>
-                </Link>
+                </button>
               </div>
             </div>
           </div>

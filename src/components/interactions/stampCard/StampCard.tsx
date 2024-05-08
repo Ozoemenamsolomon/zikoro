@@ -128,18 +128,18 @@ export default function StampCard({ eventId }: { eventId: string }) {
           (partnerData || data).map((partner) => (
             <div
               key={eventId}
-              className="w-full h-52 overflow-hidden rounded-lg border p-3 flex flex-col gap-y-2"
+              className="w-full h-64 overflow-hidden rounded-lg border p-3 flex flex-col gap-y-2"
             >
               {partner?.companyLogo ? (
                 <Image
                   src={partner?.companyLogo}
                   width={300}
                   height={300}
-                  className="w-full h-24 object-contain"
+                  className="w-fit h-24 object-cover"
                   alt="partner-logo"
                 />
               ) : (
-                <div className="w-full h-27 animate-pulse bg-gray-300"></div>
+                <div className="w-full h-24 animate-pulse bg-gray-300"></div>
               )}
               <p className="font-semibold w-full text-ellipsis overflow-hidden whitespace-nowrap">
                 {partner?.companyName ?? ""}
