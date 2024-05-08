@@ -57,12 +57,16 @@ const Topbar = ({ eventId }: { eventId?: string | any }) => {
   const reformedLink = useMemo(() => {
     return links.filter((link) => {
       if (!user || !user?.userEmail || !isIdPresent) {
+       
         return !set.has(String(link?.name));
       } else {
+     
         return links;
       }
     });
   }, [user, isIdPresent]);
+
+  console.log("idp", isIdPresent)
 
   return (
     <>

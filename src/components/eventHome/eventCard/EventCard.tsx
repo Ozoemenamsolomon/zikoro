@@ -191,14 +191,14 @@ function ActionModal({
             onClick={() => {
               onClose();
             }}
-            className="items-center h-10 w-full text-red-600 hover:bg-gray-100 justify-start text-xs"
+            className="items-center rounded-none h-10 w-full text-red-600 hover:bg-gray-100 justify-start text-xs"
           >
             Delete
           </Button>
           <Button
             onClick={duplicate}
             className={
-              "items-center h-10 gap-x-2 hover:bg-gray-100 justify-start w-full  text-xs"
+              "items-center rounded-none h-10 gap-x-2 hover:bg-gray-100 justify-start w-full  text-xs"
             }
           >
             {loading && <LoaderAlt size={12} className="animate-spin" />}
@@ -207,7 +207,7 @@ function ActionModal({
           <Button
             onClick={() => window.open(`/live-events/${alias}`, "_blank")}
             className={cn(
-              "items-center hidden h-10 gap-x-2 hover:bg-gray-100 justify-start w-full  text-xs",
+              "items-center hidden h-10 gap-x-2 hover:bg-gray-100 justify-start w-full rounded-none text-xs",
               isPublished && org?.id && "flex"
             )}
           >

@@ -1,3 +1,4 @@
+import { TOrganization } from ".";
 export interface Attendees {
   firstName: string;
   lastName: string;
@@ -123,10 +124,11 @@ export interface Organization {
   facebook: string;
   certificateAsset: string;
   tiktok: string;
+
 }
 
 export type TOrgEvent = Event & {
-  organization: Organization
+  organization: TOrganization
   }
   
 export interface Reward {

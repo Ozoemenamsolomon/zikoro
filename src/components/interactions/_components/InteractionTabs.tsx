@@ -27,6 +27,10 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
       name: "LeaderBoard",
       href: "leaderboard",
     },
+    {
+      name: "Quiz",
+      href:"quiz"
+    }
   ];
 
   return (

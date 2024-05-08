@@ -181,12 +181,14 @@ export function useGetUserHomePageEvents() {
       });
 
       const organizationIds = filteredOrganizations.map(({ id }) => id);
-
+      
       // getting events that matches those organization ids
-      const matchingEvents = events?.filter(({ organisationId }) => {
-        return Number(organisationId) === Number(organizationIds[0]);
+      const matchingEvents = events?.filter((event) => {
+       
+        return organizationIds.includes(Number(event?.organisationId))
       });
 
+     
       setUserEvents(matchingEvents);
     }
   }, [events, organizations]);
@@ -1131,7 +1133,7 @@ export function useAttenedeeEvents() {
 export function useCheckTeamMember({ eventId }: { eventId?: string }) {
   const [isIdPresent, setIsIdPresent] = useState(false);
   const { events, loading: eventLoading } = useGetUserHomePageEvents();
-
+ 
   useEffect(() => {
     if (events && !eventLoading) {
       //checked if the eventid is present in the event array
