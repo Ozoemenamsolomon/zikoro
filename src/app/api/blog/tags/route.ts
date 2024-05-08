@@ -45,6 +45,7 @@ export async function GET(req: NextRequest) {
       if (filteredTags.length === 0) {
         throw new Error("Tags parameter is missing or invalid");
       }
+      console.log(filteredTags);
 
       const { data, error } = await supabase
         .from("blog")

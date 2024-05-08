@@ -145,18 +145,13 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
       };
     }
 
-    if (data) {
-      setPostTag(data.tags);
-    }
-
     const fetchTags = async () => {
       try {
-        const response = await fetch(`/api/blog/tags?tags=statusFinance`, {
+        const response = await fetch(`/api/blog/tags?tags=${postTag}`, {
           method: "GET",
         });
         if (response.ok) {
           const data = await response.json(); // Parse response body
-          console.log(data); // Access parsed response data
         } else {
           throw new Error("Failed to fetch similar posts");
         }
