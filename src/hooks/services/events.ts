@@ -156,7 +156,8 @@ export function useCreateOrganisation() {
 
 export function useGetUserHomePageEvents() {
   const userData = getCookie("user");
-  const [userEvents, setUserEvents] = useState<Event[]>([] as Event[]);
+  const [userEvents, setUserEvents] = useState<TOrgEvent[]>([] as TOrgEvent[]);
+  const [firstSetEvents, setFirstSetEvents] = useState<TOrgEvent[]>([] as TOrgEvent[]);
   const [loading, setLoading] = useState(true);
   const {
     organizations,
@@ -188,6 +189,12 @@ export function useGetUserHomePageEvents() {
         return organizationIds.includes(Number(event?.organisationId))
       });
 
+      const firstSet = events?.filter((event) => {
+       
+        return Number(organizationIds[0]) === Number(event?.organisationId)
+      });
+
+      setFirstSetEvents(firstSet)
      
       setUserEvents(matchingEvents);
     }
@@ -197,6 +204,7 @@ export function useGetUserHomePageEvents() {
 
   return {
     events: userEvents,
+    firstOrganizationEvents: firstSetEvents,
     loading,
     refetch,
   };

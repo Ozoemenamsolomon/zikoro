@@ -7,7 +7,7 @@ import { useGetUserHomePageEvents } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 
 export default function EventHome() {
-  const { events: eventData, loading, refetch } = useGetUserHomePageEvents();
+  const { firstOrganizationEvents, loading, refetch } = useGetUserHomePageEvents();
 
   return (
     <EventHomeLayout>
@@ -17,10 +17,10 @@ export default function EventHome() {
         </div>
       )}
       
-      {!loading && eventData.length > 0 && (
-        <EventCards refetch={refetch} events={eventData} />
+      {!loading && firstOrganizationEvents.length > 0 && (
+        <EventCards refetch={refetch} events={firstOrganizationEvents} />
       )}
-      {!loading && eventData?.length === 0 && (
+      {!loading && firstOrganizationEvents?.length === 0 && (
         <EmptyCard text={`You have not added any event.`} />
       )}
     </EventHomeLayout>

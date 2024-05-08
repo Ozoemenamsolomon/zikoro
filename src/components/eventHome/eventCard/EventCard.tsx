@@ -11,7 +11,7 @@ import { Dot } from "@styled-icons/bootstrap/Dot";
 import { Edit } from "@styled-icons/boxicons-solid/Edit";
 import { useState } from "react";
 import { AboutWidget, EventLocationType } from "@/components/composables";
-import { Event } from "@/types";
+import { TOrgEvent } from "@/types";
 import { DeleteEventModal } from "..";
 import { getCookie, useDuplicateEvent, useFormatEventData } from "@/hooks";
 import { saveCookie } from "@/hooks";
@@ -23,7 +23,7 @@ export function EventCard({
   refetch,
 }: {
   refetch: () => Promise<any>;
-  event: Event;
+  event: TOrgEvent;
 }) {
   const [isAction, setAction] = useState(false);
   const router = useRouter();

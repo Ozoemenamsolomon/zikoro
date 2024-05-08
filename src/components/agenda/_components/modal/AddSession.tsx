@@ -292,7 +292,6 @@ export function AddSession({
           sessionSpeakers: chosenSpeakers,
           sessionSponsors: chosenSponsors,
           sessionFiles: files,
-          sessionAlias,
           eventAlias: event?.eventAlias,
           eventId: String(event?.id),
         }
