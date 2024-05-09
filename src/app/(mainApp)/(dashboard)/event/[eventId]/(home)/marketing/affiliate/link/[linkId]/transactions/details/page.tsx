@@ -16,7 +16,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import RequestPayoutDialog from "@/components/requestPayoutDialog";
-import { columns } from "../../../../../../../../billing/columns";
+import { columns } from "@/app/(mainApp)/(dashboard)/billing/columns";
 
 const LinkDetails = () => {
   const { linkId } = useParams();
@@ -35,7 +35,7 @@ const LinkDetails = () => {
         <Dialog
           onOpenChange={(newOpen) => {
             if (
-              newOpen && 
+              newOpen &&
               (!affiliateLink?.eventTransactions ||
                 (affiliateLink?.eventTransactions &&
                   affiliateLink?.eventTransactions.filter(
@@ -49,7 +49,7 @@ const LinkDetails = () => {
         >
           <DialogTrigger
             asChild
-            disabled={ 
+            disabled={
               affiliateLink?.eventTransactions &&
               affiliateLink.eventTransactions.filter(
                 ({ id }) => rowSelection[id]
