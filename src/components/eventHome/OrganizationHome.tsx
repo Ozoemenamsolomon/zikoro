@@ -20,7 +20,7 @@ export default function OrganizationHome({
     <EventHomeLayout>
       {loading && (
         <div className="w-full h-[300px] flex items-center justify-center">
-          <LoaderAlt size={50} className="animate-spin" />
+          <LoaderAlt size={30} className="animate-spin" />
         </div>
       )}
 

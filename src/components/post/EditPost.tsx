@@ -135,34 +135,23 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
       return; // Return early if content is empty
     }
 
-    router.push(
-      `/post/preview?blog=${JSON.stringify({
-        title: formData.title,
-        category: formData.category,
-        tags: formData.tags,
-        readingDuration: formData.readingDuration,
-        status: status,
-        content: content,
-        created_at: Date.now(),
-      })}`
-    );
     // Upload image
-    // uploadImage().then((headerImageUrl) => {
-    //   // Fetch request
-    //   return;
-    //   router.push(
-    //     `/post/preview?blog=${JSON.stringify({
-    //       title: formData.title,
-    //       category: formData.category,
-    //       headerImageUrl: headerImageUrl, // Use uploaded image URL
-    //       tags: formData.tags,
-    //       readingDuration: formData.readingDuration,
-    //       status: status,
-    //       content: content,
-    //       created_at: Date.now(),
-    //     })}`
-    //   );
-    // });
+    uploadImage().then((headerImageUrl) => {
+      window.open(
+        `/post/preview?blog=${JSON.stringify({
+          title: formData.title,
+          category: formData.category,
+          tags: formData.tags,
+          headerImageUrl: headerImageUrl,
+          readingDuration: formData.readingDuration,
+          status: status,
+          content: content,
+          created_at: Date.now(),
+        })}`,
+        "_blank"
+      );
+      return;
+    });
   };
 
   //submit post function
@@ -203,7 +192,13 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           toast.success(
             `${status === "draft" ? "Saved to draft" : "Post Published"}`
           );
-          goToDashboard();
+          if (status == "draft") {
+            window.open("/admin/blog/draft", "_self");
+          } else if (status == "schedule") {
+            window.open("/admin/blog/scheduled", "_self");
+          } else {
+            window.open("/admin/blog/dashboard", "_self");
+          }
         } else {
           throw new Error("Post Not Published ");
         }
@@ -217,9 +212,9 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   return (
     <>
       {data && (
-        <div className="lg:max-w-6xl mx-auto">
-          <div className=" flex flex-col pl-3 lg:pl-10 pr-3 lg:pr-28 pt-28 ">
-            <p className="text-3xl font-semibold bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text ">
+        <div className="lg:max-w-[1180px] mx-auto">
+          <div className=" flex flex-col pl-3 lg:pl-10 pr-3 lg:pr-12 pt-28 ">
+            <p className="text-3xl font-semibold bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text pl-3 ">
               Edit Post
             </p>
 
@@ -231,7 +226,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                     <div className="px-3 bg-transparent rounded-xl flex items-center ">
                       <input
                         type="text"
-                        value={data.title}
+                        defaultValue={data.title}
                         name="title"
                         onChange={handleChange}
                         placeholder="Enter Blog Title"
@@ -243,18 +238,11 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
                   <select
                     name="category"
-                    value={formData.category}
                     onChange={handleChange}
+                    defaultValue={data.category}
                     required
                     className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none  hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer"
                   >
-                    <option
-                      disabled
-                      defaultValue=""
-                      className="bg-transparent text-gray-400 "
-                    >
-                      Select Category
-                    </option>
                     {categories.map((category, index) => (
                       <option
                         key={index}
@@ -293,7 +281,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                       onChange={handleChange}
                       placeholder="Reading Duration"
                       className=" pl-4 outline-none text-base text-gray-600 bg-transparent h-[44px] w-full"
-                      value={data.readingDuration}
+                      defaultValue={data.readingDuration}
                       required
                     />
                   </div>

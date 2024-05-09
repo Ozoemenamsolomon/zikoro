@@ -31,7 +31,6 @@ export default function BlogPost({
   tags,
   headerImageUrl,
 }: BlogPostProps) {
-
   const [date, setDate] = useState<string | null>(null);
 
   // Extracting the date only
@@ -75,17 +74,15 @@ export default function BlogPost({
     return formattedDate;
   }
 
-
   //function that shows the blog post
   function goToPost() {
     window.open(`/post/${id}`, "_self");
   }
 
   useEffect(() => {
-     //extract date
-     const extractedDate = extractAndFormatDate(createdAt);
-
-     setDate(extractedDate);
+    //extract date
+    const extractedDate = extractAndFormatDate(createdAt);
+    setDate(extractedDate);
   }, []);
 
   return (

@@ -1,1 +1,6 @@
 export * from "./cards/QuizCard"
+export * from "./actions/Option"
+export * from "./question/ActiveQuestion"
+export * from "./modals/AddQuestion"
+export * from "./question/QuestionCard"
+export * from "./modals/AddQuestion"

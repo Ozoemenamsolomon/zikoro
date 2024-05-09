@@ -7,8 +7,7 @@ import { Metadata } from "next";
 
 
 export const metadata: Metadata = {
-  title: " Zikoro Blog",
-  description: "",
+  title: "Zikoro Blog",
 };
 export default function RootLayout({
   children,
