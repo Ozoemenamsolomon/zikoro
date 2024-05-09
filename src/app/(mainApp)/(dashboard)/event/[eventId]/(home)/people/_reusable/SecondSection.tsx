@@ -300,7 +300,8 @@ export default function SecondSection({
   const attendeeIsUser = user.userEmail === email;
 
   const attendeeExchangedContacts = userContactRequests.find(
-    ({ senderUserEmail }) => senderUserEmail === email
+    ({ senderUserEmail, receiverUserEmail }) =>
+      senderUserEmail === email || receiverUserEmail === email
   );
 
   console.log(email);

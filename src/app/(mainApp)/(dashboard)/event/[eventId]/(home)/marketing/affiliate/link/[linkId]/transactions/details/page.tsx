@@ -21,7 +21,7 @@ import { columns } from "@/app/(mainApp)/(dashboard)/billing/columns";
 const LinkDetails = () => {
   const { linkId } = useParams();
 
-  if (Array.isArray(linkId)) return null;
+if (Array.isArray(linkId)) return null;
   const { affiliateLink, getAffiliateLink, isLoading } = useGetAffiliateLink({
     linkId: parseInt(linkId),
   });
