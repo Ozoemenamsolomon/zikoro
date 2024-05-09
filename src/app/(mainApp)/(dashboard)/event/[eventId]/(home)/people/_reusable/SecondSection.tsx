@@ -54,6 +54,7 @@ import {
 import { TAgenda } from "@/types";
 import SlideToReveal from "@/components/SlideToReveal";
 import { useRequestContact } from "@/hooks/services/contacts";
+import { ContactRequest } from "@/types/contacts";
 
 export default function SecondSection({
   attendee,
@@ -61,12 +62,18 @@ export default function SecondSection({
   event,
   eventAgendasIsLoading,
   eventAgendas,
+  userContactRequests,
+  contactRequestIsLoading,
+  getContactRequests,
 }: {
   attendee: TAttendee;
   getAttendees?: () => Promise<void>;
   event: Event;
   eventAgendasIsLoading: boolean;
   eventAgendas: TAgenda;
+  userContactRequests: ContactRequest;
+  contactRequestIsLoading: boolean;
+  getContactRequests: () => Promise<void>;
 }) {
   const router = useRouter();
   const {
@@ -291,6 +298,13 @@ export default function SecondSection({
 
   const isEventOwner = user && String(event?.createdBy) === String(user.id);
   const attendeeIsUser = user.userEmail === email;
+
+  const attendeeExchangedContacts = userContactRequests.find(
+    ({ senderUserEmail }) => senderUserEmail === email
+  );
+
+  console.log(email);
+  console.log(attendeeExchangedContacts, userContactRequests);
 
   return (
     <div className="h-fit space-y-4">
@@ -540,14 +554,15 @@ export default function SecondSection({
                       }
                     </div>
                   )}
-                  {!(isEventOwner || attendeeIsUser) && (
-                    <SlideToReveal
-                      action={() => {
-                        console.log("drag");
-                        setOpen(true);
-                      }}
-                    />
-                  )}
+                  {!(isEventOwner || attendeeIsUser) &&
+                    !attendeeExchangedContacts && (
+                      <SlideToReveal
+                        action={() => {
+                          console.log("drag");
+                          setOpen(true);
+                        }}
+                      />
+                    )}
                 </div>
               </div>
             </div>
@@ -584,8 +599,10 @@ export default function SecondSection({
                       />
                     </svg>
                     <span className="text-gray-500 text-xs md:text-sm truncate">
-                      {/* {phoneNumber} */}
-                      +xxxxxxxxxxxx
+                      {attendeeExchangedContacts &&
+                      attendeeExchangedContacts.status === "accepted"
+                        ? phoneNumber
+                        : "+xxxxxxxxxxxx"}
                     </span>
                   </div>
                 )}
@@ -604,8 +621,12 @@ export default function SecondSection({
                       />
                     </svg>
                     <span className="text-gray-500 text-xs md:text-sm truncate">
-                      {/* {whatsappNumber || phoneNumber} */}
-                      +xxxxxxxxxxxx
+                      {attendeeExchangedContacts &&
+                      attendeeExchangedContacts.status === "accepted" ? (
+                        <>{whatsappNumber || phoneNumber}</>
+                      ) : (
+                        "+xxxxxxxxxxxx"
+                      )}
                     </span>
                   </div>
                 )}
@@ -625,11 +646,13 @@ export default function SecondSection({
                     />
                   </svg>
                   <span className="text-gray-500 text-xs md:text-sm truncate">
-                    {/* {email} */}
-                    xxxxx@gmail.com
+                    {attendeeExchangedContacts &&
+                    attendeeExchangedContacts.status === "accepted"
+                      ? email
+                      : "xxxxx@gmail.com"}
                   </span>
                 </div>
-                {
+                {websiteUrl && (
                   <div className="flex gap-2 items-center">
                     <svg
                       stroke="currentColor"
@@ -650,7 +673,7 @@ export default function SecondSection({
                       {websiteUrl}
                     </span>
                   </div>
-                }
+                )}
                 {/* <div className="flex-1 flex flex-col gap-2 items-center justify-center">
                 <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
                   <svg

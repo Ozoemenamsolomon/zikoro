@@ -18,6 +18,7 @@ import {
 import useEventStore from "@/store/globalEventStore";
 import { TExPartner } from "@/types";
 import { useParams } from "next/navigation";
+import { useGetContactRequests } from "@/hooks/services/contacts";
 
 interface ReusablePeopleComponentProps {
   attendees: TAttendee[];
@@ -96,6 +97,14 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     );
   }, [data]);
 
+  const {
+    userContactRequests,
+    isLoading: contactRequestIsLoading,
+    getContactRequests,
+  } = useGetContactRequests({ userEmail: user.userEmail });
+
+  console.log(userContactRequests);
+
   return (
     <section
       className="relative h-fit md:border-t-[1px] border-[#F3F3F3] w-full grid md:grid-cols-10 overflow-hidden"
@@ -123,6 +132,9 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
                 onOpen={onOpenAttendeeForm}
                 eventAgendas={eventAgendas}
                 eventAgendasIsLoading={eventAgendasIsLoading}
+                userContactRequests={userContactRequests}
+                isLoading={contactRequestIsLoading}
+                getContactRequests={getContactRequests}
               />
             </section>
             <section className="flex flex-col md:col-span-3 pt-2">
