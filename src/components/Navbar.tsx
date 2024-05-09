@@ -112,7 +112,7 @@ export default function Navbar() {
         // className={` p-4 ${scrolling ? "bg-white" : "bg-white"} text-base  `}
         className=" p-4 bg-white text-base"
       >
-        <div className=" flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
+        <div className="flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
           {!isOpen && (
             <>
               <Image
@@ -291,7 +291,7 @@ export default function Navbar() {
                           )}
 
                           {tag === "use-cases" && (
-                            <div className="absolute top-full left-[-300px] rounded-lg mb-5 w-max bg-white -z-1">
+                            <div className="absolute top-full left-[-300px] rounded-lg w-max bg-white -z-1">
                               <div className="flex rounded-lg ">
                                 <div className="w-8/12 grid gap-[60px] grid-cols-3  pt-[30px] pr-[40px] pb-[60px] pl-[40px]">
                                   <ul className="flex flex-col">
@@ -309,7 +309,7 @@ export default function Navbar() {
                                     </li>
                                   </ul>
                                   <ul className="flex flex-col">
-                                    <li className="cursor-pointer mt-7 font-medium text-base">
+                                    <li className="cursor-pointer mt-7 font-medium text-base whitespace-nowrap">
                                       Tradeshows & Exhibition
                                     </li>
                                     <li className="cursor-pointer mt-6 font-medium text-base ">
@@ -323,7 +323,7 @@ export default function Navbar() {
                                     </li>
                                   </ul>
                                   <ul className="flex flex-col">
-                                    <li className="cursor-pointer mt-7 font-medium text-base">
+                                    <li className="cursor-pointer mt-7 font-medium text-base whitespace-nowrap">
                                       Seminars & Workshops
                                     </li>
                                     <li className="cursor-pointer mt-6 font-medium text-base ">
@@ -366,9 +366,9 @@ export default function Navbar() {
                           )}
 
                           {tag === "resources" && (
-                            <div className="absolute top-full left-[-450px]  rounded-lg mb-5 w-max bg-white -z-1">
+                            <div className="absolute top-full left-[-450px] rounded-lg  w-max bg-white -z-1">
                               <div className="flex rounded-lg ">
-                                <div className="w-8/12 grid gap-[60px] grid-cols-3  pt-[30px] pr-[40px] pb-[60px] pl-[40px]">
+                                <div className="w-8/12 grid gap-[60px] grid-cols-3 pb-[60px] pt-[30px] pr-[40px] pl-[40px]">
                                   <ul className="flex flex-col">
                                     <li className="cursor-pointer mt-6 font-medium text-base ">
                                       Events
@@ -465,7 +465,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="lg:hidden max-w-full h-screen px-5 bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end pb-8 -cursor-pointer mt-10 pt-8">
+        <div className="lg:hidden max-w-full h-screen px-5 bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end pb-8 -cursor-pointer mt-[-32px] md:mt-[-37px] pt-8">
           <div className="flex flex-col">
             <div
               className="flex justify-end items-end pb-10 "

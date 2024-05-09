@@ -42,8 +42,12 @@ export default function FeaturedEvents() {
   const [eventData, setEventData] = useState<DBFeaturedEvent[] | undefined>(
     undefined
   );
-  const [eventCategories, setEventCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [filterCategories, setFilterCategories] = useState<string[]>([]);
+  const [filterLocationType, setFilterLocationType] = useState<string[]>([]);
+  const [filterDate, setFilterDate] = useState<string[]>([]);
+  const [filterCountry, setFilterCountry] = useState<string[]>([]);
+  const [filterCategory, setFilterCategory] = useState<string | null>(null);
+  const [filterPrice, setFilterPrice] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -73,7 +77,7 @@ export default function FeaturedEvents() {
   };
 
   const handleCategoryClick = (category: string) => {
-    setSelectedCategory(category);
+    setFilterCategory(category);
   };
 
   //fetch events from database
@@ -95,12 +99,26 @@ export default function FeaturedEvents() {
   }, []);
 
   useEffect(() => {
+    //filtered categories
     if (eventData) {
       const categories: string[] = eventData.map(
         (event) => event.eventCategory
       );
-      setEventCategories(categories);
+      setFilterCategories(categories);
     }
+    //filtered location type
+    if (eventData) {
+      const type: string[] = eventData.map((event) => event.locationType);
+      setFilterLocationType(type);
+    }
+
+     //filtered country
+     if (eventData) {
+      const type: string[] = eventData.map((event) => event.locationType);
+      setFilterLocationType(type);
+    }
+
+    
   }, [eventData]); // Update eventCategories when eventData changes
 
   return (
@@ -136,11 +154,6 @@ export default function FeaturedEvents() {
                         className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
                       />
                     </div>
-
-                    {/* <button className="bg-gradient-to-tr flex-1 from-custom-gradient-start to-custom-gradient-end text-white cursor-pointer px-5 py-[13px] text-base rounded-lg">
-                       {" "}
-                       Search
-                     </button> */}
                   </div>
 
                   {/* main section */}
@@ -469,12 +482,12 @@ export default function FeaturedEvents() {
                       {/* top */}
                       <div className="flex">
                         <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] ">
-                          {eventCategories.map((eventCategory, i) => (
+                          {filterCategories.map((filterCategory, i) => (
                             <div
                               key={i}
                               className="py-[18px] px-5 t w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap"
                             >
-                              {eventCategory}{" "}
+                              {filterCategory}{" "}
                             </div>
                           ))}
                         </div>
@@ -554,12 +567,12 @@ export default function FeaturedEvents() {
 
                     <div className="mt-7">
                       <div className=" px-4 flex w-auto items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] border-y-[1px] border-gray-200 ">
-                        {eventCategories.map((eventCategory, i) => (
+                        {filterCategories.map((filterCategory, i) => (
                           <div
                             key={i}
                             className="py-[18px] px-5 w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap"
                           >
-                            {eventCategory}{" "}
+                            {filterCategory}{" "}
                           </div>
                         ))}
                       </div>
