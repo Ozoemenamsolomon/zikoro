@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Email, SMS, Whatsapp, Affiliate } from "./_tabs";
-import { useRef, useState, useLayoutEffect } from "react";
+import { Email, SMS, Whatsapp } from "./_tabs";
+import { useRef, useLayoutEffect } from "react";
 import {
   ReadonlyURLSearchParams,
   usePathname,
@@ -22,11 +22,6 @@ const marketingTabs: TMarketingTabs[] = [
     label: "Email",
     value: "email",
     component: <Email />,
-  },
-  {
-    label: "Affiliates",
-    value: "affiliate",
-    component: <Affiliate />,
   },
   {
     label: "SMS",
@@ -94,7 +89,7 @@ const page = () => {
         onValueChange={(value) => handleTabChange(value)}
         defaultValue={searchParams.get("tab1") || "email"}
       >
-        <TabsList className="bg-transparent border-b px-4 pt-4 w-full flex justify-start">
+        <TabsList className="bg-transparent border-b px-4 pt-4 w-full hidden">
           {marketingTabs.map((tab) => (
             <TabsTrigger
               key={tab.label}

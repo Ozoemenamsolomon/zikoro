@@ -40,9 +40,9 @@ export const useSendMarketingEmail = (): usePostResult<
 };
 
 export const useGetAffiliates = ({
-  eventId,
+  userId,
 }: {
-  eventId: string;
+  userId: number;
 }): UseGetResult<TAffiliate[], "affiliates", "getAffiliates"> => {
   const [affiliates, setAffiliates] = useState<TAffiliate[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -53,7 +53,7 @@ export const useGetAffiliates = ({
 
     try {
       const { data, status } = await getRequest<TAffiliate[]>({
-        endpoint: `marketing/affiliate?eventId=${eventId}`,
+        endpoint: `marketing/affiliate?userId=${userId}`,
       });
 
       if (status !== 200) {

@@ -156,9 +156,13 @@ const Create = () => {
 
     if (!user) return;
 
+    if (sendTest) {
+      data.emailRecipient = testEmail;
+    }
+
     await sendMarketingEmail({
       payload: {
-        organizationId: currentEvent?.organisationId,
+        organizationId: currentEvent?.organisationId || 0,
         userId: user.id,
         userEmail: user.userEmail,
         emailCategory: data.category,
@@ -533,7 +537,7 @@ const Create = () => {
             />
           </div>
           <Button
-            disabled={isLoading}
+            disabled={isLoading || (sendTest && !testEmail)}
             type="submit"
             className="bg-basePrimary w-full flex items-center gap-4 flex-[30%]"
           >

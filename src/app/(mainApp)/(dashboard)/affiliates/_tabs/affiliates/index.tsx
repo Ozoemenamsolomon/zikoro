@@ -20,15 +20,20 @@ import CreateAffiliateForm from "@/components/forms/createAffiliateForm";
 import useSearch from "@/hooks/common/useSearch";
 import { TAffiliate } from "@/types/marketing";
 import useEventStore from "@/store/globalEventStore";
+import { TUser } from "@/types";
+import { getCookie } from "@/hooks";
 
 const Affiliates = () => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const currentEvent = useEventStore((state) => state.event);
 
+  const user = getCookie<TUser>("user");
+
   const { getAffiliates, affiliates, isLoading } = useGetAffiliates({
-    eventId: currentEvent?.id,
+    userId: user?.id || 0,
   });
+
   const { searchTerm, searchedData, setSearchTerm } = useSearch<TAffiliate>({
     data: affiliates || [],
     accessorKey: ["email", "firstName", "lastname"],

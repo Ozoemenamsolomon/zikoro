@@ -1,10 +1,12 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
+import { getCookie } from "@/hooks";
 import {
   useGetAffiliates,
   useUpdateAffiliate,
 } from "@/hooks/services/marketing";
+import { TUser } from "@/types";
 import { TAffiliate } from "@/types/marketing";
 import { convertDateFormat } from "@/utils/date";
 import { ColumnDef } from "@tanstack/react-table";
@@ -51,7 +53,9 @@ export const columns: ColumnDef<TAffiliate>[] = [
     accessorKey: "email",
     header: "Email",
     cell: ({ row }) => (
-      <div className="truncate overflow-hidden max-w-full">{row.original.email}</div>
+      <div className="truncate overflow-hidden max-w-full">
+        {row.original.email}
+      </div>
     ),
   },
   {
@@ -96,8 +100,10 @@ export const columns: ColumnDef<TAffiliate>[] = [
         affiliateId: affiliateId as number,
       });
 
+      const user = getCookie<TUser>("user");
+
       const { getAffiliates, isLoading: affiliatesIsLoading } =
-        useGetAffiliates();
+        useGetAffiliates({ userId: user?.id || 0 });
 
       const updateAffiliateStatus = async (affliateStatus: boolean) => {
         await updateAffiliate({ payload: { affliateStatus } });

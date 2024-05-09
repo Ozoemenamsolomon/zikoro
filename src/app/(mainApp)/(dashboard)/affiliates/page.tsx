@@ -1,8 +1,5 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Create from "./create";
-import Affiliates from "./affiliates";
-import Performance from "./performance";
 
 const Affiliate = () => {
   return (

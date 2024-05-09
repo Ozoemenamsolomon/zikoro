@@ -8,12 +8,12 @@ export async function GET(req: NextRequest) {
   if (req.method === "GET") {
     try {
       const { searchParams } = new URL(req.url);
-      const eventId = searchParams.get("eventId");
+      const userId = searchParams.get("userId");
 
       const { data, error, status } = await supabase
         .from("affiliate")
         .select("*")
-        .eq("eventId", eventId);
+        .eq("userId", userId);
 
       if (error) throw error;
 

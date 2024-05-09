@@ -21,6 +21,10 @@ const Topbar = ({ eventId }: { eventId?: string | any }) => {
       href: `${eventId}/content/info`,
     },
     {
+      name: "Marketing",
+      href: `${eventId}/marketing`,
+    },
+    {
       name: "People",
       href: `${eventId}/people/all`,
     },
@@ -51,7 +55,7 @@ const Topbar = ({ eventId }: { eventId?: string | any }) => {
     },
   ];
 
-  const hideFromAttendee = ["Contents", "Analytics", "Settings"];
+  const hideFromAttendee = ["Contents", "Analytics", "Settings", "marketing"];
   const set = new Set(hideFromAttendee);
 
   const reformedLink = useMemo(() => {

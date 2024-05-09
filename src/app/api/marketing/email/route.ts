@@ -40,10 +40,16 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      console.log(params, "email")
+      console.log(params, "email");
 
-      const { emailCategory, subject, sendersName, emailBody, emailRecipient } =
-        params;
+      const {
+        emailCategory,
+        subject,
+        sendersName,
+        emailBody,
+        emailRecipient,
+        replyTo,
+      } = params;
 
       let nodemailer = require("nodemailer");
       const transporter = nodemailer.createTransport({
@@ -56,17 +62,24 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      const mailData = {
-        from: `${sendersName} <${process.env.NEXT_PUBLIC_EMAIL}>`,
-        to: emailRecipient,
-        subject: `${emailCategory} email`,
-        html: `<div>${emailBody}</div>`,
-      };
+      emailRecipient.forEach(async (email: string) => {
+        try {
+          const mailData = {
+            from: `${sendersName} <${process.env.NEXT_PUBLIC_EMAIL}>`,
+            to: email,
+            subject: `${emailCategory} email`,
+            html: `<div>${emailBody}</div>`,
+            replyTo,
+          };
 
-      await transporter.sendMail(mailData, function (err: any, info: any) {
-        console.log(params, "params");
-        if (err) throw err;
-        else console.log(info);
+          await transporter.sendMail(mailData, function (err: any, info: any) {
+            console.log(params, "params");
+            if (err) throw err;
+            else console.log(info);
+          });
+        } catch (error) {
+          console.error(`Error sending email to ${email}:`, error);
+        }
       });
 
       const { error } = await supabase.from("sentEmails").insert(params);
