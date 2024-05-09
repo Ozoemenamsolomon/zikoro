@@ -1,7 +1,7 @@
 "use client";
 import { TEventTransaction } from "@/types/billing";
 import React, { useState } from "react";
-import { columns } from "../../../../../../billing/columns";
+
 import { DataTable } from "@/components/DataTable";
 import { RowSelectionState } from "@tanstack/react-table";
 import { useParams } from "next/navigation";
@@ -16,6 +16,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import RequestPayoutDialog from "@/components/requestPayoutDialog";
+import { columns } from "../../../../../../../../billing/columns";
 
 const LinkDetails = () => {
   const { linkId } = useParams();
