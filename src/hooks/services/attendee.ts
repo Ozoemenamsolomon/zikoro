@@ -141,16 +141,21 @@ export const useGetAttendees = ({
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+
+  console.log(eventId);
+
   const getAttendees = async () => {
     setLoading(true);
 
+    console.log(eventId);
     const { data, status } = await getRequest<TAttendee[]>({
       endpoint: `/attendees?${eventId ? "eventId=" + eventId : ""}${
         userId ? "userId=" + userId : ""
       }`,
     });
 
-    console.log(data, "attendees services");
+    console.log(data, eventId);
+    console.log(eventId);
 
     setLoading(false);
 

@@ -9,14 +9,18 @@ import { useEffect } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { eventId } = useParams();
+  // const currentEvent = useEventStore((state) => state.event);
+  const setEvent = useEventStore((state) => state.setEvent);
 
-  return (
-    <div className="w-full h-full">
-      <div className="w-full lg:w-[calc(100%-250px)] pt-4 bg-white min-[1024px]:float-right right-0 z-50 fixed flex justify-between items-center ">
-        <Topbar eventId={eventId} />
-      </div>
+  const { event, getEvent, isLoading } = useGetEvent({
+    eventId,
+    isAlias: true,
+  });
 
-      <div className="w-full h-full pt-12">{children}</div>
-    </div>
-  );
+  useEffect(() => {
+    if (isLoading || !event) return;
+    setEvent(event);
+  }, [isLoading, eventId]);
+
+  return <>{isLoading ? <p>Loading...</p> : children}</>;
 }

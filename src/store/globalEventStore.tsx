@@ -1,8 +1,8 @@
-import { Event } from "@/types";
+import { Event, TOrganization } from "@/types";
 import { create } from "zustand";
 
 interface eventState {
-  event: Event | null;
+  event: (Event & { organization: TOrganization }) | null;
   setEvent: (event: Event) => void;
 }
 

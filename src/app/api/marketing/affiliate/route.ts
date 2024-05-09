@@ -7,9 +7,13 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
+      const { searchParams } = new URL(req.url);
+      const eventId = searchParams.get("eventId");
+
       const { data, error, status } = await supabase
         .from("affiliate")
-        .select("*");
+        .select("*")
+        .eq("eventId", eventId);
 
       if (error) throw error;
 

@@ -92,7 +92,7 @@ const page = () => {
     <section className="bg-white space-y-6" ref={divRef || null}>
       <Tabs
         onValueChange={(value) => handleTabChange(value)}
-        defaultValue="email"
+        defaultValue={searchParams.get("tab1") || "email"}
       >
         <TabsList className="bg-transparent border-b px-4 pt-4 w-full flex justify-start">
           {marketingTabs.map((tab) => (
