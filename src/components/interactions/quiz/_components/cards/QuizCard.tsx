@@ -14,7 +14,7 @@ export function QuizCard() {
     setOpen((prev) => !prev);
   }
   return (
-    <div className="w-full bg-gray-200 rounded-md py-4 px-3">
+    <div className="w-full h-full bg-gray-200 rounded-md py-4 px-3">
       <p className="text-xs text-gray-700 sm:text-mobile">No. 1</p>
       <div className="w-full text-mobile sm:text-sm bg-white rounded-md flex flex-col items-start justify-start gap-y-3">
         <div className="border-b border-gray-600 gap-3 pb-2 w-full flex items-center justify-between">
@@ -47,7 +47,7 @@ export function QuizCard() {
           since the 1500s, when an unknown printer took a galley of type and
           scrambled
         </p>
-        <div className="text-gray-500 flex items-center justify-between w-full">
+        <div className="text-gray-500 text-xs ms:text-mobile flex items-center justify-between w-full">
           <p className="flex items-center gap-x-2">
             <span className="border-r pr-2 border-gray-500">50 Questions</span>
             <span>1000 points</span>
@@ -57,7 +57,7 @@ export function QuizCard() {
             <span>15</span>
           </p>
         </div>
-        <p className="flex items-center gap-x-1">
+        <p className="flex text-xs ms:text-mobile items-center gap-x-1">
           <QUser />
           <span>Ibrahim Rasheed</span>
         </p>
