@@ -1,5 +1,9 @@
+"use client";
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Create from "./_tabs/create";
+import Performance from "./_tabs/performance";
+import Affiliates from "./_tabs/affiliates";
 
 const Affiliate = () => {
   return (

@@ -9,7 +9,10 @@ import { formatDate, isWithinTimeRange } from "@/utils/date";
 import { useEffect, useMemo } from "react";
 import { getCookie, useFetchPartners } from "@/hooks";
 import { Event, TExPartner, TUser } from "@/types";
-import { Sponsors } from "@/components/partners/sponsors/Sponsors";
+import { PartnerCard } from "@/components/partners/sponsors/_components";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
+import { TExPartner } from "@/types";
+import Image from "next/image";
 
 interface RewardData {
   imgSrc: string;
@@ -333,8 +336,33 @@ export default function ThirdSection({
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <Sponsors eventId={event.id} sponsors={sponsors} loading={loading} />
+    <div className="w-full h-full grid mt-6 items-center gap-4 px-2">
+      {loading && (
+        <div className="w-full col-span-full h-[300px] flex items-center justify-center">
+          <LoaderAlt size={30} className="animate-spin" />
+        </div>
+      )}
+      {!loading && sponsors.length === 0 && (
+        <div className="w-full col-span-full items-center flex flex-col justify-center h-[300px]">
+          <div className="flex items-center justify-center flex-col gap-y-2">
+            <Image
+              src="/images/epartner.png"
+              width={400}
+              height={400}
+              className="w-[100px] h-[100px]"
+              alt="partner"
+            />
+            <p className="text-[#717171] font-medium">
+              This page is empty. Sponsors will appear here
+            </p>
+          </div>
+        </div>
+      )}
+      {!loading &&
+        sponsors.length > 0 &&
+        sponsors.map((sponsor) => (
+          <PartnerCard key={sponsor.id} eventId={eventId} sponsor={sponsor} />
+        ))}
     </div>
   );
 }
