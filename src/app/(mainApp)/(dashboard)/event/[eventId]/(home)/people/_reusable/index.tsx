@@ -17,6 +17,7 @@ import {
 } from "@/hooks";
 import useEventStore from "@/store/globalEventStore";
 import { TExPartner } from "@/types";
+import { useParams } from "next/navigation";
 
 interface ReusablePeopleComponentProps {
   attendees: TAttendee[];
@@ -40,6 +41,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   console.log(attendees, "attendees");
   const user = getCookie("user");
   const event = useEventStore((state) => state.event);
+  const { eventId } = useParams();
 
   console.log(event);
 
@@ -69,9 +71,9 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const { createAttendee } = useCreateAttendee();
 
-  const { data, loading, refetch } = useFetchPartners(event?.eventAlias || 0);
+  const { data, loading, refetch } = useFetchPartners(eventId);
 
-  console.log(data);
+  console.log(event?.eventAlias, event, eventId);
 
   const formatPartners: TExPartner[] = useMemo(() => {
     return data?.map((value) => {

@@ -55,7 +55,7 @@ const Topbar = ({ eventId }: { eventId?: string | any }) => {
     },
   ];
 
-  const hideFromAttendee = ["Contents", "Analytics", "Settings", "marketing"];
+  const hideFromAttendee = ["Contents", "Analytics", "Settings", "Marketing"];
   const set = new Set(hideFromAttendee);
 
   const reformedLink = useMemo(() => {

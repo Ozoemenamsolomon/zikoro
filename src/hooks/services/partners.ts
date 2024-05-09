@@ -15,12 +15,9 @@ export function useAddPartners() {
 
   async function addPartners(values: Partial<TPartner>) {
     setLoading(true);
-  
-   
 
     const payload = {
       ...values,
-     
     };
 
     try {
@@ -59,24 +56,24 @@ export function useAddPartners() {
 export function useFetchPartners(eventId: string) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<TPartner[]>([]);
+
   useEffect(() => {
     fetchPartners();
   }, []);
 
   async function fetchPartners() {
     setLoading(true);
+    console.log(eventId);
     try {
-     
-      const {data: result, status} = await getRequest<TPartner[]>({
-        endpoint: `/partner/${eventId}`
-      })
+      const { data: result, status } = await getRequest<TPartner[]>({
+        endpoint: `/partner/${eventId}`,
+      });
 
-      setLoading(false)
+      setLoading(false);
 
-      if (status !== 200 ) return
+      if (status !== 200) return;
 
-      return setData(result.data)
-
+      return setData(result.data);
     } catch (error) {
       setLoading(false);
       //  console.log(error);
@@ -94,9 +91,7 @@ export function useUpdatePartners() {
   const [loading, setLoading] = useState(false);
 
   async function update(payload: Partial<TPartner>) {
-   
     try {
-
       const { data, status } = await patchRequest<TPartner>({
         endpoint: "/partner",
         payload,
@@ -225,14 +220,14 @@ export function useFetchCreatedEventIndustries(eventId: string) {
 
 export function useFetchSinglePartner(partnerId: string) {
   const [data, setData] = useState<TPartner | null>(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchSinglePartner();
   }, []);
 
   async function fetchSinglePartner() {
-    setLoading(true)
+    setLoading(true);
     try {
       // Fetch the partner by ID
       const { data, error, status } = await supabase
@@ -251,16 +246,15 @@ export function useFetchSinglePartner(partnerId: string) {
       }
     } catch (error) {
       return null;
-    }
-    finally {
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   }
 
   return {
     data,
     refetch: fetchSinglePartner,
-    loading
+    loading,
   };
 }
 
