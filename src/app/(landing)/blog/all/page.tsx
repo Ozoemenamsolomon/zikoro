@@ -49,9 +49,9 @@ export default function All() {
         <div className="my-[48px] lg:my-[80px]">
           <div className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[52px] lg:mt-[100px]">
             {blogData?.length &&
-              blogData?.map((blogPost, index) => (
+              blogData?.map((blogPost, i) => (
                 <BlogPost
-                  key={blogPost.id}
+                  key={i}
                   id={blogPost.id}
                   title={blogPost.title}
                   createdAt={blogPost.created_at}

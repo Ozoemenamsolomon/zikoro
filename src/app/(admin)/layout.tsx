@@ -10,8 +10,7 @@ const montserrat = Montserrat({
   });
 
 export const metadata: Metadata = {
-    title: "Admin Zikoro",
-    description: "",
+    title: "Admin Zikoro"
   };
 export default function RootLayout({
   children,

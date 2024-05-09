@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 
 const montserrat = Montserrat({
@@ -8,11 +7,6 @@ const montserrat = Montserrat({
   display: "swap",
   fallback: ["Arial", "sans-serif"],
 });
-
-// export const metadata: Metadata = {
-//   title: "Zikoro",
-//   description: "",
-// };
 
 export default function RootLayout({
   children,
