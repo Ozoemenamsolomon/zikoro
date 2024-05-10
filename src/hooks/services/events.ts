@@ -9,7 +9,7 @@ import {
   Organization,
   TAttendee,
   TEventTransactionDetail,
-  TOrgEvent
+  TOrgEvent,
 } from "@/types";
 import _ from "lodash";
 import { getCookie, useUpdateAttendees } from "@/hooks";
@@ -67,6 +67,48 @@ export const useGetEvent = ({
     isLoading,
     error,
     getEvent,
+  };
+};
+
+export const useGetUserEvents = ({
+  userId,
+}: {
+  userId?: number;
+}): UseGetResult<TOrgEvent[], "events", "getUserEvents"> => {
+  const [events, setEvents] = useState<TOrgEvent[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getUserEvents = async () => {
+    setLoading(true);
+
+    try {
+      console.log(userId, `/events${userId ? "?userId=" + userId : ""}`);
+      const { data, status } = await getRequest<TOrgEvent[]>({
+        endpoint: `/events${userId ? "?userId=" + userId : ""}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+
+      setEvents(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getUserEvents();
+  }, []);
+
+  return {
+    events,
+    isLoading,
+    error,
+    getUserEvents,
   };
 };
 
@@ -157,7 +199,9 @@ export function useCreateOrganisation() {
 export function useGetUserHomePageEvents() {
   const userData = getCookie("user");
   const [userEvents, setUserEvents] = useState<TOrgEvent[]>([] as TOrgEvent[]);
-  const [firstSetEvents, setFirstSetEvents] = useState<TOrgEvent[]>([] as TOrgEvent[]);
+  const [firstSetEvents, setFirstSetEvents] = useState<TOrgEvent[]>(
+    [] as TOrgEvent[]
+  );
   const [loading, setLoading] = useState(true);
   const {
     organizations,
@@ -182,20 +226,18 @@ export function useGetUserHomePageEvents() {
       });
 
       const organizationIds = filteredOrganizations.map(({ id }) => id);
-      
+
       // getting events that matches those organization ids
       const matchingEvents = events?.filter((event) => {
-       
-        return organizationIds.includes(Number(event?.organisationId))
+        return organizationIds.includes(Number(event?.organisationId));
       });
 
       const firstSet = events?.filter((event) => {
-       
-        return Number(organizationIds[0]) === Number(event?.organisationId)
+        return Number(organizationIds[0]) === Number(event?.organisationId);
       });
 
-      setFirstSetEvents(firstSet)
-     
+      setFirstSetEvents(firstSet);
+
       setUserEvents(matchingEvents);
     }
   }, [events, organizations]);
@@ -280,8 +322,6 @@ export function useUpdateEvent() {
     } catch (error) {}
   }
 
-
-  
   async function updateOrg(values: any, orgId: string) {
     setLoading(true);
 
@@ -316,11 +356,18 @@ export function useUpdateEvent() {
   };
 }
 
-
-export function usePublishEvent  () {
+export function usePublishEvent() {
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const publishEvent = async ({ payload, eventId, email }: { payload: Partial<Event>, eventId:string; email:string }) => {
+  const publishEvent = async ({
+    payload,
+    eventId,
+    email,
+  }: {
+    payload: Partial<Event>;
+    eventId: string;
+    email: string;
+  }) => {
     setLoading(true);
 
     try {
@@ -331,20 +378,17 @@ export function usePublishEvent  () {
 
       if (status !== 200) throw data;
 
-      toast(
-        "Agenda Published"
-  );
+      toast("Agenda Published");
       return data;
     } catch (error: any) {
-      toast( error?.response?.data?.error
-  );
+      toast(error?.response?.data?.error);
     } finally {
       setLoading(false);
     }
   };
 
   return { publishEvent, isLoading };
-};
+}
 
 export function useFetchSingleOrganization(id?: number) {
   const [loading, setLoading] = useState(false);
@@ -355,7 +399,7 @@ export function useFetchSingleOrganization(id?: number) {
   }, []);
 
   async function fecthSingleOrg() {
-    if (!id) return
+    if (!id) return;
     try {
       setLoading(true);
       // Fetch the event by ID
@@ -438,7 +482,7 @@ export function useDuplicateEvent() {
         setLoading(false);
         return null;
       }
-      const eventAlias = generateAlias()
+      const eventAlias = generateAlias();
       // Create a new event with the same data
       const newEvent = {
         ...originalEvent,
@@ -591,7 +635,7 @@ export function useFetchSingleEvent(eventId: string) {
         .from("events")
         .select("*, organization!inner(*)")
         .eq("eventAlias", eventId)
-        .single();
+        .maybeSingle();
 
       if (fetchError) {
         toast.error(fetchError.message);
@@ -1141,7 +1185,7 @@ export function useAttenedeeEvents() {
 export function useCheckTeamMember({ eventId }: { eventId?: string }) {
   const [isIdPresent, setIsIdPresent] = useState(false);
   const { events, loading: eventLoading } = useGetUserHomePageEvents();
- 
+
   useEffect(() => {
     if (events && !eventLoading) {
       //checked if the eventid is present in the event array

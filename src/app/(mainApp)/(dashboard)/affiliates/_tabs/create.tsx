@@ -40,7 +40,7 @@ import {
   useCreateAffiliateLink,
   useGetAffiliates,
 } from "@/hooks/services/marketing";
-import { useGetEvents } from "@/hooks/services/events";
+import { useGetEvents, useGetUserEvents } from "@/hooks/services/events";
 import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
 
@@ -72,7 +72,10 @@ const Create = () => {
   const { affiliates, isLoading: affiliatesIsLoading } = useGetAffiliates({
     userId: user?.id || 0,
   });
-  const { events, isLoading: eventsIsLoading } = useGetEvents();
+
+  const { events, isLoading: eventsIsLoading } = useGetUserEvents({
+    userId: user?.id || 0,
+  });
   console.log(events);
 
   const { createAffiliateLink, isLoading: createLinkIsLoading } =
@@ -107,7 +110,7 @@ const Create = () => {
       payload: {
         organizationName: thisEvent?.organization.organizationName,
         affiliateName: thisAffiliate?.firstName,
-        eventPoster: thisEvent?.eventPoster?.image1,
+        eventPoster: thisEvent?.eventPoster,
         payload: {
           payoutSchedule,
           validity,
@@ -117,11 +120,11 @@ const Create = () => {
           eventName: thisEvent?.eventTitle,
           Goal: goal,
           affiliateId: parseInt(affiliateId),
-          affliateEmail: thisAffiliate?.email || "affiliate@email.com",
-          userId: 5,
-          affiliateLink: `www.zikoro-copy.vercel.app/published-event${
-            event !== "all" && "/" + event
-          }/${thisAffiliate?.affliateCode}`,
+          affiliateEmail: thisAffiliate?.email || "affiliate@email.com",
+          userId: user?.id,
+          affiliateLink: `${process.env.NEXT_PUBLIC_HOME_URL}/live-events${
+            event !== "all" && "/" + thisEvent.eventAlias
+          }?affiliateCode=${thisAffiliate?.affliateCode}`,
         },
       },
     });

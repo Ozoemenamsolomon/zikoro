@@ -12,14 +12,12 @@ export async function GET(req: NextRequest) {
       const payOutStatus = searchParams.get("payOutStatus");
       const registrationCompleted = searchParams.get("registrationCompleted");
 
-      console.log(userEmail);
+      console.log(userEmail, userId);
 
-      const query = supabase
-        .from("eventTransactions")
-        .select("*, events!inner(*)");
+      const query = supabase.from("attendees").select("*");
 
       if (userId) query.eq("userId", userId);
-      if (userId) query.eq("events.email", userEmail);
+      if (userEmail) query.eq("events.email", userEmail);
       if (registrationCompleted)
         query.eq(
           "registrationCompleted",
@@ -29,6 +27,7 @@ export async function GET(req: NextRequest) {
         query.neq("payOutStatus", "new");
 
       const { data, error, status } = await query;
+      console.log(data, error);
 
       if (error) throw error;
 

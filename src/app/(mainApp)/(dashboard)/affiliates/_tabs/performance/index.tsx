@@ -134,6 +134,8 @@ const Performance = () => {
   const { affiliateLinks, getAffiliateLinks, isLoading } =
     useGetAffiliateLinks();
 
+  console.log(affiliateLinks);
+
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =

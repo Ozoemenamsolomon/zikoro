@@ -51,7 +51,7 @@ export interface TAffiliateLink {
   Goal?: string;
   affiliateLink?: string;
   eventId?: number;
-  affliateEmail?: string;
+  affiliateEmail?: string;
   affiliate?: TAffiliate;
   eventTransactions?: TEventTransaction[];
   linkCode?: string;

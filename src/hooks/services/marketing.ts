@@ -143,10 +143,14 @@ export const useCreateAffiliateLink = (): usePostResult<
       description: "sending email...",
     });
     try {
+      console.log("here");
       const { data, status } = await postRequest({
         endpoint: `marketing/affiliate/link`,
         payload: { payload, affiliateName, organizationName, eventPoster },
       });
+      console.log("here");
+
+      console.log(data, status);
 
       if (status !== 201) throw data.data;
       toast({
@@ -154,6 +158,7 @@ export const useCreateAffiliateLink = (): usePostResult<
       });
     } catch (error) {
       setError(true);
+      console.log(error);
       toast({
         description: "An error occurred",
         variant: "destructive",

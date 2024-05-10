@@ -129,7 +129,7 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
     id: "details",
     header: "Details",
     cell: ({ row }) =>
-      <Link className="text-basePrimary" href={`/marketing/affiliate/link/${row.original.id}/transactions/details`}>Details</Link>
+      <Link className="text-basePrimary" href={`/affiliates/link/${row.original.id}/transactions/details`}>Details</Link>
 
   }
 ];

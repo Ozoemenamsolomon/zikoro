@@ -84,9 +84,11 @@ export async function POST(req: NextRequest) {
               <p>Hi ${affiliateName},</p>
               <p>This is your affiliate link to promote <b>${eventName}</b>. It is valid until: <b>${convertDateFormat(
           validity
-        )}</b>. You get <b>${commissionType === "fixed" ? "NGN" : ""
-          }${commissionValue} ${commissionType === "percentage" ? "%" : ""
-          }</b> commission when your referrals complete the following event goal: <b>${Goal}</b>.</p>
+        )}</b>. You get <b>${
+          commissionType === "fixed" ? "NGN" : ""
+        }${commissionValue} ${
+          commissionType === "percentage" ? "%" : ""
+        }</b> commission when your referrals complete the following event goal: <b>${Goal}</b>.</p>
               <p>Here's your link <a href="${affiliateLink}" class="">${affiliateLink}</a></p>
               <p><i>Best regards</i></p>
             </div>
@@ -101,20 +103,29 @@ export async function POST(req: NextRequest) {
 
       console.log(mailData);
 
-      await transporter.sendMail(mailData, function (err: any, info: any) {
-        if (err) {
-          console.log(err);
-          throw err;
-        } else console.log(info);
-      });
+      await transporter.sendMail(
+        mailData,
+        async function (err: any, info: any) {
+          if (err) {
+            console.log(err);
+            throw err;
+          }
 
-      const { error } = await supabase
-        .from("affiliateLinks")
-        .insert({ ...payload, linkCode });
+          console.log(info);
+          const { error } = await supabase
+            .from("affiliateLinks")
+            .insert({ ...payload, linkCode });
 
-      if (error) throw error;
+          console.log(error);
+
+          if (error) throw error;
+
+          console.log("here");
+        }
+      );
+
       return NextResponse.json(
-        { msg: "payout requested successfully" },
+        { msg: "certificate saved successfully" },
         {
           status: 201,
         }
@@ -146,7 +157,9 @@ export async function GET(req: NextRequest) {
     try {
       const { data, error, status } = await supabase
         .from("affiliateLinks")
-        .select("*, eventTransactions!inner(*)");
+        .select("*");
+
+      console.log(data, error);
 
       if (error) throw error;
 
