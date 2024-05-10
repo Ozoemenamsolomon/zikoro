@@ -504,7 +504,7 @@ export default function All() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button className="bg-white border-[1px] border-basePrimary text-basePrimary hover:bg-basePrimary hover:text-white flex gap-2 items-center w-fit px-4">
-                  <span>More Column Options</span> \
+                  <span>More Column Options</span>
                   <AngleDown className="w-5 h-5" />
                 </Button>
               </DropdownMenuTrigger>

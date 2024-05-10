@@ -71,10 +71,6 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     header: "Currency",
   },
   {
-    accessorKey: "eventPrice",
-    header: "Ticket Price",
-  },
-  {
     accessorKey: "amountPaid",
     header: "Revenue",
   },
@@ -144,9 +140,5 @@ export const columns: ColumnDef<TEventTransaction>[] = [
   {
     accessorKey: "affliateCode",
     header: "Affiliate Code",
-  },
-  {
-    accessorKey: "ticketCategory",
-    header: "Ticket Category",
   },
 ];
