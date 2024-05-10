@@ -265,7 +265,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
             <div
               ref={contentRef}
-              className=" h-fit lg:h-fit overflow-y-hidden lg:overflow-y-auto  w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px]"
+              className=" h-fit lg:h-[505px] overflow-y-hidden lg:overflow-y-auto  w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px]"
             >
               <div dangerouslySetInnerHTML={{ __html: data?.content ?? "" }} />
             </div>

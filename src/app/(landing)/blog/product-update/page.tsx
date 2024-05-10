@@ -30,7 +30,7 @@ export default function All() {
       },
     })
       .then((response) => response.json())
-      .then((data) => console.log(data.data))
+      .then((data) => setBlogData(data.data))
       .catch((error) => console.error("Error:", error));
   }
 

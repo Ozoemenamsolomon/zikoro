@@ -7,7 +7,7 @@ import Image from "next/image";
 import { ThreeLine, Close } from "@/constants/icons";
 import { getCookie } from "@/hooks";
 import { ChevronDown } from "styled-icons/bootstrap";
-import { ArrowRightNavbar } from "@/constants/icons";
+import { ArrowDownNavbar, ArrowRightNavbar } from "@/constants/icons";
 
 type DBBlogAll = {
   id: number;
@@ -153,7 +153,7 @@ export default function Navbar() {
                       {isHovered === linkName && (
                         <>
                           {tag === "features" && (
-                            <div className="absolute top-full left-[-170px] pt-[-10px] rounded-lg mb-5 w-max bg-white -z-1 ">
+                            <div className="absolute border-[1px] border-r-gray-200 border-l-gray-200  border-b-gray-200 top-full left-[-170px] pt-[30px] pb-[60px] rounded-lg mb-5 w-max bg-white -z-8 ">
                               <div className="flex rounded-lg ">
                                 <div className="w-9/12 grid gap-[60px] grid-cols-3  pt-[30px] pr-[40px] pb-[60px] pl-[40px]">
                                   <ul className="flex flex-col">
@@ -260,7 +260,7 @@ export default function Navbar() {
                                   </ul>
                                 </div>
                                 <div className="w-3/12 px-[14px] pt-[52px]">
-                                  <p className="text-[20px] uppercase font-medium">
+                                  <p className="text-xl uppercase font-medium">
                                     Featured
                                   </p>
                                   {
@@ -276,7 +276,9 @@ export default function Navbar() {
                                         width={223}
                                         className="rounded-lg w-[223px] object-cover h-[103px]"
                                       />
-                                      <p>{randomBlog?.title}</p>
+                                      <p className="mt-4 text-base font-medium">
+                                        {randomBlog?.title}
+                                      </p>
                                     </div>
                                   }
                                   <div
@@ -291,7 +293,7 @@ export default function Navbar() {
                           )}
 
                           {tag === "use-cases" && (
-                            <div className="absolute top-full left-[-300px] rounded-lg w-max bg-white -z-1">
+                            <div className="absolute top-full border-r-gray-200 border-l-gray-200  border-b-gray-200 left-[-220px] pt-[30px] pb-[60px] rounded-lg w-max bg-white -z-8">
                               <div className="flex rounded-lg ">
                                 <div className="w-8/12 grid gap-[60px] grid-cols-3  pt-[30px] pr-[40px] pb-[60px] pl-[40px]">
                                   <ul className="flex flex-col">
@@ -335,7 +337,7 @@ export default function Navbar() {
                                   </ul>
                                 </div>
                                 <div className="w-4/12 px-[14px] pt-[52px]">
-                                  <p className="text-[20px] uppercase font-medium">
+                                  <p className="text-xl uppercase font-medium">
                                     Featured
                                   </p>
                                   {
@@ -351,7 +353,9 @@ export default function Navbar() {
                                         width={223}
                                         className="rounded-lg w-[223px] object-cover h-[103px]"
                                       />
-                                      <p>{randomBlog?.title}</p>
+                                      <p className="mt-4 text-base font-medium">
+                                        {randomBlog?.title}
+                                      </p>
                                     </div>
                                   }
                                   <div
@@ -366,9 +370,9 @@ export default function Navbar() {
                           )}
 
                           {tag === "resources" && (
-                            <div className="absolute top-full left-[-450px] rounded-lg  w-max bg-white -z-1">
+                            <div className="absolute top-full border-r-gray-200 border-l-gray-200  border-b-gray-200 left-[-300px] rounded-lg  w-max bg-white pt-[30px] pb-[60px] -z-8">
                               <div className="flex rounded-lg ">
-                                <div className="w-8/12 grid gap-[60px] grid-cols-3 pb-[60px] pt-[30px] pr-[40px] pl-[40px]">
+                                <div className="w-9/12 grid gap-[60px] grid-cols-3  pt-[30px] pr-[40px] pl-[40px]">
                                   <ul className="flex flex-col">
                                     <li className="cursor-pointer mt-6 font-medium text-base ">
                                       Events
@@ -394,8 +398,8 @@ export default function Navbar() {
                                     </li>
                                   </ul>
                                 </div>
-                                <div className="w-4/12 px-[14px] pt-[52px]">
-                                  <p className="text-[20px] uppercase font-medium">
+                                <div className="w-3/12 px-[14px] pt-[52px]">
+                                  <p className="text-xl uppercase font-medium">
                                     Featured
                                   </p>
                                   {
@@ -411,7 +415,9 @@ export default function Navbar() {
                                         width={223}
                                         className="rounded-lg w-[223px] object-cover h-[103px]"
                                       />
-                                      <p>{randomBlog?.title}</p>
+                                      <p className="mt-4 text-base font-medium">
+                                        {randomBlog?.title}
+                                      </p>
                                     </div>
                                   }
                                   <div
@@ -465,46 +471,48 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="lg:hidden max-w-full h-screen px-5 bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end pb-8 -cursor-pointer mt-[-32px] md:mt-[-37px] pt-8">
-          <div className="flex flex-col">
-            <div
-              className="flex justify-end items-end pb-10 "
-              onClick={toggleMenuOff}
-            >
-              <Close />
-            </div>
-
-            <div className="flex flex-col items-center text-white ">
-              {links.map(({ linkName, href, hasArrow }, i) => {
-                return (
-                  <Link
-                    key={i}
-                    href={href}
-                    className="text-xl font-medium pb-7"
-                  >
-                    {linkName}
-                  </Link>
-                );
-              })}
-            </div>
-
-            <div className=" gap-5 flex justify-center items-center md:hidden pt-12">
-              <button
-                onClick={() => router.push("/home")}
-                className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white"
+        <>
+          <div className="lg:hidden max-w-full h-screen px-5 bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end pb-8 -cursor-pointer mt-[-32px] md:mt-[-37px] pt-8">
+            <div className="flex flex-col">
+              <div
+                className="flex justify-end items-end pb-10 "
+                onClick={toggleMenuOff}
               >
-                Sign up
-              </button>
+                <Close />
+              </div>
 
-              <button
-                onClick={() => router.push("/home")}
-                className="text-base text-white bg-transparent border border-white py-[10px] px-5 rounded-md "
-              >
-                Login
-              </button>
+              <div className="flex flex-col  text-white ">
+                {links.map(({ linkName, href, hasArrow }, i) => {
+                  return (
+                    <Link
+                      key={i}
+                      href={href}
+                      className="text-xl font-medium pb-7"
+                    >
+                      {linkName}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              <div className=" gap-5 flex md:hidden pt-12">
+                <button
+                  onClick={() => router.push("/home")}
+                  className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white w-1/2"
+                >
+                  Sign up
+                </button>
+
+                <button
+                  onClick={() => router.push("/home")}
+                  className="text-base text-white bg-transparent border border-white py-[10px] px-5 rounded-md w-1/2 "
+                >
+                  Login
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
