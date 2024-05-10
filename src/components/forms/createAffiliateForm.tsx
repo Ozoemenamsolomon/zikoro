@@ -23,8 +23,6 @@ export default function CreateAffiliateForm() {
   console.log(currentEvent);
 
   const defaultValues: Partial<TAffiliate> = {
-    organizationId: parseInt(currentEvent?.organization.id),
-    organizationName: currentEvent?.organization.organizationName,
     userEmail: user?.userEmail,
     userId: user?.id,
     accountDetails: {
