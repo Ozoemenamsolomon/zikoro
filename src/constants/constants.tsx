@@ -595,7 +595,6 @@ export function QAIcon() {
   );
 }
 
-
 export const links: NavLinkType[] = [
   {
     name: "Home",
@@ -613,9 +612,9 @@ export const links: NavLinkType[] = [
     href: "/billing",
   },
   {
-    name: "Marketing",
+    name: "Affiliates",
     icon: MarketingIcon,
-    href: "/marketing",
+    href: "/affiliates",
   },
   {
     name: "Published Events",
@@ -685,5 +684,3 @@ export const adminLinks: AdminNavLinkType[] = [
     href: "certificates",
   },
 ];
-
-

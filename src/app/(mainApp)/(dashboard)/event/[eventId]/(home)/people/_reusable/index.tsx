@@ -17,6 +17,8 @@ import {
 } from "@/hooks";
 import useEventStore from "@/store/globalEventStore";
 import { TExPartner } from "@/types";
+import { useParams } from "next/navigation";
+import { useGetContactRequests } from "@/hooks/services/contacts";
 
 interface ReusablePeopleComponentProps {
   attendees: TAttendee[];
@@ -40,6 +42,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   console.log(attendees, "attendees");
   const user = getCookie("user");
   const event = useEventStore((state) => state.event);
+  const { eventId } = useParams();
 
   console.log(event);
 
@@ -69,9 +72,9 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const { createAttendee } = useCreateAttendee();
 
-  const { data, loading, refetch } = useFetchPartners(event?.eventAlias || 0);
+  const { data, loading, refetch } = useFetchPartners(eventId);
 
-  console.log(data);
+  console.log(event?.eventAlias, event, eventId);
 
   const formatPartners: TExPartner[] = useMemo(() => {
     return data?.map((value) => {
@@ -93,6 +96,14 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
       (v) => v.partnerType.toLowerCase() === "sponsor"
     );
   }, [data]);
+
+  const {
+    userContactRequests,
+    isLoading: contactRequestIsLoading,
+    getContactRequests,
+  } = useGetContactRequests({ userEmail: user.userEmail });
+
+  console.log(userContactRequests);
 
   return (
     <section
@@ -121,6 +132,9 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
                 onOpen={onOpenAttendeeForm}
                 eventAgendas={eventAgendas}
                 eventAgendasIsLoading={eventAgendasIsLoading}
+                userContactRequests={userContactRequests}
+                isLoading={contactRequestIsLoading}
+                getContactRequests={getContactRequests}
               />
             </section>
             <section className="flex flex-col md:col-span-3 pt-2">

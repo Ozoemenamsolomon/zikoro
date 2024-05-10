@@ -1,14 +1,21 @@
 "use client";
 import { useCreateAttendee, useGetAttendee } from "@/hooks/services/attendee";
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
+import React, { useMemo } from "react";
 import ThirdSection from "../../_reusable/ThirdSection";
 import SecondSection from "../../_reusable/SecondSection";
 import { toast } from "@/components/ui/use-toast";
-import { getCookie, useGetEvent, useGetEventAgendas } from "@/hooks";
+import {
+  getCookie,
+  useFetchPartners,
+  useGetEvent,
+  useGetEventAgendas,
+} from "@/hooks";
 import useDisclose from "@/hooks/common/useDisclose";
 import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
-import { TAttendee } from "@/types";
+import { TAttendee, TExPartner } from "@/types";
+import { useGetContactRequests } from "@/hooks/services/contacts";
+import useEventStore from "@/store/globalEventStore";
 
 const page = () => {
   const router = useRouter();
@@ -25,7 +32,8 @@ const page = () => {
     onClose: onCloseAttendeeForm,
   } = useDisclose();
 
-  const event = getCookie("event");
+  const user = getCookie("user");
+  const event = useEventStore((state) => state.event);
 
   const {
     eventAgendas,
@@ -37,6 +45,35 @@ const page = () => {
   console.log(attendee);
 
   const { createAttendee } = useCreateAttendee();
+
+  const { data, loading, refetch } = useFetchPartners(event.eventAlias);
+
+  const formatPartners: TExPartner[] = useMemo(() => {
+    return data?.map((value) => {
+      return {
+        ...value,
+        stampIt: value?.stampIt || false,
+        offers: Array.isArray(value?.offers)
+          ? value?.offers?.length > 0
+          : false,
+        industry: value?.industry,
+        jobs: Array.isArray(value?.jobs) ? value?.jobs?.length > 0 : false,
+        boothNumber: String(value?.boothNumber?.length),
+      };
+    });
+  }, [data]);
+
+  const sponsors = useMemo(() => {
+    return formatPartners.filter(
+      (v) => v.partnerType.toLowerCase() === "sponsor"
+    );
+  }, [data]);
+
+  const {
+    userContactRequests,
+    isLoading: contactRequestIsLoading,
+    getContactRequests,
+  } = useGetContactRequests({ userEmail: user.userEmail });
 
   //   if (!isLoading && !attendee) {
   //     toast({ variant: "destructive", description: "attendee does not exist" });
@@ -55,10 +92,18 @@ const page = () => {
               eventAgendas={eventAgendas}
               eventAgendasIsLoading={eventAgendasIsLoading}
               getAttendees={getAttendee}
+              userContactRequests={userContactRequests}
+              isLoading={contactRequestIsLoading}
+              getContactRequests={getContactRequests}
             />
           </section>
           <section className="flex flex-col md:col-span-3 pt-2">
-            <ThirdSection attendee={attendee} />
+            <ThirdSection
+              attendee={attendee}
+              event={event}
+              sponsors={sponsors}
+              loading={loading}
+            />
           </section>
         </div>
       ) : (

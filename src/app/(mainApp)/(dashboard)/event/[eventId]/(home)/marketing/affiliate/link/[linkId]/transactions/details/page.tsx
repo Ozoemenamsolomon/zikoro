@@ -1,7 +1,7 @@
 "use client";
 import { TEventTransaction } from "@/types/billing";
 import React, { useState } from "react";
-import { columns } from "../../../../../../billing/columns";
+
 import { DataTable } from "@/components/DataTable";
 import { RowSelectionState } from "@tanstack/react-table";
 import { useParams } from "next/navigation";
@@ -16,11 +16,12 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import RequestPayoutDialog from "@/components/requestPayoutDialog";
+import { columns } from "@/app/(mainApp)/(dashboard)/billing/columns";
 
 const LinkDetails = () => {
   const { linkId } = useParams();
 
-  if (Array.isArray(linkId)) return null;
+if (Array.isArray(linkId)) return null;
   const { affiliateLink, getAffiliateLink, isLoading } = useGetAffiliateLink({
     linkId: parseInt(linkId),
   });
@@ -34,7 +35,7 @@ const LinkDetails = () => {
         <Dialog
           onOpenChange={(newOpen) => {
             if (
-              newOpen && 
+              newOpen &&
               (!affiliateLink?.eventTransactions ||
                 (affiliateLink?.eventTransactions &&
                   affiliateLink?.eventTransactions.filter(
@@ -48,7 +49,7 @@ const LinkDetails = () => {
         >
           <DialogTrigger
             asChild
-            disabled={ 
+            disabled={
               affiliateLink?.eventTransactions &&
               affiliateLink.eventTransactions.filter(
                 ({ id }) => rowSelection[id]

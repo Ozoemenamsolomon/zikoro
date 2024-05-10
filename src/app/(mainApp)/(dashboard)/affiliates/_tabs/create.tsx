@@ -41,6 +41,8 @@ import {
   useGetAffiliates,
 } from "@/hooks/services/marketing";
 import { useGetEvents } from "@/hooks/services/events";
+import { TUser } from "@/types";
+import { getCookie } from "@/hooks";
 
 const CreateAffiliateSchema = z.object({
   event: z.string(),
@@ -65,7 +67,11 @@ const Create = () => {
     defaultValues,
   });
 
-  const { affiliates, isLoading: affiliatesIsLoading } = useGetAffiliates();
+  const user = getCookie<TUser>("user");
+
+  const { affiliates, isLoading: affiliatesIsLoading } = useGetAffiliates({
+    userId: user?.id || 0,
+  });
   const { events, isLoading: eventsIsLoading } = useGetEvents();
   console.log(events);
 

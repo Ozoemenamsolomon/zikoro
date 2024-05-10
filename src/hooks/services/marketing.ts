@@ -39,11 +39,11 @@ export const useSendMarketingEmail = (): usePostResult<
   return { sendMarketingEmail, isLoading, error };
 };
 
-export const useGetAffiliates = (): UseGetResult<
-  TAffiliate[],
-  "affiliates",
-  "getAffiliates"
-> => {
+export const useGetAffiliates = ({
+  userId,
+}: {
+  userId: number;
+}): UseGetResult<TAffiliate[], "affiliates", "getAffiliates"> => {
   const [affiliates, setAffiliates] = useState<TAffiliate[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -53,7 +53,7 @@ export const useGetAffiliates = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<TAffiliate[]>({
-        endpoint: "marketing/affiliate",
+        endpoint: `marketing/affiliate?userId=${userId}`,
       });
 
       if (status !== 200) {

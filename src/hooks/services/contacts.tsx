@@ -1,5 +1,6 @@
 import { toast } from "@/components/ui/use-toast";
 import { UseGetResult, usePostResult } from "@/types";
+import { Contact, ContactRequest } from "@/types/contacts";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
@@ -50,33 +51,35 @@ export const useRequestContact = (): usePostResult<
   return { requestContact, isLoading, error };
 };
 
-export const useGetUserContactRequests = ({
+export const useGetContactRequests = ({
   userEmail,
 }: {
-  userEmail: string;
+  userEmail?: string;
 }): UseGetResult<
   ContactRequest[],
   "userContactRequests",
-  "getUserContactRequests"
+  "getContactRequests"
 > => {
-  const [userContactRequests, setUserContactRequests] = useState<
-    ContactRequest[]
-  >([]);
+  const [userContactRequests, setContactRequests] = useState<ContactRequest[]>(
+    []
+  );
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const getUserContactRequests = async () => {
+  const getContactRequests = async () => {
     setLoading(true);
 
     try {
       const { data, status } = await getRequest<ContactRequest[]>({
-        endpoint: `/contacts/request?userEmail=${userEmail}`,
+        endpoint: `/contacts/request${
+          userEmail ? `?userEmail=${userEmail}` : ""
+        }`,
       });
 
       if (status !== 200) {
         throw data;
       }
-      setUserContactRequests(data.data);
+      setContactRequests(data.data);
     } catch (error) {
       setError(true);
     } finally {
@@ -85,13 +88,61 @@ export const useGetUserContactRequests = ({
   };
 
   useEffect(() => {
-    getUserContactRequests();
+    getContactRequests();
   }, []);
 
   return {
     userContactRequests,
     isLoading,
     error,
-    getUserContactRequests,
+    getContactRequests,
   };
+};
+
+type RespondToContactRequestPayload = {
+  body: Pick<Contact, "userEmail" | "contactUserEmail" | "contactRequestId">;
+  action: "accept" | "reject";
+};
+
+export const useRespondToContactRequest = (): usePostResult<
+  RespondToContactRequestPayload,
+  "respondToContactRequest"
+> => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const respondToContactRequest = async ({
+    payload,
+  }: {
+    payload: RespondToContactRequestPayload;
+  }) => {
+    setLoading(true);
+    toast({
+      description: `${payload.action}ing to contact request...`,
+    });
+    try {
+      const { data, status } =
+        await postRequest<RespondToContactRequestPayload>({
+          endpoint: `/contacts/request/respond?action=${payload.action}`,
+          payload: payload.body,
+        });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: `Contact ${payload.action}ed Successfully`,
+      });
+      return data.data;
+    } catch (error) {
+      console.log(error);
+      setError(true);
+      toast({
+        description: "An error has occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { respondToContactRequest, isLoading, error };
 };

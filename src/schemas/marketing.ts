@@ -16,7 +16,7 @@ export const AffiliateSchema = z.object({
   userId: z.number(),
   userEmail: z.string(),
   firstName: z.string(),
-  lastname: z.string(), // Corrected capitalization of 'lastName'
+  lastname: z.string(),
   email: z.string(),
   phoneNumber: z
     .string()

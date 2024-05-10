@@ -48,6 +48,8 @@ import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSec
 import { TAttendee } from "@/types/attendee";
 import TextEditor from "@/components/TextEditor";
 import { getCookie } from "@/hooks";
+import { TUser } from "@/types";
+import useEventStore from "@/store/globalEventStore";
 
 const CreateEmailSchema = z
   .object({
@@ -82,9 +84,13 @@ const CreateEmailSchema = z
 type TCreateEmail = z.infer<typeof CreateEmailSchema>;
 
 const Create = () => {
-  const user = getCookie("user");
+  const currentEvent = useEventStore((state) => state.event);
+  const user = getCookie<TUser>("user");
+
+  console.log(currentEvent?.eventAlias);
+
   const { attendees, getAttendees, isLoading } = useGetAttendees({
-    userId: user.id,
+    eventId: currentEvent?.eventAlias,
   });
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
 
@@ -102,6 +108,7 @@ const Create = () => {
   const defaultValues: Partial<TCreateEmail> = {
     isScheduled: false,
     content: "",
+    replyTo: user.userEmail,
   };
 
   const [sendTest, setSendTest] = useState<boolean>(false);
@@ -146,11 +153,18 @@ const Create = () => {
 
   const onSubmit = async (data: TCreateEmail) => {
     console.log(data);
+
+    if (!user) return;
+
+    if (sendTest) {
+      data.emailRecipient = testEmail;
+    }
+
     await sendMarketingEmail({
       payload: {
-        organizationId: 5,
-        userId: 10,
-        userEmail: "ubahyusuf484@gmail.com",
+        organizationId: currentEvent?.organisationId || 0,
+        userId: user.id,
+        userEmail: user.userEmail,
         emailCategory: data.category,
         subject: data.subject,
         sendersName: data.sender,
@@ -523,7 +537,7 @@ const Create = () => {
             />
           </div>
           <Button
-            disabled={isLoading}
+            disabled={isLoading || (sendTest && !testEmail)}
             type="submit"
             className="bg-basePrimary w-full flex items-center gap-4 flex-[30%]"
           >

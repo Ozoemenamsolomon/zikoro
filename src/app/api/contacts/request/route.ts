@@ -48,7 +48,8 @@ export async function GET(req: NextRequest) {
       const query = supabase
         .from("contactRequest")
         .select("*")
-        .eq("senderUserEmail", userEmail);
+        .eq("receiverUserEmail", userEmail)
+        // .eq("status", "pending");
 
       const { data, error, status } = await query;
 

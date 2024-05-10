@@ -1,7 +1,7 @@
 // import { DialogClose } from "../ui/dialog";
-"use client"
+"use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
@@ -12,12 +12,21 @@ import { TAffiliate } from "@/types/marketing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { DialogClose } from "../ui/dialog";
+import useEventStore from "@/store/globalEventStore";
+import { TUser } from "@/types";
+import { getCookie } from "@/hooks";
+
 export default function CreateAffiliateForm() {
+  const currentEvent = useEventStore((state) => state.event);
+  const user = getCookie<TUser>("user");
+
+  console.log(currentEvent);
+
   const defaultValues: Partial<TAffiliate> = {
-    organizationId: 4,
-    organizationName: "CNT",
-    userEmail: "kachiozo@gmail.com",
-    userId: 2,
+    organizationId: parseInt(currentEvent?.organization.id),
+    organizationName: currentEvent?.organization.organizationName,
+    userEmail: user?.userEmail,
+    userId: user?.id,
     accountDetails: {
       bankCountry: "Nigeria",
       currency: "NGN",
@@ -35,9 +44,18 @@ export default function CreateAffiliateForm() {
     defaultValues,
   });
 
+  const {
+    formState: { dirtyFields, errors },
+  } = form;
+
+  console.log(errors);
+
+  const clsBtnRef = useRef<HTMLButtonElement>(null);
+
   async function onSubmit(payload: TAffiliate) {
     console.log(payload);
 
+    clsBtnRef.current.click();
     await createAffiliate({ payload });
   }
 
@@ -185,14 +203,17 @@ export default function CreateAffiliateForm() {
             </InputOffsetLabel>
           )}
         />
+        <Button
+          disabled={isLoading}
+          type="submit"
+          className="bg-basePrimary w-full"
+        >
+          {isLoading ? "Please wait..." : "Create"}
+        </Button>
         <DialogClose asChild>
-          <Button
-            disabled={isLoading}
-            type="submit"
-            className="bg-basePrimary w-full"
-          >
-            {isLoading ? "Please wait..." : "Create"}
-          </Button>
+          <button className="hidden" ref={clsBtnRef}>
+            close
+          </button>
         </DialogClose>
       </form>
     </Form>
