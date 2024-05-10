@@ -34,7 +34,7 @@ export function ActiveQuestion() {
             <FeedStar size={20} />
           </div>
           <div className="flex  items-center font-medium text-xs text-basePrimary gap-x-2">
-            <p>00:00:40</p>
+            <p>0:40</p>
             <Time size={20} />
           </div>
         </div>
