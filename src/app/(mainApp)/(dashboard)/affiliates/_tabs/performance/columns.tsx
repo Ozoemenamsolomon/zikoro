@@ -52,11 +52,11 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
     accessorFn: (row) =>
       row.eventTransactions
         ? row.eventTransactions
-          .filter(
-            ({ amountPaid, registrationCompleted }) =>
-              amountPaid > 0 && registrationCompleted
-          )
-          .reduce((acc, curr) => acc + curr.attendees, 0)
+            .filter(
+              ({ amountPaid, registrationCompleted }) =>
+                amountPaid > 0 && registrationCompleted
+            )
+            .reduce((acc, curr) => acc + curr.attendees, 0)
         : 0,
   },
   // {
@@ -86,28 +86,28 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
     header: "Earned Commission",
     accessorFn: (row) =>
       row.commissionType === "fixed"
-        ? row.commissionValue
+        ? row.commissionValue * row.eventTransactions?.length
         : row.commissionValue *
-        0.01 *
-        (row.eventTransactions
-          ? row.eventTransactions
-            .filter(
-              ({ amountPaid, registrationCompleted }) =>
-                amountPaid > 0 && registrationCompleted
-            )
-            .reduce((acc, curr) => acc + curr.amountPaid, 0)
-          : 0),
+          0.01 *
+          (row.eventTransactions
+            ? row.eventTransactions
+                .filter(
+                  ({ amountPaid, registrationCompleted }) =>
+                    amountPaid > 0 && registrationCompleted
+                )
+                .reduce((acc, curr) => acc + curr.amountPaid, 0)
+            : 0),
   },
   {
     header: "Revenue",
     accessorFn: (row) =>
       row.eventTransactions
         ? row.eventTransactions
-          .filter(
-            ({ amountPaid, registrationCompleted }) =>
-              amountPaid > 0 && registrationCompleted
-          )
-          .reduce((acc, curr) => acc + curr.amountPaid, 0)
+            .filter(
+              ({ amountPaid, registrationCompleted }) =>
+                amountPaid > 0 && registrationCompleted
+            )
+            .reduce((acc, curr) => acc + curr.amountPaid, 0)
         : 0,
   },
   // {
@@ -124,8 +124,13 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
   {
     id: "details",
     header: "Details",
-    cell: ({ row }) =>
-      <Link className="text-basePrimary" href={`/affiliates/link/${row.original.id}/transactions/details`}>Details</Link>
-
-  }
+    cell: ({ row }) => (
+      <Link
+        className="text-basePrimary"
+        href={`/affiliates/link/${row.original.id}/transactions/details`}
+      >
+        Details
+      </Link>
+    ),
+  },
 ];
