@@ -86,7 +86,8 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
     header: "Earned Commission",
     accessorFn: (row) =>
       row.commissionType === "fixed"
-        ? row.commissionValue * row.eventTransactions?.length
+        ? row.commissionValue *
+          (row.eventTransactions ? row.eventTransactions?.length : 0)
         : row.commissionValue *
           0.01 *
           (row.eventTransactions
