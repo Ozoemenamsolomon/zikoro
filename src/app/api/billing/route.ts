@@ -14,9 +14,11 @@ export async function GET(req: NextRequest) {
 
       console.log(userEmail, userId);
 
-      const query = supabase.from("eventTransactions").select("*");
+      const query = supabase
+        .from("eventTransactions")
+        .select("*, events!inner(*)");
 
-      if (userId) query.eq("userId", userId);
+      if (userId) query.eq("events.createdBy", userId);
       if (userEmail) query.eq("events.email", userEmail);
       if (registrationCompleted)
         query.eq(
