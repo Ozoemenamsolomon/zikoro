@@ -115,8 +115,6 @@ export default function FeaturedEvent({
     }
   }, []);
 
-
-
   return (
     <div
       className={`cursor-pointer relative ${
