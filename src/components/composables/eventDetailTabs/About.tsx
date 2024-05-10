@@ -152,3 +152,6 @@ export function About({
     </div>
   );
 }
+
+
+// https://www.google.com/maps/@6.508685,3.223821,15z?hl=en-US&entry=ttu

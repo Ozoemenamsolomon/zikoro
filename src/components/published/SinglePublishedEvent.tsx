@@ -29,18 +29,10 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
     <>
       {eventDetail ? (
         <div className="w-full h-full bg-gray-50 fixed overflow-y-auto ">
-          <div className="w-full bg-white px-4 sm:px-6 py-4">
-            <Image
-              src={data?.organizationLogo || "/logo.png"}
-              alt="logo"
-              width={300}
-              height={300}
-              className="w-[100px] md:w-[150px] h-[30px] md:h-[40px]"
-            />
-          </div>
           <SingleEvent
             isDetail={true}
             organization={eventDetail?.organisationName}
+            organizationLogo={data?.organizationLogo}
             event={eventDetail}
             useDiv={true}
             eventId={eventDetail?.eventAlias}

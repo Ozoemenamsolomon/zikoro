@@ -15,7 +15,7 @@ export function Sponsors({
   changeMajorActiveState: (n: number) => void;
   event: Event;
 }) {
-  const { data, loading } = useFetchPartners(event?.id);
+  const { data, loading } = useFetchPartners(event?.eventAlias);
 
   return (
     <>
@@ -42,7 +42,7 @@ export function Sponsors({
         {!loading &&
           Array.isArray(data) &&
           data?.map((sponsor) => (
-            <PartnerCard key={sponsor.id} sponsor={sponsor} />
+            <PartnerCard key={sponsor.id} eventId={event?.eventAlias} sponsor={sponsor} />
           ))}
       </div>
     </>

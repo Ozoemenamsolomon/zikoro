@@ -21,7 +21,7 @@ export function CertificateWidget({
         window.open(`https://${certificate?.certificateURL}`, "_blank")
       }
       role="button"
-      className="w-full"
+      className="w-full "
     >
       {certificate?.certificate?.cerificateUrl ? (
         <Image
@@ -29,21 +29,21 @@ export function CertificateWidget({
           alt="certificate"
           width={700}
           height={600}
-          className="w-full h-[250px] rounded-t-lg object-cover"
+          className="w-full h-[250px] border-x border-t rounded-t-lg object-cover"
         />
       ) : (
         <div className="w-full h-[250px] rounded-t-lg animate-pulse">
           <div className="w-full h-full bg-gray-200"></div>
         </div>
       )}
-      <div className="w-full flex items-start gap-x-3 p-3 sm:p-4 shadow border rounded-b-lg">
+      <div className="w-full flex items-start justify-between gap-x-3 p-3 sm:p-4 border rounded-b-lg">
         <div className="flex gap-y-1 flex-col items-start justify-start">
           <p className="font-semibold capitalize text-base sm:text-lg">
             {certificate?.CertificateName ?? ""}
           </p>
           <AboutWidget
             Icon={Users}
-            text="Event Attendees except moderator and partners"
+            text="Event Attendees"
           />
           <p className="text-sm">{createdAt || ""}</p>
 

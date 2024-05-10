@@ -38,7 +38,8 @@ export function SingleEvent({
   event,
   useDiv = false,
   eventId,
-  imageClassName
+  imageClassName,
+  organizationLogo,
 }: {
   isDetail?: boolean;
   className?: string;
@@ -47,6 +48,7 @@ export function SingleEvent({
   eventId?: string;
   useDiv?: boolean;
   imageClassName?: string;
+  organizationLogo?:string;
 }) {
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
@@ -170,7 +172,7 @@ export function SingleEvent({
             <div className="w-full h-full inset-0 absolute z-10 bg-white/50"></div>
           )}
           <div className={cn("w-full grid grid-cols-1 h-fit gap-4 lg:grid-cols-8 items-start", isDetail && "lg:grid-cols-1")}>
-            <div className={cn("w-full h-72 sm:h-[350px] lg:h-[400px] flex lg:col-span-4 flex-col items-start justify-start",
+            <div className={cn("w-full h-72 sm:h-[350px] relative lg:h-[400px] flex lg:col-span-4 flex-col items-start justify-start",
             isDetail && "sm:h-[400px] lg:h-[500px]"
             )}>
               {event?.eventPoster ? (
@@ -190,6 +192,15 @@ export function SingleEvent({
                   <div className="w-full h-full bg-gray-200"></div>
                 </div>
               )}
+              <div className={cn("absolute left-10 bottom-0 bg-white px-3 py-2 rounded-t-lg hidden", isDetail && "block")}>
+              <Image
+              src={organizationLogo || "/logo.png"}
+              alt="logo"
+              width={300}
+              height={300}
+              className="w-[100px] md:w-[150px] h-[30px] md:h-[40px]"
+            />
+              </div>
             </div>
             {/** */}
             <div className={cn("w-full lg:col-span-4 flex flex-col gap-y-3 py-4 px-4 sm:px-10 sm:py-6 items-start justify-start", isDetail && "mx-auto lg:col-span-1 max-w-2xl")}>

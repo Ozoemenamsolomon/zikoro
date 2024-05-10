@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Event, TPartner, PartnerJobType } from "@/types";
+import { Event, TPartner, PartnerJobType, TExPartner } from "@/types";
 import { postRequest, patchRequest, getRequest } from "@/utils/api";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
@@ -55,7 +55,7 @@ export function useAddPartners() {
 
 export function useFetchPartners(eventId: string) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<TPartner[]>([]);
+  const [data, setData] = useState<TExPartner[]>([]);
 
   useEffect(() => {
     fetchPartners();
@@ -65,7 +65,7 @@ export function useFetchPartners(eventId: string) {
     setLoading(true);
     console.log(eventId);
     try {
-      const { data: result, status } = await getRequest<TPartner[]>({
+      const { data: result, status } = await getRequest<TExPartner[]>({
         endpoint: `/partner/${eventId}`,
       });
 
