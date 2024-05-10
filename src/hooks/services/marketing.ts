@@ -207,11 +207,11 @@ export const useCreateAffiliate = (): usePostResult<
   return { createAffiliate, isLoading, error };
 };
 
-export const useGetAffiliateLinks = (): UseGetResult<
-  TAffiliateLink[],
-  "affiliateLinks",
-  "getAffiliateLinks"
-> => {
+export const useGetAffiliateLinks = ({
+  userId,
+}: {
+  userId: number;
+}): UseGetResult<TAffiliateLink[], "affiliateLinks", "getAffiliateLinks"> => {
   const [affiliateLinks, setAffiliateLinks] = useState<TAffiliateLink[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -221,7 +221,7 @@ export const useGetAffiliateLinks = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<TAffiliateLink[]>({
-        endpoint: "marketing/affiliate/link",
+        endpoint: `marketing/affiliate/link?userId=${userId}`,
       });
 
       if (status !== 200) {

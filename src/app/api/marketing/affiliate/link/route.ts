@@ -155,9 +155,13 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
+      const { searchParams } = new URL(req.url);
+      const userId = searchParams.get("userId");
+
       const { data, error, status } = await supabase
         .from("affiliateLinks")
-        .select("*");
+        .select("*")
+        .eq("userId", userId);
 
       console.log(data, error);
 
