@@ -32,8 +32,8 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
   const Comp = Array.isArray(partnersData) && partnersData?.length > 1 ? Slider : "div"
   return (
     <>
-      <div className="w-full grid grid-cols-1 md:grid-cols-7 items-center sm:items-start ">
-        <div className="w-full col-span-full md:col-span-4 flex flex-col gap-y-4  items-start justify-start border-r">
+      <div className="w-full grid grid-cols-1 md:grid-cols-8 items-center sm:items-start ">
+        <div className="w-full col-span-full md:col-span-5 flex flex-col gap-y-4  items-start justify-start border-r">
           <div className={cn("w-full", active > 1 && "hidden sm:block")}>
             <EventSchedule event={data} loading={loading} />
           </div>
@@ -75,7 +75,8 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             active={active}
             setActiveTab={setActiveTab}
             event={data}
-            aboutClassName={"lg:grid-cols-1"}
+            isEventHome
+            aboutClassName={" lg:grid-cols-1"}
           />
         </div>
       </div>

@@ -7,20 +7,24 @@ import Slider from "react-slick";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { FeedBackCard } from "../../published";
 import { cn } from "@/lib";
-import { geocodeAddress } from "@/utils";
+import { geocodeAddress, isEventLive } from "@/utils";
 import { Event } from "@/types";
 import { useState, useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { useGetEventReviews } from "@/hooks";
+import Link from "next/link";
+import { ExternalLink } from "styled-icons/remix-fill";
 
 export function About({
   className,
   event,
   isEventDetailPage,
+  isEventHome,
 }: {
   event: Event | null;
   className?: string;
   isEventDetailPage?: boolean;
+  isEventHome?: boolean;
 }) {
   const pathname = usePathname();
   const { reviews } = useGetEventReviews(event?.eventAlias);
@@ -66,6 +70,8 @@ export function About({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
   });
 
+  console.log("hhh", coordinates);
+
   const Comp = Array.isArray(reviews) && reviews?.length > 1 ? Slider : "div";
   return (
     <div
@@ -80,36 +86,53 @@ export function About({
           className
         )}
       >
-        <div className="w-full flex flex-col border gap-y-6 rounded-lg p-3 sm:p-4">
-          {event?.description && (
+        {event?.description && (
+          <div className="w-full p-3 sm:p-4 mb-2">
             <div
               className="innerhtml"
               dangerouslySetInnerHTML={{
                 __html: event?.description,
               }}
             />
+          </div>
+        )}
+        <div
+          className={cn(
+            "w-full flex flex-col gap-y-6 p-3 sm:p-4",
+            isEventHome && "rounded-lg border"
           )}
+        >
           <div className="w-full h-full flex flex-col gap-y-6">
             {event?.eventAddress && (
               <ul className="w-full flex flex-col items-start justify-start space-y-4">
-                <h2 className="font-medium text-base sm:text-lg ">
-                  Event Address
-                </h2>
+                <li className="font-medium flex items-center gap-x-2 text-base sm:text-lg ">
+                  <p>Event Address</p>
+                  {coordinates && (
+                    <Link
+                      target="_blank"
+                      href={`https://www.google.com/maps/@${coordinates?.lat},${coordinates?.lng},15z?hl=en-US&entry=ttu`}
+                      title="View Direction"
+                    >
+                      <ExternalLink size={20} className="text-basePrimary" />
+                    </Link>
+                  )}
+                </li>
                 <li className="flex flex-wrap leading-6 items-start justify-start">
                   {event?.eventAddress}
                 </li>
-
-                {isLoaded && coordinates !== null ? (
-                  <GoogleMap
-                    mapContainerStyle={{ width: "100%", height: "350px" }}
-                    center={coordinates}
-                    zoom={15}
-                  >
-                    <Marker position={coordinates} />
-                  </GoogleMap>
-                ) : (
-                  <div>Loading...</div>
-                )}
+                <li className="w-full">
+                  {isLoaded && coordinates !== null ? (
+                    <GoogleMap
+                      mapContainerStyle={{ width: "100%", height: "350px" }}
+                      center={coordinates}
+                      zoom={15}
+                    >
+                      <Marker position={coordinates} />
+                    </GoogleMap>
+                  ) : (
+                    <div>Loading...</div>
+                  )}
+                </li>
               </ul>
             )}
           </div>
@@ -152,6 +175,5 @@ export function About({
     </div>
   );
 }
-
 
 // https://www.google.com/maps/@6.508685,3.223821,15z?hl=en-US&entry=ttu

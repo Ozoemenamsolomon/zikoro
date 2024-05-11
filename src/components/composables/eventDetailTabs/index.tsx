@@ -24,6 +24,7 @@ export function EventDetailTabs({
   isEventDetailPage,
   active,
   setActiveTab,
+  isEventHome
 }: {
   event: Event | null;
   className?: string;
@@ -31,6 +32,7 @@ export function EventDetailTabs({
   aboutClassName?: string;
   active: number;
   setActiveTab: (n: number) => void;
+  isEventHome?:boolean
 }) {
   const [selectedTabs, setSelectedTabs] = useState<
     { title: string; status: boolean }[]
@@ -113,11 +115,12 @@ export function EventDetailTabs({
         ))}
       </div>
 
-<div className={cn("", isEventDetailPage && "mx-auto p-3 sm:p-6 bg-white mt-4 rounded-lg py-3 sm:mt-6 w-full sm:w-[65%] lg:w-[90%] xl:w-[80%]")}>
+<div className={cn("w-full", isEventDetailPage && "mx-auto p-3 sm:p-6 bg-white mt-4 rounded-lg py-3 sm:mt-6 w-full sm:w-[65%] lg:w-[90%] xl:w-[80%]")}>
 {active === EventDetailTab.ABOUT_TAB && (
         <About
           isEventDetailPage={isEventDetailPage}
           event={event}
+          isEventHome={isEventHome}
           className={aboutClassName}
         />
       )}
