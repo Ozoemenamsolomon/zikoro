@@ -41,10 +41,6 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
     header: "Affilate Email",
   },
   {
-    accessorKey: "linkCode",
-    header: "Code",
-  },
-  {
     header: "Registrations",
     accessorFn: (row) =>
       row.eventTransactions
@@ -56,80 +52,86 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
     accessorFn: (row) =>
       row.eventTransactions
         ? row.eventTransactions
-          .filter(
-            ({ amountPaid, registrationCompleted }) =>
-              amountPaid > 0 && registrationCompleted
-          )
-          .reduce((acc, curr) => acc + curr.attendees, 0)
-        : 0,
-  },
-  {
-    header: "Commission rate",
-    accessorFn: (row) =>
-      (row.commissionType === "fixed"
-        ? row.commissionValue
-        : (row.commissionValue *
-          0.01 *
-          (row.eventTransactions
-            ? row.eventTransactions
-              .filter(
-                ({ amountPaid, registrationCompleted }) =>
-                  amountPaid > 0 && registrationCompleted
-              )
-              .reduce((acc, curr) => acc + curr.amountPaid, 0)
-            : 0)) /
-        (row.eventTransactions
-          ? row.eventTransactions.reduce(
-            (acc, curr) => acc + curr.attendees,
-            0
-          )
-          : 1)
-      ).toFixed(2),
-  },
-  {
-    header: "Earned Commission",
-    accessorFn: (row) =>
-      row.commissionType === "fixed"
-        ? row.commissionValue
-        : row.commissionValue *
-        0.01 *
-        (row.eventTransactions
-          ? row.eventTransactions
             .filter(
               ({ amountPaid, registrationCompleted }) =>
                 amountPaid > 0 && registrationCompleted
             )
-            .reduce((acc, curr) => acc + curr.amountPaid, 0)
-          : 0),
+            .reduce((acc, curr) => acc + curr.attendees, 0)
+        : 0,
+  },
+  // {
+  //   header: "Commission rate",
+  //   accessorFn: (row) =>
+  //     (row.commissionType === "fixed"
+  //       ? row.commissionValue
+  //       : (row.commissionValue *
+  //         0.01 *
+  //         (row.eventTransactions
+  //           ? row.eventTransactions
+  //             .filter(
+  //               ({ amountPaid, registrationCompleted }) =>
+  //                 amountPaid > 0 && registrationCompleted
+  //             )
+  //             .reduce((acc, curr) => acc + curr.amountPaid, 0)
+  //           : 0)) /
+  //       (row.eventTransactions
+  //         ? row.eventTransactions.reduce(
+  //           (acc, curr) => acc + curr.attendees,
+  //           0
+  //         )
+  //         : 1)
+  //     ).toFixed(2),
+  // },
+  {
+    header: "Earned Commission",
+    accessorFn: (row) =>
+      row.commissionType === "fixed"
+        ? row.commissionValue *
+          (row.eventTransactions ? row.eventTransactions?.length : 0)
+        : row.commissionValue *
+          0.01 *
+          (row.eventTransactions
+            ? row.eventTransactions
+                .filter(
+                  ({ amountPaid, registrationCompleted }) =>
+                    amountPaid > 0 && registrationCompleted
+                )
+                .reduce((acc, curr) => acc + curr.amountPaid, 0)
+            : 0),
   },
   {
     header: "Revenue",
     accessorFn: (row) =>
       row.eventTransactions
         ? row.eventTransactions
-          .filter(
-            ({ amountPaid, registrationCompleted }) =>
-              amountPaid > 0 && registrationCompleted
-          )
-          .reduce((acc, curr) => acc + curr.amountPaid, 0)
+            .filter(
+              ({ amountPaid, registrationCompleted }) =>
+                amountPaid > 0 && registrationCompleted
+            )
+            .reduce((acc, curr) => acc + curr.amountPaid, 0)
         : 0,
   },
-  {
-    accessorKey: "created_at",
-    header: "Date Created",
-    cell: ({ row }) => (
-      <div>{convertDateFormat(row.getValue("created_at"))}</div>
-    ),
-  },
-  {
-    accessorKey: "payoutSchedule",
-    header: "Payment Schedule"
-  },
+  // {
+  //   accessorKey: "created_at",
+  //   header: "Date Created",
+  //   cell: ({ row }) => (
+  //     <div>{convertDateFormat(row.getValue("created_at"))}</div>
+  //   ),
+  // },
+  // {
+  //   accessorKey: "payoutSchedule",
+  //   header: "Payment Schedule"
+  // },
   {
     id: "details",
     header: "Details",
-    cell: ({ row }) =>
-      <Link className="text-basePrimary" href={`/marketing/affiliate/link/${row.original.id}/transactions/details`}>Details</Link>
-
-  }
+    cell: ({ row }) => (
+      <Link
+        className="text-basePrimary"
+        href={`/affiliates/link/${row.original.id}/transactions/details`}
+      >
+        Details
+      </Link>
+    ),
+  },
 ];

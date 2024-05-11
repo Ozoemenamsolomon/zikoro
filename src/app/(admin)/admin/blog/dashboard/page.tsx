@@ -31,11 +31,7 @@ export default function Create() {
   const [totalViews, setTotalViews] = useState<number>(0);
   const [totalShares, setTotalShares] = useState<number>(0);
   const [totalPosts, setTotalPosts] = useState<number>(0);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
-  };
+  const [startDate, setStartDate] = useState<Date>(new Date());
 
   const [formData, setFormData] = useState({
     category: "",
@@ -142,13 +138,13 @@ export default function Create() {
             </div>
           </div>
 
-          <div className="flex cursor-pointer p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-2/12 items-center justify-between h-[44px] ">
-            <AdminBlogCalendarIcon />
+          <div className="flex p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-2/12 items-center justify-between h-[44px]">
             <DatePicker
-              selected={selectedDate}
-              onChange={handleDateChange}
+              selected={startDate}
+              onChange={(date) => date && setStartDate(date)}
               dateFormat="dd/MM/yyyy" // customize date format
-              className="w-28 cursor-pointer bg-transparent outline-none"
+              className="w-full cursor-pointer bg-transparent outline-none "
+              icon={<AdminBlogCalendarIcon />}
             />
           </div>
 

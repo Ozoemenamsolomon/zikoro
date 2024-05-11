@@ -304,7 +304,7 @@ function Filter<T>({
                   {label}
                 </span>
               </MenubarTrigger>
-              <MenubarContent className="space-y-2 w-fit max-h-[200px] overflow-auto">
+              <MenubarContent className="space-y-2 w-fit max-h-[250px] overflow-auto">
                 <FilterOptions<T>
                   filter={filter}
                   selectedFilters={selectedFilters}

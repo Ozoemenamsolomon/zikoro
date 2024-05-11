@@ -12,6 +12,8 @@ import { TAffiliateLink } from "@/types/marketing";
 import { columns } from "./columns";
 import { RowSelectionState } from "@tanstack/react-table";
 import { TEventTransaction } from "@/types/billing";
+import { getCookie } from "@/hooks";
+import { TUser } from "@/types";
 
 const affiliateLinkFilter: TFilter<TAffiliateLink>[] = [
   {
@@ -131,8 +133,12 @@ const affiliateLinkFilter: TFilter<TAffiliateLink>[] = [
 ];
 
 const Performance = () => {
-  const { affiliateLinks, getAffiliateLinks, isLoading } =
-    useGetAffiliateLinks();
+  const user = getCookie<TUser>("user");
+  const { affiliateLinks, getAffiliateLinks, isLoading } = useGetAffiliateLinks(
+    { userId: user?.id || 0 }
+  );
+
+  console.log(affiliateLinks);
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 

@@ -9,6 +9,7 @@ import {
   CloseIcon,
 } from "@/constants/icons";
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
+import { useSearchParams } from "next/navigation";
 
 type DBFeaturedEvent = {
   id: string;
@@ -31,7 +32,9 @@ type DBFeaturedEvent = {
 
 export default function FeaturedEvents() {
   const [showMore, setShowMore] = useState(false);
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+  const params = useSearchParams()
+  const query = params.get('query')
+  const [selectedButton, setSelectedButton] = useState<string | null>(query);
   const [isEventDateUp, setEventDateUp] = useState(false);
   const [isEventTypeUp, setEventTypeUp] = useState(false);
   const [isCountryUp, setCountryUp] = useState(false);
@@ -46,24 +49,34 @@ export default function FeaturedEvents() {
   const [filterLocationType, setFilterLocationType] = useState<string[]>([]);
   const [filterDate, setFilterDate] = useState<string[]>([]);
   const [filterCountry, setFilterCountry] = useState<string[]>([]);
-  const [filterCategory, setFilterCategory] = useState<string | null>(null);
-  const [filterPrice, setFilterPrice] = useState<string | null>(null);
+  const [filterCity, setFilterCity] = useState<string[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  const filteredEvents = eventData?.filter((event) => {
-    // Filter by event title, city, or category
-    return (
-      event.eventTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.eventCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.eventCategory.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
+  const filteredEvents = eventData
+    ?.filter((event) => {
+      // Filter by event title, city, or category
+      return (
+        event.eventTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.eventCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.eventCategory.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    })
+    .filter((event) => {
+      // Additional filter based on the selectedButton value
+      return selectedButton
+        ? event.locationType.toLowerCase() === selectedButton.toLowerCase() ||
+            event.eventCountry.toLowerCase() === selectedButton.toLowerCase() ||
+            event.eventCity.toLowerCase() === selectedButton.toLowerCase() ||
+            event.eventCategory.toLowerCase() === selectedButton.toLowerCase()
+        : true;
+    });
 
-  const handleClick = (v: string) => {
-    setSelectedButton(v);
+  const handleButtonClick = (text: string) => {
+    setSelectedButton(text);
+    setFilterOpen(false);
   };
 
   //see more function
@@ -73,17 +86,12 @@ export default function FeaturedEvents() {
 
   //clear filter button
   const clearFilterButton = () => {
-    selectedButton === null;
-  };
-
-  const handleCategoryClick = (category: string) => {
-    setFilterCategory(category);
+    setSelectedButton(null);
   };
 
   //fetch events from database
-
   async function fetchEventFeautured() {
-    fetch("/api/explore/featured", {
+    fetch("/api/explore/featured?query", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -108,17 +116,21 @@ export default function FeaturedEvents() {
     }
     //filtered location type
     if (eventData) {
-      const type: string[] = eventData.map((event) => event.locationType);
-      setFilterLocationType(type);
+      const filtertype: string[] = eventData.map((event) => event.locationType);
+      setFilterLocationType(filtertype);
     }
 
-     //filtered country
-     if (eventData) {
-      const type: string[] = eventData.map((event) => event.locationType);
-      setFilterLocationType(type);
+    //filtered country
+    if (eventData) {
+      const country: string[] = eventData.map((event) => event.eventCountry);
+      setFilterCountry(country);
     }
 
-    
+    //filtered city
+    if (eventData) {
+      const cities: string[] = eventData.map((event) => event.eventCity);
+      setFilterCity(cities);
+    }
   }, [eventData]); // Update eventCategories when eventData changes
 
   return (
@@ -186,36 +198,25 @@ export default function FeaturedEvents() {
                           </div>
                           {isEventTypeUp && (
                             <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                              <button
-                                onClick={() => handleClick("hybrid")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "hybrid"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Hybrid
-                              </button>
-                              <button
-                                onClick={() => handleClick("onsite")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "onsite"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Onsite
-                              </button>
-                              <button
-                                onClick={() => handleClick("virtual")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "virtual"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Virtual
-                              </button>
+                              {filterLocationType
+                                .filter(
+                                  (locationType, index, self) =>
+                                    self.indexOf(locationType) === index
+                                )
+                                .map((locationType) => (
+                                  <button
+                                    onClick={() =>
+                                      handleButtonClick(locationType)
+                                    }
+                                    className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                      selectedButton === locationType
+                                        ? "bg-zikoroBlue text-white"
+                                        : "bg-white text-black"
+                                    }`}
+                                  >
+                                    {locationType}
+                                  </button>
+                                ))}
                             </div>
                           )}
                         </div>
@@ -241,8 +242,8 @@ export default function FeaturedEvents() {
                           {isEventDateUp && (
                             <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
                               <button
-                                onClick={() => handleClick("today")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                                onClick={() => handleButtonClick("today")}
+                                className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
                                   selectedButton === "today"
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
@@ -251,8 +252,8 @@ export default function FeaturedEvents() {
                                 Today
                               </button>
                               <button
-                                onClick={() => handleClick("this-week")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                                onClick={() => handleButtonClick("this-week")}
+                                className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
                                   selectedButton === "this-week"
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
@@ -261,8 +262,8 @@ export default function FeaturedEvents() {
                                 This Week
                               </button>
                               <button
-                                onClick={() => handleClick("this-month")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                                onClick={() => handleButtonClick("this-month")}
+                                className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
                                   selectedButton === "this-month"
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
@@ -271,8 +272,8 @@ export default function FeaturedEvents() {
                                 This Month
                               </button>
                               <button
-                                onClick={() => handleClick("next-month")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                                onClick={() => handleButtonClick("next-month")}
+                                className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
                                   selectedButton === "next-month"
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
@@ -300,67 +301,24 @@ export default function FeaturedEvents() {
                           </div>
                           {isCountryUp && (
                             <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                              <button
-                                onClick={() => handleClick("nigeria")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap  rounded-lg ${
-                                  selectedButton === "nigeria"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Nigeria
-                              </button>
-                              <button
-                                onClick={() => handleClick("germany")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "germany"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Germany
-                              </button>
-                              <button
-                                onClick={() => handleClick("usa")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "usa"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                U.S.A
-                              </button>
-                              <button
-                                onClick={() => handleClick("uk")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "uk"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                U.K
-                              </button>
-                              <button
-                                onClick={() => handleClick("ghana")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "ghana"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Ghana
-                              </button>
-
-                              <button
-                                onClick={() => handleClick("canada")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "canada"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Canada
-                              </button>
+                              {filterCountry
+                                .filter(
+                                  (country, index, self) =>
+                                    self.indexOf(country) === index
+                                )
+                                .slice(0, 4)
+                                .map((country) => (
+                                  <button
+                                    onClick={() => handleButtonClick(country)}
+                                    className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                      selectedButton === country
+                                        ? "bg-zikoroBlue text-white"
+                                        : "bg-white text-black"
+                                    }`}
+                                  >
+                                    {country}
+                                  </button>
+                                ))}
                             </div>
                           )}
                         </div>
@@ -381,42 +339,30 @@ export default function FeaturedEvents() {
                           </div>
                           {isCityUp && (
                             <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                              <button
-                                onClick={() => handleClick("lagos")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "lagos"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Lagos
-                              </button>
-                              <button
-                                onClick={() => handleClick("abuja")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "abuja"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Abuja
-                              </button>
-                              <button
-                                onClick={() => handleClick("enugu")}
-                                className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "enugu"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Enugu
-                              </button>
+                              {filterCity
+                                .filter(
+                                  (city, index, self) =>
+                                    self.indexOf(city) === index
+                                )
+                                .slice(0, 4)
+                                .map((city) => (
+                                  <button
+                                    onClick={() => handleButtonClick(city)}
+                                    className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                      selectedButton === city
+                                        ? "bg-zikoroBlue text-white"
+                                        : "bg-white text-black"
+                                    }`}
+                                  >
+                                    {city}
+                                  </button>
+                                ))}
                             </div>
                           )}
                         </div>
 
                         {/* 5th section */}
-                        <div className="px-8 cursor-pointer">
+                        {/* <div className="px-8 cursor-pointer">
                           <div className="flex justify-between items-center">
                             <p className="text-lg font-semibold">Price Range</p>
                             {isPriceUp ? (
@@ -432,9 +378,9 @@ export default function FeaturedEvents() {
                           {isPriceUp && (
                             <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
                               <button
-                                onClick={() => handleClick("free")}
-                                className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "free"
+                                onClick={() => handleButtonClick("Free")}
+                                className={`py-4 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                                  selectedButton === "Free"
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
                                 }`}
@@ -442,9 +388,9 @@ export default function FeaturedEvents() {
                                 Free
                               </button>
                               <button
-                                onClick={() => handleClick("1-10")}
-                                className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "1-10"
+                                onClick={() => handleButtonClick("1k - 10k")}
+                                className={`py-4 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                                  selectedButton === "10000"
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
                                 }`}
@@ -452,9 +398,9 @@ export default function FeaturedEvents() {
                                 1k -10k
                               </button>
                               <button
-                                onClick={() => handleClick("10-50")}
-                                className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap  rounded-lg ${
-                                  selectedButton === "10-50"
+                                onClick={() => handleButtonClick("10k - 50k")}
+                                className={`py-4 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap  rounded-lg ${
+                                  selectedButton === "10000"
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
                                 }`}
@@ -462,9 +408,9 @@ export default function FeaturedEvents() {
                                 10k -50k
                               </button>
                               <button
-                                onClick={() => handleClick("50-100")}
-                                className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton == "50-100"
+                                onClick={() => handleButtonClick("50k - 100k")}
+                                className={`py-4 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                                  selectedButton == "50000"
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
                                 }`}
@@ -473,7 +419,7 @@ export default function FeaturedEvents() {
                               </button>
                             </div>
                           )}
-                        </div>
+                        </div> */}
                       </div>
                     </div>
 
@@ -482,14 +428,19 @@ export default function FeaturedEvents() {
                       {/* top */}
                       <div className="flex">
                         <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] ">
-                          {filterCategories.map((filterCategory, i) => (
-                            <div
-                              key={i}
-                              className="py-[18px] px-5 t w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap"
-                            >
-                              {filterCategory}{" "}
-                            </div>
-                          ))}
+                          {filterCategories
+                            .filter(
+                              (category, i, self) =>
+                                self.indexOf(category) === i
+                            )
+                            .map((category) => (
+                              <div
+                                className="py-[18px] px-5 t w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap"
+                                onClick={() => handleButtonClick(category)}
+                              >
+                                {category}{" "}
+                              </div>
+                            ))}
                         </div>
                       </div>
 
@@ -567,14 +518,18 @@ export default function FeaturedEvents() {
 
                     <div className="mt-7">
                       <div className=" px-4 flex w-auto items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] border-y-[1px] border-gray-200 ">
-                        {filterCategories.map((filterCategory, i) => (
-                          <div
-                            key={i}
-                            className="py-[18px] px-5 w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap"
-                          >
-                            {filterCategory}{" "}
-                          </div>
-                        ))}
+                        {filterCategories
+                          .filter(
+                            (category, i, self) => self.indexOf(category) === i
+                          )
+                          .map((category) => (
+                            <div
+                              className="py-[18px] px-5 t w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap"
+                              onClick={() => handleButtonClick(category)}
+                            >
+                              {category}{" "}
+                            </div>
+                          ))}
                       </div>
                     </div>
 
@@ -659,36 +614,23 @@ export default function FeaturedEvents() {
                     </div>
                     {isEventTypeUp && (
                       <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                        <button
-                          onClick={() => handleClick("hybrid")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "hybrid"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Hybrid
-                        </button>
-                        <button
-                          onClick={() => handleClick("onsite")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "onsite"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Onsite
-                        </button>
-                        <button
-                          onClick={() => handleClick("virtual")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "virtual"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Virtual
-                        </button>
+                        {filterLocationType
+                          .filter(
+                            (locationType, index, self) =>
+                              self.indexOf(locationType) === index
+                          )
+                          .map((locationType) => (
+                            <button
+                              onClick={() => handleButtonClick(locationType)}
+                              className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                selectedButton === locationType
+                                  ? "bg-zikoroBlue text-white"
+                                  : "bg-white text-black"
+                              }`}
+                            >
+                              {locationType}
+                            </button>
+                          ))}
                       </div>
                     )}
                   </div>
@@ -710,7 +652,7 @@ export default function FeaturedEvents() {
                     {isEventDateUp && (
                       <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
                         <button
-                          onClick={() => handleClick("today")}
+                          onClick={() => handleButtonClick("today")}
                           className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
                             selectedButton === "today"
                               ? "bg-zikoroBlue text-white"
@@ -720,7 +662,7 @@ export default function FeaturedEvents() {
                           Today
                         </button>
                         <button
-                          onClick={() => handleClick("this-week")}
+                          onClick={() => handleButtonClick("this-week")}
                           className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
                             selectedButton === "this-week"
                               ? "bg-zikoroBlue text-white"
@@ -730,7 +672,7 @@ export default function FeaturedEvents() {
                           This Week
                         </button>
                         <button
-                          onClick={() => handleClick("this-month")}
+                          onClick={() => handleButtonClick("this-month")}
                           className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
                             selectedButton === "this-month"
                               ? "bg-zikoroBlue text-white"
@@ -740,7 +682,7 @@ export default function FeaturedEvents() {
                           This Month
                         </button>
                         <button
-                          onClick={() => handleClick("next-month")}
+                          onClick={() => handleButtonClick("next-month")}
                           className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
                             selectedButton === "next-month"
                               ? "bg-zikoroBlue text-white"
@@ -769,67 +711,24 @@ export default function FeaturedEvents() {
                     </div>
                     {isCountryUp && (
                       <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                        <button
-                          onClick={() => handleClick("nigeria")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap  rounded-lg ${
-                            selectedButton === "nigeria"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Nigeria
-                        </button>
-                        <button
-                          onClick={() => handleClick("germany")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "germany"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Germany
-                        </button>
-                        <button
-                          onClick={() => handleClick("usa")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "usa"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          U.S.A
-                        </button>
-                        <button
-                          onClick={() => handleClick("uk")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "uk"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          U.K
-                        </button>
-                        <button
-                          onClick={() => handleClick("ghana")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "ghana"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Ghana
-                        </button>
-
-                        <button
-                          onClick={() => handleClick("canada")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "canada"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Canada
-                        </button>
+                        {filterCountry
+                          .filter(
+                            (country, index, self) =>
+                              self.indexOf(country) === index
+                          )
+                          .slice(0, 4)
+                          .map((country) => (
+                            <button
+                              onClick={() => handleButtonClick(country)}
+                              className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                selectedButton === country
+                                  ? "bg-zikoroBlue text-white"
+                                  : "bg-white text-black"
+                              }`}
+                            >
+                              {country}
+                            </button>
+                          ))}
                       </div>
                     )}
                   </div>
@@ -850,42 +749,29 @@ export default function FeaturedEvents() {
                     </div>
                     {isCityUp && (
                       <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                        <button
-                          onClick={() => handleClick("lagos")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "lagos"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Lagos
-                        </button>
-                        <button
-                          onClick={() => handleClick("abuja")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "abuja"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Abuja
-                        </button>
-                        <button
-                          onClick={() => handleClick("enugu")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "enugu"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Enugu
-                        </button>
+                        {filterCity
+                          .filter(
+                            (city, index, self) => self.indexOf(city) === index
+                          )
+                          .slice(0, 4)
+                          .map((city) => (
+                            <button
+                              onClick={() => handleButtonClick(city)}
+                              className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                selectedButton === city
+                                  ? "bg-zikoroBlue text-white"
+                                  : "bg-white text-black"
+                              }`}
+                            >
+                              {city}
+                            </button>
+                          ))}
                       </div>
                     )}
                   </div>
 
                   {/* 5th section */}
-                  <div className="px-8 cursor-pointer">
+                  {/* <div className="px-8 cursor-pointer">
                     <div className="flex justify-between items-center">
                       <p className="text-lg font-semibold">Price Range</p>
                       {isPriceUp ? (
@@ -901,7 +787,7 @@ export default function FeaturedEvents() {
                     {isPriceUp && (
                       <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
                         <button
-                          onClick={() => handleClick("free")}
+                          onClick={() => handleButtonClick("free")}
                           className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
                             selectedButton === "free"
                               ? "bg-zikoroBlue text-white"
@@ -911,7 +797,7 @@ export default function FeaturedEvents() {
                           Free
                         </button>
                         <button
-                          onClick={() => handleClick("1-10")}
+                          onClick={() => handleButtonClick("1-10")}
                           className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
                             selectedButton === "1-10"
                               ? "bg-zikoroBlue text-white"
@@ -921,7 +807,7 @@ export default function FeaturedEvents() {
                           1k -10k
                         </button>
                         <button
-                          onClick={() => handleClick("10-50")}
+                          onClick={() => handleButtonClick("10-50")}
                           className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap  rounded-lg ${
                             selectedButton === "10-50"
                               ? "bg-zikoroBlue text-white"
@@ -931,7 +817,7 @@ export default function FeaturedEvents() {
                           10k -50k
                         </button>
                         <button
-                          onClick={() => handleClick("50-100")}
+                          onClick={() => handleButtonClick("50-100")}
                           className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
                             selectedButton == "50-100"
                               ? "bg-zikoroBlue text-white"
@@ -942,7 +828,7 @@ export default function FeaturedEvents() {
                         </button>
                       </div>
                     )}
-                  </div>
+                  </div> */}
 
                   <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] mx-3 px-5 rounded-md border border-white">
                     See more

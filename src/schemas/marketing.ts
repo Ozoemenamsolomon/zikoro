@@ -11,8 +11,6 @@ const accountDetailsSchema = z.object({
 export const AffiliateSchema = z.object({
   id: z.number().optional(),
   created_at: z.date().optional(),
-  organizationId: z.number(),
-  organizationName: z.string(),
   userId: z.number(),
   userEmail: z.string(),
   firstName: z.string(),
