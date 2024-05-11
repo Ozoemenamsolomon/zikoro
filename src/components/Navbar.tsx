@@ -153,7 +153,7 @@ export default function Navbar() {
                       {isHovered === linkName && (
                         <>
                           {tag === "features" && (
-                            <div className="absolute border-[1px] border-r-gray-200 border-l-gray-200  border-b-gray-200 top-full left-[-170px] pt-[30px] pb-[60px] rounded-lg mb-5 w-max bg-white -z-8 ">
+                            <div className="absolute border-[1px] border-t-0 border-r-gray-200 border-l-gray-200  border-b-gray-200 top-full left-[-185px] pt-[30px] pb-[60px] rounded-lg mb-5 w-max bg-white -z-8 ">
                               <div className="flex rounded-lg ">
                                 <div className="w-9/12 grid gap-[60px] grid-cols-3  pt-[30px] pr-[40px] pb-[60px] pl-[40px]">
                                   <ul className="flex flex-col">
@@ -293,7 +293,7 @@ export default function Navbar() {
                           )}
 
                           {tag === "use-cases" && (
-                            <div className="absolute top-full border-r-gray-200 border-l-gray-200  border-b-gray-200 left-[-220px] pt-[30px] pb-[60px] rounded-lg w-max bg-white -z-8">
+                            <div className="absolute top-full border-[1px] border-t-0 border-r-gray-200 border-l-gray-200  border-b-gray-200 left-[-220px] pt-[30px] pb-[60px] rounded-lg w-max bg-white -z-8">
                               <div className="flex rounded-lg ">
                                 <div className="w-8/12 grid gap-[60px] grid-cols-3  pt-[30px] pr-[40px] pb-[60px] pl-[40px]">
                                   <ul className="flex flex-col">
@@ -370,7 +370,7 @@ export default function Navbar() {
                           )}
 
                           {tag === "resources" && (
-                            <div className="absolute top-full border-r-gray-200 border-l-gray-200  border-b-gray-200 left-[-300px] rounded-lg  w-max bg-white pt-[30px] pb-[60px] -z-8">
+                            <div className="absolute top-full border-[1px] border-t-0 border-r-gray-200 border-l-gray-200  border-b-gray-200 left-[-260px] rounded-lg  w-max bg-white pt-[30px] pb-[60px] -z-8">
                               <div className="flex rounded-lg ">
                                 <div className="w-9/12 grid gap-[60px] grid-cols-3  pt-[30px] pr-[40px] pl-[40px]">
                                   <ul className="flex flex-col">

@@ -22,22 +22,15 @@ type DBBlogAll = {
 
 export default function Create() {
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
-  const [formData, setFormData] = useState({
-    category: "",
-  });
-  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date | null >(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const categories = [
-    { name: "Event tips", value: "event" },
-    { name: "Product Updates", value: "product" },
-    { name: "Guides and Tutorial", value: "guide" },
-    { name: "Case Study", value: "case" },
+    { name: "Event tips", value: "Event" },
+    { name: "Product Updates", value: "Product" },
+    { name: "Guides and Tutorial", value: "Guide" },
+    { name: "Case Study", value: "Case" },
   ];
-
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
 
   //fetch blog posts
   async function fetchBlogPost() {
@@ -51,6 +44,28 @@ export default function Create() {
       .then((data) => setBlogData(data.data))
       .catch((error) => console.error("Error:", error));
   }
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(e.target.value);
+  };
+
+  // Function to filter blog posts based on selected date
+  // Function to filter blog posts
+  const filterBlogPosts = (posts: DBBlogAll[]) => {
+    let filteredPosts = posts;
+    if (startDate) {
+      filteredPosts = filteredPosts.filter((post) => {
+        const postDate = new Date(post.created_at);
+        return postDate.toDateString() === startDate.toDateString();
+      });
+    }
+    if (selectedCategory) {
+      filteredPosts = filteredPosts.filter(
+        (post) => post.category === selectedCategory
+      );
+    }
+    return filteredPosts;
+  };
 
   useEffect(() => {
     fetchBlogPost();
@@ -66,15 +81,17 @@ export default function Create() {
               selected={startDate}
               onChange={(date) => date && setStartDate(date)}
               dateFormat="dd/MM/yyyy" // customize date format
+              placeholderText="Select a date"
               className="w-full cursor-pointer bg-transparent outline-none "
               icon={<AdminBlogCalendarIcon />}
+              onFocus={(e) => (e.target.readOnly = true)}
             />
           </div>
 
           <select
             name="category"
-            value={formData.category}
-            onChange={handleChange}
+            value={selectedCategory}
+            onChange={handleCategoryChange}
             // required
             className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none"
           >
@@ -101,13 +118,13 @@ export default function Create() {
       </section>
 
       {/* section 2 */}
-      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px] bg-white">
+      <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px]  bg-white ">
         {blogData &&
           blogData?.length > 0 &&
-          blogData?.map((blogPost, index) => (
+          filterBlogPosts(blogData)?.map((blogPost, index) => (
             <AdminPublishedBlog
-              draft={false}
-              scheduled={true}
+              scheduled={false}
+              draft={true}
               key={blogPost.id}
               id={blogPost.id}
               title={blogPost.title}
