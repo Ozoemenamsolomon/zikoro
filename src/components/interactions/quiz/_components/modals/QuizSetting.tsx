@@ -24,7 +24,7 @@ export function QuizSettings({ close }: { close: () => void }) {
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="py-6 px-4 w-[95%] max-w-2xl m-auto rounded-lg bg-white absolute inset-0 overflow-y-auto max-h-[85%] h-fit"
+        className="py-6 px-4 w-[95%] max-w-xl m-auto rounded-lg bg-white absolute inset-0 overflow-y-auto max-h-[85%] h-fit"
       >
         <div className="flex mb-4 items-center justify-between w-full">
           <h2 className="font-semibold text-lg sm:text-2xl">Quiz Settings</h2>
@@ -79,13 +79,13 @@ export function QuizSettings({ close }: { close: () => void }) {
 
             <p className="font-semibold">Branding</p>
 
-            <div className="flex items-center justify-between">
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
               <p>Show Event Name</p>
-              <Switch />
+              <Switch className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"/>
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
               <p>Show Powered by Zikoro</p>
-              <Switch />
+              <Switch className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"/>
             </div>
           </form>
         </Form>

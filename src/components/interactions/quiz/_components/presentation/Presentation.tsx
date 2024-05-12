@@ -2,7 +2,7 @@
 
 import { Advert, LeaderBoard, Qusetion } from "..";
 import { useState } from "react";
-export default function Presentation() {
+export default function Presentation({eventId, quizId}:{eventId:string; quizId:string;}) {
   const [isRightBox, setRightBox] = useState(true);
   const [isLeftBox, setLeftBox] = useState(true);
 
