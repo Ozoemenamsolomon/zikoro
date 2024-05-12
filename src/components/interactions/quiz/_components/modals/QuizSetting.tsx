@@ -12,8 +12,28 @@ import { Switch } from "@/components/ui/switch";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { useForm } from "react-hook-form";
+import * as z from "zod"
+import { quizSettingSchema } from "@/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {useState} from "react"
+import {TQuiz} from "@/types"
 export function QuizSettings({ close }: { close: () => void }) {
-  const form = useForm({});
+  const [isEventName, setShowEventName] = useState(false)
+  const [isPoweredBy, setShowPooweredBy] = useState(false)
+  const form = useForm<z.infer<typeof quizSettingSchema>>({
+    resolver: zodResolver(quizSettingSchema)
+  });
+
+  async function onSubmit(values: z.infer<typeof quizSettingSchema>) {
+    const payload: Partial<TQuiz> = {
+      branding: {
+        ...values,
+        poweredBy: isPoweredBy,
+        eventName: isEventName,
+       
+      }
+    }
+  }
   return (
     <div
       onClick={close}
