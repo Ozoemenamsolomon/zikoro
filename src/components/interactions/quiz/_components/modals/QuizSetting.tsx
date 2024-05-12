@@ -82,7 +82,7 @@ export function QuizSettings({
       coverImage: promise,
     };
     const asynQuery = quiz?.quizAlias ? updateQuiz : createQuiz
-    await createQuiz({ payload });
+    await asynQuery({ payload });
     setLoading(false);
     close();
   }
