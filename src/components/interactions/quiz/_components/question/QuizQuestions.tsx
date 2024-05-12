@@ -12,10 +12,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { QuizSettings } from "../modals/QuizSetting";
 import { useRouter } from "next/navigation";
+import { useCreateQuiz, useUpdateQuiz } from "@/hooks";
 export default function QuizQuestion({ eventId }: { eventId: string }) {
+  const { createQuiz, isLoading, quiz } = useCreateQuiz();
+  const {updateQuiz, isLoading: updating} = useUpdateQuiz()
   const [height, setHeight] = useState<number>(0);
   const router = useRouter();
   const [isOpen, setOpen] = useState(false);
+
   function onOpen() {
     setOpen((prev) => !prev);
   }
@@ -73,7 +77,16 @@ export default function QuizQuestion({ eventId }: { eventId: string }) {
           ))}
         </div>
       </div>
-      {isOpen && <QuizSettings close={onOpen} />}
+      {isOpen && (
+        <QuizSettings
+          createQuiz={createQuiz}
+          updateQuiz={updateQuiz}
+          isLoading={isLoading || updating}
+          close={onOpen}
+          quiz={quiz}
+          eventAlias={eventId}
+        />
+      )}
     </InteractionLayout>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 import { toast } from "@/components/ui/use-toast";
-import { TQuiz} from "@/types";
+import { TQuiz } from "@/types";
 import {
   postRequest,
   patchRequest,
@@ -10,27 +10,22 @@ import {
 import { useState, useEffect } from "react";
 
 export const useCreateQuiz = () => {
+  const [quiz, setQuiz] = useState<TQuiz | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const createQuiz = async ({ payload }: { payload: Partial<TQuiz> }) => {
     setLoading(true);
 
     try {
-      const { data, status } = await postRequest({
+      const { data, status } = await postRequest<TQuiz>({
         endpoint: "/quiz",
         payload,
       });
 
-      if (status !== 201)
-        return toast({
-          description: (data.data as { error: string }).error,
-          variant: "destructive",
-        });
-
       toast({
         description: "Quiz created successfully",
       });
-      return data;
+      return setQuiz(data?.data);
     } catch (error: any) {
       // console.log({ error });
       toast({
@@ -42,10 +37,11 @@ export const useCreateQuiz = () => {
     }
   };
 
-  return { createQuiz, isLoading };
+  return { createQuiz, isLoading, quiz };
 };
 
 export const useUpdateQuiz = () => {
+  const [quiz, setQuiz] = useState<TQuiz | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const updateQuiz = async ({ payload }: { payload: Partial<TQuiz> }) => {
@@ -62,7 +58,7 @@ export const useUpdateQuiz = () => {
       toast({
         description: "Quiz Updated successfully",
       });
-      return data;
+      return setQuiz(data?.data);
     } catch (error: any) {
       toast({
         description: error?.response?.data?.error,
@@ -73,7 +69,7 @@ export const useUpdateQuiz = () => {
     }
   };
 
-  return { updateQuiz, isLoading };
+  return { updateQuiz, isLoading, quiz };
 };
 
 export const useGetQuizzes = (eventId: string) => {

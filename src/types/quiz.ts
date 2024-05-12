@@ -11,4 +11,7 @@ export interface TQuiz {
   questions: JSON;
   totalDuration: number;
   totalPoints: number;
+  eventAlias:string;
+  quizAlias:string;
+  
 }

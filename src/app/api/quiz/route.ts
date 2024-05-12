@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      const { error, data } = await supabase.from("quiz").upsert(params);
+      const { error } = await supabase.from("quiz").upsert(params);
 
       if (error) {
         return NextResponse.json(
@@ -21,6 +21,21 @@ export async function POST(req: NextRequest) {
       }
 
       if (error) throw error;
+
+      const { error: fetchError, data } = await supabase
+        .from("quiz")
+        .select("*")
+        .eq("quizAlias", params?.quizAlias)
+        .single();
+
+      if (fetchError) {
+        return NextResponse.json(
+          { error: fetchError.message },
+          {
+            status: 400,
+          }
+        );
+      }
 
       return NextResponse.json(
         { msg: "Quiz created successfully", data },
@@ -71,8 +86,24 @@ export async function PATCH(req: NextRequest) {
       }
       if (error) throw error;
 
+      
+      const { error: fetchError, data } = await supabase
+        .from("quiz")
+        .select("*")
+        .eq("quizAlias", params?.quizAlias)
+        .single();
+
+      if (fetchError) {
+        return NextResponse.json(
+          { error: fetchError.message },
+          {
+            status: 400,
+          }
+        );
+      }
+
       return NextResponse.json(
-        { msg: "quiz updated successfully" },
+        { msg: "quiz updated successfully", data },
         {
           status: 200,
         }
