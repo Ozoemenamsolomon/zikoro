@@ -6,7 +6,7 @@ import { Button } from "@/components";
 import { cn } from "@/lib";
 export function Advert({close, isLeftBox}:{isLeftBox:boolean; close:() =>  void}) {
   return (
-    <div className={cn("w-full flex-col items-start justify-between hidden md:flex md:invisible", isLeftBox && "flex visible")}>
+    <div className={cn("w-full flex-col bg-white rounded-l-xl h-full col-span-3 items-start justify-between hidden md:flex md:invisible", isLeftBox && "flex md:flex visible md:visible")}>
       <h2 className="font-semibold w-full border-b p-4 text-base sm:text-xl">
         Resin Art Workshop
       </h2>
@@ -19,7 +19,7 @@ export function Advert({close, isLeftBox}:{isLeftBox:boolean; close:() =>  void}
         </p>
       </div>
 
-      <div className="w-full flex items-end justify-between">
+      <div className="p-4 w-full flex items-end justify-between">
         <div className="space-y-1">
           <p>Powered By:</p>
           <Image

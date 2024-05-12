@@ -9,6 +9,7 @@ import { Settings } from "@styled-icons/feather/Settings";
 import Image from "next/image";
 import { ActiveQuestion, QuestionCard } from "..";
 import { useState } from "react";
+import Link from "next/link";
 import { QuizSettings } from "../modals/QuizSetting";
 import { useRouter } from "next/navigation";
 export default function QuizQuestion({ eventId }: { eventId: string }) {
@@ -22,8 +23,6 @@ export default function QuizQuestion({ eventId }: { eventId: string }) {
   function questionHeight(num: number) {
     setHeight(num);
   }
-
-  
 
   return (
     <InteractionLayout eventId={eventId}>
@@ -52,13 +51,12 @@ export default function QuizQuestion({ eventId }: { eventId: string }) {
             <PlusCircle size={20} />
             <p>Question</p>
           </Button>
-          <Button
-            //  onClick={onClose}
+          <Link
+            href={`/quiz/${eventId}/present/${1}`} //  onClick={onClose}
             className="text-basePrimary px-0 w-fit h-fit  hover:text-black gap-x-2 font-medium flex"
           >
             <PlayBtn size={20} />
-           
-          </Button>
+          </Link>
         </div>
       </div>
       <div className="w-full grid grid-cols-1  lg:grid-cols-5 pb-20">
