@@ -329,34 +329,34 @@ export const useUpdateAttendeeBadges = ({
   return { updateAttendeeBadges, isLoading, error };
 };
 
-type UseGetAttendeeBadgesResult = {
-  attendeeBadges: TAttendeeBadge[];
-  getAttendeeBadges: () => Promise<void>;
+type UseGetAttendeeBadgeResult = {
+  attendeeBadge: TAttendeeBadge;
+  getAttendeeBadge: () => Promise<void>;
 } & RequestStatus;
 
-export const useGetAttendeeBadges = ({
+export const useGetAttendeeBadge = ({
   eventId,
   attendeeId,
 }: {
   eventId: number;
   attendeeId: number;
-}): UseGetAttendeeBadgesResult => {
-  const [attendeeBadges, setAttendeeBadges] = useState<TAttendeeBadge[]>([]);
+}): UseGetAttendeeBadgeResult => {
+  const [attendeeBadge, setAttendeeBadge] = useState<TAttendeeBadge>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const getAttendeeBadges = async () => {
+  const getAttendeeBadge = async () => {
     setLoading(true);
 
     try {
-      const { data, status } = await getRequest<TAttendeeBadge[]>({
+      const { data, status } = await getRequest<TAttendeeBadge>({
         endpoint: `/badge/events/${eventId}/attendees/${attendeeId}`,
       });
 
       if (status !== 200) {
         throw data;
       }
-      setAttendeeBadges(data.data);
+      setAttendeeBadge(data.data);
     } catch (error) {
       setError(true);
     } finally {
@@ -365,8 +365,57 @@ export const useGetAttendeeBadges = ({
   };
 
   useEffect(() => {
-    getAttendeeBadges();
+    getAttendeeBadge();
   }, [eventId, attendeeId]);
 
-  return { attendeeBadges, isLoading, error, getAttendeeBadges };
+  return { attendeeBadge, isLoading, error, getAttendeeBadge };
+};
+
+export const useVerifyAttendeeBadge = ({
+  badgeId,
+}: {
+  badgeId: string;
+}): UseGetResult<TFullBadge, "attendeeBadge", "verifyAttendeeBadge"> => {
+  const [attendeeBadge, setAttendeeBadge] = useState<TFullBadge | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const verifyAttendeeBadge = async () => {
+    try {
+      setLoading(true);
+      toast({ description: "verifying badge..." });
+
+      const { data, status } = await getRequest<TFullBadge>({
+        endpoint: `/badge/attendees/verify/${badgeId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+
+      if (!data.data) {
+        toast({
+          description: "this badge is not valid",
+          variant: "destructive",
+        });
+        setError(true);
+      }
+
+      setAttendeeBadge(data.data);
+    } catch (error) {
+      setError(true);
+      toast({
+        description: "something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    verifyAttendeeBadge();
+  }, []);
+
+  return { attendeeBadge, isLoading, error, verifyAttendeeBadge };
 };

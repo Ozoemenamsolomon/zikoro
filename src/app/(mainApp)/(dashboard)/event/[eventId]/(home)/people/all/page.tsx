@@ -8,7 +8,7 @@ export default function page() {
   const { eventId } = useParams();
   const useGetAttendeesprops = useGetAttendees({ eventId });
 
-  // console.log(useGetAttendeesprops.attendees, "attendees");
+  console.log(useGetAttendeesprops.attendees, "attendees");
 
   return <ReusablePeopleComponent {...useGetAttendeesprops} />;
 }

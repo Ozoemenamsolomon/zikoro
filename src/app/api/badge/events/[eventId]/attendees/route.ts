@@ -18,7 +18,7 @@ export async function GET(
         error: badgeError,
         status,
       } = await supabase
-        .from("attendeeBadges")
+        .from("attendeeBadge")
         .select("*")
         .eq("eventAlias", eventId);
 
@@ -72,7 +72,7 @@ export async function POST(
 
       if (action === "release") {
         query = await supabase
-          .from("attendeeBadges")
+          .from("attendeeBadge")
           .upsert(
             attendeeInfo.map((attendee: any) => {
               const badgeId = createHash(
@@ -90,7 +90,7 @@ export async function POST(
           .select("*, attendee:attendees!inner(*)");
       } else {
         query = await supabase
-          .from("attendeeBadges")
+          .from("attendeeBadge")
           .delete()
           .eq("BadgeGroupId", badgeInfo.BadgeGroupId)
           .in(

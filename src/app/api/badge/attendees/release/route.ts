@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       console.log(body);
 
       const { data, error } = await supabase
-        .from("attendeeBadges")
+        .from("attendeeBadge")
         .insert(body)
         .select()
         .maybeSingle();

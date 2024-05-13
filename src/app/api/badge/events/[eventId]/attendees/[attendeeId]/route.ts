@@ -43,10 +43,11 @@ export async function GET(
     try {
       const { attendeeId, eventId } = params;
       const { data, error, status } = await supabase
-        .from("attendeeBadges")
+        .from("attendeeBadge")
         .select("*")
         .eq("attendeeId", attendeeId)
-        .eq("eventAlias", eventId);
+        .eq("eventAlias", eventId)
+        .maybeSingle();
 
       if (error) throw error;
 
@@ -85,7 +86,7 @@ export async function POST(
       console.log(badgeIds, "badgeIds");
 
       const { error } = await supabase
-        .from("attendeeBadges")
+        .from("attendeeBadge")
         .delete()
         .eq("attendeeId", attendeeId)
         .eq("eventAlias", eventId)
