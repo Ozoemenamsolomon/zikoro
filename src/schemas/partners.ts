@@ -81,14 +81,21 @@ export const partnerSchema = z.object({
   website: z.string().min(3, { message: "Website Link is required" }),
   phoneNumber: z
     .string()
-    .refine((value) => value && /^(\+\d{10,}|\d{10,})$/.test(value), {
-      message: "Phone number must be at least 11 digits",
+    .refine((value) => value && /^\d{11,}$/.test(value.replace(/\D/g, "")), {
+      message: "Phone number must be at least 11 digits long",
+    })
+    .refine((value) => value && /^\+\d{1,3}/.test(value), {
+      message: "Phone number must include start with a country code",
     }),
   whatsApp: z
     .string()
-    .refine((value) => value && /^(\+\d{10,}|\d{10,})$/.test(value), {
-      message: "Whatsapp number must be at least 11 digits",
-    }),
+    .refine((value) => value && /^\d{11,}$/.test(value.replace(/\D/g, "")), {
+      message: "Phone number must be at least 11 digits long",
+    })
+    .refine((value) => value && /^\+\d{1,3}/.test(value), {
+      message: "Phone number must include start with a country code",
+    })
+    .optional(),
 });
 
 export const hallSchema = z.object({

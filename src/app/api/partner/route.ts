@@ -93,12 +93,12 @@ export async function PATCH(req: NextRequest) {
   if (req.method === "PATCH") {
     try {
       const params = await req.json();
-
+      const {organizerEmail, ...restData} = params
       const { error } = await supabase
         .from("eventPartners")
         .update([
           {
-            ...params,
+            ...restData,
           },
         ])
         .eq("partnerAlias", params?.partnerAlias);

@@ -1,6 +1,10 @@
 "use client";
 
-import { useFetchSingleEvent, useFetchPartners } from "@/hooks";
+import {
+  useFetchSingleEvent,
+  useFetchPartners,
+  useFetchRewards,
+} from "@/hooks";
 import { EventSchedule } from "./_components";
 import { EventDetailTabs } from "../composables";
 import { useState } from "react";
@@ -9,11 +13,18 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import Image from "next/image";
-
+import { Reward } from "@/types";
+import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { RewardCard } from "../marketPlace/rewards/_components";
 export function SingleEventHome({ eventId }: { eventId: string }) {
   const { data, loading } = useFetchSingleEvent(eventId);
   const [active, setActive] = useState(1);
-  const { data: partnersData } = useFetchPartners(eventId);
+  const {
+    data: rewards,
+    loading: loadingRewards,
+  }: { data: Reward[]; loading: boolean } = useFetchRewards(eventId);
+  const { data: partnersData, loading: partnersLoading } =
+    useFetchPartners(eventId);
 
   function setActiveTab(active: number) {
     setActive(active);
@@ -29,11 +40,12 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     slidesToScroll: 1,
   };
 
-  const Comp = Array.isArray(partnersData) && partnersData?.length > 1 ? Slider : "div"
+  const Comp =
+    Array.isArray(partnersData) && partnersData?.length > 1 ? Slider : "div";
   return (
     <>
-      <div className="w-full grid grid-cols-1 md:grid-cols-8 items-center sm:items-start ">
-        <div className="w-full col-span-full md:col-span-5 flex flex-col gap-y-4  items-start justify-start border-r">
+      <div className="w-full grid grid-cols-1 md:grid-cols-9 items-center sm:items-start ">
+        <div className="w-full col-span-full md:col-span-6 flex flex-col gap-y-4  items-start justify-start border-r">
           <div className={cn("w-full", active > 1 && "hidden sm:block")}>
             <EventSchedule event={data} loading={loading} />
           </div>
@@ -78,6 +90,27 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             isEventHome
             aboutClassName={" lg:grid-cols-1"}
           />
+        </div>
+        <div className="hidden md:block md:col-span-3 w-full p-3 md:overflow-y-auto">
+          <h2 className="font-semibold text-base sm:text-xl mb-4">Rewards</h2>
+
+          <div className="  w-full grid grid-cols-1 gap-2 items-start justify-start ">
+            {loadingRewards && (
+              <div className="w-full col-span-full h-[300px] flex items-center justify-center">
+                <LoaderAlt size={30} className="animate-spin" />
+              </div>
+            )}
+            {!loadingRewards && Array.isArray(rewards) && rewards?.length === 0 && (
+              <div className="w-full col-span-full h-[300px] flex items-center justify-center">
+                <p className="font-semibold text-sm">No Available Reward</p>
+              </div>
+            )}
+            {!loadingRewards &&
+              Array.isArray(rewards) &&
+              rewards?.map((reward, index) => (
+                <RewardCard key={index} reward={reward} />
+              ))}
+          </div>
         </div>
       </div>
     </>

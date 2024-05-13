@@ -152,8 +152,8 @@ export function AddPartners({
           organizerEmail: org?.email,
           eventId: String(eventData?.id),
           eventAlias: eventData?.eventAlias,
-          whatsApp: whatsappCountryCode + values.whatsApp,
-          phoneNumber: phoneCountryCode + values.phoneNumber,
+          whatsApp:  values.whatsApp,
+          phoneNumber: values.phoneNumber,
           boothStaff: selectedAttendees,
           companyLogo: image,
           media: video,
@@ -162,8 +162,8 @@ export function AddPartners({
           ...values,
           eventId: String(eventData?.id),
           eventAlias: eventData?.eventAlias,
-          whatsApp: whatsappCountryCode + values.whatsApp,
-          phoneNumber: phoneCountryCode + values.phoneNumber,
+          whatsApp:  values.whatsApp,
+          phoneNumber:  values.phoneNumber,
           boothStaff: selectedAttendees,
           companyLogo: image,
           partnerAlias,
@@ -369,15 +369,10 @@ export function AddPartners({
                     <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
                       Phone number
                     </FormLabel>
-                    <input
-                      type="text"
-                      className="!mt-0 text-sm absolute top-[1.4rem]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
-                      value={phoneCountryCode}
-                      onChange={(e) => setPhoneCountryCode(e.target.value)}
-                    />
+                   
                     <FormControl>
                       <Input
-                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
+                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 px-4"
                         placeholder="Enter Phone Number"
                         {...form.register("phoneNumber")}
                         type="tel"
@@ -396,15 +391,10 @@ export function AddPartners({
                     <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-[10px] px-1">
                       WhatsApp number
                     </FormLabel>
-                    <input
-                      type="text"
-                      className="!mt-0 text-sm absolute top-[1.4rem] left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
-                      value={whatsappCountryCode}
-                      onChange={(e) => setWhatsAppCountryCode(e.target.value)}
-                    />
+                   
                     <FormControl>
                       <Input
-                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
+                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 px-4"
                         placeholder="Enter Whatsapp Number"
                         {...form.register("whatsApp")}
                         type="tel"

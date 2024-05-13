@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { useState, useMemo, useEffect } from "react";
 import { DropDownSelect } from "@/components/contents/_components";
 import { Event, TPartner } from "@/types";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import {
   useUpdateHall,
   useUpdateBooth,
@@ -42,10 +43,10 @@ export function PartnerWidget({
   const { updateBooth } = useUpdateBooth();
   const { updatePartnerType } = useUpdatePartnerType();
   const { updateSponsorCategory } = useUpdateSponsor();
-  const [isOpen, setOpen] = useState(false)
+  const [isOpen, setOpen] = useState(false);
 
   function onClose() {
-    setOpen((prev) =>!prev);
+    setOpen((prev) => !prev);
   }
 
   // format hall list
@@ -137,6 +138,14 @@ export function PartnerWidget({
     })();
   }, [event]);
 
+  async function removeAddedBooth() {
+    // boothList
+    await updateBooth(item?.partnerAlias, null);
+    refetch(); // fetch partners
+
+
+  }
+
   async function handleSelectedBooth(value: string[]) {
     await updateBooth(item?.partnerAlias, value);
     refetch(); // fetch partners
@@ -162,136 +171,159 @@ export function PartnerWidget({
   return (
     <>
       <tr
-      onClick={onClose}
-    role="button"
-
-      className={cn(
-        "w-full grid grid-cols-8 text-sm items-center gap-3 p-3 ",
-        className
-      )}
-    >
-      <label 
-      onClick={(e) => {
-        e.stopPropagation()
-      }}
-      className="col-span-2 w-full flex  relative items-center gap-x-2">
-        <input
-          checked={selectedRows.includes(item?.id)}
-          onChange={() => selectRowFn(item?.id)}
-          type="checkbox"
-          className="accent-basePrimary w-4 h-4"
-        />
-
-        <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
-          {item?.companyName}
-        </p>
-      </label>
-      <td
-      onClick={(e) => {
-        e.stopPropagation()
-      }}
-      className="flex items-center gap-x-2 ">
-        <button
-        className={cn("hidden", item?.email && "block")}
-        onClick={() => sendMail(item?.email)}>
-          <EmailIcon />
-        </button>
-        <button
-           className={cn("hidden", item?.whatsApp && "block")}
-         onClick={() => whatsapp(item?.whatsApp)}>
-          {" "}
-          <WhatsappIcon />
-        </button>
-        <button 
-           className={cn("hidden", item?.phoneNumber && "block")}
-        onClick={() => phoneCall(item?.phoneNumber)}>
-          <Phone size={22} />
-        </button>
-      </td>
-      <td onClick={(e) => {
-        e.stopPropagation()
-      }}>
-        <DropDownSelect
-          handleChange={handleSelectedPartner}
-          data={["Exhibitor", "Sponsor"]}
-          className="w-full"
-        >
-          <button className="flex relative items-center gap-x-1">
-            <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
-              {item?.partnerType || "Select Type"}
-            </p>
-            <ArrowIosDownward size={20} />
-          </button>
-        </DropDownSelect>
-      </td>
-
-      <td
-      onClick={(e) => {
-        e.stopPropagation()
-      }}
+        onClick={onClose}
+        role="button"
+        className={cn(
+          "w-full grid grid-cols-8 text-sm items-center gap-3 p-3 ",
+          className
+        )}
       >
-        {item?.partnerType.toLowerCase() === "sponsor" ? (
-          <DropDownSelect handleChange={handleSelectedLevel} data={levelList}>
+        <label
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className="col-span-2 w-full flex  relative items-center gap-x-2"
+        >
+          <input
+            checked={selectedRows.includes(item?.id)}
+            onChange={() => selectRowFn(item?.id)}
+            type="checkbox"
+            className="accent-basePrimary w-4 h-4"
+          />
+
+          <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
+            {item?.companyName}
+          </p>
+        </label>
+        <td
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className="flex items-center gap-x-2 "
+        >
+          <button
+            className={cn("hidden", item?.email && "block")}
+            onClick={() => sendMail(item?.email)}
+          >
+            <EmailIcon />
+          </button>
+          <button
+            className={cn("hidden", item?.whatsApp && "block")}
+            onClick={() => whatsapp(item?.whatsApp)}
+          >
+            {" "}
+            <WhatsappIcon />
+          </button>
+          <button
+            className={cn("hidden", item?.phoneNumber && "block")}
+            onClick={() => phoneCall(item?.phoneNumber)}
+          >
+            <Phone size={22} />
+          </button>
+        </td>
+        <td
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <DropDownSelect
+            handleChange={handleSelectedPartner}
+            data={["Exhibitor", "Sponsor"]}
+            className="w-full"
+          >
             <button className="flex relative items-center gap-x-1">
               <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
-                {item?.sponsorCategory || " Select Level"}
+                {item?.partnerType || "Select Type"}
               </p>
               <ArrowIosDownward size={20} />
             </button>
           </DropDownSelect>
-        ) : (
-          <p className="w-1 h-1"></p>
-        )}
-      </td>
+        </td>
 
-      <td
-      onClick={(e) => {
-        e.stopPropagation()
-      }}
-      >
-        <DropDownSelect handleChange={handleSelectedHall} data={hallList}>
-          <button className="flex relative items-center gap-x-1">
-            <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
-              {item?.exhibitionHall || " Select Hall"}
-            </p>
-            <ArrowIosDownward size={20} />
-          </button>
-        </DropDownSelect>
-      </td>
-      <td
-      onClick={(e) => {
-        e.stopPropagation()
-      }}
-      >
-        <DropDownSelect
-          handleChange={handleSelectedBooth}
-          isMultiple
-          data={boothList}
-          className={item?.exhibitionHall ? "block" : "hidden"}
+        <td
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
         >
-          <button className="flex items-center relative gap-x-1">
-            <p className="flex flex-wrap items-start justify-start max-w-[100px]">
-              {item?.boothNumber?.toString() || "0"}
-            </p>
-            <ArrowIosDownward size={20} />
-          </button>
-        </DropDownSelect>
-      </td>
-      <td
-      onClick={(e) => {
-        e.stopPropagation()
-      }}
-      >
-        <Switch
-          className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
-          disabled={loading}
-          checked={status}
-          onClick={() => submit(!item?.stampIt)}
+          {item?.partnerType.toLowerCase() === "sponsor" ? (
+            <DropDownSelect handleChange={handleSelectedLevel} data={levelList}>
+              <button className="flex relative items-center gap-x-1">
+                <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
+                  {item?.sponsorCategory || " Select Level"}
+                </p>
+                <ArrowIosDownward size={20} />
+              </button>
+            </DropDownSelect>
+          ) : (
+            <p className="w-1 h-1"></p>
+          )}
+        </td>
+
+        <td
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <DropDownSelect handleChange={handleSelectedHall} data={hallList}>
+            <button className="flex relative items-center gap-x-1">
+              <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
+                {item?.exhibitionHall || " Select Hall"}
+              </p>
+              <ArrowIosDownward size={20} />
+            </button>
+          </DropDownSelect>
+        </td>
+        <td
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <DropDownSelect
+            handleChange={handleSelectedBooth}
+            isMultiple
+            data={boothList}
+            className={item?.exhibitionHall ? "block" : "hidden"}
+          >
+            <div className="flex items-center gap-x-1">
+              <button className="flex items-center relative gap-x-1">
+                <p className="flex flex-wrap items-start justify-start max-w-[100px]">
+                  {item?.boothNumber?.toString() || "0"}
+                </p>
+                <ArrowIosDownward size={20} />
+              </button>
+              <button
+              onClick={(e) => {
+                e.stopPropagation()
+                e.preventDefault()
+                removeAddedBooth()
+              }}
+              >
+                <CloseOutline size={18} className="text-red-500" />
+              </button>
+            </div>
+          </DropDownSelect>
+        </td>
+        <td
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Switch
+            className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+            disabled={loading}
+            checked={status}
+            onClick={() => submit(!item?.stampIt)}
+          />
+        </td>
+      </tr>
+      {isOpen && event && (
+        <AddPartners
+          refetchPartners={refetch}
+          close={onClose}
+          eventId={event?.eventAlias}
+          partner={item}
         />
-      </td>
-    </tr>
-    {isOpen && event && <AddPartners refetchPartners={refetch} close={onClose} eventId={event?.eventAlias} partner={item}/>}
+      )}
     </>
-  
   );
 }

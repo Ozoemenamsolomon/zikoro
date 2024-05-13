@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Play } from "@/constants/icons";
-// import '../../../public/custom/VideoLinkHide'
 
 export default function Section2() {
   const [showIcon, setShowIcon] = useState(true);
@@ -13,6 +12,10 @@ export default function Section2() {
   const handleVideoEnd = () => {
     setShowIcon(true);
   };
+
+  useEffect(() => {
+    setShowIcon(false); // Hide play icon when component mounts
+  }, [])
 
   return (
     <div className="mt-20 max-w-full mx-auto lg:max-w-6xl px-5 ">
@@ -37,6 +40,7 @@ export default function Section2() {
               className="max-w-full max-h-full rounded-3xl"
               controls
               autoPlay
+              muted
               onEnded={handleVideoEnd}
               style={{ minWidth: "100%", minHeight: "100%" }}
             >

@@ -7,6 +7,7 @@ import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { AddTag } from "@/components/blog/modal/AddTag";
 import { useRouter } from "next/navigation";
 import { useFetchBlogPost } from "@/hooks/services/post";
+import Image from "next/image";
 
 type DBBlogPost = {
   id: number;
@@ -288,20 +289,27 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                   >
                     Save to draft
                   </button> */}
-
+                  <Image
+                    src={data.headerImageUrl}
+                    alt=""
+                    height={90}
+                    width={90}
+                    className=" object-contain w-[90px] h-[90px] max-w-full lg:max-w-2/12 "
+                  />
                   <button
                     className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px]  w-full lg:w-2/12 h-[44px] rounded-lg cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      preview();
-                    }}
+                    // onClick={(e) => {
+                    //   e.preventDefault();
+                    //   e.stopPropagation();
+                    //   preview();
+                    
+                    // }}
                   >
                     Preview
                   </button>
 
                   <button
-                    onClick={() => handleUpdateStaus("publish")}
+                    // onClick={() => handleUpdateStaus("publish")}
                     className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] cursor-pointer"
                     type="submit"
                   >
