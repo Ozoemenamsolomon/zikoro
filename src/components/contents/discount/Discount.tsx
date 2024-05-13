@@ -23,6 +23,7 @@ import { useDiscount } from "@/hooks";
 import { ContentTopNav } from "../_components";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
+import toast from "react-hot-toast"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const supabase = createClientComponentClient()
@@ -173,6 +174,12 @@ const DiscountList: React.FC<{
   const { updating, updateDiscount } = useDiscount();
 
   async function submit(value: boolean) {
+ 
+    if ( validUntil < new Date().toISOString().split("T")[0]) {
+      toast.error("Validity date has exceeded")
+      return 
+    }
+
     setValue(value);
     await updateDiscount(value, orgId);
     getDiscount();
