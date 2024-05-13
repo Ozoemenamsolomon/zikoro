@@ -11,10 +11,12 @@ import { ActiveQuestion, QuestionCard, QuizSettings, AddQuestion } from "..";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCreateQuiz, useUpdateQuiz } from "@/hooks";
+import { useCreateAnswer,useUpdateAnswer, useCreateQuiz, useUpdateQuiz } from "@/hooks";
 export default function QuizQuestion({ eventId }: { eventId: string }) {
   const { createQuiz, isLoading, quiz } = useCreateQuiz();
   const { updateQuiz, isLoading: updating } = useUpdateQuiz();
+  const {createAnswer, answer} = useCreateAnswer() 
+  const {updateAnswer} = useUpdateAnswer() 
   const [openQuestionModal, setOpenQusetionModal] = useState(false);
   const [height, setHeight] = useState<number>(0);
   const router = useRouter();
@@ -90,7 +92,7 @@ export default function QuizQuestion({ eventId }: { eventId: string }) {
           eventAlias={eventId}
         />
       )}
-      {openQuestionModal && <AddQuestion updateQuiz={updateQuiz} close={onToggle} quiz={quiz}/>}
+      {openQuestionModal && <AddQuestion answer={answer} updateAnswer={updateAnswer} createAnswer={createAnswer} updateQuiz={updateQuiz} close={onToggle} quiz={quiz}/>}
     </InteractionLayout>
   );
 }

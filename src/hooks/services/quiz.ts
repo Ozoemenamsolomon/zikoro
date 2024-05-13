@@ -1,6 +1,6 @@
 "use client";
 import { toast } from "@/components/ui/use-toast";
-import { TQuiz } from "@/types";
+import { TQuiz, TAnswer } from "@/types";
 import {
   postRequest,
   patchRequest,
@@ -159,4 +159,95 @@ export const useDeleteQuiz = () => {
   };
 
   return { deleteQuiz, isLoading };
+};
+
+/*** Answer ***/
+export const useCreateAnswer = () => {
+  const [answer, setAnswer] = useState<TAnswer | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const createAnswer = async ({ payload }: { payload: Partial<TAnswer> }) => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await postRequest<TAnswer>({
+        endpoint: "/quiz/answer",
+        payload,
+      });
+
+      toast({
+        description: "",
+      });
+      return setAnswer(data?.data);
+    } catch (error: any) {
+      // console.log({ error });
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createAnswer, isLoading, answer };
+};
+
+export const useUpdateAnswer = () => {
+  const [answer, setAnswer] = useState<TAnswer | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const updateAnswer = async ({ payload }: { payload: Partial<TAnswer> }) => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await patchRequest<TAnswer>({
+        endpoint: "/quiz/answer",
+        payload,
+      });
+
+      if (status !== 200) throw data;
+
+      toast({
+        description: "",
+      });
+      return setAnswer(data?.data);
+    } catch (error: any) {
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { updateAnswer, isLoading, answer };
+};
+
+export const useGetAnswer = (questionId: string) => {
+  const [answer, setAnswer] = useState<TQuiz[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  // console.log({date})
+  const getAnswer = async () => {
+    setLoading(true);
+
+    const { data, status } = await getRequest<TQuiz[]>({
+      endpoint: `/quiz/answer/${questionId}`,
+    });
+
+    setLoading(false);
+
+    if (status !== 200) return;
+
+    //
+    return setAnswer(data.data);
+  };
+
+  useEffect(() => {
+    getAnswer();
+  }, [questionId]);
+
+  return { answer, isLoading, getAnswer };
 };

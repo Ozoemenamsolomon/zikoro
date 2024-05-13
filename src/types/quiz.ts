@@ -9,19 +9,23 @@ export interface TQuiz {
   description: string;
   coverImage: string;
   branding: { poweredBy: boolean; eventName: boolean };
-  questions: z.infer<typeof quizQuestionSchema>[];
+  questions: TQuestion[];
   totalDuration: number;
   totalPoints: number;
   eventAlias: string;
   quizAlias: string;
 }
 
+export type TQuestion = z.infer<typeof quizQuestionSchema> & {
+  id: string;
+};
+
 export interface TAnswer {
   id: number;
   created_at: string;
   attendeeId: string;
   attendeeName: string;
-  quizId: string;
+  quizId: number;
   questionId: string;
   startTime: string;
   endTime: string;
@@ -29,6 +33,7 @@ export interface TAnswer {
   maxDuration: string;
   attendeePoints: string;
   answerDuration: string;
+  quizAlias: string;
   selectedOptionId: { optionId: string };
   correctOptionId: { optionId: string };
 }
