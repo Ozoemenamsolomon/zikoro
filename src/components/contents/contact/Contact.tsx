@@ -76,10 +76,26 @@ function Contact({ eventId }: { eventId: string }) {
 
   useEffect(() => {
     if (data) {
+      // get the added country code
+      const previousCode = COUNTRY_CODE?.find(
+        ({ name }) => name.toLowerCase() === data?.country?.toLowerCase() 
+      )?.dial_code;
+
+      // remove country code from the prev phone or whatsapp Number
+      let updatedPhoneNumber = "";
+      let updatedWhatsappNumber = "";
+
+      if (previousCode && data?.eventPhoneNumber?.startsWith(previousCode)) {
+        updatedPhoneNumber = data?.eventPhoneNumber.slice(previousCode?.length);
+      }
+
+      if (previousCode && data?.eventWhatsApp?.startsWith(previousCode)) {
+        updatedWhatsappNumber = data?.eventWhatsApp.slice(previousCode?.length);
+      }
       form.reset({
         country: data?.country,
-        eventPhoneNumber: data?.eventPhoneNumber,
-        eventWhatsApp: data?.eventWhatsApp,
+        eventPhoneNumber: updatedPhoneNumber,
+        eventWhatsApp: updatedWhatsappNumber,
         eventContactEmail: data?.eventContactEmail,
         organizationLogo: data?.organizationLogo,
         x: data?.x,
@@ -87,6 +103,12 @@ function Contact({ eventId }: { eventId: string }) {
         facebook: data?.facebook,
         instagram: data?.instagram,
       });
+
+      // set phone and whatsapp code
+      if (previousCode) {
+        setWhatsAppCountryCode(previousCode);
+        setPhoneCountryCode(previousCode);
+      }
     }
   }, [data]);
 

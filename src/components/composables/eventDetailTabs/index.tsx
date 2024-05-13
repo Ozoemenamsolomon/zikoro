@@ -24,7 +24,7 @@ export function EventDetailTabs({
   isEventDetailPage,
   active,
   setActiveTab,
-  isEventHome
+  isEventHome,
 }: {
   event: Event | null;
   className?: string;
@@ -32,7 +32,7 @@ export function EventDetailTabs({
   aboutClassName?: string;
   active: number;
   setActiveTab: (n: number) => void;
-  isEventHome?:boolean
+  isEventHome?: boolean;
 }) {
   const [selectedTabs, setSelectedTabs] = useState<
     { title: string; status: boolean }[]
@@ -80,9 +80,20 @@ export function EventDetailTabs({
       }
     }
   }, [event]);
+
   function changeActiveState(active: number) {
     setActiveTab(active);
   }
+
+  const itemTabs = isEventHome
+    ? [
+        { status: true, title: "About" },
+        { status: true, title: "Agenda" },
+        { status: true, title: "Speakers" },
+        { status: true, title: "Partners" },
+      ]
+    : selectedTabs;
+
   return (
     <>
       {!isEventDetailPage && active === 1 && event && (
@@ -98,7 +109,7 @@ export function EventDetailTabs({
           isEventDetailPage && "flex bg-white justify-center pt-2 border-y"
         )}
       >
-        {selectedTabs.map(({ title, status }, id) => (
+        {itemTabs.map(({ title, status }, id) => (
           <Button
             key={title}
             onClick={() => setActiveTab(id + 1)}
@@ -106,8 +117,7 @@ export function EventDetailTabs({
               "px-2 py-2 h-fit bg-transparent rounded-none text-sm sm:text-base font-medium text-gray-500 hidden",
               active === id + 1 &&
                 "border-b-2 border-basePrimary text-basePrimary",
-              status && "block",
-            
+              status && "block"
             )}
           >
             {title}
@@ -115,26 +125,34 @@ export function EventDetailTabs({
         ))}
       </div>
 
-<div className={cn("w-full", isEventDetailPage && "mx-auto p-3 sm:p-6 bg-white mt-4 rounded-lg py-3 sm:mt-6 w-full sm:w-[65%] lg:w-[90%] xl:w-[80%]")}>
-{active === EventDetailTab.ABOUT_TAB && (
-        <About
-          isEventDetailPage={isEventDetailPage}
-          event={event}
-          isEventHome={isEventHome}
-          className={aboutClassName}
-        />
-      )}
-      {active === EventDetailTab.SPEAKERS_TAB && event &&(
-        <Speakers
-        eventId={String(event.eventAlias)}
-        changeMajorActiveState={changeActiveState} />
-      )}
-      {active === EventDetailTab.AGENDA_TAB && event && <EventAgendas eventId={String(event?.eventAlias)} />}
-      {active === EventDetailTab.EXIHIBITORS_TAB && event && (
-        <Sponsors event={event} changeMajorActiveState={changeActiveState} />
-      )}
-</div>
-
+      <div
+        className={cn(
+          "w-full",
+          isEventDetailPage &&
+            "mx-auto p-3 sm:p-6 bg-white mt-4 rounded-lg py-3 sm:mt-6 w-full sm:w-[65%] lg:w-[90%] xl:w-[80%]"
+        )}
+      >
+        {active === EventDetailTab.ABOUT_TAB && (
+          <About
+            isEventDetailPage={isEventDetailPage}
+            event={event}
+            isEventHome={isEventHome}
+            className={aboutClassName}
+          />
+        )}
+        {active === EventDetailTab.SPEAKERS_TAB && event && (
+          <Speakers
+            eventId={String(event.eventAlias)}
+            changeMajorActiveState={changeActiveState}
+          />
+        )}
+        {active === EventDetailTab.AGENDA_TAB && event && (
+          <EventAgendas eventId={String(event?.eventAlias)} />
+        )}
+        {active === EventDetailTab.EXIHIBITORS_TAB && event && (
+          <Sponsors event={event} changeMajorActiveState={changeActiveState} />
+        )}
+      </div>
     </>
   );
 }
