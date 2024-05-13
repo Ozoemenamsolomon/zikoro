@@ -7,21 +7,24 @@ import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { PlayBtn } from "@styled-icons/bootstrap/PlayBtn";
 import { Settings } from "@styled-icons/feather/Settings";
 import Image from "next/image";
-import { ActiveQuestion, QuestionCard } from "..";
+import { ActiveQuestion, QuestionCard, QuizSettings, AddQuestion } from "..";
 import { useState } from "react";
 import Link from "next/link";
-import { QuizSettings } from "../modals/QuizSetting";
 import { useRouter } from "next/navigation";
 import { useCreateQuiz, useUpdateQuiz } from "@/hooks";
 export default function QuizQuestion({ eventId }: { eventId: string }) {
   const { createQuiz, isLoading, quiz } = useCreateQuiz();
-  const {updateQuiz, isLoading: updating} = useUpdateQuiz()
+  const { updateQuiz, isLoading: updating } = useUpdateQuiz();
+  const [openQuestionModal, setOpenQusetionModal] = useState(false);
   const [height, setHeight] = useState<number>(0);
   const router = useRouter();
   const [isOpen, setOpen] = useState(false);
 
   function onOpen() {
     setOpen((prev) => !prev);
+  }
+  function onToggle() {
+    setOpenQusetionModal((prev) => !prev);
   }
 
   function questionHeight(num: number) {
@@ -49,7 +52,7 @@ export default function QuizQuestion({ eventId }: { eventId: string }) {
             <Settings size={22} />
           </button>
           <Button
-            //  onClick={onClose}
+              onClick={onToggle}
             className="text-gray-50 bg-basePrimary gap-x-2 h-10 font-medium flex"
           >
             <PlusCircle size={20} />
@@ -87,6 +90,7 @@ export default function QuizQuestion({ eventId }: { eventId: string }) {
           eventAlias={eventId}
         />
       )}
+      {openQuestionModal && <AddQuestion updateQuiz={updateQuiz} close={onToggle} quiz={quiz}/>}
     </InteractionLayout>
   );
 }
