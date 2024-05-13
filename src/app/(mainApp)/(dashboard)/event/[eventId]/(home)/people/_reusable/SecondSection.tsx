@@ -47,6 +47,7 @@ import useDisclose from "@/hooks/common/useDisclose";
 import {
   getCookie,
   useCreateAttendee,
+  useGetAttendeeBadges,
   useGetBadges,
   useGetEvent,
   useGetEventAgendas,
@@ -155,6 +156,16 @@ export default function SecondSection({
     attendeeId: id,
   });
   console.log(attendeeCertificates, "attendee certificates");
+
+  const {
+    attendeeBadges,
+    isLoading: attendeeBadgesIsLoading,
+    getAttendeeBadges,
+  } = useGetAttendeeBadges({
+    eventId,
+    attendeeId: id,
+  });
+  console.log(attendeeBadges, "attendee badges");
 
   const {
     certificates: eventCertificates,
@@ -1044,27 +1055,17 @@ export default function SecondSection({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="py-4 min-w-[200px]">
                   {badges.map((badge) => (
-                    <DialogTrigger>
-                      <DropdownMenuItem key={badge.id}>
-                        <button
-                          className="w-full"
-                          onClick={() => setBadge(badge)}
-                        >
-                          {badge.badgeName}
-                        </button>
-                      </DropdownMenuItem>
-                    </DialogTrigger>
+                    <DropdownMenuItem key={badge.id}>
+                      <button
+                        className="w-full"
+                        onClick={() => setBadge(badge)}
+                      >
+                        {badge.badgeName}
+                      </button>
+                    </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-              <DialogContent className="px-3 h-[70vh]">
-                <DialogHeader>
-                  <DialogTitle>
-                    <span className="capitalize">View Badge</span>
-                  </DialogTitle>
-                </DialogHeader>
-                <AttendeeBadge attendee={attendee} badge={selectedBadge} />
-              </DialogContent>
             </Dialog>
           )}
         {!getEventCertificatesIsLoading &&

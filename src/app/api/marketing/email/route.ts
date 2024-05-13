@@ -51,32 +51,56 @@ export async function POST(req: NextRequest) {
         replyTo,
       } = params;
 
-      let nodemailer = require("nodemailer");
-      const transporter = nodemailer.createTransport({
-        host: "smtp.zoho.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.NEXT_PUBLIC_EMAIL,
-          pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
-        },
+      // let nodemailer = require("nodemailer");
+      // const transporter = nodemailer.createTransport({
+      //   host: "smtp.zoho.com",
+      //   port: 465,
+      //   secure: true,
+      //   auth: {
+      //     user: process.env.NEXT_PUBLIC_EMAIL,
+      //     pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
+      //   },
+      // });
+      var { SendMailClient } = require("zeptomail");
+      let client = new SendMailClient({
+        url: process.env.NEXT_PUBLIC_ZEPTO_URL,
+        token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
       });
 
       emailRecipient.forEach(async (email: string) => {
         try {
-          const mailData = {
-            from: `${sendersName} <${process.env.NEXT_PUBLIC_EMAIL}>`,
-            to: email,
+          const resp = await client.sendMail({
+            from: {
+              address: process.env.NEXT_PUBLIC_EMAIL,
+              name: sendersName,
+            },
+            to: [
+              {
+                email_address: {
+                  address: email,
+                  name: "affiliate",
+                },
+              },
+            ],
             subject: `${emailCategory} email`,
-            html: `<div>${emailBody}</div>`,
-            replyTo,
-          };
-
-          await transporter.sendMail(mailData, function (err: any, info: any) {
-            console.log(params, "params");
-            if (err) throw err;
-            else console.log(info);
+            htmlbody: `<div>${emailBody}</div>`,
           });
+
+          console.log(resp);
+
+          // const mailData = {
+          //   from: `${sendersName} <${process.env.NEXT_PUBLIC_EMAIL}>`,
+          //   to: email,
+          //   subject: `${emailCategory} email`,
+          //   html: `<div>${emailBody}</div>`,
+          //   replyTo,
+          // };
+
+          // await transporter.sendMail(mailData, function (err: any, info: any) {
+          //   console.log(params, "params");
+          //   if (err) throw err;
+          //   else console.log(info);
+          // });
         } catch (error) {
           console.error(`Error sending email to ${email}:`, error);
         }
