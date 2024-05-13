@@ -108,16 +108,16 @@ export async function POST(
       if (error) throw error;
 
       if (action === "release") {
-        let nodemailer = require("nodemailer");
-        const transporter = nodemailer.createTransport({
-          host: "smtp.zoho.com",
-          port: 465,
-          secure: true,
-          auth: {
-            user: process.env.NEXT_PUBLIC_EMAIL,
-            pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
-          },
-        });
+        // let nodemailer = require("nodemailer");
+        // const transporter = nodemailer.createTransport({
+        //   host: "smtp.zoho.com",
+        //   port: 465,
+        //   secure: true,
+        //   auth: {
+        //     user: process.env.NEXT_PUBLIC_EMAIL,
+        //     pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
+        //   },
+        // });
 
         (
           certificateData as (TAttendeeCertificate & { attendee: TAttendee })[]
@@ -133,67 +133,144 @@ export async function POST(
             } = certificate;
 
             try {
-              // Send email to individual recipient
-              await transporter.sendMail({
-                from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
-                to: attendeeEmail,
-                subject: `Your Certificate is Ready!`,
-                html: `<!DOCTYPE html>
+              // For CommonJS
+              var { SendMailClient } = require("zeptomail");
+
+              let client = new SendMailClient({
+                url: process.env.NEXT_PUBLIC_ZEPTO_URL,
+                token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
+              });
+
+              const resp = await client.sendMail({
+                from: {
+                  address: process.env.NEXT_PUBLIC_EMAIL,
+                  name: "Zikoro",
+                },
+                to: [
+                  {
+                    email_address: {
+                      address: attendeeEmail,
+                      name: firstName,
+                    },
+                  },
+                ],
+                subject: "Your Certificate is Ready!",
+                htmlbody: `<!DOCTYPE html>
                 <html lang="en">
                 <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Email Template</title>
                 <style>
-                  /* CSS styles */
-                  body {
-                    font-family: Arial, sans-serif;
-                    margin: 0;
-                    padding: 0;
-                    background-color: #f4f4f4;
-                  }
-                  .container {
-                    max-width: 600px;
-                    margin: 20px auto;
-                    padding: 20px;
-                    background-color: #fff;
-                    border-radius: 5px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                  }
-                  .heading {
-                    font-size: 24px;
-                    color: #333;
-                    margin-bottom: 20px;
-                  }
-                  .content {
-                    font-size: 16px;
-                    color: #666;
-                    margin-bottom: 20px;
-                  }
-                  .link {
-                    color: #007bff;
-                    text-decoration: none;
-                  }
-                  .link:hover {
-                    text-decoration: underline;
-                  }
+                    /* CSS styles */
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 0;
+                        padding: 0;
+                        background-color: #f4f4f4;
+                    }
+                    .container {
+                        max-width: 600px;
+                        margin: 20px auto;
+                        padding: 20px;
+                        background-color: #fff;
+                        border-radius: 5px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    }
+                    .heading {
+                        font-size: 24px;
+                        color: #333;
+                        margin-bottom: 20px;
+                    }
+                    .content {
+                        font-size: 16px;
+                        color: #666;
+                        margin-bottom: 20px;
+                    }
+                    .link {
+                        color: #007bff;
+                        text-decoration: none;
+                    }
+                    .link:hover {
+                        text-decoration: underline;
+                    }
                 </style>
                 </head>
                 <body>
-                  <div class="container">
-                    <div class="heading">Dear ${firstName},</div>
-                    <div class="content">Great news! Your ${CertificateName} certificate is ready for download. Access it now through this link: <a href="${certificateURL}" class="link">Download Certificate</a>.</div>
-                    <div class="content">Congratulations!</div>
-                    <div class="content">Best,<br>Event Team</div>
-                  </div>
+                    <div class="container">
+                        <div class="heading">Dear ${firstName},</div>
+                        <div class="content">Great news! Your ${CertificateName} certificate is ready for download. Access it now through this link: <a href="${certificateURL}" class="link">Download Certificate</a>.</div>
+                        <div class="content">Congratulations!</div>
+                        <div class="content">Best,<br>Event Team</div>
+                    </div>
                 </body>
                 </html>
                 `,
               });
+              console.log(resp);
 
-              console.log(`Email sent to ${attendeeEmail}`);
+              // Send email to individual recipient
+              // await transporter.sendMail({
+              //   from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
+              //   to: attendeeEmail,
+              //   subject: `Your Certificate is Ready!`,
+              //   html: `<!DOCTYPE html>
+              //   <html lang="en">
+              //   <head>
+              //   <meta charset="UTF-8">
+              //   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              //   <title>Email Template</title>
+              //   <style>
+              //     /* CSS styles */
+              //     body {
+              //       font-family: Arial, sans-serif;
+              //       margin: 0;
+              //       padding: 0;
+              //       background-color: #f4f4f4;
+              //     }
+              //     .container {
+              //       max-width: 600px;
+              //       margin: 20px auto;
+              //       padding: 20px;
+              //       background-color: #fff;
+              //       border-radius: 5px;
+              //       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+              //     }
+              //     .heading {
+              //       font-size: 24px;
+              //       color: #333;
+              //       margin-bottom: 20px;
+              //     }
+              //     .content {
+              //       font-size: 16px;
+              //       color: #666;
+              //       margin-bottom: 20px;
+              //     }
+              //     .link {
+              //       color: #007bff;
+              //       text-decoration: none;
+              //     }
+              //     .link:hover {
+              //       text-decoration: underline;
+              //     }
+              //   </style>
+              //   </head>
+              //   <body>
+              //     <div class="container">
+              //       <div class="heading">Dear ${firstName},</div>
+              //       <div class="content">Great news! Your ${CertificateName} certificate is ready for download. Access it now through this link: <a href="${certificateURL}" class="link">Download Certificate</a>.</div>
+              //       <div class="content">Congratulations!</div>
+              //       <div class="content">Best,<br>Event Team</div>
+              //     </div>
+              //   </body>
+              //   </html>
+              //   `,
+              // });
+
+              // console.log(`Email sent to ${attendeeEmail}`);
             } catch (error) {
               console.error(`Error sending email to ${attendeeEmail}:`, error);
+              console.log(error);
             }
           }
         );

@@ -1,7 +1,12 @@
-"use client"
+"use client";
 import { toast } from "@/components/ui/use-toast";
-import { TBadgeTemplate, TBadge } from "@/types/badge";
-import { UseGetResult } from "@/types/request";
+import {
+  TBadgeTemplate,
+  TBadge,
+  TAttendeeBadge,
+  TFullBadge,
+} from "@/types/badge";
+import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
@@ -172,4 +177,196 @@ export const useGetBadgeTemplates = (): UseGetResult<
     error,
     getBadgeTemplates,
   };
+};
+
+export const useReleaseAttendeeBadge = (): usePostResult<
+  Partial<TAttendeeBadge>,
+  "releaseAttendeeBadge",
+  TAttendeeBadge
+> => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const releaseAttendeeBadge = async ({
+    payload,
+  }: {
+    payload: Partial<TAttendeeBadge>;
+  }) => {
+    setLoading(true);
+    toast({
+      description: "releasing badge...",
+    });
+    try {
+      const { data, status } = await postRequest<TAttendeeBadge>({
+        endpoint: `/badge/attendees/release`,
+        payload,
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: "Badge released successfully",
+      });
+      return data.data;
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { releaseAttendeeBadge, isLoading, error };
+};
+
+type UseGetAttendeesBadgesResult = {
+  attendeesBadges: TAttendeeBadge[];
+  getAttendeesBadges: () => Promise<void>;
+} & RequestStatus;
+
+export const useGetAttendeesBadges = ({
+  eventId,
+}: {
+  eventId: number;
+}): UseGetAttendeesBadgesResult => {
+  const [attendeesBadges, setAttendeesBadges] = useState<TAttendeeBadge[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendeesBadges = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TAttendeeBadge[]>({
+        endpoint: `/badge/events/${eventId}/attendees`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setAttendeesBadges(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendeesBadges();
+  }, [eventId]);
+
+  return { attendeesBadges, isLoading, error, getAttendeesBadges };
+};
+
+type useUpdateAttendeeBadgesResult = {
+  updateAttendeeBadges: ({
+    payload,
+  }: {
+    payload: {
+      badgeInfo: Partial<TAttendeeBadge>;
+      attendeeInfo: { attendeeId?: number; attendeeEmail: string }[];
+      action: string;
+    };
+  }) => Promise<void>;
+} & RequestStatus;
+
+export const useUpdateAttendeeBadges = ({
+  eventId,
+}: {
+  eventId: number;
+}): usePostResult<
+  {
+    badgeInfo: Partial<TAttendeeBadge>;
+    attendeeInfo: { attendeeId?: number; attendeeEmail: string }[];
+    action: string;
+  },
+  "updateAttendeeBadges",
+  TFullBadge
+> => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const updateAttendeeBadges = async ({
+    payload,
+  }: {
+    payload: {
+      badgeInfo: Partial<TAttendeeBadge>;
+      attendeeInfo: { attendeeId?: number; attendeeEmail: string }[];
+      action: string;
+    };
+  }) => {
+    setLoading(true);
+    toast({
+      description: `${
+        payload.action === "release" ? "releasing" : "recalling"
+      } badges...`,
+    });
+    try {
+      const { data, status } = await postRequest<{ msg: string }>({
+        endpoint: `/badge/events/${eventId}/attendees`,
+        payload,
+      });
+
+      if (status !== 201) throw data.data;
+
+      toast({
+        description: data.data?.msg,
+      });
+
+      if (payload.action === "release") {
+        return data.data;
+      }
+    } catch (error) {
+      console.log(error);
+      setError(true);
+      toast({
+        description: "an error has occurred",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { updateAttendeeBadges, isLoading, error };
+};
+
+type UseGetAttendeeBadgesResult = {
+  attendeeBadges: TAttendeeBadge[];
+  getAttendeeBadges: () => Promise<void>;
+} & RequestStatus;
+
+export const useGetAttendeeBadges = ({
+  eventId,
+  attendeeId,
+}: {
+  eventId: number;
+  attendeeId: number;
+}): UseGetAttendeeBadgesResult => {
+  const [attendeeBadges, setAttendeeBadges] = useState<TAttendeeBadge[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendeeBadges = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TAttendeeBadge[]>({
+        endpoint: `/badge/events/${eventId}/attendees/${attendeeId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setAttendeeBadges(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendeeBadges();
+  }, [eventId, attendeeId]);
+
+  return { attendeeBadges, isLoading, error, getAttendeeBadges };
 };

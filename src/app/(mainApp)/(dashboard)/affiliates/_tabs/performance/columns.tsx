@@ -37,8 +37,11 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "affiliateEmail",
     header: "Affilate Email",
+    accessorFn: (row) =>
+      row.affiliate
+        ? row.affiliate?.firstName + " " + row.affiliate.lastName
+        : "",
   },
   {
     header: "Registrations",
