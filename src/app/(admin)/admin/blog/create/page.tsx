@@ -142,7 +142,7 @@ export default function Create() {
   };
 
   //submit post function
-  const submitBlogPost = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitBlogPost = async (e:any) => {
     e.preventDefault();
     if (!content) {
       toast.error("Please write your blog content");
@@ -223,13 +223,6 @@ export default function Create() {
                 required
                 className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none  hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer"
               >
-                <option
-                  disabled
-                  defaultValue=""
-                  className="bg-transparent text-gray-400 "
-                >
-                  Select Category
-                </option>
                 {categories.map((category, index) => (
                   <option
                     key={index}
@@ -305,7 +298,6 @@ export default function Create() {
                     disabled={
                       formData.title == "" ||
                       formData.category == "" ||
-                      formData.tags.length == 0 ||
                       formData.readingDuration == "" ||
                       !content
                     }
@@ -368,7 +360,7 @@ export default function Create() {
                         </p>
                         <div className="flex gap-x-4 mt-6 items-center mx-auto justify-center">
                           <button
-                            onClick={() => submitBlogPost}
+                            onClick={(e) => submitBlogPost(e)}
                             className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
                           >
                             Publish

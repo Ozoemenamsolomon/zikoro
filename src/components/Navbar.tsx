@@ -143,11 +143,12 @@ export default function Navbar() {
                       <Link
                         key={i}
                         href={href}
-                        className={` ${
-                          pathname === href || isHovered === linkName
+                        className={`${
+                          (pathname === href || isHovered === linkName) &&
+                          href !== ""
                             ? "text-zikoroBlue text-lg font-medium px-4"
                             : "px-4 text-lg font-medium"
-                        }`}
+                        } ${href === "" ? "text-white" : ""}`}
                       >
                         {linkName}{" "}
                         {hasArrow && (

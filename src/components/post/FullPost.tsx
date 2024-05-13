@@ -183,7 +183,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     fetchSimilarPost();
   }, [router]);
 
-  const headings = data?.content.match(/<h[3](.*?)>(.*?)<\/h[3]>/g) || [];
+  const headings = data?.content.match(/<h[1](.*?)>(.*?)<\/h[1]>/g) || [];
 
   return (
     <>
@@ -296,33 +296,32 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             <p className="text-center text-xl lg:text-3xl font-semibold mt-14">
               Read More Articles
             </p>
-            <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
-              {similarPosts.length > 0 ? (
-                <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
-                  {similarPosts.slice(0,2).map((post) => (
-                    <PostArticle
-                      key={post.id}
-                      id={post.id}
-                      title={post.title}
-                      createdAt={post.created_at}
-                      category={post.category}
-                      status={post.status}
-                      statusDetails={post.statusDetails}
-                      readingDuration={post.readingDuration}
-                      content={post.content}
-                      views={post.views}
-                      shares={post.shares}
-                      tags={post.tags}
-                      headerImageUrl={post.headerImageUrl}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-xl lg:text-3xl font-semibold mt-8">
-                  No related posts found.
-                </p>
-              )}
-            </div>
+
+            {similarPosts.length > 0 ? (
+              <div className="flex flex-col lg:flex-row mx-auto max-w-full lg:max-w-6xl gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 pb-[80px] lg:pb-[162px] pt-12  ">
+                {similarPosts.slice(0, 2).map((post) => (
+                  <PostArticle
+                    key={post.id}
+                    id={post.id}
+                    title={post.title}
+                    createdAt={post.created_at}
+                    category={post.category}
+                    status={post.status}
+                    statusDetails={post.statusDetails}
+                    readingDuration={post.readingDuration}
+                    content={post.content}
+                    views={post.views}
+                    shares={post.shares}
+                    tags={post.tags}
+                    headerImageUrl={post.headerImageUrl}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-xl lg:text-3xl font-semibold mt-8">
+                No related posts found.
+              </p>
+            )}
           </div>
         </div>
       )}

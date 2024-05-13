@@ -7,6 +7,17 @@ import {
 } from "@/constants/icons";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import toast from "react-hot-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type BlogPostProps = {
   id: number;
@@ -261,11 +272,28 @@ export default function AdminBlogTemplate({
                 {status == "publish" ? "view" : "preview"}
               </li>
 
-              <li
-                onClick={() => deletePost(id)}
-                className="py-1 text-xs lowercase cursor-pointer hover:text-indigo-700"
-              >
-                Delete
+              <li className="py-1 text-xs lowercase cursor-pointer hover:text-indigo-700">
+                {/* Delete */}
+                <AlertDialog>
+                  <AlertDialogTrigger>delete</AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete this post from our server.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => deletePost(id)}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </li>
             </ul>
           </PopoverContent>
