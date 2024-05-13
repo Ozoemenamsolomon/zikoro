@@ -7,7 +7,7 @@ import Image from "next/image";
 import { ThreeLine, Close } from "@/constants/icons";
 import { getCookie } from "@/hooks";
 import { ChevronDown } from "styled-icons/bootstrap";
-import { ArrowDownNavbar, ArrowRightNavbar } from "@/constants/icons";
+import { ArrowRightNavbar } from "@/constants/icons";
 
 type DBBlogAll = {
   id: number;
@@ -32,6 +32,7 @@ export default function Navbar() {
   const [scrolling, setScrolling] = useState(false);
   const [isHovered, setIsHovered] = useState<string>("");
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
+  const [selectedMobileLink, setSelectedMobileLink] = useState(null);
 
   const links = [
     {
@@ -66,13 +67,15 @@ export default function Navbar() {
     },
   ];
 
-  const toggleMenuOn = () => {
-    setIsOpen(true);
-  };
+ // Function to toggle mobile menu
+ const toggleMenu = () => {
+  setIsOpen(!isOpen);
+  setSelectedMobileLink(null); // Reset selected mobile link
+};
 
-  const toggleMenuOff = () => {
-    setIsOpen(false);
-  };
+const handleMobileLinkClick = (index:any) => {
+  setSelectedMobileLink(index === selectedMobileLink ? null : index);
+};
 
   //fetch events from database
   async function fetchBlogPost() {
@@ -460,7 +463,7 @@ export default function Navbar() {
               </div>
 
               <div className="lg:hidden">
-                <button className="text-black" onClick={toggleMenuOn}>
+                <button className="text-black" onClick={toggleMenu}>
                   <ThreeLine />
                 </button>
               </div>
@@ -476,7 +479,7 @@ export default function Navbar() {
             <div className="flex flex-col">
               <div
                 className="flex justify-end items-end pb-10 "
-                onClick={toggleMenuOff}
+                onClick={toggleMenu}
               >
                 <Close />
               </div>
@@ -487,9 +490,9 @@ export default function Navbar() {
                     <Link
                       key={i}
                       href={href}
-                      className="text-xl font-medium pb-7"
+                      className="text-xl font-medium pb-7 flex items-center gap-x-2"
                     >
-                      {linkName}
+                      {linkName} {hasArrow && <ArrowRightNavbar />}
                     </Link>
                   );
                 })}
