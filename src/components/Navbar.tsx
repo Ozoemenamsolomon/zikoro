@@ -157,7 +157,7 @@ export default function Navbar() {
                           />
                         )}
                       </Link>
-                      {isHovered === linkName && (
+                      {/* {isHovered === linkName && (
                         <>
                           {tag === "features" && (
                             <div className="absolute border-[1px] border-t-0 border-r-gray-200 border-l-gray-200  border-b-gray-200 top-full left-[-185px] pt-[30px] pb-[60px] rounded-lg mb-5 w-max bg-white -z-8 ">
@@ -438,7 +438,7 @@ export default function Navbar() {
                             </div>
                           )}
                         </>
-                      )}
+                      )} */}
                     </div>
                   );
                 })}
@@ -524,7 +524,7 @@ export default function Navbar() {
             </div>
           )}
 
-          {showSubLinks && (
+          {/* {showSubLinks && (
             <div className="fixed px-3 top-0 left-0 w-full h-full bg-white bg-opacity-100 z-50 items-center overflow-y-auto no-scrollbar">
               <div className="p-4 rounded-lg">
                 <button onClick={handleCloseSubLinks} className="flex gap-x-2">
@@ -735,7 +735,7 @@ export default function Navbar() {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </>
       )}
     </div>

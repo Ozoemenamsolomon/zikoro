@@ -299,7 +299,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
               {similarPosts.length > 0 ? (
                 <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
-                  {similarPosts.map((post) => (
+                  {similarPosts.slice(0,2).map((post) => (
                     <PostArticle
                       key={post.id}
                       id={post.id}
