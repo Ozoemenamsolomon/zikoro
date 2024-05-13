@@ -6,11 +6,21 @@ import toast from "react-hot-toast";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { AddTag } from "@/components/blog/modal/AddTag";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import Image from "next/image";
 
 export default function Create() {
   const [file, setFile] = useState<any>(null);
   const [status, setStatus] = useState<string>("");
   const [tagModalOpen, setTagModalOpen] = useState<boolean>(false);
+  const [headerImageUrl, setHeaderImageUrl] = useState<string>("");
   const router = useRouter();
   const form = useForm<any>({
     // Add validation rule for content field
@@ -34,14 +44,13 @@ export default function Create() {
     tags: [],
     content: [],
     readingDuration: "",
-    statusDetail: {},
   });
 
   const categories = [
-    { name: "Event tips", value: "event" },
-    { name: "Product Updates", value: "product" },
-    { name: "Guides and Tutorial", value: "guide" },
-    { name: "Case Study", value: "case" },
+    { name: "Event tips", value: "Event" },
+    { name: "Product Updates", value: "Product" },
+    { name: "Guides and Tutorial", value: "Guide" },
+    { name: "Case Study", value: "Case" },
   ];
 
   const setMessage = (content: string) => {
@@ -53,7 +62,7 @@ export default function Create() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleUpdateStaus = (newStatus: string) => {
+  const handleUpdateStatus = (newStatus: string) => {
     setStatus(newStatus);
   };
 
@@ -68,6 +77,11 @@ export default function Create() {
 
   //Upload Image Function
   const uploadImage = async () => {
+    if (!content) {
+      toast.error("Please write your blog content");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "w5xbik6z");
@@ -85,6 +99,7 @@ export default function Create() {
       if (res.ok) {
         const data = await res.json();
         toast.success("Image Uploaded");
+        setHeaderImageUrl(data.url);
         return data.url; // Return the uploaded image URL
       } else {
         throw new Error("Image upload failed");
@@ -127,16 +142,11 @@ export default function Create() {
   };
 
   //submit post function
-  const submitBlogPost = async (e: any) => {
+  const submitBlogPost = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!content) {
       toast.error("Please write your blog content");
       return;
-    }
-
-    if (!content) {
-      toast.error("Please write your blog content");
-      return; // Return early if content is empty
     }
 
     // Upload image
@@ -264,7 +274,7 @@ export default function Create() {
               </div>
 
               <button
-                onClick={() => handleUpdateStaus("draft")}
+                onClick={() => handleUpdateStatus("draft")}
                 className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px] w-full lg:w-2/12 h-[44px] rounded-lg"
                 type="submit"
               >
@@ -281,14 +291,99 @@ export default function Create() {
               >
                 Preview
               </button>
-
+              {/* 
               <button
                 onClick={() => handleUpdateStaus("publish")}
                 className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] cursor-pointer"
                 type="submit"
               >
                 Publish
-              </button>
+              </button> */}
+              <div className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] flex text-center justify-center  cursor-pointer">
+                <Dialog>
+                  <DialogTrigger
+                    disabled={
+                      formData.title == "" ||
+                      formData.category == "" ||
+                      formData.tags.length == 0 ||
+                      formData.readingDuration == "" ||
+                      !content
+                    }
+                    onClick={() => handleUpdateStatus("publish")}
+                  >
+                    Publish
+                  </DialogTrigger>
+                  <DialogContent className="">
+                    <DialogHeader>
+                      <DialogTitle></DialogTitle>
+                      <DialogDescription className="max-w-2xl mx-auto py-[100px] ">
+                        <div className="h-[168px] w-[367px]">
+                          <Image
+                            className="rounded-lg w-full h-full object-cover "
+                            src={
+                              file
+                                ? URL.createObjectURL(file)
+                                : "/postImage2.png"
+                            }
+                            alt=""
+                            height={168}
+                            width={367}
+                          />
+                        </div>
+                        <p className="text-2xl text-center mt-5 capitalize">
+                          {formData.title}
+                        </p>
+                        {/* <div className="flex items-center justify-center mx-auto">
+                          <select
+                            name="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                            required
+                            className="mt-6 w-6/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none  hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer "
+                          >
+                            <option
+                              disabled
+                              defaultValue={formData.category}
+                              className="bg-transparent text-gray-400 "
+                            ></option>
+                            {categories.map((category, index) => (
+                              <option
+                                key={index}
+                                value={category.value}
+                                className="bg-transparent text-black text-[15px]"
+                              >
+                                {" "}
+                                {category.name}{" "}
+                              </option>
+                            ))}
+                          </select>
+                        </div> */}
+
+                        <p className="mt-6 text-base font-semibold text-center">
+                          {formData.category}
+                        </p>
+
+                        <p className="mt-6 text-base font-semibold text-center">
+                          {formData.readingDuration} mins read
+                        </p>
+                        <div className="flex gap-x-4 mt-6 items-center mx-auto justify-center">
+                          <button
+                            onClick={() => submitBlogPost}
+                            className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
+                          >
+                            Publish
+                          </button>
+
+                          <button className="text-base text-indigo-600 bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md ">
+                            Schedule For Later
+                          </button>
+                        </div>
+                        <div></div>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
 
             <div className="mt-8 lg:mt-[60px] bg-white flex-1 resize-none h-fit mb-10 ">
