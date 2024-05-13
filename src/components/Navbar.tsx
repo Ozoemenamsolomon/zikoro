@@ -7,7 +7,7 @@ import Image from "next/image";
 import { ThreeLine, Close } from "@/constants/icons";
 import { getCookie } from "@/hooks";
 import { ChevronDown } from "styled-icons/bootstrap";
-import { ArrowRightNavbar } from "@/constants/icons";
+import { MobileNavbarArrowLeft, ArrowRightNavbar } from "@/constants/icons";
 
 type DBBlogAll = {
   id: number;
@@ -32,7 +32,8 @@ export default function Navbar() {
   const [scrolling, setScrolling] = useState(false);
   const [isHovered, setIsHovered] = useState<string>("");
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
-  const [selectedMobileLink, setSelectedMobileLink] = useState(null);
+  const [showSubLinks, setShowSubLinks] = useState(false);
+  const [subLinkIndex, setSubLinkIndex] = useState<number>(0);
 
   const links = [
     {
@@ -67,28 +68,19 @@ export default function Navbar() {
     },
   ];
 
- // Function to toggle mobile menu
- const toggleMenu = () => {
-  setIsOpen(!isOpen);
-  setSelectedMobileLink(null); // Reset selected mobile link
-};
+  // Function to toggle mobile menu
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
-const handleMobileLinkClick = (index:any) => {
-  setSelectedMobileLink(index === selectedMobileLink ? null : index);
-};
+  const handleCloseSubLinks = () => {
+    setShowSubLinks(false);
+  };
 
-  //fetch events from database
-  async function fetchBlogPost() {
-    fetch("/api/blog/published", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setBlogData(data.data))
-      .catch((error) => console.error("Error:", error));
-  }
+  const handleMobileLinkClick = (i: number) => {
+    setShowSubLinks(true);
+    setSubLinkIndex(i);
+  };
 
   useEffect(() => {
     // const handleScroll = () => {
@@ -102,7 +94,19 @@ const handleMobileLinkClick = (index:any) => {
     // return () => {
     //   window.removeEventListener("scroll", handleScroll);
     // };
+    //fetch events from database
 
+    async function fetchBlogPost() {
+      fetch("/api/blog/published", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => setBlogData(data.data))
+        .catch((error) => console.error("Error:", error));
+    }
     fetchBlogPost();
   }, []);
 
@@ -475,46 +479,263 @@ const handleMobileLinkClick = (index:any) => {
       {/* Mobile Menu */}
       {isOpen && (
         <>
-          <div className="lg:hidden max-w-full h-screen px-5 bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end pb-8 -cursor-pointer mt-[-32px] md:mt-[-37px] pt-8">
-            <div className="flex flex-col">
-              <div
-                className="flex justify-end items-end pb-10 "
-                onClick={toggleMenu}
-              >
-                <Close />
-              </div>
-
-              <div className="flex flex-col  text-white ">
-                {links.map(({ linkName, href, hasArrow }, i) => {
-                  return (
-                    <Link
-                      key={i}
-                      href={href}
-                      className="text-xl font-medium pb-7 flex items-center gap-x-2"
-                    >
-                      {linkName} {hasArrow && <ArrowRightNavbar />}
-                    </Link>
-                  );
-                })}
-              </div>
-
-              <div className=" gap-5 flex md:hidden pt-12">
-                <button
-                  onClick={() => router.push("/home")}
-                  className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white w-1/2"
+          {!showSubLinks && (
+            <div className="lg:hidden max-w-full h-screen px-5 bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end pb-8 -cursor-pointer mt-[-32px] md:mt-[-37px] pt-8">
+              <div className="flex flex-col">
+                <div
+                  className="flex justify-end items-end pb-10 "
+                  onClick={toggleMenu}
                 >
-                  Sign up
-                </button>
+                  <Close />
+                </div>
 
-                <button
-                  onClick={() => router.push("/home")}
-                  className="text-base text-white bg-transparent border border-white py-[10px] px-5 rounded-md w-1/2 "
-                >
-                  Login
-                </button>
+                <div className="flex flex-col  text-white ">
+                  {links.map(({ linkName, hasArrow }, i) => {
+                    return (
+                      <p
+                        key={i}
+                        onClick={() => handleMobileLinkClick(i)}
+                        className="text-xl font-medium pb-7 flex items-center gap-x-2"
+                      >
+                        {linkName} {hasArrow && <ArrowRightNavbar />}
+                      </p>
+
+                      // {selectedMobileLink &&}
+                    );
+                  })}
+                </div>
+
+                <div className=" gap-5 flex md:hidden pt-12">
+                  <button
+                    onClick={() => router.push("/home")}
+                    className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white w-1/2"
+                  >
+                    Sign up
+                  </button>
+
+                  <button
+                    onClick={() => router.push("/home")}
+                    className="text-base text-white bg-transparent border border-white py-[10px] px-5 rounded-md w-1/2 "
+                  >
+                    Login
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {showSubLinks && (
+            <div className="fixed px-3 top-0 left-0 w-full h-full bg-white bg-opacity-100 z-50 items-center overflow-y-auto no-scrollbar">
+              <div className="p-4 rounded-lg">
+                <button onClick={handleCloseSubLinks} className="flex gap-x-2">
+                  {" "}
+                  <MobileNavbarArrowLeft />
+                  Close
+                </button>
+
+                <div className=" my-10">
+                  {subLinkIndex == 0 && (
+                    <div className="flex flex-col gap-y-7">
+                      <ul className="flex flex-col gap-y-6">
+                        <li className="text-lg font-semibold">
+                          TICKETING & REGISTRATION{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Event Website{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Multi-tier ticketing{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment reminders{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment procedures{" "}
+                        </li>
+                      </ul>
+
+                      <ul className="flex flex-col gap-y-6">
+                        <li className="text-lg font-semibold">
+                          DIGITAL CREDENTIALING{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Event Website{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Multi-tier ticketing{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment reminders{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment procedures{" "}
+                        </li>
+                      </ul>
+
+                      <ul className="flex flex-col gap-y-6 ">
+                        <li className="text-lg font-semibold">
+                          Event MANAGEMENT{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Event Website{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Multi-tier ticketing{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment reminders{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment procedures{" "}
+                        </li>
+                      </ul>
+
+                      <ul className="flex flex-col gap-y-6 ">
+                        <li className="text-lg font-semibold">
+                          ATTENDEE MANAGEMENT{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Event Website{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Multi-tier ticketing{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment reminders{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment procedures{" "}
+                        </li>
+                      </ul>
+
+                      <ul className="flex flex-col gap-y-6 ">
+                        <li className="text-lg font-semibold">GAMIFICATION </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Event Website{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Multi-tier ticketing{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment reminders{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment procedures{" "}
+                        </li>
+                      </ul>
+
+                      <ul className="flex flex-col gap-y-6 ">
+                        <li className="text-lg font-semibold">
+                          EXHIBITOR'S HUB{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Event Website{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Multi-tier ticketing{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment reminders{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Payment procedures{" "}
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+
+                  {subLinkIndex == 1 && (
+                    <div className="flex flex-col gap-y-7">
+                      <ul className="flex flex-col gap-y-6">
+                        <li className="text-base font-medium"> Conferences </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Tradeshows & Exhibition{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Seminars & Workshops{" "}
+                        </li>
+                        <li className="text-base font-medium"> Education </li>
+                        <li className="text-base font-medium"> Networking </li>
+
+                        <li className="text-base font-medium">
+                          {" "}
+                          Culture & Arts{" "}
+                        </li>
+
+                        <li className="text-base font-medium"> Celebration </li>
+
+                        <li className="text-base font-medium"> Sports </li>
+
+                        <li className="text-base font-medium"> Job Fairs </li>
+
+                        <li className="text-base font-medium"> Festivals </li>
+
+                        <li className="text-base font-medium"> Charity </li>
+                      </ul>
+                    </div>
+                  )}
+
+                  {subLinkIndex == 2 && (
+                    <div className="flex flex-col gap-y-7">
+                      <ul className="flex flex-col gap-y-6">
+                        <li className="text-base font-medium">
+                          {" "}
+                          Event{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Verify Certificates{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Blog{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          FAQ{" "}
+                        </li>
+                        <li className="text-base font-medium">
+                          {" "}
+                          Affiliates{" "}
+                        </li>
+
+                        <li className="text-base font-medium">
+                          {" "}
+                          API{" "}
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>

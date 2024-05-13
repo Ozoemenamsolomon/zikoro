@@ -109,14 +109,14 @@ export default function PostArticle({
         alt=""
         height={240}
         width={524}
-        className="hidden lg:block rounded-lg w-full"
+        className="hidden lg:block rounded-lg w-full h-[240px] object-cover"
       />
       <Image
         src={headerImageUrl ? headerImageUrl : "/postImage2.png"}
         alt=""
-        height={335}
-        width={160}
-        className="block lg:hidden rounded-lg w-full"
+        width={335}
+        height={160}
+        className="block lg:hidden rounded-lg w-full h-[160px] object-cover"
       />
 
       <div className="flex flex-col justify-center max-w-full lg:max-w-md ">
