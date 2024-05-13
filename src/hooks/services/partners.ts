@@ -477,12 +477,12 @@ export function useUpdateBooth() {
 
       const { boothNumber, ...restData } = data;
 
-      let booths: string[] = [];
+      let booths: string[] | null = [];
 
       if (boothNumber === null && value) {
         booths = value;
       } else if (boothNumber && value === null) {
-        booths = boothNumber;
+        booths = null;
       } else if (value) {
         booths = [...boothNumber, ...value];
       }
