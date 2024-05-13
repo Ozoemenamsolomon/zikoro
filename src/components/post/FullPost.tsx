@@ -153,22 +153,25 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             "Content-Type": "application/json",
           },
         });
-    
+
         if (!response.ok) {
-          throw new Error('Failed to fetch');
+          throw new Error("Failed to fetch");
         }
-    
+
         const data = await response.json();
-        console.log("API Response Data:", data);
-    
-        if (data && data.tags) {
-          const similarPostsFiltered = data.data.filter((post: DBBlogPost) => {
-            const matchedTags = post.tags.filter((tag: string) =>
-              data.tags.includes(tag)
-            );
-            console.log("Matched tags:", matchedTags);
-            return matchedTags.length > 0;
+
+        console.log(data);
+        data.data.map((tag: any) => setPostTag(tag.tags));
+        if (data && postTag) {
+          // Convert tags array into a string
+          const tagString = postTag.join(",");
+
+          // Filter similar posts based on matching tag strings
+          const similarPostsFiltered = data.data.filter((post: any) => {
+            const postTagString = post.tags.join(",");
+            return postTagString.includes(tagString);
           });
+
           console.log("Similar posts:", similarPostsFiltered);
           setSimilarPosts(similarPostsFiltered);
         }
@@ -176,6 +179,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
         console.error("Error fetching similar posts:", error);
       }
     }
+
     fetchSimilarPost();
   }, [router]);
 
