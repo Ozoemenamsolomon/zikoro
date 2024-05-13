@@ -155,16 +155,11 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   };
 
   //submit post function
-  const submitBlogPost = async (e: any) => {
+  const savePost = async (e: any) => {
     e.preventDefault();
     if (!content) {
       toast.error("Please write your blog content");
       return;
-    }
-
-    if (!content) {
-      toast.error("Please write your blog content");
-      return; // Return early if content is empty
     }
 
     // Upload image
@@ -219,7 +214,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             </p>
 
             <section className="mt-4 lg:mt-6 ">
-              <form onSubmit={submitBlogPost}>
+              <form onSubmit={savePost}>
                 <input type="hidden" name="status" value={status} />
                 <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center gap-x-0 lg:gap-x-4">
                   <div className=" rounded-xl shadow-sm w-full lg:w-8/12  ">
@@ -286,13 +281,13 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                     />
                   </div>
 
-                  <button
+                  {/* <button
                     onClick={() => handleUpdateStaus("draft")}
                     className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px] w-full lg:w-2/12 h-[44px] rounded-lg"
                     type="submit"
                   >
                     Save to draft
-                  </button>
+                  </button> */}
 
                   <button
                     className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px]  w-full lg:w-2/12 h-[44px] rounded-lg cursor-pointer"
@@ -310,7 +305,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                     className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] cursor-pointer"
                     type="submit"
                   >
-                    Publish
+                    Save
                   </button>
                 </div>
 
