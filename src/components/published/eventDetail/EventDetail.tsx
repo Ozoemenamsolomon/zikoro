@@ -13,12 +13,12 @@ export function EventDetail({ event }: { event: Event }) {
 
   return (
     <div className=" ">
-    
       <EventDetailTabs
         active={active}
         setActiveTab={setActiveTab}
         event={event}
         isEventDetailPage
+        aboutClassName={"border rounded-lg py-4 sm:py-6"}
       />
     </div>
   );

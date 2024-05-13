@@ -117,7 +117,7 @@ export function AddPartners({
 
   async function onSubmit(values: any) {
     setLoading(true);
-    console.log("vv", values);
+  //  console.log("vv", values);
     const promise = new Promise(async (resolve) => {
       if (typeof values?.companyLogo === "string") {
         resolve(values?.companyLogo);

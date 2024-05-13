@@ -73,13 +73,14 @@ const Topbar = ({ eventId }: { eventId?: string | any }) => {
       <nav className="w-full overflow-x-auto no-scrollbar">
         <div className="bg-white min-w-[900px] px-4 pt-2 h-max border-b">
           <ul className="flex justify-between text-gray-700">
-            {reformedLink.map(({ name, href }) => {
+            {reformedLink.map(({ name, href }, index) => {
               //  console.log(href.split("/")[1].split("?"))
               const path = href.includes("?")
                 ? href.split("/")[1].split("?")[0]
                 : href.split("/")[1];
               return (
                 <li
+                key={index}
                   className={`pb-1 text-sm ${
                     pathname.split("/")[3].includes(path)
                       ? "text-basePrimary border-b-2 border-basePrimary font-medium"

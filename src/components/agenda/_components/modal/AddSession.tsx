@@ -23,7 +23,7 @@ import {
   useUpdateAgenda,
 } from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
-import { TAttendee, TPartner, TAgenda } from "@/types";
+import { TAttendee, TExPartner, TAgenda } from "@/types";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sessionSchema } from "@/schemas";
@@ -59,13 +59,13 @@ export function AddSession({
   session?: TAgenda;
 }) {
   const { attendees } = useGetEventAttendees(eventId);
-  const { data }: { data: TPartner[] } = useFetchPartners(eventId);
+  const { data }: { data: TExPartner[] } = useFetchPartners(eventId);
   const { createAgenda } = useCreateAgenda();
   const { updateAgenda } = useUpdateAgenda();
   const [loading, setLoading] = useState(false);
   const [chosenModerators, setChosenModerators] = useState<TAttendee[]>([]);
   const [chosenSpeakers, setChosenSpeakers] = useState<TAttendee[]>([]);
-  const [chosenSponsors, setChosenSponsors] = useState<TPartner[]>([]);
+  const [chosenSponsors, setChosenSponsors] = useState<any[]>([]); // don't forget to resolve the type issue here
   const [chosenFiles, setChosenFiles] = useState<TSessionFile<File | string>[]>(
     []
   );

@@ -145,22 +145,38 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
       };
     }
 
-    const fetchTags = async () => {
+    async function fetchSimilarPost() {
       try {
-        const response = await fetch(`/api/blog/tags?tags=${postTag}`, {
+        const response = await fetch("/api/blog/published", {
           method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
-        if (response.ok) {
-          const data = await response.json(); // Parse response body
-        } else {
-          throw new Error("Failed to fetch similar posts");
+    
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
+    
+        const data = await response.json();
+        console.log("API Response Data:", data);
+    
+        if (data && data.tags) {
+          const similarPostsFiltered = data.data.filter((post: DBBlogPost) => {
+            const matchedTags = post.tags.filter((tag: string) =>
+              data.tags.includes(tag)
+            );
+            console.log("Matched tags:", matchedTags);
+            return matchedTags.length > 0;
+          });
+          console.log("Similar posts:", similarPostsFiltered);
+          setSimilarPosts(similarPostsFiltered);
         }
       } catch (error) {
         console.error("Error fetching similar posts:", error);
       }
-    };
-
-    fetchTags();
+    }
+    fetchSimilarPost();
   }, [router]);
 
   const headings = data?.content.match(/<h[3](.*?)>(.*?)<\/h[3]>/g) || [];
@@ -277,26 +293,31 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
               Read More Articles
             </p>
             <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
-              {similarPosts &&
-                similarPosts.length > 0 &&
-                // similarPosts.slice(0, 2) &&
-                similarPosts.map((post) => (
-                  <PostArticle
-                    key={post.id}
-                    id={post.id}
-                    title={post.title}
-                    createdAt={post.created_at}
-                    category={post.category}
-                    status={post.status}
-                    statusDetails={post.statusDetails}
-                    readingDuration={post.readingDuration}
-                    content={post.content}
-                    views={post.views}
-                    shares={post.shares}
-                    tags={post.tags}
-                    headerImageUrl={post.headerImageUrl}
-                  />
-                ))}
+              {similarPosts.length > 0 ? (
+                <div className="flex flex-col lg:flex-row  px-0 lg:px-[146px] gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 py-7 lg:py-16">
+                  {similarPosts.map((post) => (
+                    <PostArticle
+                      key={post.id}
+                      id={post.id}
+                      title={post.title}
+                      createdAt={post.created_at}
+                      category={post.category}
+                      status={post.status}
+                      statusDetails={post.statusDetails}
+                      readingDuration={post.readingDuration}
+                      content={post.content}
+                      views={post.views}
+                      shares={post.shares}
+                      tags={post.tags}
+                      headerImageUrl={post.headerImageUrl}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-xl lg:text-3xl font-semibold mt-8">
+                  No related posts found.
+                </p>
+              )}
             </div>
           </div>
         </div>

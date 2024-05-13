@@ -37,9 +37,10 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
     <>
       <nav className="bg-white w-full flex overflow-x-auto no-scrollbar items-center justify-between px-4 py-4 h-max border-b">
         <ul className="flex gap-x-9 text-gray-700">
-          {links.map(({ name, href }) => {
+          {links.map(({ name, href }, index) => {
             return (
               <li
+              key={index}
                 className={`pb-1 text-sm ${
                   pathname.includes(href) ? "text-basePrimary  font-medium" : ""
                 }`}

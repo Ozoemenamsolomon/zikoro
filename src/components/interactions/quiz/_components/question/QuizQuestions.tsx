@@ -7,19 +7,39 @@ import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { PlayBtn } from "@styled-icons/bootstrap/PlayBtn";
 import { Settings } from "@styled-icons/feather/Settings";
 import Image from "next/image";
-import { ActiveQuestion, QuestionCard } from "..";
+import { ActiveQuestion, QuestionCard, QuizSettings, AddQuestion } from "..";
 import { useState } from "react";
-import { QuizSettings } from "../modals/QuizSetting";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCreateAnswer,useUpdateAnswer, useCreateQuiz, useUpdateQuiz } from "@/hooks";
 export default function QuizQuestion({ eventId }: { eventId: string }) {
+  const { createQuiz, isLoading, quiz } = useCreateQuiz();
+  const { updateQuiz, isLoading: updating } = useUpdateQuiz();
+  const {createAnswer, answer} = useCreateAnswer() 
+  const {updateAnswer} = useUpdateAnswer() 
+  const [openQuestionModal, setOpenQusetionModal] = useState(false);
+  const [height, setHeight] = useState<number>(0);
+  const router = useRouter();
   const [isOpen, setOpen] = useState(false);
 
   function onOpen() {
     setOpen((prev) => !prev);
   }
+  function onToggle() {
+    setOpenQusetionModal((prev) => !prev);
+  }
+
+  function questionHeight(num: number) {
+    setHeight(num);
+  }
+
   return (
     <InteractionLayout eventId={eventId}>
       <div className="w-full border-b p-4 flex items-center justify-between">
-        <Button className="px-0 w-fit h-fit gap-x-2 text-sm">
+        <Button
+          onClick={() => router.back()}
+          className="px-0 w-fit h-fit gap-x-2 text-sm"
+        >
           <ArrowBackOutline size={18} />
           <p>Back</p>
         </Button>
@@ -34,28 +54,45 @@ export default function QuizQuestion({ eventId }: { eventId: string }) {
             <Settings size={22} />
           </button>
           <Button
-            //  onClick={onClose}
+              onClick={onToggle}
             className="text-gray-50 bg-basePrimary gap-x-2 h-10 font-medium flex"
           >
             <PlusCircle size={20} />
             <p>Question</p>
           </Button>
-          <Button
-            //  onClick={onClose}
-            className="text-basPrimaray hover:text-gray-50 bg-white hover:bg-basePrimary gap-x-2 h-10 font-medium flex"
+          <Link
+            href={`/quiz/${eventId}/present/${1}`} //  onClick={onClose}
+            className="text-basePrimary px-0 w-fit h-fit  hover:text-black gap-x-2 font-medium flex"
           >
             <PlayBtn size={20} />
-            <p>Present</p>
-          </Button>
+          </Link>
         </div>
       </div>
-      <div className="w-full grid grid-cols-1  md:grid-cols-5 h-full pb-20">
-        <ActiveQuestion />
-        <div className="w-full md:col-span-3 border-l p-2 grid grid-cols-1 gap-3">
-          {[...Array(4).map((_) => <QuestionCard key={_} />)]}
+      <div className="w-full grid grid-cols-1  lg:grid-cols-5 pb-20">
+        <div className="w-full p-3 sm:p-4 lg:col-span-2">
+          <ActiveQuestion setHeight={questionHeight} />
+        </div>
+
+        <div
+          style={{ maxHeight: height === 0 ? "initial" : height + 30 }}
+          className="w-full lg:col-span-3 border-l p-2  lg:overflow-y-auto space-y-3"
+        >
+          {[1, 2, 3, 4, 5, 6].map((_) => (
+            <QuestionCard key={_} />
+          ))}
         </div>
       </div>
-      {isOpen && <QuizSettings close={onOpen} />}
+      {isOpen && (
+        <QuizSettings
+          createQuiz={createQuiz}
+          updateQuiz={updateQuiz}
+          isLoading={isLoading || updating}
+          close={onOpen}
+          quiz={quiz}
+          eventAlias={eventId}
+        />
+      )}
+      {openQuestionModal && <AddQuestion answer={answer} updateAnswer={updateAnswer} createAnswer={createAnswer} updateQuiz={updateQuiz} close={onToggle} quiz={quiz}/>}
     </InteractionLayout>
   );
 }

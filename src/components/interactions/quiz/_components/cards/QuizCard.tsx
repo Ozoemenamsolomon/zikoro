@@ -14,11 +14,11 @@ export function QuizCard() {
     setOpen((prev) => !prev);
   }
   return (
-    <div className="w-full h-full bg-gray-200 rounded-md py-4 px-3">
-      <p className="text-xs text-gray-700 sm:text-mobile">No. 1</p>
+    <div className="w-full h-full bg-gray-100 rounded-md py-4 px-3">
+      <p className="text-xs text-gray-700 sm:text-mobile mb-3">No. 1</p>
       <div className="w-full text-mobile sm:text-sm bg-white rounded-md flex flex-col items-start justify-start gap-y-3">
-        <div className="border-b border-gray-600 gap-3 pb-2 w-full flex items-center justify-between">
-          <p className="italic w-full line-clamp-2">
+        <div className="border-b p-3 border-gray-600 gap-3 pb-2 w-full flex items-center justify-between">
+          <p className="italic w-full text-gray-500 line-clamp-2">
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry. Lorem Ipsum has been the industry's standard dummy text
             ever since the 1500s, when an unknown printer took a galley of type
@@ -27,27 +27,30 @@ export function QuizCard() {
           <Button
             onClick={(e) => {
               e.stopPropagation();
+              onClose()
             }}
-            className="px-0 w-fit h-fit"
+            className="px-0 w-fit relative h-fit"
           >
             <ThreeDotsVertical size={20} />
             {isOpen && <ActionModal close={onClose} />}
           </Button>
         </div>
-        <Image
-          className="w-full rounded-md h-36 object-cover"
-          alt="quiz"
-          src="/quizimage.png"
-          width={400}
-          height={400}
-        />
-        <p className="font-medium w-full line-clamp-2">
+        <div className="w-full px-3">
+          <Image
+            className="w-full rounded-md h-36 object-cover"
+            alt="quiz"
+            src="/quizimage.png"
+            width={400}
+            height={400}
+          />
+        </div>
+        <p className="font-medium px-3 w-full line-clamp-2">
           Lorem Ipsum is simply dummy text of the printing and typesetting
           industry. Lorem Ipsum has been the industry's standard dummy text ever
           since the 1500s, when an unknown printer took a galley of type and
           scrambled
         </p>
-        <div className="text-gray-500 text-xs ms:text-mobile flex items-center justify-between w-full">
+        <div className="text-gray-500 px-3 text-xs ms:text-mobile flex items-center justify-between w-full">
           <p className="flex items-center gap-x-2">
             <span className="border-r pr-2 border-gray-500">50 Questions</span>
             <span>1000 points</span>
@@ -57,7 +60,7 @@ export function QuizCard() {
             <span>15</span>
           </p>
         </div>
-        <p className="flex text-xs ms:text-mobile items-center gap-x-1">
+        <p className="flex p-3 text-xs ms:text-mobile items-center gap-x-1">
           <QUser />
           <span>Ibrahim Rasheed</span>
         </p>
@@ -69,14 +72,14 @@ export function QuizCard() {
 function ActionModal({ close }: { close: () => void }) {
   return (
     <>
-      <div className="absolute right-0 top-10  w-[140px]">
+      <div className="absolute right-0 top-8  w-[140px]">
         <Button className="fixed inset-0 bg-none h-full w-full z-[100"></Button>
         <div
           role="button"
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="flex relative z-[50]  flex-col py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
+          className="flex relative z-[50]  flex-col  py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
         >
           <Button
             // onClick={duplicate}
@@ -84,12 +87,12 @@ function ActionModal({ close }: { close: () => void }) {
               "items-center h-10 gap-x-2 hover:bg-gray-100 justify-start w-full  text-xs"
             }
           >
-            {"loading" && <LoaderAlt size={12} className="animate-spin" />}
+            {"" && <LoaderAlt size={12} className="animate-spin" />}
             <span>Make a Copy</span>
           </Button>
-          <div className="w-full text-xs flex items-center justify-between ">
+          <div className="w-full px-4 text-xs flex items-center justify-between ">
             <p>Activate</p>
-            <Switch />
+            <Switch className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"/>
           </div>
 
           <Button
