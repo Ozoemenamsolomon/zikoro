@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { generateAlphanumericHash } from "@/utils/helpers";
+import { TAffiliate } from "@/types";
 
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -43,13 +44,9 @@ export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
     try {
-      const payload = await req.json();
+      const payload = (await req.json()) as TAffiliate;
 
-      const affliateCode = generateAlphanumericHash(7);
-
-      const { error } = await supabase
-        .from("affiliate")
-        .insert({ ...payload, affliateCode });
+      const { error } = await supabase.from("affiliate").upsert(payload);
 
       if (error) throw error;
       return NextResponse.json(

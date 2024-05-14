@@ -15,14 +15,21 @@ import { DialogClose } from "../ui/dialog";
 import useEventStore from "@/store/globalEventStore";
 import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
+import { generateAlphanumericHash } from "@/utils/helpers";
 
-export default function CreateAffiliateForm() {
+export default function CreateAffiliateForm({
+  affiliate,
+  getAffiliates,
+}: {
+  affiliate?: TAffiliate;
+  getAffiliates: () => Promise<void>;
+}) {
   const currentEvent = useEventStore((state) => state.event);
   const user = getCookie<TUser>("user");
 
   console.log(currentEvent);
 
-  const defaultValues: Partial<TAffiliate> = {
+  const defaultValues: Partial<TAffiliate> = affiliate || {
     userEmail: user?.userEmail,
     userId: user?.id,
     accountDetails: {
@@ -50,11 +57,23 @@ export default function CreateAffiliateForm() {
 
   const clsBtnRef = useRef<HTMLButtonElement>(null);
 
-  async function onSubmit(payload: TAffiliate) {
-    console.log(payload);
+  async function onSubmit(data: TAffiliate) {
+    console.log(data);
+
+    if (!clsBtnRef) return;
 
     clsBtnRef.current.click();
+
+    const payload = data;
+
+    if (affiliate) {
+      const affliateCode = generateAlphanumericHash(7);
+      payload.affliateCode = affliateCode;
+    }
+
     await createAffiliate({ payload });
+
+    await getAffiliates();
   }
 
   return (
