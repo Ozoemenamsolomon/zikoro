@@ -198,7 +198,7 @@ export function AboutSession({
             event={event}
             refetch={refetch}
           >
-            <div className="w-full px-3 py-4 grid grid-cols-3 items-center gap-4">
+            <div className="w-full px-3 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">
               {Array.isArray(agenda?.sessionSpeakers) &&
                 agenda?.sessionSpeakers?.length === 0 && (
                   <div className="w-full col-span-full h-[200px] flex items-center justify-center">
@@ -208,10 +208,10 @@ export function AboutSession({
               {Array.isArray(agenda?.sessionSpeakers) &&
                 agenda?.sessionSpeakers.map((attendee, index) => (
                   <BoothStaffWidget
-                    company={"DND"}
+                    company={attendee?.organization ?? ""}
                     image={attendee?.profilePicture || null}
                     name={`${attendee?.firstName} ${attendee?.lastName}`}
-                    profession={attendee?.jobTitle ?? "Job"}
+                    profession={attendee?.jobTitle ?? ""}
                     email={attendee?.email ?? ""}
                     key={index}
                   />
@@ -224,7 +224,7 @@ export function AboutSession({
             event={event}
             refetch={refetch}
           >
-            <div className="w-full px-3 py-4 grid grid-cols-3 items-center gap-4">
+            <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">
               {Array.isArray(agenda?.sessionModerators) &&
                 agenda?.sessionModerators?.length === 0 && (
                   <div className="w-full col-span-full h-[200px] flex items-center justify-center">
@@ -234,10 +234,10 @@ export function AboutSession({
               {Array.isArray(agenda?.sessionModerators) &&
                 agenda?.sessionModerators.map((attendee, index) => (
                   <BoothStaffWidget
-                    company={"DND"}
+                    company={attendee?.organization ?? ""}
                     image={attendee?.profilePicture || null}
                     name={`${attendee?.firstName} ${attendee?.lastName}`}
-                    profession={attendee?.jobTitle ?? "Job"}
+                    profession={attendee?.jobTitle ?? ""}
                     email={attendee?.email ?? ""}
                     key={index}
                   />
@@ -250,7 +250,7 @@ export function AboutSession({
             event={event}
             refetch={refetch}
           >
-            <div className="w-full px-3 py-4 grid grid-cols-4 items-center gap-4">
+            <div className="w-full px-3 py-4 grid grid-cols-2 md:grid-cols-4 items-center gap-4">
               {Array.isArray(agenda?.sessionSponsors) &&
                 agenda?.sessionSponsors?.length === 0 && (
                   <div className="w-full col-span-full h-[200px] flex items-center justify-center">
@@ -275,7 +275,7 @@ export function AboutSession({
             event={event}
             refetch={refetch}
           >
-            <div className="w-full px-3 py-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 items-center gap-4">
+            <div className="w-full px-3 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">
               {Array.isArray(agenda?.sessionFiles) &&
                 agenda?.sessionFiles?.length === 0 && (
                   <div className="w-full col-span-full h-[200px] flex items-center justify-center">
@@ -291,11 +291,11 @@ export function AboutSession({
                     className="w-full group border relative rounded-lg p-3 flex items-start justify-start gap-x-2"
                   >
                     <FilePdf size={25} className="text-red-500" />
-                    <div className="space-y-1">
-                      <p className="text-[13px] sm:text-sm text-gray-500">
+                    <div className="space-y-1 w-full">
+                      <p className="text-[13px] w-full text-ellipsis whitespace-nowrap overflow-hidden sm:text-sm text-gray-500">
                         {item?.name}
                       </p>
-                      <p className="text-[11px] sm:text-xs text-gray-400">
+                      <p className="text-[11px] w-full sm:text-xs text-gray-400">
                         {item?.size}
                       </p>
                     </div>

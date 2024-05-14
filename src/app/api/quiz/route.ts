@@ -1,4 +1,3 @@
-import { deploymentUrl } from "@/utils";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -20,25 +19,10 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      if (error) throw error;
-
-      const { error: fetchError, data } = await supabase
-        .from("quiz")
-        .select("*")
-        .eq("quizAlias", params?.quizAlias)
-        .single();
-
-      if (fetchError) {
-        return NextResponse.json(
-          { error: fetchError.message },
-          {
-            status: 400,
-          }
-        );
-      }
+ 
 
       return NextResponse.json(
-        { msg: "Quiz created successfully", data },
+        { msg: "Quiz created successfully" },
         {
           status: 201,
         }
@@ -87,23 +71,9 @@ export async function PATCH(req: NextRequest) {
       if (error) throw error;
 
       
-      const { error: fetchError, data } = await supabase
-        .from("quiz")
-        .select("*")
-        .eq("quizAlias", params?.quizAlias)
-        .single();
-
-      if (fetchError) {
-        return NextResponse.json(
-          { error: fetchError.message },
-          {
-            status: 400,
-          }
-        );
-      }
-
+   
       return NextResponse.json(
-        { msg: "quiz updated successfully", data },
+        { msg: "quiz updated successfully" },
         {
           status: 200,
         }

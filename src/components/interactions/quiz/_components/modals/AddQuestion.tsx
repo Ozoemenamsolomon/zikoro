@@ -24,25 +24,18 @@ import { quizQuestionSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { TQuiz, TAnswer } from "@/types";
-import { useState } from "react";
+import { useUpdateQuiz } from "@/hooks";
+import Image from "next/image";
+import { useState, useMemo } from "react";
 import { uploadFile } from "@/utils";
 
 type AddQuestionProp = {
-  updateQuiz: ({ payload }: { payload: Partial<TQuiz> }) => Promise<void>;
-  updateAnswer: ({ payload }: { payload: Partial<TAnswer> }) => Promise<void>;
-  createAnswer: ({ payload }: { payload: Partial<TAnswer> }) => Promise<void>;
+  refetch?: () => Promise<any>;
   close: () => void;
   quiz?: TQuiz | null;
-  answer?: TAnswer | null;
 };
-export function AddQuestion({
-  answer,
-  close,
-  updateQuiz,
-  quiz,
-  createAnswer,
-  updateAnswer,
-}: AddQuestionProp) {
+export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
+  const { updateQuiz } = useUpdateQuiz();
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof quizQuestionSchema>>({
     resolver: zodResolver(quizQuestionSchema),
@@ -95,14 +88,17 @@ export function AddQuestion({
       lastUpdated_at: new Date().toISOString(),
     };
     await updateQuiz({ payload });
+    setLoading(false);
+    if (refetch) refetch()
 
-    const questionAnswer: Partial<TAnswer> = answer?.id
+    /**
+     const questionAnswer: Partial<TAnswer> = answer?.id
       ? {
           ...answer,
           quizId: quiz?.id,
           quizAlias: quiz?.quizAlias,
-          startTime: "0",
-          endTime: values?.duration,
+          maxDuration: Number(values?.duration),
+          maxPoints: Number(values?.points),
           correctOptionId: {
             optionId:
               values?.options?.find(({ isAnswer }) => isAnswer !== "")
@@ -113,8 +109,8 @@ export function AddQuestion({
           quizId: quiz?.id,
           questionId: updatedQuestion?.id,
           quizAlias: quiz?.quizAlias,
-          startTime: "0",
-          endTime: values?.duration,
+          maxDuration: Number(values?.duration),
+          maxPoints: Number(values?.points),
           correctOptionId: {
             optionId:
               values?.options?.find(({ isAnswer }) => isAnswer !== "")
@@ -124,8 +120,20 @@ export function AddQuestion({
 
     const asynQuery = answer?.id ? updateAnswer : createAnswer;
     await asynQuery({ payload: questionAnswer });
-    setLoading(false);
+ */
+    
   }
+
+  const questionImg = form.watch("questionImage");
+  const addedImage = useMemo(() => {
+    if (typeof questionImg === "string") {
+      return questionImg;
+    } else if (questionImg && questionImg[0]) {
+      return URL.createObjectURL(questionImg[0]);
+    } else {
+      return null;
+    }
+  }, [questionImg]);
 
   // console.log(form.getValues("options"))
   function handleRadioChange(id: number) {
@@ -195,6 +203,15 @@ export function AddQuestion({
                 </InputOffsetLabel>
               )}
             />
+            {addedImage && (
+              <Image
+                src={addedImage}
+                alt=""
+                className="w-[100px] h-[100px]"
+                width={300}
+                height={300}
+              />
+            )}
             <FormField
               control={form.control}
               name="duration"

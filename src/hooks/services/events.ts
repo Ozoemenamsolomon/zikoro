@@ -276,7 +276,7 @@ export function useCreateEvent() {
       if (status === 201 || status === 200) {
         setLoading(false);
         //   console.log({ data });
-        router.push(` /events`);
+        router.push(` /event/${values?.eventAlias}/content/info`);
         toast.success("Event created successfully");
       }
     } catch (error) {}

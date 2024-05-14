@@ -10,7 +10,7 @@ import {
 import { useState, useEffect } from "react";
 
 export const useCreateQuiz = () => {
-  const [quiz, setQuiz] = useState<TQuiz | null>(null);
+ 
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const createQuiz = async ({ payload }: { payload: Partial<TQuiz> }) => {
@@ -25,7 +25,7 @@ export const useCreateQuiz = () => {
       toast({
         description: "Quiz created successfully",
       });
-      return setQuiz(data?.data);
+      return data
     } catch (error: any) {
       // console.log({ error });
       toast({
@@ -37,11 +37,11 @@ export const useCreateQuiz = () => {
     }
   };
 
-  return { createQuiz, isLoading, quiz };
+  return { createQuiz, isLoading };
 };
 
 export const useUpdateQuiz = () => {
-  const [quiz, setQuiz] = useState<TQuiz | null>(null);
+ 
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const updateQuiz = async ({ payload }: { payload: Partial<TQuiz> }) => {
@@ -58,7 +58,7 @@ export const useUpdateQuiz = () => {
       toast({
         description: "Quiz Updated successfully",
       });
-      return setQuiz(data?.data);
+      return data
     } catch (error: any) {
       toast({
         description: error?.response?.data?.error,
@@ -69,7 +69,7 @@ export const useUpdateQuiz = () => {
     }
   };
 
-  return { updateQuiz, isLoading, quiz };
+  return { updateQuiz, isLoading};
 };
 
 export const useGetQuizzes = (eventId: string) => {

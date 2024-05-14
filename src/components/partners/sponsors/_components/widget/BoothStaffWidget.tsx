@@ -31,19 +31,25 @@ export function BoothStaffWidget({
       )}
     >
       <div className="flex flex-col gap-y-1 items-center justify-center">
-        <Image
+       {image ? <Image
           alt="staff"
           width={120}
           height={120}
           className="w-12 h-12 rounded-full "
           src={image || "/b92cf7b1b06acc1b9a0759b6f97724c349488816.webp"}
         />
+        :
+        <div className="w-12 bg-gray-100 h-12 flex items-center justify-center">
+            <p className="text-gray-700">{`${name?.split(" ")[0]}${name?.split(" ")[1]}`}</p>
+        </div>
+      
+      }
       
       </div>
-      <div className="flex text-tiny sm:text-xs flex-col items-start justify-start">
+      <div className="flex text-sm flex-col items-start justify-start">
         <p className="font-medium capitalize">{name || ""}</p>
-        <p className="text-[#717171]">{profession || ""}</p>
-        <p className="text-[#717171]">{company || ""}</p>
+        <p className="text-tiny text-[#717171]">{profession || ""}</p>
+        <p className="text-tiny text-[#717171]">{company || ""}</p>
       </div>
 
       {isAddingBoothStaff && (
