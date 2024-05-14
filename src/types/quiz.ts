@@ -29,10 +29,10 @@ export interface TAnswer {
   questionId: string;
   startTime: string;
   endTime: string;
-  maxPoints: string;
-  maxDuration: string;
-  attendeePoints: string;
-  answerDuration: string;
+  maxPoints: number;
+  maxDuration: number;
+  attendeePoints: number;
+  answerDuration: number;
   quizAlias: string;
   selectedOptionId: { optionId: string };
   correctOptionId: { optionId: string };

@@ -142,8 +142,6 @@ export function PartnerWidget({
     // boothList
     await updateBooth(item?.partnerAlias, null);
     refetch(); // fetch partners
-
-
   }
 
   async function handleSelectedBooth(value: string[]) {
@@ -292,11 +290,15 @@ export function PartnerWidget({
                 <ArrowIosDownward size={20} />
               </button>
               <button
-              onClick={(e) => {
-                e.stopPropagation()
-                e.preventDefault()
-                removeAddedBooth()
-              }}
+                className={cn(
+                  "hidden",
+                  item?.boothNumber?.length > 0 && "block"
+                )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  removeAddedBooth();
+                }}
               >
                 <CloseOutline size={18} className="text-red-500" />
               </button>

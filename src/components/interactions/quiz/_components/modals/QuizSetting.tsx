@@ -13,23 +13,22 @@ import { useMemo, useEffect, useState } from "react";
 import { TQuiz } from "@/types";
 import Image from "next/image";
 import { generateAlias, uploadFile } from "@/utils";
+import { useCreateQuiz, useUpdateQuiz } from "@/hooks";
 
 type QuizSettingsProp = {
   eventAlias: string;
   close: () => void;
-  isLoading: boolean;
-  updateQuiz: ({ payload }: { payload: Partial<TQuiz> }) => Promise<void>;
-  createQuiz: ({ payload }: { payload: Partial<TQuiz> }) => Promise<void>;
   quiz?: TQuiz | null;
+  refetch?: () => Promise<any>;
 };
 export function QuizSettings({
   close,
   eventAlias,
   quiz,
-  createQuiz,
-  updateQuiz,
-  isLoading,
+  refetch,
 }: QuizSettingsProp) {
+  const { createQuiz } = useCreateQuiz();
+  const { updateQuiz } = useUpdateQuiz();
   const [isEventName, setShowEventName] = useState(false);
   const [isPoweredBy, setShowPooweredBy] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -56,34 +55,34 @@ export function QuizSettings({
 
     const quizAlias = generateAlias();
 
-    const payload: Partial<TQuiz> = quiz?.quizAlias ?
-    
-    {
-      ...quiz,
-      ...values,
-      branding: {
-        poweredBy: isPoweredBy,
-        eventName: isEventName,
-      },
-      eventAlias,
-      quizAlias,
-      lastUpdated_at: new Date().toISOString(),
-      coverImage: promise,
-    }
-    :{
-      ...values,
-      branding: {
-        poweredBy: isPoweredBy,
-        eventName: isEventName,
-      },
-      eventAlias,
-      quizAlias,
-      lastUpdated_at: new Date().toISOString(),
-      coverImage: promise,
-    };
-    const asynQuery = quiz?.quizAlias ? updateQuiz : createQuiz
+    const payload: Partial<TQuiz> = quiz?.quizAlias
+      ? {
+          ...quiz,
+          ...values,
+          branding: {
+            poweredBy: isPoweredBy,
+            eventName: isEventName,
+          },
+          eventAlias,
+          quizAlias,
+          lastUpdated_at: new Date().toISOString(),
+          coverImage: promise,
+        }
+      : {
+          ...values,
+          branding: {
+            poweredBy: isPoweredBy,
+            eventName: isEventName,
+          },
+          eventAlias,
+          quizAlias,
+          lastUpdated_at: new Date().toISOString(),
+          coverImage: promise,
+        };
+    const asynQuery = quiz?.quizAlias ? updateQuiz : createQuiz;
     await asynQuery({ payload });
     setLoading(false);
+    if (refetch) refetch();
     close();
   }
 
@@ -210,7 +209,7 @@ export function QuizSettings({
               type="submit"
               className="w-full gap-x-2 mt-3 text-gray-50 h-12 bg-basePrimary hover:bg-basePrimary/80 "
             >
-              {isLoading && <LoaderAlt size={22} className="animate-spin" />}
+              {loading && <LoaderAlt size={22} className="animate-spin" />}
               <p>Done</p>
             </Button>
           </form>
