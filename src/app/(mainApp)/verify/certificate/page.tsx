@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useGetAttendeeCertificate } from "@/hooks/services/certificate";
-import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
 const Page = () => {

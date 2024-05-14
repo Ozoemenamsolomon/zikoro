@@ -102,21 +102,21 @@ export default function PostArticle({
   return (
     <div
       onClick={goToPost}
-      className="flex flex-col cursor-pointer gap-y-6 lg:gap-y-16 "
+      className="flex flex-col cursor-pointer gap-y-6 lg:gap-y-16  "
     >
       <Image
         src={headerImageUrl ? headerImageUrl : "/postImage2.png"}
         alt=""
         height={240}
         width={524}
-        className="hidden lg:block rounded-lg w-full"
+        className="hidden lg:block rounded-lg w-[524px] h-[240px] object-cover"
       />
       <Image
         src={headerImageUrl ? headerImageUrl : "/postImage2.png"}
         alt=""
-        height={335}
-        width={160}
-        className="block lg:hidden rounded-lg w-full"
+        width={335}
+        height={160}
+        className="block lg:hidden rounded-lg w-full h-[160px] object-cover"
       />
 
       <div className="flex flex-col justify-center max-w-full lg:max-w-md ">

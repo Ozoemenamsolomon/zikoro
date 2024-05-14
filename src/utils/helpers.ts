@@ -1,4 +1,4 @@
-import { TBadge } from "@/types";
+import { TAttendeeBadge, TBadge } from "@/types";
 import { TAttendee } from "@/types/attendee";
 import { TAttendeeCertificate } from "@/types/certificates";
 import { Event } from "@/types/events";
@@ -198,7 +198,7 @@ export function base64ToFile(base64Data: string, fileName: string): File {
 }
 
 type Context = {
-  asset: TAttendeeCertificate | TBadge;
+  asset: TAttendeeCertificate | TAttendeeBadge;
   attendee: TAttendee;
   event: Event;
   organization: TOrganization;

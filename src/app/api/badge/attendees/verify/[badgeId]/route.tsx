@@ -1,34 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { createHash } from "@/utils/helpers";
 
-export async function POST(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { badgeId: string } }
+) {
   const supabase = createRouteHandlerClient({ cookies });
-
-  if (req.method === "POST") {
+  if (req.method === "GET") {
     try {
-      const params = await req.json();
-      const badgeId = createHash(JSON.stringify(params));
-      const body = {
-        ...params,
-        badgeId,
-        badgeURL: "www.zikoro.com/badge/" + badgeId,
-      };
+      const { badgeId } = params;
 
-      console.log(body);
-
-      const { data, error } = await supabase
+      // .select("*")
+      const { data, error, status } = await supabase
         .from("attendeeBadge")
-        .insert(body)
-        .select()
+        .select(
+          "*, originalBadge:badge!inner(*, event:events!inner(organization:organization!inner(*))), attendee:attendees!inner(*)"
+        )
+        .eq("badgeId", badgeId)
         .maybeSingle();
+
+      console.log(data);
       if (error) throw error;
 
       return NextResponse.json(
-        { msg: "badge released successfully", data },
+        { data },
         {
-          status: 201,
+          status: 200,
         }
       );
     } catch (error) {
