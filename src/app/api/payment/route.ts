@@ -180,24 +180,23 @@ export async function POST(req: NextRequest) {
       }[] = await Promise.all(resolveAttendees);
       // sending email
       let nodemailer = require("nodemailer");
-      console.log({ registeredAttendees });
+      //   console.log({ registeredAttendees });
+      var { SendMailClient } = require("zeptomail");
 
-      const transporter = nodemailer.createTransport({
-        host: "smtp.zoho.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.NEXT_PUBLIC_EMAIL,
-          pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
-        },
+      let client = new SendMailClient({
+        url: process.env.NEXT_PUBLIC_ZEPTO_URL,
+        token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
       });
 
       registeredAttendees.forEach(async (attendee) => {
-        const mailData = {
-          from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
+        await client.sendMail({
+          from: {
+            address: process.env.NEXT_PUBLIC_EMAIL,
+            name: "Zikoro",
+          },
           to: attendee.email,
           subject: `Confirmation to attend ${event}`,
-          html: `
+          htmlbody: `
             <div
            style=" background: "#000000"
           >
@@ -487,19 +486,6 @@ export async function POST(req: NextRequest) {
               contentType: "text/calendar",
             },
           ],
-        };
-
-        await transporter.sendMail(mailData, function (err: any, info: any) {
-          //  console.log({ attendee: registeredAttendees[0], mailData });
-          if (err) {
-            //  console.log({ error });
-            check += " error";
-            throw err;
-          } else {
-            check += " success";
-            //  console.log({ info });
-            // console.log({ check });
-          }
         });
       });
 

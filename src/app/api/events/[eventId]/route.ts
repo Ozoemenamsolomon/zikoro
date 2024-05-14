@@ -53,7 +53,7 @@ export async function PATCH(req: NextRequest) {
   if (req.method === "PATCH") {
     try {
       const params = await req.json();
-      let nodemailer = require("nodemailer");
+   
       const { error } = await supabase
         .from("events")
         .upsert(params, { onConflict: "eventAlias" });
@@ -68,43 +68,39 @@ export async function PATCH(req: NextRequest) {
           }
         );
       }
+      var { SendMailClient } = require("zeptomail");
 
-      const transporter = nodemailer.createTransport({
-        host: "smtp.zoho.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.NEXT_PUBLIC_EMAIL,
-          pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
-        },
+      let client = new SendMailClient({
+        url: process.env.NEXT_PUBLIC_ZEPTO_URL,
+        token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
       });
 
-      const mailData = {
-        from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
+     const resp =  await client.sendMail({
+        from: {
+          address: process.env.NEXT_PUBLIC_EMAIL,
+          name: "Zikoro",
+        },
         to: email,
         subject: `Your ${params?.eventTitle} is Live!`,
-        html: `<div>
+        htmlbody:`<div>
      
 
-     <p> Hi [Event Creator's Name],</p>
-      
-     <p> Great news! Your event is officially live, and attendees can now register using the following link: [Insert Registration Link]</p>
-      
-      <p>You can track attendee registration and other details in the Zikoro app ${deploymentUrl}/event/${params?.eventAlias}/people/all as they register, ensuring you stay up-to-date with all participant information.</p>
-      
-      <p>Let us know if you have any questions or need further assistance.</p>
-      
-      Best,
-      Tola From Zikoro
-      Phone/Whatsapp: +2347041497076 
-          
-          </div>`,
-      };
-
-      await transporter.sendMail(mailData, function (err: any, info: any) {
-        if (err) throw err;
-        else console.log(info);
+        <p> Hi [Event Creator's Name],</p>
+         
+        <p> Great news! Your event is officially live, and attendees can now register using the following link: [Insert Registration Link]</p>
+         
+         <p>You can track attendee registration and other details in the Zikoro app ${deploymentUrl}/event/${params?.eventAlias}/people/all as they register, ensuring you stay up-to-date with all participant information.</p>
+         
+         <p>Let us know if you have any questions or need further assistance.</p>
+         
+         Best,
+         Tola From Zikoro
+         Phone/Whatsapp: +2347041497076 
+             
+             </div>`,
       });
+
+      console.log(resp)
 
       if (error) throw error;
 

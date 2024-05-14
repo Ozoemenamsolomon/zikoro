@@ -6,17 +6,22 @@ import { FeedStar } from "@styled-icons/octicons/FeedStar";
 import { TQuestion, TQuiz } from "@/types";
 import { millisecondsToTime } from "@/utils";
 import { useMemo } from "react";
+import { cn } from "@/lib";
 import { DeleteQuestion, CopyQuestion } from "..";
 
 export function QuestionCard({
   question,
   id,
   quiz,
+  setActiveQuestion,
+  activeQuestion,
   refetch,
 }: {
   question: TQuestion;
   id: number;
   quiz: TQuiz;
+  setActiveQuestion: (q: TQuestion) => void;
+  activeQuestion: TQuestion | null;
   refetch: () => Promise<any>;
 }) {
   const duration = useMemo(() => {
@@ -24,7 +29,16 @@ export function QuestionCard({
   }, [question?.duration]);
 
   return (
-    <div className="w-full p-3 rounded-lg gap-2 grid grid-cols-7">
+    <div
+    onClick={() => setActiveQuestion(question)}
+    role="button"
+      className={cn(
+        "w-full p-3 rounded-lg gap-2 grid grid-cols-7",
+        activeQuestion &&
+          activeQuestion?.id === question?.id &&
+          "bg-basePrimary/10"
+      )}
+    >
       {question?.questionImage ? (
         <Image
           src={question?.questionImage}

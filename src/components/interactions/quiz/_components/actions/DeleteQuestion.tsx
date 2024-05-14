@@ -35,7 +35,10 @@ export function DeleteQuestion({
   return (
     <>
       <Button
-      onClick={onClose}
+      onClick={(e) => {
+        e.stopPropagation()
+        onClose()
+      }}
       className="px-0 w-fit text-red-500 h-fit">
         <DeleteOutline size={18} />
       </Button>

@@ -33,7 +33,10 @@ export function CopyQuestion({
   }
   return (
     <>
-      <Button onClick={coppied} className="px-0 gap-x-2 w-fit h-fit">
+      <Button onClick={(e) =>{
+        e.stopPropagation()
+        coppied()
+      }} className="px-0 gap-x-2 w-fit h-fit">
         <Copy size={18} />
         {isLoading && <LoaderAlt size={16} className="animate-spin" />}
       </Button>

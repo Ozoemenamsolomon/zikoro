@@ -12,7 +12,7 @@ import { useState } from "react";
 import { cn } from "@/lib";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { TQuiz } from "@/types";
+import { TQuiz, TQuestion } from "@/types";
 import { useGetQuiz } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 
@@ -25,7 +25,7 @@ export default function QuizQuestion({
 }) {
   const { quiz, isLoading, getQuiz } = useGetQuiz({ quizId });
   const [openQuestionModal, setOpenQusetionModal] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState<TQuiz | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<TQuestion | null>(null);
   const [height, setHeight] = useState<number>(0);
   const router = useRouter();
   const [isOpen, setOpen] = useState(false);
@@ -37,12 +37,14 @@ export default function QuizQuestion({
   function onToggle() {
     setOpenQusetionModal((prev) => !prev);
   }
- 
+
   function questionHeight(num: number) {
     setHeight(num);
   }
 
-
+  function setActiveQuestion(question: TQuestion) {
+    setCurrentQuestion(question);
+  }
 
   return (
     <InteractionLayout eventId={eventId}>
@@ -84,7 +86,7 @@ export default function QuizQuestion({
                 <p>Question</p>
               </Button>
               <Link
-                href={`/quiz/${eventId}/present/${quiz?.quizAlias}`} //  onClick={onClose}
+                href={`/quiz/${eventId}/present/${quiz?.quizAlias}`} 
                 className="text-basePrimary px-0 w-fit h-fit  hover:text-black gap-x-2 font-medium flex"
               >
                 <PlayBtn size={20} />
@@ -101,7 +103,7 @@ export default function QuizQuestion({
             ) : (
               <>
                 <div className="w-full p-3 sm:p-4 lg:col-span-2">
-                  <ActiveQuestion setHeight={questionHeight} />
+                  <ActiveQuestion questions={quiz?.questions} activeQuestion={currentQuestion} setHeight={questionHeight} />
                 </div>
 
                 <div
@@ -109,9 +111,17 @@ export default function QuizQuestion({
                   className="w-full lg:col-span-3 border-l p-2  lg:overflow-y-auto space-y-3"
                 >
                   {Array.isArray(quiz?.questions) &&
-              quiz?.questions.map((question, index) => (
-                    <QuestionCard refetch={getQuiz} key={question?.id} id={index} quiz={quiz} question={question} />
-                  ))}
+                    quiz?.questions.map((question, index) => (
+                      <QuestionCard
+                        refetch={getQuiz}
+                        key={question?.id}
+                        id={index}
+                        quiz={quiz}
+                        setActiveQuestion={setActiveQuestion}
+                        activeQuestion={currentQuestion}
+                        question={question}
+                      />
+                    ))}
                 </div>
               </>
             )}
