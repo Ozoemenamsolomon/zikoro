@@ -95,7 +95,7 @@ export function Qusetion({
       setCurrentQuestion(nextQuestion);
     }
   }
-
+ 
   // active index
   const activeQuestionIndex = useMemo(() => {
     const index = quiz?.questions?.findIndex(

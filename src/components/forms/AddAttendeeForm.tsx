@@ -1,4 +1,4 @@
-\"use client";
+"use client";
 import Overlay from "@/components/Overlay";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

@@ -186,11 +186,17 @@ export function BookEvent({
     if (Array.isArray(event?.pricing)) {
       return event?.pricing?.map(
         ({ price, validity, ticketQuantity, attendeeType, description }) => {
-          const discountPrice =
+          let discountPrice = 0
+          if (!price || Number(price) === 0) {
+            discountPrice = 0
+          }
+          else {
+            discountPrice =
             discountAmount !== null
               ? Number(price) - Number(discountAmount)
               : Number(price) -
                 (Number(price) * Number(discountPercentage)) / 100;
+          }
 
           return {
             validity,
@@ -198,9 +204,9 @@ export function BookEvent({
             discountPrice,
             price: Number(price),
             ticketQuantity,
-            discountPercentage: discountPrice
+            discountPercentage: discountPrice > 0
               ? ((Number(price) - Number(discountPrice)) / Number(price)) * 100
-              : null,
+              : 0,
             attendeeType,
           };
         }
@@ -208,26 +214,7 @@ export function BookEvent({
     }
   }, [event?.pricing, discountAmount, discountPercentage]);
 
-  /**
-     function activeSelectedPrice(selected: string | undefined) {
-    return selected === priceCategory;
-  }
-     function selectedPrice(value: number | undefined) {
-    setChosenPrice(value);
-  }
-    activeSelectedPrice(v?.attendeeType) &&
-                                "border-basePrimary"
- activeSelectedPrice(v?.attendeeType) &&
-                                    "bg-blue-50 text-basePrimary"
-  function selectedPriceCategory(value: string | undefined) {
-    if (priceCategory === undefined && priceCategory !== value) {
-      setPriceCategory(undefined);
-    } else {
-      setPriceCategory(value);
-    }
-  }
-   */
-
+  console.log('dcdv d', pricingArray, 'refvedcvd', event?.pricing)
   /// verifying and redeeming a discount code'
   async function redeem() {
     await verifyDiscountCode(code, String(eventId));
@@ -425,8 +412,6 @@ export function BookEvent({
     return result;
   }
 
-  // console.log(chosenAttendeesTicket);
-
   return (
     <>
       <div
@@ -604,20 +589,6 @@ export function BookEvent({
                                 )}
                               </div>
 
-                              {/*!isDateGreaterThanToday(v?.date) && (
-                                <div
-                                  className={cn(
-                                    "hidden group-hover:block",
-
-                                    activeSelectedPrice(v?.name) && "block"
-                                  )}
-                                >
-                                  <CheckCircleFill
-                                    className=" text-basePrimary"
-                                    size={20}
-                                  />
-                                </div>
-                                  )*/}
                             </div>
                             <div className="flex items-end mt-2 justify-between w-full">
                               <div
@@ -933,32 +904,6 @@ export function BookEvent({
     </>
   );
 }
-
-/**
-    eventDate={eventDate}
-          eventImage={eventImage}
-          allowPayment={allowPayment}
-          priceCategory={priceCategory}
-          eventTitle={eventTitle}
-          address={address}
-          startDate={startDate}
-          eventReference={eventReference}
-          endDate={endDate}
-          attendeesDetails={attendees}
-          eventId={eventId}
-          organization={organization}
-          organizerContact={organizerContact}
-          currency={currency}
-          processingFee={processingFee}
-          amountPayable={processingFee ? total - processingFee : total}
-          referralSource={social}
-          discountCode={code}
-          count={fields?.length}
-          eventLocation={eventLocation}
-          discount={discount}
-          total={total}
-          eventPrice={chosenPrice}
- */
 
 function DescriptionModal({
   description,
