@@ -80,7 +80,12 @@ export async function PATCH(req: NextRequest) {
           address: process.env.NEXT_PUBLIC_EMAIL,
           name: "Zikoro",
         },
-        to: email,
+        to: {
+          email_address: {
+            address: email,
+            name: "User"
+          }
+        },
         subject: `Your ${params?.eventTitle} is Live!`,
         htmlbody:`<div>
      

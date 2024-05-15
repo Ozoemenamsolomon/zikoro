@@ -16,7 +16,7 @@ export async function GET(
         .from("quizAnswer")
         .select("*")
         .eq("questionId", questionId)
-        .single()
+       
 
       // console.log(data);
       if (error) {

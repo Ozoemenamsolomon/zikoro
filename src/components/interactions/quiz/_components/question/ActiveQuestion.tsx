@@ -6,31 +6,31 @@ import { Time } from "@styled-icons/ionicons-outline/Time";
 import { FeedStar } from "@styled-icons/octicons/FeedStar";
 import { Button } from "@/components";
 import { Option } from "..";
+import {useCreateAnswer, useGetAnswer} from "@/hooks";
 import { useRef, useEffect, useMemo, useState } from "react";
-import { TQuestion, TRefinedQuestion, TQuiz } from "@/types";
-import { millisecondsToTime } from "@/utils";
+import { TQuestion, TRefinedQuestion, TQuiz, TAnswer } from "@/types";
 import { cn } from "@/lib";
+import toast from "react-hot-toast"
 
-type TQuestionOption = {
-  optionId: string;
-  isAnswer: string;
-  option: string;
-  isCorrect: boolean | string;
-};
+
 export function ActiveQuestion({
   setHeight,
   activeQuestion,
   quiz,
   setActiveQuestion,
   updateQuiz,
+  attendeeDetail
 }: {
   setHeight: (n: number) => void;
   activeQuestion: TRefinedQuestion | null;
   quiz: TQuiz<TRefinedQuestion[]>;
   setActiveQuestion: (q: TRefinedQuestion) => void;
   updateQuiz: (q: TQuiz<TRefinedQuestion[]>) => void;
+  attendeeDetail: {attendeeId?:string; attendeeName:string}
 }) {
   const divRef = useRef<HTMLDivElement | null>(null);
+  const {answer, getAnswer} = useGetAnswer()
+  const {createAnswer} = useCreateAnswer()
   const [millisecondsLeft, setMillisecondsLeft] = useState<number>(
     Number(activeQuestion?.duration)
   );
@@ -62,7 +62,19 @@ export function ActiveQuestion({
 
   const optionLetter = ["A", "B", "C", "D"];
 
-  function selectOption(id: string) {
+  useEffect(() => {
+    if (activeQuestion) {
+      getAnswer(activeQuestion?.id)
+    }
+
+  },[activeQuestion])
+
+  console.log("answer", answer)
+  async function selectOption(id: string) {
+    if (!attendeeDetail?.attendeeId) {
+      toast.error("Only attendee can answer the question")
+      return
+    }
     if (activeQuestion) {
       const updatedOptions = activeQuestion?.options?.map((item) => {
         return {
@@ -70,9 +82,21 @@ export function ActiveQuestion({
           isCorrect: item?.isAnswer === item?.optionId,
         };
       });
-
       setActiveQuestion({ ...activeQuestion, options: updatedOptions });
-      // console.log("updated", updatedOptions)
+
+      // user score: (correct 1, wrong 0), dependent on time
+
+      // checking if the correct answer is chosen
+      const isCorrectAnswer = activeQuestion?.options?.some(
+        (item) => item?.isAnswer === id
+      );
+      //  console.log(isCorrectAnswer, millisecondsLeft);
+      const score = isCorrectAnswer ? 1 : 0;
+      // calculate the user point
+      const attendeePoints =
+        ((score * millisecondsLeft) / Number(activeQuestion?.duration)) *
+        Number(activeQuestion?.points);
+      //console.log(maxPoints)
 
       const updatedQuiz: TQuiz<TRefinedQuestion[]> = {
         ...quiz,
@@ -88,7 +112,26 @@ export function ActiveQuestion({
       };
       updateQuiz(updatedQuiz);
 
-      // nextQuestion();
+      const payload: Partial<TAnswer> = {
+        ...attendeeDetail,
+         quizId: quiz?.id,
+         questionId: activeQuestion?.id,
+         attendeePoints,
+         answerDuration: millisecondsLeft,
+         quizAlias: quiz?.quizAlias,
+         maxPoints: Number(activeQuestion?.points),
+         maxDuration: Number(activeQuestion?.duration),
+         selectedOptionId: { optionId: id },
+         correctOptionId: {
+           optionId:
+             activeQuestion?.options?.find(({ isAnswer }) => isAnswer === id)
+               ?.optionId || "",
+         },
+       };
+  
+
+        await createAnswer({payload})
+       
     }
   }
 
@@ -110,6 +153,22 @@ export function ActiveQuestion({
     if (nextQuestion) {
       setActiveQuestion(nextQuestion);
     }
+      // update question time limit
+      if (millisecondsLeft > 0) {
+        const updatedQuiz: TQuiz<TRefinedQuestion[]> = {
+          ...quiz,
+          questions: quiz?.questions?.map((item) => {
+            if (item?.id === activeQuestion?.id) {
+              return {
+                ...item,
+               duration: String(millisecondsLeft)
+              };
+            }
+           return item
+          }),
+        };
+        updateQuiz(updatedQuiz);
+      }
   }
   // prev
   function previousQuestion() {
@@ -119,8 +178,25 @@ export function ActiveQuestion({
     const nextQuestion = quiz?.questions?.find(
       (item) => item?.id === quiz?.questions[index - 1]?.id
     );
+
     if (nextQuestion) {
       setActiveQuestion(nextQuestion);
+    }
+    // update question time limit
+    if (millisecondsLeft > 0) {
+      const updatedQuiz: TQuiz<TRefinedQuestion[]> = {
+        ...quiz,
+        questions: quiz?.questions?.map((item) => {
+          if (item?.id === activeQuestion?.id) {
+            return {
+              ...item,
+             duration: String(millisecondsLeft)
+            };
+          }
+         return item
+        }),
+      };
+      updateQuiz(updatedQuiz);
     }
   }
 
@@ -160,22 +236,7 @@ export function ActiveQuestion({
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   }, [millisecondsLeft, activeQuestion]);
 
-  // {minutes}:{seconds < 10 ? '0' : ''}{seconds}
-  /**
-     useEffect(() => {
-    const countdownInterval = setInterval(() => {
-      setSecondsLeft((prevSeconds) => {
-        if (prevSeconds === 0) {
-          clearInterval(countdownInterval);
-        }
-
-        return Math.max(0, prevSeconds - 1);
-      });
-    }, 1000);
-
-    return () => clearInterval(countdownInterval);
-  }, []);
-   */
+ 
 
   useEffect(() => {
     if (activeQuestion?.duration) {
@@ -198,7 +259,7 @@ export function ActiveQuestion({
             </p>
             <p className="flex items-center gap-x-1">
               <QUsers />
-              <span>15</span>
+              <span>{answer?.length ?? 0}</span>
             </p>
           </div>
           <div className="w-full text-mobile sm:text-sm py-3 bg-white rounded-md flex flex-col items-start justify-start gap-y-3">
@@ -235,6 +296,7 @@ export function ActiveQuestion({
                   <Option
                     key={index}
                     option={option}
+                    
                     selectOption={selectOption}
                     optionIndex={optionLetter[index]}
                   />

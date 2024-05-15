@@ -179,7 +179,7 @@ export async function POST(req: NextRequest) {
         qrCode: string;
       }[] = await Promise.all(resolveAttendees);
       // sending email
-      let nodemailer = require("nodemailer");
+    
       //   console.log({ registeredAttendees });
       var { SendMailClient } = require("zeptomail");
 
@@ -194,7 +194,12 @@ export async function POST(req: NextRequest) {
             address: process.env.NEXT_PUBLIC_EMAIL,
             name: "Zikoro",
           },
-          to: attendee.email,
+          to: {
+            email_address: {
+              address: attendee.email,
+              name: attendee?.name
+            }
+          },
           subject: `Confirmation to attend ${event}`,
           htmlbody: `
             <div

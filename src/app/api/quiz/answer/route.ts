@@ -22,23 +22,8 @@ export async function POST(req: NextRequest) {
 
       if (error) throw error;
 
-      const { error: fetchError, data } = await supabase
-        .from("quizAnswer")
-        .select("*")
-        .eq("id", params?.id)
-        .single();
-
-      if (fetchError) {
-        return NextResponse.json(
-          { error: fetchError.message },
-          {
-            status: 400,
-          }
-        );
-      }
-
       return NextResponse.json(
-        { msg: "Answer created successfully", data },
+        { msg: "Answer created successfully" },
         {
           status: 201,
         }
@@ -86,24 +71,8 @@ export async function PATCH(req: NextRequest) {
       }
       if (error) throw error;
 
-      
-      const { error: fetchError, data } = await supabase
-        .from("quizAnswer")
-        .select("*")
-        .eq("id", params?.id)
-        .single();
-
-      if (fetchError) {
-        return NextResponse.json(
-          { error: fetchError.message },
-          {
-            status: 400,
-          }
-        );
-      }
-
       return NextResponse.json(
-        { msg: "Answer updated successfully", data },
+        { msg: "Answer updated successfully" },
         {
           status: 200,
         }

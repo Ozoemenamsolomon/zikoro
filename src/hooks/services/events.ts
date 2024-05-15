@@ -1207,6 +1207,7 @@ export function useVerifyUserAccess(eventId: string) {
   const { attendees: eventAttendees, isLoading: loading } =
     useGetEventAttendees(eventId);
   const [attendeeId, setAttendeeId] = useState<number | undefined>();
+  const [attendeeName, setAttendeeName] = useState<string>("")
   const [isOrganizer, setIsOrganizer] = useState(false);
   const user = getCookie("user");
 
@@ -1216,7 +1217,14 @@ export function useVerifyUserAccess(eventId: string) {
         ({ email, eventAlias }) =>
           eventAlias === eventId && email === user?.userEmail
       )?.id;
-      setAttendeeId(atId);
+      const attendee =  attendees?.find(
+        ({ email, eventAlias }) =>
+          eventAlias === eventId && email === user?.userEmail
+      )
+      const name = `${attendee?.firstName} ${attendee?.lastName}`
+ 
+    setAttendeeId(atId);
+      setAttendeeName(name)
 
       const isPresent = eventAttendees?.some(
         ({ attendeeType, id }) =>
@@ -1228,6 +1236,7 @@ export function useVerifyUserAccess(eventId: string) {
 
   return {
     attendeeId,
+    attendeeName,
     isOrganizer,
   };
 }

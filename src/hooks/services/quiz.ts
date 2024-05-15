@@ -163,7 +163,7 @@ export const useDeleteQuiz = () => {
 
 /*** Answer ***/
 export const useCreateAnswer = () => {
-  const [answer, setAnswer] = useState<TAnswer | null>(null);
+  
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const createAnswer = async ({ payload }: { payload: Partial<TAnswer> }) => {
@@ -174,11 +174,13 @@ export const useCreateAnswer = () => {
         endpoint: "/quiz/answer",
         payload,
       });
-
+      /**
+       
       toast({
         description: "",
       });
-      return setAnswer(data?.data);
+       */
+      return data
     } catch (error: any) {
       // console.log({ error });
       toast({
@@ -190,11 +192,10 @@ export const useCreateAnswer = () => {
     }
   };
 
-  return { createAnswer, isLoading, answer };
+  return { createAnswer, isLoading };
 };
 
 export const useUpdateAnswer = () => {
-  const [answer, setAnswer] = useState<TAnswer | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const updateAnswer = async ({ payload }: { payload: Partial<TAnswer> }) => {
@@ -208,10 +209,12 @@ export const useUpdateAnswer = () => {
 
       if (status !== 200) throw data;
 
-      toast({
+     /**
+       toast({
         description: "",
       });
-      return setAnswer(data?.data);
+      */
+      return data
     } catch (error: any) {
       toast({
         description: error?.response?.data?.error,
@@ -222,19 +225,19 @@ export const useUpdateAnswer = () => {
     }
   };
 
-  return { updateAnswer, isLoading, answer };
+  return { updateAnswer, isLoading };
 };
 
-export const useGetAnswer = (questionId: string) => {
+export const useGetAnswer = () => {
   const [answer, setAnswer] = useState<TAnswer[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
   // console.log({date})
-  const getAnswer = async () => {
+  const getAnswer = async (questionId: string) => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAnswer[]>({
-      endpoint: `/quiz/answer/${questionId}`,
+      endpoint: `/quiz/answer/single/${questionId}`,
     });
 
     setLoading(false);
@@ -245,9 +248,11 @@ export const useGetAnswer = (questionId: string) => {
     return setAnswer(data.data);
   };
 
-  useEffect(() => {
+ /**
+   useEffect(() => {
     getAnswer();
   }, [questionId]);
+  */
 
   return { answer, isLoading, getAnswer };
 };

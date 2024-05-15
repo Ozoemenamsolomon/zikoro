@@ -11,6 +11,7 @@ import { ActiveQuestion, QuestionCard, QuizSettings, AddQuestion } from "..";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib";
 import Link from "next/link";
+import {useVerifyUserAccess, useCheckTeamMember} from "@/hooks"
 import { useRouter } from "next/navigation";
 import { TQuiz, TQuestion, TRefinedQuestion } from "@/types";
 import { useGetQuiz } from "@/hooks";
@@ -24,6 +25,8 @@ export default function QuizQuestion({
   quizId: string;
 }) {
   const { quiz, isLoading, getQuiz } = useGetQuiz({ quizId });
+  const { isOrganizer, attendeeId, attendeeName } = useVerifyUserAccess(eventId);
+  const { isIdPresent } = useCheckTeamMember({ eventId });
   const [openQuestionModal, setOpenQusetionModal] = useState(false);
   const [currentQuestion, setCurrentQuestion] =
     useState<TRefinedQuestion | null>(null);
@@ -33,6 +36,7 @@ export default function QuizQuestion({
   const [height, setHeight] = useState<number>(0);
   const router = useRouter();
   const [isOpen, setOpen] = useState(false);
+
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -96,30 +100,33 @@ export default function QuizQuestion({
               placeholder="Quiz Title"
               className="outline-none border-0 p-2 text-gray-500"
             />
-
-            <div className="flex items-center gap-x-2">
-              <button
-                onClick={onClose}
-                className="flex items-center justify-center rounded-full hover:bg-gray-100 p-1"
-              >
-                <Settings size={22} />
-              </button>
-              <Button
-                onClick={onToggle}
-                className={cn(
-                  "text-gray-50 bg-basePrimary gap-x-2 h-10 font-medium flex"
-                )}
-              >
-                <PlusCircle size={20} />
-                <p>Question</p>
-              </Button>
-              <Link
-                href={`/quiz/${eventId}/present/${quiz?.quizAlias}`}
-                className="text-basePrimary px-0 w-fit h-fit  hover:text-black gap-x-2 font-medium flex"
-              >
-                <PlayBtn size={20} />
-              </Link>
-            </div>
+          {(isIdPresent || isOrganizer) ? 
+          
+          <div className="flex items-center gap-x-2">
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center rounded-full hover:bg-gray-100 p-1"
+          >
+            <Settings size={22} />
+          </button>
+          <Button
+            onClick={onToggle}
+            className={cn(
+              "text-gray-50 bg-basePrimary gap-x-2 h-10 font-medium flex"
+            )}
+          >
+            <PlusCircle size={20} />
+            <p>Question</p>
+          </Button>
+          <Link
+            href={`/quiz/${eventId}/present/${quiz?.quizAlias}`}
+            className="text-basePrimary px-0 w-fit h-fit  hover:text-black gap-x-2 font-medium flex"
+          >
+            <PlayBtn size={20} />
+          </Link>
+        </div>
+          : <p className="w-1 h-1"></p>}
+           
           </div>
           <div className="w-full grid grid-cols-1  lg:grid-cols-5 pb-20">
             {!refinedQuizArray?.questions ||
@@ -132,6 +139,7 @@ export default function QuizQuestion({
               <>
                 <div className="w-full p-3 sm:p-4 lg:col-span-2">
                   <ActiveQuestion
+                    attendeeDetail={{attendeeId: String(attendeeId), attendeeName}}
                     setActiveQuestion={setActiveQuestion}
                     quiz={refinedQuizArray}
                     activeQuestion={currentQuestion}
