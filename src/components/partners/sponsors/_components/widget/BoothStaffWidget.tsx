@@ -27,7 +27,7 @@ export function BoothStaffWidget({
     <div
       className={cn(
         "flex  items-start justify-start group gap-x-2",
-        isAddingBoothStaff && "hover:bg-gray-100 relative rounded-md p-2"
+        isAddingBoothStaff && "hover:bg-gray-50 relative rounded-md p-2"
       )}
     >
       <div className="flex flex-col gap-y-1 items-center justify-center">
@@ -39,8 +39,8 @@ export function BoothStaffWidget({
           src={image || "/b92cf7b1b06acc1b9a0759b6f97724c349488816.webp"}
         />
         :
-        <div className="w-12 bg-gray-100 h-12 flex items-center justify-center">
-            <p className="text-gray-700">{`${name?.split(" ")[0]}${name?.split(" ")[1]}`}</p>
+        <div className="w-12 bg-gray-100 h-12 rounded-full flex items-center justify-center">
+            <p className="text-gray-700">{`${name?.split(" ")[0].charAt(0)}${name?.split(" ")[1].charAt(0)}`}</p>
         </div>
       
       }
