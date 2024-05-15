@@ -3,8 +3,9 @@ import { FileCopy } from "@styled-icons/remix-fill/FileCopy";
 import { Minimize2 } from "@styled-icons/feather/Minimize2";
 import Image from "next/image";
 import { Button } from "@/components";
+import {TQuiz, TQuestion} from "@/types"
 import { cn } from "@/lib";
-export function Advert({close, isLeftBox}:{isLeftBox:boolean; close:() =>  void}) {
+export function Advert({quiz, close, isLeftBox}:{quiz:TQuiz<TQuestion[]>; isLeftBox:boolean; close:() =>  void}) {
   return (
     <div className={cn("w-full flex-col bg-white rounded-l-xl h-full col-span-3 items-start justify-between hidden md:flex md:invisible", isLeftBox && "flex md:flex visible md:visible")}>
       <h2 className="font-semibold w-full border-b p-4 text-base sm:text-xl">

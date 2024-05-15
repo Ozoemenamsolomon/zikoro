@@ -32,7 +32,7 @@ export function Option({
           "border-basePrimary bg-basePrimary/10"
       )}
     >
-      <div className="flex items-center gap-x-2 w-full">
+      <div className="flex items-start gap-x-2 w-full">
         {option?.isCorrect !== "default" && (
           <>
             {option?.isCorrect ? (
@@ -45,7 +45,7 @@ export function Option({
 
         <div className="w-full flex items-start gap-x-1">
           <span>{optionIndex}.</span>
-          <p>{option?.option ?? ""}</p>
+          <p className="text-start ">{option?.option ?? ""}</p>
         </div>
       </div>
 

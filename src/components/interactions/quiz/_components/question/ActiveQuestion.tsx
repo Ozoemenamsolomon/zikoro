@@ -69,7 +69,7 @@ export function ActiveQuestion({
 
   },[activeQuestion])
 
-  console.log("answer", answer)
+ // console.log("answer", answer)
   async function selectOption(id: string) {
     if (!attendeeDetail?.attendeeId) {
       toast.error("Only attendee can answer the question")
@@ -296,7 +296,7 @@ export function ActiveQuestion({
                   <Option
                     key={index}
                     option={option}
-                    
+
                     selectOption={selectOption}
                     optionIndex={optionLetter[index]}
                   />
