@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -41,6 +40,7 @@ const Affiliates = () => {
 
   return (
     <section className="p-4 space-y-4">
+      {isLoading && <span>Loading...</span>}
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-medium">Affiliate</h1>
         <Dialog>
@@ -67,7 +67,7 @@ const Affiliates = () => {
                 <span className="capitalize">Create affiliate</span>
               </DialogTitle>
             </DialogHeader>
-            <CreateAffiliateForm />
+            <CreateAffiliateForm getAffiliates={getAffiliates} />
           </DialogContent>
         </Dialog>
       </div>
@@ -102,7 +102,7 @@ const Affiliates = () => {
           setRowSelection={setRowSelection}
           rowStyle={{
             display: "grid",
-            gridTemplateColumns: `auto repeat(2, minmax(0, 1fr)) 1.5fr repeat(3, minmax(0, 1fr)) auto`,
+            gridTemplateColumns: `repeat(2, minmax(0, 1fr)) 1.5fr repeat(2, minmax(0, 1fr)) repeat(2, minmax(0, 0.5fr))`,
           }}
         />
       </div>

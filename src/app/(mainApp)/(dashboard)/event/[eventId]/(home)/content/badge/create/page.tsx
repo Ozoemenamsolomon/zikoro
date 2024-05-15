@@ -24,9 +24,8 @@ import TextTab from "./_tabs/Text";
 import Verification from "./_tabs/verification";
 import Settings from "./_tabs/Settings";
 import QRCode from "react-qr-code";
-import { formatDateToHumanReadable } from "@/utils/date";
 import Background from "./_tabs/Background";
-import { TBadge } from "@/types/badge";
+import { TBadge, TBadgeSettings } from "@/types/badge";
 import useUndo from "use-undo";
 import { useGetBadge, useSaveBadge } from "@/hooks/services/badge";
 import { Image as ImageElement } from "@/components/certificate";
@@ -43,6 +42,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useGetEvent } from "@/hooks";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 const tabs = [
   {
@@ -221,8 +221,8 @@ const DEFAULT_FRAME_STATE: SerializedNodes = {
 export interface TabProps {
   details: any;
   setValue: (key: string, value: any) => void;
-  settings: any;
-  editSettings: (key: string, value: any) => void;
+  settings: TBadgeSettings;
+  editSettings: (key: keyof TBadgeSettings, value: any) => void;
 }
 
 const page = () => {
@@ -291,7 +291,9 @@ const page = () => {
     }
   }, [badgeIsLoading]);
 
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<TBadgeSettings>({
+    width: 250,
+    height: 370,
     size: "A4",
     orientation: "portrait",
     canReceive: {
@@ -300,10 +302,6 @@ const page = () => {
       sessionAttendees: false,
       trackAttendees: false,
     },
-    criteria: 100,
-    canExpire: false,
-    expiryDate: new Date(),
-    skills: [],
   });
 
   useLayoutEffect(() => {
@@ -317,7 +315,7 @@ const page = () => {
 
     // Set the maximum height of the div
     div.style.maxHeight = `${distanceToBottom}px`;
-    badgeDiv.style.maxHeight = `${secondDistanceToBottom}px`;
+    badgeDiv.style.height = `${secondDistanceToBottom}px`;
   }, []);
 
   const setValue = (key: string, value: any) => {
@@ -623,7 +621,7 @@ const page = () => {
               ))}
             </Tabs>
           </div>
-          <div className="col-span-6 flex flex-col items-center bg-basebody">
+          <div className="col-span-6 flex flex-col items-center bg-basebody w-full">
             <div className="grid grid-cols-10 bg-white w-full">
               <div className="col-span-2 flex gap-4 text-gray-500 py-2 px-4">
                 <button onClick={undoDetails}>
@@ -657,57 +655,63 @@ const page = () => {
                 <SettingsPanel />
               </div>
             </div>
-            <div
-              className="py-6 overflow-auto w-full no-scrollbar flex justify-center"
-              ref={badgeDivRef}
-            >
-              <div
-                className="relative w-4/5 h-fit space-y-6 text-black bg-no-repeat"
-                style={{
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "100% 100%",
-                  backgroundImage: !!details.background
-                    ? `url(${details.background})`
-                    : "",
-                  backgroundColor: "#fff",
-                  width: "400px",
-                  height: "500px",
-                }}
-                ref={badgeRef}
-                id="badge"
-              >
-                {!badgeIsLoading ? (
-                  <>
-                    {hashRef.current && (
-                      <Frame data={hashRef.current}>
-                        <Element
-                          is={Container}
-                          canvas
-                          className="w-full h-full"
-                        >
-                          <Text text={"example text"} />
-                        </Element>
-                      </Frame>
-                    )}
-                  </>
-                ) : (
-                  <div className="h-1/2 w-full flex items-center justify-center">
-                    <div className="animate-spin">
-                      <svg
-                        stroke="currentColor"
-                        fill="currentColor"
-                        strokeWidth={0}
-                        viewBox="0 0 1024 1024"
-                        height="2.5em"
-                        width="2.5em"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
-                      </svg>
+            <div className="w-full flex justify-center items-center">
+              <TransformWrapper panning={{ disabled: true }}>
+                <TransformComponent wrapperClass="!w-full">
+                  <div
+                    className="py-6 overflow-auto w-full no-scrollbar flex justify-center"
+                    ref={badgeDivRef}
+                  >
+                    <div
+                      className="relative space-y-6 text-black bg-no-repeat overflow-hidden"
+                      style={{
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "100% 100%",
+                        backgroundImage: !!details.background
+                          ? `url(${details.background})`
+                          : "",
+                        backgroundColor: "#fff",
+                        width: (settings.width ?? "250") + "px",
+                        height: (settings.height ?? "370") + "px",
+                      }}
+                      ref={badgeRef}
+                      id="badge"
+                    >
+                      {!badgeIsLoading ? (
+                        <>
+                          {hashRef.current && (
+                            <Frame data={hashRef.current}>
+                              <Element
+                                is={Container}
+                                canvas
+                                className="w-full h-full"
+                              >
+                                <Text text={"example text"} />
+                              </Element>
+                            </Frame>
+                          )}
+                        </>
+                      ) : (
+                        <div className="h-1/2 w-full flex items-center justify-center">
+                          <div className="animate-spin">
+                            <svg
+                              stroke="currentColor"
+                              fill="currentColor"
+                              strokeWidth={0}
+                              viewBox="0 0 1024 1024"
+                              height="2.5em"
+                              width="2.5em"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M512 1024c-69.1 0-136.2-13.5-199.3-40.2C251.7 958 197 921 150 874c-47-47-84-101.7-109.8-162.7C13.5 648.2 0 581.1 0 512c0-19.9 16.1-36 36-36s36 16.1 36 36c0 59.4 11.6 117 34.6 171.3 22.2 52.4 53.9 99.5 94.3 139.9 40.4 40.4 87.5 72.2 139.9 94.3C395 940.4 452.6 952 512 952c59.4 0 117-11.6 171.3-34.6 52.4-22.2 99.5-53.9 139.9-94.3 40.4-40.4 72.2-87.5 94.3-139.9C940.4 629 952 571.4 952 512c0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.2C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3s-13.5 136.2-40.2 199.3C958 772.3 921 827 874 874c-47 47-101.8 83.9-162.7 109.7-63.1 26.8-130.2 40.3-199.3 40.3z" />
+                            </svg>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
-                )}
-              </div>
+                </TransformComponent>
+              </TransformWrapper>
             </div>
           </div>
         </section>

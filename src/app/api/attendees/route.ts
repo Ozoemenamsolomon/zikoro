@@ -584,8 +584,8 @@ export async function GET(req: NextRequest) {
 
       console.log(eventId);
 
-      // if (eventId) query.eq("eventAlias", eventId);
-      // if (userId) query.eq("userId", userId);
+      if (eventId) query.eq("eventAlias", eventId);
+      if (userId) query.eq("userId", userId);
 
       const { data, error, status } = await query;
 

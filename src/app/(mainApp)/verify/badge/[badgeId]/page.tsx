@@ -171,6 +171,8 @@ const Page = ({ params }: { params: { badgeId: string } }) => {
     }
   }, [isLoading]);
 
+  console.log(badge?.originalBadge, "original");
+
   return (
     <section className="min-h-screen flex flex-col-reverse md:flex-row justify-center gap-6 pt-20 pb-8">
       {!isLoading ? (
@@ -261,7 +263,7 @@ const Page = ({ params }: { params: { badgeId: string } }) => {
                     BadgeQRCode,
                   }}
                 >
-                  <div className="relative px-4 w-full">
+                  <div className="relative px-4 w-full flex justify-center mt-6">
                     <div className="w-full h-full absolute bg-transparent z-[100]" />
                     <div
                       className="relative h-fit space-y-6 text-black bg-no-repeat"
@@ -273,8 +275,12 @@ const Page = ({ params }: { params: { badgeId: string } }) => {
                           ? `url(${badge?.originalBadge?.badgeDetails?.background})`
                           : "",
                         backgroundColor: "#fff",
-                        height: "750px",
-                        width: "100%",
+                        height:
+                          (badge?.originalBadge.badgeSettings.height ?? "370") +
+                          "px",
+                        width:
+                          (badge?.originalBadge.badgeSettings.width ?? "250") +
+                          "px",
                       }}
                       id="badge"
                     >

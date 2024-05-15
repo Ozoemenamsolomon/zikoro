@@ -284,6 +284,9 @@ importers:
       react-toastify:
         specifier: ^10.0.4
         version: 10.0.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react-zoom-pan-pinch:
+        specifier: ^3.4.4
+        version: 3.4.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       slick-carousel:
         specifier: ^1.8.1
         version: 1.8.1(jquery@3.7.1)
@@ -4317,6 +4320,13 @@ packages:
     peerDependencies:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
+
+  react-zoom-pan-pinch@3.4.4:
+    resolution: {integrity: sha512-lGTu7D9lQpYEQ6sH+NSlLA7gicgKRW8j+D/4HO1AbSV2POvKRFzdWQ8eI0r3xmOsl4dYQcY+teV6MhULeg1xBw==}
+    engines: {node: '>=8', npm: '>=5'}
+    peerDependencies:
+      react: '*'
+      react-dom: '*'
 
   react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
@@ -9866,6 +9876,11 @@ snapshots:
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
+  react-zoom-pan-pinch@3.4.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 

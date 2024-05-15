@@ -8,39 +8,47 @@ import {
 } from "@/hooks/services/marketing";
 import { TUser } from "@/types";
 import { TAffiliate } from "@/types/marketing";
-import { convertDateFormat } from "@/utils/date";
 import { ColumnDef } from "@tanstack/react-table";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import CreateAffiliateForm from "@/components/forms/createAffiliateForm";
 
 export const columns: ColumnDef<TAffiliate>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="pl-2">
-        <Checkbox
-          className="data-[state=checked]:bg-basePrimary"
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="pl-2">
-        <Checkbox
-          className="data-[state=checked]:bg-basePrimary"
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          disabled={!row.getCanSelect()}
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <div className="pl-2">
+  //       <Checkbox
+  //         className="data-[state=checked]:bg-basePrimary"
+  //         checked={
+  //           table.getIsAllPageRowsSelected() ||
+  //           (table.getIsSomePageRowsSelected() && "indeterminate")
+  //         }
+  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //         aria-label="Select all"
+  //       />
+  //     </div>
+  //   ),
+  //   cell: ({ row }) => (
+  //     <div className="pl-2">
+  //       <Checkbox
+  //         className="data-[state=checked]:bg-basePrimary"
+  //         checked={row.getIsSelected()}
+  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //         aria-label="Select row"
+  //         disabled={!row.getCanSelect()}
+  //       />
+  //     </div>
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "firstName",
     header: "First Name",
@@ -117,6 +125,36 @@ export const columns: ColumnDef<TAffiliate>[] = [
           disabled={isLoading || affiliatesIsLoading}
           className="data-[state=checked]:bg-basePrimary"
         />
+      );
+    },
+  },
+  {
+    id: "edit",
+    cell: ({ row }) => {
+      const user = getCookie<TUser>("user");
+      const { getAffiliates } = useGetAffiliates({
+        userId: user?.id || 0,
+      });
+
+      return (
+        <Dialog>
+          <DialogTrigger asChild>
+            <button className="text-basePrimary underline">
+              <span>Edit</span>
+            </button>
+          </DialogTrigger>
+          <DialogContent className="px-3">
+            <DialogHeader>
+              <DialogTitle>
+                <span className="capitalize">Create affiliate</span>
+              </DialogTitle>
+            </DialogHeader>
+            <CreateAffiliateForm
+              getAffiliates={getAffiliates}
+              affiliate={row.original}
+            />
+          </DialogContent>
+        </Dialog>
       );
     },
   },

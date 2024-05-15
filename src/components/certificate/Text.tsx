@@ -282,9 +282,9 @@ const TextSettings = () => {
             <Slider
               defaultValue={[16]}
               value={[fontSize]}
-              step={4}
-              min={16}
-              max={50}
+              step={2}
+              min={8}
+              max={24}
               onValueChange={(value) => {
                 setProp(
                   (props: Textprops) => (props.fontSize = value[0]),

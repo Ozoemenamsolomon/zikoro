@@ -79,10 +79,39 @@ const Settings = ({ settings, editSettings }: TabProps) => {
     calculateAndSetMaxHeight(divRef);
   }, []);
 
+  console.log(settings);
+
   return (
     <div ref={divRef} className="hide-scrollbar">
       <h4 className="text-lg text-gray-700 font-medium">Paper Format</h4>
-      <div className="space-y-4 text-gray-500 pt-2 pb-4">
+      <div className="pt-2 pb-4 text-gray-500 flex gap-4">
+        <div className="flex-1 rounded-md bg-background text-sm relative">
+          <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+            Width
+          </span>
+          <Input
+            className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+            onInput={(e) => editSettings("width", e.currentTarget.value)}
+            value={settings.width ?? 250}
+            min={150}
+            type="number"
+          />
+        </div>
+        <div className="flex-1 rounded-md bg-background text-sm relative">
+          <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+            Height
+          </span>
+          <Input
+            className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+            onInput={(e) => editSettings("height", e.currentTarget.value)}
+            value={settings.height ?? 370}
+            min={370}
+            type="number"
+          />
+        </div>
+      </div>
+      {/* <div className="space-y-4 text-gray-500 pt-2 pb-4">
+
         <div className="flex justify-between">
           <span className="font-medium text-sm">Size</span>
           <RadioGroup
@@ -92,11 +121,11 @@ const Settings = ({ settings, editSettings }: TabProps) => {
             className="flex gap-2 text-sm"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="A4" id="A4" />
+              <RadioGroupItem value="A5" id="A5" />
               <Label htmlFor="A4">A5</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="letter" id="letter" />
+              <RadioGroupItem value="A6" id="A6" />
               <Label htmlFor="letter">A6</Label>
             </div>
           </RadioGroup>
@@ -119,7 +148,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
             </div>
           </RadioGroup>
         </div>
-      </div>
+      </div> */}
       <div className=" pb-2 pt-4">
         <h4 className="text-gray-700 font-medium">
           Who should receive this certificate?

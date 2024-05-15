@@ -10,16 +10,15 @@ const accountDetailsSchema = z.object({
 
 export const AffiliateSchema = z.object({
   id: z.number().optional(),
-  created_at: z.date().optional(),
+  created_at: z.string().optional(),
   userId: z.number(),
   userEmail: z.string(),
   firstName: z.string(),
   lastname: z.string(),
   email: z.string(),
-  phoneNumber: z
-    .string()
-    .regex(/^\d{11}$/, { message: "Phone number must be 11 digits long" }),
+  phoneNumber: z.string(),
+  // .regex(/^\d{11}$/, { message: "Phone number must be 11 digits long" }),
   accountDetails: accountDetailsSchema,
-  payoutSchedule: z.string().optional(),
+  payoutSchedule: z.string().optional().nullable(),
   affliateStatus: z.boolean(),
 });

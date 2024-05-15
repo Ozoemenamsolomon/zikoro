@@ -8,10 +8,23 @@ export interface TBadge {
   eventAlias: string;
   badgeName: string;
   badgeDetails: any;
-  badgeSettings: any;
+  badgeSettings: TBadgeSettings;
   badgeBackground: string;
   badgeUrl: string;
   lastEdited: Date;
+}
+
+export interface TBadgeSettings {
+  width: number;
+  height: number;
+  size: string;
+  orientation: string;
+  canReceive: {
+    eventAttendees: boolean;
+    quizParticipants: boolean;
+    sessionAttendees: boolean;
+    trackAttendees: boolean;
+  };
 }
 
 export interface TBadgeTemplate {
