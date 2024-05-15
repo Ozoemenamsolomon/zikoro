@@ -31,9 +31,12 @@ export function DeleteModal({
           </div>
   
           <div className="w-full flex items-end justify-end gap-x-3">
-            <Button onClick={close}>Cancel</Button>
+            <Button
+            disabled={loading}
+            onClick={close}>Cancel</Button>
   
             <Button
+            disabled={loading}
               onClick={asyncDelete}
               className="text-gray-50 bg-basePrimary w-[120px] gap-x-2"
             >

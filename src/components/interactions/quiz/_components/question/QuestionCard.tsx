@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Time } from "@styled-icons/ionicons-outline/Time";
 import { FeedStar } from "@styled-icons/octicons/FeedStar";
-import { TQuestion, TQuiz } from "@/types";
+import { TQuestion, TQuiz, TRefinedQuestion } from "@/types";
 import { millisecondsToTime } from "@/utils";
 import { useMemo } from "react";
 import { cn } from "@/lib";
@@ -17,21 +17,33 @@ export function QuestionCard({
   activeQuestion,
   refetch,
 }: {
-  question: TQuestion;
+  question: TRefinedQuestion;
   id: number;
-  quiz: TQuiz;
-  setActiveQuestion: (q: TQuestion) => void;
-  activeQuestion: TQuestion | null;
+  quiz: TQuiz<TRefinedQuestion[]>;
+  setActiveQuestion: (q: TRefinedQuestion) => void;
+  activeQuestion: TRefinedQuestion | null;
   refetch: () => Promise<any>;
 }) {
   const duration = useMemo(() => {
     return millisecondsToTime(Number(question?.duration || 0));
   }, [question?.duration]);
 
+  const actualQuiz: TQuiz<TQuestion[]> = useMemo(() => {
+    return {
+      ...quiz,
+      questions: quiz?.questions?.map((item) => {
+        return {
+          ...item,
+          options: item?.options?.map(({ isCorrect, ...rest }) => rest),
+        };
+      }),
+    };
+  }, [quiz]);
+
   return (
     <div
-    onClick={() => setActiveQuestion(question)}
-    role="button"
+      onClick={() => setActiveQuestion(question)}
+      role="button"
       className={cn(
         "w-full p-3 rounded-lg gap-2 grid grid-cols-7",
         activeQuestion &&
@@ -66,12 +78,12 @@ export function QuestionCard({
           </div>
           <DeleteQuestion
             refetch={refetch}
-            quiz={quiz}
+            quiz={actualQuiz}
             questionId={question?.id}
           />
           <CopyQuestion
             refetch={refetch}
-            quiz={quiz}
+            quiz={actualQuiz}
             questionId={question?.id}
           />
         </div>

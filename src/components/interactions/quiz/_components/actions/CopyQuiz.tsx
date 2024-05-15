@@ -2,23 +2,24 @@
 
 import { Button } from "@/components";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
-import { TQuiz } from "@/types";
+import { TQuiz, TQuestion } from "@/types";
 import { useCreateQuiz } from "@/hooks";
 import { generateAlias } from "@/utils";
 export function CopyQuiz({
   quiz,
   refetch,
 }: {
-  quiz: TQuiz;
+  quiz: TQuiz<TQuestion[]>;
   refetch: () => Promise<any>;
 }) {
   const { createQuiz, isLoading } = useCreateQuiz();
 
   async function coppied() {
+    const {id, ...restData} = quiz
     const newAlias = generateAlias();
 
     const payload = {
-      ...quiz,
+      ...restData,
       quizAlias: newAlias,
     };
 
@@ -28,6 +29,7 @@ export function CopyQuiz({
   return (
     <>
       <Button
+      disabled={isLoading}
         onClick={coppied}
         className={
           "items-center h-10 gap-x-2 hover:bg-gray-100 justify-start w-full  text-xs"

@@ -4,7 +4,7 @@ import { Button } from "@/components";
 import { useState } from "react";
 import { useDeleteQuiz } from "@/hooks";
 import { DeleteModal } from "..";
-export function DeleteQuiz({ quizAlias }: { quizAlias: string }) {
+export function DeleteQuiz({ quizAlias, refetch }: {refetch: () =>Promise<any>; quizAlias: string }) {
   const { deleteQuiz, isLoading } = useDeleteQuiz();
   const [isOpen, setOpen] = useState(false);
 
@@ -13,6 +13,8 @@ export function DeleteQuiz({ quizAlias }: { quizAlias: string }) {
   }
   async function deletes() {
     await deleteQuiz({ quizId: quizAlias });
+    refetch()
+    onClose()
   }
 
   return (

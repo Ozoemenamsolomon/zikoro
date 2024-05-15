@@ -2,22 +2,34 @@
 
 import { Button } from "@/components";
 import { Switch } from "@/components/ui/switch";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ThreeDotsVertical } from "styled-icons/bootstrap";
 import { CopyQuiz, DeleteQuiz } from "..";
 import Image from "next/image";
 import { QUser, QUsers } from "@/constants";
 import { useRouter } from "next/navigation";
-import { TQuiz } from "@/types";
+import { TQuiz, TQuestion } from "@/types";
+
 export function QuizCard({
   quiz,
   refetch,
 }: {
   refetch: () => Promise<any>;
-  quiz: TQuiz;
+  quiz: TQuiz<TQuestion[]>;
 }) {
   const [isOpen, setOpen] = useState(false);
   const router = useRouter();
+
+  const points = useMemo(() => {
+    // MAP AND SOME ALL POINTS
+    if (Array.isArray(quiz?.questions) && quiz?.questions?.length > 0) {
+      const allPoints = quiz?.questions?.map(({ points }) => Number(points));
+      const sumOfPoints = allPoints.reduce((sum, point) => sum + point, 0);
+      return sumOfPoints;
+    } else {
+      return 0;
+    }
+  }, [quiz]);
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -65,8 +77,10 @@ export function QuizCard({
         </p>
         <div className="text-gray-500 px-3 text-xs ms:text-mobile flex items-center justify-between w-full">
           <p className="flex items-center gap-x-2">
-            <span className="border-r pr-2 border-gray-500">50 Questions</span>
-            <span>1000 points</span>
+            <span className="border-r pr-2 border-gray-500">{`${
+              quiz?.questions?.length || 0
+            } ${quiz?.questions?.length > 1 ? "Questions" : "Question"}`}</span>
+            <span>{`${points} ${points > 0 ? `points` : `point`}`}</span>
           </p>
           <p className="flex items-center gap-x-1">
             <QUsers />
@@ -88,7 +102,7 @@ function ActionModal({
   quiz,
 }: {
   refetch: () => Promise<any>;
-  quiz: TQuiz;
+  quiz: TQuiz<TQuestion[]>;
   close: () => void;
 }) {
   return (
@@ -109,7 +123,7 @@ function ActionModal({
             <Switch className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary" />
           </div>
 
-          <DeleteQuiz quizAlias={quiz?.quizAlias} />
+          <DeleteQuiz quizAlias={quiz?.quizAlias} refetch={refetch} />
         </div>
       </div>
     </>

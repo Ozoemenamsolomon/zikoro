@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components";
-import { TQuiz } from "@/types";
+import { TQuiz, TQuestion } from "@/types";
 import { useState } from "react";
 import { useUpdateQuiz } from "@/hooks";
 import { DeleteOutline } from "@styled-icons/material/DeleteOutline";
@@ -12,7 +12,7 @@ export function DeleteQuestion({
   refetch,
 }: {
   questionId: string;
-  quiz: TQuiz;
+  quiz: TQuiz<TQuestion[]>;
   refetch: () => Promise<any>;
 }) {
   const [isOpen, setOpen] = useState(false);

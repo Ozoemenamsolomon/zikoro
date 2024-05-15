@@ -10,7 +10,7 @@ import * as z from "zod";
 import { quizSettingSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo, useEffect, useState } from "react";
-import { TQuiz } from "@/types";
+import { TQuiz, TQuestion } from "@/types";
 import Image from "next/image";
 import { generateAlias, uploadFile } from "@/utils";
 import { useCreateQuiz, useUpdateQuiz } from "@/hooks";
@@ -18,7 +18,7 @@ import { useCreateQuiz, useUpdateQuiz } from "@/hooks";
 type QuizSettingsProp = {
   eventAlias: string;
   close: () => void;
-  quiz?: TQuiz | null;
+  quiz?: TQuiz<TQuestion[]> | null;
   refetch?: () => Promise<any>;
 };
 export function QuizSettings({
@@ -55,7 +55,7 @@ export function QuizSettings({
 
     const quizAlias = generateAlias();
 
-    const payload: Partial<TQuiz> = quiz?.quizAlias
+    const payload: Partial<TQuiz<TQuestion[]>> = quiz?.quizAlias
       ? {
           ...quiz,
           ...values,

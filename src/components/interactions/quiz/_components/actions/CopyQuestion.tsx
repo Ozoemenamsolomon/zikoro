@@ -12,7 +12,7 @@ export function CopyQuestion({
   refetch,
 }: {
   questionId: string;
-  quiz: TQuiz;
+  quiz: TQuiz<TQuestion[]>;
   refetch: () => Promise<any>;
 }) {
   const { updateQuiz, isLoading } = useUpdateQuiz();

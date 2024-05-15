@@ -23,7 +23,7 @@ import { cn } from "@/lib";
 import { quizQuestionSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { TQuiz, TAnswer } from "@/types";
+import { TQuiz, TAnswer, TQuestion } from "@/types";
 import { useUpdateQuiz } from "@/hooks";
 import Image from "next/image";
 import { useState, useMemo } from "react";
@@ -32,7 +32,7 @@ import { uploadFile } from "@/utils";
 type AddQuestionProp = {
   refetch?: () => Promise<any>;
   close: () => void;
-  quiz?: TQuiz | null;
+  quiz?: TQuiz<TQuestion[]> | null;
 };
 export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
   const { updateQuiz } = useUpdateQuiz();
@@ -71,7 +71,7 @@ export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
       id: nanoid(),
       questionImage: promise,
     };
-    const payload: Partial<TQuiz> = {
+    const payload: Partial<TQuiz<TQuestion[]>> = {
       ...quiz,
       questions:
         quiz?.questions?.length > 0

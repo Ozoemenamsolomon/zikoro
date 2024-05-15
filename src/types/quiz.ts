@@ -1,6 +1,6 @@
 import * as z from "zod";
 import { quizQuestionSchema } from "@/schemas";
-export interface TQuiz {
+export interface TQuiz<T> {
   id: number;
   created_at: string;
   lastUpdated_at: string;
@@ -9,7 +9,7 @@ export interface TQuiz {
   description: string;
   coverImage: string;
   branding: { poweredBy: boolean; eventName: boolean };
-  questions: TQuestion[];
+  questions: T;
   totalDuration: number;
   totalPoints: number;
   eventAlias: string;
@@ -18,6 +18,21 @@ export interface TQuiz {
 
 export type TQuestion = z.infer<typeof quizQuestionSchema> & {
   id: string;
+};
+
+export type TRefinedQuestion = {
+  id: string;
+  question: string;
+  questionImage?: any;
+  duration: string;
+  points: string;
+  feedBack?: any;
+  options: {
+    optionId: string;
+    option: string;
+    isAnswer: string;
+    isCorrect: boolean | string;
+  }[];
 };
 
 export interface TAnswer {
