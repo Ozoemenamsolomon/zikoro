@@ -107,7 +107,7 @@ export function Qusetion({
 
   const optionLetter = ["A", "B", "C", "D"];
   return (
-    <div className="w-full h-full bg-white relative col-span-5 px-6 py-12 border-x  flex flex-col items-start justify-between gap-3">
+    <div className={cn("w-full h-full bg-white relative  px-6 py-12 border-x  flex flex-col items-start justify-between gap-3 col-span-7", isLeftBox && isRightBox && "col-span-5", !isLeftBox && !isRightBox && "col-span-full")}>
       <Button
         onClick={toggleRightBox}
         className={cn("absolute right-2 top-2", isRightBox && "hidden")}

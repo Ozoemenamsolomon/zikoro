@@ -2,7 +2,7 @@
 
 import { Advert, LeaderBoard, Qusetion } from "..";
 import { useState } from "react";
-import {useGetQuiz} from "@/hooks"
+import {useGetQuiz} from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 export default function Presentation({
   eventId,
@@ -23,11 +23,11 @@ export default function Presentation({
     setRightBox((prev) => !prev);
   }
   return (
-    <div className="w-full  p-4 sm:p-8">
+    <div className="w-full">
      {quiz ?
      
      <div className="w-full grid md:grid-cols-11 h-full items-start">
-     <Advert quiz={quiz} isLeftBox={isLeftBox} close={onClose} />
+     <Advert quiz={quiz} isRightBox={isRightBox} isLeftBox={isLeftBox} close={onClose} />
      <Qusetion
        isLeftBox={isLeftBox}
        quiz={quiz}
@@ -35,7 +35,7 @@ export default function Presentation({
        toggleRightBox={onToggle}
        toggleLeftBox={onClose}
      />
-     <LeaderBoard isRightBox={isRightBox} close={onToggle} />
+     <LeaderBoard isRightBox={isRightBox} isLeftBox={isLeftBox} close={onToggle} />
    </div>
      :
      <div className="w-full h-[40vh] flex items-center justify-center">

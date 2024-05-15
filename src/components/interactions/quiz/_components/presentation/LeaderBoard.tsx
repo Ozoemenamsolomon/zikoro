@@ -2,9 +2,9 @@ import { Minimize2 } from "@styled-icons/feather/Minimize2";
 import Image from "next/image";
 import { Button } from "@/components";
 import { cn } from "@/lib";
-export function LeaderBoard({isRightBox, close}:{isRightBox: boolean; close:() => void}) {
+export function LeaderBoard({isRightBox,isLeftBox, close}:{isLeftBox: boolean; isRightBox: boolean; close:() => void}) {
   return (
-    <div className={cn("w-full col-span-3 bg-white h-full rounded-r-xl hidden md:block md:invisible", isRightBox && "block md:block visible md:visible" )}>
+    <div className={cn("w-full col-span-3 bg-white h-full rounded-r-xl hidden  md:hidden", isRightBox && "block md:block ", !isLeftBox && "col-span-4" )}>
       <div className="flex items-center p-4 justify-between w-full border-b">
         <h2 className="font-semibold  text-base sm:text-xl">LeaderBoard</h2>
         <Button

@@ -64,7 +64,6 @@ export function QuizSettings({
             eventName: isEventName,
           },
           eventAlias,
-          quizAlias,
           lastUpdated_at: new Date().toISOString(),
           coverImage: promise,
         }

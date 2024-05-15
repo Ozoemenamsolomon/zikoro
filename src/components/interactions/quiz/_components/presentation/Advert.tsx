@@ -3,11 +3,27 @@ import { FileCopy } from "@styled-icons/remix-fill/FileCopy";
 import { Minimize2 } from "@styled-icons/feather/Minimize2";
 import Image from "next/image";
 import { Button } from "@/components";
-import {TQuiz, TQuestion} from "@/types"
+import { TQuiz, TQuestion } from "@/types";
 import { cn } from "@/lib";
-export function Advert({quiz, close, isLeftBox}:{quiz:TQuiz<TQuestion[]>; isLeftBox:boolean; close:() =>  void}) {
+export function Advert({
+  quiz,
+  isRightBox,
+  close,
+  isLeftBox,
+}: {
+  quiz: TQuiz<TQuestion[]>;
+  isLeftBox: boolean;
+  close: () => void;
+  isRightBox: boolean;
+}) {
   return (
-    <div className={cn("w-full flex-col bg-white rounded-l-xl h-full col-span-3 items-start justify-between hidden md:flex md:invisible", isLeftBox && "flex md:flex visible md:visible")}>
+    <div
+      className={cn(
+        "w-full flex-col bg-white rounded-l-xl h-full  items-start justify-between hidden col-span-3 md:hidden",
+        isLeftBox && "flex md:flex ",
+        !isRightBox && "col-span-4"
+      )}
+    >
       <h2 className="font-semibold w-full border-b p-4 text-base sm:text-xl">
         Resin Art Workshop
       </h2>
@@ -32,9 +48,7 @@ export function Advert({quiz, close, isLeftBox}:{quiz:TQuiz<TQuestion[]>; isLeft
           />
         </div>
 
-        <Button
-        onClick={close}
-        className="px-0 h-fit w-fit">
+        <Button onClick={close} className="px-0 h-fit w-fit">
           <Minimize2 size={20} />
         </Button>
       </div>
