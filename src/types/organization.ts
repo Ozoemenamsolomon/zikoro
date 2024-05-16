@@ -2,27 +2,36 @@ export interface TOrganization {
   id: number;
   created_at: string;
   organizationName: string;
-  organizationSlug: string | null;
+  organizationSlug: string;
   subscriptionPlan: string;
-  subscritionStartDate: string | null;
-  subscriptionEndDate: string | null;
+  subscritionStartDate: string;
+  subscriptionEndDate: string;
   organizationOwner: string;
-  BillingAddress: string | null;
-  TaxID: string | null;
-  payoutAccountDetails: string | null;
+  BillingAddress: string;
+  TaxID: string;
+  payoutAccountDetails: IPayoutAccountDetails | null;
   organizationOwnerId: number;
   organizationType: string;
-  organizationLogo: string | null;
-  country: string | null;
-  eventPhoneNumber: string | null;
-  eventWhatsApp: string | null;
-  eventContactEmail: string | null;
-  x: string | null;
-  linkedIn: string | null;
-  instagram: string | null;
-  facebook: string | null;
-  certificateAsset: TCertificateAsset | null;
+  organizationLogo: string;
+  country: string;
+  eventPhoneNumber: string;
+  eventWhatsApp: string;
+  eventContactEmail: string;
+  x: string;
+  linkedIn: string;
+  instagram: string;
+  facebook: string;
+  certificateAsset: TCertificateAsset;
   teamMembers: TOrganizationTeamMember[];
+}
+
+export interface IPayoutAccountDetails {
+  bankCountry: string;
+  currency: string;
+  accountNumber: string;
+  accountName: string;
+  bankName: string;
+  bankCode: number;
 }
 
 type TOrganizationTeamMember = {

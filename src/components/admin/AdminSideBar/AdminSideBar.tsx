@@ -29,7 +29,7 @@ function SideNav({ close, isNav }: { isNav: boolean; close: () => void }) {
         e.stopPropagation();
         close();
       }}
-      className={`fixed z-[99] inset-y-0 left-0 h-full ${
+      className={`fixed z-[49] inset-y-0 left-0 h-full ${
         isNav
           ? "w-full bg-white/50  min-[1024px]:w-[250px]"
           : "max-[1024px]:hidden w-[250px] "

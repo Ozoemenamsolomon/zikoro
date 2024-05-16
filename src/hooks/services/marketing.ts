@@ -79,11 +79,11 @@ export const useGetAffiliates = ({
   };
 };
 
-export const useGetMarketingEmails = (): UseGetResult<
-  TSentEmail[],
-  "marketingEmails",
-  "getMarketingEmails"
-> => {
+export const useGetMarketingEmails = ({
+  userId,
+}: {
+  userId: number;
+}): UseGetResult<TSentEmail[], "marketingEmails", "getMarketingEmails"> => {
   const [marketingEmails, setMarketingEmails] = useState<TSentEmail[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -93,7 +93,7 @@ export const useGetMarketingEmails = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<TSentEmail[]>({
-        endpoint: "marketing/email",
+        endpoint: `marketing/email${userId ? "?userId=" + userId : ""}`,
       });
 
       if (status !== 200) {

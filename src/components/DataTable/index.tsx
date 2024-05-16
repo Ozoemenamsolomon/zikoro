@@ -91,7 +91,7 @@ export function DataTable<TData extends { id?: number }>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   style={rowStyle}
-                  className="max-w-full grid grid-cols-[auto_1.5fr_repeat(8,_minmax(0,_1fr))]  gap-2"
+                  className="max-w-full gap-2 "
                   key={row.id}
                   // data-state={row?.getIsSelected() && "selected"}
                 >

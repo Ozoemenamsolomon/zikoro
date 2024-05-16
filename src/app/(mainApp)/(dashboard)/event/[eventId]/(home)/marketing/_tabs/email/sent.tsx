@@ -7,6 +7,8 @@ import { extractUniqueTypes } from "@/utils/helpers";
 import { DataTable } from "@/components/DataTable";
 import { columns } from "./columns";
 import { TSentEmail } from "@/types/marketing";
+import { getCookie } from "@/hooks";
+import { TUser } from "@/types";
 
 const marketingEmailsFilter: TFilter<TSentEmail>[] = [
   {
@@ -113,8 +115,13 @@ const marketingEmailsFilter: TFilter<TSentEmail>[] = [
 ];
 
 const Sent = () => {
+  const user = getCookie<TUser>("user");
+
+  if (!user) return;
   const { getMarketingEmails, marketingEmails, isLoading } =
-    useGetMarketingEmails();
+    useGetMarketingEmails({ userId: user.id ?? 0 });
+
+  console.log(marketingEmails);
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<TSentEmail>({

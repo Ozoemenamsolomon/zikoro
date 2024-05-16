@@ -1,11 +1,12 @@
 import { z } from "zod";
 
-const accountDetailsSchema = z.object({
+export const accountDetailsSchema = z.object({
   bankCountry: z.string(),
   currency: z.string(),
   accountNumber: z.string(),
   accountName: z.string(),
   bankName: z.string(),
+  bankCode: z.number().optional(),
 });
 
 export const AffiliateSchema = z.object({

@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       const body = {
         ...params,
         certificateId,
-        certificateURL: "www.zikoro.com/verify/" + certificateId,
+        certificateURL: "www.zikoro.com/verify/certificate/" + certificateId,
       };
 
       console.log(body);

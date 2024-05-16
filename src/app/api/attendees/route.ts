@@ -455,9 +455,9 @@ export async function POST(req: NextRequest) {
           `,
           attachments: [
             {
-              filename: "event.ics",
+              name: "event.ics",
               content: iCalendarContent,
-              contentType: "text/calendar",
+              mime_type: "text/calendar",
             },
           ],
         });
