@@ -7,24 +7,35 @@ import { Button } from "@/components";
 import { Maximize2 } from "@styled-icons/feather/Maximize2";
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
-import { TQuiz, TQuestion } from "@/types";
+import { useCreateAnswer } from "@/hooks";
+import toast from "react-hot-toast";
+import { TQuiz, TRefinedQuestion, TAnswer } from "@/types";
 export function Qusetion({
   isRightBox,
   isLeftBox,
   toggleRightBox,
   toggleLeftBox,
   quiz,
+  updateQuiz,
+  attendeeDetail,
+  isOrganizer,
+  isIdPresent,
 }: {
   isRightBox: boolean;
   isLeftBox: boolean;
   toggleLeftBox: () => void;
   toggleRightBox: () => void;
-  quiz: TQuiz<TQuestion[]>;
+  quiz: TQuiz<TRefinedQuestion[]>;
+  updateQuiz: (q: TQuiz<TRefinedQuestion[]>) => void;
+  attendeeDetail: { attendeeId?: string; attendeeName: string };
+  isOrganizer: boolean;
+  isIdPresent: boolean;
 }) {
-  const [currentQuestion, setCurrentQuestion] = useState<TQuestion | null>(
-    null
-  );
+  const [currentQuestion, setCurrentQuestion] =
+    useState<TRefinedQuestion | null>(null);
   const [millisecondsLeft, setMillisecondsLeft] = useState<number>(0);
+  const { createAnswer } = useCreateAnswer();
+
   useEffect(() => {
     if (quiz) {
       setCurrentQuestion(quiz.questions[0]);
@@ -81,6 +92,22 @@ export function Qusetion({
     if (nextQuestion) {
       setCurrentQuestion(nextQuestion);
     }
+    // update question time limit
+    if (millisecondsLeft > 0) {
+      const updatedQuiz: TQuiz<TRefinedQuestion[]> = {
+        ...quiz,
+        questions: quiz?.questions?.map((item) => {
+          if (item?.id === currentQuestion?.id) {
+            return {
+              ...item,
+              duration: String(millisecondsLeft),
+            };
+          }
+          return item;
+        }),
+      };
+      updateQuiz(updatedQuiz);
+    }
   }
 
   function previousQuestion() {
@@ -94,8 +121,24 @@ export function Qusetion({
     if (nextQuestion) {
       setCurrentQuestion(nextQuestion);
     }
+    // update question time limit
+    if (millisecondsLeft > 0) {
+      const updatedQuiz: TQuiz<TRefinedQuestion[]> = {
+        ...quiz,
+        questions: quiz?.questions?.map((item) => {
+          if (item?.id === currentQuestion?.id) {
+            return {
+              ...item,
+              duration: String(millisecondsLeft),
+            };
+          }
+          return item;
+        }),
+      };
+      updateQuiz(updatedQuiz);
+    }
   }
- 
+
   // active index
   const activeQuestionIndex = useMemo(() => {
     const index = quiz?.questions?.findIndex(
@@ -106,8 +149,80 @@ export function Qusetion({
   }, [currentQuestion]);
 
   const optionLetter = ["A", "B", "C", "D"];
+
+  // console.log("answer", answer)
+  async function selectOption(id: string) {
+    if (!attendeeDetail?.attendeeId) {
+      toast.error("Only attendee can answer the question");
+      return;
+    }
+    if (currentQuestion) {
+      const updatedOptions = currentQuestion?.options?.map((item) => {
+        return {
+          ...item,
+          isCorrect: item?.isAnswer === item?.optionId,
+        };
+      });
+      setCurrentQuestion({ ...currentQuestion, options: updatedOptions });
+
+      // user score: (correct 1, wrong 0), dependent on time
+
+      // checking if the correct answer is chosen
+      const isCorrectAnswer = currentQuestion?.options?.some(
+        (item) => item?.isAnswer === id
+      );
+      //  console.log(isCorrectAnswer, millisecondsLeft);
+      const score = isCorrectAnswer ? 1 : 0;
+      // calculate the user point
+      const attendeePoints =
+        ((score * millisecondsLeft) / Number(currentQuestion?.duration)) *
+        Number(currentQuestion?.points);
+      //console.log(maxPoints)
+
+      const updatedQuiz: TQuiz<TRefinedQuestion[]> = {
+        ...quiz,
+        questions: quiz?.questions?.map((item) => {
+          if (item?.id === currentQuestion?.id) {
+            return {
+              ...item,
+              options: updatedOptions,
+            };
+          }
+          return item;
+        }),
+      };
+      updateQuiz(updatedQuiz);
+
+      const payload: Partial<TAnswer> = {
+        ...attendeeDetail,
+        quizId: quiz?.id,
+        questionId: currentQuestion?.id,
+        attendeePoints,
+        answerDuration: millisecondsLeft,
+        quizAlias: quiz?.quizAlias,
+        maxPoints: Number(currentQuestion?.points),
+        maxDuration: Number(currentQuestion?.duration),
+        selectedOptionId: { optionId: id },
+        correctOptionId: {
+          optionId:
+            currentQuestion?.options?.find(({ isAnswer }) => isAnswer === id)
+              ?.optionId || "",
+        },
+      };
+
+      await createAnswer({ payload });
+    }
+  }
+
   return (
-    <div className={cn("w-full h-full bg-white relative  px-6 py-12 border-x  flex flex-col items-start justify-between gap-3 col-span-7", isLeftBox && isRightBox && "col-span-5", !isLeftBox && !isRightBox && "col-span-full")}>
+    <div
+      className={cn(
+        "w-full h-full bg-white relative  px-6 py-12 border-x  flex flex-col items-start justify-between gap-3 col-span-7",
+        isLeftBox && isRightBox && (isIdPresent || isOrganizer) && "col-span-5",
+        !isLeftBox && !isRightBox && "col-span-full",
+        !isIdPresent && !isOrganizer && "col-span-full"
+      )}
+    >
       <Button
         onClick={toggleRightBox}
         className={cn("absolute right-2 top-2", isRightBox && "hidden")}
@@ -143,10 +258,13 @@ export function Qusetion({
 
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
         {currentQuestion?.options.map((option, index) => (
-          <QuestOption
+          <Option
             key={index}
+            option={option}
+            isOrganizer={isOrganizer}
+            isIdPresent={isIdPresent}
+            selectOption={selectOption}
             optionIndex={optionLetter[index]}
-            option={option?.option}
           />
         ))}
       </div>
@@ -179,22 +297,5 @@ export function Qusetion({
         <p className="w-1 h-1"></p>
       </div>
     </div>
-  );
-}
-
-function QuestOption({
-  optionIndex,
-  option,
-}: {
-  optionIndex: string;
-  option: string;
-}) {
-  return (
-    <button className="w-full px-4 text-gray-500 flex items-center justify-between min-h-[44px] h-fit rounded-md border border-gray-500 bg-gray-100">
-      <div className="w-full flex items-start gap-x-1">
-        <span>{optionIndex}.</span>
-        <p className="text-start ">{option ?? ""}</p>
-      </div>
-    </button>
   );
 }
