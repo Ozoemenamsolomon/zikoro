@@ -3,8 +3,8 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-// intialize qrcode
-const QRCode = require("qrcode");
+
+
 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -183,12 +183,15 @@ export async function POST(req: NextRequest) {
       //   console.log({ registeredAttendees });
       var { SendMailClient } = require("zeptomail");
 
-      let client = new SendMailClient({
-        url: process.env.NEXT_PUBLIC_ZEPTO_URL,
-        token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
-      });
+    
 
       registeredAttendees.forEach(async (attendee) => {
+
+        let client = new SendMailClient({
+          url: process.env.NEXT_PUBLIC_ZEPTO_URL,
+          token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
+        });
+
         await client.sendMail({
           from: {
             address: process.env.NEXT_PUBLIC_EMAIL,
@@ -520,6 +523,9 @@ export async function POST(req: NextRequest) {
 
 // Function to generate QR code
 export async function generateQRCode(user: string) {
+  // intialize qrcode
+const QRCode = require("qrcode");
+
   try {
     return await QRCode.toDataURL(user.toString());
   } catch (error) {

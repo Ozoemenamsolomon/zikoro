@@ -145,6 +145,8 @@ export default function QuizQuestion({
                     activeQuestion={currentQuestion}
                     updateQuiz={updateQuiz}
                     setHeight={questionHeight}
+                    isIdPresent={isIdPresent}
+                    isOrganizer={isOrganizer}
                   />
                 </div>
 

@@ -8,7 +8,7 @@ import { Button } from "@/components";
 import { Option } from "..";
 import {useCreateAnswer, useGetAnswer} from "@/hooks";
 import { useRef, useEffect, useMemo, useState } from "react";
-import { TQuestion, TRefinedQuestion, TQuiz, TAnswer } from "@/types";
+import { TRefinedQuestion, TQuiz, TAnswer } from "@/types";
 import { cn } from "@/lib";
 import toast from "react-hot-toast"
 
@@ -19,7 +19,9 @@ export function ActiveQuestion({
   quiz,
   setActiveQuestion,
   updateQuiz,
-  attendeeDetail
+  attendeeDetail,
+  isOrganizer,
+  isIdPresent
 }: {
   setHeight: (n: number) => void;
   activeQuestion: TRefinedQuestion | null;
@@ -27,6 +29,9 @@ export function ActiveQuestion({
   setActiveQuestion: (q: TRefinedQuestion) => void;
   updateQuiz: (q: TQuiz<TRefinedQuestion[]>) => void;
   attendeeDetail: {attendeeId?:string; attendeeName:string}
+  isOrganizer: boolean;
+  isIdPresent: boolean;
+
 }) {
   const divRef = useRef<HTMLDivElement | null>(null);
   const {answer, getAnswer} = useGetAnswer()
@@ -69,71 +74,7 @@ export function ActiveQuestion({
 
   },[activeQuestion])
 
- // console.log("answer", answer)
-  async function selectOption(id: string) {
-    if (!attendeeDetail?.attendeeId) {
-      toast.error("Only attendee can answer the question")
-      return
-    }
-    if (activeQuestion) {
-      const updatedOptions = activeQuestion?.options?.map((item) => {
-        return {
-          ...item,
-          isCorrect: item?.isAnswer === item?.optionId,
-        };
-      });
-      setActiveQuestion({ ...activeQuestion, options: updatedOptions });
-
-      // user score: (correct 1, wrong 0), dependent on time
-
-      // checking if the correct answer is chosen
-      const isCorrectAnswer = activeQuestion?.options?.some(
-        (item) => item?.isAnswer === id
-      );
-      //  console.log(isCorrectAnswer, millisecondsLeft);
-      const score = isCorrectAnswer ? 1 : 0;
-      // calculate the user point
-      const attendeePoints =
-        ((score * millisecondsLeft) / Number(activeQuestion?.duration)) *
-        Number(activeQuestion?.points);
-      //console.log(maxPoints)
-
-      const updatedQuiz: TQuiz<TRefinedQuestion[]> = {
-        ...quiz,
-        questions: quiz?.questions?.map((item) => {
-          if (item?.id === activeQuestion?.id) {
-            return {
-              ...item,
-              options: updatedOptions,
-            };
-          }
-          return item;
-        }),
-      };
-      updateQuiz(updatedQuiz);
-
-      const payload: Partial<TAnswer> = {
-        ...attendeeDetail,
-         quizId: quiz?.id,
-         questionId: activeQuestion?.id,
-         attendeePoints,
-         answerDuration: millisecondsLeft,
-         quizAlias: quiz?.quizAlias,
-         maxPoints: Number(activeQuestion?.points),
-         maxDuration: Number(activeQuestion?.duration),
-         selectedOptionId: { optionId: id },
-         correctOptionId: {
-           optionId:
-             activeQuestion?.options?.find(({ isAnswer }) => isAnswer === id)
-               ?.optionId || "",
-         },
-       };
-  
-
-        await createAnswer({payload})
-       
-    }
-  }
+ 
 
   // goto next question when time exceeds limit
   useEffect(() => {
@@ -153,22 +94,7 @@ export function ActiveQuestion({
     if (nextQuestion) {
       setActiveQuestion(nextQuestion);
     }
-      // update question time limit
-      if (millisecondsLeft > 0) {
-        const updatedQuiz: TQuiz<TRefinedQuestion[]> = {
-          ...quiz,
-          questions: quiz?.questions?.map((item) => {
-            if (item?.id === activeQuestion?.id) {
-              return {
-                ...item,
-               duration: String(millisecondsLeft)
-              };
-            }
-           return item
-          }),
-        };
-        updateQuiz(updatedQuiz);
-      }
+     
   }
   // prev
   function previousQuestion() {
@@ -182,22 +108,7 @@ export function ActiveQuestion({
     if (nextQuestion) {
       setActiveQuestion(nextQuestion);
     }
-    // update question time limit
-    if (millisecondsLeft > 0) {
-      const updatedQuiz: TQuiz<TRefinedQuestion[]> = {
-        ...quiz,
-        questions: quiz?.questions?.map((item) => {
-          if (item?.id === activeQuestion?.id) {
-            return {
-              ...item,
-             duration: String(millisecondsLeft)
-            };
-          }
-         return item
-        }),
-      };
-      updateQuiz(updatedQuiz);
-    }
+
   }
 
   // active index
@@ -296,8 +207,8 @@ export function ActiveQuestion({
                   <Option
                     key={index}
                     option={option}
-
-                    selectOption={selectOption}
+                    isOrganizer={isOrganizer}
+                    isIdPresent={isIdPresent}
                     optionIndex={optionLetter[index]}
                   />
                 ))}
