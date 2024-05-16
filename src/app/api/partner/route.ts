@@ -36,12 +36,12 @@ export async function POST(req: NextRequest) {
           address: process.env.NEXT_PUBLIC_EMAIL,
           name: "Zikoro",
         },
-        to: {
+        to:[ {
           email_address: {
             address: params?.email,
             name: "Partner"
           }
-        },
+        }],
         subject: `Profile update notification`,
         htmlbody: `<div>
         <p>Dear ${params?.companyName},</p>
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
         
         </div>`,
       });
-      // console.log(resp);
+     //  console.log(resp);
 
       if (error) throw error;
 
