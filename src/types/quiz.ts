@@ -1,5 +1,6 @@
 import * as z from "zod";
 import { quizQuestionSchema } from "@/schemas";
+import { TAttendee } from ".";
 export interface TQuiz<T> {
   id: number;
   created_at: string;
@@ -14,6 +15,7 @@ export interface TQuiz<T> {
   totalPoints: number;
   eventAlias: string;
   quizAlias: string;
+  quizParticipants: TAttendee[]
 }
 
 export type TQuestion = z.infer<typeof quizQuestionSchema> & {

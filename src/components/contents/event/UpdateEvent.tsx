@@ -82,10 +82,10 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   function appendPricing() {
     append({
-      attendeeType: "",
-      ticketQuantity: "",
-      price: "",
-      validity: "",
+      attendeeType: "NIL",
+      ticketQuantity: "0",
+      price: "0",
+      validity: new Date().toTimeString(),
       description: "",
     });
   }
@@ -104,7 +104,15 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         eventCategory: data?.eventCategory,
         locationType: data?.locationType,
         eventCountry: data?.eventCountry,
-        pricing: data?.pricing,
+        pricing: data?.pricing || [
+          {
+            attendeeType: "",
+            ticketQuantity: "",
+            price: "",
+            validity: "",
+            description: "",
+          },
+        ],
         eventTimeZone: data?.eventTimeZone,
       });
       if (data?.eventPoster) {
@@ -238,7 +246,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   // update event
   async function publishEvent() {
-    if (!data) return
+    if (!data) return;
     setIsPublishing(true);
     const userData = getCookie("user");
     if (data?.eventStatus === "review") {
@@ -253,7 +261,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       status: "review",
       user: userData?.userEmail,
     };
-    const {organization, ...restData} = data
+    const { organization, ...restData } = data;
     await update(
       {
         ...restData,
@@ -266,7 +274,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       eventId
     );
     setIsPublishing(false);
-    showPublishModal()
+    showPublishModal();
   }
   return (
     <DateAndTimeAdapter>
@@ -281,8 +289,9 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
               <div className="w-full py-4 flex items-center sm:items-end justify-start sm:justify-end">
                 <div className="flex items-center gap-x-2">
                   <Button
-                  disabled={!publishing && updating}
-                  className="gap-x-2">
+                    disabled={!publishing && updating}
+                    className="gap-x-2"
+                  >
                     {!publishing && updating && (
                       <LoaderAlt size={22} className="animate-spin" />
                     )}

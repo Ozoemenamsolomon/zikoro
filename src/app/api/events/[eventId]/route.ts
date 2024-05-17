@@ -53,7 +53,7 @@ export async function PATCH(req: NextRequest) {
   if (req.method === "PATCH") {
     try {
       const params = await req.json();
-   
+
       const { error } = await supabase
         .from("events")
         .upsert(params, { onConflict: "eventAlias" });
@@ -75,37 +75,39 @@ export async function PATCH(req: NextRequest) {
         token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
       });
 
-     const resp =  await client.sendMail({
+      const resp = await client.sendMail({
         from: {
           address: process.env.NEXT_PUBLIC_EMAIL,
           name: "Zikoro",
         },
-        to: [{
-          email_address: {
-            address: email,
-            name: "User"
-          }
-        }],
+        to: [
+          {
+            email_address: {
+              address: email,
+              name: "User",
+            },
+          },
+        ],
         subject: `Your ${params?.eventTitle} is Live!`,
-        htmlbody:`<div>
+        htmlbody: `<div>
      
 
         <p> Hi [Event Creator's Name],</p>
          
-        <p> Great news! Your event is officially live, and attendees can now register using the following link: [Insert Registration Link]</p>
+        <p> Great news! Your event is officially live, and attendees can now register using the following link: ${deploymentUrl}/live-events/${params?.eventAlias} </p>
          
          <p>You can track attendee registration and other details in the Zikoro app ${deploymentUrl}/event/${params?.eventAlias}/people/all as they register, ensuring you stay up-to-date with all participant information.</p>
          
          <p>Let us know if you have any questions or need further assistance.</p>
          
-         Best,
-         Tola From Zikoro
-         Phone/Whatsapp: +2347041497076 
+         <p>Best,</p>
+        <p> Tola From Zikoro</p>
+         <p>Phone/Whatsapp: +2347041497076 </p>
              
              </div>`,
       });
 
-    //  console.log(resp)
+      //  console.log(resp)
 
       if (error) throw error;
 

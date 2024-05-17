@@ -1,10 +1,12 @@
-"use client"
+"use client";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import {
   Form,
   FormField,
   Textarea,
   Button,
+  FormMessage,
+  FormItem,
 } from "@/components";
 import { useForm } from "react-hook-form";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -15,12 +17,7 @@ import { eventFeedBackSchema } from "@/schemas";
 import { useEventFeedBack } from "@/hooks";
 import InputOffsetLabel from "../InputOffsetLabel";
 
-export function EventFeedBack({
-  close,
-}: {
-
-  close: () => void;
-}) {
+export function EventFeedBack({ close }: { close: () => void }) {
   const { loading, sendFeedback } = useEventFeedBack();
   const form = useForm<z.infer<typeof eventFeedBackSchema>>({
     resolver: zodResolver(eventFeedBackSchema),
@@ -32,10 +29,10 @@ export function EventFeedBack({
       ratings: Number(values.ratings),
     };
     await sendFeedback(payload);
-    close()
+    close();
   }
 
- // console.log(form.watch("ratings"))
+  // console.log(form.watch("ratings"))
   // rating numbers
   const ratings = Array.from({ length: 10 }, (_, index) => String(index + 1));
   return (
@@ -51,11 +48,12 @@ export function EventFeedBack({
       >
         <div className="w-full flex items-center justify-between">
           <div className="flex flex-col items-start justify-start">
-          <h2 className="font-medium text-lg sm:text-xl">
-            Zikoro wants your feedback
-          </h2>
-          <p className="text-xs sm:text-sm">Select a number and state your reason.</p>
-
+            <h2 className="font-medium text-lg sm:text-xl">
+              Zikoro wants your feedback
+            </h2>
+            <p className="text-xs sm:text-sm">
+              Select a number and state your reason.
+            </p>
           </div>
           <Button onClick={close} className="px-1 h-fit w-fit">
             <CloseOutline size={22} />
@@ -77,20 +75,27 @@ export function EventFeedBack({
                     control={form.control}
                     name="ratings"
                     render={({ field }) => (
-                      <label
-                        className={cn(
-                          "h-10 w-full border-y flex items-center justify-center border-gray-300",
-                          index === 0 ? "border-l border-r" : "border-r",
-                          form.watch("ratings") === value && "bg-gray-300"
-                        )}
-                      >
-                        <span>{value}</span>
-                        <input {...field} hidden value={value} type="radio" />
-                      </label>
+                      <FormItem>
+                        <label
+                          className={cn(
+                            "h-10 w-full border-y flex items-center justify-center border-gray-300",
+                            index === 0 ? "border-l border-r" : "border-r",
+                            form.watch("ratings") === value && "bg-gray-300"
+                          )}
+                        >
+                          <span>{value}</span>
+                          <input {...field} hidden value={value} type="radio" />
+                        </label>
+                      </FormItem>
                     )}
                   />
                 ))}
               </div>
+              {form.formState?.errors?.ratings?.message && (
+                <p className="text-sm  text-red-500">
+                  {form.formState.errors.ratings?.message}
+                </p>
+              )}
               <div className="text-sm w-full flex items-center justify-between">
                 <p>Not Likely</p>
 

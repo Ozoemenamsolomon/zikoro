@@ -19,7 +19,6 @@ export function ActiveQuestion({
   quiz,
   setActiveQuestion,
   updateQuiz,
-  attendeeDetail,
   isOrganizer,
   isIdPresent
 }: {
@@ -28,7 +27,6 @@ export function ActiveQuestion({
   quiz: TQuiz<TRefinedQuestion[]>;
   setActiveQuestion: (q: TRefinedQuestion) => void;
   updateQuiz: (q: TQuiz<TRefinedQuestion[]>) => void;
-  attendeeDetail: {attendeeId?:string; attendeeName:string}
   isOrganizer: boolean;
   isIdPresent: boolean;
 

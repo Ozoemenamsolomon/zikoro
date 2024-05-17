@@ -37,7 +37,7 @@ export function Option({
           disabled={typeof option?.isCorrect === "boolean"}
           onClick={() => {
             if (selectOption) {
-              selectOption(option?.optionId)
+              selectOption(option?.optionId);
             }
           }}
           className={cn(
