@@ -491,17 +491,38 @@ export default function Navbar() {
                 </div>
 
                 <div className="flex flex-col  text-white ">
-                  {links.map(({ linkName, hasArrow }, i) => {
+                  {links.map(({ linkName, hasArrow, href }, i) => {
+                    // return (
+                    //   <p
+                    //     key={i}
+                    //     onClick={() => handleMobileLinkClick(i)}
+                    //     className="text-xl font-medium pb-7 flex items-center gap-x-2"
+                    //   >
+                    //     {linkName} {hasArrow && <ArrowRightNavbar />}
+                    //   </p>
+                    // );
                     return (
-                      <p
-                        key={i}
-                        onClick={() => handleMobileLinkClick(i)}
-                        className="text-xl font-medium pb-7 flex items-center gap-x-2"
-                      >
-                        {linkName} {hasArrow && <ArrowRightNavbar />}
-                      </p>
-
-                      // {selectedMobileLink &&}
+                      <React.Fragment key={i}>
+                        {hasArrow ? (
+                          <p
+                            key={i}
+                            onClick={() => handleMobileLinkClick(i)}
+                            className="text-xl font-medium pb-7 flex items-center text-transparent gap-x-2 "
+                          >
+                            {linkName}
+                            {/* <ArrowRightNavbar /> */}
+                          </p>
+                        ) : (
+                          <Link
+                            href={href} // Assuming you want to use the index as part of the link
+                            className={`text-xl font-medium pb-7 flex items-center gap-x-2 ${
+                              href === "" ? "text-transparent" : "text-white"
+                            }`}
+                          >
+                            {linkName}
+                          </Link>
+                        )}
+                      </React.Fragment>
                     );
                   })}
                 </div>

@@ -73,7 +73,8 @@
   * {
     @apply border-border;
   }
-  html, body {
+  html,
+  body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
     /* margin: 0; */
@@ -184,7 +185,7 @@
   height: 100%;
 }
 
-.quill>.ql-container>.ql-editor.ql-blank::before {
+.quill > .ql-container > .ql-editor.ql-blank::before {
   color: #d4d4d4;
 }
 
@@ -322,12 +323,9 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
-
-
-
 
 .agenda-slider .slick-dots {
   position: absolute;
@@ -349,13 +347,104 @@ input[type=number] {
 }
 .agenda-slider .slick-dots li.slick-active button::before {
   background-color: #0001fc;
- 
 }
 
 .player {
   width: 100%;
   @apply h-48 sm:h-[25rem] lg:h-[16rem] object-cover;
-
   aspect-ratio: unset;
 }
 
+/* DatePicker.css */
+.react-datepicker {
+  font-family: Arial, sans-serif;
+  border: 1px solid #7c4dff; /* Set border color to a lighter shade of indigo */
+}
+
+.react-datepicker__header {
+  background-color: #7c4dff; /* Set header background color to a lighter shade of indigo */
+}
+
+.react-datepicker__day--selected {
+  background-color: #7c4dff !important; /* Set selected day background color to a lighter shade of indigo */
+  color: white !important; /* Set selected day text color to white */
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: #7c4dff !important; /* Set keyboard selected day background color to a lighter shade of indigo */
+}
+
+.react-datepicker__day:hover {
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.04
+  ); /* Set hover background color to a light gray */
+}
+
+.react-datepicker__current-month {
+  color: #7c4dff; /* Set current month text color to a lighter shade of indigo */
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day {
+  color: #7c4dff; /* Set day name and day text color to a lighter shade of indigo */
+}
+
+.react-datepicker__navigation--previous,
+.react-datepicker__navigation--next {
+  border-color: #7c4dff; /* Set navigation button border color to a lighter shade of indigo */
+}
+
+.react-datepicker__navigation--previous:hover,
+.react-datepicker__navigation--next:hover {
+  border-color: #7c4dff; /* Set navigation button border color to a lighter shade of indigo on hover */
+}
+
+.blog h1 {
+  font-size: 3rem;
+  line-height: 3.5rem;
+}
+.blog h2 {
+  font-size: 2.5rem;
+  line-height: 3rem;
+}
+
+.blog h3 {
+  font-size: 2rem;
+  line-height: 2.5rem;
+}
+
+.blog h4 {
+  font-size: 1.75rem;
+  line-height: 2.25rem;
+}
+
+.blog h5 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+@media only screen and (max-width: 767px) {
+  .blog h1 {
+    font-size: 2rem;
+    line-height: 3rem;
+  }
+  .blog h2 {
+    font-size: 1.85rem;
+    line-height: 2.25rem;
+  }
+  .blog h3 {
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+  }
+  .blog h4 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  .blog h5 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
