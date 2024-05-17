@@ -32,9 +32,9 @@ type DBFeaturedEvent = {
 
 export default function FeaturedEvents() {
   const [showMore, setShowMore] = useState(false);
-  const params = useSearchParams()
-  const query = params.get('query')
-  const [selectedButton, setSelectedButton] = useState<string | null>(query);
+  const params = useSearchParams();
+  const query = params.get("query");
+  const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
   const [isEventTypeUp, setEventTypeUp] = useState(false);
   const [isCountryUp, setCountryUp] = useState(false);
@@ -57,7 +57,6 @@ export default function FeaturedEvents() {
 
   const filteredEvents = eventData
     ?.filter((event) => {
-      // Filter by event title, city, or category
       return (
         event.eventTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
         event.eventCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -65,17 +64,31 @@ export default function FeaturedEvents() {
       );
     })
     .filter((event) => {
-      // Additional filter based on the selectedButton value
-      return selectedButton
-        ? event.locationType.toLowerCase() === selectedButton.toLowerCase() ||
-            event.eventCountry.toLowerCase() === selectedButton.toLowerCase() ||
-            event.eventCity.toLowerCase() === selectedButton.toLowerCase() ||
-            event.eventCategory.toLowerCase() === selectedButton.toLowerCase()
-        : true;
+      // Check if all selected buttons match any of the event properties
+      return (
+        selectedButtons.length === 0 ||
+        selectedButtons.every((button) =>
+          [
+            event.locationType,
+            event.eventCountry,
+            event.eventCity,
+            event.eventCategory,
+          ]
+            .map((prop) => prop.toLowerCase())
+            .includes(button.toLowerCase())
+        )
+      );
     });
 
   const handleButtonClick = (text: string) => {
-    setSelectedButton(text);
+    const isSelected = selectedButtons.includes(text);
+
+    if (isSelected) {
+      setSelectedButtons(selectedButtons.filter((button) => button !== text));
+    } else {
+      setSelectedButtons([...selectedButtons, text]);
+    }
+
     setFilterOpen(false);
   };
 
@@ -86,7 +99,7 @@ export default function FeaturedEvents() {
 
   //clear filter button
   const clearFilterButton = () => {
-    setSelectedButton(null);
+    setSelectedButtons([]);
   };
 
   //fetch events from database
@@ -105,6 +118,12 @@ export default function FeaturedEvents() {
   useEffect(() => {
     fetchEventFeautured();
   }, []);
+
+  useEffect(() => {
+    if (query) {
+      setSelectedButtons(query.split(","));
+    }
+  }, [query]);
 
   useEffect(() => {
     //filtered categories
@@ -131,7 +150,7 @@ export default function FeaturedEvents() {
       const cities: string[] = eventData.map((event) => event.eventCity);
       setFilterCity(cities);
     }
-  }, [eventData]); // Update eventCategories when eventData changes
+  }, [eventData]);
 
   return (
     <>
@@ -209,7 +228,7 @@ export default function FeaturedEvents() {
                                       handleButtonClick(locationType)
                                     }
                                     className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                      selectedButton === locationType
+                                      selectedButtons.includes(locationType)
                                         ? "bg-zikoroBlue text-white"
                                         : "bg-white text-black"
                                     }`}
@@ -244,7 +263,7 @@ export default function FeaturedEvents() {
                               <button
                                 onClick={() => handleButtonClick("today")}
                                 className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "today"
+                                  selectedButtons.includes("today")
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
                                 }`}
@@ -254,7 +273,7 @@ export default function FeaturedEvents() {
                               <button
                                 onClick={() => handleButtonClick("this-week")}
                                 className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "this-week"
+                                  selectedButtons.includes("this-week")
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
                                 }`}
@@ -264,7 +283,7 @@ export default function FeaturedEvents() {
                               <button
                                 onClick={() => handleButtonClick("this-month")}
                                 className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "this-month"
+                                  selectedButtons.includes("this-month")
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
                                 }`}
@@ -274,7 +293,7 @@ export default function FeaturedEvents() {
                               <button
                                 onClick={() => handleButtonClick("next-month")}
                                 className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "next-month"
+                                  selectedButtons.includes("next-month")
                                     ? "bg-zikoroBlue text-white"
                                     : "bg-white text-black"
                                 }`}
@@ -311,7 +330,7 @@ export default function FeaturedEvents() {
                                   <button
                                     onClick={() => handleButtonClick(country)}
                                     className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                      selectedButton === country
+                                      selectedButtons.includes(country)
                                         ? "bg-zikoroBlue text-white"
                                         : "bg-white text-black"
                                     }`}
@@ -349,7 +368,7 @@ export default function FeaturedEvents() {
                                   <button
                                     onClick={() => handleButtonClick(city)}
                                     className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                      selectedButton === city
+                                      selectedButtons.includes(city)
                                         ? "bg-zikoroBlue text-white"
                                         : "bg-white text-black"
                                     }`}
@@ -435,10 +454,14 @@ export default function FeaturedEvents() {
                             )
                             .map((category) => (
                               <div
-                                className="py-[18px] px-5 t w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap"
+                                className={`py-[18px] px-5 w-auto cursor-pointer text-sm border-[1px] rounded-lg whitespace-nowrap ${
+                                  selectedButtons.includes(category)
+                                    ? "bg-zikoroBlue text-white"
+                                    : "border-gray-200 bg-white text-black"
+                                }`}
                                 onClick={() => handleButtonClick(category)}
                               >
-                                {category}{" "}
+                                {category}
                               </div>
                             ))}
                         </div>
@@ -524,10 +547,14 @@ export default function FeaturedEvents() {
                           )
                           .map((category) => (
                             <div
-                              className="py-[18px] px-5 t w-auto  cursor-pointer text-sm border-[1px] border-gray-200 rounded-lg whitespace-nowrap"
+                              className={`py-[18px] px-5 w-auto cursor-pointer text-sm border-[1px] rounded-lg whitespace-nowrap ${
+                                selectedButtons.includes(category)
+                                  ? "bg-zikoroBlue text-white"
+                                  : "border-gray-200 bg-white text-black"
+                              }`}
                               onClick={() => handleButtonClick(category)}
                             >
-                              {category}{" "}
+                              {category}
                             </div>
                           ))}
                       </div>
@@ -623,7 +650,7 @@ export default function FeaturedEvents() {
                             <button
                               onClick={() => handleButtonClick(locationType)}
                               className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                selectedButton === locationType
+                                selectedButtons.includes(locationType)
                                   ? "bg-zikoroBlue text-white"
                                   : "bg-white text-black"
                               }`}
@@ -654,7 +681,7 @@ export default function FeaturedEvents() {
                         <button
                           onClick={() => handleButtonClick("today")}
                           className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "today"
+                            selectedButtons.includes("today")
                               ? "bg-zikoroBlue text-white"
                               : "bg-white text-black"
                           }`}
@@ -664,7 +691,7 @@ export default function FeaturedEvents() {
                         <button
                           onClick={() => handleButtonClick("this-week")}
                           className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "this-week"
+                            selectedButtons.includes("this-week")
                               ? "bg-zikoroBlue text-white"
                               : "bg-white text-black"
                           }`}
@@ -674,7 +701,7 @@ export default function FeaturedEvents() {
                         <button
                           onClick={() => handleButtonClick("this-month")}
                           className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "this-month"
+                            selectedButtons.includes("this-month")
                               ? "bg-zikoroBlue text-white"
                               : "bg-white text-black"
                           }`}
@@ -684,7 +711,7 @@ export default function FeaturedEvents() {
                         <button
                           onClick={() => handleButtonClick("next-month")}
                           className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "next-month"
+                            selectedButtons.includes("next-month")
                               ? "bg-zikoroBlue text-white"
                               : "bg-white text-black"
                           }`}
@@ -721,7 +748,7 @@ export default function FeaturedEvents() {
                             <button
                               onClick={() => handleButtonClick(country)}
                               className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                selectedButton === country
+                                selectedButtons.includes(country)
                                   ? "bg-zikoroBlue text-white"
                                   : "bg-white text-black"
                               }`}
@@ -758,7 +785,7 @@ export default function FeaturedEvents() {
                             <button
                               onClick={() => handleButtonClick(city)}
                               className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                selectedButton === city
+                                selectedButtons.includes(city)
                                   ? "bg-zikoroBlue text-white"
                                   : "bg-white text-black"
                               }`}

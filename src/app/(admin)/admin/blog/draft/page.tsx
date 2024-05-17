@@ -22,8 +22,9 @@ type DBBlogAll = {
 
 export default function Create() {
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
-  const [startDate, setStartDate] = useState<Date | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const categories = [
     { name: "Event tips", value: "Event" },
@@ -49,21 +50,34 @@ export default function Create() {
     setSelectedCategory(e.target.value);
   };
 
-  // Function to filter blog posts based on selected date
-  // Function to filter blog posts
-  const filterBlogPosts = (posts: DBBlogAll[]) => {
+  const handleDateChange = (dates: any) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  // Function to filter blog posts based on selected date and other criteria
+  const filterBlogPosts = (
+    posts: DBBlogAll[],
+    startDate: Date | null,
+    endDate: Date | null,
+    selectedCategory: string | null
+  ) => {
     let filteredPosts = posts;
-    if (startDate) {
-      filteredPosts = filteredPosts.filter((post) => {
-        const postDate = new Date(post.created_at);
-        return postDate.toDateString() === startDate.toDateString();
-      });
-    }
+
     if (selectedCategory) {
       filteredPosts = filteredPosts.filter(
         (post) => post.category === selectedCategory
       );
     }
+
+    if (startDate && endDate) {
+      filteredPosts = filteredPosts.filter((post) => {
+        const postDate = new Date(post.created_at);
+        return postDate >= startDate && postDate <= endDate;
+      });
+    }
+
     return filteredPosts;
   };
 
@@ -79,11 +93,17 @@ export default function Create() {
           <div className="flex cursor-pointer p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-2/12 items-center justify-between h-[44px] ">
             <DatePicker
               selected={startDate}
-              onChange={(date) => date && setStartDate(date)}
-              dateFormat="dd/MM/yyyy" // customize date format
-              className="w-full cursor-pointer bg-transparent outline-none "
-              placeholderText="Select a date" // Placeholder text
+              onChange={handleDateChange}
+              startDate={startDate}
+              endDate={endDate}
+              selectsRange
+              isClearable
+              showPopperArrow={false}
+              popperPlacement="top-start"
+              // locale="en-GB"
               icon={<AdminBlogCalendarIcon />}
+              className="w-full cursor-pointer text-indigo-600 bg-transparent outline-none"
+              placeholderText="Select Your Dates "
               onFocus={(e) => (e.target.readOnly = true)}
             />
           </div>
@@ -99,7 +119,6 @@ export default function Create() {
               selected
               value=""
               className="bg-transparent text-gray-400 "
-              
             >
               Select Category
             </option>
@@ -119,27 +138,34 @@ export default function Create() {
 
       {/* section 2 */}
       <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px]  bg-white ">
-        {blogData &&
-          blogData?.length > 0 &&
-          filterBlogPosts(blogData)?.map((blogPost, index) => (
-            <AdminPublishedBlog
-              scheduled={false}
-              draft={true}
-              key={blogPost.id}
-              id={blogPost.id}
-              title={blogPost.title}
-              createdAt={blogPost.created_at}
-              category={blogPost.category}
-              status={blogPost.status}
-              statusDetails={blogPost.statusDetails}
-              readingDuration={blogPost.readingDuration}
-              content={blogPost.content}
-              views={blogPost.views}
-              shares={blogPost.shares}
-              tags={blogPost.tags}
-              headerImageUrl={blogPost.headerImageUrl}
-            />
-          ))}
+        {blogData && (
+          <>
+            {filterBlogPosts(
+              blogData,
+              startDate,
+              endDate,
+              selectedCategory
+            )?.map((blogPost, index) => (
+              <AdminPublishedBlog
+                scheduled={false}
+                draft={true}
+                key={blogPost.id}
+                id={blogPost.id}
+                title={blogPost.title}
+                createdAt={blogPost.created_at}
+                category={blogPost.category}
+                status={blogPost.status}
+                statusDetails={blogPost.statusDetails}
+                readingDuration={blogPost.readingDuration}
+                content={blogPost.content}
+                views={blogPost.views}
+                shares={blogPost.shares}
+                tags={blogPost.tags}
+                headerImageUrl={blogPost.headerImageUrl}
+              />
+            ))}
+          </>
+        )}
       </section>
     </div>
   );
