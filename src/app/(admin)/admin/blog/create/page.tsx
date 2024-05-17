@@ -15,12 +15,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Create() {
   const [file, setFile] = useState<any>(null);
   const [status, setStatus] = useState<string>("");
   const [tagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [headerImageUrl, setHeaderImageUrl] = useState<string>("");
+  const [scheduledDate, setScheduledDate] = useState<any>(null);
+
   const router = useRouter();
   const form = useForm<any>({
     // Add validation rule for content field
@@ -114,11 +118,6 @@ export default function Create() {
   const preview = () => {
     if (!content) {
       toast.error("Please write your blog content");
-      return;
-    }
-
-    if (!content) {
-      toast.error("Please write your blog content");
       return; // Return early if content is empty
     }
 
@@ -142,7 +141,7 @@ export default function Create() {
   };
 
   //submit post function
-  const submitBlogPost = async (e:any) => {
+  const saveOrPublishPost = async (e: any) => {
     e.preventDefault();
     if (!content) {
       toast.error("Please write your blog content");
@@ -175,9 +174,7 @@ export default function Create() {
             `${status === "draft" ? "Saved to draft" : "Post Published"}`
           );
           if (status == "draft") {
-            window.open("/admin/blog/draft", "_self");
-          } else if (status == "schedule") {
-            window.open("/admin/blog/scheduled", "_self");
+            // window.open("/admin/blog/draft", "_self");
           } else {
             window.open("/admin/blog/dashboard", "_self");
           }
@@ -191,6 +188,39 @@ export default function Create() {
       });
   };
 
+  const schedulePost = () => {
+    if (!scheduledDate) {
+      toast.error("Please select a scheduled date");
+      return;
+    }
+
+    fetch("/api/blog/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: formData.title,
+        category: formData.category,
+        headerImageUrl: headerImageUrl,
+        tags: formData.tags,
+        readingDuration: formData.readingDuration,
+        content: content,
+        scheduledDate: scheduledDate.toISOString(),
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          toast.success("Post scheduled successfully");
+        } else {
+          throw new Error("Failed to schedule post");
+        }
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
+
   return (
     <div className="">
       <div className=" flex flex-col pl-3 lg:pl-10 pr-3 lg:pr-28 pt-28 ">
@@ -199,7 +229,7 @@ export default function Create() {
         </p>
 
         <section className="mt-4 lg:mt-6 ">
-          <form onSubmit={submitBlogPost}>
+          <form onSubmit={saveOrPublishPost}>
             <input type="hidden" name="status" value={status} />
             <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center gap-x-0 lg:gap-x-4">
               <div className=" rounded-xl shadow-sm w-full lg:w-8/12  ">
@@ -284,15 +314,8 @@ export default function Create() {
               >
                 Preview
               </button>
-              {/* 
-              <button
-                onClick={() => handleUpdateStaus("publish")}
-                className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] cursor-pointer"
-                type="submit"
-              >
-                Publish
-              </button> */}
-              <div className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] flex text-center justify-center  cursor-pointer">
+
+              <div className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] flex text-center justify-center">
                 <Dialog>
                   <DialogTrigger
                     disabled={
@@ -302,13 +325,14 @@ export default function Create() {
                       !content
                     }
                     onClick={() => handleUpdateStatus("publish")}
+                    className="cursor-pointer"
                   >
                     Publish
                   </DialogTrigger>
                   <DialogContent className="">
                     <DialogHeader>
                       <DialogTitle></DialogTitle>
-                      <DialogDescription className="max-w-2xl mx-auto py-[100px] ">
+                      <DialogDescription className="max-w-2xl mx-auto py-[100px] font-montserrat ">
                         <div className="h-[168px] w-[367px]">
                           <Image
                             className="rounded-lg w-full h-full object-cover "
@@ -325,31 +349,6 @@ export default function Create() {
                         <p className="text-2xl text-center mt-5 capitalize">
                           {formData.title}
                         </p>
-                        {/* <div className="flex items-center justify-center mx-auto">
-                          <select
-                            name="category"
-                            value={formData.category}
-                            onChange={handleChange}
-                            required
-                            className="mt-6 w-6/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none  hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer "
-                          >
-                            <option
-                              disabled
-                              defaultValue={formData.category}
-                              className="bg-transparent text-gray-400 "
-                            ></option>
-                            {categories.map((category, index) => (
-                              <option
-                                key={index}
-                                value={category.value}
-                                className="bg-transparent text-black text-[15px]"
-                              >
-                                {" "}
-                                {category.name}{" "}
-                              </option>
-                            ))}
-                          </select>
-                        </div> */}
 
                         <p className="mt-6 text-base font-semibold text-center">
                           {formData.category}
@@ -358,19 +357,61 @@ export default function Create() {
                         <p className="mt-6 text-base font-semibold text-center">
                           {formData.readingDuration} mins read
                         </p>
-                        <div className="flex gap-x-4 mt-6 items-center mx-auto justify-center">
-                          <button
-                            onClick={(e) => submitBlogPost(e)}
-                            className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
-                          >
-                            Publish
-                          </button>
 
-                          <button className="text-base text-indigo-600 bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md ">
-                            Schedule For Later
-                          </button>
-                        </div>
-                        <div></div>
+                        {scheduledDate !== null && (
+                          <p className="mt-6 text-base font-medium text-center">
+                            Schedule a time to publish:
+                            <span className="block items-center gap-x-7 text-center">
+                              {" "}
+                              {scheduledDate.toLocaleString("en-US")}
+                            </span>
+                          </p>
+                        )}
+                        {scheduledDate == null && (
+                          <div className="flex gap-x-4 mt-6 items-center mx-auto justify-center">
+                            <button
+                              onClick={(e) => saveOrPublishPost(e)}
+                              className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
+                            >
+                              Publish
+                            </button>
+
+                            <div className="text-base text-indigo-600 bg-transparent border border-indigo-800 py-[10px] px-2 rounded-md ">
+                              <DatePicker
+                                selected={scheduledDate}
+                                onChange={(date: Date | null) =>
+                                  setScheduledDate(date)
+                                }
+                                locale="pt-BR"
+                                showTimeSelect
+                                timeFormat="p"
+                                timeIntervals={15}
+                                dateFormat="Pp"
+                                placeholderText="Schedule for later"
+                                className="text-indigo-600 w-full outline-none cursor-pointer"
+                                onFocus={(e) => (e.target.readOnly = true)}
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {scheduledDate !== null && (
+                          <div className="flex gap-x-4 mt-6 items-center mx-auto justify-center">
+                            <button
+                              onClick={() => schedulePost()}
+                              className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
+                            >
+                              Schedule to publish
+                            </button>
+
+                            <button
+                              className="text-base text-indigo-600 bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md "
+                              onClick={() => setScheduledDate(null)}
+                            >
+                              Cancel schedule
+                            </button>
+                          </div>
+                        )}
                       </DialogDescription>
                     </DialogHeader>
                   </DialogContent>

@@ -177,7 +177,7 @@ export default function Footer() {
           <p className="text-[13px] lg:text-base font-normal">
             {" "}
             <span className="hidden lg:inline">Copyright</span> © 2024 - Zikoro{" "}
-            <span className="hidden lg:inline"> - an OrthoEx</span>{" "}
+            <span className="hidden lg:inline"> - an OrthoEx brand</span>{" "}
           </p>
         </div>
       </div>

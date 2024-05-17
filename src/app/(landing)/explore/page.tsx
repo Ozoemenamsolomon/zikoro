@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import CopywrightFooter from "@/components/CopywrightFooter";
 import EventHeader from "@/components/explore/EventHeader";
 import EventList from "@/components/explore/SelectedLocationList";
 import FeaturedEventList from "@/components/explore/FeaturedEventList";
@@ -19,7 +19,7 @@ export default function Events() {
       <FeaturedEventList searchQuery={searchQuery}  />
       <CitiesEventList />
       <CategoryEventList />
-      <Footer />
+      <CopywrightFooter/>
     </div>
   );
 }

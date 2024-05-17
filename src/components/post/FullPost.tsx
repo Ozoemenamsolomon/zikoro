@@ -54,7 +54,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   } = useFetchBlogPost(postId);
 
   const [similarPosts, setSimilarPosts] = useState<DBSimilarPost[]>([]);
-  const [postTag, setPostTag] = useState<any>([]);
+  // const [postTag, setPostTag] = useState<any>([]);
 
   //for side bar links
   const router = useRouter();
@@ -119,20 +119,20 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   const handleShareOnLinkedin = () => {
     shareOnLinkedin(articleUrl, postId);
   };
-  //share
-  //ID and
 
   //useEffect
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
-      e.preventDefault();
-      const targetId = (e.target as HTMLAnchorElement).getAttribute("href");
-      if (targetId) {
-        const targetElement = document.getElementById(targetId.slice(1));
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: "smooth" });
-          // router.push(`#${targetId.slice(1)}`, undefined, { shallow: true });
-          router.push(`#${targetId.slice(1)}`, { shallow: true });
+      const target = e.target as HTMLAnchorElement;
+      if (target.tagName === "A") {
+        e.preventDefault();
+        const targetId = target.getAttribute("href");
+        if (targetId) {
+          const targetElement = document.getElementById(targetId.slice(1));
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: "smooth" });
+            router.push(`#${targetId.slice(1)}`, { shallow: true });
+          }
         }
       }
     };
@@ -144,46 +144,43 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
         contentDiv.removeEventListener("click", handleAnchorClick);
       };
     }
-
-    async function fetchSimilarPost() {
-      try {
-        const response = await fetch("/api/blog/published", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch");
-        }
-
-        const data = await response.json();
-
-        console.log(data);
-        data.data.map((tag: any) => setPostTag(tag.tags));
-        if (data && postTag) {
-          // Convert tags array into a string
-          const tagString = postTag.join(",");
-
-          // Filter similar posts based on matching tag strings
-          const similarPostsFiltered = data.data.filter((post: any) => {
-            const postTagString = post.tags.join(",");
-            return postTagString.includes(tagString);
-          });
-
-          console.log("Similar posts:", similarPostsFiltered);
-          setSimilarPosts(similarPostsFiltered);
-        }
-      } catch (error) {
-        console.error("Error fetching similar posts:", error);
-      }
-    }
-
-    fetchSimilarPost();
   }, [router]);
 
   const headings = data?.content.match(/<h[1](.*?)>(.*?)<\/h[1]>/g) || [];
+
+  useEffect(() => {
+    const fetchSimilarPosts = async () => {
+      if (data) {
+        try {
+          // Fetch all posts
+          const response = await fetch("/api/blog/published", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+
+          if (!response.ok) throw new Error("Failed to fetch");
+
+          const allPostsData = await response.json();
+
+          // Get current post tags
+          const currentPostTags: string[] = data?.tags || [];
+
+          console.log(currentPostTags);
+
+          // Filter posts based on tags
+          const similarPostsFiltered = allPostsData.data.filter((post: any) =>
+            post.tags.some((tag: any) => currentPostTags.includes(tag))
+          );
+
+          setSimilarPosts(similarPostsFiltered);
+        } catch (error) {
+          console.error("Error fetching similar posts:", error);
+        }
+      }
+    };
+
+    fetchSimilarPosts();
+  }, [data]);
 
   return (
     <>
@@ -285,9 +282,12 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
             <div
               ref={contentRef}
-              className=" h-fit lg:h-[505px] overflow-y-hidden lg:overflow-y-auto  w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px]"
+              className=" h-fit lg:h-screen no-scrollbar lg:overflow-y-auto  w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px]"
             >
-              <div dangerouslySetInnerHTML={{ __html: data?.content ?? "" }} />
+              <div
+                className="blog no-scrollbar"
+                dangerouslySetInnerHTML={{ __html: data?.content ?? "" }}
+              />
             </div>
           </div>
 
