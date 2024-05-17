@@ -25,7 +25,7 @@ export default function QuizQuestion({
   quizId: string;
 }) {
   const { quiz, isLoading, getQuiz } = useGetQuiz({ quizId });
-  const { isOrganizer, attendeeId, attendeeName } = useVerifyUserAccess(eventId);
+  const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const [openQuestionModal, setOpenQusetionModal] = useState(false);
   const [currentQuestion, setCurrentQuestion] =
@@ -139,7 +139,7 @@ export default function QuizQuestion({
               <>
                 <div className="w-full p-3 sm:p-4 lg:col-span-2">
                   <ActiveQuestion
-                    attendeeDetail={{attendeeId: String(attendeeId), attendeeName}}
+                   
                     setActiveQuestion={setActiveQuestion}
                     quiz={refinedQuizArray}
                     activeQuestion={currentQuestion}

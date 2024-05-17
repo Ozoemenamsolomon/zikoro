@@ -87,10 +87,7 @@ export function QuizCard({
             <span>15</span>
           </p>
         </div>
-        <p className="flex p-3 text-xs ms:text-mobile items-center gap-x-1">
-          <QUser />
-          <span>Ibrahim Rasheed</span>
-        </p>
+    
       </div>
     </div>
   );
