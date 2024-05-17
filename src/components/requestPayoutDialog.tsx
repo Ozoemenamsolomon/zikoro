@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useRequestPayOut } from "@/hooks/services/billing";
 import { DialogClose } from "./ui/dialog";
 import { getCookie } from "@/hooks";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 interface RequestPayoutDialogProps {
   selectedRows: TEventTransaction[];
@@ -15,6 +16,10 @@ const RequestPayoutDialog = ({
   selectedRows,
   getEventTransactions,
 }: RequestPayoutDialogProps) => {
+  const { organization } = useOrganizationStore();
+
+  if (!organization) return;
+
   const totalRevenue = selectedRows.reduce(
     (acc, { amountPaid }) => (amountPaid ? amountPaid + acc : amountPaid),
     0
@@ -42,6 +47,7 @@ const RequestPayoutDialog = ({
     const payload = {
       transactionId: selectedRows.map(({ id }) => id.toString()),
       amount: totalRevenue - totalProcessingFee - totalAffiliateCommission,
+      requestedFor: organization.id,
     };
     await requestPayOut({ payload });
     await getEventTransactions();

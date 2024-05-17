@@ -463,23 +463,6 @@ export default function All() {
             Transactions selected
           </span>
           <div className="flex gap-0 md:gap-4 justify-between md:justify-start">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className="bg-basePrimary px-4">
-                  Add Organization payment details
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="px-3 max-h-[500px] hide-scrollbar overflow-auto">
-                <DialogHeader>
-                  <DialogTitle>
-                    <span className="capitalize">
-                      Add Organization payment details
-                    </span>
-                  </DialogTitle>
-                </DialogHeader>
-                <AddOrganizationPaymentDetails />
-              </DialogContent>
-            </Dialog>
             <Dialog
               onOpenChange={(newOpen) => {
                 console.log(

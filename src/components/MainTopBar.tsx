@@ -24,16 +24,19 @@ import {
 } from "@/hooks";
 import { TUser } from "@/types";
 import useEventStore from "@/store/globalEventStore";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const MainTopBar = () => {
+  const router = useRouter();
   const pathname = usePathname().split("/");
   console.log(pathname);
   const user = getCookie<TUser>("user");
   if (!user) return;
 
-  const { setOrganization } = useOrganizationStore();
-  const { setEvent } = useEventStore();
+  const { organization, setOrganization } = useOrganizationStore();
+  const { event, setEvent } = useEventStore();
+
+  console.log(event);
 
   const {
     userOrganizations,
@@ -51,36 +54,52 @@ const MainTopBar = () => {
     const currentOrganization = userOrganizations?.find(
       ({ id }) => id.toString() === value
     );
+
     if (!currentOrganization) return;
     setOrganization(currentOrganization);
   };
 
   const setCurrentEvent = (value: string) => {
-    const currentEvent = events?.find(({ id }) => id.toString() === value);
+    const currentEvent = events?.find(({ eventAlias }) => eventAlias === value);
     if (!currentEvent) return;
     setEvent(currentEvent);
+    router.push(`/event/${currentEvent.eventAlias}/content/info`);
   };
 
   return (
-    <header className="border-b p-4 flex justify-between row-reverse">
+    <header className="border-b p-4 flex justify-between">
+      {pathname.includes("event") ? (
+        <Selector
+          options={(events ?? [])?.map(({ eventAlias, eventTitle }) => ({
+            label: eventTitle,
+            value: eventAlias,
+          }))}
+          onSelect={setCurrentEvent}
+          label="event"
+          initialValue={
+            event && {
+              label: event.eventTitle,
+              value: event.eventAlias,
+            }
+          }
+        />
+      ) : (
+        <div></div>
+      )}
       <Selector
         options={(userOrganizations ?? [])?.map(({ id, organizationName }) => ({
           label: organizationName,
           value: id.toString(),
         }))}
         onSelect={setCurrentOrganization}
-        label="organization"
+        label="workspace"
+        initialValue={
+          organization && {
+            label: organization.organizationName,
+            value: organization.id.toString(),
+          }
+        }
       />
-      {pathname.includes("event") && (
-        <Selector
-          options={(events ?? [])?.map(({ id, eventTitle }) => ({
-            label: eventTitle,
-            value: id.toString(),
-          }))}
-          onSelect={setCurrentEvent}
-          label="event"
-        />
-      )}
     </header>
   );
 };
@@ -91,13 +110,15 @@ export function Selector({
   options,
   onSelect,
   label,
+  initialValue,
 }: {
   options: { label: string; value: string }[];
   onSelect: (value: string) => void;
   label: string;
+  initialValue?: { label: string; value: string } | null;
 }) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState(initialValue?.value || "");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -116,7 +137,7 @@ export function Selector({
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder={`enter an ${label}...`} />
+          <CommandInput placeholder={`enter ${label}...`} />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup heading="Your Organizations">

@@ -31,7 +31,7 @@ export interface IPayoutAccountDetails {
   accountNumber: string;
   accountName: string;
   bankName: string;
-  bankCode: number;
+  bankCode: string;
 }
 
 type TOrganizationTeamMember = {
