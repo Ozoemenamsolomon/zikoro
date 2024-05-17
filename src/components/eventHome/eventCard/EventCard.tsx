@@ -17,6 +17,7 @@ import { getCookie, useDuplicateEvent, useFormatEventData } from "@/hooks";
 import { saveCookie } from "@/hooks";
 import { cn } from "@/lib";
 import { useRouter } from "next/navigation";
+import { ExternalLink } from "styled-icons/remix-fill";
 
 export function EventCard({
   event,
@@ -64,6 +65,16 @@ export function EventCard({
           {event?.eventTitle ?? ""}
         </p>
         <div className="flex items-center gap-x-2">
+          {event?.published && (
+            <Button
+              onClick={() =>
+                window.open(`/live-events/${event?.eventAlias}`, "_blank")
+              }
+              className="px-0 w-fit h-fit"
+            >
+              <ExternalLink size={20} />
+            </Button>
+          )}
           <Button
             onClick={(e) => {
               e.stopPropagation();
@@ -78,7 +89,6 @@ export function EventCard({
                 refetch={refetch}
                 close={onClose}
                 id={event?.id}
-                alias={event?.eventAlias}
               />
             )}
           </Button>
@@ -153,13 +163,11 @@ function ActionModal({
   id,
   refetch,
   isPublished,
-  alias,
 }: {
   refetch: () => Promise<any>;
   close: () => void;
   isPublished: boolean;
   id: number;
-  alias: string;
 }) {
   const { duplicateEvent, loading } = useDuplicateEvent();
   const org = getCookie("currentOrganization");
@@ -203,15 +211,6 @@ function ActionModal({
           >
             {loading && <LoaderAlt size={12} className="animate-spin" />}
             <span>Duplicate</span>
-          </Button>
-          <Button
-            onClick={() => window.open(`/live-events/${alias}`, "_blank")}
-            className={cn(
-              "items-center hidden h-10 gap-x-2 hover:bg-gray-100 justify-start w-full rounded-none text-xs",
-              isPublished && org?.id && "flex"
-            )}
-          >
-            <span>View Event</span>
           </Button>
         </div>
       </div>

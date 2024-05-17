@@ -836,7 +836,7 @@ export function BookEvent({
 
                     <div className="w-full flex flex-col items-start justify-start gap-y-2">
                       <p className="mb-4">How do you hear about us?</p>
-                      {form.formState?.errors?.aboutUs?.message &&  <p className="text-xs  text-red-500">{form.formState.errors.aboutUs?.message}</p>}           
+                      {form.formState?.errors?.aboutUs?.message &&  <p className="text-sm  text-red-500">{form.formState.errors.aboutUs?.message}</p>}           
                       {["instagram", "facebook", "x", "linkedIn", "others"].map(
                         (value) => (
                           <FormField

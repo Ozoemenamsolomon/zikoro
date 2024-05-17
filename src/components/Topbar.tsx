@@ -9,7 +9,7 @@ import { AccessVerification } from "./composables";
 const Topbar = ({ eventId }: { eventId?: string | any }) => {
   const pathname = usePathname();
   const user = getCookie("user");
-  const { isIdPresent } = useCheckTeamMember({ eventId });
+  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
 
   const links = [
     {
@@ -94,13 +94,15 @@ const Topbar = ({ eventId }: { eventId?: string | any }) => {
           </ul>
         </div>
       </nav>
+     
       {/**
-          <AccessVerification
+           <AccessVerification
         eventLoading={eventLoading}
         isEventIdPresent={isIdPresent}
         id={eventId}
       />
-         */}
+       */}
+         
     </>
   );
 };

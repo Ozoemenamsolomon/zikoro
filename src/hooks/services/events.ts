@@ -1199,6 +1199,7 @@ export function useCheckTeamMember({ eventId }: { eventId?: string }) {
 
   return {
     isIdPresent,
+    eventLoading
   };
 }
 

@@ -406,7 +406,7 @@ const DialogDemo = ({
                 </div>
               )}
 
-              <div className="flex justify-between items-center mt-4">
+              <div className="hidden justify-between items-center mt-4">
                 <p className="text-base">Quantity</p>
                 <div className="flex items-center gap-x-2">
                   <MinusCircle
