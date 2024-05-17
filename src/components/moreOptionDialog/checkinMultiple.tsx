@@ -25,7 +25,7 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
   favourites,
   event,
 }) => {
-  console.log(attendeesTags);
+  
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
@@ -33,11 +33,11 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
   const [action, setAction] = useState<"checkin" | "undo">("checkin");
 
   useEffect(() => {
-    console.log("here");
+    
     if (!eventDate) return;
-    console.log("here");
+    
 
-    console.log(eventDate);
+    
 
     setMappedAttendees(
       attendees.filter(({ checkin }) => {
@@ -75,7 +75,7 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
     if (!eventDate) return;
 
     const newDate = new Date(eventDate);
-    console.log(eventDate, newDate, isSameDay(eventDate, newDate));
+    
 
     const payload = selectedAttendees.map((attendee) => {
       const existingCheckin = attendee.checkin || [];
@@ -90,7 +90,7 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
       };
     });
 
-    console.log(payload, action);
+    
 
     await updateAttendees({ payload });
     await getAttendees();

@@ -24,7 +24,7 @@ const UserContacts = ({ user }: { user: TUser }) => {
     getContactRequests,
   } = useGetContactRequests({ userEmail: user.userEmail });
 
-  // console.log(userContactRequests);
+  // 
 
   const [action, setAction] = useState<"accept" | "reject" | null>(null);
   const [open, setOpen] = useState<boolean>(false);

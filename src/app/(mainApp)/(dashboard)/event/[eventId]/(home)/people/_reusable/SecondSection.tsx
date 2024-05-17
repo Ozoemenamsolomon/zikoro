@@ -157,7 +157,7 @@ export default function SecondSection({
     websiteUrl,
   } = attendee;
 
-  console.log(attendee);
+  
 
   const user = getCookie("user");
 
@@ -173,7 +173,7 @@ export default function SecondSection({
       !!sessionSpeakers?.find(({ id: speakerId }) => id === speakerId)
   );
 
-  console.log(eventAgendas);
+  
 
   const {
     note,
@@ -208,7 +208,7 @@ export default function SecondSection({
     eventId,
     attendeeId: id,
   });
-  console.log(attendeeCertificates, "attendee certificates");
+  
 
   const {
     attendeeBadge,
@@ -218,7 +218,7 @@ export default function SecondSection({
     eventId,
     attendeeId: id,
   });
-  console.log(attendeeBadge, "attendee badges");
+  
 
   const {
     certificates: eventCertificates,
@@ -226,7 +226,7 @@ export default function SecondSection({
   } = useGetCertificates({
     eventId,
   });
-  console.log(eventCertificates, "event certificates");
+  
 
   const { updateAttendeeCertificates } = useUpdateAttendeeCertificates({
     eventId: event.eventAlias,
@@ -311,7 +311,7 @@ export default function SecondSection({
       },
     });
 
-    console.log(newAttendeeCertificate);
+    
 
     await getAttendeeCertificates();
 
@@ -321,7 +321,7 @@ export default function SecondSection({
   };
 
   const releaseBadge = async (eventBadge: TBadge) => {
-    console.log(eventBadge, "event badge");
+    
     // await updateAttendeeBadges({
     //   payload: {
     //     action: "release",
@@ -351,7 +351,7 @@ export default function SecondSection({
       },
     });
 
-    console.log(newAttendeeBadge);
+    
 
     await getAttendeeBadge();
 
@@ -373,7 +373,7 @@ export default function SecondSection({
 
     if (!parentCard || !innerCard) return;
 
-    console.log(innerCard.style, parentCard.style);
+    
     parentCard.style.height = `${innerCard.style.height}px`;
   }, [attendee]);
 
@@ -411,8 +411,8 @@ export default function SecondSection({
       senderUserEmail === email || receiverUserEmail === email
   );
 
-  console.log(email);
-  console.log(attendeeExchangedContacts, userContactRequests);
+  
+  
 
   return (
     <div className="h-fit space-y-4">

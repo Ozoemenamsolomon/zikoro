@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
         
         </div>`,
       });
-     //  console.log(resp);
+     //  
 
       if (error) throw error;
 

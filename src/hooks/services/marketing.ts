@@ -15,7 +15,7 @@ export const useSendMarketingEmail = (): usePostResult<
 
   const sendMarketingEmail = async ({ payload }: { payload: TSentEmail }) => {
     setLoading(true);
-    console.log(payload, "data");
+    
     toast({
       description: "sending email...",
     });
@@ -143,14 +143,14 @@ export const useCreateAffiliateLink = (): usePostResult<
       description: "sending email...",
     });
     try {
-      console.log("here");
+      
       const { data, status } = await postRequest({
         endpoint: `marketing/affiliate/link`,
         payload: { payload, affiliateName, organizationName, eventPoster },
       });
-      console.log("here");
+      
 
-      console.log(data, status);
+      
 
       if (status !== 201) throw data.data;
       toast({
@@ -158,7 +158,7 @@ export const useCreateAffiliateLink = (): usePostResult<
       });
     } catch (error) {
       setError(true);
-      console.log(error);
+      
       toast({
         description: "An error occurred",
         variant: "destructive",
@@ -307,7 +307,7 @@ export const useUpdateAffiliate = ({
       description: "updating affiliate...",
     });
     try {
-      console.log(affiliateId, "affiliateId");
+      
       const { data, status } = await postRequest({
         endpoint: `marketing/affiliate/${affiliateId}`,
         payload,

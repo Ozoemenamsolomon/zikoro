@@ -11,13 +11,13 @@ export async function GET(
   const { eventId } = params;
   if (req.method === "GET") {
     try {
-      console.log(eventId);
+      
       const { data, error, status } = await supabase
         .from("eventPartners")
         .select("*")
         .eq("eventAlias", eventId);
 
-      console.log(data);
+      
 
       if (error) {
         return NextResponse.json(

@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       const params = await req.json();
       const { InviteDetails, Message } = params;
 
-      console.log(InviteDetails.map(({ email }: { email: string }) => email));
+      
 
       var { SendMailClient } = require("zeptomail");
 
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
         subject: `Invite from [organization] to [event name]`,
         htmlbody: `<div>${Message}</div>`,
       });
-      console.log(resp);
+      
       
       // let nodemailer = require("nodemailer");
       // const transporter = nodemailer.createTransport({
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
 
       // await transporter.sendMail(mailData, function (err: any, info: any) {
       //   if (err) throw err;
-      //   else console.log(info);
+      //   else 
       // });
 
       const { error } = await supabase

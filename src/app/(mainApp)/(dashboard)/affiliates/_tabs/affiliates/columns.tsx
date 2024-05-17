@@ -102,7 +102,7 @@ export const columns: ColumnDef<TAffiliate>[] = [
       const status = row.original.affliateStatus;
       const affiliateId = row.original.id;
 
-      console.log(affiliateId, status);
+      
 
       const { updateAffiliate, isLoading } = useUpdateAffiliate({
         affiliateId: affiliateId as number,

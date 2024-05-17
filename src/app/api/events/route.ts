@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
       const { searchParams } = new URL(req.url);
       const userId = searchParams.get("userId");
 
-      console.log(userId);
+      
 
       const query = supabase.from("events").select("*, organization!inner(*)");
 
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
       const { data, error, status } = await query;
 
-      console.log(data);
+      
 
       if (error) {
         return NextResponse.json(

@@ -160,7 +160,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
         const data = await response.json();
 
-        console.log(data);
+        
         data.data.map((tag: any) => setPostTag(tag.tags));
         if (data && postTag) {
           // Convert tags array into a string
@@ -172,7 +172,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             return postTagString.includes(tagString);
           });
 
-          console.log("Similar posts:", similarPostsFiltered);
+          
           setSimilarPosts(similarPostsFiltered);
         }
       } catch (error) {

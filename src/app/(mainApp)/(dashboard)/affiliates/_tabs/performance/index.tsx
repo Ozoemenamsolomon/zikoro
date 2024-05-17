@@ -138,7 +138,7 @@ const Performance = () => {
     { userId: user?.id || 0 }
   );
 
-  console.log(affiliateLinks);
+  
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -148,7 +148,7 @@ const Performance = () => {
       dataFilters: affiliateLinkFilter,
     });
 
-  // console.log(filteredData, "here");
+  // 
 
   const totalRevenue = filteredData
     .reduce(

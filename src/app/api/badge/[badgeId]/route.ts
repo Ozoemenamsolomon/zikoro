@@ -48,7 +48,7 @@ export async function DELETE(
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "DELETE") {
     try {
-      console.log(badgeId, "backedn delte");
+      
       const { data, error, status } = await supabase
         .from("badge")
         .delete()

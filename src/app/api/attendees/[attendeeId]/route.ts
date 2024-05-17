@@ -41,7 +41,7 @@ export async function GET(
   const { attendeeId } = params;
   const supabase = createRouteHandlerClient({ cookies });
 
-  console.log(attendeeId, "attendeeId");
+  
 
   if (req.method === "GET") {
     try {
@@ -51,7 +51,7 @@ export async function GET(
         .eq("id", attendeeId)
         .maybeSingle();
 
-      console.log(data, error);
+      
 
       if (error) throw error;
 

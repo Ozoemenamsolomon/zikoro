@@ -137,7 +137,7 @@ export const getUser = async (email: string | null) => {
     .eq("userEmail", email)
     .single();
   if (error) {
-    //  console.log({error});
+    //  
   }
   saveCookie("user", user);
   return user;

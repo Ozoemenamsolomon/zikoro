@@ -265,7 +265,7 @@ const page = () => {
       hashRef.current = DEFAULT_FRAME_STATE;
     }
 
-    console.log(badge);
+    
 
     setBadge(badge);
 
@@ -283,11 +283,11 @@ const page = () => {
       badge?.badgeDetails?.craftHash &&
       typeof badge?.badgeDetails?.craftHash === "string"
     ) {
-      console.log(badge?.badgeDetails?.craftHash, "craft hash");
+      
       hashRef.current = lz.decompress(
         lz.decodeBase64(badge?.badgeDetails?.craftHash)
       );
-      console.log(hashRef.current, "hash current");
+      
     }
   }, [badgeIsLoading]);
 
@@ -319,12 +319,12 @@ const page = () => {
   }, []);
 
   const setValue = (key: string, value: any) => {
-    console.log(key + ": " + value);
+    
     setDetails({ ...details, [key]: value });
   };
 
   const editSettings = (key: string, value: any) => {
-    console.log(key + ": " + value);
+    
     setSettings({ ...settings, [key]: value });
   };
 
@@ -334,7 +334,7 @@ const page = () => {
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#badge",
     onSuccess: (data) => {
-      console.log("downloading");
+      
       const link = document.createElement("a");
       link.download = badgeName + ".jpeg";
       link.href = data;
@@ -344,8 +344,8 @@ const page = () => {
   const [{ data: png }, convert, badgeRef] = useToPng<HTMLDivElement>({
     onSuccess: async (data) => {
       setUploading(true);
-      console.log(hashRef.current, "what you get");
-      console.log(data, "image");
+      
+      
 
       // const img = new Image();
       // img.src = data;
@@ -354,12 +354,12 @@ const page = () => {
       const { url, error } = await uploadFile(snapshot, "image");
 
       if (error || !url) throw error;
-      console.log(url);
+      
       // alert("File uploaded successfully", url);
 
       if (!hashRef.current) return;
 
-      console.log(editableBadge);
+      
       const newBadge = await saveBadge({
         payload: editableBadge
           ? {
@@ -381,7 +381,7 @@ const page = () => {
               lastEdited: new Date(),
             },
       });
-      console.log(newBadge);
+      
 
       if (newBadge) {
         setBadge(newBadge);
@@ -395,7 +395,7 @@ const page = () => {
   //   convert()
   // };
 
-  console.log(details.craftHash);
+  
 
   const PreviewButton = () => {
     const { actions, query, enabled } = useEditor((state) => ({
@@ -486,7 +486,7 @@ const page = () => {
         onClick={() => {
           const json = query.serialize();
           hashRef.current = lz.encodeBase64(lz.compress(json));
-          console.log(lz.encodeBase64(lz.compress(json)), "what you see");
+          
           convert();
         }}
       >

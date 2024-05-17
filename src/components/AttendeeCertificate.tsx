@@ -42,12 +42,12 @@ const AttendeeCertificate = ({
     getEvent,
   } = useGetEvent({ eventId: 5 });
 
-  console.log(certificate);
+  
 
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#certificate",
     onSuccess: (data) => {
-      console.log("downloading");
+      
       const link = document.createElement("a");
       link.download =
         certificate?.certificateName +
@@ -120,11 +120,11 @@ const AttendeeCertificate = ({
           organization,
         })
       );
-      console.log("hash set", hashRef.current);
+      
     }
   }, [isLoading, organizationIsLoading, eventIsLoading]);
 
-  console.log(attendee);
+  
 
   return (
     <Editor

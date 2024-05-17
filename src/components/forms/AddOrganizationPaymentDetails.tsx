@@ -14,23 +14,21 @@ import { useForm } from "react-hook-form";
 import { DialogClose } from "../ui/dialog";
 import useEventStore from "@/store/globalEventStore";
 import { IPayoutAccountDetails, TUser } from "@/types";
-import { getCookie } from "@/hooks";
+import { getCookie, useGetOrganization, useUpdateOrganization } from "@/hooks";
 import { generateAlphanumericHash } from "@/utils/helpers";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
-export default function AddOrganizationPaymentDetails({
-  payoutAccountDetails,
-  getOrganization,
-}: {
-  payoutAccountDetails?: IPayoutAccountDetails;
-  getOrganization: () => Promise<void>;
-}) {
-  //   const currentEvent = useEventStore((state) => state.event);
+export default function AddOrganizationPaymentDetails() {
+  const { organization, setOrganization } = useOrganizationStore();
   const user = getCookie<TUser>("user");
 
-  //   console.log(currentEvent);
+  if (!organization || !user) return;
+
+  const { updateOrganization, isLoading: updatingOrganization } =
+    useUpdateOrganization({ organizationId: organization?.id });
 
   const defaultValues: Partial<IPayoutAccountDetails> =
-    payoutAccountDetails || {
+    organization?.payoutAccountDetails ?? {
       bankCountry: "Nigeria",
       currency: "NGN",
       accountNumber: "",
@@ -47,18 +45,22 @@ export default function AddOrganizationPaymentDetails({
     formState: { dirtyFields, errors },
   } = form;
 
-  console.log(errors);
-
   const clsBtnRef = useRef<HTMLButtonElement>(null);
 
   async function onSubmit(data: IPayoutAccountDetails) {
-    console.log(data);
-
-    if (!clsBtnRef) return;
+    if (!clsBtnRef.current) return;
 
     clsBtnRef.current.click();
 
-    console.log(data);
+    const newOrganization = await updateOrganization({
+      payload: { ...organization, payoutAccountDetails: data },
+    });
+
+    console.log(newOrganization);
+
+    if (newOrganization) {
+      setOrganization(newOrganization);
+    }
   }
 
   return (
@@ -142,7 +144,7 @@ export default function AddOrganizationPaymentDetails({
           )}
         />
         <Button
-        //   disabled={isLoading}
+          //   disabled={isLoading}
           type="submit"
           className="bg-basePrimary w-full"
         >

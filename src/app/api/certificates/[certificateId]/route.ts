@@ -48,7 +48,7 @@ export async function DELETE(
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "DELETE") {
     try {
-      console.log(certificateId, "backedn delte");
+      
       const { data, error, status } = await supabase
         .from("certificate")
         .delete()

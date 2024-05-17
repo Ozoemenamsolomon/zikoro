@@ -24,7 +24,7 @@ export function Option({
   isOrganizer: boolean;
   isIdPresent: boolean;
 }) {
-  // console.log("opt", option);
+  // 
   return (
     <>
       {isOrganizer || isIdPresent ? (

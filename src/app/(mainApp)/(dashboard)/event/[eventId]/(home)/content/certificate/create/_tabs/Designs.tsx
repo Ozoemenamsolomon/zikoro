@@ -63,7 +63,7 @@ const Designs = ({ details, setValue }: TabProps) => {
   const { certificateTemplates, isLoading, getCertificateTemplates } =
     useGetCertificateTemplates();
 
-  console.log(certificateTemplates);
+  
 
   useEffect(() => {
     if (!divRef) return;

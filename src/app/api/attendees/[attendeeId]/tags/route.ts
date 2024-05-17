@@ -6,20 +6,20 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { attendeeId: string } }
 ) {
-  console.log(params, "params");
+  
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
     try {
       //   const { attendeeId } = params;
       const payload = await req.json();
 
-      console.log(payload, "payload");
+      
 
       const { error } = await supabase
         .from("attendeeTags")
         .upsert(payload, { onConflict: "id" });
 
-      console.log(error, "error");
+      
       if (error) throw error;
       return NextResponse.json(
         { msg: "tags updated successfully" },
@@ -60,7 +60,7 @@ export async function GET(
 
       if (error) throw error;
 
-      console.log(data);
+      
 
       return NextResponse.json(
         { data },

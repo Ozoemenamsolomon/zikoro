@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 
       const { data, error, status } = await query;
 
-      console.log(data, eventId);
+      
 
       if (error) throw error;
 
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      console.log(params);
+      
 
       const { data, error } = await supabase
         .from("badge")
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         .select()
         .maybeSingle();
 
-      console.log(data, error);
+      
 
       if (error) throw error;
 

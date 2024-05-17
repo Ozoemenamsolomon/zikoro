@@ -176,7 +176,7 @@ export default function ViewAttendeesSection({
       onFilter: (attendee: TAttendee, selectedTags: string[]) => {
         if (!attendeesTags) return false;
         const attendeeTags = attendeesTags.find((attendeeTag) => {
-          console.log(attendeeTag);
+          
           return attendeeTag.attendeeId === attendee.id;
         });
 

@@ -20,7 +20,7 @@ export async function GET(
         .eq("badgeId", badgeId)
         .maybeSingle();
 
-      console.log(data);
+      
       if (error) throw error;
 
       return NextResponse.json(

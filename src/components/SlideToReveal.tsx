@@ -23,9 +23,9 @@ const SlideToReveal: React.FC<{ action: () => void }> = ({ action }) => {
             slider.getBoundingClientRect().right <
             well.getBoundingClientRect().right - 3
           ) {
-            console.log("drag not there yet");
+            
           } else {
-            console.log("drag there!");
+            
             action();
           }
           slider.style.left = "0px";

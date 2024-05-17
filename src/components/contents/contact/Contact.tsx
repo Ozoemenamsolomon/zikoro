@@ -43,7 +43,7 @@ function Contact({ eventId }: { eventId: string }) {
   }, []);
 
   async function onSubmit(values: any) {
-    //  console.log({ values });
+    //  
 
     let logoUrl: any = "";
 
@@ -66,7 +66,7 @@ function Contact({ eventId }: { eventId: string }) {
       eventPhoneNumber: phoneCountryCode + values.eventPhoneNumber,
       eventWhatsApp: whatsappCountryCode + values.eventWhatsApp,
     };
-    // console.log({ payload });
+    // 
 
     await updateOrg(payload, org?.id);
     refetch();

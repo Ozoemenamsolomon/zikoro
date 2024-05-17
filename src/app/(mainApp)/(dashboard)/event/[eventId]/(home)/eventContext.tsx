@@ -22,9 +22,9 @@ const EventContextWrapper = ({ children }: { children: React.ReactNode }) => {
   });
 
   useEffect(() => {
-    console.log("here");
+    
     if (eventIsLoading || !event) return;
-    console.log(event.createdBy);
+    
     saveCookie("event", event);
   }, [eventIsLoading, eventId]);
 

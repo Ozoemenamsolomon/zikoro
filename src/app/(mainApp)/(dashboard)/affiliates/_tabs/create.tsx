@@ -76,19 +76,19 @@ const Create = () => {
   const { events, isLoading: eventsIsLoading } = useGetUserEvents({
     userId: user?.id || 0,
   });
-  console.log(events);
+  // 
 
   const { createAffiliateLink, isLoading: createLinkIsLoading } =
     useCreateAffiliateLink();
 
   const { watch, getValues } = form;
 
-  console.log(getValues(), "default values");
+  
 
   const commissionType = watch("commissionType");
 
   const onSubmit = async (data: TCreateAffiliate) => {
-    console.log(data);
+    
     const {
       affiliateId,
       commissionType,

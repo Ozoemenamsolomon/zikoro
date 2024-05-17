@@ -12,7 +12,7 @@ export const UserActions = () => {
   // if (error) return <div>an error has occurred</div>;
   // if (!user) return <Link href="/api/auth/login">Login</Link>;
 
-  // console.log({ user });
+  // 
 
   // const {
   //   user: { name: userName, avatar },

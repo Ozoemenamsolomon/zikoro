@@ -13,7 +13,7 @@ export async function GET(
       const certificateGroupId = searchParams.get("certificateGroupId");
       const certificateId = searchParams.get("certificateId");
 
-      console.log(certificateGroupId, certificateId, req.url);
+      
 
       const query = supabase
         .from("attendeeCertificates")

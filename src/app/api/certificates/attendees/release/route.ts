@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         certificateURL: "www.zikoro.com/verify/certificate/" + certificateId,
       };
 
-      console.log(body);
+      
 
       const { data, error } = await supabase
         .from("attendeeCertificates")

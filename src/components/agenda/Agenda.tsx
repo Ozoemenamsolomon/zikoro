@@ -88,7 +88,7 @@ export default function Agenda({
   }, [eventAttendees, attendees, attendeeId]);
  */
 
-  // console.log("sesson", fetching,);
+  // 
 
   return (
     <>

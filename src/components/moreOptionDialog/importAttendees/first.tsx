@@ -29,13 +29,13 @@ const First = ({
     reader.onload = (e) => {
       if (e.target) {
         const data = e.target.result;
-        console.log(data);
+        
         const dt = XLSX.read(data, { type: "binary" });
         const first_worksheet = dt.Sheets[dt.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(first_worksheet, {
           header: 1,
         }) as any[][];
-        console.log(jsonData);
+        
 
         if (jsonData[0].length >= 4) {
           setExcelResult(jsonData);

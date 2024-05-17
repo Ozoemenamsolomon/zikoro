@@ -201,7 +201,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
       })
       .catch((error) => {
         toast.error(`${error}`);
-        console.log(`Error submitting blog ${error}`);
+        
       });
   };
 

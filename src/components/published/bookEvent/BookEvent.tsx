@@ -375,7 +375,7 @@ export function BookEvent({
     return result;
   }
 
-  // console.log({ chosenAttendee });
+  // 
 
   function formatTicketPrice(attendees: TChosenAttendee[]): TChosenTicket[] {
     // init a Map to hold the sum of prices for each ticketType

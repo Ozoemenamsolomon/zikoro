@@ -121,7 +121,7 @@ export default function AdminBlogTemplate({
         throw new Error("Failed to delete post");
       }
     } catch (error) {
-      console.log(`Error Deleting Post`);
+      
     }
   };
 

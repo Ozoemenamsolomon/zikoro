@@ -35,7 +35,7 @@ export default function AddNotesForm({
 }) {
   const user = getCookie<TUser>("user");
   const { eventId } = useParams();
-  console.log(attendeeEmail);
+  
   const defaultValues: Partial<TAttendeeNote> = !!note
     ? note
     : {
@@ -59,7 +59,7 @@ export default function AddNotesForm({
   } = form;
 
   useEffect(() => {
-    console.log(errors);
+    
   });
 
   useEffect(() => {

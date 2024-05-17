@@ -37,7 +37,7 @@ export default function StampCard({ eventId }: { eventId: string }) {
   // exhibitionHall
   // filter by partner's name
   function onSubmit(value: FormValue) {
-    // console.log(value);
+    // 
     if (Array.isArray(data)) {
       const filtered = data.filter((partner) => {
         const isPresent =

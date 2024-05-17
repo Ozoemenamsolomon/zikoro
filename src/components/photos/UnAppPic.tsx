@@ -30,7 +30,7 @@
 //           throw new Error("Failed to re-approve photo");
 //         }
 //       } catch (error) {
-//         console.log(error);
+//         
 //       }
 //   };
 

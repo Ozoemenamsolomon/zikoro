@@ -15,7 +15,7 @@ const Portal: React.FC<PortalProps> = ({ children }) => {
     const portalContainer = document.createElement('div');
     document.body.appendChild(portalContainer);
     portalContainerRef.current = portalContainer;
-  console.log(portalContainerRef.current);
+  
     return () => {
       if (portalContainerRef.current && portalContainerRef.current.parentNode === document.body) {
         document.body.removeChild(portalContainerRef.current);

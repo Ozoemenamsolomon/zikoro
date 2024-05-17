@@ -32,7 +32,7 @@ const useSearch = <T>({ data, accessorKey }: UseSearchProps<T>) => {
     })
   );
 
-  console.log(searchedData, data, "search data");
+  
   return { searchedData, searchTerm, setSearchTerm };
 };
 

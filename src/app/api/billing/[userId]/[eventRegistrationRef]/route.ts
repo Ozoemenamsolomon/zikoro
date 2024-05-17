@@ -17,7 +17,7 @@ export async function GET(
         .eq("eventRegistrationRef", eventRegistrationRef)
         .maybeSingle();
 
-      console.log(data, eventRegistrationRef);
+      
 
       if (error) throw error;
 

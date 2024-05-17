@@ -36,7 +36,7 @@ const Badges = () => {
 
   const { eventId } = useParams();
 
-  console.log(eventId);
+  
 
   const { badges, isLoading, getBadges } = useGetBadges({ eventId });
 
@@ -44,7 +44,7 @@ const Badges = () => {
 
   const { deleteBadge, isLoading: deletingBadge, error } = useDeleteBadge();
 
-  console.log(badges);
+  
 
   const makeACopy = async (badge: TBadge, eventId: number) => {
     delete badge.id;
@@ -59,7 +59,7 @@ const Badges = () => {
     const newBadge = await saveBadge({ payload });
 
     if (newBadge) {
-      console.log(newBadge);
+      
       router.push(`create?badgeId=${newBadge.id}`);
     }
   };

@@ -168,7 +168,7 @@ export function Partners({ eventId }: { eventId: string }) {
         { label: "No", value: false },
       ],
       onFilter: (partner: TExPartner, isStamp: boolean) => {
-        console.log("partner", partner?.stampIt, isStamp);
+        
         return partner?.stampIt === isStamp;
       },
       order: 5,

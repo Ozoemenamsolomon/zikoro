@@ -187,7 +187,7 @@ export default function Create() {
       })
       .catch((error) => {
         toast.error(`${error}`);
-        console.log(`Error submitting blog ${error}`);
+        
       });
   };
 

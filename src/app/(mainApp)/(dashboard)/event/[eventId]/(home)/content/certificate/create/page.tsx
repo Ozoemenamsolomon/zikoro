@@ -423,7 +423,7 @@ const page = () => {
   const { event, isLoading: eventIsLoading } = useGetEvent({
     eventId: parseInt(Array.isArray(eventId) ? eventId[0] : eventId),
   });
-  console.log(event, eventId, "event");
+  
 
   const [editableCertificate, setCertificate] = useState<TCertificate | null>(
     null
@@ -449,7 +449,7 @@ const page = () => {
       hashRef.current = DEFAULT_FRAME_STATE;
     }
 
-    console.log(certificate);
+    
 
     setCertificate(certificate);
 
@@ -467,11 +467,11 @@ const page = () => {
       certificate?.certficateDetails?.craftHash &&
       typeof certificate?.certficateDetails?.craftHash === "string"
     ) {
-      console.log(certificate?.certficateDetails?.craftHash, "craft hash");
+      
       hashRef.current = lz.decompress(
         lz.decodeBase64(certificate?.certficateDetails?.craftHash)
       );
-      console.log(hashRef.current);
+      
     }
   }, [certificateIsLoading]);
 
@@ -509,12 +509,12 @@ const page = () => {
   }, []);
 
   const setValue = (key: keyof TCertificateDetails, value: any) => {
-    console.log(key + ": " + value);
+    
     setDetails({ ...details, [key]: value });
   };
 
   const editSettings = (key: keyof TCertificateSettings, value: any) => {
-    console.log(key + ": " + value);
+    
     setSettings({ ...settings, [key]: value });
   };
 
@@ -530,7 +530,7 @@ const page = () => {
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#certificate",
     onSuccess: (data) => {
-      console.log("downloading");
+      
       const link = document.createElement("a");
       link.download = certificateName + ".jpeg";
       link.href = data;
@@ -540,8 +540,8 @@ const page = () => {
   const [{ data: png }, convert, certificateRef] = useToPng<HTMLDivElement>({
     onSuccess: async (data) => {
       setUploading(true);
-      console.log(hashRef.current, "what you get");
-      console.log(data, "image");
+      
+      
 
       // const img = new Image();
       // img.src = data;
@@ -553,12 +553,12 @@ const page = () => {
       const { url, error } = await uploadFile(snapshot, "image");
 
       if (error || !url) throw error;
-      console.log(url);
+      
       // alert("File uploaded successfully", url);
 
       if (!hashRef.current) return;
 
-      console.log(editableCertificate);
+      
       const newCertificate = await saveCertificate({
         payload: editableCertificate
           ? {
@@ -578,7 +578,7 @@ const page = () => {
               cerificateUrl: url,
             },
       });
-      console.log(newCertificate);
+      
 
       setUploading(false);
 
@@ -593,7 +593,7 @@ const page = () => {
   //   convert()
   // };
 
-  console.log(details.craftHash);
+  
 
   const PreviewButton = () => {
     const { actions, query, enabled } = useEditor((state) => ({
@@ -688,7 +688,7 @@ const page = () => {
         onClick={() => {
           const json = query.serialize();
           hashRef.current = lz.encodeBase64(lz.compress(json));
-          console.log(lz.encodeBase64(lz.compress(json)), "what you see");
+          
           convert();
         }}
       >

@@ -184,7 +184,7 @@ export default function AttendeeCard(props) {
                   !props.attendeeExchangedContacts && (
                     <SlideToReveal
                       action={() => {
-                        console.log("drag");
+                        
                         props.setOpen(true);
                       }}
                     />

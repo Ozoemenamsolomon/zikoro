@@ -10,18 +10,17 @@ export async function POST(
   if (req.method === "POST") {
     try {
       const { organizationId } = params;
-      //
+      ``;
       const payload = await req.json();
 
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("organization")
         .update(payload)
-        .eq("id", organizationId)
-        .select("*");
+        .eq("id", organizationId);
 
       if (error) throw error;
       return NextResponse.json(
-        { data, msg: "organization updated successfully" },
+        { msg: "organization updated successfully" },
         {
           status: 201,
         }
@@ -81,24 +80,34 @@ export async function PATCH(req: NextRequest) {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { organizationId: number } }
+  { params }: { params: { userEmail: number } }
 ) {
-  const { organizationId } = params;
+  const { userEmail } = params;
   const supabase = createRouteHandlerClient({ cookies });
+  console.log(userEmail);
 
   if (req.method === "GET") {
     try {
-      const { data, error, status } = await supabase
-        .from("organization")
-        .select("*")
-        .eq("id", organizationId)
-        .maybeSingle();
+      const {
+        data: organizations,
+        error,
+        status,
+      } = await supabase.from("organization").select("*");
+
+      const filteredOrganizations = organizations?.filter((organization) => {
+        return organization.teamMembers?.some(
+          ({ userEmail: email }) => email === userEmail
+        );
+      });
+
+      console.log(organizations);
+      console.log(filteredOrganizations);
 
       if (error) throw error;
 
       return NextResponse.json(
         {
-          data,
+          data: filteredOrganizations,
         },
         {
           status: 200,

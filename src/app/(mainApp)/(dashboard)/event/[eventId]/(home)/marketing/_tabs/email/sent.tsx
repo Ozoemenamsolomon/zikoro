@@ -121,7 +121,7 @@ const Sent = () => {
   const { getMarketingEmails, marketingEmails, isLoading } =
     useGetMarketingEmails({ userId: user.id ?? 0 });
 
-  console.log(marketingEmails);
+  
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<TSentEmail>({

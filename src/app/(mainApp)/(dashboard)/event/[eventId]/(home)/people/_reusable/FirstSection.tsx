@@ -275,7 +275,7 @@ export default function FirstSection({
         );
       });
 
-    console.log(event?.startDateTime);
+    
 
     setOptions(
       "checkin",

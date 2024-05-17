@@ -28,7 +28,7 @@ export function PartnerOffers({ eventId }: { eventId: string }) {
 
   // filter by offer's name
   function onSubmit(value: FormValue) {
-    // console.log(value);
+    // 
     if (offers) {
       const filtered = offers.filter((offer) => {
         const isPresent =

@@ -22,12 +22,12 @@ const AttendeeBadge = ({
 }) => {
   const currentEvent = useEventStore((state) => state.event);
 
-  console.log(badge);
+  
 
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#badge",
     onSuccess: (data) => {
-      console.log("downloading");
+      
       const link = document.createElement("a");
       link.download =
         attendee.firstName + "-" + attendee.lastName + "-" + ".jpeg";
@@ -40,7 +40,7 @@ const AttendeeBadge = ({
     lz.decompress(lz.decodeBase64(badge.badgeDetails.craftHash))
   );
 
-  console.log(hashRef.current);
+  
 
   // useEffect(() => {
   //   if (!badge) return;

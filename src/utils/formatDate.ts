@@ -106,7 +106,7 @@ export function formatDate(dateString: string): string {
     targetDateTime.setDate(targetDateTime.getDate() + 1);
   
     const today = new Date();
-   // console.log({ targetDateTime, today });
+   // 
   
     return targetDateTime < today;
   }

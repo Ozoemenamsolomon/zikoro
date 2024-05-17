@@ -45,7 +45,7 @@ export function AddBanners({
   async function onSubmit(values: z.infer<typeof addBannerSchema>) {
     await addPartnerBanner(partnerId, values.banners, partner);
 
-    // console.log({ result });
+    // 
     refetch();
     close();
   }

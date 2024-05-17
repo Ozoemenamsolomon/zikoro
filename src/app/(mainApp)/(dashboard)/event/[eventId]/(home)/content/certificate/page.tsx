@@ -50,7 +50,7 @@ const Certificates = () => {
     error,
   } = useDeleteCertificate();
 
-  console.log(certificates);
+  
 
   const makeACopy = async (certificate: TCertificate, eventId: number) => {
     delete certificate.id;
@@ -65,7 +65,7 @@ const Certificates = () => {
     const newCertificate = await saveCertificate({ payload });
 
     if (newCertificate) {
-      console.log(newCertificate);
+      
       router.push(`certificate/create?certificateId=${newCertificate.id}`);
     }
   };
@@ -184,7 +184,7 @@ const Certificates = () => {
           certificateGroupId: certificateId,
           isVerify: false,
         });
-        console.log(certificates);
+        
         setCertificateIsIssued(
           (!Array.isArray(certificates) && certificates) ||
             (Array.isArray(certificates) && certificates.length > 0)

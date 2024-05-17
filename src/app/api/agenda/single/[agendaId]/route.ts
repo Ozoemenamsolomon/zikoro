@@ -18,7 +18,7 @@ export async function GET(
         .eq("sessionAlias", agendaId)
         .single()
 
-      // console.log(data);
+      // 
       if (error) {
         return NextResponse.json(
           {

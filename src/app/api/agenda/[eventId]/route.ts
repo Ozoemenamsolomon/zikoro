@@ -49,7 +49,7 @@ export async function GET(
         .select("*")
         .eq("eventAlias", eventId);
 
-      // console.log(data);
+      // 
 
       if (error) {
         return NextResponse.json(
