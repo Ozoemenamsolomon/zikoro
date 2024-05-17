@@ -6,9 +6,15 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      const { data, error, status } = await supabase
-        .from("sentEmails")
-        .select("*");
+      const { searchParams } = new URL(req.url);
+      const userId = searchParams.get("userId");
+      const query = supabase.from("sentEmails").select("*");
+
+      console.log(userId);
+
+      if (userId) query.eq("userId", userId);
+
+      const { data, error, status } = await query;
 
       if (error) throw error;
 

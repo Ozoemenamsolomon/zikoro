@@ -80,7 +80,7 @@ export async function POST(
               );
               return {
                 badgeId,
-                badgeURL: "www.zikoro.com/verify/" + badgeId,
+                badgeURL: "www.zikoro.com/verify/badge/" + badgeId,
                 ...badgeInfo,
                 ...attendee,
               };

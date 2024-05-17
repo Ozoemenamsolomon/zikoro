@@ -382,10 +382,11 @@ export default function page() {
               setRowSelection={setRowSelection}
               canSelectRow={(row) => true}
               rowStyle={{
+                padding: "5px",
                 display: "grid",
-                gridTemplateColumns: `auto 1.5fr repeat(${
+                gridTemplateColumns: `1.5fr repeat(${
                   columns.length - 2
-                }, minmax(0, 1fr))`,
+                }, minmax(0, 1fr)) auto`,
               }}
             />
           </div>

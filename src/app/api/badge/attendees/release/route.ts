@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       const body = {
         ...params,
         badgeId,
-        badgeURL: "www.zikoro.com/verify/" + badgeId,
+        badgeURL: "www.zikoro.com/verify/badge/" + badgeId,
       };
 
       console.log(body);

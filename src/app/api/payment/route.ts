@@ -179,7 +179,7 @@ export async function POST(req: NextRequest) {
         qrCode: string;
       }[] = await Promise.all(resolveAttendees);
       // sending email
-    
+
       //   console.log({ registeredAttendees });
       var { SendMailClient } = require("zeptomail");
 
@@ -197,12 +197,14 @@ export async function POST(req: NextRequest) {
             address: process.env.NEXT_PUBLIC_EMAIL,
             name: "Zikoro",
           },
-          to:[ {
-            email_address: {
-              address: attendee.email,
-              name: attendee?.name
-            }
-          }],
+          to: [
+            {
+              email_address: {
+                address: attendee.email,
+                name: attendee?.name,
+              },
+            },
+          ],
           subject: `Confirmation to attend ${event}`,
           htmlbody: `
             <div
@@ -489,9 +491,9 @@ export async function POST(req: NextRequest) {
             `,
           attachments: [
             {
-              filename: "event.ics",
+              name: "event.ics",
               content: iCalendarContent,
-              contentType: "text/calendar",
+              mime_type: "text/calendar",
             },
           ],
         });

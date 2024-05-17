@@ -199,3 +199,46 @@ export const useGetPayOuts = ({
     getPayOuts,
   };
 };
+
+export const useGetBanks = (): UseGetResult<IBank[], "banks", "getBanks"> => {
+  const [banks, setBanks] = useState<IBank[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  console.log("here");
+
+  const getBanks = async () => {
+    setLoading(true);
+    console.log("here");
+    try {
+      console.log("here");
+      const { data, status } = await getRequest<IBank[]>({
+        endpoint: `/billing/bank`,
+      });
+
+      console.log(data);
+
+      if (status !== 200) {
+        throw data;
+      }
+      setBanks(data.data);
+    } catch (error) {
+      console.log(error);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    console.log("here");
+    getBanks();
+  }, []);
+
+  return {
+    banks,
+    isLoading,
+    error,
+    getBanks,
+  };
+};

@@ -17,6 +17,8 @@ const People = ({ children }: { children: React.ReactNode }) => {
   // const event = getCookie<Event>("event");
   const { eventId } = useParams();
 
+  if (!user) return;
+
   const { event, getEvent, isLoading } = useGetEvent({
     eventId,
     isAlias: true,
