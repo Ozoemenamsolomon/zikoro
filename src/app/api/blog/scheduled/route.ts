@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
         const { data, error, } = await supabase
         .from('blog')
         .select()
-        .eq( 'status', 'schedule' )
+        .eq( 'status', 'scheduled' )
   
         if (error) throw error;
   
