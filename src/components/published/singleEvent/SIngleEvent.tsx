@@ -386,7 +386,7 @@ export function SingleEvent({
           eventImage={event?.eventPoster}
           availableSlot={availableSlot}
           startDate={startDate}
-          currency={currency}
+          currency={event?.pricingCurrency}
           organizerContact={organizerContact}
           eventTitle={event?.eventTitle}
           close={onClose}
