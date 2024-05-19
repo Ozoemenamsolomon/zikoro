@@ -96,7 +96,7 @@ export function useLogin() {
 
       if (data && data?.user?.email) {
         await getUser(data?.user?.email);
-        toast.success("Sign In Successful");
+        //  toast.success("Sign In Successful");
         router.push("/home");
         setLoading(false);
       }
@@ -138,6 +138,11 @@ export const getUser = async (email: string | null) => {
     .single();
   if (error) {
     //  console.log({error});
+    window.open(
+      `/onboarding?email=${email}&createdAt=${new Date().toISOString()}`,
+      "_self"
+    );
+    return;
   }
   saveCookie("user", user);
   return user;
@@ -154,7 +159,9 @@ export function useRegistration() {
         email: values.email,
         password: values.password,
         options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback/${values?.email}/${new Date().toISOString()}`,
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback/${
+            values?.email
+          }/${new Date().toISOString()}`,
         },
       });
 
@@ -166,10 +173,12 @@ export function useRegistration() {
 
       if (data) {
         //  saveCookie("user", data);
-        toast.success("Regsitration  Successful");
+        toast.success("Registration  Successful");
         router.push(`/verify-email?message=Verify your Email&content= Thank you for signing up! An email has been sent to your registered
         email address. Please check your inbox and follow the instructions to
-        verify your account.`);
+        verify your account.&email=${values.email}&redirect=${
+          process.env.NEXT_PUBLIC_SITE_URL
+        }/auth/callback/${values?.email}/${new Date().toISOString()}`);
       }
     } catch (error) {
       setLoading(false);
@@ -299,16 +308,26 @@ export function useUpdatePassword() {
   };
 }
 
-
 export function useResendLink() {
+  const [loading, setLoading] = useState(false);
 
-  /**
-  
-const { data, error } = await supabase.auth.signInWithOtp({
-  email: 'example@email.com',
-  options: {
-    emailRedirectTo: 'https://example.com/welcome'
+  async function resendLink(email: string, redirect: string) {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: redirect,
+        },
+      });
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   }
-})
-   */
+ 
+  return {
+    resendLink,
+    loading,
+  };
 }
