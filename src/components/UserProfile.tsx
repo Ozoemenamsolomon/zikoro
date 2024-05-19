@@ -77,7 +77,7 @@ export default function UserProfile({
 
     if (!parentCard || !innerCard) return;
 
-    // console.log(innerCard.style, parentCard.style);
+    // 
     parentCard.style.height = `${innerCard.style.height}px`;
   }, [user]);
 

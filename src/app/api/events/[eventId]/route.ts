@@ -145,7 +145,7 @@ export async function GET(
       const { searchParams } = new URL(req.url);
       const isAlias = searchParams.get("isAlias");
 
-      console.log(isAlias, eventId);
+      
 
       const { data, error, status } = await supabase
         .from("events")

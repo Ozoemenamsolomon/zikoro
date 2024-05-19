@@ -121,7 +121,7 @@ export default function AdminBlogTemplate({
         throw new Error("Failed to delete post");
       }
     } catch (error) {
-      console.log(`Error Deleting Post`);
+      
     }
   };
 
@@ -275,7 +275,7 @@ export default function AdminBlogTemplate({
               <li className="py-1 text-xs lowercase cursor-pointer hover:text-indigo-700">
                 {/* Delete */}
                 <AlertDialog>
-                  <AlertDialogTrigger>delete</AlertDialogTrigger>
+                  <AlertDialogTrigger className="">delete</AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>

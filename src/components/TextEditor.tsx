@@ -132,7 +132,7 @@ export default function TextEditor({
   const handleEditorChange = (content: string) => {
     setContent(content);
     onChange(content);
-    console.log("newContent", content);
+    
   };
 
   return (

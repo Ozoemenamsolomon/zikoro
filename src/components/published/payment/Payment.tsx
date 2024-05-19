@@ -37,7 +37,7 @@ export function Payment({
 
   const eventData: any = query.get("eventData");
   const parsedData: QueryData = JSON.parse(eventData);
-  // console.log({ parsedData });
+  // 
 
  // const user = getCookie("user");
   const config = paymentConfig({
@@ -51,7 +51,7 @@ export function Payment({
   }
 
   async function handleSuccess(reference: any) {
-    // console.log(reference);
+    // 
 
     const payload = {
       eventId: data?.eventId,
@@ -83,7 +83,7 @@ export function Payment({
       eventPrice: data?.eventPrice,
     };
 
-    //  console.log({ payload });
+    //  
 
     /// change to priceCategory after validity date has been adjusted
     await sendTransactionDetail(toggleSuccessModal, payload);
@@ -130,7 +130,7 @@ export function Payment({
       eventPrice: data?.eventPrice,
     };
 
-    //  console.log({ payload });
+    //  
 
     /// change to priceCategory after validity date has been adjusted
     await sendTransactionDetail(toggleSuccessModal, payload);

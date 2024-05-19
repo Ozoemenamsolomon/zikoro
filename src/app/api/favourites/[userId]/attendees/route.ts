@@ -16,7 +16,7 @@ export async function GET(
         .select("attendees")
         .eq("userId", userId);
 
-      console.log(favouriteAttendees);
+      
 
       if (firstError) throw firstError;
 

@@ -12,7 +12,7 @@ const Designs = ({ details, setValue }: TabProps) => {
   const { badgeTemplates, isLoading, getBadgeTemplates } =
     useGetBadgeTemplates();
 
-  console.log(badgeTemplates);
+  
 
   const { searchTerm, searchedData, setSearchTerm } = useSearch<TBadgeTemplate>(
     {

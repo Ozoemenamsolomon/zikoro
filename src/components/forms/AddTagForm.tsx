@@ -14,7 +14,7 @@ export default function AddTagForm({
   currentTags: TTags | null;
   getTags: () => void;
 }) {
-  console.log(currentTags, "tag");
+  
   const [label, setLabel] = useState<string>("");
   const [color, setColor] = useState<string>("");
 
@@ -37,7 +37,7 @@ export default function AddTagForm({
           tags: [{ label, color }],
         };
 
-    console.log(payload);
+    
 
     await updateTags({ payload });
     await getTags();

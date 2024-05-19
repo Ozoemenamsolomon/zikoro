@@ -24,6 +24,7 @@ export function Option({
   isOrganizer: boolean;
   isIdPresent: boolean;
 }) {
+  // 
   return (
     <>
       {isOrganizer || isIdPresent ? (

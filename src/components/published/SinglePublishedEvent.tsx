@@ -8,7 +8,7 @@ import {
   useFetchSingleEvent,
   useFetchSingleOrganization,
 } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { usePathname } from "next/navigation";
 import { SingleEvent } from "@/components/published";
 import  {useEffect} from "react"

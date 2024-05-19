@@ -18,7 +18,7 @@ export async function GET(
         .select("*")
         .eq("eventAlias", eventId);
 
-      console.log(data);
+      
 
       if (error) throw error;
 

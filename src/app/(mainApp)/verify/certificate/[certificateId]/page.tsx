@@ -93,7 +93,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#certificate",
     onSuccess: (data) => {
-      console.log("downloading");
+      
       if (!certificate) return;
       const link = document.createElement("a");
       link.download = `${
@@ -108,11 +108,11 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
 
   useEffect(() => {
     if (isLoading) {
-      console.log("still loading");
+      
       return;
     }
 
-    console.log("done loading", certificate);
+    
     if (!certificate) {
       toast({
         variant: "destructive",
@@ -148,13 +148,13 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
     //   return; // Exit early after showing the toast
     // }
 
-    console.log(certificate);
+    
 
     if (
       certificate?.originalCertificate.certficateDetails &&
       certificate?.originalCertificate.certficateDetails.craftHash
     ) {
-      console.log("crafthash");
+      
       const initData = lz.decompress(
         lz.decodeBase64(
           certificate?.originalCertificate.certficateDetails.craftHash
@@ -169,7 +169,7 @@ const Page = ({ params }: { params: { certificateId: string } }) => {
           organization: certificate.originalCertificate.event.organization,
         })
       );
-      console.log("hash set", hashRef.current);
+      
     }
   }, [isLoading]);
 

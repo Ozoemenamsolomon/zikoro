@@ -9,12 +9,12 @@ import { format } from "date-fns";
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
-    console.log("here");
+    
     try {
       const params = await req.json();
 
-      console.log(params);
-      console.log(params.id);
+      
+      
 
       if (!params.id) {
         const { data, error: checkIfRegisteredError } = await supabase
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
           .eq("eventAlias", params.eventId)
           .maybeSingle();
 
-        console.log(checkIfRegisteredError, data);
+        
 
         if (checkIfRegisteredError) throw checkIfRegisteredError?.code;
         if (data) throw "email error";
@@ -35,12 +35,12 @@ export async function POST(req: NextRequest) {
         .upsert({ ...params, eventAlias: params.eventId });
 
       if (error) {
-        console.log(error);
+        
         throw error.code;
       }
 
       if (!params.id) {
-        console.log("here");
+        
 
         const { data: event, error: eventSelectError } = await supabase
           .from("events")
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
           .maybeSingle();
 
         if (eventSelectError) {
-          console.log(eventSelectError);
+          
           throw eventSelectError.code;
         }
 
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
           throw "no event";
         }
 
-        console.log(event.registered);
+        
 
         const { data: currentEvent, error: eventError } = await supabase
           .from("events")
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
           eventPoster,
         } = currentEvent as never as Event & { organization: TOrganization };
 
-        console.log(currentEvent);
+        
 
         console.log(
           startDateTime,
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
 
         const date = new Date(params.registrationDate);
         // format Date
-        console.log(date);
+        
 
         const options: Intl.DateTimeFormatOptions = {
           year: "numeric",
@@ -106,12 +106,12 @@ export async function POST(req: NextRequest) {
           "en-US",
           options
         ).format(date);
-        console.log(formattedDate);
+        
 
         // convert date to ics format
         const icsDateFormat = convertToICSFormat(startDateTime);
 
-        console.log(icsDateFormat);
+        
 
         // Create iCalendar event
         const icsEvent = {
@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
           //  organizerContact?.email
         };
 
-        console.log(icsEvent);
+        
 
         // Generate iCalendar content
         const { error: icsError, value: iCalendarContent }: any =
@@ -146,18 +146,18 @@ export async function POST(req: NextRequest) {
           throw icsError;
         }
 
-        console.log(iCalendarContent);
+        
 
         // // Generate QR code
         // const qrCodeB64 = await generateQRCode(
         //   `${params.firstName} ${params.lastName}`
         // );
 
-        // console.log(qrCodeB64);
+        // 
 
         // // generate cloud url
         // const qrCodeUrl = await uploadFile(qrCodeB64, "image");
-        // console.log(qrCodeUrl);
+        // 
 
         var { SendMailClient } = require("zeptomail");
 
@@ -461,7 +461,7 @@ export async function POST(req: NextRequest) {
             },
           ],
         });
-        console.log(resp);
+        
 
         // let nodemailer = require("nodemailer");
         // const transporter = nodemailer.createTransport({
@@ -474,7 +474,7 @@ export async function POST(req: NextRequest) {
         //   },
         // });
 
-        console.log("here");
+        
 
         // const mailData = {
         //   from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
@@ -490,22 +490,22 @@ export async function POST(req: NextRequest) {
         //   ],
         // };
 
-        // console.log(mailData);
+        // 
 
         // await transporter.sendMail(mailData, function (err: any, info: any) {
-        //   //  console.log({ attendee: registeredAttendees[0], mailData });
+        //   //  
         //   if (err) {
-        //     console.log({ error });
+        //     
         //     // check += " error";
         //     throw err;
         //   } else {
         //     // check += " success";
-        //     console.log({ info });
+        //     
         //   }
         // });
       }
 
-      console.log("here");
+      
       return NextResponse.json(
         { msg: "attendee created successfully" },
         {
@@ -513,9 +513,9 @@ export async function POST(req: NextRequest) {
         }
       );
     } catch (error) {
-      console.log("here");
-      console.log("here", error);
-      console.log("here", error);
+      
+      
+      
       console.error(error, "error");
       return NextResponse.json(
         {
@@ -575,21 +575,21 @@ export async function GET(req: NextRequest) {
     const eventId = searchParams.get("eventId");
     const userId = searchParams.get("userId");
 
-    console.log(eventId);
+    
     try {
       const query = supabase
         .from("attendees")
         .select("*")
         .order("registrationDate", { ascending: false });
 
-      console.log(eventId);
+      
 
       if (eventId) query.eq("eventAlias", eventId);
       if (userId) query.eq("userId", userId);
 
       const { data, error, status } = await query;
 
-      console.log(data);
+      
 
       if (error) throw error;
 

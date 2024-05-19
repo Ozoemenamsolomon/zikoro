@@ -40,7 +40,7 @@ export const useCreateAgenda = () => {
       });
       return data;
     } catch (error: any) {
-      // console.log({ error });
+      // 
       toast({
         description: error?.response?.data?.error,
         variant: "destructive",
@@ -285,7 +285,7 @@ export const useDeleteAgenda = () => {
                   };
               }
       
-              console.log("third");
+              
               agendaGroups[key].sessions.push(agenda);
       
               // Resolve the promise to signal that processing for this agenda is complete
@@ -298,7 +298,7 @@ export const useDeleteAgenda = () => {
           .then(() => {
               const result = Object.values(agendaGroups);
               // Do something with the result, such as updating state
-              console.log("forth");
+              
               setSessionAgendas(result);
               setFetching(false);
       
@@ -344,7 +344,7 @@ export const useSendReview = () => {
       });
       return data;
     } catch (error: any) {
-      // console.log({ error });
+      // 
       toast({
         description: error?.response?.data?.error,
         variant: "destructive",
@@ -443,7 +443,7 @@ export const useCreateMyAgenda = () => {
       });
       return data;
     } catch (error: any) {
-      // console.log({ error });
+      // 
       toast({
         description: error?.response?.data?.error,
         variant: "destructive",

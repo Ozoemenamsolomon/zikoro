@@ -24,7 +24,7 @@ export const useSaveCertificate = () => {
       description: "saving certificate...",
     });
     try {
-      console.log(payload);
+      
       const { data, status } = await postRequest<TCertificate>({
         endpoint: "/certificates",
         payload,
@@ -291,7 +291,7 @@ export const useUpdateAttendeeCertificates = ({
         return data.data;
       }
     } catch (error) {
-      console.log(error);
+      
       setError(true);
       toast({
         description: "an error has occurred",
@@ -429,7 +429,7 @@ export const useRecallAttendeeCertificates = ({
         description: data.data?.msg,
       });
     } catch (error) {
-      console.log(error);
+      
       setError(true);
       toast({
         description: "an error has occurred",

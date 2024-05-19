@@ -127,7 +127,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   //
   async function onSubmit(values: z.infer<typeof updateEventSchema>) {
-    // console.log(values);
+    // 
     if (values.pricing?.length > 0) {
       const totalTicketQuantity = values.pricing.reduce(
         (sum, { ticketQuantity }) => {
@@ -231,7 +231,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     setEventPosterArr(filtered);
   }
 
-  // console.log(form.getValues());
+  // 
 
   const formatZone = useMemo(() => {
     return TIME_ZONES.flatMap(({ zones }) => {

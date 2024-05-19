@@ -9,14 +9,14 @@ import { format } from "date-fns";
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
-    console.log("here");
+    
     try {
       const params = await req.json();
 
       const { error } = await supabase.from("attendees").insert(params);
       if (error) throw error;
 
-      console.log("here");
+      
 
       const { data: event, error: eventSelectError } = await supabase
         .from("events")
@@ -25,13 +25,13 @@ export async function POST(req: NextRequest) {
         .maybeSingle();
 
       if (eventSelectError) {
-        console.log(eventSelectError);
+        
         throw eventSelectError.code;
       }
 
       if (!event) throw "event not found";
 
-      console.log(event.registered);
+      
 
       const { data: currentEvent, error: eventError } = await supabase
         .from("events")
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
         eventPoster,
       } = currentEvent as never as Event & { organization: TOrganization };
 
-      console.log(currentEvent);
+      
 
       console.log(
         startDateTime,
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
 
       const date = new Date(params[0].registrationDate);
       // format Date
-      console.log(date);
+      
 
       const options: Intl.DateTimeFormatOptions = {
         year: "numeric",
@@ -80,12 +80,12 @@ export async function POST(req: NextRequest) {
         "en-US",
         options
       ).format(date);
-      console.log(formattedDate);
+      
 
       // convert date to ics format
       const icsDateFormat = convertToICSFormat(startDateTime);
 
-      console.log(icsDateFormat);
+      
 
       // Create iCalendar event
       const icsEvent = {
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
         //  organizerContact?.email
       };
 
-      console.log(icsEvent);
+      
 
       // Generate iCalendar content
       const { error: icsError, value: iCalendarContent }: any =
@@ -118,18 +118,18 @@ export async function POST(req: NextRequest) {
         throw icsError;
       }
 
-      console.log(iCalendarContent);
+      
 
       // // Generate QR code
       // const qrCodeB64 = await generateQRCode(
       //   `${params.firstName} ${params.lastName}`
       // );
 
-      // console.log(qrCodeB64);
+      // 
 
       // // generate cloud url
       // const qrCodeUrl = await uploadFile(qrCodeB64, "image");
-      // console.log(qrCodeUrl);
+      // 
 
       let nodemailer = require("nodemailer");
       const transporter = nodemailer.createTransport({
@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      console.log("here");
+      
 
       (params as TAttendee[]).forEach(async (attendee: TAttendee) => {
         try {
@@ -433,13 +433,13 @@ export async function POST(req: NextRequest) {
             ],
           });
 
-          console.log(`Email sent to ${attendee.email}`);
+          
         } catch (error) {
           console.error(`Error sending email to ${attendee.email}:`, error);
         }
       });
 
-      console.log("here");
+      
       return NextResponse.json(
         { msg: "attendee created successfully" },
         {
@@ -447,9 +447,9 @@ export async function POST(req: NextRequest) {
         }
       );
     } catch (error) {
-      console.log("here");
-      console.log("here", error);
-      console.log("here", error);
+      
+      
+      
       console.error(error, "error");
       return NextResponse.json(
         {

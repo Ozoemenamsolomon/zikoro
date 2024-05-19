@@ -20,7 +20,7 @@ import useEventStore from "@/store/globalEventStore";
 const page = () => {
   const router = useRouter();
   const { attendeeId, eventId } = useParams();
-  console.log(attendeeId);
+  
 
   const { attendee, isLoading, getAttendee } = useGetAttendee({
     attendeeId,
@@ -42,7 +42,7 @@ const page = () => {
   } = useGetEventAgendas({
     eventId: event.id,
   });
-  console.log(attendee);
+  
 
   const { createAttendee } = useCreateAttendee();
 

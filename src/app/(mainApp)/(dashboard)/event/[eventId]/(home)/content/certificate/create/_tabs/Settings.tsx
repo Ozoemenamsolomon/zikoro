@@ -53,7 +53,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
       : []
   );
 
-  console.log(selectedAttendees);
+  
 
   type ValueType = TAttendee | TAttendee[];
 
@@ -76,7 +76,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
 
   const divRef = useRef<HTMLDivElement>(null);
 
-  console.log(settings.publishOn);
+  
 
   useEffect(() => {
     if (!divRef) return;

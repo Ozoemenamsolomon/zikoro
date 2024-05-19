@@ -10,7 +10,7 @@ const People = ({ children }: { children: React.ReactNode }) => {
   const pathNames = usePathname().split("/");
 
   useEffect(() => {
-    console.log(pathNames);
+    
   }, [pathNames]);
 
   const user = getCookie<TUser>("user");
@@ -24,7 +24,7 @@ const People = ({ children }: { children: React.ReactNode }) => {
     isAlias: true,
   });
 
-  console.log(event);
+  
 
   console.log(
     String(event?.createdBy),

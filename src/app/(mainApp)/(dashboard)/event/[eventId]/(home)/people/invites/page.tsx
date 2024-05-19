@@ -80,7 +80,7 @@ export default function Page() {
   const data = emailInvites.flatMap(({ InviteDetails, created_at }) =>
     InviteDetails.map((invitee) => ({ ...invitee, created_at }))
   );
-  console.log(data);
+  
 
   // const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
   //   useFilter<TInviteDetail>({
@@ -105,7 +105,7 @@ export default function Page() {
   }
 
   const updateInvitee = (key: string, newVal: Partial<TInviteDetails>) => {
-    console.log(newVal);
+    
     setInvitees((prevInvitees) => {
       const prevVal = prevInvitees[key];
       return { ...prevInvitees, [key]: { ...prevVal, ...newVal } };
@@ -113,7 +113,7 @@ export default function Page() {
   };
 
   const createNewInvitee = () => {
-    console.log("create new invitees");
+    
     setInvitees((prevInvitees) => {
       const key = generateAlphanumericHash(5);
       return {
@@ -133,8 +133,8 @@ export default function Page() {
         [key]: { email, attendeeType },
         ...newInvitees
       } = prevInvitees;
-      console.log("deleting key", key);
-      console.log("Updated invitees:", newInvitees);
+      
+      
       return newInvitees;
     });
   };

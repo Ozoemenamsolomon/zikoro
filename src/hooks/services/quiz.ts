@@ -27,7 +27,7 @@ export const useCreateQuiz = () => {
       });
       return data
     } catch (error: any) {
-      // console.log({ error });
+      // 
       toast({
         description: error?.response?.data?.error,
         variant: "destructive",
@@ -182,7 +182,7 @@ export const useCreateAnswer = () => {
        */
       return data
     } catch (error: any) {
-      // console.log({ error });
+      // 
       toast({
         description: error?.response?.data?.error,
         variant: "destructive",

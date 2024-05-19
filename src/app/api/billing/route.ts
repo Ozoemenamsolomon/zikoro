@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
       const payOutStatus = searchParams.get("payOutStatus");
       const registrationCompleted = searchParams.get("registrationCompleted");
 
-      console.log(userEmail, userId);
+      
 
       const query = supabase
         .from("eventTransactions")
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
         query.neq("payOutStatus", "new");
 
       const { data, error, status } = await query;
-      console.log(data, error);
+      
 
       if (error) throw error;
 

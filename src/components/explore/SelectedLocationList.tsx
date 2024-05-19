@@ -53,12 +53,12 @@ export default function SelectedLocationList({
   //       navigator.geolocation.getCurrentPosition(
   //         async (position: GeolocationPosition) => {
   //           try {
-  //             console.log(position.coords.latitude);
+  //             
   //             const response = await fetch(
   //               `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${process.env.GOOGLE_API_KEY}`
   //             );
   //             const data = await response.json();
-  //             console.log(data);
+  //             
   //             if (data.status === "OK") {
   //               setLocation(data.results[0].formatted_address);
   //             } else {

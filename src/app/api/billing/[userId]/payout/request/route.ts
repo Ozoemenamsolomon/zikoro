@@ -32,6 +32,7 @@ export async function POST(
         requestedBy: userId,
         payOutRef,
         Amount: payload.amount,
+        requestedFor: payload.requestedFor,
       });
 
       if (secondError) throw error;

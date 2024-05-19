@@ -42,7 +42,7 @@ const Compose = () => {
   // const isScheduled = watch("isScheduled");
 
   const onSubmit = (data: TComposeSMS) => {
-    console.log(data);
+    
   };
 
   return (

@@ -10,7 +10,7 @@ export const getUser = async (email: string) => {
   //    .eq("userEmail", email)
   //    .single();
   //  if (error) {
-  //  //  console.log({error});
+  //  //  
   //  }
   //  return user;
 };

@@ -111,22 +111,22 @@ export const useUpdateAttendeeTags = ({
     });
 
     try {
-      console.log(payload, "starting update attendee tag");
+      
       const { data, status } = await postRequest({
         endpoint: `/attendees/${attendeeId}/tags`,
         payload,
       });
 
-      console.log("finish update attendee tag");
+      
       if (status !== 201) throw data;
       toast({
         description: "Attendee tags updated successfully",
       });
     } catch (error) {
-      console.log(error);
+      
       setError(true);
     } finally {
-      console.log("done");
+      
       setLoading(false);
     }
   };

@@ -18,7 +18,7 @@ export async function GET(
         .eq("quizAlias", quizId)
         .single()
 
-      // console.log(data);
+      // 
       if (error) {
         return NextResponse.json(
           {

@@ -45,7 +45,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
       ? selectedAttendees.filter((item) => item !== value)
       : [...selectedAttendees, value];
 
-    console.log(updatedValue);
+    
 
     setSelectedAttendees(updatedValue);
   };

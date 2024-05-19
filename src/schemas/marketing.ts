@@ -6,7 +6,7 @@ export const accountDetailsSchema = z.object({
   accountNumber: z.string(),
   accountName: z.string(),
   bankName: z.string(),
-  bankCode: z.number().optional(),
+  bankCode: z.string().optional(),
 });
 
 export const AffiliateSchema = z.object({

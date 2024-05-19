@@ -20,7 +20,7 @@ export const useGetOrganizations = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<TOrganization[]>({
-        endpoint: "organization",
+        endpoint: `organization`,
       });
 
       if (status !== 200) {
@@ -43,6 +43,54 @@ export const useGetOrganizations = (): UseGetResult<
     isLoading,
     error,
     getOrganizations,
+  };
+};
+
+export const useGetUserTeamOrganizations = ({
+  userEmail,
+}: {
+  userEmail: string;
+}): UseGetResult<
+  TOrganization[],
+  "userOrganizations",
+  "getUserOrganizations"
+> => {
+  const [userOrganizations, setUserOrganizations] = useState<TOrganization[]>(
+    []
+  );
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getUserOrganizations = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TOrganization[]>({
+        endpoint: `organization/user/${userEmail}`,
+      });
+
+      console.log(data);
+
+      if (status !== 200) {
+        throw data;
+      }
+      setUserOrganizations(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getUserOrganizations();
+  }, []);
+
+  return {
+    userOrganizations,
+    isLoading,
+    error,
+    getUserOrganizations,
   };
 };
 
@@ -106,7 +154,6 @@ export const useUpdateOrganization = ({
       description: "updating organization...",
     });
     try {
-      console.log(organizationId, "organizationId");
       const { data, status } = await postRequest({
         endpoint: `organization/${organizationId}`,
         payload,
@@ -116,6 +163,8 @@ export const useUpdateOrganization = ({
       toast({
         description: "Organization updated successfully",
       });
+
+      return data.data.data;
     } catch (error) {
       setError(true);
       toast({

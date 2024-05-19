@@ -117,13 +117,13 @@ export function AddPartners({
 
   async function onSubmit(values: any) {
     setLoading(true);
-  //  console.log("vv", values);
+  //  
     const promise = new Promise(async (resolve) => {
       if (typeof values?.companyLogo === "string") {
         resolve(values?.companyLogo);
       } else if (values?.companyLogo && values?.companyLogo?.length > 0) {
         const img = await uploadFile(values?.companyLogo[0], "image");
-        console.log(img);
+        
         resolve(img);
       } else {
         resolve(null);
@@ -211,7 +211,7 @@ export function AddPartners({
   }, [eventData?.sponsorCategory]);
 
   ///
-  // console.log("mm", partner);
+  // 
   useEffect(() => {
     if (partner) {
       form.reset({

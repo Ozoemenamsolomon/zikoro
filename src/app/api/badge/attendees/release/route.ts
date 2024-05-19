@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         badgeURL: "www.zikoro.com/verify/badge/" + badgeId,
       };
 
-      console.log(body);
+      
 
       const { data, error } = await supabase
         .from("attendeeBadge")

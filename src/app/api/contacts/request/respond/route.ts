@@ -10,18 +10,18 @@ export async function POST(req: NextRequest) {
       const { searchParams } = new URL(req.url);
       const action = searchParams.get("action");
 
-      console.log(payload);
+      
 
       const { error } = await supabase
         .from("contactRequest")
         .update({ status: action + "ed" })
         .eq("id", payload.contactRequestId);
-      console.log(error);
+      
       if (error) throw error;
 
       if (action === "accept") {
         const { error } = await supabase.from("contacts").insert(payload);
-        console.log(error);
+        
         if (error) throw error;
       }
 

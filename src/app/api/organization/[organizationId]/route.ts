@@ -10,17 +10,18 @@ export async function POST(
   if (req.method === "POST") {
     try {
       const { organizationId } = params;
-    //  console.log(params);
+      //
       const payload = await req.json();
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("organization")
         .update(payload)
-        .eq("id", organizationId);
+        .eq("id", organizationId)
+        .select("*");
 
       if (error) throw error;
       return NextResponse.json(
-        { msg: "organization updated successfully" },
+        { data, msg: "organization updated successfully" },
         {
           status: 201,
         }
@@ -120,5 +121,3 @@ export async function GET(
 }
 
 export const dynamic = "force-dynamic";
-
-

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextEditor from "@/components/TextEditor";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -124,7 +124,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     }
   };
 
-  //Upload preview post Function
+  // Upload preview post Function
   const preview = () => {
     if (!content) {
       toast.error("Please write your blog content");
@@ -155,55 +155,88 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     });
   };
 
-  //submit post function
-  const savePost = async (e: any) => {
-    e.preventDefault();
-    if (!content) {
-      toast.error("Please write your blog content");
-      return;
-    }
-
-    // Upload image
-    uploadImage()
-      .then((headerImageUrl) => {
-        // Fetch request
-        return fetch("/api/blog/add", {
+  const saveOrPublish = async (e:any) => {
+    e.preventDefault()
+    //if file doesnt exist
+    if (!data?.headerImageUrl) {
+      uploadImage()
+        .then((headerImageUrl) => {
+          // Fetch request
+          return fetch("/api/blog/add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...data,
+              title: formData.title,
+              category: formData.category,
+              headerImageUrl: headerImageUrl, // Use uploaded image URL
+              tags: formData.tags,
+              readingDuration: formData.readingDuration,
+              status: status,
+              content: content,
+            }),
+          });
+        })
+        .then((response) => {
+          if (response.ok) {
+            toast.success(
+              `${status === "draft" ? "Saved to draft" : "Post Published"}`
+            );
+            if (status == "draft") {
+            } else if (status == "schedule") {
+            } else {
+              window.open("/admin/blog/dashboard", "_self");
+            }
+          } else {
+            throw new Error("Post Not Published ");
+          }
+        })
+        .catch((error) => {
+          toast.error(`${error}`);
+        });
+    } else {
+      try {
+        const response = await fetch("/api/blog/add", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            ...data,
             title: formData.title,
             category: formData.category,
-            headerImageUrl: headerImageUrl, // Use uploaded image URL
+            headerImageUrl: data?.headerImageUrl, // Use uploaded image URL
             tags: formData.tags,
             readingDuration: formData.readingDuration,
             status: status,
             content: content,
           }),
         });
-      })
-      .then((response) => {
         if (response.ok) {
           toast.success(
             `${status === "draft" ? "Saved to draft" : "Post Published"}`
           );
           if (status == "draft") {
-            window.open("/admin/blog/draft", "_self");
           } else if (status == "schedule") {
-            window.open("/admin/blog/scheduled", "_self");
           } else {
             window.open("/admin/blog/dashboard", "_self");
           }
         } else {
           throw new Error("Post Not Published ");
         }
-      })
-      .catch((error) => {
-        toast.error(`${error}`);
-        console.log(`Error submitting blog ${error}`);
-      });
+      } catch (error) {}
+    }
   };
+
+  useEffect(() => {
+    if (data) {
+      form.reset({
+        content: data?.content,
+      });
+    }
+  }, [data]);
 
   return (
     <>
@@ -214,8 +247,8 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
               Edit Post
             </p>
 
-            <section className="mt-4 lg:mt-6 ">
-              <form onSubmit={savePost}>
+            <section className="mt-4 lg:mt-6">
+              <form onSubmit={saveOrPublish}>
                 <input type="hidden" name="status" value={status} />
                 <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center gap-x-0 lg:gap-x-4">
                   <div className=" rounded-xl shadow-sm w-full lg:w-8/12  ">
@@ -261,14 +294,20 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                 </div>
                 {/* second section */}
                 <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center gap-x-0 lg:gap-x-4">
-                  <div className="px-0 lg:px-3 bg-transparent rounded-xl shadow-sm  w-full lg:w-4/12 items-center justify-center ">
+                  <div className="px-0 lg:px-3 bg-transparent rounded-xl shadow-sm  w-full lg:w-2/12 items-center justify-center ">
                     <input
                       type="file"
                       onChange={handleImageChange}
                       className=" pt-3 outline-none text-base text-gray-600 bg-transparent h-[44px] w-full"
-                      required
                     />
                   </div>
+                  <Image
+                    src={data.headerImageUrl}
+                    alt=""
+                    height={90}
+                    width={90}
+                    className=" object-contain w-[90px] h-[90px] max-w-full lg:max-w-2/12 "
+                  />
 
                   <div className="px-0 lg:px-3 bg-transparent shadow-sm  rounded-xl w-full lg:w-2/12">
                     <input
@@ -282,38 +321,31 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                     />
                   </div>
 
-                  {/* <button
+                  <button
                     onClick={() => handleUpdateStaus("draft")}
-                    className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px] w-full lg:w-2/12 h-[44px] rounded-lg"
+                    className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px]  w-full lg:w-2/12 h-[44px] rounded-lg cursor-pointer"
                     type="submit"
                   >
-                    Save to draft
-                  </button> */}
-                  <Image
-                    src={data.headerImageUrl}
-                    alt=""
-                    height={90}
-                    width={90}
-                    className=" object-contain w-[90px] h-[90px] max-w-full lg:max-w-2/12 "
-                  />
+                    Save
+                  </button>
+
                   <button
                     className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px]  w-full lg:w-2/12 h-[44px] rounded-lg cursor-pointer"
-                    // onClick={(e) => {
-                    //   e.preventDefault();
-                    //   e.stopPropagation();
-                    //   preview();
-                    
-                    // }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      preview();
+                    }}
                   >
                     Preview
                   </button>
 
                   <button
-                    // onClick={() => handleUpdateStaus("publish")}
+                    onClick={() => handleUpdateStaus("publish")}
                     className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] cursor-pointer"
                     type="submit"
                   >
-                    Save
+                    Publish
                   </button>
                 </div>
 

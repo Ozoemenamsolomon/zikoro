@@ -27,7 +27,7 @@ export default function CreateAffiliateForm({
   const currentEvent = useEventStore((state) => state.event);
   const user = getCookie<TUser>("user");
 
-  console.log(currentEvent);
+  
 
   const defaultValues: Partial<TAffiliate> = affiliate || {
     userEmail: user?.userEmail,
@@ -53,12 +53,12 @@ export default function CreateAffiliateForm({
     formState: { dirtyFields, errors },
   } = form;
 
-  console.log(errors);
+  
 
   const clsBtnRef = useRef<HTMLButtonElement>(null);
 
   async function onSubmit(data: TAffiliate) {
-    console.log(data);
+    
 
     if (!clsBtnRef) return;
 

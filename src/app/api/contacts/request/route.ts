@@ -14,7 +14,7 @@ export async function POST(
       const { error } = await supabase
         .from("contactRequest")
         .insert({ ...payload, status: "pending" });
-      console.log(error);
+      
       if (error) throw error;
       return NextResponse.json(
         { msg: "contact requested successfully" },
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
 
       const { data, error, status } = await query;
 
-      console.log(data, userEmail);
+      
 
       if (error) throw error;
 
@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
             .eq("userEmail", item.senderUserEmail)
             .maybeSingle();
 
-          console.log(senderData, item);
+          
 
           if (senderError) throw senderError;
 
@@ -73,7 +73,7 @@ export async function GET(req: NextRequest) {
         })
       );
 
-      console.log(mappedData);
+      
 
       return NextResponse.json(
         { data: mappedData },

@@ -30,7 +30,7 @@ const Element = ({}: TabProps) => {
     organizationId: 5,
   });
 
-  console.log(organization);
+  
 
   const [elementUploading, setElementUploading] = useState<boolean>(false);
   const uploadElement = async (file: File | null) => {
@@ -70,7 +70,7 @@ const Element = ({}: TabProps) => {
       });
 
       await getOrganization();
-      console.log("File uploaded successfully!", url);
+      
     } catch (error) {
       alert("error uploading profile picture");
       console.error("Error uploading file:", error);

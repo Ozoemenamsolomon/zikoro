@@ -86,7 +86,7 @@ export function DropDownSelect({
       <span
         onClick={(e) => {
           e.stopPropagation();
-         // console.log({ checkedValue });
+         // 
           if (!isMultiple && checkedValue?.length > 0) {
         
             handleChange(checkedValue?.join(","));

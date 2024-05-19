@@ -171,7 +171,7 @@ export function Qusetion({
       const isCorrectAnswer = currentQuestion?.options?.some(
         (item) => item?.isAnswer === id
       );
-      //  console.log(isCorrectAnswer, millisecondsLeft);
+      //  
       const score = isCorrectAnswer ? 1 : 0;
       // calculate the user point
       const attendeePoints =

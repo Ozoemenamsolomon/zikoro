@@ -80,7 +80,7 @@
 //         throw new Error("Failed to delete photo");
 //       }
 //     } catch (error) {
-//       console.log(error);
+//       
 //     }
 //   };
 
@@ -105,7 +105,7 @@
 //         throw new Error("Failed to update likes");
 //       }
 //     } catch (error) {
-//       console.log(`Error Liking Photo`);
+//       
 //     }
 
 //     setLiked(true);
@@ -138,7 +138,7 @@
 //         throw new Error("Failed to report photo");
 //       }
 //     } catch (error) {
-//       console.log(error);
+//       
 //     }
 //   };
 

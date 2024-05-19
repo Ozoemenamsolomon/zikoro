@@ -71,7 +71,7 @@ export default function AddUserForm({
     setValue,
     formState: { errors },
   } = form;
-  console.log(errors);
+  
 
   const country = watch("country");
   const profilePicture = watch("profilePicture");
@@ -114,7 +114,7 @@ export default function AddUserForm({
       alert("File uploaded successfully");
 
       setValue("profilePicture", url || "");
-      console.log("File uploaded successfully!", url);
+      
     } catch (error) {
       alert("error uploading profile picture");
       console.error("Error uploading file:", error);

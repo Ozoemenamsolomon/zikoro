@@ -54,10 +54,10 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
     eventId,
   });
 
-  console.log(attendeesCertificates, "attendees certificate");
+  
 
   useEffect(() => {
-    console.log(selectedCertificate);
+    
     if (!selectedCertificate || attendeesCertificateisLoading) return;
 
     const attendeesId = attendeesCertificates
@@ -101,7 +101,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
   };
 
   const onSubmit = async () => {
-    console.log(selectedAttendees, selectedCertificate);
+    
     if (!selectedCertificate) return;
 
     if (selectedAttendees.some(({ id }) => !id)) return;

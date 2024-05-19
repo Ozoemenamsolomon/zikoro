@@ -74,7 +74,7 @@ export default function AddAttendeeTagForm({
           attendeeTags: selectedTags,
         };
 
-    console.log(payload, "on the front side");
+    
     await updateAttendeeTags({ payload });
     await getTags();
     await getAttendeeTags();
@@ -92,11 +92,11 @@ export default function AddAttendeeTagForm({
   }
 
   useEffect(() => {
-    console.log(attendeeTags, tags, "attendee tags");
+    
   }, [attendeeTags]);
 
   const toggleTags = (tag: TTag) => {
-    console.log(selectedTags.includes(tag));
+    
     setSelectedTags((prevTags) =>
       prevTags.includes(tag)
         ? prevTags.filter((item) => item !== tag)
@@ -104,7 +104,7 @@ export default function AddAttendeeTagForm({
     );
   };
 
-  console.log(tags);
+  
 
   return (
     <div className="space-y-6">

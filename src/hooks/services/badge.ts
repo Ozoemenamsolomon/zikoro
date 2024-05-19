@@ -316,7 +316,7 @@ export const useUpdateAttendeeBadges = ({
         return data.data;
       }
     } catch (error) {
-      console.log(error);
+      
       setError(true);
       toast({
         description: "an error has occurred",

@@ -18,7 +18,7 @@ export async function GET(
         .eq("questionId", questionId)
        
 
-      // console.log(data);
+      // 
       if (error) {
         return NextResponse.json(
           {

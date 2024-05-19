@@ -77,7 +77,7 @@ export async function GET(req: NextRequest) {
         .from("myAgenda")
         .select("*");
 
-      // console.log(data);
+      // 
 
       if (error) {
         return NextResponse.json(

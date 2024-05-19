@@ -180,7 +180,7 @@ export async function POST(req: NextRequest) {
       }[] = await Promise.all(resolveAttendees);
       // sending email
 
-      //   console.log({ registeredAttendees });
+      //   
       var { SendMailClient } = require("zeptomail");
 
     

@@ -17,7 +17,7 @@ export async function GET(
         .select("*")
         .eq("sessionId", agendaId);
 
-      // console.log(data);
+      // 
       let ratingCount = 0
 
       if ( !data || (Array.isArray(data) && data?.length === 0) ) {

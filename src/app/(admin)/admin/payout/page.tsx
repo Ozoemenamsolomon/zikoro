@@ -190,10 +190,10 @@ const PAYOUT_TABS = [
 export default function page() {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const user = getCookie("user");
-  console.log(user?.id);
+  
   const { payOuts, isLoading } = useGetPayOuts({ userId: user?.id || 0 });
 
-  console.log(payOuts);
+  
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<IPayOut>({
@@ -201,7 +201,7 @@ export default function page() {
       dataFilters: payOutsFilter,
     });
 
-  // console.log(filteredData, payOuts);
+  // 
 
   useEffect(() => {
     if (isLoading) return;
@@ -213,7 +213,7 @@ export default function page() {
       });
   }, [isLoading]);
 
-  // console.log(payOuts);
+  // 
 
   const onChange = (accessorKey: string) =>
     setShownColumns((prevShown) =>

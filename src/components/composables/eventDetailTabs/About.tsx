@@ -70,8 +70,6 @@ export function About({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
   });
 
- // console.log("hhh", coordinates);
-
   const Comp = Array.isArray(reviews) && reviews?.length > 1 ? Slider : "div";
   return (
     <div

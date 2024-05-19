@@ -83,7 +83,7 @@ export const useGetUserEvents = ({
     setLoading(true);
 
     try {
-      console.log(userId, `/events${userId ? "?userId=" + userId : ""}`);
+      
       const { data, status } = await getRequest<TOrgEvent[]>({
         endpoint: `/events${userId ? "?userId=" + userId : ""}`,
       });
@@ -275,7 +275,7 @@ export function useCreateEvent() {
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        //   console.log({ data });
+        //   
         router.push(` /event/${values?.eventAlias}/content/info`);
         toast.success("Event created successfully");
       }
@@ -885,7 +885,7 @@ export function useRedeemDiscountCode() {
         throw error;
       }
 
-      // console.log({ data });
+      // 
 
       // check if code exist
       let isDiscountCodeExist = data?.map((v) => v.discountCode).includes(code);
@@ -1069,7 +1069,7 @@ export function useFetchRewards(eventId: string | number) {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      //  console.log(error);
+      //  
     }
   }
 

@@ -2,6 +2,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { useLayoutEffect, useRef } from "react";
 import { SideBarLayout } from "@/components/SideBarLayout";
+import MainTopBar from "@/components/MainTopBar";
 
 export default function RootLayout({
   children,
@@ -29,6 +30,7 @@ export default function RootLayout({
         <SideBarLayout />
 
         <div className="lg:w-[calc(100%-250px)] min-[1024px]:float-right">
+          <MainTopBar />
           {children}
         </div>
       </main>

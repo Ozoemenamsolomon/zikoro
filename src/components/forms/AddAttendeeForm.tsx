@@ -100,7 +100,7 @@ export default function AddAttendeeForm({
     );
   }, [attendee]);
 
-  console.log(errors);
+  
 
   const attendeeType = watch("attendeeType");
   const country = watch("country");
@@ -132,7 +132,7 @@ export default function AddAttendeeForm({
   };
 
   async function onSubmit(data: z.infer<typeof AttendeeSchema>) {
-    console.log(data, "submit");
+    
     const payload: TAttendee = {
       ...data,
       phoneNumber: data.phoneNumber
@@ -170,7 +170,7 @@ export default function AddAttendeeForm({
       alert("File uploaded successfully");
 
       setValue("profilePicture", url || "");
-      console.log("File uploaded successfully!", url);
+      
     } catch (error) {
       alert("error uploading profile picture");
       console.error("Error uploading file:", error);

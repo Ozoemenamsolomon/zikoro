@@ -25,7 +25,7 @@ const Background = ({ details, setValue }: TabProps) => {
 
   const divRef = useRef<HTMLDivElement>(null);
 
-  console.log(organization);
+  
   const [backgroundUploading, setBackgroundUploading] =
     useState<boolean>(false);
 
@@ -66,7 +66,7 @@ const Background = ({ details, setValue }: TabProps) => {
       });
 
       await getOrganization();
-      console.log("File uploaded successfully!", url);
+      
     } catch (error) {
       alert("error uploading profile picture");
       console.error("Error uploading file:", error);

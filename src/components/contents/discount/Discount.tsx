@@ -43,11 +43,11 @@ export default function Discount({ eventId }: { eventId: string }) {
         .eq("eventId", eventId);
       if (error) {
         setError(true);
-        console.log(error);
+        
         throw error;
       }
       if (data) {
-        console.log(data);
+        
         setDiscountData(data as any);
         setError(false);
         revalidatePath("/content/discount");

@@ -83,7 +83,7 @@ export async function POST(
       const { eventId, attendeeId } = params;
       const body = await req.json();
       const { badgeIds } = body;
-      console.log(badgeIds, "badgeIds");
+      
 
       const { error } = await supabase
         .from("attendeeBadge")

@@ -37,7 +37,7 @@ export function useAddPartners() {
       });
       return data;
     } catch (error: any) {
-      // console.log({ error });
+      // 
       toast({
         description: error?.response?.data?.error,
         variant: "destructive",
@@ -63,7 +63,7 @@ export function useFetchPartners(eventId: string) {
 
   async function fetchPartners() {
     setLoading(true);
-    console.log(eventId);
+    
     try {
       const { data: result, status } = await getRequest<TExPartner[]>({
         endpoint: `/partner/${eventId}`,
@@ -76,7 +76,7 @@ export function useFetchPartners(eventId: string) {
       return setData(result.data);
     } catch (error) {
       setLoading(false);
-      //  console.log(error);
+      //  
     }
   }
 

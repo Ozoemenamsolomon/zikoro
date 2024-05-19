@@ -43,7 +43,7 @@ export function ActiveQuestion({
       if (divRef?.current && window.innerWidth >= 1024) {
         const rect = divRef?.current?.getBoundingClientRect();
         setHeight(rect.height);
-        // console.log("yup", rect);
+        // 
       } else {
         setHeight(0);
       }

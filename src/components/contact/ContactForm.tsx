@@ -304,7 +304,7 @@ export default function ContactForm() {
       }
     } catch (error) {
       toast.error(`Error submitting contact form: ${error}`);
-      console.log(`Error submitting contact form: ${error}`);
+      
     }
   };
   return (

@@ -159,7 +159,7 @@ export const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
       transaction: TEventTransaction,
       registrationCompleted: number[]
     ) => {
-      console.log(transaction.registrationCompleted, registrationCompleted);
+      
       return registrationCompleted.some((status) =>
         status === 0
           ? !transaction.registrationCompleted

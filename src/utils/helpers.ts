@@ -205,17 +205,17 @@ type Context = {
 };
 
 export function replaceSpecialText(input: string, context: Context): string {
-  console.log(input, "this is the input");
+  
   const pattern = /#{(.*?)#}/g;
 
   if (pattern.test(input)) {
-    console.log("String contains the pattern.");
+    
   } else {
-    console.log("String does not contain the pattern.");
+    
   }
 
   return input.replaceAll(/#{(.*?)#}/g, (match, value) => {
-    console.log(value);
+    
     switch (value.trim()) {
       case "first_name":
         return context.attendee.firstName;

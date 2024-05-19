@@ -14,7 +14,7 @@ const MyProfile = () => {
     userId: Number(currentUser?.id ?? 0).toString(),
   });
 
-  console.log(user);
+  
 
   const {
     isOpen: userFormIsOpen,

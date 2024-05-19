@@ -50,7 +50,7 @@ export function EventsFilterProvider({
 
   const handleSelectedLocations = (value: string) => {
     const isValueSelected = locations.includes(value);
-    console.log({ isValueSelected });
+    
 
     selectedLocations((prevSelectedValues) => {
       if (isValueSelected) {

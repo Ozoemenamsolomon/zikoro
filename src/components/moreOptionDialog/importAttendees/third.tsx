@@ -52,7 +52,7 @@ const Third = ({
       return attendee;
     });
 
-    console.log(payload);
+    
     await uploadAttendees({ payload });
     await getAttendees();
   };
@@ -60,11 +60,11 @@ const Third = ({
   const showRow = (value: any, row: any[]) => {
     if (!value) return;
     const rowValue = headerMap.get(value);
-    console.log(value, rowValue, row[rowValue]);
+    
     return row[rowValue];
   };
 
-  console.log(data, Array.from(headerMap));
+  
 
   return (
     <>

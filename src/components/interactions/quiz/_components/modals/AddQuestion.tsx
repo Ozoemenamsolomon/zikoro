@@ -139,7 +139,7 @@ export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
   function handleRadioChange(id: number) {
     const optionId = form.getValues(`options.${id}.optionId`);
     const option = form.getValues(`options.${id}.option`);
-    console.log(option);
+    
     const updatedField = fields.map((field, index) => {
       return {
         ...field,

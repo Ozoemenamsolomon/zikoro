@@ -65,7 +65,7 @@ function DateRangeFilter<T>({
   const { type, accessor, onFilter, label: filterLabel } = filter;
   const date = selectedFilters.find(({ key }) => key === accessor);
 
-  console.log(date, "here");
+  
   return (
     <Calendar
       mode="range"
@@ -138,9 +138,9 @@ function SingleFilter<T>({
   const singleValue = selectedFilters.find(({ key }) => key === accessor);
 
   useEffect(() => {
-    console.log("is default set?", defaultValue);
+    
     if (!defaultValue) return;
-    console.log("default set", defaultValue);
+    
     applyFilter(accessor, filterLabel, defaultValue, onFilter, type);
   }, []);
 

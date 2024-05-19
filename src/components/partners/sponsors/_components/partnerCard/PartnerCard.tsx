@@ -23,7 +23,7 @@ export function PartnerCard({
     }
   }, [sponsor.companyLogo]);
 
-  // console.log(sponsor.industry?.name);
+  // 
   return (
     <Link
       href={`/event/${eventId}/partner/${sponsor.partnerAlias}`}

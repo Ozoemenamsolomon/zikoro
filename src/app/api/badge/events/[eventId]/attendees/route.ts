@@ -22,7 +22,7 @@ export async function GET(
         .select("*")
         .eq("eventAlias", eventId);
 
-      console.log(data);
+      
 
       if (badgeError) throw badgeError;
 
@@ -103,7 +103,7 @@ export async function POST(
 
       const { data: badgeData, error } = query;
 
-      console.log(badgeData);
+      
 
       if (error) throw error;
 
@@ -205,9 +205,9 @@ export async function POST(
           `,
               });
 
-              console.log(resp);
+              
 
-              console.log(`Email sent to ${attendeeEmail}`);
+              
             } catch (error) {
               console.error(`Error sending email to ${attendeeEmail}:`, error);
             }
@@ -215,9 +215,9 @@ export async function POST(
         );
 
         // await transporter.sendMail(mailData, function (err: any, info: any) {
-        //   console.log(params, "params");
+        //   
         //   if (err) throw err;
-        //   else console.log(info);
+        //   else 
         // });
       }
 

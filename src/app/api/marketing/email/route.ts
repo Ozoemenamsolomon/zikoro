@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
       const userId = searchParams.get("userId");
       const query = supabase.from("sentEmails").select("*");
 
-      console.log(userId);
+      
 
       if (userId) query.eq("userId", userId);
 
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      console.log(params, "email");
+      
 
       const {
         emailCategory,
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
             htmlbody: `<div>${emailBody}</div>`,
           });
 
-          console.log(resp);
+          
 
           // const mailData = {
           //   from: `${sendersName} <${process.env.NEXT_PUBLIC_EMAIL}>`,
@@ -103,9 +103,9 @@ export async function POST(req: NextRequest) {
           // };
 
           // await transporter.sendMail(mailData, function (err: any, info: any) {
-          //   console.log(params, "params");
+          //   
           //   if (err) throw err;
-          //   else console.log(info);
+          //   else 
           // });
         } catch (error) {
           console.error(`Error sending email to ${email}:`, error);

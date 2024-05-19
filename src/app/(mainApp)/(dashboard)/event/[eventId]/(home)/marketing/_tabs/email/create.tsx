@@ -64,7 +64,7 @@ const CreateEmailSchema = z
     timezone: z.string().optional(),
   })
   .superRefine(({ isScheduled, schedule, timezone }, refinementContext) => {
-    console.log(isScheduled, schedule, timezone);
+    
     if (isScheduled && !schedule) {
       return refinementContext.addIssue({
         code: z.ZodIssueCode.custom,
@@ -87,7 +87,7 @@ const Create = () => {
   const currentEvent = useEventStore((state) => state.event);
   const user = getCookie<TUser>("user");
 
-  console.log(currentEvent?.eventAlias);
+  
 
   const { attendees, getAttendees, isLoading } = useGetAttendees({
     eventId: currentEvent?.eventAlias,
@@ -131,7 +131,7 @@ const Create = () => {
     formState: { errors },
   } = form;
 
-  console.log(errors, "errors");
+  
 
   const content = watch("content");
   const isScheduled = watch("isScheduled");
@@ -152,7 +152,7 @@ const Create = () => {
   };
 
   const onSubmit = async (data: TCreateEmail) => {
-    console.log(data);
+    
 
     if (!user) return;
 
@@ -176,7 +176,7 @@ const Create = () => {
   };
 
   const setMessage = (content: string) => {
-    console.log(content);
+    
     setValue("content", content);
   };
 

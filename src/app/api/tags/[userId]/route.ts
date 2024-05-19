@@ -12,7 +12,7 @@ export async function POST(
       const { userId } = params;
       const payload = await req.json();
 
-      console.log(payload);
+      
 
       const { error } = await supabase
         .from("tags")
@@ -49,7 +49,7 @@ export async function GET(
     try {
       const { userId } = params;
 
-      console.log(userId);
+      
 
       const { data, error, status } = await supabase
         .from("tags")
@@ -57,7 +57,7 @@ export async function GET(
         .eq("userId", userId)
         .maybeSingle();
 
-      console.log(data);
+      
 
       if (error) throw error;
 

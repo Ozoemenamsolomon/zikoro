@@ -48,7 +48,7 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
     key: { label: string; value: keyof TAttendee; isRequired: boolean },
     value: string
   ) => {
-    console.log(value);
+    
     setHeaders((prevHeaders) => {
       prevHeaders.set(key, value);
       return prevHeaders;

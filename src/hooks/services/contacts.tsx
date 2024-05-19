@@ -37,7 +37,7 @@ export const useRequestContact = (): usePostResult<
       });
       return data.data;
     } catch (error) {
-      console.log(error);
+      
       setError(true);
       toast({
         description: "An error has occurred",
@@ -133,7 +133,7 @@ export const useRespondToContactRequest = (): usePostResult<
       });
       return data.data;
     } catch (error) {
-      console.log(error);
+      
       setError(true);
       toast({
         description: "An error has occurred",

@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
       const { affiliateName, organizationName, eventPoster, payload } = params;
 
-      console.log(params);
+      
 
       const linkCode = generateAlphanumericHash(7);
 
@@ -101,26 +101,26 @@ export async function POST(req: NextRequest) {
         `,
       };
 
-      console.log(mailData);
+      
 
       await transporter.sendMail(
         mailData,
         async function (err: any, info: any) {
           if (err) {
-            console.log(err);
+            
             throw err;
           }
 
-          console.log(info);
+          
           const { error } = await supabase
             .from("affiliateLinks")
             .insert({ ...payload, linkCode });
 
-          console.log(error);
+          
 
           if (error) throw error;
 
-          console.log("here");
+          
         }
       );
 
@@ -163,7 +163,7 @@ export async function GET(req: NextRequest) {
         .select("*, affiliate!inner(*)")
         .eq("userId", userId);
 
-      console.log(data, error); 
+       
 
       if (error) throw error;
 

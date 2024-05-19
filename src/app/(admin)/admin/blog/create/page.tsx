@@ -6,6 +6,18 @@ import toast from "react-hot-toast";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { AddTag } from "@/components/blog/modal/AddTag";
 import { useRouter } from "next/navigation";
+import { TriangleDown } from "@styled-icons/entypo/TriangleDown";
+import { Copy } from "@styled-icons/feather/Copy";
+import copy from "copy-to-clipboard";
+import {
+  Form,
+  FormField,
+  Input,
+  FormControl,
+  FormItem,
+  FormLabel,
+  Button,
+} from "@/components";
 import {
   Dialog,
   DialogContent,
@@ -15,12 +27,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Link from "next/link";
+import QRCode from "react-qr-code";
 
 export default function Create() {
   const [file, setFile] = useState<any>(null);
   const [status, setStatus] = useState<string>("");
   const [tagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [headerImageUrl, setHeaderImageUrl] = useState<string>("");
+  const [scheduledDate, setScheduledDate] = useState<any>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const router = useRouter();
   const form = useForm<any>({
     // Add validation rule for content field
@@ -114,11 +133,6 @@ export default function Create() {
   const preview = () => {
     if (!content) {
       toast.error("Please write your blog content");
-      return;
-    }
-
-    if (!content) {
-      toast.error("Please write your blog content");
       return; // Return early if content is empty
     }
 
@@ -142,7 +156,7 @@ export default function Create() {
   };
 
   //submit post function
-  const submitBlogPost = async (e:any) => {
+  const saveOrPublishPost = async (e: any) => {
     e.preventDefault();
     if (!content) {
       toast.error("Please write your blog content");
@@ -175,9 +189,6 @@ export default function Create() {
             `${status === "draft" ? "Saved to draft" : "Post Published"}`
           );
           if (status == "draft") {
-            window.open("/admin/blog/draft", "_self");
-          } else if (status == "schedule") {
-            window.open("/admin/blog/scheduled", "_self");
           } else {
             window.open("/admin/blog/dashboard", "_self");
           }
@@ -187,7 +198,41 @@ export default function Create() {
       })
       .catch((error) => {
         toast.error(`${error}`);
-        console.log(`Error submitting blog ${error}`);
+      });
+  };
+
+  const schedulePost = () => {
+    if (!scheduledDate) {
+      toast.error("Please select a scheduled date");
+      return;
+    }
+
+    fetch("/api/blog/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: formData.title,
+        category: formData.category,
+        headerImageUrl: headerImageUrl,
+        tags: formData.tags,
+        readingDuration: formData.readingDuration,
+        content: content,
+        status: 'scheduled',
+        scheduledDate: scheduledDate.toISOString(),
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          toast.success("Post scheduled successfully");
+          window.open("/admin/blog/scheduled", "_self");
+        } else {
+          throw new Error("Failed to schedule post");
+        }
+      })
+      .catch((error) => {
+        toast.error(error.message);
       });
   };
 
@@ -199,7 +244,7 @@ export default function Create() {
         </p>
 
         <section className="mt-4 lg:mt-6 ">
-          <form onSubmit={submitBlogPost}>
+          <form onSubmit={saveOrPublishPost}>
             <input type="hidden" name="status" value={status} />
             <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center gap-x-0 lg:gap-x-4">
               <div className=" rounded-xl shadow-sm w-full lg:w-8/12  ">
@@ -273,7 +318,6 @@ export default function Create() {
               >
                 Save to draft
               </button>
-
               <button
                 className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px]  w-full lg:w-2/12 h-[44px] rounded-lg cursor-pointer"
                 onClick={(e) => {
@@ -284,15 +328,87 @@ export default function Create() {
               >
                 Preview
               </button>
-              {/* 
-              <button
-                onClick={() => handleUpdateStaus("publish")}
-                className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] cursor-pointer"
-                type="submit"
-              >
-                Publish
-              </button> */}
-              <div className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] flex text-center justify-center  cursor-pointer">
+
+              {/* <Dialog>
+                <DialogTrigger
+                  className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px]  w-full lg:w-2/12 h-[44px] rounded-lg cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    preview();
+                  }}
+                  disabled={
+                    formData.title == "" ||
+                    formData.category == "" ||
+                    formData.readingDuration == "" ||
+                    !content
+                  }
+                >
+                  Preview
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Preview</DialogTitle>
+                  </DialogHeader>
+                  <div>
+                    <p className="text-mobile sm:text-sm">{`Open link to preview ${formData.title}`}</p>
+
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem className="relative w-full h-fit">
+                          <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
+                            Link
+                          </FormLabel>
+                          <div className="flex absolute top-2 z-10 bg-white justify-center h-[60%] right-2 items-center gap-x-2">
+                            <CopyLink
+                              link={`${window.location.origin}/preview/${
+                                eventDetail?.eventAlias || event?.eventId
+                              }`}
+                            />
+                            <Link
+                              target="_blank"
+                              href={`/preview/${
+                                eventDetail?.eventAlias || event?.eventId
+                              }`}
+                            >
+                              <ExternalLinkOutline size={16} />
+                            </Link>
+                          </div>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              placeholder=""
+                              defaultValue={`${
+                                window.location.origin
+                              }/preview/${
+                                eventDetail?.eventAlias || event?.eventId
+                              }`}
+                              readOnly
+                              className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <div className="w-full flex mt-6 items-center justify-between">
+                      <p className="text-xs sm:text-sm flex flex-col items-start ">
+                        <span> Scan QRCode to preview</span>
+                        <span className="font-semibold capitalize">
+                          {formData.title}
+                        </span>
+                      </p>
+                      <QRCode
+                        size={150}
+                        value={`${window.location.origin}/preview/${1}`}
+                      />
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog> */}
+
+              <div className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] flex text-center justify-center">
                 <Dialog>
                   <DialogTrigger
                     disabled={
@@ -302,77 +418,90 @@ export default function Create() {
                       !content
                     }
                     onClick={() => handleUpdateStatus("publish")}
+                    className="cursor-pointer"
                   >
                     Publish
                   </DialogTrigger>
-                  <DialogContent className="">
-                    <DialogHeader>
-                      <DialogTitle></DialogTitle>
-                      <DialogDescription className="max-w-2xl mx-auto py-[100px] ">
-                        <div className="h-[168px] w-[367px]">
-                          <Image
-                            className="rounded-lg w-full h-full object-cover "
-                            src={
-                              file
-                                ? URL.createObjectURL(file)
-                                : "/postImage2.png"
+                  <DialogContent className="max-w-2xl mx-auto py-[100px] font-montserrat ">
+                    <div className="h-[168px] w-[367px] flex mx-auto">
+                      <Image
+                        className="rounded-lg w-full h-full object-cover "
+                        src={
+                          file ? URL.createObjectURL(file) : "/postImage2.png"
+                        }
+                        alt=""
+                        height={168}
+                        width={367}
+                      />
+                    </div>
+                    <p className="text-2xl text-center mt-5 capitalize">
+                      {formData.title}
+                    </p>
+
+                    <p className="mt-6 text-base font-semibold text-center">
+                      {formData.category}
+                    </p>
+
+                    <p className="mt-6 text-base font-semibold text-center">
+                      {formData.readingDuration} mins read
+                    </p>
+
+                    {isOpen && (
+                      <p className="mt-6 text-base font-medium text-center">
+                        Schedule a time to publish:
+                        <span className="block items-center gap-x-7 text-center">
+                          {" "}
+                          {scheduledDate.toLocaleString("en-US")}
+                        </span>
+                      </p>
+                    )}
+                    {!isOpen && (
+                      <div className="flex gap-x-4 mt-6 items-center mx-auto justify-center">
+                        <button
+                          onClick={(e) => saveOrPublishPost(e)}
+                          className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
+                        >
+                          Publish
+                        </button>
+
+                        <div className="text-base text-indigo-600 bg-transparent border border-indigo-800 py-[10px] px-2 rounded-md ">
+                          <DatePicker
+                            selected={scheduledDate}
+                            onChange={(date: Date | null) =>
+                              setScheduledDate(date)
                             }
-                            alt=""
-                            height={168}
-                            width={367}
+                            locale="pt-BR"
+                            showTimeSelect
+                            timeFormat="p"
+                            timeIntervals={15}
+                            dateFormat="Pp"
+                            placeholderText="Schedule for later"
+                            className="text-indigo-600 w-full outline-none cursor-pointer"
+                            onFocus={(e) => (e.target.readOnly = true)}
+                            onCalendarClose={() => setIsOpen(true)}
+                            onCalendarOpen={() => setIsOpen(false)}
                           />
                         </div>
-                        <p className="text-2xl text-center mt-5 capitalize">
-                          {formData.title}
-                        </p>
-                        {/* <div className="flex items-center justify-center mx-auto">
-                          <select
-                            name="category"
-                            value={formData.category}
-                            onChange={handleChange}
-                            required
-                            className="mt-6 w-6/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none  hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer "
-                          >
-                            <option
-                              disabled
-                              defaultValue={formData.category}
-                              className="bg-transparent text-gray-400 "
-                            ></option>
-                            {categories.map((category, index) => (
-                              <option
-                                key={index}
-                                value={category.value}
-                                className="bg-transparent text-black text-[15px]"
-                              >
-                                {" "}
-                                {category.name}{" "}
-                              </option>
-                            ))}
-                          </select>
-                        </div> */}
+                      </div>
+                    )}
 
-                        <p className="mt-6 text-base font-semibold text-center">
-                          {formData.category}
-                        </p>
+                    {isOpen && (
+                      <div className="flex gap-x-4 mt-6 items-center mx-auto justify-center">
+                        <button
+                          onClick={() => schedulePost()}
+                          className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
+                        >
+                          Schedule to publish
+                        </button>
 
-                        <p className="mt-6 text-base font-semibold text-center">
-                          {formData.readingDuration} mins read
-                        </p>
-                        <div className="flex gap-x-4 mt-6 items-center mx-auto justify-center">
-                          <button
-                            onClick={(e) => submitBlogPost(e)}
-                            className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
-                          >
-                            Publish
-                          </button>
-
-                          <button className="text-base text-indigo-600 bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md ">
-                            Schedule For Later
-                          </button>
-                        </div>
-                        <div></div>
-                      </DialogDescription>
-                    </DialogHeader>
+                        <button
+                          className="text-base text-indigo-600 bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md "
+                          onClick={() => setIsOpen(false)}
+                        >
+                          Cancel schedule
+                        </button>
+                      </div>
+                    )}
                   </DialogContent>
                 </Dialog>
               </div>

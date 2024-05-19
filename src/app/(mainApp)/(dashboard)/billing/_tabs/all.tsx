@@ -193,7 +193,6 @@ const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
       transaction: TEventTransaction,
       registrationCompleted: number[]
     ) => {
-      console.log(transaction.registrationCompleted, registrationCompleted);
       return registrationCompleted.some((status) =>
         status === 0
           ? !transaction.registrationCompleted
@@ -302,7 +301,7 @@ export default function All() {
   ]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const user = getCookie("user");
-  console.log(user);
+
   const { eventTransactions, isLoading, getEventTransactions } =
     useGetEventTransactions({
       userId: user?.id || 0,
@@ -313,8 +312,6 @@ export default function All() {
       data: eventTransactions,
       dataFilters: eventTransactionsFilter,
     });
-
-  console.log(eventTransactions);
 
   const totalRevenue = filteredData.reduce(
     (acc, { amountPaid }) => (amountPaid || 0) + acc,
@@ -342,7 +339,7 @@ export default function All() {
   const currency =
     selectedFilters.find(({ key }) => key === "currency")?.value ?? "NGN";
 
-  // console.log(filteredData, eventTransactions);
+  //
 
   useEffect(() => {
     if (isLoading) return;
@@ -357,7 +354,7 @@ export default function All() {
       });
   }, [isLoading]);
 
-  // console.log(eventTransactions);
+  //
 
   const onChange = (accessorKey: string) =>
     setShownColumns((prevShown) =>
@@ -466,21 +463,6 @@ export default function All() {
             Transactions selected
           </span>
           <div className="flex gap-0 md:gap-4 justify-between md:justify-start">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className="bg-basePrimary px-4">
-                  Add Organization payment details
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="px-3 max-h-[500px] hide-scrollbar overflow-auto">
-                <DialogHeader>
-                  <DialogTitle>
-                    <span className="capitalize">Request Payout</span>
-                  </DialogTitle>
-                </DialogHeader>
-                <AddOrganizationPaymentDetails />
-              </DialogContent>
-            </Dialog>
             <Dialog
               onOpenChange={(newOpen) => {
                 console.log(

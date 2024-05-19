@@ -22,7 +22,7 @@ export async function GET(
         .select("*")
         .eq("eventAlias", eventId);
 
-      console.log(data);
+      
 
       if (certificateError) throw certificateError;
 
@@ -103,7 +103,7 @@ export async function POST(
 
       const { data: certificateData, error } = query;
 
-      console.log(certificateData);
+      
 
       if (error) throw error;
 
@@ -207,7 +207,7 @@ export async function POST(
                 </html>
                 `,
               });
-              console.log(resp);
+              
 
               // Send email to individual recipient
               // await transporter.sendMail({
@@ -267,18 +267,18 @@ export async function POST(
               //   `,
               // });
 
-              // console.log(`Email sent to ${attendeeEmail}`);
+              // 
             } catch (error) {
               console.error(`Error sending email to ${attendeeEmail}:`, error);
-              console.log(error);
+              
             }
           }
         );
 
         // await transporter.sendMail(mailData, function (err: any, info: any) {
-        //   console.log(params, "params");
+        //   
         //   if (err) throw err;
-        //   else console.log(info);
+        //   else 
         // });
       }
 

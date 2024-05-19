@@ -27,10 +27,10 @@ export async function addDiscount(formData: FormData) {
     },
   ]);
   if (error) {
-    console.log(error);
+    
   }
   revalidatePath("/getDiscount");
-  // console.log("discount added", data);
+  // 
 
   return { message: "Success" };
 }

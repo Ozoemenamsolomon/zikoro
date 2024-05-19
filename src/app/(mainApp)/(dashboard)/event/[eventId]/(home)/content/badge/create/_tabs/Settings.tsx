@@ -42,7 +42,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
 
   const { attendees, isLoading } = useGetAttendees({});
 
-  console.log(settings.canReceive.exceptions);
+  
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>(
     settings.canReceive.exceptions
       ? attendees.filter(({ id }) =>
@@ -51,7 +51,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
       : []
   );
 
-  console.log(selectedAttendees);
+  
 
   type ValueType = TAttendee | TAttendee[];
 
@@ -79,7 +79,7 @@ const Settings = ({ settings, editSettings }: TabProps) => {
     calculateAndSetMaxHeight(divRef);
   }, []);
 
-  console.log(settings);
+  
 
   return (
     <div ref={divRef} className="hide-scrollbar">

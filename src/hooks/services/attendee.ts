@@ -22,7 +22,7 @@ export const useCreateAttendee = () => {
         payload,
       });
 
-      console.log(status);
+      
 
       if (status !== 201)
         return toast({
@@ -36,7 +36,7 @@ export const useCreateAttendee = () => {
       return data;
     } catch (error) {
       setError(true);
-      console.log({ error });
+      
       toast({
         description: error.response.data.error,
         variant: "destructive",
@@ -142,20 +142,20 @@ export const useGetAttendees = ({
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  console.log(eventId);
+  
 
   const getAttendees = async () => {
     setLoading(true);
 
-    console.log(eventId);
+    
     const { data, status } = await getRequest<TAttendee[]>({
       endpoint: `/attendees?${eventId ? "eventId=" + eventId : ""}${
         userId ? "userId=" + userId : ""
       }`,
     });
 
-    console.log(data, eventId);
-    console.log(eventId);
+    // 
+    
 
     setLoading(false);
 

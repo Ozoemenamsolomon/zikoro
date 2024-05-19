@@ -31,7 +31,7 @@
 //         throw new Error("Failed to approve photo");
 //       }
 //     } catch (error) {
-//       console.log(error);
+//       
 //     }
 //   };
 
@@ -54,7 +54,7 @@
 //         throw new Error("Failed to reject photo");
 //       }
 //     } catch (error) {
-//       console.log(error);
+//       
 //     }
 
 //   };
