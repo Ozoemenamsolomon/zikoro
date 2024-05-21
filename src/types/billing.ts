@@ -1,4 +1,4 @@
-import { TUser } from ".";
+import { TOrganization, TUser } from ".";
 import { TAttendee } from "./attendee";
 
 export type TEventTransaction = {
@@ -28,6 +28,7 @@ export type TEventTransaction = {
   ticketCategory: string;
   affliateCommission: number;
   processingFee: number;
+  payoutReference: string;
   payOutRequestDate: string | null;
   payOutRequestedBy: string | null;
 };
@@ -41,7 +42,9 @@ export interface IPayOut {
   paidAt?: Date | null;
   requestedBy: string;
   requestedFor: number;
+  paidOutBy: number;
   user: TUser;
+  organization: TOrganization;
 }
 
 export interface IBank {

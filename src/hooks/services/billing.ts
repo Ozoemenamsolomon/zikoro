@@ -159,46 +159,6 @@ export const useRequestPayOut = ({
   return { requestPayOut, isLoading, error };
 };
 
-export const useGetPayOuts = ({
-  userId,
-}: {
-  userId: string;
-}): UseGetResult<IPayOut[], "payOuts", "getPayOuts"> => {
-  const [payOuts, setPayOuts] = useState<IPayOut[]>([]);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-
-  const getPayOuts = async () => {
-    setLoading(true);
-
-    try {
-      const { data, status } = await getRequest<IPayOut[]>({
-        endpoint: `/billing/${userId}/payout`,
-      });
-
-      if (status !== 200) {
-        throw data;
-      }
-      setPayOuts(data.data);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getPayOuts();
-  }, []);
-
-  return {
-    payOuts,
-    isLoading,
-    error,
-    getPayOuts,
-  };
-};
-
 export const useGetBanks = ({
   country,
 }: {
