@@ -204,11 +204,11 @@ export default function Create() {
               isClearable
               showPopperArrow={false}
               popperPlacement="top-start"
-              locale="en-GB"
               icon={<AdminBlogCalendarIcon />}
               className="w-full cursor-pointer text-indigo-600 bg-transparent outline-none"
               placeholderText="Select Your Dates "
               onFocus={(e) => (e.target.readOnly = true)}
+              dateFormat="MMMM d, yyyy h:mm aa"
             />
           </div>
 

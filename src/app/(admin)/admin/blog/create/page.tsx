@@ -7,8 +7,6 @@ import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { AddTag } from "@/components/blog/modal/AddTag";
 import { useRouter } from "next/navigation";
 import { TriangleDown } from "@styled-icons/entypo/TriangleDown";
-import { Copy } from "@styled-icons/feather/Copy";
-import copy from "copy-to-clipboard";
 import {
   Form,
   FormField,
@@ -29,10 +27,19 @@ import {
 import Image from "next/image";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Link from "next/link";
-import QRCode from "react-qr-code";
 
-export default function Create() {
+type BlogData = {
+  title: string;
+  category: string;
+  tags: string[];
+  headerImageUrl: string;
+  readingDuration: string;
+  status: string;
+  content: string;
+  created_at: number;
+};
+
+export default function BlogCreate() {
   const [file, setFile] = useState<any>(null);
   const [status, setStatus] = useState<string>("");
   const [tagModalOpen, setTagModalOpen] = useState<boolean>(false);
@@ -130,28 +137,27 @@ export default function Create() {
   };
 
   //Upload preview post Function
-  const preview = () => {
+  const preview = (): void => {
     if (!content) {
       toast.error("Please write your blog content");
-      return; // Return early if content is empty
+      return;
     }
 
-    // Upload image
     uploadImage().then((headerImageUrl) => {
-      window.open(
-        `/post/preview?blog=${JSON.stringify({
-          title: formData.title,
-          category: formData.category,
-          tags: formData.tags,
-          headerImageUrl: headerImageUrl,
-          readingDuration: formData.readingDuration,
-          status: status,
-          content: content,
-          created_at: Date.now(),
-        })}`,
-        "_blank"
-      );
-      return;
+      const blogData: BlogData = {
+        title: formData.title,
+        category: formData.category,
+        tags: formData.tags,
+        headerImageUrl,
+        readingDuration: formData.readingDuration,
+        status,
+        content,
+        created_at: Date.now(),
+      };
+
+      localStorage.setItem("blogPreviewData", JSON.stringify(blogData));
+
+      window.open("/post/preview", "_blank");
     });
   };
 
@@ -219,7 +225,7 @@ export default function Create() {
         tags: formData.tags,
         readingDuration: formData.readingDuration,
         content: content,
-        status: 'scheduled',
+        status: "scheduled",
         scheduledDate: scheduledDate.toISOString(),
       }),
     })
@@ -236,6 +242,7 @@ export default function Create() {
       });
   };
 
+  
   return (
     <div className="">
       <div className=" flex flex-col pl-3 lg:pl-10 pr-3 lg:pr-28 pt-28 ">
@@ -328,85 +335,6 @@ export default function Create() {
               >
                 Preview
               </button>
-
-              {/* <Dialog>
-                <DialogTrigger
-                  className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end border-[1px] border-indigo-600 font-medium text-[15px]  w-full lg:w-2/12 h-[44px] rounded-lg cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    preview();
-                  }}
-                  disabled={
-                    formData.title == "" ||
-                    formData.category == "" ||
-                    formData.readingDuration == "" ||
-                    !content
-                  }
-                >
-                  Preview
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Preview</DialogTitle>
-                  </DialogHeader>
-                  <div>
-                    <p className="text-mobile sm:text-sm">{`Open link to preview ${formData.title}`}</p>
-
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem className="relative w-full h-fit">
-                          <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                            Link
-                          </FormLabel>
-                          <div className="flex absolute top-2 z-10 bg-white justify-center h-[60%] right-2 items-center gap-x-2">
-                            <CopyLink
-                              link={`${window.location.origin}/preview/${
-                                eventDetail?.eventAlias || event?.eventId
-                              }`}
-                            />
-                            <Link
-                              target="_blank"
-                              href={`/preview/${
-                                eventDetail?.eventAlias || event?.eventId
-                              }`}
-                            >
-                              <ExternalLinkOutline size={16} />
-                            </Link>
-                          </div>
-                          <FormControl>
-                            <Input
-                              type="text"
-                              placeholder=""
-                              defaultValue={`${
-                                window.location.origin
-                              }/preview/${
-                                eventDetail?.eventAlias || event?.eventId
-                              }`}
-                              readOnly
-                              className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <div className="w-full flex mt-6 items-center justify-between">
-                      <p className="text-xs sm:text-sm flex flex-col items-start ">
-                        <span> Scan QRCode to preview</span>
-                        <span className="font-semibold capitalize">
-                          {formData.title}
-                        </span>
-                      </p>
-                      <QRCode
-                        size={150}
-                        value={`${window.location.origin}/preview/${1}`}
-                      />
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog> */}
 
               <div className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] flex text-center justify-center">
                 <Dialog>

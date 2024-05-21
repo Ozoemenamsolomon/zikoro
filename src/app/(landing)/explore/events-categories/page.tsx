@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import CategoryEvent from "@/components/explore/CategoryEvent";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import CopyrightFooter from "@/components/CopyrightFooter";
 
 export default function EventsCategories() {
   const [data, setData] = useState<any[]>([]);
@@ -88,7 +88,7 @@ export default function EventsCategories() {
           </div>
 
           {/* Footer */}
-          <Footer />
+          <CopyrightFooter />
         </div>
       )}
     </>
