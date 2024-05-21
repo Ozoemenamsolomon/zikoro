@@ -12,6 +12,7 @@ import {
 } from "@/utils/shareOnSocial";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useUpdatePostView, useUpdatePostshare } from "@/hooks/services/post";
 
 type DBSimilarPost = {
   id: number;
@@ -23,7 +24,7 @@ type DBSimilarPost = {
   readingDuration: number;
   content: JSON;
   views: number;
-  shares: JSON;
+  shares: number;
   tags: [];
   headerImageUrl: string;
 };
@@ -38,7 +39,7 @@ type DBBlogPost = {
   readingDuration: number;
   content: string;
   views: number;
-  shares: JSON;
+  shares: number;
   tags: [];
   headerImageUrl: string;
 };
@@ -59,6 +60,8 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   //for side bar links
   const router = useRouter();
   const contentRef = useRef<HTMLDivElement>(null);
+  const { updatePostShare } = useUpdatePostshare();
+  const { updatePostView } = useUpdatePostView();
 
   // Extracting the date only
   function extractAndFormatDate(dateTimeString: any): any {
@@ -106,18 +109,30 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   );
   const handleShareOnFacebook = () => {
     shareOnFacebook(articleUrl);
+    if (data) {
+      updatePostShare(data.shares, data.id);
+    }
   };
 
   const handleShareOnTwitter = () => {
     shareOnTwitter(articleUrl, postId);
+    if (data) {
+      updatePostShare(data.shares, data.id);
+    }
   };
 
   const handleShareOnInstagram = () => {
     shareOnInstagram();
+    if (data) {
+      updatePostShare(data.shares, data.id);
+    }
   };
 
   const handleShareOnLinkedin = () => {
     shareOnLinkedin(articleUrl, postId);
+    if (data) {
+      updatePostShare(data.shares, data.id);
+    }
   };
 
   //useEffect
@@ -182,6 +197,12 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     fetchSimilarPosts();
   }, [data]);
 
+  useEffect(() => {
+    if (data) {
+      updatePostView(data.views, data.id);
+    }
+  });
+
   return (
     <>
       {data && (
@@ -221,9 +242,9 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           </div>
 
           {/* body section */}
-          <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-28 lg:mb-20 ">
+          <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-48 lg:mb-48  ">
             {/* Left */}
-            <div className="hidden lg:inline h-full pb-12 w-full flex-col  lg:w-3/12">
+            <div className="hidden lg:inline  pb-12 w-full flex-col lg:w-3/12 h-fit ">
               {/* section links */}
               <div className="flex-col">
                 {/* Top */}
@@ -235,8 +256,9 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                   return (
                     <div key={id} id={id}>
                       <Link href={`#${id}`}>
-                        <div className="text-base font-semibold mt-8">
+                        <div className="text-base font-semibold  mt-8">
                           <div
+                            className="blackLink"
                             dangerouslySetInnerHTML={{
                               __html: heading ?? "",
                             }}
@@ -282,7 +304,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
             <div
               ref={contentRef}
-              className=" h-fit lg:h-screen no-scrollbar lg:overflow-y-auto  w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px]"
+              className=" no-scrollbar lg:overflow-y-auto  w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px] h-half-screen "
             >
               <div
                 className="blog no-scrollbar"

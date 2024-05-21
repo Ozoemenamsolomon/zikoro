@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import CopyrightFooter from "@/components/CopyrightFooter";
 import CityEvent from "@/components/explore/CityEvent";
 
 export default function EventsCities() {
@@ -83,7 +83,7 @@ export default function EventsCities() {
           </div>
 
           {/* Footer */}
-          <Footer />
+          <CopyrightFooter />
         </div>
       )}
     </>

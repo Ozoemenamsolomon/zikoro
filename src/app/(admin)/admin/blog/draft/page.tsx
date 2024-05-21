@@ -20,7 +20,7 @@ type DBBlogAll = {
   headerImageUrl: string;
 };
 
-export default function Create() {
+export default function BlogDraft() {
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -34,7 +34,7 @@ export default function Create() {
   ];
 
   //fetch blog posts
-  async function fetchBlogPost() {
+  async function fetchDraftPost() {
     fetch("/api/blog/drafts", {
       method: "GET",
       headers: {
@@ -82,7 +82,7 @@ export default function Create() {
   };
 
   useEffect(() => {
-    fetchBlogPost();
+    fetchDraftPost();
   }, [blogData]);
 
   return (
@@ -92,15 +92,15 @@ export default function Create() {
         <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row gap-x-0 md:gap-x-6 mt-6">
           <div className="flex cursor-pointer p-[10px] gap-x-2 border-[1px] border-indigo-600 rounded-xl w-full lg:w-2/12 items-center justify-between h-[44px] ">
             <DatePicker
-              selected={startDate}
+              selected={null}
               onChange={handleDateChange}
               startDate={startDate}
               endDate={endDate}
               selectsRange
               isClearable
+              locale="en-GB"
               showPopperArrow={false}
               popperPlacement="top-start"
-              // locale="en-GB"
               icon={<AdminBlogCalendarIcon />}
               className="w-full cursor-pointer text-indigo-600 bg-transparent outline-none"
               placeholderText="Select Your Dates "

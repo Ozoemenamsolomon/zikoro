@@ -20,7 +20,7 @@ type DBBlogAll = {
   headerImageUrl: string;
 };
 
-export default function Create() {
+export default function BlogSchedule() {
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | null>(null);

@@ -403,48 +403,63 @@ input[type="number"] {
 }
 
 .blog h1 {
-  font-size: 3rem;
+  font-size: 2.7rem;
   line-height: 3.5rem;
 }
 .blog h2 {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   line-height: 3rem;
 }
 
 .blog h3 {
-  font-size: 2rem;
+  font-size: 1.7rem;
   line-height: 2.5rem;
 }
 
 .blog h4 {
-  font-size: 1.75rem;
+  font-size: 1.45rem;
   line-height: 2.25rem;
 }
 
 .blog h5 {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   line-height: 2rem;
+}
+
+/* post header side links */
+.blackLink h1 strong  {
+  color:black !important
+}
+
+.h-half-screen{
+  height: calc(60vh);
 }
 
 @media only screen and (max-width: 767px) {
   .blog h1 {
-    font-size: 2rem;
+    font-size: 1.7rem;
     line-height: 3rem;
   }
   .blog h2 {
-    font-size: 1.85rem;
+    font-size: 1.55rem;
     line-height: 2.25rem;
   }
   .blog h3 {
-    font-size: 1.75rem;
+    font-size: 1.45rem;
     line-height: 2.25rem;
   }
   .blog h4 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     line-height: 2rem;
   }
   .blog h5 {
-    font-size: 1.25rem;
+    font-size: 0.95rem;
     line-height: 1.75rem;
   }
+
+  .h-half-screen{
+    height: 100%;
+  }
 }
+
+
