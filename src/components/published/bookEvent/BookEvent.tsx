@@ -468,7 +468,7 @@ export function BookEvent({
                   >
                     <p>{`${item?.count}x ${item?.ticketType}:`}</p>
                     {item?.price > 0 ? (
-                      <p> {`₦${item?.price?.toLocaleString()}`}</p>
+                      <p> {` ${currency ?? "NGN"}${item?.price?.toLocaleString()}`}</p>
                     ) : (
                       <p>---</p>
                     )}
@@ -478,7 +478,7 @@ export function BookEvent({
               <div className=" flex items-center text-sm justify-between w-full">
                 <p>{`${fields.length}x Discount:`}</p>
                 {discount > 0 ? (
-                  <p> {`- ₦${discount?.toLocaleString()}`}</p>
+                  <p> {`-  ${currency ?? "NGN"}${discount?.toLocaleString()}`}</p>
                 ) : (
                   <p>---</p>
                 )}
@@ -486,7 +486,7 @@ export function BookEvent({
               <div className=" flex items-center text-sm justify-between w-full">
                 <p>{`${fields.length}x Processing fee:`}</p>
                 {processingFee ? (
-                  <p> {`₦${processingFee?.toLocaleString()}`}</p>
+                  <p> {` ${currency ?? "NGN"}${processingFee?.toLocaleString()}`}</p>
                 ) : (
                   <p>---</p>
                 )}
@@ -494,7 +494,7 @@ export function BookEvent({
 
               <div className="border-t border-gray-300 font-semibold py-2 mt-3 w-full flex items-center justify-between">
                 <p className="">Total</p>
-                {computedPrice && <p>{` ₦${total?.toLocaleString()}`}</p>}
+                {computedPrice && <p>{` ${currency ?? "NGN"}${total?.toLocaleString()}`}</p>}
               </div>
             </div>
           </div>
@@ -576,13 +576,13 @@ export function BookEvent({
                               </div>
                               <div className="flex flex-col items-end justify-end">
                                 <p className="font-medium text-base">{`${
-                                  currency ? currency : "₦"
+                                  currency ? currency : "NGN"
                                 }${(
                                   Number(v?.price) ?? 0
                                 )?.toLocaleString()}`}</p>
                                 {v?.discountPrice < v?.price && (
                                   <p className="font-medium text-gray-500">{`${
-                                    currency ? currency : "₦"
+                                    currency ? currency : "NGN"
                                   }${(
                                     Number(v?.discountPrice) ?? 0
                                   )?.toLocaleString()}`}</p>
@@ -752,7 +752,7 @@ export function BookEvent({
                         <p className="text-xs">Fee:</p>
                         <h2 className="text-base sm:text-xl font-semibold">
                           {Number(total) > 0
-                            ? `₦${total?.toLocaleString()}`
+                            ? ` ${currency ?? "NGN"}${total?.toLocaleString()}`
                             : "Free"}
                         </h2>
                       </div>
