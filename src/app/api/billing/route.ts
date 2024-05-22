@@ -13,6 +13,8 @@ export async function GET(req: NextRequest) {
       const payOutStatus = searchParams.get("payOutStatus");
       const registrationCompleted = searchParams.get("registrationCompleted");
 
+      console.log(organizationId);
+
       const query = supabase
         .from("eventTransactions")
         .select("*, events!inner(*, organization!inner(*))");

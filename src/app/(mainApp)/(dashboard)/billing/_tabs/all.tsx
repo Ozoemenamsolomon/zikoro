@@ -300,13 +300,16 @@ export default function All() {
     "registrationCompleted",
     "payOutStatus",
   ]);
+  const { organization } = useOrganizationStore();
+
+  if (!organization) return;
+
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const user = getCookie("user");
-  const { organization } = useOrganizationStore();
 
   const { eventTransactions, isLoading, getEventTransactions } =
     useGetEventTransactions({
-      organizationId: organization.id
+      organizationId: organization.id,
     });
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =

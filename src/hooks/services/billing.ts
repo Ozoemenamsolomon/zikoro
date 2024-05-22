@@ -48,7 +48,7 @@ export const useGetEventTransactions = ({
             ? "registrationCompleted=" + registrationCompleted + "&"
             : ""
         }${payOutStatus ? "payOutStatus=" + payOutStatus + "&" : ""}${
-          payOutStatus ? "organizationId=" + organizationId + "&" : ""
+          organizationId ? "organizationId=" + organizationId + "&" : ""
         }`,
       });
 
