@@ -34,6 +34,7 @@ import { toast } from "@/components/ui/use-toast";
 import { DataTable } from "@/components/DataTable";
 import { getCookie } from "@/hooks";
 import AddOrganizationPaymentDetails from "@/components/forms/AddOrganizationPaymentDetails";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
   {
@@ -301,10 +302,11 @@ export default function All() {
   ]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const user = getCookie("user");
+  const { organization } = useOrganizationStore();
 
   const { eventTransactions, isLoading, getEventTransactions } =
     useGetEventTransactions({
-      userId: user?.id || 0,
+      organizationId: organization.id
     });
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =

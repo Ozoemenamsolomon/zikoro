@@ -9,7 +9,6 @@ const AuthorizePayOutDialog = ({
 }: {
   organization: TOrganization;
   payoutInfo: IPayOut;
-  getPayOuts: () => Promise<void>
 }) => {
   const [step, setStep] = useState<number>(1);
   const [transferCode, setTransferCode] = useState<string>("");

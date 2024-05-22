@@ -22,7 +22,9 @@ export const useGetEventTransactions = ({
   userId,
   registrationCompleted,
   payOutStatus,
+  organizationId,
 }: {
+  organizationId?: number;
   userId?: number;
   userEmail?: string;
   registrationCompleted?: number;
@@ -45,7 +47,9 @@ export const useGetEventTransactions = ({
           registrationCompleted
             ? "registrationCompleted=" + registrationCompleted + "&"
             : ""
-        }${payOutStatus ? "payOutStatus=" + payOutStatus + "&" : ""}`,
+        }${payOutStatus ? "payOutStatus=" + payOutStatus + "&" : ""}${
+          payOutStatus ? "organizationId=" + organizationId + "&" : ""
+        }`,
       });
 
       if (status !== 200) {
