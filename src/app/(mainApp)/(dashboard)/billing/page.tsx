@@ -36,6 +36,7 @@ export default function page() {
         "tab",
         currentTab
       );
+      console.log(updatedSearchParams.toString());
       router.push(`${pathName}?${updatedSearchParams.toString()}`, {
         shallow: true,
       });

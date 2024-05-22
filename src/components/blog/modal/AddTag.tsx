@@ -1,49 +1,54 @@
 "use client";
-
 import { Form, FormField, Input, Button } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
 import { useForm } from "react-hook-form";
-import { CirclePicker } from "react-color";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import React, { useState } from "react";
-import { CreatedPreview } from "@/components/composables";
-import { toast } from "@/components/ui/use-toast";
+import toast from "react-hot-toast";
 import {
-  useCreateEventIndustry,
-  useFetchSingleEvent,
-  useUpdateEvent,
-} from "@/hooks";
+  // useCreateEventIndustry,
+  useFetchBlogTags,
+  useCreateBlogTag,
+} from "@/hooks/services/post";
 
 type FormValue = {
   name: string;
 };
 
 export function AddTag({
-  // close,
   updateTags,
 }: {
-  // close: () => void;
   updateTags?: (tags: string[]) => void;
 }) {
   const form = useForm<FormValue>();
-  const [tagColor, setTagColor] = useState<string>("");
-  const [allTags, setAllTags] = useState<{ color: string; name: string }[]>([]);
+  const { data, refetch } = useFetchBlogTags();
+  const { createBlogTag } = useCreateBlogTag();
+  const [loading, setLoading] = useState(false);
+  const [allTags, setAllTags] = useState<{ tagName: string }[]>([]);
 
   async function onSubmit(value: FormValue) {
-    if (tagColor === "" || value.name === undefined) {
-      toast({
-        variant: "destructive",
-        description: "Pls, Select a Color or Name",
-      });
+    if (value.name === undefined || "") {
+      toast.error("Please enter a valid tag name");
+      setLoading(true);
       return;
     }
-    setAllTags((prev) => [...prev, { color: tagColor, name: value?.name }]);
 
+    await createBlogTag(value?.name);
     form.reset({
       name: "",
     });
-    setTagColor("");
+    refetch();
+    setLoading(false);
+  }
+
+  function handleTagClick(tag: string) {
+    if (!allTags.some((t) => t.tagName === tag)) {
+      setAllTags((prevTags) => [...prevTags, { tagName: tag }]);
+      toast(`${tag} added.`);
+    } else {
+      toast.error(`Tag "${tag}" is already added.`);
+    }
   }
 
   return (
@@ -59,7 +64,7 @@ export function AddTag({
       >
         <div className="w-full flex items-center gap-x-2">
           <Button
-            onClick={() => updateTags!(allTags.map(({ name }) => name))}
+            onClick={() => updateTags!(allTags.map(({ tagName }) => tagName))}
             className="px-1 h-fit w-fit"
           >
             <ArrowBackOutline size={22} />
@@ -76,53 +81,42 @@ export function AddTag({
               control={form.control}
               name="name"
               render={({ field }) => (
-                <InputOffsetLabel label="Industry Name">
+                <InputOffsetLabel label="Tag Name">
                   <Input
                     type="text"
-                    placeholder="Industry"
+                    placeholder="Tag"
                     {...field}
                     className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
             />
-            {/** */}
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-              }}
-              className="w-full my-8 h-fit"
-            >
-              <CirclePicker
-                width="100%"
-                color={tagColor}
-                onChangeComplete={(color) => setTagColor(color.hex)}
-                circleSize={36}
-              />
-            </div>
-            {/** */}
-            {Array.isArray(allTags) && allTags?.length > 0 && (
-              <div className="w-full flex flex-col gap-y-4 items-start justify-start">
-                <h3>Your Created Tag</h3>
 
-                <div className="w-full flex flex-wrap items-center gap-4">
-                  {Array.isArray(allTags) &&
-                    allTags.map(({ name, color }, index) => (
-                      <CreatedPreview
-                        key={name}
-                        name={name}
-                        // remove={() => remove(index)}
-                        color={color}
-                      />
+            {/** */}
+            {Array.isArray(data) && data?.length > 0 && (
+              <div className="w-full flex flex-col gap-y-4 items-start justify-start">
+                <h3>Existing Tags</h3>
+
+                <div className="w-full grid grid-cols-4 lg:grid-cols-5 items-center gap-4">
+                  {Array.isArray(data) &&
+                    data?.map(({ blogTag }, index) => (
+                      <p
+                        onClick={() => handleTagClick(blogTag)}
+                        className="p-2 cursor-pointer text-black border-[1px] rounded-lg font-medium capitalize text-base"
+                        key={index}
+                      >
+                        {blogTag}
+                      </p>
                     ))}
                 </div>
               </div>
             )}
             <Button
               type="submit"
+              disabled={loading}
               className="mt-4 h-12 w-full gap-x-2 bg-basePrimary text-gray-50 font-medium"
             >
+              {loading && <LoaderAlt size={22} className="animate-spin" />}
               <span>Create Tag</span>
             </Button>
           </form>
@@ -131,178 +125,3 @@ export function AddTag({
     </div>
   );
 }
-
-
-
-//second part
-
-// "use client";
-
-// import { Form, FormField, Input, Button } from "@/components";
-// import InputOffsetLabel from "@/components/InputOffsetLabel";
-// import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
-// import { useForm } from "react-hook-form";
-// import { CirclePicker } from "react-color";
-// import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
-// import React, { useState } from "react";
-// import { CreatedPreview } from "@/components/composables";
-// import { toast } from "@/components/ui/use-toast";
-// import {
-//   // useCreateEventIndustry,
-//   useFetchBlogTags,
-//   // useUpdateEvent,
-// } from "@/hooks/services/post";
-
-// type FormValue = {
-//   name: string;
-// };
-
-// export function AddTag({
-//   setActive,
-//   close,
-// }: {
-//   close: () => void;
-//   eventId: string;
-
-//   setActive: React.Dispatch<React.SetStateAction<number>>;
-// }) {
-//   const form = useForm<FormValue>();
-//   const [industryColor, setIndustryColor] = useState<string>("");
-//   // const [createdIndustry, setCreatedIndustry] = useState<IndustryType[]>([]);
-//   // const { loading, createEventIndustry } = useCreateEventIndustry();
-//   const { data, refetch } = useFetchBlogTags();
-//   const { loading, update: createEventIndustry } = useUpdateEvent();
-//   async function onSubmit(value: FormValue) {
-//     if (industryColor === "" || value.name === undefined) {
-//       toast({
-//         variant: "destructive",
-//         description: "Pls, Select a Color or Name",
-//       });
-//       return;
-//     }
-
-//     const payload =
-//       Array.isArray(data?.partnerIndustry) && data?.partnerIndustry.length > 0
-//         ? [
-//             ...data?.partnerIndustry,
-//             { name: value?.name, color: industryColor },
-//           ]
-//         : [{ name: value?.name, color: industryColor }];
-//     await createEventIndustry(
-//       { partnerIndustry: payload },
-//       eventId,
-//       "Industry Created Successfully"
-//     );
-
-//     form.reset({
-//       name: "",
-//     });
-//     setIndustryColor("");
-//     refetch();
-//   //  close();
-
-//     /*
-//      setCreatedIndustry((prev) => [
-//       ...prev,
-//       { name: value.name, color: industryColor },
-//     ]);
-//     */
-//   }
-
-//   // FN to remove from the list of industries
-//   async function remove(id: number) {
-//     const updatedList = data?.partnerIndustry?.filter(
-//       (_, index) => index !== id
-//     );
-
-//     await createEventIndustry({ partnerIndustry: updatedList }, eventId, "Industries Updated Successfully");
-//     refetch();
-//   }
-
-//   return (
-//     <div
-//       role="button"
-//       onClick={close}
-//       className="w-full h-full fixed z-[100] inset-0 bg-black/50"
-//     >
-//       <div
-//         onClick={(e) => e.stopPropagation()}
-//         role="button"
-//         className="w-[95%] sm:w-[500px] box-animation h-fit flex flex-col gap-y-6 rounded-lg bg-white m-auto absolute inset-0 py-8 px-3 sm:px-6"
-//       >
-//         <div className="w-full flex items-center gap-x-2">
-//           <Button onClick={() => setActive(1)} className="px-1 h-fit w-fit">
-//             <ArrowBackOutline size={22} />
-//           </Button>
-//           <h2 className="font-medium text-lg sm:text-xl">
-//             Create New Industry
-//           </h2>
-//         </div>
-
-//         <Form {...form}>
-//           <form
-//             onSubmit={form.handleSubmit(onSubmit)}
-//             className="flex items-start w-full flex-col gap-y-3"
-//           >
-//             <FormField
-//               control={form.control}
-//               name="name"
-//               render={({ field }) => (
-//                 <InputOffsetLabel label="Industry Name">
-//                   <Input
-//                     type="text"
-//                     placeholder="Industry"
-//                     {...field}
-//                     className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
-//                   />
-//                 </InputOffsetLabel>
-//               )}
-//             />
-//             {/** */}
-//             <div
-//               onClick={(e) => {
-//                 e.stopPropagation();
-//                 e.preventDefault();
-//               }}
-//               className="w-full my-8 h-fit"
-//             >
-//               <CirclePicker
-//                 width="100%"
-//                 color={industryColor}
-//                 onChangeComplete={(color) => setIndustryColor(color.hex)}
-//                 circleSize={36}
-//               />
-//             </div>
-//             {/** */}
-//             {Array.isArray(data?.partnerIndustry) &&
-//               data?.partnerIndustry?.length > 0 && (
-//                 <div className="w-full flex flex-col gap-y-4 items-start justify-start">
-//                   <h3>Your Created Industry</h3>
-
-//                   <div className="w-full flex flex-wrap items-center gap-4">
-//                     {Array.isArray(data?.partnerIndustry) &&
-//                       data?.partnerIndustry.map(({ name, color }, index) => (
-//                         <CreatedPreview
-//                           key={name}
-//                           name={name}
-//                           remove={() => remove(index)}
-//                           color={color}
-//                         />
-//                       ))}
-//                   </div>
-//                 </div>
-//               )}
-//             <Button
-//               type="submit"
-//               disabled={loading}
-//               className="mt-4 h-12 w-full gap-x-2 bg-basePrimary text-gray-50 font-medium"
-//             >
-//               {loading && <LoaderAlt size={22} className="animate-spin" />}
-//               <span>Create Industry</span>
-//             </Button>
-//           </form>
-//         </Form>
-//       </div>
-//     </div>
-//   );
-// }

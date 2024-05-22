@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetPayOuts } from "@/hooks/services/billing";
+import { useGetPayOuts } from "@/hooks/services/payout";
 import { IPayOut } from "@/types/billing";
 import { extractUniqueTypes } from "@/utils/helpers";
 import { useEffect, useState } from "react";
@@ -190,10 +190,10 @@ const PAYOUT_TABS = [
 export default function page() {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const user = getCookie("user");
-  
-  const { payOuts, isLoading } = useGetPayOuts({ userId: user?.id || 0 });
 
-  
+  const { payOuts, isLoading, getPayOuts } = useGetPayOuts({ userId: user?.id || 0 });
+
+  console.log(payOuts);
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<IPayOut>({
@@ -201,7 +201,7 @@ export default function page() {
       dataFilters: payOutsFilter,
     });
 
-  // 
+  //
 
   useEffect(() => {
     if (isLoading) return;
@@ -213,7 +213,7 @@ export default function page() {
       });
   }, [isLoading]);
 
-  // 
+  //
 
   const onChange = (accessorKey: string) =>
     setShownColumns((prevShown) =>

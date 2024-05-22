@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import AuthorizePayOutDialog from "@/components/authorizePayOut";
 
 export const columns: ColumnDef<IPayOut>[] = [
   // {
@@ -67,6 +68,29 @@ export const columns: ColumnDef<IPayOut>[] = [
     },
   },
   {
+    accessorKey: "requestedFor",
+    header: "Requested for",
+
+    cell: ({ row }) => {
+      const organization = row.original.organization;
+
+      if (!organization) return <div>N/A</div>;
+
+      return (
+        <div className="space-y-1">
+          <span className="text-sm font-medium text-gray-600">
+            {organization.organizationName}
+            <div className="text-gray-500 flex no-wrap">
+              <span className="flex-[70%] truncate">
+                {organization.eventContactEmail || "N/A"}
+              </span>
+            </div>
+          </span>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "Amount",
     header: "amount",
   },
@@ -91,8 +115,8 @@ export const columns: ColumnDef<IPayOut>[] = [
     header: "Payout Date",
     cell: ({ row }) => (
       <div className="max-w-full truncate">
-        {row.getValue("paidDate")
-          ? convertDateFormat(row.getValue("paidDate"))
+        {row.getValue("paidAt")
+          ? convertDateFormat(row.getValue("paidAt"))
           : "------"}
       </div>
     ),
@@ -126,22 +150,31 @@ export const columns: ColumnDef<IPayOut>[] = [
     id: "pay out",
     header: "Action",
     cell: ({ row }) => {
-      // const user = getCookie<TUser>("user");
+      const organization = row.original.organization;
+      const payoutInfo = row.original;
+
+      if (payoutInfo.payOutStatus !== "requested") return;
 
       return (
         <Dialog>
           <DialogTrigger asChild>
-            <button className="text-basePrimary underline">
+            <button
+              disabled={!organization.payoutAccountDetails}
+              className="text-basePrimary underline"
+            >
               <span>Pay Out</span>
             </button>
           </DialogTrigger>
           <DialogContent className="px-3">
             <DialogHeader>
               <DialogTitle>
-                <span className="capitalize">Create affiliate</span>
+                <span className="capitalize">Authorize Pay Out</span>
               </DialogTitle>
             </DialogHeader>
-            pay out
+            <AuthorizePayOutDialog
+              payoutInfo={payoutInfo}
+              organization={organization}
+            />
           </DialogContent>
         </Dialog>
       );

@@ -51,6 +51,7 @@ export default function AddOrganizationPaymentDetails() {
   const { updateOrganization, isLoading: updatingOrganization } =
     useUpdateOrganization({ organizationId: organization?.id });
 
+  console.log(organization?.payoutAccountDetails);
   const defaultValues: Partial<IPayoutAccountDetails> =
     organization?.payoutAccountDetails ?? {
       bankCountry: "",

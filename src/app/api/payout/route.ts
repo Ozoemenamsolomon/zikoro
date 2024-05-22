@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     try {
       const { data, error, status } = await supabase
         .from("payOut")
-        .select("*, user:users!inner(*)");
+        .select("*, user:users!inner(*), organization!inner(*)");
 
       if (error) throw error;
 

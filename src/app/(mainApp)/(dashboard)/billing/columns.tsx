@@ -141,4 +141,8 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     accessorKey: "affliateCode",
     header: "Affiliate Code",
   },
+  {
+    accessorKey: "payoutReference",
+    header: "payout Reference",
+  },
 ];

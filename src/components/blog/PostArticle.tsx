@@ -12,7 +12,7 @@ type BlogPostProps = {
   readingDuration: number;
   content: JSON;
   views: number;
-  shares: JSON;
+  shares: number;
   headerImageUrl: string;
   tags: string[];
 };

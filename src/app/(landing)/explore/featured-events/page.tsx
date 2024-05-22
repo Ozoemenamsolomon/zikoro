@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import CopyrightFooter from "@/components/CopyrightFooter";
 import {
   FilterIcon,
   ArrowDownIcon,
@@ -26,9 +26,6 @@ type DBFeaturedEvent = {
   expectedParticipants: number;
   registered: number;
 };
-// type EventCategoryData = {
-//   eventCategory: string; // Adjust the type accordingly
-// };
 
 export default function FeaturedEvents() {
   const [showMore, setShowMore] = useState(false);
@@ -56,30 +53,30 @@ export default function FeaturedEvents() {
   };
 
   const filteredEvents = eventData
-    ?.filter((event) => {
-      return (
-        event.eventTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.eventCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.eventCategory.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    })
-    .filter((event) => {
-      // Check if all selected buttons match any of the event properties
-      return (
-        selectedButtons.length === 0 ||
-        selectedButtons.every((button) =>
-          [
-            event.locationType,
-            event.eventCountry,
-            event.eventCity,
-            event.eventCategory,
-          ]
-            .map((prop) => prop.toLowerCase())
-            .includes(button.toLowerCase())
-        )
-      );
-    });
-
+  ?.filter((event) => {
+    return (
+      event.eventTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.eventCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.eventCategory.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  })
+  .filter((event) => {
+    // Check if any selected buttons match any of the event properties
+    return (
+      selectedButtons.length === 0 ||
+      selectedButtons.some((button) =>
+        [
+          event.locationType,
+          event.eventCountry,
+          event.eventCity,
+          event.eventCategory,
+        ]
+          .map((prop) => prop.toLowerCase())
+          .includes(button.toLowerCase())
+      )
+    );
+  });
+  
   const handleButtonClick = (text: string) => {
     const isSelected = selectedButtons.includes(text);
 
@@ -379,66 +376,6 @@ export default function FeaturedEvents() {
                             </div>
                           )}
                         </div>
-
-                        {/* 5th section */}
-                        {/* <div className="px-8 cursor-pointer">
-                          <div className="flex justify-between items-center">
-                            <p className="text-lg font-semibold">Price Range</p>
-                            {isPriceUp ? (
-                              <div onClick={() => setPriceUp(!isPriceUp)}>
-                                <ArrowUpIcon />
-                              </div>
-                            ) : (
-                              <div onClick={() => setPriceUp(!isPriceUp)}>
-                                <ArrowDownIcon />
-                              </div>
-                            )}
-                          </div>
-                          {isPriceUp && (
-                            <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                              <button
-                                onClick={() => handleButtonClick("Free")}
-                                className={`py-4 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "Free"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Free
-                              </button>
-                              <button
-                                onClick={() => handleButtonClick("1k - 10k")}
-                                className={`py-4 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton === "10000"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                1k -10k
-                              </button>
-                              <button
-                                onClick={() => handleButtonClick("10k - 50k")}
-                                className={`py-4 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap  rounded-lg ${
-                                  selectedButton === "10000"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                10k -50k
-                              </button>
-                              <button
-                                onClick={() => handleButtonClick("50k - 100k")}
-                                className={`py-4 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButton == "50000"
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                50k - 100k
-                              </button>
-                            </div>
-                          )}
-                        </div> */}
                       </div>
                     </div>
 
@@ -601,7 +538,7 @@ export default function FeaturedEvents() {
                 </div>
               </div>
 
-              <Footer />
+              <CopyrightFooter />
             </div>
           )}
 
@@ -796,66 +733,6 @@ export default function FeaturedEvents() {
                       </div>
                     )}
                   </div>
-
-                  {/* 5th section */}
-                  {/* <div className="px-8 cursor-pointer">
-                    <div className="flex justify-between items-center">
-                      <p className="text-lg font-semibold">Price Range</p>
-                      {isPriceUp ? (
-                        <div onClick={() => setPriceUp(!isPriceUp)}>
-                          <ArrowUpIcon />
-                        </div>
-                      ) : (
-                        <div onClick={() => setPriceUp(!isPriceUp)}>
-                          <ArrowDownIcon />
-                        </div>
-                      )}
-                    </div>
-                    {isPriceUp && (
-                      <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                        <button
-                          onClick={() => handleButtonClick("free")}
-                          className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "free"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Free
-                        </button>
-                        <button
-                          onClick={() => handleButtonClick("1-10")}
-                          className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton === "1-10"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          1k -10k
-                        </button>
-                        <button
-                          onClick={() => handleButtonClick("10-50")}
-                          className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap  rounded-lg ${
-                            selectedButton === "10-50"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          10k -50k
-                        </button>
-                        <button
-                          onClick={() => handleButtonClick("50-100")}
-                          className={`py-4 px-5 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButton == "50-100"
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          50k - 100k
-                        </button>
-                      </div>
-                    )}
-                  </div> */}
 
                   <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] mx-3 px-5 rounded-md border border-white">
                     See more
