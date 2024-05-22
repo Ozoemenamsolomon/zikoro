@@ -27,11 +27,13 @@ import {
 import { TUser } from "@/types";
 import useEventStore from "@/store/globalEventStore";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { UserIcon } from "@/constants";
 
 const MainTopBar = ({ eventId }: { eventId: string }) => {
   const router = useRouter();
-  const { isOrganizer, loading, isLoading } = useVerifyUserAccess(eventId);
-  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
+  const { isOrganizer } = useVerifyUserAccess(eventId);
+  const { isIdPresent } = useCheckTeamMember({ eventId });
   const pathname = usePathname().split("/");
 
   // console.log(pathname);
@@ -72,10 +74,10 @@ const MainTopBar = ({ eventId }: { eventId: string }) => {
   };
 
   return (
-    <header className="border-b w-full p-4 flex justify-between ">
-      {isIdPresent || isOrganizer ? (
+    <header className="border-b w-full p-4 items-center flex justify-between ">
+      {pathname.includes("event") ? (
         <>
-          {pathname.includes("event") ? (
+          {isIdPresent || isOrganizer ? (
             <Selector
               options={(events ?? [])?.map(({ eventAlias, eventTitle }) => ({
                 label: eventTitle,
@@ -91,37 +93,48 @@ const MainTopBar = ({ eventId }: { eventId: string }) => {
               }
             />
           ) : (
-            <div></div>
+            <div>
+              <div className="flex items-center gap-x-3">
+                <h2 className="text-base sm:text-xl font-semibold">
+                  {event?.eventTitle ?? ""}
+                </h2>
+
+                <p className="text-basePrimary bg-basePrimary/20 px-2 flex items-center justify-center py-1 rounded-3xl text-sm">
+                  {event?.locationType ?? ""}
+                </p>
+              </div>
+            </div>
           )}
-          <Selector
-            options={(userOrganizations ?? [])?.map(
-              ({ id, organizationName }) => ({
-                label: organizationName,
-                value: id.toString(),
-              })
-            )}
-            onSelect={setCurrentOrganization}
-            label="workspace"
-            initialValue={
-              organization && {
-                label: organization.organizationName,
-                value: organization.id.toString(),
-              }
-            }
-          />
         </>
       ) : (
-        <>
-          <div className="flex items-center gap-x-3">
-            <h2 className="text-base sm:text-xl font-semibold">
-              {event?.eventTitle ?? ""}
-            </h2>
+        <div></div>
+      )}
 
-            <p className="text-basePrimary bg-basePrimary/20 px-2 flex items-center justify-center py-1 rounded-3xl text-sm">
-              {event?.locationType ?? ""}
-            </p>
-          </div>
-        </>
+      {pathname.includes("event") && (
+        <Link className="block sm:hidden" href="/profile">
+          <UserIcon color="#717171" />
+        </Link>
+      )}
+
+      {!pathname.includes("event") ? (
+        <Selector
+          options={(userOrganizations ?? [])?.map(
+            ({ id, organizationName }) => ({
+              label: organizationName,
+              value: id.toString(),
+            })
+          )}
+          onSelect={setCurrentOrganization}
+          label="workspace"
+          initialValue={
+            organization && {
+              label: organization.organizationName,
+              value: organization.id.toString(),
+            }
+          }
+        />
+      ) : (
+        null
       )}
     </header>
   );

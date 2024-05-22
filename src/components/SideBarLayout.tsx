@@ -8,6 +8,8 @@ import Link from "next/link";
 import { useSearchParams, useParams } from "next/navigation";
 import { EventFeedBack } from "./modals/EventFeedback";
 import { VipCrown2 } from "styled-icons/remix-fill";
+import MainTopBar from "@/components/MainTopBar";
+import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import {
   CustomerServiceIcon,
   EmailIcon,
@@ -18,7 +20,7 @@ import {
 } from "@/constants";
 import { getCookie, useGetEvents, useLogOut, useValidateUser } from "@/hooks";
 import { sendMail, whatsapp } from "@/utils";
-export function SideBarLayout() {
+export function SideBarLayout({eventId, children}:{eventId:string; children:React.ReactNode}) {
   const [isNav, setNav] = useState(false);
   const param = useSearchParams();
 
@@ -53,6 +55,10 @@ export function SideBarLayout() {
 
   return (
     <>
+      <div className={cn("w-full sm:w-[calc(100%-60px)]  bg-white float-right right-0 z-[43] fixed flex justify-between items-center ", isNav && "w-[calc(100%-60px)]")}>
+       <MainTopBar eventId={eventId}/>
+      </div>
+
       <SideNavs
         isNav={isNav}
         close={onClose}
@@ -61,6 +67,10 @@ export function SideBarLayout() {
         query={query}
         isHaveEvent={isHaveEvent}
       />
+         <div className="w-full sm:w-[calc(100%-60px)] float-right">
+         
+         {children}
+       </div>
       {isOpen && <EventFeedBack close={onShot} />}
       <MobileBottomNav toggleSideNav={onClose} isHaveEvent={isHaveEvent} />
     </>
@@ -88,6 +98,7 @@ function SideNavs({
 
   // max-[1024px]:hidden
   return (
+    <>
     <div
       aria-roledescription="container"
       role="button"
@@ -95,10 +106,11 @@ function SideNavs({
         e.stopPropagation();
         close();
       }}
+      id="sidebar"
       className={`fixed  transition-all duration-300 transform ease-in-out group  inset-y-0 left-0 h-full ${
         isNav
-          ? " bg-white/50 z-[49] group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]  "
-          : " z-[65] group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]"
+          ? " bg-white/50 block z-[49] group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]  "
+          : " z-[65] max-[642px]:hidden group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]"
       }`}
     >
       <div
@@ -127,11 +139,11 @@ function SideNavs({
         <div className="flex items-start text-[#717171] justify-start w-full flex-col gap-4 border-t p-4 border-basebody">
           <div className="w-full flex items-center gap-x-2 ">
             <Link
-              href="https://www.zikoro.com"
+              href={`${window.location.origin}/create`}
               className="text-mobile sm:text-sm text-basePrimary font-medium hover:underline "
             >
-              <p> Try</p>
-              <p> Zikoro!</p>
+              <p><PlusCircle size={18}/> </p>
+              <p>Event</p>
             </Link>
           </div>
           {/*
@@ -221,5 +233,6 @@ function SideNavs({
         </div>
       </div>
     </div>
+    </>
   );
 }

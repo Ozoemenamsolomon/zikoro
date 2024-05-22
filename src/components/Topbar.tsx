@@ -14,6 +14,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
   const pathname = usePathname();
   const [isShowNav, setShowNav] = useState(false);
   const [isScrolling, setScrolling] = useState(false);
+  const [left, setLeft] = useState(false);
   const user = getCookie("user");
   const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
 
@@ -27,6 +28,21 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
         setScrolling(false);
       }
     });
+
+    document.addEventListener("click", () => {
+      const sideBar = document.getElementById("sidebar");
+      if (sideBar) {
+        const sideBarStyle = window.getComputedStyle(sideBar);
+       // console.log(sideBarStyle.display);
+        if (sideBarStyle.display === "none") {
+          setLeft(false);
+        } else {
+          setLeft(true);
+        }
+      }
+    });
+
+ 
   }, []);
 
   const links = [
@@ -89,15 +105,17 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
   return (
     <>
       <nav
+       
         className={cn(
-          "w-fit border-b-0 bg-white lg:border-b-0 lg:w-[180px] lg:pb-10 border-r-0 lg:border-r z-[55] fixed left-[60px] h-fit lg:h-[calc(100%-68px)] top-[60px] sm:top-[68px] overflow-y-auto top-nav-scroll",
-          isShowNav && "w-[180px] border-b-0 h-[calc(100%-68px)] pb-10 border-r"
+          "w-fit border-b-0 left-0 sm:left-[60px] bg-white lg:border-b-0 lg:w-[180px] lg:pb-10 border-r-0 lg:border-r z-[55] fixed  h-fit lg:h-[calc(100%-68px)] top-[60px] sm:top-[68px] overflow-y-auto top-nav-scroll",
+          isShowNav && "w-[180px] border-b-0 h-[calc(100%-68px)] pb-10 border-r",
+          left && "left-[60px]"
         )}
       >
         <div
           className={cn(
             "bg-white w-full  lg:px-4 lg:pt-5   h-full ",
-            isShowNav && "px-4 pt-5"
+            isShowNav && "px-4 pt-5 "
           )}
         >
           <div
@@ -123,7 +141,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
           </div>
           <ul
             className={cn(
-              "hidden lg:flex flex-col mt-4 lg:mt-0 items-start gap-y-6 justify-start text-gray-700",
+              "hidden lg:flex flex-col pb-20 mt-4 lg:mt-0 items-start gap-y-6 justify-start text-gray-700",
               isShowNav && "flex"
             )}
           >
@@ -137,7 +155,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
                   key={index}
                   className={`w-full p-2 text-sm ${
                     pathname.split("/")[3].includes(path)
-                      ? "bg-basePrimary/20  rounded-lg font-medium"
+                      ? "bg-basePrimary/10  rounded-lg font-medium"
                       : ""
                   }`}
                 >

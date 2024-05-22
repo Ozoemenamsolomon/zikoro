@@ -44,7 +44,7 @@ export default function page() {
   }
 
   return (
-    <section className="bg-white p-2 md:p-4 space-y-6">
+    <section className="bg-white pt-[4.5rem] px-2 md:px-4 md:pb-4 pb-2  space-y-6">
       <Tabs
         onValueChange={(value) => handleTabChange(value)}
         defaultValue={searchParams.get("tab") || "details"}

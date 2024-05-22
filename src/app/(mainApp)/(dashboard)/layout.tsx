@@ -2,7 +2,8 @@
 import { Toaster } from "@/components/ui/toaster";
 import { useLayoutEffect, useRef } from "react";
 import { SideBarLayout } from "@/components/SideBarLayout";
-// import MainTopBar from "@/components/MainTopBar";
+ import MainTopBar from "@/components/MainTopBar";
+ import { useParams } from "next/navigation";
 
 export default function RootLayout({
   children,
@@ -10,6 +11,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const divRef = useRef<HTMLDivElement>(null);
+  const { eventId }:{eventId:string} = useParams();
 
   useLayoutEffect(() => {
     const div = divRef.current;
@@ -29,12 +31,9 @@ export default function RootLayout({
   return (
     <>
       <main className="relative w-full h-full bg-white" ref={divRef}>
-        <SideBarLayout />
-
-        <div className="w-[calc(100%-60px)]  float-right">
-         
-          {children}
-        </div>
+        <SideBarLayout eventId={eventId} children={children}/>
+      
+     
       </main>
       <Toaster />
     </>
