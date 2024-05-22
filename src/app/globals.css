@@ -295,6 +295,26 @@
   padding-bottom: 2rem;
 }
 
+.top-nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.top-nav-scroll:hover::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  display: block;
+}
+
+.top-nav-scroll::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  @apply bg-gray-300;
+}
+
+.top-nav-scroll::-webkit-scrollbar-track {
+  border-radius: 6px;
+  @apply bg-gray-100;
+}
+
 .partner-scroll-style::-webkit-scrollbar {
   display: none;
 }

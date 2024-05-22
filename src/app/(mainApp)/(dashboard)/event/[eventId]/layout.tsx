@@ -1,14 +1,13 @@
 "use client";
 
-import { Topbar } from "@/components";
-import { getCookie, saveCookie, useGetEvent } from "@/hooks";
+import {  useGetEvent } from "@/hooks";
 import useEventStore from "@/store/globalEventStore";
 import { Event } from "@/types";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { eventId } = useParams();
+  const { eventId }:{eventId:string} = useParams();
   // const currentEvent = useEventStore((state) => state.event);
   const setEvent = useEventStore((state) => state.setEvent);
 

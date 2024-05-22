@@ -8,8 +8,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -18,9 +16,7 @@ import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { Input, Button } from "@/components";
 import { MinusCircle, PlusCircle } from "styled-icons/heroicons-outline";
 import { addDiscount } from "@/app/server-actions/addDiscount";
-import { SideBarLayout } from "@/components";
 import { useDiscount } from "@/hooks";
-import { ContentTopNav } from "../_components";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import toast from "react-hot-toast"
@@ -32,7 +28,7 @@ export default function Discount({ eventId }: { eventId: string }) {
   const [discountData, setDiscountData] = useState<[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [value, setValue] = useState<string>("off");
+
 
   const getDiscount = async () => {
     try {

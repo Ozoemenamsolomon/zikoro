@@ -283,7 +283,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-full px-4 h-full "
+              className="w-full px-4 pb-20 h-full "
               id="form"
             >
               <div className="w-full py-4 flex items-center sm:items-end justify-start sm:justify-end">

@@ -94,7 +94,7 @@ export default function Agenda({
     <>
       <div>
         {!isReception && (
-          <div className="w-full overflow-x-auto no-scrollbar  p-4 text-base flex items-center gap-x-8 justify-between text-[#3E404B]">
+          <div className="w-full pl-[60px] lg:pl-0 overflow-x-auto no-scrollbar  p-4 text-base flex items-center gap-x-8 justify-between text-[#3E404B]">
             <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
               <Link
                 href={`/event/${eventId}/agenda?date=${

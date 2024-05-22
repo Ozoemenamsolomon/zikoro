@@ -13,7 +13,7 @@ export const NavLinks = ({
   id,
   isHaveEvent,
 }: {
-  id: string | string[];
+  id: string;
   query: string | null;
   isHaveEvent?: boolean;
 }) => {
@@ -32,7 +32,7 @@ export const NavLinks = ({
   }, [isHaveEvent]);
 
   return (
-    <ul className="flex text-mobile sm:text-sm flex-col gap-y-1 items-start h-[30vh] sm:h-[45vh] pb-32 overflow-hidden  no-scrollbar overflow-y-auto  justify-start w-full">
+    <ul className="flex text-mobile sm:text-sm flex-col px-3 gap-y-1 items-start h-[30vh] sm:h-[45vh] pb-32 overflow-hidden  no-scrollbar overflow-y-auto  justify-start w-full">
       {navs.map(({ href, name, icon: Icon }, idx) => {
         if (idx === links.length - 1) {
           return (
@@ -42,18 +42,18 @@ export const NavLinks = ({
             >
               <Button
                 className={cn(
-                  "p-3 px-4 flex  items-center justify-start gap-x-2  w-full",
+                  "p-3 px-0 h-fit flex    items-center font-medium rounded-lg justify-start gap-x-2 text-[#717171] group-hover:w-full w-fit",
                   pathname.includes(href) &&
-                    "text-basePrimary pl-4  bg-basePrimary border-l-4 border-basePrimary bg-opacity-10  "
+                    "bg-basePrimary/10 text-[#1F1F1F]  "
                 )}
               >
                 {Icon && (
-                  <Icon color={href === pathname ? "#001FCC" : "black"} />
+                  <Icon color={href === pathname ? "#1F1F1F" : "#717171"} />
                 )}
-                <span>{name}</span>
+                <span className="group-hover:block hidden">{name}</span>
               </Button>
 
-              <ul className="w-full flex flex-col gap-y-1 pl-12 text-xs sm:text-sm items-start justify-start">
+              <ul className="w-full group-hover:flex hidden  flex-col gap-y-1 pl-12 text-xs sm:text-sm items-start justify-start">
                 <li className="w-full">
                   <Link
                     prefetch={false}
@@ -78,14 +78,15 @@ export const NavLinks = ({
               }
               target={href === "/live-events" ? "_blank" : ""}
               className={cn(
-                "p-3 pr-4 pl-4 flex  items-center gap-x-2  w-full",
-                href === pathname &&
-                  "text-basePrimary pl-4 pr-4  bg-basePrimary border-l-4 border-basePrimary bg-opacity-10  ",
+                "p-3  flex  items-center justify-start font-medium rounded-lg  gap-x-2 text-[#717171] group-hover:w-full w-fit",
+                href === pathname && " bg-basePrimary/10 text-[#1F1F1F] ",
                 query === null && href === "/live-events" && "hidden"
               )}
             >
-              {Icon && <Icon color={href === pathname ? "#001FCC" : "black"} />}
-              <span>{name}</span>
+              {Icon && (
+                <Icon color={href === pathname ? "#1F1F1F" : "#717171"} />
+              )}
+              <span className="group-hover:block hidden">{name}</span>
             </Link>
           </li>
         );

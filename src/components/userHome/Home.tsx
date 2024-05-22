@@ -39,7 +39,7 @@ export default function Home() {
   ];
   return (
     <>
-      <div className="w-full px-2 sm:px-4 pb-2 lg:w-[calc(100%-250px)] pt-28 bg-white min-[1024px]:float-right right-0 z-50 fixed flex justify-between items-center ">
+      <div className="w-full px-2 sm:px-4 pb-2 lg:w-[calc(100%-80px)] pt-28 bg-white min-[1024px]:float-right right-0 z-[44] fixed flex justify-between items-center ">
         <h2 className="font-semibold text-base sm:text-2xl capitalize">{`Welcome ${
           user?.firstName ?? "User"
         }`}</h2>

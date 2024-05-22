@@ -20,7 +20,7 @@ export function MarketPlaceTab({eventId}:{eventId?:string}) {
     },
   ];
   return (
-    <ul className="py-4 flex gap-x-6 px-3 text-gray-700">
+    <ul className="py-4 pl-[60px] lg:pl-0 flex gap-x-6 px-3 text-gray-700">
       {links.map(({ name, href }) => {
         return (
           <li

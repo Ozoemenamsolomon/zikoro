@@ -214,7 +214,7 @@ export function BookEvent({
     }
   }, [event?.pricing, discountAmount, discountPercentage]);
 
-  console.log('dcdv d', pricingArray, 'refvedcvd', event?.pricing)
+ //  console.log('dcdv d', pricingArray, 'refvedcvd', event?.pricing)
   /// verifying and redeeming a discount code'
   async function redeem() {
     await verifyDiscountCode(code, String(eventId));

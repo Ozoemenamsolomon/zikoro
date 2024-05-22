@@ -5,8 +5,16 @@ import { UserProvider } from "@auth0/nextjs-auth0/client";
 import "react-toastify/dist/ReactToastify.css";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
-import { inter } from "@/utils/fonts";
 import { TOASTER_PROPS } from "@/lib";
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({
+    weight: ["200", "300", "400", "500", "600", "700", "800"],
+    subsets: ["latin"],
+    display: "swap",
+    fallback: ["Arial", "sans-serif"],
+  });
+
 
 export const metadata: Metadata = {
   title: "Zikoro",
@@ -31,7 +39,7 @@ export default function RootLayout({
             rel="stylesheet"
           />
         </Head>
-        <body className={`${inter.className}`}>
+        <body className={`${montserrat.className}`}>
           {children}
           <Toaster {...TOASTER_PROPS} />
         </body>

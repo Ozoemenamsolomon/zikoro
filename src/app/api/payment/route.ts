@@ -3,9 +3,6 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-
-
-
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
 
@@ -79,11 +76,12 @@ export async function POST(req: NextRequest) {
         title: event,
         location: address,
         attendees: attendeesNames,
-        organizer: { name: organization, email: "me@gmail.com" },
+        organizer: { name: organization, email: organizerContact?.email },
         // Add other event details as needed
         //  organizerContact?.email
       };
 
+   //   console.log("tyhejscs", icsEvent);
       // Generate iCalendar content
       const { error: icsError, value: iCalendarContent }: any =
         await new Promise((resolve) => {
@@ -93,6 +91,7 @@ export async function POST(req: NextRequest) {
         });
 
       if (icsError) {
+     //   console.log("error", icsError);
         throw icsError;
       }
 
@@ -152,10 +151,12 @@ export async function POST(req: NextRequest) {
           email,
           firstName,
           lastName,
+          ticketType,
         }: {
           email: string;
           firstName: string;
           lastName: string;
+          ticketType: string;
         }) => {
           return new Promise(async (resolve) => {
             // Generate QR code
@@ -168,6 +169,7 @@ export async function POST(req: NextRequest) {
               email,
               name: `${firstName} ${lastName}`,
               qrCode: qrCodeUrl,
+              ticketType,
             });
           });
         }
@@ -177,16 +179,14 @@ export async function POST(req: NextRequest) {
         email: string;
         name: string;
         qrCode: string;
+        ticketType: string;
       }[] = await Promise.all(resolveAttendees);
       // sending email
 
-      //   
+      //
       var { SendMailClient } = require("zeptomail");
 
-    
-
       registeredAttendees.forEach(async (attendee) => {
-
         let client = new SendMailClient({
           url: process.env.NEXT_PUBLIC_ZEPTO_URL,
           token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
@@ -309,7 +309,9 @@ export async function POST(req: NextRequest) {
               <p style="font-size: 14px; font-weight: 600; margin: 0; margin-bottom:2px;">
                Ticket Type
               </p>
-              <p style="color: #b4b4b4; font-size: 14px; margin: 0">${ticketCategory}</p>
+              <p style="color: #b4b4b4; font-size: 14px; margin: 0">${
+                attendee?.ticketType
+              }</p>
             </div>
           </div>
           <!---venue-->
@@ -428,7 +430,9 @@ export async function POST(req: NextRequest) {
                   width: 100%;
                 "
               >
-                <p style="font-size: 14px; color: #b4b4b4; width: 50%;">${count}x ${ticketCategory} Ticket</p>
+                <p style="font-size: 14px; color: #b4b4b4; width: 50%;">${count}x ${
+            attendee?.ticketType
+          } Ticket</p>
                 <p style="font-size: 14px;  width: 50%; text-align: end;">${
                   amountPaid > 0
                     ? "NGN" + Number(amountPaid)?.toLocaleString()
@@ -524,7 +528,7 @@ export async function POST(req: NextRequest) {
 // Function to generate QR code
 export async function generateQRCode(user: string) {
   // intialize qrcode
-const QRCode = require("qrcode");
+  const QRCode = require("qrcode");
 
   try {
     return await QRCode.toDataURL(user.toString());

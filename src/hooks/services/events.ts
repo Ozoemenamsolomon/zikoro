@@ -1238,5 +1238,8 @@ export function useVerifyUserAccess(eventId: string) {
     attendeeId,
     attendee,
     isOrganizer,
+    loading,
+    isLoading
+    
   };
 }

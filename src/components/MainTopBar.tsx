@@ -18,25 +18,30 @@ import {
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import {
   getCookie,
+  useCheckTeamMember,
   useGetOrganizations,
   useGetUserEvents,
   useGetUserTeamOrganizations,
+  useVerifyUserAccess,
 } from "@/hooks";
 import { TUser } from "@/types";
 import useEventStore from "@/store/globalEventStore";
 import { usePathname, useRouter } from "next/navigation";
 
-const MainTopBar = () => {
+const MainTopBar = ({ eventId }: { eventId: string }) => {
   const router = useRouter();
+  const { isOrganizer, loading, isLoading } = useVerifyUserAccess(eventId);
+  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
   const pathname = usePathname().split("/");
-  console.log(pathname);
+
+  // console.log(pathname);
   const user = getCookie<TUser>("user");
   if (!user) return;
 
   const { organization, setOrganization } = useOrganizationStore();
   const { event, setEvent } = useEventStore();
 
-  console.log(event);
+  // console.log(event);
 
   const {
     userOrganizations,
@@ -67,39 +72,57 @@ const MainTopBar = () => {
   };
 
   return (
-    <header className="border-b p-4 flex justify-between">
-      {pathname.includes("event") ? (
-        <Selector
-          options={(events ?? [])?.map(({ eventAlias, eventTitle }) => ({
-            label: eventTitle,
-            value: eventAlias,
-          }))}
-          onSelect={setCurrentEvent}
-          label="event"
-          initialValue={
-            event && {
-              label: event.eventTitle,
-              value: event.eventAlias,
+    <header className="border-b w-full p-4 flex justify-between ">
+      {isIdPresent || isOrganizer ? (
+        <>
+          {pathname.includes("event") ? (
+            <Selector
+              options={(events ?? [])?.map(({ eventAlias, eventTitle }) => ({
+                label: eventTitle,
+                value: eventAlias,
+              }))}
+              onSelect={setCurrentEvent}
+              label="event"
+              initialValue={
+                event && {
+                  label: event.eventTitle,
+                  value: event.eventAlias,
+                }
+              }
+            />
+          ) : (
+            <div></div>
+          )}
+          <Selector
+            options={(userOrganizations ?? [])?.map(
+              ({ id, organizationName }) => ({
+                label: organizationName,
+                value: id.toString(),
+              })
+            )}
+            onSelect={setCurrentOrganization}
+            label="workspace"
+            initialValue={
+              organization && {
+                label: organization.organizationName,
+                value: organization.id.toString(),
+              }
             }
-          }
-        />
+          />
+        </>
       ) : (
-        <div></div>
+        <>
+          <div className="flex items-center gap-x-3">
+            <h2 className="text-base sm:text-xl font-semibold">
+              {event?.eventTitle ?? ""}
+            </h2>
+
+            <p className="text-basePrimary bg-basePrimary/20 px-2 flex items-center justify-center py-1 rounded-3xl text-sm">
+              {event?.locationType ?? ""}
+            </p>
+          </div>
+        </>
       )}
-      <Selector
-        options={(userOrganizations ?? [])?.map(({ id, organizationName }) => ({
-          label: organizationName,
-          value: id.toString(),
-        }))}
-        onSelect={setCurrentOrganization}
-        label="workspace"
-        initialValue={
-          organization && {
-            label: organization.organizationName,
-            value: organization.id.toString(),
-          }
-        }
-      />
     </header>
   );
 };
