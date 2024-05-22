@@ -147,6 +147,6 @@ export const columns: ColumnDef<TEventTransaction>[] = [
   },
   {
     header: "Organization",
-    cell: ({row}) => row.original.
+    cell: ({row}) => row.original.events.organization.organizationName
   }
 ];
