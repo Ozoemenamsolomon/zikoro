@@ -75,7 +75,7 @@ export function QuizCard({
         <p className="font-medium px-3 pt-3 w-full line-clamp-2">
           {quiz?.coverTitle}
         </p>
-        <div className="text-gray-500 px-3 text-xs ms:text-mobile flex items-center justify-between w-full">
+        <div className="text-gray-500 px-3 pb-3 text-xs ms:text-mobile flex items-center justify-between w-full">
           <p className="flex items-center gap-x-2">
             <span className="border-r pr-2 border-gray-500">{`${
               quiz?.questions?.length || 0

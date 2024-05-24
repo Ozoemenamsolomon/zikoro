@@ -29,9 +29,21 @@ export function QuizSettings({
 }: QuizSettingsProp) {
   const { createQuiz } = useCreateQuiz();
   const { updateQuiz } = useUpdateQuiz();
+  const [branding, setBranding] = useState({
+    eventName: false,
+    poweredBy: false,
+  });
   const [isEventName, setShowEventName] = useState(false);
-  const [isPoweredBy, setShowPooweredBy] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [accessibility, setAccessibility] = useState({
+    visible: false,
+    review: false,
+    countdown: true,
+    timer: true,
+    countdownTransition: true,
+    disable: false,
+    live: true,
+  });
   const form = useForm<z.infer<typeof quizSettingSchema>>({
     resolver: zodResolver(quizSettingSchema),
   });
@@ -59,21 +71,17 @@ export function QuizSettings({
       ? {
           ...quiz,
           ...values,
-          branding: {
-            poweredBy: isPoweredBy,
-            eventName: isEventName,
-          },
+          branding,
+          accessibility,
           eventAlias,
           lastUpdated_at: new Date().toISOString(),
           coverImage: promise,
         }
       : {
           ...values,
-          branding: {
-            poweredBy: isPoweredBy,
-            eventName: isEventName,
-          },
+          branding,
           eventAlias,
+          accessibility,
           quizAlias,
           lastUpdated_at: new Date().toISOString(),
           coverImage: promise,
@@ -102,8 +110,10 @@ export function QuizSettings({
         coverTitle: quiz?.coverTitle,
         description: quiz?.description,
       });
-      setShowPooweredBy(quiz?.branding?.poweredBy);
-      setShowEventName(quiz?.branding?.eventName);
+      // setShowPooweredBy(quiz?.branding?.poweredBy);
+      // setShowEventName(quiz?.branding?.eventName);
+      setBranding(quiz?.branding);
+      setAccessibility(quiz?.accessibility)
     }
   }, [quiz]);
 
@@ -189,20 +199,162 @@ export function QuizSettings({
               <p>Show Event Name</p>
               <Switch
                 disabled={loading}
-                checked={isEventName}
-                onClick={() => setShowEventName((prev) => !prev)}
+                checked={branding?.eventName}
+                onClick={() =>
+                  setBranding({ ...branding, eventName: !branding?.eventName })
+                }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
               />
             </div>
             <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
               <p>Show Powered by Zikoro</p>
               <Switch
-                checked={isPoweredBy}
+                checked={branding?.poweredBy}
                 disabled={loading}
-                onClick={() => setShowPooweredBy((prev) => !prev)}
+                onClick={() =>
+                  setBranding({ ...branding, poweredBy: !branding?.poweredBy })
+                }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
               />
             </div>
+
+            <p className="font-semibold">Accessibility</p>
+
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Make Quiz Visible to Everyone?</p>
+                <p className="text-xs text-gray-500">
+                  Users who are not registered for your event can access your
+                  quiz
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility.visible}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    visible: !accessibility.visible,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Review answers after each question</p>
+                <p className="text-xs text-gray-500">
+                  You will see how people answered each question before the next
+                  question appears.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility.review}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    review: !accessibility.review,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <p>Show countdown before the next question</p>
+
+              <Switch
+                disabled={loading}
+                checked={accessibility.countdown}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    countdown: !accessibility.countdown,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Show timer</p>
+                <p className="text-xs text-gray-500">
+                  The timer shown while attempting the quiz will be turned off.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility.timer}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    timer: !accessibility.timer,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Show countdown transition</p>
+                <p className="text-xs text-gray-500">
+                  Countdown appears before each new question.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility.countdownTransition}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    countdownTransition: !accessibility.countdownTransition,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Disable quiz</p>
+                <p className="text-xs text-gray-500">
+                  Participants will no longer be able to join this quiz.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility.disable}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    disable: !accessibility.disable,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <div className="flex flex-col items-start justify-start">
+                <p>Live Mode</p>
+                <p className="text-xs text-gray-500">
+                  All quiz participants will attempt the quiz at the same time.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility.live}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    live: !accessibility.live,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+
             <Button
               disabled={loading}
               type="submit"

@@ -7,6 +7,7 @@ import { Button } from "@/components";
 import { Maximize2 } from "@styled-icons/feather/Maximize2";
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
+import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
 import { useCreateAnswer } from "@/hooks";
 import toast from "react-hot-toast";
 import { TQuiz, TRefinedQuestion, TAnswer } from "@/types";
@@ -79,7 +80,7 @@ export function Qusetion({
     );
     // console.log(minutes, seconds, millisecondsLeft)
 
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    return seconds;
   }, [millisecondsLeft, currentQuestion]);
 
   function nextQuestion() {
@@ -89,6 +90,7 @@ export function Qusetion({
     const nextQuestion = quiz?.questions?.find(
       (item) => item?.id === quiz?.questions[index + 1]?.id
     );
+
     if (nextQuestion) {
       setCurrentQuestion(nextQuestion);
     }
@@ -139,6 +141,8 @@ export function Qusetion({
     }
   }
 
+  console.log({ currentQuestion: currentQuestion?.id });
+
   // active index
   const activeQuestionIndex = useMemo(() => {
     const index = quiz?.questions?.findIndex(
@@ -158,10 +162,13 @@ export function Qusetion({
     }
     if (currentQuestion) {
       const updatedOptions = currentQuestion?.options?.map((item) => {
-        return {
-          ...item,
-          isCorrect: item?.isAnswer === item?.optionId,
-        };
+        if (item?.optionId === id) {
+          return {
+            ...item,
+            isCorrect: item?.isAnswer === id,
+          };
+        }
+        return item;
       });
       setCurrentQuestion({ ...currentQuestion, options: updatedOptions });
 
@@ -171,7 +178,7 @@ export function Qusetion({
       const isCorrectAnswer = currentQuestion?.options?.some(
         (item) => item?.isAnswer === id
       );
-      //  
+      //
       const score = isCorrectAnswer ? 1 : 0;
       // calculate the user point
       const attendeePoints =
@@ -220,7 +227,7 @@ export function Qusetion({
         "w-full h-full bg-white relative  px-6 py-12 border-x  flex flex-col items-start justify-between gap-3 col-span-7",
         isLeftBox && isRightBox && (isIdPresent || isOrganizer) && "col-span-5",
         !isLeftBox && !isRightBox && "col-span-full",
-        !isIdPresent && !isOrganizer && "col-span-full"
+        !isIdPresent && !isOrganizer && "col-span-full max-w-3xl mx-auto"
       )}
     >
       <Button
@@ -235,13 +242,23 @@ export function Qusetion({
       >
         <Maximize2 size={20} />
       </Button>
-      <div className="border-b border-gray-500 gap-3 pb-2 w-full flex items-end justify-between">
-        <p className="italic w-full text-gray-500">{quiz?.coverTitle ?? ""}</p>
-        <div className="flex  items-center font-medium text-xs text-basePrimary gap-x-1">
-          <p>{timing}</p>
-          <Time size={15} />
-        </div>
+      <div className=" gap-3 pb-2 w-full flex items-end justify-between">
+        <Button
+          //onClick={goBack}
+          className="gap-x-1 self-start w-fit h-fit px-2"
+        >
+          <ArrowBackOutline size={20} />
+          <p className="text-sm">Exit Quiz</p>
+        </Button>
+        <p className="text-xs sm:text-mobile text-gray-500">{`${
+          activeQuestionIndex + 1
+        }/${quiz?.questions?.length}`}</p>
       </div>
+
+        <div className="w-full flex items-center justify-center">
+
+          
+          </div>  
 
       <div className="flex items-center flex-col justify-center w-full gap-3">
         <p className="font-medium w-full">{currentQuestion?.question}</p>
@@ -269,6 +286,10 @@ export function Qusetion({
         ))}
       </div>
 
+      <p className="self-end bg-basePrimary/20 rounded-3xl text-sm text-basePrimary px-2 py-1">{`${
+        currentQuestion?.points
+      } ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
+
       <div className="w-full mt-3 flex items-end justify-between">
         <div className="flex items-center gap-x-2">
           <Button
@@ -290,9 +311,6 @@ export function Qusetion({
             <p>Next</p>
           </Button>
         </div>
-        <p className="text-xs sm:text-mobile text-gray-500">{`${
-          activeQuestionIndex + 1
-        }/${quiz?.questions?.length}`}</p>
 
         <p className="w-1 h-1"></p>
       </div>
