@@ -47,7 +47,8 @@ export function AddTag({
       setAllTags((prevTags) => [...prevTags, { tagName: tag }]);
       toast(`${tag} added.`);
     } else {
-      toast.error(`Tag "${tag}" is already added.`);
+      setAllTags((prevTags) => prevTags.filter((t) => t.tagName !== tag));
+      toast.error(`Tag "${tag}" removed.`);
     }
   }
 
@@ -95,22 +96,52 @@ export function AddTag({
             {/** */}
             {Array.isArray(data) && data?.length > 0 && (
               <div className="w-full flex flex-col gap-y-4 items-start justify-start">
-                <h3>Existing Tags</h3>
+                <h3 className="mt-2">Existing Tags</h3>
 
                 <div className="w-full grid grid-cols-4 lg:grid-cols-5 items-center gap-4">
                   {Array.isArray(data) &&
-                    data?.map(({ blogTag }, index) => (
-                      <p
-                        onClick={() => handleTagClick(blogTag)}
-                        className="p-2 cursor-pointer text-black border-[1px] rounded-lg font-medium capitalize text-base"
-                        key={index}
-                      >
-                        {blogTag}
-                      </p>
-                    ))}
+                    data.map(({ blogTag }, index) => {
+                      const isSelected = allTags.some(
+                        (t) => t.tagName === blogTag
+                      );
+
+                      return (
+                        <p
+                          onClick={() => handleTagClick(blogTag)}
+                          className={`p-2 cursor-pointer border-[1px] rounded-lg font-medium capitalize text-base ${
+                            isSelected
+                              ? "bg-basePrimary text-white"
+                              : "bg-white text-black"
+                          }`}
+                          key={index}
+                        >
+                          {blogTag}
+                        </p>
+                      );
+                    })}
                 </div>
+                {allTags.length > 0 && (
+                  <>
+                    <h3 className="mt-2">Selected Tags</h3>
+
+                    <div className="w-full grid grid-cols-4 lg:grid-cols-5 items-center gap-4">
+                      {Array.isArray(allTags) &&
+                        allTags.map(({ tagName }, i) => {
+                          return (
+                            <p
+                              className="p-2 cursor-pointer border-[1px] rounded-lg font-medium capitalize text-base bg-basePrimary text-white"
+                              key={i}
+                            >
+                              {tagName}
+                            </p>
+                          );
+                        })}
+                    </div>
+                  </>
+                )}
               </div>
             )}
+
             <Button
               type="submit"
               disabled={loading}

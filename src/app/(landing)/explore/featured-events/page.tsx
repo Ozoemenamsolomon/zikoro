@@ -27,6 +27,14 @@ type DBFeaturedEvent = {
   registered: number;
 };
 
+interface Event {
+  eventTitle: string;
+  eventCity: string;
+  eventCategory: string;
+  locationType: string;
+  eventCountry: string;
+}
+
 export default function FeaturedEvents() {
   const [showMore, setShowMore] = useState(false);
   const params = useSearchParams();
@@ -52,31 +60,76 @@ export default function FeaturedEvents() {
     setSearchQuery(e.target.value);
   };
 
+  const getCategory = (button: string, events: Event[]): string | null => {
+    const categories: { [key: string]: keyof Event } = {
+      locationType: "locationType",
+      eventCountry: "eventCountry",
+      eventCity: "eventCity",
+      eventCategory: "eventCategory",
+    };
+
+    for (const category in categories) {
+      if (
+        events.some(
+          (event) =>
+            event[categories[category]].toLowerCase() === button.toLowerCase()
+        )
+      ) {
+        return category;
+      }
+    }
+
+    return null;
+  };
+
+  const isSameCategory = (buttons: string[], events: Event[]): boolean => {
+    if (buttons.length === 0) return true;
+    const firstCategory = getCategory(buttons[0], events);
+    return buttons.every(
+      (button) => getCategory(button, events) === firstCategory
+    );
+  };
+
   const filteredEvents = eventData
-  ?.filter((event) => {
-    return (
-      event.eventTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.eventCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.eventCategory.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  })
-  .filter((event) => {
-    // Check if any selected buttons match any of the event properties
-    return (
-      selectedButtons.length === 0 ||
-      selectedButtons.some((button) =>
-        [
-          event.locationType,
-          event.eventCountry,
-          event.eventCity,
-          event.eventCategory,
-        ]
-          .map((prop) => prop.toLowerCase())
-          .includes(button.toLowerCase())
-      )
-    );
-  });
-  
+    ?.filter((event: Event) => {
+      const lowerSearchQuery = searchQuery.toLowerCase();
+      return (
+        event.eventTitle.toLowerCase().includes(lowerSearchQuery) ||
+        event.eventCity.toLowerCase().includes(lowerSearchQuery) ||
+        event.eventCategory.toLowerCase().includes(lowerSearchQuery)
+      );
+    })
+    .filter((event: Event) => {
+      if (selectedButtons.length === 0) return true;
+
+      const sameCategory = isSameCategory(selectedButtons, eventData);
+
+      if (sameCategory) {
+        return selectedButtons.some((button) =>
+          [
+            event.locationType,
+            event.eventCountry,
+            event.eventCity,
+            event.eventCategory,
+          ]
+            .map((prop) => prop.toLowerCase())
+            .includes(button.toLowerCase())
+        );
+      } else {
+        return selectedButtons.every((button) =>
+          [
+            event.locationType,
+            event.eventCountry,
+            event.eventCity,
+            event.eventCategory,
+          ]
+            .map((prop) => prop.toLowerCase())
+            .includes(button.toLowerCase())
+        );
+      }
+    });
+
+  //button selection
   const handleButtonClick = (text: string) => {
     const isSelected = selectedButtons.includes(text);
 

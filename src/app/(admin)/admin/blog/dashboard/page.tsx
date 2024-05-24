@@ -10,6 +10,11 @@ import {
 import AdminPublishedBlog from "@/components/blog/AdminBlogTemplate";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 type DBBlogAll = {
   id: number;
@@ -26,25 +31,34 @@ type DBBlogAll = {
   headerImageUrl: string;
 };
 
+interface Category {
+  name: string;
+  value: string;
+}
+
 export default function Create() {
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
   const [totalViews, setTotalViews] = useState<number>(0);
   const [totalShares, setTotalShares] = useState<number>(0);
   const [totalPosts, setTotalPosts] = useState<number>(0);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [blogName, setBlogName] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [checkedItems, setCheckedItems] = useState<Category[]>([]);
 
-  const categories = [
-    { name: "Event tips", value: "Event" },
-    { name: "Product Updates", value: "Product" },
-    { name: "Guides and Tutorial", value: "Guide" },
-    { name: "Case Study", value: "Case" },
-  ];
-
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(e.target.value);
+  //handle checkbox selection
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    category: Category
+  ) => {
+    const isChecked = event.target.checked;
+    if (isChecked) {
+      setCheckedItems((prevCheckedItems) => [...prevCheckedItems, category]);
+    } else {
+      setCheckedItems((prevCheckedItems) =>
+        prevCheckedItems.filter((item) => item.value !== category.value)
+      );
+    }
   };
 
   // Event handler for blog name input change
@@ -52,6 +66,7 @@ export default function Create() {
     setBlogName(e.target.value);
   };
 
+  //handle date selection
   const handleDateChange = (dates: any) => {
     const [start, end] = dates;
     setStartDate(start);
@@ -76,15 +91,18 @@ export default function Create() {
     posts: DBBlogAll[],
     startDate: Date | null,
     endDate: Date | null,
-    selectedCategory: string | null,
+    checkedItems: Category[] | null,
     blogName: string | null
   ) => {
     let filteredPosts = posts;
 
-    if (selectedCategory) {
-      filteredPosts = filteredPosts.filter(
-        (post) => post.category === selectedCategory
-      );
+    if (checkedItems) {
+      const selectedCategories = checkedItems.map((item) => item.value);
+      if (selectedCategories.length > 0) {
+        filteredPosts = filteredPosts.filter((post) =>
+          selectedCategories.includes(post.category)
+        );
+      }
     }
 
     if (blogName) {
@@ -104,10 +122,12 @@ export default function Create() {
     return filteredPosts;
   };
 
+  //fetching blog Post
   useEffect(() => {
     fetchBlogPost();
   }, [blogData]);
 
+  //filter use Effect
   useEffect(() => {
     if (blogData) {
       // Filter blog posts based on selected date, category, and blog name
@@ -115,7 +135,7 @@ export default function Create() {
         blogData,
         startDate,
         endDate,
-        selectedCategory,
+        checkedItems,
         blogName
       );
 
@@ -137,7 +157,7 @@ export default function Create() {
       const totalPosts = filteredPosts.length;
       setTotalPosts(totalPosts);
     }
-  }, [blogData, startDate, endDate, selectedCategory, blogName]);
+  }, [blogData, startDate, endDate, blogName]);
 
   return (
     <div className=" pl-3 lg:pl-10 pr-3 lg:pr-28 pb-7 lg:pb-10  ">
@@ -212,32 +232,39 @@ export default function Create() {
             />
           </div>
 
-          <select
-            name="category"
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-            // required
-            className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none"
-          >
-            <option
-              disabled
-              selected
-              value=""
-              className="bg-transparent text-gray-400 "
-            >
+          <Popover>
+            <PopoverTrigger className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none">
               Select Category
-            </option>
-            {categories.map((category, index) => (
-              <option
-                key={index}
-                value={category.value}
-                className="bg-transparent text-black text-[15px]"
-              >
-                {" "}
-                {category.name}{" "}
-              </option>
-            ))}
-          </select>
+            </PopoverTrigger>
+            <PopoverContent className="p-3 bg-white shadow-lg rounded-lg">
+              <form>
+                {[
+                  { name: "Event tips", value: "Event" },
+                  { name: "Product Updates", value: "Product" },
+                  { name: "Guides and Tutorial", value: "guide" },
+                  { name: "Case Study", value: "Case" },
+                ].map((category, index) => (
+                  <div className="flex items-center mb-2" key={index}>
+                    <input
+                      id={`checkbox${index + 1}`}
+                      type="checkbox"
+                      className="mr-2"
+                      checked={checkedItems.some(
+                        (item) => item.value === category.value
+                      )}
+                      onChange={(e) => handleCheckboxChange(e, category)}
+                    />
+                    <label
+                      htmlFor={`checkbox${index + 1}`}
+                      className="text-[15px]"
+                    >
+                      {category.name}
+                    </label>
+                  </div>
+                ))}
+              </form>
+            </PopoverContent>
+          </Popover>
         </div>
       </section>
 
@@ -250,7 +277,7 @@ export default function Create() {
               blogData,
               startDate,
               endDate,
-              selectedCategory,
+              checkedItems,
               blogName
             )?.map((blogPost, index) => (
               <AdminPublishedBlog

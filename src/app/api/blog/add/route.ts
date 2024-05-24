@@ -1,17 +1,17 @@
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+// import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+// import { cookies } from "next/headers";
+// import { NextRequest, NextResponse } from "next/server";
 
-type PostBlogRequestBody = {
-  title: string;
-  category: string;
-  tags: string[];
-  content: [];
-  headerImageUrl: string;
-  readingDuration: number;
-  status: string;
-  // statusDetail: { [key: string]: any }[];
-}
+// type PostBlogRequestBody = {
+//   title: string;
+//   category: string;
+//   tags: string[];
+//   content: [];
+//   headerImageUrl: string;
+//   readingDuration: number;
+//   status: string;
+//   // statusDetail: { [key: string]: any }[];
+// }
 
 // export async function POST(req: NextRequest) {
 //   const supabase = createRouteHandlerClient({ cookies });
@@ -58,6 +58,21 @@ type PostBlogRequestBody = {
 //   }
 // }
 
+
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+
+type PostBlogRequestBody = {
+  title: string;
+  category: string;
+  tags: string[];
+  content: [];
+  headerImageUrl: string;
+  readingDuration: number;
+  status: string;
+  // statusDetail: { [key: string]: any }[];
+};
 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
