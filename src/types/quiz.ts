@@ -52,6 +52,7 @@ export interface TAnswer {
   attendeeId: string;
   attendeeName: string;
   quizId: number;
+  quizParticipantId:string;
   questionId: string;
   startTime: string;
   endTime: string;

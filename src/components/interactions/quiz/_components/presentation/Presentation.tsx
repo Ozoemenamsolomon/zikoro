@@ -19,7 +19,7 @@ export default function Presentation({
   quizId: string;
 }) {
   const { quiz, getQuiz } = useGetQuiz({ quizId });
-
+  const [nickName, setNickName] = useState("");
   const [isYetTosStart, setIsYetToStart] = useState(true);
   const { isOrganizer, attendeeId, attendee, loading, isLoading } =
     useVerifyUserAccess(eventId);
@@ -30,6 +30,7 @@ export default function Presentation({
     TRefinedQuestion[]
   > | null>(null);
 
+  const id = generateAlias();
   function onClose() {
     setLeftBox((prev) => !prev);
   }
@@ -68,6 +69,7 @@ export default function Presentation({
 
   // console.log({ isIdPresent, isOrganizer });
 
+
   return (
     <div className="w-full">
       {refinedQuizArray && !loading && !isLoading && !eventLoading ? (
@@ -79,6 +81,9 @@ export default function Presentation({
               isAttendee={!isIdPresent && !isOrganizer}
               refetch={getQuiz}
               quiz={refinedQuizArray}
+              id={id}
+              nickName={nickName}
+              setNickName={setNickName}
             />
           ) : (
             <div className="w-full mx-auto absolute inset-x-0 top-10 grid md:grid-cols-11 h-full items-start">
@@ -97,9 +102,10 @@ export default function Presentation({
                 toggleRightBox={onToggle}
                 toggleLeftBox={onClose}
                 updateQuiz={updateQuiz}
+                quizParticipantId={id}
                 attendeeDetail={{
                   attendeeId: String(attendeeId),
-                  attendeeName: `${attendee?.firstName} ${attendee?.lastName}`,
+                  attendeeName: nickName,
                 }}
                 isIdPresent={isIdPresent}
                 isOrganizer={isOrganizer}
@@ -129,17 +135,23 @@ function AttendeeRegistration({
   attendee,
   refetch,
   isAttendee,
+  id,
+  nickName,
+  setNickName
 }: {
   close: () => void;
   attendee?: TAttendee;
   quiz: TQuiz<TRefinedQuestion[]>;
   refetch: () => Promise<any>;
   isAttendee: boolean;
+  id:string;
+  nickName:string
+  setNickName: React.Dispatch<React.SetStateAction<string>>
 }) {
   const { updateQuiz } = useUpdateQuiz();
   const [loading, setLoading] = useState(false);
   const [isLobby, setisLobby] = useState(false);
-  const [nickName, setNickName] = useState("");
+  
 
   const actualQuiz: TQuiz<TQuestion[]> = useMemo(() => {
     return {
@@ -158,7 +170,7 @@ function AttendeeRegistration({
       toast.error("Pls add a nickName");
       return;
     }
-    const id = generateAlias();
+    
     setLoading(true);
     const payload: Partial<TQuiz<TQuestion[]>> = {
       ...actualQuiz,
