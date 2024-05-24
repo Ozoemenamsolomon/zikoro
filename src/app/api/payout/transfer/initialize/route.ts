@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
+  const supabase = createRouteHandlerClient({ cookies });
+
   if (req.method === "POST") {
     try {
       const body = await req.json();
@@ -34,6 +38,8 @@ export async function POST(req: NextRequest) {
 
       const { recipient_code } = transferRecipientResponse.data.data;
 
+      console.log(recipient_code);
+
       const transferParams = {
         source: "balance",
         reason: `payout for ${body.reference}`,
@@ -49,12 +55,29 @@ export async function POST(req: NextRequest) {
         config
       );
 
-      if (!transferResponse.data.status)
+      if (!transferResponse.data.status) {
+        const { error: payoutError } = await supabase
+          .from("payOut")
+          .update({
+            payOutStatus: "failed",
+          })
+          .eq("payOutRef", body.reference);
         throw new Error(transferResponse.data.message);
+      }
 
       console.log(transferResponse.data.data);
 
       const { transfer_code } = transferResponse.data.data;
+
+      const { error: payoutError } = await supabase
+        .from("payOut")
+        .update({
+          payOutStatus: "pending",
+          transferCode: transfer_code,
+        })
+        .eq("payOutRef", body.reference);
+
+      if (payoutError) throw new Error(payoutError?.message);
 
       return NextResponse.json(
         {
