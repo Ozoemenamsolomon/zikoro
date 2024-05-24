@@ -2,8 +2,8 @@
 
 import { QUsers } from "@/constants";
 import { cn } from "@/lib";
-import { CloseCircle } from "@styled-icons/ionicons-sharp/CloseCircle";
-import { CheckCircleFill } from "@styled-icons/bootstrap/CheckCircleFill";
+import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
+import { CheckCircle} from "@styled-icons/bootstrap/CheckCircle";
 
 type TOption = {
   optionId: string;
@@ -41,17 +41,20 @@ export function Option({
             }
           }}
           className={cn(
-            "w-full px-4 text-gray-500 flex items-center justify-between min-h-[44px] h-fit rounded-md border border-gray-500 bg-gray-100",
+            "w-full px-4 text-gray-500 flex items-center justify-between min-h-[44px] h-fit rounded-md border border-basePrimary bg-white",
             typeof option?.isCorrect === "boolean" &&
               option?.isCorrect &&
-              "border-basePrimary bg-basePrimary/10"
+              "border-green-500 bg-green-500/20",
+              typeof option?.isCorrect === "boolean" &&
+              !option?.isCorrect &&
+              "border-red-500 bg-red-500/20"
           )}
         >
           <div className="flex items-start gap-x-2 w-full">
             {option?.isCorrect !== "default" && (
               <>
                 {option?.isCorrect ? (
-                  <CheckCircleFill className="text-green-500" size={18} />
+                  <CheckCircle className="text-green-500" size={18} />
                 ) : (
                   <CloseCircle className="text-red-500" size={20} />
                 )}

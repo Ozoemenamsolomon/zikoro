@@ -15,7 +15,16 @@ export interface TQuiz<T> {
   totalPoints: number;
   eventAlias: string;
   quizAlias: string;
-  quizParticipants: TAttendee[]
+  quizParticipants: { id: string; nickName: string; attendee?: TAttendee }[];
+  accessibility: {
+    visible: boolean;
+    review: boolean;
+    countdown: boolean;
+    timer: boolean;
+    countdownTransition: boolean;
+    disable: boolean;
+    live: boolean;
+  };
 }
 
 export type TQuestion = z.infer<typeof quizQuestionSchema> & {
