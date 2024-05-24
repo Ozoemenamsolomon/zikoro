@@ -218,6 +218,9 @@ importers:
       react-aria:
         specifier: ^3.32.1
         version: 3.32.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react-circular-progressbar:
+        specifier: ^2.1.0
+        version: 2.1.0(react@18.2.0)
       react-color:
         specifier: ^2.19.3
         version: 2.19.3(react@18.2.0)
@@ -4088,6 +4091,11 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  react-circular-progressbar@2.1.0:
+    resolution: {integrity: sha512-xp4THTrod4aLpGy68FX/k1Q3nzrfHUjUe5v6FsdwXBl3YVMwgeXYQKDrku7n/D6qsJA9CuunarAboC2xCiKs1g==}
+    peerDependencies:
+      react: ^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
 
   react-clock@4.6.0:
     resolution: {integrity: sha512-Yz+vwrwrfVRSBw3BdmX/Mc7mVdQYJQ5Pi00qDzGLyLNWQuEmp5PC2oYjQAsDalLjekeDwBIGD7OLcKnkAp1kcw==}
@@ -9593,6 +9601,10 @@ snapshots:
       warning: 4.0.3
     optionalDependencies:
       '@types/react': 18.2.45
+
+  react-circular-progressbar@2.1.0(react@18.2.0):
+    dependencies:
+      react: 18.2.0
 
   react-clock@4.6.0(@types/react@18.2.45)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
