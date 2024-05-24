@@ -56,7 +56,6 @@ const payOutsFilter: TFilter<TPayOut>[] = [
     optionsFromData: true,
     type: "multiple",
     order: 1, 
-    opti
   },
 
   {
