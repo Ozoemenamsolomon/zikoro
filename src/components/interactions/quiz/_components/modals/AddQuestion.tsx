@@ -90,6 +90,7 @@ export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
     await updateQuiz({ payload });
     setLoading(false);
     if (refetch) refetch()
+    close()
 
     /**
      const questionAnswer: Partial<TAnswer> = answer?.id

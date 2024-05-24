@@ -73,8 +73,10 @@ const MainTopBar = ({
     router.push(`/event/${currentEvent.eventAlias}/content/info`);
   };
 
+  
+
   return (
-    <header className="border-b w-full p-4 items-center flex justify-between ">
+    <header className={cn("border-b w-full p-4 items-center flex justify-between ", pathname.includes("events") && "hidden")}>
       {pathname.includes("event") ? (
         <>
           {isIdPresent || isOrganizer ? (

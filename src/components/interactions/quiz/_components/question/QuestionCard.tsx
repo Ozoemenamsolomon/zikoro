@@ -7,7 +7,7 @@ import { TQuestion, TQuiz, TRefinedQuestion } from "@/types";
 import { millisecondsToTime } from "@/utils";
 import { useMemo } from "react";
 import { cn } from "@/lib";
-import { DeleteQuestion, CopyQuestion } from "..";
+import { DeleteQuestion, CopyQuestion, EditQuestion } from "..";
 
 export function QuestionCard({
   question,
@@ -85,6 +85,11 @@ export function QuestionCard({
             refetch={refetch}
             quiz={actualQuiz}
             questionId={question?.id}
+          />
+          <EditQuestion
+          refetch={refetch}
+          quiz={actualQuiz}
+          
           />
         </div>
       </div>

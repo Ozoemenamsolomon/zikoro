@@ -282,43 +282,46 @@ export function Qusetion({
         }/${quiz?.questions?.length} Questions`}</p>
       </div>
 
-      <div className="w-full gap-x-3 text-sm flex items-end justify-center">
-        <div className="flex flex-col items-center justify-center gap-y-2">
-          {currentQuestion?.duration && (
-            <div className="w-[70px] h-[70px]">
-              <CircularProgressbar
-                styles={buildStyles({
-                  pathColor: "#991b1b",
-                  trailColor: "#ffffff",
-                  textColor: "black",
-                })}
-                strokeWidth={3}
-                minValue={0}
-                maxValue={Number(currentQuestion?.duration) / 1000}
-                value={timing}
-                text={`${timing}`}
-              />
-            </div>
-          )}
-          <p>Seconds Left</p>
-        </div>
-        <p className="flex items-center gap-x-1">
-          <QUsers />
-          <span>{`${answer?.length || 0} Answered`}</span>
-        </p>
-      </div>
-
       <div className="flex items-center flex-col justify-center w-full gap-3">
         <p className="font-medium w-full">{currentQuestion?.question}</p>
-        {currentQuestion?.questionImage && (
-          <Image
-            className="w-52 sm:w-72 rounded-md h-48 sm:h-52 object-cover"
-            alt="quiz"
-            src={currentQuestion?.questionImage}
-            width={400}
-            height={400}
-          />
-        )}
+
+        <div className="w-full flex items-center justify-between">
+          <div className="flex flex-col items-center justify-center gap-y-2">
+            {currentQuestion?.duration && (
+              <div className="w-[70px] h-[70px]">
+                <CircularProgressbar
+                  styles={buildStyles({
+                    pathColor: "#991b1b",
+                    trailColor: "#ffffff",
+                    textColor: "black",
+                    textSize: "24px",
+                  })}
+                  strokeWidth={3}
+                  minValue={0}
+                  maxValue={Number(currentQuestion?.duration) / 1000}
+                  value={timing}
+                  text={`${timing}`}
+                />
+              </div>
+            )}
+            <p>Seconds Left</p>
+          </div>
+          {currentQuestion?.questionImage ? (
+            <Image
+              className="w-52 sm:w-72 rounded-md h-48 sm:h-52 object-cover"
+              alt="quiz"
+              src={currentQuestion?.questionImage}
+              width={400}
+              height={400}
+            />
+          ) : (
+            <div className="w-1 h-1"></div>
+          )}
+          <p className="flex flex-col justify-center items-center gap-y-2">
+            <span className="text-xl ">{answer?.length || 0}</span>
+            <span>{` Answered`}</span>
+          </p>
+        </div>
       </div>
 
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
