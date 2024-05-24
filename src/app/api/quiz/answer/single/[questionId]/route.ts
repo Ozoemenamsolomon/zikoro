@@ -17,6 +17,7 @@ export async function GET(
         .select("*")
         .eq("questionId", questionId)
        
+       
 
       // 
       if (error) {

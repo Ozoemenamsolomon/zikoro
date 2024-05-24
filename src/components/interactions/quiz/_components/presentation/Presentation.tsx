@@ -81,7 +81,7 @@ export default function Presentation({
               quiz={refinedQuizArray}
             />
           ) : (
-            <div className="w-full mt-28 grid md:grid-cols-11 h-full items-start">
+            <div className="w-full mx-auto absolute inset-x-0 top-10 grid md:grid-cols-11 h-full items-start">
               {(isIdPresent || isOrganizer) && (
                 <Advert
                   quiz={refinedQuizArray}
