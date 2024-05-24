@@ -55,8 +55,9 @@ const payOutsFilter: TFilter<TPayOut>[] = [
     ),
     optionsFromData: true,
     type: "multiple",
-    order: 1,
+    order: 1, 
   },
+
   {
     label: "request Date",
     accessor: "created_at",

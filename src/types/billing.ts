@@ -45,6 +45,7 @@ export interface IPayOut {
   paidOutBy: number;
   user: TUser;
   organization: TOrganization;
+  transferCode: string;
 }
 
 export interface IBank {

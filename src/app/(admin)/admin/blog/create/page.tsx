@@ -6,16 +6,6 @@ import toast from "react-hot-toast";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { AddTag } from "@/components/blog/modal/AddTag";
 import { useRouter } from "next/navigation";
-import { TriangleDown } from "@styled-icons/entypo/TriangleDown";
-import {
-  Form,
-  FormField,
-  Input,
-  FormControl,
-  FormItem,
-  FormLabel,
-  Button,
-} from "@/components";
 import {
   Dialog,
   DialogContent,
@@ -207,11 +197,12 @@ export default function BlogCreate() {
       });
   };
 
-  const schedulePost = () => {
+  const schedulePost = async () => {
     if (!scheduledDate) {
       toast.error("Please select a scheduled date");
       return;
     }
+    const imageUrl = file && (await uploadImage());
 
     fetch("/api/blog/add", {
       method: "POST",
@@ -221,7 +212,7 @@ export default function BlogCreate() {
       body: JSON.stringify({
         title: formData.title,
         category: formData.category,
-        headerImageUrl: headerImageUrl,
+        headerImageUrl: imageUrl,
         tags: formData.tags,
         readingDuration: formData.readingDuration,
         content: content,
@@ -242,7 +233,6 @@ export default function BlogCreate() {
       });
   };
 
-  
   return (
     <div className="">
       <div className=" flex flex-col pl-3 lg:pl-10 pr-3 lg:pr-28 pt-28 ">
@@ -295,6 +285,7 @@ export default function BlogCreate() {
                 <p>Tag</p>
               </div>
             </div>
+
             {/* second section */}
             <div className="flex flex-col gap-y-4 lg:gap-y-0 lg:flex-row justify-between mt-6 items-center gap-x-0 lg:gap-x-4">
               <div className="px-0 lg:px-3 bg-transparent rounded-xl shadow-sm  w-full lg:w-4/12 items-center justify-center ">
@@ -336,7 +327,7 @@ export default function BlogCreate() {
                 Preview
               </button>
 
-              <div className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] flex text-center justify-center">
+              <div className="text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end w-full lg:w-2/12 h-[44px] rounded-lg font-medium text-[15px] flex text-center justify-center ">
                 <Dialog>
                   <DialogTrigger
                     disabled={
@@ -435,7 +426,22 @@ export default function BlogCreate() {
               </div>
             </div>
 
-            <div className="mt-8 lg:mt-[60px] bg-white flex-1 resize-none h-fit mb-10 ">
+            {/* third section */}
+            <div className="flex mt-4 px-0 lg:px-3 items-center gap-x-2">
+              {formData.tags.length > 0 && (
+                <>
+                  {" "}
+                  <p> Selected tags:</p>
+                  <div className="grid grid-cols-5 lg:grid-cols-8 gap-x-[1px] ">
+                    {formData.tags.map((tag: string) => (
+                      <p className="text-sm text-black ">{tag}</p>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="mt-8 lg:mt-[50px] bg-white flex-1 resize-none h-fit mb-10 ">
               <TextEditor
                 onChange={setMessage}
                 defaultValue={content}

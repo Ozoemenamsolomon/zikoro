@@ -6,12 +6,18 @@ import TransferOTP from "./transferOTP";
 const AuthorizePayOutDialog = ({
   organization,
   payoutInfo,
+  defaultStep,
+  isRetry,
 }: {
   organization: TOrganization;
   payoutInfo: IPayOut;
+  defaultStep: number;
+  isRetry: boolean;
 }) => {
-  const [step, setStep] = useState<number>(1);
-  const [transferCode, setTransferCode] = useState<string>("");
+  const [step, setStep] = useState<number>(defaultStep);
+  const [transferCode, setTransferCode] = useState<string>(
+    payoutInfo.transferCode
+  );
 
   if (step === 1)
     return (
@@ -29,6 +35,7 @@ const AuthorizePayOutDialog = ({
         transferCode={transferCode}
         setStep={setStep}
         payOutRef={payoutInfo.payOutRef}
+        isRetry={isRetry}
       />
     );
 };

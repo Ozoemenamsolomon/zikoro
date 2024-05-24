@@ -145,8 +145,4 @@ export const columns: ColumnDef<TEventTransaction>[] = [
     accessorKey: "payoutReference",
     header: "payout Reference",
   },
-  {
-    header: "Organization",
-    cell: ({row}) => row.original.events.organization.organizationName
-  }
 ];

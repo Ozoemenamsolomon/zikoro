@@ -135,7 +135,7 @@ export const columns: ColumnDef<IPayOut>[] = [
               : payOutStatus === "requested"
               ? "bg-yellow-100 text-yellow-600 border-yellow-600"
               : payOutStatus === "pending"
-              ? "bg-blue-100 text-amber-600 border-amber-600"
+              ? "bg-amber-100 text-amber-600 border-amber-600"
               : payOutStatus === "failed"
               ? "bg-blue-100 text-red-600 border-red-600"
               : "bg-gray-100 text-gray-600 border-gray-600"
@@ -153,7 +153,7 @@ export const columns: ColumnDef<IPayOut>[] = [
       const organization = row.original.organization;
       const payoutInfo = row.original;
 
-      if (payoutInfo.payOutStatus !== "requested") return;
+      // if (payoutInfo.payOutStatus !== "requested") return;
 
       return (
         <Dialog>
@@ -174,6 +174,8 @@ export const columns: ColumnDef<IPayOut>[] = [
             <AuthorizePayOutDialog
               payoutInfo={payoutInfo}
               organization={organization}
+              defaultStep={payoutInfo.payOutStatus !== "requested" ? 2 : 1}
+              isRetry={payoutInfo.payOutStatus !== "requested" ? true : false}
             />
           </DialogContent>
         </Dialog>

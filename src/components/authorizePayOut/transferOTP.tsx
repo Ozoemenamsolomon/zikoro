@@ -19,8 +19,12 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { DialogClose } from "../ui/dialog";
-import { useFinalizePayOut, useGetPayOuts } from "@/hooks/services/payout";
-import { useRef } from "react";
+import {
+  useFinalizePayOut,
+  useGetPayOuts,
+  useResendOTP,
+} from "@/hooks/services/payout";
+import { useEffect, useRef, useState } from "react";
 import { getCookie } from "@/hooks";
 
 const FormSchema = z.object({
@@ -33,23 +37,48 @@ export default function TransferOTP({
   transferCode,
   setStep,
   payOutRef,
+  isRetry,
 }: {
   transferCode: string;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   payOutRef: string;
+  isRetry: boolean;
 }) {
   const user = getCookie("user");
+
+  const [timer, setTimer] = useState<number>(60);
+  const [isResendDisabled, setIsResendDisabled] = useState<boolean>(true);
 
   const { getPayOuts } = useGetPayOuts({
     userId: user?.id || 0,
   });
   const { finalizePayOut, isLoading } = useFinalizePayOut();
 
+  const { resendOTP, isLoading: resendingOTP } = useResendOTP();
+
   const clsBtnRef = useRef<HTMLButtonElement>(null);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
+
+  useEffect(() => {
+    if (timer > 0) {
+      const countdown = setInterval(() => {
+        setTimer(timer - 1);
+      }, 1000);
+
+      return () => clearInterval(countdown);
+    } else {
+      setIsResendDisabled(false);
+    }
+  }, [timer]);
+
+  useEffect(() => {
+    if (isRetry) {
+      resendOTP({ payload: { transferCode } });
+    }
+  }, []);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const { reference, status } = await finalizePayOut({
@@ -101,6 +130,21 @@ export default function TransferOTP({
             </FormItem>
           )}
         />
+        <button
+          type="button"
+          onClick={async () => {
+            const { status } = await resendOTP({ payload: { transferCode } });
+
+            if (!status) return;
+
+            setTimer(60);
+            setIsResendDisabled(true);
+          }}
+          className="text-sky-600 text-sm w-full text-left disabled:text-gray-600"
+          disabled={isResendDisabled || resendingOTP}
+        >
+          Resend OTP {isResendDisabled && `in 00:${timer}`}
+        </button>
         <Button disabled={isLoading} className="bg-basePrimary w-full">
           Submit OTP
         </Button>{" "}

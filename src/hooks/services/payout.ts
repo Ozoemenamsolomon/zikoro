@@ -111,7 +111,7 @@ type useFinalizePayOutResult = {
       payOutRef: string;
       paidOutBy: number;
     };
-  }) => Promise<{ reference: string; status: boolean }>;
+  }) => Promise<{ reference: string | null; status: boolean }>;
 } & RequestStatus;
 
 export const useFinalizePayOut = (): useFinalizePayOutResult => {
@@ -157,4 +157,56 @@ export const useFinalizePayOut = (): useFinalizePayOutResult => {
   };
 
   return { finalizePayOut, isLoading, error };
+};
+
+type useResendOTPResult = {
+  resendOTP: ({
+    payload,
+  }: {
+    payload: {
+      transferCode: string;
+    };
+  }) => Promise<{ status: boolean }>;
+} & RequestStatus;
+
+export const useResendOTP = (): useResendOTPResult => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const resendOTP = async ({
+    payload,
+  }: {
+    payload: {
+      transferCode: string;
+    };
+  }) => {
+    setLoading(true);
+    toast({
+      description: "sending OTP...",
+    });
+    try {
+      const { data, status } = await postRequest<{ reference: string }>({
+        endpoint: `/payout/transfer/resend_otp`,
+        payload,
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: "OTP sent successfully",
+      });
+
+      return { status: true };
+    } catch (error) {
+      setError(true);
+      toast({
+        description: "something went wrong",
+        variant: "destructive",
+      });
+      return { status: false };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { resendOTP, isLoading, error };
 };
