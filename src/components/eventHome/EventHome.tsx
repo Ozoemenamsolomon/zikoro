@@ -4,7 +4,7 @@ import { EventCards, EventHomeLayout } from ".";
 import { EmptyCard } from "../composables";
 import { useGetUserHomePageEvents } from "@/hooks";
 
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 export default function EventHome() {
   const { firstOrganizationEvents, loading, refetch } = useGetUserHomePageEvents();

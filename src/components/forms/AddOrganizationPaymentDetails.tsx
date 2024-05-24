@@ -54,7 +54,7 @@ export default function AddOrganizationPaymentDetails() {
   console.log(organization?.payoutAccountDetails);
   const defaultValues: Partial<IPayoutAccountDetails> =
     organization?.payoutAccountDetails ?? {
-      bankCountry: "",
+      bankCountry: "Nigeria",
       currency: "NGN",
       accountNumber: "",
       accountName: "",
@@ -70,7 +70,13 @@ export default function AddOrganizationPaymentDetails() {
     if (organization?.payoutAccountDetails) {
       form.reset(organization?.payoutAccountDetails);
     } else {
-      form.reset();
+      form.reset({
+        bankCountry: "Nigeria",
+        currency: "NGN",
+        accountNumber: "",
+        accountName: "",
+        bankName: "",
+      });
     }
   }, [organization]);
 
@@ -99,6 +105,9 @@ export default function AddOrganizationPaymentDetails() {
 
     const countryData =
       countries && countries.find(({ name }) => country === name);
+
+    console.log(countryData, country, "country");
+
     if (countryData) {
       setCurrencies(countryData.relationships.currency.data);
     }
@@ -120,7 +129,11 @@ export default function AddOrganizationPaymentDetails() {
           bankCode,
         },
       });
-      if (account) setValue("accountName", account.account_name);
+      if (account) {
+        setValue("accountName", account.account_name);
+      } else {
+        setValue("accountName", "");
+      }
     };
 
     console.log(accountNumber.length);
@@ -211,21 +224,14 @@ export default function AddOrganizationPaymentDetails() {
             name="bankName"
             render={({ field }) => (
               <InputOffsetLabel isRequired label="Bank Name">
-                {/* <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger disabled={fetchingBanks}>
-                    <SelectValue
-                      placeholder="select bank"
-                      className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 mt-0"
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {(banks ?? []).map(({ name }) => (
-                    <SelectItem value={name}>{name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select> */}
+                {(() => {
+                  console.log(
+                    field.value,
+                    banks.find((bank) => bank.name === field.value)
+                  );
+
+                  return null;
+                })()}
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>

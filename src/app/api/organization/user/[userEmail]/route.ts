@@ -100,9 +100,6 @@ export async function GET(
         );
       });
 
-      console.log(organizations);
-      console.log(filteredOrganizations);
-
       if (error) throw error;
 
       return NextResponse.json(
