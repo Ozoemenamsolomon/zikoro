@@ -2,6 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { AdminBlogCalendarIcon } from "@/constants/icons";
 import AdminPublishedBlog from "@/components/blog/AdminBlogTemplate";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -20,18 +25,30 @@ type DBBlogAll = {
   headerImageUrl: string;
 };
 
+interface Category {
+  name: string;
+  value: string;
+}
+
 export default function BlogSchedule() {
   const [blogData, setBlogData] = useState<DBBlogAll[] | undefined>(undefined);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [checkedItems, setCheckedItems] = useState<Category[]>([]);
 
-  const categories = [
-    { name: "Event tips", value: "Event" },
-    { name: "Product Updates", value: "Product" },
-    { name: "Guides and Tutorial", value: "Guide" },
-    { name: "Case Study", value: "Case" },
-  ];
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    category: Category
+  ) => {
+    const isChecked = event.target.checked;
+    if (isChecked) {
+      setCheckedItems((prevCheckedItems) => [...prevCheckedItems, category]);
+    } else {
+      setCheckedItems((prevCheckedItems) =>
+        prevCheckedItems.filter((item) => item.value !== category.value)
+      );
+    }
+  };
 
   //fetch blog posts
   async function fetchBlogPost() {
@@ -46,10 +63,7 @@ export default function BlogSchedule() {
       .catch((error) => console.error("Error:", error));
   }
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCategory(e.target.value);
-  };
-
+  //handle date selection
   const handleDateChange = (dates: any) => {
     const [start, end] = dates;
     setStartDate(start);
@@ -61,14 +75,17 @@ export default function BlogSchedule() {
     posts: DBBlogAll[],
     startDate: Date | null,
     endDate: Date | null,
-    selectedCategory: string | null
+    checkedItems: Category[] | null
   ) => {
     let filteredPosts = posts;
 
-    if (selectedCategory) {
-      filteredPosts = filteredPosts.filter(
-        (post) => post.category === selectedCategory
-      );
+    if (checkedItems) {
+      const selectedCategories = checkedItems.map((item) => item.value);
+      if (selectedCategories.length > 0) {
+        filteredPosts = filteredPosts.filter((post) =>
+          selectedCategories.includes(post.category)
+        );
+      }
     }
 
     if (startDate && endDate) {
@@ -108,32 +125,39 @@ export default function BlogSchedule() {
             />
           </div>
 
-          <select
-            name="category"
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-            // required
-            className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none"
-          >
-            <option
-              disabled
-              selected
-              value=""
-              className="bg-transparent text-gray-400 "
-            >
+          <Popover>
+            <PopoverTrigger className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none">
               Select Category
-            </option>
-            {categories.map((category, index) => (
-              <option
-                key={index}
-                value={category.value}
-                className="bg-transparent text-black text-[15px]"
-              >
-                {" "}
-                {category.name}{" "}
-              </option>
-            ))}
-          </select>
+            </PopoverTrigger>
+            <PopoverContent className="p-3 bg-white shadow-lg rounded-lg">
+              <form>
+                {[
+                  { name: "Event tips", value: "Event" },
+                  { name: "Product Updates", value: "Product" },
+                  { name: "Guides and Tutorial", value: "guide" },
+                  { name: "Case Study", value: "Case" },
+                ].map((category, index) => (
+                  <div className="flex items-center mb-2" key={index}>
+                    <input
+                      id={`checkbox${index + 1}`}
+                      type="checkbox"
+                      className="mr-2"
+                      checked={checkedItems.some(
+                        (item) => item.value === category.value
+                      )}
+                      onChange={(e) => handleCheckboxChange(e, category)}
+                    />
+                    <label
+                      htmlFor={`checkbox${index + 1}`}
+                      className="text-[15px]"
+                    >
+                      {category.name}
+                    </label>
+                  </div>
+                ))}
+              </form>
+            </PopoverContent>
+          </Popover>
         </div>
       </section>
 
@@ -141,30 +165,27 @@ export default function BlogSchedule() {
       <section className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[20px] lg:mt-[24px]  bg-white ">
         {blogData && (
           <>
-            {filterBlogPosts(
-              blogData,
-              startDate,
-              endDate,
-              selectedCategory
-            )?.map((blogPost, index) => (
-              <AdminPublishedBlog
-                scheduled={true}
-                draft={false}
-                key={blogPost.id}
-                id={blogPost.id}
-                title={blogPost.title}
-                createdAt={blogPost.created_at}
-                category={blogPost.category}
-                status={blogPost.status}
-                statusDetails={blogPost.statusDetails}
-                readingDuration={blogPost.readingDuration}
-                content={blogPost.content}
-                views={blogPost.views}
-                shares={blogPost.shares}
-                tags={blogPost.tags}
-                headerImageUrl={blogPost.headerImageUrl}
-              />
-            ))}
+            {filterBlogPosts(blogData, startDate, endDate, checkedItems)?.map(
+              (blogPost, index) => (
+                <AdminPublishedBlog
+                  scheduled={true}
+                  draft={false}
+                  key={blogPost.id}
+                  id={blogPost.id}
+                  title={blogPost.title}
+                  createdAt={blogPost.created_at}
+                  category={blogPost.category}
+                  status={blogPost.status}
+                  statusDetails={blogPost.statusDetails}
+                  readingDuration={blogPost.readingDuration}
+                  content={blogPost.content}
+                  views={blogPost.views}
+                  shares={blogPost.shares}
+                  tags={blogPost.tags}
+                  headerImageUrl={blogPost.headerImageUrl}
+                />
+              )
+            )}
           </>
         )}
       </section>

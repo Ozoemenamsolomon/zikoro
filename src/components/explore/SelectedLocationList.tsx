@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import SelectedLocation from "./SelectedLocation";
 import { RightArrow, LocationIcon1 } from "@/constants/icons";
 import { useRouter } from "next/navigation";
-import LoadingSpinner from "../LoadingSpinner";
 
 type selectedEventProps = {
   searchQuery: string;
@@ -36,7 +35,7 @@ export default function SelectedLocationList({
   const [error, setError] = useState<string | null>(null);
 
   async function fetchEventFeautured() {
-    fetch(`/api/explore?eventCountry=Nigeria`, {
+    fetch(`/api/explore`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -53,12 +52,12 @@ export default function SelectedLocationList({
   //       navigator.geolocation.getCurrentPosition(
   //         async (position: GeolocationPosition) => {
   //           try {
-  //             
+  //
   //             const response = await fetch(
   //               `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${process.env.GOOGLE_API_KEY}`
   //             );
   //             const data = await response.json();
-  //             
+  //
   //             if (data.status === "OK") {
   //               setLocation(data.results[0].formatted_address);
   //             } else {
@@ -100,6 +99,8 @@ export default function SelectedLocationList({
     // fetchLocation();
   }, []);
 
+  console.log(eventData)
+
   return (
     <>
       {eventData && eventData.length > 0 && (
@@ -122,7 +123,7 @@ export default function SelectedLocationList({
 
             {eventData && eventData.length > 4 && (
               <div
-                // onClick={() => router.push("/explore/featured-events")}
+                onClick={() => router.push("/explore/featured-events")}
                 className="hidden lg:flex gap-x-4 cursor-pointer items-center"
               >
                 <p className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-xl font-semibold">
