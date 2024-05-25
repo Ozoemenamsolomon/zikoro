@@ -3,7 +3,9 @@
 import { QUsers } from "@/constants";
 import { cn } from "@/lib";
 import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
-import { CheckCircle} from "@styled-icons/bootstrap/CheckCircle";
+import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
+import { TAnswer } from "@/types";
+import { useMemo } from "react";
 
 type TOption = {
   optionId: string;
@@ -17,14 +19,27 @@ export function Option({
   selectOption,
   isOrganizer,
   isIdPresent,
+  answer,
+  showAnswerMetric,
 }: {
   optionIndex: string;
   option: TOption;
   selectOption?: (id: string) => void;
   isOrganizer: boolean;
   isIdPresent: boolean;
+  answer: TAnswer[];
+  showAnswerMetric: boolean;
 }) {
-  // 
+  const chosedOption = useMemo(() => {
+    const i = answer?.filter((ans) => {
+      return option?.optionId === ans?.selectedOptionId?.optionId;
+    });
+
+    return i?.length;
+  }, [answer]);
+
+  //console.log()
+  //
   return (
     <>
       {isOrganizer || isIdPresent ? (
@@ -41,39 +56,52 @@ export function Option({
             }
           }}
           className={cn(
-            "w-full px-4 text-gray-500 flex items-center justify-between min-h-[44px] h-fit rounded-md border border-basePrimary bg-white",
+            "w-full px-4 text-gray-500 space-y-1  min-h-[44px] h-fit rounded-md border border-basePrimary bg-white",
             typeof option?.isCorrect === "boolean" &&
               option?.isCorrect &&
               "border-green-500 bg-green-500/20",
-              typeof option?.isCorrect === "boolean" &&
+            typeof option?.isCorrect === "boolean" &&
               !option?.isCorrect &&
               "border-red-500 bg-red-500/20"
           )}
         >
-          <div className="flex items-start gap-x-2 w-full">
-            {option?.isCorrect !== "default" && (
-              <>
-                {option?.isCorrect ? (
-                  <CheckCircle className="text-green-500" size={18} />
-                ) : (
-                  <CloseCircle className="text-red-500" size={20} />
-                )}
-              </>
-            )}
+          <div className="w-full flex items-center justify-between">
+            <div className="flex items-start gap-x-2 w-full">
+              {option?.isCorrect !== "default" && (
+                <>
+                  {option?.isCorrect ? (
+                    <CheckCircle className="text-green-500" size={18} />
+                  ) : (
+                    <CloseCircle className="text-red-500" size={20} />
+                  )}
+                </>
+              )}
 
-            <div className="w-full flex items-start gap-x-1">
-              <span>{optionIndex}.</span>
-              <p className="text-start ">{option?.option ?? ""}</p>
+              <div className="w-full flex items-start gap-x-1">
+                <span>{optionIndex}.</span>
+                <p className="text-start ">{option?.option ?? ""}</p>
+              </div>
             </div>
+
+            {showAnswerMetric && (
+              <div className="text-mobile">
+                <span>{`${((chosedOption / answer?.length) * 100).toFixed(
+                  0
+                )}%`}</span>
+              </div>
+            )}
           </div>
 
-          {typeof option?.isCorrect === "boolean" && (
-            <div className="text-mobile flex items-center gap-x-2">
-              <span>20%</span>
-              <span className="flex items-center gap-x-2">
-                <QUsers />
-                <p>35</p>
-              </span>
+          {showAnswerMetric && (
+            <div className="w-full relative h-1 rounded-3xl bg-gray-200">
+              <span
+                style={{
+                  width: `${((chosedOption / answer?.length) * 100).toFixed(
+                    0
+                  )}%`,
+                }}
+                className="absolute rounded-3xl inset-0 bg-basePrimary h-full"
+              ></span>
             </div>
           )}
         </button>

@@ -29,9 +29,11 @@ export function Qusetion({
   attendeeDetail,
   isOrganizer,
   isIdPresent,
+  quizParticipantId,
 }: {
   isRightBox: boolean;
   isLeftBox: boolean;
+  quizParticipantId: string;
   toggleLeftBox: () => void;
   toggleRightBox: () => void;
   quiz: TQuiz<TRefinedQuestion[]>;
@@ -44,6 +46,7 @@ export function Qusetion({
     useState<TRefinedQuestion | null>(null);
   const [millisecondsLeft, setMillisecondsLeft] = useState<number>(0);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [showAnswerMetric, setShowAnswerMetric] = useState(false);
   const { answer, getAnswer } = useGetAnswer();
   const [chosenAnswerStatus, setChosenAnswerStatus] =
     useState<ChosenAnswerStatus | null>(null);
@@ -54,39 +57,6 @@ export function Qusetion({
       setCurrentQuestion(quiz.questions[0]);
     }
   }, [quiz]);
-
-  useEffect(() => {
-    const countdownInterval = setInterval(() => {
-      setMillisecondsLeft((prevMilliseconds) => {
-        if (prevMilliseconds <= 1000) {
-          clearInterval(countdownInterval);
-          return 0;
-        }
-
-        return prevMilliseconds - 1000;
-      });
-    }, 1000);
-
-    return () => clearInterval(countdownInterval);
-  }, [millisecondsLeft]);
-
-  // goto next question when time exceeds limit
-  useEffect(() => {
-    if (millisecondsLeft <= 0) {
-      nextQuestion();
-    }
-  }, [millisecondsLeft]);
-
-  useEffect(() => {
-    if (currentQuestion?.duration) {
-      setMillisecondsLeft(Number(currentQuestion?.duration));
-    }
-  }, [currentQuestion?.duration]);
-  useEffect(() => {
-    if (currentQuestion?.id) {
-      getAnswer(currentQuestion?.id);
-    }
-  }, [currentQuestion?.id]);
 
   const timing = useMemo(() => {
     const minutes = Math.floor(
@@ -99,6 +69,44 @@ export function Qusetion({
 
     return seconds;
   }, [millisecondsLeft, currentQuestion]);
+
+  useEffect(() => {
+    const countdownInterval = setInterval(() => {
+      setMillisecondsLeft((prevMilliseconds) => {
+        if (prevMilliseconds <= 1000) {
+          setShowAnswerMetric(true);
+          clearInterval(countdownInterval);
+          return 0;
+        }
+
+        return prevMilliseconds - 1000;
+      });
+    }, 1000);
+
+    return () => clearInterval(countdownInterval);
+  }, [millisecondsLeft]);
+
+  // goto next question when time exceeds limit
+  /**
+   useEffect(() => {
+    if (millisecondsLeft <= 0) {
+      // nextQuestion();
+     console.log(millisecondsLeft)
+      setShowAnswerMetric(true);
+    }
+  }, [millisecondsLeft]);
+ */
+
+  useEffect(() => {
+    if (currentQuestion?.duration) {
+      setMillisecondsLeft(Number(currentQuestion?.duration));
+    }
+  }, [currentQuestion?.duration]);
+  useEffect(() => {
+    if (currentQuestion?.id) {
+      getAnswer(currentQuestion?.id);
+    }
+  }, [currentQuestion?.id]);
 
   function nextQuestion() {
     const index = quiz?.questions?.findIndex(
@@ -216,6 +224,7 @@ export function Qusetion({
         ...attendeeDetail,
         quizId: quiz?.id,
         questionId: currentQuestion?.id,
+        quizParticipantId,
         attendeePoints,
         answerDuration: millisecondsLeft,
         quizAlias: quiz?.quizAlias,
@@ -230,6 +239,8 @@ export function Qusetion({
       };
 
       await createAnswer({ payload });
+
+      await getAnswer(currentQuestion?.id);
     }
   }
 
@@ -316,6 +327,8 @@ export function Qusetion({
             key={index}
             option={option}
             isOrganizer={isOrganizer}
+            showAnswerMetric={showAnswerMetric}
+            answer={answer}
             isIdPresent={isIdPresent}
             selectOption={selectOption}
             optionIndex={optionLetter[index]}
@@ -363,6 +376,15 @@ export function Qusetion({
           {showExplanation ? "Hide Explanation" : "Show Explanation"}
         </button>
       </div>
+
+      <Button
+        onClick={
+          showAnswerMetric ? nextQuestion : () => setShowAnswerMetric(true)
+        }
+        className="text-gray-50 mx-auto w-[180px] mt-6 bg-basePrimary gap-x-2 h-10 font-medium flex"
+      >
+        <p>Next </p>
+      </Button>
 
       <div className="w-full mt-3 flex items-end justify-between">
         <div className="flex items-center gap-x-2">
