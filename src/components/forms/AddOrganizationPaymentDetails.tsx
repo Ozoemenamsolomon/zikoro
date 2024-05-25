@@ -99,10 +99,6 @@ export default function AddOrganizationPaymentDetails() {
     useResolveAccountNumber();
 
   useEffect(() => {
-    setValue("currency", "");
-    setValue("bankCode", "");
-    setValue("bankName", "");
-
     const countryData =
       countries && countries.find(({ name }) => country === name);
 
@@ -110,8 +106,11 @@ export default function AddOrganizationPaymentDetails() {
 
     if (countryData) {
       setCurrencies(countryData.relationships.currency.data);
+
+      setValue("currency", "");
+      setValue("bankCode", "");
     }
-  }, [country]);
+  }, [country, countries]);
 
   useEffect(() => {
     const bankData = banks && banks.find(({ name }) => bankName === name);
@@ -224,14 +223,14 @@ export default function AddOrganizationPaymentDetails() {
             name="bankName"
             render={({ field }) => (
               <InputOffsetLabel isRequired label="Bank Name">
-                {(() => {
+                {/* {(() => {
                   console.log(
                     field.value,
                     banks.find((bank) => bank.name === field.value)
                   );
 
                   return null;
-                })()}
+                })()} */}
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
