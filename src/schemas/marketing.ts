@@ -4,9 +4,9 @@ export const accountDetailsSchema = z.object({
   bankCountry: z.string(),
   currency: z.string(),
   accountNumber: z.string(),
-  accountName: z.string(),
+  accountName: z.string().min(1),
   bankName: z.string(),
-  bankCode: z.string().optional(),
+  bankCode: z.string(),
 });
 
 export const AffiliateSchema = z.object({

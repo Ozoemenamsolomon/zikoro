@@ -24,13 +24,19 @@ import {
   useGetUserTeamOrganizations,
   useVerifyUserAccess,
 } from "@/hooks";
-import { TUser } from "@/types";
+import { TOrganization, TUser } from "@/types";
 import useEventStore from "@/store/globalEventStore";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserIcon } from "@/constants";
 
-const MainTopBar = ({ eventId }: { eventId: string }) => {
+const MainTopBar = ({
+  eventId,
+  userOrganizations,
+}: {
+  eventId: string;
+  userOrganizations: TOrganization[];
+}) => {
   const router = useRouter();
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
@@ -44,12 +50,6 @@ const MainTopBar = ({ eventId }: { eventId: string }) => {
   const { event, setEvent } = useEventStore();
 
   // console.log(event);
-
-  const {
-    userOrganizations,
-    isLoading: organizationIsLoading,
-    getUserOrganizations,
-  } = useGetUserTeamOrganizations({ userEmail: user.userEmail });
 
   const {
     events,
