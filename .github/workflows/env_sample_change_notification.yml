@@ -13,15 +13,16 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-
+ 
       - name: Send email if .env.sample changed
-        uses: singhkshitij/announcerr@v2
+        uses: devellany/send-mailer@v1.0.2
         with:
-          server_address: smtp.zeptomail.com
-          server_port: 465
-          username: ${{secrets.MAIL_USERNAME}}
+          host: smtp.zeptomail.com
+          account: ${{ secrets.MAIL_USERNAME }}
           password: ${{secrets.MAIL_PASSWORD}}
-          subject: Zikoro - Update Production Environment Required
-          body: "file://env.sample"
-          to: ${{ secrets.ENV_CHANGE_RECIPIENT_EMAIL }}
+          sender: Zikoro-workflow
           from: support@zikoro.com
+          to: ${{ secrets.ENV_CHANGE_RECIPIENT_EMAIL }}
+          subject: Update Production Environment Required.
+          body: The env sample has just been updated, compare it with production.
+          attachments: '[{"path":"env.sample"}]'
