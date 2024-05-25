@@ -21,28 +21,31 @@ export function Advert({
   return (
     <div
       className={cn(
-        "w-full flex-col bg-white rounded-l-xl h-[35rem]  items-start justify-between hidden col-span-3 md:hidden",
+        "w-full flex-col bg-white rounded-l-xl h-[90vh]  items-start justify-between hidden col-span-3 md:hidden",
         isLeftBox && "flex md:flex ",
         !isRightBox && "col-span-4"
       )}
     >
-      {quiz?.branding?.eventName && (
+      {quiz?.branding?.eventName ? (
         <h2 className="font-semibold w-full border-b p-4 text-base sm:text-xl">
           Resin Art Workshop
         </h2>
-      )}
+      )
+    :
+    <div className="w-1 h-1"></div>
+    }
       <div className="w-full p-2 flex flex-col gap-y-4 items-center justify-center ">
         <p className="text-center">Scan the QR code or use the link to join.</p>
 
-        <div className="w-full grid grid-cols-10 text-sm items-start -2">
+        <div className="w-full flex flex-wrap items-start text-sm ">
           <Link target="_blank" href={quizLink}>
             <FileCopy size={20} className="text-basePrimary" />
           </Link>
 
-          <div className="flex flex-wrap whitespace-pre-wrap col-span-9 items-start  gap-2">
-            {quizLink}
-          </div>
         </div>
+        <p className="px-10">
+            {quizLink}
+          </p>
         <QRCode size={150} value={quizLink} />
       </div>
 

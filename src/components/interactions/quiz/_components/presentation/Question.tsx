@@ -251,7 +251,7 @@ export function Qusetion({
   return (
     <div
       className={cn(
-        "w-full h-[35rem] overflow-y-auto bg-white relative  px-6 pt-12 pb-3 border-x   space-y-3 col-span-7",
+        "w-full h-[90vh] overflow-y-auto bg-white relative  px-6 pt-12 pb-3 border-x   space-y-3 col-span-7",
         isLeftBox && isRightBox && (isIdPresent || isOrganizer) && "col-span-5",
         !isLeftBox && !isRightBox && "col-span-full ",
         !isIdPresent && !isOrganizer && "col-span-full max-w-3xl mx-auto"
@@ -294,7 +294,7 @@ export function Qusetion({
                     pathColor: "#991b1b",
                     trailColor: "#ffffff",
                     textColor: "black",
-                    textSize: "40px",
+                    textSize: "50px",
                   })}
                   strokeWidth={3}
                   minValue={0}
