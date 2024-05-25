@@ -66,6 +66,14 @@ export default function AddOrganizationPaymentDetails() {
     defaultValues,
   });
 
+  useEffect(() => {
+    if (organization?.payoutAccountDetails) {
+      form.reset(organization?.payoutAccountDetails);
+    } else {
+      form.reset();
+    }
+  }, [organization]);
+
   const {
     formState: { dirtyFields, errors },
     watch,

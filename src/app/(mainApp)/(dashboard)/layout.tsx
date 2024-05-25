@@ -32,8 +32,6 @@ export default function RootLayout({
     <>
       <main className="relative w-full h-full bg-white" ref={divRef}>
         <SideBarLayout eventId={eventId} children={children}/>
-      
-     
       </main>
       <Toaster />
     </>

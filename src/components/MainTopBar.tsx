@@ -133,9 +133,7 @@ const MainTopBar = ({ eventId }: { eventId: string }) => {
             }
           }
         />
-      ) : (
-        null
-      )}
+      ) : null}
     </header>
   );
 };
@@ -163,7 +161,7 @@ export function Selector({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-fit justify-between border-none"
         >
           {value
             ? options.find((option) => option.value === value)?.label
