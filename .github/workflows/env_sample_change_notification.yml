@@ -13,11 +13,15 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      
-      - name: Send email if.env.sample changed
-        run: |
-          # Retrieve the recipient's email from GitHub Secrets
-          RECIPIENT_EMAIL=${{ secrets.ENV_CHANGE_RECIPIENT_EMAIL }}
-          
-          # Use mailx to send an email
-          echo "Subject: Zikoro - Update Production Environment Required" | mailx -s "Update Production Environment Required" -r "workflow@zikoro.com" $RECIPIENT_EMAIL
+
+      - name: Send email if .env.sample changed
+        uses: singhkshitij/announcerr@v2
+        with:
+          server_address: smtp.zeptomail.com
+          server_port: 465
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: Zikoro - Update Production Environment Required
+          body: "file://env.sample"
+          to: ${{ secrets.ENV_CHANGE_RECIPIENT_EMAIL }}
+          from: support@zikoro.com
