@@ -86,7 +86,7 @@ export default function Presentation({
               setNickName={setNickName}
             />
           ) : (
-            <div className="w-full mx-auto absolute inset-x-0 top-10 grid md:grid-cols-11 h-full items-start">
+            <div className="w-full mx-auto absolute inset-x-0 top-10 grid md:grid-cols-11 h-[35rem] overflow-hidden items-start">
               {(isIdPresent || isOrganizer) && (
                 <Advert
                   quiz={refinedQuizArray}

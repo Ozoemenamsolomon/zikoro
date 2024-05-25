@@ -251,9 +251,9 @@ export function Qusetion({
   return (
     <div
       className={cn(
-        "w-full h-full bg-white relative  px-6 pt-12 pb-3 border-x  flex flex-col items-start justify-between gap-3 col-span-7",
+        "w-full h-[35rem] overflow-y-auto bg-white relative  px-6 pt-12 pb-3 border-x   space-y-3 col-span-7",
         isLeftBox && isRightBox && (isIdPresent || isOrganizer) && "col-span-5",
-        !isLeftBox && !isRightBox && "col-span-full",
+        !isLeftBox && !isRightBox && "col-span-full ",
         !isIdPresent && !isOrganizer && "col-span-full max-w-3xl mx-auto"
       )}
     >
@@ -294,7 +294,7 @@ export function Qusetion({
                     pathColor: "#991b1b",
                     trailColor: "#ffffff",
                     textColor: "black",
-                    textSize: "24px",
+                    textSize: "40px",
                   })}
                   strokeWidth={3}
                   minValue={0}
@@ -304,7 +304,7 @@ export function Qusetion({
                 />
               </div>
             )}
-            <p>Seconds Left</p>
+           
           </div>
           {currentQuestion?.questionImage ? (
             <Image
@@ -318,7 +318,7 @@ export function Qusetion({
             <div className="w-1 h-1"></div>
           )}
           <p className="flex flex-col justify-center items-center gap-y-2">
-            <span className="text-xl ">{answer?.length || 0}</span>
+            <span className="text-[40px] ">{answer?.length || 0}</span>
             <span>{` Answered`}</span>
           </p>
         </div>
@@ -389,7 +389,7 @@ export function Qusetion({
         <p>Next </p>
       </Button>
 
-      <div className="w-full mt-3 flex items-end justify-between">
+      <div className="w-full hidden items-end justify-between">
         <div className="flex items-center gap-x-2">
           <Button
             onClick={previousQuestion}

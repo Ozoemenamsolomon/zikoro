@@ -96,7 +96,7 @@ const MainTopBar = ({
             />
           ) : (
             <div>
-              <div className="flex items-center gap-x-3">
+              <div className="flex items-center pb-[0.31rem] pt-[0.4rem] gap-x-3">
                 <h2 className="text-base sm:text-xl font-semibold">
                   {event?.eventTitle ?? ""}
                 </h2>
