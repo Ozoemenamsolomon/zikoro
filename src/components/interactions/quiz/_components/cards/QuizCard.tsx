@@ -84,10 +84,9 @@ export function QuizCard({
           </p>
           <p className="flex items-center gap-x-1">
             <QUsers />
-            <span>15</span>
+            <span>{quiz?.quizParticipants?.length ?? 0}</span>
           </p>
         </div>
-    
       </div>
     </div>
   );

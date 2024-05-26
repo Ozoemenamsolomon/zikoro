@@ -89,6 +89,7 @@ export function QuestionCard({
           <EditQuestion
           refetch={refetch}
           quiz={actualQuiz}
+          question={question}
           
           />
         </div>

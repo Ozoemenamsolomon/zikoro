@@ -100,7 +100,7 @@ export default function QuizQuestion({
               placeholder="Quiz Title"
               className="outline-none border-0 p-2 text-gray-500"
             />
-          {(isIdPresent || isOrganizer) ? 
+          {(isIdPresent || isOrganizer) && quizId ? 
           
           <div className="flex items-center gap-x-2">
           <button

@@ -26,15 +26,21 @@ import * as z from "zod";
 import { TQuiz, TAnswer, TQuestion } from "@/types";
 import { useUpdateQuiz } from "@/hooks";
 import Image from "next/image";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { uploadFile } from "@/utils";
 
 type AddQuestionProp = {
   refetch?: () => Promise<any>;
   close: () => void;
   quiz?: TQuiz<TQuestion[]> | null;
+  question?: TQuestion;
 };
-export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
+export function AddQuestion({
+  refetch,
+  close,
+  quiz,
+  question,
+}: AddQuestionProp) {
   const { updateQuiz } = useUpdateQuiz();
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof quizQuestionSchema>>({
@@ -89,8 +95,8 @@ export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
     };
     await updateQuiz({ payload });
     setLoading(false);
-    if (refetch) refetch()
-    close()
+    if (refetch) refetch();
+    close();
 
     /**
      const questionAnswer: Partial<TAnswer> = answer?.id
@@ -122,7 +128,6 @@ export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
     const asynQuery = answer?.id ? updateAnswer : createAnswer;
     await asynQuery({ payload: questionAnswer });
  */
-    
   }
 
   const questionImg = form.watch("questionImage");
@@ -140,7 +145,7 @@ export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
   function handleRadioChange(id: number) {
     const optionId = form.getValues(`options.${id}.optionId`);
     const option = form.getValues(`options.${id}.option`);
-    
+
     const updatedField = fields.map((field, index) => {
       return {
         ...field,
@@ -151,6 +156,19 @@ export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
 
     form.setValue("options", updatedField);
   }
+
+  useEffect(() => {
+    if (question) {
+      form.reset({
+        question: question?.question,
+        questionImage: question?.questionImage,
+        duration: question?.duration,
+        points: question?.points,
+        feedBack: question?.feedBack,
+        options: question?.options,
+      });
+    }
+  }, [question]);
   return (
     <div
       onClick={close}
@@ -220,6 +238,13 @@ export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
                 <FormItem className="relative w-full h-fit">
                   <FormControl>
                     <ReactSelect
+                      defaultValue={
+                        question
+                          ? duration?.find(
+                              ({ value }) => value === question?.duration
+                            )
+                          : ""
+                      }
                       placeHolder="Select duration"
                       options={duration}
                       {...form.register("duration")}
@@ -237,6 +262,13 @@ export function AddQuestion({ refetch, close, quiz }: AddQuestionProp) {
                 <FormItem className="relative w-full h-fit">
                   <FormControl>
                     <ReactSelect
+                      defaultValue={
+                        question
+                          ? points?.find(
+                              ({ value }) => value === question?.points
+                            )
+                          : ""
+                      }
                       placeHolder="Select points"
                       options={points}
                       {...form.register("points")}
