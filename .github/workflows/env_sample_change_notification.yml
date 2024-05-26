@@ -18,9 +18,9 @@ jobs:
         id: env_sample_content
         run: |
           {
-            echo env_sample_content << EOF
+            echo "env_sample_content<<EOF"
             cat env.sample
-            EOF
+            echo EOF
           } >> "$GITHUB_ENV"
 
       - name: Send email if .env.sample changed
