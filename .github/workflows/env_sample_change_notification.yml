@@ -37,9 +37,14 @@ jobs:
           # attachments: '[{"path":"env.sample"}]'
           body: |
             The env sample has just been updated, compare it with production.
-            # env_sample_content is appended to the env of this step
-            1: $env_sample_content
-            2: ${{ env.env_sample_content}}
-            3: ${{ steps.env_sample_content.outputs.env_sample_content}}
+            File content:
+            ${{ env.env_sample_content}}
+
             Regards,
             Zikoro Team
+          html: |
+            <p>The env sample has just been updated, compare it with production.</p>
+            <p>File content:</p>
+            <pre>${{ env.env_sample_content }}</pre>
+            <p>Regards,</p>
+            <p>Zikoro Team</p>
