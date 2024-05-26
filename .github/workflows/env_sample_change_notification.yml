@@ -21,7 +21,7 @@ jobs:
             echo env_sample_content << EOF
             cat env.sample
             EOF
-          }
+          } >> "$GITHUB_ENV"
 
       - name: Send email if .env.sample changed
         uses: hilarion5/send-mail@v1
