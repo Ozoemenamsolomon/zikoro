@@ -167,10 +167,12 @@ export function Qusetion({
 
   // console.log("answer", answer)
   async function selectOption(id: string) {
-    if (!attendeeDetail?.attendeeId) {
+   /**
+     if (!attendeeDetail?.attendeeId) {
       toast.error("Only attendee can answer the question");
       return;
     }
+    */
     if (currentQuestion) {
       const updatedOptions = currentQuestion?.options?.map((item) => {
         if (item?.optionId === id) {

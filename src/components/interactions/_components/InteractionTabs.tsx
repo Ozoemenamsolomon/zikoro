@@ -35,13 +35,13 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
 
   return (
     <>
-      <nav className="bg-white w-full flex pl-[60px] lg:pl-0 overflow-x-auto no-scrollbar items-center justify-between px-4 py-4 h-max border-b">
-        <ul className="flex gap-x-9 text-gray-700">
+      <nav className="bg-white w-full flex pl-[60px] lg:pl-[20px] overflow-x-auto no-scrollbar items-center justify-between px-4 py-4 h-max border-b">
+        <ul className="flex gap-x-8 text-gray-700">
           {links.map(({ name, href }, index) => {
             return (
               <li
               key={index}
-                className={`pb-1 text-sm ${
+                className={` text-sm ${
                   pathname.includes(href) ? "text-basePrimary  font-medium" : ""
                 }`}
               >

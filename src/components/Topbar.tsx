@@ -126,7 +126,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
           >
             <button
               className={cn(
-                " px-4 pt-[0.9rem] pb-[1rem]   lg:hidden",
+                " px-4 pt-[0.6rem] pb-[0.5rem]   lg:hidden",
                 isShowNav && " pt-0 pb-0",
                 isScrolling && "hidden"
               )}
