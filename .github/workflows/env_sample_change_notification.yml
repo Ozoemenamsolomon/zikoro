@@ -37,8 +37,8 @@ jobs:
           # attachments: '[{"path":"env.sample"}]'
           body: |
             The env sample has just been updated, compare it with production.
-            <pre>$env_sample_content</pre>
+            <pre>${{ steps.env_sample_content.outputs.env_sample_content }}</pre>
           html: |
             <h1>The env sample has just been updated</h1>
             <p>compare it with production:</p>
-            <pre>$env_sample_content</pre>
+            <pre>${{ steps.env_sample_content.outputs.env_sample_content }}</pre>
