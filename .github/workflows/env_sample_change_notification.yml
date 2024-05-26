@@ -1,0 +1,28 @@
+name: Notify on env.sample Change
+
+on:
+  push:
+    paths:
+      - 'env.sample'
+    branches:
+      - integrate
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+ 
+      - name: Send email if .env.sample changed
+        uses: devellany/send-mailer@v1.0.2
+        with:
+          host: smtp.zeptomail.com
+          account: ${{ secrets.MAIL_USERNAME }}
+          password: ${{secrets.MAIL_PASSWORD}}
+          sender: Zikoro-workflow
+          from: support@zikoro.com
+          to: ${{ secrets.ENV_CHANGE_RECIPIENT_EMAIL }}
+          subject: Update Production Environment Required.
+          body: The env sample has just been updated, compare it with production.
+          attachments: '[{"path":"env.sample"}]'
