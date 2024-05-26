@@ -3,7 +3,7 @@ name: Notify on env.sample Change
 on:
   push:
     paths:
-      - 'env.sample'
+      - "env.sample"
     branches:
       - integrate
 
@@ -13,6 +13,12 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+
+      - name: Read env.sample content
+        run: |
+          env_sample_content=$(cat env.sample)
+          echo "::set-output name=env_sample_content::$env_sample_content"
+        id: env_sample_content
 
       - name: Send email if .env.sample changed
         uses: hilarion5/send-mail@v1
@@ -25,8 +31,11 @@ jobs:
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{secrets.MAIL_PASSWORD}}
           subject: Update Production Environment Required.
-          body: The env sample has just been updated, compare it with production.
           # attachments: '[{"path":"env.sample"}]'
+          body: |
+            The env sample has just been updated, compare it with production.
+            <pre>${{ steps.env_sample_content.outputs.env_sample_content }}</pre>
           html: |
             <h1>The env sample has just been updated</h1>
-            <p>compare it with production</p>
+            <p>compare it with production:</p>
+            <pre>${{ steps.env_sample_content.outputs.env_sample_content }}</pre>
