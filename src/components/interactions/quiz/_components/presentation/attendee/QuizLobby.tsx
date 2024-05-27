@@ -4,18 +4,23 @@ import { Button } from "@/components";
 import { TQuiz, TQuestion } from "@/types";
 import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
 import Image from "next/image";
+import {cn} from "@/lib"
 
 export function QuizLobby({
   quiz,
   close,
   goBack,
+  isAttendee,
+  submit
 }: {
   close: () => void;
   goBack: () => void;
   quiz: TQuiz<TQuestion[]>;
+  isAttendee: boolean;
+  submit:() => Promise<any>
 }) {
   return (
-    <div className="w-full bg-white h-fit flex flex-col gap-y-8 items-center py-8 px-4 sm:px-8">
+    <div className={cn("w-full bg-white h-[90vh] border-x flex flex-col gap-y-8 items-center py-8 px-4 col-span-5 sm:px-8",isAttendee && "col-span-full" )}>
       <Button onClick={goBack} className="gap-x-1 self-start w-fit h-fit px-2">
         <ArrowBackOutline size={20} />
         <p className="text-sm">Exit Quiz</p>
@@ -29,7 +34,7 @@ export function QuizLobby({
           Waiting for Players to Join
         </h2>
 
-        <div className="w-full grid grid-cols-1 px-4 py-6 sm:grid-cols-2 md:grid-cols-3">
+        <div className={cn("w-full grid grid-cols-1 px-4 py-6 sm:grid-cols-1 md:grid-cols-1", isAttendee && "md:grid-cols-3")}>
           <div className="w-full flex items-center justify-between">
             <div className="flex items-center gap-x-2">
               <Image

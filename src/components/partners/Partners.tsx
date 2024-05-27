@@ -251,7 +251,7 @@ export function Partners({ eventId }: { eventId: string }) {
   }, [data, searchedData]);
 
   return (
-    <>
+    <div className="w-full pb-24">
       <HeaderTab eventId={eventId} refetch={refetch} />
 
       <div
@@ -298,6 +298,6 @@ export function Partners({ eventId }: { eventId: string }) {
           loading={loading}
         />
       )}
-    </>
+    </div>
   );
 }

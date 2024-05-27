@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const quizSettingSchema = z.object({
-  description: z.string().min(3, { message: "Description is required" }),
+  description: z.any(),
   coverTitle: z.string().min(3, { message: "Title is required" }),
   coverImage: z.any(),
   

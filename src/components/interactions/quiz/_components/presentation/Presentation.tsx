@@ -31,6 +31,7 @@ export default function Presentation({
   const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
   const [isRightBox, setRightBox] = useState(true);
   const [isLeftBox, setLeftBox] = useState(true);
+  const [isLobby, setisLobby] = useState(false);
   const { answers, getAnswers } = useGetQuizAnswer();
   const { answer, getAnswer } = useGetAnswer();
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
@@ -83,16 +84,28 @@ export default function Presentation({
       {refinedQuizArray && !loading && !isLoading && !eventLoading ? (
         <>
           {isYetTosStart ? (
-            <AttendeeRegistration
-              attendee={attendee}
-              close={close}
-              isAttendee={!isIdPresent && !isOrganizer}
-              refetch={getQuiz}
-              quiz={refinedQuizArray}
-              id={id}
-              nickName={nickName}
-              setNickName={setNickName}
-            />
+            <div className="w-full grid grid-cols-8 items-center h-full">
+              {(isIdPresent || isOrganizer) && isLobby && (
+                <Advert
+                  quiz={refinedQuizArray}
+                  isRightBox={isRightBox}
+                  isLeftBox={isLeftBox}
+                  close={onClose}
+                />
+              )}
+              <AttendeeRegistration
+                attendee={attendee}
+                close={close}
+                isAttendee={!isIdPresent && !isOrganizer}
+                refetch={getQuiz}
+                quiz={refinedQuizArray}
+                id={id}
+                nickName={nickName}
+                setNickName={setNickName}
+                isLobby={isLobby}
+                setisLobby={setisLobby}
+              />
+            </div>
           ) : (
             <div className="w-full mx-auto absolute inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
               {(isIdPresent || isOrganizer) && (
@@ -115,7 +128,7 @@ export default function Presentation({
                 updateQuiz={updateQuiz}
                 quizParticipantId={id}
                 attendeeDetail={{
-                  attendeeId: String(attendeeId),
+                  attendeeId: attendeeId ? String(attendeeId) : null,
                   attendeeName: nickName,
                 }}
                 isIdPresent={isIdPresent}
@@ -150,6 +163,8 @@ function AttendeeRegistration({
   id,
   nickName,
   setNickName,
+  isLobby,
+  setisLobby,
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -159,10 +174,12 @@ function AttendeeRegistration({
   id: string;
   nickName: string;
   setNickName: React.Dispatch<React.SetStateAction<string>>;
+  isLobby: boolean;
+  setisLobby: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { updateQuiz } = useUpdateQuiz();
   const [loading, setLoading] = useState(false);
-  const [isLobby, setisLobby] = useState(false);
+  // const [isLobby, setisLobby] = useState(false);
 
   const actualQuiz: TQuiz<TQuestion[]> = useMemo(() => {
     return {
@@ -207,7 +224,7 @@ function AttendeeRegistration({
       {isAttendee ? (
         <div
           className={cn(
-            "w-full text-sm p-4 gap-y-4 flex flex-col items-center mx-auto max-w-2xl rounded-lg bg-white",
+            "w-full text-sm p-4 gap-y-4 col-span-full flex flex-col items-center mx-auto max-w-2xl rounded-lg bg-white",
             isLobby && "hidden"
           )}
         >
@@ -250,7 +267,7 @@ function AttendeeRegistration({
       ) : (
         <div
           className={cn(
-            "w-full h-fit px-4 md:px-10 lg:px-20 py-8 flex gap-y-6 sm:gap-y-10 flex-col items-center justify-center ",
+            "w-full h-fit px-4 md:px-10 col-span-full lg:px-20 py-8 flex gap-y-6 sm:gap-y-10 flex-col items-center justify-center ",
             isLobby && "hidden"
           )}
         >
@@ -270,7 +287,8 @@ function AttendeeRegistration({
             <p className="text-sm">{quiz?.description ?? ""}</p>
           </div>
           <Button
-            onClick={quiz?.accessibility?.live ? () => setisLobby(true) : close}
+            onClick={() => setisLobby(true)}
+            // onClick={quiz?.accessibility?.live ? () => setisLobby(true) : close}
             className="bg-basePrimary px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
           >
             Start Quiz
@@ -282,7 +300,9 @@ function AttendeeRegistration({
         <QuizLobby
           goBack={() => setisLobby(false)}
           quiz={quiz}
+          submit={submit}
           close={onClose}
+          isAttendee={isAttendee}
         />
       )}
     </>

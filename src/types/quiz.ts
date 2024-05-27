@@ -49,7 +49,7 @@ export type TRefinedQuestion = {
 export interface TAnswer {
   id: number;
   created_at: string;
-  attendeeId: string;
+  attendeeId: string | null;
   attendeeName: string;
   quizId: number;
   quizParticipantId:string;

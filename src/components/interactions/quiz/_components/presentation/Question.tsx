@@ -41,7 +41,7 @@ export function Qusetion({
   toggleRightBox: () => void;
   quiz: TQuiz<TRefinedQuestion[]>;
   updateQuiz: (q: TQuiz<TRefinedQuestion[]>) => void;
-  attendeeDetail: { attendeeId?: string; attendeeName: string };
+  attendeeDetail: { attendeeId: string | null; attendeeName: string };
   isOrganizer: boolean;
   isIdPresent: boolean;
   answer: TAnswer[];
@@ -116,15 +116,14 @@ export function Qusetion({
     }
   }, [currentQuestion?.id]);
 
+  console.log("metic", showAnswerMetric)
+
   function nextQuestion() {
     setShowAnswerMetric(false);
     setShowExplanation(false);
     setChosenAnswerStatus(null);
     if (currentQuestionIndex < quiz.questions.length - 1) {
-      if (!quiz?.accessibility?.countdownTransition) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        return;
-      }
+    
       setShowTransiting(true);
       setTimeout(() => {
         setShowTransiting(false);

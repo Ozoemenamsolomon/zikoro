@@ -37,15 +37,15 @@ export function Advert({
       <div className="w-full p-2 flex flex-col gap-y-4 items-center justify-center ">
         <p className="text-center">Scan the QR code or use the link to join.</p>
 
-        <div className="w-full flex flex-wrap items-start text-sm ">
+        <div className="w-full grid grid-cols-10 items-start text-sm ">
           <Link target="_blank" href={quizLink}>
             <FileCopy size={20} className="text-basePrimary" />
           </Link>
-
-        </div>
-        <p className="px-10">
+          <div className="col-span-9 max-w-[10rem] flex-wrap flex">
             {quizLink}
-          </p>
+          </div>
+        </div>
+      
         <QRCode size={150} value={quizLink} />
       </div>
 
