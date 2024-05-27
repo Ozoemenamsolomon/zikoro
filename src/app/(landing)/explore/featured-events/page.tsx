@@ -10,6 +10,14 @@ import {
 } from "@/constants/icons";
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
 import { useSearchParams } from "next/navigation";
+import {
+  startOfToday,
+  endOfToday,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+} from "date-fns";
 
 type DBFeaturedEvent = {
   id: string;
@@ -90,8 +98,21 @@ export default function FeaturedEvents() {
     );
   };
 
+  const getStartAndEndDates = (filterType: string) => {
+    switch (filterType) {
+      case "today":
+        return { start: startOfToday(), end: endOfToday() };
+      case "this-week":
+        return { start: startOfWeek(new Date()), end: endOfWeek(new Date()) };
+      case "this-month":
+        return { start: startOfMonth(new Date()), end: endOfMonth(new Date()) };
+      default:
+        return { start: null, end: null };
+    }
+  };
+
   const filteredEvents = eventData
-    ?.filter((event: Event) => {
+    ?.filter((event) => {
       const lowerSearchQuery = searchQuery.toLowerCase();
       return (
         event.eventTitle.toLowerCase().includes(lowerSearchQuery) ||
@@ -99,34 +120,31 @@ export default function FeaturedEvents() {
         event.eventCategory.toLowerCase().includes(lowerSearchQuery)
       );
     })
-    .filter((event: Event) => {
+    .filter((event) => {
       if (selectedButtons.length === 0) return true;
 
-      const sameCategory = isSameCategory(selectedButtons, eventData);
+      const eventProps = [
+        event.locationType.toLowerCase(),
+        event.eventCountry.toLowerCase(),
+        event.eventCity.toLowerCase(),
+        event.eventCategory.toLowerCase(),
+      ];
 
-      if (sameCategory) {
-        return selectedButtons.some((button) =>
-          [
-            event.locationType,
-            event.eventCountry,
-            event.eventCity,
-            event.eventCategory,
-          ]
-            .map((prop) => prop.toLowerCase())
-            .includes(button.toLowerCase())
-        );
-      } else {
-        return selectedButtons.every((button) =>
-          [
-            event.locationType,
-            event.eventCountry,
-            event.eventCity,
-            event.eventCategory,
-          ]
-            .map((prop) => prop.toLowerCase())
-            .includes(button.toLowerCase())
-        );
+      const dateFilter = selectedButtons.find((button) =>
+        ["today", "this-week", "this-month"].includes(button)
+      );
+
+      if (dateFilter) {
+        const { start, end } = getStartAndEndDates(dateFilter);
+        const eventDate = new Date(event.startDateTime);
+        if (start && end) {
+          return eventDate >= start && eventDate <= end;
+        }
       }
+
+      return selectedButtons.every((button) =>
+        eventProps.includes(button.toLowerCase())
+      );
     });
 
   //button selection
@@ -138,7 +156,6 @@ export default function FeaturedEvents() {
     } else {
       setSelectedButtons([...selectedButtons, text]);
     }
-
     setFilterOpen(false);
   };
 
@@ -339,16 +356,6 @@ export default function FeaturedEvents() {
                                 }`}
                               >
                                 This Month
-                              </button>
-                              <button
-                                onClick={() => handleButtonClick("next-month")}
-                                className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButtons.includes("next-month")
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Next Month
                               </button>
                             </div>
                           )}
