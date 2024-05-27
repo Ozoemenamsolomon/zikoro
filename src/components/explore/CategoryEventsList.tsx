@@ -30,7 +30,7 @@ export default function CategoryEventList() {
 
   return (
     <>
-      {data.length > 0 && (
+      {data?.length > 0 && (
         <div className="mt-[100px] max-w-6xl mx-auto pb-24 px-3 lg:px-0">
           {/* header */}
           <div className="flex justify-between">

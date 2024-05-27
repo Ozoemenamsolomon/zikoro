@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Facebook, X, Linkedin, Instagram } from "@/constants/icons";
 import PostArticle from "@/components/blog/PostArticle";
@@ -55,13 +55,43 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   } = useFetchBlogPost(postId);
 
   const [similarPosts, setSimilarPosts] = useState<DBSimilarPost[]>([]);
-  // const [postTag, setPostTag] = useState<any>([]);
 
   //for side bar links
   const router = useRouter();
   const contentRef = useRef<HTMLDivElement>(null);
   const { updatePostShare } = useUpdatePostshare();
   const { updatePostView } = useUpdatePostView();
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+
+  //intersection observer
+  const observeEl = useRef<IntersectionObserver>();
+
+  //Get the exiting element
+  const existingElement = useCallback((node: any) => {
+    observeEl.current = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    });
+
+    if (node) observeEl.current.observe(node);
+  }, []);
+
+  const existingElementReadMore = useCallback((node: any) => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        setIsVisible(!entry.isIntersecting);
+      });
+    });
+
+    if (node) observer.observe(node);
+
+    return () => {
+      if (node) observer.unobserve(node);
+    };
+  }, []);
 
   // Extracting the date only
   function extractAndFormatDate(dateTimeString: any): any {
@@ -77,6 +107,8 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
       return "Invalid Date";
     }
   }
+
+  console.log(isVisible);
 
   //formatDate
   function formatDate(date: Date): string {
@@ -163,6 +195,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
   const headings = data?.content.match(/<h[1](.*?)>(.*?)<\/h[1]>/g) || [];
 
+  //fetch the post
   useEffect(() => {
     const fetchSimilarPosts = async () => {
       if (data) {
@@ -180,8 +213,6 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           // Get current post tags
           const currentPostTags: string[] = data?.tags || [];
 
-          console.log(currentPostTags);
-
           // Filter posts based on tags
           const similarPostsFiltered = allPostsData.data.filter((post: any) =>
             post.tags.some((tag: any) => currentPostTags.includes(tag))
@@ -197,6 +228,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     fetchSimilarPosts();
   }, [data]);
 
+  //update post view
   useEffect(() => {
     if (data) {
       updatePostView(data.views, data.id);
@@ -226,25 +258,25 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                 data?.headerImageUrl ? data?.headerImageUrl : "/postImage2.png"
               }
               alt=""
-              width={982}
-              height={450}
-              className="w-[982px] h-[450px] object-cover hidden lg:block"
-            />
-            <Image
-              src={
-                data?.headerImageUrl ? data?.headerImageUrl : "/postImage2.png"
-              }
-              alt=""
-              width={335}
-              height={160}
-              className="w-full h-[160px] object-cover block lg:hidden"
+              width={1000}
+              height={500}
+              className="w-full h-[160px] lg:w-[982px] lg:h-[450px]  object-cover hidden lg:block"
+              ref={existingElement}
             />
           </div>
 
           {/* body section */}
-          <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-48 lg:mb-48  ">
+
+          <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-24 lg:mb-24 ">
             {/* Left */}
-            <div className="hidden lg:inline  pb-12 w-full flex-col lg:w-3/12 h-fit ">
+            <div
+              className={`lg:inline  pb-12 w-full flex-col lg:w-3/12 h-fit ${
+                isVisible
+                  ? "lg:fixed lg:top-[120px] lg:w-3/12 z-10"
+                  : "lg:relative"
+              }`}
+              id="left"
+            >
               {/* section links */}
               <div className="flex-col">
                 {/* Top */}
@@ -304,7 +336,12 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
             <div
               ref={contentRef}
-              className=" no-scrollbar lg:overflow-y-auto  w-full lg:w-9/12  flex-col  pb-0 lg:pb-[50px] h-half-screen "
+              className={` w-full  flex-col  pb-0 lg:pb-[50px] ${
+                isVisible
+                  ? "lg:ml-[30%] lg:w-9/12 lg:overflow-y-auto"
+                  : "lg:w-9/12"
+              }`}
+              id="right"
             >
               <div
                 className="blog no-scrollbar"
@@ -315,12 +352,18 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
           {/* Footer Section */}
           <div className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24 mt-44">
-            <p className="text-center text-xl lg:text-3xl font-semibold mt-14">
+            <p
+              className="text-center text-xl lg:text-3xl font-semibold mt-14"
+              id="readMore"
+            >
               Read More Articles
             </p>
 
             {similarPosts.length > 0 ? (
-              <div className="flex flex-col lg:flex-row mx-auto max-w-full lg:max-w-6xl gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 pb-[80px] lg:pb-[162px] pt-12  ">
+              <div
+                className="flex flex-col lg:flex-row mx-auto max-w-full lg:max-w-6xl gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 pb-[80px] lg:pb-[162px] pt-12  "
+                ref={existingElementReadMore}
+              >
                 {similarPosts.slice(0, 2).map((post) => (
                   <PostArticle
                     key={post.id}
