@@ -9,7 +9,7 @@ import { useSearchParams, useParams, useRouter } from "next/navigation";
 import { EventFeedBack } from "./modals/EventFeedback";
 import { VipCrown2 } from "styled-icons/remix-fill";
 import MainTopBar from "@/components/MainTopBar";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import {
   CustomerServiceIcon,
   EmailIcon,
@@ -26,6 +26,7 @@ import {
   useValidateUser,
 } from "@/hooks";
 import { sendMail, whatsapp } from "@/utils";
+import { TUser } from "@/types";
 export function SideBarLayout({
   eventId,
   children,
@@ -39,8 +40,12 @@ export function SideBarLayout({
   const [isOpen, setOpen] = useState(false);
   const query = param.get("organization");
   const { events } = useGetEvents();
-  const user = getCookie("user");
+  const user = getCookie<TUser>("user");
   const router = useRouter();
+
+  console.log(user);
+
+  if (!user) return router.push("login");
 
   // get events
   const isHaveEvent = useMemo(() => {
