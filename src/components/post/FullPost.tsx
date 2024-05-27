@@ -67,27 +67,25 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   const observeEl = useRef<IntersectionObserver>();
 
   //Get the exiting element
-  const existingElement = useCallback((node: any) => {
+  const existingElement = useCallback((node: HTMLDivElement | null) => {
+    if (observeEl.current) observeEl.current.disconnect();
     observeEl.current = new IntersectionObserver((entries) => {
-      if (!entries[0].isIntersecting) {
-        setIsVisible(true);
-      } else {
+      if (entries[0].isIntersecting) {
         setIsVisible(false);
+      } else {
+        setIsVisible(true);
       }
     });
-
     if (node) observeEl.current.observe(node);
   }, []);
 
-  const existingElementReadMore = useCallback((node: any) => {
+  const existingElementReadMore = useCallback((node: HTMLDivElement | null) => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         setIsVisible(!entry.isIntersecting);
       });
     });
-
     if (node) observer.observe(node);
-
     return () => {
       if (node) observer.unobserve(node);
     };
@@ -107,8 +105,6 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
       return "Invalid Date";
     }
   }
-
-  console.log(isVisible);
 
   //formatDate
   function formatDate(date: Date): string {
@@ -270,10 +266,8 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-24 lg:mb-24 ">
             {/* Left */}
             <div
-              className={`lg:inline  pb-12 w-full flex-col lg:w-3/12 h-fit ${
-                isVisible
-                  ? "lg:fixed lg:top-[120px] lg:w-3/12 z-10"
-                  : "lg:relative"
+              className={`lg:inline pb-12 w-full flex-col lg:w-3/12 h-fit ${
+                isVisible ? "lg:fixed lg:top-[120px] z-10" : "lg:relative"
               }`}
               id="left"
             >
@@ -351,7 +345,10 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           </div>
 
           {/* Footer Section */}
-          <div className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24 mt-44">
+          <div
+            className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24 mt-44"
+            ref={existingElementReadMore}
+          >
             <p
               className="text-center text-xl lg:text-3xl font-semibold mt-14"
               id="readMore"
@@ -360,10 +357,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             </p>
 
             {similarPosts.length > 0 ? (
-              <div
-                className="flex flex-col lg:flex-row mx-auto max-w-full lg:max-w-6xl gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 pb-[80px] lg:pb-[162px] pt-12  "
-                ref={existingElementReadMore}
-              >
+              <div className="flex flex-col lg:flex-row mx-auto max-w-full lg:max-w-6xl gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 pb-[80px] lg:pb-[162px] pt-12  ">
                 {similarPosts.slice(0, 2).map((post) => (
                   <PostArticle
                     key={post.id}
