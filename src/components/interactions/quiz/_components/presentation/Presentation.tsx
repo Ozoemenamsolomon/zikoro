@@ -2,7 +2,12 @@
 
 import { Advert, LeaderBoard, Qusetion, QuizLobby } from "..";
 import { useState, useEffect, useMemo } from "react";
-import { useGetQuiz, useUpdateQuiz } from "@/hooks";
+import {
+  useGetQuiz,
+  useUpdateQuiz,
+  useGetAnswer,
+  useGetQuizAnswer,
+} from "@/hooks";
 import { TRefinedQuestion, TQuiz, TQuestion, TAttendee } from "@/types";
 import { useCheckTeamMember, useVerifyUserAccess } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -26,6 +31,8 @@ export default function Presentation({
   const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
   const [isRightBox, setRightBox] = useState(true);
   const [isLeftBox, setLeftBox] = useState(true);
+  const { answers, getAnswers } = useGetQuizAnswer();
+  const { answer, getAnswer } = useGetAnswer();
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
@@ -60,6 +67,8 @@ export default function Presentation({
         }),
       };
       setRefinedQuizArray(refinedArray);
+
+      getAnswers(quiz?.id);
     }
   }, [quiz]);
 
@@ -68,7 +77,6 @@ export default function Presentation({
   }
 
   // console.log({ isIdPresent, isOrganizer });
-
 
   return (
     <div className="w-full">
@@ -97,6 +105,9 @@ export default function Presentation({
               )}
               <Qusetion
                 isLeftBox={isLeftBox}
+                answer={answer}
+                getAnswer={getAnswer}
+                refetchQuizAnswers={getAnswers}
                 quiz={refinedQuizArray}
                 isRightBox={isRightBox}
                 toggleRightBox={onToggle}
@@ -115,6 +126,7 @@ export default function Presentation({
                   isRightBox={isRightBox}
                   isLeftBox={isLeftBox}
                   close={onToggle}
+                  answers={answers}
                 />
               )}
             </div>
@@ -137,21 +149,20 @@ function AttendeeRegistration({
   isAttendee,
   id,
   nickName,
-  setNickName
+  setNickName,
 }: {
   close: () => void;
   attendee?: TAttendee;
   quiz: TQuiz<TRefinedQuestion[]>;
   refetch: () => Promise<any>;
   isAttendee: boolean;
-  id:string;
-  nickName:string
-  setNickName: React.Dispatch<React.SetStateAction<string>>
+  id: string;
+  nickName: string;
+  setNickName: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const { updateQuiz } = useUpdateQuiz();
   const [loading, setLoading] = useState(false);
   const [isLobby, setisLobby] = useState(false);
-  
 
   const actualQuiz: TQuiz<TQuestion[]> = useMemo(() => {
     return {
@@ -170,7 +181,7 @@ function AttendeeRegistration({
       toast.error("Pls add a nickName");
       return;
     }
-    
+
     setLoading(true);
     const payload: Partial<TQuiz<TQuestion[]>> = {
       ...actualQuiz,
@@ -232,7 +243,7 @@ function AttendeeRegistration({
             }
             className="bg-basePrimary gap-x-2 px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
           >
-            {loading && <LoaderAlt size={22} />}
+            {loading && <LoaderAlt size={22} className="animate-spin" />}
             <p> Let's Go</p>
           </Button>
         </div>

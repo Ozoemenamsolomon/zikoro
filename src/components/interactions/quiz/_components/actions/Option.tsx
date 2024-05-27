@@ -21,6 +21,7 @@ export function Option({
   isIdPresent,
   answer,
   showAnswerMetric,
+  isDisabled,
 }: {
   optionIndex: string;
   option: TOption;
@@ -29,13 +30,14 @@ export function Option({
   isIdPresent: boolean;
   answer: TAnswer[];
   showAnswerMetric: boolean;
+  isDisabled: boolean;
 }) {
   const chosedOption = useMemo(() => {
     const i = answer?.filter((ans) => {
       return option?.optionId === ans?.selectedOptionId?.optionId;
     });
 
-    return i?.length;
+    return i?.length || 0;
   }, [answer]);
 
   //console.log()
@@ -49,7 +51,7 @@ export function Option({
         />
       ) : (
         <button
-          disabled={typeof option?.isCorrect === "boolean"}
+          disabled={isDisabled}
           onClick={() => {
             if (selectOption) {
               selectOption(option?.optionId);

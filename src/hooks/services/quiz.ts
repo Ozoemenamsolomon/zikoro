@@ -10,10 +10,13 @@ import {
 import { useState, useEffect } from "react";
 
 export const useCreateQuiz = () => {
- 
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const createQuiz = async ({ payload }: { payload: Partial<TQuiz<TQuestion[]>> }) => {
+  const createQuiz = async ({
+    payload,
+  }: {
+    payload: Partial<TQuiz<TQuestion[]>>;
+  }) => {
     setLoading(true);
 
     try {
@@ -25,9 +28,9 @@ export const useCreateQuiz = () => {
       toast({
         description: "Quiz created successfully",
       });
-      return data
+      return data;
     } catch (error: any) {
-      // 
+      //
       toast({
         description: error?.response?.data?.error,
         variant: "destructive",
@@ -41,10 +44,13 @@ export const useCreateQuiz = () => {
 };
 
 export const useUpdateQuiz = () => {
- 
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const updateQuiz = async ({ payload }: { payload: Partial<TQuiz<TQuestion[]>> }) => {
+  const updateQuiz = async ({
+    payload,
+  }: {
+    payload: Partial<TQuiz<TQuestion[]>>;
+  }) => {
     setLoading(true);
 
     try {
@@ -58,7 +64,7 @@ export const useUpdateQuiz = () => {
       toast({
         description: "Quiz Updated successfully",
       });
-      return data
+      return data;
     } catch (error: any) {
       toast({
         description: error?.response?.data?.error,
@@ -69,7 +75,7 @@ export const useUpdateQuiz = () => {
     }
   };
 
-  return { updateQuiz, isLoading};
+  return { updateQuiz, isLoading };
 };
 
 export const useGetQuizzes = (eventId: string) => {
@@ -163,7 +169,6 @@ export const useDeleteQuiz = () => {
 
 /*** Answer ***/
 export const useCreateAnswer = () => {
-  
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const createAnswer = async ({ payload }: { payload: Partial<TAnswer> }) => {
@@ -180,9 +185,9 @@ export const useCreateAnswer = () => {
         description: "",
       });
        */
-      return data
+      return data;
     } catch (error: any) {
-      // 
+      //
       toast({
         description: error?.response?.data?.error,
         variant: "destructive",
@@ -209,12 +214,12 @@ export const useUpdateAnswer = () => {
 
       if (status !== 200) throw data;
 
-     /**
+      /**
        toast({
         description: "",
       });
       */
-      return data
+      return data;
     } catch (error: any) {
       toast({
         description: error?.response?.data?.error,
@@ -248,11 +253,36 @@ export const useGetAnswer = () => {
     return setAnswer(data.data);
   };
 
- /**
+  /**
    useEffect(() => {
     getAnswer();
   }, [questionId]);
   */
 
   return { answer, isLoading, getAnswer };
+};
+
+export const useGetQuizAnswer = () => {
+  const [answers, setAnswers] = useState<TAnswer[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  // console.log({date})
+  const getAnswers = async (quizId: number) => {
+    setLoading(true);
+
+    const { data, status } = await getRequest<TAnswer[]>({
+      endpoint: `/quiz/answer/${quizId}`,
+    });
+
+    setLoading(false);
+
+    if (status !== 200) return;
+
+    //
+    return setAnswers(data.data);
+  };
+
+
+
+  return { answers, isLoading, getAnswers };
 };
