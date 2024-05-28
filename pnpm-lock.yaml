@@ -165,7 +165,7 @@ importers:
         specifier: ^3.3.3
         version: 3.3.3
       date-fns:
-        specifier: ^3.6.0
+        specifier: ^3.0.6
         version: 3.6.0
       dayjs:
         specifier: ^1.11.10
