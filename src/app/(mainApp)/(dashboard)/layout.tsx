@@ -16,7 +16,7 @@ export default function RootLayout({
   const user = getCookie<TUser>("user");
   const router = useRouter();
   console.log(user);
-  if (!user) return router.push("login");
+  // if (!user) return router.push("login");
 
   const divRef = useRef<HTMLDivElement>(null);
   const { eventId }: { eventId: string } = useParams();
