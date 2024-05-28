@@ -68,36 +68,6 @@ export default function FeaturedEvents() {
     setSearchQuery(e.target.value);
   };
 
-  const getCategory = (button: string, events: Event[]): string | null => {
-    const categories: { [key: string]: keyof Event } = {
-      locationType: "locationType",
-      eventCountry: "eventCountry",
-      eventCity: "eventCity",
-      eventCategory: "eventCategory",
-    };
-
-    for (const category in categories) {
-      if (
-        events.some(
-          (event) =>
-            event[categories[category]].toLowerCase() === button.toLowerCase()
-        )
-      ) {
-        return category;
-      }
-    }
-
-    return null;
-  };
-
-  const isSameCategory = (buttons: string[], events: Event[]): boolean => {
-    if (buttons.length === 0) return true;
-    const firstCategory = getCategory(buttons[0], events);
-    return buttons.every(
-      (button) => getCategory(button, events) === firstCategory
-    );
-  };
-
   const getStartAndEndDates = (filterType: string) => {
     switch (filterType) {
       case "today":
@@ -111,6 +81,7 @@ export default function FeaturedEvents() {
     }
   };
 
+  //
   const filteredEvents = eventData
     ?.filter((event) => {
       const lowerSearchQuery = searchQuery.toLowerCase();
@@ -142,10 +113,11 @@ export default function FeaturedEvents() {
         }
       }
 
-      return selectedButtons.every((button) =>
+      return selectedButtons.some((button) =>
         eventProps.includes(button.toLowerCase())
       );
     });
+  //
 
   //button selection
   const handleButtonClick = (text: string) => {
@@ -310,6 +282,82 @@ export default function FeaturedEvents() {
                         {/* 2nd section */}
                         <div className="px-8 cursor-pointer">
                           <div className="flex justify-between items-center">
+                            <p className="text-lg font-semibold">Country</p>
+                            {isCountryUp ? (
+                              <div onClick={() => setCountryUp(!isCountryUp)}>
+                                <ArrowUpIcon />
+                              </div>
+                            ) : (
+                              <div onClick={() => setCountryUp(!isCountryUp)}>
+                                <ArrowDownIcon />
+                              </div>
+                            )}
+                          </div>
+                          {isCountryUp && (
+                            <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                              {filterCountry
+                                .filter(
+                                  (country, index, self) =>
+                                    self.indexOf(country) === index
+                                )
+                                .slice(0, 4)
+                                .map((country) => (
+                                  <button
+                                    onClick={() => handleButtonClick(country)}
+                                    className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                      selectedButtons.includes(country)
+                                        ? "bg-zikoroBlue text-white"
+                                        : "bg-white text-black"
+                                    }`}
+                                  >
+                                    {country}
+                                  </button>
+                                ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* 3rd section */}
+                        <div className="px-8 cursor-pointer">
+                          <div className="flex justify-between items-center">
+                            <p className="text-lg font-semibold">City</p>
+                            {isCityUp ? (
+                              <div onClick={() => setCityUp(!isCityUp)}>
+                                <ArrowUpIcon />
+                              </div>
+                            ) : (
+                              <div onClick={() => setCityUp(!isCityUp)}>
+                                <ArrowDownIcon />
+                              </div>
+                            )}
+                          </div>
+                          {isCityUp && (
+                            <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                              {filterCity
+                                .filter(
+                                  (city, index, self) =>
+                                    self.indexOf(city) === index
+                                )
+                                .slice(0, 4)
+                                .map((city) => (
+                                  <button
+                                    onClick={() => handleButtonClick(city)}
+                                    className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                      selectedButtons.includes(city)
+                                        ? "bg-zikoroBlue text-white"
+                                        : "bg-white text-black"
+                                    }`}
+                                  >
+                                    {city}
+                                  </button>
+                                ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* 4th section */}
+                        <div className="px-8 cursor-pointer">
+                          <div className="flex justify-between items-center">
                             <p className="text-lg  font-semibold">Event Date</p>
                             {isEventDateUp ? (
                               <div
@@ -357,82 +405,6 @@ export default function FeaturedEvents() {
                               >
                                 This Month
                               </button>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* 3rd section */}
-                        <div className="px-8 cursor-pointer">
-                          <div className="flex justify-between items-center">
-                            <p className="text-lg font-semibold">Country</p>
-                            {isCountryUp ? (
-                              <div onClick={() => setCountryUp(!isCountryUp)}>
-                                <ArrowUpIcon />
-                              </div>
-                            ) : (
-                              <div onClick={() => setCountryUp(!isCountryUp)}>
-                                <ArrowDownIcon />
-                              </div>
-                            )}
-                          </div>
-                          {isCountryUp && (
-                            <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                              {filterCountry
-                                .filter(
-                                  (country, index, self) =>
-                                    self.indexOf(country) === index
-                                )
-                                .slice(0, 4)
-                                .map((country) => (
-                                  <button
-                                    onClick={() => handleButtonClick(country)}
-                                    className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                      selectedButtons.includes(country)
-                                        ? "bg-zikoroBlue text-white"
-                                        : "bg-white text-black"
-                                    }`}
-                                  >
-                                    {country}
-                                  </button>
-                                ))}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* 4th section */}
-                        <div className="px-8 cursor-pointer">
-                          <div className="flex justify-between items-center">
-                            <p className="text-lg font-semibold">City</p>
-                            {isCityUp ? (
-                              <div onClick={() => setCityUp(!isCityUp)}>
-                                <ArrowUpIcon />
-                              </div>
-                            ) : (
-                              <div onClick={() => setCityUp(!isCityUp)}>
-                                <ArrowDownIcon />
-                              </div>
-                            )}
-                          </div>
-                          {isCityUp && (
-                            <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                              {filterCity
-                                .filter(
-                                  (city, index, self) =>
-                                    self.indexOf(city) === index
-                                )
-                                .slice(0, 4)
-                                .map((city) => (
-                                  <button
-                                    onClick={() => handleButtonClick(city)}
-                                    className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                      selectedButtons.includes(city)
-                                        ? "bg-zikoroBlue text-white"
-                                        : "bg-white text-black"
-                                    }`}
-                                  >
-                                    {city}
-                                  </button>
-                                ))}
                             </div>
                           )}
                         </div>
@@ -662,6 +634,81 @@ export default function FeaturedEvents() {
                   {/* 2nd section */}
                   <div className="px-8 cursor-pointer">
                     <div className="flex justify-between items-center">
+                      <p className="text-lg font-semibold">Country</p>
+                      {isCountryUp ? (
+                        <div onClick={() => setCountryUp(!isCountryUp)}>
+                          <ArrowUpIcon />
+                        </div>
+                      ) : (
+                        <div onClick={() => setCountryUp(!isCountryUp)}>
+                          <ArrowDownIcon />
+                        </div>
+                      )}
+                    </div>
+                    {isCountryUp && (
+                      <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                        {filterCountry
+                          .filter(
+                            (country, index, self) =>
+                              self.indexOf(country) === index
+                          )
+                          .slice(0, 4)
+                          .map((country) => (
+                            <button
+                              onClick={() => handleButtonClick(country)}
+                              className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                selectedButtons.includes(country)
+                                  ? "bg-zikoroBlue text-white"
+                                  : "bg-white text-black"
+                              }`}
+                            >
+                              {country}
+                            </button>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 3rd section */}
+                  <div className="px-8 cursor-pointer">
+                    <div className="flex justify-between items-center">
+                      <p className="text-lg font-semibold">City</p>
+                      {isCityUp ? (
+                        <div onClick={() => setCityUp(!isCityUp)}>
+                          <ArrowUpIcon />
+                        </div>
+                      ) : (
+                        <div onClick={() => setCityUp(!isCityUp)}>
+                          <ArrowDownIcon />
+                        </div>
+                      )}
+                    </div>
+                    {isCityUp && (
+                      <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                        {filterCity
+                          .filter(
+                            (city, index, self) => self.indexOf(city) === index
+                          )
+                          .slice(0, 4)
+                          .map((city) => (
+                            <button
+                              onClick={() => handleButtonClick(city)}
+                              className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                selectedButtons.includes(city)
+                                  ? "bg-zikoroBlue text-white"
+                                  : "bg-white text-black"
+                              }`}
+                            >
+                              {city}
+                            </button>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 4th section */}
+                  <div className="px-8 cursor-pointer">
+                    <div className="flex justify-between items-center">
                       <p className="text-lg  font-semibold">Event Date</p>
                       {isEventDateUp ? (
                         <div onClick={() => setEventDateUp(!isEventDateUp)}>
@@ -715,81 +762,6 @@ export default function FeaturedEvents() {
                         >
                           Next Month
                         </button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 3rd section */}
-                  <div className="px-8 cursor-pointer">
-                    <div className="flex justify-between items-center">
-                      <p className="text-lg font-semibold">Country</p>
-                      {isCountryUp ? (
-                        <div onClick={() => setCountryUp(!isCountryUp)}>
-                          <ArrowUpIcon />
-                        </div>
-                      ) : (
-                        <div onClick={() => setCountryUp(!isCountryUp)}>
-                          <ArrowDownIcon />
-                        </div>
-                      )}
-                    </div>
-                    {isCountryUp && (
-                      <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                        {filterCountry
-                          .filter(
-                            (country, index, self) =>
-                              self.indexOf(country) === index
-                          )
-                          .slice(0, 4)
-                          .map((country) => (
-                            <button
-                              onClick={() => handleButtonClick(country)}
-                              className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                selectedButtons.includes(country)
-                                  ? "bg-zikoroBlue text-white"
-                                  : "bg-white text-black"
-                              }`}
-                            >
-                              {country}
-                            </button>
-                          ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 4th section */}
-                  <div className="px-8 cursor-pointer">
-                    <div className="flex justify-between items-center">
-                      <p className="text-lg font-semibold">City</p>
-                      {isCityUp ? (
-                        <div onClick={() => setCityUp(!isCityUp)}>
-                          <ArrowUpIcon />
-                        </div>
-                      ) : (
-                        <div onClick={() => setCityUp(!isCityUp)}>
-                          <ArrowDownIcon />
-                        </div>
-                      )}
-                    </div>
-                    {isCityUp && (
-                      <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                        {filterCity
-                          .filter(
-                            (city, index, self) => self.indexOf(city) === index
-                          )
-                          .slice(0, 4)
-                          .map((city) => (
-                            <button
-                              onClick={() => handleButtonClick(city)}
-                              className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                selectedButtons.includes(city)
-                                  ? "bg-zikoroBlue text-white"
-                                  : "bg-white text-black"
-                              }`}
-                            >
-                              {city}
-                            </button>
-                          ))}
                       </div>
                     )}
                   </div>
