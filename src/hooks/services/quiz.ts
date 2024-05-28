@@ -8,7 +8,9 @@ import {
   deleteRequest,
 } from "@/utils/api";
 import { useState, useEffect } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
+const supabase = createClientComponentClient();
 export const useCreateQuiz = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
 
@@ -282,7 +284,57 @@ export const useGetQuizAnswer = () => {
     return setAnswers(data.data);
   };
 
-
-
   return { answers, isLoading, getAnswers };
 };
+
+export function useRealtimeQuestionUpdate({quizId}:{quizId:string}) {
+  useEffect(() => {
+    const channel = supabase
+      .channel("live-quiz")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "quiz",
+          filter: `quizAlias=eq.${quizId}`
+        },
+        (payload) => {
+          console.log(payload);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
+}
+
+export const useRealtimePresence = () => {
+ 
+
+ useEffect(() => {
+  const channel = supabase
+  .channel("live-quiz")
+ 
+  channel.on('presence', { event: 'sync' }, () => {
+    const newState = channel.presenceState()
+    console.log('sync', newState)
+  })
+  .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+    console.log('join', key, newPresences)
+  })
+  .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+    console.log('leave', key, leftPresences)
+  })
+  .subscribe()
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+
+ },[supabase])
+
+
+}

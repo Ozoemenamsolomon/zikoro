@@ -9,7 +9,7 @@ import {
   useGetQuizAnswer,
 } from "@/hooks";
 import { TRefinedQuestion, TQuiz, TQuestion, TAttendee } from "@/types";
-import { useCheckTeamMember, useVerifyUserAccess } from "@/hooks";
+import { useCheckTeamMember, useVerifyUserAccess, useRealtimePresence } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import Image from "next/image";
 import { Button, Input } from "@/components";
@@ -37,6 +37,7 @@ export default function Presentation({
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
+ // useRealtimePresence()
 
   const id = generateAlias();
   function onClose() {
