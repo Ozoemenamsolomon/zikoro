@@ -4,14 +4,14 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 interface eventState {
   event: (Event & { organization: TOrganization }) | null;
-  setEvent: (event: Event & { organization: TOrganization }) => void;
+  setEvent: (event: (Event & { organization: TOrganization }) | null) => void;
 }
 
 const useEventStore = create<eventState>()(
   persist(
     (set) => ({
       event: null,
-      setEvent: (event: Event & { organization: TOrganization }) =>
+      setEvent: (event: (Event & { organization: TOrganization }) | null) =>
         set({ event }),
     }),
     {

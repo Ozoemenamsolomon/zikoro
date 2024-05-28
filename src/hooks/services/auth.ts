@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { getRequest } from "@/utils/api";
 import { TAuthUser } from "@/types";
+import useOrganizationStore from "@/store/globalOrganizationStore";
+import useEventStore from "@/store/globalEventStore";
 
 const supabase = createClientComponentClient();
 export const saveCookie = (name: string, value: any) => {
@@ -192,10 +194,14 @@ export function useRegistration() {
 
 export function useLogOut() {
   const router = useRouter();
+  const { setOrganization } = useOrganizationStore();
+  const { setEvent } = useEventStore();
 
   async function logOut() {
     await supabase.auth.signOut();
     saveCookie("user", null);
+    setOrganization(null);
+    setEvent(null);
     router.push("/");
   }
 
@@ -325,7 +331,7 @@ export function useResendLink() {
       setLoading(false);
     }
   }
- 
+
   return {
     resendLink,
     loading,

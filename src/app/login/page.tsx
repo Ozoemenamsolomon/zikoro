@@ -8,10 +8,10 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useState } from "react";
-import { Eye } from "@styled-icons/feather/Eye";
-import { EyeOff } from "@styled-icons/feather/EyeOff";
+import { Eye } from "styled-icons/feather";
+import { EyeOff } from "styled-icons/feather";
 import { useLogin } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);

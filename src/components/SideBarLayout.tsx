@@ -45,8 +45,6 @@ export function SideBarLayout({
 
   console.log(user);
 
-  if (!user) return router.push("login");
-
   // get events
   const isHaveEvent = useMemo(() => {
     return (
