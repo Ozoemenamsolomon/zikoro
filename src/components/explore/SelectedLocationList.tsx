@@ -34,56 +34,6 @@ export default function SelectedLocationList({
   const [location, setLocation] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function fetchEventFeautured() {
-    fetch(`/api/explore`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setEventData(data.data))
-      .catch((error) => console.error("Error:", error));
-  }
-
-  // const fetchLocation = async () => {
-  //   try {
-  //     if (typeof window !== "undefined" && navigator.geolocation) {
-  //       navigator.geolocation.getCurrentPosition(
-  //         async (position: GeolocationPosition) => {
-  //           try {
-  //
-  //             const response = await fetch(
-  //               `https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${process.env.GOOGLE_API_KEY}`
-  //             );
-  //             const data = await response.json();
-  //
-  //             if (data.status === "OK") {
-  //               setLocation(data.results[0].formatted_address);
-  //             } else {
-  //               setError("Unable to fetch location");
-  //             }
-  //           } catch (error) {
-  //             setError("Error fetching location");
-  //           } finally {
-  //             setLoading(false);
-  //           }
-  //         },
-  //         (error: GeolocationPositionError) => {
-  //           setError(`Error: ${error.message}`);
-  //           setLoading(false);
-  //         }
-  //       );
-  //     } else {
-  //       setError("Geolocation is not supported by your browser");
-  //       setLoading(false);
-  //     }
-  //   } catch (error) {
-  //     setError("Error detecting location");
-  //     setLoading(false);
-  //   }
-  // };
-
   //filter event
   const filteredEvents = eventData?.filter((event) => {
     // Filter by event title, city, or category
@@ -95,11 +45,73 @@ export default function SelectedLocationList({
   });
 
   useEffect(() => {
-    fetchEventFeautured();
-    // fetchLocation();
-  }, []);
+    async function fetchEventFeautured() {
+      fetch(`/api/explore?eventCountry=${location}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => setEventData(data.data))
+        .catch((error) => console.error("Error:", error));
+    }
 
-  console.log(eventData)
+    // fetch the functions
+    fetchEventFeautured();
+  }, [location]);
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        if (typeof window !== "undefined" && navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              try {
+                const { latitude, longitude } = position.coords;
+                const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+                const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.status === "OK") {
+                  const addressComponents = data.results[0].address_components;
+                  const countryComponent = addressComponents.find(
+                    (component: { types: string | string[] }) =>
+                      component.types.includes("country")
+                  );
+
+                  if (countryComponent) {
+                    setLocation(countryComponent.long_name);
+                  } else {
+                    setError("Country not found in address components");
+                  }
+                } else {
+                  setError(
+                    `Geocoding error: ${data.status} - ${data.error_message}`
+                  );
+                }
+              } catch (error) {
+                console.error("Error fetching geocoding data:", error);
+                setError("Error fetching location");
+              }
+            },
+            (error) => {
+              console.error("Geolocation error:", error);
+              setError(`Error: ${error.message}`);
+            }
+          );
+        } else {
+          setError("Geolocation is not supported by your browser");
+        }
+      } catch (error) {
+        console.error("Error detecting location:", error);
+        setError("Error detecting location");
+      }
+    };
+
+    // fetch the functions
+    fetchLocation();
+  }, [eventData]);
 
   return (
     <>
@@ -110,14 +122,11 @@ export default function SelectedLocationList({
             <div className="flex items-center gap-x-1 lg:gap-x-3">
               <LocationIcon1 />
               <div className="font-semibold text-[20px] lg:text-[32px]">
-                {/* {loading ? (
-                 <p>Loading...</p>
-               ) : error ? (
-                 <p>{error}</p>
-               ) : location ? (
-                 <p className="">{location}</p>
-               ) : null} */}
-                Nigeria
+                {location ? (
+                  <p className="">{location}</p>
+                ) : (
+                  "Couldnt Get Location"
+                )}
               </div>
             </div>
 
