@@ -357,21 +357,17 @@ export function useBroadCastMessage() {
     // Join a room/topic. Can be anything except for 'realtime'.
     const channelB = supabase.channel("live-quiz");
 
+
     channelB.subscribe((status) => {
-      // Wait for successful connection
-      if (status !== "SUBSCRIBED") {
-        return null;
+      if (status === 'SUBSCRIBED') {
+        console.log("status", status)
+        channelB.send({
+          type: 'broadcast',
+          event: 'cursor-pos',
+          payload: { x: Math.random(), y: Math.random() },
+        })
       }
-
-      console.log("subscribed");
-
-      // Send a message once the client is subscribed
-      channelB.send({
-        type: "broadcast",
-        event: "test",
-        payload: { message: "hello, world" },
-      });
-    });
+    })
   }
 
   return {
@@ -382,7 +378,7 @@ export function useBroadCastMessage() {
 export function useGetBroadCastMessage() {
   useEffect(() => {
     // Join a room/topic. Can be anything except for 'realtime'.
-    const channelA = supabase.channel("live-quiz");
+
 
     // Simple function to log any messages we receive
     function messageReceived(payload: any) {
@@ -390,14 +386,20 @@ export function useGetBroadCastMessage() {
     }
 
     // Subscribe to the Channel
-    channelA
-      .on("broadcast", { event: "test" }, (payload) => messageReceived(payload))
-      .subscribe(async (status) => {
-        if (status === "SUBSCRIBED") {
-          await channelA.track({
-            online_at: new Date().toISOString(),
-          });
-        }
-      });
+const channel = supabase.channel("live-quiz")
+
+channel.on("broadcast", { event: "cursor-pos" }, (payload) => {
+  console.log("Cursor position received!", payload);
+}).subscribe((status) => {
+  if (status === "SUBSCRIBED") {
+    console.log("listen")
+    channel.send({
+      type: "broadcast",
+      event: "cursor-pos",
+      payload: { x: Math.random(), y: Math.random() },
+    });
+  }
+});
+  
   }, [supabase]);
 }

@@ -29,7 +29,8 @@ export function Qusetion({
   quizParticipantId,
   answer,
   getAnswer,
-  refetchQuizAnswers
+  refetchQuizAnswers,
+  quizAnswer,
 }: {
   isRightBox: boolean;
   isLeftBox: boolean;
@@ -42,8 +43,9 @@ export function Qusetion({
   isOrganizer: boolean;
   isIdPresent: boolean;
   answer: TAnswer[];
+  quizAnswer: TAnswer[];
   getAnswer: (questionId: string) => Promise<any>;
-  refetchQuizAnswers: (id: number) => Promise<any>
+  refetchQuizAnswers: (id: number) => Promise<any>;
 }) {
   const [currentQuestion, setCurrentQuestion] =
     useState<TRefinedQuestion | null>(null);
@@ -56,8 +58,7 @@ export function Qusetion({
   const [chosenAnswerStatus, setChosenAnswerStatus] =
     useState<ChosenAnswerStatus | null>(null);
   const { createAnswer } = useCreateAnswer();
-  useGetBroadCastMessage()
-
+  useGetBroadCastMessage();
 
   useEffect(() => {
     if (quiz) {
@@ -115,20 +116,17 @@ export function Qusetion({
     }
   }, [currentQuestion?.id]);
 
-  console.log("metic", showAnswerMetric)
-
   function nextQuestion() {
     setShowAnswerMetric(false);
     setShowExplanation(false);
     setChosenAnswerStatus(null);
-    if (currentQuestionIndex < quiz.questions.length - 1) {
-    
-      setShowTransiting(true);
-      setTimeout(() => {
-        setShowTransiting(false);
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-      }, 6000);
-    }
+    //if (currentQuestionIndex < quiz.questions.length) {
+    setShowTransiting(true);
+    setTimeout(() => {
+      setShowTransiting(false);
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }, 6000);
+    // }
   }
 
   function previousQuestion() {
@@ -136,6 +134,25 @@ export function Qusetion({
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   }
+
+  const score = useMemo(() => {
+    // filter answer with p- ID
+    if (Array.isArray(quizAnswer) && quizAnswer?.length > 0) {
+      const filteredAnswer = quizAnswer?.filter(
+        (answer) => answer?.quizParticipantId === quizParticipantId
+      );
+      const mappedArray = filteredAnswer?.map(({ attendeePoints }) =>
+        Number(attendeePoints)
+      );
+
+      // summ up the asnwr
+      const sum = mappedArray.reduce((arr, curr) => arr + curr, 0);
+
+      return sum;
+    } else {
+      return 0;
+    }
+  }, [quizAnswer]);
 
   /**
     // update question time limit
@@ -245,7 +262,7 @@ export function Qusetion({
       await createAnswer({ payload });
 
       await getAnswer(currentQuestion?.id);
-      refetchQuizAnswers(quiz?.id)
+      refetchQuizAnswers(quiz?.id);
       setLoading(false);
     }
   }
@@ -263,171 +280,193 @@ export function Qusetion({
         !isIdPresent && !isOrganizer && "col-span-full max-w-3xl mx-auto"
       )}
     >
-      {transiting ? (
-        <Transition />
+      {quiz && currentQuestionIndex >= quiz?.questions?.length ? (
+        <div className="w-full h-full flex items-center flex-col gap-y-2 justify-center">
+          <h2 className="text-xl font-semibold">Quiz Has Ended!</h2>
+          <p>Your Total Score is {score?.toFixed(0)}</p>
+        </div>
       ) : (
         <>
-          <Button
-            onClick={toggleRightBox}
-            className={cn("absolute right-2 top-2", isRightBox && "hidden")}
-          >
-            <Maximize2 size={20} />
-          </Button>
-          <Button
-            onClick={toggleLeftBox}
-            className={cn("absolute bottom-1 left-1", isLeftBox && "hidden")}
-          >
-            <Maximize2 size={20} />
-          </Button>
-          <div className=" gap-3 pb-2 w-full flex items-end justify-between">
-            <Button
-              //onClick={goBack}
-              className="gap-x-1 self-start w-fit h-fit px-2"
-            >
-              <ArrowBackOutline size={20} />
-              <p className="text-sm">Exit Quiz</p>
-            </Button>
-            <p className="text-xs sm:text-mobile text-gray-500">{`${
-              currentQuestionIndex + 1
-            }/${quiz?.questions?.length} Questions`}</p>
-          </div>
+          {transiting ? (
+            <Transition />
+          ) : (
+            <>
+              <Button
+                onClick={toggleRightBox}
+                className={cn("absolute right-2 top-2", isRightBox && "hidden")}
+              >
+                <Maximize2 size={20} />
+              </Button>
+              <Button
+                onClick={toggleLeftBox}
+                className={cn(
+                  "absolute bottom-1 left-1",
+                  isLeftBox && "hidden"
+                )}
+              >
+                <Maximize2 size={20} />
+              </Button>
+              <div className=" gap-3 pb-2 w-full flex items-end justify-between">
+                <Button
+                  //onClick={goBack}
+                  className="gap-x-1 self-start w-fit h-fit px-2"
+                >
+                  <ArrowBackOutline size={20} />
+                  <p className="text-sm">Exit Quiz</p>
+                </Button>
+                <p className="text-xs sm:text-mobile text-gray-500">{`${
+                  currentQuestionIndex + 1
+                }/${quiz?.questions?.length} Questions`}</p>
+              </div>
 
-          <div className="flex items-center flex-col justify-center w-full gap-3">
-            <p className="font-medium w-full">{currentQuestion?.question}</p>
+              <div className="flex items-center flex-col justify-center w-full gap-3">
+                <p className="font-medium w-full">
+                  {currentQuestion?.question}
+                </p>
 
-            <div className="w-full flex items-center justify-between">
-              <div className="flex flex-col items-center justify-center gap-y-2">
-                {currentQuestion?.duration && (
-                  <div className="w-[70px] h-[70px]">
-                    <CircularProgressbar
-                      styles={buildStyles({
-                        pathColor: "#991b1b",
-                        trailColor: "#ffffff",
-                        textColor: "black",
-                        textSize: "50px",
-                      })}
-                      strokeWidth={3}
-                      minValue={0}
-                      maxValue={Number(currentQuestion?.duration) / 1000}
-                      value={timing}
-                      text={`${timing}`}
+                <div className="w-full flex items-center justify-between">
+                  <div className="flex flex-col items-center justify-center gap-y-2">
+                    {currentQuestion?.duration && (
+                      <div className="w-[70px] h-[70px]">
+                        <CircularProgressbar
+                          styles={buildStyles({
+                            pathColor: "#991b1b",
+                            trailColor: "#ffffff",
+                            textColor: "black",
+                            textSize: "50px",
+                          })}
+                          strokeWidth={3}
+                          minValue={0}
+                          maxValue={Number(currentQuestion?.duration) / 1000}
+                          value={timing}
+                          text={`${timing}`}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {currentQuestion?.questionImage ? (
+                    <Image
+                      className="w-52 sm:w-72 rounded-md h-48 sm:h-52 object-cover"
+                      alt="quiz"
+                      src={currentQuestion?.questionImage}
+                      width={400}
+                      height={400}
                     />
+                  ) : (
+                    <div className="w-1 h-1"></div>
+                  )}
+                  <p className="flex flex-col justify-center items-center gap-y-2">
+                    <span className="text-[40px] ">{answer?.length || 0}</span>
+                    <span>{` Answered`}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {currentQuestion?.options.map((option, index, arr) => (
+                  <Option
+                    key={index}
+                    option={option}
+                    isOrganizer={isOrganizer}
+                    showAnswerMetric={showAnswerMetric}
+                    answer={answer}
+                    isDisabled={arr?.some(
+                      ({ isCorrect }) => typeof isCorrect === "boolean"
+                    )}
+                    isIdPresent={isIdPresent}
+                    selectOption={selectOption}
+                    optionIndex={optionLetter[index]}
+                  />
+                ))}
+              </div>
+
+              <div
+                className={cn(
+                  "w-full flex items-start justify-between",
+                  chosenAnswerStatus === null && "items-end justify-end"
+                )}
+              >
+                {chosenAnswerStatus !== null && (
+                  <div className="flex flex-col items-start justify-start text-mobile">
+                    <p
+                      className={cn(
+                        "text-green-500",
+                        !chosenAnswerStatus.isCorrect && "text-red-500"
+                      )}
+                    >
+                      You answered{" "}
+                      {chosenAnswerStatus.isCorrect
+                        ? "correctly"
+                        : "incorrectly"}
+                    </p>
+                    <p className="font-medium text-sm">{`Correct Answer is ${
+                      optionLetter[chosenAnswerStatus.correctOption]
+                    }`}</p>
                   </div>
                 )}
+                <p className="self-end bg-basePrimary/20 rounded-3xl text-sm text-basePrimary px-2 py-1">{`${
+                  currentQuestion?.points
+                } ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
               </div>
-              {currentQuestion?.questionImage ? (
-                <Image
-                  className="w-52 sm:w-72 rounded-md h-48 sm:h-52 object-cover"
-                  alt="quiz"
-                  src={currentQuestion?.questionImage}
-                  width={400}
-                  height={400}
-                />
-              ) : (
-                <div className="w-1 h-1"></div>
-              )}
-              <p className="flex flex-col justify-center items-center gap-y-2">
-                <span className="text-[40px] ">{answer?.length || 0}</span>
-                <span>{` Answered`}</span>
-              </p>
-            </div>
-          </div>
 
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {currentQuestion?.options.map((option, index, arr) => (
-              <Option
-                key={index}
-                option={option}
-                isOrganizer={isOrganizer}
-                showAnswerMetric={showAnswerMetric}
-                answer={answer}
-                isDisabled={arr?.some(
-                  ({ isCorrect }) => typeof isCorrect === "boolean"
+              <div
+                className={cn("block", chosenAnswerStatus === null && "hidden")}
+              >
+                {showExplanation && (
+                  <p className="mb-3 text-xs sm:text-sm text-gray-500">
+                    {currentQuestion?.feedBack ?? "No Explanation"}
+                  </p>
                 )}
-                isIdPresent={isIdPresent}
-                selectOption={selectOption}
-                optionIndex={optionLetter[index]}
-              />
-            ))}
-          </div>
-
-          <div
-            className={cn(
-              "w-full flex items-start justify-between",
-              chosenAnswerStatus === null && "items-end justify-end"
-            )}
-          >
-            {chosenAnswerStatus !== null && (
-              <div className="flex flex-col items-start justify-start text-mobile">
-                <p
-                  className={cn(
-                    "text-green-500",
-                    !chosenAnswerStatus.isCorrect && "text-red-500"
-                  )}
+                <button
+                  onClick={toggleExplanationVisibility}
+                  className="text-xs sm:text-sm text-basePrimary underline"
                 >
-                  You answered{" "}
-                  {chosenAnswerStatus.isCorrect ? "correctly" : "incorrectly"}
-                </p>
-                <p className="font-medium text-sm">{`Correct Answer is ${
-                  optionLetter[chosenAnswerStatus.correctOption]
-                }`}</p>
+                  {showExplanation ? "Hide Explanation" : "Show Explanation"}
+                </button>
               </div>
-            )}
-            <p className="self-end bg-basePrimary/20 rounded-3xl text-sm text-basePrimary px-2 py-1">{`${
-              currentQuestion?.points
-            } ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
-          </div>
 
-          <div className={cn("block", chosenAnswerStatus === null && "hidden")}>
-            {showExplanation && (
-              <p className="mb-3 text-xs sm:text-sm text-gray-500">
-                {currentQuestion?.feedBack ?? "No Explanation"}
+              <Button
+                disabled={loading}
+                onClick={
+                  showAnswerMetric
+                    ? nextQuestion
+                    : () => setShowAnswerMetric(true)
+                }
+                className="text-gray-50 mx-auto w-[180px] mt-6 bg-basePrimary gap-x-2 h-11 font-medium flex"
+              >
+                <p>Next </p>
+              </Button>
+
+              <div className="w-full hidden items-end justify-between">
+                <div className="flex items-center gap-x-2">
+                  <Button
+                    onClick={previousQuestion}
+                    className={cn(
+                      "text-basePrimary w-[95px] border border-basePrimary hover:text-gray-50 bg-white hover:bg-basePrimary gap-x-2 h-10 font-medium hidden",
+                      currentQuestionIndex > 0 && "flex"
+                    )}
+                  >
+                    <p>Previous</p>
+                  </Button>
+                  <Button
+                    onClick={nextQuestion}
+                    className={cn(
+                      "text-gray-50 w-[95px] bg-basePrimary gap-x-2 h-10 font-medium hidden",
+                      currentQuestionIndex < quiz?.questions?.length && "flex"
+                    )}
+                  >
+                    <p>Next</p>
+                  </Button>
+                </div>
+
+                <p className="w-1 h-1"></p>
+              </div>
+
+              <p className="text-center text-sm w-full mt-8 ">
+                Powered By Zikoro
               </p>
-            )}
-            <button
-              onClick={toggleExplanationVisibility}
-              className="text-xs sm:text-sm text-basePrimary underline"
-            >
-              {showExplanation ? "Hide Explanation" : "Show Explanation"}
-            </button>
-          </div>
-
-          <Button
-            disabled={loading}
-            onClick={
-              showAnswerMetric ? nextQuestion : () => setShowAnswerMetric(true)
-            }
-            className="text-gray-50 mx-auto w-[180px] mt-6 bg-basePrimary gap-x-2 h-11 font-medium flex"
-          >
-            <p>Next </p>
-          </Button>
-
-          <div className="w-full hidden items-end justify-between">
-            <div className="flex items-center gap-x-2">
-              <Button
-                onClick={previousQuestion}
-                className={cn(
-                  "text-basePrimary w-[95px] border border-basePrimary hover:text-gray-50 bg-white hover:bg-basePrimary gap-x-2 h-10 font-medium hidden",
-                  currentQuestionIndex > 0 && "flex"
-                )}
-              >
-                <p>Previous</p>
-              </Button>
-              <Button
-                onClick={nextQuestion}
-                className={cn(
-                  "text-gray-50 w-[95px] bg-basePrimary gap-x-2 h-10 font-medium hidden",
-                  currentQuestionIndex < quiz?.questions?.length && "flex"
-                )}
-              >
-                <p>Next</p>
-              </Button>
-            </div>
-
-            <p className="w-1 h-1"></p>
-          </div>
-
-          <p className="text-center text-sm w-full mt-8 ">Powered By Zikoro</p>
+            </>
+          )}
         </>
       )}
     </div>

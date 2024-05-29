@@ -14,6 +14,7 @@ import {
   useVerifyUserAccess,
   useRealtimePresence,
   useBroadCastMessage,
+  useGetBroadCastMessage
 } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import Image from "next/image";
@@ -29,7 +30,7 @@ export default function Presentation({
   quizId: string;
 }) {
   const { quiz, getQuiz } = useGetQuiz({ quizId });
-  const [nickName, setNickName] = useState("");
+ 
   const [isYetTosStart, setIsYetToStart] = useState(true);
   const { isOrganizer, attendeeId, attendee, loading, isLoading } =
     useVerifyUserAccess(eventId);
@@ -39,14 +40,17 @@ export default function Presentation({
   const [isLobby, setisLobby] = useState(false);
   const { answers, getAnswers } = useGetQuizAnswer();
   const { answer, getAnswer } = useGetAnswer();
+  const [nickName, setNickName] = useState(attendee?.firstName || "");
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
-
+  useGetBroadCastMessage()
   const { presentUser } = useRealtimePresence();
   
 
-  const id = generateAlias();
+  const id = useMemo(() => {
+      return generateAlias();
+  },[])
   function onClose() {
     setLeftBox((prev) => !prev);
   }
@@ -127,6 +131,7 @@ export default function Presentation({
               <Qusetion
                 isLeftBox={isLeftBox}
                 answer={answer}
+                quizAnswer={answers}
                 getAnswer={getAnswer}
                 refetchQuizAnswers={getAnswers}
                 quiz={refinedQuizArray}
@@ -154,7 +159,9 @@ export default function Presentation({
           )}
         </>
       ) : (
-        <div className="w-full h-[40vh] flex items-center justify-center">
+        <div
+        
+        className="w-full h-[40vh] flex items-center justify-center">
           <LoaderAlt size={30} className="animate-spin" />
         </div>
       )}
@@ -258,7 +265,7 @@ function AttendeeRegistration({
             value={nickName}
             onChange={(e) => setNickName(e.target.value)}
             className="border-0 border-b rounded-none w-full max-w-[30em]"
-            placeholder="Enter Nickname"
+            placeholder="Enter Name"
             type="text"
           />
 
@@ -296,8 +303,8 @@ function AttendeeRegistration({
             <p className="text-sm">{quiz?.description ?? ""}</p>
           </div>
           <Button
-            onClick={sendBroadCast}
-            // onClick={quiz?.accessibility?.live ? () => setisLobby(true) : close}
+          //  onClick={sendBroadCast}
+           onClick={quiz?.accessibility?.live ? () => setisLobby(true) : close}
             className="bg-basePrimary px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
           >
             Start Quiz
