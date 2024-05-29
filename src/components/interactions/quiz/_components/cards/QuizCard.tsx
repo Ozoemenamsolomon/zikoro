@@ -13,9 +13,11 @@ import { TQuiz, TQuestion } from "@/types";
 export function QuizCard({
   quiz,
   refetch,
+  isAttendee
 }: {
   refetch: () => Promise<any>;
   quiz: TQuiz<TQuestion[]>;
+  isAttendee: boolean;
 }) {
   const [isOpen, setOpen] = useState(false);
   const router = useRouter();
@@ -34,13 +36,23 @@ export function QuizCard({
   function onClose() {
     setOpen((prev) => !prev);
   }
+
+  // /quiz/c3c78107412a4a80abe9/present/ccc4fea1695d44fdaaad
   return (
     <div
-      onClick={() =>
-        router.push(
-          `/event/${quiz?.eventAlias}/interaction/quiz/${quiz?.quizAlias}`
-        )
-      }
+      onClick={() => {
+        if (isAttendee) {
+          router.push(
+            `/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`
+          )
+        }
+        else {
+          router.push(
+            `/event/${quiz?.eventAlias}/interaction/quiz/${quiz?.quizAlias}`
+          )
+        }
+      
+       } }
       role="button"
       className="w-full text-mobile  sm:text-sm bg-white rounded-md flex flex-col items-start justify-start"
     >

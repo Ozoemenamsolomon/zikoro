@@ -33,7 +33,6 @@ import RequestPayoutDialog from "@/components/requestPayoutDialog";
 import { toast } from "@/components/ui/use-toast";
 import { DataTable } from "@/components/DataTable";
 import { getCookie } from "@/hooks";
-import AddOrganizationPaymentDetails from "@/components/forms/AddOrganizationPaymentDetails";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const eventTransactionsFilter: TFilter<TEventTransaction>[] = [

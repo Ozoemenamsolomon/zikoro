@@ -157,8 +157,6 @@ export default function SecondSection({
     websiteUrl,
   } = attendee;
 
-  
-
   const user = getCookie("user");
 
   const attendeeModeratingAt = eventAgendas?.filter(
@@ -172,8 +170,6 @@ export default function SecondSection({
       !!sessionSpeakers &&
       !!sessionSpeakers?.find(({ id: speakerId }) => id === speakerId)
   );
-
-  
 
   const {
     note,
@@ -208,7 +204,6 @@ export default function SecondSection({
     eventId,
     attendeeId: id,
   });
-  
 
   const {
     attendeeBadge,
@@ -218,7 +213,6 @@ export default function SecondSection({
     eventId,
     attendeeId: id,
   });
-  
 
   const {
     certificates: eventCertificates,
@@ -226,7 +220,6 @@ export default function SecondSection({
   } = useGetCertificates({
     eventId,
   });
-  
 
   const { updateAttendeeCertificates } = useUpdateAttendeeCertificates({
     eventId: event.eventAlias,
@@ -311,8 +304,6 @@ export default function SecondSection({
       },
     });
 
-    
-
     await getAttendeeCertificates();
 
     // if (newAttendeeCertificate) {
@@ -321,7 +312,6 @@ export default function SecondSection({
   };
 
   const releaseBadge = async (eventBadge: TBadge) => {
-    
     // await updateAttendeeBadges({
     //   payload: {
     //     action: "release",
@@ -351,8 +341,6 @@ export default function SecondSection({
       },
     });
 
-    
-
     await getAttendeeBadge();
 
     if (newAttendeeBadge) {
@@ -373,7 +361,6 @@ export default function SecondSection({
 
     if (!parentCard || !innerCard) return;
 
-    
     parentCard.style.height = `${innerCard.style.height}px`;
   }, [attendee]);
 
@@ -410,9 +397,6 @@ export default function SecondSection({
     ({ senderUserEmail, receiverUserEmail }) =>
       senderUserEmail === email || receiverUserEmail === email
   );
-
-  
-  
 
   return (
     <div className="h-fit space-y-4">

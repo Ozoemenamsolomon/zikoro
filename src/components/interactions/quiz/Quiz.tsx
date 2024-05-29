@@ -52,7 +52,12 @@ export default function Quiz({ eventId }: { eventId: string }) {
           {!isLoading &&
             Array.isArray(quizzes) &&
             quizzes.map((quiz, index) => (
-              <QuizCard refetch={getQuizzes} key={quiz.quizAlias} quiz={quiz} />
+              <QuizCard
+                refetch={getQuizzes}
+                isAttendee={isIdPresent || isOrganizer}
+                key={quiz.quizAlias}
+                quiz={quiz}
+              />
             ))}
         </div>
       </div>
