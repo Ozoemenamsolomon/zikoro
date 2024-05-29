@@ -70,7 +70,7 @@ export default function EventsCities() {
                 })}
             </div>
 
-            {data && data.length > 12 && !showMore && (
+            {data.length > 16 && !showMore && (
               <div className=" flex justify-center items-center mt-12 ">
                 <button
                   onClick={handleSeeMoreClick}
