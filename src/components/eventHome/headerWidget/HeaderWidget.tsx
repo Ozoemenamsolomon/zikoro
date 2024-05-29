@@ -1,7 +1,7 @@
 "use client";
 
 import { useGetUserOrganizations, saveCookie, getCookie } from "@/hooks";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import { useState, useMemo, useEffect } from "react";
 import { OrganizationIcon } from "@/constants";
 import { Button, Form, ReactSelect } from "@/components";
@@ -9,6 +9,7 @@ import { CreateOrganization } from "..";
 import { useParams, useRouter } from "next/navigation";
 import _ from "lodash";
 import { useForm } from "react-hook-form";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 type OrganizationListType = {
   label: string;
@@ -43,21 +44,24 @@ export function HeaderWidget({
     return _.uniqBy(restructuredList, "value");
   }, [organizationList]);
 
+  const { setOrganization } = useOrganizationStore();
   const selectedOrg = form.watch("org");
   useEffect(() => {
     if (selectedOrg) {
       const org = organizationList.find(
         (o) => String(o.id) === String(selectedOrg)
       );
+
+      if (!org) return;
+      setOrganization(org);
       saveCookie("currentOrganization", {
         id: org?.id,
         name: org?.organizationName,
         plan: org?.subscriptionPlan,
-        email: org?.eventContactEmail
+        email: org?.eventContactEmail,
       });
       router.push(`/events/${org?.id}?organization=${org?.organizationName}`);
-    }
-    else if (Array.isArray(formattedList) && formattedList?.length > 0 ) {
+    } else if (Array.isArray(formattedList) && formattedList?.length > 0) {
       const org = organizationList.find(
         (o) => String(o.id) === String(formattedList[0]?.value)
       );
@@ -65,8 +69,8 @@ export function HeaderWidget({
         id: org?.id,
         name: org?.organizationName,
         plan: org?.subscriptionPlan,
-        email: org?.eventContactEmail
-      }); 
+        email: org?.eventContactEmail,
+      });
     }
   }, [selectedOrg, formattedList]);
 
@@ -75,7 +79,7 @@ export function HeaderWidget({
   }
 
   return (
-    <div>
+    <div className="z-[50]">
       <div className="w-full mb-4 sm:mb-6 items-start flex-col gap-y-2 sm:items-center sm:flex-row sm:justify-between justify-start flex">
         <div className="flex flex-col gap-y-2 items-start justify-start">
           <h2 className="font-semibold capitalize text-base sm:text-2xl">

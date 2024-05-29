@@ -45,8 +45,6 @@ export function SideBarLayout({
 
   console.log(user);
 
-  if (!user) return router.push("login");
-
   // get events
   const isHaveEvent = useMemo(() => {
     return (
@@ -175,7 +173,7 @@ function SideNavs({
           <div className="flex items-start text-[#717171] justify-start w-full flex-col gap-4 border-t p-4 border-basebody">
             <div className="w-full flex items-center gap-x-2 ">
               <Link
-                href={`${window.location.origin}/create`}
+                href={`create`}
                 className="text-mobile sm:text-sm text-basePrimary font-medium hover:underline "
               >
                 <p>
