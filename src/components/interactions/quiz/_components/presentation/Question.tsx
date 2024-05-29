@@ -7,7 +7,7 @@ import { Maximize2 } from "@styled-icons/feather/Maximize2";
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
 import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
-import { useCreateAnswer } from "@/hooks";
+import { useCreateAnswer, useGetBroadCastMessage } from "@/hooks";
 import { TQuiz, TRefinedQuestion, TAnswer } from "@/types";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -56,6 +56,8 @@ export function Qusetion({
   const [chosenAnswerStatus, setChosenAnswerStatus] =
     useState<ChosenAnswerStatus | null>(null);
   const { createAnswer } = useCreateAnswer();
+  useGetBroadCastMessage()
+
 
   useEffect(() => {
     if (quiz) {

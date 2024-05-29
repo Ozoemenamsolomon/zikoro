@@ -64,3 +64,8 @@ export interface TAnswer {
   selectedOptionId: { optionId: string };
   correctOptionId: { optionId: string };
 }
+
+export interface TConnectedUser {
+  connectedAt: string;
+  userId: string;
+}

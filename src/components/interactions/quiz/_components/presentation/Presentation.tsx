@@ -9,7 +9,12 @@ import {
   useGetQuizAnswer,
 } from "@/hooks";
 import { TRefinedQuestion, TQuiz, TQuestion, TAttendee } from "@/types";
-import { useCheckTeamMember, useVerifyUserAccess, useRealtimePresence } from "@/hooks";
+import {
+  useCheckTeamMember,
+  useVerifyUserAccess,
+  useRealtimePresence,
+  useBroadCastMessage,
+} from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import Image from "next/image";
 import { Button, Input } from "@/components";
@@ -37,7 +42,9 @@ export default function Presentation({
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
- // useRealtimePresence()
+
+  const { presentUser } = useRealtimePresence();
+  
 
   const id = generateAlias();
   function onClose() {
@@ -179,6 +186,7 @@ function AttendeeRegistration({
   setisLobby: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { updateQuiz } = useUpdateQuiz();
+  const { sendBroadCast } = useBroadCastMessage();
   const [loading, setLoading] = useState(false);
   // const [isLobby, setisLobby] = useState(false);
 
@@ -288,7 +296,7 @@ function AttendeeRegistration({
             <p className="text-sm">{quiz?.description ?? ""}</p>
           </div>
           <Button
-            onClick={() => setisLobby(true)}
+            onClick={sendBroadCast}
             // onClick={quiz?.accessibility?.live ? () => setisLobby(true) : close}
             className="bg-basePrimary px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
           >
