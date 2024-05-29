@@ -45,8 +45,8 @@ export default function All() {
 
   return (
     <>
-      {blogData && blogData.length > 0 && (
-        <div className="my-[48px] lg:my-[80px]">
+      <div className="my-[48px] lg:my-[80px]">
+        {blogData && blogData.length > 0 && (
           <div className="flex flex-col gap-y-[48px] lg:gap-y-[100px]  lg:max-w-[1160px] mx-auto mt-[52px] lg:mt-[100px]">
             {blogData?.length &&
               blogData?.map((blogPost, i) => (
@@ -67,19 +67,19 @@ export default function All() {
                 />
               ))}
           </div>
+        )}
 
-          {blogData && blogData.length > 10 && !showMore && (
-            <div className=" flex justify-center items-center ">
-              <button
-                onClick={handleSeeMoreClick}
-                className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white"
-              >
-                See more
-              </button>
-            </div>
-          )}
-        </div>
-      )}
+        {blogData && blogData.length > 10 && !showMore && (
+          <div className=" flex justify-center items-center ">
+            <button
+              onClick={handleSeeMoreClick}
+              className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white"
+            >
+              See more
+            </button>
+          </div>
+        )}
+      </div>
     </>
   );
 }

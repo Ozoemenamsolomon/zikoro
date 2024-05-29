@@ -263,11 +263,11 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
           {/* body section */}
 
-          <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-24 lg:mb-24 ">
+          <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-8 lg:mt-24 lg:mb-10 ">
             {/* Left */}
             <div
-              className={`lg:inline pb-12 w-full flex-col lg:w-3/12 h-fit ${
-                isVisible ? "lg:fixed lg:top-[120px] z-10" : "lg:relative"
+              className={`hidden lg:inline pb-12 pt-12 w-full flex-col lg:w-3/12 h-fit border-[1px] border-gray-100 rounded-lg px-4 ${
+                isVisible ? "lg:fixed lg:top-[120px] z-10 lg:w-[17%] " : ""
               }`}
               id="left"
             >
@@ -344,9 +344,18 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             </div>
           </div>
 
+          <div className="max-w-full lg:max-w-6xl mx-auto flex gap-x-4 ">
+            <p className="font-bold">Tags:</p>
+            <div className="grid grid-cols-4 gap-x-2">
+              {data.tags.map((tag) => (
+                <p className="text-b">{tag}</p>
+              ))}
+            </div>
+          </div>
+
           {/* Footer Section */}
           <div
-            className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24 mt-44"
+            className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24 mt-32"
             ref={existingElementReadMore}
           >
             <p

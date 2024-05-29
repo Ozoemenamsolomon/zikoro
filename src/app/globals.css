@@ -448,12 +448,11 @@ input[type="number"] {
 
 /* post header side links */
 .blackLink h1 strong  {
-  color:black !important
+  color: black!important;
+  font-weight: 400;
 }
 
-.h-half-screen{
-  height: calc(60vh);
-}
+
 
 @media only screen and (max-width: 767px) {
   .blog h1 {

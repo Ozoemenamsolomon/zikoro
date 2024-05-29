@@ -173,12 +173,39 @@ export default function Footer() {
       </div>
 
       <div className="mt-4 lg:mt-6 border-t-[1px] border-indigo-500 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end  px-5 lg:px-0">
-        <div className="max-w-6xl  mx-auto py-4 lg:py-14 flex justify-between">
+        <div className="py-4 lg:py-14 px-5 lg:px-0 flex  justify-between items-center max-w-6xl mx-auto ">
+          {/* left */}
           <p className="text-[13px] lg:text-base font-normal">
             {" "}
             <span className="hidden lg:inline">Copyright</span> © 2024 - Zikoro{" "}
-            <span className="hidden lg:inline"> - an OrthoEx brand</span>{" "}
+            {/* <span className="hidden lg:inline"> </span>{" "} */}
           </p>
+
+          {/* right */}
+          <ul className="flex gap-x-3 lg:gap-x-4">
+            <li>
+              <a href="https://m.facebook.com/profile.php?id=61558280512718&name=xhp_nt__fb__action__open_user" target="_blank">
+                <Facebook />
+              </a>
+            </li>
+            <li>
+              <a href="">
+                <X />
+              </a>
+            </li>
+
+            <li>
+              <a href="https://www.linkedin.com/company/zikoro" target="_blank">
+                <Linkedin />
+              </a>
+            </li>
+
+            <li>
+              <a href="https://www.instagram.com/zikoro24/" target="_blank">
+                <Instagram />
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
