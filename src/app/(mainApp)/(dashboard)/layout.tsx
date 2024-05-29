@@ -3,10 +3,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { useLayoutEffect, useRef } from "react";
 import { SideBarLayout } from "@/components/SideBarLayout";
 import MainTopBar from "@/components/MainTopBar";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import useEventStore from "@/store/globalEventStore";
 
 export default function RootLayout({
   children,
@@ -15,8 +16,9 @@ export default function RootLayout({
 }) {
   const user = getCookie<TUser>("user");
   const router = useRouter();
+  const pathname = usePathname().split("/");
+
   console.log(user);
-  // if (!user) return router.push("login");
 
   const divRef = useRef<HTMLDivElement>(null);
   const { eventId }: { eventId: string } = useParams();
@@ -38,13 +40,20 @@ export default function RootLayout({
 
   const { organization } = useOrganizationStore();
 
+  const { event } = useEventStore();
+
+  const isEventOwner =
+    user && event && String(event?.createdBy) === String(user.id);
+
+  if (!user) return router.push("login");
+
   return (
     <>
       <main className="relative w-full h-full bg-white" ref={divRef}>
         <SideBarLayout
           eventId={eventId}
           children={
-            organization ? (
+            (organization && isEventOwner) || !isEventOwner ? (
               children
             ) : (
               <div className="mt-24 px-4 text-xl font-medium text-gray-800">

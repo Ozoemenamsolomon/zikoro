@@ -1,17 +1,17 @@
 "use client";
 
 import { Button } from "@/components";
-import { Location } from "@styled-icons/fluentui-system-regular/Location";
-import { Bag } from "@styled-icons/ionicons-solid/Bag";
-import { User } from "@styled-icons/boxicons-regular/User";
+import { Location } from "styled-icons/fluentui-system-regular";
+import { Bag } from "styled-icons/ionicons-solid";
+import { User } from "styled-icons/boxicons-regular";
 import { BoxSeam } from "styled-icons/bootstrap";
 import { PartnerJobType } from "@/types";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { useMemo, useState } from "react";
 import { COUNTRIES_CURRENCY, sendMail, whatsapp } from "@/utils";
 import { FlexibilityType } from "..";
 import { cn } from "@/lib";
-import { AlertCircle } from "@styled-icons/feather/AlertCircle";
+import { AlertCircle } from "styled-icons/feather";
 
 export function JobWidget({
   job,
