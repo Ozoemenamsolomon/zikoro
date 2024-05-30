@@ -45,7 +45,6 @@ export default function RootLayout({
     user && event && String(event?.createdBy) === String(user.id);
 
   if (!user) {
-    router.push("login");
     return <div>You are not logged in, redirecting to login...</div>;
   }
 
