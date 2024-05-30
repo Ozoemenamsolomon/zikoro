@@ -13,8 +13,7 @@ import {
   useCheckTeamMember,
   useVerifyUserAccess,
   useRealtimePresence,
-  useBroadCastMessage,
-  useGetBroadCastMessage
+  useRealtimeQuestionUpdate,
 } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import Image from "next/image";
@@ -22,6 +21,10 @@ import { Button, Input } from "@/components";
 import { generateAlias } from "@/utils";
 import { cn } from "@/lib";
 import toast from "react-hot-toast";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
+const supabase = createClientComponentClient();
+
 export default function Presentation({
   eventId,
   quizId,
@@ -44,9 +47,38 @@ export default function Presentation({
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
-  useGetBroadCastMessage()
-  const { presentUser } = useRealtimePresence();
-  
+ // useRealtimeQuestionUpdate({quizId})
+
+
+
+  // subscribe
+  useEffect(() => {
+    function subscribeToUpdate() {
+      const channel = supabase
+        .channel("live-quiz")
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "quiz",
+            filter: `quizAlias=eq.${quizId}`,
+          },
+          (payload) => {
+            console.log(payload);
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+
+    const cleanUp = subscribeToUpdate();
+
+    return cleanUp;
+  }, []);
 
   const id = useMemo(() => {
       return generateAlias();
@@ -133,6 +165,7 @@ export default function Presentation({
                 answer={answer}
                 quizAnswer={answers}
                 getAnswer={getAnswer}
+                refetchQuiz={getQuiz}
                 refetchQuizAnswers={getAnswers}
                 quiz={refinedQuizArray}
                 isRightBox={isRightBox}
@@ -193,8 +226,10 @@ function AttendeeRegistration({
   setisLobby: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { updateQuiz } = useUpdateQuiz();
-  const { sendBroadCast } = useBroadCastMessage();
+
   const [loading, setLoading] = useState(false);
+  const { presentUser } = useRealtimePresence();
+  //console.log("present", presentUser)
   // const [isLobby, setisLobby] = useState(false);
 
   const actualQuiz: TQuiz<TQuestion[]> = useMemo(() => {
@@ -298,12 +333,12 @@ function AttendeeRegistration({
             {quiz?.coverTitle ?? ""}
           </h2>
 
-          <div className="w-full flex flex-col items-start justify-start gap-y-4">
+         {quiz?.description && <div className="w-full flex flex-col items-start justify-start gap-y-4">
             <h2 className="font-semibold">Description</h2>
             <p className="text-sm">{quiz?.description ?? ""}</p>
-          </div>
+          </div>}
           <Button
-          //  onClick={sendBroadCast}
+           
            onClick={quiz?.accessibility?.live ? () => setisLobby(true) : close}
             className="bg-basePrimary px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
           >

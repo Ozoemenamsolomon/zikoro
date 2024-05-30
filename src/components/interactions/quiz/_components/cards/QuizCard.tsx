@@ -13,11 +13,11 @@ import { TQuiz, TQuestion } from "@/types";
 export function QuizCard({
   quiz,
   refetch,
-  isAttendee
+  isNotAttendee
 }: {
   refetch: () => Promise<any>;
   quiz: TQuiz<TQuestion[]>;
-  isAttendee: boolean;
+  isNotAttendee: boolean;
 }) {
   const [isOpen, setOpen] = useState(false);
   const router = useRouter();
@@ -38,17 +38,19 @@ export function QuizCard({
   }
 
   // /quiz/c3c78107412a4a80abe9/present/ccc4fea1695d44fdaaad
+
   return (
     <div
       onClick={() => {
-        if (isAttendee) {
+        if (isNotAttendee) {
+         
           router.push(
-            `/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`
+            `/event/${quiz?.eventAlias}/interaction/quiz/${quiz?.quizAlias}`
           )
         }
         else {
           router.push(
-            `/event/${quiz?.eventAlias}/interaction/quiz/${quiz?.quizAlias}`
+            `/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`
           )
         }
       

@@ -288,27 +288,36 @@ export const useGetQuizAnswer = () => {
 };
 
 export function useRealtimeQuestionUpdate({ quizId }: { quizId: string }) {
+  const [quiz, setQuiz] = useState<TQuiz<TQuestion[]> | null>(null)
   useEffect(() => {
+   function subscribeToUpdate() {
     const channel = supabase
-      .channel("live-quiz")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "quiz",
-          filter: `quizAlias=eq.${quizId}`,
-        },
-        (payload) => {
-          console.log(payload);
-        }
-      )
-      .subscribe();
+    .channel("live-quiz")
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "quiz",
+        filter: `quizAlias=eq.${quizId}`,
+      },
+      (payload) => {
+        console.log(payload);
+      }
+    )
+    .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+  return () => {
+    supabase.removeChannel(channel);
+  };
+   }
+
+   const cleanUp = subscribeToUpdate()
+
+   return cleanUp
   }, [supabase]);
+
+  
 }
 
 export const useRealtimePresence = () => {
@@ -319,13 +328,13 @@ export const useRealtimePresence = () => {
     channel
       .on("presence", { event: "sync" }, () => {
         const newState = channel.presenceState();
-          console.log("sync", newState);
+         // console.log("sync", newState);
         for (let id in newState) {
           //  console.log(newState[id][0])
         }
       })
       .on("presence", { event: "join" }, ({ key, newPresences }) => {
-        // console.log("join", key, newPresences[0]);
+       console.log("join", key, newPresences[0]);
         setPresentUser({
           userId: newPresences[0]?.presence_ref,
           connectedAt: newPresences[0]?.online_at,
@@ -387,10 +396,14 @@ export function useGetBroadCastMessage() {
 
     // Subscribe to the Channel
 const channel = supabase.channel("live-quiz")
+console.log("listen yeee", channel)
 
 channel.on("broadcast", { event: "cursor-pos" }, (payload) => {
   console.log("Cursor position received!", payload);
-}).subscribe((status) => {
+})
+
+/**
+ channel.subscribe((status) => {
   if (status === "SUBSCRIBED") {
     console.log("listen")
     channel.send({
@@ -400,6 +413,11 @@ channel.on("broadcast", { event: "cursor-pos" }, (payload) => {
     });
   }
 });
+ */
+
+return () => {
+  supabase.removeChannel(channel);
+};
   
   }, [supabase]);
 }

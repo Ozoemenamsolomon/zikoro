@@ -76,8 +76,8 @@
   html,
   body {
     @apply bg-background text-foreground;
-    overflow-x: hidden;
-    /* margin: 0; */
+   
+   margin: 0; 
   }
 }
 

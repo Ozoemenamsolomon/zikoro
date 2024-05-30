@@ -7,10 +7,11 @@ import { Maximize2 } from "@styled-icons/feather/Maximize2";
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
 import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
-import { useCreateAnswer, useGetBroadCastMessage } from "@/hooks";
-import { TQuiz, TRefinedQuestion, TAnswer } from "@/types";
+import { useCreateAnswer, useUpdateQuiz } from "@/hooks";
+import { TQuiz, TRefinedQuestion, TAnswer, TQuestion } from "@/types";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 type ChosenAnswerStatus = {
   isCorrect: boolean;
@@ -31,6 +32,7 @@ export function Qusetion({
   getAnswer,
   refetchQuizAnswers,
   quizAnswer,
+  refetchQuiz,
 }: {
   isRightBox: boolean;
   isLeftBox: boolean;
@@ -44,6 +46,7 @@ export function Qusetion({
   isIdPresent: boolean;
   answer: TAnswer[];
   quizAnswer: TAnswer[];
+  refetchQuiz: () => Promise<any>;
   getAnswer: (questionId: string) => Promise<any>;
   refetchQuizAnswers: (id: number) => Promise<any>;
 }) {
@@ -55,15 +58,31 @@ export function Qusetion({
   const [showExplanation, setShowExplanation] = useState(false);
   const [showAnswerMetric, setShowAnswerMetric] = useState(false);
   const [transiting, setShowTransiting] = useState(false);
+  const { updateQuiz: updatingQuiz, isLoading: isUpdating } = useUpdateQuiz();
   const [chosenAnswerStatus, setChosenAnswerStatus] =
     useState<ChosenAnswerStatus | null>(null);
   const { createAnswer } = useCreateAnswer();
-  useGetBroadCastMessage();
 
   useEffect(() => {
-    if (quiz) {
-      setCurrentQuestion(quiz.questions[currentQuestionIndex]);
-    }
+    (async () => {
+      if (quiz && (isIdPresent || isOrganizer) && quiz?.accessibility?.live) {
+        console.log("hreen");
+        setCurrentQuestion(quiz.questions[currentQuestionIndex]);
+        const { questions, ...restData } = quiz;
+        const payload: Partial<TQuiz<TQuestion[]>> = {
+          ...restData,
+          liveMode: {
+            questionIndex: currentQuestionIndex,
+            isTransitioning: quiz?.accessibility?.countdown,
+          },
+        };
+
+        await updatingQuiz({ payload });
+        refetchQuiz();
+      } else if (quiz && !quiz?.accessibility?.live) {
+        setCurrentQuestion(quiz.questions[currentQuestionIndex]);
+      }
+    })();
   }, [quiz, currentQuestionIndex]);
 
   const timing = useMemo(() => {
@@ -116,18 +135,40 @@ export function Qusetion({
     }
   }, [currentQuestion?.id]);
 
-  function nextQuestion() {
-    setShowAnswerMetric(false);
-    setShowExplanation(false);
-    setChosenAnswerStatus(null);
-    //if (currentQuestionIndex < quiz.questions.length) {
-    setShowTransiting(true);
-    setTimeout(() => {
-      setShowTransiting(false);
+  async function nextQuestion() {
+    if (quiz?.accessibility?.live) {
+      const { questions, ...restData } = quiz;
+      const payload: Partial<TQuiz<TQuestion[]>> = {
+        ...restData,
+        liveMode: {
+          questionIndex: currentQuestionIndex + 1,
+          isTransitioning: quiz?.accessibility?.countdown,
+        },
+      };
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-    }, 6000);
-    // }
+      await updatingQuiz({ payload });
+      refetchQuiz();
+    } else {
+      setShowAnswerMetric(false);
+      setShowExplanation(false);
+      setChosenAnswerStatus(null);
+      //if (currentQuestionIndex < quiz.questions.length) {
+      // }
+      setShowTransiting(true);
+      setTimeout(() => {
+        setShowTransiting(false);
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      }, 6000);
+    }
   }
+
+  useEffect(() => {
+    if (quiz && quiz?.accessibility?.live && (isIdPresent || isOrganizer)) {
+      setShowTransiting(quiz?.accessibility?.countdown);
+    } else if (quiz && quiz?.accessibility?.live && quiz?.liveMode) {
+      setShowTransiting(quiz?.liveMode?.isTransitioning);
+    }
+  }, [quiz]);
 
   function previousQuestion() {
     if (currentQuestionIndex > 0) {
@@ -271,6 +312,8 @@ export function Qusetion({
     setShowExplanation((prev) => !prev);
   }
 
+  console.log("sdd", isIdPresent, isOrganizer, transiting);
+
   return (
     <div
       className={cn(
@@ -288,7 +331,7 @@ export function Qusetion({
       ) : (
         <>
           {transiting ? (
-            <Transition />
+            <Transition setShowTransiting={setShowTransiting} />
           ) : (
             <>
               <Button
@@ -426,14 +469,15 @@ export function Qusetion({
               </div>
 
               <Button
-                disabled={loading}
+                disabled={loading || isUpdating}
                 onClick={
                   showAnswerMetric
                     ? nextQuestion
                     : () => setShowAnswerMetric(true)
                 }
-                className="text-gray-50 mx-auto w-[180px] mt-6 bg-basePrimary gap-x-2 h-11 font-medium flex"
+                className="text-gray-50  mx-auto w-[180px] mt-6 bg-basePrimary gap-x-2 h-11 font-medium flex"
               >
+                {isUpdating && <LoaderAlt size={22} className="animate-spin" />}
                 <p>Next </p>
               </Button>
 
@@ -473,13 +517,18 @@ export function Qusetion({
   );
 }
 
-function Transition() {
+function Transition({
+  setShowTransiting,
+}: {
+  setShowTransiting: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [secondsLeft, setSecondsLeft] = useState(5);
 
   useEffect(() => {
     const countdownInterval = setInterval(() => {
       setSecondsLeft((prevMilliseconds) => {
         if (prevMilliseconds <= 1) {
+          setShowTransiting(false);
           clearInterval(countdownInterval);
           return 0;
         }

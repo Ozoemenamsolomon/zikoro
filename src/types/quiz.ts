@@ -7,6 +7,7 @@ export interface TQuiz<T> {
   lastUpdated_at: string;
   quizName: string;
   coverTitle: string;
+  liveMode: any;
   description: string;
   coverImage: string;
   branding: { poweredBy: boolean; eventName: boolean };

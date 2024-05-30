@@ -43,18 +43,21 @@ export default function RootLayout({
       <main className="relative w-full h-full bg-white" ref={divRef}>
         <SideBarLayout
           eventId={eventId}
-          children={
-            organization ? (
-              children
-            ) : (
-              <div className="mt-24 px-4 text-xl font-medium text-gray-800">
-                Please select an organization from the topbar to continue
-              </div>
-            )
-          }
+          children={children}
         />
       </main>
       <Toaster />
     </>
   );
 }
+
+
+/**
+ organization ? (
+              children
+            ) : (
+              <div className="mt-24 px-4 text-xl font-medium text-gray-800">
+                Please select an organization from the topbar to continue
+              </div>
+            )
+ */
