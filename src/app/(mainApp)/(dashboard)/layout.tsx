@@ -45,6 +45,7 @@ export default function RootLayout({
     user && event && String(event?.createdBy) === String(user.id);
 
   if (!user) {
+    router.push("login");
     return <div>You are not logged in, redirecting to login...</div>;
   }
 
@@ -54,13 +55,14 @@ export default function RootLayout({
         <SideBarLayout
           eventId={eventId}
           children={
-            (organization && isEventOwner) || !isEventOwner ? (
-              children
-            ) : (
-              <div className="mt-24 px-4 text-xl font-medium text-gray-800">
-                Please select an organization from the topbar to continue
-              </div>
-            )
+            // (organization && isEventOwner) || !isEventOwner ? (
+            //   children
+            // ) : (
+            //   <div className="mt-24 px-4 text-xl font-medium text-gray-800">
+            //     Please select an organization from the topbar to continue
+            //   </div>
+            // )
+            children
           }
         />
       </main>

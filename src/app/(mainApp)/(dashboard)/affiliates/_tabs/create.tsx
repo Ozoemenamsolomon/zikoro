@@ -43,6 +43,7 @@ import {
 import { useGetEvents, useGetUserEvents } from "@/hooks/services/events";
 import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const CreateAffiliateSchema = z.object({
   event: z.string(),
@@ -62,6 +63,8 @@ const Create = () => {
     value: 5,
   };
 
+  const { organization, setOrganization } = useOrganizationStore();
+
   const form = useForm<TCreateAffiliate>({
     resolver: zodResolver(CreateAffiliateSchema),
     defaultValues,
@@ -75,20 +78,18 @@ const Create = () => {
 
   const { events, isLoading: eventsIsLoading } = useGetUserEvents({
     userId: user?.id || 0,
+    organisationId: organization?.id,
   });
-  // 
+  //
 
   const { createAffiliateLink, isLoading: createLinkIsLoading } =
     useCreateAffiliateLink();
 
   const { watch, getValues } = form;
 
-  
-
   const commissionType = watch("commissionType");
 
   const onSubmit = async (data: TCreateAffiliate) => {
-    
     const {
       affiliateId,
       commissionType,

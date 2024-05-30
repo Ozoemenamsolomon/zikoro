@@ -71,9 +71,11 @@ export const useGetEvent = ({
 };
 
 export const useGetUserEvents = ({
-  userId,
+  userId = 0,
+  organisationId,
 }: {
   userId?: number;
+  organisationId: number;
 }): UseGetResult<TOrgEvent[], "events", "getUserEvents"> => {
   const [events, setEvents] = useState<TOrgEvent[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -83,9 +85,10 @@ export const useGetUserEvents = ({
     setLoading(true);
 
     try {
-      
       const { data, status } = await getRequest<TOrgEvent[]>({
-        endpoint: `/events${userId ? "?userId=" + userId : ""}`,
+        endpoint: `/events${userId ? "?userId=" + userId + "&" : "&"}${
+          organisationId ? "?organisationId=" + organisationId : ""
+        }`,
       });
 
       if (status !== 200) {
@@ -102,7 +105,7 @@ export const useGetUserEvents = ({
 
   useEffect(() => {
     getUserEvents();
-  }, []);
+  }, [organisationId]);
 
   return {
     events,
@@ -275,7 +278,7 @@ export function useCreateEvent() {
 
       if (status === 201 || status === 200) {
         setLoading(false);
-        //   
+        //
         router.push(` /event/${values?.eventAlias}/content/info`);
         toast.success("Event created successfully");
       }
@@ -885,7 +888,7 @@ export function useRedeemDiscountCode() {
         throw error;
       }
 
-      // 
+      //
 
       // check if code exist
       let isDiscountCodeExist = data?.map((v) => v.discountCode).includes(code);
@@ -1069,7 +1072,7 @@ export function useFetchRewards(eventId: string | number) {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      //  
+      //
     }
   }
 
@@ -1199,7 +1202,7 @@ export function useCheckTeamMember({ eventId }: { eventId?: string }) {
 
   return {
     isIdPresent,
-    eventLoading
+    eventLoading,
   };
 }
 
@@ -1239,7 +1242,6 @@ export function useVerifyUserAccess(eventId: string) {
     attendee,
     isOrganizer,
     loading,
-    isLoading
-    
+    isLoading,
   };
 }

@@ -6,9 +6,13 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
+      const { searchParams } = new URL(req.url);
+      const eventId = searchParams.get("eventId");
+
       const { data, error, status } = await supabase
         .from("attendeeEmailInvites")
-        .select("*");
+        .select("*")
+        .eq("eventId", eventId);
 
       if (error) throw error;
 
@@ -39,9 +43,7 @@ export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     try {
       const params = await req.json();
-      const { InviteDetails, Message } = params;
-
-      
+      const { InviteDetails, Message, eventName } = params;
 
       var { SendMailClient } = require("zeptomail");
 
@@ -50,24 +52,35 @@ export async function POST(req: NextRequest) {
         token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
       });
 
-      const resp = await client.sendMail({
-        from: {
-          address: process.env.NEXT_PUBLIC_EMAIL,
-          name: "Zikoro",
-        },
-        to: 
-        InviteDetails.map(({ email }: { email: string }) => (  {
-          email_address: {
-            address: email,
-            name: "attendee",
-          },
-        
-        })),
-        subject: `Invite from [organization] to [event name]`,
-        htmlbody: `<div>${Message}</div>`,
-      });
-      
-      
+      const senderAddress = process.env.NEXT_PUBLIC_EMAIL;
+      const senderName = "Zikoro";
+      const subject = `Invite from to ${eventName}`;
+      const htmlBody = `<div>${Message}</div>`;
+
+      for (const { email } of InviteDetails) {
+        try {
+          const resp = await client.sendMail({
+            from: {
+              address: senderAddress,
+              name: senderName,
+            },
+            to: [
+              {
+                email_address: {
+                  address: email,
+                  name: "attendee",
+                },
+              },
+            ],
+            subject,
+            htmlbody: htmlBody,
+          });
+          console.log(`Email sent to ${email}:`, resp);
+        } catch (error) {
+          console.error(`Failed to send email to ${email}:`, error);
+        }
+      }
+
       // let nodemailer = require("nodemailer");
       // const transporter = nodemailer.createTransport({
       //   host: "smtp.zoho.com",
@@ -88,7 +101,7 @@ export async function POST(req: NextRequest) {
 
       // await transporter.sendMail(mailData, function (err: any, info: any) {
       //   if (err) throw err;
-      //   else 
+      //   else
       // });
 
       const { error } = await supabase
