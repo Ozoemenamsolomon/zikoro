@@ -22,6 +22,8 @@ export default function Quiz({ eventId }: { eventId: string }) {
   function onClose() {
     setOpen((prev) => !prev);
   }
+
+  
   return (
     <InteractionLayout eventId={eventId}>
       <div className="w-full">
@@ -54,7 +56,7 @@ export default function Quiz({ eventId }: { eventId: string }) {
             quizzes.map((quiz, index) => (
               <QuizCard
                 refetch={getQuizzes}
-                isAttendee={isIdPresent || isOrganizer}
+                isNotAttendee={isIdPresent || isOrganizer}
                 key={quiz.quizAlias}
                 quiz={quiz}
               />

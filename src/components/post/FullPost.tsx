@@ -61,35 +61,6 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   const contentRef = useRef<HTMLDivElement>(null);
   const { updatePostShare } = useUpdatePostshare();
   const { updatePostView } = useUpdatePostView();
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-
-  //intersection observer
-  const observeEl = useRef<IntersectionObserver>();
-
-  //Get the exiting element
-  const existingElement = useCallback((node: HTMLDivElement | null) => {
-    if (observeEl.current) observeEl.current.disconnect();
-    observeEl.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-    });
-    if (node) observeEl.current.observe(node);
-  }, []);
-
-  const existingElementReadMore = useCallback((node: HTMLDivElement | null) => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        setIsVisible(!entry.isIntersecting);
-      });
-    });
-    if (node) observer.observe(node);
-    return () => {
-      if (node) observer.unobserve(node);
-    };
-  }, []);
 
   // Extracting the date only
   function extractAndFormatDate(dateTimeString: any): any {
@@ -236,6 +207,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
       {data && (
         <div className="mt-[120px] lg:mt-[200px] px-3 lg:px-0 ">
           {/* header section */}
+
           <div className="max-w-full lg:max-w-[982px] mx-auto flex flex-col gap-y-6 lg:gap-y-10 ">
             <div className="max-w-full lg:max-w-2xl lg:mx-auto flex flex-col gap-y-2 text-center ">
               <p className="text-indigo-600 text-[12px] lg:text-[15px] font-medium uppercase">
@@ -257,104 +229,110 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
               width={1000}
               height={500}
               className="w-full h-[160px] lg:w-[982px] lg:h-[450px]  object-cover hidden lg:block"
-              ref={existingElement}
             />
           </div>
 
           {/* body section */}
+          <div
+            // ref={existingElement}
+            className="w-full h-fit"
+          >
+            <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-24 lg:mb-24 ">
+              {/* Left */}
+              <div
+                className={`lg:inline sticky top-[120px] transform transition-all duration-200 pb-12 w-full flex-col lg:w-3/12 h-fit `}
+                id="left"
+              >
+                {/* section links */}
+                <div className="flex-col">
+                  {/* Top */}
+                  <p className="text-xl font-semibold">On This Page</p>
+                  {/* Links */}
 
-          <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-24 lg:mb-24 ">
-            {/* Left */}
-            <div
-              className={`lg:inline pb-12 w-full flex-col lg:w-3/12 h-fit ${
-                isVisible ? "lg:fixed lg:top-[120px] z-10" : "lg:relative"
-              }`}
-              id="left"
-            >
-              {/* section links */}
-              <div className="flex-col">
-                {/* Top */}
-                <p className="text-xl font-semibold">On This Page</p>
-                {/* Links */}
+                  {headings.map((heading, index) => {
+                    const id = `section-${index}`;
+                    return (
+                      <div key={id} id={id}>
+                        <Link href={`#${id}`}>
+                          <div className="text-base font-semibold  mt-8">
+                            <div
+                              className="blackLink"
+                              dangerouslySetInnerHTML={{
+                                __html: heading ?? "",
+                              }}
+                            />
+                          </div>
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
 
-                {headings.map((heading, index) => {
-                  const id = `section-${index}`;
-                  return (
-                    <div key={id} id={id}>
-                      <Link href={`#${id}`}>
-                        <div className="text-base font-semibold  mt-8">
-                          <div
-                            className="blackLink"
-                            dangerouslySetInnerHTML={{
-                              __html: heading ?? "",
-                            }}
-                          />
-                        </div>
-                      </Link>
+                {/* Share Buttons */}
+                <div className="mt-8">
+                  <p className="text-xl font-medium">Share This Article</p>
+                  <div className="flex gap-x-[14px] mt-4">
+                    <div
+                      className="cursor-pointer"
+                      onClick={handleShareOnTwitter}
+                    >
+                      <X />
                     </div>
-                  );
-                })}
-              </div>
-
-              {/* Share Buttons */}
-              <div className="mt-8">
-                <p className="text-xl font-medium">Share This Article</p>
-                <div className="flex gap-x-[14px] mt-4">
-                  <div
-                    className="cursor-pointer"
-                    onClick={handleShareOnTwitter}
-                  >
-                    <X />
-                  </div>
-                  <div
-                    className="cursor-pointer"
-                    onClick={handleShareOnFacebook}
-                  >
-                    <Facebook />
-                  </div>
-                  <div
-                    className="cursor-pointer"
-                    onClick={handleShareOnInstagram}
-                  >
-                    <Instagram />
-                  </div>
-                  <div
-                    className="cursor-pointer"
-                    onClick={handleShareOnLinkedin}
-                  >
-                    <Linkedin />
+                    <div
+                      className="cursor-pointer"
+                      onClick={handleShareOnFacebook}
+                    >
+                      <Facebook />
+                    </div>
+                    <div
+                      className="cursor-pointer"
+                      onClick={handleShareOnInstagram}
+                    >
+                      <Instagram />
+                    </div>
+                    <div
+                      className="cursor-pointer"
+                      onClick={handleShareOnLinkedin}
+                    >
+                      <Linkedin />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div
-              ref={contentRef}
-              className={` w-full  flex-col  pb-0 lg:pb-[50px] ${
-                isVisible
-                  ? "lg:ml-[30%] lg:w-9/12 lg:overflow-y-auto"
-                  : "lg:w-9/12"
-              }`}
-              id="right"
-            >
               <div
-                className="blog no-scrollbar"
-                dangerouslySetInnerHTML={{ __html: data?.content ?? "" }}
-              />
+                ref={contentRef}
+                className={` w-full  flex-col  pb-0 lg:pb-[50px] ${
+                  "" ? "lg:ml-[30%] lg:w-9/12 lg:overflow-y-auto" : "lg:w-9/12"
+                }`}
+                id="right"
+              >
+                <div
+                  className="blog no-scrollbar"
+                  dangerouslySetInnerHTML={{ __html: data?.content ?? "" }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="max-w-full lg:max-w-6xl mx-auto flex gap-x-4 ">
+            <p className="font-bold">Tags:</p>
+            <div className="grid grid-cols-4 gap-x-2">
+              {data.tags.map((tag) => (
+                <p className="text-b">{tag}</p>
+              ))}
             </div>
           </div>
 
           {/* Footer Section */}
-          <div
-            className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24 mt-44"
-            ref={existingElementReadMore}
-          >
-            <p
+
+          <div className="border-t-0 lg:border-t-[1px] border-gray-300 mb-12 lg:mb-24 mt-44">
+            <div
               className="text-center text-xl lg:text-3xl font-semibold mt-14"
               id="readMore"
             >
               Read More Articles
-            </p>
+            </div>
 
             {similarPosts.length > 0 ? (
               <div className="flex flex-col lg:flex-row mx-auto max-w-full lg:max-w-6xl gap-x-0 lg:gap-x-[100px] gap-y-7 lg:gap-y-0 pb-[80px] lg:pb-[162px] pt-12  ">

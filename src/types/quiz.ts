@@ -7,6 +7,7 @@ export interface TQuiz<T> {
   lastUpdated_at: string;
   quizName: string;
   coverTitle: string;
+  liveMode: any;
   description: string;
   coverImage: string;
   branding: { poweredBy: boolean; eventName: boolean };
@@ -15,7 +16,7 @@ export interface TQuiz<T> {
   totalPoints: number;
   eventAlias: string;
   quizAlias: string;
-  quizParticipants: { id: string; nickName: string; attendee?: TAttendee }[];
+  quizParticipants: { id: string; nickName: string; attendee?: TAttendee; joinedAt: string }[];
   accessibility: {
     visible: boolean;
     review: boolean;

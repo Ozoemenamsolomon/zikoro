@@ -80,12 +80,12 @@ export function About({
     >
       <div
         className={cn(
-          "w-full px-4 sm:px-6 gap-6 grid grid-cols-1  items-center",
+          "w-full  gap-6 grid grid-cols-1  items-center",
           className
         )}
       >
         {event?.description && (
-          <div className="w-full p-3 sm:p-4 mb-2">
+          <div className="w-full px-4 sm:px-6 mb-2">
             <div
               className="innerhtml"
               dangerouslySetInnerHTML={{
@@ -96,14 +96,14 @@ export function About({
         )}
         <div
           className={cn(
-            "w-full flex flex-col gap-y-6 p-3 sm:p-4",
-            isEventHome && "rounded-lg border"
+            "w-full flex flex-col gap-y-6",
+            isEventHome && ""
           )}
         >
           <div className="w-full h-full flex flex-col gap-y-6">
             {event?.eventAddress && (
               <ul className="w-full flex flex-col items-start justify-start space-y-4">
-                <li className="font-medium flex items-center gap-x-2 text-base sm:text-lg ">
+                <li className="font-medium px-4 sm:px-6 flex items-center gap-x-2 text-base sm:text-lg ">
                   <p>Event Address</p>
                   {coordinates && (
                     <Link
@@ -115,7 +115,7 @@ export function About({
                     </Link>
                   )}
                 </li>
-                <li className="flex flex-wrap leading-6 items-start justify-start">
+                <li className="flex flex-wrap px-4 sm:px-6 leading-6 items-start justify-start">
                   {event?.eventAddress}
                 </li>
                 <li className="w-full">

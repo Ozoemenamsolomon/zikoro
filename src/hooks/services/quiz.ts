@@ -9,6 +9,7 @@ import {
 } from "@/utils/api";
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { saveCookie } from "..";
 
 const supabase = createClientComponentClient();
 export const useCreateQuiz = () => {
@@ -136,7 +137,11 @@ export const useGetQuiz = ({ quizId }: { quizId: string }) => {
     getQuiz();
   }, [quizId]);
 
-  return { quiz, isLoading, getQuiz };
+  const fetchQuiz = (updatedQuiz: TQuiz<TQuestion[]>) => {
+    setQuiz(updatedQuiz);
+  };
+
+  return { quiz, isLoading, getQuiz, setQuiz: fetchQuiz };
 };
 
 export const useDeleteQuiz = () => {
@@ -288,45 +293,51 @@ export const useGetQuizAnswer = () => {
 };
 
 export function useRealtimeQuestionUpdate({ quizId }: { quizId: string }) {
+  const [quiz, setQuiz] = useState<TQuiz<TQuestion[]> | null>(null);
   useEffect(() => {
-    const channel = supabase
-      .channel("live-quiz")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "quiz",
-          filter: `quizAlias=eq.${quizId}`,
-        },
-        (payload) => {
-          console.log(payload);
-        }
-      )
-      .subscribe();
+    function subscribeToUpdate() {
+      const channel = supabase
+        .channel("live-quiz")
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "quiz",
+            filter: `quizAlias=eq.${quizId}`,
+          },
+          (payload) => {
+            console.log(payload);
+          }
+        )
+        .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+
+    const cleanUp = subscribeToUpdate();
+
+    return cleanUp;
   }, [supabase]);
 }
 
 export const useRealtimePresence = () => {
-  const [presentUser, setPresentUser] = useState<TConnectedUser>();
   useEffect(() => {
     const channel = supabase.channel("live-quiz");
 
     channel
       .on("presence", { event: "sync" }, () => {
         const newState = channel.presenceState();
-          console.log("sync", newState);
+        // console.log("sync", newState);
         for (let id in newState) {
           //  console.log(newState[id][0])
         }
       })
       .on("presence", { event: "join" }, ({ key, newPresences }) => {
-        // console.log("join", key, newPresences[0]);
-        setPresentUser({
+        console.log("join", key, newPresences[0]);
+        saveCookie("player", {
           userId: newPresences[0]?.presence_ref,
           connectedAt: newPresences[0]?.online_at,
         });
@@ -346,10 +357,6 @@ export const useRealtimePresence = () => {
       supabase.removeChannel(channel);
     };
   }, [supabase]);
-
-  return {
-    presentUser,
-  };
 };
 
 export function useBroadCastMessage() {
@@ -357,17 +364,16 @@ export function useBroadCastMessage() {
     // Join a room/topic. Can be anything except for 'realtime'.
     const channelB = supabase.channel("live-quiz");
 
-
     channelB.subscribe((status) => {
-      if (status === 'SUBSCRIBED') {
-        console.log("status", status)
+      if (status === "SUBSCRIBED") {
+        console.log("status", status);
         channelB.send({
-          type: 'broadcast',
-          event: 'cursor-pos',
+          type: "broadcast",
+          event: "cursor-pos",
           payload: { x: Math.random(), y: Math.random() },
-        })
+        });
       }
-    })
+    });
   }
 
   return {
@@ -379,18 +385,21 @@ export function useGetBroadCastMessage() {
   useEffect(() => {
     // Join a room/topic. Can be anything except for 'realtime'.
 
-
     // Simple function to log any messages we receive
     function messageReceived(payload: any) {
       console.log("new message", payload);
     }
 
     // Subscribe to the Channel
-const channel = supabase.channel("live-quiz")
+    const channel = supabase.channel("live-quiz");
+    console.log("listen yeee", channel);
 
-channel.on("broadcast", { event: "cursor-pos" }, (payload) => {
-  console.log("Cursor position received!", payload);
-}).subscribe((status) => {
+    channel.on("broadcast", { event: "cursor-pos" }, (payload) => {
+      console.log("Cursor position received!", payload);
+    });
+
+    /**
+ channel.subscribe((status) => {
   if (status === "SUBSCRIBED") {
     console.log("listen")
     channel.send({
@@ -400,6 +409,10 @@ channel.on("broadcast", { event: "cursor-pos" }, (payload) => {
     });
   }
 });
-  
+ */
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [supabase]);
 }

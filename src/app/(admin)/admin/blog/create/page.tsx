@@ -35,6 +35,7 @@ export default function BlogCreate() {
   const [tagModalOpen, setTagModalOpen] = useState<boolean>(false);
   const [headerImageUrl, setHeaderImageUrl] = useState<string>("");
   const [scheduledDate, setScheduledDate] = useState<any>(null);
+  const [isScheduled, setIsScheduled] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const router = useRouter();
@@ -202,8 +203,14 @@ export default function BlogCreate() {
       toast.error("Please select a scheduled date");
       return;
     }
+
+    //update isScheduled state
+    setIsScheduled(true);
+
+    //image upload
     const imageUrl = file && (await uploadImage());
 
+    //add scheduled post to blog Post
     fetch("/api/blog/add", {
       method: "POST",
       headers: {
@@ -407,10 +414,11 @@ export default function BlogCreate() {
                     {isOpen && (
                       <div className="flex gap-x-4 mt-6 items-center mx-auto justify-center">
                         <button
+                          disabled={isScheduled}
                           onClick={() => schedulePost()}
                           className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md "
                         >
-                          Schedule to publish
+                          {isScheduled ? "Scheduled" : "Schedule to publish"}
                         </button>
 
                         <button

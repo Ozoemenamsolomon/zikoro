@@ -16,7 +16,7 @@ type DBSelectedLocation = {
   eventCity: string;
   eventAlias: string;
   eventCountry: string;
-  locationType: string;
+  locationType: string; 
   pricing: [];
   pricingCurrency: string;
   startDateTime: string;
@@ -31,6 +31,7 @@ export default function SelectedLocationList({
   const [eventData, setEventData] = useState<DBSelectedLocation[] | undefined>(
     undefined
   );
+
   const [location, setLocation] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 

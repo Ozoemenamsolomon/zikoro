@@ -129,7 +129,7 @@ export function EventDetailTabs({
         className={cn(
           "w-full",
           isEventDetailPage &&
-            "mx-auto p-3 sm:p-6 bg-white mt-4 rounded-lg py-3 sm:mt-6 w-full sm:w-[65%] lg:w-[90%] xl:w-[80%]"
+            "mx-auto bg-white mt-4 rounded-lg py-3 sm:mt-6 w-full sm:w-[65%] lg:w-[90%] xl:w-[80%]"
         )}
       >
         {active === EventDetailTab.ABOUT_TAB && (

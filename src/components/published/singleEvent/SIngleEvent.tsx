@@ -198,15 +198,18 @@ export function SingleEvent({
               alt="logo"
               width={300}
               height={300}
-              className="w-[100px] md:w-[150px] h-[30px] md:h-[40px]"
+              className="w-fit h-fit max-h-[40px]"
             />
               </div>
             </div>
             {/** */}
             <div className={cn("w-full lg:col-span-4 flex flex-col gap-y-3 py-4 px-4 sm:px-10 sm:py-6 items-start justify-start", isDetail && "mx-auto lg:col-span-1 max-w-2xl")}>
-              <p className="text-base text-start w-full  sm:text-2xl font-medium  ">
+             <div className="flex w-full items-center justify-between">
+             <p className="text-base text-start w-full  sm:text-2xl font-medium  ">
                 {event?.eventTitle}
               </p>
+                <Button className="text-white bg-basePrimary h-10 text-sm rounded-3xl">{event?.locationType}</Button>
+             </div>
               <div className="flex items-center justify-between w-full">
                 <AboutWidget
                   Icon={CalendarDateFill}
@@ -224,10 +227,10 @@ export function SingleEvent({
                     </div>
                   }
                 />
-                <EventLocationType
+              {/*  <EventLocationType
                   locationType={event?.locationType}
                   className="w-fit px-4 h-10 text-xs"
-                />
+                />*/}
               </div>
               <AboutWidget Icon={TimeFive} text={`${startTime} - ${endTime}`} />
               <AboutWidget
@@ -241,41 +244,7 @@ export function SingleEvent({
                 }
               />
 
-              <div className="w-full flex items-center gap-x-6 justify-start">
-                <h3>Speak with the Event Team</h3>
-
-                <div className={cn("flex items-center gap-x-2", pathname.includes("preview") && "hidden")}>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      phoneCall();
-                    }}
-                    className={cn("text-black h-fit w-fit px-0")}
-                  >
-                    <Telephone size={20} />
-                  </Button>
-
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      whatsapp();
-                    }}
-                    className={cn("text-black h-fit w-fit px-0")}
-                  >
-                    <Whatsapp size={22} />
-                  </Button>
-
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      sendMail();
-                    }}
-                    className={cn("text-black h-fit w-fit px-0")}
-                  >
-                    <EmailOutline size={22} />
-                  </Button>
-                </div>
-              </div>
+              
 
               <div className="w-full flex items-center justify-between">
                 {Array.isArray(event?.pricing) && event?.pricing?.length > 0 && Number(price) > 0 ? (
@@ -350,6 +319,41 @@ export function SingleEvent({
                 </div>
               )}
               <div className="w-full flex  justify-between items-center ">
+              <div className=" flex items-center gap-x-6 justify-start">
+                <h3>Speak with the Event Team</h3>
+
+                <div className={cn("flex items-center gap-x-2", pathname.includes("preview") && "hidden")}>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      phoneCall();
+                    }}
+                    className={cn("text-black h-fit w-fit px-0")}
+                  >
+                    <Telephone size={20} />
+                  </Button>
+
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      whatsapp();
+                    }}
+                    className={cn("text-black h-fit w-fit px-0")}
+                  >
+                    <Whatsapp size={22} />
+                  </Button>
+
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      sendMail();
+                    }}
+                    className={cn("text-black h-fit w-fit px-0")}
+                  >
+                    <EmailOutline size={22} />
+                  </Button>
+                </div>
+              </div>
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -366,12 +370,12 @@ export function SingleEvent({
                     />
                   )}
                 </Button>
-                {!isDetail && (
+                {/*!isDetail && (
                   <Link
                     className="text-basePrimary "
                     href={`/live-events/${event?.eventAlias}`}
                   >{`Read more >>`}</Link>
-                )}
+                )*/}
               </div>
             </div>
           </div>
