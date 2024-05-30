@@ -8,12 +8,18 @@ import {
   useGetAnswer,
   useGetQuizAnswer,
 } from "@/hooks";
-import { TRefinedQuestion, TQuiz, TQuestion, TAttendee } from "@/types";
+import {
+  TRefinedQuestion,
+  TQuiz,
+  TQuestion,
+  TAttendee,
+  TConnectedUser,
+} from "@/types";
 import {
   useCheckTeamMember,
   useVerifyUserAccess,
   useRealtimePresence,
-  useRealtimeQuestionUpdate,
+  getCookie,
 } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import Image from "next/image";
@@ -32,8 +38,8 @@ export default function Presentation({
   eventId: string;
   quizId: string;
 }) {
-  const { quiz, getQuiz } = useGetQuiz({ quizId });
- 
+  const { quiz, getQuiz, setQuiz } = useGetQuiz({ quizId });
+
   const [isYetTosStart, setIsYetToStart] = useState(true);
   const { isOrganizer, attendeeId, attendee, loading, isLoading } =
     useVerifyUserAccess(eventId);
@@ -47,9 +53,7 @@ export default function Presentation({
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
- // useRealtimeQuestionUpdate({quizId})
-
-
+  // useRealtimeQuestionUpdate({quizId})
 
   // subscribe
   useEffect(() => {
@@ -66,6 +70,7 @@ export default function Presentation({
           },
           (payload) => {
             console.log(payload);
+            setQuiz(payload.new as TQuiz<TQuestion[]>)
           }
         )
         .subscribe();
@@ -78,11 +83,11 @@ export default function Presentation({
     const cleanUp = subscribeToUpdate();
 
     return cleanUp;
-  }, []);
+  }, [supabase, quiz]);
 
   const id = useMemo(() => {
-      return generateAlias();
-  },[])
+    return generateAlias();
+  }, []);
   function onClose() {
     setLeftBox((prev) => !prev);
   }
@@ -192,9 +197,7 @@ export default function Presentation({
           )}
         </>
       ) : (
-        <div
-        
-        className="w-full h-[40vh] flex items-center justify-center">
+        <div className="w-full h-[40vh] flex items-center justify-center">
           <LoaderAlt size={30} className="animate-spin" />
         </div>
       )}
@@ -228,7 +231,8 @@ function AttendeeRegistration({
   const { updateQuiz } = useUpdateQuiz();
 
   const [loading, setLoading] = useState(false);
-  const { presentUser } = useRealtimePresence();
+  useRealtimePresence();
+  const player = getCookie<TConnectedUser>("player");
   //console.log("present", presentUser)
   // const [isLobby, setisLobby] = useState(false);
 
@@ -256,19 +260,48 @@ function AttendeeRegistration({
       quizParticipants: actualQuiz?.quizParticipants
         ? [
             ...actualQuiz?.quizParticipants,
-            { id, nickName, attendee: attendee || undefined },
+            {
+              id: player?.userId || id,
+              nickName,
+              attendee: attendee || undefined,
+              joinedAt: player?.connectedAt || new Date().toISOString(),
+            },
           ]
-        : [{ id, nickName, attendee: attendee || undefined }],
+        : [
+            {
+              id: player?.userId || id,
+              nickName,
+              attendee: attendee || undefined,
+              joinedAt: player?.connectedAt || new Date().toISOString(),
+            },
+          ],
     };
     await updateQuiz({ payload });
     setLoading(false);
     refetch();
-    close();
+    if (quiz?.accessibility?.live) {
+      setisLobby(true);
+    }
+    else {
+      close()
+    }
   }
 
   function onClose() {
     setisLobby(false);
     close();
+  }
+  async function startLiveQuiz() {
+    setLoading(true);
+    const payload: Partial<TQuiz<TQuestion[]>> = {
+      ...actualQuiz,
+      liveMode: {startingAt: new Date().toISOString()}
+    };
+    await updateQuiz({ payload });
+    refetch();
+    setisLobby(true)
+    setLoading(false);
+   
   }
   return (
     <>
@@ -306,9 +339,7 @@ function AttendeeRegistration({
 
           <Button
             disabled={loading}
-            onClick={
-              quiz?.accessibility?.live ? () => setisLobby(true) : submit
-            }
+            onClick={submit}
             className="bg-basePrimary gap-x-2 px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
           >
             {loading && <LoaderAlt size={22} className="animate-spin" />}
@@ -333,15 +364,17 @@ function AttendeeRegistration({
             {quiz?.coverTitle ?? ""}
           </h2>
 
-         {quiz?.description && <div className="w-full flex flex-col items-start justify-start gap-y-4">
-            <h2 className="font-semibold">Description</h2>
-            <p className="text-sm">{quiz?.description ?? ""}</p>
-          </div>}
+          {quiz?.description && (
+            <div className="w-full flex flex-col items-start justify-start gap-y-4">
+              <h2 className="font-semibold">Description</h2>
+              <p className="text-sm">{quiz?.description ?? ""}</p>
+            </div>
+          )}
           <Button
-           
-           onClick={quiz?.accessibility?.live ? () => setisLobby(true) : close}
-            className="bg-basePrimary px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
+            onClick={quiz?.accessibility?.live ? startLiveQuiz : close}
+            className="bg-basePrimary gap-x-2 px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
           >
+             {loading && <LoaderAlt size={22} className="animate-spin" />}
             Start Quiz
           </Button>
         </div>
@@ -353,6 +386,7 @@ function AttendeeRegistration({
           quiz={quiz}
           submit={submit}
           close={onClose}
+          refetch={refetch}
           isAttendee={isAttendee}
         />
       )}

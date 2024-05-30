@@ -16,7 +16,7 @@ export interface TQuiz<T> {
   totalPoints: number;
   eventAlias: string;
   quizAlias: string;
-  quizParticipants: { id: string; nickName: string; attendee?: TAttendee }[];
+  quizParticipants: { id: string; nickName: string; attendee?: TAttendee; joinedAt: string }[];
   accessibility: {
     visible: boolean;
     review: boolean;
