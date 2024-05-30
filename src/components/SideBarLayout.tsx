@@ -83,6 +83,10 @@ export function SideBarLayout({
     };
   }, [organizationIsLoading]);
 
+  if (!user) {
+    router.push("login");
+  }
+
   return (
     <>
       <div
@@ -128,7 +132,12 @@ function SideNavs({
 }) {
   const { organizationId }: { organizationId: string } = useParams();
   const user = getCookie("user");
+  const router = useRouter();
   const { logOut } = useLogOut();
+
+  if (!user) {
+    router.push("login");
+  }
 
   // max-[1024px]:hidden
   return (
