@@ -131,13 +131,8 @@ function SideNavs({
   isHaveEvent?: boolean;
 }) {
   const { organizationId }: { organizationId: string } = useParams();
-  const user = getCookie("user");
   const router = useRouter();
   const { logOut } = useLogOut();
-
-  if (!user) {
-    router.push("login");
-  }
 
   // max-[1024px]:hidden
   return (

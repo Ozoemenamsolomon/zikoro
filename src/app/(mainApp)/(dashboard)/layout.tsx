@@ -44,9 +44,9 @@ export default function RootLayout({
   const isEventOwner =
     user && event && String(event?.createdBy) === String(user.id);
 
-  if (!user) {
-    return <div>You are not logged in, redirecting to login...</div>;
-  }
+  // if (!user) {
+  //   return <div>You are not logged in, redirecting to login...</div>;
+  // }
 
   return (
     <>
