@@ -79,8 +79,8 @@ export default function FeaturedEventList({ searchQuery }: selectedEventProps) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-5 lg:gap-y-0 mt-[50px] bg-white ">
-            {filteredEvents?.length &&
-              filteredEvents?.map((event, index) => (
+            { filteredEvents && filteredEvents?.length &&
+              filteredEvents.slice(0,4).map((event, index) => (
                 <FeaturedEvent
                   key={event.id}
                   id={event.id}
