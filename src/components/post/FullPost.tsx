@@ -318,6 +318,16 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             </div>
           </div>
           </div>
+          </div>
+
+          <div className="max-w-full lg:max-w-6xl mx-auto flex gap-x-4 ">
+            <p className="font-bold">Tags:</p>
+            <div className="grid grid-cols-4 gap-x-2">
+              {data.tags.map((tag) => (
+                <p className="text-b">{tag}</p>
+              ))}
+            </div>
+          </div>
 
           {/* Footer Section */}
 

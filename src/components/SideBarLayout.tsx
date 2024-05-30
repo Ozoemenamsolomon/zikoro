@@ -83,6 +83,8 @@ export function SideBarLayout({
     };
   }, [organizationIsLoading]);
 
+  if (!user) router.push("login");
+
   return (
     <>
       <div
