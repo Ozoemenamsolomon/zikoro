@@ -27,6 +27,7 @@ import {
 } from "@/hooks";
 import { sendMail, whatsapp } from "@/utils";
 import { TUser } from "@/types";
+
 export function SideBarLayout({
   eventId,
   children,
@@ -73,7 +74,7 @@ export function SideBarLayout({
     userOrganizations,
     isLoading: organizationIsLoading,
     getUserOrganizations,
-  } = useGetUserTeamOrganizations({ userEmail: user.userEmail });
+  } = useGetUserTeamOrganizations({ userEmail: user?.userEmail });
 
   useEffect(() => {
     return () => {
@@ -82,10 +83,6 @@ export function SideBarLayout({
       if (!userOrganizations) return router.push("/home");
     };
   }, [organizationIsLoading]);
-
-  if (!user) {
-    router.push("login");
-  }
 
   return (
     <>
@@ -133,6 +130,7 @@ function SideNavs({
   const { organizationId }: { organizationId: string } = useParams();
   const router = useRouter();
   const { logOut } = useLogOut();
+  const user = getCookie<TUser>("user");
 
   // max-[1024px]:hidden
   return (

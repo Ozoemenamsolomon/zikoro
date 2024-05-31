@@ -23,10 +23,7 @@ export function MobileBottomNav({
   const pathname = usePathname();
   const event = getCookie("currentEvent");
   const router = useRouter();
-
-  if (!user) {
-    router.push("login");
-  }
+  
   return (
     <nav className="w-full flex sm:hidden items-center justify-between border-t z-[99999] px-4 py-2 fixed bottom-0 inset-x-0 bg-white">
       <button
