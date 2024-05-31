@@ -133,7 +133,6 @@ export function useUpdatePostView() {
       }
 
       if (status === 204 || status === 200) {
-        console.log("post view updated");
       }
     } catch (error) {}
   }

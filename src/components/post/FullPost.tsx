@@ -134,7 +134,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
     }
   };
 
-  //useEffect
+  //useEffect for side bar links
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLAnchorElement;
@@ -162,7 +162,6 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
   const headings = data?.content.match(/<h[1](.*?)>(.*?)<\/h[1]>/g) || [];
 
-  //fetch the post
   useEffect(() => {
     const fetchSimilarPosts = async () => {
       if (data) {
@@ -180,10 +179,23 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           // Get current post tags
           const currentPostTags: string[] = data?.tags || [];
 
-          // Filter posts based on tags
-          const similarPostsFiltered = allPostsData.data.filter((post: any) =>
-            post.tags.some((tag: any) => currentPostTags.includes(tag))
+          // Ensure tags are trimmed and lowercased for comparison
+          const normalizedCurrentPostTags = currentPostTags.map((tag) =>
+            tag.trim().toLowerCase()
           );
+
+          // Filter posts based on tags
+          const similarPostsFiltered = allPostsData.data.filter((post: any) => {
+            const normalizedPostTags = post.tags.map((tag: string) =>
+              tag.trim().toLowerCase()
+            );
+            const hasMatchingTag = normalizedPostTags.some((tag: string) =>
+              normalizedCurrentPostTags.includes(tag)
+            );
+            if (hasMatchingTag) {
+            }
+            return hasMatchingTag;
+          });
 
           setSimilarPosts(similarPostsFiltered);
         } catch (error) {
@@ -237,10 +249,10 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             // ref={existingElement}
             className="w-full h-fit"
           >
-            <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-24 lg:mb-24 ">
+            <div className="max-w-full lg:max-w-6xl lg:mx-auto flex gap-x-0 lg:gap-x-28 mt-5 mb-10 lg:mt-24 lg:mb-24  ">
               {/* Left */}
               <div
-                className={`lg:inline sticky top-[120px] transform transition-all duration-200 pb-12 w-full flex-col lg:w-3/12 h-fit `}
+                className={`hidden lg:inline sticky top-[120px] transform transition-all duration-200 pb-12 w-full flex-col lg:w-3/12 h-fit border-[1px] border-gray-100 rounded-lg px-3 pt-2`}
                 id="left"
               >
                 {/* section links */}
