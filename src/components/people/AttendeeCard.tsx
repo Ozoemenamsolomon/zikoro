@@ -117,7 +117,10 @@ export default function AttendeeCard(props) {
                       </div>
                     )}
                     {(props.whatsappNumber || props.phoneNumber) && (
-                      <button onClick={props.sendWhatsAppMessage} className="flex-1">
+                      <button
+                        onClick={props.sendWhatsAppMessage}
+                        className="flex-1"
+                      >
                         <div className=" w-12 h-12 rounded-[50%] flex justify-center items-center">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -184,7 +187,6 @@ export default function AttendeeCard(props) {
                   !props.attendeeExchangedContacts && (
                     <SlideToReveal
                       action={() => {
-                        
                         props.setOpen(true);
                       }}
                     />
@@ -204,7 +206,7 @@ export default function AttendeeCard(props) {
               </button>
             </div>
           </div>
-          <div className="pt-12 pb-4 px-2 md:px-6 grid md:grid-cols-2 md:justify-center md:items-center gap-2 md:gap-8 w-full">
+          <div className="pt-12 pb-4 px-6 grid md:grid-cols-2 md:justify-center md:items-center gap-2 md:gap-8 w-full">
             <div className="flex flex-col gap-4 flex-1 h-full col-span-1">
               {props.phoneNumber && (
                 <div className="flex gap-1 items-center">
@@ -225,8 +227,9 @@ export default function AttendeeCard(props) {
                     />
                   </svg>
                   <span className="text-gray-500 text-xs md:text-sm truncate">
-                    {props.attendeeExchangedContacts &&
-                    props.attendeeExchangedContacts.status === "accepted"
+                    {props.isEventOwner ||
+                    (props.attendeeExchangedContacts &&
+                      props.attendeeExchangedContacts.status === "accepted")
                       ? props.phoneNumber
                       : "+xxxxxxxxxxxx"}
                   </span>
@@ -247,8 +250,9 @@ export default function AttendeeCard(props) {
                     />
                   </svg>
                   <span className="text-gray-500 text-xs md:text-sm truncate">
-                    {props.attendeeExchangedContacts &&
-                    props.attendeeExchangedContacts.status === "accepted" ? (
+                    {props.isEventOwner ||
+                    (props.attendeeExchangedContacts &&
+                      props.attendeeExchangedContacts.status === "accepted") ? (
                       <>{props.whatsappNumber || props.phoneNumber}</>
                     ) : (
                       "+xxxxxxxxxxxx"
@@ -272,8 +276,9 @@ export default function AttendeeCard(props) {
                   />
                 </svg>
                 <span className="text-gray-500 text-xs md:text-sm truncate">
-                  {props.attendeeExchangedContacts &&
-                  props.attendeeExchangedContacts.status === "accepted"
+                  {props.isEventOwner ||
+                  (props.attendeeExchangedContacts &&
+                    props.attendeeExchangedContacts.status === "accepted")
                     ? props.email
                     : "xxxxx@gmail.com"}
                 </span>

@@ -9,9 +9,7 @@ import { Event, TUser } from "@/types";
 const People = ({ children }: { children: React.ReactNode }) => {
   const pathNames = usePathname().split("/");
 
-  useEffect(() => {
-    
-  }, [pathNames]);
+  useEffect(() => {}, [pathNames]);
 
   const user = getCookie<TUser>("user");
   // const event = getCookie<Event>("event");
@@ -24,8 +22,6 @@ const People = ({ children }: { children: React.ReactNode }) => {
     isAlias: true,
   });
 
-  
-
   console.log(
     String(event?.createdBy),
     String(user.id),
@@ -34,9 +30,9 @@ const People = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <section className="bg-white ">
-        <nav className="flex justify-between items-center w-full overflow-x-auto no-scrollbar border-b-2 md:border-b-0 border-[#F3F3F3]">
-          <ul className="px-8 pt-3 pb-3 flex items-center font-normal gap-x-8 text-sm">
+      <section className="bg-white">
+        <nav className="flex justify-between items-center w-full overflow-x-auto no-scrollbar border-b md:border-b-0">
+          <ul className="px-8 pl-[60px] lg:pl-[30px] py-5 flex items-center font-normal gap-x-8 text-sm">
             {PeopleLinks.map(({ href, name, hideFromAttendee }) => (
               <li
                 key={name}

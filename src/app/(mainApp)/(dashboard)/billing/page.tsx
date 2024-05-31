@@ -47,7 +47,7 @@ export default function page() {
     <section className="bg-white pt-[4.5rem] px-2 md:px-4 md:pb-4 pb-2  space-y-6">
       <Tabs
         onValueChange={(value) => handleTabChange(value)}
-        defaultValue={searchParams.get("tab") || "details"}
+        defaultValue={searchParams.get("tab") || "all"}
         className=""
       >
         <TabsList className="bg-transparent">

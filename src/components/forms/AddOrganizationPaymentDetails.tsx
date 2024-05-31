@@ -157,14 +157,14 @@ export default function AddOrganizationPaymentDetails() {
   }
 
   return (
-    <div className="pl-8 mt-4 space-y-4">
-      <h1 className="text-3xl md:text-lg text-gray-800 font-bold">
+    <div className="md:pl-8 mt-4 space-y-4">
+      <h1 className="md:text-lg text-gray-800 font-bold">
         Organization Account Details
       </h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 w-1/2"
+          className="space-y-6 md:w-1/2"
         >
           <FormField
             control={form.control}

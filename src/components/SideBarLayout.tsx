@@ -145,8 +145,8 @@ function SideNavs({
         id="sidebar"
         className={`fixed  transition-all duration-300 transform ease-in-out group  inset-y-0 left-0 h-full ${
           isNav
-            ? " bg-white/50 block z-[49] group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]  "
-            : " z-[65] max-[642px]:hidden group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]"
+            ? " bg-white/50 block z-[20] group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]  "
+            : " z-[15] max-[642px]:hidden group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]"
         }`}
       >
         <div
