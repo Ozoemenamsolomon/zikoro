@@ -16,7 +16,7 @@ type DBSelectedLocation = {
   eventCity: string;
   eventAlias: string;
   eventCountry: string;
-  locationType: string; 
+  locationType: string;
   pricing: [];
   pricingCurrency: string;
   startDateTime: string;
@@ -34,6 +34,7 @@ export default function SelectedLocationList({
 
   const [location, setLocation] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [allEventCountries, setAllEventCountries] = useState<string[]>([]);
 
   //filter event
   const filteredEvents = eventData?.filter((event) => {
@@ -45,6 +46,7 @@ export default function SelectedLocationList({
     );
   });
 
+  // fetch the Latest
   useEffect(() => {
     async function fetchEventFeautured() {
       fetch(`/api/explore?eventCountry=${location}`, {
@@ -58,9 +60,18 @@ export default function SelectedLocationList({
         .catch((error) => console.error("Error:", error));
     }
 
-    // fetch the functions
     fetchEventFeautured();
   }, [location]);
+
+  //GETTING ALL THE COUNTRIES
+  useEffect(() => {
+    if (eventData) {
+      const countries: string[] = eventData.map((event) => event.eventCountry);
+      setAllEventCountries(countries);
+    }
+  }, [eventData]);
+
+  console.log(allEventCountries);
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -112,7 +123,7 @@ export default function SelectedLocationList({
 
     // fetch the functions
     fetchLocation();
-  }, [eventData]);
+  }, []);
 
   return (
     <>
@@ -124,14 +135,27 @@ export default function SelectedLocationList({
               <LocationIcon1 />
               <div className="font-semibold text-[20px] lg:text-[32px]">
                 {location ? (
-                  <p className="">{location}</p>
+                  <select
+                    className="mt-2 p-2 border-none ouline-none"
+                    defaultValue="location"
+                    disabled={!location}
+                  >
+                    <option value="location" disabled>
+                      {location || "Couldn't Get Location"}
+                    </option>
+                    {allEventCountries.map((country, i) => (
+                      <option key={i} value={country}>
+                        {country}
+                      </option>
+                    ))}
+                  </select>
                 ) : (
                   "Couldnt Get Location"
                 )}
               </div>
             </div>
 
-            {eventData && eventData.length > 4 && (
+            {/* {eventData && eventData.length > 4 && (
               <div
                 onClick={() => router.push("/explore/featured-events")}
                 className="hidden lg:flex gap-x-4 cursor-pointer items-center"
@@ -141,32 +165,34 @@ export default function SelectedLocationList({
                 </p>
                 <RightArrow />
               </div>
-            )}
+            )} */}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-0 md:gap-x-4 lg:gap-x-4 gap-y-5 lg:gap-y-0 mt-[10px] lg:mt-[50px] bg-white  ">
             {filteredEvents?.length &&
-              filteredEvents.map((event, index) => (
-                <SelectedLocation
-                  key={event.id}
-                  id={event.id}
-                  eventPoster={event.eventPoster}
-                  eventTitle={event.eventTitle}
-                  eventCity={event.eventCity}
-                  eventAlias={event.eventAlias}
-                  eventCountry={event.eventCountry}
-                  eventCategory={event.eventCategory}
-                  locationType={event.locationType}
-                  pricing={event.pricing}
-                  pricingCurrency={event.pricingCurrency}
-                  startDateTime={event.startDateTime}
-                  expectedParticipants={event.expectedParticipants}
-                  registered={event.registered}
-                />
-              ))}
+              filteredEvents
+                .slice(0, 4)
+                .map((event, index) => (
+                  <SelectedLocation
+                    key={event.id}
+                    id={event.id}
+                    eventPoster={event.eventPoster}
+                    eventTitle={event.eventTitle}
+                    eventCity={event.eventCity}
+                    eventAlias={event.eventAlias}
+                    eventCountry={event.eventCountry}
+                    eventCategory={event.eventCategory}
+                    locationType={event.locationType}
+                    pricing={event.pricing}
+                    pricingCurrency={event.pricingCurrency}
+                    startDateTime={event.startDateTime}
+                    expectedParticipants={event.expectedParticipants}
+                    registered={event.registered}
+                  />
+                ))}
           </div>
 
-          {eventData && eventData.length > 4 && (
+          {/* {eventData && eventData.length > 4 && (
             <div
               onClick={() => router.push("/explore/featured-events")}
               className=" justify-end mt-[30px] flex lg:hidden gap-x-4 cursor-pointer items-center"
@@ -176,7 +202,7 @@ export default function SelectedLocationList({
               </p>
               <RightArrow />
             </div>
-          )}
+          )} */}
         </div>
       )}
     </>

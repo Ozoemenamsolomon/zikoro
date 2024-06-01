@@ -121,13 +121,13 @@ export default function Footer() {
             Resources
           </li>
           <li
-            onClick={() => router.push("/explore")}
+            onClick={() => router.push("/explore/")}
             className="text-[13px] lg:text-base font-normal cursor-pointer pt-4 lg:pt-0"
           >
             Explore Events
           </li>
           <li
-            onClick={() => router.push("/verify")}
+            onClick={() => router.push("/verify/certificate")}
             className="text-[13px] lg:text-base font-normal cursor-pointer"
           >
             Verify Certificates
@@ -184,12 +184,15 @@ export default function Footer() {
           {/* right */}
           <ul className="flex gap-x-3 lg:gap-x-4">
             <li>
-              <a href="https://m.facebook.com/profile.php?id=61558280512718&name=xhp_nt__fb__action__open_user" target="_blank">
+              <a
+                href="https://m.facebook.com/profile.php?id=61558280512718&name=xhp_nt__fb__action__open_user"
+                target="_blank"
+              >
                 <Facebook />
               </a>
             </li>
             <li>
-              <a href="">
+              <a href="https://x.com/zikoro24" target="_blank">
                 <X />
               </a>
             </li>

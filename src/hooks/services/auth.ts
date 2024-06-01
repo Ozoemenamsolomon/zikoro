@@ -81,7 +81,10 @@ export function useLogin() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function logIn(values: z.infer<typeof loginSchema>) {
+  async function logIn(
+    values: z.infer<typeof loginSchema>,
+    redirectTo: string | null
+  ) {
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -99,7 +102,7 @@ export function useLogin() {
       if (data && data?.user?.email) {
         await getUser(data?.user?.email);
         //  toast.success("Sign In Successful");
-        router.push("/home");
+        router.push(redirectTo ?? "home");
         setLoading(false);
       }
     } catch (error) {

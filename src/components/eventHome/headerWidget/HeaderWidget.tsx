@@ -122,7 +122,7 @@ export function HeaderWidget({
 
             <Button
               onClick={newEvent}
-              className="  text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
+              className="text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
             >
               <PlusCircle size={22} />
               <p>Event</p>

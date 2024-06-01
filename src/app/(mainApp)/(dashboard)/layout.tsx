@@ -44,6 +44,8 @@ export default function RootLayout({
   const isEventOwner =
     user && event && String(event?.createdBy) === String(user.id);
 
+  console.log(user);
+
   if (!user) {
     return <div>You are not logged in, redirecting to login...</div>;
   }
@@ -53,21 +55,19 @@ export default function RootLayout({
       <main className="relative w-full h-full bg-white" ref={divRef}>
         <SideBarLayout
           eventId={eventId}
-          children={children}
+          children={
+            // (organization && isEventOwner) || !isEventOwner ? (
+            //   children
+            // ) : (
+            //   <div className="mt-24 px-4 text-xl font-medium text-gray-800">
+            //     Please select an organization from the topbar to continue
+            //   </div>
+            // )
+            children
+          }
         />
       </main>
       <Toaster />
     </>
   );
 }
-
-
-/**
- organization ? (
-              children
-            ) : (
-              <div className="mt-24 px-4 text-xl font-medium text-gray-800">
-                Please select an organization from the topbar to continue
-              </div>
-            )
- */

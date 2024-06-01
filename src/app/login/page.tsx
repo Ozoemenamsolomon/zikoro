@@ -12,6 +12,7 @@ import { Eye } from "styled-icons/feather";
 import { EyeOff } from "styled-icons/feather";
 import { useLogin } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
+import { useSearchParams } from "next/navigation";
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,8 +21,13 @@ export default function Page() {
     resolver: zodResolver(loginSchema),
   });
 
+  const params = useSearchParams();
+  const redirectTo = params.get("redirectedFrom");
+
+  console.log(redirectTo);
+
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    await logIn(values);
+    await logIn(values, redirectTo);
   }
 
   return (

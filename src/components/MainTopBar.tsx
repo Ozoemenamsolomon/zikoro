@@ -48,14 +48,16 @@ const MainTopBar = ({
 
   const { organization, setOrganization } = useOrganizationStore();
   const { event, setEvent } = useEventStore();
-
   // console.log(event);
 
   const {
     events,
     isLoading: eventIsLoading,
     getUserEvents,
-  } = useGetUserEvents({ userId: user.id });
+  } = useGetUserEvents({
+    userId: user.id,
+    organisationId: organization?.id ?? 0,
+  });
 
   const setCurrentOrganization = (value: string) => {
     const currentOrganization = userOrganizations?.find(
@@ -73,10 +75,13 @@ const MainTopBar = ({
     router.push(`/event/${currentEvent.eventAlias}/content/info`);
   };
 
-  
-
   return (
-    <header className={cn("border-b w-full p-4 items-center flex justify-between ", pathname.includes("events") && "hidden")}>
+    <header
+      className={cn(
+        "border-b w-full p-4 items-center flex justify-between ",
+        pathname.includes("events") && "hidden"
+      )}
+    >
       {pathname.includes("event") ? (
         <>
           {isIdPresent || isOrganizer ? (

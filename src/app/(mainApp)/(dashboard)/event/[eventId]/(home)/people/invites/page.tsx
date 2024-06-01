@@ -13,6 +13,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { attendeeTypeOptions } from "@/data/attendee";
 import { useFilter } from "@/hooks/common/useFilter";
+import TextEditor from "@/components/TextEditor";
 import {
   useGetEmailInvites,
   useInviteAttendees,
@@ -29,6 +30,7 @@ import { useParams } from "next/navigation";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 import { Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
+import useEventStore from "@/store/globalEventStore";
 
 type TInviteDetail = {
   email: string;
@@ -64,6 +66,8 @@ const inviteesFilters: TFilter<TInviteDetail>[] = [
 
 export default function Page() {
   const { eventId } = useParams();
+  const { event } = useEventStore();
+  if (!event) return;
   const [invitees, setInvitees] = useState<Record<string, TInviteDetails>>({
     [generateAlphanumericHash(5)]: {
       email: "",
@@ -71,16 +75,37 @@ export default function Page() {
     },
   });
 
-  const [message, setMessage] = useState<string>();
+  const [message, setMessage] = useState<string>(
+    `
+    ---------------------------------------------------------------------------
+<br/>
+<br/>
+<br/>
+Hi there,
+<br />
+<br />
+    here's your link: ${window.location.host}/live-events/${eventId}?source=link
+<br/>
+<br/>
+Yours sincerely,
+<br/>
+${event?.eventTitle} Organizing Team
+<br/>
+<br/>
+<br/>
+    ---------------------------------------------------------------------------
+    `
+  );
 
   const [copiedText, copyToClipboard] = useCopyToClipboard();
   const hasCopiedText = Boolean(copiedText);
 
-  const { emailInvites, isLoading, getEmailInvites } = useGetEmailInvites();
+  const { emailInvites, isLoading, getEmailInvites } = useGetEmailInvites({
+    eventId: event.id,
+  });
   const data = emailInvites.flatMap(({ InviteDetails, created_at }) =>
     InviteDetails.map((invitee) => ({ ...invitee, created_at }))
   );
-  
 
   // const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
   //   useFilter<TInviteDetail>({
@@ -97,15 +122,14 @@ export default function Page() {
       payload: {
         Message: message,
         InviteDetails: Object.entries(invitees).map(([key, value]) => value),
-        eventName: "event",
-        eventId: 1234567890,
+        eventName: event?.eventTitle,
+        eventId: event?.id,
       },
     });
     await getEmailInvites();
   }
 
   const updateInvitee = (key: string, newVal: Partial<TInviteDetails>) => {
-    
     setInvitees((prevInvitees) => {
       const prevVal = prevInvitees[key];
       return { ...prevInvitees, [key]: { ...prevVal, ...newVal } };
@@ -113,7 +137,6 @@ export default function Page() {
   };
 
   const createNewInvitee = () => {
-    
     setInvitees((prevInvitees) => {
       const key = generateAlphanumericHash(5);
       return {
@@ -133,8 +156,7 @@ export default function Page() {
         [key]: { email, attendeeType },
         ...newInvitees
       } = prevInvitees;
-      
-      
+
       return newInvitees;
     });
   };
@@ -282,12 +304,10 @@ export default function Page() {
                 <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                   Message
                 </span>
-                <Textarea
-                  value={message}
-                  onInput={(e) => setMessage(e.currentTarget.value)}
-                  className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
-                  placeholder="Enter message"
-                  required
+                <TextEditor
+                  onChange={setMessage}
+                  defaultValue={message}
+                  placeholder="Write message"
                 />
               </div>
               <Button type="submit" className="bg-basePrimary">

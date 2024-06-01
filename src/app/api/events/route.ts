@@ -9,16 +9,14 @@ export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
       const userId = searchParams.get("userId");
-
-      
+      const organisationId = searchParams.get("organisationId");
 
       const query = supabase.from("events").select("*, organization!inner(*)");
 
       if (userId) query.eq("createdBy", userId);
+      if (organisationId) query.eq("organisationId", organisationId);
 
       const { data, error, status } = await query;
-
-      
 
       if (error) {
         return NextResponse.json(

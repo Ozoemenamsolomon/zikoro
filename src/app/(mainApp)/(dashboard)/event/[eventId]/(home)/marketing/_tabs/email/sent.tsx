@@ -158,7 +158,7 @@ const Sent = () => {
           data={filteredData}
           rowStyle={{
             display: "grid",
-            gridTemplateColumns: `1.5fr repeat(${
+            gridTemplateColumns: `1fr repeat(${
               columns.length - 1
             }, minmax(0, 1fr))`,
           }}

@@ -275,8 +275,6 @@ export default function FirstSection({
         );
       });
 
-    
-
     setOptions(
       "checkin",
       eachDayOfInterval({
@@ -314,20 +312,45 @@ export default function FirstSection({
     setShowFilter((prevShowFilter) => !prevShowFilter);
 
   const exportAttendees = () => {
+    const omittedFields = [
+      "id",
+      "eventId",
+      "userId",
+      "checkin",
+      "profilePicture",
+      "eventAlias",
+      "bio",
+      "eventRegistrationRef",
+      "paymentLink",
+      "registrationCompleted",
+    ];
     const normalizedData = convertCamelToNormal<TAttendee>(
-      mappedAttendees,
+      mappedAttendees.map((obj) =>
+        Object.keys(obj).reduce((newObj, key) => {
+          if (!omittedFields.includes(key)) {
+            newObj[key] =
+              key === "registrationDate"
+                ? format(new Date(obj[key]), "MM/dd/yyyy")
+                : obj[key];
+          }
+          return newObj;
+        }, {})
+      ),
       " "
     );
     const worksheet = XLSX.utils.json_to_sheet(normalizedData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    XLSX.writeFile(workbook, "attendees.xlsx");
+    XLSX.writeFile(
+      workbook,
+      `attendees_${event.eventTitle}_${new Date().toISOString()}.xlsx`
+    );
   };
 
   return (
     <>
       <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2">
-        <h1 className="font-semibold leading-normal text-greyBlack ">People</h1>
+        <h1 className="font-semibold leading-normal text-greyBlack ">Attendees</h1>
         {user && String(event?.createdBy) === String(user.id) && (
           <div className="flex gap-4 items-center">
             <button

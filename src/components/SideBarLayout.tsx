@@ -27,6 +27,7 @@ import {
 } from "@/hooks";
 import { sendMail, whatsapp } from "@/utils";
 import { TUser } from "@/types";
+
 export function SideBarLayout({
   eventId,
   children,
@@ -73,7 +74,7 @@ export function SideBarLayout({
     userOrganizations,
     isLoading: organizationIsLoading,
     getUserOrganizations,
-  } = useGetUserTeamOrganizations({ userEmail: user.userEmail });
+  } = useGetUserTeamOrganizations({ userEmail: user?.userEmail });
 
   useEffect(() => {
     return () => {
@@ -82,8 +83,6 @@ export function SideBarLayout({
       if (!userOrganizations) return router.push("/home");
     };
   }, [organizationIsLoading]);
-
-  if (!user) router.push("login");
 
   return (
     <>
@@ -129,8 +128,9 @@ function SideNavs({
   isHaveEvent?: boolean;
 }) {
   const { organizationId }: { organizationId: string } = useParams();
-  const user = getCookie("user");
+  const router = useRouter();
   const { logOut } = useLogOut();
+  const user = getCookie<TUser>("user");
 
   // max-[1024px]:hidden
   return (
@@ -145,8 +145,8 @@ function SideNavs({
         id="sidebar"
         className={`fixed  transition-all duration-300 transform ease-in-out group  inset-y-0 left-0 h-full ${
           isNav
-            ? " bg-white/50 block z-[49] group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]  "
-            : " z-[65] max-[642px]:hidden group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]"
+            ? " bg-white/50 block z-[20] group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]  "
+            : " z-[15] max-[642px]:hidden group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px]"
         }`}
       >
         <div

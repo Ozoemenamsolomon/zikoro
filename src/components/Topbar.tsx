@@ -107,7 +107,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
       <nav
        
         className={cn(
-          "w-fit border-b-0 left-0 sm:left-[60px] bg-white lg:border-b-0 lg:w-[180px] lg:pb-10 border-r-0 lg:border-r z-[55] fixed  h-fit lg:h-[calc(100%-68px)] top-[60px] sm:top-[68px] overflow-y-auto top-nav-scroll",
+          "w-fit border-b-0 left-0 sm:left-[60px] bg-white lg:border-b-0 lg:w-[180px] lg:pb-10 border-r-0 lg:border-r z-[10] fixed  h-fit lg:h-[calc(100%-68px)] top-[60px] sm:top-[68px] overflow-y-auto top-nav-scroll",
           isShowNav && "w-[180px] border-b-0 h-[calc(100%-68px)] pb-10 border-r",
           left && "left-[60px]"
         )}

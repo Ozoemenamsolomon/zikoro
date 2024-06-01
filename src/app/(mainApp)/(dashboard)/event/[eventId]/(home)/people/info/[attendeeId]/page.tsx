@@ -81,7 +81,7 @@ const page = () => {
   //   }
 
   return (
-    <div>
+    <div className="pb-12">
       {!isLoading && attendee ? (
         <div className="space-y-6">
           <section className="md:col-span-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">

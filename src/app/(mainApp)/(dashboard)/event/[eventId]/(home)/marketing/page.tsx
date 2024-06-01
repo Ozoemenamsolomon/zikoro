@@ -89,7 +89,7 @@ const page = () => {
         onValueChange={(value) => handleTabChange(value)}
         defaultValue={searchParams.get("tab1") || "email"}
       >
-        <TabsList className="bg-transparent border-b px-4 pt-4 w-full hidden">
+        <TabsList className="bg-transparent border-b pl-[60px] lg:pl-[30px] px-4 pt-4 w-full hidden">
           {marketingTabs.map((tab) => (
             <TabsTrigger
               key={tab.label}

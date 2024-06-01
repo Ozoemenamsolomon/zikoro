@@ -25,7 +25,6 @@ type DBBlogAll = {
 };
 
 export default function Navbar() {
-  const user = getCookie("user");
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
@@ -455,11 +454,7 @@ export default function Navbar() {
 
                 <button
                   onClick={() => {
-                    if (user) {
-                      router.push("/home");
-                    } else {
-                      router.push("/login");
-                    }
+                    router.push("/login");
                   }}
                   className="text-base text-blue-700 bg-transparent border border-indigo-800 py-[10px] px-5 rounded-md "
                 >
@@ -529,14 +524,14 @@ export default function Navbar() {
 
                 <div className=" gap-5 flex md:hidden pt-12">
                   <button
-                    onClick={() => router.push("/home")}
+                    onClick={() => router.push("/register")}
                     className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white w-1/2"
                   >
                     Sign up
                   </button>
 
                   <button
-                    onClick={() => router.push("/home")}
+                    onClick={() => router.push("/login")}
                     className="text-base text-white bg-transparent border border-white py-[10px] px-5 rounded-md w-1/2 "
                   >
                     Login

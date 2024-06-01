@@ -22,8 +22,6 @@ export const useCreateAttendee = () => {
         payload,
       });
 
-      
-
       if (status !== 201)
         return toast({
           description: (data.data as { error: string }).error,
@@ -36,7 +34,7 @@ export const useCreateAttendee = () => {
       return data;
     } catch (error) {
       setError(true);
-      
+
       toast({
         description: error.response.data.error,
         variant: "destructive",
@@ -142,20 +140,16 @@ export const useGetAttendees = ({
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  
-
   const getAttendees = async () => {
     setLoading(true);
 
-    
     const { data, status } = await getRequest<TAttendee[]>({
       endpoint: `/attendees?${eventId ? "eventId=" + eventId : ""}${
         userId ? "userId=" + userId : ""
       }`,
     });
 
-    // 
-    
+    //
 
     setLoading(false);
 
@@ -326,6 +320,9 @@ export const useInviteAttendees = () => {
     setLoading(true);
 
     try {
+      toast({
+        description: "sending invites...",
+      });
       const { data, status } = await postRequest({
         endpoint: "/attendees/invites",
         payload,
@@ -334,7 +331,7 @@ export const useInviteAttendees = () => {
       if (status !== 201) throw data;
 
       toast({
-        description: "Invitees sent successfuly",
+        description: "Invitees sent successfully",
       });
       return data;
     } catch (error) {
@@ -352,10 +349,14 @@ export const useInviteAttendees = () => {
 
 type UseGetEmailInvitesResult = {
   emailInvites: TAttendeeEmailInvites[];
-  getEmailInvites: () => Promise<void>;
+  getEmailInvites: ({ eventId }: { eventId: string }) => Promise<void>;
 } & RequestStatus;
 
-export const useGetEmailInvites = (): UseGetEmailInvitesResult => {
+export const useGetEmailInvites = ({
+  eventId,
+}: {
+  eventId: number;
+}): UseGetEmailInvitesResult => {
   const [emailInvites, setEmailInvites] = useState<TAttendeeEmailInvites[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -365,7 +366,7 @@ export const useGetEmailInvites = (): UseGetEmailInvitesResult => {
 
     try {
       const { data, status } = await getRequest<TAttendeeEmailInvites[]>({
-        endpoint: `/attendees/invites`,
+        endpoint: `/attendees/invites?eventId=${eventId}`,
       });
 
       if (status !== 200) {
