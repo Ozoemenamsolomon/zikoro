@@ -460,7 +460,7 @@ export default function BlogCreate() {
           </form>
         </section>
       </div>
-      {tagModalOpen && <AddTag updateTags={addNewTags} />}
+      {tagModalOpen && <AddTag updateTags={addNewTags} initialTags={formData.tags} />}
     </div>
   );
 }
