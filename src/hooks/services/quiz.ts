@@ -289,7 +289,11 @@ export const useGetQuizAnswer = () => {
     return setAnswers(data.data);
   };
 
-  return { answers, isLoading, getAnswers };
+  function fetchAnswer(values: TAnswer[]) {
+    setAnswers(values);
+  }
+
+  return { answers, isLoading, getAnswers, setAnswers: fetchAnswer };
 };
 
 export function useRealtimeQuestionUpdate({ quizId }: { quizId: string }) {

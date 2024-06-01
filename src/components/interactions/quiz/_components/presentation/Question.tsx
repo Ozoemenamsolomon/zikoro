@@ -65,25 +65,57 @@ export function Qusetion({
 
   useEffect(() => {
     (async () => {
-      if (quiz && (isIdPresent || isOrganizer) && quiz?.accessibility?.live) {
-        console.log("hreen");
-        setCurrentQuestion(quiz.questions[currentQuestionIndex]);
-        const { questions, ...restData } = quiz;
+      if (quiz && quiz?.accessibility?.live && (isIdPresent || isOrganizer)) {
+        const { liveMode, ...restData } = quiz;
+        const { startingAt } = liveMode;
+
         const payload: Partial<TQuiz<TQuestion[]>> = {
           ...restData,
           liveMode: {
+            startingAt,
             questionIndex: currentQuestionIndex,
+            questions: quiz?.questions?.map((item) => {
+              return {
+                ...item,
+                options: item?.options?.map(({ isCorrect, ...rest }) => rest),
+              };
+            }),
+            current: quiz?.questions[currentQuestionIndex],
             isTransitioning: quiz?.accessibility?.countdown,
           },
         };
 
         await updatingQuiz({ payload });
         refetchQuiz();
+        setCurrentQuestion(quiz.questions[currentQuestionIndex]);
+
+        console.log("admin 1");
       } else if (quiz && !quiz?.accessibility?.live) {
         setCurrentQuestion(quiz.questions[currentQuestionIndex]);
+        // console.log("not suppose to be here")
       }
     })();
-  }, [quiz, currentQuestionIndex]);
+  }, []);
+
+  //attendee
+  useEffect(() => {
+    if (quiz && quiz?.accessibility?.live && !isOrganizer && !isIdPresent) {
+      if (quiz?.liveMode?.current) {
+        setCurrentQuestion(quiz?.liveMode?.current);
+        setShowAnswerMetric(false);
+      }
+      if (typeof quiz?.liveMode?.questionIndex === "number") {
+        setCurrentQuestionIndex(quiz?.liveMode?.questionIndex);
+      }
+      if (quiz?.liveMode?.isTransitioning)
+        setShowTransiting(quiz?.liveMode?.isTransitioning);
+      if (typeof quiz?.liveMode?.isShowAnswerMetric === "boolean")
+        setShowAnswerMetric(quiz?.liveMode?.isShowAnswerMetric);
+
+      console.log("player 1", quiz);
+    }
+  }, [quiz]);
+  // console.log("yu", quiz?.liveMode);
 
   const timing = useMemo(() => {
     const minutes = Math.floor(
@@ -101,7 +133,7 @@ export function Qusetion({
     const countdownInterval = setInterval(() => {
       setMillisecondsLeft((prevMilliseconds) => {
         if (prevMilliseconds <= 1000) {
-          setShowAnswerMetric(true);
+          //  setShowAnswerMetric(true);
           clearInterval(countdownInterval);
           return 0;
         }
@@ -138,14 +170,27 @@ export function Qusetion({
   async function nextQuestion() {
     if (quiz?.accessibility?.live) {
       const { questions, ...restData } = quiz;
+
       const payload: Partial<TQuiz<TQuestion[]>> = {
         ...restData,
+        questions: quiz?.questions?.map((item) => {
+          return {
+            ...item,
+            options: item?.options?.map(({ isCorrect, ...rest }) => rest),
+          };
+        }),
         liveMode: {
           questionIndex: currentQuestionIndex + 1,
+          current: quiz?.questions[currentQuestionIndex + 1],
           isTransitioning: quiz?.accessibility?.countdown,
         },
       };
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      if (isIdPresent || isOrganizer) {
+        setCurrentQuestion(quiz?.questions[currentQuestionIndex + 1]);
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setShowTransiting(quiz?.accessibility?.countdown)
+      }
+
       await updatingQuiz({ payload });
       refetchQuiz();
     } else {
@@ -160,15 +205,45 @@ export function Qusetion({
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       }, 6000);
     }
+
+    setChosenAnswerStatus(null);
+    setShowExplanation(false);
   }
 
+  // admin
   useEffect(() => {
     if (quiz && quiz?.accessibility?.live && (isIdPresent || isOrganizer)) {
       setShowTransiting(quiz?.accessibility?.countdown);
-    } else if (quiz && quiz?.accessibility?.live && quiz?.liveMode) {
-      setShowTransiting(quiz?.liveMode?.isTransitioning);
+      // console.log("admin");
     }
-  }, [quiz]);
+  }, []);
+
+  async function showMetric() {
+    if (!quiz?.accessibility?.live) {
+      setShowAnswerMetric(true);
+    } else {
+      if (timing > 0) return;
+      const { questions, liveMode, ...restData } = quiz;
+      const { startingAt } = liveMode;
+      const payload: Partial<TQuiz<TQuestion[]>> = {
+        ...restData,
+        questions: quiz?.questions?.map((item) => {
+          return {
+            ...item,
+            options: item?.options?.map(({ isCorrect, ...rest }) => rest),
+          };
+        }),
+        liveMode: {
+          startingAt,
+          isShowAnswerMetric: true,
+        },
+      };
+
+      await updatingQuiz({ payload });
+      setShowAnswerMetric(true);
+      refetchQuiz();
+    }
+  }
 
   function previousQuestion() {
     if (currentQuestionIndex > 0) {
@@ -278,7 +353,11 @@ export function Qusetion({
           return item;
         }),
       };
-      updateQuiz(updatedQuiz);
+
+      // udpate chosen option state, if quiz is not live
+      if (!quiz?.accessibility?.live) {
+        updateQuiz(updatedQuiz);
+      }
 
       // setCurrentQuestion(quiz?.questions[index])
 
@@ -312,12 +391,12 @@ export function Qusetion({
     setShowExplanation((prev) => !prev);
   }
 
-  console.log("sdd", isIdPresent, isOrganizer, transiting);
+  console.log("sdd", transiting);
 
   return (
     <div
       className={cn(
-        "w-full h-[90vh] overflow-y-auto bg-white relative  px-6 pt-12 pb-3 border-x   space-y-3 col-span-7",
+        "w-full h-[90vh] overflow-y-auto bg-white relative  px-6 pt-12  border-x  space-y-3 col-span-7",
         isLeftBox && isRightBox && (isIdPresent || isOrganizer) && "col-span-5",
         !isLeftBox && !isRightBox && "col-span-full ",
         !isIdPresent && !isOrganizer && "col-span-full max-w-3xl mx-auto"
@@ -376,13 +455,13 @@ export function Qusetion({
                             pathColor: "#991b1b",
                             trailColor: "#ffffff",
                             textColor: "black",
-                            textSize: "50px",
+                            textSize: "60px",
                           })}
                           strokeWidth={3}
                           minValue={0}
                           maxValue={Number(currentQuestion?.duration) / 1000}
                           value={timing}
-                          text={`${timing}`}
+                          text={`${timing === 0 ?  "": timing}`}
                         />
                       </div>
                     )}
@@ -413,9 +492,12 @@ export function Qusetion({
                     isOrganizer={isOrganizer}
                     showAnswerMetric={showAnswerMetric}
                     answer={answer}
-                    isDisabled={arr?.some(
-                      ({ isCorrect }) => typeof isCorrect === "boolean"
-                    )}
+                    isDisabled={
+                      timing === 0 ||
+                      arr?.some(
+                        ({ isCorrect }) => typeof isCorrect === "boolean"
+                      )
+                    }
                     isIdPresent={isIdPresent}
                     selectOption={selectOption}
                     optionIndex={optionLetter[index]}
@@ -468,18 +550,20 @@ export function Qusetion({
                 </button>
               </div>
 
-              <Button
-                disabled={loading || isUpdating}
-                onClick={
-                  showAnswerMetric
-                    ? nextQuestion
-                    : () => setShowAnswerMetric(true)
-                }
-                className="text-gray-50  mx-auto w-[180px] mt-6 bg-basePrimary gap-x-2 h-11 font-medium flex"
-              >
-                {isUpdating && <LoaderAlt size={22} className="animate-spin" />}
-                <p>Next </p>
-              </Button>
+              {quiz?.accessibility?.live &&
+              !isIdPresent &&
+              !isOrganizer ? null : (
+                <Button
+                  disabled={loading || isUpdating}
+                  onClick={showAnswerMetric ? nextQuestion : showMetric}
+                  className="text-gray-50  mx-auto w-[180px] my-8 bg-basePrimary gap-x-2 h-11 font-medium flex"
+                >
+                  {isUpdating && (
+                    <LoaderAlt size={22} className="animate-spin" />
+                  )}
+                  <p>Next </p>
+                </Button>
+              )}
 
               <div className="w-full hidden items-end justify-between">
                 <div className="flex items-center gap-x-2">
@@ -506,7 +590,7 @@ export function Qusetion({
                 <p className="w-1 h-1"></p>
               </div>
 
-              <p className="text-center text-sm w-full mt-8 ">
+              <p className="text-center bg-white text-sm w-full mx-auto sticky inset-x-0 bottom-0 p-2 ">
                 Powered By Zikoro
               </p>
             </>
@@ -540,22 +624,25 @@ function Transition({
   }, [secondsLeft]);
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full flex items-center flex-col gap-y-3 justify-center">
       <div className="w-[170px] h-[170px]">
         <CircularProgressbar
           styles={buildStyles({
             pathColor: "#001fcc",
-            trailColor: "#ffffff",
+            trailColor: "#e5e7eb",
             textColor: "black",
-            textSize: "70px",
+            textSize: "50px",
           })}
           strokeWidth={5}
           minValue={0}
           maxValue={5}
           value={secondsLeft}
-          text={`${secondsLeft}`}
+          text={`${secondsLeft === 0 ? "GO" : secondsLeft}`}
         />
       </div>
+      <p className="font-semibold text-base sm:text-xl bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text">
+        Prepare for next question
+      </p>
     </div>
   );
 }
