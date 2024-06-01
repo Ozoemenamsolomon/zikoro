@@ -301,14 +301,12 @@ export default function All() {
   ]);
   const { organization } = useOrganizationStore();
 
-  if (!organization) return;
-
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const user = getCookie("user");
 
   const { eventTransactions, isLoading, getEventTransactions } =
     useGetEventTransactions({
-      organizationId: organization.id,
+      organizationId: organization?.id ?? 0,
     });
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
@@ -366,6 +364,8 @@ export default function All() {
         ? prevShown.filter((item) => item !== accessorKey)
         : [...prevShown, accessorKey]
     );
+
+  if (!organization) return;
 
   return (
     <section className="space-y-6 max-w-full">
