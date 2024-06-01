@@ -16,7 +16,12 @@ export interface TQuiz<T> {
   totalPoints: number;
   eventAlias: string;
   quizAlias: string;
-  quizParticipants: { id: string; nickName: string; attendee?: TAttendee; joinedAt: string }[];
+  quizParticipants: {
+    id: string;
+    nickName: string;
+    attendee?: TAttendee;
+    joinedAt: string;
+  }[];
   accessibility: {
     visible: boolean;
     review: boolean;
@@ -53,7 +58,7 @@ export interface TAnswer {
   attendeeId: string | null;
   attendeeName: string;
   quizId: number;
-  quizParticipantId:string;
+  quizParticipantId: string;
   questionId: string;
   startTime: string;
   endTime: string;

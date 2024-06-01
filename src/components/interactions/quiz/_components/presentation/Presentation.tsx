@@ -14,6 +14,7 @@ import {
   TQuestion,
   TAttendee,
   TConnectedUser,
+  TAnswer
 } from "@/types";
 import {
   useCheckTeamMember,
@@ -47,7 +48,7 @@ export default function Presentation({
   const [isRightBox, setRightBox] = useState(true);
   const [isLeftBox, setLeftBox] = useState(true);
   const [isLobby, setisLobby] = useState(false);
-  const { answers, getAnswers } = useGetQuizAnswer();
+  const { answers, getAnswers, setAnswers } = useGetQuizAnswer();
   const { answer, getAnswer } = useGetAnswer();
   const [nickName, setNickName] = useState(attendee?.firstName || "");
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
@@ -55,7 +56,7 @@ export default function Presentation({
   > | null>(null);
   // useRealtimeQuestionUpdate({quizId})
 
-  // subscribe
+  // subscribe to quiz
   useEffect(() => {
     function subscribeToUpdate() {
       const channel = supabase
@@ -70,7 +71,7 @@ export default function Presentation({
           },
           (payload) => {
             console.log(payload);
-            setQuiz(payload.new as TQuiz<TQuestion[]>)
+            setQuiz(payload.new as TQuiz<TQuestion[]>);
           }
         )
         .subscribe();
@@ -84,6 +85,38 @@ export default function Presentation({
 
     return cleanUp;
   }, [supabase, quiz]);
+
+/**
+   // subscribe to answers
+  useEffect(() => {
+    function subscribeToUpdate() {
+      const channel = supabase
+        .channel("live-quiz")
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "quizAnswer",
+            filter: `quizId=eq.${quiz?.id}`,
+          },
+          (payload) => {
+            console.log(payload);
+            setAnswers(payload.new as TAnswer[]);
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+
+    const cleanUp = subscribeToUpdate();
+
+    return cleanUp;
+  }, [supabase, answers]);
+ */
 
   const id = useMemo(() => {
     return generateAlias();
@@ -281,9 +314,8 @@ function AttendeeRegistration({
     refetch();
     if (quiz?.accessibility?.live) {
       setisLobby(true);
-    }
-    else {
-      close()
+    } else {
+      close();
     }
   }
 
@@ -295,14 +327,14 @@ function AttendeeRegistration({
     setLoading(true);
     const payload: Partial<TQuiz<TQuestion[]>> = {
       ...actualQuiz,
-      liveMode: {startingAt: new Date().toISOString()}
+      liveMode: { startingAt: new Date().toISOString() },
     };
     await updateQuiz({ payload });
     refetch();
-    setisLobby(true)
+    setisLobby(true);
     setLoading(false);
-   
   }
+
   return (
     <>
       {isAttendee ? (
@@ -371,10 +403,16 @@ function AttendeeRegistration({
             </div>
           )}
           <Button
-            onClick={quiz?.accessibility?.live ? startLiveQuiz : close}
+            onClick={() => {
+              if (quiz?.accessibility?.live) {
+                startLiveQuiz();
+              } else {
+                close();
+              }
+            }}
             className="bg-basePrimary gap-x-2 px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
           >
-             {loading && <LoaderAlt size={22} className="animate-spin" />}
+            {loading && <LoaderAlt size={22} className="animate-spin" />}
             Start Quiz
           </Button>
         </div>
