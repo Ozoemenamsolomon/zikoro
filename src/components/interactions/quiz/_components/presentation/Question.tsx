@@ -97,8 +97,6 @@ export function Qusetion({
     })();
   }, []);
 
-
-
   //attendee
   useEffect(() => {
     if (quiz && quiz?.accessibility?.live && !isOrganizer && !isIdPresent) {
@@ -190,10 +188,9 @@ export function Qusetion({
       if (isIdPresent || isOrganizer) {
         setCurrentQuestion(quiz?.questions[currentQuestionIndex + 1]);
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-      
+        setShowTransiting(quiz?.accessibility?.countdown)
       }
 
-     
       await updatingQuiz({ payload });
       refetchQuiz();
     } else {
@@ -210,6 +207,7 @@ export function Qusetion({
     }
 
     setChosenAnswerStatus(null);
+    setShowExplanation(false);
   }
 
   // admin
@@ -463,7 +461,7 @@ export function Qusetion({
                           minValue={0}
                           maxValue={Number(currentQuestion?.duration) / 1000}
                           value={timing}
-                          text={`${timing}`}
+                          text={`${timing === 0 ?  "": timing}`}
                         />
                       </div>
                     )}
@@ -494,9 +492,12 @@ export function Qusetion({
                     isOrganizer={isOrganizer}
                     showAnswerMetric={showAnswerMetric}
                     answer={answer}
-                    isDisabled={timing === 0 || arr?.some(
-                      ({ isCorrect }) => typeof isCorrect === "boolean"
-                    )}
+                    isDisabled={
+                      timing === 0 ||
+                      arr?.some(
+                        ({ isCorrect }) => typeof isCorrect === "boolean"
+                      )
+                    }
                     isIdPresent={isIdPresent}
                     selectOption={selectOption}
                     optionIndex={optionLetter[index]}
@@ -630,13 +631,13 @@ function Transition({
             pathColor: "#001fcc",
             trailColor: "#e5e7eb",
             textColor: "black",
-            textSize: "70px",
+            textSize: "50px",
           })}
           strokeWidth={5}
           minValue={0}
           maxValue={5}
           value={secondsLeft}
-          text={`${secondsLeft}`}
+          text={`${secondsLeft === 0 ? "GO" : secondsLeft}`}
         />
       </div>
       <p className="font-semibold text-base sm:text-xl bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text">
