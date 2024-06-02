@@ -4,7 +4,7 @@ import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
 import { useForm } from "react-hook-form";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
   // useCreateEventIndustry,
@@ -18,8 +18,11 @@ type FormValue = {
 
 export function AddTag({
   updateTags,
+  initialTags,
 }: {
   updateTags?: (tags: string[]) => void;
+  initialTags?: string[];
+
 }) {
   const form = useForm<FormValue>();
   const { data, refetch } = useFetchBlogTags();
@@ -51,6 +54,12 @@ export function AddTag({
       toast.error(`Tag "${tag}" removed.`);
     }
   }
+
+  useEffect(() => {
+    if (initialTags) {
+      setAllTags(initialTags.map(tag => ({ tagName: tag })));
+    }
+  }, [initialTags]);
 
   return (
     <div
@@ -147,7 +156,6 @@ export function AddTag({
               disabled={loading}
               className="mt-4 h-12 w-full gap-x-2 bg-basePrimary text-gray-50 font-medium"
             >
-              {loading && <LoaderAlt size={22} className="animate-spin" />}
               <span>Create Tag</span>
             </Button>
           </form>
@@ -156,3 +164,4 @@ export function AddTag({
     </div>
   );
 }
+

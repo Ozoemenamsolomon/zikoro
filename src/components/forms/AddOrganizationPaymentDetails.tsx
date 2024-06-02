@@ -46,8 +46,6 @@ export default function AddOrganizationPaymentDetails() {
 
   if (!organization || !user) return;
 
-  const [countryCurrencies, setCurrencies] = useState<string[]>([]);
-
   const { updateOrganization, isLoading: updatingOrganization } =
     useUpdateOrganization({ organizationId: organization?.id });
 
@@ -105,9 +103,7 @@ export default function AddOrganizationPaymentDetails() {
     console.log(countryData, country, "country");
 
     if (countryData) {
-      setCurrencies(countryData.relationships.currency.data);
-
-      setValue("currency", "");
+      setValue("currency", countryData.relationships.currency.data[0]);
       setValue("bankCode", "");
     }
   }, [country, countries]);
@@ -197,24 +193,14 @@ export default function AddOrganizationPaymentDetails() {
             name="currency"
             render={({ field }) => (
               <InputOffsetLabel isRequired label={"Currency"}>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger disabled={fetchingCountries}>
-                      <SelectValue
-                        placeholder="Select currency"
-                        className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 mt-0"
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {(countryCurrencies ?? []).map((currency) => (
-                      <SelectItem value={currency}>{currency}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Input
+                  placeholder={
+                    fetchingCountries ? "fetching countries..." : "currency"
+                  }
+                  {...field}
+                  className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                  disabled
+                />
               </InputOffsetLabel>
             )}
           />
