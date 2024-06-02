@@ -36,8 +36,8 @@ const config = {
       }),
       colors: {
         zikoroBlue: "hsl(var(--zblue))",
+        basePrimary: "#001FCC",
         basebody: "#f3f3f3",
-        basePrimary: "#001fcc",
         ticketColor: "#CFCFCF",
         greyBlack: "#0A0E2E",
         earlyBirdColor: "#001FCC",
@@ -76,6 +76,10 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+    
+      backgroundImage: {
+        basePrimary: 'linear-gradient(to right, #001FCC 0%, #9D00FF 100%)'
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -110,6 +114,7 @@ const config = {
   plugins: [
     require("tailwindcss-animate"),
     require("@vidstack/react/tailwind.cjs"),
+  
   ],
 } satisfies Config;
 

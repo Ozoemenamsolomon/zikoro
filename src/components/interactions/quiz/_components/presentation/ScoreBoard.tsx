@@ -94,7 +94,7 @@ export function ScoreBoard({
           userScore={userScore}
         />
       ) : (
-        <div className="w-full inset-0 fixed bg-black h-full ">
+        <div className="w-full inset-0 fixed bg-scoresheet h-full ">
           <div className="absolute inset-x-0  min-w-[50rem]  mx-auto px-4 w-full max-w-3xl mt-8">
             <h2 className="w-full text-white text-center mb-3 font-semibold text-lg sm:text-2xl">
               LeaderBoard
