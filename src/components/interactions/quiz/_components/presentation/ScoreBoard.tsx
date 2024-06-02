@@ -73,20 +73,29 @@ export function ScoreBoard({
 
     return index + 1;
   }, [board]);
+  const userScore = useMemo(() => {
+    const playerId = quiz?.accessibility?.live ? player?.userId : id;
+    const score = board?.find(
+      ({ quizParticipantId }) => quizParticipantId === playerId
+    );
+
+    return score?.totalScore || 0;
+  }, [board]);
 
   return (
     <>
       {isQuizResult ? (
         <AttendeeScore
           quiz={quiz}
-          close={close}
+          close={onClose}
           quizAnswer={quizAnswer}
           id={id}
           userPosition={userPosition}
+          userScore={userScore}
         />
       ) : (
-        <div className="w-full inset-0 fixed h-full ">
-          <div className="absolute inset-x-0 overflow-y-auto min-w-[50rem] bg-black mx-auto px-4 w-full max-w-3xl mt-20">
+        <div className="w-full inset-0 fixed bg-black h-full ">
+          <div className="absolute inset-x-0  min-w-[50rem]  mx-auto px-4 w-full max-w-3xl mt-8">
             <h2 className="w-full text-white text-center mb-3 font-semibold text-lg sm:text-2xl">
               LeaderBoard
             </h2>
@@ -99,7 +108,10 @@ export function ScoreBoard({
                 Go To Quiz Page
               </Button>
               {isAttendee && (
-                <Button className="underline rounded-none px-2 h-10 w-fit">
+                <Button
+                  onClick={onClose}
+                  className="underline rounded-none px-2 h-10 w-fit"
+                >
                   View Quiz Result
                 </Button>
               )}
@@ -107,12 +119,12 @@ export function ScoreBoard({
 
             <div className="mx-auto w-full relative">
               {Array.isArray(board) && board?.length > 0 && (
-                <div className=" flex  text-sm">
-                  <div className="flex flex-col mt-8 gap-y-4 justify-center">
+                <div className=" flex w-full justify-center text-sm">
+                  <div className="flex flex-col relative left-10  mt-8 gap-y-4 justify-center">
                     <div className="flex flex-col items-center justify-center gap-y-2">
                       <Image
                         src="/quizattendee.png"
-                        className="w-[5rem] h-[5rem]"
+                        className="w-[5rem]  h-[5rem]"
                         alt=""
                         width={150}
                         height={150}
@@ -122,10 +134,10 @@ export function ScoreBoard({
                       </p>
                     </div>
 
-                    <div className="w-[9.5rem] relative h-fit">
+                    <div className="w-[11.2rem]  relative h-fit">
                       <Image
                         src="/secondp.png"
-                        className="w-[9.5rem] object-cover"
+                        className="w-[11.2rem]  object-cover"
                         alt=""
                         width={150}
                         height={500}
@@ -133,12 +145,12 @@ export function ScoreBoard({
                       <div className="absolute inset-x-0 top-10 text-white mx-auto flex flex-col items-center justify-center">
                         <p className="font-medium">2nd</p>
                         <p className="text-tiny bg-white/20 rounded-3xl p-1">{`${
-                          board[1]?.totalScore ?? 0
+                          board[1]?.totalScore?.toFixed(0) ?? 0
                         }p`}</p>
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-y-4 justify-center">
+                  <div className="flex flex-col relative z-30 gap-y-4 justify-center">
                     <div className="flex flex-col items-center justify-center gap-y-2">
                       <Image
                         src="/quizattendee.png"
@@ -152,9 +164,9 @@ export function ScoreBoard({
                       </p>
                     </div>
 
-                    <div className="w-[11.2rem] relative h-fit">
+                    <div className="w-[11.2rem]  relative h-fit">
                       <Image
-                        src="/secondp.png"
+                        src="/firstp.png"
                         className="w-[11.2rem] object-cover"
                         alt=""
                         width={150}
@@ -163,12 +175,12 @@ export function ScoreBoard({
                       <div className="absolute inset-x-0 top-10 text-white mx-auto flex flex-col items-center justify-center">
                         <p className="font-medium text-sm">1st</p>
                         <p className="text-tiny bg-white/20 rounded-3xl p-1">{`${
-                          board[0]?.totalScore ?? 0
+                          board[0]?.totalScore.toFixed(0) ?? 0
                         }p`}</p>
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col mt-10 gap-y-4 justify-center">
+                  <div className="flex flex-col relative right-11 mt-10 gap-y-4 justify-center">
                     <div className="flex flex-col items-center justify-center gap-y-2">
                       <Image
                         src="/quizattendee.png"
@@ -182,10 +194,10 @@ export function ScoreBoard({
                       </p>
                     </div>
 
-                    <div className="w-[9.5rem] relative h-fit">
+                    <div className="w-[11.2rem] relative h-fit">
                       <Image
                         src="/thirdp.png"
-                        className="w-[9.5rem] object-cover"
+                        className="w-[11.2rem] object-cover"
                         alt=""
                         width={150}
                         height={500}
@@ -193,7 +205,7 @@ export function ScoreBoard({
                       <div className="absolute inset-x-0 top-10 text-white mx-auto flex flex-col items-center justify-center">
                         <p className="font-medium">3rd</p>
                         <p className="text-tiny bg-white/20 rounded-3xl p-1">{`${
-                          board[2]?.totalScore ?? 0
+                          board[2]?.totalScore.toFixed(0) ?? 0
                         }p`}</p>
                       </div>
                     </div>
@@ -202,15 +214,18 @@ export function ScoreBoard({
               )}
               {/** */}
 
-              <div className="w-full overflow-y-auto no-scrollbar bg-white absolute inset-x-0 h-full top-96 rounded-t-lg py-6 px-8">
+              <div className="w-full overflow-y-auto pb-20 no-scrollbar z-50 bg-white absolute inset-x-0 h-full top-80 rounded-t-lg py-6 px-8">
                 <div className="w-full flex flex-col items-start justify-start">
                   {Array.isArray(board) &&
                     board.slice(3, board?.length).map((player, index) => (
-                      <div key={index} className="w-full py-4 border-b px-2">
+                      <div
+                        key={index}
+                        className="flex items-center justify-between w-full py-3 border-b px-2"
+                      >
                         <div className="flex items-center gap-x-3">
                           <Image
                             src="/quizattendee.png"
-                            className="w-[5rem] h-[5rem]"
+                            className="w-[4rem] h-[4rem]"
                             alt=""
                             width={150}
                             height={150}
@@ -237,52 +252,35 @@ function AttendeeScore({
   quiz,
   id,
   close,
+  userScore,
 }: {
   userPosition: number;
   id: string;
   quizAnswer: TAnswer[];
   quiz: TQuiz<TRefinedQuestion[]>;
   close: () => void;
+  userScore: number;
 }) {
   const [isAnswers, setIsAnswer] = useState(false);
 
-  const player = getCookie<TConnectedUser>("player");
-  const score = useMemo(() => {
-    // filter answer with p- ID
-    const playerId = quiz?.accessibility?.live ? player?.userId : id;
-    if (Array.isArray(quizAnswer) && quizAnswer?.length > 0) {
-      const filteredAnswer = quizAnswer?.filter(
-        (answer) => answer?.quizParticipantId === playerId
-      );
-      const mappedArray = filteredAnswer?.map(({ attendeePoints }) =>
-        Number(attendeePoints)
-      );
-
-      // summ up the asnwr
-      const sum = mappedArray.reduce((arr, curr) => arr + curr, 0);
-
-      return sum;
-    } else {
-      return 0;
-    }
-  }, [quizAnswer]);
+  //const player = getCookie<TConnectedUser>("player");
 
   function showAnswers() {
     setIsAnswer((prev) => !prev);
   }
 
   return (
-    <div className="w-full h-full inset-0 fixed overflow-y-auto bg-basePrimary/10">
+    <div className="w-full h-full inset-0 fixed overflow-y-auto bg-gray-100">
       {isAnswers ? (
         <AnswerSheet quiz={quiz} close={showAnswers} />
       ) : (
-        <div className="bg-white rounded-lg p-4 absolute inset-0 m-auto h-fit flex flex-col items-center gap-y-10">
+        <div className="bg-white rounded-lg p-4 absolute inset-0 m-auto h-fit max-w-2xl flex flex-col items-center gap-y-6">
           <Button
             onClick={close}
             className="gap-x-1 self-start w-fit h-fit px-2"
           >
             <ArrowBackOutline size={20} />
-            <p className="text-sm">Exit Quiz</p>
+            <p className="text-sm">Back</p>
           </Button>
           <Image
             src={quiz?.coverImage || "/quiztime.png"}
@@ -296,9 +294,10 @@ function AttendeeScore({
             <h2 className="font-semibold text-base sm:text-2xl">
               {quiz?.coverTitle ?? ""}
             </h2>
-            <div className="mx-auto w-[60%] flex items-center justify-between">
+            <div className="mx-auto w-[60%] my-6 flex items-center justify-between">
               <p>
-                Points won: <span className="font-medium">{score ?? ""}</span>
+                Points won:{" "}
+                <span className="font-medium">{userScore ?? ""}</span>
               </p>
               <p>
                 Position:{" "}
@@ -307,7 +306,7 @@ function AttendeeScore({
             </div>
           </div>
 
-          <button onClick={showAnswers} className="underline">
+          <button onClick={showAnswers} className="mb-10 underline">
             View Quiz Scores
           </button>
         </div>
@@ -329,6 +328,7 @@ function AnswerSheet({
     setShowExplanation((prev) => !prev);
   }
   const optionLetter = ["A", "B", "C", "D"];
+
   return (
     <div className="w-full max-w-3xl absolute top-0 mx-auto inset-x-0 bg-white p-4">
       <Button onClick={close} className="gap-x-1 self-start w-fit h-fit px-2">
@@ -336,7 +336,7 @@ function AnswerSheet({
         <p className="text-sm">Back</p>
       </Button>
 
-      <div className="W-full max-w-xl flex gap-y-3 flex-col items-start justify-start">
+      <div className="W-full max-w-xl mx-auto mt-8 flex gap-y-3 flex-col items-start justify-start">
         {Array.isArray(quiz?.questions) &&
           quiz?.questions?.map((question, index) => {
             // correct answer index
@@ -353,7 +353,7 @@ function AnswerSheet({
             );
 
             return (
-              <div className="w-full space-y-3">
+              <div className="w-full space-y-3 ">
                 <h2>{`Question ${index + 1}`}</h2>
 
                 <p className="font-medium">{question?.question ?? ""}</p>
@@ -375,7 +375,7 @@ function AnswerSheet({
                     </div>
                   ))}
                 </div>
-                <div className="w-full flex flex-col items-start justify-start">
+                <div className="w-full flex flex-col gap-y-1 items-start justify-start">
                   <div
                     className={cn(
                       "text-white font-medium bg-red-500 w-full px-2 py-3 flex items-center justify-between",
