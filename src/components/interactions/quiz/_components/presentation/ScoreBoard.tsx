@@ -1,0 +1,426 @@
+"use client";
+
+import { Button } from "@/components";
+import Image from "next/image";
+import { TAnswer, TQuiz, TRefinedQuestion, TConnectedUser } from "@/types";
+import { useMemo, useState } from "react";
+import { getCookie } from "@/hooks";
+import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
+import { cn } from "@/lib";
+import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
+import { CloseOutline } from "@styled-icons/zondicons/CloseOutline";
+
+type TLeaderBoard = {
+  quizParticipantId: string;
+  attendeeName: string;
+  image?: string;
+  totalScore: number;
+};
+export function ScoreBoard({
+  answers,
+  close,
+  quiz,
+  id,
+  isAttendee,
+  quizAnswer,
+}: {
+  answers: TAnswer[];
+  close: () => void;
+  quiz: TQuiz<TRefinedQuestion[]>;
+  id: string;
+  isAttendee: boolean;
+  quizAnswer: TAnswer[];
+}) {
+  const [isQuizResult, setQuizResult] = useState(false);
+  const player = getCookie<TConnectedUser>("player");
+
+  const board = useMemo(() => {
+    const participantGroup: { [key: string]: TLeaderBoard } = {};
+    if (Array.isArray(answers) && answers.length > 0) {
+      answers?.forEach((ans) => {
+        const key = ans?.quizParticipantId;
+        if (!participantGroup[key]) {
+          participantGroup[key] = {
+            quizParticipantId: ans?.quizParticipantId,
+            attendeeName: ans?.attendeeName,
+            totalScore: 0,
+          };
+        }
+        participantGroup[key].totalScore += Number(ans?.attendeePoints);
+      });
+
+      const result = Object.values(participantGroup);
+
+      const data = result.sort((a, b) => {
+        return b?.totalScore - a?.totalScore;
+      });
+
+      return data;
+    } else {
+      return [];
+    }
+  }, [answers]);
+
+  function onClose() {
+    setQuizResult((prev) => !prev);
+  }
+
+  const userPosition = useMemo(() => {
+    const playerId = quiz?.accessibility?.live ? player?.userId : id;
+    const index = board?.findIndex(
+      ({ quizParticipantId }) => quizParticipantId === playerId
+    );
+
+    return index + 1;
+  }, [board]);
+
+  return (
+    <>
+      {isQuizResult ? (
+        <AttendeeScore
+          quiz={quiz}
+          close={close}
+          quizAnswer={quizAnswer}
+          id={id}
+          userPosition={userPosition}
+        />
+      ) : (
+        <div className="w-full inset-0 fixed h-full ">
+          <div className="absolute inset-x-0 overflow-y-auto min-w-[50rem] bg-black mx-auto px-4 w-full max-w-3xl mt-20">
+            <h2 className="w-full text-white text-center mb-3 font-semibold text-lg sm:text-2xl">
+              LeaderBoard
+            </h2>
+
+            <div className="mx-auto w-fit flex px-2 mb-6 items-center gap-x-8 sm:gap-x-20 bg-white h-10 rounded-3xl">
+              <Button
+                onClick={close}
+                className="underline rounded-none px-2 h-10 w-fit"
+              >
+                Go To Quiz Page
+              </Button>
+              {isAttendee && (
+                <Button className="underline rounded-none px-2 h-10 w-fit">
+                  View Quiz Result
+                </Button>
+              )}
+            </div>
+
+            <div className="mx-auto w-full relative">
+              {Array.isArray(board) && board?.length > 0 && (
+                <div className=" flex  text-sm">
+                  <div className="flex flex-col mt-8 gap-y-4 justify-center">
+                    <div className="flex flex-col items-center justify-center gap-y-2">
+                      <Image
+                        src="/quizattendee.png"
+                        className="w-[5rem] h-[5rem]"
+                        alt=""
+                        width={150}
+                        height={150}
+                      />
+                      <p className="text-white font-medium">
+                        {board[1]?.attendeeName ?? ""}
+                      </p>
+                    </div>
+
+                    <div className="w-[9.5rem] relative h-fit">
+                      <Image
+                        src="/secondp.png"
+                        className="w-[9.5rem] object-cover"
+                        alt=""
+                        width={150}
+                        height={500}
+                      />
+                      <div className="absolute inset-x-0 top-10 text-white mx-auto flex flex-col items-center justify-center">
+                        <p className="font-medium">2nd</p>
+                        <p className="text-tiny bg-white/20 rounded-3xl p-1">{`${
+                          board[1]?.totalScore ?? 0
+                        }p`}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-y-4 justify-center">
+                    <div className="flex flex-col items-center justify-center gap-y-2">
+                      <Image
+                        src="/quizattendee.png"
+                        className="w-[5rem] h-[5rem]"
+                        alt=""
+                        width={150}
+                        height={150}
+                      />
+                      <p className="text-white font-medium text-sm">
+                        {board[0]?.attendeeName ?? ""}
+                      </p>
+                    </div>
+
+                    <div className="w-[11.2rem] relative h-fit">
+                      <Image
+                        src="/secondp.png"
+                        className="w-[11.2rem] object-cover"
+                        alt=""
+                        width={150}
+                        height={500}
+                      />
+                      <div className="absolute inset-x-0 top-10 text-white mx-auto flex flex-col items-center justify-center">
+                        <p className="font-medium text-sm">1st</p>
+                        <p className="text-tiny bg-white/20 rounded-3xl p-1">{`${
+                          board[0]?.totalScore ?? 0
+                        }p`}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col mt-10 gap-y-4 justify-center">
+                    <div className="flex flex-col items-center justify-center gap-y-2">
+                      <Image
+                        src="/quizattendee.png"
+                        className="w-[5rem] h-[5rem]"
+                        alt=""
+                        width={150}
+                        height={150}
+                      />
+                      <p className="text-white font-medium">
+                        {board[2]?.attendeeName ?? ""}
+                      </p>
+                    </div>
+
+                    <div className="w-[9.5rem] relative h-fit">
+                      <Image
+                        src="/thirdp.png"
+                        className="w-[9.5rem] object-cover"
+                        alt=""
+                        width={150}
+                        height={500}
+                      />
+                      <div className="absolute inset-x-0 top-10 text-white mx-auto flex flex-col items-center justify-center">
+                        <p className="font-medium">3rd</p>
+                        <p className="text-tiny bg-white/20 rounded-3xl p-1">{`${
+                          board[2]?.totalScore ?? 0
+                        }p`}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {/** */}
+
+              <div className="w-full overflow-y-auto no-scrollbar bg-white absolute inset-x-0 h-full top-96 rounded-t-lg py-6 px-8">
+                <div className="w-full flex flex-col items-start justify-start">
+                  {Array.isArray(board) &&
+                    board.slice(3, board?.length).map((player, index) => (
+                      <div key={index} className="w-full py-4 border-b px-2">
+                        <div className="flex items-center gap-x-3">
+                          <Image
+                            src="/quizattendee.png"
+                            className="w-[5rem] h-[5rem]"
+                            alt=""
+                            width={150}
+                            height={150}
+                          />
+                          <p className="">{player?.attendeeName}</p>
+                        </div>
+
+                        <p>{`${index + 4}th`}</p>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function AttendeeScore({
+  quizAnswer,
+  userPosition,
+  quiz,
+  id,
+  close,
+}: {
+  userPosition: number;
+  id: string;
+  quizAnswer: TAnswer[];
+  quiz: TQuiz<TRefinedQuestion[]>;
+  close: () => void;
+}) {
+  const [isAnswers, setIsAnswer] = useState(false);
+
+  const player = getCookie<TConnectedUser>("player");
+  const score = useMemo(() => {
+    // filter answer with p- ID
+    const playerId = quiz?.accessibility?.live ? player?.userId : id;
+    if (Array.isArray(quizAnswer) && quizAnswer?.length > 0) {
+      const filteredAnswer = quizAnswer?.filter(
+        (answer) => answer?.quizParticipantId === playerId
+      );
+      const mappedArray = filteredAnswer?.map(({ attendeePoints }) =>
+        Number(attendeePoints)
+      );
+
+      // summ up the asnwr
+      const sum = mappedArray.reduce((arr, curr) => arr + curr, 0);
+
+      return sum;
+    } else {
+      return 0;
+    }
+  }, [quizAnswer]);
+
+  function showAnswers() {
+    setIsAnswer((prev) => !prev);
+  }
+
+  return (
+    <div className="w-full h-full inset-0 fixed overflow-y-auto bg-basePrimary/10">
+      {isAnswers ? (
+        <AnswerSheet quiz={quiz} close={showAnswers} />
+      ) : (
+        <div className="bg-white rounded-lg p-4 absolute inset-0 m-auto h-fit flex flex-col items-center gap-y-10">
+          <Button
+            onClick={close}
+            className="gap-x-1 self-start w-fit h-fit px-2"
+          >
+            <ArrowBackOutline size={20} />
+            <p className="text-sm">Exit Quiz</p>
+          </Button>
+          <Image
+            src={quiz?.coverImage || "/quiztime.png"}
+            alt="cover-image"
+            className="w-full h-[250px] object-cover"
+            width={2000}
+            height={1000}
+          />
+
+          <div className="flex flex-col mb-4 items-center justify-center gap-y-3 w-full">
+            <h2 className="font-semibold text-base sm:text-2xl">
+              {quiz?.coverTitle ?? ""}
+            </h2>
+            <div className="mx-auto w-[60%] flex items-center justify-between">
+              <p>
+                Points won: <span className="font-medium">{score ?? ""}</span>
+              </p>
+              <p>
+                Position:{" "}
+                <span className="font-medium">{userPosition ?? ""}</span>
+              </p>
+            </div>
+          </div>
+
+          <button onClick={showAnswers} className="underline">
+            View Quiz Scores
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AnswerSheet({
+  quiz,
+  close,
+}: {
+  quiz: TQuiz<TRefinedQuestion[]>;
+  close: () => void;
+}) {
+  const [showExplanation, setShowExplanation] = useState(false);
+
+  function toggleExplanationVisibility() {
+    setShowExplanation((prev) => !prev);
+  }
+  const optionLetter = ["A", "B", "C", "D"];
+  return (
+    <div className="w-full max-w-3xl absolute top-0 mx-auto inset-x-0 bg-white p-4">
+      <Button onClick={close} className="gap-x-1 self-start w-fit h-fit px-2">
+        <ArrowBackOutline size={20} />
+        <p className="text-sm">Back</p>
+      </Button>
+
+      <div className="W-full max-w-xl flex gap-y-3 flex-col items-start justify-start">
+        {Array.isArray(quiz?.questions) &&
+          quiz?.questions?.map((question, index) => {
+            // correct answer index
+            const correctAnswerIndex = question?.options?.findIndex(
+              ({ isAnswer }) => isAnswer !== ""
+            );
+            // chosen answer index
+            const chosenAsnwerIndex = question?.options?.findIndex(
+              ({ isCorrect }) => typeof isCorrect === "boolean"
+            );
+            // chosen answer
+            const chosenAnswer = question?.options?.find(
+              ({ isCorrect }) => typeof isCorrect === "boolean"
+            );
+
+            return (
+              <div className="w-full space-y-3">
+                <h2>{`Question ${index + 1}`}</h2>
+
+                <p className="font-medium">{question?.question ?? ""}</p>
+                {question?.questionImage && (
+                  <Image
+                    className="w-full h-40 "
+                    src={question?.questionImage}
+                    width={700}
+                    height={300}
+                    alt=""
+                  />
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                  {question?.options.map((option, index) => (
+                    <div className="w-full flex items-center gap-x-2">
+                      <p>{`${optionLetter[index]}.`}</p>
+                      <p>{option?.option ?? ""}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="w-full flex flex-col items-start justify-start">
+                  <div
+                    className={cn(
+                      "text-white font-medium bg-red-500 w-full px-2 py-3 flex items-center justify-between",
+                      typeof chosenAnswer?.isCorrect === "boolean" &&
+                        chosenAnswer?.isCorrect &&
+                        "bg-green-500"
+                    )}
+                  >
+                    <p>Your Answer</p>
+                    <div className="flex items-center gap-x-2">
+                      {typeof chosenAnswer?.isCorrect === "boolean" &&
+                      chosenAnswer?.isCorrect ? (
+                        <CheckCircle size={22} />
+                      ) : (
+                        <CloseOutline size={22} />
+                      )}
+                      <p>{optionLetter[chosenAsnwerIndex]}</p>
+                    </div>
+                  </div>
+                  <div className="text-white font-medium bg-green-500 w-full px-2 py-3 flex items-center justify-between">
+                    <p>Correct Answer</p>
+                    <div className="flex items-center gap-x-2">
+                      <CheckCircle size={22} />
+
+                      <p>{optionLetter[correctAnswerIndex]}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {showExplanation && (
+                  <p className="mb-3 text-xs sm:text-sm text-gray-500">
+                    {question?.feedBack ?? "No Explanation"}
+                  </p>
+                )}
+
+                <button
+                  onClick={toggleExplanationVisibility}
+                  className="text-xs sm:text-sm text-basePrimary underline"
+                >
+                  {showExplanation ? "Hide Explanation" : "Show Explanation"}
+                </button>
+              </div>
+            );
+          })}
+      </div>
+    </div>
+  );
+}

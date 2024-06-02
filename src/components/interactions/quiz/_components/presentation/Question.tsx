@@ -7,8 +7,14 @@ import { Maximize2 } from "@styled-icons/feather/Maximize2";
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
 import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
-import { useCreateAnswer, useUpdateQuiz } from "@/hooks";
-import { TQuiz, TRefinedQuestion, TAnswer, TQuestion } from "@/types";
+import { useCreateAnswer, useUpdateQuiz, getCookie } from "@/hooks";
+import {
+  TQuiz,
+  TRefinedQuestion,
+  TAnswer,
+  TQuestion,
+  TConnectedUser,
+} from "@/types";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
@@ -33,6 +39,8 @@ export function Qusetion({
   refetchQuizAnswers,
   quizAnswer,
   refetchQuiz,
+  onOpenScoreSheet,
+  updateQuizResult
 }: {
   isRightBox: boolean;
   isLeftBox: boolean;
@@ -49,6 +57,8 @@ export function Qusetion({
   refetchQuiz: () => Promise<any>;
   getAnswer: (questionId: string) => Promise<any>;
   refetchQuizAnswers: (id: number) => Promise<any>;
+  onOpenScoreSheet: () => void;
+  updateQuizResult: (q: TQuiz<TRefinedQuestion[]>) => void;
 }) {
   const [currentQuestion, setCurrentQuestion] =
     useState<TRefinedQuestion | null>(null);
@@ -59,6 +69,7 @@ export function Qusetion({
   const [showAnswerMetric, setShowAnswerMetric] = useState(false);
   const [transiting, setShowTransiting] = useState(false);
   const { updateQuiz: updatingQuiz, isLoading: isUpdating } = useUpdateQuiz();
+  const player = getCookie<TConnectedUser>("player");
   const [chosenAnswerStatus, setChosenAnswerStatus] =
     useState<ChosenAnswerStatus | null>(null);
   const { createAnswer } = useCreateAnswer();
@@ -188,7 +199,7 @@ export function Qusetion({
       if (isIdPresent || isOrganizer) {
         setCurrentQuestion(quiz?.questions[currentQuestionIndex + 1]);
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setShowTransiting(quiz?.accessibility?.countdown)
+        setShowTransiting(quiz?.accessibility?.countdown);
       }
 
       await updatingQuiz({ payload });
@@ -251,24 +262,7 @@ export function Qusetion({
     }
   }
 
-  const score = useMemo(() => {
-    // filter answer with p- ID
-    if (Array.isArray(quizAnswer) && quizAnswer?.length > 0) {
-      const filteredAnswer = quizAnswer?.filter(
-        (answer) => answer?.quizParticipantId === quizParticipantId
-      );
-      const mappedArray = filteredAnswer?.map(({ attendeePoints }) =>
-        Number(attendeePoints)
-      );
-
-      // summ up the asnwr
-      const sum = mappedArray.reduce((arr, curr) => arr + curr, 0);
-
-      return sum;
-    } else {
-      return 0;
-    }
-  }, [quizAnswer]);
+  
 
   /**
     // update question time limit
@@ -358,6 +352,7 @@ export function Qusetion({
       if (!quiz?.accessibility?.live) {
         updateQuiz(updatedQuiz);
       }
+      updateQuizResult(updatedQuiz)
 
       // setCurrentQuestion(quiz?.questions[index])
 
@@ -365,7 +360,9 @@ export function Qusetion({
         ...attendeeDetail,
         quizId: quiz?.id,
         questionId: currentQuestion?.id,
-        quizParticipantId,
+        quizParticipantId: quiz?.accessibility?.live
+          ? player?.userId
+          : quizParticipantId,
         attendeePoints,
         answerDuration: millisecondsLeft,
         quizAlias: quiz?.quizAlias,
@@ -391,7 +388,33 @@ export function Qusetion({
     setShowExplanation((prev) => !prev);
   }
 
-  console.log("sdd", transiting);
+  async function onNextBtnClick() {
+    if (showAnswerMetric) {
+      nextQuestion();
+    } else if (currentQuestionIndex >= quiz?.questions?.length) {
+      onOpenScoreSheet();
+      if (quiz?.accessibility?.live) {
+        const { questions, liveMode, ...restData } = quiz;
+        const payload: Partial<TQuiz<TQuestion[]>> = {
+          ...restData,
+          questions: quiz?.questions?.map((item) => {
+            return {
+              ...item,
+              options: item?.options?.map(({ isCorrect, ...rest }) => rest),
+            };
+          }),
+          liveMode: {
+            isEnded: true,
+          },
+        };
+
+        await updatingQuiz({ payload });
+        refetchQuiz();
+      }
+    } else {
+      showMetric();
+    }
+  }
 
   return (
     <div
@@ -402,12 +425,7 @@ export function Qusetion({
         !isIdPresent && !isOrganizer && "col-span-full max-w-3xl mx-auto"
       )}
     >
-      {quiz && currentQuestionIndex >= quiz?.questions?.length ? (
-        <div className="w-full h-full flex items-center flex-col gap-y-2 justify-center">
-          <h2 className="text-xl font-semibold">Quiz Has Ended!</h2>
-          <p>Your Total Score is {score?.toFixed(0)}</p>
-        </div>
-      ) : (
+   
         <>
           {transiting ? (
             <Transition setShowTransiting={setShowTransiting} />
@@ -461,7 +479,7 @@ export function Qusetion({
                           minValue={0}
                           maxValue={Number(currentQuestion?.duration) / 1000}
                           value={timing}
-                          text={`${timing === 0 ?  "": timing}`}
+                          text={`${timing === 0 ? "" : timing}`}
                         />
                       </div>
                     )}
@@ -554,8 +572,8 @@ export function Qusetion({
               !isIdPresent &&
               !isOrganizer ? null : (
                 <Button
-                  disabled={loading || isUpdating}
-                  onClick={showAnswerMetric ? nextQuestion : showMetric}
+                  disabled={loading || isUpdating} //
+                  onClick={onNextBtnClick}
                   className="text-gray-50  mx-auto w-[180px] my-8 bg-basePrimary gap-x-2 h-11 font-medium flex"
                 >
                   {isUpdating && (
@@ -596,7 +614,7 @@ export function Qusetion({
             </>
           )}
         </>
-      )}
+    
     </div>
   );
 }

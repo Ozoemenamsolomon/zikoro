@@ -1,6 +1,6 @@
 "use client";
 
-import { Advert, LeaderBoard, Qusetion, QuizLobby } from "..";
+import { Advert, LeaderBoard, Qusetion, QuizLobby, ScoreBoard } from "..";
 import { useState, useEffect, useMemo } from "react";
 import {
   useGetQuiz,
@@ -14,7 +14,6 @@ import {
   TQuestion,
   TAttendee,
   TConnectedUser,
-  TAnswer
 } from "@/types";
 import {
   useCheckTeamMember,
@@ -49,6 +48,8 @@ export default function Presentation({
   const [isLeftBox, setLeftBox] = useState(true);
   const [isLobby, setisLobby] = useState(false);
   const { answers, getAnswers, setAnswers } = useGetQuizAnswer();
+  const [showScoreSheet, setShowScoreSheet] = useState(false);
+  const [quizResult, setQuizResult] = useState<TQuiz<TRefinedQuestion[]> | null>(null);
   const { answer, getAnswer } = useGetAnswer();
   const [nickName, setNickName] = useState(attendee?.firstName || "");
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
@@ -86,7 +87,7 @@ export default function Presentation({
     return cleanUp;
   }, [supabase, quiz]);
 
-/**
+  /**
    // subscribe to answers
   useEffect(() => {
     function subscribeToUpdate() {
@@ -133,6 +134,10 @@ export default function Presentation({
     setRefinedQuizArray(quiz);
   }
 
+  function updateQuizResult(quiz: TQuiz<TRefinedQuestion[]>) {
+    setQuizResult(quiz);
+  }
+
   useEffect(() => {
     if (quiz) {
       const refinedArray = {
@@ -159,74 +164,103 @@ export default function Presentation({
     setIsYetToStart(false);
   }
 
+  function onCloseScoreSheet() {
+    setShowScoreSheet(false);
+  }
+  function onOpenScoreSheet() {
+    setShowScoreSheet(true);
+  }
+
+  // show score sheet after live quiz
+  useEffect(() => {
+    if (quiz && quiz?.accessibility?.live) {
+      if (quiz?.liveMode?.isEnded) setShowScoreSheet(quiz?.liveMode?.isEnded);
+    }
+  }, [quiz]);
+
   // console.log({ isIdPresent, isOrganizer });
 
   return (
     <div className="w-full">
       {refinedQuizArray && !loading && !isLoading && !eventLoading ? (
         <>
-          {isYetTosStart ? (
-            <div className="w-full grid grid-cols-8 items-center h-full">
-              {(isIdPresent || isOrganizer) && isLobby && (
-                <Advert
-                  quiz={refinedQuizArray}
-                  isRightBox={isRightBox}
-                  isLeftBox={isLeftBox}
-                  close={onClose}
-                />
-              )}
-              <AttendeeRegistration
-                attendee={attendee}
-                close={close}
-                isAttendee={!isIdPresent && !isOrganizer}
-                refetch={getQuiz}
-                quiz={refinedQuizArray}
-                id={id}
-                nickName={nickName}
-                setNickName={setNickName}
-                isLobby={isLobby}
-                setisLobby={setisLobby}
-              />
-            </div>
+          {showScoreSheet && quizResult ? (
+            <ScoreBoard
+              isAttendee={!isIdPresent && !isOrganizer}
+              answers={answers}
+              close={() => setIsYetToStart(true)}
+              id={id}
+              quiz={quizResult}
+              quizAnswer={answer}
+            />
           ) : (
-            <div className="w-full mx-auto absolute inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
-              {(isIdPresent || isOrganizer) && (
-                <Advert
-                  quiz={refinedQuizArray}
-                  isRightBox={isRightBox}
-                  isLeftBox={isLeftBox}
-                  close={onClose}
-                />
+            <>
+              {isYetTosStart ? (
+                <div className="w-full grid grid-cols-8 items-center h-full">
+                  {(isIdPresent || isOrganizer) && isLobby && (
+                    <Advert
+                      quiz={refinedQuizArray}
+                      isRightBox={isRightBox}
+                      isLeftBox={isLeftBox}
+                      close={onClose}
+                    />
+                  )}
+                  <AttendeeRegistration
+                    attendee={attendee}
+                    close={close}
+                    isAttendee={!isIdPresent && !isOrganizer}
+                    refetch={getQuiz}
+                    quiz={refinedQuizArray}
+                    id={id}
+                    nickName={nickName}
+                    setNickName={setNickName}
+                    isLobby={isLobby}
+                    setisLobby={setisLobby}
+                  />
+                </div>
+              ) : (
+                <div className="w-full mx-auto absolute inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
+                  {(isIdPresent || isOrganizer) && (
+                    <Advert
+                      quiz={refinedQuizArray}
+                      isRightBox={isRightBox}
+                      isLeftBox={isLeftBox}
+                      close={onClose}
+                    />
+                  )}
+                  <Qusetion
+                    isLeftBox={isLeftBox}
+                    answer={answer}
+                    quizAnswer={answers}
+                    getAnswer={getAnswer}
+                    refetchQuiz={getQuiz}
+                    refetchQuizAnswers={getAnswers}
+                    quiz={refinedQuizArray}
+                    isRightBox={isRightBox}
+                    toggleRightBox={onToggle}
+                    toggleLeftBox={onClose}
+                    onOpenScoreSheet={onOpenScoreSheet}
+                    updateQuiz={updateQuiz}
+                    updateQuizResult={updateQuizResult}
+                    quizParticipantId={id}
+                    attendeeDetail={{
+                      attendeeId: attendeeId ? String(attendeeId) : null,
+                      attendeeName: nickName,
+                    }}
+                    isIdPresent={isIdPresent}
+                    isOrganizer={isOrganizer}
+                  />
+                  {(isIdPresent || isOrganizer) && (
+                    <LeaderBoard
+                      isRightBox={isRightBox}
+                      isLeftBox={isLeftBox}
+                      close={onToggle}
+                      answers={answers}
+                    />
+                  )}
+                </div>
               )}
-              <Qusetion
-                isLeftBox={isLeftBox}
-                answer={answer}
-                quizAnswer={answers}
-                getAnswer={getAnswer}
-                refetchQuiz={getQuiz}
-                refetchQuizAnswers={getAnswers}
-                quiz={refinedQuizArray}
-                isRightBox={isRightBox}
-                toggleRightBox={onToggle}
-                toggleLeftBox={onClose}
-                updateQuiz={updateQuiz}
-                quizParticipantId={id}
-                attendeeDetail={{
-                  attendeeId: attendeeId ? String(attendeeId) : null,
-                  attendeeName: nickName,
-                }}
-                isIdPresent={isIdPresent}
-                isOrganizer={isOrganizer}
-              />
-              {(isIdPresent || isOrganizer) && (
-                <LeaderBoard
-                  isRightBox={isRightBox}
-                  isLeftBox={isLeftBox}
-                  close={onToggle}
-                  answers={answers}
-                />
-              )}
-            </div>
+            </>
           )}
         </>
       ) : (
@@ -294,7 +328,7 @@ function AttendeeRegistration({
         ? [
             ...actualQuiz?.quizParticipants,
             {
-              id: player?.userId || id,
+              id: quiz?.accessibility?.live ? player?.userId || "" : id,
               nickName,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
@@ -302,7 +336,7 @@ function AttendeeRegistration({
           ]
         : [
             {
-              id: player?.userId || id,
+              id: quiz?.accessibility?.live ? player?.userId || "" : id,
               nickName,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),

@@ -26,7 +26,7 @@ export function LeaderBoard({
   close: () => void;
   answers: TAnswer[];
 }) {
-  console.log(answers);
+  //console.log(answers);
   const board = useMemo(() => {
     const participantGroup: { [key: string]: TLeaderBoard } = {};
     if (Array.isArray(answers) && answers.length > 0) {
