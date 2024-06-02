@@ -42,6 +42,12 @@ interface CategorizedButtons {
   eventCategory: string[];
   dateFilter: string[];
 }
+
+interface DateRange {
+  start: Date | null;
+  end: Date | null;
+}
+
 export default function FeaturedEvents() {
   const [showMore, setShowMore] = useState(false);
   const params = useSearchParams();
@@ -100,7 +106,7 @@ export default function FeaturedEvents() {
     }
   }, [query]);
 
-  const getStartAndEndDates = (filterType: string) => {
+  const getStartAndEndDates = (filterType: string): DateRange => {
     switch (filterType) {
       case "today":
         return { start: startOfToday(), end: endOfToday() };
@@ -179,6 +185,62 @@ export default function FeaturedEvents() {
   };
 
   //filter function
+  // const filteredEvents = eventData
+  //   ?.filter((event) => {
+  //     const lowerSearchQuery = searchQuery.toLowerCase();
+  //     return (
+  //       event.eventTitle.toLowerCase().includes(lowerSearchQuery) ||
+  //       event.eventCity.toLowerCase().includes(lowerSearchQuery) ||
+  //       event.eventCategory.toLowerCase().includes(lowerSearchQuery)
+  //     );
+  //   })
+  //   .filter((event) => {
+  //     const categories = categorizeButtons(selectedButtons);
+
+  //     if (
+  //       Object.values(categories).every((category) => category.length === 0)
+  //     ) {
+  //       return true;
+  //     }
+
+  //     const eventProps = {
+  //       locationType: event.locationType.toLowerCase(),
+  //       eventCountry: event.eventCountry.toLowerCase(),
+  //       eventCity: event.eventCity.toLowerCase(),
+  //       eventCategory: event.eventCategory.toLowerCase(),
+  //     };
+
+  //     // Date filtering
+  //     const dateFilter = categories.dateFilter[0];
+  //     if (dateFilter) {
+  //       const { start, end } = getStartAndEndDates(dateFilter);
+  //       const eventDate = new Date(event.startDateTime);
+  //       if (start && end && (eventDate < start || eventDate > end)) {
+  //         return false;
+  //       }
+  //     }
+
+  //     // If only one category is selected
+  //     const selectedCategories = Object.entries(categories).filter(
+  //       ([key, values]) => values.length > 0
+  //     );
+  //     if (selectedCategories.length === 1) {
+  //       const [key, values] = selectedCategories[0];
+  //       return values.some(
+  //         (value: string) =>
+  //           eventProps[key as keyof typeof eventProps] === value.toLowerCase()
+  //       );
+  //     }
+
+  //     // If multiple categories are selected, apply AND logic for categories and OR logic within the same category
+  //     return selectedCategories.every(([key, values]) => {
+  //       return values.some(
+  //         (value: string) =>
+  //           eventProps[key as keyof typeof eventProps] === value.toLowerCase()
+  //       );
+  //     });
+  //   });
+
   const filteredEvents = eventData
     ?.filter((event) => {
       const lowerSearchQuery = searchQuery.toLowerCase();
@@ -197,15 +259,16 @@ export default function FeaturedEvents() {
         return true;
       }
 
-      const eventProps = [
-        event.locationType.toLowerCase(),
-        event.eventCountry.toLowerCase(),
-        event.eventCity.toLowerCase(),
-        event.eventCategory.toLowerCase(),
-      ];
+      const eventProps = {
+        locationType: event.locationType.toLowerCase(),
+        eventCountry: event.eventCountry.toLowerCase(),
+        eventCity: event.eventCity.toLowerCase(),
+        eventCategory: event.eventCategory.toLowerCase(),
+      };
 
-      const dateFilter = categories.dateFilter[0];
-      if (dateFilter) {
+      // Date filtering
+      if (categories.dateFilter.length > 0) {
+        const dateFilter = categories.dateFilter[0];
         const { start, end } = getStartAndEndDates(dateFilter);
         const eventDate = new Date(event.startDateTime);
         if (start && end && (eventDate < start || eventDate > end)) {
@@ -213,42 +276,25 @@ export default function FeaturedEvents() {
         }
       }
 
-      const allCategories = [
-        categories.locationType,
-        categories.eventCountry,
-        categories.eventCity,
-        categories.eventCategory,
-      ];
-      const hasMultipleCategoriesSelected =
-        allCategories.filter((category) => category.length > 0).length > 1;
-
-      if (hasMultipleCategoriesSelected) {
-        return Object.entries(categories).every(([key, values]) => {
-          if (values.length === 0) return true;
-          return values.some((value: string) =>
-            eventProps.includes(value.toLowerCase())
-          );
-        });
-      } else {
-        return Object.entries(categories).some(([key, values]) => {
-          if (values.length === 0) return true;
-          return values.some((value: string) =>
-            eventProps.includes(value.toLowerCase())
-          );
-        });
-      }
-    })
-    .filter((event) => {
-      if (selectedButtons.length === 1) {
-        const button = selectedButtons[0].toLowerCase();
-        return (
-          event.locationType.toLowerCase() === button ||
-          event.eventCountry.toLowerCase() === button ||
-          event.eventCity.toLowerCase() === button ||
-          event.eventCategory.toLowerCase() === button
+      // If only one category is selected
+      const selectedCategories = Object.entries(categories).filter(
+        ([key, values]) => values.length > 0
+      );
+      if (selectedCategories.length === 1) {
+        const [key, values] = selectedCategories[0];
+        return values.some(
+          (value:string) =>
+            eventProps[key as keyof typeof eventProps] === value.toLowerCase()
         );
       }
-      return true;
+
+      // If multiple categories are selected, apply AND logic for categories and OR logic within the same category
+      return selectedCategories.every(([key, values]) => {
+        return values.some(
+          (value:string) =>
+            eventProps[key as keyof typeof eventProps] === value.toLowerCase()
+        );
+      });
     });
 
   return (
