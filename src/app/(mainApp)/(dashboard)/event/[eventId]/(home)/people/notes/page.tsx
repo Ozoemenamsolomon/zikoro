@@ -4,9 +4,10 @@ import { useGetAttendeesWithNotes } from "@/hooks/services/attendee";
 import ReusablePeopleComponent from "../_reusable";
 import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
+import useUserStore from "@/store/globalUserStore";
 
 export default function page() {
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   const { attendees, isLoading, error, getAttendees } =
     useGetAttendeesWithNotes({ userId: user.id });
 

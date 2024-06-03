@@ -11,6 +11,7 @@ import { getRequest } from "@/utils/api";
 import { TAuthUser } from "@/types";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useEventStore from "@/store/globalEventStore";
+import useUserStore from "@/store/globalUserStore";
 
 const supabase = createClientComponentClient();
 export const saveCookie = (name: string, value: any) => {
@@ -116,7 +117,7 @@ export function useLogin() {
 }
 
 export function useValidateUser() {
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
   const router = useRouter();
 
   // using this to redirect new users to onboarding
@@ -135,6 +136,8 @@ export function useValidateUser() {
 }
 
 export const getUser = async (email: string | null) => {
+  const { setUser } = useUserStore();
+
   if (!email) return;
   const { data: user, error } = await supabase
     .from("users")
@@ -149,7 +152,7 @@ export const getUser = async (email: string | null) => {
     );
     return;
   }
-  saveCookie("user", user);
+  setUser(user);
   return user;
 };
 
@@ -199,10 +202,11 @@ export function useLogOut() {
   const router = useRouter();
   const { setOrganization } = useOrganizationStore();
   const { setEvent } = useEventStore();
+  const { setUser } = useUserStore();
 
   async function logOut() {
     await supabase.auth.signOut();
-    saveCookie("user", null);
+    setUser(null);
     setOrganization(null);
     setEvent(null);
     router.push("/");

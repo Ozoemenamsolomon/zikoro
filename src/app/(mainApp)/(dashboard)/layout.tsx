@@ -7,13 +7,14 @@ import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useEventStore from "@/store/globalEventStore";
+import useUserStore from "@/store/globalUserStore";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   const router = useRouter();
   const pathname = usePathname().split("/");
 

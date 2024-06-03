@@ -21,13 +21,14 @@ import { TAffiliate } from "@/types/marketing";
 import useEventStore from "@/store/globalEventStore";
 import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
+import useUserStore from "@/store/globalUserStore";
 
 const Affiliates = () => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const currentEvent = useEventStore((state) => state.event);
 
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
 
   const { getAffiliates, affiliates, isLoading } = useGetAffiliates({
     userId: user?.id || 0,

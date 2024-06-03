@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import CreateAffiliateForm from "@/components/forms/createAffiliateForm";
+import useUserStore from "@/store/globalUserStore";
 
 export const columns: ColumnDef<TAffiliate>[] = [
   // {
@@ -108,7 +109,7 @@ export const columns: ColumnDef<TAffiliate>[] = [
         affiliateId: affiliateId as number,
       });
 
-      const user = getCookie<TUser>("user");
+      const { user, setUser } = useUserStore();
 
       const { getAffiliates, isLoading: affiliatesIsLoading } =
         useGetAffiliates({ userId: user?.id || 0 });
@@ -131,7 +132,7 @@ export const columns: ColumnDef<TAffiliate>[] = [
   {
     id: "edit",
     cell: ({ row }) => {
-      const user = getCookie<TUser>("user");
+      const { user, setUser } = useUserStore();
       const { getAffiliates } = useGetAffiliates({
         userId: user?.id || 0,
       });

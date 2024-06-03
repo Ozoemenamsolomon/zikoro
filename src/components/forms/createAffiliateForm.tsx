@@ -16,6 +16,7 @@ import useEventStore from "@/store/globalEventStore";
 import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
 import { generateAlphanumericHash } from "@/utils/helpers";
+import useUserStore from "@/store/globalUserStore";
 
 export default function CreateAffiliateForm({
   affiliate,
@@ -25,7 +26,7 @@ export default function CreateAffiliateForm({
   getAffiliates: () => Promise<void>;
 }) {
   const currentEvent = useEventStore((state) => state.event);
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
 
   
 

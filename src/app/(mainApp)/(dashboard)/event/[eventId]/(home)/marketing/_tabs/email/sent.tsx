@@ -9,6 +9,7 @@ import { columns } from "./columns";
 import { TSentEmail } from "@/types/marketing";
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
+import useUserStore from "@/store/globalUserStore";
 
 const marketingEmailsFilter: TFilter<TSentEmail>[] = [
   {
@@ -115,7 +116,7 @@ const marketingEmailsFilter: TFilter<TSentEmail>[] = [
 ];
 
 const Sent = () => {
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
 
   if (!user) return;
   const { getMarketingEmails, marketingEmails, isLoading } =
