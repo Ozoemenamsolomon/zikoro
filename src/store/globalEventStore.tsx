@@ -16,7 +16,7 @@ const useEventStore = create<eventState>()(
     }),
     {
       name: "event", // name of the item in the storage (must be unique)
-      getStorage: () => sessionStorage, // specify the storage mechanism
+      storage: createJSONStorage(() => localStorage), // specify the storage mechanism
     }
   )
 );

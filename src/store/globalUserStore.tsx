@@ -17,7 +17,7 @@ const useUserStore = create<userState>()(
     }),
     {
       name: "user", // name of the item in the storage (must be unique)
-      getStorage: () => sessionStorage, // specify the storage mechanism
+      storage: createJSONStorage(() => localStorage), // specify the storage mechanism
     }
   )
 );
