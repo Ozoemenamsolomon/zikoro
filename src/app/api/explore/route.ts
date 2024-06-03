@@ -7,8 +7,8 @@ export async function GET(req: any) {
 
   if (req.method === "GET") {
     // Get the query parameters from the request
-    const { searchParams } = new URL(req.url);
-    const eventCountry = searchParams.get("eventCountry");    
+    // const { searchParams } = new URL(req.url);
+    // const eventCountry = searchParams.get("eventCountry");    
 
     try {
       let eventsQuery = supabase
@@ -16,12 +16,11 @@ export async function GET(req: any) {
         .select()
         .eq("published", true)
         .eq('explore', true)
-        // .limit(4);
 
       // If query parameters are provided, apply filters
-      if (eventCountry) {
-        eventsQuery = eventsQuery.eq("eventCountry", eventCountry);
-      }
+      // if (eventCountry) {
+      //   eventsQuery = eventsQuery.eq("eventCountry", eventCountry);
+      // }
 
       // Fetch data from Superbase table 'events' based on query parameters
       const { data, error } = await eventsQuery;

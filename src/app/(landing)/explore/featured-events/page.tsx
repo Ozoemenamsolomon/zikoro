@@ -35,12 +35,17 @@ type DBFeaturedEvent = {
   registered: number;
 };
 
-interface Event {
-  eventTitle: string;
-  eventCity: string;
-  eventCategory: string;
-  locationType: string;
-  eventCountry: string;
+interface CategorizedButtons {
+  locationType: string[];
+  eventCountry: string[];
+  eventCity: string[];
+  eventCategory: string[];
+  dateFilter: string[];
+}
+
+interface DateRange {
+  start: Date | null;
+  end: Date | null;
 }
 
 export default function FeaturedEvents() {
@@ -64,11 +69,44 @@ export default function FeaturedEvents() {
   const [filterCountry, setFilterCountry] = useState<string[]>([]);
   const [filterCity, setFilterCity] = useState<string[]>([]);
 
+  //see more function
+  const handleSeeMoreClick = () => {
+    setShowMore(true);
+  };
+
+  //clear filter button
+  const clearFilterButton = () => {
+    setSelectedButtons([]);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  const getStartAndEndDates = (filterType: string) => {
+  useEffect(() => {
+    //fetch events from database
+    async function fetchEventFeautured() {
+      fetch("/api/explore/featured?query", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => setEventData(data.data))
+        .catch((error) => console.error("Error:", error));
+    }
+
+    fetchEventFeautured();
+  }, []);
+
+  useEffect(() => {
+    if (query) {
+      setSelectedButtons(query.split(","));
+    }
+  }, [query]);
+
+  const getStartAndEndDates = (filterType: string): DateRange => {
     switch (filterType) {
       case "today":
         return { start: startOfToday(), end: endOfToday() };
@@ -80,44 +118,6 @@ export default function FeaturedEvents() {
         return { start: null, end: null };
     }
   };
-
-  //
-  const filteredEvents = eventData
-    ?.filter((event) => {
-      const lowerSearchQuery = searchQuery.toLowerCase();
-      return (
-        event.eventTitle.toLowerCase().includes(lowerSearchQuery) ||
-        event.eventCity.toLowerCase().includes(lowerSearchQuery) ||
-        event.eventCategory.toLowerCase().includes(lowerSearchQuery)
-      );
-    })
-    .filter((event) => {
-      if (selectedButtons.length === 0) return true;
-
-      const eventProps = [
-        event.locationType.toLowerCase(),
-        event.eventCountry.toLowerCase(),
-        event.eventCity.toLowerCase(),
-        event.eventCategory.toLowerCase(),
-      ];
-
-      const dateFilter = selectedButtons.find((button) =>
-        ["today", "this-week", "this-month"].includes(button)
-      );
-
-      if (dateFilter) {
-        const { start, end } = getStartAndEndDates(dateFilter);
-        const eventDate = new Date(event.startDateTime);
-        if (start && end) {
-          return eventDate >= start && eventDate <= end;
-        }
-      }
-
-      return selectedButtons.some((button) =>
-        eventProps.includes(button.toLowerCase())
-      );
-    });
-  //
 
   //button selection
   const handleButtonClick = (text: string) => {
@@ -131,65 +131,171 @@ export default function FeaturedEvents() {
     setFilterOpen(false);
   };
 
-  //see more function
-  const handleSeeMoreClick = () => {
-    setShowMore(true);
-  };
-
-  //clear filter button
-  const clearFilterButton = () => {
-    setSelectedButtons([]);
-  };
-
-  //fetch events from database
-  async function fetchEventFeautured() {
-    fetch("/api/explore/featured?query", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setEventData(data.data))
-      .catch((error) => console.error("Error:", error));
-  }
-
   useEffect(() => {
-    fetchEventFeautured();
-  }, []);
-
-  useEffect(() => {
-    if (query) {
-      setSelectedButtons(query.split(","));
-    }
-  }, [query]);
-
-  useEffect(() => {
-    //filtered categories
+    //fetching event categories
     if (eventData) {
       const categories: string[] = eventData.map(
         (event) => event.eventCategory
       );
       setFilterCategories(categories);
     }
-    //filtered location type
+    //fetching event location type
     if (eventData) {
       const filtertype: string[] = eventData.map((event) => event.locationType);
       setFilterLocationType(filtertype);
     }
 
-    //filtered country
+    //fetching event country
     if (eventData) {
       const country: string[] = eventData.map((event) => event.eventCountry);
       setFilterCountry(country);
     }
 
-    //filtered city
+    //fetching event city
     if (eventData) {
       const cities: string[] = eventData.map((event) => event.eventCity);
       setFilterCity(cities);
     }
   }, [eventData]);
+
+  const categorizeButtons = (buttons: string[]): CategorizedButtons => {
+    const categories: CategorizedButtons = {
+      locationType: [],
+      eventCountry: [],
+      eventCity: [],
+      eventCategory: [],
+      dateFilter: [],
+    };
+
+    buttons.forEach((button) => {
+      if (["today", "this-week", "this-month"].includes(button)) {
+        categories.dateFilter.push(button);
+      } else if (filterLocationType.includes(button)) {
+        categories.locationType.push(button);
+      } else if (filterCountry.includes(button)) {
+        categories.eventCountry.push(button);
+      } else if (filterCity.includes(button)) {
+        categories.eventCity.push(button);
+      } else if (filterCategories.includes(button)) {
+        categories.eventCategory.push(button);
+      }
+    });
+
+    return categories;
+  };
+
+  //filter function
+  // const filteredEvents = eventData
+  //   ?.filter((event) => {
+  //     const lowerSearchQuery = searchQuery.toLowerCase();
+  //     return (
+  //       event.eventTitle.toLowerCase().includes(lowerSearchQuery) ||
+  //       event.eventCity.toLowerCase().includes(lowerSearchQuery) ||
+  //       event.eventCategory.toLowerCase().includes(lowerSearchQuery)
+  //     );
+  //   })
+  //   .filter((event) => {
+  //     const categories = categorizeButtons(selectedButtons);
+
+  //     if (
+  //       Object.values(categories).every((category) => category.length === 0)
+  //     ) {
+  //       return true;
+  //     }
+
+  //     const eventProps = {
+  //       locationType: event.locationType.toLowerCase(),
+  //       eventCountry: event.eventCountry.toLowerCase(),
+  //       eventCity: event.eventCity.toLowerCase(),
+  //       eventCategory: event.eventCategory.toLowerCase(),
+  //     };
+
+  //     // Date filtering
+  //     const dateFilter = categories.dateFilter[0];
+  //     if (dateFilter) {
+  //       const { start, end } = getStartAndEndDates(dateFilter);
+  //       const eventDate = new Date(event.startDateTime);
+  //       if (start && end && (eventDate < start || eventDate > end)) {
+  //         return false;
+  //       }
+  //     }
+
+  //     // If only one category is selected
+  //     const selectedCategories = Object.entries(categories).filter(
+  //       ([key, values]) => values.length > 0
+  //     );
+  //     if (selectedCategories.length === 1) {
+  //       const [key, values] = selectedCategories[0];
+  //       return values.some(
+  //         (value: string) =>
+  //           eventProps[key as keyof typeof eventProps] === value.toLowerCase()
+  //       );
+  //     }
+
+  //     // If multiple categories are selected, apply AND logic for categories and OR logic within the same category
+  //     return selectedCategories.every(([key, values]) => {
+  //       return values.some(
+  //         (value: string) =>
+  //           eventProps[key as keyof typeof eventProps] === value.toLowerCase()
+  //       );
+  //     });
+  //   });
+
+  const filteredEvents = eventData
+    ?.filter((event) => {
+      const lowerSearchQuery = searchQuery.toLowerCase();
+      return (
+        event.eventTitle.toLowerCase().includes(lowerSearchQuery) ||
+        event.eventCity.toLowerCase().includes(lowerSearchQuery) ||
+        event.eventCategory.toLowerCase().includes(lowerSearchQuery)
+      );
+    })
+    .filter((event) => {
+      const categories = categorizeButtons(selectedButtons);
+
+      if (
+        Object.values(categories).every((category) => category.length === 0)
+      ) {
+        return true;
+      }
+
+      const eventProps = {
+        locationType: event.locationType.toLowerCase(),
+        eventCountry: event.eventCountry.toLowerCase(),
+        eventCity: event.eventCity.toLowerCase(),
+        eventCategory: event.eventCategory.toLowerCase(),
+      };
+
+      // Date filtering
+      if (categories.dateFilter.length > 0) {
+        const dateFilter = categories.dateFilter[0];
+        const { start, end } = getStartAndEndDates(dateFilter);
+        const eventDate = new Date(event.startDateTime);
+        if (start && end && (eventDate < start || eventDate > end)) {
+          return false;
+        }
+      }
+
+      // If only one category is selected
+      const selectedCategories = Object.entries(categories).filter(
+        ([key, values]) => values.length > 0
+      );
+      if (selectedCategories.length === 1) {
+        const [key, values] = selectedCategories[0];
+        return values.some(
+          (value:string) =>
+            eventProps[key as keyof typeof eventProps] === value.toLowerCase()
+        );
+      }
+
+      // If multiple categories are selected, apply AND logic for categories and OR logic within the same category
+      return selectedCategories.every(([key, values]) => {
+        return values.some(
+          (value:string) =>
+            eventProps[key as keyof typeof eventProps] === value.toLowerCase()
+        );
+      });
+    });
 
   return (
     <>

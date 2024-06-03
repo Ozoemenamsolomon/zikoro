@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import { Metadata } from "next";
+import CopyrightFooter from "@/components/CopyrightFooter";
 
 export const metadata: Metadata = {
   title: "Zikoro Blog Post",
