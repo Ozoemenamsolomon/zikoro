@@ -11,6 +11,7 @@ import { getRequest } from "@/utils/api";
 import { TAuthUser } from "@/types";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useEventStore from "@/store/globalEventStore";
+import useUserStore from "@/store/globalUserStore";
 
 const supabase = createClientComponentClient();
 export const saveCookie = (name: string, value: any) => {
@@ -80,6 +81,7 @@ export function useOnboarding() {
 export function useLogin() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { setLoggedInUser } = useSetLoggedInUser(); // Assuming this is a hook
 
   async function logIn(
     values: z.infer<typeof loginSchema>,
@@ -87,6 +89,7 @@ export function useLogin() {
   ) {
     setLoading(true);
     try {
+      console.log("here");
       const { data, error } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
@@ -94,29 +97,31 @@ export function useLogin() {
 
       if (error) {
         toast.error(error?.message);
-
+        console.log(error?.message);
         setLoading(false);
         return;
       }
 
       if (data && data?.user?.email) {
-        await getUser(data?.user?.email);
-        //  toast.success("Sign In Successful");
+        await setLoggedInUser(data?.user?.email);
+        console.log(data?.user?.email);
+        toast.success("Sign In Successful");
         router.push(redirectTo ?? "home");
         setLoading(false);
       }
     } catch (error) {
+      console.log(error);
       setLoading(false);
     }
   }
+
   return {
     logIn,
     loading,
   };
 }
-
 export function useValidateUser() {
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
   const router = useRouter();
 
   // using this to redirect new users to onboarding
@@ -134,6 +139,32 @@ export function useValidateUser() {
   }, []);
 }
 
+export const useSetLoggedInUser = () => {
+  const { setUser } = useUserStore();
+
+  const setLoggedInUser = async (email: string | null) => {
+    if (!email) return;
+    const { data: user, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("userEmail", email)
+      .single();
+    if (error) {
+      //  console.log({error});
+      window.open(
+        `/onboarding?email=${email}&createdAt=${new Date().toISOString()}`,
+        "_self"
+      );
+      return;
+    }
+    console.log(user);
+    setUser(user);
+    return user;
+  };
+
+  return { setLoggedInUser };
+};
+
 export const getUser = async (email: string | null) => {
   if (!email) return;
   const { data: user, error } = await supabase
@@ -149,6 +180,7 @@ export const getUser = async (email: string | null) => {
     );
     return;
   }
+  console.log(user);
   saveCookie("user", user);
   return user;
 };
@@ -199,10 +231,11 @@ export function useLogOut() {
   const router = useRouter();
   const { setOrganization } = useOrganizationStore();
   const { setEvent } = useEventStore();
+  const { setUser } = useUserStore();
 
   async function logOut() {
     await supabase.auth.signOut();
-    saveCookie("user", null);
+    setUser(null);
     setOrganization(null);
     setEvent(null);
     router.push("/");

@@ -27,6 +27,7 @@ import {
 } from "@/hooks";
 import { sendMail, whatsapp } from "@/utils";
 import { TUser } from "@/types";
+import useUserStore from "@/store/globalUserStore";
 
 export function SideBarLayout({
   eventId,
@@ -41,7 +42,7 @@ export function SideBarLayout({
   const [isOpen, setOpen] = useState(false);
   const query = param.get("organization");
   const { events } = useGetEvents();
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   const router = useRouter();
 
   console.log(user);
@@ -130,7 +131,7 @@ function SideNavs({
   const { organizationId }: { organizationId: string } = useParams();
   const router = useRouter();
   const { logOut } = useLogOut();
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
 
   // max-[1024px]:hidden
   return (

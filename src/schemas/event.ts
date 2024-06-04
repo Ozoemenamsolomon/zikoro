@@ -44,6 +44,7 @@ export const newEventSchema = z.object({
   eventAlias: z.any(),
   eventCountry: z.string().min(2, { message: "Country is required" }),
   organisationId: z.string().min(2, { message: "Organization is required" }),
+  eventPoster: z.any()
 });
 
 const eventPricing = z.array(

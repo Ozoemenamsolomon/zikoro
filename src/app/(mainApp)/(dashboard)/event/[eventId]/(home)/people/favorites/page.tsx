@@ -4,9 +4,10 @@ import { HeartFill } from "styled-icons/bootstrap";
 import ReusablePeopleComponent from "../_reusable";
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
+import useUserStore from "@/store/globalUserStore";
 
 export default function page() {
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   const { attendees, isLoading, error, getAttendees } =
     useGetAttendeesWithFavourites({ userId: user.id });
 

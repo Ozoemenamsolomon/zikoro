@@ -318,7 +318,7 @@ export function SingleEvent({
                   </div>
                 </div>
               )}
-              <div className="w-full flex  justify-between items-center ">
+              <div className={cn("w-full flex  justify-between items-start flex-col gap-3 ", isDetail && "flex-col sm:flex-row items-start sm:items-center")}>
               <div className=" flex items-center gap-x-6 justify-start">
                 <h3>Speak with the Event Team</h3>
 

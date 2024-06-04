@@ -14,6 +14,7 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { TExPartner } from "@/types";
 import Image from "next/image";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
+import useUserStore from "@/store/globalUserStore";
 
 interface RewardData {
   imgSrc: string;
@@ -35,7 +36,7 @@ export default function ThirdSection({
   loading: boolean;
 }) {
   const { eventRegistrationRef, id } = attendee;
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   const { attendeeEventTransactions, isLoading, getAttendeeEventTransactions } =
     useGetAttendeeEventTransactions({
       userId: user ? user.id : 0,

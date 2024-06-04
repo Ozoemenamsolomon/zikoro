@@ -4,9 +4,10 @@ import React from "react";
 import ReusablePeopleComponent from "../_reusable";
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
+import useUserStore from "@/store/globalUserStore";
 
 export default function page() {
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
 
   const { attendees, isLoading, error, getAttendees } = useGetAttendeesWithTags(
     { userId: user.id }

@@ -42,6 +42,7 @@ import { TFilter } from "@/types/filter";
 import { Event, TUser } from "@/types";
 import { getCookie } from "@/hooks";
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
+import useUserStore from "@/store/globalUserStore";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -180,7 +181,7 @@ export default function FirstSection({
   selectedAttendee: TAttendee;
   event: Event;
 }) {
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   const divRef = useRef<HTMLDivElement>(null);
   const {
     filteredData: mappedAttendees,

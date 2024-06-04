@@ -13,11 +13,12 @@ const useOrganizationStore = create<organizationState>()(
   persist(
     (set) => ({
       organization: null,
-      setOrganization: (organization: TOrganization | null) => set({ organization }),
+      setOrganization: (organization: TOrganization | null) =>
+        set({ organization }),
     }),
     {
       name: "organization", // name of the item in the storage (must be unique)
-      getStorage: () => sessionStorage, // specify the storage mechanism
+      storage: createJSONStorage(() => localStorage), // specify the storage mechanism
     }
   )
 );

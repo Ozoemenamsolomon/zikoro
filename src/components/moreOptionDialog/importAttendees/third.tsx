@@ -8,6 +8,7 @@ import { DialogClose } from "@/components/ui/dialog";
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
 import useEventStore from "@/store/globalEventStore";
+import useUserStore from "@/store/globalUserStore";
 
 const Third = ({
   data,
@@ -30,7 +31,7 @@ const Third = ({
   );
   const { uploadAttendees } = useUploadAttendees();
 
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   const event = useEventStore((state) => state.event);
 
   const submitAttendees = async () => {

@@ -29,6 +29,7 @@ import useEventStore from "@/store/globalEventStore";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserIcon } from "@/constants";
+import useUserStore from "@/store/globalUserStore";
 
 const MainTopBar = ({
   eventId,
@@ -43,7 +44,7 @@ const MainTopBar = ({
   const pathname = usePathname().split("/");
 
   // console.log(pathname);
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   if (!user) return;
 
   const { organization, setOrganization } = useOrganizationStore();

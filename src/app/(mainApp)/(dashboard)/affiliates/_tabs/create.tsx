@@ -44,6 +44,7 @@ import { useGetEvents, useGetUserEvents } from "@/hooks/services/events";
 import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import useUserStore from "@/store/globalUserStore";
 
 const CreateAffiliateSchema = z.object({
   event: z.string(),
@@ -70,7 +71,7 @@ const Create = () => {
     defaultValues,
   });
 
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
 
   const { affiliates, isLoading: affiliatesIsLoading } = useGetAffiliates({
     userId: user?.id || 0,

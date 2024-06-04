@@ -26,7 +26,7 @@ export async function middleware(req: NextRequest) {
     req.nextUrl.pathname.startsWith(path)
   );
 
-  if (isIncludedPath && !session) {
+   if (isIncludedPath && !session) {
     // If user is not authenticated and path is included, redirect to the login page
     if (req.nextUrl.pathname.startsWith("/api")) {
       return NextResponse.json(
@@ -39,6 +39,7 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(redirectUrl);
     }
   }
+
 
   // Allow the request to proceed if user is authenticated or the path is not included
   return res;
