@@ -141,7 +141,7 @@ export default function CreateEvent() {
                 <div className="w-full md:col-span-3">
                   <div className="w-full rounded-lg p-4 bg-basePrimary bg-opacity-80 h-56 flex items-center justify-center relative">
                     <div className="w-full h-full bg-white/40 absolute inset-0"></div>
-                   {image && <Image src={image} width={500} height={500} className="w-full h-56 rounded-lg inset-0 z-10 absolute" alt=""/>}
+                   {image && <Image src={image} width={500} height={500} className="w-full h-56 inset-0 z-10 rounded-lg absolute" alt=""/>}
                     <label
                       htmlFor="eventImageUpload"
                       className="relative bg-white/50 flex z-20 items-center gap-x-2 w-full px-4  rounded-md outline-none border border-white h-12"
