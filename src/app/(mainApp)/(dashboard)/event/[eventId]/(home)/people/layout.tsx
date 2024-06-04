@@ -5,13 +5,14 @@ import { useEffect } from "react";
 import { PeopleLinks } from "@/data/LayoutLinks";
 import { getCookie, useGetEvent } from "@/hooks";
 import { Event, TUser } from "@/types";
+import useUserStore from "@/store/globalUserStore";
 
 const People = ({ children }: { children: React.ReactNode }) => {
   const pathNames = usePathname().split("/");
 
   useEffect(() => {}, [pathNames]);
 
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   // const event = getCookie<Event>("event");
   const { eventId } = useParams();
 

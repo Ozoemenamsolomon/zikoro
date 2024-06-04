@@ -14,6 +14,7 @@ import { RowSelectionState } from "@tanstack/react-table";
 import { TEventTransaction } from "@/types/billing";
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
+import useUserStore from "@/store/globalUserStore";
 
 const affiliateLinkFilter: TFilter<TAffiliateLink>[] = [
   {
@@ -133,7 +134,7 @@ const affiliateLinkFilter: TFilter<TAffiliateLink>[] = [
 ];
 
 const Performance = () => {
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   const { affiliateLinks, getAffiliateLinks, isLoading } = useGetAffiliateLinks(
     { userId: user?.id || 0 }
   );

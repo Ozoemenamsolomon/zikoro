@@ -21,6 +21,7 @@ import {
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
 import { useParams } from "next/navigation";
+import useUserStore from "@/store/globalUserStore";
 
 export default function AddAttendeeTagForm({
   attendeeEmail,
@@ -31,7 +32,7 @@ export default function AddAttendeeTagForm({
   attendeeId: number;
   getAttendeeTags: () => Promise<void>;
 }) {
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   const { eventId } = useParams();
   const [selectedTags, setSelectedTags] = useState<TTag[]>([]);
   const {

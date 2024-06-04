@@ -21,6 +21,7 @@ import { DialogClose } from "../ui/dialog";
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
 import { useParams } from "next/navigation";
+import useUserStore from "@/store/globalUserStore";
 
 export default function AddNotesForm({
   attendeeEmail,
@@ -33,7 +34,7 @@ export default function AddNotesForm({
   note: TAttendeeNote;
   getnote: () => Promise<void>;
 }) {
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
   const { eventId } = useParams();
   
   const defaultValues: Partial<TAttendeeNote> = !!note

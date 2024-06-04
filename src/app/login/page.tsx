@@ -27,6 +27,7 @@ export default function Page() {
   console.log(redirectTo);
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
+    console.log(values, redirectTo);
     await logIn(values, redirectTo);
   }
 

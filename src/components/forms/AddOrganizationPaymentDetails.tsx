@@ -39,10 +39,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import useUserStore from "@/store/globalUserStore";
 
 export default function AddOrganizationPaymentDetails() {
   const { organization, setOrganization } = useOrganizationStore();
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
 
   if (!organization || !user) return;
 

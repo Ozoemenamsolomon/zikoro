@@ -50,6 +50,7 @@ import TextEditor from "@/components/TextEditor";
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
 import useEventStore from "@/store/globalEventStore";
+import useUserStore from "@/store/globalUserStore";
 
 const CreateEmailSchema = z
   .object({
@@ -64,7 +65,6 @@ const CreateEmailSchema = z
     timezone: z.string().optional(),
   })
   .superRefine(({ isScheduled, schedule, timezone }, refinementContext) => {
-    
     if (isScheduled && !schedule) {
       return refinementContext.addIssue({
         code: z.ZodIssueCode.custom,
@@ -85,9 +85,7 @@ type TCreateEmail = z.infer<typeof CreateEmailSchema>;
 
 const Create = () => {
   const currentEvent = useEventStore((state) => state.event);
-  const user = getCookie<TUser>("user");
-
-  
+  const { user, setUser } = useUserStore();
 
   const { attendees, getAttendees, isLoading } = useGetAttendees({
     eventId: currentEvent?.eventAlias,
@@ -131,8 +129,6 @@ const Create = () => {
     formState: { errors },
   } = form;
 
-  
-
   const content = watch("content");
   const isScheduled = watch("isScheduled");
 
@@ -152,13 +148,7 @@ const Create = () => {
   };
 
   const onSubmit = async (data: TCreateEmail) => {
-    
-
     if (!user) return;
-
-    if (sendTest) {
-      data.emailRecipient = testEmail;
-    }
 
     await sendMarketingEmail({
       payload: {
@@ -170,13 +160,12 @@ const Create = () => {
         sendersName: data.sender,
         replyTo: data.replyTo,
         emailBody: data.content,
-        emailRecipient: data.recipients.split("; "),
+        emailRecipient: sendTest ? [testEmail] : data.recipients.split("; "),
       },
     });
   };
 
   const setMessage = (content: string) => {
-    
     setValue("content", content);
   };
 

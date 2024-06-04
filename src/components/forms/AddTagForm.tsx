@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getCookie } from "@/hooks";
 import { useUpdateTags } from "@/hooks/services/tags";
+import useUserStore from "@/store/globalUserStore";
 import { TUser } from "@/types";
 import { TTag, TTags } from "@/types/tags";
 import COLORTAG from "@/utils/colorTag";
@@ -18,7 +19,7 @@ export default function AddTagForm({
   const [label, setLabel] = useState<string>("");
   const [color, setColor] = useState<string>("");
 
-  const user = getCookie<TUser>("user");
+  const { user, setUser } = useUserStore();
 
   const { updateTags, isLoading, error } = useUpdateTags({
     userId: user ? user.id : 0,
