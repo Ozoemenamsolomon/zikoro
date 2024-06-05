@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useUserStore from "@/store/globalUserStore";
 
+
 type OrganizationListType = {
   label: string;
   value: any;
@@ -22,8 +23,7 @@ export function HeaderWidget({
   currentQuery: string | null;
 }) {
   const [isOpen, setOpen] = useState(false);
-  const { user, setUser } = useUserStore();
-  // const user = getCookie("user");
+  const {user} = useUserStore()
   const router = useRouter();
   const form = useForm({
     defaultValues: {

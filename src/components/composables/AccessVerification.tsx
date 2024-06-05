@@ -16,8 +16,7 @@ export function AccessVerification({
   isEventIdPresent: boolean;
   id?: string | any;
 }) {
-  const { user, setUser } = useUserStore();
-  // const user = getCookie("user");
+  const {user} = useUserStore()
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);

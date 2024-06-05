@@ -16,8 +16,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
   const [isShowNav, setShowNav] = useState(false);
   const [isScrolling, setScrolling] = useState(false);
   const [left, setLeft] = useState(false);
-  const { user, setUser } = useUserStore();
-  // const user = getCookie("user");
+  const {user} = useUserStore()
   const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
 
   useEffect(() => {

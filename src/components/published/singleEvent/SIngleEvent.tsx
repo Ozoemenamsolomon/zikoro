@@ -14,6 +14,7 @@ import { EventLocationType, AboutWidget } from "@/components/composables";
 import Link from "next/link";
 import { cn } from "@/lib";
 import { Users } from "@styled-icons/fa-solid/Users";
+import useUserStore from "@/store/globalUserStore";
 import {
   dateFormatting,
   calculateTimeDifference,
@@ -32,7 +33,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Event, OrganizerContact } from "@/types";
 import { useFetchSingleOrganization, getCookie, useFormatEventData } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
-import useUserStore from "@/store/globalUserStore";
+
 export function SingleEvent({
   className,
   isDetail,
@@ -53,8 +54,7 @@ export function SingleEvent({
 }) {
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
-  const { user, setUser } = useUserStore();
-  // const user = getCookie("user")
+  const {user} = useUserStore()
   const [isShareDropDown, showShareDropDown] = useState(false);
   const pathname = usePathname()
   const org = getCookie("currentOrganization");
