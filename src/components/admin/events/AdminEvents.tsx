@@ -21,6 +21,7 @@ import { Download } from "@styled-icons/bootstrap/Download";
 import { Eye } from "@styled-icons/feather/Eye";
 import { useSearchParams } from "next/navigation";
 import { EmptyCard } from "../../composables";
+import useUserStore from "@/store/globalUserStore";
 
 export default function AdminEvents() {
   const { events, getEvents: refetch, isLoading: loading } = useGetEvents();
@@ -90,7 +91,8 @@ function EventCard({
   }
 
   async function publishEvent() {
-    const userData = getCookie("user");
+    const { user: userData, setUser } = useUserStore();
+    // const userData = getCookie("user");
     const statusDetail = {
       createdAt: new Date().toISOString(),
       status: "published",

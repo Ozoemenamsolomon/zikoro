@@ -34,6 +34,7 @@ import { DataTable } from "@/components/DataTable";
 import { getCookie } from "@/hooks";
 import { Bold, Italic, Underline } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import useUserStore from "@/store/globalUserStore";
 
 const payOutsFilter: TFilter<TPayOut>[] = [
   {
@@ -190,7 +191,7 @@ const PAYOUT_TABS = [
 
 export default function page() {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
 
   const { payOuts, isLoading, getPayOuts } = useGetPayOuts({ userId: user?.id || 0 });
 

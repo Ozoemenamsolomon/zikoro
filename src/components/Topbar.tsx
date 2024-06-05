@@ -9,13 +9,15 @@ import { cn } from "@/lib";
 import { Button } from ".";
 import { ArrowExportLtr } from "@styled-icons/fluentui-system-filled/ArrowExportLtr";
 import { ArrowExportRtl } from "@styled-icons/fluentui-system-filled/ArrowExportRtl";
+import useUserStore from "@/store/globalUserStore";
 
 const Topbar = ({ eventId }: { eventId?: string }) => {
   const pathname = usePathname();
   const [isShowNav, setShowNav] = useState(false);
   const [isScrolling, setScrolling] = useState(false);
   const [left, setLeft] = useState(false);
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
   const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
 
   useEffect(() => {

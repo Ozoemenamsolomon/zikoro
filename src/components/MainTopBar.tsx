@@ -124,7 +124,7 @@ const MainTopBar = ({
         </Link>
       )}
 
-      {!pathname.includes("event") ? (
+      {!pathname.includes("event") && (
         <Selector
           options={(userOrganizations ?? [])?.map(
             ({ id, organizationName }) => ({
@@ -141,7 +141,7 @@ const MainTopBar = ({
             }
           }
         />
-      ) : null}
+      )}
     </header>
   );
 };

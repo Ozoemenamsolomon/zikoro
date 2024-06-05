@@ -17,6 +17,7 @@ import { getCookie, useGetReviews, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import Link from "next/link";
+import useUserStore from "@/store/globalUserStore";
 export function AboutSession({
   agenda,
   event,
@@ -32,7 +33,8 @@ export function AboutSession({
   isIdPresent: boolean;
   isOrganizer: boolean;
 }) {
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
   const router = useRouter();
   const { rating, getRating } = useGetReviews();
   const { updateAgenda } = useUpdateAgenda();

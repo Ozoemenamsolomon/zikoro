@@ -31,6 +31,7 @@ import {
   pricingCurrency,
 } from "../_components/utils";
 import { TOrgEvent } from "@/types";
+import useUserStore from "@/store/globalUserStore";
 
 interface ImageFile {
   url: string | undefined;
@@ -248,7 +249,8 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   async function publishEvent() {
     if (!data) return;
     setIsPublishing(true);
-    const userData = getCookie("user");
+    const { user, setUser } = useUserStore();
+    // const userData = getCookie("user");
     if (data?.eventStatus === "review") {
       toast({
         variant: "destructive",

@@ -5,6 +5,7 @@ import { getCookie, useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib";
+import useUserStore from "@/store/globalUserStore";
 
 export function AccessVerification({
   id,
@@ -15,7 +16,8 @@ export function AccessVerification({
   isEventIdPresent: boolean;
   id?: string | any;
 }) {
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
