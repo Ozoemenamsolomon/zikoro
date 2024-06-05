@@ -84,7 +84,7 @@ export default function Page() {
 Hi there,
 <br />
 <br />
-    here's your link: ${window.location.host}/live-events/${eventId}?source=link
+    here's your link: ${window.location.host}/live-events/${eventId}?source=email
 <br/>
 <br/>
 Yours sincerely,
