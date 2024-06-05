@@ -4,7 +4,6 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useRequestPayOut } from "@/hooks/services/billing";
 import { DialogClose } from "./ui/dialog";
-import { getCookie } from "@/hooks";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 
 interface RequestPayoutDialogProps {

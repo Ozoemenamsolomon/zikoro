@@ -76,6 +76,8 @@ const MainTopBar = ({
     router.push(`/event/${currentEvent.eventAlias}/content/info`);
   };
 
+  if (pathname.includes("home") || pathname.includes("referrals")) return;
+
   return (
     <header
       className={cn(

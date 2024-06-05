@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Table,
@@ -9,13 +10,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { useParams } from "next/navigation";
+import useUserStore from "@/store/globalUserStore";
+import { useGetUserReferrals } from "@/hooks";
 
 const page = () => {
+  const { user, setUser } = useUserStore();
+  if (!user) return;
+  const { userReferrals, isLoading } = useGetUserReferrals({
+    userId: user?.id,
+    referredBy: user?.referralCode,
+  });
+
+  console.log(userReferrals);
+
   return (
     <div>
       <h1 className="px-4 py-6 border-b text-lg font-medium">Referrals</h1>
-      <div className="p-4 grid grid-cols-10 gap-6">
-        <div className="col-span-6 space-y-6">
+      <div className="p-4 grid md:grid-cols-10 gap-3 md:gap-6">
+        <div className="md:col-span-6 space-y-6">
           <div className="border p-2 flex items-center gap-2">
             <svg
               width={34}
@@ -73,7 +86,9 @@ const page = () => {
                 <line x1={23} y1={11} x2={17} y2={11} />
               </svg>
               <div className="flex flex-col gap-1">
-                <h3 className="text-greyBlack font-medium">0 Registrations</h3>
+                <h3 className="text-greyBlack font-medium">
+                  {userReferrals && userReferrals.length} Registrations
+                </h3>
                 <p className="text-gray-500 font-medium text-sm">
                   People who have signed up using your referral link
                 </p>
@@ -109,35 +124,36 @@ const page = () => {
             <h2 className="font-medium text-xl text-gray-800">
               Your referrals
             </h2>
-            <Table>
-              <TableCaption>A list of your recent invoices.</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Subscribers</TableHead>
-                  <TableHead className="w-[100px]">Commission</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium">Musa Aderemi</TableCell>
-                  <TableCell>#100.00</TableCell>
-                  <TableCell>New</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            {isLoading ? (
+              <div>Loading...</div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Date Registered</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-medium">Musa Aderemi</TableCell>
+                    <TableCell>{}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            )}
           </div>
         </div>
-        <div className="col-span-4 flex flex-col gap-6">
+        <div className="md:col-span-4 flex flex-col gap-6 w-full">
           <Button className="bg-basePrimary w-fit self-end">
             Request Payout
           </Button>
           <div className="border p-4 flex flex-col gap-2 rounded">
-            <span>Referral Link</span>
+            <span>Referral Code</span>
             <span className="max-w-full truncate border p-2 rounded text-gray-700 font-medium text-sm">
-              https://zikoro.com/r/rasheedidris/45344537/3dsfffssfssfsfssfsffsffs
+              {user?.referralCode}
             </span>
-            <Button className="bg-basePrimary w-full">Copy Link</Button>
+            <Button className="bg-basePrimary w-full">Copy Code</Button>
           </div>
           <div className="space-y-2">
             <h2 className="font-medium text-xl text-gray-800">
