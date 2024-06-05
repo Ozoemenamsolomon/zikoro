@@ -8,7 +8,7 @@ import FeaturedEventList from "@/components/explore/FeaturedEventList";
 import CitiesEventList from "@/components/explore/CitiesEventList";
 import CategoryEventList from "@/components/explore/CategoryEventsList";
 
-export default function Events() {
+export default function Explore() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (

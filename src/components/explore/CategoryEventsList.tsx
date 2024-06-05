@@ -24,7 +24,6 @@ export default function CategoryEventList() {
     fetchEventCategories();
   }, []);
 
-
   const renderedCategories = new Set(); // Set to store rendered categories
   let renderedCategoryCount = 0;
 
