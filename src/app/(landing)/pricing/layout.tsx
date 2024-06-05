@@ -1,10 +1,8 @@
-import Navbar from "@/components/Navbar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Zikoro Blog Post",
+  title: "Zikoro Pricing",
 };
-
 export default function RootLayout({
   children,
 }: {
@@ -12,7 +10,6 @@ export default function RootLayout({
 }) {
   return (
     <section className="">
-      <Navbar />
       {children}
     </section>
   );

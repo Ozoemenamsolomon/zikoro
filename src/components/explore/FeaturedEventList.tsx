@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import FeaturedEvent from "./FeaturedEvent";
 import { RightArrow } from "@/constants/icons";
 import { useRouter } from "next/navigation";
-import LoadingSpinner from "../LoadingSpinner";
 
 type selectedEventProps = {
   searchQuery: string;
