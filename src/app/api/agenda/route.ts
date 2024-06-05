@@ -115,6 +115,7 @@ export async function POST(req: NextRequest) {
 
             return {
               ...speaker,
+              attendeeType: [...speaker?.attendeeType, "speaker"],
               speakingAt: [
                 ...filterSpeakers,
                 {
