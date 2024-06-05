@@ -13,6 +13,7 @@ import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
 import { deleteRequest, getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 import { getCookie } from "@/hooks";
+import useUserStore from "@/store/globalUserStore";
 
 export const useSaveCertificate = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -658,7 +659,8 @@ export function useGetUserCertificates() {
   >([]);
   const { attendeeCertificates, isLoading } =
     useGetAllEventAttendeesCertificates();
-  const user = getCookie("user");
+    const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
 
   useEffect(() => {
     if (!isLoading && user) {

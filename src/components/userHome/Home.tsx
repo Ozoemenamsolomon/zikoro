@@ -1,10 +1,12 @@
 "use client";
 
+import useUserStore from "@/store/globalUserStore";
 import { ActionCard, UserCertificates, UserEvents } from "./_components";
 import { getCookie } from "@/hooks";
 
 export default function Home() {
-  const user  = getCookie("user")
+  const { user, setUser } = useUserStore();
+
   const homeTab = [
     {
       title: "Create your Event",

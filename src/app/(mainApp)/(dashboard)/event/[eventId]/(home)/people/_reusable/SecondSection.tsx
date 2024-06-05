@@ -50,6 +50,7 @@ import AttendeeCard from "@/components/people/AttendeeCard";
 import AttendeeCredentials from "@/components/people/AttendeeCredentials";
 import AttendeeAbout from "@/components/people/AttendeeAbout";
 import AttendeeTagsSection from "@/components/people/AttendeeTagsSection";
+import useUserStore from "@/store/globalUserStore";
 
 function AttendeeNotesSection(props) {
   return (
@@ -157,7 +158,8 @@ export default function SecondSection({
     websiteUrl,
   } = attendee;
 
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
 
   const attendeeModeratingAt = eventAgendas?.filter(
     ({ sessionModerators }) =>

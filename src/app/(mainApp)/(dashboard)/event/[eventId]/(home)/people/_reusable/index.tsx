@@ -19,6 +19,7 @@ import useEventStore from "@/store/globalEventStore";
 import { TExPartner } from "@/types";
 import { useParams } from "next/navigation";
 import { useGetContactRequests } from "@/hooks/services/contacts";
+import useUserStore from "@/store/globalUserStore";
 
 interface ReusablePeopleComponentProps {
   attendees: TAttendee[];
@@ -39,8 +40,8 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     onClose: onCloseAttendeeForm,
   } = useDisclose();
 
-  
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
   const event = useEventStore((state) => state.event);
   const { eventId } = useParams();
 

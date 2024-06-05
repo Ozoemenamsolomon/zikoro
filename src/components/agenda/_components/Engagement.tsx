@@ -11,6 +11,7 @@ import { cn } from "@/lib";
 import { TAgenda, TAttendee } from "@/types";
 import { getCookie, useSendReview } from "@/hooks";
 import { Like } from "@styled-icons/foundation/Like";
+import useUserStore from "@/store/globalUserStore";
 export function Engagement({
   agenda,
   id,
@@ -21,7 +22,8 @@ export function Engagement({
   agenda: TAgenda | null;
 }) {
   const [rating, setRating] = useState(0);
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
 
   const attendeeId = useMemo(() => {
     return attendees?.find(
