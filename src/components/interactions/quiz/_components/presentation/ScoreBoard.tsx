@@ -26,7 +26,7 @@ export function ScoreBoard({
 }: {
   answers: TAnswer[];
   close: () => void;
-  quiz: TQuiz<TRefinedQuestion[]>;
+  quiz: TQuiz<TRefinedQuestion[]> | null;
   id: string;
   isAttendee: boolean;
   quizAnswer: TAnswer[];
@@ -66,25 +66,30 @@ export function ScoreBoard({
   }
 
   const userPosition = useMemo(() => {
-    const playerId = quiz?.accessibility?.live ? player?.userId : id;
-    const index = board?.findIndex(
-      ({ quizParticipantId }) => quizParticipantId === playerId
-    );
-
-    return index + 1;
+    if (isAttendee && quiz) {
+      const playerId = quiz?.accessibility?.live ? player?.userId : id;
+      const index = board?.findIndex(
+        ({ quizParticipantId }) => quizParticipantId === playerId
+      );
+  
+      return index + 1;
+    }
+  
   }, [board]);
   const userScore = useMemo(() => {
+   if (isAttendee && quiz) {
     const playerId = quiz?.accessibility?.live ? player?.userId : id;
     const score = board?.find(
       ({ quizParticipantId }) => quizParticipantId === playerId
     );
 
     return score?.totalScore || 0;
+   }
   }, [board]);
 
   return (
     <>
-      {isQuizResult ? (
+      {isQuizResult && quiz ? (
         <AttendeeScore
           quiz={quiz}
           close={onClose}
@@ -254,12 +259,12 @@ function AttendeeScore({
   close,
   userScore,
 }: {
-  userPosition: number;
+  userPosition?: number;
   id: string;
   quizAnswer: TAnswer[];
   quiz: TQuiz<TRefinedQuestion[]>;
   close: () => void;
-  userScore: number;
+  userScore?: number;
 }) {
   const [isAnswers, setIsAnswer] = useState(false);
 
