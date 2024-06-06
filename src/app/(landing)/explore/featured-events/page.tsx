@@ -8,6 +8,7 @@ import {
   ArrowUpIcon,
   CloseIcon,
 } from "@/constants/icons";
+import { ArrowBackCircle } from "styled-icons/ionicons-outline";
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
 import { useSearchParams } from "next/navigation";
 import {
@@ -128,6 +129,10 @@ export default function FeaturedEvents() {
     } else {
       setSelectedButtons([...selectedButtons, text]);
     }
+  };
+
+  //saveFilter
+  const saveFilter = () => {
     setFilterOpen(false);
   };
 
@@ -185,62 +190,6 @@ export default function FeaturedEvents() {
   };
 
   //filter function
-  // const filteredEvents = eventData
-  //   ?.filter((event) => {
-  //     const lowerSearchQuery = searchQuery.toLowerCase();
-  //     return (
-  //       event.eventTitle.toLowerCase().includes(lowerSearchQuery) ||
-  //       event.eventCity.toLowerCase().includes(lowerSearchQuery) ||
-  //       event.eventCategory.toLowerCase().includes(lowerSearchQuery)
-  //     );
-  //   })
-  //   .filter((event) => {
-  //     const categories = categorizeButtons(selectedButtons);
-
-  //     if (
-  //       Object.values(categories).every((category) => category.length === 0)
-  //     ) {
-  //       return true;
-  //     }
-
-  //     const eventProps = {
-  //       locationType: event.locationType.toLowerCase(),
-  //       eventCountry: event.eventCountry.toLowerCase(),
-  //       eventCity: event.eventCity.toLowerCase(),
-  //       eventCategory: event.eventCategory.toLowerCase(),
-  //     };
-
-  //     // Date filtering
-  //     const dateFilter = categories.dateFilter[0];
-  //     if (dateFilter) {
-  //       const { start, end } = getStartAndEndDates(dateFilter);
-  //       const eventDate = new Date(event.startDateTime);
-  //       if (start && end && (eventDate < start || eventDate > end)) {
-  //         return false;
-  //       }
-  //     }
-
-  //     // If only one category is selected
-  //     const selectedCategories = Object.entries(categories).filter(
-  //       ([key, values]) => values.length > 0
-  //     );
-  //     if (selectedCategories.length === 1) {
-  //       const [key, values] = selectedCategories[0];
-  //       return values.some(
-  //         (value: string) =>
-  //           eventProps[key as keyof typeof eventProps] === value.toLowerCase()
-  //       );
-  //     }
-
-  //     // If multiple categories are selected, apply AND logic for categories and OR logic within the same category
-  //     return selectedCategories.every(([key, values]) => {
-  //       return values.some(
-  //         (value: string) =>
-  //           eventProps[key as keyof typeof eventProps] === value.toLowerCase()
-  //       );
-  //     });
-  //   });
-
   const filteredEvents = eventData
     ?.filter((event) => {
       const lowerSearchQuery = searchQuery.toLowerCase();
@@ -283,7 +232,7 @@ export default function FeaturedEvents() {
       if (selectedCategories.length === 1) {
         const [key, values] = selectedCategories[0];
         return values.some(
-          (value:string) =>
+          (value: string) =>
             eventProps[key as keyof typeof eventProps] === value.toLowerCase()
         );
       }
@@ -291,7 +240,7 @@ export default function FeaturedEvents() {
       // If multiple categories are selected, apply AND logic for categories and OR logic within the same category
       return selectedCategories.every(([key, values]) => {
         return values.some(
-          (value:string) =>
+          (value: string) =>
             eventProps[key as keyof typeof eventProps] === value.toLowerCase()
         );
       });
@@ -685,10 +634,8 @@ export default function FeaturedEvents() {
             <div className="block lg:hidden">
               <div className="flex py-6 px-5 items-center justify-between border-b-[1px] border-gray-300 ">
                 <div className="flex gap-x-3 items-center">
-                  <div onClick={() => setFilterOpen(false)}>
-                    <CloseIcon />
-                  </div>
-                  <p className="text-[14px] font-semibold">Filter Events</p>
+                    <ArrowBackCircle onClick={() => setFilterOpen(false)} />
+                  <p className="text-[14px] font-semibold  ">Filter Events</p>
                 </div>
                 <button
                   onClick={clearFilterButton}
@@ -858,22 +805,13 @@ export default function FeaturedEvents() {
                         >
                           This Month
                         </button>
-                        <button
-                          onClick={() => handleButtonClick("next-month")}
-                          className={`py-3 px-4 text-base border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                            selectedButtons.includes("next-month")
-                              ? "bg-zikoroBlue text-white"
-                              : "bg-white text-black"
-                          }`}
-                        >
-                          Next Month
-                        </button>
+                       
                       </div>
                     )}
                   </div>
 
-                  <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] mx-3 px-5 rounded-md border border-white">
-                    See more
+                  <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] mx-3 px-5 rounded-md border border-white" onClick={() => setFilterOpen(false)}>
+                    Save
                   </button>
                 </div>
               </div>

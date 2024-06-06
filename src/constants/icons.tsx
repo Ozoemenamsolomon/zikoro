@@ -1591,3 +1591,65 @@ export function MobileNavbarArrowLeft() {
     </svg>
   );
 }
+
+export function PaymentTick() {
+  return (
+    <svg
+      width="21"
+      height="21"
+      viewBox="0 0 21 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M16.8349 5.71182C17.1321 6.0003 17.1392 6.47513 16.8507 6.77236L8.60069 15.2724C8.45821 15.4192 8.26195 15.5014 8.05739 15.5C7.85282 15.4986 7.6577 15.4137 7.51724 15.265L3.26724 10.765C2.98283 10.4638 2.9964 9.98915 3.29753 9.70474C3.59867 9.42033 4.07335 9.43389 4.35776 9.73503L8.0699 13.6655L15.7743 5.72764C16.0628 5.43041 16.5376 5.42333 16.8349 5.71182Z"
+        fill="url(#paint0_linear_1599_3380)"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_1599_3380"
+          x1="3.0625"
+          y1="10.5"
+          x2="17.0625"
+          y2="10.5"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#001FCC" />
+          <stop offset="1" stop-color="#9D00FF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+export function PaymentPlus() {
+  return (
+    <svg
+      width="14"
+      height="15"
+      viewBox="0 0 14 15"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7.06315 0.833252C6.6029 0.833252 6.22982 1.20635 6.22982 1.66659V6.66658H1.22982C0.769584 6.66658 0.396484 7.03967 0.396484 7.49992C0.396484 7.96017 0.769584 8.33325 1.22982 8.33325H6.22982V13.3333C6.22982 13.7935 6.6029 14.1666 7.06315 14.1666C7.5234 14.1666 7.89648 13.7935 7.89648 13.3333V8.33325H12.8965C13.3567 8.33325 13.7298 7.96017 13.7298 7.49992C13.7298 7.03967 13.3567 6.66658 12.8965 6.66658H7.89648V1.66659C7.89648 1.20635 7.5234 0.833252 7.06315 0.833252Z"
+        fill="url(#paint0_linear_1599_3393)"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_1599_3393"
+          x1="0.396484"
+          y1="7.49992"
+          x2="13.7298"
+          y2="7.49992"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stop-color="#001FCC" />
+          <stop offset="1" stop-color="#9D00FF" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}

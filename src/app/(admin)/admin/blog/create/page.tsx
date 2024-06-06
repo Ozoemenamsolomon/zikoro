@@ -127,7 +127,7 @@ export default function BlogCreate() {
     }
   };
 
-  //Upload preview post Function
+  //Preview Function
   const preview = (): void => {
     if (!content) {
       toast.error("Please write your blog content");
@@ -198,6 +198,7 @@ export default function BlogCreate() {
       });
   };
 
+  //schedule function
   const schedulePost = async () => {
     if (!scheduledDate) {
       toast.error("Please select a scheduled date");
@@ -401,6 +402,7 @@ export default function BlogCreate() {
                             timeFormat="p"
                             timeIntervals={15}
                             dateFormat="Pp"
+                            minDate={new Date()}
                             placeholderText="Schedule for later"
                             className="text-indigo-600 w-full outline-none cursor-pointer"
                             onFocus={(e) => (e.target.readOnly = true)}
@@ -441,8 +443,11 @@ export default function BlogCreate() {
                   {" "}
                   <p> Selected tags:</p>
                   <div className="grid grid-cols-5 lg:grid-cols-8 gap-x-[1px] ">
-                    {formData.tags.map((tag: string) => (
-                      <p className="text-sm text-black ">{tag}</p>
+                    {formData.tags.map((tag: string, index: number) => (
+                      <p key={index} className="text-sm text-black ">
+                        {tag}
+                        {index < formData.tags.length - 1 && ","}
+                      </p>
                     ))}
                   </div>
                 </>
@@ -460,7 +465,9 @@ export default function BlogCreate() {
           </form>
         </section>
       </div>
-      {tagModalOpen && <AddTag updateTags={addNewTags} initialTags={formData.tags} />}
+      {tagModalOpen && (
+        <AddTag updateTags={addNewTags} initialTags={formData.tags} />
+      )}
     </div>
   );
 }

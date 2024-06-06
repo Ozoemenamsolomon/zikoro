@@ -9,21 +9,6 @@ import { useRouter } from "next/navigation";
 import { useFetchBlogPost } from "@/hooks/services/post";
 import Image from "next/image";
 
-type DBBlogPost = {
-  id: number;
-  title: string;
-  created_at: string;
-  category: string;
-  status: string;
-  statusDetails: JSON;
-  readingDuration: number;
-  content: string;
-  views: number;
-  shares: JSON;
-  tags: string[];
-  headerImageUrl: string;
-};
-
 export default function EditPost({ postId }: { postId: string }): JSX.Element {
   const { data, refetch } = useFetchBlogPost(postId);
   const [file, setFile] = useState<File | null>(null);
@@ -119,8 +104,38 @@ export default function EditPost({ postId }: { postId: string }): JSX.Element {
     }
   };
 
+  // Function to preview the blog post
   const preview = async () => {
-    alert("still working on this");
+    if (!content) {
+      toast.error("Please write your blog content");
+      return;
+    }
+
+    // Upload the image if a file is selected, otherwise use the existing image URL
+    const headerImageUrl = file ? await uploadImage() : data?.headerImageUrl;
+
+    try {
+      // Construct the blog data object
+      const blogData = {
+        title: formData.title,
+        category: formData.category,
+        tags: formData.tags,
+        headerImageUrl,
+        readingDuration: formData.readingDuration,
+        status,
+        content,
+        created_at: Date.now(),
+      };
+
+      // Store the blog data in local storage for previewing
+      localStorage.setItem("blogPreviewData", JSON.stringify(blogData));
+
+      // Open the preview page in a new tab
+      window.open("/post/preview", "_blank");
+    } catch (error) {
+      // Handle any errors that may occur
+      console.error("Error during preview:", error);
+    }
   };
 
   const saveOrPublish = async (formData: any) => {
@@ -282,6 +297,24 @@ export default function EditPost({ postId }: { postId: string }): JSX.Element {
               >
                 Publish
               </button>
+            </div>
+
+            {/* third section */}
+            <div className="flex mt-4 px-0 lg:px-3 items-center gap-x-2">
+              {formData.tags.length > 0 && (
+                <>
+                  {" "}
+                  <p> Selected tags:</p>
+                  <div className="grid grid-cols-5 lg:grid-cols-8 gap-x-[1px] ">
+                    {formData.tags.map((tag: string, index: number) => (
+                      <p key={index} className="text-sm text-black ">
+                        {tag}
+                        {index < formData.tags.length - 1 && ","}
+                      </p>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="mt-8 lg:mt-[60px] bg-white flex-1 resize-none h-fit mb-10">
