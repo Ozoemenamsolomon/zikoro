@@ -174,7 +174,9 @@ export default function Presentation({
   // show score sheet after live quiz
   useEffect(() => {
     if (quiz && quiz?.accessibility?.live) {
-      if (quiz?.liveMode?.isEnded) setShowScoreSheet(quiz?.liveMode?.isEnded);
+      if (quiz?.liveMode?.isEnded) {
+        setShowScoreSheet(quiz?.liveMode?.isEnded);
+      }
     }
   }, [quiz]);
 
@@ -184,11 +186,14 @@ export default function Presentation({
     <div className="w-full">
       {refinedQuizArray && !loading && !isLoading && !eventLoading ? (
         <>
-          {showScoreSheet && quizResult ? (
+          {showScoreSheet  ? (
             <ScoreBoard
               isAttendee={!isIdPresent && !isOrganizer}
               answers={answers}
-              close={() => setIsYetToStart(true)}
+              close={() => {
+                setShowScoreSheet(false)
+                setIsYetToStart(true)
+              }}
               id={id}
               quiz={quizResult}
               quizAnswer={answer}
