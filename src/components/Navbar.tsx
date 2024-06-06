@@ -55,7 +55,7 @@ export default function Navbar() {
     },
     {
       linkName: "Pricing",
-      href: "",
+      href: "/pricing",
       hasArrow: false,
       tag: "pricing",
     },

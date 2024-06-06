@@ -8,7 +8,9 @@ import { millisecondsToTime } from "@/utils";
 import { useMemo } from "react";
 import { cn } from "@/lib";
 import { DeleteQuestion, CopyQuestion, EditQuestion } from "..";
-
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Quiz } from "styled-icons/material";
 export function QuestionCard({
   question,
   id,
@@ -17,31 +19,29 @@ export function QuestionCard({
   activeQuestion,
   refetch,
 }: {
-  question: TRefinedQuestion;
+  question: TQuestion;
   id: number;
-  quiz: TQuiz<TRefinedQuestion[]>;
-  setActiveQuestion: (q: TRefinedQuestion) => void;
-  activeQuestion: TRefinedQuestion | null;
+  quiz: TQuiz<TQuestion[]>;
+  setActiveQuestion: (q: TQuestion) => void;
+  activeQuestion: TQuestion | null;
   refetch: () => Promise<any>;
 }) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+		useSortable({ id: question?.id });
   const duration = useMemo(() => {
     return millisecondsToTime(Number(question?.duration || 0));
   }, [question?.duration]);
 
-  const actualQuiz: TQuiz<TQuestion[]> = useMemo(() => {
-    return {
-      ...quiz,
-      questions: quiz?.questions?.map((item) => {
-        return {
-          ...item,
-          options: item?.options?.map(({ isCorrect, ...rest }) => rest),
-        };
-      }),
-    };
-  }, [quiz]);
-
   return (
     <div
+    ref={setNodeRef}
+			{...attributes}
+			{...listeners}
+			style={{
+				transition,
+				transform: CSS.Transform.toString(transform),
+				touchAction: "none",
+			}}
       onClick={() => setActiveQuestion(question)}
       role="button"
       className={cn(
@@ -78,17 +78,17 @@ export function QuestionCard({
           </div>
           <DeleteQuestion
             refetch={refetch}
-            quiz={actualQuiz}
+            quiz={quiz}
             questionId={question?.id}
           />
           <CopyQuestion
             refetch={refetch}
-            quiz={actualQuiz}
+            quiz={quiz}
             questionId={question?.id}
           />
           <EditQuestion
           refetch={refetch}
-          quiz={actualQuiz}
+          quiz={quiz}
           question={question}
           
           />

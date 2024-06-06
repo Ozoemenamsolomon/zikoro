@@ -5,6 +5,7 @@ import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 import { getCookie } from "@/hooks";
 import { UseGetResult, usePostResult } from "@/types/request";
+import useUserStore from "@/store/globalUserStore";
 
 export const useGetOrganizations = (): UseGetResult<
   TOrganization[],
@@ -180,7 +181,8 @@ export const useUpdateOrganization = ({
 };
 
 export function useGetUserOrganizations() {
-  const userData = getCookie("user");
+  // const userData = getCookie("user");
+  const { user: userData, setUser } = useUserStore();
   const [userOrganizations, setUserOrganizatiions] = useState<TOrganization[]>(
     [] as TOrganization[]
   );

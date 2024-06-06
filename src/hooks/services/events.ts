@@ -12,7 +12,7 @@ import {
   TOrgEvent,
 } from "@/types";
 import _ from "lodash";
-import { getCookie, useUpdateAttendees } from "@/hooks";
+import {  useUpdateAttendees } from "@/hooks";
 import { getRequest, postRequest, patchRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
 import { useGetAllAttendees, useGetEventAttendees } from "@/hooks";
@@ -25,6 +25,7 @@ import {
   generateAlias,
 } from "@/utils";
 import { useGetOrganizations } from "./organization";
+import useUserStore from "@/store/globalUserStore";
 
 const supabase = createClientComponentClient();
 
@@ -157,7 +158,7 @@ export const useGetEvents = (): UseGetResult<
 };
 
 export function useCreateOrganisation() {
-  const userData = getCookie("user");
+  const {user: userData} = useUserStore();
   const [loading, setLoading] = useState(false);
 
   async function organisation(values: z.infer<typeof organizationSchema>) {
@@ -200,7 +201,7 @@ export function useCreateOrganisation() {
 }
 
 export function useGetUserHomePageEvents() {
-  const userData = getCookie("user");
+  const {user: userData } = useUserStore()
   const [userEvents, setUserEvents] = useState<TOrgEvent[]>([] as TOrgEvent[]);
   const [firstSetEvents, setFirstSetEvents] = useState<TOrgEvent[]>(
     [] as TOrgEvent[]
@@ -662,7 +663,7 @@ export function useFetchSingleEvent(eventId: string) {
 }
 
 export function useBookingEvent() {
-  const userData = getCookie("user");
+  const {user:userData} = useUserStore()
   const [loading, setLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
 
@@ -731,7 +732,7 @@ export function useBookingEvent() {
 
 export function useTransactionDetail() {
   const [loading, setLoading] = useState(false);
-  const userData = getCookie("user");
+  const {user: userData} = useUserStore()
   async function sendTransactionDetail(
     allowPayment: (bool: boolean) => void,
     values: any
@@ -1150,7 +1151,7 @@ export function useFormatEventData(event?: Event | null) {
 
 export function useAttenedeeEvents() {
   const { events, isLoading } = useGetEvents();
-  const user = getCookie("user");
+  const {user} = useUserStore() 
   const { attendees, isLoading: loading } = useGetAllAttendees();
   const [registeredEvents, setRegisteredEvents] = useState<Event[] | undefined>(
     []
@@ -1213,7 +1214,7 @@ export function useVerifyUserAccess(eventId: string) {
   const [attendeeId, setAttendeeId] = useState<number | undefined>();
   const [attendee, setAttendee] = useState<TAttendee | undefined>();
   const [isOrganizer, setIsOrganizer] = useState(false);
-  const user = getCookie("user");
+  const {user} = useUserStore()
 
   useEffect(() => {
     if (!loading && !isLoading) {

@@ -446,13 +446,11 @@ input[type="number"] {
   line-height: 2rem;
 }
 
-/* post header side links */
+/* blog post header side links */
 .blackLink h1 strong  {
   color: black!important;
   font-weight: 400;
 }
-
-
 
 @media only screen and (max-width: 767px) {
   .blog h1 {
@@ -481,15 +479,17 @@ input[type="number"] {
   }
 }
 
-
 .bg-scoresheet {
   background-size: cover;
   height: 100%;
   width: 100%;
   z-index: -1;
-  background-image:  url('/public/scoresheetbg.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
  
 }
+
+/* make the left side pointed on the choose plan section */
+
+

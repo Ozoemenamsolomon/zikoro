@@ -22,6 +22,7 @@ export type TAttendee = z.infer<typeof AttendeeSchema> & {
   favourite: boolean;
   tags: string[];
   checkin?: { date: Date; checkin: boolean }[];
+  inviteSource: string | null;
 };
 
 export type TAttendeeNote = z.infer<typeof attendeeNoteSchema>;

@@ -4,7 +4,6 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useRequestPayOut } from "@/hooks/services/billing";
 import { DialogClose } from "./ui/dialog";
-import { getCookie } from "@/hooks";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 
 interface RequestPayoutDialogProps {
@@ -39,7 +38,8 @@ const RequestPayoutDialog = ({
     0
   );
 
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
 
   const { requestPayOut } = useRequestPayOut({ userId: user.id });
 

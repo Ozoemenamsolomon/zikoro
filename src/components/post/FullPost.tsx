@@ -336,7 +336,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             <div className="max-w-full lg:max-w-6xl mx-auto flex gap-x-4 ">
               <p className="font-bold">Tags:</p>
               <div className="grid grid-cols-4 gap-x-2">
-                {data.tags.map((tag) => (
+                {data.tags.map((tag:string) => (
                   <p className="text-b">{tag}</p>
                 ))}
               </div>

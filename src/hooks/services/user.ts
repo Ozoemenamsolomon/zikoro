@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import { toast } from "@/components/ui/use-toast";
-import { RequestStatus } from "@/types/request";
+import { RequestStatus, UseGetResult } from "@/types/request";
 import { TUser } from "@/types/user";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
@@ -11,10 +11,9 @@ export const useGetUser = ({ userId }: { userId: string }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  
   const getUser = async () => {
     setLoading(true);
-   // 
+    //
     const { data, status } = await getRequest<TUser>({
       endpoint: `/users/${userId}`,
     });
@@ -109,4 +108,48 @@ export const useUpdateUsers = () => {
   };
 
   return { updateUsers, isLoading, error };
+};
+
+type TUserReferrals = Pick<TUser, "created_at" | "firstName" | "lastName">;
+
+export const useGetUserReferrals = ({
+  userId,
+  referredBy,
+}: {
+  userId: string;
+  referredBy: string;
+}): UseGetResult<TUserReferrals[], "userReferrals", "getUserReferrals"> => {
+  const [userReferrals, setUserReferrals] = useState<TUserReferrals[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getUserReferrals = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TUserReferrals[]>({
+        endpoint: `/users/${userId}/referrals?referredBy=${referredBy}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setUserReferrals(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getUserReferrals();
+  }, []);
+
+  return {
+    userReferrals,
+    isLoading,
+    error,
+    getUserReferrals,
+  };
 };

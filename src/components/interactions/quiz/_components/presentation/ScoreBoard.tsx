@@ -26,7 +26,7 @@ export function ScoreBoard({
 }: {
   answers: TAnswer[];
   close: () => void;
-  quiz: TQuiz<TRefinedQuestion[]>;
+  quiz: TQuiz<TRefinedQuestion[]> | null;
   id: string;
   isAttendee: boolean;
   quizAnswer: TAnswer[];
@@ -66,25 +66,30 @@ export function ScoreBoard({
   }
 
   const userPosition = useMemo(() => {
-    const playerId = quiz?.accessibility?.live ? player?.userId : id;
-    const index = board?.findIndex(
-      ({ quizParticipantId }) => quizParticipantId === playerId
-    );
-
-    return index + 1;
+    if (isAttendee && quiz) {
+      const playerId = quiz?.accessibility?.live ? player?.userId : id;
+      const index = board?.findIndex(
+        ({ quizParticipantId }) => quizParticipantId === playerId
+      );
+  
+      return index + 1;
+    }
+  
   }, [board]);
   const userScore = useMemo(() => {
+   if (isAttendee && quiz) {
     const playerId = quiz?.accessibility?.live ? player?.userId : id;
     const score = board?.find(
       ({ quizParticipantId }) => quizParticipantId === playerId
     );
 
     return score?.totalScore || 0;
+   }
   }, [board]);
 
   return (
     <>
-      {isQuizResult ? (
+      {isQuizResult && quiz ? (
         <AttendeeScore
           quiz={quiz}
           close={onClose}
@@ -94,7 +99,7 @@ export function ScoreBoard({
           userScore={userScore}
         />
       ) : (
-        <div className="w-full inset-0 fixed bg-scoresheet h-full ">
+        <div className="w-full inset-0 fixed  bg-[url('/scoresheetbg.png')] overflow-x-auto h-full ">
           <div className="absolute inset-x-0  min-w-[50rem]  mx-auto px-4 w-full max-w-3xl mt-8">
             <h2 className="w-full text-white text-center mb-3 font-semibold text-lg sm:text-2xl">
               LeaderBoard
@@ -120,7 +125,7 @@ export function ScoreBoard({
             <div className="mx-auto w-full relative">
               {Array.isArray(board) && board?.length > 0 && (
                 <div className=" flex w-full justify-center text-sm">
-                  <div className="flex flex-col relative left-10  mt-8 gap-y-4 justify-center">
+                  <div className="flex flex-col relative left-11  mt-8 gap-y-4 justify-center">
                     <div className="flex flex-col items-center justify-center gap-y-2">
                       <Image
                         src="/quizattendee.png"
@@ -254,12 +259,12 @@ function AttendeeScore({
   close,
   userScore,
 }: {
-  userPosition: number;
+  userPosition?: number;
   id: string;
   quizAnswer: TAnswer[];
   quiz: TQuiz<TRefinedQuestion[]>;
   close: () => void;
-  userScore: number;
+  userScore?: number;
 }) {
   const [isAnswers, setIsAnswer] = useState(false);
 
@@ -297,7 +302,7 @@ function AttendeeScore({
             <div className="mx-auto w-[60%] my-6 flex items-center justify-between">
               <p>
                 Points won:{" "}
-                <span className="font-medium">{userScore ?? ""}</span>
+                <span className="font-medium">{userScore?.toFixed(0) ?? ""}</span>
               </p>
               <p>
                 Position:{" "}

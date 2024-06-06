@@ -29,7 +29,7 @@ export function Option({
   isOrganizer: boolean;
   isIdPresent: boolean;
   answer: TAnswer[];
-  showAnswerMetric: boolean;
+  showAnswerMetric?: boolean;
   isDisabled: boolean;
 }) {
   const chosedOption = useMemo(() => {
@@ -112,7 +112,7 @@ export function Option({
   );
 }
 
-function OrganizerQuestOption({
+export function OrganizerQuestOption({
   optionIndex,
   option,
 }: {

@@ -16,6 +16,7 @@ import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
 import { TAttendee, TExPartner } from "@/types";
 import { useGetContactRequests } from "@/hooks/services/contacts";
 import useEventStore from "@/store/globalEventStore";
+import useUserStore from "@/store/globalUserStore";
 
 const page = () => {
   const router = useRouter();
@@ -32,7 +33,8 @@ const page = () => {
     onClose: onCloseAttendeeForm,
   } = useDisclose();
 
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
   const event = useEventStore((state) => state.event);
 
   const {
