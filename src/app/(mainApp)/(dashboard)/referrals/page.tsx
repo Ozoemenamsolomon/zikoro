@@ -13,9 +13,16 @@ import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import useUserStore from "@/store/globalUserStore";
 import { useGetUserReferrals } from "@/hooks";
+import { format } from "date-fns";
+import { useCopyToClipboard } from "@uidotdev/usehooks";
+import { Copy } from "styled-icons/boxicons-regular";
 
 const page = () => {
   const { user, setUser } = useUserStore();
+
+  const [copiedText, copyToClipboard] = useCopyToClipboard();
+  const hasCopiedText = Boolean(copiedText);
+
   if (!user) return;
   const { userReferrals, isLoading } = useGetUserReferrals({
     userId: user?.id,
@@ -135,10 +142,17 @@ const page = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell className="font-medium">Musa Aderemi</TableCell>
-                    <TableCell>{}</TableCell>
-                  </TableRow>
+                  {userReferrals &&
+                    userReferrals.map(({ firstName, lastName, created_at }) => (
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          {firstName} {lastName}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {format(created_at, "PPP")}
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             )}
@@ -150,10 +164,35 @@ const page = () => {
           </Button>
           <div className="border p-4 flex flex-col gap-2 rounded">
             <span>Referral Code</span>
-            <span className="max-w-full truncate border p-2 rounded text-gray-700 font-medium text-sm">
-              {user?.referralCode}
-            </span>
-            <Button className="bg-basePrimary w-full">Copy Code</Button>
+            <div className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm relative">
+              <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+                Share link
+              </span>
+              <div className="flex gap-2 justify-between items-center overflow-hidden">
+                <span className="truncate text-xs md:text-base">
+                  {user?.referralCode}
+                </span>
+                <span className="bg-white h-full flex items-center px-2">
+                  {hasCopiedText ? (
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth={0}
+                      viewBox="0 0 24 24"
+                      height="1.25em"
+                      width="1.25em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M2.394 13.742L7.137 17.362 14.753 8.658 13.247 7.342 6.863 14.638 3.606 12.152zM21.753 8.658L20.247 7.342 13.878 14.621 13.125 14.019 11.875 15.581 14.122 17.379z" />
+                    </svg>
+                  ) : (
+                    <button onClick={() => copyToClipboard(user?.referralCode)}>
+                      <Copy className="w-5 h-5 text-gray-700" />
+                    </button>
+                  )}
+                </span>
+              </div>
+            </div>
           </div>
           <div className="space-y-2">
             <h2 className="font-medium text-xl text-gray-800">
