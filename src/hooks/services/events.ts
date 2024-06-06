@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import * as z from "zod";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { eventBookingValidationSchema, organizationSchema } from "@/schemas";
-import useUserStore from "@/store/globalUserStore";
 import {
   Event,
   Organization,
