@@ -11,10 +11,11 @@ import {
   useGetEventAttendees,
 } from "@/hooks";
 import { useMemo } from "react";
+import useUserStore from "@/store/globalUserStore";
 
 export function PartnerDetails({ partnerId }: { partnerId: string }) {
   const { data, refetch, loading } = useFetchSinglePartner(partnerId);
-  const user = getCookie("user");
+  const {user} = useUserStore()
   const search = useSearchParams();
   const id: any = search.get("event");
   const owner = search.get("email");

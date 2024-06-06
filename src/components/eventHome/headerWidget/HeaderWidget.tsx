@@ -10,6 +10,7 @@ import { useParams, useRouter } from "next/navigation";
 import _ from "lodash";
 import { useForm } from "react-hook-form";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import useUserStore from "@/store/globalUserStore";
 
 type OrganizationListType = {
   label: string;
@@ -21,7 +22,7 @@ export function HeaderWidget({
   currentQuery: string | null;
 }) {
   const [isOpen, setOpen] = useState(false);
-  const user = getCookie("user");
+  const {user} = useUserStore()
   const router = useRouter();
   const form = useForm({
     defaultValues: {
