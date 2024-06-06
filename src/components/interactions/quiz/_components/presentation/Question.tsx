@@ -432,7 +432,7 @@ export function Qusetion({
     }
   }
 
-  console.log("yeahssss", showAnswerMetric);
+  // console.log("yeahssss", showAnswerMetric);
 
   return (
     <div
@@ -560,7 +560,7 @@ export function Qusetion({
               } ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
             </div>
 
-            <div
+          {quiz?.accessibility?.review &&  <div
               className={cn("block", chosenAnswerStatus === null && "hidden")}
             >
               {showExplanation && (
@@ -574,7 +574,7 @@ export function Qusetion({
               >
                 {showExplanation ? "Hide Explanation" : "Show Explanation"}
               </button>
-            </div>
+            </div>}
 
             {quiz?.accessibility?.live &&
             !isIdPresent &&
