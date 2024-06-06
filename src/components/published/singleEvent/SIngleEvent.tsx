@@ -33,6 +33,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Event, OrganizerContact } from "@/types";
 import { useFetchSingleOrganization, getCookie, useFormatEventData } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
+import useUserStore from "@/store/globalUserStore";
 export function SingleEvent({
   className,
   isDetail,

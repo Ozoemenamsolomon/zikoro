@@ -39,7 +39,8 @@ const RequestPayoutDialog = ({
     0
   );
 
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
 
   const { requestPayOut } = useRequestPayOut({ userId: user.id });
 

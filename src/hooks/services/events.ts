@@ -26,6 +26,7 @@ import {
   generateAlias,
 } from "@/utils";
 import { useGetOrganizations } from "./organization";
+import useUserStore from "@/store/globalUserStore";
 
 const supabase = createClientComponentClient();
 

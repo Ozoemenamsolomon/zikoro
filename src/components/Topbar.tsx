@@ -10,6 +10,7 @@ import { Button } from ".";
 import { ArrowExportLtr } from "@styled-icons/fluentui-system-filled/ArrowExportLtr";
 import { ArrowExportRtl } from "@styled-icons/fluentui-system-filled/ArrowExportRtl";
 import useUserStore from "@/store/globalUserStore";
+import useUserStore from "@/store/globalUserStore";
 
 const Topbar = ({ eventId }: { eventId?: string }) => {
   const pathname = usePathname();

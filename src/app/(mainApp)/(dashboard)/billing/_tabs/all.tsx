@@ -34,6 +34,7 @@ import { toast } from "@/components/ui/use-toast";
 import { DataTable } from "@/components/DataTable";
 import { getCookie } from "@/hooks";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import useUserStore from "@/store/globalUserStore";
 
 const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
   {
@@ -302,7 +303,8 @@ export default function All() {
   const { organization } = useOrganizationStore();
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const user = getCookie("user");
+  const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
 
   const { eventTransactions, isLoading, getEventTransactions } =
     useGetEventTransactions({
