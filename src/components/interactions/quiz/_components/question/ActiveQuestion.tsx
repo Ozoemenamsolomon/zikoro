@@ -5,12 +5,12 @@ import Image from "next/image";
 import { Time } from "@styled-icons/ionicons-outline/Time";
 import { FeedStar } from "@styled-icons/octicons/FeedStar";
 import { Button } from "@/components";
-import { Option } from "..";
 import {useCreateAnswer, useGetAnswer} from "@/hooks";
 import { useRef, useEffect, useMemo, useState } from "react";
-import { TRefinedQuestion, TQuiz, TAnswer } from "@/types";
+import { TQuestion, TQuiz, TAnswer } from "@/types";
 import { cn } from "@/lib";
 import toast from "react-hot-toast"
+import { OrganizerQuestOption } from "..";
 
 
 export function ActiveQuestion({
@@ -18,17 +18,12 @@ export function ActiveQuestion({
   activeQuestion,
   quiz,
   setActiveQuestion,
-  updateQuiz,
-  isOrganizer,
-  isIdPresent
+
 }: {
   setHeight: (n: number) => void;
-  activeQuestion: TRefinedQuestion | null;
-  quiz: TQuiz<TRefinedQuestion[]>;
-  setActiveQuestion: (q: TRefinedQuestion) => void;
-  updateQuiz: (q: TQuiz<TRefinedQuestion[]>) => void;
-  isOrganizer: boolean;
-  isIdPresent: boolean;
+  activeQuestion: TQuestion | null;
+  quiz: TQuiz<TQuestion[]>;
+  setActiveQuestion: (q: TQuestion) => void;
 
 }) {
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -202,11 +197,9 @@ export function ActiveQuestion({
             <div className="flex flex-col px-3 w-full items-start justify-start gap-y-2">
               {Array.isArray(activeQuestion?.options) &&
                 activeQuestion?.options?.map((option, index) => (
-                  <Option
+                  <OrganizerQuestOption
                     key={index}
-                    option={option}
-                    isOrganizer={isOrganizer}
-                    isIdPresent={isIdPresent}
+                    option={option?.option}
                     optionIndex={optionLetter[index]}
                   />
                 ))}
