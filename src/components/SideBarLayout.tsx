@@ -104,7 +104,7 @@ export function SideBarLayout({
         query={query}
         isHaveEvent={isHaveEvent}
       />
-      <div className="w-full sm:w-[calc(100%-60px)] float-right">
+      <div className="w-full sm:w-[calc(100%-60px)] float-right mt-24">
         {children}
       </div>
       {isOpen && <EventFeedBack close={onShot} />}
