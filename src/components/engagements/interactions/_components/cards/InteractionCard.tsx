@@ -128,7 +128,7 @@ function ActionModal({
         >
           <CopyQuiz quiz={quiz} refetch={refetch} />
 
-          <div className="w-full px-4 text-xs flex items-center justify-between ">
+          <div className="w-full px-4 text-xs hidden items-center justify-between ">
             <p>Activate</p>
             <Switch className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary" />
           </div>

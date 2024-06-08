@@ -16,3 +16,4 @@ export * from "./custom_ui/scrollableCard/ScrollableCard"
 export * from "./ui/select"
 export * from "./auth/AuthLayout";
 export * from "./custom_ui/portal/Portal"
+export * from "./custom_ui/CopyLink"

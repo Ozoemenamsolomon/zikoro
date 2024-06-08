@@ -52,7 +52,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
       <div className="w-full">
         <div className="flex items-end w-full justify-end p-4">
           <Button
-            onClick={onClose}
+            onClick={toggleInteractionModal}
             className={cn(
               "text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium hidden",
               (isIdPresent || isOrganizer) && "flex"

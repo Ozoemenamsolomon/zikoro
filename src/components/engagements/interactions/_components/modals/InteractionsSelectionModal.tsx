@@ -12,14 +12,14 @@ export function InteractionsSelectionModal({
   toggleQuiz: () => void;
 }) {
   return (
-    <div className="w-full h-full bg-white/50 fixed inset-0">
+    <div className="w-full h-full z-[999999] bg-white/50 fixed inset-0">
       <div
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className=" w-[95%] max-w-3xl absolute inset-0 h-fit px-4 sm:px-6 py-4 rounded-lg bg-white m-auto max-h-[85%]"
+        className=" w-[95%] max-w-4xl absolute shadow inset-0 h-fit px-4 sm:px-6 py-4 rounded-lg bg-white m-auto max-h-[85%]"
       >
-        <div className="w-full items-end justify-end mb-3">
+        <div className="w-full flex items-end justify-end mb-3">
           <Button onClick={close} className="px-0 h-fit w-fit">
             <CloseOutline size={22} />
           </Button>
@@ -38,11 +38,11 @@ export function InteractionsSelectionModal({
                 height={80}
                 className="w-[3.7rem] h-[3.7rem]"
               />
-              <div className="flex items-start justify-start gap-y-1">
+              <div className="flex flex-col items-start justify-start gap-y-1">
                 <p className="font-semibold text-sm sm:text-base">
                   {item.header}
                 </p>
-                <p className="text-xs sm:text-sm">{item.description}</p>
+                <p className="text-xs text-start sm:text-sm">{item.description}</p>
               </div>
             </Button>
           ))}

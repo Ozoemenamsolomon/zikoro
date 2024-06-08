@@ -255,11 +255,12 @@ export default function Presentation({
                     isIdPresent={isIdPresent}
                     isOrganizer={isOrganizer}
                   />
-                  {(isIdPresent || isOrganizer) && (
+                  {(isIdPresent || isOrganizer) && quiz && (
                     <LeaderBoard
                       isRightBox={isRightBox}
                       isLeftBox={isLeftBox}
                       close={onToggle}
+                      quiz={quiz}
                       answers={answers}
                     />
                   )}

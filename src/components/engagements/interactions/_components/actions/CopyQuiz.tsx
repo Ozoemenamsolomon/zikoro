@@ -4,7 +4,7 @@ import { Button } from "@/components";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { TQuiz, TQuestion } from "@/types";
 import { useCreateQuiz } from "@/hooks";
-import { generateAlias } from "@/utils";
+import { generateInteractionAlias } from "@/utils";
 export function CopyQuiz({
   quiz,
   refetch,
@@ -16,7 +16,7 @@ export function CopyQuiz({
 
   async function coppied() {
     const {id, ...restData} = quiz
-    const newAlias = generateAlias();
+    const newAlias = generateInteractionAlias();
 
     const payload = {
       ...restData,

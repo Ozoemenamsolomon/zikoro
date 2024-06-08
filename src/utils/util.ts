@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import axios from "axios"
+import axios from "axios";
 // call phone
 export function phoneCall(number?: string) {
   window.open(`tel:${number}`, "_blank");
@@ -20,7 +20,6 @@ export function sendMail(mail?: string) {
   window.open(`mailto:${mail}`, "_blank");
 }
 
-
 export function isEventLive(startTime: string, endTime: string): boolean {
   const startDate = new Date(startTime);
   const endDate = new Date(endTime);
@@ -32,14 +31,19 @@ export function isEventLive(startTime: string, endTime: string): boolean {
   return isLive;
 }
 
+export function generateAlias(): string {
+  const alias = uuidv4().replace(/-/g, "").substring(0, 20);
 
-export function generateAlias():string {
-const alias = uuidv4().replace(/-/g, "").substring(0, 20);
+  return alias;
+}
 
-  return alias
-} 
+export function generateInteractionAlias(): string {
+  const alias = uuidv4().replace(/-/g, "").substring(0, 6).toUpperCase();
 
-export const formatReviewNumber = (number: number):string => {
+  return alias;
+}
+
+export const formatReviewNumber = (number: number): string => {
   if (number === 0) {
     return "0";
   }
@@ -54,7 +58,6 @@ export const formatReviewNumber = (number: number):string => {
   return shortValue + suffixes[suffixNum];
 };
 
-
 interface GeocodeResponse {
   results: Array<{
     geometry: {
@@ -67,9 +70,10 @@ interface GeocodeResponse {
   status: string;
 }
 
-
-export const geocodeAddress = async (address: string): Promise<{ lat: number; lng: number }> => {
-  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; 
+export const geocodeAddress = async (
+  address: string
+): Promise<{ lat: number; lng: number }> => {
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   const response = await axios.get<GeocodeResponse>(
     `https://maps.googleapis.com/maps/api/geocode/json`,
@@ -89,7 +93,4 @@ export const geocodeAddress = async (address: string): Promise<{ lat: number; ln
   return { lat, lng };
 };
 
-
-export const deploymentUrl = 'https://www.zikoro.com'
-
-
+export const deploymentUrl = "https://www.zikoro.com";

@@ -1,4 +1,4 @@
-import QuizQuestion from "@/components/interactions/quiz/_components/question/QuizQuestions";
+import QuizQuestion from "@/components/engagements/interactions/_components/question/QuizQuestions";
 export default function Page({
   params: { eventId, quizId },
 }: {

@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo, useEffect, useState } from "react";
 import { TQuiz, TQuestion } from "@/types";
 import Image from "next/image";
-import { generateAlias, uploadFile } from "@/utils";
+import { generateInteractionAlias, uploadFile } from "@/utils";
 import { useCreateQuiz, useUpdateQuiz } from "@/hooks";
 
 type QuizSettingsProp = {
@@ -33,7 +33,6 @@ export function QuizSettings({
     eventName: false,
     poweredBy: false,
   });
-  const [isEventName, setShowEventName] = useState(false);
   const [loading, setLoading] = useState(false);
   const [accessibility, setAccessibility] = useState({
     visible: false,
@@ -65,7 +64,7 @@ export function QuizSettings({
 
     const promise: any = await image;
 
-    const quizAlias = generateAlias();
+    const quizAlias = generateInteractionAlias();
 
     const payload: Partial<TQuiz<TQuestion[]>> = quiz?.quizAlias
       ? {
@@ -113,7 +112,7 @@ export function QuizSettings({
       // setShowPooweredBy(quiz?.branding?.poweredBy);
       // setShowEventName(quiz?.branding?.eventName);
       setBranding(quiz?.branding);
-      setAccessibility(quiz?.accessibility)
+      setAccessibility(quiz?.accessibility);
     }
   }, [quiz]);
 
@@ -167,30 +166,44 @@ export function QuizSettings({
                 </InputOffsetLabel>
               )}
             />
-            <FormField
-              control={form.control}
-              name="coverImage"
-              render={({ field }) => (
-                <InputOffsetLabel label="Cover Image">
-                  <Input
-                    placeholder=""
-                    type="file"
-                    accept="image/*"
-                    {...form.register("coverImage")}
-                    className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                  />
-                </InputOffsetLabel>
-              )}
-            />
+            {!addedImage && (
+              <FormField
+                control={form.control}
+                name="coverImage"
+                render={({ field }) => (
+                  <InputOffsetLabel label="Cover Image">
+                    <Input
+                      placeholder=""
+                      type="file"
+                      accept="image/*"
+                      {...form.register("coverImage")}
+                      className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    />
+                  </InputOffsetLabel>
+                )}
+              />
+            )}
 
             {addedImage && (
-              <Image
-                src={addedImage}
-                alt=""
-                className="w-[100px] h-[100px]"
-                width={300}
-                height={300}
-              />
+              <div className="w-[100px] relative h-[100px]">
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    form.setValue("coverImage", null);
+                  }}
+                  className="h-6 w-6 rounded-full px-0 absolute top-3 right-3 bg-red-500 text-white"
+                >
+                  <CloseOutline size={16} />
+                </Button>
+                <Image
+                  src={addedImage}
+                  alt=""
+                  className="w-[100px] h-[100px]"
+                  width={300}
+                  height={300}
+                />
+              </div>
             )}
 
             <p className="font-semibold">Branding</p>
