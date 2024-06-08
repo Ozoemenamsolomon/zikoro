@@ -18,3 +18,30 @@ export const points = [
   { value: "40", label: "40 points" },
   { value: "50", label: "50 points" },
 ];
+
+export const interactionList = [
+  {
+    image: "/iquiz.png",
+    header: "Quiz",
+    description:
+      "Design an interactive quiz that includes a dynamic leaderboard at the end.",
+  },
+  {
+    image: "/ipoll.png",
+    header: "Poll",
+    description:
+      "Allow participants to share their opinion by choosing from a list of options.",
+  },
+  {
+    image: "/imultiple.png",
+    header: "Multiple Choice",
+    description:
+      "Have participants select their responses from a provided list of answers.",
+  },
+  {
+    image: "/iword.png",
+    header: "Word Cloud",
+    description:
+      "Visualize the most frequently used words from text data by participants.",
+  },
+];

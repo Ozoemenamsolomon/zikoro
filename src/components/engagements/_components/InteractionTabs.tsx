@@ -8,10 +8,18 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
 
   const links = [
     {
-      name: "Discussions",
-      href: `discussion`,
+      name: "Interactions",
+      href:"interaction"
     },
     {
+      name: "StampCard",
+      href: `stamp-card`,
+    }
+  
+  ];
+
+  /**
+       {
       name: "Photos",
       href: "photos",
     },
@@ -20,18 +28,10 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
       href: "social-wall",
     },
     {
-      name: "StampCard",
-      href: `stamp-card`,
-    },
-    {
       name: "LeaderBoard",
       href: "leaderboard",
     },
-    {
-      name: "Quiz",
-      href:"quiz"
-    }
-  ];
+   */
 
   return (
     <>
@@ -45,7 +45,7 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
                   pathname.includes(href) ? "text-basePrimary  font-medium" : ""
                 }`}
               >
-                <Link href={`/event/${eventId}/interaction/${href}`} className="whitespace-nowrap">{name}</Link>
+                <Link href={`/event/${eventId}/engagements/${href}`} className="whitespace-nowrap">{name}</Link>
               </li>
             );
           })}

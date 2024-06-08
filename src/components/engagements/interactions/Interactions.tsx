@@ -10,30 +10,43 @@ import {
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { cn } from "@/lib";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
-import { QuizCard, QuizSettings } from "./_components";
+import {
+  InteractionCard,
+  InteractionsSelectionModal,
+  QuizSettings,
+} from "./_components";
 import { useMemo, useState } from "react";
 import Image from "next/image";
-export default function Quiz({ eventId }: { eventId: string }) {
+export default function Interactions({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
+  const [isOpenInteractionModal, setOpenInteractionModal] = useState(false);
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const { quizzes, isLoading, getQuizzes } = useGetQuizzes(eventId);
 
   function onClose() {
     setOpen((prev) => !prev);
+    setOpenInteractionModal(false);
+  }
+
+  function toggleInteractionModal() {
+    setOpenInteractionModal((prev) => !prev);
   }
 
   const visibleQuizzes = useMemo(() => {
-      if (!isIdPresent && !isOrganizer) {
-        const filteredQuizzes  = quizzes?.filter((quiz) => quiz?.accessibility?.visible)
+    if (!isIdPresent && !isOrganizer) {
+      const filteredQuizzes = quizzes?.filter(
+        (quiz) => quiz?.accessibility?.visible
+      );
 
-        return filteredQuizzes
-      }
-      else {
-        return quizzes
-      }
-  },[quizzes])
-  
+      return filteredQuizzes;
+    } else {
+      return quizzes;
+    }
+  }, [quizzes, isIdPresent, isOrganizer]);
+
+  // console.log({visibleQuizzes, quizzes, isIdPresent,isOrganizer})
+
   return (
     <InteractionLayout eventId={eventId}>
       <div className="w-full">
@@ -46,7 +59,7 @@ export default function Quiz({ eventId }: { eventId: string }) {
             )}
           >
             <PlusCircle size={22} />
-            <p>Quiz</p>
+            <p>Interactions</p>
           </Button>
         </div>
 
@@ -56,15 +69,17 @@ export default function Quiz({ eventId }: { eventId: string }) {
               <LoaderAlt size={30} className="animate-spin" />
             </div>
           )}
-          {!isLoading && Array.isArray(quizzes) && quizzes?.length === 0 && (
-            <div className="w-full col-span-full flex items-center justify-center h-[350px]">
-              <EmptyState />
-            </div>
-          )}
+          {!isLoading &&
+            Array.isArray(visibleQuizzes) &&
+            visibleQuizzes?.length === 0 && (
+              <div className="w-full col-span-full flex items-center justify-center h-[350px]">
+                <EmptyState />
+              </div>
+            )}
           {!isLoading &&
             Array.isArray(visibleQuizzes) &&
             visibleQuizzes.map((quiz, index) => (
-              <QuizCard
+              <InteractionCard
                 refetch={getQuizzes}
                 isNotAttendee={isIdPresent || isOrganizer}
                 key={quiz.quizAlias}
@@ -78,6 +93,12 @@ export default function Quiz({ eventId }: { eventId: string }) {
           refetch={getQuizzes}
           eventAlias={eventId}
           close={onClose}
+        />
+      )}
+      {isOpenInteractionModal && (
+        <InteractionsSelectionModal
+          close={toggleInteractionModal}
+          toggleQuiz={onClose}
         />
       )}
     </InteractionLayout>

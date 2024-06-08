@@ -10,7 +10,7 @@ import { QUser, QUsers } from "@/constants";
 import { useRouter } from "next/navigation";
 import { TQuiz, TQuestion } from "@/types";
 
-export function QuizCard({
+export function InteractionCard({
   quiz,
   refetch,
   isNotAttendee
@@ -45,7 +45,7 @@ export function QuizCard({
         if (isNotAttendee) {
          
           router.push(
-            `/event/${quiz?.eventAlias}/interaction/quiz/${quiz?.quizAlias}`
+            `/event/${quiz?.eventAlias}/engagements/interactions/${quiz?.quizAlias}`
           )
         }
         else {
