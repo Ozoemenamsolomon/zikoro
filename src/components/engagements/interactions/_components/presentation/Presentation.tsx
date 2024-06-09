@@ -49,7 +49,9 @@ export default function Presentation({
   const [isLobby, setisLobby] = useState(false);
   const { answers, getAnswers, setAnswers } = useGetQuizAnswer();
   const [showScoreSheet, setShowScoreSheet] = useState(false);
-  const [quizResult, setQuizResult] = useState<TQuiz<TRefinedQuestion[]> | null>(null);
+  const [quizResult, setQuizResult] = useState<TQuiz<
+    TRefinedQuestion[]
+  > | null>(null);
   const { answer, getAnswer } = useGetAnswer();
   const [nickName, setNickName] = useState(attendee?.firstName || "");
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
@@ -186,13 +188,13 @@ export default function Presentation({
     <div className="w-full">
       {refinedQuizArray && !loading && !isLoading && !eventLoading ? (
         <>
-          {showScoreSheet  ? (
+          {showScoreSheet ? (
             <ScoreBoard
               isAttendee={!isIdPresent && !isOrganizer}
               answers={answers}
               close={() => {
-                setShowScoreSheet(false)
-                setIsYetToStart(true)
+                setShowScoreSheet(false);
+                setIsYetToStart(true);
               }}
               id={id}
               quiz={quizResult}
@@ -374,6 +376,17 @@ function AttendeeRegistration({
     setisLobby(true);
     setLoading(false);
   }
+
+
+  useEffect(() => {
+    let interval = setInterval(() => {
+      if (!isAttendee && quiz?.liveMode?.startingAt) {
+        refetch();
+      } else {
+        clearInterval(interval);
+      }
+    }, 2000);
+  }, []);
 
   return (
     <>

@@ -48,6 +48,8 @@ export function Option({
         <OrganizerQuestOption
           optionIndex={optionIndex}
           option={option?.option ?? ""}
+          showAnswerMetric={showAnswerMetric}
+          chosen={((chosedOption / answer?.length) * 100).toFixed(0)}
         />
       ) : (
         <button
@@ -115,16 +117,37 @@ export function Option({
 export function OrganizerQuestOption({
   optionIndex,
   option,
+  showAnswerMetric,
+  chosen,
 }: {
   optionIndex: string;
   option: string;
+  showAnswerMetric?: boolean;
+  chosen?: string;
 }) {
   return (
-    <button className="w-full px-4 text-gray-500 flex items-center justify-between min-h-[44px] h-fit rounded-md border border-gray-500 bg-gray-100">
-      <div className="w-full flex items-start gap-x-1">
-        <span>{optionIndex}.</span>
-        <p className="text-start ">{option ?? ""}</p>
+    <button className="w-full px-4 text-gray-500 gap-y-1  min-h-[44px] h-fit rounded-md border border-gray-500 bg-gray-100">
+      <div className="w-full flex items-center justify-between">
+        <div className="flex items-center gap-x-1">
+          <span>{optionIndex}.</span>
+          <p className="text-start ">{option ?? ""}</p>
+        </div>
+        {showAnswerMetric && (
+          <div className="text-mobile">
+            <span>{`${chosen}%`}</span>
+          </div>
+        )}
       </div>
+      {showAnswerMetric && (
+        <div className="w-full relative h-1 rounded-3xl bg-gray-200">
+          <span
+            style={{
+              width: `${chosen}%`,
+            }}
+            className="absolute rounded-3xl inset-0 bg-basePrimary h-full"
+          ></span>
+        </div>
+      )}
     </button>
   );
 }

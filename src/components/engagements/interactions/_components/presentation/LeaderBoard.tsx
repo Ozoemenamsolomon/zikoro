@@ -78,7 +78,7 @@ export function LeaderBoard({
         !isLeftBox && "col-span-4"
       )}
     >
-      <div className="w-full gap-y-2 flex bg-basePrimary bg-opacity-20 flex-col items-center justify-center">
+      <div className="w-full gap-y-2 flex bg-[#001fcc]/20 pb-2 flex-col items-center justify-center">
         <div className="flex items-center p-4 justify-between w-full">
           <h2 className="font-semibold  text-base sm:text-xl">LeaderBoard</h2>
           <div className="flex items-center gap-x-2">
@@ -91,17 +91,17 @@ export function LeaderBoard({
             </Button>
           </div>
         </div>
-        <p className="text-white bg-basePrimary text-sm rounded-3xl px-2 py-1">
-          {totalMaxPoints || 0}
+        <p className="text-white bg-basePrimary text-mobile rounded-3xl px-2 py-1">
+          {totalMaxPoints || 0}pts
         </p>
 
         {Array.isArray(board) && board?.length > 0 && (
           <div className="flex items-end justify-center">
-            <div className="flex items-center gap-y-1 justify-center">
+            <div className={cn("flex items-center flex-col gap-y-1 justify-center invisible", board[1]?.attendeeName && "flex visible")}>
               {/**2nd */}
               <p className="font-semibold text-lg mb-1">2nd</p>
               <Image
-                className="w-[5.5rem] h-[5.5rem]"
+                className="w-[4.0rem] h-[4.0rem]"
                 src="/quizattendee.png"
                 width={100}
                 height={100}
@@ -113,10 +113,10 @@ export function LeaderBoard({
               </p>
             </div>
             {/**1st */}
-            <div className="flex items-center gap-y-1 justify-center">
+            <div className={cn("flex items-center flex-col gap-y-1 justify-center invisible", board[0]?.attendeeName && "flex visible")}>
               <p className="font-semibold text-xl mb-1">1st</p>
               <Image
-                className="w-[8.5rem] h-[8.5rem]"
+                className="w-[5.5rem] h-[5.5rem]"
                 src="/quizattendee.png"
                 width={100}
                 height={100}
@@ -128,7 +128,7 @@ export function LeaderBoard({
               </p>
             </div>
             {/**3rd */}
-            <div className="flex items-center gap-y-1 justify-center">
+            <div className={cn("flex items-center flex-col gap-y-1 justify-center invisible", board[2]?.attendeeName && "flex visible")}>
               <p className="font-semibold text-base mb-1">3rd</p>
               <Image
                 className="w-[3.5rem] h-[3.5rem]"
@@ -151,23 +151,21 @@ export function LeaderBoard({
           board.slice(3, board?.length)?.map((attendee, index) => (
             <div
               key={attendee?.quizParticipantId}
-              className="grid grid-cols-2  tranform transition-all duration-300 ease-in-out gap-2 px-3 py-3"
+              className={cn("grid grid-cols-3 items-center tranform transition-all duration-300 ease-in-out gap-2 px-3 py-3", index % 2 !== 0 && "border-y bg-[#001FCC]/10")}
             >
-              <div className="flex items-center gap-x-2">
-                {index <= 2 ? (
+              <div className="flex items-center col-span-2 w-full gap-x-2">
+              
+                  <p className="text-sm">{`${index + 4}th`}</p>
                   <Image
-                    src={ranksImage[index]}
-                    alt="ranks"
-                    width={20}
-                    height={20}
-                    className="w-[25px] h-[25px]"
-                  />
-                ) : (
-                  <p>{`${index + 1}.`}</p>
-                )}
-                <p>{attendee?.attendeeName ?? ""}</p>
+                className="w-[2.5rem] h-[2.5rem]"
+                src="/quizattendee.png"
+                width={100}
+                height={100}
+                alt="quizplayer"
+              />
+                <p className="text-sm">{attendee?.attendeeName ?? ""}</p>
               </div>
-              <p>{(attendee?.totalScore ?? 0)?.toFixed(0)}</p>
+              <p>{(attendee?.totalScore ?? 0)?.toFixed(0)}p</p>
             </div>
           ))}
       </div>

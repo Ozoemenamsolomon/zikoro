@@ -97,10 +97,10 @@ export function Qusetion({
         };
 
         await updatingQuiz({ payload });
-        refetchQuiz();
+       await refetchQuiz();
         setCurrentQuestion(quiz.questions[currentQuestionIndex]);
 
-        console.log("admin 1");
+       // console.log("admin 1");
       }
       // console.log("not suppose to be here")
     })();
@@ -137,6 +137,20 @@ export function Qusetion({
       }
     }
   }, [quiz]);
+
+  // isOptionSelected
+  useEffect(() => {
+  (async () => {
+    if (quiz && quiz?.accessibility?.live && (isOrganizer || isIdPresent)) {
+      
+      if (quiz?.liveMode?.isOptionSelected && currentQuestion) {
+    
+        await getAnswer(currentQuestion?.id);
+      }
+    }
+  })()
+
+  },[quiz])
   // console.log("yu", quiz?.liveMode);
 
   const timing = useMemo(() => {
@@ -385,6 +399,26 @@ export function Qusetion({
       };
 
       await createAnswer({ payload });
+
+      if (quiz?.accessibility?.live) {
+        const { questions, liveMode, ...restData } = quiz;
+        const payload: Partial<TQuiz<TQuestion[]>> = {
+          ...restData,
+          questions: quiz?.questions?.map((item) => {
+            return {
+              ...item,
+              options: item?.options?.map(({ isCorrect, ...rest }) => rest),
+            };
+          }),
+          liveMode: {
+            isOptionSelected: true,
+          },
+        };
+
+        await updatingQuiz({ payload });
+        refetchQuiz();
+        
+      }
 
       await getAnswer(currentQuestion?.id);
       refetchQuizAnswers(quiz?.id);

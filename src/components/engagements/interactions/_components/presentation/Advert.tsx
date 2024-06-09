@@ -35,17 +35,17 @@ export function Advert({
       )}
       <div className="w-full p-2 flex flex-col gap-y-3 items-center justify-center ">
         <div className="w-fit h-fit  bg-white p-2">
-          <QRCode size={200} value={quizLink} />
+          <QRCode size={150} value={quizLink} />
         </div>
 
         <div className="w-full flex items-center">
-          <Button className="bg-white w-[10%] rounded-r-none rounded-l-lg border-y-0 border-l border-r-0 h-11">
+          <Button className="bg-white w-[10%] px-0 rounded-r-none rounded-l-lg border-y-0 border-l border-r-0 h-11">
             <Link45deg size={22} />
           </Button>
           <input
             value={quizLink}
             type="text"
-            className="w-[70%] h-11 border bg-white pl-4"
+            className="w-[70%] text-mobile h-11 border bg-white pl-4"
           />
           <Button className="w-[20%] rounded-r-lg rounded-l-none bg-basePrimary text-white text-mobile">
            <span className="text-white"> Copy</span>
