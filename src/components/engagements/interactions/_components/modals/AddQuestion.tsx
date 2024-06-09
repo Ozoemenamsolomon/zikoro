@@ -28,6 +28,7 @@ import { useUpdateQuiz } from "@/hooks";
 import Image from "next/image";
 import { useState, useMemo, useEffect } from "react";
 import { uploadFile } from "@/utils";
+import InteractionInput from "../custom_ui/InteractionInput";
 
 type AddQuestionProp = {
   refetch?: () => Promise<any>;
@@ -49,6 +50,7 @@ export function AddQuestion({
       options: [{ optionId: nanoid(), option: "", isAnswer: "" }],
     },
   });
+  const {formState:{errors}} = form
 
   const { fields, remove, append } = useFieldArray({
     control: form.control,
@@ -198,12 +200,14 @@ export function AddQuestion({
               name="question"
               render={({ field }) => (
                 <InputOffsetLabel label="Question">
-                  <Input
-                    placeholder="Enter the  Question"
-                    type="text"
-                    {...form.register("question")}
-                    className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                  <InteractionInput
+                  placeholder="Enter the  Question"
+                  onChange={(value) => {
+                    form.setValue("question", value)
+                  }}
+                  error={errors?.question?.message}
                   />
+                
                 </InputOffsetLabel>
               )}
             />

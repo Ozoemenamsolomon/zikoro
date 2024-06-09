@@ -2,7 +2,6 @@
 
 import { Button } from "@/components";
 import Image from "next/image";
-import { interactionList } from "..";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 export function InteractionsSelectionModal({
   close,
@@ -11,6 +10,37 @@ export function InteractionsSelectionModal({
   close: () => void;
   toggleQuiz: () => void;
 }) {
+
+
+ const interactionList = [
+    {
+      image: "/iquiz.png",
+      header: "Quiz",
+      asynFn: toggleQuiz,
+      description:
+        "Design an interactive quiz that includes a dynamic leaderboard at the end.",
+    },
+    {
+      image: "/ipoll.png",
+      header: "Poll",
+      description:
+        "Allow participants to share their opinion by choosing from a list of options.",
+    },
+    {
+      image: "/imultiple.png",
+      header: "Multiple Choice",
+      description:
+        "Have participants select their responses from a provided list of answers.",
+    },
+    {
+      image: "/iword.png",
+      header: "Word Cloud",
+      description:
+        "Visualize the most frequently used words from text data by participants.",
+    },
+  ];
+
+  
   return (
     <div className="w-full h-full z-[999999] bg-white/50 fixed inset-0">
       <div
@@ -27,7 +57,7 @@ export function InteractionsSelectionModal({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {interactionList.map((item) => (
             <Button
-              onClick={toggleQuiz}
+              onClick={item?.asynFn}
               key={item.image}
               className="w-full rounded-lg gap-x-2 items-start justify-start h-full px-0 p-3 border hover:border-basePrimary"
             >

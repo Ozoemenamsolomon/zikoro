@@ -493,3 +493,38 @@ input[type="number"] {
 /* make the left side pointed on the choose plan section */
 
 
+.interaction-input .quill {
+  width: 100%;
+  /* border-radius: 8px; */
+}
+
+.interaction-input .quill .ql-editor {
+  height: 100%;
+}
+
+.interaction-input .quill > .ql-container > .ql-editor.ql-blank::before {
+  color: #d4d4d4;
+}
+
+.interaction-input .ql-container.ql-snow {
+  border: 1px solid #f3f3f3 !important;
+  height: 3rem;
+  border-top: none;
+  font-size: 14px;
+  border-radius: 0px 0px 8px 8px;
+}
+
+.interaction-input .ql-toolbar.ql-snow {
+  border-radius: 8px 8px 0px 0px;
+  border: 1px solid #f3f3f3 !important;
+}
+
+.interaction-input .ql-editor.ql-blank::before {
+  color: rgba(0, 0, 0, 0.6);
+  content: attr(data-placeholder);
+  font-size: 14px;
+  left: 15px;
+  pointer-events: none;
+  position: absolute;
+  right: 15px;
+}

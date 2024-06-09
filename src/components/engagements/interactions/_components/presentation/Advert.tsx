@@ -6,6 +6,7 @@ import { TQuiz, TRefinedQuestion } from "@/types";
 import QRCode from "react-qr-code";
 import { cn } from "@/lib";
 import Link from "next/link";
+import copy from "copy-to-clipboard";
 export function Advert({
   quiz,
   isRightBox,
@@ -17,7 +18,7 @@ export function Advert({
   close: () => void;
   isRightBox: boolean;
 }) {
-  const quizLink = `${window.location.origin}/quiz/${quiz?.eventAlias}/present`;
+  const quizLink = `${window.location.origin}/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`;
   return (
     <div
       className={cn(
@@ -47,36 +48,29 @@ export function Advert({
             type="text"
             className="w-[70%] text-mobile h-11 border bg-white pl-4"
           />
-          <Button className="w-[20%] rounded-r-lg rounded-l-none bg-basePrimary text-white text-mobile">
+          <Button
+          onClick={() => {
+            copy(quizLink)
+          }}
+          className="w-[20%] rounded-r-lg rounded-l-none bg-basePrimary text-white text-mobile">
            <span className="text-white"> Copy</span>
           </Button>
         </div>
 
-        <div className="w-full flex flex-col items-center justify-center gap-y-3">
+        <div className="w-full flex mt-8 flex-col items-center justify-center gap-y-3">
           <p>Or join at</p>
           <div className="gap-2 grid grid-cols-10">
             <p className="w-full col-span-9 text-ellipsis whitespace-nowrap overflow-hidden text-xl">
-              {quizLink}
+              www.zikoro.com/interaction
             </p>
-            <CopyLink link={quizLink} />
+           
           </div>
           <p className="font-semibold text-lg sm:text-3xl">{quiz?.quizAlias}</p>
         </div>
       </div>
 
-      <div className="p-4 w-full flex items-end justify-between">
-        {quiz?.branding?.poweredBy && (
-          <div className="space-y-1">
-            <p>Powered By:</p>
-            <Image
-              src={"/logo.png"}
-              alt="logo"
-              width={300}
-              height={300}
-              className="w-[100px] md:w-[150px] h-[30px] md:h-[40px]"
-            />
-          </div>
-        )}
+      <div className="p-4 w-full flex items-end justify-end">
+     
 
         <Button onClick={close} className="px-0 h-fit w-fit">
           <Minimize2 size={20} />

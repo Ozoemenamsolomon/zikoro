@@ -7,25 +7,26 @@ import Image from "next/image";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { cn } from "@/lib";
 import { useEffect, useMemo, useState } from "react";
-import {useUpdateQuiz} from "@/hooks"
+import { useUpdateQuiz } from "@/hooks";
+import { QLUsers } from "@/constants";
 export function QuizLobby({
   quiz,
   close,
   goBack,
   isAttendee,
   submit,
-  refetch
+  refetch,
 }: {
   close: () => void;
   goBack: () => void;
   quiz: TQuiz<TQuestion[]>;
   isAttendee: boolean;
   submit: () => Promise<any>;
-  refetch:() => Promise<any>
+  refetch: () => Promise<any>;
 }) {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const { updateQuiz } = useUpdateQuiz();
- 
+
   const players = useMemo(() => {
     if (
       Array.isArray(quiz?.quizParticipants) &&
@@ -44,52 +45,66 @@ export function QuizLobby({
   // for an attendee
   useEffect(() => {
     if (isAttendee && quiz?.liveMode?.isStarting) {
-      close()
+      close();
     }
-
-  },[quiz])
+  }, [quiz]);
 
   async function openQuestion() {
     setLoading(true);
-    const {startingAt} = quiz?.liveMode
+    const { startingAt } = quiz?.liveMode;
     const payload: Partial<TQuiz<TQuestion[]>> = {
       ...quiz,
-      liveMode: {startingAt, isStarting: true}
+      liveMode: { startingAt, isStarting: true },
     };
     await updateQuiz({ payload });
     refetch();
-    close()
+    close();
   }
+  //  px-4 sm:px-8
   return (
     <div
       className={cn(
-        "w-full bg-white h-[90vh] border-x flex flex-col gap-y-8 items-center py-8 px-4 col-span-5 sm:px-8",
+        "w-full bg-white h-[90vh] relative border-x flex flex-col gap-y-8 items-center py-8 col-span-5 ",
         isAttendee && "col-span-full"
       )}
     >
-      <Button onClick={goBack} className="gap-x-1 self-start w-fit h-fit px-2">
-        <ArrowBackOutline size={20} />
-        <p className="text-sm">Exit Quiz</p>
-      </Button>
-      <h2 className="font-semibold text-base sm:text-xl text-basePrimary">
-        {quiz?.coverTitle ?? ""}
-      </h2>
-
-      <div className="w-full max-w-[80%] mx-auto rounded-t-lg border">
-        <h2 className="border-b w-full text-center p-3">
-          Waiting for Players to Join
+      <div className="px-4  w-full flex items-center justify-between">
+        <Button
+          onClick={goBack}
+          className="gap-x-1 self-start w-fit h-fit px-0"
+        >
+          <ArrowBackOutline size={20} />
+          <p className="text-sm">Exit Quiz</p>
+        </Button>
+        <h2 className="font-semibold text-base  sm:text-xl text-basePrimary">
+          {quiz?.coverTitle ?? ""}
         </h2>
+        <p className="w-1 h-1"></p>
+      </div>
+      <div className="w-full ">
+        <div className=" flex w-full  px-3 py-3 items-center justify-between">
+          <div className="flex items-center w-fit  gap-x-2 rounded-3xl p-1 bg-[#001fcc]/20">
+            <div className="h-7 w-7 rounded-full flex items-center justify-center bg-basePrimary">
+              <QLUsers />
+            </div>
+            <p className="text-basePrimary pr-1 font-semibold texts-sm">
+              {players?.length || 0}
+            </p>
+          </div>
+          <h2 className=" w-full text-center">Waiting for Players to Join</h2>
+          <p className="w-1 h-1"></p>
+        </div>
 
         <div
           className={cn(
-            "w-full grid grid-cols-1 px-4 py-6 sm:grid-cols-1 md:grid-cols-1",
-            isAttendee && "md:grid-cols-3"
+            "w-full grid grid-cols-1 px-4 py-6  sm:grid-cols-2 md:grid-cols-4",
+            isAttendee && "md:grid-cols-4 lg:grid-cols-5"
           )}
         >
           {players?.map((player) => (
             <div
               key={player?.id}
-              className="w-full flex items-center justify-between"
+              className="w-full rounded-3xl bg-[#001FCC]/10 p-2 flex items-center justify-between"
             >
               <div className="flex items-center gap-x-2">
                 <Image
@@ -109,17 +124,19 @@ export function QuizLobby({
         </div>
       </div>
 
-      {!isAttendee && (
-        <Button
-          onClick={openQuestion}
-          className="bg-basePrimary gap-x-2 px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
-        >
-           {loading && <LoaderAlt size={22} className="animate-spin" />}
-          Start Quiz
-        </Button>
-      )}
+      <div className="w-full flex flex-col items-center justify-center absolute inset-x-0 bottom-0 gap-y-3  mx-auto bg-white py-2">
+        {!isAttendee && (
+          <Button
+            onClick={openQuestion}
+            className="bg-basePrimary gap-x-2 px-10 h-12 w-fit rounded-lg text-gray-50 transform transition-all duration-400 "
+          >
+            {loading && <LoaderAlt size={22} className="animate-spin" />}
+            Start Quiz
+          </Button>
+        )}
 
-      <p className="text-center">Powered by Zikoro</p>
+        <p className="text-center">Powered by Zikoro</p>
+      </div>
     </div>
   );
 }
