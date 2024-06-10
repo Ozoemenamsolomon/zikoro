@@ -122,12 +122,19 @@ export function Qusetion({
       if (typeof quiz?.liveMode?.questionIndex === "number") {
         setCurrentQuestionIndex(quiz?.liveMode?.questionIndex);
       }
-      if (quiz?.liveMode?.isTransitioning)
+      if (quiz?.liveMode?.isTransitioning) {
         setShowTransiting(quiz?.liveMode?.isTransitioning);
-      if (typeof quiz?.liveMode?.isShowAnswerMetric === "boolean")
-        setShowAnswerMetric(quiz?.liveMode?.isShowAnswerMetric);
+      }
 
-      console.log("player 1", quiz);
+      if (typeof quiz?.liveMode?.isShowAnswerMetric === "boolean") {
+        setShowAnswerMetric(quiz?.liveMode?.isShowAnswerMetric);
+      }
+      if (quiz?.liveMode?.answerStatus === null) {
+        setChosenAnswerStatus(quiz?.liveMode?.answerStatus);
+      }
+      if (typeof quiz?.liveMode?.explanation === "boolean") {
+        setShowExplanation(quiz?.liveMode?.explanation);
+      }
     }
   }, [quiz]);
   // console.log("yu", quiz?.liveMode);
@@ -198,6 +205,8 @@ export function Qusetion({
           questionIndex: currentQuestionIndex + 1,
           current: quiz?.questions[currentQuestionIndex + 1],
           isTransitioning: quiz?.accessibility?.countdown,
+          answerStatus: null,
+          explanation: false,
         },
       };
       if (isIdPresent || isOrganizer) {
@@ -220,9 +229,6 @@ export function Qusetion({
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       }, 6000);
     }
-
-    setChosenAnswerStatus(null);
-    setShowExplanation(false);
   }
 
   // admin
@@ -391,8 +397,10 @@ export function Qusetion({
   }
 
   async function onNextBtnClick() {
-    if (showAnswerMetric && currentQuestionIndex >= quiz?.questions?.length -1) {
-     
+    if (
+      showAnswerMetric &&
+      currentQuestionIndex >= quiz?.questions?.length - 1
+    ) {
       onOpenScoreSheet();
       if (quiz?.accessibility?.live) {
         const { questions, liveMode, ...restData } = quiz;
@@ -411,18 +419,20 @@ export function Qusetion({
 
         await updatingQuiz({ payload });
         refetchQuiz();
+        onOpenScoreSheet();
       }
     } else if (
       showAnswerMetric &&
-      currentQuestionIndex < quiz?.questions?.length -1
+      currentQuestionIndex < quiz?.questions?.length - 1
     ) {
       nextQuestion();
+      setShowAnswerMetric(false);
     } else {
       showMetric();
     }
   }
 
-  console.log("yeahssss", showAnswerMetric,currentQuestionIndex,quiz?.questions?.length - 1, "scs" , quiz?.questions?.length)
+  // console.log("yeahssss", showAnswerMetric);
 
   return (
     <div
@@ -550,7 +560,7 @@ export function Qusetion({
               } ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
             </div>
 
-            <div
+          {quiz?.accessibility?.review &&  <div
               className={cn("block", chosenAnswerStatus === null && "hidden")}
             >
               {showExplanation && (
@@ -564,7 +574,7 @@ export function Qusetion({
               >
                 {showExplanation ? "Hide Explanation" : "Show Explanation"}
               </button>
-            </div>
+            </div>}
 
             {quiz?.accessibility?.live &&
             !isIdPresent &&

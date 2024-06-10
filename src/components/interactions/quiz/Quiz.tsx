@@ -11,7 +11,7 @@ import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { cn } from "@/lib";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { QuizCard, QuizSettings } from "./_components";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 export default function Quiz({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
@@ -23,6 +23,16 @@ export default function Quiz({ eventId }: { eventId: string }) {
     setOpen((prev) => !prev);
   }
 
+  const visibleQuizzes = useMemo(() => {
+      if (!isIdPresent && !isOrganizer) {
+        const filteredQuizzes  = quizzes?.filter((quiz) => quiz?.accessibility?.visible)
+
+        return filteredQuizzes
+      }
+      else {
+        return quizzes
+      }
+  },[quizzes])
   
   return (
     <InteractionLayout eventId={eventId}>
@@ -52,8 +62,8 @@ export default function Quiz({ eventId }: { eventId: string }) {
             </div>
           )}
           {!isLoading &&
-            Array.isArray(quizzes) &&
-            quizzes.map((quiz, index) => (
+            Array.isArray(visibleQuizzes) &&
+            visibleQuizzes.map((quiz, index) => (
               <QuizCard
                 refetch={getQuizzes}
                 isNotAttendee={isIdPresent || isOrganizer}
