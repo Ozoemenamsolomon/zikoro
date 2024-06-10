@@ -108,6 +108,35 @@ export const useGetQuizzes = (eventId: string) => {
   return { quizzes, isLoading, getQuizzes };
 };
 
+export const useFetchQuiz = () => {
+  
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const getQuiz = async (quizId:string) => {
+    try {
+      setLoading(true);
+      const { data, status } = await getRequest<TQuiz<TQuestion[]>>({
+        endpoint: `/quiz/single/${quizId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      return data.data
+    } catch (error: any) {
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  return { isLoading, getQuiz };
+};
+
 export const useGetQuiz = ({ quizId }: { quizId: string }) => {
   const [quiz, setQuiz] = useState<TQuiz<TQuestion[]> | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);

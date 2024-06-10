@@ -1,4 +1,4 @@
-import Presentation from "@/components/interactions/quiz/_components/presentation/Presentation";
+import Presentation from "@/components/engagements/interactions/_components/presentation/Presentation";
 export default function Page({
   params: { eventId, quizId },
 }: {

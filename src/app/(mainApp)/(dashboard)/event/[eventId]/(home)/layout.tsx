@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="w-full h-full">
       
 
-      <div className="w-full  lg:w-[calc(100%-180px)] h-full float-right pt-[4.5rem]">
+      <div className="w-full  lg:w-[calc(100%-180px)] h-full float-right p">
       <Topbar eventId={eventId} />
         {children}
         </div>

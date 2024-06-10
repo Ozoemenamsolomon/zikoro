@@ -249,7 +249,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   async function publishEvent() {
     if (!data) return;
     setIsPublishing(true);
-    const { user, setUser } = useUserStore();
+    const { user: userData  } = useUserStore();
     // const userData = getCookie("user");
     if (data?.eventStatus === "review") {
       toast({
@@ -261,7 +261,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     const statusDetail = {
       createdAt: new Date().toISOString(),
       status: "review",
-      user: userData?.userEmail,
+      user: userData?.userEmail!,
     };
     const { organization, ...restData } = data;
     await update(

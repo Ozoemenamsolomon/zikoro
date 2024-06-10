@@ -119,7 +119,7 @@ export function EventDetailMobileTab({
 
       <div className="sm:hidden w-full mb-8 grid grid-cols-3 gap-8 items-center justify-center">
         <button 
-         onClick={() => router.push(`/event/${eventId}/interaction/stamp-card`)}
+         onClick={() => router.push(`/event/${eventId}/engagements/interactions`)}
         className="flex flex-col gap-y-2 items-center justify-center">
           <StampCardIcon />
           <p>StampCard</p>

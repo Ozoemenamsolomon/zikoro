@@ -49,7 +49,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
   const links = [
     {
       name: "Reception",
-      href: `${eventId}/home`,
+      href: `${eventId}/reception`,
     },
     {
       name: "Contents",
@@ -77,12 +77,12 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
     },
 
     {
-      name: "Interactions",
-      href: `${eventId}/interaction/stamp-card`,
+      name: "Engagements",
+      href: `${eventId}/engagements/interactions`,
     },
     {
       name: "Analytics",
-      href: `${eventId}/analytics`,
+      href: ``, // ${eventId}/analytics
     },
     {
       name: "Settings",
