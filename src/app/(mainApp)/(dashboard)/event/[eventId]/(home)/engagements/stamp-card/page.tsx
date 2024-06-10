@@ -1,4 +1,4 @@
-import StampCard from "@/components/interactions/stampCard/StampCard";
+import StampCard from "@/components/engagements/stampCard/StampCard";
 
 export default function Page({
   params: { eventId },
