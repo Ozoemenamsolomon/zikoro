@@ -21,56 +21,7 @@ export function PaymentModal({ updateModalState }: Props) {
   const plans = ["Lite", "Professional", "Business", "Enterprise"];
 
   //currencies list
-  const currencies = [
-    {
-      name: "USD",
-      symbol: "$",
-    },
-    {
-      name: "EUR",
-      symbol: "€",
-    },
-    {
-      name: "GBP",
-      symbol: "£",
-    },
-    {
-      name: "JPY",
-      symbol: "¥",
-    },
-    {
-      name: "AUD",
-      symbol: "A$",
-    },
-    {
-      name: "CAD",
-      symbol: "C$",
-    },
-    {
-      name: "CNY",
-      symbol: "¥",
-    },
-    {
-      name: "INR",
-      symbol: "₹",
-    },
-    {
-      name: "NGN",
-      symbol: "₦",
-    },
-    {
-      name: "EGP",
-      symbol: "£",
-    },
-    {
-      name: "DZD",
-      symbol: "د.ج",
-    },
-    {
-      name: "GHS",
-      symbol: "GH₵",
-    },
-  ];
+  const currencies = ["USD", "NGN", "GHC", "ZAR", "KES"];
 
   //toggler functions
   const handlePlanToogle = () => {
@@ -178,10 +129,10 @@ export function PaymentModal({ updateModalState }: Props) {
             />
             <input
               type="text"
-              name="phone"
+              name="workspace"
               id=""
               className=" mt-6 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
-              placeholder="Phone Number"
+              placeholder="Workspace"
             />
 
             <select
@@ -190,7 +141,7 @@ export function PaymentModal({ updateModalState }: Props) {
               className="border-[1px] border-indigo-600 rounded-lg h-[45px] outline-none mt-10 px-3 w-full"
             >
               <option value="currency" selected disabled>
-                Select Plan
+                Plan
               </option>
               {plans.map((plan, index) => (
                 <option value={plan} key={index}>
@@ -204,24 +155,24 @@ export function PaymentModal({ updateModalState }: Props) {
               <select
                 name="currency"
                 id=""
-                className="border-[1px] border-indigo-600 rounded-lg h-[45px] outline-none"
+                className="border-[1px] border-indigo-600 rounded-lg h-[45px] px-3 outline-none"
               >
                 <option value="currency" selected disabled>
-                  Select Currency
+                  Currency
                 </option>
                 {currencies.map((currency, index) => (
-                  <option value={currency.name} key={index}>
-                    {currency.symbol}
+                  <option value={currency} key={index}>
+                    {currency}
                   </option>
                 ))}
               </select>
 
-              <div className="flex items-center  gap-x-1 mt-2 ">
+              <div className="flex items-center  gap-x-3 mt-2 ">
                 <p className="text-xl font-medium ">Monthly</p>
                 <Switch
-                  className={`${isChecked ? "bg-zikoroBlue" : "bg-white"}`}
+                  className="data-[state=checked]:bg-zikoroBlue"
                   checked={isChecked}
-                  onChange={() => handlePlanToogle()}
+                  onCheckedChange={(e) => setIsChecked(!isChecked)}
                 />
                 <p className="text-xl font-medium">Yearly</p>
               </div>
@@ -234,7 +185,7 @@ export function PaymentModal({ updateModalState }: Props) {
                 <p className="texx-base font-normal">Certificate</p>
                 <div className="flex items-center gap-x-2">
                   <MinusCircle size={24} fill="#EAEAEA" />
-                  <p className="text-xl font-medium">1</p>
+                  <p className="text-xl font-medium">0</p>
                   <PlusCircleFill size={24} fill="#001FCC" />
                 </div>
               </div>
@@ -265,7 +216,7 @@ export function PaymentModal({ updateModalState }: Props) {
                   placeholder="Enter a valid discount code"
                   className="h-full p-2 text-[12px] w-8/12 placeholder-gray-500 outline-none border-[1px] border-gray-200"
                 />
-                <button className="text-base text-white bg-gray-600  h-full px-3 lg:px-8 w-4/12 ">
+                <button className="text-base text-white bg-zikoroBlue  h-full px-3 lg:px-8 w-4/12 ">
                   Redeem
                 </button>
               </div>
