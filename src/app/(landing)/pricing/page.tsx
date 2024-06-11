@@ -4,24 +4,34 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PricingHeader from "@/components/pricing/PricingHeader";
 import PricingTable from "@/components/pricing/PricingTable";
-import PricingCurrency from "@/components/pricing/PricingCurrency";
 import { PaymentModal } from "@/components/payment/paymentModal";
 
-export default function Contact() {
+export default function Pricing() {
   const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
+  const [chosenPlan, setChosenPlan] = useState<string | null>(null);
+  const [chosenPrice, setChosenPrice] = useState<number | null>(0);
+  const [chosenCurrency, setChosenCurrency] = useState<string>("NGN");
 
   return (
     <div className="">
       <Navbar />
       <div>
         <PricingHeader />
-        <PricingCurrency />
         <PricingTable
           updateModalState={() => setPaymentModalOpen(!paymentModalOpen)}
+          setChosenPlan={setChosenPlan}
+          setChosenPrice={setChosenPrice}
+          setChosenCurrency={setChosenCurrency}
         />
         {paymentModalOpen && (
           <PaymentModal
             updateModalState={() => setPaymentModalOpen(!paymentModalOpen)}
+            setChosenPlan={setChosenPlan}
+            setChosenPrice={setChosenPrice}
+            setChosenCurrency={setChosenCurrency}
+            chosenPlan={chosenPlan}
+            chosenPrice={chosenPrice}
+            chosenCurrency={chosenCurrency}
           />
         )}
       </div>
