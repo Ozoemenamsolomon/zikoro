@@ -135,7 +135,6 @@ export function ActiveQuestion({
     const seconds = Math.floor(
       (millisecondsLeft % Number(activeQuestion?.duration)) / 1000
     );
-    // console.log(minutes, seconds, millisecondsLeft)
 
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   }, [millisecondsLeft, activeQuestion]);
