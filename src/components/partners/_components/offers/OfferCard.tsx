@@ -6,9 +6,22 @@ import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { Button } from "@/components";
 import { useMemo, useState } from "react";
 import { formatShortDate, sendMail, whatsapp } from "@/utils";
-import { PromotionalOfferType } from "@/types";
-export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
+import { PromotionalOfferType, TAttendee } from "@/types";
+export function OfferCard({
+  offer,
+  isOrganizer,
+  attendee,
+}: {
+  isOrganizer: boolean;
+  attendee?: TAttendee;
+  offer: PromotionalOfferType;
+}) {
   const [isOpen, setOpen] = useState(false);
+  const [isApply, setApply] = useState(false);
+
+  function toggleApply() {
+    setApply((prev) => !prev);
+  }
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -21,6 +34,21 @@ export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
       100
     );
   }, [offer?.productPrice, offer?.productPromo]);
+
+  function apply() {
+    if (offer?.url) {
+      visitOfferPage(offer?.url);
+    }
+    if (offer?.whatsApp) {
+      whatsapp(
+        offer?.whatsApp,
+        `I'm interested in the ${offer?.serviceTitle ?? ""} offer`
+      );
+    }
+    if (offer?.email) {
+      sendMail(offer?.email);
+    }
+  }
   return (
     <>
       <div className="w-full h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
@@ -66,18 +94,7 @@ export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
         <div className="px-3 w-full mt-1 flex items-center justify-between">
           <button
             onClick={() => {
-              if (offer?.url) {
-                visitOfferPage(offer?.url);
-              }
-              if (offer?.whatsApp) {
-                whatsapp(
-                  offer?.whatsApp,
-                  `I'm interested in the ${offer?.serviceTitle ?? ""} offer`
-                );
-              }
-              if (offer?.email) {
-                sendMail(offer?.email);
-              }
+              apply();
             }}
             className="text-basePrimary text-sm font-semibold"
           >
@@ -89,6 +106,14 @@ export function OfferCard({ offer }: { offer: PromotionalOfferType }) {
         </div>
       </div>
       {isOpen && <OfferCardModal close={onClose} offer={offer} />}
+      {isApply && (
+        <ActionWidget
+          close={toggleApply}
+          companyName={offer?.companyName}
+          attendee={attendee}
+          apply={apply}
+        />
+      )}
     </>
   );
 }
@@ -180,14 +205,52 @@ function OfferCardModal({
                   sendMail(offer?.email);
                 }
               }}
-              className="text-basePrimary text-sm font-semibold"
+              className="hidden text-basePrimary text-sm font-semibold"
             >
               Get Offer
             </button>
             <p className="font-semibold text-zinc-700 text-sm">
-            Discount code: {offer?.voucherCode ?? ""}
-          </p>{" "}
+              Discount code: {offer?.voucherCode ?? ""}
+            </p>{" "}
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ActionWidget({
+  companyName,
+  close,
+  apply,
+  attendee,
+}: {
+  companyName: string;
+  close: () => void;
+  apply: () => void;
+  attendee?: TAttendee;
+}) {
+  return (
+    <div
+      role="button"
+      onClick={close}
+      className="w-full h-full inset-0  fixed z-[100] bg-black/50"
+    >
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        className="w-[95%] max-w-xl m-auto h-fit absolute gap-y-16 inset-0 rounded-lg bg-white py-10 px-4 flex items-center justify-center flex-col "
+      >
+        <p className="text-center">
+          Do you want to apply for this offer?. Your details will be shared with{" "}
+          <span className="font-semibold">{companyName}</span>
+        </p>
+        <div className="w-full flex items-end justify-end gap-x-3">
+          <Button onClick={close}>Cancel</Button>
+          <Button className="bg-basePrimary rounded-lg text-white w-[100px] gap-x-2">
+            <p>Continue</p>
+          </Button>
         </div>
       </div>
     </div>

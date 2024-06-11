@@ -4,18 +4,22 @@ import { useState } from "react";
 import { Button } from "@/components";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { CreatePromo, Offers } from "@/components/partners/_components";
-import { TPartner } from "@/types";
+import { TPartner, TAttendee } from "@/types";
 
 export function PromotionalOffer({
   partner,
   partnerId,
   refetch,
-  isHaveAccess
+  isHaveAccess,
+  isOrganizer,
+  attendee
 }: {
   partner: TPartner | null;
   refetch: () => Promise<null | undefined>;
   partnerId: string;
   isHaveAccess: boolean;
+  isOrganizer: boolean;
+  attendee?:TAttendee;
 }) {
   const [isOpen, setOpen] = useState(false);
 
@@ -33,7 +37,7 @@ export function PromotionalOffer({
           </Button>}
         </div>
 
-        <Offers  data={partner?.offers}/>
+        <Offers isOrganizer={isOrganizer} attendee={attendee} data={partner?.offers}/>
       </div>
 
       {isOpen && (

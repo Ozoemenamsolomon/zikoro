@@ -68,6 +68,8 @@ export function PartnerDetails({ partnerId, eventId }: { eventId:string; partner
               partner={data}
               refetch={refetch}
               partnerId={partnerId}
+              isOrganizer={isOrganizer}
+              attendee={attendee}
             />
           </div>
         </div>
