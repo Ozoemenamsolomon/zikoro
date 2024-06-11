@@ -5,7 +5,7 @@ import { Location } from "styled-icons/fluentui-system-regular";
 import { Bag } from "styled-icons/ionicons-solid";
 import { User } from "styled-icons/boxicons-regular";
 import { BoxSeam } from "styled-icons/bootstrap";
-import { PartnerJobType } from "@/types";
+import { PartnerJobType, TAttendee } from "@/types";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 import { useMemo, useState } from "react";
 import { COUNTRIES_CURRENCY, sendMail, whatsapp } from "@/utils";
@@ -16,11 +16,20 @@ import { AlertCircle } from "styled-icons/feather";
 export function JobWidget({
   job,
   className,
+  attendee,
+  isOrganizer
 }: {
   job: PartnerJobType;
   className: string;
+  attendee?:TAttendee;
+  isOrganizer:boolean
 }) {
   const [isOpen, setOpen] = useState(false);
+  const [isApply, setApply] = useState(false);
+
+  function toggleApply() {
+    setApply((prev) => !prev);
+  }
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -100,14 +109,22 @@ export function JobWidget({
           </div>
         </div>
 
-        <Button
-          onClick={apply}
+       {!isOrganizer && <Button
+          onClick={toggleApply}
           className="hover:text-gray-50 w-full sm:w-fit mt-3 transform border transition-all duration-300 ease-in-out  border-basePrimary hover:bg-basePrimary text-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
         >
           Apply Now
-        </Button>
+        </Button>}
       </div>
       {isOpen && <JobCardModal close={onClose} job={job} />}
+      {isApply && (
+        <ActionWidget
+          close={toggleApply}
+          apply={apply}
+          attendee={attendee}
+          companyName={job?.companyName ?? ""}
+        />
+      )}
     </>
   );
 }
@@ -201,10 +218,51 @@ function JobCardModal({
           </div>
 
           <Button
-            onClick={apply}
-            className="hover:text-gray-50 w-full sm:w-fit mt-3 transform border transition-all duration-300 ease-in-out  border-basePrimary hover:bg-basePrimary text-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
+         //   onClick={apply}
+            className="hidden hover:text-gray-50 w-full sm:w-fit mt-3 transform border transition-all duration-300 ease-in-out  border-basePrimary hover:bg-basePrimary text-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
           >
             Apply Now
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ActionWidget({
+  companyName,
+  close,
+  apply,
+  attendee
+}: {
+  companyName: string;
+  close: () => void;
+  apply:() => void;
+  attendee?: TAttendee
+}) {
+
+  return (
+    <div
+      role="button"
+      onClick={close}
+      className="w-full h-full inset-0  fixed z-[100] bg-black/50"
+    >
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        className="w-[95%] max-w-xl m-auto h-fit absolute gap-y-16 inset-0 rounded-lg bg-white py-10 px-4 flex items-center justify-center flex-col "
+      >
+        <p className="text-center">
+          Do you want to apply for this job?. Your details will be shared with{" "}
+          <span className="font-semibold">{companyName}</span>
+        </p>
+        <div className="w-full flex items-end justify-end gap-x-3">
+          <Button
+          onClick={close}
+          >Cancel</Button>
+          <Button className="bg-basePrimary rounded-lg text-white w-[100px] gap-x-2">
+            <p>Continue</p>
           </Button>
         </div>
       </div>
