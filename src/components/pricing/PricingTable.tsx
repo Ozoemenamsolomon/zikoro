@@ -1,23 +1,130 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp } from "styled-icons/ionicons-outline";
 import { ArrowRight } from "styled-icons/typicons";
 import { useRouter } from "next/navigation";
+import { Switch } from "@/components/ui/switch";
+import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 
 type Props = {
   updateModalState: () => void;
+  setChosenPlan: (plan: string | null) => void;
+  setChosenPrice: (price: number | null) => void;
+  setChosenCurrency: (currency: string) => void;
 };
 
-export default function PricingTable({ updateModalState }: Props) {
+//type annotation for the data being fetched
+type DBPricingTypes = {
+  id: number;
+  created_at: string;
+  currency: string;
+  plan: string | null;
+  monthPrice: number | null;
+  yearPrice: number | null;
+  productType: string;
+  amount: number | null;
+};
+
+export default function PricingTable({
+  updateModalState,
+  setChosenCurrency,
+  setChosenPlan,
+  setChosenPrice,
+}: Props) {
   const [freeFeatures, setFreeFeatures] = useState<boolean>(false);
   const [liteFeatures, setLiteFeatures] = useState<boolean>(false);
   const [profFeatures, setProfFeatures] = useState<boolean>(false);
   const [busFeatures, setBusFeatures] = useState<boolean>(false);
-
+  const [selectedCurrency, setSelectedCurrency] = useState<string>("NGN");
+  const [pricingData, setPricingData] = useState<DBPricingTypes[] | undefined>(
+    undefined
+  );
+  const [isMonthly, setIsMonthly] = useState<boolean>(true);
   const router = useRouter();
+
+  //currencies list
+  const currencies = ["NGN", "USD", "GHC", "ZAR", "KES"];
+
+  //toggler functions
+  const handlePlanToogle = () => {
+    setIsMonthly(!isMonthly);
+  };
+
+  useEffect(() => {
+    async function fetchPricingData() {
+      try {
+        const response = await fetch("/api/pricing", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        setPricingData(data.data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+
+    fetchPricingData();
+  }, []);
+
+  //get plan price
+  const getPlanPrice = (plan: string) => {
+    if (!pricingData) return null;
+    const planData = pricingData.find(
+      (data) => data.plan === plan && data.currency === selectedCurrency
+    );
+    if (!planData) return null;
+    return isMonthly ? planData.monthPrice : planData.yearPrice;
+  };
+
+  const handleSelectPlan = (plan: string) => {
+    const price = getPlanPrice(plan);
+    setChosenPrice(price);
+    setChosenPlan(plan);
+    updateModalState();
+  };
+
+  const handleCurrencyChange = (currency: string) => {
+    setSelectedCurrency(currency);
+    setChosenCurrency(currency);
+  };
 
   return (
     <div className=" my-[75px] lg:my-[75px] px-5 lg:px-0 max-w-full lg:max-w-7xl mx-auto">
+      <div className=" my-12 lg:mt-20 px-5 lg:px-0 max-w-full lg:max-w-7xl mx-auto justify-between items-center flex flex-col md:flex-row gap-y-6 ">
+        <div className="px-3 rounded-lg border-[1px]  border-indigo-600 ">
+          <select
+            name="currency"
+            value={selectedCurrency}
+            className="bg-transparent  h-[45px] outline-none cursor-pointer "
+            onChange={(e) => handleCurrencyChange(e.target.value)}
+          >
+            {currencies.map((currency, index) => (
+              <option value={currency} key={index}>
+                {currency}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex items-center md:flex-row gap-y-2 gap-x-6 ">
+          <p className="text-xl font-medium ">Monthly</p>
+          <Switch
+            className="data-[state=checked]:bg-zikoroBlue"
+            checked={!isMonthly}
+            onCheckedChange={(e) => handlePlanToogle()}
+          />
+          <p className="text-xl font-medium">Yearly</p>
+
+          <div className="relative text-[11px] lg:text-[14px] bg-zikoroBlue py-2 px-2 lg:px-2 text-white ml-2">
+            save up to 15%
+            <div className="absolute left-0 top-0 bottom-0 w-[16px] bg-zikoroBlue transform -translate-x-full clip-triangle"></div>
+          </div>
+        </div>
+      </div>
+
       <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Free Section */}
         <div className="py-10 px-2 border-[.5px] border-indigo-600 rounded-lg">
@@ -26,16 +133,19 @@ export default function PricingTable({ updateModalState }: Props) {
             <p className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-2xl font-bold ">
               Free
             </p>
-            <div className="h-[68px]"></div>
-
+            <p className="text-[14px] h-[68px] ">
+              New to hosting events? Whether you're an individual or part of a
+              small team, we've got you covered
+            </p>
             <p className="text-2xl font-bold text-zikoroBlue mt-6">
               {" "}
-              ₦0 <span className="text-[14px] text-gray-400">/month</span>{" "}
+              {convertCurrencyCodeToSymbol(selectedCurrency)} 0{" "}
+              <span className="text-[14px] text-gray-400">/month</span>{" "}
             </p>
             <div className="px-1 my-6">
               {/* buttons */}
               <button
-                className="w-full bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[47px] text-base font-bold text-white py-2 cursor-pointe opacity-50"
+                className="w-full bg-white rounded-[47px] text-base font-bold text-white py-2 cursor-pointe opacity-50"
                 onClick={() => updateModalState()}
                 disabled
               >
@@ -83,21 +193,21 @@ export default function PricingTable({ updateModalState }: Props) {
 
             {/* description */}
             <p className="text-[14px] h-[68px]">
-              Perfect for personal events like weddings, celebrations of life,
-              birthdays e.t.c.
+              For individuals and teams who want to boost audience engagement at
+              their events
             </p>
 
             <p className="text-2xl font-bold text-zikoroBlue mt-6">
               {" "}
-              ₦15000 <span className="text-[14px] text-gray-400">
-                /month
-              </span>{" "}
+              {convertCurrencyCodeToSymbol(selectedCurrency)}{" "}
+              {getPlanPrice("Lite") ?? "N/A"}{" "}
+              <span className="text-[14px] text-gray-400">/month</span>{" "}
             </p>
             <div className="px-1 my-6">
               {/* buttons */}
               <button
                 className="w-full bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[47px] text-base font-bold text-white py-2 cursor-pointer"
-                onClick={() => updateModalState()}
+                onClick={() => handleSelectPlan("Lite")}
               >
                 Buy
               </button>
@@ -141,22 +251,20 @@ export default function PricingTable({ updateModalState }: Props) {
 
             {/* description */}
             <p className="text-[14px] h-[68px] ">
-              For mid-sized events like Galas & Fundraisers, Meetings & Small
-              Summits, Launch Events, Shows & Performances with options to
-              scale.
+              For teams and organisations seeking flexibility and control over
+              audience engagement at their events.
             </p>
 
             <p className="text-2xl font-bold mt-6">
-              {" "}
-              ₦15000 <span className="text-[14px] text-gray-400 ">
-                /month
-              </span>{" "}
+              {convertCurrencyCodeToSymbol(selectedCurrency)}{" "}
+              {getPlanPrice("Professional") ?? "N/A"}{" "}
+              <span className="text-[14px] text-gray-400 ">/month</span>{" "}
             </p>
             <div className="px-1 my-6">
               {/* buttons */}
               <button
                 className="w-full bg-white rounded-[47px] text-base font-bold text-zikoroBlue py-2 cursor-pointer"
-                onClick={() => updateModalState()}
+                onClick={() => handleSelectPlan("Professional")}
               >
                 Buy
               </button>
@@ -202,21 +310,21 @@ export default function PricingTable({ updateModalState }: Props) {
 
             {/* description */}
             <p className="text-[14px] h-[68px] ">
-              For large-scale events like Conferences, Summits, large Private
-              Events, Event Teams & Agencies.
+              For large-scale events and organisations requiring absolute
+              control and tailored experiences.
             </p>
 
             <p className="text-2xl font-bold text-zikoroBlue mt-6">
               {" "}
-              ₦15000 <span className="text-[14px] text-gray-400">
-                /month
-              </span>{" "}
+              {convertCurrencyCodeToSymbol(selectedCurrency)}{" "}
+              {getPlanPrice("Enterprise") ?? "N/A"}{" "}
+              <span className="text-[14px] text-gray-400">/month</span>{" "}
             </p>
             <div className="px-1 my-6">
               {/* buttons */}
               <button
                 className="w-full bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[47px] text-base font-bold text-white py-2 cursor-pointer"
-                onClick={() => updateModalState()}
+                onClick={() => handleSelectPlan("Enterprise")}
               >
                 Buy
               </button>
