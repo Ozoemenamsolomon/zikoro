@@ -8,6 +8,7 @@ import { Event } from "@/types";
 import { useForm } from "react-hook-form";
 import { useEffect, useMemo, useState } from "react";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { cn } from "@/lib";
 
 const eventWebsiteSettings = [
   { title: "Logo", status: false },
@@ -25,9 +26,13 @@ type FormValue = {
 export function ContentSetting({
   onClose,
   eventId,
+  parentClassName,
+  childClassName
 }: {
   eventId: string | any;
-  onClose: () => void;
+  onClose?: () => void;
+  parentClassName?:string;
+  childClassName?:string;
 }) {
   const { update, loading } = useUpdateEvent();
   const [settings, setSettings] =
@@ -116,23 +121,25 @@ export function ContentSetting({
       }
     }
   }, [data, form]);
+  // relative bg-none
+  // relative mx-auto w-full max-h-full bg-none
   return (
     <div
       onClick={onClose}
       role="button"
-      className="w-full h-full inset-0 z-[200] bg-white/50 fixed"
+      className={cn("w-full h-full inset-0 z-[200] bg-white/50 fixed", parentClassName)}
     >
       <div
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="w-[95%] max-h-[85%] overflow-y-auto max-w-2xl m-auto inset-0 absolute rounded-lg bg-white py-6 px-4 sm:px-6 shadow"
+        className={cn("w-[95%] max-h-[85%] overflow-y-auto max-w-2xl m-auto inset-0 absolute rounded-lg bg-white py-6 px-4 sm:px-6 shadow", childClassName)}
       >
         <div className="w-full flex items-center mb-6 justify-between">
           <h2 className="text-base sm:text-xl">Content Settings</h2>
-          <Button onClick={onClose}>
+         {!childClassName && <Button onClick={onClose}>
             <CloseOutline size={22} />
-          </Button>
+          </Button>}
         </div>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

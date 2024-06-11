@@ -1,9 +1,9 @@
 import { PartnerDetails } from "@/components/partners/sponsors/PartnerDetail";
 
 export default function Page({
-  params: { partnerId },
+  params: { partnerId, eventId },
 }: {
-  params: { partnerId: string };
+  params: { partnerId: string; eventId: string };
 }) {
-  return <PartnerDetails partnerId={partnerId} />;
+  return <PartnerDetails partnerId={partnerId} eventId={eventId} />;
 }

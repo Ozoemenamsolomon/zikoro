@@ -27,21 +27,21 @@ export function QuestionCard({
   refetch: () => Promise<any>;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-		useSortable({ id: question?.id });
+    useSortable({ id: question?.id });
   const duration = useMemo(() => {
     return millisecondsToTime(Number(question?.duration || 0));
   }, [question?.duration]);
 
   return (
     <div
-    ref={setNodeRef}
-			{...attributes}
-			{...listeners}
-			style={{
-				transition,
-				transform: CSS.Transform.toString(transform),
-				touchAction: "none",
-			}}
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={{
+        transition,
+        transform: CSS.Transform.toString(transform),
+        touchAction: "none",
+      }}
       onClick={() => setActiveQuestion(question)}
       role="button"
       className={cn(
@@ -65,7 +65,12 @@ export function QuestionCard({
       <div className="text-mobile sm:text-sm w-full flex flex-col items-start justify-start col-span-4 gap-y-3">
         <p className="text-gray-400">{`Question ${id + 1}`}</p>
         <p className="w-full line-clamp-3 font-medium leading-6">
-          {question?.question ?? ""}
+          <div
+            className="innerhtml"
+            dangerouslySetInnerHTML={{
+              __html: question?.question,
+            }}
+          />
         </p>
         <div className="flex items-center gap-x-2">
           <div className="flex bg-basePrimary/10 px-2 py-1 items-center font-medium text-xs text-basePrimary gap-x-1">
@@ -86,12 +91,7 @@ export function QuestionCard({
             quiz={quiz}
             questionId={question?.id}
           />
-          <EditQuestion
-          refetch={refetch}
-          quiz={quiz}
-          question={question}
-          
-          />
+          <EditQuestion refetch={refetch} quiz={quiz} question={question} />
         </div>
       </div>
     </div>

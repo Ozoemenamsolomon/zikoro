@@ -21,6 +21,7 @@ import {  useOnboarding } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import {useSearchParams} from "next/navigation"
+import { generateAlphanumericHash } from "@/utils/helpers";
 export default function Onboarding() {
     const search = useSearchParams()
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
@@ -29,6 +30,9 @@ export default function Onboarding() {
 
   const form = useForm<z.infer<typeof onboardingSchema>>({
     resolver: zodResolver(onboardingSchema),
+    defaultValues: {
+      referralCode: generateAlphanumericHash(10)
+    }
   });
 
   const countriesList = useMemo(() => {

@@ -14,20 +14,25 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { EmptyCard } from "@/components/composables";
 import { AddJob } from "@/components/partners/_components";
-import { TPartner } from "@/types";
+import { TPartner, TAttendee } from "@/types";
 import { phoneCall, sendMail, whatsapp } from "@/utils";
 export function AboutPartner({
   partner,
   refetch,
   partnerId,
-  isHaveAccess
+  isHaveAccess,
+  isOrganizer,
+  attendee
 }: {
   partnerId: string;
   refetch: () => Promise<any>;
   partner: TPartner | null;
   isHaveAccess: boolean;
+  isOrganizer:boolean;
+  attendee?:TAttendee
 }) {
   const router = useRouter();
+  
   const [isAddJob, setAddJob] = useState(false);
 
   function onOpen() {
@@ -224,6 +229,8 @@ export function AboutPartner({
               partner?.jobs.map((job, index) => (
                 <JobWidget
                   key={index}
+                  isOrganizer={isOrganizer}
+                  attendee={attendee}
                   job={job}
                   className={
                     index === partner?.jobs?.length - 1

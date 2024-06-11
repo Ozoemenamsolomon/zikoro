@@ -23,6 +23,7 @@ import InputOffsetLabel from "../InputOffsetLabel";
 import _ from "lodash";
 import { useRouter } from "next/navigation";
 import { CreateOrganization } from "../eventHome";
+import useUserStore from "@/store/globalUserStore";
 import { ArrowBack } from "@styled-icons/material-outlined/ArrowBack";
 import { ImageAdd } from "@styled-icons/boxicons-regular/ImageAdd";
 type OrganizationListType = {
@@ -54,12 +55,12 @@ export default function CreateEvent() {
   }, [organizationList]);
 
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
-    const userData = getCookie("user");
+    const { user: userData } = useUserStore();
     const today = new Date();
 
     const newPromise = new Promise(async (resolve) => {
       if (values?.eventPoster && values?.eventPoster[0]) {
-        const image = await uploadFile(values?.eventPoster, "image");
+        const image = await uploadFile(values?.eventPoster[0], "image");
         resolve(image);
       } else if (typeof values?.eventPoster === "string") {
         resolve(values?.eventPoster);
@@ -68,13 +69,14 @@ export default function CreateEvent() {
       }
     });
     const eventImage: any = await newPromise;
+
     const eventAlias = generateAlias();
     await createEvent({
       ...values,
       expectedParticipants: Number(values?.expectedParticipants),
       eventAlias,
       eventPoster: eventImage,
-      createdBy: userData?.id,
+      createdBy: String(userData?.id)!,
       published: false,
       eventStatus: "new",
       eventAppAccess: formatDate(
@@ -84,7 +86,7 @@ export default function CreateEvent() {
         {
           createdAt: today.toISOString(),
           status: "new",
-          user: userData?.userEmail,
+          user: userData?.userEmail!,
         },
       ],
     });
@@ -113,7 +115,7 @@ export default function CreateEvent() {
     }
   }, [poster]);
 
-  console.log(image)
+  console.log(image);
 
   return (
     <>
@@ -141,7 +143,15 @@ export default function CreateEvent() {
                 <div className="w-full md:col-span-3">
                   <div className="w-full rounded-lg p-4 bg-basePrimary bg-opacity-80 h-56 flex items-center justify-center relative">
                     <div className="w-full h-full bg-white/40 absolute inset-0"></div>
-                   {image && <Image src={image} width={500} height={500} className="w-full h-56 inset-0 z-10 rounded-lg absolute" alt=""/>}
+                    {image && (
+                      <Image
+                        src={image}
+                        width={500}
+                        height={500}
+                        className="w-full h-56 inset-0 z-10 rounded-lg absolute"
+                        alt=""
+                      />
+                    )}
                     <label
                       htmlFor="eventImageUpload"
                       className="relative bg-white/50 flex z-20 items-center gap-x-2 w-full px-4  rounded-md outline-none border border-white h-12"

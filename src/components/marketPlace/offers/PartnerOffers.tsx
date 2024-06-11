@@ -2,7 +2,7 @@
 
 import { Offers } from "@/components/partners/_components";
 import { MarketPlaceLayout } from "../_components";
-import { useFetchPartnersOffers } from "@/hooks";
+import { useFetchPartnersOffers, useVerifyUserAccess } from "@/hooks";
 import { EmptyCard } from "@/components/composables";
 import { Search } from "@styled-icons/evil/Search";
 import { Loader2 } from "styled-icons/remix-fill";
@@ -16,6 +16,7 @@ type FormValue = {
 };
 
 export function PartnerOffers({ eventId }: { eventId: string }) {
+  const {attendee, isOrganizer} = useVerifyUserAccess(eventId)
   const { offers, loading } = useFetchPartnersOffers(eventId);
   const [offerData, setOfferData] = useState<
     PromotionalOfferType[] | undefined
@@ -93,6 +94,8 @@ export function PartnerOffers({ eventId }: { eventId: string }) {
         <Offers
           data={offerData || offers}
           className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          isOrganizer={isOrganizer}
+          attendee={attendee}
         />
       )}
     </MarketPlaceLayout>

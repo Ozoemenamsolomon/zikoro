@@ -1,8 +1,9 @@
 import { cn } from "@/lib";
 import { OfferCard } from "./OfferCard";
-import { PromotionalOfferType } from "@/types";
+import { PromotionalOfferType, TAttendee } from "@/types";
 
-export function Offers({ className, data }: { className?: string, data: PromotionalOfferType[] | undefined }) {
+export function Offers({ className, data, attendee, isOrganizer }: { className?: string, data: PromotionalOfferType[] | undefined; isOrganizer: boolean;
+  attendee?:TAttendee; }) {
   return (
     <div
       className={cn(
@@ -11,7 +12,7 @@ export function Offers({ className, data }: { className?: string, data: Promotio
       )}
     >
       {Array.isArray(data) && data?.map((item) => (
-        <OfferCard key={item.partnerId} offer={item} />
+        <OfferCard key={item.partnerId} offer={item} attendee={attendee} isOrganizer={isOrganizer} />
       ))}
     </div>
   );

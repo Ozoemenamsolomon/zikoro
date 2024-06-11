@@ -135,7 +135,6 @@ export function ActiveQuestion({
     const seconds = Math.floor(
       (millisecondsLeft % Number(activeQuestion?.duration)) / 1000
     );
-    // console.log(minutes, seconds, millisecondsLeft)
 
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   }, [millisecondsLeft, activeQuestion]);
@@ -192,7 +191,13 @@ export function ActiveQuestion({
               )}
             </div>
             <p className="font-medium w-full px-3">
-              {activeQuestion?.question ?? ""}
+            <div
+            className="innerhtml"
+            dangerouslySetInnerHTML={{
+              __html: activeQuestion?.question ?? "",
+            }}
+          />
+        
             </p>
             <div className="flex flex-col px-3 w-full items-start justify-start gap-y-2">
               {Array.isArray(activeQuestion?.options) &&

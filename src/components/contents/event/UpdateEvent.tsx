@@ -20,7 +20,7 @@ import { Form, FormField, Input, Button, ReactSelect } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { PublishCard } from "@/components/composables";
 
-import { useFetchSingleEvent, useUpdateEvent, getCookie } from "@/hooks";
+import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
 import { TIME_ZONES } from "@/utils";
 import { PreviewModal } from "../_components/modal/PreviewModal";
@@ -50,7 +50,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     refetch: () => Promise<null | undefined>;
   } = useFetchSingleEvent(eventId);
   const [publishing, setIsPublishing] = useState(false);
-  const [eventPosterArr, setEventPosterArr] = useState([] as ImageFile[]);
+
   const { loading: updating, update } = useUpdateEvent();
   const [isShowPublishModal, setShowPublishModal] = useState(false);
   const [isOpen, setOpen] = useState(false);
@@ -105,6 +105,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         eventCategory: data?.eventCategory,
         locationType: data?.locationType,
         eventCountry: data?.eventCountry,
+        eventPoster: data?.eventPoster,
         pricing: data?.pricing || [
           {
             attendeeType: "",
@@ -116,19 +117,12 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         ],
         eventTimeZone: data?.eventTimeZone,
       });
-      if (data?.eventPoster) {
-        setEventPosterArr([
-          { url: data?.eventPoster, file: undefined, isValid: true },
-        ]);
-      } else {
-        setEventPosterArr([]);
-      }
     }
   }, [data]);
 
   //
   async function onSubmit(values: z.infer<typeof updateEventSchema>) {
-    // 
+    //
     if (values.pricing?.length > 0) {
       const totalTicketQuantity = values.pricing.reduce(
         (sum, { ticketQuantity }) => {
@@ -146,40 +140,29 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         return;
       }
     }
-    const posterUrl = eventPosterArr.map((v) => v.url);
 
-    if (posterUrl.length > 0) {
-      const promise = posterUrl.map(async (value) => {
-        return new Promise(async (resolve) => {
-          if (value && value.startsWith("http")) {
-            resolve(value);
-          } else if (value) {
-            const img = await uploadFile(value, "image");
-            resolve(img);
-          }
-        });
-      });
-      const response = await Promise.all(promise);
-      const payload: any = {
-        ...values,
-        eventPoster: response[0],
-        expectedParticipants: Number(values?.expectedParticipants),
-      };
+    const promise = new Promise(async (resolve) => {
+      if (values.eventPoster && values.eventPoster.startsWith("http")) {
+        resolve(values.eventPoster);
+      } else if (values.eventPoster && values.eventPoster[0]) {
+        const img = await uploadFile(values.eventPoster[0], "image");
+        resolve(img);
+      } else {
+        return null;
+      }
+    });
+    const response = await promise;
 
-      await update(payload, eventId);
-      refetch();
-    } else {
-      const payload: any = {
-        ...values,
+    const payload: any = {
+      ...values,
+      eventPoster: response,
+      expectedParticipants: Number(values?.expectedParticipants),
+    };
 
-        expectedParticipants: Number(values?.expectedParticipants),
-      };
+    // return;
 
-      // return;
-
-      await update(payload, eventId);
-      refetch();
-    }
+    await update(payload, eventId);
+    refetch();
 
     //   console.log("postera", posters)
 
@@ -199,40 +182,17 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   const poster = form.watch("eventPoster");
 
-  useEffect(() => {
-    (async () => {
-      if (poster && poster[0]) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          if (reader.result) {
-            const img = document.createElement("img");
-
-            img.onload = () => {
-              setEventPosterArr((prev) => [
-                ...prev,
-                {
-                  url: reader?.result?.toString(),
-                  file: poster[0],
-                  isValid: true,
-                },
-              ]);
-            };
-            img.src = URL.createObjectURL(poster[0]);
-
-            // img.naturalHeight >= 500 && img.naturalWidth >= 1000
-          }
-        };
-        reader.readAsDataURL(poster[0]);
-      }
-    })();
+  const posterImage = useMemo(() => {
+    if (typeof poster === "string") {
+      return poster;
+    } else if (poster && poster[0]) {
+      return URL.createObjectURL(poster[0]);
+    } else {
+      return null;
+    }
   }, [poster]);
 
-  function removePoster(id: number) {
-    const filtered = eventPosterArr.filter((_, index) => index !== id);
-    setEventPosterArr(filtered);
-  }
-
-  // 
+  //
 
   const formatZone = useMemo(() => {
     return TIME_ZONES.flatMap(({ zones }) => {
@@ -249,7 +209,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   async function publishEvent() {
     if (!data) return;
     setIsPublishing(true);
-    const { user: userData  } = useUserStore();
+    const { user: userData } = useUserStore();
     // const userData = getCookie("user");
     if (data?.eventStatus === "review") {
       toast({
@@ -708,33 +668,23 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                 </div>
 
                 <div className="flex gap-x-2 flex-wrap items-center">
-                  {eventPosterArr.map(({ url, isValid }, index) => {
-                    return (
-                      <div className=" relative w-32 h-32" key={index}>
-                        <Image
-                          className="w-32 h-32 rounded-md"
-                          src={url ? url : ""}
-                          width={300}
-                          height={300}
-                          alt="image"
-                        />
-                        <button
-                          onClick={() => removePoster(index)}
-                          className="absolute top-2 right-2 bg-black rounded-full text-white w-6 h-6 flex items-center justify-center"
-                        >
-                          <CloseCircle size={16} />
-                        </button>
-                        {!isValid && (
-                          <button
-                            onClick={() => removePoster(index)}
-                            className="text-red-500 absolute inset-0 w-full h-full"
-                          >
-                            <CloseCircle size={56} />
-                          </button>
-                        )}
-                      </div>
-                    );
-                  })}
+                  {posterImage && (
+                    <div className=" relative w-32 h-32">
+                      <Image
+                        className="w-32 h-32 rounded-md"
+                        src={posterImage ? posterImage : ""}
+                        width={300}
+                        height={300}
+                        alt="image"
+                      />
+                      <button
+                        onClick={() => form.setValue("eventPoster", null)}
+                        className="absolute top-2 right-2 bg-black rounded-full text-white w-6 h-6 flex items-center justify-center"
+                      >
+                        <CloseCircle size={16} />
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </form>

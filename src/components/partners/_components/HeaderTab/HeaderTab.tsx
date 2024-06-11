@@ -48,6 +48,17 @@ export function HeaderTab({
           >
             Exhibitors
           </Button>
+          <Button
+            onClick={() =>
+              router.push(`/event/${eventId}/partners/leads`)
+            }
+            className={cn(
+              "bg-transparent",
+              query === "exhibitors" && "text-basePrimary"
+            )}
+          >
+            Leads
+          </Button>
         </div>
         <Button
           onClick={onClose}

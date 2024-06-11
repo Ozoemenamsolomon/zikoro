@@ -97,10 +97,10 @@ export function Qusetion({
         };
 
         await updatingQuiz({ payload });
-       await refetchQuiz();
+        await refetchQuiz();
         setCurrentQuestion(quiz.questions[currentQuestionIndex]);
 
-       // console.log("admin 1");
+        // console.log("admin 1");
       }
       // console.log("not suppose to be here")
     })();
@@ -140,17 +140,14 @@ export function Qusetion({
 
   // isOptionSelected
   useEffect(() => {
-  (async () => {
-    if (quiz && quiz?.accessibility?.live && (isOrganizer || isIdPresent)) {
-      
-      if (quiz?.liveMode?.isOptionSelected && currentQuestion) {
-    
-        await getAnswer(currentQuestion?.id);
+    (async () => {
+      if (quiz && quiz?.accessibility?.live && (isOrganizer || isIdPresent)) {
+        if (quiz?.liveMode?.isOptionSelected && currentQuestion) {
+          await getAnswer(currentQuestion?.id);
+        }
       }
-    }
-  })()
-
-  },[quiz])
+    })();
+  }, [quiz]);
   // console.log("yu", quiz?.liveMode);
 
   const timing = useMemo(() => {
@@ -417,7 +414,6 @@ export function Qusetion({
 
         await updatingQuiz({ payload });
         refetchQuiz();
-        
       }
 
       await getAnswer(currentQuestion?.id);
@@ -508,7 +504,12 @@ export function Qusetion({
             </div>
 
             <div className="flex items-center flex-col justify-center w-full gap-3">
-              <p className="font-medium w-full">{currentQuestion?.question}</p>
+              <div
+                className="innerhtml w-full"
+                dangerouslySetInnerHTML={{
+                  __html: currentQuestion?.question ?? "",
+                }}
+              />
 
               <div className="w-full flex items-center justify-between">
                 <div className="flex flex-col items-center justify-center gap-y-2">
@@ -594,21 +595,23 @@ export function Qusetion({
               } ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
             </div>
 
-          {quiz?.accessibility?.review &&  <div
-              className={cn("block", chosenAnswerStatus === null && "hidden")}
-            >
-              {showExplanation && (
-                <p className="mb-3 text-xs sm:text-sm text-gray-500">
-                  {currentQuestion?.feedBack ?? "No Explanation"}
-                </p>
-              )}
-              <button
-                onClick={toggleExplanationVisibility}
-                className="text-xs sm:text-sm text-basePrimary underline"
+            {quiz?.accessibility?.review && (
+              <div
+                className={cn("block", chosenAnswerStatus === null && "hidden")}
               >
-                {showExplanation ? "Hide Explanation" : "Show Explanation"}
-              </button>
-            </div>}
+                {showExplanation && (
+                  <p className="mb-3 text-xs sm:text-sm text-gray-500">
+                    {currentQuestion?.feedBack ?? "No Explanation"}
+                  </p>
+                )}
+                <button
+                  onClick={toggleExplanationVisibility}
+                  className="text-xs sm:text-sm text-basePrimary underline"
+                >
+                  {showExplanation ? "Hide Explanation" : "Show Explanation"}
+                </button>
+              </div>
+            )}
 
             {quiz?.accessibility?.live &&
             !isIdPresent &&

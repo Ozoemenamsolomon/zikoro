@@ -13,8 +13,9 @@ import {
 import { useMemo } from "react";
 import useUserStore from "@/store/globalUserStore";
 
-export function PartnerDetails({ partnerId }: { partnerId: string }) {
+export function PartnerDetails({ partnerId, eventId }: { eventId:string; partnerId: string }) {
   const { data, refetch, loading } = useFetchSinglePartner(partnerId);
+  const {attendee, isOrganizer} = useVerifyUserAccess(eventId)
   const {user} = useUserStore()
   const search = useSearchParams();
   const id: any = search.get("event");
@@ -51,6 +52,8 @@ export function PartnerDetails({ partnerId }: { partnerId: string }) {
             isHaveAccess={isHaveAccess}
             partner={data}
             partnerId={partnerId}
+            isOrganizer={isOrganizer}
+            attendee={attendee}
             refetch={refetch}
           />
           <div className="lg:col-span-3  flex flex-col gap-y-2 items-start justify-start w-full">
@@ -65,6 +68,8 @@ export function PartnerDetails({ partnerId }: { partnerId: string }) {
               partner={data}
               refetch={refetch}
               partnerId={partnerId}
+              isOrganizer={isOrganizer}
+              attendee={attendee}
             />
           </div>
         </div>
