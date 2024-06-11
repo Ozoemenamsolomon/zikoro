@@ -1,6 +1,5 @@
 "use client";
 
-import { QUsers } from "@/constants";
 import { cn } from "@/lib";
 import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
 import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
@@ -83,7 +82,13 @@ export function Option({
 
               <div className="w-full flex items-start gap-x-1">
                 <span>{optionIndex}.</span>
-                <p className="text-start ">{option?.option ?? ""}</p>
+
+                <div
+                  className="innerhtml"
+                  dangerouslySetInnerHTML={{
+                    __html: option?.option ?? "",
+                  }}
+                />
               </div>
             </div>
 
@@ -130,7 +135,13 @@ export function OrganizerQuestOption({
       <div className="w-full flex items-center justify-between">
         <div className="flex items-center gap-x-1">
           <span>{optionIndex}.</span>
-          <p className="text-start ">{option ?? ""}</p>
+
+          <div
+            className="innerhtml"
+            dangerouslySetInnerHTML={{
+              __html: option ?? "",
+            }}
+          />
         </div>
         {showAnswerMetric && (
           <div className="text-mobile">

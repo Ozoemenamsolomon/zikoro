@@ -192,7 +192,13 @@ export function ActiveQuestion({
               )}
             </div>
             <p className="font-medium w-full px-3">
-              {activeQuestion?.question ?? ""}
+            <div
+            className="innerhtml"
+            dangerouslySetInnerHTML={{
+              __html: activeQuestion?.question ?? "",
+            }}
+          />
+        
             </p>
             <div className="flex flex-col px-3 w-full items-start justify-start gap-y-2">
               {Array.isArray(activeQuestion?.options) &&

@@ -17,7 +17,7 @@ import {
   useUpdateQuiz,
 } from "@/hooks";
 import { useRouter } from "next/navigation";
-import { TQuiz, TQuestion, TRefinedQuestion } from "@/types";
+import { TQuiz, TQuestion } from "@/types";
 import { useGetQuiz } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import {

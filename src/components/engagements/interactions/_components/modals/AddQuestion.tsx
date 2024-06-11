@@ -50,7 +50,9 @@ export function AddQuestion({
       options: [{ optionId: nanoid(), option: "", isAnswer: "" }],
     },
   });
-  const {formState:{errors}} = form
+  const {
+    formState: { errors },
+  } = form;
 
   const { fields, remove, append } = useFieldArray({
     control: form.control,
@@ -99,37 +101,6 @@ export function AddQuestion({
     setLoading(false);
     if (refetch) refetch();
     close();
-
-    /**
-     const questionAnswer: Partial<TAnswer> = answer?.id
-      ? {
-          ...answer,
-          quizId: quiz?.id,
-          quizAlias: quiz?.quizAlias,
-          maxDuration: Number(values?.duration),
-          maxPoints: Number(values?.points),
-          correctOptionId: {
-            optionId:
-              values?.options?.find(({ isAnswer }) => isAnswer !== "")
-                ?.optionId || "",
-          },
-        }
-      : {
-          quizId: quiz?.id,
-          questionId: updatedQuestion?.id,
-          quizAlias: quiz?.quizAlias,
-          maxDuration: Number(values?.duration),
-          maxPoints: Number(values?.points),
-          correctOptionId: {
-            optionId:
-              values?.options?.find(({ isAnswer }) => isAnswer !== "")
-                ?.optionId || "",
-          },
-        };
-
-    const asynQuery = answer?.id ? updateAnswer : createAnswer;
-    await asynQuery({ payload: questionAnswer });
- */
   }
 
   const questionImg = form.watch("questionImage");
@@ -145,19 +116,25 @@ export function AddQuestion({
 
   // console.log(form.getValues("options"))
   function handleRadioChange(id: number) {
+    const fields = form.watch("options");
     const optionId = form.getValues(`options.${id}.optionId`);
-    const option = form.getValues(`options.${id}.option`);
 
+    // option: index === id ? option : field.option,
     const updatedField = fields.map((field, index) => {
-      return {
-        ...field,
-        option: index === id ? option : field.option,
-        isAnswer: index === id ? optionId : "",
-      };
+      if (index === id) {
+        return {
+          ...field,
+
+          isAnswer: optionId,
+        };
+      }
+
+      return { ...field };
     });
 
     form.setValue("options", updatedField);
   }
+  console.log("options", form.watch("options"));
 
   useEffect(() => {
     if (question) {
@@ -201,13 +178,12 @@ export function AddQuestion({
               render={({ field }) => (
                 <InputOffsetLabel label="Question">
                   <InteractionInput
-                  placeholder="Enter the  Question"
-                  onChange={(value) => {
-                    form.setValue("question", value)
-                  }}
-                  error={errors?.question?.message}
+                    placeholder="Enter the Question"
+                    onChange={(value) => {
+                      form.setValue("question", value);
+                    }}
+                    error={errors?.question?.message}
                   />
-                
                 </InputOffsetLabel>
               )}
             />
@@ -286,38 +262,45 @@ export function AddQuestion({
             {fields.map((field, index) => (
               <div
                 key={field.id}
-                className="w-full relative h-12 border-input grid grid-cols-12 rounded-md  px-2 pb-2 pt-1 items-center border "
+                className="w-full relative grid grid-cols-12  px-2 pb-2 pt-1 items-center  "
               >
                 <span className="absolute font-medium top-0 z-10 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">{`Option ${
                   index + 1
                 }`}</span>
-                <label className="flex items-center justify-center col-span-1">
-                  <input
-                    {...form.register(`options.${index}.isAnswer` as const)}
-                    type="radio"
-                    name={`isAnswer`}
-                    value={field.optionId}
-                    onChange={() => handleRadioChange(index)}
-                    className="h-5 w-5 accent-basePrimary"
+
+                <div className="w-full relative col-span-12">
+                  <InteractionInput
+                    placeholder="Enter Option"
+                    defaultValue={field.option}
+                    onChange={(value) => {
+                      form.setValue(`options.${index}.option` as const, value);
+                    }}
+                    error={
+                      errors?.options ? errors?.options[index]?.message : ""
+                    }
                   />
-                </label>
-                <Input
-                  type="text"
-                  {...form.register(`options.${index}.option` as const)}
-                  placeholder="Enter Option"
-                  className="col-span-10 w-full rounded-none border-x-0 border-t-0 border-b-0"
-                />
-                <button
-                  disabled={fields.length === 1}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    remove(index);
-                  }}
-                  className="col-span-1 text-red-500"
-                >
-                  <CloseCircle size={20} />
-                </button>
+                  <label className="flex absolute right-2 top-[3.5rem] ">
+                    <input
+                      {...form.register(`options.${index}.isAnswer` as const)}
+                      type="radio"
+                      name={`isAnswer`}
+                      value={field.optionId}
+                      onChange={() => handleRadioChange(index)}
+                      className="h-5 w-5 accent-basePrimary"
+                    />
+                  </label>
+                  <button
+                    disabled={fields.length === 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      remove(index);
+                    }}
+                    className="absolute right-2 top-[0.5rem] text-red-500"
+                  >
+                    <CloseCircle size={20} />
+                  </button>
+                </div>
               </div>
             ))}
             <Button
@@ -345,11 +328,13 @@ export function AddQuestion({
               name="feedBack"
               render={({ field }) => (
                 <InputOffsetLabel label="Additional FeedBack">
-                  <Textarea
+                  <InteractionInput
                     placeholder="Enter the feedBack"
-                    {...form.register("feedBack")}
-                    className="placeholder:text-sm  focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                  ></Textarea>
+                    onChange={(value) => {
+                      form.setValue("feedBack", value);
+                    }}
+                   
+                  />
                 </InputOffsetLabel>
               )}
             />
