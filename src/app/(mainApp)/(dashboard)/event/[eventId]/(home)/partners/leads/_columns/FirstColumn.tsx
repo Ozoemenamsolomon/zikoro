@@ -121,25 +121,37 @@ function ViewAttendeesSection({
       </div>
       <Button
         className="text-white bg-basePrimary h-10 text-sm rounded-3xl"
-        onClick={() => {
-          if (!selectedAttendee) return;
-          selectedAttendee.createdAt = selectedAttendee.registrationDate;
-          delete selectedAttendee.checkin;
-          delete selectedAttendee.email;
-          delete selectedAttendee.eventRegistrationRef;
-          delete selectedAttendee.paymentLink;
-          delete selectedAttendee.registrationCompleted;
-          delete selectedAttendee.registrationDate;
-          delete selectedAttendee.favourite;
-          delete selectedAttendee.tags;
-          delete selectedAttendee.inviteSource;
-          delete selectedAttendee.badge;
-          delete selectedAttendee.userEmail;
-          delete selectedAttendee.moderatingAt;
-          delete selectedAttendee.speakingAt;
-          delete selectedAttendee.userId;
-          selectedAttendee && mutateData({ payload: selectedAttendee });
-        }}
+        onClick={() =>
+          selectedAttendee &&
+          mutateData({
+            payload: {
+              id: selectedAttendee.id || 0,
+              eventId: selectedAttendee.eventId,
+              createdAt: new Date(),
+              firstName: selectedAttendee.firstName,
+              lastName: selectedAttendee.lastName,
+              attendeeEmail: selectedAttendee.userEmail,
+              jobTitle: selectedAttendee.jobTitle,
+              organization: selectedAttendee.organization,
+              city: selectedAttendee.city,
+              country: selectedAttendee.country,
+              phoneNumber: selectedAttendee.phoneNumber,
+              whatsappNumber: selectedAttendee.whatsappNumber,
+              profilePicture: selectedAttendee.profilePicture,
+              bio: selectedAttendee.bio,
+              x: selectedAttendee.x,
+              linkedin: selectedAttendee.linkedin,
+              instagram: selectedAttendee.instagram,
+              facebook: selectedAttendee.facebook,
+              ticketType: selectedAttendee.ticketType,
+              attendeeType: selectedAttendee.attendeeType,
+              attendeeAlias: selectedAttendee.attendeeAlias,
+              attendeeId: selectedAttendee.id,
+              websiteUrl: selectedAttendee.websiteUrl,
+              eventAlias: selectedAttendee.eventAlias,
+            },
+          })
+        }
         disabled={!selectedAttendee}
       >
         Add Lead
