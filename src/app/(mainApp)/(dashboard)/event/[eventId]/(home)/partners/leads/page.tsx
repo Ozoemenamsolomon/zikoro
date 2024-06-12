@@ -6,6 +6,7 @@ import { ILead } from "@/types/leads";
 import useUserStore from "@/store/globalUserStore";
 import { useGetContactRequests } from "@/hooks/services/contacts";
 import SecondColumn from "./_columns/SecondColumn";
+import ThirdColumn from "./_columns/ThirdColumn";
 
 const page = () => {
   const { user, setUser } = useUserStore();
@@ -39,7 +40,7 @@ const page = () => {
 
   return (
     <section
-      className="relative h-fit md:border-t w-full grid md:grid-cols-10 overflow-hidden"
+      className="relative h-fit md:border-t w-full grid md:grid-cols-10"
       ref={divRef}
     >
       <section className="md:col-span-3 border-r-[1px] border-[#F3F3F3] md:pt-2">
@@ -63,17 +64,9 @@ const page = () => {
                 getContactRequests={getContactRequests}
               />
             </section>
-            <section className="flex flex-col md:col-span-3 pt-2">
-              {/* <ThirdSection
-                attendee={selectedAttendee}
-                event={event}
-                sponsors={sponsors}
-                loading={loading}
-              /> */}
-            </section>
           </>
         ) : (
-          <div className="flex flex-col h-96 w-full col-span-7 items-center justify-center gap-2">
+          <div className="flex flex-col h-96 w-full md:col-span-4 items-center justify-center gap-2 border-r-[1px]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width={50}
@@ -165,6 +158,9 @@ const page = () => {
             </p>
           </div>
         )}
+        <section className="flex flex-col md:col-span-3 h-fit">
+          <ThirdColumn />
+        </section>
       </div>
     </section>
   );

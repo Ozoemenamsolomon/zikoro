@@ -23,6 +23,7 @@ export type TAttendee = z.infer<typeof AttendeeSchema> & {
   tags: string[];
   checkin?: { date: Date; checkin: boolean }[];
   inviteSource: string | null;
+  attendeeAlias: string;
 };
 
 export type TAttendeeNote = z.infer<typeof attendeeNoteSchema>;

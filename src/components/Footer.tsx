@@ -146,9 +146,15 @@ export default function Footer() {
           </li>
           <li
             onClick={() => router.push("/blog/all")}
-            className="text-[13px] lg:text-base font-normal cursor-pointe text-transparent"
+            className="text-[13px] lg:text-base font-normal cursor-pointer text-transparent"
           >
             Blog
+          </li>
+          <li
+            onClick={() => router.push("/pricing")}
+            className="text-[13px] lg:text-base font-normal cursor-pointer "
+          >
+            Pricing
           </li>
         </ul>
 
