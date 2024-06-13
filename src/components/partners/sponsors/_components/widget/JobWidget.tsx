@@ -3,7 +3,8 @@
 import { Button, Textarea } from "@/components";
 import { Location } from "styled-icons/fluentui-system-regular";
 import { Bag } from "styled-icons/ionicons-solid";
-import { LoaderAlt, User } from "styled-icons/boxicons-regular";
+import {LoaderAlt} from "@styled-icons/boxicons-regular/LoaderAlt"
+import {  User } from "styled-icons/boxicons-regular";
 import { BoxSeam } from "styled-icons/bootstrap";
 import { PartnerJobType, TAttendee, TLead } from "@/types";
 import { CloseOutline } from "styled-icons/evaicons-outline";

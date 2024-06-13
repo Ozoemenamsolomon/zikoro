@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
           }
         );
       }
-
+      console.log("daaa", data)
       let leads = [];
       if (data?.length === 0) {
         leads = data;

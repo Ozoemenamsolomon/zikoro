@@ -13,7 +13,7 @@ export const useCreateLeads = () => {
 
     try {
       const { data, status } = await postRequest({
-        endpoint: "/lead",
+        endpoint: "/leads",
         payload,
       });
 
