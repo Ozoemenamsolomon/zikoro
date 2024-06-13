@@ -1,7 +1,7 @@
 export interface ILead {
+  createdAt: Date;
   id: number;
   eventId?: string;
-  createdAt: Date;
   boothStaffId?: bigint;
   firstName: string;
   lastName: string;
@@ -28,6 +28,8 @@ export interface ILead {
   interests?: object;
   boothStaffEmail?: string;
   stampCard?: boolean;
+  eventPartnerAlias: string;
+  leadType: string;
 }
 
 export interface TLead {
@@ -62,5 +64,4 @@ export interface TLead {
   stampCard: boolean;
   eventPartnerId: number;
   eventPartnerAlias: string;
-
 }

@@ -12,11 +12,19 @@ const dataset = [
   },
   {
     product: "product2",
-    impressions: 30,
+    impressions: 35,
   },
   {
     product: "product3",
     impressions: 50,
+  },
+  {
+    product: "product4",
+    impressions: 55,
+  },
+  {
+    product: "product5",
+    impressions: 45,
   },
 ];
 
@@ -55,26 +63,64 @@ const ThirdColumn = ({ leads }: { leads: ILead[] }) => {
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 flex flex-col gap-2 bg-white items-center">
             <h3 className="text-basePrimary font-medium text-sm">Hot Leads</h3>
-            <span className="text-xl font-bold">35%</span>
+            <span className="text-xl font-bold">
+              {(leads.filter(({ leadType }) => leadType === "hot").length /
+                leads.length) *
+                100}
+              %
+            </span>
             <span className="text-xs text-center text-gray-700">
-              <b className="text-gray-900">400</b> out of{" "}
-              <b className="text-gray-900">750</b> scanned
+              <b className="text-gray-900">
+                {leads.filter(({ leadType }) => leadType === "hot").length}
+              </b>{" "}
+              out of <b className="text-gray-900">{leads.length}</b> scanned
             </span>
           </div>
           <div className="p-4 flex flex-col gap-2 bg-white items-center">
             <h3 className="text-basePrimary font-medium text-sm">Warm Leads</h3>
-            <span className="text-xl font-bold">40%</span>
+            <span className="text-xl font-bold">
+              {(leads.filter(({ leadType }) => leadType === "warm").length /
+                leads.length) *
+                100}
+              %
+            </span>
             <span className="text-xs text-center text-gray-700">
-              <b className="text-gray-900">350</b> out of{" "}
-              <b className="text-gray-900">750</b> scanned
+              <b className="text-gray-900">
+                {leads.filter(({ leadType }) => leadType === "warm").length}
+              </b>{" "}
+              out of <b className="text-gray-900">{leads.length}</b> scanned
             </span>
           </div>
           <div className="p-4 flex flex-col gap-2 bg-white items-center">
             <h3 className="text-basePrimary font-medium text-sm">Cold Leads</h3>
-            <span className="text-xl font-bold">25%</span>
+            <span className="text-xl font-bold">
+              {(leads.filter(({ leadType }) => leadType === "cold").length /
+                leads.length) *
+                100}
+              %
+            </span>
             <span className="text-xs text-center text-gray-700">
-              <b className="text-gray-900">400</b> out of{" "}
-              <b className="text-gray-900">750</b> scanned
+              <b className="text-gray-900">
+                {leads.filter(({ leadType }) => leadType === "cold").length}
+              </b>{" "}
+              out of <b className="text-gray-900">{leads.length}</b> scanned
+            </span>
+          </div>
+          <div className="p-4 flex flex-col gap-2 bg-white items-center">
+            <h3 className="text-basePrimary font-medium text-sm">
+              Unknown Leads
+            </h3>
+            <span className="text-xl font-bold">
+              {(leads.filter(({ leadType }) => !leadType).length /
+                leads.length) *
+                100}
+              %
+            </span>
+            <span className="text-xs text-center text-gray-700">
+              <b className="text-gray-900">
+                {leads.filter(({ leadType }) => !leadType).length}
+              </b>{" "}
+              out of <b className="text-gray-900">{leads.length}</b> scanned
             </span>
           </div>
         </div>
@@ -122,7 +168,9 @@ const ThirdColumn = ({ leads }: { leads: ILead[] }) => {
             },
           ]}
           layout="horizontal"
-          height={400}
+          height={250}
+          borderRadius={20}
+          colors={["purple"]}
         />
       </div>
     </div>

@@ -1,9 +1,9 @@
 import { PartnerCard } from "./_components";
 import { TExPartner } from "@/types";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import Image from "next/image"
 import {Button} from "@/components"
-import {PlusCircle} from "@styled-icons/bootstrap/PlusCircle"
+import {PlusCircle} from "styled-icons/bootstrap"
 
 export function Sponsors({
   sponsors,

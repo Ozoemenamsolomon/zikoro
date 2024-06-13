@@ -9,7 +9,11 @@ import SecondColumn from "./_columns/SecondColumn";
 import ThirdColumn from "./_columns/ThirdColumn";
 import useEventStore from "@/store/globalEventStore";
 
-const page = () => {
+const page = ({
+  params: { partnerId, eventId },
+}: {
+  params: { partnerId: string; eventId: string };
+}) => {
   const { user, setUser } = useUserStore();
   const {
     userContactRequests,
@@ -21,7 +25,9 @@ const page = () => {
     data: leads,
     isLoading,
     getData: getLeads,
-  } = useGetData<ILead[]>(`/leads?eventAlias=${event.eventAlias}`);
+  } = useGetData<ILead[]>(
+    `/leads?eventAlias=${event.eventAlias}&partnerId=${partnerId}`
+  );
   console.log(leads);
   const [selectedLead, onSelectLead] = useState<ILead | null>();
 
@@ -51,6 +57,7 @@ const page = () => {
           getLeads={getLeads}
           onSelectLead={onSelectLead}
           selectedLead={selectedLead}
+          partnerId={partnerId}
         />
       </section>
       <div className="hidden md:contents">
