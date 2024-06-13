@@ -54,11 +54,13 @@ export interface TLead {
   attendeeType: string[];
   attendeeAlias: string;
   attendeeId: number;
-  firstContactChannel: { interestType: string; title: string; note: string };
+  firstContactChannel: string;
   websiteUrl: string;
   eventAlias: string;
   interests: { interestType: string; title: string; note: string }[];
   boothStaffEmail: string;
   stampCard: boolean;
-  eventPartnerId: string;
+  eventPartnerId: number;
+  eventPartnerAlias: string;
+
 }

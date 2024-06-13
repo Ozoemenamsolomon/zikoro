@@ -87,22 +87,32 @@ export async function POST(req: NextRequest) {
           }
         );
       }
-      console.log("daaa", data)
+    //  console.log("daaa", data)
       let leads = [];
       if (data?.length === 0) {
         leads = data;
       } else {
-        leads = data?.map((lead) => {
-          if (lead?.attendeeId === params?.attendeeId) {
-            return {
-              ...lead,
-              interests: [...lead?.interests, ...params?.interests],
-            };
-          }
-
-          return { ...lead };
-        });
+        const isPresent  = data?.some((lead) => lead?.attendeeId === params?.attendeeId)
+        const isPartnerPresent = data?.some((lead) => lead?.eventPartnerAlias === params?.eventPartnerAlias)
+        if (isPresent) {
+          leads = data?.map((lead) => {
+            if (lead?.attendeeId === params?.attendeeId) {
+              return {
+                ...lead,
+                interests: [...lead?.interests, ...params?.interests],
+              };
+            }
+  
+            return { ...lead };
+          });
+        }
+        else {
+          leads = {...params, createdAt: new Date().toISOString()}
+        }
+       
       }
+
+     // console.log("leads", leads)
 
       const { error } = await supabase.from("Leads").upsert(leads);
 

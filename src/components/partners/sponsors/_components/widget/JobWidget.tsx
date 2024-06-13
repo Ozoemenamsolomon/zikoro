@@ -273,6 +273,7 @@ function ActionWidget({
       country: attendee?.country,
       phoneNumber: attendee?.phoneNumber,
       whatsappNumber: attendee?.whatsappNumber,
+      attendeeAlias: attendee?.attendeeAlias
     };
   };
 
@@ -281,14 +282,10 @@ function ActionWidget({
 
     const payload: Partial<TLead> = {
       ...leadAttendee,
-      eventPartnerId: job?.partnerId,
+      eventPartnerAlias: job?.partnerId,
       stampCard: true,
       jobTitle: job?.jobTitle,
-      firstContactChannel: {
-        interestType: "Job",
-        title: job?.jobTitle,
-        note: values?.note,
-      },
+      firstContactChannel: "Job",
       interests: [
         {
           interestType: "Job",
