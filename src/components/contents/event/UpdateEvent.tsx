@@ -85,19 +85,25 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   const startDate = useMemo(() => {
     if (start) {
+      form.setValue("startDateTime", formateJSDate(start))
       return formateJSDate(start);
     } else {
+      form.setValue("startDateTime", formateJSDate(new Date()))
       return formateJSDate(new Date());
     }
   }, [start]);
 
   const endDate = useMemo(() => {
     if (end) {
+      form.setValue("endDateTime", formateJSDate(end))
       return formateJSDate(end);
     } else {
+      form.setValue("endDateTime", formateJSDate(new Date()))
       return formateJSDate(new Date());
     }
   }, [end]);
+
+ 
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -790,7 +796,7 @@ function SelectDate<T>({
   const selectedDate = useMemo(() => {
     return parseFormattedDate(value);
   }, [value]);
-  console.log("ddddddd", formateJSDate(value));
+  console.log("ddddddd", value , selectedDate);
   return (
     <div
       onClick={(e) => {
