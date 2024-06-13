@@ -85,25 +85,23 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   const startDate = useMemo(() => {
     if (start) {
-      form.setValue("startDateTime", formateJSDate(start))
+      form.setValue("startDateTime", formateJSDate(start));
       return formateJSDate(start);
     } else {
-      form.setValue("startDateTime", formateJSDate(new Date()))
+      form.setValue("startDateTime", formateJSDate(new Date()));
       return formateJSDate(new Date());
     }
   }, [start]);
 
   const endDate = useMemo(() => {
     if (end) {
-      form.setValue("endDateTime", formateJSDate(end))
+      form.setValue("endDateTime", formateJSDate(end));
       return formateJSDate(end);
     } else {
-      form.setValue("endDateTime", formateJSDate(new Date()))
+      form.setValue("endDateTime", formateJSDate(new Date()));
       return formateJSDate(new Date());
     }
   }, [end]);
-
- 
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -673,9 +671,9 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                           />
 
                           <PriceValidityDate
-                          id={id}
-                          form={form}
-                          value={value?.validity}
+                            id={id}
+                            form={form}
+                            value={value?.validity}
                           />
                         </div>
                       </div>
@@ -769,50 +767,64 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   );
 }
 
+function PriceValidityDate({
+  id,
+  value,
+  form,
+}: {
+  id: any;
+  value: string;
+  form: UseFormReturn<z.infer<typeof updateEventSchema>, any, any>;
+}) {
+  const [isOpen, setOpen] = useState(false);
 
-function PriceValidityDate({id,value, form}:{id:any, value:string, form: UseFormReturn<z.infer<typeof updateEventSchema>, any, any>;}) {
-  const [isOpen, setOpen] = useState(false)
+  const validity = useMemo(() => {
+    if (value) {
+      form.setValue("endDateTime", formateJSDate(value));
+      return formateJSDate(value);
+    } else {
+      form.setValue("endDateTime", formateJSDate(new Date()));
+      return formateJSDate(new Date());
+    }
+  }, [value]);
   return (
     <FormField
-    control={form.control}
-    name={`pricing.${id}.validity` as const}
-    render={({ field }) => (
-      <InputOffsetLabel label="Validity">
+      control={form.control}
+      name={`pricing.${id}.validity` as const}
+      render={({ field }) => (
+        <InputOffsetLabel label="Validity">
           <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              setOpen((prev) => !prev);
-                            }}
-                            role="button"
-                            className="w-full relative h-12"
-                          >
-                            <button className="absolute left-3 top-[0.6rem]">
-                              <DateRange size={22} className="text-gray-600" />
-                            </button>
-                            <Input
-                              placeholder="End Date "
-                              type="text"
-                              {...form.register(
-                                `pricing.${id}.validity` as const
-                              )}
-                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
-                            />
-                            {/** */}
-                            {isOpen && (
-                              <SelectDate
-                                value={value}
-                                form={form}
-                                name={`pricing.${id}.validity` as const}
-                                close={() => setOpen((prev) => !prev)}
-                              />
-                            )}
-                          </div>
-      
-      </InputOffsetLabel>
-    )}
-  />
-  )
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setOpen((prev) => !prev);
+            }}
+            role="button"
+            className="w-full relative h-12"
+          >
+            <button className="absolute left-3 top-[0.6rem]">
+              <DateRange size={22} className="text-gray-600" />
+            </button>
+            <Input
+              placeholder="End Date "
+              type="text"
+              {...form.register(`pricing.${id}.validity` as const)}
+              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+            />
+            {/** */}
+            {isOpen && (
+              <SelectDate
+                value={validity}
+                form={form}
+                name={`pricing.${id}.validity` as const}
+                close={() => setOpen((prev) => !prev)}
+              />
+            )}
+          </div>
+        </InputOffsetLabel>
+      )}
+    />
+  );
 }
 
 function SelectDate({
@@ -831,7 +843,7 @@ function SelectDate({
   const selectedDate = useMemo(() => {
     return parseFormattedDate(value);
   }, [value]);
-  console.log("ddddddd", value , selectedDate);
+  console.log("ddddddd", value, selectedDate);
   return (
     <div
       onClick={(e) => {
