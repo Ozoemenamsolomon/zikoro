@@ -299,8 +299,18 @@ function ActionWidget({
     };
 
     await createLeads({ payload });
-    apply()
-    close()
+    if (job?.applicationLink) {
+      window.open(job.applicationLink, "_blank");
+    }
+    if (job?.whatsApp) {
+      whatsapp(
+        job?.whatsApp,
+        `I'm interested in the ${job?.jobTitle ?? ""} job. ${values?.note}`
+      );
+    }
+    if (job?.email) {
+      sendMail(job?.email);
+    }
   }
 
   return (
@@ -355,7 +365,7 @@ function ActionWidget({
               <Button
                 disabled={isLoading}
                 type="submit"
-                className="bg-basePrimary rounded-lg text-white w-[100px] gap-x-2"
+                className="bg-basePrimary rounded-lg text-white w-[150px] gap-x-2"
               >
                 {isLoading && <LoaderAlt size={22} className="animate-spin" />}
                 <p> Submit</p>
