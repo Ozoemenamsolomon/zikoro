@@ -29,3 +29,38 @@ export interface ILead {
   boothStaffEmail?: string;
   stampCard?: boolean;
 }
+
+export interface TLead {
+  id: number;
+  eventId: number;
+  createdAt: string;
+  boothStaffId: number;
+  firstName: string;
+  lastName: string;
+  attendeeEmail: string;
+  jobTitle: string;
+  organization: string | null;
+  city: string | null;
+  country: string | null;
+  phoneNumber: string;
+  whatsappNumber: string | null;
+  profilePicture: string | null;
+  bio: string | null;
+  x: string | null;
+  linkedin: string | null;
+  instagram: string | null;
+  facebook: string | null;
+  ticketType: string;
+  attendeeType: string[];
+  attendeeAlias: string;
+  attendeeId: number;
+  firstContactChannel: string;
+  websiteUrl: string;
+  eventAlias: string;
+  interests: { interestType: string; title: string; note: string }[];
+  boothStaffEmail: string;
+  stampCard: boolean;
+  eventPartnerId: number;
+  eventPartnerAlias: string;
+
+}

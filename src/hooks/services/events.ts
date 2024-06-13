@@ -26,6 +26,7 @@ import {
 } from "@/utils";
 import { useGetOrganizations } from "./organization";
 import useUserStore from "@/store/globalUserStore";
+import { generateAlphanumericHash } from "@/utils/helpers";
 
 const supabase = createClientComponentClient();
 
@@ -683,6 +684,7 @@ export function useBookingEvent() {
           ...attendee,
           eventId,
           eventAlias,
+          attendeeAlias: generateAlphanumericHash(7),
           attendeeType: [attendants],
           registrationDate: new Date(),
           paymentLink,

@@ -45,7 +45,7 @@ export function SideBarLayout({
   const { user, setUser } = useUserStore();
   const router = useRouter();
 
-  console.log(user);
+  // console.log(user);
 
   // get events
   const isHaveEvent = useMemo(() => {
@@ -177,7 +177,7 @@ function SideNavs({
           <div className="flex items-start text-[#717171] justify-start w-full flex-col gap-4 border-t p-4 border-basebody">
             <div className="w-full flex items-center gap-x-2 ">
               <Link
-                href={`create`}
+                href={`/create`}
                 className="text-mobile sm:text-sm text-basePrimary font-medium hover:underline "
               >
                 <p>

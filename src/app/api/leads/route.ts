@@ -67,6 +67,86 @@ import { cookies } from "next/headers";
 //   },
 // ];
 
+export async function POST(req: NextRequest) {
+  const supabase = createRouteHandlerClient({ cookies });
+  if (req.method === "POST") {
+    try {
+      const params = await req.json();
+
+      const {
+        data,
+        error: fetchError,
+        status,
+      } = await supabase.from("Leads").select("*");
+
+      if (fetchError) {
+        return NextResponse.json(
+          { error: fetchError.message },
+          {
+            status: 400,
+          }
+        );
+      }
+    //  console.log("daaa", data)
+      let leads = [];
+      if (data?.length === 0) {
+        leads = data;
+      } else {
+        const isPresent  = data?.some((lead) => lead?.attendeeId === params?.attendeeId)
+        const isPartnerPresent = data?.some((lead) => lead?.eventPartnerAlias === params?.eventPartnerAlias)
+        if (isPresent) {
+          leads = data?.map((lead) => {
+            if (lead?.attendeeId === params?.attendeeId) {
+              return {
+                ...lead,
+                interests: [...lead?.interests, ...params?.interests],
+              };
+            }
+  
+            return { ...lead };
+          });
+        }
+        else {
+          leads = {...params, createdAt: new Date().toISOString()}
+        }
+       
+      }
+
+     // console.log("leads", leads)
+
+      const { error } = await supabase.from("Leads").upsert(leads);
+
+      if (error) {
+        return NextResponse.json(
+          { error: error.message },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      return NextResponse.json(
+        { msg: "Leads created successfully" },
+        {
+          status: 201,
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json(
+        {
+          error: error,
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+  } else {
+    return NextResponse.json({ error: "Method not allowed" });
+  }
+}
+
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
@@ -103,35 +183,3 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
-
-export async function POST(req: NextRequest) {
-  const supabase = createRouteHandlerClient({ cookies });
-  if (req.method === "POST") {
-    try {
-      const payload = await req.json();
-
-      const { error } = await supabase.from("Leads").insert(payload);
-      if (error) throw error;
-      return NextResponse.json(
-        { msg: "favourites updated successfully" },
-        {
-          status: 201,
-        }
-      );
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json(
-        {
-          error: "An error occurred while making the request.",
-        },
-        {
-          status: 500,
-        }
-      );
-    }
-  } else {
-    return NextResponse.json({ error: "Method not allowed" });
-  }
-}
-
-export const dynamic = "force-dynamic";
