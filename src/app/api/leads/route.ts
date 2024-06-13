@@ -168,35 +168,3 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
-
-export async function POST(req: NextRequest) {
-  const supabase = createRouteHandlerClient({ cookies });
-  if (req.method === "POST") {
-    try {
-      const payload = await req.json();
-
-      const { error } = await supabase.from("Leads").insert(payload);
-      if (error) throw error;
-      return NextResponse.json(
-        { msg: "favourites updated successfully" },
-        {
-          status: 201,
-        }
-      );
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json(
-        {
-          error: "An error occurred while making the request.",
-        },
-        {
-          status: 500,
-        }
-      );
-    }
-  } else {
-    return NextResponse.json({ error: "Method not allowed" });
-  }
-}
-
-export const dynamic = "force-dynamic";
