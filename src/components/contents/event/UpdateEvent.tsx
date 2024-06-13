@@ -115,7 +115,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       attendeeType: "NIL",
       ticketQuantity: "0",
       price: "0",
-      validity: new Date().toTimeString(),
+      validity: formateJSDate(new Date()),
       description: "",
     });
   }
@@ -590,9 +590,9 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                 <div className="border col-span-full w-full border-[#f3f3f3] p-4 rounded-md space-y-5 pb-10">
                   <h5>Pricing</h5>
                   <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-3 sm:gap-10">
-                    {fields.map((field, id) => (
+                    {fields.map((value, id) => (
                       <div
-                        key={field.id}
+                        key={value.id}
                         className="w-full flex flex-col items-start gap-y-4 justify-start"
                       >
                         <div className="flex text-sm items-center gap-x-2">
@@ -672,21 +672,10 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                             )}
                           />
 
-                          <FormField
-                            control={form.control}
-                            name={`pricing.${id}.validity` as const}
-                            render={({ field }) => (
-                              <InputOffsetLabel label="Validity">
-                                <Input
-                                  type="datetime-local"
-                                  placeholder="Enter the Date"
-                                  {...form.register(
-                                    `pricing.${id}.validity` as const
-                                  )}
-                                  className=" placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                                />
-                              </InputOffsetLabel>
-                            )}
+                          <PriceValidityDate
+                          id={id}
+                          form={form}
+                          value={value?.validity}
                           />
                         </div>
                       </div>
@@ -780,7 +769,53 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   );
 }
 
-function SelectDate<T>({
+
+function PriceValidityDate({id,value, form}:{id:any, value:string, form: UseFormReturn<z.infer<typeof updateEventSchema>, any, any>;}) {
+  const [isOpen, setOpen] = useState(false)
+  return (
+    <FormField
+    control={form.control}
+    name={`pricing.${id}.validity` as const}
+    render={({ field }) => (
+      <InputOffsetLabel label="Validity">
+          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setOpen((prev) => !prev);
+                            }}
+                            role="button"
+                            className="w-full relative h-12"
+                          >
+                            <button className="absolute left-3 top-[0.6rem]">
+                              <DateRange size={22} className="text-gray-600" />
+                            </button>
+                            <Input
+                              placeholder="End Date "
+                              type="text"
+                              {...form.register(
+                                `pricing.${id}.validity` as const
+                              )}
+                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                            />
+                            {/** */}
+                            {isOpen && (
+                              <SelectDate
+                                value={value}
+                                form={form}
+                                name={`pricing.${id}.validity` as const}
+                                close={() => setOpen((prev) => !prev)}
+                              />
+                            )}
+                          </div>
+      
+      </InputOffsetLabel>
+    )}
+  />
+  )
+}
+
+function SelectDate({
   className,
   form,
   close,
