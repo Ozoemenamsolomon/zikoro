@@ -780,10 +780,10 @@ function PriceValidityDate({
 
   const validity = useMemo(() => {
     if (value) {
-      form.setValue("endDateTime", formateJSDate(value));
+      form.setValue(`pricing.${id}.validity` as const, formateJSDate(value));
       return formateJSDate(value);
     } else {
-      form.setValue("endDateTime", formateJSDate(new Date()));
+      form.setValue(`pricing.${id}.validity` as const, formateJSDate(new Date()));
       return formateJSDate(new Date());
     }
   }, [value]);
@@ -869,7 +869,7 @@ function SelectDate({
           showTimeSelect
           minDate={selectedDate}
           onChange={(date) => {
-            console.log(formateJSDate(date!));
+           // console.log(formateJSDate(date!));
             form.setValue(name, formateJSDate(date!));
           }}
           inline
