@@ -87,32 +87,51 @@ export async function POST(req: NextRequest) {
           }
         );
       }
-    //  console.log("daaa", data)
+      //  console.log("daaa", data)
       let leads = [];
       if (data?.length === 0) {
-        leads = data;
+        leads = params;
       } else {
-        const isPresent  = data?.some((lead) => lead?.attendeeId === params?.attendeeId)
-        const isPartnerPresent = data?.some((lead) => lead?.eventPartnerAlias === params?.eventPartnerAlias)
-        if (isPresent) {
-          leads = data?.map((lead) => {
-            if (lead?.attendeeId === params?.attendeeId) {
-              return {
-                ...lead,
-                interests: [...lead?.interests, ...params?.interests],
-              };
-            }
-  
-            return { ...lead };
-          });
+        const isPartnerPresent = data?.some(
+          (lead) => lead?.eventPartnerAlias === params?.eventPartnerAlias
+        );
+        if (isPartnerPresent) {
+          // all partner leads
+          const allPartnerLeads = data?.filter(
+            (lead) => lead?.eventPartnerAlias === params?.eventPartnerAlias
+          );
+          const remainingLeads = data?.filter(
+            (lead) => lead?.eventPartnerAlias !== params?.eventPartnerAlias
+          );
+          // check attendee in partnerlist
+          const isPresent = allPartnerLeads?.some(
+            (lead) => lead?.attendeeId === params?.attendeeId
+          );
+          // if partner is present, check the attendee has applied for any of their job or offer
+          if (isPresent) {
+            const mappedArray = allPartnerLeads?.map((lead) => {
+              if (lead?.attendeeId === params?.attendeeId) {
+                return {
+                  ...lead,
+                  interests: [...lead?.interests, ...params?.interests],
+                };
+              }
+
+              return { ...lead };
+            });
+
+            leads = [...mappedArray, ...remainingLeads];
+          } else {
+            // append appendee if not applied
+            leads = { ...params, createdAt: new Date().toISOString() };
+          }
+        } else {
+          // add attendee to the new partner, if the partner is not present
+          leads = { ...params, createdAt: new Date().toISOString() };
         }
-        else {
-          leads = {...params, createdAt: new Date().toISOString()}
-        }
-       
       }
 
-     // console.log("leads", leads)
+      // console.log("leads", leads)
 
       const { error } = await supabase.from("Leads").upsert(leads);
 

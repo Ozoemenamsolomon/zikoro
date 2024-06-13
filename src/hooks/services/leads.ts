@@ -23,9 +23,7 @@ export const useCreateLeads = () => {
           variant: "destructive",
         });
 
-      toast({
-        description: " ",
-      });
+     
       return data;
     } catch (error: any) {
       //

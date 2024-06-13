@@ -308,6 +308,7 @@ function ActionWidget({
     if (job?.email) {
       sendMail(job?.email);
     }
+    close()
   }
 
   return (
