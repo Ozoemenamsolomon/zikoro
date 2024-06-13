@@ -170,7 +170,12 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      const { data, error, status } = await supabase.from("Leads").select("*");
+      const { searchParams } = new URL(req.url);
+      const eventAlias = searchParams.get("eventAlias");
+      const { data, error, status } = await supabase
+        .from("Leads")
+        .select("*")
+        .eq("eventAlias", eventAlias);
 
       if (error) throw error;
 

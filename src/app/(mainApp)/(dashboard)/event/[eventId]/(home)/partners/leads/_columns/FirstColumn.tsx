@@ -25,10 +25,13 @@ import { TFavouriteContact } from "@/types/favourites";
 import useSearch from "@/hooks/common/useSearch";
 import { Button } from "@/components/ui/button";
 import { useMutateData } from "@/hooks/services/request";
+import { TUser } from "@/types";
 
 function ViewAttendeesSection({
   attendees,
+  user,
 }: {
+  user: TUser;
   attendees: TAttendee[];
   selectedAttendees: TAttendee[];
   toggleValue: (value: TAttendee | TAttendee[]) => void;
@@ -97,26 +100,29 @@ function ViewAttendeesSection({
       </div>
       <div className="space-y-4">
         <div className="space-y-4 max-h-32 overflow-auto">
-          {searchedAttendees.map((attendee) => (
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                className="data-[state=checked]:bg-basePrimary"
-                id={attendee.attendeeAlias}
-                onCheckedChange={() =>
-                  selectedAttendee === attendee
-                    ? setSelectedAttendee(null)
-                    : setSelectedAttendee(attendee)
-                }
-                checked={selectedAttendee === attendee}
-              />
-              <label
-                htmlFor={attendee.attendeeAlias}
-                className="capitalize text-gray-500 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                {attendee.firstName + " " + attendee.lastName}
-              </label>
-            </div>
-          ))}
+          {searchedAttendees.every(
+            ({ attendeeAlias }) => attendeeAlias === searchTerm
+          ) &&
+            searchedAttendees.map((attendee) => (
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  className="data-[state=checked]:bg-basePrimary"
+                  id={attendee.attendeeAlias}
+                  onCheckedChange={() =>
+                    selectedAttendee === attendee
+                      ? setSelectedAttendee(null)
+                      : setSelectedAttendee(attendee)
+                  }
+                  checked={selectedAttendee === attendee}
+                />
+                <label
+                  htmlFor={attendee.attendeeAlias}
+                  className="capitalize text-gray-500 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {attendee.firstName + " " + attendee.lastName}
+                </label>
+              </div>
+            ))}
         </div>
       </div>
       <Button
@@ -126,7 +132,6 @@ function ViewAttendeesSection({
           mutateData({
             payload: {
               id: selectedAttendee.id || 0,
-              eventId: selectedAttendee.eventId,
               createdAt: new Date(),
               firstName: selectedAttendee.firstName,
               lastName: selectedAttendee.lastName,
@@ -149,6 +154,10 @@ function ViewAttendeesSection({
               attendeeId: selectedAttendee.id,
               websiteUrl: selectedAttendee.websiteUrl,
               eventAlias: selectedAttendee.eventAlias,
+              firstContactChannel: "booth staff",
+              boothStaffEmail: user.email,
+              boothStaffId: user.id,
+              stampCard: true,
             },
           })
         }
@@ -293,17 +302,6 @@ export default function FirstColumn({
       .forEach(({ accessor }) => {
         setOptions(accessor, extractUniqueTypes<ILead>(leads, accessor));
       });
-
-    setOptions(
-      "checkin",
-      eachDayOfInterval({
-        start: event?.startDateTime,
-        end: event?.endDateTime,
-      }).map((date) => ({
-        label: format(date, "PPP"),
-        value: date,
-      }))
-    );
   }, [isLoading]);
 
   const toggleSort = () => {
@@ -362,7 +360,7 @@ export default function FirstColumn({
                 <span className="capitalize">Select Attendees</span>
               </DialogTitle>
             </DialogHeader>
-            <ViewAttendeesSection attendees={attendees} />
+            <ViewAttendeesSection user={user} attendees={attendees} />
           </DialogContent>
         </Dialog>
       </div>
