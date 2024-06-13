@@ -172,10 +172,12 @@ export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
       const eventAlias = searchParams.get("eventAlias");
+      const partnerId = searchParams.get("partnerId");
       const { data, error, status } = await supabase
         .from("Leads")
         .select("*")
-        .eq("eventAlias", eventAlias);
+        .eq("eventAlias", eventAlias)
+        .eq("eventPartnerAlias", partnerId);
 
       if (error) throw error;
 

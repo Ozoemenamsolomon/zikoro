@@ -6,6 +6,7 @@ import { TExPartner } from "@/types";
 import { useMemo } from "react";
 
 import { Location } from "@styled-icons/fluentui-system-regular/Location";
+import { useRouter } from "next/navigation";
 
 export function PartnerCard({
   sponsor,
@@ -23,7 +24,9 @@ export function PartnerCard({
     }
   }, [sponsor.companyLogo]);
 
-  // 
+  const router = useRouter();
+
+  //
   return (
     <Link
       href={`/event/${eventId}/partner/${sponsor.partnerAlias}`}
@@ -92,6 +95,12 @@ export function PartnerCard({
           )}
         </div>
       </div>
+      <Link
+        className="text-sky-500 text-sm p-2 font-medium hover:underline"
+        href={`/event/${eventId}/partner/${sponsor.partnerAlias}/leads`}
+      >
+        show Leads
+      </Link>
     </Link>
   );
 }

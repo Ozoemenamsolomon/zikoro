@@ -4,7 +4,7 @@ import { cn } from "@/lib";
 import { Button } from "@/components";
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import { AddPartners } from "..";
 
 export function HeaderTab({
@@ -47,17 +47,6 @@ export function HeaderTab({
             )}
           >
             Exhibitors
-          </Button>
-          <Button
-            onClick={() =>
-              router.push(`/event/${eventId}/partners/leads`)
-            }
-            className={cn(
-              "bg-transparent",
-              query === "exhibitors" && "text-basePrimary"
-            )}
-          >
-            Leads
           </Button>
         </div>
         <Button
