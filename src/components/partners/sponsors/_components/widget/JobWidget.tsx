@@ -312,7 +312,7 @@ function ActionWidget({
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="w-[95%] max-w-xl m-auto h-[400px] absolute  inset-0 rounded-lg bg-white py-10 px-4 flex  flex-col "
+        className="w-[95%] max-w-xl m-auto h-[300px] absolute  inset-0 rounded-lg bg-white py-10 px-4 flex  flex-col "
       >
         {!isShow ? (
           <div className="w-full flex gap-y-16 flex-col items-center justify-center h-full">
