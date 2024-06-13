@@ -4,18 +4,161 @@ import Filter from "@/components/Filter";
 import { Input } from "@/components/ui/input";
 import { useFilter } from "@/hooks/common/useFilter";
 import { ILead } from "@/types/leads";
-import {
-  calculateAndSetMaxHeight,
-  convertCamelToNormal,
-  extractUniqueTypes,
-} from "@/utils/helpers";
+import { calculateAndSetMaxHeight, extractUniqueTypes } from "@/utils/helpers";
 import { useEffect, useRef, useState } from "react";
-import * as XLSX from "xlsx";
 import { TFilter } from "@/types/filter";
-import { Event } from "@/types";
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import useUserStore from "@/store/globalUserStore";
 import useEventStore from "@/store/globalEventStore";
+import { useGetAttendees } from "@/hooks";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { TAttendee } from "@/types/attendee";
+import { TAttendeeTags } from "@/types/tags";
+import { TFavouriteContact } from "@/types/favourites";
+import useSearch from "@/hooks/common/useSearch";
+import { Button } from "@/components/ui/button";
+import { useMutateData } from "@/hooks/services/request";
+
+function ViewAttendeesSection({
+  attendees,
+}: {
+  attendees: TAttendee[];
+  selectedAttendees: TAttendee[];
+  toggleValue: (value: TAttendee | TAttendee[]) => void;
+  attendeesTags?: TAttendeeTags[];
+  favourites?: TFavouriteContact;
+}) {
+  const { mutateData, isLoading } =
+    useMutateData<
+      Omit<TAttendee, "checkin" | "email" | "eventRegistrationRef">
+    >("/leads");
+
+  const [selectedAttendee, setSelectedAttendee] = useState<TAttendee | null>(
+    null
+  );
+
+  const {
+    searchTerm,
+    searchedData: searchedAttendees,
+    setSearchTerm,
+  } = useSearch({
+    data: attendees,
+    accessorKey: ["attendeeAlias"],
+  });
+
+  return (
+    <>
+      <div className="space-y-4">
+        <div className="relative">
+          <svg
+            className="absolute left-2 top-[25%]"
+            xmlns="http://www.w3.org/2000/svg"
+            width={18}
+            height={18}
+            viewBox="0 0 18 18"
+            fill="none"
+          >
+            <path
+              d="M16.5 16.5L11.5 11.5M1.5 7.33333C1.5 8.09938 1.65088 8.85792 1.94404 9.56565C2.23719 10.2734 2.66687 10.9164 3.20854 11.4581C3.75022 11.9998 4.39328 12.4295 5.10101 12.7226C5.80875 13.0158 6.56729 13.1667 7.33333 13.1667C8.09938 13.1667 8.85792 13.0158 9.56565 12.7226C10.2734 12.4295 10.9164 11.9998 11.4581 11.4581C11.9998 10.9164 12.4295 10.2734 12.7226 9.56565C13.0158 8.85792 13.1667 8.09938 13.1667 7.33333C13.1667 6.56729 13.0158 5.80875 12.7226 5.10101C12.4295 4.39328 11.9998 3.75022 11.4581 3.20854C10.9164 2.66687 10.2734 2.23719 9.56565 1.94404C8.85792 1.65088 8.09938 1.5 7.33333 1.5C6.56729 1.5 5.80875 1.65088 5.10101 1.94404C4.39328 2.23719 3.75022 2.66687 3.20854 3.20854C2.66687 3.75022 2.23719 4.39328 1.94404 5.10101C1.65088 5.80875 1.5 6.56729 1.5 7.33333Z"
+              stroke="#717171"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <Input
+            type="email"
+            placeholder="Search attendees by id"
+            onInput={(event) => setSearchTerm(event.currentTarget.value)}
+            value={searchTerm}
+            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8"
+          />
+          <svg
+            className="absolute right-2 top-[25%]"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M21 3.75V7.5C21 7.69891 20.921 7.88968 20.7803 8.03033C20.6397 8.17098 20.4489 8.25 20.25 8.25C20.0511 8.25 19.8603 8.17098 19.7197 8.03033C19.579 7.88968 19.5 7.69891 19.5 7.5V4.5H16.5C16.3011 4.5 16.1103 4.42098 15.9697 4.28033C15.829 4.13968 15.75 3.94891 15.75 3.75C15.75 3.55109 15.829 3.36032 15.9697 3.21967C16.1103 3.07902 16.3011 3 16.5 3H20.25C20.4489 3 20.6397 3.07902 20.7803 3.21967C20.921 3.36032 21 3.55109 21 3.75ZM7.5 19.5H4.5V16.5C4.5 16.3011 4.42098 16.1103 4.28033 15.9697C4.13968 15.829 3.94891 15.75 3.75 15.75C3.55109 15.75 3.36032 15.829 3.21967 15.9697C3.07902 16.1103 3 16.3011 3 16.5V20.25C3 20.4489 3.07902 20.6397 3.21967 20.7803C3.36032 20.921 3.55109 21 3.75 21H7.5C7.69891 21 7.88968 20.921 8.03033 20.7803C8.17098 20.6397 8.25 20.4489 8.25 20.25C8.25 20.0511 8.17098 19.8603 8.03033 19.7197C7.88968 19.579 7.69891 19.5 7.5 19.5ZM20.25 15.75C20.0511 15.75 19.8603 15.829 19.7197 15.9697C19.579 16.1103 19.5 16.3011 19.5 16.5V19.5H16.5C16.3011 19.5 16.1103 19.579 15.9697 19.7197C15.829 19.8603 15.75 20.0511 15.75 20.25C15.75 20.4489 15.829 20.6397 15.9697 20.7803C16.1103 20.921 16.3011 21 16.5 21H20.25C20.4489 21 20.6397 20.921 20.7803 20.7803C20.921 20.6397 21 20.4489 21 20.25V16.5C21 16.3011 20.921 16.1103 20.7803 15.9697C20.6397 15.829 20.4489 15.75 20.25 15.75ZM3.75 8.25C3.94891 8.25 4.13968 8.17098 4.28033 8.03033C4.42098 7.88968 4.5 7.69891 4.5 7.5V4.5H7.5C7.69891 4.5 7.88968 4.42098 8.03033 4.28033C8.17098 4.13968 8.25 3.94891 8.25 3.75C8.25 3.55109 8.17098 3.36032 8.03033 3.21967C7.88968 3.07902 7.69891 3 7.5 3H3.75C3.55109 3 3.36032 3.07902 3.21967 3.21967C3.07902 3.36032 3 3.55109 3 3.75V7.5C3 7.69891 3.07902 7.88968 3.21967 8.03033C3.36032 8.17098 3.55109 8.25 3.75 8.25ZM15.75 17.25H8.25C7.85218 17.25 7.47064 17.092 7.18934 16.8107C6.90804 16.5294 6.75 16.1478 6.75 15.75V8.25C6.75 7.85218 6.90804 7.47064 7.18934 7.18934C7.47064 6.90804 7.85218 6.75 8.25 6.75H15.75C16.1478 6.75 16.5294 6.90804 16.8107 7.18934C17.092 7.47064 17.25 7.85218 17.25 8.25V15.75C17.25 16.1478 17.092 16.5294 16.8107 16.8107C16.5294 17.092 16.1478 17.25 15.75 17.25ZM8.25 15.75H15.75V8.25H8.25V15.75Z"
+              fill="#717171"
+            />
+          </svg>
+        </div>
+      </div>
+      <div className="space-y-4">
+        <div className="space-y-4 max-h-32 overflow-auto">
+          {searchedAttendees.map((attendee) => (
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                className="data-[state=checked]:bg-basePrimary"
+                id={attendee.attendeeAlias}
+                onCheckedChange={() =>
+                  selectedAttendee === attendee
+                    ? setSelectedAttendee(null)
+                    : setSelectedAttendee(attendee)
+                }
+                checked={selectedAttendee === attendee}
+              />
+              <label
+                htmlFor={attendee.attendeeAlias}
+                className="capitalize text-gray-500 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                {attendee.firstName + " " + attendee.lastName}
+              </label>
+            </div>
+          ))}
+        </div>
+      </div>
+      <Button
+        className="text-white bg-basePrimary h-10 text-sm rounded-3xl"
+        onClick={() =>
+          selectedAttendee &&
+          mutateData({
+            payload: {
+              id: selectedAttendee.id || 0,
+              eventId: selectedAttendee.eventId,
+              createdAt: new Date(),
+              firstName: selectedAttendee.firstName,
+              lastName: selectedAttendee.lastName,
+              attendeeEmail: selectedAttendee.userEmail,
+              jobTitle: selectedAttendee.jobTitle,
+              organization: selectedAttendee.organization,
+              city: selectedAttendee.city,
+              country: selectedAttendee.country,
+              phoneNumber: selectedAttendee.phoneNumber,
+              whatsappNumber: selectedAttendee.whatsappNumber,
+              profilePicture: selectedAttendee.profilePicture,
+              bio: selectedAttendee.bio,
+              x: selectedAttendee.x,
+              linkedin: selectedAttendee.linkedin,
+              instagram: selectedAttendee.instagram,
+              facebook: selectedAttendee.facebook,
+              ticketType: selectedAttendee.ticketType,
+              attendeeType: selectedAttendee.attendeeType,
+              attendeeAlias: selectedAttendee.attendeeAlias,
+              attendeeId: selectedAttendee.id,
+              websiteUrl: selectedAttendee.websiteUrl,
+              eventAlias: selectedAttendee.eventAlias,
+            },
+          })
+        }
+        disabled={!selectedAttendee}
+      >
+        Add Lead
+      </Button>
+    </>
+  );
+}
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -115,7 +258,14 @@ export default function FirstColumn({
   selectedLead: ILead;
 }) {
   const { event } = useEventStore();
-  const { user, setUser } = useUserStore();
+  const {
+    attendees,
+    getAttendees,
+    isLoading: attendeesIsLoading,
+  } = useGetAttendees({
+    eventId: event?.eventAlias,
+  });
+  const { user } = useUserStore();
   const divRef = useRef<HTMLDivElement>(null);
   const {
     filteredData: mappedLeads,
@@ -184,6 +334,37 @@ export default function FirstColumn({
     <>
       <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2">
         <h1 className="font-semibold leading-normal text-greyBlack ">leads</h1>
+        <Dialog>
+          <DialogTrigger asChild>
+            <button
+              disabled={attendeesIsLoading}
+              onClick={() => {
+                onSelectLead(null);
+              }}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.54 13V16C10.54 16.2833 10.636 16.521 10.828 16.713C11.02 16.905 11.2574 17.0007 11.54 17C11.8234 17 12.061 16.904 12.253 16.712C12.445 16.52 12.5407 16.2827 12.54 16V13H15.54C15.8234 13 16.061 12.904 16.253 12.712C16.445 12.52 16.5407 12.2827 16.54 12C16.54 11.7167 16.444 11.479 16.252 11.287C16.06 11.095 15.8227 10.9993 15.54 11H12.54V8C12.54 7.71667 12.444 7.479 12.252 7.287C12.06 7.095 11.8227 6.99933 11.54 7C11.2567 7 11.019 7.096 10.827 7.288C10.635 7.48 10.5394 7.71733 10.54 8V11H7.54004C7.25671 11 7.01904 11.096 6.82704 11.288C6.63504 11.48 6.53937 11.7173 6.54004 12C6.54004 12.2833 6.63604 12.521 6.82804 12.713C7.02004 12.905 7.25737 13.0007 7.54004 13H10.54ZM11.54 22C10.1567 22 8.85671 21.7373 7.64004 21.212C6.42337 20.6867 5.36504 19.9743 4.46504 19.075C3.56504 18.175 2.85271 17.1167 2.32804 15.9C1.80337 14.6833 1.54071 13.3833 1.54004 12C1.54004 10.6167 1.80271 9.31667 2.32804 8.1C2.85337 6.88333 3.56571 5.825 4.46504 4.925C5.36504 4.025 6.42337 3.31267 7.64004 2.788C8.85671 2.26333 10.1567 2.00067 11.54 2C12.9234 2 14.2234 2.26267 15.44 2.788C16.6567 3.31333 17.715 4.02567 18.615 4.925C19.515 5.825 20.2277 6.88333 20.753 8.1C21.2784 9.31667 21.5407 10.6167 21.54 12C21.54 13.3833 21.2774 14.6833 20.752 15.9C20.2267 17.1167 19.5144 18.175 18.615 19.075C17.715 19.975 16.6567 20.6877 15.44 21.213C14.2234 21.7383 12.9234 22.0007 11.54 22ZM11.54 20C13.7734 20 15.665 19.225 17.215 17.675C18.765 16.125 19.54 14.2333 19.54 12C19.54 9.76667 18.765 7.875 17.215 6.325C15.665 4.775 13.7734 4 11.54 4C9.30671 4 7.41504 4.775 5.86504 6.325C4.31504 7.875 3.54004 9.76667 3.54004 12C3.54004 14.2333 4.31504 16.125 5.86504 17.675C7.41504 19.225 9.30671 20 11.54 20Z"
+                  fill="#15161B"
+                />
+              </svg>
+            </button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                <span className="capitalize">Select Attendees</span>
+              </DialogTitle>
+            </DialogHeader>
+            <ViewAttendeesSection attendees={attendees} />
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="flex justify-between my-2 px-2 items-center gap-1">
         <div className="relative w-fit flex-1">

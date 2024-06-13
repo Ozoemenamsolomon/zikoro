@@ -7,10 +7,8 @@ export async function GET(req: NextRequest) {
 
   if (req.method === "GET") {
     try {
-      const { data, error } = await supabase.from("pricing").select();
-
+      const { data, error } = await supabase.from("pricing").select("*");
       if (error) throw error;
-
       return NextResponse.json(
         {
           data,

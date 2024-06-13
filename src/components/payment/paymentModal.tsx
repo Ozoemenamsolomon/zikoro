@@ -7,15 +7,30 @@ import { PlusCircleFill } from "styled-icons/bootstrap";
 import { MinusCircle } from "styled-icons/evaicons-solid";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
+import useUserStore from "@/store/globalUserStore";
+import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 
 type Props = {
   updateModalState: () => void;
+  setChosenPlan: (plan: string | null) => void;
+  setChosenPrice: (price: number) => void;
+  setChosenCurrency: (currency: string) => void;
+  chosenPlan: string | null;
+  chosenCurrency: string;
+  chosenPrice: number | null;
 };
 
-export function PaymentModal({ updateModalState }: Props) {
+export function PaymentModal({
+  updateModalState,
+  chosenPlan,
+  chosenCurrency,
+  chosenPrice,
+}: Props) {
+  const { user, setUser } = useUserStore();
   const [loading, setLoading] = useState(false);
-  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [isMonthly, setIsMonthly] = useState<boolean>(false);
   const [haveCoupon, setHaveCoupon] = useState<boolean>(false);
+  const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const router = useRouter();
 
   const plans = ["Lite", "Professional", "Business", "Enterprise"];
@@ -25,13 +40,19 @@ export function PaymentModal({ updateModalState }: Props) {
 
   //toggler functions
   const handlePlanToogle = () => {
-    setIsChecked(!isChecked);
+    setIsMonthly(!isMonthly);
   };
 
   const submitForm = (e: any) => {
     e.preventDefault();
     router.push("/payment");
   };
+
+  if (!user) {
+    router.push("/login");
+  }
+
+  console.log(user);
 
   return (
     <div className="w-full h-full fixed z-[100] inset-0 bg-black/50 overflow-y-auto ">
@@ -46,16 +67,22 @@ export function PaymentModal({ updateModalState }: Props) {
           <div className="mt-4 border-b-[1px] border-gray-400 pb-8">
             <p className="text-xl font-medium">Selected Plan</p>
             <div className="mt-8 flex gap-x-1 items-center">
-              <p className="text-2xl font-semibold ">Professional</p>{" "}
-              <p className="rounded-[37px] text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end uppercase text-[10px] py-1 px-[10px] ">
-                Discount
-              </p>
+              <p className="text-2xl font-semibold ">{chosenPlan}</p>{" "}
+              {isDiscount && (
+                <p className="rounded-[37px] text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end uppercase text-[10px] py-1 px-[10px] ">
+                  Discount
+                </p>
+              )}
             </div>
 
             <div className="mt-1 flex gap-x-2 items-center">
-              <p className="line-through text-2xl font-normal ">₦2000</p>
+              {isDiscount && (
+                <p className="line-through text-2xl font-normal ">
+                  {convertCurrencyCodeToSymbol(chosenCurrency)}2000
+                </p>
+              )}
               <p className="text-2xl font-normal whitespace-nowrap ">
-                ₦15000 per month
+                {convertCurrencyCodeToSymbol(chosenCurrency)}{chosenPrice} per month
               </p>
             </div>
 
@@ -86,52 +113,65 @@ export function PaymentModal({ updateModalState }: Props) {
               {/* Individual Product */}
               <div className="mt-5">
                 <div className=" flex justify-between ">
-                  <p className="text-xl font-medium">Professional</p>
-                  <p className="text-xl font-normal">₦ 24000</p>
+                  <p className="text-xl font-medium">{chosenPlan}</p>
+                  <p className="text-xl font-normal">
+                    {convertCurrencyCodeToSymbol(chosenCurrency)}{chosenPrice}
+                  </p>
                 </div>
                 <p className="text-base font-normal mt-2">
-                  ₦ 20000 per month x 12{" "}
+                  {convertCurrencyCodeToSymbol(chosenCurrency)}
+                  {chosenPrice} per month x 12{" "}
                 </p>
               </div>
 
               {/* Individual Product */}
-              <div className="mt-5">
+              {/* <div className="mt-5">
                 <div className=" flex justify-between ">
                   <p className="text-xl font-medium">Certificate</p>
                   <p className="text-xl font-normal">₦ 24000</p>
                 </div>
                 <p className="text-base font-normal mt-2">xx credits </p>
-              </div>
+              </div> */}
             </div>
           </div>
 
           {/* footer */}
           <div className="py-3 px-2 flex items-center justify-between bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-lg mt-9">
             <p className="text-xl font-medium">Total Cost</p>
-            <p className="text-xl font-normal">₦ 180000</p>
+            <p className="text-xl font-normal">
+              {convertCurrencyCodeToSymbol(chosenCurrency)}{chosenPrice}
+            </p>
           </div>
         </div>
 
         {/* right */}
 
-        <div className="w-full bg-white px-[40px] lg:pr-[100px] pb-[40px] lg:pb-[50px] pt-[80px] ">
+        <div className="w-full bg-white px-[40px] lg:pr-[100px] pb-[40px] lg:pb-[50px] pt-[60px] ">
           <p className=" whitespace-nowrap text-xl font-medium ">
             Personal Information
           </p>
 
-          <form action="" className="mt-8">
+          <form action="" className="mt-6">
             <input
               type="text"
               name="fullname"
-              id=""
+              value={user?.firstName}
               className="px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+              placeholder="Full Name"
+            />
+
+            <input
+              type="email"
+              name="email"
+              value={user?.userEmail}
+              className="mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
               placeholder="Full Name"
             />
             <input
               type="text"
               name="workspace"
-              id=""
-              className=" mt-6 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+              value={user?.organization}
+              className=" mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
               placeholder="Workspace"
             />
 
@@ -140,9 +180,6 @@ export function PaymentModal({ updateModalState }: Props) {
               id=""
               className="border-[1px] border-indigo-600 rounded-lg h-[45px] outline-none mt-10 px-3 w-full"
             >
-              <option value="currency" selected disabled>
-                Plan
-              </option>
               {plans.map((plan, index) => (
                 <option value={plan} key={index}>
                   {plan}
@@ -157,9 +194,6 @@ export function PaymentModal({ updateModalState }: Props) {
                 id=""
                 className="border-[1px] border-indigo-600 rounded-lg h-[45px] px-3 outline-none"
               >
-                <option value="currency" selected disabled>
-                  Currency
-                </option>
                 {currencies.map((currency, index) => (
                   <option value={currency} key={index}>
                     {currency}
@@ -171,8 +205,8 @@ export function PaymentModal({ updateModalState }: Props) {
                 <p className="text-xl font-medium ">Monthly</p>
                 <Switch
                   className="data-[state=checked]:bg-zikoroBlue"
-                  checked={isChecked}
-                  onCheckedChange={(e) => setIsChecked(!isChecked)}
+                  checked={isMonthly}
+                  onCheckedChange={(e) => handlePlanToogle()}
                 />
                 <p className="text-xl font-medium">Yearly</p>
               </div>
@@ -208,7 +242,7 @@ export function PaymentModal({ updateModalState }: Props) {
                 Have a discount code? click here to enter code{" "}
               </p>
             ) : (
-              <div className="h-[50px] mt-7">
+              <div className="h-[50px] mt-5">
                 <input
                   type="text"
                   name=""

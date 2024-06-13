@@ -1,12 +1,33 @@
-import { TAttendee } from "./attendee";
-
-export interface ILead extends TAttendee {
-  boothStaffId: string;
-  firstContactChannel: string;
-  interests: string[];
-  boothStampEmail: string;
-  stampCard: string;
-  attendeeId: string;
+export interface ILead {
+  id: number;
+  eventId?: string;
+  createdAt: Date;
+  boothStaffId?: bigint;
+  firstName: string;
+  lastName: string;
+  attendeeEmail: string;
+  jobTitle?: string;
+  organization?: string;
+  city?: string;
+  country?: string;
+  phoneNumber: string;
+  whatsappNumber?: string;
+  profilePicture?: string;
+  bio?: string;
+  x?: string;
+  linkedin?: string;
+  instagram?: string;
+  facebook?: string;
+  ticketType?: string;
+  attendeeType?: object;
+  attendeeAlias?: string;
+  attendeeId?: number;
+  firstContactChannel?: string;
+  websiteUrl?: string;
+  eventAlias?: string;
+  interests?: object;
+  boothStaffEmail?: string;
+  stampCard?: boolean;
 }
 
 export interface TLead {
