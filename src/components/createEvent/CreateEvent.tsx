@@ -44,6 +44,7 @@ export default function CreateEvent() {
   const { createEvent, loading } = useCreateEvent();
   const [isStartDate, setStartDate] = useState(false);
   const [isEndDate, setEndDate] = useState(false);
+  const { user: userData } = useUserStore();
 
   const router = useRouter();
   const { organizations: organizationList, getOrganizations } =
@@ -74,7 +75,7 @@ export default function CreateEvent() {
   }, [organizationList]);
 
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
-    const { user: userData } = useUserStore();
+   
     const today = new Date();
 
     const newPromise = new Promise(async (resolve) => {

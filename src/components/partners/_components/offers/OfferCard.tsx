@@ -301,7 +301,7 @@ function ActionWidget({
         }}
         className="w-[95%] max-w-xl m-auto h-[400px] absolute  inset-0 rounded-lg bg-white py-10 px-4 flex  flex-col "
       >
-        {isShow ? (
+        {!isShow ? (
           <div className="w-full flex gap-y-16 flex-col items-center justify-center h-full">
             <p className="text-center">
               Do you want to apply for this offer?. Your details will be shared
@@ -320,11 +320,11 @@ function ActionWidget({
         ) : (
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full flex flex-col items-start justify-start gap-y-3"
+            className="w-full h-full flex flex-col items-start justify-start gap-y-3"
           >
             <Textarea
               placeholder="Write Something... (Optional)"
-              className="w-full h-[70%] "
+              className="w-full h-[80%] "
               {...form.register("note")}
             ></Textarea>
             <div className="w-full flex items-end justify-end gap-x-2">
