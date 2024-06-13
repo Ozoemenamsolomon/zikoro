@@ -62,6 +62,9 @@ export default function CreateEvent() {
   const startDate = form.watch("startDateTime");
   const endDate = form.watch("endDateTime");
 
+  const minimumDate = useMemo(() => {
+      return parseFormattedDate(startDate)
+  },[startDate])
   function formatDate(date: Date): string {
     return date.toISOString();
   }
@@ -301,6 +304,7 @@ export default function CreateEvent() {
                               <SelectDate
                                 value={endDate}
                                 form={form}
+                                minimumDate={minimumDate}
                                 name="endDateTime"
                                 close={() => setEndDate((prev) => !prev)}
                               />
@@ -415,17 +419,19 @@ export default function CreateEvent() {
   );
 }
 
-function SelectDate<T>({
+function SelectDate({
   className,
   form,
   close,
   name,
   value,
+  minimumDate
 }: {
   form: UseFormReturn<z.infer<typeof newEventSchema>, any, any>;
   close: () => void;
   className?: string;
   name: any;
+  minimumDate?:Date
   value: string;
 }) {
   const selectedDate = useMemo(() => {
@@ -454,7 +460,7 @@ function SelectDate<T>({
         <DatePicker
           selected={selectedDate}
           showTimeSelect
-          minDate={new Date()}
+          minDate={minimumDate || new Date()}
           onChange={(date) => {
             form.setValue(name, formateJSDate(date!));
           }}
