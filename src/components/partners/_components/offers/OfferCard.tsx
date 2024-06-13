@@ -3,10 +3,13 @@
 import Image from "next/image";
 import { AlertCircle } from "@styled-icons/feather/AlertCircle";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
-import { Button } from "@/components";
+import { Button, Textarea } from "@/components";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useMemo, useState } from "react";
 import { formatShortDate, sendMail, whatsapp } from "@/utils";
-import { PromotionalOfferType, TAttendee } from "@/types";
+import { PromotionalOfferType, TAttendee, TLead } from "@/types";
+import { useForm } from "react-hook-form";
+import { useCreateLeads } from "@/hooks";
 export function OfferCard({
   offer,
   isOrganizer,
@@ -109,7 +112,7 @@ export function OfferCard({
       {isApply && (
         <ActionWidget
           close={toggleApply}
-          companyName={offer?.companyName}
+          offer={offer}
           attendee={attendee}
           apply={apply}
         />
@@ -220,38 +223,132 @@ function OfferCardModal({
 }
 
 function ActionWidget({
-  companyName,
+  offer,
   close,
   apply,
   attendee,
 }: {
-  companyName: string;
+  offer: PromotionalOfferType;
   close: () => void;
   apply: () => void;
   attendee?: TAttendee;
 }) {
+  const [isShow, setShow] = useState(false);
+  const { isLoading, createLeads } = useCreateLeads();
+  const form = useForm({})
+
+  function toggleShow() {
+    setShow((prev) => !prev);
+  }
+
+  const getLeadAttendee = (attendee?: TAttendee): Partial<TLead> => {
+    return {
+      firstName: attendee?.firstName,
+      lastName: attendee?.lastName,
+      attendeeEmail: attendee?.email,
+      profilePicture: attendee?.profilePicture,
+      bio: attendee?.bio,
+      x: attendee?.x,
+      linkedin: attendee?.linkedin,
+      instagram: attendee?.instagram,
+      facebook: attendee?.facebook,
+      ticketType: attendee?.ticketType,
+      attendeeType: attendee?.attendeeType,
+      attendeeId: attendee?.id,
+      eventAlias: attendee?.eventAlias,
+      organization: attendee?.organization,
+      city: attendee?.city,
+      country: attendee?.country,
+      phoneNumber: attendee?.phoneNumber,
+      whatsappNumber: attendee?.whatsappNumber,
+    };
+  };
+
+  async function onSubmit(values: any) {
+    const leadAttendee = getLeadAttendee(attendee);
+
+    const payload: Partial<TLead> = {
+      ...leadAttendee,
+      eventPartnerId: offer?.partnerId,
+      stampCard: true,
+      firstContactChannel: {
+        interestType: "Offer",
+        title: offer?.serviceTitle,
+        note: values?.note,
+      },
+      interests: [
+        {
+          interestType: "Offer",
+          title: offer?.serviceTitle,
+          note: values?.note,
+        },
+      ],
+    };
+
+    await createLeads({ payload });
+    apply()
+    close()
+  }
   return (
     <div
       role="button"
       onClick={close}
       className="w-full h-full inset-0  fixed z-[100] bg-black/50"
     >
-      <div
+    <div
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="w-[95%] max-w-xl m-auto h-fit absolute gap-y-16 inset-0 rounded-lg bg-white py-10 px-4 flex items-center justify-center flex-col "
+        className="w-[95%] max-w-xl m-auto h-[400px] absolute  inset-0 rounded-lg bg-white py-10 px-4 flex  flex-col "
       >
-        <p className="text-center">
-          Do you want to apply for this offer?. Your details will be shared with{" "}
-          <span className="font-semibold">{companyName}</span>
-        </p>
-        <div className="w-full flex items-end justify-end gap-x-3">
-          <Button onClick={close}>Cancel</Button>
-          <Button className="bg-basePrimary rounded-lg text-white w-[100px] gap-x-2">
-            <p>Continue</p>
-          </Button>
-        </div>
+        {isShow ? (
+          <div className="w-full flex gap-y-16 flex-col items-center justify-center h-full">
+            <p className="text-center">
+              Do you want to apply for this offer?. Your details will be shared
+              with <span className="font-semibold">{offer?.companyName}</span>
+            </p>
+            <div className="w-full flex items-end justify-end gap-x-3">
+              <Button onClick={close}>Cancel</Button>
+              <Button
+                onClick={toggleShow}
+                className="bg-basePrimary rounded-lg text-white w-[100px] gap-x-2"
+              >
+                <p>Continue</p>
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full flex flex-col items-start justify-start gap-y-3"
+          >
+            <Textarea
+              placeholder="Write Something... (Optional)"
+              className="w-full h-[70%] "
+              {...form.register("note")}
+            ></Textarea>
+            <div className="w-full flex items-end justify-end gap-x-2">
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  // toggleShow();
+                  close();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={isLoading}
+                type="submit"
+                className="bg-basePrimary rounded-lg text-white w-[100px] gap-x-2"
+              >
+                {isLoading && <LoaderAlt size={22} className="animate-spin" />}
+                <p> Submit</p>
+              </Button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

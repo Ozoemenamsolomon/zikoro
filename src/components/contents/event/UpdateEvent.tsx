@@ -9,8 +9,9 @@ import { Camera } from "@styled-icons/feather/Camera";
 import { COUNTRY_CODE } from "@/utils";
 import TextEditor from "@/components/TextEditor";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, UseFormReturn } from "react-hook-form";
 import * as z from "zod";
+import { cn } from "@/lib";
 import { uploadFile } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -19,11 +20,13 @@ import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
 import { Form, FormField, Input, Button, ReactSelect } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { PublishCard } from "@/components/composables";
-
+import DatePicker from "react-datepicker";
 import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
 import { TIME_ZONES } from "@/utils";
 import { PreviewModal } from "../_components/modal/PreviewModal";
+import { formateJSDate, parseFormattedDate } from "@/utils";
+import { DateRange } from "@styled-icons/material-outlined/DateRange";
 import {
   industryArray,
   categories,
@@ -50,7 +53,8 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     refetch: () => Promise<null | undefined>;
   } = useFetchSingleEvent(eventId);
   const [publishing, setIsPublishing] = useState(false);
-
+  const [isStartDate, setStartDate] = useState(false);
+  const [isEndDate, setEndDate] = useState(false);
   const { loading: updating, update } = useUpdateEvent();
   const [isShowPublishModal, setShowPublishModal] = useState(false);
   const [isOpen, setOpen] = useState(false);
@@ -75,6 +79,25 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   function showPublishModal() {
     setShowPublishModal((prev) => !prev);
   }
+
+  const start = form.watch("startDateTime");
+  const end = form.watch("endDateTime");
+
+  const startDate = useMemo(() => {
+    if (start) {
+      return formateJSDate(start);
+    } else {
+      return formateJSDate(new Date());
+    }
+  }, [start]);
+
+  const endDate = useMemo(() => {
+    if (end) {
+      return formateJSDate(end);
+    } else {
+      return formateJSDate(new Date());
+    }
+  }, [end]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -309,13 +332,34 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                       name="startDateTime"
                       render={() => (
                         <InputOffsetLabel label="Start date and time">
-                          <Input
-                            placeholder="Enter event title"
-                            type="datetime-local"
-                            defaultValue={data?.startDateTime}
-                            {...form.register("startDateTime")}
-                            className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
-                          />
+                          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setStartDate((prev) => !prev);
+                            }}
+                            role="button"
+                            className="w-full relative h-12"
+                          >
+                            <button className="absolute left-3 top-[0.6rem]">
+                              <DateRange size={22} className="text-gray-600" />
+                            </button>
+                            <Input
+                              placeholder=" Start Date Time"
+                              type="text"
+                              {...form.register("startDateTime")}
+                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                            />
+                            {isStartDate && (
+                              <SelectDate
+                                value={startDate}
+                                className="sm:left-0 right-0"
+                                name="startDateTime"
+                                form={form}
+                                close={() => setStartDate((prev) => !prev)}
+                              />
+                            )}
+                          </div>
                         </InputOffsetLabel>
                       )}
                     />
@@ -325,13 +369,34 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                       name="endDateTime"
                       render={({ field }) => (
                         <InputOffsetLabel label="End date and time">
-                          <Input
-                            placeholder="Enter event title"
-                            type="datetime-local"
-                            defaultValue={data?.endDateTime}
-                            {...form.register("endDateTime")}
-                            className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                          />
+                          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setEndDate((prev) => !prev);
+                            }}
+                            role="button"
+                            className="w-full relative h-12"
+                          >
+                            <button className="absolute left-3 top-[0.6rem]">
+                              <DateRange size={22} className="text-gray-600" />
+                            </button>
+                            <Input
+                              placeholder="End Date Time"
+                              type="text"
+                              {...form.register("endDateTime")}
+                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                            />
+                            {/** */}
+                            {isEndDate && (
+                              <SelectDate
+                                value={endDate}
+                                form={form}
+                                name="endDateTime"
+                                close={() => setEndDate((prev) => !prev)}
+                              />
+                            )}
+                          </div>
                         </InputOffsetLabel>
                       )}
                     />
@@ -706,5 +771,57 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         {isOpen && <PreviewModal close={onClose} eventDetail={data} />}
       </>
     </DateAndTimeAdapter>
+  );
+}
+
+function SelectDate<T>({
+  className,
+  form,
+  close,
+  name,
+  value,
+}: {
+  form: UseFormReturn<z.infer<typeof updateEventSchema>, any, any>;
+  close: () => void;
+  className?: string;
+  name: any;
+  value: string;
+}) {
+  const selectedDate = useMemo(() => {
+    return parseFormattedDate(value);
+  }, [value]);
+  console.log("ddddddd", formateJSDate(value));
+  return (
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      }}
+      className={cn(
+        "absolute left-0 sm:left-0 md:left-0 top-[3.2rem]",
+        className
+      )}
+    >
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          close();
+        }}
+        className="w-full h-full inset-0 fixed z-[70]"
+      ></button>
+      <div className="relative z-[80] w-[320px]">
+        <DatePicker
+          selected={selectedDate}
+          showTimeSelect
+          minDate={selectedDate}
+          onChange={(date) => {
+            console.log(formateJSDate(date!));
+            form.setValue(name, formateJSDate(date!));
+          }}
+          inline
+        />
+      </div>
+    </div>
   );
 }

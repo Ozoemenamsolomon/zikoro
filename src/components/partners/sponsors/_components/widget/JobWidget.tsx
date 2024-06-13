@@ -1,28 +1,30 @@
 "use client";
 
-import { Button } from "@/components";
+import { Button, Textarea } from "@/components";
 import { Location } from "styled-icons/fluentui-system-regular";
 import { Bag } from "styled-icons/ionicons-solid";
-import { User } from "styled-icons/boxicons-regular";
+import { LoaderAlt, User } from "styled-icons/boxicons-regular";
 import { BoxSeam } from "styled-icons/bootstrap";
-import { PartnerJobType, TAttendee } from "@/types";
+import { PartnerJobType, TAttendee, TLead } from "@/types";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 import { useMemo, useState } from "react";
 import { COUNTRIES_CURRENCY, sendMail, whatsapp } from "@/utils";
 import { FlexibilityType } from "..";
 import { cn } from "@/lib";
 import { AlertCircle } from "styled-icons/feather";
+import { useForm } from "react-hook-form";
+import { useCreateLeads } from "@/hooks";
 
 export function JobWidget({
   job,
   className,
   attendee,
-  isOrganizer
+  isOrganizer,
 }: {
   job: PartnerJobType;
   className: string;
-  attendee?:TAttendee;
-  isOrganizer:boolean
+  attendee?: TAttendee;
+  isOrganizer: boolean;
 }) {
   const [isOpen, setOpen] = useState(false);
   const [isApply, setApply] = useState(false);
@@ -109,12 +111,14 @@ export function JobWidget({
           </div>
         </div>
 
-       {!isOrganizer && <Button
-          onClick={toggleApply}
-          className="hover:text-gray-50 w-full sm:w-fit mt-3 transform border transition-all duration-300 ease-in-out  border-basePrimary hover:bg-basePrimary text-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
-        >
-          Apply Now
-        </Button>}
+        {!isOrganizer && (
+          <Button
+            onClick={toggleApply}
+            className="hover:text-gray-50 w-full sm:w-fit mt-3 transform border transition-all duration-300 ease-in-out  border-basePrimary hover:bg-basePrimary text-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
+          >
+            Apply Now
+          </Button>
+        )}
       </div>
       {isOpen && <JobCardModal close={onClose} job={job} />}
       {isApply && (
@@ -122,7 +126,7 @@ export function JobWidget({
           close={toggleApply}
           apply={apply}
           attendee={attendee}
-          companyName={job?.companyName ?? ""}
+          job={job}
         />
       )}
     </>
@@ -218,7 +222,7 @@ function JobCardModal({
           </div>
 
           <Button
-         //   onClick={apply}
+            //   onClick={apply}
             className="hidden hover:text-gray-50 w-full sm:w-fit mt-3 transform border transition-all duration-300 ease-in-out  border-basePrimary hover:bg-basePrimary text-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
           >
             Apply Now
@@ -230,16 +234,73 @@ function JobCardModal({
 }
 
 function ActionWidget({
-  companyName,
+  job,
   close,
   apply,
-  attendee
+  attendee,
 }: {
-  companyName: string;
+  job: PartnerJobType;
   close: () => void;
-  apply:() => void;
-  attendee?: TAttendee
+  apply: () => void;
+  attendee?: TAttendee;
 }) {
+  const [isShow, setShow] = useState(false);
+  const { isLoading, createLeads } = useCreateLeads();
+  const form = useForm({});
+
+  function toggleShow() {
+    setShow((prev) => !prev);
+  }
+
+  const getLeadAttendee = (attendee?: TAttendee): Partial<TLead> => {
+    return {
+      firstName: attendee?.firstName,
+      lastName: attendee?.lastName,
+      attendeeEmail: attendee?.email,
+      profilePicture: attendee?.profilePicture,
+      bio: attendee?.bio,
+      x: attendee?.x,
+      linkedin: attendee?.linkedin,
+      instagram: attendee?.instagram,
+      facebook: attendee?.facebook,
+      ticketType: attendee?.ticketType,
+      attendeeType: attendee?.attendeeType,
+      attendeeId: attendee?.id,
+      eventAlias: attendee?.eventAlias,
+      organization: attendee?.organization,
+      city: attendee?.city,
+      country: attendee?.country,
+      phoneNumber: attendee?.phoneNumber,
+      whatsappNumber: attendee?.whatsappNumber,
+    };
+  };
+
+  async function onSubmit(values: any) {
+    const leadAttendee = getLeadAttendee(attendee);
+
+    const payload: Partial<TLead> = {
+      ...leadAttendee,
+      eventPartnerId: job?.partnerId,
+      stampCard: true,
+      jobTitle: job?.jobTitle,
+      firstContactChannel: {
+        interestType: "Job",
+        title: job?.jobTitle,
+        note: values?.note,
+      },
+      interests: [
+        {
+          interestType: "Job",
+          title: job?.jobTitle,
+          note: values?.note,
+        },
+      ],
+    };
+
+    await createLeads({ payload });
+    apply()
+    close()
+  }
 
   return (
     <div
@@ -251,20 +312,56 @@ function ActionWidget({
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="w-[95%] max-w-xl m-auto h-fit absolute gap-y-16 inset-0 rounded-lg bg-white py-10 px-4 flex items-center justify-center flex-col "
+        className="w-[95%] max-w-xl m-auto h-[400px] absolute  inset-0 rounded-lg bg-white py-10 px-4 flex  flex-col "
       >
-        <p className="text-center">
-          Do you want to apply for this job?. Your details will be shared with{" "}
-          <span className="font-semibold">{companyName}</span>
-        </p>
-        <div className="w-full flex items-end justify-end gap-x-3">
-          <Button
-          onClick={close}
-          >Cancel</Button>
-          <Button className="bg-basePrimary rounded-lg text-white w-[100px] gap-x-2">
-            <p>Continue</p>
-          </Button>
-        </div>
+        {isShow ? (
+          <div className="w-full flex gap-y-16 flex-col items-center justify-center h-full">
+            <p className="text-center">
+              Do you want to apply for this job?. Your details will be shared
+              with <span className="font-semibold">{job?.companyName}</span>
+            </p>
+            <div className="w-full flex items-end justify-end gap-x-3">
+              <Button onClick={close}>Cancel</Button>
+              <Button
+                onClick={toggleShow}
+                className="bg-basePrimary rounded-lg text-white w-[100px] gap-x-2"
+              >
+                <p>Continue</p>
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full flex flex-col items-start justify-start gap-y-3"
+          >
+            <Textarea
+              placeholder="Write Something... (Optional)"
+              className="w-full h-[70%] "
+              {...form.register("note")}
+            ></Textarea>
+            <div className="w-full flex items-end justify-end gap-x-2">
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  // toggleShow();
+                  close();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={isLoading}
+                type="submit"
+                className="bg-basePrimary rounded-lg text-white w-[100px] gap-x-2"
+              >
+                {isLoading && <LoaderAlt size={22} className="animate-spin" />}
+                <p> Submit</p>
+              </Button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

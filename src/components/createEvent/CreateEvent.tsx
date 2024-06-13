@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
 import {
   Form,
   FormField,
@@ -15,7 +15,13 @@ import Image from "next/image";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo, useState } from "react";
-import { COUNTRY_CODE, generateAlias, uploadFile } from "@/utils";
+import {
+  COUNTRY_CODE,
+  formateJSDate,
+  generateAlias,
+  parseFormattedDate,
+  uploadFile,
+} from "@/utils";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { useCreateEvent, getCookie, useGetUserOrganizations } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
@@ -26,6 +32,9 @@ import { CreateOrganization } from "../eventHome";
 import useUserStore from "@/store/globalUserStore";
 import { ArrowBack } from "@styled-icons/material-outlined/ArrowBack";
 import { ImageAdd } from "@styled-icons/boxicons-regular/ImageAdd";
+import DatePicker from "react-datepicker";
+import { DateRange } from "@styled-icons/material-outlined/DateRange";
+import { cn } from "@/lib";
 type OrganizationListType = {
   label: string;
   value: any;
@@ -33,6 +42,9 @@ type OrganizationListType = {
 
 export default function CreateEvent() {
   const { createEvent, loading } = useCreateEvent();
+  const [isStartDate, setStartDate] = useState(false);
+  const [isEndDate, setEndDate] = useState(false);
+
   const router = useRouter();
   const { organizations: organizationList, getOrganizations } =
     useGetUserOrganizations();
@@ -40,7 +52,14 @@ export default function CreateEvent() {
 
   const form = useForm<z.infer<typeof newEventSchema>>({
     resolver: zodResolver(newEventSchema),
+    defaultValues: {
+      startDateTime: formateJSDate(new Date()),
+      endDateTime: formateJSDate(new Date()),
+    },
   });
+
+  const startDate = form.watch("startDateTime");
+  const endDate = form.watch("endDateTime");
 
   function formatDate(date: Date): string {
     return date.toISOString();
@@ -114,8 +133,6 @@ export default function CreateEvent() {
       return "";
     }
   }, [poster]);
-
-  console.log(image);
 
   return (
     <>
@@ -224,12 +241,34 @@ export default function CreateEvent() {
                       name="startDateTime"
                       render={() => (
                         <InputOffsetLabel label="Start date and time">
-                          <Input
-                            placeholder="Enter event title"
-                            type="datetime-local"
-                            {...form.register("startDateTime")}
-                            className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
-                          />
+                          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault()
+                              setStartDate((prev) => !prev)
+                            }}
+                            role="button"
+                            className="w-full relative h-12"
+                          >
+                            <button className="absolute left-3 top-[0.6rem]">
+                              <DateRange size={22} className="text-gray-600" />
+                            </button>
+                            <Input
+                              placeholder=" Start Date Time"
+                              type="text"
+                              {...form.register("startDateTime")}
+                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                            />
+                            {isStartDate && (
+                              <SelectDate
+                                value={startDate}
+                                className="sm:left-0 right-0"
+                                name="startDateTime"
+                                form={form}
+                                close={() => setStartDate((prev) => !prev)}
+                              />
+                            )}
+                          </div>
                         </InputOffsetLabel>
                       )}
                     />
@@ -238,12 +277,34 @@ export default function CreateEvent() {
                       name="endDateTime"
                       render={({ field }) => (
                         <InputOffsetLabel label="End date and time">
-                          <Input
-                            placeholder="Enter event title"
-                            type="datetime-local"
-                            {...form.register("endDateTime")}
-                            className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
-                          />
+                          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault()
+                              setEndDate((prev) => !prev)
+                            }}
+                            role="button"
+                            className="w-full relative h-12"
+                          >
+                            <button className="absolute left-3 top-[0.6rem]">
+                              <DateRange size={22} className="text-gray-600" />
+                            </button>
+                            <Input
+                              placeholder="End Date Time"
+                              type="text"
+                              {...form.register("endDateTime")}
+                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                            />
+                            {/** */}
+                            {isEndDate && (
+                              <SelectDate
+                                value={endDate}
+                                form={form}
+                                name="endDateTime"
+                                close={() => setEndDate((prev) => !prev)}
+                              />
+                            )}
+                          </div>
                         </InputOffsetLabel>
                       )}
                     />
@@ -350,5 +411,55 @@ export default function CreateEvent() {
         <CreateOrganization close={onClose} refetch={getOrganizations} />
       )}
     </>
+  );
+}
+
+function SelectDate<T>({
+  className,
+  form,
+  close,
+  name,
+  value,
+}: {
+  form: UseFormReturn<z.infer<typeof newEventSchema>, any, any>;
+  close: () => void;
+  className?: string;
+  name: any;
+  value: string;
+}) {
+  const selectedDate = useMemo(() => {
+    return parseFormattedDate(value);
+  }, [value]);
+  return (
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault()
+      }}
+      className={cn(
+        "absolute left-0 sm:-left-24 md:left-[-8rem] top-[3.2rem]",
+        className
+      )}
+    >
+      <button
+         onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault()
+          close()
+        }}
+        className="w-full h-full inset-0 fixed z-20"
+      ></button>
+      <div className="relative z-50 w-fit">
+        <DatePicker
+          selected={selectedDate}
+          showTimeSelect
+          minDate={new Date()}
+          onChange={(date) => {
+            form.setValue(name, formateJSDate(date!));
+          }}
+          inline
+        />
+      </div>
+    </div>
   );
 }
