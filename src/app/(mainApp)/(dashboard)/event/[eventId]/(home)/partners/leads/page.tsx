@@ -7,6 +7,7 @@ import useUserStore from "@/store/globalUserStore";
 import { useGetContactRequests } from "@/hooks/services/contacts";
 import SecondColumn from "./_columns/SecondColumn";
 import ThirdColumn from "./_columns/ThirdColumn";
+import useEventStore from "@/store/globalEventStore";
 
 const page = () => {
   const { user, setUser } = useUserStore();
@@ -15,12 +16,12 @@ const page = () => {
     isLoading: contactRequestIsLoading,
     getContactRequests,
   } = useGetContactRequests({ userEmail: user.userEmail });
-
+  const { event } = useEventStore();
   const {
     data: leads,
     isLoading,
     getData: getLeads,
-  } = useGetData<ILead[]>("/leads");
+  } = useGetData<ILead[]>(`/leads?eventAlias=${event.eventAlias}`);
   console.log(leads);
   const [selectedLead, onSelectLead] = useState<ILead | null>();
 
@@ -159,7 +160,7 @@ const page = () => {
           </div>
         )}
         <section className="flex flex-col md:col-span-3 h-fit">
-          <ThirdColumn />
+          <ThirdColumn leads={leads ?? []} />
         </section>
       </div>
     </section>

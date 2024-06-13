@@ -97,7 +97,7 @@ export function OfferCard({
         <div className="px-3 w-full mt-1 flex items-center justify-between">
           <button
             onClick={() => {
-              apply();
+              toggleApply();
             }}
             className="text-basePrimary text-sm font-semibold"
           >
@@ -261,6 +261,7 @@ function ActionWidget({
       country: attendee?.country,
       phoneNumber: attendee?.phoneNumber,
       whatsappNumber: attendee?.whatsappNumber,
+      attendeeAlias: attendee?.attendeeAlias
     };
   };
 
@@ -269,13 +270,9 @@ function ActionWidget({
 
     const payload: Partial<TLead> = {
       ...leadAttendee,
-      eventPartnerId: offer?.partnerId,
+      eventPartnerAlias: offer?.partnerId,
       stampCard: true,
-      firstContactChannel: {
-        interestType: "Offer",
-        title: offer?.serviceTitle,
-        note: values?.note,
-      },
+      firstContactChannel: "Offer",
       interests: [
         {
           interestType: "Offer",
@@ -286,7 +283,18 @@ function ActionWidget({
     };
 
     await createLeads({ payload });
-    apply()
+    if (offer?.url) {
+      visitOfferPage(offer?.url);
+    }
+    if (offer?.whatsApp) {
+      whatsapp(
+        offer?.whatsApp,
+        `I'm interested in the ${offer?.serviceTitle ?? ""} offer. ${values.note}`
+      );
+    }
+    if (offer?.email) {
+      sendMail(offer?.email);
+    }
     close()
   }
   return (
@@ -341,7 +349,7 @@ function ActionWidget({
               <Button
                 disabled={isLoading}
                 type="submit"
-                className="bg-basePrimary rounded-lg text-white w-[100px] gap-x-2"
+                className="bg-basePrimary rounded-lg text-white w-[150px] gap-x-2"
               >
                 {isLoading && <LoaderAlt size={22} className="animate-spin" />}
                 <p> Submit</p>

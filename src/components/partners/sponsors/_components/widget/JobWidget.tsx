@@ -273,6 +273,7 @@ function ActionWidget({
       country: attendee?.country,
       phoneNumber: attendee?.phoneNumber,
       whatsappNumber: attendee?.whatsappNumber,
+      attendeeAlias: attendee?.attendeeAlias
     };
   };
 
@@ -281,14 +282,10 @@ function ActionWidget({
 
     const payload: Partial<TLead> = {
       ...leadAttendee,
-      eventPartnerId: job?.partnerId,
+      eventPartnerAlias: job?.partnerId,
       stampCard: true,
       jobTitle: job?.jobTitle,
-      firstContactChannel: {
-        interestType: "Job",
-        title: job?.jobTitle,
-        note: values?.note,
-      },
+      firstContactChannel: "Job",
       interests: [
         {
           interestType: "Job",
@@ -299,7 +296,18 @@ function ActionWidget({
     };
 
     await createLeads({ payload });
-    apply()
+    if (job?.applicationLink) {
+      window.open(job.applicationLink, "_blank");
+    }
+    if (job?.whatsApp) {
+      whatsapp(
+        job?.whatsApp,
+        `I'm interested in the ${job?.jobTitle ?? ""} job. ${values?.note}`
+      );
+    }
+    if (job?.email) {
+      sendMail(job?.email);
+    }
     close()
   }
 
@@ -355,7 +363,7 @@ function ActionWidget({
               <Button
                 disabled={isLoading}
                 type="submit"
-                className="bg-basePrimary rounded-lg text-white w-[100px] gap-x-2"
+                className="bg-basePrimary rounded-lg text-white w-[150px] gap-x-2"
               >
                 {isLoading && <LoaderAlt size={22} className="animate-spin" />}
                 <p> Submit</p>

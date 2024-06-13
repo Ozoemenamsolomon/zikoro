@@ -1,6 +1,9 @@
 import React from "react";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { BarChart } from "@mui/x-charts/BarChart";
+import useEventStore from "@/store/globalEventStore";
+import { useGetAttendees } from "@/hooks";
+import { ILead } from "@/types/leads";
 
 const dataset = [
   {
@@ -17,9 +20,20 @@ const dataset = [
   },
 ];
 
-const ThirdColumn = () => {
+const ThirdColumn = ({ leads }: { leads: ILead[] }) => {
+  const { event } = useEventStore();
+  const {
+    attendees,
+    getAttendees,
+    isLoading: attendeesIsLoading,
+  } = useGetAttendees({
+    eventId: event?.eventAlias,
+  });
+
+  if (attendeesIsLoading) return <div>Loading...</div>;
+
   return (
-    <div className="space-y-8 bg-[#001FCC]/10 py-8 px-4">
+    <div className="space-y-8 bg-[#001FCC]/10 py-8 px-2">
       <div className="space-y-4">
         <h2 className="text-gray-800 text-xl font-medium">
           Leads Analytic Overview
@@ -28,12 +42,14 @@ const ThirdColumn = () => {
           <h3 className="text-basePrimary font-medium text-sm">
             Percentage Retrieved
           </h3>
-          <span className="text-xl font-bold">75%</span>
-          <span>
-            You've retrieved <b>750</b>
+          <span className="text-xl font-bold">
+            {Number((leads.length / attendees.length) * 100).toFixed()}%
           </span>
           <span>
-            out of <b>1000</b> attendees
+            You've retrieved <b>{leads.length}</b>
+          </span>
+          <span>
+            out of <b>{attendees.length}</b> attendees
           </span>
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -89,7 +105,7 @@ const ThirdColumn = () => {
               fontSize: "8px",
             },
           }}
-          height={500}
+          height={400}
           slotProps={{
             legend: {
               direction: "column",
@@ -106,14 +122,7 @@ const ThirdColumn = () => {
             },
           ]}
           layout="horizontal"
-          xAxis={[
-            {
-              label: "Impressions",
-              categoryGapRatio: 0.75,
-              barGapRatio: 0.2,
-            },
-          ]}
-          height={500}
+          height={400}
         />
       </div>
     </div>
