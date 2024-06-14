@@ -77,7 +77,6 @@ export interface TLeadsInterest {
   note: string;
 }
 
-
-export interface TAllLeads extends TLead  {
+export interface TAllLeads extends TLead {
   interests: TLeadsInterest;
 }
