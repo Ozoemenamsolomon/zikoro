@@ -7,7 +7,7 @@ import { Button, Textarea } from "@/components";
 import {LoaderAlt} from "@styled-icons/boxicons-regular/LoaderAlt"
 import { useMemo, useState } from "react";
 import { formatShortDate, sendMail, whatsapp } from "@/utils";
-import { PromotionalOfferType, TAttendee, TLead } from "@/types";
+import { PromotionalOfferType, TAttendee, TAllLeads } from "@/types";
 import { useForm } from "react-hook-form";
 import { useCreateLeads } from "@/hooks";
 export function OfferCard({
@@ -241,7 +241,7 @@ function ActionWidget({
     setShow((prev) => !prev);
   }
 
-  const getLeadAttendee = (attendee?: TAttendee): Partial<TLead> => {
+  const getLeadAttendee = (attendee?: TAttendee): Partial<TAllLeads> => {
     return {
       firstName: attendee?.firstName,
       lastName: attendee?.lastName,
@@ -268,18 +268,20 @@ function ActionWidget({
   async function onSubmit(values: any) {
     const leadAttendee = getLeadAttendee(attendee);
 
-    const payload: Partial<TLead> = {
+    const payload: Partial<TAllLeads> = {
       ...leadAttendee,
       eventPartnerAlias: offer?.partnerId,
       stampCard: true,
       firstContactChannel: "Offer",
-      interests: [
-        {
-          interestType: "Offer",
-          title: offer?.serviceTitle,
-          note: values?.note,
-        },
-      ],
+      interests: {
+        interestType: "Offer",
+        attendeeAlias: attendee?.attendeeAlias,
+        attendeeId: attendee?.id,
+        eventAlias: attendee?.eventAlias,
+        eventPartnerAlias: offer?.partnerId,
+        title: offer?.serviceTitle,
+        note: values?.note,
+      },
     };
 
     await createLeads({ payload });

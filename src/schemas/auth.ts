@@ -21,7 +21,8 @@ export const onboardingSchema = z.object({
   }),
   city: z.string().min(1, { message: "City is required" }),
   country: z.string().min(1, { message: "Country is required" }),
-  referralCode: z.string()
+  referralCode: z.string(),
+  referredBy: z.any()
 });
 
 export const organizationSchema = z.object({

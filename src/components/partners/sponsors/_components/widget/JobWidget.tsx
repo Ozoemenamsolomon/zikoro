@@ -6,7 +6,7 @@ import { Bag } from "styled-icons/ionicons-solid";
 import {LoaderAlt} from "@styled-icons/boxicons-regular/LoaderAlt"
 import {  User } from "styled-icons/boxicons-regular";
 import { BoxSeam } from "styled-icons/bootstrap";
-import { PartnerJobType, TAttendee, TLead } from "@/types";
+import { PartnerJobType, TAttendee, TAllLeads } from "@/types";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 import { useMemo, useState } from "react";
 import { COUNTRIES_CURRENCY, sendMail, whatsapp } from "@/utils";
@@ -253,7 +253,7 @@ function ActionWidget({
     setShow((prev) => !prev);
   }
 
-  const getLeadAttendee = (attendee?: TAttendee): Partial<TLead> => {
+  const getLeadAttendee = (attendee?: TAttendee): Partial<TAllLeads> => {
     return {
       firstName: attendee?.firstName,
       lastName: attendee?.lastName,
@@ -280,19 +280,23 @@ function ActionWidget({
   async function onSubmit(values: any) {
     const leadAttendee = getLeadAttendee(attendee);
 
-    const payload: Partial<TLead> = {
+    const payload: Partial<TAllLeads> = {
       ...leadAttendee,
       eventPartnerAlias: job?.partnerId,
       stampCard: true,
       jobTitle: job?.jobTitle,
       firstContactChannel: "Job",
-      interests: [
+      interests: 
         {
           interestType: "Job",
+          attendeeAlias: attendee?.attendeeAlias,
+          attendeeId: attendee?.id,
+          eventAlias: attendee?.eventAlias,
+          eventPartnerAlias: job?.partnerId,
           title: job?.jobTitle,
           note: values?.note,
         },
-      ],
+      
     };
 
     await createLeads({ payload });

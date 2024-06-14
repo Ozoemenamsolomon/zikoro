@@ -211,11 +211,9 @@ export function useRegistration() {
       if (data) {
         //  saveCookie("user", data);
         toast.success("Registration  Successful");
-        router.push(`/verify-email?message=Verify your Email&content= Thank you for signing up! An email has been sent to your registered
-        email address. Please check your inbox and follow the instructions to
-        verify your account.&email=${values.email}&redirect=${
-          process.env.NEXT_PUBLIC_SITE_URL
-        }/auth/callback/${values?.email}/${new Date().toISOString()}`);
+        router.push(
+          `/verify-email?message=Verify your Account&content= Thank you for signing up! A verification code has been sent to your registered email address. Please check your inbox and enter the code to verify your account.&email=${values.email}`
+        );
       }
     } catch (error) {
       setLoading(false);
@@ -280,7 +278,9 @@ export function useGetAuthUser() {
  await supabase.auth.resetPasswordForEmail('hello@example.com', {
   redirectTo: 'http://example.com/account/update-password',
 })
-
+&redirect=${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback/${
+            values?.email
+          }/${new Date().toISOString()}
 
  */
 
@@ -353,14 +353,11 @@ export function useUpdatePassword() {
 export function useResendLink() {
   const [loading, setLoading] = useState(false);
 
-  async function resendLink(email: string, redirect: string) {
+  async function resendLink(email: string) {
     try {
       setLoading(true);
       const { data, error } = await supabase.auth.signInWithOtp({
         email,
-        options: {
-          emailRedirectTo: redirect,
-        },
       });
     } catch (error) {
     } finally {
@@ -371,5 +368,40 @@ export function useResendLink() {
   return {
     resendLink,
     loading,
+  };
+}
+
+export function useVerifyCode() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function verifyCode(email: string, token: string) {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.auth.verifyOtp({
+        email,
+        token,
+        type: "email",
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      router.push(
+        `${
+          window.location.origin
+        }/onboarding?email=${email}&createdAt=${new Date().toISOString()}`
+      );
+    } catch (error: any) {
+      toast.error(error?.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return {
+    loading,
+    verifyCode,
   };
 }
