@@ -13,6 +13,7 @@ import useEventStore from "@/store/globalEventStore";
 import { useGetAttendees } from "@/hooks";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -30,6 +31,9 @@ import { TUser } from "@/types";
 function ViewAttendeesSection({
   attendees,
   user,
+  partnerId,
+  getLeads,
+  leads,
 }: {
   user: TUser;
   attendees: TAttendee[];
@@ -37,15 +41,17 @@ function ViewAttendeesSection({
   toggleValue: (value: TAttendee | TAttendee[]) => void;
   attendeesTags?: TAttendeeTags[];
   favourites?: TFavouriteContact;
+  partnerId: string;
+  getLeads: () => Promise<void>;
+  leads: ILead[];
 }) {
-  const { mutateData, isLoading } =
-    useMutateData<
-      Omit<TAttendee, "checkin" | "email" | "eventRegistrationRef">
-    >("/leads");
+  const { mutateData, isLoading } = useMutateData<ILead>("/leads");
 
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee | null>(
     null
   );
+
+  const clsBtnRef = useRef<HTMLButtonElement>(null);
 
   const {
     searchTerm,
@@ -101,7 +107,11 @@ function ViewAttendeesSection({
       <div className="space-y-4">
         <div className="space-y-4 max-h-32 overflow-auto">
           {searchedAttendees.every(
-            ({ attendeeAlias }) => attendeeAlias === searchTerm
+            ({ attendeeAlias }) =>
+              attendeeAlias === searchTerm &&
+              !leads.some(
+                ({ attendeeAlias: leadAlias }) => attendeeAlias === leadAlias
+              )
           ) &&
             searchedAttendees.map((attendee) => (
               <div className="flex items-center space-x-2">
@@ -127,44 +137,53 @@ function ViewAttendeesSection({
       </div>
       <Button
         className="text-white bg-basePrimary h-10 text-sm rounded-3xl"
-        onClick={() =>
+        onClick={async () => {
           selectedAttendee &&
-          mutateData({
-            payload: {
-              id: selectedAttendee.id || 0,
-              createdAt: new Date(),
-              firstName: selectedAttendee.firstName,
-              lastName: selectedAttendee.lastName,
-              attendeeEmail: selectedAttendee.userEmail,
-              jobTitle: selectedAttendee.jobTitle,
-              organization: selectedAttendee.organization,
-              city: selectedAttendee.city,
-              country: selectedAttendee.country,
-              phoneNumber: selectedAttendee.phoneNumber,
-              whatsappNumber: selectedAttendee.whatsappNumber,
-              profilePicture: selectedAttendee.profilePicture,
-              bio: selectedAttendee.bio,
-              x: selectedAttendee.x,
-              linkedin: selectedAttendee.linkedin,
-              instagram: selectedAttendee.instagram,
-              facebook: selectedAttendee.facebook,
-              ticketType: selectedAttendee.ticketType,
-              attendeeType: selectedAttendee.attendeeType,
-              attendeeAlias: selectedAttendee.attendeeAlias,
-              attendeeId: selectedAttendee.id,
-              websiteUrl: selectedAttendee.websiteUrl,
-              eventAlias: selectedAttendee.eventAlias,
-              firstContactChannel: "booth staff",
-              boothStaffEmail: user.email,
-              boothStaffId: user.id,
-              stampCard: true,
-            },
-          })
-        }
+            (await mutateData({
+              payload: {
+                createdAt: new Date(),
+                firstName: selectedAttendee.firstName,
+                lastName: selectedAttendee.lastName,
+                attendeeEmail: selectedAttendee.userEmail,
+                jobTitle: selectedAttendee.jobTitle,
+                organization: selectedAttendee.organization,
+                city: selectedAttendee.city,
+                country: selectedAttendee.country,
+                phoneNumber: selectedAttendee.phoneNumber,
+                whatsappNumber: selectedAttendee.whatsappNumber,
+                profilePicture: selectedAttendee.profilePicture,
+                bio: selectedAttendee.bio,
+                x: selectedAttendee.x,
+                linkedin: selectedAttendee.linkedin,
+                instagram: selectedAttendee.instagram,
+                facebook: selectedAttendee.facebook,
+                ticketType: selectedAttendee.ticketType,
+                attendeeType: selectedAttendee.attendeeType,
+                attendeeAlias: selectedAttendee.attendeeAlias,
+                attendeeId: selectedAttendee.id,
+                websiteUrl: selectedAttendee.websiteUrl,
+                eventAlias: selectedAttendee.eventAlias,
+                firstContactChannel: "booth staff",
+                boothStaffEmail: user.userEmail,
+                boothStaffId: user.id,
+                stampCard: true,
+                eventPartnerAlias: partnerId,
+                leadType: "unknown",
+              },
+            }));
+          await getLeads();
+          clsBtnRef.current && clsBtnRef.current.click();
+        }}
         disabled={!selectedAttendee}
       >
         Add Lead
       </Button>
+      <DialogClose asChild>
+        <button className="hidden" ref={clsBtnRef}>
+          {" "}
+          close
+        </button>
+      </DialogClose>
     </>
   );
 }
@@ -259,12 +278,14 @@ export default function FirstColumn({
   getLeads,
   onSelectLead,
   selectedLead,
+  partnerId,
 }: {
   leads: ILead[];
   isLoading: boolean;
   getLeads: () => Promise<void>;
   onSelectLead: (lead: ILead) => void;
   selectedLead: ILead;
+  partnerId: string;
 }) {
   const { event } = useEventStore();
   const {
@@ -360,7 +381,13 @@ export default function FirstColumn({
                 <span className="capitalize">Select Attendees</span>
               </DialogTitle>
             </DialogHeader>
-            <ViewAttendeesSection user={user} attendees={attendees} />
+            <ViewAttendeesSection
+              user={user}
+              attendees={attendees}
+              partnerId={partnerId}
+              getLeads={getLeads}
+              leads={leads}
+            />
           </DialogContent>
         </Dialog>
       </div>
