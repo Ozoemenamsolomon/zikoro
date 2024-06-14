@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components";
-import { useResendLink } from "@/hooks";
+import { useResendLink, useVerifyCode } from "@/hooks";
 import { cn } from "@/lib";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -11,11 +11,11 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 export default function Page() {
   const [secondsLeft, setSecondsLeft] = useState(60);
   const { loading, resendLink } = useResendLink();
+  const { loading: isVerifying, verifyCode } = useVerifyCode()
   const search = useSearchParams();
   const [code, setCode] = useState("")
   const message = search.get("message");
   const content = search.get("content");
-  const link = search.get("redirect");
   const email = search.get("email");
 
   useEffect(() => {
@@ -32,6 +32,9 @@ export default function Page() {
     return () => clearInterval(countdownInterval);
   }, []);
 
+  async function verify() {
+    await verifyCode(email!, code)
+  }
   return (
     <div className="w-full h-full inset-0 fixed">
       <div className="w-fit h-fit m-auto inset-0 absolute flex flex-col gap-y-2 items-center justify-center px-4">
@@ -42,12 +45,12 @@ export default function Page() {
           width={100}
           height={100}
         />
-        <h1 className="font-semibold text-xl w-full text-center sm:text-2xl">
+        <h1 className="font-semibold text-base w-full text-center sm:text-xl">
           {message ?? ""}
         </h1>
         <p className="text-center w-full max-w-xl">{content ?? ""}</p>
-        <div className="w-full max-w-xl flex items-center justify-center gap-y-3">
-        <div className="w-full flex items-center h-24 justify-center">
+        <div className="w-full max-w-xl flex flex-col items-center justify-center gap-y-3">
+          <div className="w-full flex items-center h-24 justify-center">
             <VerificationInput
               classNames={{
                 character: "character",
@@ -55,42 +58,43 @@ export default function Page() {
               }}
               placeholder=" "
               length={6}
+            
               inputProps={{
                 autoComplete: "one-time-code", // for IOS
               }}
-              onChange={(value) => {
+              onChange={(value: string) => {
                 setCode(value);
               }}
             />
           </div>
           <Button
-            disabled
+            disabled={isVerifying || code === ""}
             type="submit"
-           
-            className="bg-donkeysign gap-x-2 hover:bg-/80 text-gray-50 mt-3  font-medium flex items-center justify-center w-full  h-12 2xl:h-14 rounded-lg"
+            onClick={verify}
+            className="bg-basePrimary gap-x-2 text-gray-50 mt-3  font-medium flex items-center justify-center w-full  h-12 2xl:h-14 rounded-lg"
           >
-            {"" && <LoaderAlt size={22} className="animate-spin" />}
+            {isVerifying && <LoaderAlt size={22} className="animate-spin" />}
             <p>Verify</p>
           </Button>
         </div>
 
         {secondsLeft <= 0 && (
           <div className={cn("block w-full space-y-3")}>
-            <div className="flex items-center gap-x-2">
+            <div className="flex w-full justify-center items-center gap-x-2">
               <p>Didn't get OTP code?</p>
               <Button
-              disabled={loading}
-            //  onClick={() => resendLink(email, link)}
-              className={cn("hidden text-basePrimary hover:underline w-fit mx-auto font-semibold", secondsLeft <= 0 && "flex")}
-            >
-              Resend
-            </Button>
+                disabled={loading}
+                onClick={() => resendLink(email!)}
+                className={cn("hidden text-basePrimary px-2 hover:underline w-fit font-semibold", secondsLeft <= 0 && "flex")}
+              >
+                Resend
+              </Button>
             </div>
-            <p className="font-semibold text-center">{`0:${
-              secondsLeft >= 10 ? "" : "0"
-            }${secondsLeft}`}</p>
+
           </div>
         )}
+        <p className="font-semibold w-full text-center">{`0:${secondsLeft >= 10 ? "" : "0"
+          }${secondsLeft}`}</p>
       </div>
     </div>
   );
