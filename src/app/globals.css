@@ -530,3 +530,7 @@ input[type="number"] {
   position: absolute;
   right: 15px;
 }
+
+.character {
+  @apply border  flex items-center justify-center rounded-lg shadow-md border-gray-300 bg-transparent text-xl w-12 h-16
+}

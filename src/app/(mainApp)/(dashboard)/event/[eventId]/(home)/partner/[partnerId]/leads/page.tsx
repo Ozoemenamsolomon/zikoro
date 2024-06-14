@@ -2,25 +2,32 @@
 import { useGetData } from "@/hooks/services/request";
 import React, { useLayoutEffect, useRef, useState } from "react";
 import FirstColumn from "./_columns/FirstColumn";
-import { ILead } from "@/types/leads";
+import { ILead, TLeadsInterest } from "@/types/leads";
 import useUserStore from "@/store/globalUserStore";
 import { useGetContactRequests } from "@/hooks/services/contacts";
 import SecondColumn from "./_columns/SecondColumn";
 import ThirdColumn from "./_columns/ThirdColumn";
+import useEventStore from "@/store/globalEventStore";
 
-const page = () => {
+const page = ({
+  params: { partnerId, eventId },
+}: {
+  params: { partnerId: string; eventId: string };
+}) => {
   const { user, setUser } = useUserStore();
   const {
     userContactRequests,
     isLoading: contactRequestIsLoading,
     getContactRequests,
   } = useGetContactRequests({ userEmail: user.userEmail });
-
+  const { event } = useEventStore();
   const {
     data: leads,
     isLoading,
     getData: getLeads,
-  } = useGetData<ILead[]>("/leads");
+  } = useGetData<ILead[]>(
+    `/leads?eventAlias=${event.eventAlias}&partnerId=${partnerId}`
+  );
   console.log(leads);
   const [selectedLead, onSelectLead] = useState<ILead | null>();
 
@@ -50,6 +57,7 @@ const page = () => {
           getLeads={getLeads}
           onSelectLead={onSelectLead}
           selectedLead={selectedLead}
+          partnerId={partnerId}
         />
       </section>
       <div className="hidden md:contents">
@@ -159,7 +167,7 @@ const page = () => {
           </div>
         )}
         <section className="flex flex-col md:col-span-3 h-fit">
-          <ThirdColumn />
+          <ThirdColumn leads={leads ?? []} />
         </section>
       </div>
     </section>

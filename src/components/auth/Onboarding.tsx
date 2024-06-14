@@ -17,13 +17,13 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useMemo } from "react";
 import { COUNTRY_CODE } from "@/utils";
-import {  useOnboarding } from "@/hooks";
+import { useOnboarding } from "@/hooks";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import {useSearchParams} from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { generateAlphanumericHash } from "@/utils/helpers";
 export default function Onboarding() {
-    const search = useSearchParams()
+  const search = useSearchParams()
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
 
   const { loading, registration } = useOnboarding();
@@ -31,7 +31,7 @@ export default function Onboarding() {
   const form = useForm<z.infer<typeof onboardingSchema>>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
-      referralCode: generateAlphanumericHash(10)
+      referralCode: generateAlphanumericHash(10).toUpperCase()
     }
   });
 
@@ -49,7 +49,7 @@ export default function Onboarding() {
 
     const payload: z.infer<typeof onboardingSchema> = {
       ...values,
-     
+
       phoneNumber: phoneCountryCode + values.phoneNumber,
     };
     await registration(payload, query, createdAt);
@@ -59,9 +59,8 @@ export default function Onboarding() {
   return (
     <>
       <div className="w-full flex flex-col gap-y-1 mb-6 items-start justify-start">
-        <h2 className="font-medium w-full text-center text-base sm:text-lg ">{`Welcome ${
-          query ?? ""
-        } 👋`}</h2>
+        <h2 className="font-medium w-full text-center text-base sm:text-lg ">{`Welcome ${query ?? ""
+          } 👋`}</h2>
       </div>
 
       <Form {...form}>
@@ -136,7 +135,7 @@ export default function Onboarding() {
               control={form.control}
               name="phoneNumber"
               render={({ field }) => (
-                <FormItem className="relative h-fit">
+                <FormItem className="w-full relative h-fit">
                   <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
                     Phone number
                   </FormLabel>
@@ -159,8 +158,22 @@ export default function Onboarding() {
               )}
             />
 
-       
+
           </div>
+          <FormField
+            control={form.control}
+            name="referredBy"
+            render={({ field }) => (
+              <InputOffsetLabel label="Referral Code">
+                <Input
+                  type="text"
+                  placeholder="Referral Code (Optional)"
+                  {...field}
+                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                />
+              </InputOffsetLabel>
+            )}
+          />
 
           <div className="flex items-center flex-wrap gap-x-2 text-[11px] sm:text-[13px] leading-5 w-full">
             {` By clicking on 'create account', you agree to`}{" "}

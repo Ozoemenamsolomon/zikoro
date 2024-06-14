@@ -33,7 +33,10 @@ export default function AttendeeCard(props) {
                   props.onOpenattendeeForm();
                 }}
                 className={`text-gray-700 ${
-                  props.isEventOwner || props.attendeeIsUser ? "" : "hidden"
+                  (props.isEventOwner || props.attendeeIsUser) &&
+                  !props.hideEdit
+                    ? ""
+                    : "hidden"
                 }`}
               >
                 <svg

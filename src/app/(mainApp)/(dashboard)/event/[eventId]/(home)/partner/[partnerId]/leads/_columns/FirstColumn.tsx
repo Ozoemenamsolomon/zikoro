@@ -3,16 +3,22 @@ import Attendee from "@/components/Attendee";
 import Filter from "@/components/Filter";
 import { Input } from "@/components/ui/input";
 import { useFilter } from "@/hooks/common/useFilter";
-import { ILead } from "@/types/leads";
+import { ILead, TLeadsInterest } from "@/types/leads";
 import { calculateAndSetMaxHeight, extractUniqueTypes } from "@/utils/helpers";
 import { useEffect, useRef, useState } from "react";
 import { TFilter } from "@/types/filter";
-import { eachDayOfInterval, format, isSameDay } from "date-fns";
+import {
+  eachDayOfInterval,
+  format,
+  isSameDay,
+  setDefaultOptions,
+} from "date-fns";
 import useUserStore from "@/store/globalUserStore";
 import useEventStore from "@/store/globalEventStore";
 import { useGetAttendees } from "@/hooks";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -24,25 +30,33 @@ import { TAttendeeTags } from "@/types/tags";
 import { TFavouriteContact } from "@/types/favourites";
 import useSearch from "@/hooks/common/useSearch";
 import { Button } from "@/components/ui/button";
-import { useMutateData } from "@/hooks/services/request";
+import { useGetData, useMutateData } from "@/hooks/services/request";
+import { TUser } from "@/types";
 
 function ViewAttendeesSection({
   attendees,
+  user,
+  partnerId,
+  getLeads,
+  leads,
 }: {
+  user: TUser;
   attendees: TAttendee[];
   selectedAttendees: TAttendee[];
   toggleValue: (value: TAttendee | TAttendee[]) => void;
   attendeesTags?: TAttendeeTags[];
   favourites?: TFavouriteContact;
+  partnerId: string;
+  getLeads: () => Promise<void>;
+  leads: ILead[];
 }) {
-  const { mutateData, isLoading } =
-    useMutateData<
-      Omit<TAttendee, "checkin" | "email" | "eventRegistrationRef">
-    >("/leads");
+  const { mutateData, isLoading } = useMutateData<ILead>("/leads");
 
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee | null>(
     null
   );
+
+  const clsBtnRef = useRef<HTMLButtonElement>(null);
 
   const {
     searchTerm,
@@ -97,65 +111,84 @@ function ViewAttendeesSection({
       </div>
       <div className="space-y-4">
         <div className="space-y-4 max-h-32 overflow-auto">
-          {searchedAttendees.map((attendee) => (
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                className="data-[state=checked]:bg-basePrimary"
-                id={attendee.attendeeAlias}
-                onCheckedChange={() =>
-                  selectedAttendee === attendee
-                    ? setSelectedAttendee(null)
-                    : setSelectedAttendee(attendee)
-                }
-                checked={selectedAttendee === attendee}
-              />
-              <label
-                htmlFor={attendee.attendeeAlias}
-                className="capitalize text-gray-500 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                {attendee.firstName + " " + attendee.lastName}
-              </label>
-            </div>
-          ))}
+          {searchedAttendees.every(
+            ({ attendeeAlias }) =>
+              attendeeAlias === searchTerm &&
+              !leads.some(
+                ({ attendeeAlias: leadAlias }) => attendeeAlias === leadAlias
+              )
+          ) &&
+            searchedAttendees.map((attendee) => (
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  className="data-[state=checked]:bg-basePrimary"
+                  id={attendee.attendeeAlias}
+                  onCheckedChange={() =>
+                    selectedAttendee === attendee
+                      ? setSelectedAttendee(null)
+                      : setSelectedAttendee(attendee)
+                  }
+                  checked={selectedAttendee === attendee}
+                />
+                <label
+                  htmlFor={attendee.attendeeAlias}
+                  className="capitalize text-gray-500 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {attendee.firstName + " " + attendee.lastName}
+                </label>
+              </div>
+            ))}
         </div>
       </div>
       <Button
         className="text-white bg-basePrimary h-10 text-sm rounded-3xl"
-        onClick={() =>
+        onClick={async () => {
           selectedAttendee &&
-          mutateData({
-            payload: {
-              id: selectedAttendee.id || 0,
-              eventId: selectedAttendee.eventId,
-              createdAt: new Date(),
-              firstName: selectedAttendee.firstName,
-              lastName: selectedAttendee.lastName,
-              attendeeEmail: selectedAttendee.userEmail,
-              jobTitle: selectedAttendee.jobTitle,
-              organization: selectedAttendee.organization,
-              city: selectedAttendee.city,
-              country: selectedAttendee.country,
-              phoneNumber: selectedAttendee.phoneNumber,
-              whatsappNumber: selectedAttendee.whatsappNumber,
-              profilePicture: selectedAttendee.profilePicture,
-              bio: selectedAttendee.bio,
-              x: selectedAttendee.x,
-              linkedin: selectedAttendee.linkedin,
-              instagram: selectedAttendee.instagram,
-              facebook: selectedAttendee.facebook,
-              ticketType: selectedAttendee.ticketType,
-              attendeeType: selectedAttendee.attendeeType,
-              attendeeAlias: selectedAttendee.attendeeAlias,
-              attendeeId: selectedAttendee.id,
-              websiteUrl: selectedAttendee.websiteUrl,
-              eventAlias: selectedAttendee.eventAlias,
-            },
-          })
-        }
+            (await mutateData({
+              payload: {
+                createdAt: new Date(),
+                firstName: selectedAttendee.firstName,
+                lastName: selectedAttendee.lastName,
+                attendeeEmail: selectedAttendee.userEmail,
+                jobTitle: selectedAttendee.jobTitle,
+                organization: selectedAttendee.organization,
+                city: selectedAttendee.city,
+                country: selectedAttendee.country,
+                phoneNumber: selectedAttendee.phoneNumber,
+                whatsappNumber: selectedAttendee.whatsappNumber,
+                profilePicture: selectedAttendee.profilePicture,
+                bio: selectedAttendee.bio,
+                x: selectedAttendee.x,
+                linkedin: selectedAttendee.linkedin,
+                instagram: selectedAttendee.instagram,
+                facebook: selectedAttendee.facebook,
+                ticketType: selectedAttendee.ticketType,
+                attendeeType: selectedAttendee.attendeeType,
+                attendeeAlias: selectedAttendee.attendeeAlias,
+                attendeeId: selectedAttendee.id,
+                websiteUrl: selectedAttendee.websiteUrl,
+                eventAlias: selectedAttendee.eventAlias,
+                firstContactChannel: "booth staff",
+                boothStaffEmail: user.userEmail,
+                boothStaffId: user.id,
+                stampCard: true,
+                eventPartnerAlias: partnerId,
+                leadType: "unknown",
+              },
+            }));
+          await getLeads();
+          clsBtnRef.current && clsBtnRef.current.click();
+        }}
         disabled={!selectedAttendee}
       >
         Add Lead
       </Button>
+      <DialogClose asChild>
+        <button className="hidden" ref={clsBtnRef}>
+          {" "}
+          close
+        </button>
+      </DialogClose>
     </>
   );
 }
@@ -164,8 +197,8 @@ type TSortorder = "asc" | "desc" | "none";
 
 const leadFilter: TFilter<ILead>[] = [
   {
-    label: "ticket type",
-    accessor: "ticketType",
+    label: "lead type",
+    accessor: "leadType",
     icon: (
       <svg
         width="16"
@@ -185,62 +218,49 @@ const leadFilter: TFilter<ILead>[] = [
     type: "multiple",
   },
   {
-    label: "attendee",
-    accessor: "attendeeType",
+    label: "lead channel",
+    accessor: "firstContactChannel",
     icon: (
       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="14"
-        height="13"
-        viewBox="0 0 14 13"
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
         fill="none"
+        xmlns="http://www.w3.org/2000/svg"
       >
         <path
-          d="M13.3245 12.3128C12.3363 10.6053 10.7851 9.40719 8.98259 8.89907C9.85894 8.4536 10.5597 7.72596 10.9719 6.83349C11.3841 5.94102 11.4837 4.93573 11.2547 3.97972C11.0257 3.02371 10.4813 2.1727 9.70945 1.56391C8.93757 0.955113 7.98316 0.624023 7.00009 0.624023C6.01703 0.624023 5.06261 0.955113 4.29074 1.56391C3.51887 2.1727 2.97453 3.02371 2.74549 3.97972C2.51645 4.93573 2.61607 5.94102 3.02828 6.83349C3.44048 7.72596 4.14125 8.4536 5.01759 8.89907C3.21509 9.40656 1.66384 10.6047 0.675719 12.3128C0.648586 12.3555 0.630368 12.4032 0.622159 12.4531C0.613951 12.503 0.615922 12.5541 0.627955 12.6032C0.639988 12.6523 0.661832 12.6985 0.692176 12.739C0.722519 12.7794 0.760734 12.8133 0.804521 12.8387C0.848308 12.864 0.896762 12.8802 0.946969 12.8863C0.997176 12.8924 1.0481 12.8882 1.09667 12.8741C1.14524 12.8601 1.19046 12.8363 1.22961 12.8043C1.26876 12.7722 1.30103 12.7326 1.32447 12.6878C2.52509 10.6134 4.64634 9.37531 7.00009 9.37531C9.35384 9.37531 11.4751 10.6134 12.6757 12.6878C12.6992 12.7326 12.7314 12.7722 12.7706 12.8043C12.8097 12.8363 12.8549 12.8601 12.9035 12.8741C12.9521 12.8882 13.003 12.8924 13.0532 12.8863C13.1034 12.8802 13.1519 12.864 13.1957 12.8387C13.2395 12.8133 13.2777 12.7794 13.308 12.739C13.3384 12.6985 13.3602 12.6523 13.3722 12.6032C13.3843 12.5541 13.3862 12.503 13.378 12.4531C13.3698 12.4032 13.3516 12.3555 13.3245 12.3128ZM3.37509 5.00031C3.37509 4.28336 3.5877 3.5825 3.98602 2.98637C4.38434 2.39024 4.95048 1.92562 5.61287 1.65125C6.27525 1.37688 7.00411 1.3051 7.7073 1.44497C8.41048 1.58484 9.05639 1.93009 9.56336 2.43705C10.0703 2.94402 10.4156 3.58993 10.5554 4.29311C10.6953 4.99629 10.6235 5.72516 10.3492 6.38754C10.0748 7.04992 9.61016 7.61607 9.01404 8.01439C8.41791 8.41271 7.71705 8.62531 7.00009 8.62531C6.03904 8.62416 5.11768 8.24187 4.43811 7.5623C3.75854 6.88273 3.37625 5.96137 3.37509 5.00031Z"
+          d="M14.5 7C14.6326 7 14.7598 6.94732 14.8536 6.85355C14.9473 6.75979 15 6.63261 15 6.5V4C15 3.73478 14.8946 3.48043 14.7071 3.29289C14.5196 3.10536 14.2652 3 14 3H2C1.73478 3 1.48043 3.10536 1.29289 3.29289C1.10536 3.48043 1 3.73478 1 4V6.5C1 6.63261 1.05268 6.75979 1.14645 6.85355C1.24021 6.94732 1.36739 7 1.5 7C1.76522 7 2.01957 7.10536 2.20711 7.29289C2.39464 7.48043 2.5 7.73478 2.5 8C2.5 8.26522 2.39464 8.51957 2.20711 8.70711C2.01957 8.89464 1.76522 9 1.5 9C1.36739 9 1.24021 9.05268 1.14645 9.14645C1.05268 9.24021 1 9.36739 1 9.5V12C1 12.2652 1.10536 12.5196 1.29289 12.7071C1.48043 12.8946 1.73478 13 2 13H14C14.2652 13 14.5196 12.8946 14.7071 12.7071C14.8946 12.5196 15 12.2652 15 12V9.5C15 9.36739 14.9473 9.24021 14.8536 9.14645C14.7598 9.05268 14.6326 9 14.5 9C14.2348 9 13.9804 8.89464 13.7929 8.70711C13.6054 8.51957 13.5 8.26522 13.5 8C13.5 7.73478 13.6054 7.48043 13.7929 7.29289C13.9804 7.10536 14.2348 7 14.5 7ZM14 9.935V12H10.5V10.5H9.5V12H2V9.935C2.428 9.82314 2.80683 9.57253 3.07721 9.2224C3.34759 8.87227 3.49426 8.44238 3.49426 8C3.49426 7.55762 3.34759 7.12773 3.07721 6.7776C2.80683 6.42747 2.428 6.17686 2 6.065V4H9.5V5.5H10.5V4H14V6.065C13.572 6.17686 13.1932 6.42747 12.9228 6.7776C12.6524 7.12773 12.5057 7.55762 12.5057 8C12.5057 8.44238 12.6524 8.87227 12.9228 9.2224C13.1932 9.57253 13.572 9.82314 14 9.935Z"
           fill="#CFCFCF"
         />
+        <path d="M9.5 6.5H10.5V9.5H9.5V6.5Z" fill="#CFCFCF" />
       </svg>
     ),
     optionsFromData: true,
     type: "multiple",
   },
   {
-    label: "checked-in",
-    accessor: "checkin",
+    label: "Interest",
+    accessor: "interests",
     icon: (
       <svg
-        xmlns="http://www.w3.org/2000/svg"
         width="16"
         height="16"
         viewBox="0 0 16 16"
         fill="none"
+        xmlns="http://www.w3.org/2000/svg"
       >
         <path
-          d="M5.33333 8.32312L8.162 11.1518L13.818 5.49512M2 8.32312L4.82867 11.1518M10.4853 5.49512L8.33333 7.66645"
-          stroke="#CFCFCF"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          d="M14.5 7C14.6326 7 14.7598 6.94732 14.8536 6.85355C14.9473 6.75979 15 6.63261 15 6.5V4C15 3.73478 14.8946 3.48043 14.7071 3.29289C14.5196 3.10536 14.2652 3 14 3H2C1.73478 3 1.48043 3.10536 1.29289 3.29289C1.10536 3.48043 1 3.73478 1 4V6.5C1 6.63261 1.05268 6.75979 1.14645 6.85355C1.24021 6.94732 1.36739 7 1.5 7C1.76522 7 2.01957 7.10536 2.20711 7.29289C2.39464 7.48043 2.5 7.73478 2.5 8C2.5 8.26522 2.39464 8.51957 2.20711 8.70711C2.01957 8.89464 1.76522 9 1.5 9C1.36739 9 1.24021 9.05268 1.14645 9.14645C1.05268 9.24021 1 9.36739 1 9.5V12C1 12.2652 1.10536 12.5196 1.29289 12.7071C1.48043 12.8946 1.73478 13 2 13H14C14.2652 13 14.5196 12.8946 14.7071 12.7071C14.8946 12.5196 15 12.2652 15 12V9.5C15 9.36739 14.9473 9.24021 14.8536 9.14645C14.7598 9.05268 14.6326 9 14.5 9C14.2348 9 13.9804 8.89464 13.7929 8.70711C13.6054 8.51957 13.5 8.26522 13.5 8C13.5 7.73478 13.6054 7.48043 13.7929 7.29289C13.9804 7.10536 14.2348 7 14.5 7ZM14 9.935V12H10.5V10.5H9.5V12H2V9.935C2.428 9.82314 2.80683 9.57253 3.07721 9.2224C3.34759 8.87227 3.49426 8.44238 3.49426 8C3.49426 7.55762 3.34759 7.12773 3.07721 6.7776C2.80683 6.42747 2.428 6.17686 2 6.065V4H9.5V5.5H10.5V4H14V6.065C13.572 6.17686 13.1932 6.42747 12.9228 6.7776C12.6524 7.12773 12.5057 7.55762 12.5057 8C12.5057 8.44238 12.6524 8.87227 12.9228 9.2224C13.1932 9.57253 13.572 9.82314 14 9.935Z"
+          fill="#CFCFCF"
         />
+        <path d="M9.5 6.5H10.5V9.5H9.5V6.5Z" fill="#CFCFCF" />
       </svg>
     ),
-    options: [
-      { label: "07/01/2024", value: "01/07/2024" },
-      { label: "08/01/2024", value: "01/08/2024" },
-      { label: "09/01/2024", value: "01/09/2024" },
-    ],
-    onFilter: (attendee: ILead, compareDate: Date[]) =>
-      !!attendee.checkin &&
-      attendee.checkin.some(({ date }) => {
-        console.log(
-          date,
-          compareDate[0],
-          isSameDay(compareDate[0], date),
-          typeof compareDate
-        );
-        return isSameDay(compareDate[0], date);
-      }),
+    optionsFromData: true,
     type: "multiple",
+    // onFilter: (lead: ILead, interest: string[]) => {
+
+    // }
   },
 ];
 
@@ -250,14 +270,24 @@ export default function FirstColumn({
   getLeads,
   onSelectLead,
   selectedLead,
+  partnerId,
 }: {
   leads: ILead[];
   isLoading: boolean;
   getLeads: () => Promise<void>;
   onSelectLead: (lead: ILead) => void;
   selectedLead: ILead;
+  partnerId: string;
 }) {
   const { event } = useEventStore();
+  const {
+    data: leadsInterests,
+    isLoading: interestsIsLoading,
+    getData: getLeadsInterests,
+  } = useGetData<TLeadsInterest[]>(
+    `/leads/interests?eventPartnerAlias=${partnerId}`
+  );
+
   const {
     attendees,
     getAttendees,
@@ -267,6 +297,7 @@ export default function FirstColumn({
   });
   const { user } = useUserStore();
   const divRef = useRef<HTMLDivElement>(null);
+
   const {
     filteredData: mappedLeads,
     filters,
@@ -293,18 +324,18 @@ export default function FirstColumn({
       .forEach(({ accessor }) => {
         setOptions(accessor, extractUniqueTypes<ILead>(leads, accessor));
       });
+  }, [isLoading]);
 
+  useEffect(() => {
+    if (!leadsInterests) return;
     setOptions(
-      "checkin",
-      eachDayOfInterval({
-        start: event?.startDateTime,
-        end: event?.endDateTime,
-      }).map((date) => ({
-        label: format(date, "PPP"),
-        value: date,
+      "interests",
+      leadsInterests?.map(({ interestType }) => ({
+        label: interestType,
+        value: interestType,
       }))
     );
-  }, [isLoading]);
+  }, [interestsIsLoading]);
 
   const toggleSort = () => {
     let newOrder: TSortorder;
@@ -362,7 +393,13 @@ export default function FirstColumn({
                 <span className="capitalize">Select Attendees</span>
               </DialogTitle>
             </DialogHeader>
-            <ViewAttendeesSection attendees={attendees} />
+            <ViewAttendeesSection
+              user={user}
+              attendees={attendees}
+              partnerId={partnerId}
+              getLeads={getLeads}
+              leads={leads}
+            />
           </DialogContent>
         </Dialog>
       </div>

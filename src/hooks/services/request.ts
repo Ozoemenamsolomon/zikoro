@@ -13,7 +13,11 @@ type UseGetResult<TData> = {
 } & RequestStatus;
 
 type usePostResult<TData, TReturnData = any> = {
-  mutateData: ({ payload }: { payload: TData }) => Promise<TReturnData | undefined>;
+  mutateData: ({
+    payload,
+  }: {
+    payload: TData;
+  }) => Promise<TReturnData | undefined>;
 } & RequestStatus;
 
 export const useGetData = <TData>(endpoint: string): UseGetResult<TData> => {
@@ -58,27 +62,31 @@ export const useMutateData = <TData, TReturnData = any>(
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const mutateData = async ({ payload }: { payload: TData }) => {
+  const mutateData = async ({
+    payload,
+    loadingMessage,
+    confirmationMessage,
+  }: {
+    payload: TData;
+    loadingMessage?: string;
+    confirmationMessage?: string;
+  }) => {
     try {
       setLoading(true);
-      toast({ description: "performing action..." });
+      toast({ description: loadingMessage ?? "performing action..." });
 
       const { data, status } = await postRequest<TReturnData>({
         endpoint,
         payload,
       });
 
-      if (status !== 200) {
+      if (status !== 201) {
         throw data;
       }
 
-      if (!data.data) {
-        toast({
-          description: "this badge is not valid",
-          variant: "destructive",
-        });
-        setError(true);
-      }
+      toast({
+        description: confirmationMessage ?? "action performed successfully",
+      });
 
       return data.data;
     } catch (error) {

@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import useUserStore from "@/store/globalUserStore";
 import { useGetUserReferrals } from "@/hooks";
 import { format } from "date-fns";
@@ -19,7 +19,7 @@ import { Copy } from "styled-icons/boxicons-regular";
 
 const page = () => {
   const { user, setUser } = useUserStore();
-
+  const router = useRouter();
   const [copiedText, copyToClipboard] = useCopyToClipboard();
   const hasCopiedText = Boolean(copiedText);
 
