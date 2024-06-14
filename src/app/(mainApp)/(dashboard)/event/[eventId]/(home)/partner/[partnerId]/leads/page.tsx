@@ -2,7 +2,7 @@
 import { useGetData } from "@/hooks/services/request";
 import React, { useLayoutEffect, useRef, useState } from "react";
 import FirstColumn from "./_columns/FirstColumn";
-import { ILead } from "@/types/leads";
+import { ILead, TLeadsInterest } from "@/types/leads";
 import useUserStore from "@/store/globalUserStore";
 import { useGetContactRequests } from "@/hooks/services/contacts";
 import SecondColumn from "./_columns/SecondColumn";

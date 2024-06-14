@@ -12,7 +12,9 @@ export async function POST(req: NextRequest) {
         data,
         error: fetchError,
         status,
-      } = await supabase.from("Leads").select("*");
+      } = await supabase.from("LeadsInterests").select("*");
+
+      console.log(data);
 
       if (fetchError) {
         return NextResponse.json(
@@ -106,13 +108,15 @@ export async function GET(req: NextRequest) {
   if (req.method === "GET") {
     try {
       const { searchParams } = new URL(req.url);
-      const eventAlias = searchParams.get("eventAlias");
-      const partnerId = searchParams.get("partnerId");
+      const eventPartnerAlias = searchParams.get("eventPartnerAlias");
+      //   const attendeeId = searchParams.get("attendeeId");
+
       const { data, error, status } = await supabase
-        .from("Leads")
+        .from("LeadsInterests")
         .select("*")
-        .eq("eventAlias", eventAlias)
-        .eq("eventPartnerAlias", partnerId);
+        .eq("eventPartnerAlias", eventPartnerAlias);
+
+      console.log(data);
 
       if (error) throw error;
 
