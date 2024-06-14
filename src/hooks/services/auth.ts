@@ -211,11 +211,13 @@ export function useRegistration() {
       if (data) {
         //  saveCookie("user", data);
         toast.success("Registration  Successful");
-        router.push(`/verify-email?message=Verify your Email&content= Thank you for signing up! An email has been sent to your registered
-        email address. Please check your inbox and follow the instructions to
-        verify your account.&email=${values.email}&redirect=${
-          process.env.NEXT_PUBLIC_SITE_URL
-        }/auth/callback/${values?.email}/${new Date().toISOString()}`);
+        router.push(
+          `/verify-email?message=Verify your Account&content= Thank you for signing up! A verification code has been sent to your registered email address. Please check your inbox and enter the code to verify your account.&email=${
+            values.email
+          }&redirect=${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback/${
+            values?.email
+          }/${new Date().toISOString()}`
+        );
       }
     } catch (error) {
       setLoading(false);

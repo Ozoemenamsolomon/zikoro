@@ -57,10 +57,25 @@ export interface TLead {
   firstContactChannel: string;
   websiteUrl: string;
   eventAlias: string;
-  interests: { interestType: string; title: string; note: string }[];
   boothStaffEmail: string;
   stampCard: boolean;
   eventPartnerId: number;
   eventPartnerAlias: string;
+}
 
+export interface TLeadsInterest {
+  id?: number;
+  created_at?: string;
+  eventAlias?: string;
+  attendeeId?: number;
+  attendeeAlias?: string;
+  eventPartnerAlias?: string;
+  interestType: string;
+  title: string;
+  note: string;
+}
+
+
+export interface TAllLeads extends TLead  {
+  interests: TLeadsInterest;
 }
