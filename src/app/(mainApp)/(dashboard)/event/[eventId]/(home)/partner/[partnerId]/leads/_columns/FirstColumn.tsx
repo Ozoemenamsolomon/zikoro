@@ -284,7 +284,9 @@ export default function FirstColumn({
     data: leadsInterests,
     isLoading: interestsIsLoading,
     getData: getLeadsInterests,
-  } = useGetData<TLeadsInterest[]>(`/leads?eventPartnerAlias=${partnerId}`);
+  } = useGetData<TLeadsInterest[]>(
+    `/leads/interests?eventPartnerAlias=${partnerId}`
+  );
 
   const {
     attendees,
