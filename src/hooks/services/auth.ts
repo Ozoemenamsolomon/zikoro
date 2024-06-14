@@ -68,7 +68,7 @@ export function useOnboarding() {
         await getUser(email);
         setLoading(false);
         toast.success("Profile Updated Successfully");
-        router.push("/home");
+        router.push("/login");
       }
     } catch (error) {}
   }
