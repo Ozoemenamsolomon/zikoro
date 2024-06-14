@@ -112,7 +112,7 @@ export async function GET(req: NextRequest) {
       //   const attendeeId = searchParams.get("attendeeId");
 
       const { data, error, status } = await supabase
-        .from("LeadsInterests")
+        .from("leadsInterests")
         .select("*")
         .eq("eventPartnerAlias", eventPartnerAlias);
 
