@@ -178,7 +178,7 @@ export default function Footer() {
         </ul>
       </div>
 
-      <div className="mt-4 lg:mt-6 border-t-[1px] border-indigo-500 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end  px-5 lg:px-0">
+      <div className="mt-4 lg:mt-6 border-t-[1px] border-indigo-500 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end  px-2 lg:px-0 py-2">
         <div className="py-4 lg:py-14 px-5 lg:px-0 flex  justify-between items-center max-w-6xl mx-auto ">
           {/* left */}
           <p className="text-[13px] lg:text-base font-normal">
