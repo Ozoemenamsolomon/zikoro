@@ -15,10 +15,12 @@ const ChangeLeadType = ({
   leadType,
   leadId,
   getLeads,
+  updateSelectedLead,
 }: {
   leadType: string;
   leadId: string;
   getLeads: () => Promise<void>;
+  updateSelectedLead: () => Promise<void>;
 }) => {
   const { mutateData, isLoading } = useMutateData<Partial<ILead>>(
     `/leads/${leadId}`
@@ -59,6 +61,7 @@ const ChangeLeadType = ({
           onClick={async () => {
             await mutateData({ payload: { leadType: newLeadType } });
             await getLeads();
+            await updateSelectedLead();
           }}
         >
           Change type
