@@ -40,6 +40,7 @@ export const getCookie = <T = any>(name: string): T | undefined => {
 
 export function useOnboarding() {
   const [loading, setLoading] = useState(false);
+  const { setUser } = useUserStore();
   const router = useRouter();
 
   async function registration(
@@ -59,18 +60,21 @@ export function useOnboarding() {
       ]);
 
       if (error) {
-        toast.error(error.message);
-        setLoading(false);
-        return;
+        throw error;
       }
 
       if (status === 201 || status === 200) {
-        await getUser(email);
+        const user = await getUser(email);
+        setUser(user);
         setLoading(false);
         toast.success("Profile Updated Successfully");
         router.push("/home");
       }
-    } catch (error) {}
+    } catch (error: any) {
+      toast.error(error?.message);
+    } finally {
+      setLoading(false);
+    }
   }
   return {
     registration,
@@ -97,14 +101,14 @@ export function useLogin() {
 
       if (error) {
         toast.error(error?.message);
-        console.log(error?.message);
+       // console.log(error?.message);
         setLoading(false);
         return;
       }
 
       if (data && data?.user?.email) {
         await setLoggedInUser(data?.user?.email);
-        console.log(data?.user?.email);
+      //  console.log(data?.user?.email);
         toast.success("Sign In Successful");
         router.push(redirectTo ?? "home");
         setLoading(false);
@@ -180,8 +184,8 @@ export const getUser = async (email: string | null) => {
     );
     return;
   }
-  console.log(user);
-  saveCookie("user", user);
+  // console.log(user);
+  // saveCookie("user", user);
   return user;
 };
 
