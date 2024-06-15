@@ -48,12 +48,12 @@ export function MobileBottomNav({
       </Link>
       <Link
         className="flex flex-col items-center justify-center"
-        href={`/event/${event?.eventAlias}/home`}
+        href={`/event/${event?.eventAlias}/reception`}
       >
-        <HomeIcon color={pathname.includes("home") ? "#001ffc" : "#000000"} />
+        <HomeIcon color={pathname.includes("reception") ? "#001ffc" : "#000000"} />
         <Dot
           size={10}
-          color={pathname.includes("home") ? "#001ffc" : "#ffffff"}
+          color={pathname.includes("reception") ? "#001ffc" : "#ffffff"}
         />
       </Link>
       <Link
