@@ -30,8 +30,9 @@ import {
   workExperience,
 } from "@/constants";
 import { useState } from "react";
-import { TPartner } from "@/types";
+import { TPartner, PartnerJobType } from "@/types";
 import { cn } from "@/lib";
+import {generateAlias} from "@/utils"
 
 export function AddJob({
   close,
@@ -79,13 +80,16 @@ export function AddJob({
 
       return; /// stop submission
     }
-  
-    const jobs =
+
+    
+    const id = generateAlias()
+    const jobs: PartnerJobType[] =
       Array.isArray(partner?.jobs) && partner?.jobs?.length > 0
         ? [
             ...partner?.jobs,
             {
               ...values,
+              id,
               partnerId,
               currencyCode,
               companyName: partner ? partner?.companyName : "",
@@ -94,6 +98,7 @@ export function AddJob({
         : [
             {
               ...values,
+              id,
               partnerId,
               currencyCode,
               companyName: partner ? partner?.companyName : "",

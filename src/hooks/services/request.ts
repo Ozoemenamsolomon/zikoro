@@ -37,6 +37,7 @@ export const useGetData = <TData>(endpoint: string): UseGetResult<TData> => {
         throw new Error("Failed to fetch data");
       }
       setData(responseData.data);
+      return responseData.data;
     } catch (error) {
       setError(true);
     } finally {

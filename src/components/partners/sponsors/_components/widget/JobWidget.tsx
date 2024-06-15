@@ -287,7 +287,8 @@ function ActionWidget({
       jobTitle: job?.jobTitle,
       firstContactChannel: "Job",
       interests: 
-        {
+        { 
+          partnerInterestId: job?.id || "",
           interestType: "Job",
           attendeeAlias: attendee?.attendeeAlias,
           attendeeId: attendee?.id,
