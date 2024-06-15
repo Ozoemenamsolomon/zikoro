@@ -11,6 +11,7 @@ type Props = {
   setChosenPlan: (plan: string | null) => void;
   setChosenPrice: (price: number | null) => void;
   setChosenCurrency: (currency: string) => void;
+  setChosenMonthly : (isMontly: boolean) => void
 };
 
 //type annotation for the data being fetched
@@ -30,6 +31,7 @@ export default function PricingTable({
   setChosenCurrency,
   setChosenPlan,
   setChosenPrice,
+  setChosenMonthly
 }: Props) {
   const [freeFeatures, setFreeFeatures] = useState<boolean>(false);
   const [liteFeatures, setLiteFeatures] = useState<boolean>(false);
@@ -39,7 +41,7 @@ export default function PricingTable({
   const [pricingData, setPricingData] = useState<DBPricingTypes[] | undefined>(
     undefined
   );
-  const [isMonthly, setIsMonthly] = useState<boolean>(true);
+  const [isMonthly, setIsMonthly] = useState<boolean>(false);
   const router = useRouter();
 
   //currencies list
@@ -83,6 +85,7 @@ export default function PricingTable({
     const price = getPlanPrice(plan);
     setChosenPrice(price);
     setChosenPlan(plan);
+    setChosenMonthly(isMonthly)
     updateModalState();
   };
 
@@ -118,10 +121,12 @@ export default function PricingTable({
           />
           <p className="text-xl font-medium">Yearly</p>
 
-          <div className="relative text-[11px] lg:text-[14px] bg-zikoroBlue py-2 px-2 lg:px-2 text-white ml-2">
-            save up to 15%
-            <div className="absolute left-0 top-0 bottom-0 w-[16px] bg-zikoroBlue transform -translate-x-full clip-triangle"></div>
-          </div>
+          {isMonthly && (
+            <div className="relative text-[11px] lg:text-[14px] bg-zikoroBlue py-2 px-2 lg:px-2 text-white ml-2">
+              save up to 15%
+              <div className="absolute left-0 top-0 bottom-0 w-[16px] bg-zikoroBlue transform -translate-x-full clip-triangle"></div>
+            </div>
+          )}
         </div>
       </div>
 

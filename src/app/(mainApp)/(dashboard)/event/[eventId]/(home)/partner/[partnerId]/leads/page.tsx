@@ -70,6 +70,7 @@ const page = ({
                 userContactRequests={userContactRequests}
                 isLoading={contactRequestIsLoading}
                 getContactRequests={getContactRequests}
+                setSelectedLead={onSelectLead}
               />
             </section>
           </>

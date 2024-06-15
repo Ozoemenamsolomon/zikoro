@@ -30,6 +30,7 @@ export interface ILead {
   stampCard?: boolean;
   eventPartnerAlias: string;
   leadType: string;
+  notes: string;
 }
 
 export interface TLead {
