@@ -422,6 +422,10 @@ input[type="number"] {
   border-color: #7c4dff; /* Set navigation button border color to a lighter shade of indigo on hover */
 }
 
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item--selected {
+  background-color: #7c4dff !important; 
+}
+
 .blog h1 {
   font-size: 2.7rem;
   line-height: 3.5rem;

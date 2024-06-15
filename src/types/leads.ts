@@ -74,6 +74,7 @@ export interface TLeadsInterest {
   eventPartnerAlias?: string;
   interestType: string;
   title: string;
+  partnerInterestId:string
   note: string;
 }
 

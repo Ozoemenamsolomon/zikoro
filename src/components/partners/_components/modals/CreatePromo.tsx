@@ -21,9 +21,9 @@ import {  useUpdatePartners } from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import { useState } from "react";
-import {uploadFile} from "@/utils"
+import {uploadFile, generateAlias} from "@/utils"
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import { TPartner } from "@/types";
+import { TPartner, PromotionalOfferType } from "@/types";
 import { cn } from "@/lib";
 
 export function CreatePromo({
@@ -73,13 +73,14 @@ export function CreatePromo({
     }
    
     const image = await uploadFile(values?.productImage[0], "image")
-   
-    const promo: any =
+   const id = generateAlias()
+    const promo: PromotionalOfferType[] =
       Array.isArray(partner?.offers) && partner?.offers?.length > 0
         ? [
             ...partner?.offers,
             {
               ...values,
+              id,
               partnerId,
               currencyCode,
               productImage: image,
@@ -90,6 +91,7 @@ export function CreatePromo({
             {
               ...values,
               partnerId,
+              id,
               currencyCode,
               productImage: image,
               companyName: partner ? partner?.companyName : "",
