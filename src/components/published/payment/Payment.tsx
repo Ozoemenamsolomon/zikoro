@@ -37,14 +37,16 @@ export function Payment({
 
   const eventData: any = query.get("eventData");
   const parsedData: QueryData = JSON.parse(eventData);
-  // 
+  //
 
- // const user = getCookie("user");
+  // const user = getCookie("user");
   const config = paymentConfig({
     reference: data?.eventRegistrationRef,
-    email: Array.isArray(data?.attendeesDetails) ?  data?.attendeesDetails[0]?.email : "",
+    email: Array.isArray(data?.attendeesDetails)
+      ? data?.attendeesDetails[0]?.email
+      : "",
     amount: Number(parsedData?.total),
-    currency: data?.currency
+    currency: data?.currency,
   });
 
   function toggleSuccessModal(bool: boolean) {
@@ -52,7 +54,7 @@ export function Payment({
   }
 
   async function handleSuccess(reference: any) {
-    // 
+    //
 
     const payload = {
       eventId: data?.eventId,
@@ -84,7 +86,7 @@ export function Payment({
       eventPrice: data?.eventPrice,
     };
 
-    //  
+    //
 
     /// change to priceCategory after validity date has been adjusted
     await sendTransactionDetail(toggleSuccessModal, payload);
@@ -96,7 +98,9 @@ export function Payment({
     children: (
       <Button className="w-full sm:w-[405px] gap-x-2 bg-basePrimary text-gray-50 font-medium">
         <Lock size={22} />
-        <span>{`Pay ${data?.currency ?? "NGN"}${Number(parsedData?.total)?.toLocaleString()}`}</span>
+        <span>{`Pay ${data?.currency ?? "NGN"}${Number(
+          parsedData?.total
+        )?.toLocaleString()}`}</span>
       </Button>
     ),
     onSuccess: (reference: any) => handleSuccess(reference),
@@ -131,7 +135,7 @@ export function Payment({
       eventPrice: data?.eventPrice,
     };
 
-    //  
+    //
 
     /// change to priceCategory after validity date has been adjusted
     await sendTransactionDetail(toggleSuccessModal, payload);
@@ -151,18 +155,24 @@ export function Payment({
             <div className="flex items-center justify-between w-full">
               <p>{`${data?.attendees ?? "0"}x SubTotal`}</p>
               {parsedData?.total && (
-                <p>{`${data?.currency ?? "NGN"}${(
-                  Number(parsedData?.total) + data?.discountValue
-                )?.toLocaleString() ?? 0}`}</p>
+                <p>{`${data?.currency ?? "NGN"}${
+                  (
+                    Number(parsedData?.total) + data?.discountValue
+                  )?.toLocaleString() ?? 0
+                }`}</p>
               )}
             </div>
             <div className="flex items-center justify-between w-full">
               <p>{`${data?.attendees ?? "0"}x Discount`}</p>
-              <p>{`-${data?.currency ?? "NGN"}${data?.discountValue?.toLocaleString() ?? 0}`}</p>
+              <p>{`-${data?.currency ?? "NGN"}${
+                data?.discountValue?.toLocaleString() ?? 0
+              }`}</p>
             </div>
             <div className="flex items-center justify-between w-full">
               <p>Total</p>
-              <p>{`${data?.currency ?? "NGN"}${Number(parsedData?.total || 0)?.toLocaleString() ?? 0}`}</p>
+              <p>{`${data?.currency ?? "NGN"}${
+                Number(parsedData?.total || 0)?.toLocaleString() ?? 0
+              }`}</p>
             </div>
           </div>
           <div className="w-full flex items-center justify-center">
