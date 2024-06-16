@@ -1,9 +1,13 @@
+import Appointments from '@/components/appointments/Appointments'
+import Main from '@/components/appointments/Main'
 import React from 'react'
 
-const Appointments = () => {
+const AppointmentsPage = ({children}:{children:React.ReactNode}) => {
   return (
-    <div>Appointments</div>
+    <Main>
+      <Appointments/>
+    </Main>
   )
 }
 
-export default Appointments
+export default AppointmentsPage
