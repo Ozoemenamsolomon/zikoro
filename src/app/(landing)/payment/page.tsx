@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
-import { PaymentLock } from "@/constants";
 import { ArrowBack } from "styled-icons/ionicons-outline";
 import { useRouter } from "next/navigation";
 import { paymentConfig } from "@/hooks/common/usePayStackPayment";
