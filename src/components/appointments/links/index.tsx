@@ -3,7 +3,7 @@ import LinksCard from './LinksCard'
 
 const LinksPage = () => {
   return (
-    <main>
+    <main className=''>
         <h4 className='text-2xl font-semibold'>My Links</h4>
         <div className="mt-20 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
             {

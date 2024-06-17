@@ -8,23 +8,34 @@ const Main = ({children}:{children:React.ReactNode}) => {
   return (
     <>
 
-        <div className={`${show ? 'z-50 w-[252px]':' w-0 -z-10'} transform transition-all duration-300 ease-in-out overflow-x-hidden border-r bg-white h-screen overflow-y-auto fixed top-0 left-0 lg:hidden`}>
+        <aside className={`${show ? 'z-50 w-[252px]':' w-0 -z-10'} transform transition-all duration-300 ease-in-out overflow-x-hidden border-r bg-white h-screen overflow-y-auto fixed top-0 left-0 lg:hidden`}>
             <div className="flex justify-end w-full">
-                <button type="button" onClick={()=>setShow(false)}><ChevronFirst/></button>
+                <button type="button" onClick={()=>setShow(false)}><ChevronFirst size={18} className='text-gray-600'/></button>
             </div>
             <Sidebar/>
-        </div>
+        </aside>
 
-        <div className={`max-lg:hidden flex-shrink-0 w-[252px] border-r bg-white h-screen overflow-auto fixed top-0 left-0 `}>
+        <aside className={`max-lg:hidden flex-shrink-0 w-[252px] border-r bg-white h-screen overflow-auto fixed top-0 left-0 `}>
             <Sidebar/>
-        </div>
+        </aside>
 
-        <main className="lg:pl-[252px] w-full  ">
-            <div className="p-4 sm:p-8">
-                <button className='lg:hidden' type="button" onClick={()=>setShow(true)}><ChevronLast/></button>
+        <article className="lg:pl-[252px] w-full  ">
+            <div className="p-4 sm:p-6">
+                <button className='lg:hidden' type="button" onClick={()=>setShow(true)}><ChevronLast size={18} className='text-gray-600'/></button>
+
+                <header className='flex w-full gap-4 justify-center items-center pb-8 '>
+                    <div className="flex-shrink-0 h-[47px] w-[47px] rounded-full  "
+                    style={{background: 'linear-gradient(269.83deg, #9C00FE 0.14%, #001FCB 99.85%)'
+                    }}></div>
+                    <div className="">
+                        <p className="text-[#1F1F1F] text-[12px]">Zikoro</p>
+                        <h5 className="text-[#1F1F1F] text-[16px] font-semibold">Bookings</h5>
+                    </div>
+                </header>
+
                 {children}
             </div>
-        </main>
+        </article>
         
     </>
   )

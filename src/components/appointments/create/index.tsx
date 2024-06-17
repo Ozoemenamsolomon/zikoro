@@ -51,7 +51,7 @@ const CreateAppointments: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   return (
-    <main className="p-4 sm:p-8 bg-background">
+    <main className="p-4 sm:p-8 ">
       <Link href={'/appointments'} type="button">
         <BentArrowLeft />
       </Link >
