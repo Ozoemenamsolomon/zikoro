@@ -95,6 +95,7 @@ export enum PartnersEnum {
     applicationMode:string;
     email?:string;
     whatsApp?:string;
+    id:string;
   }
   
   export interface PromotionalOfferType {
@@ -112,6 +113,7 @@ export enum PartnersEnum {
     partnerId: string;
     companyName:string
     productImage:any
+    id:string;
   
   
   }

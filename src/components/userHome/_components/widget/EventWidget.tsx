@@ -24,7 +24,7 @@ export function EventWidget({ event }: { event: Event }) {
         eventName: event?.eventTitle,
         startDate: event?.startDateTime
       });
-      router.push(`/event/${event?.eventAlias}/home`);
+      router.push(`/event/${event?.eventAlias}/reception`);
     }
     return (
       <div

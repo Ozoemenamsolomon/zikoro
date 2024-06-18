@@ -275,6 +275,7 @@ function ActionWidget({
       firstContactChannel: "Offer",
       interests: {
         interestType: "Offer",
+        partnerInterestId: offer?.id || "",
         attendeeAlias: attendee?.attendeeAlias,
         attendeeId: attendee?.id,
         eventAlias: attendee?.eventAlias,
