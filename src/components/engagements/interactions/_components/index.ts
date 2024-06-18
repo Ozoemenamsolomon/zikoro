@@ -15,6 +15,7 @@ export * from "./actions/DeleteModal";
 export * from "./actions/DeleteQuiz";
 export * from "./actions/CopyQuiz";
 export * from "./actions/EditQuestion";
+export * from "./actions/ActivateQuiz"
 export * from "./presentation/attendee/QuizLobby";
 export * from "./presentation/ScoreBoard";
 export * from "./modals/InteractionsSelectionModal";
