@@ -65,13 +65,19 @@ export function PaymentModal({
   const router = useRouter();
   const pathname = usePathname();
 
-  
   const { data: organizationData, refetch: refetchOrganizationData } =
     useGetUserOrganization(user?.id ?? 0);
 
-  const submitForm = (e: any) => {
+  const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    router.push("/payment");
+    const url = `/payment?name=${encodeURIComponent(
+      user?.firstName || ""
+    )}&id=${encodeURIComponent(user?.id || "")}&email=${encodeURIComponent(
+      user?.userEmail || ""
+    )}&plan=${encodeURIComponent(chosenPlan || "")}&total=${encodeURIComponent(
+      totalPrice.toString()
+    )}&currency=${encodeURIComponent(chosenCurrency)}`;
+    router.push(url);
   };
 
   useEffect(() => {
@@ -93,8 +99,6 @@ export function PaymentModal({
 
   const submitOrgDetails = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    try {
-    } catch (err) {}
   };
 
   return (
@@ -197,7 +201,7 @@ export function PaymentModal({
             Personal Information
           </p>
 
-          <form action="" className="mt-6">
+          <form action="" className="mt-6" onSubmit={submitForm}>
             <input
               type="text"
               name="fullname"
@@ -247,32 +251,30 @@ export function PaymentModal({
                   <p>Add Workspace</p>
                 </PopoverTrigger>
                 <PopoverContent className="z-[1000]">
-                  <form action="" className="w-full">
-                    <input
-                      type="email"
-                      name="orgOwnerEmail"
-                      value=""
-                      required
-                      className="mt-4 px-4 py-[10px] text-base rounded-lg placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
-                      placeholder="Organization email"
-                    />
+                  <input
+                    type="email"
+                    name="orgOwnerEmail"
+                    value=""
+                    required
+                    className="mt-4 px-4 py-[10px] text-base rounded-lg placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+                    placeholder="Organization email"
+                  />
 
-                    <input
-                      type="text"
-                      name="orgName"
-                      value=""
-                      required
-                      className=" mt-4 px-4 py-[10px] text-base rounded-lg placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
-                      placeholder="Organization name"
-                    />
-                    <button
-                      className="text-base mt-3 w-full text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  rounded-lg py-3 font-medium"
-                      onSubmit={(e) => submitOrgDetails(e)}
-                    >
-                      {" "}
-                      Submit
-                    </button>
-                  </form>
+                  <input
+                    type="text"
+                    name="orgName"
+                    value=""
+                    required
+                    className=" mt-4 px-4 py-[10px] text-base rounded-lg placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+                    placeholder="Organization name"
+                  />
+                  <button
+                    className="text-base mt-3 w-full text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  rounded-lg py-3 font-medium"
+                    onSubmit={(e) => submitOrgDetails(e)}
+                  >
+                    {" "}
+                    Submit
+                  </button>
                 </PopoverContent>
               </Popover>
             )}
@@ -323,7 +325,7 @@ export function PaymentModal({
 
             <button
               className="text-base mt-3 w-full text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  rounded-lg py-3 font-medium"
-              onClick={submitForm}
+              type="submit"
             >
               Continue
             </button>
