@@ -9,41 +9,35 @@ import { Button } from "@/components";
 import { Lock } from "@styled-icons/fa-solid/Lock";
 import { PaystackButton } from "react-paystack";
 import toast from "react-hot-toast";
+import { useCreateOrgSubscription } from "@/hooks/services/subscription";
 
 export default function PaymentPage() {
   const [loading, setLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const params = useSearchParams();
   const name = params.get("name");
-  const id = params.get("id");
+  const id = params.get("id") ?? "";
   const email = params.get("email");
-  const plan = params.get("plan");
+  const plan = params.get("plan") ?? "";
   const total = params.get("total");
-  const currency = params.get("currency");
+  const currency = params.get("currency") ?? "";
   const router = useRouter();
 
-  async function handleSuccess(reference: any) {
-    toast("Payment Successfull");
-    router.back();
-    const payload = {
-      // startDate: parsedData?.startDate,
-      // endDate: parsedData?.endDate,
-      // registrationCompleted: reference.status === "success",
-      // eventDate: data?.eventDate,
-    };
+  const { createOrgSubscription } = useCreateOrgSubscription(
+    id,
+    totalPrice,
+    currency,
+    plan
+  );
 
-    // update the subscription table
+  async function handleSuccess(reference: any) {
+    createOrgSubscription();
+    toast("Payment Successfull");
+    router.push('/events');
   }
 
   async function submit() {
-    const payload = {
-      // startDate: parsedData?.startDate,
-      // endDate: parsedData?.endDate,
-      // registrationCompleted: reference.status === "success",
-      // eventDate: data?.eventDate,
-    };
-
-    // update the subscription table
+    
   }
 
   //paystack props
