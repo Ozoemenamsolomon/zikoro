@@ -1,6 +1,6 @@
 import { ArrowDownIcon } from '@/constants';
 import React, { useState } from 'react';
-import { FormProps } from '../types'; // Ensure to import the FormProps type
+import { FormProps } from '@/types/appointments'; 
 
 interface DetailsProps extends FormProps {
   title: string;
@@ -35,7 +35,8 @@ const Details: React.FC<DetailsProps> = ({
         <div className="flex gap-3 justify-between items-center">
           <div>{icon}</div>
           <div className="space-y-">
-            <h5 className="text-[20px] font-medium">{title}</h5>
+            <h5 className="text-xl font-medium">{title}</h5>
+            {/* <h5 className="text-[20px] font-medium">{title}</h5> */}
             <p className="text-[#828282] text-[14px]">{description}</p>
           </div>
         </div>
@@ -45,9 +46,9 @@ const Details: React.FC<DetailsProps> = ({
       </div>
 
       <div
-        className={`transition-all duration-300 overflow-hidden ${drop ? 'max-h-screen ease-in' : 'max-h-0 ease-out'}`}
+        className={`transition-all duration-300  ${drop ? 'max-h-[60rem] ease-in' : 'max-h-0 ease-out overflow-hidden'}`}
       >
-        <div className="p-4">
+        <div className="px-4 py-14">
           {formComponent}
         </div>
       </div>
