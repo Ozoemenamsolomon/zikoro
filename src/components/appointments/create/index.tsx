@@ -72,39 +72,44 @@ const CreateAppointments: React.FC = () => {
     });
   };
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrors(null);
-
+  
     try {
-      const data = new FormData();
-
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== undefined) {
-          data.append(key, value.toString());
-        }
+      const payload = { ...formData, timeDetails: JSON.stringify(formData.timeDetails) };
+      console.log({ formData, payload });
+  
+      const response = await fetch('/api/appointments/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       });
-      console.log({formData });
-
-      // const response = await fetch('/api/appointment-links', {
-      //   method: 'POST',
-      //   body: data,
-      // });
-
-      // if (response.ok) {
-      //   setFormData({});
-      //   console.log('Form submitted successfully');
-      // } else {
-      //   console.error('Form submission failed');
-      // }
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        setFormData({});
+        console.log('Form submitted successfully', result);
+        // Handle any additional success actions here
+      } else {
+        console.error('Form submission failed', result);
+        setErrors(result.error);
+      }
     } catch (error) {
-      console.log(error);
+      console.error('An error occurred:', error);
+      setErrors('An unexpected error occurred');
     } finally {
       setLoading(false);
     }
   };
+  
 
+  
   return (
     <main className="p-4 sm:p-8">
       <Link href={'/appointments'} type="button">
