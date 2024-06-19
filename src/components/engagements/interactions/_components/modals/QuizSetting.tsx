@@ -88,7 +88,8 @@ export function QuizSettings({
     const asynQuery = quiz?.quizAlias ? updateQuiz : createQuiz;
     await asynQuery({ payload });
     setLoading(false);
-    if (refetch) refetch();
+    window.open(`/event/${eventAlias}/engagements/interactions/${quizAlias}`,"_self")
+   // if (refetch) refetch();
     close();
   }
 

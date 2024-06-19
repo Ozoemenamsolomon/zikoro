@@ -81,11 +81,24 @@ export function AddQuestion({
       id: nanoid(),
       questionImage: promise,
     };
+
+    // filter question
+    const filteredQuestion = quiz?.questions?.filter(
+      ({ id }) => id !== question?.id
+    );
+    const editingQuestion = quiz?.questions?.find(
+      ({ id }) => id === question?.id
+    );
     const payload: Partial<TQuiz<TQuestion[]>> = {
       ...quiz,
       questions:
         quiz?.questions?.length > 0
-          ? [...quiz?.questions, { ...updatedQuestion }]
+          ? editingQuestion?.id
+            ? [
+                ...filteredQuestion,
+                { ...editingQuestion, ...values, questionImage: promise },
+              ]
+            : [...quiz?.questions, { ...updatedQuestion }]
           : [{ ...updatedQuestion }],
       totalDuration:
         quiz?.totalDuration > 0
@@ -148,6 +161,26 @@ export function AddQuestion({
       });
     }
   }, [question]);
+  const questionValue = form.watch("question");
+  const feedBackValue = form.watch("feedBack");
+
+  const defaultQuestionValue = useMemo(() => {
+    if (typeof questionValue === "string" && questionValue?.length > 0) {
+      return questionValue;
+    } else {
+      return "";
+    }
+  }, [questionValue]);
+
+  const defaultFeedBackValue = useMemo(() => {
+    if (typeof feedBackValue === "string" && feedBackValue?.length > 0) {
+      return feedBackValue;
+    } else {
+      return "";
+    }
+  }, [feedBackValue]);
+
+  //console.log({defaultQuestionValue, defaultFeedBackValue})
   return (
     <div
       onClick={close}
@@ -172,21 +205,24 @@ export function AddQuestion({
             onSubmit={form.handleSubmit(onSubmit)}
             className="w-full flex flex-col items-start justify-start gap-y-3"
           >
-            <FormField
-              control={form.control}
-              name="question"
-              render={({ field }) => (
-                <InputOffsetLabel label="Question">
-                  <InteractionInput
-                    placeholder="Enter the Question"
-                    onChange={(value) => {
-                      form.setValue("question", value);
-                    }}
-                    error={errors?.question?.message}
-                  />
-                </InputOffsetLabel>
-              )}
-            />
+            {(defaultQuestionValue || !question) && (
+              <FormField
+                control={form.control}
+                name="question"
+                render={({ field }) => (
+                  <InputOffsetLabel label="Question">
+                    <InteractionInput
+                      defaultValue={defaultQuestionValue}
+                      placeholder="Enter the Question"
+                      onChange={(value) => {
+                        form.setValue("question", value);
+                      }}
+                      error={errors?.question?.message}
+                    />
+                  </InputOffsetLabel>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="questionImage"
@@ -323,21 +359,23 @@ export function AddQuestion({
               <PlusCircle size={18} />
               <p>Options</p>
             </Button>
-            <FormField
-              control={form.control}
-              name="feedBack"
-              render={({ field }) => (
-                <InputOffsetLabel label="Additional FeedBack">
-                  <InteractionInput
-                    placeholder="Enter the feedBack"
-                    onChange={(value) => {
-                      form.setValue("feedBack", value);
-                    }}
-                   
-                  />
-                </InputOffsetLabel>
-              )}
-            />
+            {(defaultFeedBackValue || !question) && (
+              <FormField
+                control={form.control}
+                name="feedBack"
+                render={({ field }) => (
+                  <InputOffsetLabel label="Additional FeedBack">
+                    <InteractionInput
+                      placeholder="Enter the feedBack"
+                      defaultValue={defaultFeedBackValue}
+                      onChange={(value) => {
+                        form.setValue("feedBack", value);
+                      }}
+                    />
+                  </InputOffsetLabel>
+                )}
+              />
+            )}
 
             <Button
               disabled={loading}

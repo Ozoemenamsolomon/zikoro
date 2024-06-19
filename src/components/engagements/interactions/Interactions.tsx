@@ -73,7 +73,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
             Array.isArray(visibleQuizzes) &&
             visibleQuizzes?.length === 0 && (
               <div className="w-full col-span-full flex items-center justify-center h-[350px]">
-                <EmptyState />
+                <EmptyState toggleInteractionModal={toggleInteractionModal} />
               </div>
             )}
           {!isLoading &&
@@ -105,17 +105,33 @@ export default function Interactions({ eventId }: { eventId: string }) {
   );
 }
 
-function EmptyState() {
+function EmptyState({
+  toggleInteractionModal,
+}: {
+  toggleInteractionModal: () => void;
+}) {
   return (
     <div className="w-full flex flex-col gap-y-3 items-center justify-center h-[24rem]">
       <Image
         className="w-fit h-fit"
-        src="/emptyquiz.png"
+        src="/chatbubble.png"
         alt="empty"
-        width={250}
-        height={350}
+        width={150}
+        height={150}
       />
-      <p className="text-gray-500">No Quiz</p>
+      <h2 className="text-basePrimary font-semibold text-base sm:text-2xl">
+        You have not created any interaction yet.
+      </h2>
+      <p className="text-gray-500 text-xs sm:text-sm">
+        Let's go, create your first interaction
+      </p>
+
+      <Button
+        onClick={toggleInteractionModal}
+        className="bg-basePrimary text-white  rounded-lg"
+      >
+        <p> Create Interaction 🎊</p>
+      </Button>
     </div>
   );
 }

@@ -31,11 +31,8 @@ export function Speakers({
   }
 
   const formattedAttendees = useMemo(() => {
-    return attendees?.filter(({ ticketType, attendeeType }) => {
-      return (
-        ticketType.toLowerCase() === "speaker" &&
-        attendeeType?.includes("speaker")
-      );
+    return attendees?.filter(({ attendeeType }) => {
+      return attendeeType?.includes("speaker");
     });
   }, [attendees]);
 

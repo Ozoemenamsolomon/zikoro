@@ -39,13 +39,11 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     onOpen: onOpenAttendeeForm,
     onClose: onCloseAttendeeForm,
   } = useDisclose();
-
+  console.log(attendees.map(({ attendeeAlias }) => attendeeAlias));
   const { user, setUser } = useUserStore();
   // const user = getCookie("user");
   const event = useEventStore((state) => state.event);
   const { eventId } = useParams();
-
-  
 
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee>(null);
 
@@ -75,8 +73,6 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const { data, loading, refetch } = useFetchPartners(eventId);
 
-  
-
   const formatPartners: TExPartner[] = useMemo(() => {
     return data?.map((value) => {
       return {
@@ -103,8 +99,6 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     isLoading: contactRequestIsLoading,
     getContactRequests,
   } = useGetContactRequests({ userEmail: user.userEmail });
-
-  
 
   return (
     <section
