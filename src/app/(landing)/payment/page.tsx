@@ -62,6 +62,8 @@ export default function PaymentPage() {
     onSuccess: (reference: any) => handleSuccess(reference),
   };
 
+  
+
   useEffect(() => {
     setTotalPrice(Number(total));
   }, [total]);
