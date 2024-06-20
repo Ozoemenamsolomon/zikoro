@@ -49,6 +49,10 @@ export function QuizSettings({
 
   const coverImg = form.watch("coverImage");
 
+  const quizAlias = useMemo(() => {
+    return generateInteractionAlias();
+  }, []);
+
   async function onSubmit(values: z.infer<typeof quizSettingSchema>) {
     setLoading(true);
     const image = new Promise(async (resolve) => {
@@ -63,8 +67,6 @@ export function QuizSettings({
     });
 
     const promise: any = await image;
-
-    const quizAlias = generateInteractionAlias();
 
     const payload: Partial<TQuiz<TQuestion[]>> = quiz?.quizAlias
       ? {
@@ -88,8 +90,13 @@ export function QuizSettings({
     const asynQuery = quiz?.quizAlias ? updateQuiz : createQuiz;
     await asynQuery({ payload });
     setLoading(false);
-    window.open(`/event/${eventAlias}/engagements/interactions/${quizAlias}`,"_self")
-   // if (refetch) refetch();
+    window.open(
+      `/event/${eventAlias}/engagements/interactions/${
+        quiz?.quizAlias || quizAlias
+      }`,
+      "_self"
+    );
+    // if (refetch) refetch();
     close();
   }
 

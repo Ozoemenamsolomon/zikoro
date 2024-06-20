@@ -204,8 +204,8 @@ export function Qusetion({
 
   async function nextQuestion() {
     if (quiz?.accessibility?.live) {
-      const { questions, ...restData } = quiz;
-
+      const { questions,liveMode, ...restData } = quiz;
+      
       const payload: Partial<TQuiz<TQuestion[]>> = {
         ...restData,
         questions: quiz?.questions?.map((item) => {
@@ -215,6 +215,7 @@ export function Qusetion({
           };
         }),
         liveMode: {
+          startingAt: liveMode?.startingAt,
           questionIndex: currentQuestionIndex + 1,
           current: quiz?.questions[currentQuestionIndex + 1],
           isTransitioning: quiz?.accessibility?.countdown,
@@ -414,6 +415,7 @@ export function Qusetion({
             };
           }),
           liveMode: {
+            startingAt: liveMode?.startingAt,
             isOptionSelected: true,
           },
         };
@@ -450,6 +452,7 @@ export function Qusetion({
           }),
           liveMode: {
             isEnded: true,
+            startingAt: liveMode?.startingAt
           },
         };
 
