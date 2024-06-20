@@ -166,6 +166,10 @@ export default function Presentation({
     setIsYetToStart(false);
   }
 
+  function exitQuiz() {
+    setIsYetToStart(true);
+  }
+
   function onCloseScoreSheet() {
     setShowScoreSheet(false);
   }
@@ -219,6 +223,7 @@ export default function Presentation({
                     refetch={getQuiz}
                     quiz={refinedQuizArray}
                     id={id}
+                    attendeeId={attendeeId}
                     nickName={nickName}
                     setNickName={setNickName}
                     isLobby={isLobby}
@@ -247,6 +252,7 @@ export default function Presentation({
                     toggleRightBox={onToggle}
                     toggleLeftBox={onClose}
                     onOpenScoreSheet={onOpenScoreSheet}
+                    goBack={exitQuiz}
                     updateQuiz={updateQuiz}
                     updateQuizResult={updateQuizResult}
                     quizParticipantId={id}
@@ -291,6 +297,7 @@ function AttendeeRegistration({
   setNickName,
   isLobby,
   setisLobby,
+  attendeeId,
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -302,6 +309,7 @@ function AttendeeRegistration({
   setNickName: React.Dispatch<React.SetStateAction<string>>;
   isLobby: boolean;
   setisLobby: React.Dispatch<React.SetStateAction<boolean>>;
+  attendeeId?: number;
 }) {
   const { updateQuiz } = useUpdateQuiz();
 
@@ -327,6 +335,18 @@ function AttendeeRegistration({
     if (!nickName) {
       toast.error("Pls add a nickName");
       return;
+    }
+
+    if (!quiz?.accessibility?.visible && !isAttendee) {
+      toast.error("You are not a registered attendee for this event");
+      return;
+    }
+
+    const isAttemptedQuiz = actualQuiz?.quizParticipants?.some(
+      (participant) => Number(participant.attendee?.id) === Number(attendeeId)
+    );
+    if (isAttendee && isAttemptedQuiz) {
+      return toast.error("You have already attempted this quiz");
     }
 
     setLoading(true);
@@ -376,7 +396,6 @@ function AttendeeRegistration({
     setisLobby(true);
     setLoading(false);
   }
-
 
   useEffect(() => {
     let interval = setInterval(() => {

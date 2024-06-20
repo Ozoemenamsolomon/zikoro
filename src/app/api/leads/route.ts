@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
             partnerInterestId === interests?.partnerInterestId
         );
         if (isAlreadyApplied) {
-          console.log("in alredy appleid")
+       //   console.log("in alredy appleid")
           return NextResponse.json(
             { error: "You already applied for this job or offer" },
             {
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
         const { error } = await supabase
           .from("LeadsInterests")
           .upsert(interests);
-          console.log("in appleid")
+        ///  console.log("in appleid")
         if (error) {
           return NextResponse.json(
             { error: error.message },
