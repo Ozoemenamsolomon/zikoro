@@ -135,7 +135,7 @@ export function QuizLobby({
           </Button>
         )}
 
-        <p className="text-center">Powered by Zikoro</p>
+       {quiz.branding.poweredBy && <p className="text-center">Powered by Zikoro</p>}
       </div>
     </div>
   );
