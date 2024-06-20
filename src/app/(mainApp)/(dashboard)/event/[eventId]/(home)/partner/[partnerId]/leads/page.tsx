@@ -168,7 +168,7 @@ const page = ({
           </div>
         )}
         <section className="flex flex-col md:col-span-3 h-fit">
-          <ThirdColumn leads={leads ?? []} />
+          <ThirdColumn leads={leads ?? []} partnerId={partnerId} />
         </section>
       </div>
     </section>

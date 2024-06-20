@@ -27,6 +27,7 @@ import { cn } from "@/lib";
 import ChangeLeadType from "@/components/modals/ChangeLeadType";
 import AddLeadNoteForm from "@/components/forms/addLeadNoteForm";
 import { useGetData } from "@/hooks/services/request";
+import { saveContact } from "@/utils";
 
 function LeadNotesSection(props) {
   return (
@@ -394,7 +395,16 @@ export default function SecondColumn({
       <section className="space-y-6 p-4 pt-0">
         <div className="flex gap-4 justify-evenly">
           {phoneNumber && (
-            <div className="flex-1 flex flex-col gap-2 items-center justify-center">
+            <button
+              onClick={() =>
+                saveContact({
+                  name: `${firstName} ${lastName}`,
+                  phone: phoneNumber,
+                  email,
+                })
+              }
+              className="flex-1 flex flex-col gap-2 items-center justify-center"
+            >
               <div className="w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex  justify-center items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -419,7 +429,7 @@ export default function SecondColumn({
               <span className="text-xs text-[#3E404B] font-semibold text-center">
                 Save contact
               </span>
-            </div>
+            </button>
           )}
           <div className="flex-1 flex flex-col gap-2 items-center justify-center">
             <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">

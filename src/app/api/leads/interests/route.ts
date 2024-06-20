@@ -109,12 +109,16 @@ export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
       const eventPartnerAlias = searchParams.get("eventPartnerAlias");
+      const interestType = searchParams.get("interestType");
       //   const attendeeId = searchParams.get("attendeeId");
-
-      const { data, error, status } = await supabase
+      const query = supabase
         .from("leadsInterests")
         .select("*")
         .eq("eventPartnerAlias", eventPartnerAlias);
+
+      if (interestType) query.eq("interestType", interestType);
+
+      const { data, error, status } = await query;
 
       console.log(data);
 
