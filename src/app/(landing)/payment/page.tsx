@@ -23,7 +23,6 @@ export default function PaymentPage() {
   const monthly = params.get("isMonthly");
   const currency = params.get("currency") ?? "";
   const router = useRouter();
-
   const isMonthly = monthly?.toString() ?? "";
 
   const { createOrgSubscription } = useCreateOrgSubscription(

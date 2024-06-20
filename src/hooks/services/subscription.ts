@@ -39,7 +39,7 @@ export function useCreateOrgSubscription(
           userId: userIdNum,
           organizationId: userIdNum,
           subscriptionType: plan,
-          subscriptionStatus: "",
+          subscriptionStatus: "Sucessful",
           amountPayed: totalPriceNum,
           paymentStatus: "Successful",
           paymentMethod: "",
