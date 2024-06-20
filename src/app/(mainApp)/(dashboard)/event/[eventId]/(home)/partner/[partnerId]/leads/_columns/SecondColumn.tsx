@@ -296,8 +296,6 @@ export default function SecondColumn({
 
   const { requestContact, isLoading: requestingContact } = useRequestContact();
 
-  console.log(getLeads);
-
   return (
     <div className="h-fit space-y-4">
       <Dialog open={open} onOpenChange={setOpen}>

@@ -10,7 +10,7 @@ export default function Pricing() {
   const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
   const [chosenPlan, setChosenPlan] = useState<string | null>(null);
   const [chosenPrice, setChosenPrice] = useState<number | null>(0);
-  const [isChosenMonthly, setChosenMonthly] = useState<boolean>(false)
+  const [isChosenMonthly, setChosenMonthly] = useState<boolean>(false);
   const [chosenCurrency, setChosenCurrency] = useState<string>("NGN");
 
   return (
@@ -23,7 +23,7 @@ export default function Pricing() {
           setChosenPlan={setChosenPlan}
           setChosenPrice={setChosenPrice}
           setChosenCurrency={setChosenCurrency}
-          setChosenMonthly ={setChosenMonthly}
+          setChosenMonthly={setChosenMonthly}
         />
         {paymentModalOpen && (
           <PaymentModal

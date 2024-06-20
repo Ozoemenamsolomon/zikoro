@@ -64,9 +64,11 @@ const ThirdColumn = ({ leads }: { leads: ILead[] }) => {
           <div className="p-4 flex flex-col gap-2 bg-white items-center">
             <h3 className="text-basePrimary font-medium text-sm">Hot Leads</h3>
             <span className="text-xl font-bold">
-              {(leads.filter(({ leadType }) => leadType === "hot").length /
-                leads.length) *
-                100}
+              {Number(
+                (leads.filter(({ leadType }) => leadType === "hot").length /
+                  leads.length) *
+                  100
+              ).toFixed()}
               %
             </span>
             <span className="text-xs text-center text-gray-700">
@@ -79,9 +81,11 @@ const ThirdColumn = ({ leads }: { leads: ILead[] }) => {
           <div className="p-4 flex flex-col gap-2 bg-white items-center">
             <h3 className="text-basePrimary font-medium text-sm">Warm Leads</h3>
             <span className="text-xl font-bold">
-              {(leads.filter(({ leadType }) => leadType === "warm").length /
-                leads.length) *
-                100}
+              {Number(
+                (leads.filter(({ leadType }) => leadType === "warm").length /
+                  leads.length) *
+                  100
+              ).toFixed()}
               %
             </span>
             <span className="text-xs text-center text-gray-700">
@@ -94,9 +98,11 @@ const ThirdColumn = ({ leads }: { leads: ILead[] }) => {
           <div className="p-4 flex flex-col gap-2 bg-white items-center">
             <h3 className="text-basePrimary font-medium text-sm">Cold Leads</h3>
             <span className="text-xl font-bold">
-              {(leads.filter(({ leadType }) => leadType === "cold").length /
-                leads.length) *
-                100}
+              {Number(
+                (leads.filter(({ leadType }) => leadType === "cold").length /
+                  leads.length) *
+                  100
+              ).toFixed()}
               %
             </span>
             <span className="text-xs text-center text-gray-700">
@@ -111,9 +117,11 @@ const ThirdColumn = ({ leads }: { leads: ILead[] }) => {
               Unknown Leads
             </h3>
             <span className="text-xl font-bold">
-              {(leads.filter(({ leadType }) => !leadType).length /
-                leads.length) *
-                100}
+              {Number(
+                (leads.filter(({ leadType }) => !leadType).length /
+                  leads.length) *
+                  100
+              ).toFixed()}
               %
             </span>
             <span className="text-xs text-center text-gray-700">

@@ -310,7 +310,7 @@ export default function PricingTable({
           <div>
             {/* title */}
             <p className="gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-2xl font-bold ">
-              Business
+              Enterprise
             </p>
 
             {/* description */}
