@@ -8,12 +8,17 @@ import { MinusCircle } from "styled-icons/evaicons-solid";
 import { useRouter, usePathname } from "next/navigation";
 import useUserStore from "@/store/globalUserStore";
 import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
-import { useGetUserOrganization } from "@/hooks/services/userOrganization";
+import {
+  useGetUserOrganization,
+  useCreateUserOrganization,
+} from "@/hooks/services/userOrganization";
+
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import toast from "react-hot-toast";
 
 type Props = {
   updateModalState: () => void;
@@ -61,28 +66,45 @@ export function PaymentModal({
   const [loading, setLoading] = useState(false);
   const [haveCoupon, setHaveCoupon] = useState<boolean>(false);
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
+  const [orgName, setOrgName] = useState<string>("");
   const [totalPrice, setTotalprice] = useState<number>(0);
+  const [closeForm, setCloseForm] = useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
+
+  const userId = user?.id ?? 0;
+  const userName = user?.firstName ?? "";
 
   const { data: organizationData, refetch: refetchOrganizationData } =
     useGetUserOrganization(user?.id ?? 0);
 
-  const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
+  const { createUserOrganization } = useCreateUserOrganization(
+    userId,
+    orgName,
+    userName
+  );
+
+  //submit organization details
+  const submitForm = (e: any) => {
     e.preventDefault();
     const url = `/payment?name=${encodeURIComponent(
       user?.firstName || ""
     )}&id=${encodeURIComponent(user?.id || "")}&email=${encodeURIComponent(
       user?.userEmail || ""
-    )}&plan=${encodeURIComponent(chosenPlan || "")}&total=${encodeURIComponent(
+    )}&plan=${encodeURIComponent(
+      chosenPlan || ""
+    )}&isMonthly=${encodeURIComponent(
+      isChosenMonthly || ""
+    )}&total=${encodeURIComponent(
       totalPrice.toString()
     )}&currency=${encodeURIComponent(chosenCurrency)}`;
     router.push(url);
   };
 
+  //useEffect
   useEffect(() => {
     if (!user) {
-      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+      router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
     } else {
       // Call the refetch function to get the user organization data
       refetchOrganizationData();
@@ -93,12 +115,17 @@ export function PaymentModal({
     }
   }, [user, chosenPrice, isChosenMonthly, router]);
 
-  useEffect(() => {
-    console.log("Organization data:", organizationData);
-  }, [organizationData]);
-
-  const submitOrgDetails = (e: React.FormEvent<HTMLButtonElement>) => {
+  //create organization form
+  const createOrgDetails = (e: any) => {
     e.preventDefault();
+    e.stopPropagation();
+    setCloseForm(true);
+    try {
+      createUserOrganization();
+      updateModalState();
+    } catch (error: any) {
+      toast.error(`Error: ${error}`);
+    }
   };
 
   return (
@@ -201,7 +228,7 @@ export function PaymentModal({
             Personal Information
           </p>
 
-          <form action="" className="mt-6" onSubmit={submitForm}>
+          <div className="mt-6">
             <input
               type="text"
               name="fullname"
@@ -244,38 +271,36 @@ export function PaymentModal({
               </select>
             )}
 
-            {organizationData && (
+            {!organizationData && (
               <Popover>
                 <PopoverTrigger className="w-full mt-4 flex items-center px-4 rounded-lg h-[44px] border-[1px] border-indigo-600 hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gap-x-2 w-dvh text-[15px] font-medium cursor-pointer ">
                   <PlusCircle size={22} />
                   <p>Add Workspace</p>
                 </PopoverTrigger>
-                <PopoverContent className="z-[1000]">
-                  <input
-                    type="email"
-                    name="orgOwnerEmail"
-                    value=""
-                    required
-                    className="mt-4 px-4 py-[10px] text-base rounded-lg placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
-                    placeholder="Organization email"
-                  />
-
-                  <input
-                    type="text"
-                    name="orgName"
-                    value=""
-                    required
-                    className=" mt-4 px-4 py-[10px] text-base rounded-lg placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
-                    placeholder="Organization name"
-                  />
-                  <button
-                    className="text-base mt-3 w-full text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  rounded-lg py-3 font-medium"
-                    onSubmit={(e) => submitOrgDetails(e)}
+                {!closeForm && (
+                  <PopoverContent
+                    className={`z-[1000] ${closeForm && "data-[state=close]"} `}
                   >
-                    {" "}
-                    Submit
-                  </button>
-                </PopoverContent>
+                    <form onSubmit={createOrgDetails}>
+                      <input
+                        type="text"
+                        name="orgName"
+                        value={orgName}
+                        required
+                        className=" mt-4 px-4 py-[10px] text-base rounded-lg placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+                        placeholder="Organization name"
+                        onChange={(e) => setOrgName(e.target.value)}
+                      />
+                      <button
+                        className="text-base mt-3 w-full text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  rounded-lg py-3 font-medium"
+                        type="submit"
+                      >
+                        {" "}
+                        Submit
+                      </button>
+                    </form>
+                  </PopoverContent>
+                )}
               </Popover>
             )}
 
@@ -317,7 +342,7 @@ export function PaymentModal({
                   placeholder="Enter a valid discount code"
                   className="h-full p-2 text-[12px] w-8/12 placeholder-gray-500 outline-none border-[1px] border-gray-200"
                 />
-                <button className="text-base text-white bg-zikoroBlue  h-full px-3 lg:px-8 w-4/12 ">
+                <button className="text-base text-white bg-zikoroBlue h-full px-3 lg:px-8 w-4/12 ">
                   Redeem
                 </button>
               </div>
@@ -325,11 +350,11 @@ export function PaymentModal({
 
             <button
               className="text-base mt-3 w-full text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  rounded-lg py-3 font-medium"
-              type="submit"
+              onClick={(e) => submitForm(e)}
             >
               Continue
             </button>
-          </form>
+          </div>
         </div>
       </div>
     </div>

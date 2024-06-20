@@ -18,6 +18,8 @@ export function Advert({
   close: () => void;
   isRightBox: boolean;
 }) {
+
+  
   const quizLink = `${window.location.origin}/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`;
   return (
     <div

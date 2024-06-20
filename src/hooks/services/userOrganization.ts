@@ -28,6 +28,7 @@ type organisationSchema = {
   facebook: string;
 };
 
+//fetch user organization
 export function useGetUserOrganization(id: number) {
   const [data, setData] = useState<any>(null);
 
@@ -41,8 +42,8 @@ export function useGetUserOrganization(id: number) {
       const { data, error: fetchError } = await supabase
         .from("organization")
         .select("*")
-        .eq("organizationOwnerId", id)
-        // .single();
+        .eq("organizationOwnerId", id);
+      // .single();
 
       if (fetchError) {
         toast.error(fetchError.message);
@@ -56,5 +57,36 @@ export function useGetUserOrganization(id: number) {
   return {
     data,
     refetch: getUserOrganisation,
+  };
+}
+
+//create user Organization
+export function useCreateUserOrganization(
+  userId: number,
+  orgName: string,
+  username: string
+) {
+  async function createUserOrganization() {
+    try {
+      const { data, error, status } = await supabase
+        .from("organization")
+        .upsert({
+          organizationOwnerId: userId,
+          organizationName: orgName,
+          organizationOwner: username,
+        });
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      if (status === 204 || status === 200) {
+        toast.success("Organization created successfully");
+      }
+    } catch (error) {}
+  }
+
+  return {
+    createUserOrganization,
   };
 }

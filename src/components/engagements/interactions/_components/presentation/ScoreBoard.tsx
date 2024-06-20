@@ -37,7 +37,19 @@ export function ScoreBoard({
   const board = useMemo(() => {
     const participantGroup: { [key: string]: TLeaderBoard } = {};
     if (Array.isArray(answers) && answers.length > 0) {
-      answers?.forEach((ans) => {
+      const filteredAnswers = answers?.filter((item) => {
+        const quizStart = new Date(quiz?.liveMode?.startingAt).getTime();
+        const answerCreated = new Date(item?.created_at).getTime();
+        const isQuizLive = quiz?.accessibility?.live;
+        if (isQuizLive) {
+          return answerCreated > quizStart 
+        }
+        else {
+          return true
+        }
+        
+      });
+      filteredAnswers?.forEach((ans) => {
         const key = ans?.quizParticipantId;
         if (!participantGroup[key]) {
           participantGroup[key] = {
