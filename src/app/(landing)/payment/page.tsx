@@ -20,29 +20,32 @@ export default function PaymentPage() {
   const email = params.get("email");
   const plan = params.get("plan") ?? "";
   const total = params.get("total");
+  const monthly = params.get("isMonthly");
   const currency = params.get("currency") ?? "";
   const router = useRouter();
+
+  const isMonthly = monthly?.toString() ?? "";
 
   const { createOrgSubscription } = useCreateOrgSubscription(
     id,
     totalPrice,
     currency,
-    plan
+    plan,
+    isMonthly
   );
 
   async function handleSuccess(reference: any) {
-    createOrgSubscription();
-    toast("Payment Successfull");
-    router.push('/events');
+    await createOrgSubscription().then(() => {
+      toast("Payment Successfull");
+      router.push("/events");
+    });
   }
 
-  async function submit() {
-    
-  }
+  async function submit() {}
 
   //paystack props
   const config = paymentConfig({
-    reference: id ? id : "",
+    reference: "",
     email: email ? email : "",
     amount: totalPrice,
     currency: currency ? currency : "",
