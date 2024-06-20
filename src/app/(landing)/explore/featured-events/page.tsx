@@ -11,7 +11,6 @@ import {
 import { ArrowBackCircle } from "styled-icons/ionicons-outline";
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
 import { useSearchParams } from "next/navigation";
-import { CopyAlt } from "styled-icons/boxicons-regular";
 import {
   startOfToday,
   endOfToday,
@@ -274,7 +273,6 @@ export default function FeaturedEvents() {
                         className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
                       />
                     </div>
-                    <CopyAlt size={45} className="cursor-pointer" />
                   </div>
 
                   {/* main section */}
