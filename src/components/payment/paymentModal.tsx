@@ -12,6 +12,7 @@ import {
   useGetUserOrganization,
   useCreateUserOrganization,
 } from "@/hooks/services/userOrganization";
+
 import {
   Popover,
   PopoverContent,
@@ -90,7 +91,11 @@ export function PaymentModal({
       user?.firstName || ""
     )}&id=${encodeURIComponent(user?.id || "")}&email=${encodeURIComponent(
       user?.userEmail || ""
-    )}&plan=${encodeURIComponent(chosenPlan || "")}&total=${encodeURIComponent(
+    )}&plan=${encodeURIComponent(
+      chosenPlan || ""
+    )}&isMonthly=${encodeURIComponent(
+      isChosenMonthly || ''
+    )}&total=${encodeURIComponent(
       totalPrice.toString()
     )}&currency=${encodeURIComponent(chosenCurrency)}`;
     router.push(url);
@@ -99,7 +104,7 @@ export function PaymentModal({
   //useEffect
   useEffect(() => {
     if (!user) {
-      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+      router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
     } else {
       // Call the refetch function to get the user organization data
       refetchOrganizationData();
@@ -117,6 +122,7 @@ export function PaymentModal({
     setCloseForm(true);
     try {
       createUserOrganization();
+      updateModalState();
     } catch (error: any) {
       toast.error(`Error: ${error}`);
     }
