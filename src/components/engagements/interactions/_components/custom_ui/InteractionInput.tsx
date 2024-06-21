@@ -62,6 +62,7 @@ export default function InteractionInput({
     "size",
     "indent",
     "list",
+    "script"
   ];
 
   const [content, setContent] = useState(defaultValue);

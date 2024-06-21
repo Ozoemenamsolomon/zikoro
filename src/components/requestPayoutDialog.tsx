@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useRequestPayOut } from "@/hooks/services/billing";
 import { DialogClose } from "./ui/dialog";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import useUserStore from "@/store/globalUserStore";
 
 interface RequestPayoutDialogProps {
   selectedRows: TEventTransaction[];

@@ -41,6 +41,7 @@ export function Qusetion({
   refetchQuiz,
   onOpenScoreSheet,
   updateQuizResult,
+  goBack
 }: {
   isRightBox: boolean;
   isLeftBox: boolean;
@@ -59,6 +60,7 @@ export function Qusetion({
   refetchQuizAnswers: (id: number) => Promise<any>;
   onOpenScoreSheet: () => void;
   updateQuizResult: (q: TQuiz<TRefinedQuestion[]>) => void;
+  goBack:() => void
 }) {
   const [currentQuestion, setCurrentQuestion] =
     useState<TRefinedQuestion | null>(null);
@@ -202,8 +204,8 @@ export function Qusetion({
 
   async function nextQuestion() {
     if (quiz?.accessibility?.live) {
-      const { questions, ...restData } = quiz;
-
+      const { questions,liveMode, ...restData } = quiz;
+      
       const payload: Partial<TQuiz<TQuestion[]>> = {
         ...restData,
         questions: quiz?.questions?.map((item) => {
@@ -213,6 +215,7 @@ export function Qusetion({
           };
         }),
         liveMode: {
+          startingAt: liveMode?.startingAt,
           questionIndex: currentQuestionIndex + 1,
           current: quiz?.questions[currentQuestionIndex + 1],
           isTransitioning: quiz?.accessibility?.countdown,
@@ -234,11 +237,15 @@ export function Qusetion({
       setChosenAnswerStatus(null);
       //if (currentQuestionIndex < quiz.questions.length) {
       // }
-      setShowTransiting(true);
-      setTimeout(() => {
-        setShowTransiting(false);
+      if (quiz?.accessibility?.countdown) {
+        setShowTransiting(quiz?.accessibility?.countdown);
+        setTimeout(() => {
+          setShowTransiting(false);
+          setCurrentQuestionIndex(currentQuestionIndex + 1);
+        }, 6000);
+      } else {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
-      }, 6000);
+      }
     }
   }
 
@@ -283,35 +290,13 @@ export function Qusetion({
     }
   }
 
-  /**
-    // update question time limit
-    if (millisecondsLeft > 0) {
-      const updatedQuiz: TQuiz<TRefinedQuestion[]> = {
-        ...quiz,
-        questions: quiz?.questions?.map((item) => {
-          if (item?.id === currentQuestion?.id) {
-            return {
-              ...item,
-              duration: String(millisecondsLeft),
-            };
-          }
-          return item;
-        }),
-      };
-      updateQuiz(updatedQuiz);
-    }
-   */
+ 
 
   const optionLetter = ["A", "B", "C", "D"];
 
   // console.log("answer", answer)
   async function selectOption(id: string) {
-    /**
-     if (!attendeeDetail?.attendeeId) {
-      toast.error("Only attendee can answer the question");
-      return;
-    }
-    */
+  
     setLoading(true);
     if (currentQuestion) {
       const updatedOptions = currentQuestion?.options?.map((item) => {
@@ -408,6 +393,7 @@ export function Qusetion({
             };
           }),
           liveMode: {
+            startingAt: liveMode?.startingAt,
             isOptionSelected: true,
           },
         };
@@ -444,6 +430,7 @@ export function Qusetion({
           }),
           liveMode: {
             isEnded: true,
+            startingAt: liveMode?.startingAt
           },
         };
 
@@ -467,12 +454,13 @@ export function Qusetion({
   return (
     <div
       className={cn(
-        "w-full h-[90vh] overflow-y-auto bg-white relative  px-6 pt-12  border-x  space-y-3 col-span-7",
+        "w-full h-[90vh]  bg-white relative    border-x  col-span-7",
         isLeftBox && isRightBox && (isIdPresent || isOrganizer) && "col-span-5",
         !isLeftBox && !isRightBox && "col-span-full ",
         !isIdPresent && !isOrganizer && "col-span-full max-w-3xl mx-auto"
       )}
     >
+      <div className="w-full overflow-y-auto px-6 pt-12 space-y-3  h-[90%] pb-52 ">
       <>
         {transiting ? (
           <Transition setShowTransiting={setShowTransiting} />
@@ -492,7 +480,7 @@ export function Qusetion({
             </Button>
             <div className=" gap-3 pb-2 w-full flex items-end justify-between">
               <Button
-                //onClick={goBack}
+                onClick={goBack}
                 className="gap-x-1 self-start w-fit h-fit px-2"
               >
                 <ArrowBackOutline size={20} />
@@ -613,20 +601,8 @@ export function Qusetion({
               </div>
             )}
 
-            {quiz?.accessibility?.live &&
-            !isIdPresent &&
-            !isOrganizer ? null : (
-              <Button
-                disabled={loading || isUpdating} //
-                onClick={onNextBtnClick}
-                className="text-gray-50  mx-auto w-[180px] my-8 bg-basePrimary gap-x-2 h-11 font-medium flex"
-              >
-                {isUpdating && <LoaderAlt size={22} className="animate-spin" />}
-                <p>Next </p>
-              </Button>
-            )}
-
-            <div className="w-full hidden items-end justify-between">
+            {/**
+             <div className="w-full hidden items-end justify-between">
               <div className="flex items-center gap-x-2">
                 <Button
                   onClick={previousQuestion}
@@ -650,13 +626,32 @@ export function Qusetion({
 
               <p className="w-1 h-1"></p>
             </div>
+          */}
 
-            <p className="text-center bg-white text-sm w-full mx-auto sticky inset-x-0 bottom-0 p-2 ">
-              Powered By Zikoro
-            </p>
+            <div className="w-full flex flex-col items-center justify-center mx-auto absolute inset-x-0 bottom-0 gap-y-3  bg-white py-2">
+              {quiz?.accessibility?.live &&
+              !isIdPresent &&
+              !isOrganizer ? null : (
+                <Button
+                  disabled={loading || isUpdating} //
+                  onClick={onNextBtnClick}
+                  className="text-gray-50  mx-auto w-[180px] my-4 bg-basePrimary gap-x-2 h-11 font-medium flex"
+                >
+                  {isUpdating && (
+                    <LoaderAlt size={22} className="animate-spin" />
+                  )}
+                  <p>Next </p>
+                </Button>
+              )}
+             {quiz.branding.poweredBy && <p className="text-center bg-white text-sm w-full  p-2 ">
+                Powered By Zikoro
+              </p>}
+            </div>
           </>
         )}
+
       </>
+      </div>
     </div>
   );
 }

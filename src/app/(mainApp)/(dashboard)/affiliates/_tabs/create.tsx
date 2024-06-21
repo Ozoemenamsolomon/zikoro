@@ -124,7 +124,7 @@ const Create = () => {
           affiliateId: parseInt(affiliateId),
           affiliateEmail: thisAffiliate?.email || "affiliate@email.com",
           userId: user?.id,
-          affiliateLink: `${process.env.NEXT_PUBLIC_HOME_URL}/live-events${
+          affiliateLink: `${window.location.host}/live-events${
             event !== "all" && "/" + thisEvent.eventAlias
           }?affiliateCode=${thisAffiliate?.affliateCode}`,
         },

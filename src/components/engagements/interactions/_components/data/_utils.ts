@@ -6,7 +6,7 @@ interface SelectType {
 export let duration: SelectType[] = [];
 
 for (let i = 10; i <=90; i += 5) {
-  duration.push({ value: `${i.toString()}00`, label: `${i} seconds` });
+  duration.push({ value: `${i.toString()}000`, label: `${i} seconds` });
 }
 
 

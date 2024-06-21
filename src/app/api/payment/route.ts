@@ -380,7 +380,7 @@ export async function POST(req: NextRequest) {
             alt="qrcode" />
           </div>
             <a
-            href="www.zikoro.com/event/${eventAlias}/home"
+            href="www.zikoro.com/event/${eventAlias}/reception"
             style="max-width:600px; margin:0 auto;"
             >
             <button

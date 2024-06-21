@@ -4,7 +4,7 @@ import { Button } from "@/components";
 import { Switch } from "@/components/ui/switch";
 import { useState, useMemo } from "react";
 import { ThreeDotsVertical } from "styled-icons/bootstrap";
-import { CopyQuiz, DeleteQuiz } from "..";
+import { ActivateQuiz, CopyQuiz, DeleteQuiz } from "..";
 import Image from "next/image";
 import { QUser, QUsers } from "@/constants";
 import { useRouter } from "next/navigation";
@@ -128,10 +128,7 @@ function ActionModal({
         >
           <CopyQuiz quiz={quiz} refetch={refetch} />
 
-          <div className="w-full px-4 text-xs hidden items-center justify-between ">
-            <p>Activate</p>
-            <Switch className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary" />
-          </div>
+         <ActivateQuiz quiz={quiz}  refetch={refetch}/>
 
           <DeleteQuiz quizAlias={quiz?.quizAlias} refetch={refetch} />
         </div>

@@ -422,6 +422,10 @@ input[type="number"] {
   border-color: #7c4dff; /* Set navigation button border color to a lighter shade of indigo on hover */
 }
 
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item--selected {
+  background-color: #7c4dff !important; 
+}
+
 .blog h1 {
   font-size: 2.7rem;
   line-height: 3.5rem;
@@ -535,6 +539,52 @@ input[type="number"] {
   @apply border  flex items-center justify-center rounded-lg shadow-md border-gray-300 bg-transparent text-xl w-12 h-16
 }
 
-.group-hover\:fill-hoverGradient:hover path {
-  fill: url(#hoverGradient);
+
+.quiz-lobby {
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.swipeDown {
+  animation-name: swipeDown;
+  -webkit-animation-name: swipeDown;
+}
+
+@keyframes swipeDown {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@-webkit-keyframes swipeDown {
+  0% {
+    -webkit-transform: translateY(-100%);
+  }
+
+  100% {
+    -webkit-transform: translateY(0px);
+  }
+}
+
+
+.quiz-option-animation {
+  transform: rotate(0deg);
+  transition: all;
+  animation: animate 1.2s linear;
+}
+
+@keyframes animate {
+  50% {
+    transform: rotate(30deg);
+    
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }

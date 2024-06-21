@@ -97,14 +97,14 @@ export function QuizLobby({
 
         <div
           className={cn(
-            "w-full grid grid-cols-1 px-4 py-6  sm:grid-cols-2 md:grid-cols-4",
+            "w-full grid grid-cols-1 px-4 py-6  gap-3 sm:grid-cols-2 md:grid-cols-4",
             isAttendee && "md:grid-cols-4 lg:grid-cols-5"
           )}
         >
           {players?.map((player) => (
             <div
               key={player?.id}
-              className="w-full rounded-3xl bg-[#001FCC]/10 p-2 flex items-center justify-between"
+              className="w-full rounded-3xl quiz-lobby swipeDown bg-[#001FCC]/10 p-2 flex items-center justify-between"
             >
               <div className="flex items-center gap-x-2">
                 <Image
@@ -135,7 +135,7 @@ export function QuizLobby({
           </Button>
         )}
 
-        <p className="text-center">Powered by Zikoro</p>
+       {quiz.branding.poweredBy && <p className="text-center">Powered by Zikoro</p>}
       </div>
     </div>
   );

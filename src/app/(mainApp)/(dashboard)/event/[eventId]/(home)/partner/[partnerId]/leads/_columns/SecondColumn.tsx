@@ -6,7 +6,6 @@ import {
   useUpdateAttendeeTags,
 } from "@/hooks/services/tags";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import {
   Dialog,
   DialogClose,
@@ -15,45 +14,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import AddNotesForm from "@/components/forms/AddNoteForm";
-import AttendeeBadge from "@/components/AttendeeBadge";
-import { usePDF } from "react-to-pdf";
 import { Button } from "@/components/ui/button";
-import {
-  useGetAttendeeCertificates,
-  useGetCertificates,
-  useReleaseAttendeeCertificate,
-  useUpdateAttendeeCertificates,
-} from "@/hooks/services/certificate";
-import { format, isPast } from "date-fns";
-import { TCertificate } from "@/types/certificates";
 import { useRouter } from "next/navigation";
-import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
 import useDisclose from "@/hooks/common/useDisclose";
-import {
-  getCookie,
-  useCreateAttendee,
-  useGetAttendeeBadge,
-  useGetBadges,
-  useReleaseAttendeeBadge,
-} from "@/hooks";
-import { TAgenda } from "@/types";
+import { useCreateAttendee } from "@/hooks";
 import { useRequestContact } from "@/hooks/services/contacts";
-import { ContactRequest } from "@/types/contacts";
 import AttendeeCard from "@/components/people/AttendeeCard";
-import AttendeeCredentials from "@/components/people/AttendeeCredentials";
 import AttendeeAbout from "@/components/people/AttendeeAbout";
-import AttendeeTagsSection from "@/components/people/AttendeeTagsSection";
 import useUserStore from "@/store/globalUserStore";
 import { ILead } from "@/types/leads";
 import { cn } from "@/lib";
 import ChangeLeadType from "@/components/modals/ChangeLeadType";
+import AddLeadNoteForm from "@/components/forms/addLeadNoteForm";
+import { useGetData } from "@/hooks/services/request";
+import { saveContact } from "@/utils";
 
 function LeadNotesSection(props) {
   return (
@@ -84,11 +58,10 @@ function LeadNotesSection(props) {
                 <span className="capitalize">Add Note</span>
               </DialogTitle>
             </DialogHeader>
-            <AddNotesForm
-              attendeeEmail={props.lead?.email}
-              attendeeId={props.lead?.id}
-              note={props.note}
-              getnote={props.getnote}
+            <AddLeadNoteForm
+              updateSelectedLead={props.updateSelectedLead}
+              lead={props.lead}
+              getLeads={props.getLeads}
             />
           </DialogContent>
         </Dialog>
@@ -96,9 +69,9 @@ function LeadNotesSection(props) {
       <div className="px-2 space-y-2">
         {!props.noteIsLoading ? (
           <>
-            {props.note ? (
+            {props.lead.notes ? (
               <p className="text-sm font-normal text-[#15161B] leading-normal border-[1px] border-[#EBEBEB] rounded-lg py-4 px-2">
-                {props.note.notes}
+                {props.lead.notes}
               </p>
             ) : (
               <p className="px-2 text-sm font-medium text-gray-500">
@@ -149,6 +122,7 @@ function LeadTypeSection(props) {
               leadId={props.lead.id}
               leadType={props.lead.leadType}
               getLeads={props.getLeads}
+              updateSelectedLead={props.updateSelectedLead}
             />
           </DialogContent>
         </Dialog>
@@ -176,16 +150,23 @@ function LeadTypeSection(props) {
 export default function SecondColumn({
   lead,
   getLeads,
-  userContactRequests,
-  contactRequestIsLoading,
-  getContactRequests,
+  setSelectedLead,
 }: {
   lead: ILead;
   getLeads?: () => Promise<void>;
-  userContactRequests: ContactRequest;
-  contactRequestIsLoading: boolean;
-  getContactRequests: () => Promise<void>;
+  setSelectedLead: React.Dispatch<
+    React.SetStateAction<ILead | null | undefined>
+  >;
 }) {
+  const { isLoading, getData: getLead } = useGetData<Partial<ILead>>(
+    `/leads/${lead.id}`
+  );
+
+  const updateSelectedLead = async () => {
+    const newLead = await getLead();
+    setSelectedLead(newLead);
+  };
+
   const router = useRouter();
   const {
     userEmail,
@@ -316,9 +297,6 @@ export default function SecondColumn({
 
   const { requestContact, isLoading: requestingContact } = useRequestContact();
 
-
-  console.log(getLeads);
-
   return (
     <div className="h-fit space-y-4">
       <Dialog open={open} onOpenChange={setOpen}>
@@ -417,7 +395,16 @@ export default function SecondColumn({
       <section className="space-y-6 p-4 pt-0">
         <div className="flex gap-4 justify-evenly">
           {phoneNumber && (
-            <div className="flex-1 flex flex-col gap-2 items-center justify-center">
+            <button
+              onClick={() =>
+                saveContact({
+                  name: `${firstName} ${lastName}`,
+                  phone: phoneNumber,
+                  email,
+                })
+              }
+              className="flex-1 flex flex-col gap-2 items-center justify-center"
+            >
               <div className="w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex  justify-center items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -442,7 +429,7 @@ export default function SecondColumn({
               <span className="text-xs text-[#3E404B] font-semibold text-center">
                 Save contact
               </span>
-            </div>
+            </button>
           )}
           <div className="flex-1 flex flex-col gap-2 items-center justify-center">
             <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
@@ -494,13 +481,15 @@ export default function SecondColumn({
         instagram={instagram}
         facebook={facebook}
       />
-      <LeadTypeSection lead={lead} getLeads={getLeads} />
+      <LeadTypeSection
+        lead={lead}
+        getLeads={getLeads}
+        updateSelectedLead={updateSelectedLead}
+      />
       <LeadNotesSection
         lead={lead}
-        note={note}
-        noteIsLoading={noteIsLoading}
-        getnote={getnote}
-        removeAttendeeTag={removeAttendeeTag}
+        getLeads={getLeads}
+        updateSelectedLead={updateSelectedLead}
       />
     </div>
   );

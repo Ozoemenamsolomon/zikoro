@@ -3,12 +3,22 @@ import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutlin
 import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
 import React, { useEffect, useState } from "react";
 import { PaymentPlus, PaymentTick } from "@/constants";
-import { PlusCircleFill } from "styled-icons/bootstrap";
+import { PlusCircle, PlusCircleFill } from "styled-icons/bootstrap";
 import { MinusCircle } from "styled-icons/evaicons-solid";
-import { Switch } from "@/components/ui/switch";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import useUserStore from "@/store/globalUserStore";
 import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
+import {
+  useGetUserOrganization,
+  useCreateUserOrganization,
+} from "@/hooks/services/userOrganization";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import toast from "react-hot-toast";
 
 type Props = {
   updateModalState: () => void;
@@ -18,6 +28,31 @@ type Props = {
   chosenPlan: string | null;
   chosenCurrency: string;
   chosenPrice: number | null;
+  isChosenMonthly: boolean;
+};
+
+type DBOrganisationSchema = {
+  id: number;
+  created_at: string;
+  organizationName: string;
+  organizationSlug: string;
+  subscriptionPlan: string;
+  subscritionStartDate: string;
+  subscriptionEndDate: string;
+  organizationOwner: string;
+  BillingAddress: string;
+  TaxID: string;
+  organizationOwnerId: number;
+  organizationType: string;
+  organizationLogo: string;
+  country: string;
+  eventPhoneNumber: string;
+  eventWhatsApp: string;
+  eventContactEmail: string;
+  x: string;
+  linkedIn: string;
+  instagram: string;
+  facebook: string;
 };
 
 export function PaymentModal({
@@ -25,34 +60,73 @@ export function PaymentModal({
   chosenPlan,
   chosenCurrency,
   chosenPrice,
+  isChosenMonthly,
 }: Props) {
   const { user, setUser } = useUserStore();
   const [loading, setLoading] = useState(false);
-  const [isMonthly, setIsMonthly] = useState<boolean>(false);
   const [haveCoupon, setHaveCoupon] = useState<boolean>(false);
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
+  const [orgName, setOrgName] = useState<string>("");
+  const [totalPrice, setTotalprice] = useState<number>(0);
+  const [closeForm, setCloseForm] = useState<boolean>(false);
   const router = useRouter();
+  const pathname = usePathname();
 
-  const plans = ["Lite", "Professional", "Business", "Enterprise"];
+  const userId = user?.id ?? 0;
+  const userName = user?.firstName ?? "";
 
-  //currencies list
-  const currencies = ["USD", "NGN", "GHC", "ZAR", "KES"];
+  const { data: organizationData, refetch: refetchOrganizationData } =
+    useGetUserOrganization(user?.id ?? 0);
 
-  //toggler functions
-  const handlePlanToogle = () => {
-    setIsMonthly(!isMonthly);
-  };
+  const { createUserOrganization } = useCreateUserOrganization(
+    userId,
+    orgName,
+    userName
+  );
 
+  //submit organization details
   const submitForm = (e: any) => {
     e.preventDefault();
-    router.push("/payment");
+    const url = `/payment?name=${encodeURIComponent(
+      user?.firstName || ""
+    )}&id=${encodeURIComponent(user?.id || "")}&email=${encodeURIComponent(
+      user?.userEmail || ""
+    )}&plan=${encodeURIComponent(
+      chosenPlan || ""
+    )}&isMonthly=${encodeURIComponent(
+      isChosenMonthly || ""
+    )}&total=${encodeURIComponent(
+      totalPrice.toString()
+    )}&currency=${encodeURIComponent(chosenCurrency)}`;
+    router.push(url);
   };
 
-  if (!user) {
-    router.push("/login");
-  }
+  //useEffect
+  useEffect(() => {
+    if (!user) {
+      router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
+    } else {
+      // Call the refetch function to get the user organization data
+      refetchOrganizationData();
+    }
 
-  console.log(user);
+    if (chosenPrice !== null) {
+      setTotalprice(chosenPrice * (isChosenMonthly ? 1 : 12));
+    }
+  }, [user, chosenPrice, isChosenMonthly, router]);
+
+  //create organization form
+  const createOrgDetails = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCloseForm(true);
+    try {
+      createUserOrganization();
+      updateModalState();
+    } catch (error: any) {
+      toast.error(`Error: ${error}`);
+    }
+  };
 
   return (
     <div className="w-full h-full fixed z-[100] inset-0 bg-black/50 overflow-y-auto ">
@@ -82,7 +156,8 @@ export function PaymentModal({
                 </p>
               )}
               <p className="text-2xl font-normal whitespace-nowrap ">
-                {convertCurrencyCodeToSymbol(chosenCurrency)}{chosenPrice} per month
+                {convertCurrencyCodeToSymbol(chosenCurrency)}
+                {chosenPrice} per month
               </p>
             </div>
 
@@ -115,12 +190,13 @@ export function PaymentModal({
                 <div className=" flex justify-between ">
                   <p className="text-xl font-medium">{chosenPlan}</p>
                   <p className="text-xl font-normal">
-                    {convertCurrencyCodeToSymbol(chosenCurrency)}{chosenPrice}
+                    {convertCurrencyCodeToSymbol(chosenCurrency)}
+                    {totalPrice}
                   </p>
                 </div>
-                <p className="text-base font-normal mt-2">
+                <p className="text-sm font-normal ">
                   {convertCurrencyCodeToSymbol(chosenCurrency)}
-                  {chosenPrice} per month x 12{" "}
+                  {chosenPrice} per month x {isChosenMonthly ? 1 : 12}{" "}
                 </p>
               </div>
 
@@ -139,7 +215,8 @@ export function PaymentModal({
           <div className="py-3 px-2 flex items-center justify-between bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-lg mt-9">
             <p className="text-xl font-medium">Total Cost</p>
             <p className="text-xl font-normal">
-              {convertCurrencyCodeToSymbol(chosenCurrency)}{chosenPrice}
+              {convertCurrencyCodeToSymbol(chosenCurrency)}
+              {totalPrice}
             </p>
           </div>
         </div>
@@ -151,13 +228,13 @@ export function PaymentModal({
             Personal Information
           </p>
 
-          <form action="" className="mt-6">
+          <div className="mt-6">
             <input
               type="text"
               name="fullname"
               value={user?.firstName}
               className="px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
-              placeholder="Full Name"
+              readOnly
             />
 
             <input
@@ -165,52 +242,67 @@ export function PaymentModal({
               name="email"
               value={user?.userEmail}
               className="mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
-              placeholder="Full Name"
+              readOnly
             />
+
             <input
               type="text"
-              name="workspace"
-              value={user?.organization}
+              name="plan"
+              value={chosenPlan || ""}
               className=" mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
-              placeholder="Workspace"
+              readOnly
             />
 
-            <select
+            <input
+              type="text"
               name="currency"
-              id=""
-              className="border-[1px] border-indigo-600 rounded-lg h-[45px] outline-none mt-10 px-3 w-full"
-            >
-              {plans.map((plan, index) => (
-                <option value={plan} key={index}>
-                  {plan}
-                </option>
-              ))}
-            </select>
+              value={chosenCurrency}
+              className=" mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+              readOnly
+            />
 
-            {/* Currency section */}
-            <div className=" mt-3 lg:mt-6 lg:px-0 mx-auto justify-between  flex flex-col gap-y-4 ">
-              <select
-                name="currency"
-                id=""
-                className="border-[1px] border-indigo-600 rounded-lg h-[45px] px-3 outline-none"
-              >
-                {currencies.map((currency, index) => (
-                  <option value={currency} key={index}>
-                    {currency}
+            {organizationData && organizationData.length > 0 && (
+              <select className="mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400">
+                {organizationData.map((org: DBOrganisationSchema) => (
+                  <option key={org.id} value={org.id}>
+                    {org.organizationName}
                   </option>
                 ))}
               </select>
+            )}
 
-              <div className="flex items-center  gap-x-3 mt-2 ">
-                <p className="text-xl font-medium ">Monthly</p>
-                <Switch
-                  className="data-[state=checked]:bg-zikoroBlue"
-                  checked={isMonthly}
-                  onCheckedChange={(e) => handlePlanToogle()}
-                />
-                <p className="text-xl font-medium">Yearly</p>
-              </div>
-            </div>
+            {!organizationData && (
+              <Popover>
+                <PopoverTrigger className="w-full mt-4 flex items-center px-4 rounded-lg h-[44px] border-[1px] border-indigo-600 hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gap-x-2 w-dvh text-[15px] font-medium cursor-pointer ">
+                  <PlusCircle size={22} />
+                  <p>Add Workspace</p>
+                </PopoverTrigger>
+                {!closeForm && (
+                  <PopoverContent
+                    className={`z-[1000] ${closeForm && "data-[state=close]"} `}
+                  >
+                    <form onSubmit={createOrgDetails}>
+                      <input
+                        type="text"
+                        name="orgName"
+                        value={orgName}
+                        required
+                        className=" mt-4 px-4 py-[10px] text-base rounded-lg placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+                        placeholder="Organization name"
+                        onChange={(e) => setOrgName(e.target.value)}
+                      />
+                      <button
+                        className="text-base mt-3 w-full text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  rounded-lg py-3 font-medium"
+                        type="submit"
+                      >
+                        {" "}
+                        Submit
+                      </button>
+                    </form>
+                  </PopoverContent>
+                )}
+              </Popover>
+            )}
 
             {/* Add Ons section */}
             <div className="mt-6 ">
@@ -218,18 +310,18 @@ export function PaymentModal({
               <div className="flex flex-row justify-between mt-4 ">
                 <p className="texx-base font-normal">Certificate</p>
                 <div className="flex items-center gap-x-2">
-                  <MinusCircle size={24} fill="#EAEAEA" />
+                  <MinusCircle size={22} fill="#EAEAEA" />
                   <p className="text-xl font-medium">0</p>
-                  <PlusCircleFill size={24} fill="#001FCC" />
+                  <PlusCircleFill size={18} fill="#001FCC" />
                 </div>
               </div>
 
               <div className="flex flex-row justify-between mt-4 ">
                 <p className="texx-base font-normal">Badges</p>
                 <div className="flex items-center gap-x-2">
-                  <MinusCircle size={24} fill="#EAEAEA" />
+                  <MinusCircle size={22} fill="#EAEAEA" />
                   <p className="text-xl font-medium">0</p>
-                  <PlusCircleFill size={24} fill="#001FCC" />
+                  <PlusCircleFill size={18} fill="#001FCC" />
                 </div>
               </div>
             </div>
@@ -250,7 +342,7 @@ export function PaymentModal({
                   placeholder="Enter a valid discount code"
                   className="h-full p-2 text-[12px] w-8/12 placeholder-gray-500 outline-none border-[1px] border-gray-200"
                 />
-                <button className="text-base text-white bg-zikoroBlue  h-full px-3 lg:px-8 w-4/12 ">
+                <button className="text-base text-white bg-zikoroBlue h-full px-3 lg:px-8 w-4/12 ">
                   Redeem
                 </button>
               </div>
@@ -258,11 +350,11 @@ export function PaymentModal({
 
             <button
               className="text-base mt-3 w-full text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  rounded-lg py-3 font-medium"
-              onClick={submitForm}
+              onClick={(e) => submitForm(e)}
             >
               Continue
             </button>
-          </form>
+          </div>
         </div>
       </div>
     </div>

@@ -8,6 +8,12 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
+      const { interests, ...restData } = params;
+      const leads = {
+        ...restData,
+        createdAt: new Date().toISOString()
+      }
+
       const {
         data,
         error: fetchError,
@@ -22,62 +28,95 @@ export async function POST(req: NextRequest) {
           }
         );
       }
+
+      const { data: leadsInterset, error: fetchLeadInterestError } =
+        await supabase.from("leadsInterests").select("*");
       //  console.log("daaa", data)
-      let leads = [];
-      if (data?.length === 0) {
-        leads = params;
-      } else {
-        const isPartnerPresent = data?.some(
-          (lead) => lead?.eventPartnerAlias === params?.eventPartnerAlias
-        );
-        if (isPartnerPresent) {
-          // all partner leads
-          const allPartnerLeads = data?.filter(
-            (lead) => lead?.eventPartnerAlias === params?.eventPartnerAlias
-          );
-          const remainingLeads = data?.filter(
-            (lead) => lead?.eventPartnerAlias !== params?.eventPartnerAlias
-          );
-          // check attendee in partnerlist
-          const isPresent = allPartnerLeads?.some(
-            (lead) => lead?.attendeeId === params?.attendeeId
-          );
-          // if partner is present, check the attendee has applied for any of their job or offer
-          if (isPresent) {
-            const mappedArray = allPartnerLeads?.map((lead) => {
-              if (lead?.attendeeId === params?.attendeeId) {
-                return {
-                  ...lead,
-                  interests: [...lead?.interests, ...params?.interests],
-                };
-              }
 
-              return { ...lead };
-            });
-
-            leads = [...mappedArray, ...remainingLeads];
-          } else {
-            // append appendee if not applied
-            leads = { ...params, createdAt: new Date().toISOString() };
-          }
-        } else {
-          // add attendee to the new partner, if the partner is not present
-          leads = { ...params, createdAt: new Date().toISOString() };
-        }
-      }
-
-      // console.log("leads", leads)
-
-      const { error } = await supabase.from("Leads").upsert(leads);
-
-      if (error) {
+      if (fetchLeadInterestError) {
         return NextResponse.json(
-          { error: error.message },
+          { error: fetchLeadInterestError.message },
           {
             status: 400,
           }
         );
       }
+
+      const isAttendeeInPartner = data?.some(
+        ({ attendeeAlias, eventPartnerAlias }) =>
+          eventPartnerAlias === leads?.eventPartnerAlias &&
+          attendeeAlias === leads?.attendeeAlias
+      );
+
+      console.log(
+        "scsdcsdc",
+        isAttendeeInPartner,
+        "dssd",
+        data,
+        "csdscsd",
+        leadsInterset
+      );
+
+      // post to leadsinterset only if an applicant already have his detail with a partner
+      if (isAttendeeInPartner) {
+        // dont't post if an applicant has already applied for a particular job or promo before.
+        const isAlreadyApplied = leadsInterset?.some(
+          ({ partnerInterestId }) =>
+            partnerInterestId === interests?.partnerInterestId
+        );
+        if (isAlreadyApplied) {
+       //   console.log("in alredy appleid")
+          return NextResponse.json(
+            { error: "You already applied for this job or offer" },
+            {
+              status: 400,
+            }
+          );
+        }
+        const { error } = await supabase
+          .from("LeadsInterests")
+          .upsert(interests);
+        ///  console.log("in appleid")
+        if (error) {
+          return NextResponse.json(
+            { error: error.message },
+            {
+              status: 400,
+            }
+          );
+        }
+      } else {
+        // post to leads and leadsinterest if they are empty
+        console.log(" appleid")
+        // post to leadsinterset and leads if an applicant does not have his detail with a partner
+        const { error: leadsError } = await supabase
+          .from("Leads")
+          .upsert(leads);
+
+        if (leadsError) {
+          return NextResponse.json(
+            { error: leadsError.message },
+            {
+              status: 400,
+            }
+          );
+        }
+
+        const { error: interestsError } = await supabase
+          .from("leadsInterests")
+          .upsert(interests);
+
+        if (interestsError) {
+          return NextResponse.json(
+            { error: interestsError.message },
+            {
+              status: 400,
+            }
+          );
+        }
+      }
+
+      // console.log("leads", leads)
 
       return NextResponse.json(
         { msg: "Leads created successfully" },

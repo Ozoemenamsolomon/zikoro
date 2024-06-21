@@ -12,8 +12,6 @@ export async function POST(req: NextRequest) {
 
       const { affiliateName, organizationName, eventPoster, payload } = params;
 
-      
-
       const linkCode = generateAlphanumericHash(7);
 
       const {

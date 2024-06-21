@@ -114,7 +114,7 @@ const Attendee: React.FC<AttendeeProps> = ({
       onClick={() =>
         window.innerWidth > 768
           ? selectAttendee(attendee)
-          : router.push(`info/${id}`)
+          : router.push(isLead ? `leads/info/${id}` : `info/${id}`)
       }
     >
       <div className="col-span-2">

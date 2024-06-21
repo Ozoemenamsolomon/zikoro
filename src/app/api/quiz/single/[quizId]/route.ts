@@ -17,12 +17,11 @@ export async function GET(
         .select("*")
         .eq("quizAlias", quizId)
         .single()
-
-      // 
+        
       if (error) {
         return NextResponse.json(
           {
-            error,
+            error: error.message,
           },
           {
             status: 400,

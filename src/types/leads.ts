@@ -22,7 +22,7 @@ export interface ILead {
   attendeeType?: object;
   attendeeAlias?: string;
   attendeeId?: number;
-  firstContactChannel?: string;
+  firstContactChannel: string;
   websiteUrl?: string;
   eventAlias?: string;
   interests?: object;
@@ -30,6 +30,7 @@ export interface ILead {
   stampCard?: boolean;
   eventPartnerAlias: string;
   leadType: string;
+  notes: string;
 }
 
 export interface TLead {
@@ -74,6 +75,7 @@ export interface TLeadsInterest {
   eventPartnerAlias?: string;
   interestType: string;
   title: string;
+  partnerInterestId:string
   note: string;
 }
 

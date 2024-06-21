@@ -75,7 +75,7 @@ export function SideBarLayout({
     userOrganizations,
     isLoading: organizationIsLoading,
     getUserOrganizations,
-  } = useGetUserTeamOrganizations({ userEmail: user?.userEmail });
+  } = useGetUserTeamOrganizations({ userEmail: user?.userEmail! });
 
   useEffect(() => {
     return () => {
@@ -93,7 +93,7 @@ export function SideBarLayout({
           isNav && "w-[calc(100%-60px)]"
         )}
       >
-        <MainTopBar eventId={eventId} userOrganizations={userOrganizations} />
+        <MainTopBar eventId={eventId} userOrganizations={userOrganizations!} />
       </div>
 
       <SideNavs

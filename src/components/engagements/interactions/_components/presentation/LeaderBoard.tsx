@@ -32,7 +32,19 @@ export function LeaderBoard({
   const board = useMemo(() => {
     const participantGroup: { [key: string]: TLeaderBoard } = {};
     if (Array.isArray(answers) && answers.length > 0) {
-      answers?.forEach((ans) => {
+      const filteredAnswers = answers?.filter((item) => {
+        const quizStart = new Date(quiz?.liveMode?.startingAt).getTime();
+        const answerCreated = new Date(item?.created_at).getTime();
+        const isQuizLive = quiz?.accessibility?.live;
+        if (isQuizLive) {
+          return answerCreated > quizStart 
+        }
+        else {
+          return true
+        }
+        
+      });
+      filteredAnswers?.forEach((ans) => {
         const key = ans?.quizParticipantId;
         if (!participantGroup[key]) {
           participantGroup[key] = {
@@ -54,7 +66,7 @@ export function LeaderBoard({
     } else {
       return [];
     }
-  }, [answers]);
+  }, [answers, quiz]);
 
   const totalMaxPoints = useMemo(() => {
     const totalPoints = quiz?.questions?.reduce((acc, cur) => {
@@ -62,13 +74,6 @@ export function LeaderBoard({
     }, 0);
     return totalPoints;
   }, [quiz]);
-
-  // console.log(board);
-  const ranksImage = [
-    "/firstPosition.png",
-    "/secondPosition.png",
-    "/thirdPosition.png",
-  ];
 
   return (
     <div
@@ -82,8 +87,8 @@ export function LeaderBoard({
         <div className="flex items-center p-4 justify-between w-full">
           <h2 className="font-semibold  text-base sm:text-xl">LeaderBoard</h2>
           <div className="flex items-center gap-x-2">
-            <div className="text-xs flex items-center gap-x-1">
-              <QUser />
+            <div className="text-xs flex text-white bg-basePrimary rounded-3xl px-2 py-1 justify-center items-center gap-x-1">
+              <QUser color="#ffffff" />
               <p>{board?.length || 0}</p>
             </div>
             <Button onClick={close} className="px-0 h-fit w-fit">
@@ -91,13 +96,16 @@ export function LeaderBoard({
             </Button>
           </div>
         </div>
-        <p className="text-white bg-basePrimary text-mobile rounded-3xl px-2 py-1">
-          {totalMaxPoints || 0}pts
-        </p>
+       
 
         {Array.isArray(board) && board?.length > 0 && (
           <div className="flex items-end justify-center">
-            <div className={cn("flex items-center flex-col gap-y-1 justify-center invisible", board[1]?.attendeeName && "flex visible")}>
+            <div
+              className={cn(
+                "flex items-center flex-col gap-y-1 justify-center invisible",
+                board[1]?.attendeeName && "flex visible"
+              )}
+            >
               {/**2nd */}
               <p className="font-semibold text-lg mb-1">2nd</p>
               <Image
@@ -113,7 +121,12 @@ export function LeaderBoard({
               </p>
             </div>
             {/**1st */}
-            <div className={cn("flex items-center flex-col gap-y-1 justify-center invisible", board[0]?.attendeeName && "flex visible")}>
+            <div
+              className={cn(
+                "flex items-center flex-col gap-y-1 justify-center invisible",
+                board[0]?.attendeeName && "flex visible"
+              )}
+            >
               <p className="font-semibold text-xl mb-1">1st</p>
               <Image
                 className="w-[5.5rem] h-[5.5rem]"
@@ -128,7 +141,12 @@ export function LeaderBoard({
               </p>
             </div>
             {/**3rd */}
-            <div className={cn("flex items-center flex-col gap-y-1 justify-center invisible", board[2]?.attendeeName && "flex visible")}>
+            <div
+              className={cn(
+                "flex items-center flex-col gap-y-1 justify-center invisible",
+                board[2]?.attendeeName && "flex visible"
+              )}
+            >
               <p className="font-semibold text-base mb-1">3rd</p>
               <Image
                 className="w-[3.5rem] h-[3.5rem]"
@@ -151,18 +169,20 @@ export function LeaderBoard({
           board.slice(3, board?.length)?.map((attendee, index) => (
             <div
               key={attendee?.quizParticipantId}
-              className={cn("grid grid-cols-3 items-center tranform transition-all duration-300 ease-in-out gap-2 px-3 py-3", index % 2 !== 0 && "border-y bg-[#001FCC]/10")}
+              className={cn(
+                "grid grid-cols-3 items-center tranform transition-all duration-300 ease-in-out gap-2 px-3 py-3",
+                index % 2 !== 0 && "border-y bg-[#001FCC]/10"
+              )}
             >
               <div className="flex items-center col-span-2 w-full gap-x-2">
-              
-                  <p className="text-sm">{`${index + 4}th`}</p>
-                  <Image
-                className="w-[2.5rem] h-[2.5rem]"
-                src="/quizattendee.png"
-                width={100}
-                height={100}
-                alt="quizplayer"
-              />
+                <p className="text-sm">{`${index + 4}th`}</p>
+                <Image
+                  className="w-[2.5rem] h-[2.5rem]"
+                  src="/quizattendee.png"
+                  width={100}
+                  height={100}
+                  alt="quizplayer"
+                />
                 <p className="text-sm">{attendee?.attendeeName ?? ""}</p>
               </div>
               <p>{(attendee?.totalScore ?? 0)?.toFixed(0)}p</p>
