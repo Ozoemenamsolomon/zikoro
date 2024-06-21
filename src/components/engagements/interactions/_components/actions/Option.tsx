@@ -39,14 +39,10 @@ export function Option({
     return i?.length || 0;
   }, [answer]);
 
-  //console.log()
-  //
-
   const isCorrectAnswer = useMemo(() => {
     return option?.isAnswer === option?.optionId;
   }, [option]);
 
- // console.log("fsdfsdf", isCorrectAnswer, option?.isAnswer, option?.optionId, option?.isCorrect)
   return (
     <>
       {isOrganizer || isIdPresent ? (
