@@ -94,7 +94,7 @@ export function PaymentModal({
     )}&plan=${encodeURIComponent(
       chosenPlan || ""
     )}&isMonthly=${encodeURIComponent(
-      isChosenMonthly || ''
+      isChosenMonthly || ""
     )}&total=${encodeURIComponent(
       totalPrice.toString()
     )}&currency=${encodeURIComponent(chosenCurrency)}`;
@@ -271,36 +271,38 @@ export function PaymentModal({
               </select>
             )}
 
-            <Popover>
-              <PopoverTrigger className="w-full mt-4 flex items-center px-4 rounded-lg h-[44px] border-[1px] border-indigo-600 hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gap-x-2 w-dvh text-[15px] font-medium cursor-pointer ">
-                <PlusCircle size={22} />
-                <p>Add Workspace</p>
-              </PopoverTrigger>
-              {!closeForm && (
-                <PopoverContent
-                  className={`z-[1000] ${closeForm && "data-[state=close]"} `}
-                >
-                  <form onSubmit={createOrgDetails}>
-                    <input
-                      type="text"
-                      name="orgName"
-                      value={orgName}
-                      required
-                      className=" mt-4 px-4 py-[10px] text-base rounded-lg placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
-                      placeholder="Organization name"
-                      onChange={(e) => setOrgName(e.target.value)}
-                    />
-                    <button
-                      className="text-base mt-3 w-full text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  rounded-lg py-3 font-medium"
-                      type="submit"
-                    >
-                      {" "}
-                      Submit
-                    </button>
-                  </form>
-                </PopoverContent>
-              )}
-            </Popover>
+            {!organizationData && (
+              <Popover>
+                <PopoverTrigger className="w-full mt-4 flex items-center px-4 rounded-lg h-[44px] border-[1px] border-indigo-600 hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gap-x-2 w-dvh text-[15px] font-medium cursor-pointer ">
+                  <PlusCircle size={22} />
+                  <p>Add Workspace</p>
+                </PopoverTrigger>
+                {!closeForm && (
+                  <PopoverContent
+                    className={`z-[1000] ${closeForm && "data-[state=close]"} `}
+                  >
+                    <form onSubmit={createOrgDetails}>
+                      <input
+                        type="text"
+                        name="orgName"
+                        value={orgName}
+                        required
+                        className=" mt-4 px-4 py-[10px] text-base rounded-lg placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+                        placeholder="Organization name"
+                        onChange={(e) => setOrgName(e.target.value)}
+                      />
+                      <button
+                        className="text-base mt-3 w-full text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  rounded-lg py-3 font-medium"
+                        type="submit"
+                      >
+                        {" "}
+                        Submit
+                      </button>
+                    </form>
+                  </PopoverContent>
+                )}
+              </Popover>
+            )}
 
             {/* Add Ons section */}
             <div className="mt-6 ">

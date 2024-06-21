@@ -179,9 +179,10 @@ export default function Presentation({
 
   // show score sheet after live quiz
   useEffect(() => {
-    if (quiz && quiz?.accessibility?.live) {
+    if (quiz && quiz?.accessibility?.live ) {
       if (quiz?.liveMode?.isEnded) {
         setShowScoreSheet(quiz?.liveMode?.isEnded);
+        
       }
     }
   }, [quiz]);

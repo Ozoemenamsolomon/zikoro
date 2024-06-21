@@ -22,7 +22,7 @@ export interface ILead {
   attendeeType?: object;
   attendeeAlias?: string;
   attendeeId?: number;
-  firstContactChannel?: string;
+  firstContactChannel: string;
   websiteUrl?: string;
   eventAlias?: string;
   interests?: object;

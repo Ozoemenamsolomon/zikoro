@@ -94,3 +94,29 @@ export const geocodeAddress = async (
 };
 
 export const deploymentUrl = "https://www.zikoro.com";
+
+interface Contact {
+  name: string;
+  phone: string;
+  email: string;
+}
+
+export function saveContact(contact: Contact): void {
+  // Create a vCard string
+  const vcard = `BEGIN:VCARD\nVERSION:4.0\nFN:${contact.name}\nTEL;TYPE=work,voice:${contact.phone}\nEMAIL:${contact.email}\nEND:VCARD`;
+
+  // Create a Blob from the vCard string
+  const blob = new Blob([vcard], { type: "text/vcard" });
+
+  // Create a URL for the Blob
+  const url = URL.createObjectURL(blob);
+
+  // Create a new anchor element
+  const newLink = document.createElement("a");
+  newLink.download = `${contact.name}.vcf`;
+  newLink.textContent = contact.name;
+  newLink.href = url;
+
+  // Programmatically click the anchor to trigger the download
+  newLink.click();
+}

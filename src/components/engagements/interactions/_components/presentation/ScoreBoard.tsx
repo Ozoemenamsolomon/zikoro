@@ -2,14 +2,20 @@
 
 import { Button } from "@/components";
 import Image from "next/image";
-import { TAnswer, TQuiz, TRefinedQuestion, TConnectedUser } from "@/types";
+import {
+  TAnswer,
+  TQuiz,
+  TRefinedQuestion,
+  TQuestion,
+  TConnectedUser,
+} from "@/types";
 import { useMemo, useState } from "react";
 import { getCookie } from "@/hooks";
 import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
 import { cn } from "@/lib";
 import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
 import { CloseOutline } from "@styled-icons/zondicons/CloseOutline";
-
+import { useUpdateQuiz } from "@/hooks";
 type TLeaderBoard = {
   quizParticipantId: string;
   attendeeName: string;
@@ -33,7 +39,7 @@ export function ScoreBoard({
 }) {
   const [isQuizResult, setQuizResult] = useState(false);
   const player = getCookie<TConnectedUser>("player");
-
+  const { updateQuiz, isLoading } = useUpdateQuiz();
   const board = useMemo(() => {
     const participantGroup: { [key: string]: TLeaderBoard } = {};
     if (Array.isArray(answers) && answers.length > 0) {
@@ -42,12 +48,10 @@ export function ScoreBoard({
         const answerCreated = new Date(item?.created_at).getTime();
         const isQuizLive = quiz?.accessibility?.live;
         if (isQuizLive) {
-          return answerCreated > quizStart 
+          return answerCreated > quizStart;
+        } else {
+          return true;
         }
-        else {
-          return true
-        }
-        
       });
       filteredAnswers?.forEach((ans) => {
         const key = ans?.quizParticipantId;
@@ -83,21 +87,50 @@ export function ScoreBoard({
       const index = board?.findIndex(
         ({ quizParticipantId }) => quizParticipantId === playerId
       );
-  
+
       return index + 1;
     }
-  
   }, [board]);
   const userScore = useMemo(() => {
-   if (isAttendee && quiz) {
-    const playerId = quiz?.accessibility?.live ? player?.userId : id;
-    const score = board?.find(
-      ({ quizParticipantId }) => quizParticipantId === playerId
-    );
+    if (isAttendee && quiz) {
+      const playerId = quiz?.accessibility?.live ? player?.userId : id;
+      const score = board?.find(
+        ({ quizParticipantId }) => quizParticipantId === playerId
+      );
 
-    return score?.totalScore || 0;
-   }
+      return score?.totalScore || 0;
+    }
   }, [board]);
+
+  const actualQuiz: TQuiz<TQuestion[]> | null = useMemo(() => {
+    if (quiz) {
+      return {
+        ...quiz,
+        questions: quiz?.questions?.map((item) => {
+          return {
+            ...item,
+            options: item?.options?.map(({ isCorrect, ...rest }) => rest),
+          };
+        }),
+      };
+    } else {
+      return null;
+    }
+  }, [quiz]);
+
+  async function endLiveQuiz() {
+    if (actualQuiz) {
+      const payload = {
+        ...actualQuiz,
+        liveMode: {
+          ...actualQuiz?.liveMode,
+          isEnded: null,
+        },
+      };
+      await updateQuiz({ payload });
+      close();
+    }
+  }
 
   return (
     <>
@@ -119,7 +152,8 @@ export function ScoreBoard({
 
             <div className="mx-auto w-fit flex px-2 mb-6 items-center gap-x-8 sm:gap-x-20 bg-white h-10 rounded-3xl">
               <Button
-                onClick={close}
+                disabled={isLoading}
+                onClick={quiz?.accessibility?.live ? endLiveQuiz : close}
                 className="underline rounded-none px-2 h-10 w-fit"
               >
                 Go To Quiz Page
@@ -314,7 +348,9 @@ function AttendeeScore({
             <div className="mx-auto w-[60%] my-6 flex items-center justify-between">
               <p>
                 Points won:{" "}
-                <span className="font-medium">{userScore?.toFixed(0) ?? ""}</span>
+                <span className="font-medium">
+                  {userScore?.toFixed(0) ?? ""}
+                </span>
               </p>
               <p>
                 Position:{" "}
