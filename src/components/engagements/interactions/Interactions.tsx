@@ -136,8 +136,8 @@ function EmptyState({
       <Button
         onClick={toggleInteractionModal}
         className={cn(
-          "bg-basePrimary text-white  rounded-lg",
-          isNotAttendee && "hidden"
+          "bg-basePrimary text-white hidden rounded-lg",
+          isNotAttendee && "flex"
         )}
       >
         <p> Create Interaction 🎊</p>

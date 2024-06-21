@@ -182,7 +182,7 @@ export default function Presentation({
     if (quiz && quiz?.accessibility?.live ) {
       if (quiz?.liveMode?.isEnded) {
         setShowScoreSheet(quiz?.liveMode?.isEnded);
-        
+
       }
     }
   }, [quiz]);
@@ -338,7 +338,7 @@ function AttendeeRegistration({
       return;
     }
 
-    if (!quiz?.accessibility?.visible && !isAttendee) {
+    if (!quiz?.accessibility?.visible && !attendeeId) {
       toast.error("You are not a registered attendee for this event");
       return;
     }

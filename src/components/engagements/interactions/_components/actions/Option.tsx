@@ -39,8 +39,10 @@ export function Option({
     return i?.length || 0;
   }, [answer]);
 
-  //console.log()
-  //
+  const isCorrectAnswer = useMemo(() => {
+    return option?.isAnswer === option?.optionId;
+  }, [option]);
+
   return (
     <>
       {isOrganizer || isIdPresent ? (
@@ -49,6 +51,8 @@ export function Option({
           option={option?.option ?? ""}
           showAnswerMetric={showAnswerMetric}
           chosen={((chosedOption / answer?.length) * 100).toFixed(0)}
+          isCorrect={typeof option?.isCorrect === "boolean"}
+          isCorrectAnswer={isCorrectAnswer}
         />
       ) : (
         <button
@@ -65,7 +69,10 @@ export function Option({
               "border-green-500 bg-green-500/20",
             typeof option?.isCorrect === "boolean" &&
               !option?.isCorrect &&
-              "border-red-500 bg-red-500/20"
+              "border-red-500 bg-red-500/20",
+            typeof option?.isCorrect === "boolean" &&
+              isCorrectAnswer &&
+              "border-green-500 bg-green-500/20 transform quiz-option-animation"
           )}
         >
           <div className="w-full flex items-center justify-between">
@@ -124,14 +131,25 @@ export function OrganizerQuestOption({
   option,
   showAnswerMetric,
   chosen,
+  isCorrectAnswer,
+  isCorrect,
 }: {
   optionIndex: string;
   option: string;
   showAnswerMetric?: boolean;
   chosen?: string;
+  isCorrectAnswer?: boolean;
+  isCorrect?: boolean;
 }) {
   return (
-    <button className="w-full px-4 text-gray-500 gap-y-1  min-h-[44px] h-fit rounded-md border border-gray-500 bg-gray-100">
+    <button
+      className={cn(
+        "w-full px-4 text-gray-500 gap-y-1  min-h-[44px] h-fit rounded-md border border-gray-500 bg-gray-100",
+        isCorrect &&
+          isCorrectAnswer &&
+          "border-green-500 bg-green-500/20 transform quiz-option-animation"
+      )}
+    >
       <div className="w-full flex items-center justify-between">
         <div className="flex items-center gap-x-1">
           <span>{optionIndex}.</span>

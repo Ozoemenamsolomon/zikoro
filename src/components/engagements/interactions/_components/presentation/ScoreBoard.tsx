@@ -274,17 +274,20 @@ export function ScoreBoard({
                         className="flex items-center justify-between w-full py-3 border-b px-2"
                       >
                         <div className="flex items-center gap-x-3">
-                          <Image
+                         <div className="flex flex-col items-center justify-center">
+                         <Image
                             src="/quizattendee.png"
                             className="w-[4rem] h-[4rem]"
                             alt=""
                             width={150}
                             height={150}
                           />
+                          <p>{`${index + 4}th`}</p>
+                          </div>
                           <p className="">{player?.attendeeName}</p>
                         </div>
 
-                        <p>{`${index + 4}th`}</p>
+                        <p>{player?.totalScore ?? 0}</p>
                       </div>
                     ))}
                 </div>
