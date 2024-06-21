@@ -1,3 +1,4 @@
+import { ChevronDown } from 'lucide-react';
 import React from 'react';
 
 const AppointmentCalender = () => {
@@ -19,16 +20,13 @@ const AppointmentCalender = () => {
           </p>
         </div>
 
-        <button
-          className="py-2 px-6 border-2"
-          style={{
-            borderRadius: '9999px', // Manually set a large border-radius
-            borderImage: 'linear-gradient(269.83deg, #9C00FE 0.14%, #001FCB 99.85%) 1',
-            borderImageSlice: 1,
-          }}
-        >
-          Month view
-        </button>
+        <div className="rounded-full bg-basePrimary p-0.5">
+            <button
+              className="py-2 bg-white px-4  rounded-full flex gap-2 items-center text-sm"
+            >
+              <p>Month view</p><ChevronDown size={18}/>
+            </button>
+        </div>
       </header>
 
       <section className="w-full h-screen bg-gray-100 rounded-lg">

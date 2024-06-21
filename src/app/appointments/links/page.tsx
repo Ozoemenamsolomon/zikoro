@@ -3,10 +3,9 @@ import LinksPage from '@/components/appointments/links'
 import { supabaseServerClient } from '@/utils/supabase/server'
 import React from 'react'
 
-const dynamic = 'dynamic'
-const page = async () => {
+const page = async ({ searchParams }: { searchParams: { [key: string]: string | string[] } }) => {
   const {data,error} = await supabaseServerClient.from('appointmentLinks').select('*')
-  // console.log({data,error})
+  console.log({data,error, searchParams}, )
   return (
     <Main>
         <LinksPage appointmnetLinks={data || []}/>

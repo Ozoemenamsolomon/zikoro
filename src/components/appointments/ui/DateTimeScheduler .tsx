@@ -6,13 +6,16 @@ import { SelectInput } from './CustomSelect';
 
 
 export const generateTimeOptions = () => {
-    const times = [];
-    for (let i = 0; i < 24; i++) {
-      const hour = String(i).padStart(2, '0');
-      times.push(`${hour}:00`, `${hour}:30`);
-    }
-    return times;
-  };
+  const times: string[] = [];
+  for (let i = 0; i < 24; i++) {
+    const date = new Date(0, 0, 0, i);
+    times.push(date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+    date.setMinutes(30);
+    times.push(date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+  }
+  return times;
+};
+
   
 const timeOptions = generateTimeOptions();
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", ];
@@ -39,20 +42,6 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
                                                 to: '',
                                                 enabled: false
                                               })));
-
-  // useEffect(() => {
-  //   setFormData({
-  //       ...formData,
-  //       // timeZone: timezones[0].value,
-  //       timeDetails: daysOfWeek.map(day => ({
-  //           day,
-  //           from: '',
-  //           to: '',
-  //           enabled: false
-  //         }))
-  //     })
-  // }, [])
-  
 
   const handleToggleDay = (day: string) => {
     setSchedules(schedules.map(schedule => (
@@ -83,15 +72,6 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
           value={formData?.timeZone || timezones[12].value}
           setFormData={setFormData}
         />
-        {/* <select
-          className="block w-full px-4 py-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-zikoroBlue "
-          value={timezone}
-          onChange={(e) => setTimezone(e.target.value)}
-        >
-          {timezones.map(({label,value}, idx) => (
-            <option key={idx} value={value}>{label}</option>
-          ))}
-        </select> */}
       </div>
       
       <div className="grid grid-cols-1 gap-6">
@@ -108,13 +88,13 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
                     <label className="text- font-medium text-gray-700">{schedule.day}</label>
                 </div>
             
-                <div className=" col-span-2 grid w-full grid-cols-2 gap-4">
-                <div className='p-2 w-full border rounded-md flex gap-4 items-center'>
+                <div className=" col-span-2 grid w-full grid-cols-2 gap-2">
+                <div className='p-2 w-full border rounded-md flex  items-center'>
                     <label className=" text-gray-70">From</label>
                     <select
                     disabled={!schedule?.enabled}
                     className=" w-full focus:outline-none "
-                    value={schedule.from || '10:00'}
+                    value={schedule.from || ''}
                     onChange={(e) => handleTimeChange(schedule.day, 'from', e.target.value)}
                     >
                     {/* <option value="" disabled>Select time</option> */}
@@ -128,8 +108,8 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
                     <label className=" text-gray-70">To</label>
                     <select
                     disabled={!schedule?.enabled}
-                    className=" w-full focus:outline-none "
-                    value={schedule.to || '10:00'}
+                    className=" w-full focus:outline-none text-sm"
+                    value={schedule.to || ''}
                     onChange={(e) => handleTimeChange(schedule.day, 'to', e.target.value)}
                     >
                     {/* <option value="" disabled>Select time</option> */}

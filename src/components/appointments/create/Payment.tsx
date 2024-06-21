@@ -22,7 +22,7 @@ const Payment: React.FC<FormProps> = ({
         <div className="flex gap-8 items-center">
             <SelectInput
               name='amount'
-              value={formData?.amount || 60}
+              value={formData?.amount || ''}
               options={[
                 {label:'20',value:20},
                 {label:'40',value:40},
@@ -32,11 +32,12 @@ const Payment: React.FC<FormProps> = ({
               ]}
               setFormData={setFormData!}
               setError={setErrors}
+              placeholder='select'
               className='w-32'
             />
             <SelectInput
               name='curency'
-              value={formData?.curency || 'USD'}
+              value={formData?.curency || ''}
               options={[
                 {label:'USD',value:'USD'},
                 {label:'CAD',value:'CAD'},
@@ -45,6 +46,7 @@ const Payment: React.FC<FormProps> = ({
                 {label:'AUD',value:'AUD'},
               ]}
               setFormData={setFormData!}
+              placeholder='select'
               className='w-32'
               setError={setErrors}
             />

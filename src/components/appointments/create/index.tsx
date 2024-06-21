@@ -148,9 +148,9 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
   return (
     <main className="p-4 sm:p-8">
       <Link href={'/appointments'} type="button">
-        <BentArrowLeft w={14} />
+        <BentArrowLeft w={20} />
       </Link>
-      <section className="py-20 flex w-full justify-center items-center">
+      <section className="py-4 flex w-full justify-center items-center">
         <form onSubmit={handleSubmit} className="w-full max-w-2xl bg-white rounded-[6px] p-6 sm:p-[60px] grid gap-0.5">
           {detailsArray.map((detail, index) => {
             const FormComponent = detail.formComponent;
@@ -184,7 +184,7 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
           <button type="submit"
             className='mt-6 py-3 text-center w-full rounded-md text-[#F2F2F2] font-semibold text-xl bg-basePrimary'
           >
-            Create Appointment
+            {loading ?  'Submiting...' : 'Create Appointment'}
           </button>
         </form>
       </section>
