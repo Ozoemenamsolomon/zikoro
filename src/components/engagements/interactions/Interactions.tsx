@@ -45,22 +45,24 @@ export default function Interactions({ eventId }: { eventId: string }) {
     }
   }, [quizzes, isIdPresent, isOrganizer]);
 
-  // console.log({visibleQuizzes, quizzes, isIdPresent,isOrganizer})
+  //console.log({ visibleQuizzes, quizzes, isIdPresent, isOrganizer });
 
   return (
     <InteractionLayout eventId={eventId}>
       <div className="w-full">
         <div className="flex items-end w-full justify-end p-4">
-          <Button
-            onClick={toggleInteractionModal}
-            className={cn(
-              "text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium hidden",
-              (isIdPresent || isOrganizer) && "flex"
-            )}
-          >
-            <PlusCircle size={22} />
-            <p>Interactions</p>
-          </Button>
+          {Array.isArray(visibleQuizzes) && visibleQuizzes?.length > 0 && (
+            <Button
+              onClick={toggleInteractionModal}
+              className={cn(
+                "text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium hidden",
+                (isIdPresent || isOrganizer) && "flex"
+              )}
+            >
+              <PlusCircle size={22} />
+              <p>Interactions</p>
+            </Button>
+          )}
         </div>
 
         <div className="w-full grid pb-20 mt-3 px-4 sm:mt-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-center">
@@ -73,7 +75,10 @@ export default function Interactions({ eventId }: { eventId: string }) {
             Array.isArray(visibleQuizzes) &&
             visibleQuizzes?.length === 0 && (
               <div className="w-full col-span-full flex items-center justify-center h-[350px]">
-                <EmptyState toggleInteractionModal={toggleInteractionModal} />
+                <EmptyState
+                  isNotAttendee={isIdPresent || isOrganizer}
+                  toggleInteractionModal={toggleInteractionModal}
+                />
               </div>
             )}
           {!isLoading &&
@@ -107,8 +112,10 @@ export default function Interactions({ eventId }: { eventId: string }) {
 
 function EmptyState({
   toggleInteractionModal,
+  isNotAttendee,
 }: {
   toggleInteractionModal: () => void;
+  isNotAttendee: boolean;
 }) {
   return (
     <div className="w-full flex flex-col gap-y-3 items-center justify-center h-[24rem]">
@@ -128,7 +135,10 @@ function EmptyState({
 
       <Button
         onClick={toggleInteractionModal}
-        className="bg-basePrimary text-white  rounded-lg"
+        className={cn(
+          "bg-basePrimary text-white  rounded-lg",
+          isNotAttendee && "hidden"
+        )}
       >
         <p> Create Interaction 🎊</p>
       </Button>
