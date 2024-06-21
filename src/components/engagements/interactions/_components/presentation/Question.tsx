@@ -336,7 +336,6 @@ export function Qusetion({
       const attendeePoints =
         ((score * millisecondsLeft) / Number(currentQuestion?.duration)) *
         Number(currentQuestion?.points);
-      //console.log(maxPoints)
 
       // update quiz state
       const updatedQuiz: TQuiz<TRefinedQuestion[]> = {
@@ -357,8 +356,6 @@ export function Qusetion({
         updateQuiz(updatedQuiz);
       }
       updateQuizResult(updatedQuiz);
-
-      // setCurrentQuestion(quiz?.questions[index])
 
       const payload: Partial<TAnswer> = {
         ...attendeeDetail,
@@ -448,8 +445,6 @@ export function Qusetion({
       showMetric();
     }
   }
-
-  // console.log("yeahssss", showAnswerMetric);
 
   return (
     <div
