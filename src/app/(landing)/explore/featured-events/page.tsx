@@ -58,7 +58,6 @@ export default function FeaturedEvents() {
   const [isEventTypeUp, setEventTypeUp] = useState(false);
   const [isCountryUp, setCountryUp] = useState(false);
   const [isCityUp, setCityUp] = useState(false);
-  const [isPriceUp, setPriceUp] = useState(false);
   const [isFilterOpen, setFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [eventData, setEventData] = useState<DBFeaturedEvent[] | undefined>(
@@ -129,11 +128,6 @@ export default function FeaturedEvents() {
     } else {
       setSelectedButtons([...selectedButtons, text]);
     }
-  };
-
-  //saveFilter
-  const saveFilter = () => {
-    setFilterOpen(false);
   };
 
   useEffect(() => {
@@ -634,7 +628,7 @@ export default function FeaturedEvents() {
             <div className="block lg:hidden">
               <div className="flex py-6 px-5 items-center justify-between border-b-[1px] border-gray-300 ">
                 <div className="flex gap-x-3 items-center">
-                    <ArrowBackCircle onClick={() => setFilterOpen(false)} />
+                  <ArrowBackCircle onClick={() => setFilterOpen(false)} />
                   <p className="text-[14px] font-semibold  ">Filter Events</p>
                 </div>
                 <button
@@ -805,12 +799,14 @@ export default function FeaturedEvents() {
                         >
                           This Month
                         </button>
-                       
                       </div>
                     )}
                   </div>
 
-                  <button className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] mx-3 px-5 rounded-md border border-white" onClick={() => setFilterOpen(false)}>
+                  <button
+                    className=" text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] mx-3 px-5 rounded-md border border-white"
+                    onClick={() => setFilterOpen(false)}
+                  >
                     Save
                   </button>
                 </div>
