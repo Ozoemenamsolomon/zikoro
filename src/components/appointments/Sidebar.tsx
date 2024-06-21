@@ -1,8 +1,11 @@
 
 import { BriefCase, CircleArrowRight, CalenderIcon } from '@/constants';
+import { getUser } from '@/hooks';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Bell, Calendar, Grip, HelpCircle, Link2, Menu, Plus, Settings, BriefcaseIcon } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react';
+import { usePathname } from 'next/navigation';
+import React, { useEffect } from 'react';
 
 const navlinks = [
   {
@@ -33,6 +36,17 @@ const navlinks = [
 ];
 
 const Sidebar = () => {
+  const pathanme = usePathname()
+  // const supabase = createClientComponentClient()
+
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     const user = await supabase.auth.getUser()
+  //     console.log({user},'hhhhhhhhhhhhhhh')
+  //   }
+  //   fetch()
+  // }, [])
+  
   return (
     <nav className="space-y-4 text-sm px-6 py-6 h-full w-full flex flex-col justify-between gap-6">
       <div className="w-full space-y-2">
@@ -70,13 +84,14 @@ const Sidebar = () => {
           {navlinks.map(({ icon, label, link }, idx) => {
             const Icon = icon;
             return (
-              <Link key={idx} href={link} className={`flex gap-4 items-center px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-slate-200  hover:to-purple-200 duration-300 group `}>
+              <Link key={idx} href={link} className={`${pathanme===link?'bg-gradient-to-r from-slate-200 to-purple-200':''} flex gap-4 items-center px-3 py-2 rounded-md hover:bg-gradient-to-r hover:from-slate-200  hover:to-purple-200 duration-300 group `}>
                 <div>
-                  <Icon size={18} className="group-hover:text-purple-800 duration-300" 
+                  <Icon size={18} className={`${pathanme===link?'text-purple-800':''} group-hover:text-purple-800 duration-300 `}
                   // style={{background: `linear-gradient(269.83deg, #9C00FE 0.14%, #001FCB 99.85%)`}}
                   />
                 </div>
-                <p className="group-hover:text-blue-700 font-medium duration-300">{label}</p>
+                <p className={`${pathanme===link?'text-blue-700':''} group-hover:text-blue-700 font-medium duration-300 `}>{label}</p>
+
                 {label === 'Notification' ? (
                   <div className="w-6 h-6 rounded-full text-white flex items-center justify-center bg-gradient-to-l from-purple-700 to-blue-700">
                     {2}

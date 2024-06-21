@@ -12,7 +12,6 @@ const Generalsettings: React.FC<FormProps> = ({
   loading,
   setLoading,handleChange,
 }) => {
-
   return (
     <div className="space-y-4">
       <div className="">
@@ -36,7 +35,7 @@ const Generalsettings: React.FC<FormProps> = ({
         <p className='pb-2'>Show <span className="font-semibold">unavailable</span> when core team {`member(s)`} is unavailable</p>
         <SelectInput
               name='a'
-              value={formData?.a || 'Emma Udo'}
+              value={formData?.a || ''}
               options={[
                 {label:'Emma Udo',value:'Emma Udo'},
                 {label:'John Smith',value:'John Smith'},
@@ -54,7 +53,7 @@ const Generalsettings: React.FC<FormProps> = ({
         <p className='pb-2'>Maximum bookings per session</p>
           <SelectInput
                 name='maxBooking'
-                value={formData?.maxBooking || 1}
+                value={formData?.maxBooking || ''}
                 options={[
                   {label:'1',value:1},
                   {label:'5',value:5},
@@ -70,11 +69,11 @@ const Generalsettings: React.FC<FormProps> = ({
         <label htmlFor="a" className='pb-2'>Break between sessions in minutes</label>
           <SelectInput
                 name='sessionBreak'
-                value={formData?.sessionBreak || '10'}
+                value={formData?.sessionBreak || ''}
                 options={[
-                  {label:'10',value:'10'},
-                  {label:'15',value:'15'},
-                  {label:'20',value:'20'},
+                  {label:'10',value:10},
+                  {label:'15',value:15},
+                  {label:'20',value:20},
                 ]}
                 setFormData={setFormData!}
                 className='w-32'

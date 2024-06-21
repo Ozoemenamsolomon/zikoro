@@ -4,10 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { deploymentUrl } from "@/utils";
 import { AppointmentLink } from "@/types/appointments";
 
-export async function POST(req: NextRequest) {
+export async function PUT(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
 
-  if (req.method !== "POST") {
+  if (req.method !== "PUT") {
     return NextResponse.json(
       { error: 'Method not allowed' },
       { status: 405 }
@@ -16,11 +16,12 @@ export async function POST(req: NextRequest) {
 
   try {
     const body: AppointmentLink = await req.json();
-    console.log('POST',{ body });
+    console.log('PUT',{ body });
 
     const { data, error } = await supabase
       .from('appointmentLinks')
-      .insert([body])
+      .update(body)
+      .eq('id', body.id)
       .select('*')
       .single();
 

@@ -7,7 +7,7 @@ import { AppointmentLink } from "@/types/appointments";
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
 
-  if (req.method !== "POST") {
+  if (req.method !== "GET") {
     return NextResponse.json(
       { error: 'Method not allowed' },
       { status: 405 }
@@ -15,14 +15,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body: AppointmentLink = await req.json();
-    console.log('POST',{ body });
-
     const { data, error } = await supabase
       .from('appointmentLinks')
-      .insert([body])
       .select('*')
-      .single();
 
     if (error) {
       console.error({ error });

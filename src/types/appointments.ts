@@ -1,16 +1,17 @@
 export interface AppointmentLink {
+    id?:number;
     appointmentName?: string;
     category?: any;
-    duration?: number;
+    duration?: number | null;
     loctionType?: string;
     locationDetails?: string;
     timeZone?: string;
     timeDetails?: any;
     curency?: string;
-    amount?: number;
+    amount?: number | null;
     paymentGateway?: string;
-    maxBooking?: number;
-    sessionBreak?: number;
+    maxBooking?: number | null;
+    sessionBreak?: number | null;
     statusOn?: boolean;
     note?: string;
   }

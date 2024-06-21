@@ -66,7 +66,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
           label2={'Virtual'} 
           value1={'Onsite'} 
           value2={'Virtual'} 
-          name='locationType'
+          name='loctionType'
           />
       </div>
       

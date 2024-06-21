@@ -1,20 +1,24 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import LinksCard from './LinksCard'
+import { AppointmentLink } from '@/types/appointments'
 
-const LinksPage = () => {
+const LinksPage = ({appointmnetLinks}:{appointmnetLinks:AppointmentLink[]}) => {
+    console.log('AAAA',{appointmnetLinks})
   return (
     <main className=''>
         <h4 className='text-2xl font-semibold'>My Links</h4>
-        <div className="mt-10 flex flex-wrap gap-6">
-            {
-                [1,2,3,4,5,6,7,8]?.map((items,idx)=>{
-                    return (
-                        <LinksCard key={idx}/>
-                    )
-                })
-            }
+        <Suspense fallback={<div className='p-40 text-center '>Loading...</div>}>
+            <section className="mt-10 flex flex-wrap gap-6 justify-center w-full">
+                {
+                    appointmnetLinks?.map((item,idx)=>{
+                        return (
+                            <LinksCard key={idx} data={item}/>
+                        )
+                    })
+                }
+            </section>
+        </Suspense>
 
-        </div>
     </main>
   )
 }

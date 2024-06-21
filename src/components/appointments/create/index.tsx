@@ -11,6 +11,7 @@ import Branding from './Branding';
 import Generalsettings from './Generalsettings';
 import { DetailItem } from '@/types/appointments';
 import { AppointmentLink } from '@/types/appointments';
+import { useRouter } from 'next/navigation';
 
 const detailsArray: DetailItem[] = [
   {
@@ -45,8 +46,26 @@ const detailsArray: DetailItem[] = [
   },
 ];
 
-const CreateAppointments: React.FC = () => {
-  const [formData, setFormData] = useState<AppointmentLink>({});
+const formdata = {
+  appointmentName: '',
+  category: '',
+  duration: null,
+  loctionType: '',
+  locationDetails:  '',
+  timeZone: '',
+  timeDetails: '',
+  curency: '',
+  amount: null,
+  paymentGateway: '',
+  maxBooking: null,
+  sessionBreak: null,
+  statusOn: true,
+  note: '',
+}
+
+const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) => {
+  const {push} = useRouter()
+  const [formData, setFormData] = useState<AppointmentLink>(editData ? {...editData, timeDetails: JSON.parse(editData?.timeDetails)} : formdata);
   const [errors, setErrors] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -72,7 +91,6 @@ const CreateAppointments: React.FC = () => {
     });
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -80,22 +98,39 @@ const CreateAppointments: React.FC = () => {
   
     try {
       const payload = { ...formData, timeDetails: JSON.stringify(formData.timeDetails) };
-      console.log({ formData, payload });
-  
-      const response = await fetch('/api/appointments/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-  
+      
+      let response;
+      
+      if(editData) {
+        console.log('EEEEE',{ formData,payload,  editData});
+        // edit link
+        response = await fetch('/api/appointments/edit', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+      }else {
+        console.log('CCCC',{ formData,  editData});
+        // create new appointment link
+        response = await fetch('/api/appointments/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+      }
       const result = await response.json();
   
       if (response.ok) {
         setFormData({});
         console.log('Form submitted successfully', result);
         // Handle any additional success actions here
+        push('/appointments/links')
       } else {
         console.error('Form submission failed', result);
         setErrors(result.error);

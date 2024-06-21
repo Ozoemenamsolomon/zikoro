@@ -2,7 +2,7 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { deploymentUrl } from "@/utils";
-import { AppointmentLink } from "@/types/appointments";
+import { BookingFormData } from "@/components/appointments/booking/Calender";
 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -15,11 +15,11 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body: AppointmentLink = await req.json();
+    const body: BookingFormData = await req.json();
     console.log('POST',{ body });
 
     const { data, error } = await supabase
-      .from('appointmentLinks')
+      .from('bookings')
       .insert([body])
       .select('*')
       .single();

@@ -31,25 +31,27 @@ interface DateTimeScheduler {
 const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
     
   // const [timezone, setTimezone] = useState<string>(timezones[0].value);
-  const [schedules, setSchedules] = useState<DaySchedule[]>(daysOfWeek.map(day => ({
-    day,
-    from: '',
-    to: '',
-    enabled: false
-  })));
+  const [schedules, setSchedules] = useState<DaySchedule[]>(
+                                                formData?.timeDetails ? formData?.timeDetails : 
+                                                daysOfWeek.map(day => ({
+                                                day,
+                                                from: '',
+                                                to: '',
+                                                enabled: false
+                                              })));
 
-  useEffect(() => {
-    setFormData({
-        ...formData,
-        timezone: timezones[0].value,
-        timeDetails: daysOfWeek.map(day => ({
-            day,
-            from: '',
-            to: '',
-            enabled: false
-          }))
-      })
-  }, [])
+  // useEffect(() => {
+  //   setFormData({
+  //       ...formData,
+  //       // timeZone: timezones[0].value,
+  //       timeDetails: daysOfWeek.map(day => ({
+  //           day,
+  //           from: '',
+  //           to: '',
+  //           enabled: false
+  //         }))
+  //     })
+  // }, [])
   
 
   const handleToggleDay = (day: string) => {
@@ -70,7 +72,7 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
           ))
       })
   };
-console.log({formData})
+// console.log({formData})
   return (
     <div className="w-full">
       <div className="pb-6">

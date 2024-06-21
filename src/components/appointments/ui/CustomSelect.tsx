@@ -30,7 +30,8 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   name,
   value,
   label,
-  placeholder,className,
+  placeholder='select',
+  className,
   disabled,icon,
   setError,
   addNewItem,
@@ -58,7 +59,6 @@ export const SelectInput: React.FC<SelectInputProps> = ({
     addNewItem && addNewItem();
     setIsOpen(false);
   };
-
   return (
     <div ref={containerRef} className={cn("relative z-30", className)}>
       {label && (
@@ -75,7 +75,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
             disabled ? 'cursor-not-allowed border-gray-300 bg-gray-100' : 'border-gray-300'
           }`, className )}
         >
-          {value ? options.find((option) => option.value === value)?.label : placeholder}
+          <p>{value ? (options.find((option) => option.value === value)?.label) : placeholder}</p>
             {
               icon ? <ChevronDown size={14}/> : 
             <UpDownArrow/>
