@@ -87,8 +87,8 @@ export function LeaderBoard({
         <div className="flex items-center p-4 justify-between w-full">
           <h2 className="font-semibold  text-base sm:text-xl">LeaderBoard</h2>
           <div className="flex items-center gap-x-2">
-            <div className="text-xs flex items-center gap-x-1">
-              <QUser />
+            <div className="text-xs flex text-white bg-basePrimary rounded-3xl px-2 py-1 justify-center items-center gap-x-1">
+              <QUser color="#ffffff" />
               <p>{board?.length || 0}</p>
             </div>
             <Button onClick={close} className="px-0 h-fit w-fit">
@@ -96,9 +96,7 @@ export function LeaderBoard({
             </Button>
           </div>
         </div>
-        <p className="text-white bg-basePrimary text-mobile rounded-3xl px-2 py-1">
-          {totalMaxPoints || 0}pts
-        </p>
+       
 
         {Array.isArray(board) && board?.length > 0 && (
           <div className="flex items-end justify-center">

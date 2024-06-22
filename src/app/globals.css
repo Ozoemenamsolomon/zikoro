@@ -538,3 +538,53 @@ input[type="number"] {
 .character {
   @apply border  flex items-center justify-center rounded-lg shadow-md border-gray-300 bg-transparent text-xl w-12 h-16
 }
+
+
+.quiz-lobby {
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.swipeDown {
+  animation-name: swipeDown;
+  -webkit-animation-name: swipeDown;
+}
+
+@keyframes swipeDown {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@-webkit-keyframes swipeDown {
+  0% {
+    -webkit-transform: translateY(-100%);
+  }
+
+  100% {
+    -webkit-transform: translateY(0px);
+  }
+}
+
+
+.quiz-option-animation {
+  transform: rotate(0deg);
+  transition: all;
+  animation: animate 1.2s linear;
+}
+
+@keyframes animate {
+  50% {
+    transform: rotate(30deg);
+    
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
