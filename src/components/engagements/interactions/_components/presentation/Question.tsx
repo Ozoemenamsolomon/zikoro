@@ -18,6 +18,7 @@ import {
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
+import { AvatarFullConfig } from "react-nice-avatar";
 
 type ChosenAnswerStatus = {
   isCorrect: boolean;
@@ -41,7 +42,7 @@ export function Qusetion({
   refetchQuiz,
   onOpenScoreSheet,
   updateQuizResult,
-  goBack
+  goBack,
 }: {
   isRightBox: boolean;
   isLeftBox: boolean;
@@ -50,7 +51,7 @@ export function Qusetion({
   toggleRightBox: () => void;
   quiz: TQuiz<TRefinedQuestion[]>;
   updateQuiz: (q: TQuiz<TRefinedQuestion[]>) => void;
-  attendeeDetail: { attendeeId: string | null; attendeeName: string };
+  attendeeDetail: { attendeeId: string | null; attendeeName: string; quizParticipantImage: Required<AvatarFullConfig> };
   isOrganizer: boolean;
   isIdPresent: boolean;
   answer: TAnswer[];
@@ -60,7 +61,7 @@ export function Qusetion({
   refetchQuizAnswers: (id: number) => Promise<any>;
   onOpenScoreSheet: () => void;
   updateQuizResult: (q: TQuiz<TRefinedQuestion[]>) => void;
-  goBack:() => void
+  goBack: () => void;
 }) {
   const [currentQuestion, setCurrentQuestion] =
     useState<TRefinedQuestion | null>(null);
@@ -180,17 +181,6 @@ export function Qusetion({
     return () => clearInterval(countdownInterval);
   }, [millisecondsLeft]);
 
-  // goto next question when time exceeds limit
-  /**
-   useEffect(() => {
-    if (millisecondsLeft <= 0) {
-      // nextQuestion();
-     console.log(millisecondsLeft)
-      setShowAnswerMetric(true);
-    }
-  }, [millisecondsLeft]);
- */
-
   useEffect(() => {
     if (currentQuestion?.duration) {
       setMillisecondsLeft(Number(currentQuestion?.duration));
@@ -204,8 +194,8 @@ export function Qusetion({
 
   async function nextQuestion() {
     if (quiz?.accessibility?.live) {
-      const { questions,liveMode, ...restData } = quiz;
-      
+      const { questions, liveMode, ...restData } = quiz;
+
       const payload: Partial<TQuiz<TQuestion[]>> = {
         ...restData,
         questions: quiz?.questions?.map((item) => {
@@ -275,6 +265,9 @@ export function Qusetion({
         liveMode: {
           startingAt,
           isShowAnswerMetric: true,
+          correctOptionId: currentQuestion?.options?.find(
+            (i) => i?.isAnswer === i?.optionId
+          )?.optionId,
         },
       };
 
@@ -290,13 +283,10 @@ export function Qusetion({
     }
   }
 
- 
-
   const optionLetter = ["A", "B", "C", "D"];
 
   // console.log("answer", answer)
   async function selectOption(id: string) {
-  
     setLoading(true);
     if (currentQuestion) {
       const updatedOptions = currentQuestion?.options?.map((item) => {
@@ -304,6 +294,11 @@ export function Qusetion({
           return {
             ...item,
             isCorrect: item?.isAnswer === id,
+          };
+        } else if (item?.optionId === item?.isAnswer) {
+          return {
+            ...item,
+            isCorrect: true,
           };
         }
         return item;
@@ -354,6 +349,7 @@ export function Qusetion({
       // udpate chosen option state, if quiz is not live
       if (!quiz?.accessibility?.live) {
         updateQuiz(updatedQuiz);
+      } else {
       }
       updateQuizResult(updatedQuiz);
 
@@ -364,6 +360,7 @@ export function Qusetion({
         quizParticipantId: quiz?.accessibility?.live
           ? player?.userId
           : quizParticipantId,
+        
         attendeePoints,
         answerDuration: millisecondsLeft,
         quizAlias: quiz?.quizAlias,
@@ -392,6 +389,9 @@ export function Qusetion({
           liveMode: {
             startingAt: liveMode?.startingAt,
             isOptionSelected: true,
+            correctOptionId: currentQuestion?.options?.find(
+              (i) => i?.isAnswer === i?.optionId
+            )?.optionId,
           },
         };
 
@@ -427,7 +427,7 @@ export function Qusetion({
           }),
           liveMode: {
             isEnded: true,
-            startingAt: liveMode?.startingAt
+            startingAt: liveMode?.startingAt,
           },
         };
 
@@ -456,147 +456,158 @@ export function Qusetion({
       )}
     >
       <div className="w-full overflow-y-auto px-6 pt-12 space-y-3  h-[90%] pb-52 ">
-      <>
-        {transiting ? (
-          <Transition setShowTransiting={setShowTransiting} />
-        ) : (
-          <>
-            <Button
-              onClick={toggleRightBox}
-              className={cn("absolute right-2 top-2", isRightBox && "hidden")}
-            >
-              <Maximize2 size={20} />
-            </Button>
-            <Button
-              onClick={toggleLeftBox}
-              className={cn("absolute bottom-1 left-1", isLeftBox && "hidden")}
-            >
-              <Maximize2 size={20} />
-            </Button>
-            <div className=" gap-3 pb-2 w-full flex items-end justify-between">
+        <>
+          {transiting ? (
+            <Transition setShowTransiting={setShowTransiting} />
+          ) : (
+            <>
               <Button
-                onClick={goBack}
-                className="gap-x-1 self-start w-fit h-fit px-2"
+                onClick={toggleRightBox}
+                className={cn("absolute right-2 top-2", isRightBox && "hidden")}
               >
-                <ArrowBackOutline size={20} />
-                <p className="text-sm">Exit Quiz</p>
+                <Maximize2 size={20} />
               </Button>
-              <p className="text-xs sm:text-mobile text-gray-500">{`${
-                currentQuestionIndex + 1
-              }/${quiz?.questions?.length} Questions`}</p>
-            </div>
-
-            <div className="flex items-center flex-col justify-center w-full gap-3">
-              <div
-                className="innerhtml w-full"
-                dangerouslySetInnerHTML={{
-                  __html: currentQuestion?.question ?? "",
-                }}
-              />
-
-              <div className="w-full flex items-center justify-between">
-                <div className="flex flex-col items-center justify-center gap-y-2">
-                  {currentQuestion?.duration && (
-                    <div className="w-[70px] h-[70px]">
-                      <CircularProgressbar
-                        styles={buildStyles({
-                          pathColor: "#991b1b",
-                          trailColor: "#ffffff",
-                          textColor: "black",
-                          textSize: "60px",
-                        })}
-                        strokeWidth={3}
-                        minValue={0}
-                        maxValue={Number(currentQuestion?.duration) / 1000}
-                        value={timing}
-                        text={`${timing === 0 ? "" : timing}`}
-                      />
-                    </div>
-                  )}
-                </div>
-                {currentQuestion?.questionImage ? (
-                  <Image
-                    className="w-52 sm:w-72 rounded-md h-48 sm:h-52 object-cover"
-                    alt="quiz"
-                    src={currentQuestion?.questionImage}
-                    width={400}
-                    height={400}
-                  />
-                ) : (
-                  <div className="w-1 h-1"></div>
+              <Button
+                onClick={toggleLeftBox}
+                className={cn(
+                  "absolute bottom-1 left-1",
+                  isLeftBox && "hidden"
                 )}
-                <p className="flex flex-col justify-center items-center gap-y-2">
-                  <span className="text-[40px] ">{answer?.length || 0}</span>
-                  <span>{` Answered`}</span>
-                </p>
-              </div>
-            </div>
-
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {currentQuestion?.options.map((option, index, arr) => (
-                <Option
-                  key={index}
-                  option={option}
-                  isOrganizer={isOrganizer}
-                  showAnswerMetric={showAnswerMetric}
-                  answer={answer}
-                  isDisabled={
-                    timing === 0 ||
-                    arr?.some(({ isCorrect }) => typeof isCorrect === "boolean")
-                  }
-                  isIdPresent={isIdPresent}
-                  selectOption={selectOption}
-                  optionIndex={optionLetter[index]}
-                />
-              ))}
-            </div>
-
-            <div
-              className={cn(
-                "w-full flex items-start justify-between",
-                chosenAnswerStatus === null && "items-end justify-end"
-              )}
-            >
-              {chosenAnswerStatus !== null && (
-                <div className="flex flex-col items-start justify-start text-mobile">
-                  <p
-                    className={cn(
-                      "text-green-500",
-                      !chosenAnswerStatus.isCorrect && "text-red-500"
-                    )}
-                  >
-                    You answered{" "}
-                    {chosenAnswerStatus.isCorrect ? "correctly" : "incorrectly"}
-                  </p>
-                  <p className="font-medium text-sm">{`Correct Answer is ${
-                    optionLetter[chosenAnswerStatus.correctOption]
-                  }`}</p>
-                </div>
-              )}
-              <p className="self-end bg-basePrimary/20 rounded-3xl text-sm text-basePrimary px-2 py-1">{`${
-                currentQuestion?.points
-              } ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
-            </div>
-
-            {quiz?.accessibility?.review && (
-              <div
-                className={cn("block", chosenAnswerStatus === null && "hidden")}
               >
-                {showExplanation && (
-                  <p className="mb-3 text-xs sm:text-sm text-gray-500">
-                    {currentQuestion?.feedBack ?? "No Explanation"}
-                  </p>
-                )}
-                <button
-                  onClick={toggleExplanationVisibility}
-                  className="text-xs sm:text-sm text-basePrimary underline"
+                <Maximize2 size={20} />
+              </Button>
+              <div className=" gap-3 pb-2 w-full flex items-end justify-between">
+                <Button
+                  onClick={goBack}
+                  className="gap-x-1 self-start w-fit h-fit px-2"
                 >
-                  {showExplanation ? "Hide Explanation" : "Show Explanation"}
-                </button>
+                  <ArrowBackOutline size={20} />
+                  <p className="text-sm">Exit Quiz</p>
+                </Button>
+                <p className="text-xs sm:text-mobile text-gray-500">{`${
+                  currentQuestionIndex + 1
+                }/${quiz?.questions?.length} Questions`}</p>
               </div>
-            )}
 
-            {/**
+              <div className="flex items-center flex-col justify-center w-full gap-3">
+                <div
+                  className="innerhtml w-full"
+                  dangerouslySetInnerHTML={{
+                    __html: currentQuestion?.question ?? "",
+                  }}
+                />
+
+                <div className="w-full flex items-center justify-between">
+                  <div className="flex flex-col items-center justify-center gap-y-2">
+                    {currentQuestion?.duration && (
+                      <div className="w-[70px] h-[70px]">
+                        <CircularProgressbar
+                          styles={buildStyles({
+                            pathColor: "#991b1b",
+                            trailColor: "#ffffff",
+                            textColor: "black",
+                            textSize: "60px",
+                          })}
+                          strokeWidth={3}
+                          minValue={0}
+                          maxValue={Number(currentQuestion?.duration) / 1000}
+                          value={timing}
+                          text={`${timing === 0 ? "" : timing}`}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {currentQuestion?.questionImage ? (
+                    <Image
+                      className="w-52 sm:w-72 rounded-md h-48 sm:h-52 object-cover"
+                      alt="quiz"
+                      src={currentQuestion?.questionImage}
+                      width={400}
+                      height={400}
+                    />
+                  ) : (
+                    <div className="w-1 h-1"></div>
+                  )}
+                  <p className="flex flex-col justify-center items-center gap-y-2">
+                    <span className="text-[40px] ">{answer?.length || 0}</span>
+                    <span>{` Answered`}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {currentQuestion?.options.map((option, index, arr) => (
+                  <Option
+                    key={index}
+                    option={option}
+                    isOrganizer={isOrganizer}
+                    showAnswerMetric={showAnswerMetric}
+                    answer={answer}
+                    isDisabled={
+                      timing === 0 ||
+                      arr?.some(
+                        ({ isCorrect }) => typeof isCorrect === "boolean"
+                      )
+                    }
+                    isIdPresent={isIdPresent}
+                    selectOption={selectOption}
+                    optionIndex={optionLetter[index]}
+                    quiz={quiz}
+                  />
+                ))}
+              </div>
+
+              <div
+                className={cn(
+                  "w-full flex items-start justify-between",
+                  chosenAnswerStatus === null && "items-end justify-end"
+                )}
+              >
+                {chosenAnswerStatus !== null && (
+                  <div className="flex flex-col items-start justify-start text-mobile">
+                    <p
+                      className={cn(
+                        "text-green-500",
+                        !chosenAnswerStatus.isCorrect && "text-red-500"
+                      )}
+                    >
+                      You answered{" "}
+                      {chosenAnswerStatus.isCorrect
+                        ? "correctly"
+                        : "incorrectly"}
+                    </p>
+                    <p className="font-medium text-sm">{`Correct Answer is ${
+                      optionLetter[chosenAnswerStatus.correctOption]
+                    }`}</p>
+                  </div>
+                )}
+                <p className="self-end bg-basePrimary/20 rounded-3xl text-sm text-basePrimary px-2 py-1">{`${
+                  currentQuestion?.points
+                } ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
+              </div>
+
+              {quiz?.accessibility?.review && (
+                <div
+                  className={cn(
+                    "block",
+                    chosenAnswerStatus === null && "hidden"
+                  )}
+                >
+                  {showExplanation && (
+                    <p className="mb-3 text-xs sm:text-sm text-gray-500">
+                      {currentQuestion?.feedBack ?? "No Explanation"}
+                    </p>
+                  )}
+                  <button
+                    onClick={toggleExplanationVisibility}
+                    className="text-xs sm:text-sm text-basePrimary underline"
+                  >
+                    {showExplanation ? "Hide Explanation" : "Show Explanation"}
+                  </button>
+                </div>
+              )}
+
+              {/**
              <div className="w-full hidden items-end justify-between">
               <div className="flex items-center gap-x-2">
                 <Button
@@ -623,29 +634,30 @@ export function Qusetion({
             </div>
           */}
 
-            <div className="w-full flex flex-col items-center justify-center mx-auto absolute inset-x-0 bottom-0 gap-y-3  bg-white py-2">
-              {quiz?.accessibility?.live &&
-              !isIdPresent &&
-              !isOrganizer ? null : (
-                <Button
-                  disabled={loading || isUpdating} //
-                  onClick={onNextBtnClick}
-                  className="text-gray-50  mx-auto w-[180px] my-4 bg-basePrimary gap-x-2 h-11 font-medium flex"
-                >
-                  {isUpdating && (
-                    <LoaderAlt size={22} className="animate-spin" />
-                  )}
-                  <p>Next </p>
-                </Button>
-              )}
-             {quiz.branding.poweredBy && <p className="text-center bg-white text-sm w-full  p-2 ">
-                Powered By Zikoro
-              </p>}
-            </div>
-          </>
-        )}
-
-      </>
+              <div className="w-full flex flex-col items-center justify-center mx-auto absolute inset-x-0 bottom-0 gap-y-3  bg-white py-2">
+                {quiz?.accessibility?.live &&
+                !isIdPresent &&
+                !isOrganizer ? null : (
+                  <Button
+                    disabled={loading || isUpdating} //
+                    onClick={onNextBtnClick}
+                    className="text-gray-50  mx-auto w-[180px] my-4 bg-basePrimary gap-x-2 h-11 font-medium flex"
+                  >
+                    {isUpdating && (
+                      <LoaderAlt size={22} className="animate-spin" />
+                    )}
+                    <p>Next </p>
+                  </Button>
+                )}
+                {quiz.branding.poweredBy && (
+                  <p className="text-center bg-white text-sm w-full  p-2 ">
+                    Powered By Zikoro
+                  </p>
+                )}
+              </div>
+            </>
+          )}
+        </>
       </div>
     </div>
   );
