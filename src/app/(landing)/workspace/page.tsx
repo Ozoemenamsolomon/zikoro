@@ -53,7 +53,7 @@ interface DateRange {
   end: Date | null;
 }
 
-export default function Organization() {
+export default function Workspace() {
   const [showMore, setShowMore] = useState(false);
   const params = useSearchParams();
   const query = params.get("query");
@@ -217,8 +217,10 @@ export default function Organization() {
       return (
         // event.eventTitle.toLowerCase().includes(lowerSearchQuery) ||
         // event.eventCity.toLowerCase().includes(lowerSearchQuery ?? "") ||
-        // event.eventCategory.toLowerCase().includes(lowerSearchQuery) ||
-        event.organisationId.toString().includes(query ?? "")
+        // event.eventCategory.toLowerCase().includes(lowerSearchQuery ?? "")
+        // event.organisationId.toString().includes(query ?? "")
+        console.log(event)
+        
       );
     })
     .filter((event) => {
