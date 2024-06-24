@@ -1,11 +1,11 @@
-import Booking from '@/components/appointments/booking'
+import Booking from "@/components/appointments/booking";
 
-const BookingPage = async () => {
- 
+const BookingPage = async ({
+  params: { bookingId },
+}: {
+  params: { bookingId: string };
+}) => {
+  return <Booking id={bookingId} />;
+};
 
-  return (
-    <Booking id={bookingId} />
-  )
-}
-
-export default BookingPage
+export default BookingPage;
