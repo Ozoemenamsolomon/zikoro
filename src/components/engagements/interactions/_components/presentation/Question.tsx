@@ -51,7 +51,11 @@ export function Qusetion({
   toggleRightBox: () => void;
   quiz: TQuiz<TRefinedQuestion[]>;
   updateQuiz: (q: TQuiz<TRefinedQuestion[]>) => void;
-  attendeeDetail: { attendeeId: string | null; attendeeName: string; quizParticipantImage: Required<AvatarFullConfig> };
+  attendeeDetail: {
+    attendeeId: string | null;
+    attendeeName: string;
+    avatar: Required<AvatarFullConfig>;
+  };
   isOrganizer: boolean;
   isIdPresent: boolean;
   answer: TAnswer[];
@@ -360,7 +364,7 @@ export function Qusetion({
         quizParticipantId: quiz?.accessibility?.live
           ? player?.userId
           : quizParticipantId,
-        
+
         attendeePoints,
         answerDuration: millisecondsLeft,
         quizAlias: quiz?.quizAlias,
