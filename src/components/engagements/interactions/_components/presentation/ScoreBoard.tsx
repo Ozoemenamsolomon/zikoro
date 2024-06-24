@@ -76,7 +76,7 @@ export function ScoreBoard({
           participantGroup[key] = {
             quizParticipantId: ans?.quizParticipantId,
             attendeeName: ans?.attendeeName,
-            image: ans?.quizParticipantImage,
+            image: ans?.avatar,
             recentAt: createdAt,
             recentScore: Number(ans?.attendeePoints),
             totalScore: 0,

@@ -265,7 +265,7 @@ export default function Presentation({
                     attendeeDetail={{
                       attendeeId: attendeeId ? String(attendeeId) : null,
                       attendeeName: nickName,
-                      quizParticipantImage: attendeeConfig
+                      avatar: attendeeConfig
                     }}
                     isIdPresent={isIdPresent}
                     isOrganizer={isOrganizer}

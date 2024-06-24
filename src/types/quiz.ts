@@ -61,7 +61,7 @@ export interface TAnswer {
   attendeeName: string;
   quizId: number;
   quizParticipantId: string;
-  quizParticipantImage: Required<AvatarFullConfig>;
+  avatar: Required<AvatarFullConfig>;
   questionId: string;
   startTime: string;
   endTime: string;
