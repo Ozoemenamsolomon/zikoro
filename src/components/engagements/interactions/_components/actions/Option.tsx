@@ -3,7 +3,7 @@
 import { cn } from "@/lib";
 import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
 import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
-import { TAnswer } from "@/types";
+import { TAnswer, TQuiz, TQuestion } from "@/types";
 import { useMemo } from "react";
 
 type TOption = {
@@ -21,6 +21,7 @@ export function Option({
   answer,
   showAnswerMetric,
   isDisabled,
+  quiz,
 }: {
   optionIndex: string;
   option: TOption;
@@ -30,6 +31,7 @@ export function Option({
   answer: TAnswer[];
   showAnswerMetric?: boolean;
   isDisabled: boolean;
+  quiz: TQuiz<TQuestion[]>;
 }) {
   const chosedOption = useMemo(() => {
     const i = answer?.filter((ans) => {
@@ -43,6 +45,8 @@ export function Option({
     return option?.isAnswer === option?.optionId;
   }, [option]);
 
+//  console.log(isCorrectAnswer, { isCorrect: option?.isCorrect });
+
   return (
     <>
       {isOrganizer || isIdPresent ? (
@@ -53,6 +57,8 @@ export function Option({
           chosen={((chosedOption / answer?.length) * 100).toFixed(0)}
           isCorrect={typeof option?.isCorrect === "boolean"}
           isCorrectAnswer={isCorrectAnswer}
+          quiz={quiz}
+          optionId={option?.optionId}
         />
       ) : (
         <button
@@ -133,6 +139,8 @@ export function OrganizerQuestOption({
   chosen,
   isCorrectAnswer,
   isCorrect,
+  quiz,
+  optionId
 }: {
   optionIndex: string;
   option: string;
@@ -140,14 +148,17 @@ export function OrganizerQuestOption({
   chosen?: string;
   isCorrectAnswer?: boolean;
   isCorrect?: boolean;
+  quiz?: TQuiz<TQuestion[]>;
+  optionId?:string;
 }) {
   return (
     <button
       className={cn(
         "w-full px-4 text-gray-500 gap-y-1  min-h-[44px] h-fit rounded-md border border-gray-500 bg-gray-100",
-        isCorrect &&
-          isCorrectAnswer &&
-          "border-green-500 bg-green-500/20 transform quiz-option-animation"
+        (isCorrect && isCorrectAnswer) ||
+          (quiz?.accessibility?.live &&
+            quiz?.liveMode?.correctOptionId === optionId)&&
+            "border-green-500 bg-green-500/20 transform quiz-option-animation"
       )}
     >
       <div className="w-full flex items-center justify-between">

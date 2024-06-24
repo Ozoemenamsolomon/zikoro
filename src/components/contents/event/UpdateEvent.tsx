@@ -135,10 +135,10 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         eventPoster: data?.eventPoster,
         pricing: data?.pricing || [
           {
-            attendeeType: "",
-            ticketQuantity: "",
-            price: "",
-            validity: "",
+            attendeeType: "NIL",
+            ticketQuantity: "0",
+            price: "0",
+            validity: formateJSDate(new Date()),
             description: "",
           },
         ],
@@ -783,7 +783,10 @@ function PriceValidityDate({
       form.setValue(`pricing.${id}.validity` as const, formateJSDate(value));
       return formateJSDate(value);
     } else {
-      form.setValue(`pricing.${id}.validity` as const, formateJSDate(new Date()));
+      form.setValue(
+        `pricing.${id}.validity` as const,
+        formateJSDate(new Date())
+      );
       return formateJSDate(new Date());
     }
   }, [value]);
@@ -869,7 +872,7 @@ function SelectDate({
           showTimeSelect
           minDate={selectedDate}
           onChange={(date) => {
-           // console.log(formateJSDate(date!));
+            // console.log(formateJSDate(date!));
             form.setValue(name, formateJSDate(date!));
           }}
           inline

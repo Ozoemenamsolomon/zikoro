@@ -28,6 +28,7 @@ import { generateAlias } from "@/utils";
 import { cn } from "@/lib";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import  { genConfig, AvatarFullConfig } from "react-nice-avatar";
 
 const supabase = createClientComponentClient();
 
@@ -120,6 +121,10 @@ export default function Presentation({
     return cleanUp;
   }, [supabase, answers]);
  */
+
+  const attendeeConfig = useMemo(() => {
+    return genConfig(nickName)
+  },[nickName])
 
   const id = useMemo(() => {
     return generateAlias();
@@ -226,6 +231,7 @@ export default function Presentation({
                     id={id}
                     attendeeId={attendeeId}
                     nickName={nickName}
+                    attendeeImage={attendeeConfig}
                     setNickName={setNickName}
                     isLobby={isLobby}
                     setisLobby={setisLobby}
@@ -260,6 +266,7 @@ export default function Presentation({
                     attendeeDetail={{
                       attendeeId: attendeeId ? String(attendeeId) : null,
                       attendeeName: nickName,
+                      avatar: attendeeConfig
                     }}
                     isIdPresent={isIdPresent}
                     isOrganizer={isOrganizer}
@@ -299,6 +306,7 @@ function AttendeeRegistration({
   isLobby,
   setisLobby,
   attendeeId,
+  attendeeImage
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -311,6 +319,7 @@ function AttendeeRegistration({
   isLobby: boolean;
   setisLobby: React.Dispatch<React.SetStateAction<boolean>>;
   attendeeId?: number;
+  attendeeImage: Required<AvatarFullConfig>
 }) {
   const { updateQuiz } = useUpdateQuiz();
 
@@ -331,6 +340,8 @@ function AttendeeRegistration({
       }),
     };
   }, [quiz]);
+
+ 
 
   async function submit() {
     if (!nickName) {
@@ -361,6 +372,7 @@ function AttendeeRegistration({
               nickName,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
+              participantImage: attendeeImage
             },
           ]
         : [
@@ -369,6 +381,7 @@ function AttendeeRegistration({
               nickName,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
+              participantImage: attendeeImage
             },
           ],
     };

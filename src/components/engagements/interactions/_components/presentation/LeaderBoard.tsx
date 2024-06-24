@@ -1,20 +1,33 @@
 "use client";
 
 import { Minimize2 } from "@styled-icons/feather/Minimize2";
-import Image from "next/image";
 import { Button } from "@/components";
 import { cn } from "@/lib";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { TAnswer, TQuestion, TQuiz } from "@/types";
 import { QUser } from "@/constants";
+import Avatar, { genConfig } from "react-nice-avatar";
+import Aos from "aos";
+import "aos/dist/aos.css";
+import { AvatarFullConfig } from "react-nice-avatar";
+import {ArrowUpwardOutline} from "@styled-icons/evaicons-outline/ArrowUpwardOutline";
 
 type TLeaderBoard = {
   quizParticipantId: string;
   attendeeName: string;
-  image?: string;
+  image: Required<AvatarFullConfig>;
   totalScore: number;
+  recentScore: number;
 };
 
+interface TParticipantScores {
+  quizParticipantId: string;
+  attendeeName: string;
+  image: Required<AvatarFullConfig>;
+  totalScore: number;
+  recentScore: number;
+  recentAt: Date;
+}
 export function LeaderBoard({
   isRightBox,
   isLeftBox,
@@ -30,33 +43,46 @@ export function LeaderBoard({
 }) {
   //console.log(answers);
   const board = useMemo(() => {
-    const participantGroup: { [key: string]: TLeaderBoard } = {};
+    const participantGroup: { [key: string]: TParticipantScores } = {};
     if (Array.isArray(answers) && answers.length > 0) {
       const filteredAnswers = answers?.filter((item) => {
         const quizStart = new Date(quiz?.liveMode?.startingAt).getTime();
         const answerCreated = new Date(item?.created_at).getTime();
         const isQuizLive = quiz?.accessibility?.live;
         if (isQuizLive) {
-          return answerCreated > quizStart 
+          return answerCreated > quizStart;
+        } else {
+          return true;
         }
-        else {
-          return true
-        }
-        
       });
       filteredAnswers?.forEach((ans) => {
         const key = ans?.quizParticipantId;
+        const createdAt = new Date(ans?.created_at)
         if (!participantGroup[key]) {
           participantGroup[key] = {
             quizParticipantId: ans?.quizParticipantId,
             attendeeName: ans?.attendeeName,
+            image: ans?.avatar,
+            recentAt: createdAt,
+            recentScore: Number(ans?.attendeePoints),
             totalScore: 0,
           };
         }
         participantGroup[key].totalScore += Number(ans?.attendeePoints);
+     
+        if (createdAt > participantGroup[key].recentAt) {
+          participantGroup[key].recentScore = Number(ans?.attendeePoints);
+          participantGroup[key].recentAt = createdAt;
+        }
       });
 
-      const result = Object.values(participantGroup);
+        const result: TLeaderBoard[] =  Object.entries(participantGroup).map(([quizParticipantId, data]) => ({
+          quizParticipantId: data?.quizParticipantId,
+          attendeeName: data?.attendeeName,
+          image: data?.image,
+          recentScore: Number(data?.recentScore),
+          totalScore: data?.totalScore,
+        }));
 
       const data = result.sort((a, b) => {
         return b?.totalScore - a?.totalScore;
@@ -68,12 +94,20 @@ export function LeaderBoard({
     }
   }, [answers, quiz]);
 
-  const totalMaxPoints = useMemo(() => {
+  useEffect(() => {
+    Aos.init();
+  }, []);
+
+
+
+  /**
+   const totalMaxPoints = useMemo(() => {
     const totalPoints = quiz?.questions?.reduce((acc, cur) => {
       return acc + Number(cur?.points);
     }, 0);
     return totalPoints;
   }, [quiz]);
+ */
 
   return (
     <div
@@ -96,11 +130,13 @@ export function LeaderBoard({
             </Button>
           </div>
         </div>
-       
 
         {Array.isArray(board) && board?.length > 0 && (
           <div className="flex items-end justify-center">
             <div
+           // data-aos="zoom-in"
+           // data-aos-easing="ease-in-out"
+           // data-aos-duration="500"
               className={cn(
                 "flex items-center flex-col gap-y-1 justify-center invisible",
                 board[1]?.attendeeName && "flex visible"
@@ -108,12 +144,17 @@ export function LeaderBoard({
             >
               {/**2nd */}
               <p className="font-semibold text-lg mb-1">2nd</p>
-              <Image
+              {/*    <Image
                 className="w-[4.0rem] h-[4.0rem]"
                 src="/quizattendee.png"
                 width={100}
                 height={100}
                 alt="quizplayer"
+              />*/}
+              <Avatar
+                shape="circle"
+                className="w-[4.0rem] h-[4.0rem]"
+                {...board[1]?.image}
               />
               <p className="font-medium">{board[1]?.attendeeName ?? ""}</p>
               <p className="font-medium text-gray-600">
@@ -122,18 +163,26 @@ export function LeaderBoard({
             </div>
             {/**1st */}
             <div
+           //  data-aos="zoom-in"
+            // data-aos-easing="ease-in-out"
+            // data-aos-duration="500"
               className={cn(
                 "flex items-center flex-col gap-y-1 justify-center invisible",
                 board[0]?.attendeeName && "flex visible"
               )}
             >
               <p className="font-semibold text-xl mb-1">1st</p>
-              <Image
+              {/*   <Image
                 className="w-[5.5rem] h-[5.5rem]"
                 src="/quizattendee.png"
                 width={100}
                 height={100}
                 alt="quizplayer"
+              />*/}
+              <Avatar
+                shape="circle"
+                className="w-[5.5rem] h-[5.5rem]"
+                {...board[0]?.image}
               />
               <p className="font-medium">{board[0]?.attendeeName ?? ""}</p>
               <p className="font-medium text-gray-600">
@@ -142,18 +191,26 @@ export function LeaderBoard({
             </div>
             {/**3rd */}
             <div
+           //  data-aos="zoom-in"
+           //  data-aos-easing="ease-in-out"
+            // data-aos-duration="500"
               className={cn(
                 "flex items-center flex-col gap-y-1 justify-center invisible",
                 board[2]?.attendeeName && "flex visible"
               )}
             >
               <p className="font-semibold text-base mb-1">3rd</p>
-              <Image
+              {/*  <Image
                 className="w-[3.5rem] h-[3.5rem]"
                 src="/quizattendee.png"
                 width={100}
                 height={100}
                 alt="quizplayer"
+              />*/}
+              <Avatar
+                shape="circle"
+                className="w-[3.5rem] h-[3.5rem]"
+                {...board[2]?.image}
               />
               <p className="font-medium">{board[2]?.attendeeName ?? ""}</p>
               <p className="font-medium text-gray-600">
@@ -176,16 +233,22 @@ export function LeaderBoard({
             >
               <div className="flex items-center col-span-2 w-full gap-x-2">
                 <p className="text-sm">{`${index + 4}th`}</p>
-                <Image
+
+                <Avatar
+                  shape="circle"
                   className="w-[2.5rem] h-[2.5rem]"
-                  src="/quizattendee.png"
-                  width={100}
-                  height={100}
-                  alt="quizplayer"
+                  {...attendee?.image}
                 />
                 <p className="text-sm">{attendee?.attendeeName ?? ""}</p>
               </div>
+              <div className="flex items-center gap-x-1">
               <p>{(attendee?.totalScore ?? 0)?.toFixed(0)}p</p>
+                {attendee?.recentScore > 0 &&
+                 <div className="flex items-center gap-x-1 text-xs">
+                  <ArrowUpwardOutline size={15}/>
+                  <p>{attendee?.recentScore}</p>
+                </div>}
+              </div>
             </div>
           ))}
       </div>

@@ -1,9 +1,13 @@
+"use client"
+
 import { AppointmentLink } from '@/types/appointments'
 import React from 'react'
 import Calender from './Calender'
+import {useGetBookingAppointment} from "@/hooks"
 
-const Booking =  ({appointmnetLink}:{appointmnetLink:AppointmentLink}) => {
-    console.log('bbbbb',{appointmnetLink})
+const Booking =  ({id}:{id:string}) => {
+    const {appointment: appointmnetLink} = useGetBookingAppointment(id)
+    
   return (
     <main className='relative p-6 xl:p-12 xl:pb-6 bg-[#F2F2F2] min-h-screen flex flex-col justify-between gap-12'>
         <section className="">
@@ -40,7 +44,7 @@ const Booking =  ({appointmnetLink}:{appointmnetLink:AppointmentLink}) => {
                         </div>
                     </div>
                 </div>
-                <Calender appointmnetLink={appointmnetLink}/>
+               {appointmnetLink && <Calender appointmnetLink={appointmnetLink}/>}
             </section>
         </section>
 
