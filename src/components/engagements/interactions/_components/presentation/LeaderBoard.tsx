@@ -10,14 +10,24 @@ import Avatar, { genConfig } from "react-nice-avatar";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import { AvatarFullConfig } from "react-nice-avatar";
+import {ArrowUpwardOutline} from "@styled-icons/evaicons-outline/ArrowUpwardOutline";
 
 type TLeaderBoard = {
   quizParticipantId: string;
   attendeeName: string;
   image: Required<AvatarFullConfig>;
   totalScore: number;
+  recentScore: number;
 };
 
+interface TParticipantScores {
+  quizParticipantId: string;
+  attendeeName: string;
+  image: Required<AvatarFullConfig>;
+  totalScore: number;
+  recentScore: number;
+  recentAt: Date;
+}
 export function LeaderBoard({
   isRightBox,
   isLeftBox,
@@ -33,7 +43,7 @@ export function LeaderBoard({
 }) {
   //console.log(answers);
   const board = useMemo(() => {
-    const participantGroup: { [key: string]: TLeaderBoard } = {};
+    const participantGroup: { [key: string]: TParticipantScores } = {};
     if (Array.isArray(answers) && answers.length > 0) {
       const filteredAnswers = answers?.filter((item) => {
         const quizStart = new Date(quiz?.liveMode?.startingAt).getTime();
@@ -47,18 +57,32 @@ export function LeaderBoard({
       });
       filteredAnswers?.forEach((ans) => {
         const key = ans?.quizParticipantId;
+        const createdAt = new Date(ans?.created_at)
         if (!participantGroup[key]) {
           participantGroup[key] = {
             quizParticipantId: ans?.quizParticipantId,
             attendeeName: ans?.attendeeName,
             image: ans?.quizParticipantImage,
+            recentAt: createdAt,
+            recentScore: Number(ans?.attendeePoints),
             totalScore: 0,
           };
         }
         participantGroup[key].totalScore += Number(ans?.attendeePoints);
+     
+        if (createdAt > participantGroup[key].recentAt) {
+          participantGroup[key].recentScore = Number(ans?.attendeePoints);
+          participantGroup[key].recentAt = createdAt;
+        }
       });
 
-      const result = Object.values(participantGroup);
+        const result: TLeaderBoard[] =  Object.entries(participantGroup).map(([quizParticipantId, data]) => ({
+          quizParticipantId: data?.quizParticipantId,
+          attendeeName: data?.attendeeName,
+          image: data?.image,
+          recentScore: Number(data?.recentScore),
+          totalScore: data?.totalScore,
+        }));
 
       const data = result.sort((a, b) => {
         return b?.totalScore - a?.totalScore;
@@ -217,7 +241,14 @@ export function LeaderBoard({
                 />
                 <p className="text-sm">{attendee?.attendeeName ?? ""}</p>
               </div>
+              <div className="flex items-center gap-x-1">
               <p>{(attendee?.totalScore ?? 0)?.toFixed(0)}p</p>
+                {attendee?.recentScore > 0 &&
+                 <div className="flex items-center gap-x-1 text-xs">
+                  <ArrowUpwardOutline size={15}/>
+                  <p>{attendee?.recentScore}</p>
+                </div>}
+              </div>
             </div>
           ))}
       </div>
