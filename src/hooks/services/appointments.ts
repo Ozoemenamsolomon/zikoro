@@ -27,3 +27,28 @@ export const useGetAppointments = () => {
 
   return { appointments, isLoading, getAppointments };
 };
+
+
+
+export const useGetBookingAppointment = (id:string) => {
+    const [appointment, setAppointment] = useState<AppointmentLink | null>(null);
+    const [isLoading, setLoading] = useState<boolean>(false);
+  
+    const getAppointment = async () => {
+      setLoading(true);
+      //
+      const { data, status } = await getRequest<AppointmentLink>({
+        endpoint: `/appointments/booking/${id}`,
+      });
+  
+      setLoading(false);
+  
+      return setAppointment(data.data);
+    };
+  
+    useEffect(() => {
+      getAppointment();
+    }, []);
+  
+    return { appointment, isLoading, getAppointment };
+  };
