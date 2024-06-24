@@ -215,7 +215,7 @@ export function ScoreBoard({
                       <Avatar
                         shape="circle"
                         className="w-[5rem]  h-[5rem]"
-                        {...genConfig()}
+                        {...board[1]?.image}
                       />
                       <p className="text-white font-medium">
                         {board[1]?.attendeeName ?? ""}
@@ -250,7 +250,7 @@ export function ScoreBoard({
                       <Avatar
                         shape="circle"
                         className="w-[5rem] h-[5rem]"
-                        {...genConfig()}
+                        {...board[0]?.image}
                       />
                       <p className="text-white font-medium text-sm">
                         {board[0]?.attendeeName ?? ""}
@@ -285,7 +285,7 @@ export function ScoreBoard({
                       <Avatar
                         shape="circle"
                         className="w-[5rem] h-[5rem]"
-                        {...genConfig()}
+                        {...board[2]?.image}
                       />
                       <p className="text-white font-medium">
                         {board[2]?.attendeeName ?? ""}
@@ -332,7 +332,7 @@ export function ScoreBoard({
                             <Avatar
                               shape="circle"
                               className="w-[4rem] h-[4rem]"
-                              {...genConfig()}
+                              {...player?.image}
                             />
                             <p>{`${index + 4}th`}</p>
                           </div>
