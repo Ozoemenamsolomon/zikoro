@@ -1,6 +1,7 @@
 import * as z from "zod";
 import { quizQuestionSchema } from "@/schemas";
 import { TAttendee } from ".";
+import { AvatarFullConfig } from "react-nice-avatar";
 export interface TQuiz<T> {
   id: number;
   created_at: string;
@@ -21,6 +22,7 @@ export interface TQuiz<T> {
     nickName: string;
     attendee?: TAttendee;
     joinedAt: string;
+    participantImage: Required<AvatarFullConfig>;
   }[];
   accessibility: {
     visible: boolean;
@@ -59,6 +61,7 @@ export interface TAnswer {
   attendeeName: string;
   quizId: number;
   quizParticipantId: string;
+  quizParticipantImage: Required<AvatarFullConfig>;
   questionId: string;
   startTime: string;
   endTime: string;

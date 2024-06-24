@@ -16,10 +16,13 @@ import { cn } from "@/lib";
 import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
 import { CloseOutline } from "@styled-icons/zondicons/CloseOutline";
 import { useUpdateQuiz } from "@/hooks";
+import Avatar, { genConfig } from "react-nice-avatar";
+import { AvatarFullConfig } from "react-nice-avatar";
+
 type TLeaderBoard = {
   quizParticipantId: string;
   attendeeName: string;
-  image?: string;
+  image: Required<AvatarFullConfig>;
   totalScore: number;
 };
 export function ScoreBoard({
@@ -40,6 +43,7 @@ export function ScoreBoard({
   const [isQuizResult, setQuizResult] = useState(false);
   const player = getCookie<TConnectedUser>("player");
   const { updateQuiz, isLoading } = useUpdateQuiz();
+
   const board = useMemo(() => {
     const participantGroup: { [key: string]: TLeaderBoard } = {};
     if (Array.isArray(answers) && answers.length > 0) {
@@ -59,6 +63,7 @@ export function ScoreBoard({
           participantGroup[key] = {
             quizParticipantId: ans?.quizParticipantId,
             attendeeName: ans?.attendeeName,
+            image: ans?.quizParticipantImage,
             totalScore: 0,
           };
         }
@@ -101,6 +106,7 @@ export function ScoreBoard({
       return score?.totalScore || 0;
     }
   }, [board]);
+
 
   const actualQuiz: TQuiz<TQuestion[]> | null = useMemo(() => {
     if (quiz) {
@@ -173,12 +179,17 @@ export function ScoreBoard({
                 <div className=" flex w-full justify-center text-sm">
                   <div className="flex flex-col relative left-11  mt-8 gap-y-4 justify-center">
                     <div className="flex flex-col items-center justify-center gap-y-2">
-                      <Image
+                      {/*  <Image
                         src="/quizattendee.png"
                         className="w-[5rem]  h-[5rem]"
                         alt=""
                         width={150}
                         height={150}
+                      />*/}
+                      <Avatar
+                        shape="circle"
+                        className="w-[5rem]  h-[5rem]"
+                        {...genConfig()}
                       />
                       <p className="text-white font-medium">
                         {board[1]?.attendeeName ?? ""}
@@ -203,12 +214,17 @@ export function ScoreBoard({
                   </div>
                   <div className="flex flex-col relative z-30 gap-y-4 justify-center">
                     <div className="flex flex-col items-center justify-center gap-y-2">
-                      <Image
+                      {/*   <Image
                         src="/quizattendee.png"
                         className="w-[5rem] h-[5rem]"
                         alt=""
                         width={150}
                         height={150}
+                      />*/}
+                      <Avatar
+                        shape="circle"
+                        className="w-[5rem] h-[5rem]"
+                        {...genConfig()}
                       />
                       <p className="text-white font-medium text-sm">
                         {board[0]?.attendeeName ?? ""}
@@ -233,12 +249,17 @@ export function ScoreBoard({
                   </div>
                   <div className="flex flex-col relative right-11 mt-10 gap-y-4 justify-center">
                     <div className="flex flex-col items-center justify-center gap-y-2">
-                      <Image
+                      {/*  <Image
                         src="/quizattendee.png"
                         className="w-[5rem] h-[5rem]"
                         alt=""
                         width={150}
                         height={150}
+                      />*/}
+                      <Avatar
+                        shape="circle"
+                        className="w-[5rem] h-[5rem]"
+                        {...genConfig()}
                       />
                       <p className="text-white font-medium">
                         {board[2]?.attendeeName ?? ""}
@@ -274,15 +295,20 @@ export function ScoreBoard({
                         className="flex items-center justify-between w-full py-3 border-b px-2"
                       >
                         <div className="flex items-center gap-x-3">
-                         <div className="flex flex-col items-center justify-center">
-                         <Image
-                            src="/quizattendee.png"
-                            className="w-[4rem] h-[4rem]"
-                            alt=""
-                            width={150}
-                            height={150}
-                          />
-                          <p>{`${index + 4}th`}</p>
+                          <div className="flex flex-col items-center justify-center">
+                            {/* <Image
+                              src="/quizattendee.png"
+                              className="w-[4rem] h-[4rem]"
+                              alt=""
+                              width={150}
+                              height={150}
+                            />*/}
+                            <Avatar
+                              shape="circle"
+                              className="w-[4rem] h-[4rem]"
+                              {...genConfig()}
+                            />
+                            <p>{`${index + 4}th`}</p>
                           </div>
                           <p className="">{player?.attendeeName}</p>
                         </div>
