@@ -5,6 +5,29 @@ import useEventStore from "@/store/globalEventStore";
 import { useGetAttendees } from "@/hooks";
 import { ILead, TLeadsInterest } from "@/types/leads";
 import { useGetData } from "@/hooks/services/request";
+import { useDrawingArea } from "@mui/x-charts/hooks";
+import { styled } from "@mui/material/styles";
+
+const size = {
+  width: 400,
+  height: 200,
+};
+
+const StyledText = styled("text")(({ theme }) => ({
+  fill: theme.palette.text.primary,
+  textAnchor: "middle",
+  dominantBaseline: "central",
+  fontSize: 20,
+}));
+
+function PieCenterLabel({ children }: { children: React.ReactNode }) {
+  const { width, height, left, top } = useDrawingArea();
+  return (
+    <StyledText x={left + width / 2} y={top + height / 2}>
+      {children}
+    </StyledText>
+  );
+}
 
 interface TitleCountResult {
   titles: string[];
@@ -100,7 +123,7 @@ const ThirdColumn = ({
     eventId: event?.eventAlias,
   });
 
-  const { data: leadInterests, loading: interestsIsLoading } = useGetData<
+  const { data: leadInterests, isLoading: interestsIsLoading } = useGetData<
     TLeadsInterest[]
   >(
     `/leads/interests?eventAlias=${event.eventAlias}&eventPartnerAlias=${partnerId}&interestType=Offer`
@@ -249,7 +272,9 @@ const ThirdColumn = ({
               },
             }}
             margin={{ top: 5 }}
-          />
+          >
+            <PieCenterLabel>Here</PieCenterLabel>
+          </PieChart>
           <div className="px-2 pl-10">
             <h3 className="font-medium text-gray-700">Legend</h3>
             {Object.entries(colorMap).map(([key, value]) => (

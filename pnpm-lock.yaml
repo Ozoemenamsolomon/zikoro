@@ -136,13 +136,16 @@ importers:
         version: 2.19.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@supabase/auth-helpers-nextjs':
         specifier: ^0.9.0
-        version: 0.9.0(@supabase/supabase-js@2.41.1)
+        version: 0.9.0(@supabase/supabase-js@2.43.5)
       '@supabase/auth-helpers-react':
         specifier: ^0.4.2
-        version: 0.4.2(@supabase/supabase-js@2.41.1)
+        version: 0.4.2(@supabase/supabase-js@2.43.5)
+      '@supabase/ssr':
+        specifier: ^0.3.0
+        version: 0.3.0(@supabase/supabase-js@2.43.5)
       '@supabase/supabase-js':
-        specifier: ^2.39.7
-        version: 2.41.1
+        specifier: ^2.43.5
+        version: 2.43.5
       '@tanstack/react-table':
         specifier: ^8.11.2
         version: 8.11.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -158,6 +161,9 @@ importers:
       agnostic-draggable:
         specifier: ^1.5.1
         version: 1.5.1
+      aos:
+        specifier: ^3.0.0-beta.6
+        version: 3.0.0-beta.6
       axios:
         specifier: ^1.6.2
         version: 1.6.2
@@ -275,6 +281,9 @@ importers:
       react-multi-carousel:
         specifier: ^2.8.4
         version: 2.8.4
+      react-nice-avatar:
+        specifier: ^1.5.0
+        version: 1.5.0(react@18.2.0)
       react-paystack:
         specifier: ^5.0.0
         version: 5.0.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -342,6 +351,9 @@ importers:
         specifier: ^4.5.2
         version: 4.5.2(@types/react@18.2.45)(immer@9.0.21)(react@18.2.0)
     devDependencies:
+      '@types/aos':
+        specifier: ^3.0.7
+        version: 3.0.7
       '@types/js-cookie':
         specifier: ^3.0.6
         version: 3.0.6
@@ -2615,27 +2627,32 @@ packages:
     peerDependencies:
       '@supabase/supabase-js': ^2.19.0
 
-  '@supabase/auth-js@2.63.0':
-    resolution: {integrity: sha512-yIgcHnlgv24GxHtVGUhwGqAFDyJkPIC/xjx7HostN08A8yCy8HIfl4JEkTKyBqD1v1L05jNEJOUke4Lf4O1+Qg==}
+  '@supabase/auth-js@2.64.2':
+    resolution: {integrity: sha512-s+lkHEdGiczDrzXJ1YWt2y3bxRi+qIUnXcgkpLSrId7yjBeaXBFygNjTaoZLG02KNcYwbuZ9qkEIqmj2hF7svw==}
 
-  '@supabase/functions-js@2.2.2':
-    resolution: {integrity: sha512-sJGq1nludmi7pY/fdtCpyY/pYonx7MfHdN408bqb736guWcVI1AChYVbI4kUM978EuOE4Ci6l7bUudfGg07QRw==}
+  '@supabase/functions-js@2.4.1':
+    resolution: {integrity: sha512-8sZ2ibwHlf+WkHDUZJUXqqmPvWQ3UHN0W30behOJngVh/qHHekhJLCFbh0AjkE9/FqqXtf9eoVvmYgfCLk5tNA==}
 
   '@supabase/node-fetch@2.6.15':
     resolution: {integrity: sha512-1ibVeYUacxWYi9i0cf5efil6adJ9WRyZBLivgjs+AUpewx1F3xPi7gLgaASI2SmIQxPoCEjAsLAzKPgMJVgOUQ==}
     engines: {node: 4.x || >=6.0.0}
 
-  '@supabase/postgrest-js@1.9.2':
-    resolution: {integrity: sha512-I6yHo8CC9cxhOo6DouDMy9uOfW7hjdsnCxZiaJuIVZm1dBGTFiQPgfMa9zXCamEWzNyWRjZvupAUuX+tqcl5Sw==}
+  '@supabase/postgrest-js@1.15.5':
+    resolution: {integrity: sha512-YR4TiitTE2hizT7mB99Cl3V9i00RAY5sUxS2/NuWWzkreM7OeYlP2OqnqVwwb4z6ILn+j8x9e/igJDepFhjswQ==}
 
-  '@supabase/realtime-js@2.9.3':
-    resolution: {integrity: sha512-lAp50s2n3FhGJFq+wTSXLNIDPw5Y0Wxrgt44eM5nLSA3jZNUUP3Oq2Ccd1CbZdVntPCWLZvJaU//pAd2NE+QnQ==}
+  '@supabase/realtime-js@2.9.5':
+    resolution: {integrity: sha512-TEHlGwNGGmKPdeMtca1lFTYCedrhTAv3nZVoSjrKQ+wkMmaERuCe57zkC5KSWFzLYkb5FVHW8Hrr+PX1DDwplQ==}
 
-  '@supabase/storage-js@2.5.5':
-    resolution: {integrity: sha512-OpLoDRjFwClwc2cjTJZG8XviTiQH4Ik8sCiMK5v7et0MDu2QlXjCAW3ljxJB5+z/KazdMOTnySi+hysxWUPu3w==}
+  '@supabase/ssr@0.3.0':
+    resolution: {integrity: sha512-lcVyQ7H6eumb2FB1Wa2N+jYWMfq6CFza3KapikT0fgttMQ+QvDgpNogx9jI8bZgKds+XFSMCojxFvFb+gwdbfA==}
+    peerDependencies:
+      '@supabase/supabase-js': ^2.33.1
 
-  '@supabase/supabase-js@2.41.1':
-    resolution: {integrity: sha512-xmECLhYugMo/6SObpsOhu5xaxVfsk+JK/d4JSh055bpESmgmN3PLpzbfqejKCpaUeeUNF21+lrJp/U9HQzT9mA==}
+  '@supabase/storage-js@2.6.0':
+    resolution: {integrity: sha512-REAxr7myf+3utMkI2oOmZ6sdplMZZ71/2NEIEMBZHL9Fkmm3/JnaOZVSRqvG4LStYj2v5WhCruCzuMn6oD/Drw==}
+
+  '@supabase/supabase-js@2.43.5':
+    resolution: {integrity: sha512-Y4GukjZWW6ouohMaPlYz8tSz9ykf9jY7w9/RhqKuScmla3Xiklce8eLr8TYAtA+oQYCWxo3RgS3B6O4rd/72FA==}
 
   '@swc/helpers@0.4.14':
     resolution: {integrity: sha512-4C7nX/dvpzB7za4Ql9K81xK3HPxCpHMgwTZVyf+9JQ6VUbn9jjZVN7/Nkdz/Ugzs2CSjqnL/UPXroiVBVHUWUw==}
@@ -2668,6 +2685,9 @@ packages:
 
   '@types/acorn@4.0.6':
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}
+
+  '@types/aos@3.0.7':
+    resolution: {integrity: sha512-sEhyFqvKauUJZDbvAB3Pggynrq6g+2PS4XB3tmUr+mDL1gfDJnwslUC4QQ7/l8UD+LWpr3RxZVR/rHoZrLqZVg==}
 
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
@@ -2841,6 +2861,9 @@ packages:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
 
+  aos@3.0.0-beta.6:
+    resolution: {integrity: sha512-VLWrpq8bfAWcetynVHMMrqdC+89Qq/Ym6UBJbHB4crIwp3RR8uq1dNGgsFzoDl03S43rlVMK+na3r5+oUCZsYw==}
+
   arg@5.0.2:
     resolution: {integrity: sha512-PYjyFOLKQ9y57JvQ6QLo8dAgNqswh8M1RMJYdQduT6xbWSgK36P/Z/v+p888pM69jMMfS8Xd8F6I1kQ/I9HUGg==}
 
@@ -2972,8 +2995,14 @@ packages:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}
     engines: {node: '>= 8.10.0'}
 
+  chroma-js@2.4.2:
+    resolution: {integrity: sha512-U9eDw6+wt7V8z5NncY2jJfZa+hUH8XEj8FQHgFJTrUFnJfXYf4Ml4adI2vXZOjqRDpFWtYVWypDfZwnJ+HIR4A==}
+
   class-variance-authority@0.7.0:
     resolution: {integrity: sha512-jFI8IQw4hczaL4ALINxqLEXQbWcNjoSkloa4IaufXCJr6QawJyw7tuRysRsrE8w2p/4gGaxKIt/hX3qz/IbD1A==}
+
+  classlist-polyfill@1.2.0:
+    resolution: {integrity: sha512-GzIjNdcEtH4ieA2S8NmrSxv7DfEV5fmixQeyTmqmRmRJPGpRBaSnA2a0VrCjyT8iW8JjEdMbKzDotAJf+ajgaQ==}
 
   classnames@2.5.1:
     resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
@@ -3071,6 +3100,10 @@ packages:
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
+
+  cookie@0.5.0:
+    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
+    engines: {node: '>= 0.6'}
 
   cookie@0.6.0:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
@@ -3749,6 +3782,9 @@ packages:
   lodash.memoize@4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
 
+  lodash.throttle@4.1.1:
+    resolution: {integrity: sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==}
+
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
 
@@ -4231,6 +4267,9 @@ packages:
   raf@3.4.1:
     resolution: {integrity: sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==}
 
+  ramda@0.29.1:
+    resolution: {integrity: sha512-OfxIeWzd4xdUNxlWhgFazxsA/nl3mS4/jGZI5n00uWOoSSFRhC1b6gl6xvmzUamgmqELraWp0J/qqVlXYPDPyA==}
+
   re-resizable@6.9.11:
     resolution: {integrity: sha512-a3hiLWck/NkmyLvGWUuvkAmN1VhwAz4yOhS6FdMTaxCUVN9joIWkT11wsO68coG/iEYuwn+p/7qAmfQzRhiPLQ==}
     peerDependencies:
@@ -4400,6 +4439,11 @@ packages:
   react-multi-carousel@2.8.4:
     resolution: {integrity: sha512-7Is5Wr+m2ebkR+oq2Su2tjUdBwpVtB2O6Tjb74KDNfxWe/FrsTQwezTJTk/r9cKCrRp9Li308v822/5bZm7XKg==}
     engines: {node: '>=8'}
+
+  react-nice-avatar@1.5.0:
+    resolution: {integrity: sha512-sGusqbgWIA4Il6Y0zHEfs4XF+a06etNljhwFYiHIGATDmVVf53Nez7U7GY5EwEz5/xGuUhs6uel5AC5NN/2UPg==}
+    peerDependencies:
+      react: '>=16.0.0'
 
   react-onclickoutside@6.13.0:
     resolution: {integrity: sha512-ty8So6tcUpIb+ZE+1HAhbLROvAIJYyJe/1vRrrcmW+jLsaM+/powDRqxzo6hSh9CuRZGSL1Q8mvcF5WRD93a0A==}
@@ -5923,7 +5967,7 @@ snapshots:
 
   '@mui/private-theming@5.15.14(@types/react@18.2.45)(react@18.2.0)':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@mui/utils': 5.15.14(@types/react@18.2.45)(react@18.2.0)
       prop-types: 15.8.1
       react: 18.2.0
@@ -6148,7 +6192,7 @@ snapshots:
 
   '@radix-ui/react-arrow@1.0.3(@types/react-dom@18.2.17)(@types/react@18.2.45)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.17)(@types/react@18.2.45)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -6818,7 +6862,7 @@ snapshots:
 
   '@radix-ui/react-use-escape-keydown@1.0.3(@types/react@18.2.45)(react@18.2.0)':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@radix-ui/react-use-callback-ref': 1.0.1(@types/react@18.2.45)(react@18.2.0)
       react: 18.2.0
     optionalDependencies:
@@ -6840,7 +6884,7 @@ snapshots:
 
   '@radix-ui/react-use-rect@1.0.1(@types/react@18.2.45)(react@18.2.0)':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@radix-ui/rect': 1.0.1
       react: 18.2.0
     optionalDependencies:
@@ -6866,7 +6910,7 @@ snapshots:
 
   '@radix-ui/rect@1.0.1':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
 
   '@react-aria/breadcrumbs@3.5.11(react@18.2.0)':
     dependencies:
@@ -7789,282 +7833,282 @@ snapshots:
 
   '@styled-icons/bootstrap@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/boxicons-logos@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/boxicons-regular@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/boxicons-solid@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/crypto@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/entypo-social@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/entypo@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/evaicons-outline@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/evaicons-solid@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/evil@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/fa-brands@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/fa-regular@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/fa-solid@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/feather@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/fluentui-system-filled@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/fluentui-system-regular@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/foundation@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/heroicons-outline@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/heroicons-solid@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/icomoon@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/ionicons-outline@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/ionicons-sharp@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/ionicons-solid@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/material-outlined@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/material-rounded@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/material-sharp@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/material-twotone@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/material@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/octicons@10.47.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/open-iconic@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/remix-editor@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/remix-fill@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/remix-line@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/simple-icons@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/styled-icon@10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/typicons@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
   '@styled-icons/zondicons@10.46.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))':
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       '@styled-icons/styled-icon': 10.7.0(react@18.2.0)(styled-components@5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0))
       react: 18.2.0
       styled-components: 5.3.11(@babel/core@7.24.0)(react-dom@18.2.0(react@18.2.0))(react-is@18.2.0)(react@18.2.0)
 
-  '@supabase/auth-helpers-nextjs@0.9.0(@supabase/supabase-js@2.41.1)':
+  '@supabase/auth-helpers-nextjs@0.9.0(@supabase/supabase-js@2.43.5)':
     dependencies:
-      '@supabase/auth-helpers-shared': 0.6.3(@supabase/supabase-js@2.41.1)
-      '@supabase/supabase-js': 2.41.1
+      '@supabase/auth-helpers-shared': 0.6.3(@supabase/supabase-js@2.43.5)
+      '@supabase/supabase-js': 2.43.5
       set-cookie-parser: 2.6.0
 
-  '@supabase/auth-helpers-react@0.4.2(@supabase/supabase-js@2.41.1)':
+  '@supabase/auth-helpers-react@0.4.2(@supabase/supabase-js@2.43.5)':
     dependencies:
-      '@supabase/supabase-js': 2.41.1
+      '@supabase/supabase-js': 2.43.5
 
-  '@supabase/auth-helpers-shared@0.6.3(@supabase/supabase-js@2.41.1)':
+  '@supabase/auth-helpers-shared@0.6.3(@supabase/supabase-js@2.43.5)':
     dependencies:
-      '@supabase/supabase-js': 2.41.1
+      '@supabase/supabase-js': 2.43.5
       jose: 4.15.4
 
-  '@supabase/auth-js@2.63.0':
+  '@supabase/auth-js@2.64.2':
     dependencies:
       '@supabase/node-fetch': 2.6.15
 
-  '@supabase/functions-js@2.2.2':
+  '@supabase/functions-js@2.4.1':
     dependencies:
       '@supabase/node-fetch': 2.6.15
 
@@ -8072,11 +8116,11 @@ snapshots:
     dependencies:
       whatwg-url: 5.0.0
 
-  '@supabase/postgrest-js@1.9.2':
+  '@supabase/postgrest-js@1.15.5':
     dependencies:
       '@supabase/node-fetch': 2.6.15
 
-  '@supabase/realtime-js@2.9.3':
+  '@supabase/realtime-js@2.9.5':
     dependencies:
       '@supabase/node-fetch': 2.6.15
       '@types/phoenix': 1.6.4
@@ -8086,18 +8130,24 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@supabase/storage-js@2.5.5':
+  '@supabase/ssr@0.3.0(@supabase/supabase-js@2.43.5)':
+    dependencies:
+      '@supabase/supabase-js': 2.43.5
+      cookie: 0.5.0
+      ramda: 0.29.1
+
+  '@supabase/storage-js@2.6.0':
     dependencies:
       '@supabase/node-fetch': 2.6.15
 
-  '@supabase/supabase-js@2.41.1':
+  '@supabase/supabase-js@2.43.5':
     dependencies:
-      '@supabase/auth-js': 2.63.0
-      '@supabase/functions-js': 2.2.2
+      '@supabase/auth-js': 2.64.2
+      '@supabase/functions-js': 2.4.1
       '@supabase/node-fetch': 2.6.15
-      '@supabase/postgrest-js': 1.9.2
-      '@supabase/realtime-js': 2.9.3
-      '@supabase/storage-js': 2.5.5
+      '@supabase/postgrest-js': 1.15.5
+      '@supabase/realtime-js': 2.9.5
+      '@supabase/storage-js': 2.6.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -8134,6 +8184,8 @@ snapshots:
   '@types/acorn@4.0.6':
     dependencies:
       '@types/estree': 1.0.5
+
+  '@types/aos@3.0.7': {}
 
   '@types/debug@4.1.12':
     dependencies:
@@ -8302,6 +8354,12 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
+  aos@3.0.0-beta.6:
+    dependencies:
+      classlist-polyfill: 1.2.0
+      lodash.debounce: 4.0.8
+      lodash.throttle: 4.1.1
+
   arg@5.0.2: {}
 
   argparse@2.0.1: {}
@@ -8334,7 +8392,7 @@ snapshots:
 
   babel-plugin-macros@3.1.0:
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       cosmiconfig: 7.1.0
       resolve: 1.22.8
 
@@ -8451,9 +8509,13 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  chroma-js@2.4.2: {}
+
   class-variance-authority@0.7.0:
     dependencies:
       clsx: 2.0.0
+
+  classlist-polyfill@1.2.0: {}
 
   classnames@2.5.1: {}
 
@@ -8545,6 +8607,8 @@ snapshots:
   convert-source-map@1.9.0: {}
 
   convert-source-map@2.0.0: {}
+
+  cookie@0.5.0: {}
 
   cookie@0.6.0: {}
 
@@ -9188,6 +9252,8 @@ snapshots:
   lodash.debounce@4.0.8: {}
 
   lodash.memoize@4.1.2: {}
+
+  lodash.throttle@4.1.1: {}
 
   lodash@4.17.21: {}
 
@@ -9876,6 +9942,8 @@ snapshots:
       performance-now: 2.1.0
     optional: true
 
+  ramda@0.29.1: {}
+
   re-resizable@6.9.11(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       react: 18.2.0
@@ -10060,7 +10128,7 @@ snapshots:
 
   react-error-boundary@3.1.4(react@18.2.0):
     dependencies:
-      '@babel/runtime': 7.24.1
+      '@babel/runtime': 7.24.7
       react: 18.2.0
 
   react-fit@1.7.1(@types/react-dom@18.2.17)(@types/react@18.2.45)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
@@ -10102,6 +10170,13 @@ snapshots:
   react-is@18.2.0: {}
 
   react-multi-carousel@2.8.4: {}
+
+  react-nice-avatar@1.5.0(react@18.2.0):
+    dependencies:
+      '@babel/runtime': 7.24.7
+      chroma-js: 2.4.2
+      prop-types: 15.8.1
+      react: 18.2.0
 
   react-onclickoutside@6.13.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
