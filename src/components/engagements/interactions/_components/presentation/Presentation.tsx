@@ -126,8 +126,6 @@ export default function Presentation({
     return genConfig(nickName)
   },[nickName])
 
- /// console.log('uiop',attendeeConfig)
-
   const id = useMemo(() => {
     return generateAlias();
   }, []);
