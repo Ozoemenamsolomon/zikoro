@@ -1,6 +1,6 @@
 'use client'
 
-import { AppointmentLink } from '@/types/appointments'
+import { AppointmentLink, Booking } from '@/types/appointments'
 import { DatePicker } from '@mui/x-date-pickers'
 import React , { useEffect, useState } from 'react'
 import Slots from './Slots'
@@ -21,11 +21,18 @@ import {
 import { ArrowLeft, ArrowRight, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight } from 'lucide-react'
 import { SelectInput } from '../ui/CustomSelect'
 import SubmitBtn from './SubmitBtn'
+import { supabaseBrowserClient } from '@/utils/supabase/client'
 
 function classNames(...classes: (string | false)[]): string {
     return classes.filter(Boolean).join(' ');
 }
 
+interface TimeDetail {
+    day: string;
+    from: string;
+    to: string;
+    enabled: boolean;
+}
 
 export interface BookingFormData {
     appointmentLinkId: number | null;
@@ -34,6 +41,34 @@ export interface BookingFormData {
     appointmentTime: string | null;  // HH:mm:ss format
   }
   
+//   {
+//     "id": 5,
+//     "created_at": "2024-06-21T16:04:03.642942+00:00",
+//     "appointmentName": "fift appointment",
+//     "category": "Testing C",
+//     "duration": 88,
+//     "loctionType": "Virtual",
+//     "locationDetails": "Google meet",
+//     "timeZone": "(UTC+01:00) West Central Africa",
+//     "timeDetails": "[{\"day\":\"Monday\",\"from\":\"08:00\",\"to\":\"\",\"enabled\":true},{\"day\":\"Tuesday\",\"from\":\"11:00 AM\",\"to\":\"\",\"enabled\":true},{\"day\":\"Wednesday\",\"from\":\"\",\"to\":\"\",\"enabled\":false},{\"day\":\"Thursday\",\"from\":\"\",\"to\":\"\",\"enabled\":false},{\"day\":\"Friday\",\"from\":\"\",\"to\":\"\",\"enabled\":false}]",
+//     "curency": "USD",
+//     "amount": 20,
+//     "paymentGateway": "Stripe",
+//     "maxBooking": 10,
+//     "sessionBreak": 20,
+//     "statusOn": true,
+//     "note": "Growth mindset discussions and events. I am available for serious resasons only",
+//     "appointmentAlias": "z5858jjhjpkdi3s",
+//     "createdBy": 103,
+//     "businessName": null,
+//     "logo": null,
+//     "brandColour": null,
+//     "teamMembers": null,
+//     "zikoroBranding": null
+// }
+
+
+
 
 const Calender = ({appointmnetLink}:{appointmnetLink:AppointmentLink}) => {
     let today = startOfToday();
@@ -44,67 +79,70 @@ const Calender = ({appointmnetLink}:{appointmnetLink:AppointmentLink}) => {
 	const [activeSlot, setActiveSlot] = useState<any>(null);
 	const [active, setActive] = useState<number | null>(null)
 
+    const [slotLoading, setSlotLoading] = useState<boolean>(false)
+
+    function getEnabledTimeDetails(): TimeDetail[] {
+        const timeDetails: TimeDetail[] = JSON.parse(appointmnetLink.timeDetails);
+        const enabledItems: TimeDetail[] = timeDetails.filter(item => item.enabled);
+        return enabledItems;
+    }
+
+    // Determine disabled days from the appointmentLink/timeDetails
     const isDayDisabled = (day: Date): boolean => {
-		let newHolidayList = [];
+        const enabledDays = getEnabledTimeDetails()
 		const dayOfWeek = new Date(day).getDay();
-		// Disable Sunday if isSunday is not available
-		if (dayOfWeek === 0 && true) {
-		  return true;
-		}
-		// Disable Saturday if isSaturday is not available
-		if (dayOfWeek === 6 && true) {
-		  return true;
-		}
+        const daysMap: { [key: number]: string } = {
+            0: 'Sunday',
+            1: 'Monday',
+            2: 'Tuesday',
+            3: 'Wednesday',
+            4: 'Thursday',
+            5: 'Friday',
+            6: 'Saturday'
+        };
 		// Disable days before today
 		const startOfDayToCheck = startOfDay(day);
 		if (isBefore(startOfDayToCheck, startOfToday())) {
 			return true
 		}
-		// Disable the day if it exists in the holidays list
-		// const holidays = ['2024-01-01', '2024-07-04', '2024-12-25'];
-		// newHolidayList = holidays?.map(item => {
-		// 	const originalDate = new Date(item?.date);
-		// 	originalDate.setDate(originalDate.getDate() - 1);
-		// 	return originalDate.toISOString().split('T')[0];
-		//   });
-		  
-		// const formattedDay = new Date(day).toISOString().split('T')[0];
-		// if (newHolidayList?.includes(formattedDay)) {
-		//   return true;
-		// }
+        // Check if the day is enabled
+        const dayName = daysMap[dayOfWeek];
+        const isDayEnabled = enabledDays.some(item => item.day === dayName && item.enabled);
 
-		return false;
+        return !isDayEnabled;
 	  };
 
-      // mount booked slots for the selected date
-    // useEffect(() => {
-    // 	const handleInactiveSlots = async () => {
-    // 		try {
-    // 			// const { data, error } = await fetchRow('appointment', 'appointmentDate', format(selectedDay, 'EEE dd MMM yyyy', 'id'));
+    // mount booked slots for the selected date
+    useEffect(() => {
+    	const handleInactiveSlots = async () => {
+
+    		try {
+                setSlotLoading(true)
+    			// TODO: filter based on appointmentDate and location
+    			const { data, error } = await supabaseBrowserClient
+    				.from('bookings') 
+    				.select('*')  
+    				.ilike('appointmentLinkId', `%${appointmnetLink?.id}%`)
+    				.eq('appointmentDate', format(selectedDay, 'EEE dd MMM yyyy')) 
+    				console.log({ data, error, dtae: format(selectedDay, 'EEE dd MMM yyyy') });
     
-    // 			// TODO: filter based on appointmentDate and location
-    // 			const { data, error } = await supabaseClient
-    // 				.from('appointment') 
-    // 				.select('*')  
-    // 				.ilike('locationName', `%${chosenLocation?.locationName}%`)
-    // 				.eq('appointmentDate', format(selectedDay, 'EEE dd MMM yyyy', 'id')) 
-    // 				// console.log({ data, error });
+    			if (data) {
+    				const bookingList = data.map(item => new Date(new Date(item?.appointmentDate).getTime() + 60 * 60 * 1000));
     
-    // 			if (data) {
-    // 				const bookingList = data.map(item => new Date(new Date(item?.appointmentDateTime).getTime() + 60 * 60 * 1000));
+    				setInactiveSlots(bookingList);
+    				// console.log('inactive slots', bookingList);
+    			} else {
+    				console.log({ data, error });
+    			}
+    		} catch (error) {
+    			console.error('Error fetching inactive slots:', error);
+    		} finally {
+                setSlotLoading(false)
+            }
+    	};
     
-    // 				setInactiveSlots(bookingList);
-    // 				// console.log('inactive slots', bookingList);
-    // 			} else {
-    // 				console.log({ data, error });
-    // 			}
-    // 		} catch (error) {
-    // 			console.error('Error fetching inactive slots:', error);
-    // 		}
-    // 	};
-    
-    // 	handleInactiveSlots();
-    // }, [selectedDay, chosenLocation?.locationName]);
+    	handleInactiveSlots();
+    }, [selectedDay, ]);
 
     let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'));
 	let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
@@ -124,29 +162,25 @@ const Calender = ({appointmnetLink}:{appointmnetLink:AppointmentLink}) => {
 		setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'));
 	}
 
-	function previousDay() {
-		const previousDay = add(selectedDay, { days: -1 });
-		setSelectedDay(previousDay);
-		setCurrentMonth(format(previousDay, 'MMM-yyyy'));
-	}
+	// function previousDay() {
+	// 	const previousDay = add(selectedDay, { days: -1 });
+	// 	setSelectedDay(previousDay);
+	// 	setCurrentMonth(format(previousDay, 'MMM-yyyy'));
+	// }
 
-	function nextDay() {
-		const nextDay = add(selectedDay, { days: 1 });
-		setSelectedDay(nextDay);
-		setCurrentMonth(format(nextDay, 'MMM-yyyy'));
-	}
+	// function nextDay() {
+	// 	const nextDay = add(selectedDay, { days: 1 });
+	// 	setSelectedDay(nextDay);
+	// 	setCurrentMonth(format(nextDay, 'MMM-yyyy'));
+	// }
 
-    // useEffect(() => {
-    //     const fetch = async () => {
-    //         const 
-    //     }
-    // }, [])
+    // TODO: Get user data
     
     const [categories, setCategories] = useState({
         category: 'Training 2'
     })
 
-    const [formData, setFormData] = useState<BookingFormData>({
+    const [formData, setFormData] = useState<Booking>({
         appointmentLinkId: appointmnetLink?.id!,
         participantEmail: 'ecudeji@gmail.com',
         appointmentDate: null,
@@ -230,7 +264,6 @@ const Calender = ({appointmnetLink}:{appointmnetLink:AppointmentLink}) => {
                                 disabled={isDayDisabled(day)}
                                 onClick={() => {
                                     setSelectedDay(day)
-                                    // setBooking(null)
                                     setActiveSlot(null)
                                     setFormData({
                                         ...formData,
@@ -299,6 +332,8 @@ const Calender = ({appointmnetLink}:{appointmnetLink:AppointmentLink}) => {
 }
 
 export default Calender
+
+// TODO: Generate timeslots
 
 const timeSlots = [
         { label: "8:00am - 9:00am", value: new Date(new Date().setHours(8, 0, 0, 0)).toISOString() },

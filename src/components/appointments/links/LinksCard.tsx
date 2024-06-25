@@ -79,7 +79,7 @@ const LinksCard = ({data}:{data:AppointmentLink}) => {
         <div className="flex justify-between gap-6 items-center">
             <button className="underline">Copy link</button>
 
-            <button onClick={()=>push(`/appointments/booking?b=${item.id}`)} className="flex  gap-1 items-center">
+            <button onClick={()=>push(`/appointments/booking?alias=${item.appointmentAlias}`)} className="flex  gap-1 items-center">
                 <p className="">Share</p>
                 <div><ShareIcon/> </div>
             </button>

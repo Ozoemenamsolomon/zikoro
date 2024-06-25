@@ -30,7 +30,7 @@ export const useGetAppointments = () => {
 
 
 
-export const useGetBookingAppointment = (id:string) => {
+export const useGetBookingAppointment = (appointmentAlias:string) => {
     const [appointment, setAppointment] = useState<AppointmentLink | null>(null);
     const [isLoading, setLoading] = useState<boolean>(false);
   
@@ -38,7 +38,7 @@ export const useGetBookingAppointment = (id:string) => {
       setLoading(true);
       //
       const { data, status } = await getRequest<AppointmentLink>({
-        endpoint: `/appointments/booking/${id}`,
+        endpoint: `/appointments/booking/${appointmentAlias}`,
       });
   
       setLoading(false);

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { BookingFormData } from './Calender';
 import { format } from 'date-fns';
+import { Booking } from '@/types/appointments';
 
 interface SubmitType {
-    formData: BookingFormData; 
+    formData: Booking; 
     setFormData: any
 }
 

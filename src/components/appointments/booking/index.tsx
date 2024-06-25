@@ -1,12 +1,11 @@
 "use client"
 
-import { AppointmentLink } from '@/types/appointments'
 import React from 'react'
 import Calender from './Calender'
 import {useGetBookingAppointment} from "@/hooks"
 
-const Booking =  ({id}:{id:string}) => {
-    const {appointment: appointmnetLink} = useGetBookingAppointment(id)
+const Booking =  ({alias}:{alias:string}) => {
+  const {appointment: appointmnetLink} = useGetBookingAppointment(alias)
     
   return (
     <main className='relative p-6 xl:p-12 xl:pb-6 bg-[#F2F2F2] min-h-screen flex flex-col justify-between gap-12'>

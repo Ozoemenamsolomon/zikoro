@@ -50,7 +50,7 @@ const formdata = {
   appointmentName: '',
   category: '',
   duration: null,
-  loctionType: '',
+  loctionType: 'Onsite',
   locationDetails:  '',
   timeZone: '',
   timeDetails: '',
@@ -127,7 +127,7 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
       const result = await response.json();
   
       if (response.ok) {
-        setFormData({});
+        setFormData(formdata);
         console.log('Form submitted successfully', result);
         // Handle any additional success actions here
         push('/appointments/links')
