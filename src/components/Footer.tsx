@@ -27,16 +27,11 @@ export default function Footer() {
           />
         </div>
         <p className="lg:text-center font-normal text-xs lg:text-xl mt-7">
-          2A Musari Apena Street, Ewu-Titan, off Labinjo Kalejaiye Street,{" "}
-          <span className="inline lg:block">
-            {" "}
-            Mafoluku, Oshodi, Lagos State, Nigeria{" "}
-          </span>{" "}
+          2A Musari Apena Street, Mafoluku, Lagos State, Nigeria{" "}
         </p>
       </div>
 
-      <div className="px-5 lg:px-0 mt-12 lg:mt-16 grid grid-cols-2 lg:grid-cols-5 gap-x-24 gap-y-6 lg:gap-x-24 lg:gap-y-24  max-w-6xl mx-auto">
-        {/* 1st Column */}
+      {/* <div className="px-5 lg:px-0 mt-12 lg:mt-16 grid grid-cols-2 lg:grid-cols-5 gap-x-24 gap-y-6 lg:gap-x-24 lg:gap-y-24  max-w-6xl mx-auto">
         <ul className="flex flex-col space-y-1 lg:space-y-4 ">
           <li className="text-[15px] lg:text-2xl font-bold ">Company</li>
           <li className=" text-[13px] lg:text-base font-normal cursor-pointer pt-4 lg:pt-0 text-transparent">
@@ -53,7 +48,6 @@ export default function Footer() {
           </li>
         </ul>
 
-        {/* 2nd Column */}
         <ul className="flex flex-col space-y-1 lg:space-y-4">
           <li className="text-[15px] lg:text-2xl  font-bold cursor-pointer ">
             Features
@@ -75,7 +69,6 @@ export default function Footer() {
           </li>
         </ul>
 
-        {/* 3rd Column */}
         <ul className="flex flex-col space-y-1 lg:space-y-4">
           <li className="text-[15px] lg:text-2xl font-bold cursor-pointer ">
             Use cases
@@ -115,7 +108,6 @@ export default function Footer() {
           </li>
         </ul>
 
-        {/* 4th Column */}
         <ul className="flex flex-col space-y-1 lg:space-y-4">
           <li className="text-[15px] lg:text-2xl font-bold cursor-pointer ">
             Resources
@@ -158,7 +150,6 @@ export default function Footer() {
           </li>
         </ul>
 
-        {/* 5th Column */}
         <ul className="flex flex-col space-y-1 lg:space-y-4">
           <li className="text-[15px] lg:text-2xl font-bold cursor-pointer">
             Legal
@@ -176,15 +167,27 @@ export default function Footer() {
             Cookies
           </li>
         </ul>
-      </div>
+      </div> */}
 
-      <div className="mt-4 lg:mt-6 border-t-[1px] border-indigo-500 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end  px-2 lg:px-0 py-2">
+       {/* temporary additions */}
+       {/* <div className="flex items-center">
+
+       </div> */}
+       <div className="px-5 lg:px-0 mt-12 lg:mt-12 grid grid-cols-3 lg:grid-cols-4 gap-x-1 gap-y-4 w-full max-w-full lg:max-w-2xl text-left lg:text-center mx-auto ">
+            <p onClick={() => router.push("/contact")} className="font-medium cursor-pointer text-[13px] lg:text-base">Contact us </p>
+            <p onClick={() => router.push("/explore")} className="font-medium cursor-pointer text-[13px] lg:text-base">Explore Events </p>
+            <p onClick={() => router.push("/verify")} className="font-medium cursor-pointer text-[13px] lg:text-base">Verify Certificate </p>
+            <p onClick={() => router.push("/pricing")} className="font-medium cursor-pointer text-[13px] lg:text-base">Pricing </p>
+            
+        </div>
+    
+
+      <div className="mt-16 lg:mt-20 border-t-[1px] border-indigo-500 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end  px-2 lg:px-0 py-2">
         <div className="py-4 lg:py-14 px-5 lg:px-0 flex  justify-between items-center max-w-6xl mx-auto ">
           {/* left */}
           <p className="text-[13px] lg:text-base font-normal">
             {" "}
             <span className="hidden lg:inline">Copyright</span> © 2024 - Zikoro{" "}
-            {/* <span className="hidden lg:inline"> </span>{" "} */}
           </p>
 
           {/* right */}

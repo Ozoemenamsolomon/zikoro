@@ -13,22 +13,6 @@ const size = {
   height: 200,
 };
 
-const StyledText = styled("text")(({ theme }) => ({
-  fill: theme.palette.text.primary,
-  textAnchor: "middle",
-  dominantBaseline: "central",
-  fontSize: 20,
-}));
-
-function PieCenterLabel({ children }: { children: React.ReactNode }) {
-  const { width, height, left, top } = useDrawingArea();
-  return (
-    <StyledText x={left + width / 2} y={top + height / 2}>
-      {children}
-    </StyledText>
-  );
-}
-
 interface TitleCountResult {
   titles: string[];
   counts: number[];
@@ -79,7 +63,7 @@ interface ContactChannel {
 const colorMap: { [key: string]: string } = {
   job: "purple",
   "booth staff": "blue",
-  offer: "black",
+  Offer: "black",
 };
 
 function extractUniqueContactChannels(leads: ILead[]): ContactChannel[] {
@@ -139,12 +123,15 @@ const ThirdColumn = ({
 
   console.log(containerDivRef.current?.offsetWidth);
 
-  console.log(Object.entries(colorMap), colorMap);
-
   const leadsDataset = extractUniqueContactChannels(leads);
 
+  console.log(
+    leadsDataset.map(({ value }) => value),
+    leads.length
+  );
+
   return (
-    <div className="space-y-8 bg-[#001FCC]/10 py-8" ref={containerDivRef}>
+    <div className="space-y-4 bg-[#001FCC]/10 py-8" ref={containerDivRef}>
       <div className="space-y-4 px-2">
         <h2 className="text-gray-800 text-xl font-medium">
           Leads Analytic Overview
@@ -154,7 +141,7 @@ const ThirdColumn = ({
             Percentage Retrieved
           </h3>
           <span className="text-xl font-bold">
-            {Number((leads.length / attendees.length) * 100).toFixed()}%
+            {leads.length > 0 ? Number((leads.length / attendees.length) * 100).toFixed() : 0}%
           </span>
           <span>
             You've retrieved <b>{leads.length}</b>
@@ -167,16 +154,18 @@ const ThirdColumn = ({
           <div className="p-4 flex flex-col gap-2 bg-white items-center">
             <h3 className="text-basePrimary font-medium text-sm">Hot Leads</h3>
             <span className="text-xl font-bold">
-              {Number(
-                (leads.filter(({ leadType }) => leadType === "hot").length /
-                  leads.length) *
-                  100
-              ).toFixed()}
+              {leads.length > 0
+                ? Number(
+                    (leads.filter(({ leadType }) => leadType === "hot").length /
+                      leads.length) *
+                      100
+                  ).toFixed()
+                : 0}
               %
             </span>
             <span className="text-xs text-center text-gray-700">
               <b className="text-gray-900">
-                {leads.filter(({ leadType }) => leadType === "hot").length}
+                {leads.filter(({ leadType }) => leadType === "hot").length ?? 0}
               </b>{" "}
               out of <b className="text-gray-900">{leads.length}</b> scanned
             </span>
@@ -184,16 +173,20 @@ const ThirdColumn = ({
           <div className="p-4 flex flex-col gap-2 bg-white items-center">
             <h3 className="text-basePrimary font-medium text-sm">Warm Leads</h3>
             <span className="text-xl font-bold">
-              {Number(
-                (leads.filter(({ leadType }) => leadType === "warm").length /
-                  leads.length) *
-                  100
-              ).toFixed()}
+              {leads.length > 0
+                ? Number(
+                    (leads.filter(({ leadType }) => leadType === "warm")
+                      .length /
+                      leads.length) *
+                      100
+                  ).toFixed()
+                : 0}
               %
             </span>
             <span className="text-xs text-center text-gray-700">
               <b className="text-gray-900">
-                {leads.filter(({ leadType }) => leadType === "warm").length}
+                {leads.filter(({ leadType }) => leadType === "warm").length ??
+                  0}
               </b>{" "}
               out of <b className="text-gray-900">{leads.length}</b> scanned
             </span>
@@ -201,16 +194,20 @@ const ThirdColumn = ({
           <div className="p-4 flex flex-col gap-2 bg-white items-center">
             <h3 className="text-basePrimary font-medium text-sm">Cold Leads</h3>
             <span className="text-xl font-bold">
-              {Number(
-                (leads.filter(({ leadType }) => leadType === "cold").length /
-                  leads.length) *
-                  100
-              ).toFixed()}
+              {leads.length > 0
+                ? Number(
+                    (leads.filter(({ leadType }) => leadType === "cold")
+                      .length /
+                      leads.length) *
+                      100
+                  ).toFixed()
+                : 0}
               %
             </span>
             <span className="text-xs text-center text-gray-700">
               <b className="text-gray-900">
-                {leads.filter(({ leadType }) => leadType === "cold").length}
+                {leads.filter(({ leadType }) => leadType === "cold").length ??
+                  0}
               </b>{" "}
               out of <b className="text-gray-900">{leads.length}</b> scanned
             </span>
@@ -220,24 +217,26 @@ const ThirdColumn = ({
               Unknown Leads
             </h3>
             <span className="text-xl font-bold">
-              {Number(
-                (leads.filter(({ leadType }) => !leadType).length /
-                  leads.length) *
-                  100
-              ).toFixed()}
+              {leads.length > 0
+                ? Number(
+                    (leads.filter(({ leadType }) => !leadType).length /
+                      leads.length) *
+                      100
+                  ).toFixed()
+                : 0}
               %
             </span>
             <span className="text-xs text-center text-gray-700">
               <b className="text-gray-900">
-                {leads.filter(({ leadType }) => !leadType).length}
+                {leads.filter(({ leadType }) => !leadType).length ?? 0}
               </b>{" "}
               out of <b className="text-gray-900">{leads.length}</b> scanned
             </span>
           </div>
         </div>
       </div>
-      <div className="space-y-8">
-        <div>
+      <div className="space-y-4">
+        <div className="bg-white py-4 mx-2">
           <h2 className="text-gray-800 text-xl font-medium px-2">
             Leads Channels Overview
           </h2>
@@ -245,8 +244,6 @@ const ThirdColumn = ({
             colors={["blue", "purple", "black"]}
             series={[
               {
-                arcLabel: (item) => `${item.label} (${item.value})`,
-                arcLabelMinAngle: 45,
                 data: leadsDataset,
                 innerRadius: 80,
                 outerRadius: 120,
@@ -265,41 +262,38 @@ const ThirdColumn = ({
               },
             }}
             height={300}
-            width={containerDivRef.current?.offsetWidth}
+            width={containerDivRef.current?.offsetWidth - 16}
             slotProps={{
               legend: {
                 hidden: true,
               },
             }}
-            margin={{ top: 5 }}
-          >
-            <PieCenterLabel>Here</PieCenterLabel>
-          </PieChart>
-          <div className="px-2 pl-10">
-            <h3 className="font-medium text-gray-700">Legend</h3>
-            {Object.entries(colorMap).map(([key, value]) => (
+            margin={{ top: 2 }}
+          />
+          <div className="px-2">
+            {leadsDataset.map(({ label, value, color, id }) => (
               <div
-                key={key}
-                className="border-b py-2 px-4 flex items-center gap-2"
+                key={id}
+                className="border-b py-2 px-4 flex items-center gap-2 w-1/2"
               >
                 <span
                   className="rounded-full h-5 w-5"
-                  style={{ backgroundColor: value }}
+                  style={{ backgroundColor: color }}
                 />
-                <span className="font-medium text-gray-800">{key}</span>
-                <span className="font-bold text-gray-600">
-                  {(leadInterests &&
-                  leadsDataset.find(({ label }) => label === key)?.value
-                    ? (leadsDataset.find(({ label }) => label === key)?.value /
-                        leadInterests?.length) *
-                      100
-                    : 0) + "%"}
-                </span>
+                <div className="flex flex-col">
+                  <span className="font-medium text-gray-800">{label}</span>
+                  <span className="font-medium text-gray-600">
+                    {(leads && (value / leads.length) * 100) +
+                      "%         (" +
+                      (leads && value) +
+                      ")"}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
         </div>
-        <div>
+        <div className="bg-white py-4 mx-2">
           <h2 className="text-gray-800 text-xl font-medium px-2">
             Products Overview
           </h2>
@@ -327,7 +321,7 @@ const ThirdColumn = ({
             xAxis={[{ tickMinStep: 1 }]}
             layout="horizontal"
             height={200}
-            width={containerDivRef.current?.offsetWidth}
+            width={containerDivRef.current?.offsetWidth - 16}
             borderRadius={20}
             loading={interestsIsLoading}
             margin={{ left: 100, top: 5 }}
