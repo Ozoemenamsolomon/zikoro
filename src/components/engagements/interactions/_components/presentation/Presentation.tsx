@@ -1,6 +1,13 @@
 "use client";
 
-import { Advert, LeaderBoard, Qusetion, QuizLobby, ScoreBoard } from "..";
+import {
+  Advert,
+  LeaderBoard,
+  Qusetion,
+  QuizLobby,
+  ScoreBoard,
+  SendMailModal,
+} from "..";
 import { useState, useEffect, useMemo } from "react";
 import {
   useGetQuiz,
@@ -28,7 +35,7 @@ import { generateAlias } from "@/utils";
 import { cn } from "@/lib";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import  { genConfig, AvatarFullConfig } from "react-nice-avatar";
+import { genConfig, AvatarFullConfig } from "react-nice-avatar";
 
 const supabase = createClientComponentClient();
 
@@ -48,7 +55,8 @@ export default function Presentation({
   const [isRightBox, setRightBox] = useState(true);
   const [isLeftBox, setLeftBox] = useState(true);
   const [isLobby, setisLobby] = useState(false);
-  const { answers, getAnswers, setAnswers } = useGetQuizAnswer();
+  const { answers, getAnswers } = useGetQuizAnswer();
+  const [isSendMailModal, setIsSendMailModal] = useState(false);
   const [showScoreSheet, setShowScoreSheet] = useState(false);
   const [quizResult, setQuizResult] = useState<TQuiz<
     TRefinedQuestion[]
@@ -123,8 +131,8 @@ export default function Presentation({
  */
 
   const attendeeConfig = useMemo(() => {
-    return genConfig(nickName)
-  },[nickName])
+    return genConfig(nickName);
+  }, [nickName]);
 
   const id = useMemo(() => {
     return generateAlias();
@@ -180,14 +188,18 @@ export default function Presentation({
   }
   function onOpenScoreSheet() {
     setShowScoreSheet(true);
+    setIsSendMailModal(true);
   }
 
+  function showSendMailModal() {
+    setIsSendMailModal((prev) => !prev);
+  }
   // show score sheet after live quiz
   useEffect(() => {
-    if (quiz && quiz?.accessibility?.live ) {
+    if (quiz && quiz?.accessibility?.live) {
       if (quiz?.liveMode?.isEnded) {
         setShowScoreSheet(quiz?.liveMode?.isEnded);
-
+        setIsSendMailModal(true);
       }
     }
   }, [quiz]);
@@ -199,18 +211,31 @@ export default function Presentation({
       {refinedQuizArray && !loading && !isLoading && !eventLoading ? (
         <>
           {showScoreSheet ? (
-            <ScoreBoard
-              isAttendee={!isIdPresent && !isOrganizer}
-              answers={answers}
-              close={() => {
-                setShowScoreSheet(false);
-                setIsYetToStart(true);
-              }}
-              id={id}
-              quiz={quizResult}
-              actualQuiz={quiz}
-              quizAnswer={answer}
-            />
+            <>
+              {isSendMailModal ? (
+                <SendMailModal
+                  close={showSendMailModal}
+                  id={id}
+                  quiz={quizResult}
+                 actualQuiz={quiz}
+                  isAttendee={!isIdPresent && !isOrganizer}
+                 
+                />
+              ) : (
+                <ScoreBoard
+                  isAttendee={!isIdPresent && !isOrganizer}
+                  answers={answers}
+                  close={() => {
+                    setShowScoreSheet(false);
+                    setIsYetToStart(true);
+                  }}
+                  id={id}
+                  quiz={quizResult}
+                  actualQuiz={quiz}
+               
+                />
+              )}
+            </>
           ) : (
             <>
               {isYetTosStart ? (
@@ -267,7 +292,7 @@ export default function Presentation({
                     attendeeDetail={{
                       attendeeId: attendeeId ? String(attendeeId) : null,
                       attendeeName: nickName,
-                      avatar: attendeeConfig
+                      avatar: attendeeConfig,
                     }}
                     isIdPresent={isIdPresent}
                     isOrganizer={isOrganizer}
@@ -307,7 +332,7 @@ function AttendeeRegistration({
   isLobby,
   setisLobby,
   attendeeId,
-  attendeeImage
+  attendeeImage,
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -320,7 +345,7 @@ function AttendeeRegistration({
   isLobby: boolean;
   setisLobby: React.Dispatch<React.SetStateAction<boolean>>;
   attendeeId?: number;
-  attendeeImage: Required<AvatarFullConfig>
+  attendeeImage: Required<AvatarFullConfig>;
 }) {
   const { updateQuiz } = useUpdateQuiz();
 
@@ -341,8 +366,6 @@ function AttendeeRegistration({
       }),
     };
   }, [quiz]);
-
- 
 
   async function submit() {
     if (!nickName) {
@@ -373,7 +396,8 @@ function AttendeeRegistration({
               nickName,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
-              participantImage: attendeeImage
+              participantImage: attendeeImage,
+              
             },
           ]
         : [
@@ -382,7 +406,7 @@ function AttendeeRegistration({
               nickName,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
-              participantImage: attendeeImage
+              participantImage: attendeeImage,
             },
           ],
     };
