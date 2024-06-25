@@ -45,7 +45,7 @@ export function Option({
     return option?.isAnswer === option?.optionId;
   }, [option]);
 
-  console.log(isCorrectAnswer, { isCorrect: option?.isCorrect });
+//  console.log(isCorrectAnswer, { isCorrect: option?.isCorrect });
 
   return (
     <>

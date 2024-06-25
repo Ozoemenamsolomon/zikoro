@@ -44,6 +44,7 @@ export function ScoreBoard({
   id,
   isAttendee,
   quizAnswer,
+  actualQuiz
 }: {
   answers: TAnswer[];
   close: () => void;
@@ -51,6 +52,7 @@ export function ScoreBoard({
   id: string;
   isAttendee: boolean;
   quizAnswer: TAnswer[];
+  actualQuiz: TQuiz<TQuestion[]> | null
 }) {
   const [isQuizResult, setQuizResult] = useState(false);
   const player = getCookie<TConnectedUser>("player");
@@ -60,9 +62,9 @@ export function ScoreBoard({
     const participantGroup: { [key: string]: TParticipantScores } = {};
     if (Array.isArray(answers) && answers.length > 0) {
       const filteredAnswers = answers?.filter((item) => {
-        const quizStart = new Date(quiz?.liveMode?.startingAt).getTime();
+        const quizStart = new Date(actualQuiz?.liveMode?.startingAt).getTime();
         const answerCreated = new Date(item?.created_at).getTime();
-        const isQuizLive = quiz?.accessibility?.live;
+        const isQuizLive = actualQuiz?.accessibility?.live;
         if (isQuizLive) {
           return answerCreated > quizStart;
         } else {
@@ -76,7 +78,7 @@ export function ScoreBoard({
           participantGroup[key] = {
             quizParticipantId: ans?.quizParticipantId,
             attendeeName: ans?.attendeeName,
-            image: ans?.avatar,
+            image: JSON.parse(ans?.avatar as any),
             recentAt: createdAt,
             recentScore: Number(ans?.attendeePoints),
             totalScore: 0,
@@ -112,9 +114,11 @@ export function ScoreBoard({
     setQuizResult((prev) => !prev);
   }
 
+  console.log('quizresult',quiz)
+
   const userPosition = useMemo(() => {
-    if (isAttendee && quiz) {
-      const playerId = quiz?.accessibility?.live ? player?.userId : id;
+    if (isAttendee && actualQuiz) {
+      const playerId = actualQuiz?.accessibility?.live ? player?.userId : id;
       const index = board?.findIndex(
         ({ quizParticipantId }) => quizParticipantId === playerId
       );
@@ -123,8 +127,8 @@ export function ScoreBoard({
     }
   }, [board]);
   const userScore = useMemo(() => {
-    if (isAttendee && quiz) {
-      const playerId = quiz?.accessibility?.live ? player?.userId : id;
+    if (isAttendee && actualQuiz) {
+      const playerId = actualQuiz?.accessibility?.live ? player?.userId : id;
       const score = board?.find(
         ({ quizParticipantId }) => quizParticipantId === playerId
       );
@@ -134,23 +138,10 @@ export function ScoreBoard({
   }, [board]);
 
 
-  const actualQuiz: TQuiz<TQuestion[]> | null = useMemo(() => {
-    if (quiz) {
-      return {
-        ...quiz,
-        questions: quiz?.questions?.map((item) => {
-          return {
-            ...item,
-            options: item?.options?.map(({ isCorrect, ...rest }) => rest),
-          };
-        }),
-      };
-    } else {
-      return null;
-    }
-  }, [quiz]);
+
 
   async function endLiveQuiz() {
+   
     if (actualQuiz) {
       const payload = {
         ...actualQuiz,
@@ -185,7 +176,7 @@ export function ScoreBoard({
             <div className="mx-auto w-fit flex px-2 mb-6 items-center gap-x-8 sm:gap-x-20 bg-white h-10 rounded-3xl">
               <Button
                 disabled={isLoading}
-                onClick={quiz?.accessibility?.live ? endLiveQuiz : close}
+                onClick={endLiveQuiz}
                 className="underline rounded-none px-2 h-10 w-fit"
               >
                 Go To Quiz Page
@@ -203,7 +194,7 @@ export function ScoreBoard({
             <div className="mx-auto w-full relative">
               {Array.isArray(board) && board?.length > 0 && (
                 <div className=" flex w-full justify-center text-sm">
-                  <div className="flex flex-col relative left-11  mt-8 gap-y-4 justify-center">
+                  <div className={cn("flex invisible flex-col relative left-11  mt-8 gap-y-4 justify-center", board[1]?.attendeeName && "visible")}>
                     <div className="flex flex-col items-center justify-center gap-y-2">
                       {/*  <Image
                         src="/quizattendee.png"
@@ -215,7 +206,7 @@ export function ScoreBoard({
                       <Avatar
                         shape="circle"
                         className="w-[5rem]  h-[5rem]"
-                        {...genConfig()}
+                        {...board[1]?.image}
                       />
                       <p className="text-white font-medium">
                         {board[1]?.attendeeName ?? ""}
@@ -238,7 +229,7 @@ export function ScoreBoard({
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col relative z-30 gap-y-4 justify-center">
+                  <div className={cn("flex flex-col relative z-30 gap-y-4 justify-center invisible", board[0]?.attendeeName && "visible")}>
                     <div className="flex flex-col items-center justify-center gap-y-2">
                       {/*   <Image
                         src="/quizattendee.png"
@@ -250,7 +241,7 @@ export function ScoreBoard({
                       <Avatar
                         shape="circle"
                         className="w-[5rem] h-[5rem]"
-                        {...genConfig()}
+                        {...board[0]?.image}
                       />
                       <p className="text-white font-medium text-sm">
                         {board[0]?.attendeeName ?? ""}
@@ -273,7 +264,7 @@ export function ScoreBoard({
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col relative right-11 mt-10 gap-y-4 justify-center">
+                  <div className={cn("flex flex-col relative right-11 mt-10 gap-y-4 justify-center invisible", board[2]?.attendeeName && "visible")}>
                     <div className="flex flex-col items-center justify-center gap-y-2">
                       {/*  <Image
                         src="/quizattendee.png"
@@ -285,7 +276,7 @@ export function ScoreBoard({
                       <Avatar
                         shape="circle"
                         className="w-[5rem] h-[5rem]"
-                        {...genConfig()}
+                        {...board[2]?.image}
                       />
                       <p className="text-white font-medium">
                         {board[2]?.attendeeName ?? ""}
@@ -332,17 +323,17 @@ export function ScoreBoard({
                             <Avatar
                               shape="circle"
                               className="w-[4rem] h-[4rem]"
-                              {...genConfig()}
+                              {...player?.image}
                             />
                             <p>{`${index + 4}th`}</p>
                           </div>
                           <p className="">{player?.attendeeName}</p>
                         </div>
                         <div className="flex items-center gap-x-1">
-                        <p>{player?.totalScore ?? 0}p</p>
+                        <p>{Number(player?.totalScore ?? 0).toFixed(0)}p</p>
                         {player?.recentScore > 0 && <div className="flex text-basePrimary items-center gap-x-1 text-xs">
                   <ArrowUpwardOutline size={15}/>
-                  <p>{player?.recentScore}</p>
+                  <p>{Number(player?.recentScore)?.toFixed(0)}</p>
                 
                 </div>}
                 </div>
@@ -470,7 +461,13 @@ function AnswerSheet({
               <div className="w-full space-y-3 ">
                 <h2>{`Question ${index + 1}`}</h2>
 
-                <p className="font-medium">{question?.question ?? ""}</p>
+            
+                <div
+                  className="innerhtml w-full"
+                  dangerouslySetInnerHTML={{
+                    __html: question?.question ?? "",
+                  }}
+                />
                 {question?.questionImage && (
                   <Image
                     className="w-full h-40 "
@@ -485,7 +482,11 @@ function AnswerSheet({
                   {question?.options.map((option, index) => (
                     <div className="w-full flex items-center gap-x-2">
                       <p>{`${optionLetter[index]}.`}</p>
-                      <p>{option?.option ?? ""}</p>
+                      <p className=""
+                       dangerouslySetInnerHTML={{
+                        __html: option?.option ?? "",
+                      }}
+                      />
                     </div>
                   ))}
                 </div>

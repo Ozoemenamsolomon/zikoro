@@ -123,8 +123,9 @@ export default function Presentation({
  */
 
   const attendeeConfig = useMemo(() => {
-    return genConfig()
-  },[])
+    return genConfig(nickName)
+  },[nickName])
+
   const id = useMemo(() => {
     return generateAlias();
   }, []);
@@ -207,6 +208,7 @@ export default function Presentation({
               }}
               id={id}
               quiz={quizResult}
+              actualQuiz={quiz}
               quizAnswer={answer}
             />
           ) : (

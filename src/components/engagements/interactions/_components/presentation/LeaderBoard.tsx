@@ -62,7 +62,7 @@ export function LeaderBoard({
           participantGroup[key] = {
             quizParticipantId: ans?.quizParticipantId,
             attendeeName: ans?.attendeeName,
-            image: ans?.avatar,
+            image: JSON.parse(ans?.avatar as any),
             recentAt: createdAt,
             recentScore: Number(ans?.attendeePoints),
             totalScore: 0,
@@ -134,9 +134,9 @@ export function LeaderBoard({
         {Array.isArray(board) && board?.length > 0 && (
           <div className="flex items-end justify-center">
             <div
-            data-aos="zoom-in"
-            data-aos-easing="ease-in-out"
-            data-aos-duration="500"
+           // data-aos="zoom-in"
+           // data-aos-easing="ease-in-out"
+           // data-aos-duration="500"
               className={cn(
                 "flex items-center flex-col gap-y-1 justify-center invisible",
                 board[1]?.attendeeName && "flex visible"
@@ -163,9 +163,9 @@ export function LeaderBoard({
             </div>
             {/**1st */}
             <div
-             data-aos="zoom-in"
-             data-aos-easing="ease-in-out"
-             data-aos-duration="500"
+           //  data-aos="zoom-in"
+            // data-aos-easing="ease-in-out"
+            // data-aos-duration="500"
               className={cn(
                 "flex items-center flex-col gap-y-1 justify-center invisible",
                 board[0]?.attendeeName && "flex visible"
@@ -191,9 +191,9 @@ export function LeaderBoard({
             </div>
             {/**3rd */}
             <div
-             data-aos="zoom-in"
-             data-aos-easing="ease-in-out"
-             data-aos-duration="500"
+           //  data-aos="zoom-in"
+           //  data-aos-easing="ease-in-out"
+            // data-aos-duration="500"
               className={cn(
                 "flex items-center flex-col gap-y-1 justify-center invisible",
                 board[2]?.attendeeName && "flex visible"
