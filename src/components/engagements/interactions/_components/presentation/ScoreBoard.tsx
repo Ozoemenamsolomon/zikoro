@@ -42,7 +42,6 @@ export function ScoreBoard({
   quiz,
   id,
   isAttendee,
-  quizAnswer,
   actualQuiz,
 }: {
   answers: TAnswer[];
@@ -50,7 +49,6 @@ export function ScoreBoard({
   quiz: TQuiz<TRefinedQuestion[]> | null;
   id: string;
   isAttendee: boolean;
-  quizAnswer: TAnswer[];
   actualQuiz: TQuiz<TQuestion[]> | null;
 }) {
   const [isQuizResult, setQuizResult] = useState(false);
@@ -158,7 +156,6 @@ export function ScoreBoard({
         <AttendeeScore
           quiz={quiz}
           close={onClose}
-          quizAnswer={quizAnswer}
           id={id}
           userPosition={userPosition}
           userScore={userScore}
@@ -363,7 +360,6 @@ export function ScoreBoard({
 }
 
 function AttendeeScore({
-  quizAnswer,
   userPosition,
   quiz,
   id,
@@ -372,7 +368,6 @@ function AttendeeScore({
 }: {
   userPosition?: number;
   id: string;
-  quizAnswer: TAnswer[];
   quiz: TQuiz<TRefinedQuestion[]>;
   close: () => void;
   userScore?: number;

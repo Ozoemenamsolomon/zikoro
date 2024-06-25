@@ -53,6 +53,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     refetch: () => Promise<null | undefined>;
   } = useFetchSingleEvent(eventId);
   const [publishing, setIsPublishing] = useState(false);
+  const { user: userData } = useUserStore();
   const [isStartDate, setStartDate] = useState(false);
   const [isEndDate, setEndDate] = useState(false);
   const { loading: updating, update } = useUpdateEvent();
@@ -236,7 +237,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   async function publishEvent() {
     if (!data) return;
     setIsPublishing(true);
-    const { user: userData } = useUserStore();
+    
     // const userData = getCookie("user");
     if (data?.eventStatus === "review") {
       toast({

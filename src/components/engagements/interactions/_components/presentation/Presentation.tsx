@@ -218,7 +218,6 @@ export default function Presentation({
                   id={id}
                   quiz={quizResult}
                  actualQuiz={quiz}
-                  quizAnswer={answer}
                   isAttendee={!isIdPresent && !isOrganizer}
                  
                 />
@@ -233,7 +232,7 @@ export default function Presentation({
                   id={id}
                   quiz={quizResult}
                   actualQuiz={quiz}
-                  quizAnswer={answer}
+               
                 />
               )}
             </>
