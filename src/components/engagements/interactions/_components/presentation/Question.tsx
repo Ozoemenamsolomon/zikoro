@@ -158,9 +158,7 @@ export function Qusetion({
   // console.log("yu", quiz?.liveMode);
 
   const timing = useMemo(() => {
-    const minutes = Math.floor(
-      millisecondsLeft / Number(currentQuestion?.duration)
-    );
+
     const seconds = Math.floor(
       (millisecondsLeft % Number(currentQuestion?.duration)) / 1000
     );
@@ -168,6 +166,11 @@ export function Qusetion({
 
     return seconds;
   }, [millisecondsLeft, currentQuestion]);
+  useEffect(() => {
+    if (currentQuestion?.duration) {
+      setMillisecondsLeft(Number(currentQuestion?.duration));
+    }
+  }, [currentQuestion?.id]);
 
   useEffect(() => {
     const countdownInterval = setInterval(() => {
@@ -185,11 +188,7 @@ export function Qusetion({
     return () => clearInterval(countdownInterval);
   }, [millisecondsLeft]);
 
-  useEffect(() => {
-    if (currentQuestion?.duration) {
-      setMillisecondsLeft(Number(currentQuestion?.duration));
-    }
-  }, [currentQuestion?.duration]);
+
   useEffect(() => {
     if (currentQuestion?.id) {
       getAnswer(currentQuestion?.id);

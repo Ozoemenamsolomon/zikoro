@@ -208,6 +208,7 @@ export default function Presentation({
               }}
               id={id}
               quiz={quizResult}
+              actualQuiz={quiz}
               quizAnswer={answer}
             />
           ) : (
