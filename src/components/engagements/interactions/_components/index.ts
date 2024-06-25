@@ -20,3 +20,4 @@ export * from "./presentation/attendee/QuizLobby";
 export * from "./presentation/ScoreBoard";
 export * from "./modals/InteractionsSelectionModal";
 export * from "./custom_ui/InteractionInput";
+export * from "./presentation/attendee/SendMailModal"

@@ -420,12 +420,12 @@ export function useGetBroadCastMessage() {
 
     // Simple function to log any messages we receive
     function messageReceived(payload: any) {
-      console.log("new message", payload);
+     // console.log("new message", payload);
     }
 
     // Subscribe to the Channel
     const channel = supabase.channel("live-quiz");
-    console.log("listen yeee", channel);
+   // console.log("listen yeee", channel);
 
     channel.on("broadcast", { event: "cursor-pos" }, (payload) => {
       console.log("Cursor position received!", payload);
@@ -449,3 +449,42 @@ export function useGetBroadCastMessage() {
     };
   }, [supabase]);
 }
+
+type TQuizScore = {
+  quiz: Partial<TQuiz<TQuestion[]>>;
+  mailto: {email:string; url:string}
+}
+export const useSendQuizScore = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const updateQuiz = async ({
+    payload,
+  }: {
+    payload: TQuizScore;
+  }) => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await patchRequest<TQuizScore>({
+        endpoint: "/quiz/score",
+        payload,
+      });
+
+      if (status !== 200) throw data;
+
+      toast({
+        description: "Quiz Updated successfully",
+      });
+      return data;
+    } catch (error: any) {
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { updateQuiz, isLoading };
+};

@@ -23,6 +23,7 @@ export interface TQuiz<T> {
     attendee?: TAttendee;
     joinedAt: string;
     participantImage: Required<AvatarFullConfig>;
+    email?:string;
   }[];
   accessibility: {
     visible: boolean;
