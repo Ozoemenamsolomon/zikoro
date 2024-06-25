@@ -586,3 +586,7 @@ input[type="number"] {
     transform: rotate(0deg);
   }
 }
+
+.label {
+  @apply text-lg font-medium
+}

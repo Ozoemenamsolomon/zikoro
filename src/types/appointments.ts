@@ -43,7 +43,7 @@ export interface AppointmentLink {
 
 export interface FormProps {
   formData?: AppointmentLink;
-  setFormData?: React.Dispatch<React.SetStateAction<any>>;
+  setFormData?: React.Dispatch<React.SetStateAction<AppointmentLink>>;
   errors?: any;
   setErrors?: React.Dispatch<React.SetStateAction<any>>;
   loading?: boolean;

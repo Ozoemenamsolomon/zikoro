@@ -2,7 +2,7 @@
 
 import { AtmCardIcon, BentArrowLeft, CalenderIcon, ClockIcon, SettingsIcon, ThemeIcon } from '@/constants';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Details from './Details';
 import SetAvailability from './SetAvailability';
 import Payment from './Payment';
@@ -12,6 +12,7 @@ import Generalsettings from './Generalsettings';
 import { DetailItem } from '@/types/appointments';
 import { AppointmentLink } from '@/types/appointments';
 import { useRouter } from 'next/navigation';
+import { fetchUser } from '../auth';
 
 const detailsArray: DetailItem[] = [
   {
@@ -49,18 +50,25 @@ const detailsArray: DetailItem[] = [
 const formdata = {
   appointmentName: '',
   category: '',
-  duration: null,
-  loctionType: 'Onsite',
-  locationDetails:  '',
+  duration: 0,
+  loctionType: '',
+  locationDetails: '',
   timeZone: '',
   timeDetails: '',
   curency: '',
-  amount: null,
-  paymentGateway: '',
-  maxBooking: null,
-  sessionBreak: null,
-  statusOn: true,
+  amount: 0,
+  paymentGateway: 'Zikoro manage',
+  maxBooking: 0,
+  sessionBreak: 0,
+  statusOn: false,
   note: '',
+  appointmentAlias: '',
+  createdBy: 0,
+  businessName: null,
+  logo: null,
+  brandColour: '#0000FF',
+  teamMembers: null,
+  zikoroBranding: null,
 }
 
 const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) => {
@@ -143,8 +151,12 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
     }
   };
   
+    useEffect(() => {
+      fetchUser()
+    }, [])
 
   
+
   return (
     <main className="p-4 sm:p-8">
       <Link href={'/appointments'} type="button">
