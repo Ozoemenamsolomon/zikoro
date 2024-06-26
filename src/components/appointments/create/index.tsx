@@ -2,7 +2,7 @@
 
 import { AtmCardIcon, BentArrowLeft, CalenderIcon, ClockIcon, SettingsIcon, ThemeIcon } from '@/constants';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Details from './Details';
 import SetAvailability from './SetAvailability';
 import Payment from './Payment';
@@ -11,7 +11,8 @@ import Branding from './Branding';
 import Generalsettings from './Generalsettings';
 import { DetailItem } from '@/types/appointments';
 import { AppointmentLink } from '@/types/appointments';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { fetchUser } from '../auth';
 
 const detailsArray: DetailItem[] = [
   {
@@ -45,26 +46,38 @@ const detailsArray: DetailItem[] = [
     formComponent: Generalsettings,
   },
 ];
-
+// no validation fields = curency,amount,note,createdBy,businessName,branColor,teamMembers,zikoroBranding
 const formdata = {
   appointmentName: '',
   category: '',
   duration: null,
-  loctionType: '',
-  locationDetails:  '',
+  loctionType: 'Onsite',
+  locationDetails: '',
   timeZone: '',
   timeDetails: '',
   curency: '',
-  amount: null,
-  paymentGateway: '',
-  maxBooking: null,
-  sessionBreak: null,
-  statusOn: true,
+  amount: 0,
+  paymentGateway: 'Zikoro manage',
+  maxBooking: 1,
+  sessionBreak: 5,
+  statusOn: false,
   note: '',
+  appointmentAlias: '',
+  createdBy: null,
+  businessName: null,
+  logo: null,
+  brandColour: '#0000FF',
+  teamMembers: null,
+  zikoroBranding: null,
+}
+
+interface ValidationErrors {
+  [key: string]: string;
 }
 
 const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) => {
   const {push} = useRouter()
+  const pathname = usePathname()
   const [formData, setFormData] = useState<AppointmentLink>(editData ? {...editData, timeDetails: JSON.parse(editData?.timeDetails)} : formdata);
   const [errors, setErrors] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -91,10 +104,53 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
     });
   };
 
+  const validate = (data: AppointmentLink): boolean => {
+    const error: ValidationErrors = {};
+  
+    if (!formData.appointmentName) {
+      error.appointmentName = 'Appointment Name is required';
+    }
+  
+    if (data.duration === null || data.duration <= 0) {
+      error.duration = 'Duration must be a positive number';
+    }
+  
+    if (!data.loctionType) {
+      error.loctionType = 'Location Type is required';
+    }
+  
+    if (!data.locationDetails) {
+      error.locationDetails = 'Location Details are required';
+    }
+  
+    if (!data.timeZone) {
+      error.timeZone = 'Time Zone is required';
+    }
+  
+    if (!data.timeDetails) {
+      error.timeDetails = 'Time Details are required';
+    }
+  
+    if (data.maxBooking <= 0) {
+      error.maxBooking = 'Max Booking must be a positive number';
+    }
+  
+    if (data.sessionBreak <= 0) {
+      error.sessionBreak = 'Session Break must be a positive number';
+    }
+    setErrors(error)
+    return Object.keys(error).length > 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrors(null);
+
+    if(validate(formData)){
+      setLoading(false);
+      return
+    }
   
     try {
       const payload = { ...formData, timeDetails: JSON.stringify(formData.timeDetails) };
@@ -127,10 +183,10 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
       const result = await response.json();
   
       if (response.ok) {
-        setFormData({});
+        setFormData(formdata);
         console.log('Form submitted successfully', result);
         // Handle any additional success actions here
-        push('/appointments/links')
+        push('/appointments/schedule')
       } else {
         console.error('Form submission failed', result);
         setErrors(result.error);
@@ -143,8 +199,18 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
     }
   };
   
+    useEffect(() => {
+      const fetch = async () => {
+        const user = await fetchUser()
+        console.log({user})
+        setFormData({
+          ...formData,
+          createdBy: user?.id
+        })
+      }
+      fetch()
+    }, [pathname])
 
-  
   return (
     <main className="p-4 sm:p-8">
       <Link href={'/appointments'} type="button">
@@ -152,6 +218,16 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
       </Link>
       <section className="py-4 flex w-full justify-center items-center">
         <form onSubmit={handleSubmit} className="w-full max-w-2xl bg-white rounded-[6px] p-6 sm:p-[60px] grid gap-0.5">
+          {errors && Object.keys(errors).length > 0 && (
+            <>
+              {errors.general ? (
+                <p className="text-red-600 text-[12-px]">{errors.general}</p>
+              ) : (
+                <p className="text-red-600 text-[12-px]">{Object.values(errors).join(', ')}</p>
+              )}
+            </>
+          )}
+
           {detailsArray.map((detail, index) => {
             const FormComponent = detail.formComponent;
             return (

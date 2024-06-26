@@ -605,3 +605,6 @@ input[type="number"] {
     width: 100%;
   }
 }
+.label {
+  @apply text-base font-medium pb-1
+}

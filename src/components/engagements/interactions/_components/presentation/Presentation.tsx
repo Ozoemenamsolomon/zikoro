@@ -488,10 +488,10 @@ function PlayersOnboarding({
               onClick={() => {
                 toggleAvatarModal();
               }}
-              className="text-white rounded-full h-11 w-11 flex items-center justify-center bg-[#001fcc]/20 flex-col"
+              className="text-white rounded-full h-14 w-14 flex items-center justify-center bg-black/50 flex-col"
             >
               {chosenAvatar ? (
-                <Avatar className="h-11 w-11 rounded-full" {...chosenAvatar} />
+                <Avatar className="h-14 w-14 rounded-full" {...chosenAvatar} />
               ) : (
                 <>
                   <Plus size={24} />

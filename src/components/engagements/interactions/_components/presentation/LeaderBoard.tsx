@@ -62,7 +62,7 @@ export function LeaderBoard({
           participantGroup[key] = {
             quizParticipantId: ans?.quizParticipantId,
             attendeeName: ans?.attendeeName,
-            image: JSON.parse(ans?.avatar as any),
+            image: ans?.avatar,
             recentAt: createdAt,
             recentScore: Number(ans?.attendeePoints),
             totalScore: 0,
