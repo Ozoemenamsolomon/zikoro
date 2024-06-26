@@ -12,7 +12,7 @@ export const InputCustom = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, label,error, type, ...props }, ref) => {
     return (
       <>
-        {label && <label htmlFor={props?.name} ><p className="pb-1">{label}</p ></label>}
+        {label && <label htmlFor={props?.name} ><p className="pb-1 label">{label}</p ></label>}
         <input
           type={type}
           className={cn(

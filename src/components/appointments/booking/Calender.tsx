@@ -18,74 +18,61 @@ import {
 	isBefore,
 	startOfToday,startOfDay,
 } from 'date-fns';
-import { ArrowLeft, ArrowRight, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight } from 'lucide-react'
+import {  ChevronLeft, ChevronRight } from 'lucide-react'
 import { SelectInput } from '../ui/CustomSelect'
-import SubmitBtn from './SubmitBtn'
-import { supabaseBrowserClient } from '@/utils/supabase/client'
+import { useAppointmentContext } from '../context/AppointmentContext'
+import DetailsForm from './DetailsForm'
 
 function classNames(...classes: (string | false)[]): string {
     return classes.filter(Boolean).join(' ');
 }
-
 interface TimeDetail {
     day: string;
     from: string;
     to: string;
     enabled: boolean;
 }
-
+interface Slot {
+    label: string;
+    value: string;
+  }
+export interface SlotsResult {
+selectDay: string;
+slots: Slot[];
+}
 export interface BookingFormData {
     appointmentLinkId: number | null;
     participantEmail: string | null;
-    appointmentDate: string | null;  // ISO 8601 date string
-    appointmentTime: string | null;  // HH:mm:ss format
+    appointmentDate: string | null; 
+    appointmentTime: string | null;  
+  }
+  interface CalendarProps {
+    appointmnetLink: AppointmentLink | null;
+    fetchingData: boolean;
   }
   
-//   {
-//     "id": 5,
-//     "created_at": "2024-06-21T16:04:03.642942+00:00",
-//     "appointmentName": "fift appointment",
-//     "category": "Testing C",
-//     "duration": 88,
-//     "loctionType": "Virtual",
-//     "locationDetails": "Google meet",
-//     "timeZone": "(UTC+01:00) West Central Africa",
-//     "timeDetails": "[{\"day\":\"Monday\",\"from\":\"08:00\",\"to\":\"\",\"enabled\":true},{\"day\":\"Tuesday\",\"from\":\"11:00 AM\",\"to\":\"\",\"enabled\":true},{\"day\":\"Wednesday\",\"from\":\"\",\"to\":\"\",\"enabled\":false},{\"day\":\"Thursday\",\"from\":\"\",\"to\":\"\",\"enabled\":false},{\"day\":\"Friday\",\"from\":\"\",\"to\":\"\",\"enabled\":false}]",
-//     "curency": "USD",
-//     "amount": 20,
-//     "paymentGateway": "Stripe",
-//     "maxBooking": 10,
-//     "sessionBreak": 20,
-//     "statusOn": true,
-//     "note": "Growth mindset discussions and events. I am available for serious resasons only",
-//     "appointmentAlias": "z5858jjhjpkdi3s",
-//     "createdBy": 103,
-//     "businessName": null,
-//     "logo": null,
-//     "brandColour": null,
-//     "teamMembers": null,
-//     "zikoroBranding": null
-// }
+  const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) => {
 
+    const {isFormUp} = useAppointmentContext()
+    const {bookingFormData, setBookingFormData} = useAppointmentContext()
 
-
-
-const Calender = ({appointmnetLink}:{appointmnetLink:AppointmentLink}) => {
     let today = startOfToday();
 	let [selectedDay, setSelectedDay] = useState<Date>(today);
-
-	const [inactiveSlots, setInactiveSlots] = useState<Date[]>([])
+	let [timeSlots, setTimeSlots] = useState<SlotsResult | null >(null);
 	
-	const [activeSlot, setActiveSlot] = useState<any>(null);
-	const [active, setActive] = useState<number | null>(null)
-
-    const [slotLoading, setSlotLoading] = useState<boolean>(false)
-
     function getEnabledTimeDetails(): TimeDetail[] {
-        const timeDetails: TimeDetail[] = JSON.parse(appointmnetLink.timeDetails);
-        const enabledItems: TimeDetail[] = timeDetails.filter(item => item.enabled);
-        return enabledItems;
-    }
+        if (!appointmnetLink || !appointmnetLink.timeDetails) {
+          return [];
+        }
+        try {
+          const timeDetails: TimeDetail[] = JSON.parse(appointmnetLink.timeDetails);
+          const enabledItems: TimeDetail[] = timeDetails.filter(item => item.enabled);
+          return enabledItems;
+        } catch (error) {
+          console.error('Failed to parse timeDetails:', error);
+          return [];
+        }
+      }
 
     // Determine disabled days from the appointmentLink/timeDetails
     const isDayDisabled = (day: Date): boolean => {
@@ -114,35 +101,13 @@ const Calender = ({appointmnetLink}:{appointmnetLink:AppointmentLink}) => {
 
     // mount booked slots for the selected date
     useEffect(() => {
-    	const handleInactiveSlots = async () => {
+        // Generate time slots
+        const selectedTimeSlots = generateSlots(
+            getEnabledTimeDetails(), appointmnetLink?.duration!, appointmnetLink?.sessionBreak || 1, selectedDay)
 
-    		try {
-                setSlotLoading(true)
-    			// TODO: filter based on appointmentDate and location
-    			const { data, error } = await supabaseBrowserClient
-    				.from('bookings') 
-    				.select('*')  
-    				.ilike('appointmentLinkId', `%${appointmnetLink?.id}%`)
-    				.eq('appointmentDate', format(selectedDay, 'EEE dd MMM yyyy')) 
-    				console.log({ data, error, dtae: format(selectedDay, 'EEE dd MMM yyyy') });
-    
-    			if (data) {
-    				const bookingList = data.map(item => new Date(new Date(item?.appointmentDate).getTime() + 60 * 60 * 1000));
-    
-    				setInactiveSlots(bookingList);
-    				// console.log('inactive slots', bookingList);
-    			} else {
-    				console.log({ data, error });
-    			}
-    		} catch (error) {
-    			console.error('Error fetching inactive slots:', error);
-    		} finally {
-                setSlotLoading(false)
-            }
-    	};
-    
-    	handleInactiveSlots();
-    }, [selectedDay, ]);
+        console.log({selectedTimeSlots})
+        setTimeSlots(selectedTimeSlots)
+    }, [selectedDay ]);
 
     let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'));
 	let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
@@ -173,181 +138,207 @@ const Calender = ({appointmnetLink}:{appointmnetLink:AppointmentLink}) => {
 	// 	setSelectedDay(nextDay);
 	// 	setCurrentMonth(format(nextDay, 'MMM-yyyy'));
 	// }
-
-    // TODO: Get user data
     
     const [categories, setCategories] = useState({
         category: 'Training 2'
     })
 
-    const [formData, setFormData] = useState<Booking>({
-        appointmentLinkId: appointmnetLink?.id!,
-        participantEmail: 'ecudeji@gmail.com',
-        appointmentDate: null,
-        appointmentTime: null,
-      })
-
-
   return (
-    <div className="w-full gap-6 max-sm:space-y-6 sm:flex ">
-        
-        {/* date picker */}
-        
-        <div className=" bg-white  sm:w-3/5 p-4 rounded-lg  flex-shrink-0 ">
+    isFormUp ?
+        <DetailsForm appointmentLink={appointmnetLink}/>
+        :
+        <div className=" w-full gap-6 max-sm:space-y-6 sm:flex ">
+            <div className=" bg-white  sm:w-3/5 p-4 rounded-lg  flex-shrink-0 ">
 
-            <div className=" pb-6 space-y-1">
-                <p>Select meeting category</p>
-                <SelectInput
-                    name='category'
-                    value={categories?.category}
-                    options={
-                        [
-                            {label: 'Training', value: 'Training'},
-                            {label: 'Training 2', value: 'Training 2'},
-                            {label: 'Training 3', value: 'Training 3'},
-                            {label: 'Training 4', value: 'Training 5'},
-                        ]
-                    }
-                    setFormData={setCategories}
-                    className='w-4/5 z-30'
-                />
-            </div>
-
-            <p className='pb-1'>Select day</p>
-
-            <div className="shadow-md border rounded-lg border-gray-200/50 pt-6 py-4">
-                <div className="flex  items-center w-full justify-between gap-4 px-4">
-                    <div>
-                        <button
-                            type="button"
-                            onClick={previousMonth}
-                            className=" p-1.5 text-gray-400 hover:text-gray-600">
-                            {/* <span className="">Previous month</span> */}
-                            <ChevronLeft className="w-5 h-5" aria-hidden="true" />
-                        </button>
-                    </div>
-                    <h5 className=" ">
-                        {format(firstDayCurrentMonth, 'MMMM yyyy')}
-                    </h5>
-                    <div>
-                        <button
-                            onClick={nextMonth}
-                            type="button"
-                            className=" p-1.5 text-gray-400 hover:text-gray-600">
-                            {/* <span className="">Next month</span> */}
-                            <ChevronRight className="w-5 h-5" aria-hidden="true" />
-                        </button>
-                    </div>
+                <div className=" pb-6 space-y-1">
+                    <p>Select meeting category</p>
+                    <SelectInput
+                        name='category'
+                        value={categories?.category}
+                        options={
+                            [
+                                {label: 'Training', value: 'Training'},
+                                {label: 'Training 2', value: 'Training 2'},
+                                {label: 'Training 3', value: 'Training 3'},
+                                {label: 'Training 4', value: 'Training 5'},
+                            ]
+                        }
+                        setFormData={setCategories}
+                        className='w-4/5 z-30'
+                    />
                 </div>
 
-                <div className=" grid grid-cols-7 mt-6 text-xs leading-6 text-center text-gray-500">
-                    <div>S</div>
-                    <div>M</div>
-                    <div>T</div>
-                    <div>W</div>
-                    <div>T</div>
-                    <div>F</div>
-                    <div>S</div>
-                </div>
+                <p className='pb-1'>Select day</p>
 
-                <div className="grid grid-cols-7 mt-2 text-sm">
-                    {days.map((day, dayIdx) => {
-                        
-                        return <div
-                            key={day.toString()}
-                            className={classNames(
-                                dayIdx === 0 && colStartClasses[getDay(day)],
-                                'py-1.5',
-                            )}>
+                <div className="shadow-md border rounded-lg border-gray-200/50 pt-6 py-4">
+                    <div className="flex  items-center w-full justify-between gap-4 px-4">
+                        <div>
                             <button
                                 type="button"
-                                disabled={isDayDisabled(day)}
-                                onClick={() => {
-                                    setSelectedDay(day)
-                                    setActiveSlot(null)
-                                    setFormData({
-                                        ...formData,
-                                        appointmentDate: format(day, 'yyyy-MM-dd')
-                                    })
-                                }}
-                                className={classNames(
-                                    isEqual(day, selectedDay) && 'text-white',
-                                    !isEqual(day, selectedDay) &&
-                                        isToday(day) &&
-                                        ' font-bold',
-                                    !isEqual(day, selectedDay) &&
-                                        !isToday(day) &&
-                                        isSameMonth(day, firstDayCurrentMonth) &&
-                                        'text-gray-90',
-                                    !isEqual(day, selectedDay) &&
-                                    !isSameMonth(day, firstDayCurrentMonth) &&
-                                        'text-gray-400',
-                                    
-                                    // isEqual(day, selectedDay) && isToday(day) && 'bg-orange-500',
-                                    isEqual(day, selectedDay)  && 'bg-zikoroBlue ',
-                                    !isEqual(day, selectedDay) && 'hover:bg-gray-200',
-                                    isDayDisabled(day) && 'disabled text-gray-400 cursor-not-allowed',
-                                    (isEqual(day, selectedDay) || isToday(day)) &&
-                                        'font-bold',
-                                    'mx-auto flex h-8 w-8 items-center justify-center rounded-full',
-                                )}>
-                                <time dateTime={format(day, 'yyyy-MM-dd')}>
-                                    {format(day, 'd')}
-                                </time>
+                                onClick={previousMonth}
+                                className=" p-1.5 text-gray-400 hover:text-gray-600">
+                                {/* <span className="">Previous month</span> */}
+                                <ChevronLeft className="w-5 h-5" aria-hidden="true" />
                             </button>
                         </div>
-                    })}
+                        <h5 className=" ">
+                            {format(firstDayCurrentMonth, 'MMMM yyyy')}
+                        </h5>
+                        <div>
+                            <button
+                                onClick={nextMonth}
+                                type="button"
+                                className=" p-1.5 text-gray-400 hover:text-gray-600">
+                                {/* <span className="">Next month</span> */}
+                                <ChevronRight className="w-5 h-5" aria-hidden="true" />
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className=" grid grid-cols-7 mt-6 text-xs leading-6 text-center text-gray-500">
+                        <div>S</div>
+                        <div>M</div>
+                        <div>T</div>
+                        <div>W</div>
+                        <div>T</div>
+                        <div>F</div>
+                        <div>S</div>
+                    </div>
+
+                    <div className="grid grid-cols-7 mt-2 text-sm">
+                        {days.map((day, dayIdx) => {
+                            
+                            return <div
+                                key={day.toString()}
+                                className={classNames(
+                                    dayIdx === 0 && colStartClasses[getDay(day)],
+                                    'py-1.5',
+                                )}>
+                                <button
+                                    type="button"
+                                    disabled={isDayDisabled(day)}
+                                    onClick={() => {
+                                        setSelectedDay(day)
+                                        setBookingFormData({
+                                            ...bookingFormData,
+                                            appointmentDate: format(day, 'yyyy-MM-dd')
+                                        })
+                                    }}
+                                    className={classNames(
+                                        isEqual(day, selectedDay) && 'text-white',
+                                        !isEqual(day, selectedDay) &&
+                                            isToday(day) &&
+                                            ' font-bold',
+                                        !isEqual(day, selectedDay) &&
+                                            !isToday(day) &&
+                                            isSameMonth(day, firstDayCurrentMonth) &&
+                                            'text-gray-90',
+                                        !isEqual(day, selectedDay) &&
+                                        !isSameMonth(day, firstDayCurrentMonth) &&
+                                            'text-gray-400',
+                                        
+                                        // isEqual(day, selectedDay) && isToday(day) && 'bg-orange-500',
+                                        isEqual(day, selectedDay)  && 'bg-zikoroBlue ',
+                                        !isEqual(day, selectedDay) && 'hover:bg-gray-200',
+                                        isDayDisabled(day) && 'disabled text-gray-400 cursor-not-allowed',
+                                        (isEqual(day, selectedDay) || isToday(day)) &&
+                                            'font-bold',
+                                        'mx-auto flex h-8 w-8 items-center justify-center rounded-full',
+                                    )}>
+                                    <time dateTime={format(day, 'yyyy-MM-dd')}>
+                                        {format(day, 'd')}
+                                    </time>
+                                </button>
+                            </div>
+                        })}
+                    </div>
                 </div>
             </div>
-		</div>
 
-
-        {/* slots */}
-
-        <div className="bg-white  md:w-80 flex-1 flex-shrink-0 p-4 rounded-lg  slots">
-
-            <div className="grid gap-3">
-                {
-                    timeSlots?.map(({label,value},i)=>{
-                    return (
-                        <button key={i} 
-                            type='button'
-                            className={`${formData.appointmentTime===value ? 'bg-purple-100':'border'}  px-4 py-3 text-center rounded-md `}
-                            onClick={()=>setFormData({
-                                ...formData,
-                                appointmentTime: value,
-                            })}
-                        > {label}</button>
-                    )
-                    })
-                }
-                <SubmitBtn formData={formData} setFormData={setFormData}/>
-            </div>
-            
+            <Slots appointmnetLink={appointmnetLink} selectedDate={selectedDay} timeSlots={timeSlots} />
         </div>
-
-        {/* <Slots/> */}
-    </div>
-  )
+        
+    )
 }
 
 export default Calender
 
-// TODO: Generate timeslots
+// Convert time in "HH:MM AM/PM" format to minutes since midnight
+const convertTimeToMinutes = (time: string): number => {
+  const [hoursMinutes, period] = time.split(' ');
+  let [hours, minutes] = hoursMinutes.split(':').map(Number);
 
-const timeSlots = [
-        { label: "8:00am - 9:00am", value: new Date(new Date().setHours(8, 0, 0, 0)).toISOString() },
-        { label: "9:00am - 10:00am", value: new Date(new Date().setHours(9, 0, 0, 0)).toISOString() },
-        { label: "10:00am - 11:00am", value: new Date(new Date().setHours(10, 0, 0, 0)).toISOString() },
-        { label: "11:00am - 12:00pm", value: new Date(new Date().setHours(11, 0, 0, 0)).toISOString() },
-        { label: "12:00pm - 1:00pm", value: new Date(new Date().setHours(12, 0, 0, 0)).toISOString() },
-        // { label: "1:00pm - 2:00pm", value: new Date(new Date().setHours(13, 0, 0, 0)).toISOString() },
-        { label: "2:00pm - 3:00pm", value: new Date(new Date().setHours(14, 0, 0, 0)).toISOString() },
-        { label: "3:00pm - 4:00pm", value: new Date(new Date().setHours(15, 0, 0, 0)).toISOString() },
-        // { label: "4:00pm - 5:00pm", value: new Date(new Date().setHours(16, 0, 0, 0)).toISOString() },
-        { label: "5:00pm - 6:00pm", value: new Date(new Date().setHours(17, 0, 0, 0)).toISOString() }
-      ];
-      
+  if (period === 'PM' && hours !== 12) {
+    hours += 12;
+  }
+  if (period === 'AM' && hours === 12) {
+    hours = 0;
+  }
+
+  return hours * 60 + minutes;
+};
+
+// Convert minutes since midnight to "HH:MM AM/PM" format
+const convertMinutesToTime = (minutes: number): string => {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  const period = hours >= 12 ? 'PM' : 'AM';
+
+  const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+  const formattedMinutes = mins < 10 ? `0${mins}` : mins;
+
+  return `${formattedHours}:${formattedMinutes} ${period}`;
+};
+
+// Format a time string to 'HH:mm:ss' using a selected date
+function formatTimeString(startTime: string, selectedDate: Date): string {
+  const parsedTime = parse(startTime, 'h:mm a', new Date(selectedDate));
+  const formattedTime = format(parsedTime, 'HH:mm:ss');
+  return formattedTime;
+}
+
+// Generate slots for a given day, time range, duration, and session break
+const generateSlots = (
+  timeRanges: TimeDetail[],
+  duration: number,
+  sessionBreak: number,
+  selectedDay: Date
+): SlotsResult | null => {
+  const slots: Slot[] = [];
+
+  const daysOfTheWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const dayName = daysOfTheWeek[selectedDay.getDay()];
+
+  const selectedRange = timeRanges.find(range => range.day.toLowerCase() === dayName.toLowerCase() && range.enabled);
+
+  if (!selectedRange) {
+    return null;
+  }
+
+  const startMinutes = convertTimeToMinutes(selectedRange.from);
+  const endMinutes = convertTimeToMinutes(selectedRange.to);
+  let currentStart = startMinutes;
+
+  while (currentStart + duration <= endMinutes) {
+    const slotStart = convertMinutesToTime(currentStart);
+    const slotEnd = convertMinutesToTime(currentStart + duration);
+
+    const slotStartValue = formatTimeString(slotStart, selectedDay);
+
+    slots.push({
+      label: `${slotStart} - ${slotEnd}`,
+      value: slotStartValue,
+    });
+
+    currentStart += duration + sessionBreak;
+  }
+
+  return {
+    selectDay: format(selectedDay, 'yyyy-MM-dd'),
+    slots,
+  };
+};
+
 let colStartClasses = [
 	'',
 	'col-start-2',

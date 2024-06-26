@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     const { data, error } = await supabase
       .from('appointmentLinks')
-      .insert([{...body, appointmentAlias:alias, createdBy: 'ecudeji@gmail.com'}])
+      .insert([{...body, appointmentAlias:alias,}])
       .select('*')
       .single();
 

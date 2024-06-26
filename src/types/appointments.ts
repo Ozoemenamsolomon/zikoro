@@ -1,26 +1,9 @@
-// export interface AppointmentLink {
-//     id?:number;
-//     appointmentName?: string;
-//     category?: any;
-//     duration?: number | null;
-//     loctionType?: string;
-//     locationDetails?: string;
-//     timeZone?: string;
-//     timeDetails?: any;
-//     curency?: string;
-//     amount?: number | null;
-//     paymentGateway?: string;
-//     maxBooking?: number | null;
-//     sessionBreak?: number | null;
-//     statusOn?: boolean;
-//     note?: string;
-//   }
 export interface AppointmentLink {
     id?: bigint;
     created_at?: string;
     appointmentName: string;
     category: string;
-    duration: number;
+    duration: number|null;
     loctionType: string;
     locationDetails: string;
     timeZone: string;
@@ -33,7 +16,7 @@ export interface AppointmentLink {
     statusOn: boolean;
     note: string;
     appointmentAlias: string;
-    createdBy: number;
+    createdBy: number|null;
     businessName: string | null;
     logo: string | null;
     brandColour: string | null;
@@ -58,11 +41,32 @@ export interface DetailItem {
   formComponent: React.FC<FormProps>;
 }
 
+// export interface Booking {
+//   id?: bigint;
+//   created_at?: Date;
+//   appointmentLinkId?: bigint;
+//   participantEmail?: string;
+//   appointmentDate?: Date | string | null;
+//   appointmentTime?: string | null;
+// }
+
 export interface Booking {
   id?: bigint;
-  created_at?: Date;
-  appointmentLinkId?: bigint;
+  created_at?: string;
+  appointmentLinkId?: bigint | null;
   participantEmail?: string;
   appointmentDate?: Date | string | null;
   appointmentTime?: string | null;
+  scheduleColour?: string | null;
+  teamMembers?: string | null;
+  appointmentType?: string | null;
+  appointmentName?: string | null;
+  bookingStatus?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  phone?: string | null;
+  price?: number |string| null;
+  email?:string;
+  currency?: string | null;
+  feeType?: string | null;
 }

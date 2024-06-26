@@ -68,17 +68,17 @@ const ColorPicker: FC<ColorPickerProps> = ({ onChange, position, initialColor })
   
   return (
     <div className="relative" ref={dropdownRef}>
-      <button
+      <div
         onClick={() => setIsOpen(!isOpen)}
-        className={` w-10 h-10  rounded `}
+        className={` w-10 h-10  rounded cursor-pointer`}
         style={{ backgroundColor: selectedColor }}
-      />
+      ></div>
       {isOpen && (
         <div className={`absolute top-full ${position==='right'?'right-0':'left-0'} z-30 w-60 bg-white border rounded shadow-md transition-all `}>
           <div className="grid grid-cols-8 gap-2 p-2">
-            {colors.map((color) => (
+            {colors.map((color, i) => (
               <div
-                key={color}
+                key={i}
                 className="w-6 h-6 rounded cursor-pointer"
                 style={{ backgroundColor: color }}
                 onClick={() => selectColor(color)}

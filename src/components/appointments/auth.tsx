@@ -1,46 +1,33 @@
-// import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-
-// const supabase = createClientComponentClient();
-
-// export const fetchUser = async () => {
-
-//     const response= supabase.auth.getUser()
-//     console.log({res: await response.json()})
-
-//     // if (!email) return;
-//     // const { data: user, error } = await supabase
-//     //   .from("users")
-//     //   .select("*")
-//     //   .eq("userEmail", email)
-//     //   .single();
-//     // if (error) {
-//     //   //  console.log({error});
-//     //   window.open(
-//     //     `/onboarding?email=${email}&createdAt=${new Date().toISOString()}`,
-//     //     "_self"
-//     //   );
-//     //   return;
-//     // }
-//     // // console.log(user);
-//     // // saveCookie("user", user);
-//     // return user;
-//   };
-  import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const supabase = createClientComponentClient();
 
 export const fetchUser = async () => {
   try {
-    const { data, error } = await supabase.auth.getUser();
-    
-    if (error) {
-      console.error("Error fetching user:", error);
-      return;
+    const { data: authData, error: authError } = await supabase.auth.getUser();
+
+    if (authError) {
+      console.error("Error fetching authenticated user:", authError);
+      return null;
     }
-    
-    console.log({ res: data });
-    return data;
+
+    if (authData) {
+      const { data: user, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("userEmail", authData.user?.email)
+        .single();
+
+      if (userError) {
+        console.error("Error fetching user details:", userError);
+        return null;
+      }
+
+      return user;
+    }
+    return null;
   } catch (err) {
     console.error("An unexpected error occurred:", err);
+    return null;
   }
 };

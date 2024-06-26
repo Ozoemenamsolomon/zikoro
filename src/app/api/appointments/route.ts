@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const { data, error } = await supabase.from("appointmentLinks").select("*");
+    const { data, error } = await supabase.from("appointmentLinks").select("*").order('created_at', {ascending:false});
 
     if (error) {
       throw NextResponse.json({ error: error.message }, { status: 400 });

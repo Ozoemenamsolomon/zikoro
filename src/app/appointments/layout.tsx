@@ -1,3 +1,4 @@
+import { AppointmentProvider } from "@/components/appointments/context/AppointmentContext";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -5,5 +6,9 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <main className="bg-basebody min-h-screen">{children}</main>;
+  return (
+    <AppointmentProvider>
+      <main className="bg-basebody min-h-screen">{children}</main>
+    </AppointmentProvider>
+)
 }

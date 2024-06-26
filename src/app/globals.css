@@ -588,5 +588,5 @@ input[type="number"] {
 }
 
 .label {
-  @apply text-lg font-medium
+  @apply text-base font-medium pb-1
 }

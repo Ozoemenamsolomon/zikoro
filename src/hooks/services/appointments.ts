@@ -1,6 +1,6 @@
 "use client";
 
-import { AppointmentLink } from "@/types/appointments";
+import { AppointmentLink, Booking } from "@/types/appointments";
 
 import { getRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
