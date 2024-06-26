@@ -9,6 +9,7 @@ import { cn } from "@/lib";
 import { useEffect, useMemo, useState } from "react";
 import { useUpdateQuiz } from "@/hooks";
 import { QLUsers } from "@/constants";
+import Avatar from "react-nice-avatar";
 export function QuizLobby({
   quiz,
   close,
@@ -107,12 +108,10 @@ export function QuizLobby({
               className="w-full rounded-3xl quiz-lobby swipeDown bg-[#001FCC]/10 p-2 flex items-center justify-between"
             >
               <div className="flex items-center gap-x-2">
-                <Image
-                  src="/quizattendee.png"
-                  alt=""
+                <Avatar
+                  shape="circle"
                   className="w-[40px] h-[40px]"
-                  width={40}
-                  height={40}
+                  {...player?.participantImage}
                 />
                 <p>{player?.nickName ?? ""}</p>
               </div>
@@ -135,7 +134,9 @@ export function QuizLobby({
           </Button>
         )}
 
-       {quiz.branding.poweredBy && <p className="text-center">Powered by Zikoro</p>}
+        {quiz.branding.poweredBy && (
+          <p className="text-center">Powered by Zikoro</p>
+        )}
       </div>
     </div>
   );
