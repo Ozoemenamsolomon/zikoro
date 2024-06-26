@@ -251,7 +251,7 @@ export function QuizSettings({
               </div>
               <Switch
                 disabled={loading}
-                checked={accessibility.visible}
+                checked={accessibility?.visible}
                 onClick={() =>
                   setAccessibility({
                     ...accessibility,
@@ -272,7 +272,7 @@ export function QuizSettings({
               </div>
               <Switch
                 disabled={loading}
-                checked={accessibility.review}
+                checked={accessibility?.review}
                 onClick={() =>
                   setAccessibility({
                     ...accessibility,
@@ -287,7 +287,7 @@ export function QuizSettings({
 
               <Switch
                 disabled={loading}
-                checked={accessibility.countdown}
+                checked={accessibility?.countdown}
                 onClick={() =>
                   setAccessibility({
                     ...accessibility,
@@ -307,7 +307,7 @@ export function QuizSettings({
               </div>
               <Switch
                 disabled={loading}
-                checked={accessibility.timer}
+                checked={accessibility?.timer}
                 onClick={() =>
                   setAccessibility({
                     ...accessibility,
