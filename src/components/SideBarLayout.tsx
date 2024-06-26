@@ -104,8 +104,8 @@ export function SideBarLayout({
         query={query}
         isHaveEvent={isHaveEvent}
       />
-      <div className="w-full sm:w-[calc(100%-60px)] float-right pt-[4.4rem]"> 
-      {/** mt-24 is affecting many parts in the event */}
+      <div className="w-full sm:w-[calc(100%-60px)] float-right pt-[4.4rem]">
+        {/** mt-24 is affecting many parts in the event */}
         {children}
       </div>
       {isOpen && <EventFeedBack close={onShot} />}

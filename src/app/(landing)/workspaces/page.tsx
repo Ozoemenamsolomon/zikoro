@@ -53,7 +53,7 @@ interface DateRange {
   end: Date | null;
 }
 
-export default function Workspace() {
+export default function Workspaces() {
   const [showMore, setShowMore] = useState(false);
   const params = useSearchParams();
   const query = params.get("query");
@@ -220,7 +220,6 @@ export default function Workspace() {
         // event.eventCategory.toLowerCase().includes(lowerSearchQuery ?? "")
         // event.organisationId.toString().includes(query ?? "")
         console.log(event)
-        
       );
     })
     .filter((event) => {
