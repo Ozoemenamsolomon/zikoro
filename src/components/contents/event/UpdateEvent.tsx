@@ -237,7 +237,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   async function publishEvent() {
     if (!data) return;
     setIsPublishing(true);
-    
+
     // const userData = getCookie("user");
     if (data?.eventStatus === "review") {
       toast({
@@ -411,16 +411,18 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     control={form.control}
                     name="eventTimeZone"
                     render={({ field }) => (
-                      <ReactSelect
-                        placeHolder="Enter event timezone"
-                        defaultValue={{
-                          label: data?.eventTimeZone,
-                          value: data?.eventTimeZone,
-                        }}
-                        {...form.register("eventTimeZone")}
-                        options={formatZone}
-                        label="Event Timezone"
-                      />
+                      <InputOffsetLabel label={""}>
+                        <ReactSelect
+                          placeHolder="Enter event timezone"
+                          defaultValue={data?.eventTimeZone ?{
+                            label: data?.eventTimeZone,
+                            value: data?.eventTimeZone,
+                          } :""}
+                          {...form.register("eventTimeZone")}
+                          options={formatZone}
+                          label="Event Timezone"
+                        />
+                      </InputOffsetLabel>
                     )}
                   />
 
@@ -428,19 +430,21 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     control={form.control}
                     name="eventVisibility"
                     render={({ field }) => (
-                      <ReactSelect
-                        label="Event visibilty"
-                        defaultValue={{
-                          value: data?.eventVisibility,
-                          label: data?.eventVisibility,
-                        }}
-                        {...form.register("eventVisibility")}
-                        options={[
-                          { value: "Public", label: "Public" },
-                          { value: "Private", label: "Private" },
-                        ]}
-                        placeHolder="Please select"
-                      />
+                      <InputOffsetLabel label="">
+                        <ReactSelect
+                          label="Event visibilty"
+                          defaultValue={{
+                            value: data?.eventVisibility,
+                            label: data?.eventVisibility,
+                          }}
+                          {...form.register("eventVisibility")}
+                          options={[
+                            { value: "Public", label: "Public" },
+                            { value: "Private", label: "Private" },
+                          ]}
+                          placeHolder="Please select"
+                        />
+                      </InputOffsetLabel>
                     )}
                   />
 
@@ -448,16 +452,18 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     control={form.control}
                     name="industry"
                     render={({ field }) => (
-                      <ReactSelect
-                        label="Industry"
-                        defaultValue={{
-                          value: data?.industry,
-                          label: data?.industry,
-                        }}
-                        {...form.register("industry")}
-                        options={industryArray}
-                        placeHolder="Please select"
-                      />
+                      <InputOffsetLabel label="">
+                        <ReactSelect
+                          label="Industry"
+                          defaultValue={{
+                            value: data?.industry,
+                            label: data?.industry,
+                          }}
+                          {...form.register("industry")}
+                          options={industryArray}
+                          placeHolder="Please select"
+                        />
+                      </InputOffsetLabel>
                     )}
                   />
 
@@ -465,16 +471,18 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     control={form.control}
                     name="eventCategory"
                     render={({ field }) => (
-                      <ReactSelect
-                        label="Event category"
-                        defaultValue={{
-                          value: data?.eventCategory,
-                          label: data?.eventCategory,
-                        }}
-                        {...form.register("eventCategory")}
-                        options={categories}
-                        placeHolder="Please select"
-                      />
+                      <InputOffsetLabel label="">
+                        <ReactSelect
+                          label="Event category"
+                          defaultValue={{
+                            value: data?.eventCategory,
+                            label: data?.eventCategory,
+                          }}
+                          {...form.register("eventCategory")}
+                          options={categories}
+                          placeHolder="Please select"
+                        />
+                      </InputOffsetLabel>
                     )}
                   />
 
@@ -498,16 +506,18 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     control={form.control}
                     name="locationType"
                     render={({ field }) => (
-                      <ReactSelect
-                        label="Location type"
-                        defaultValue={{
-                          value: data?.locationType,
-                          label: data?.locationType,
-                        }}
-                        {...form.register("locationType")}
-                        options={locationType}
-                        placeHolder="Please select"
-                      />
+                      <InputOffsetLabel label="">
+                        <ReactSelect
+                          label="Location type"
+                          defaultValue={{
+                            value: data?.locationType,
+                            label: data?.locationType,
+                          }}
+                          {...form.register("locationType")}
+                          options={locationType}
+                          placeHolder="Please select"
+                        />
+                      </InputOffsetLabel>
                     )}
                   />
                   <FormField
@@ -546,16 +556,18 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                       control={form.control}
                       name="eventCountry"
                       render={({ field }) => (
-                        <ReactSelect
-                          {...field}
-                          placeHolder="Select the Country"
-                          label="Event Country"
-                          defaultValue={{
-                            value: data?.eventCountry,
-                            label: data?.eventCountry,
-                          }}
-                          options={countriesList}
-                        />
+                        <InputOffsetLabel label="">
+                          <ReactSelect
+                            {...field}
+                            placeHolder="Select the Country"
+                            label="Event Country"
+                            defaultValue={{
+                              value: data?.eventCountry,
+                              label: data?.eventCountry,
+                            }}
+                            options={countriesList}
+                          />
+                        </InputOffsetLabel>
                       )}
                     />
                   </div>
@@ -572,16 +584,18 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     control={form.control}
                     name="pricingCurrency"
                     render={({ field }) => (
-                      <ReactSelect
-                        label="Pricing currency"
-                        defaultValue={{
-                          value: data?.pricingCurrency,
-                          label: data?.pricingCurrency,
-                        }}
-                        {...form.register("pricingCurrency")}
-                        options={pricingCurrency}
-                        placeHolder="Please select"
-                      />
+                      <InputOffsetLabel label="">
+                        <ReactSelect
+                          label="Pricing currency"
+                          defaultValue={{
+                            value: data?.pricingCurrency,
+                            label: data?.pricingCurrency,
+                          }}
+                          {...form.register("pricingCurrency")}
+                          options={pricingCurrency}
+                          placeHolder="Please select"
+                        />
+                      </InputOffsetLabel>
                     )}
                   />
                 </div>

@@ -329,6 +329,25 @@ export default function CreateEvent() {
                       </InputOffsetLabel>
                     )}
                   />
+                           <FormField
+                    control={form.control}
+                    name="locationType"
+                    render={({ field }) => (
+                      <FormItem className="w-full relative">
+                        <ReactSelect
+                          {...field}
+                          placeHolder="Select the Location Type"
+                          label="Location Type"
+                          options={[
+                            { value: "Hybrid", label: "Hybrid" },
+                            { value: "Onsite", label: "Onsite" },
+                            { value: "Virtual", label: "Virtual" },
+                          ]}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="eventAddress"
@@ -376,25 +395,7 @@ export default function CreateEvent() {
                     />
                   </div>
 
-                  <FormField
-                    control={form.control}
-                    name="locationType"
-                    render={({ field }) => (
-                      <FormItem className="w-full relative">
-                        <ReactSelect
-                          {...field}
-                          placeHolder="Select the Location Type"
-                          label="Location Type"
-                          options={[
-                            { value: "Hybrid", label: "Hybrid" },
-                            { value: "Onsite", label: "Onsite" },
-                            { value: "Virtual", label: "Virtual" },
-                          ]}
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+         
 
                   <Button
                     disabled={loading}
