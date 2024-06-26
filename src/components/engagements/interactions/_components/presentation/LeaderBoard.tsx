@@ -6,11 +6,11 @@ import { cn } from "@/lib";
 import { useMemo, useEffect } from "react";
 import { TAnswer, TQuestion, TQuiz } from "@/types";
 import { QUser } from "@/constants";
-import Avatar, { genConfig } from "react-nice-avatar";
+import Avatar from "react-nice-avatar";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import { AvatarFullConfig } from "react-nice-avatar";
-import {ArrowUpwardOutline} from "@styled-icons/evaicons-outline/ArrowUpwardOutline";
+import { ArrowUpwardOutline } from "@styled-icons/evaicons-outline/ArrowUpwardOutline";
 
 type TLeaderBoard = {
   quizParticipantId: string;
@@ -57,32 +57,34 @@ export function LeaderBoard({
       });
       filteredAnswers?.forEach((ans) => {
         const key = ans?.quizParticipantId;
-        const createdAt = new Date(ans?.created_at)
+        const createdAt = new Date(ans?.created_at);
         if (!participantGroup[key]) {
           participantGroup[key] = {
             quizParticipantId: ans?.quizParticipantId,
             attendeeName: ans?.attendeeName,
-            image: ans?.avatar,
+            image: JSON.parse(ans?.avatar as any),
             recentAt: createdAt,
             recentScore: Number(ans?.attendeePoints),
             totalScore: 0,
           };
         }
         participantGroup[key].totalScore += Number(ans?.attendeePoints);
-     
+
         if (createdAt > participantGroup[key].recentAt) {
           participantGroup[key].recentScore = Number(ans?.attendeePoints);
           participantGroup[key].recentAt = createdAt;
         }
       });
 
-        const result: TLeaderBoard[] =  Object.entries(participantGroup).map(([quizParticipantId, data]) => ({
+      const result: TLeaderBoard[] = Object.entries(participantGroup).map(
+        ([quizParticipantId, data]) => ({
           quizParticipantId: data?.quizParticipantId,
           attendeeName: data?.attendeeName,
           image: data?.image,
           recentScore: Number(data?.recentScore),
           totalScore: data?.totalScore,
-        }));
+        })
+      );
 
       const data = result.sort((a, b) => {
         return b?.totalScore - a?.totalScore;
@@ -97,8 +99,6 @@ export function LeaderBoard({
   useEffect(() => {
     Aos.init();
   }, []);
-
-
 
   /**
    const totalMaxPoints = useMemo(() => {
@@ -134,11 +134,8 @@ export function LeaderBoard({
         {Array.isArray(board) && board?.length > 0 && (
           <div className="flex items-end justify-center">
             <div
-           // data-aos="zoom-in"
-           // data-aos-easing="ease-in-out"
-           // data-aos-duration="500"
               className={cn(
-                "flex items-center flex-col gap-y-1 justify-center invisible",
+                "flex items-center quiz-player-animation flex-col gap-y-1 justify-center invisible",
                 board[1]?.attendeeName && "flex visible"
               )}
             >
@@ -163,11 +160,11 @@ export function LeaderBoard({
             </div>
             {/**1st */}
             <div
-           //  data-aos="zoom-in"
-            // data-aos-easing="ease-in-out"
-            // data-aos-duration="500"
+              //  data-aos="zoom-in"
+              // data-aos-easing="ease-in-out"
+              // data-aos-duration="500"
               className={cn(
-                "flex items-center flex-col gap-y-1 justify-center invisible",
+                "flex items-center quiz-player-animation flex-col gap-y-1 justify-center invisible",
                 board[0]?.attendeeName && "flex visible"
               )}
             >
@@ -191,12 +188,12 @@ export function LeaderBoard({
             </div>
             {/**3rd */}
             <div
-           //  data-aos="zoom-in"
-           //  data-aos-easing="ease-in-out"
-            // data-aos-duration="500"
+              //  data-aos="zoom-in"
+              //  data-aos-easing="ease-in-out"
+              // data-aos-duration="500"
               className={cn(
-                "flex items-center flex-col gap-y-1 justify-center invisible",
-                board[2]?.attendeeName && "flex visible"
+                "flex items-center quiz-player-animation flex-col gap-y-1 justify-center invisible",
+                board[2]?.attendeeName && " visible"
               )}
             >
               <p className="font-semibold text-base mb-1">3rd</p>
@@ -242,12 +239,13 @@ export function LeaderBoard({
                 <p className="text-sm">{attendee?.attendeeName ?? ""}</p>
               </div>
               <div className="flex items-center gap-x-1">
-              <p>{(attendee?.totalScore ?? 0)?.toFixed(0)}p</p>
-                {attendee?.recentScore > 0 &&
-                 <div className="flex items-center gap-x-1 text-xs">
-                  <ArrowUpwardOutline size={15}/>
-                  <p>{attendee?.recentScore}</p>
-                </div>}
+                <p>{(attendee?.totalScore ?? 0)?.toFixed(0)}p</p>
+                {attendee?.recentScore > 0 && (
+                  <div className="flex items-center gap-x-1 text-xs">
+                    <ArrowUpwardOutline size={15} />
+                    <p>{attendee?.recentScore}</p>
+                  </div>
+                )}
               </div>
             </div>
           ))}

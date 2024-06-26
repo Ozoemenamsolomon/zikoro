@@ -1,6 +1,14 @@
 "use client";
 
-import { Advert, LeaderBoard, Qusetion, QuizLobby, ScoreBoard } from "..";
+import {
+  Advert,
+  LeaderBoard,
+  Qusetion,
+  QuizLobby,
+  ScoreBoard,
+  SendMailModal,
+  AvatarModal,
+} from "..";
 import { useState, useEffect, useMemo } from "react";
 import {
   useGetQuiz,
@@ -28,7 +36,8 @@ import { generateAlias } from "@/utils";
 import { cn } from "@/lib";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import  { genConfig, AvatarFullConfig } from "react-nice-avatar";
+import Avatar, { genConfig, AvatarFullConfig } from "react-nice-avatar";
+import { Plus } from "@styled-icons/bootstrap/Plus";
 
 const supabase = createClientComponentClient();
 
@@ -48,8 +57,11 @@ export default function Presentation({
   const [isRightBox, setRightBox] = useState(true);
   const [isLeftBox, setLeftBox] = useState(true);
   const [isLobby, setisLobby] = useState(false);
-  const { answers, getAnswers, setAnswers } = useGetQuizAnswer();
+  const { answers, getAnswers } = useGetQuizAnswer();
+  const [isSendMailModal, setIsSendMailModal] = useState(false);
   const [showScoreSheet, setShowScoreSheet] = useState(false);
+  const [chosenAvatar, setChosenAvatar] =
+  useState<Required<AvatarFullConfig> | null>(null);
   const [quizResult, setQuizResult] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
@@ -122,10 +134,6 @@ export default function Presentation({
   }, [supabase, answers]);
  */
 
-  const attendeeConfig = useMemo(() => {
-    return genConfig(nickName)
-  },[nickName])
-
   const id = useMemo(() => {
     return generateAlias();
   }, []);
@@ -180,36 +188,51 @@ export default function Presentation({
   }
   function onOpenScoreSheet() {
     setShowScoreSheet(true);
+    setIsSendMailModal(true);
   }
 
+  function showSendMailModal() {
+    setIsSendMailModal((prev) => !prev);
+  }
   // show score sheet after live quiz
   useEffect(() => {
-    if (quiz && quiz?.accessibility?.live ) {
+    if (quiz && quiz?.accessibility?.live) {
       if (quiz?.liveMode?.isEnded) {
         setShowScoreSheet(quiz?.liveMode?.isEnded);
-
+        setIsSendMailModal(true);
       }
     }
   }, [quiz]);
-
-  // console.log({ isIdPresent, isOrganizer });
 
   return (
     <div className="w-full">
       {refinedQuizArray && !loading && !isLoading && !eventLoading ? (
         <>
           {showScoreSheet ? (
-            <ScoreBoard
-              isAttendee={!isIdPresent && !isOrganizer}
-              answers={answers}
-              close={() => {
-                setShowScoreSheet(false);
-                setIsYetToStart(true);
-              }}
-              id={id}
-              quiz={quizResult}
-              quizAnswer={answer}
-            />
+            <>
+              {isSendMailModal && !isOrganizer && !isIdPresent ? (
+                <SendMailModal
+                  close={showSendMailModal}
+                  id={id}
+                  quiz={quizResult}
+                  actualQuiz={quiz}
+                  isAttendee={!isIdPresent && !isOrganizer}
+                  attendeeEmail={attendee?.email}
+                />
+              ) : (
+                <ScoreBoard
+                  isAttendee={!isIdPresent && !isOrganizer}
+                  answers={answers}
+                  close={() => {
+                    setShowScoreSheet(false);
+                    setIsYetToStart(true);
+                  }}
+                  id={id}
+                  quiz={quizResult}
+                  actualQuiz={quiz}
+                />
+              )}
+            </>
           ) : (
             <>
               {isYetTosStart ? (
@@ -222,7 +245,7 @@ export default function Presentation({
                       close={onClose}
                     />
                   )}
-                  <AttendeeRegistration
+                  <PlayersOnboarding
                     attendee={attendee}
                     close={close}
                     isAttendee={!isIdPresent && !isOrganizer}
@@ -231,10 +254,11 @@ export default function Presentation({
                     id={id}
                     attendeeId={attendeeId}
                     nickName={nickName}
-                    attendeeImage={attendeeConfig}
                     setNickName={setNickName}
                     isLobby={isLobby}
                     setisLobby={setisLobby}
+                    chosenAvatar={chosenAvatar}
+                    setChosenAvatar={setChosenAvatar}
                   />
                 </div>
               ) : (
@@ -266,7 +290,7 @@ export default function Presentation({
                     attendeeDetail={{
                       attendeeId: attendeeId ? String(attendeeId) : null,
                       attendeeName: nickName,
-                      avatar: attendeeConfig
+                      avatar: chosenAvatar!,
                     }}
                     isIdPresent={isIdPresent}
                     isOrganizer={isOrganizer}
@@ -294,7 +318,7 @@ export default function Presentation({
   );
 }
 
-function AttendeeRegistration({
+function PlayersOnboarding({
   close,
   quiz,
   attendee,
@@ -306,7 +330,8 @@ function AttendeeRegistration({
   isLobby,
   setisLobby,
   attendeeId,
-  attendeeImage
+  chosenAvatar, 
+  setChosenAvatar
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -319,11 +344,15 @@ function AttendeeRegistration({
   isLobby: boolean;
   setisLobby: React.Dispatch<React.SetStateAction<boolean>>;
   attendeeId?: number;
-  attendeeImage: Required<AvatarFullConfig>
+  chosenAvatar: Required<AvatarFullConfig> | null;
+  setChosenAvatar: React.Dispatch<
+    React.SetStateAction<Required<AvatarFullConfig> | null>
+  >;
 }) {
   const { updateQuiz } = useUpdateQuiz();
 
   const [loading, setLoading] = useState(false);
+  const [isAvatarModal, setAvatarModal] = useState(false);
   useRealtimePresence();
   const player = getCookie<TConnectedUser>("player");
   //console.log("present", presentUser)
@@ -341,11 +370,16 @@ function AttendeeRegistration({
     };
   }, [quiz]);
 
- 
-
+  function toggleAvatarModal() {
+    setAvatarModal((prev) => !prev);
+  }
   async function submit() {
     if (!nickName) {
       toast.error("Pls add a nickName");
+      return;
+    }
+    if (chosenAvatar === null) {
+      toast.error("Pls select an avatar");
       return;
     }
 
@@ -372,7 +406,7 @@ function AttendeeRegistration({
               nickName,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
-              participantImage: attendeeImage
+              participantImage: chosenAvatar,
             },
           ]
         : [
@@ -381,7 +415,7 @@ function AttendeeRegistration({
               nickName,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
-              participantImage: attendeeImage
+              participantImage: chosenAvatar,
             },
           ],
     };
@@ -421,6 +455,8 @@ function AttendeeRegistration({
     }, 2000);
   }, []);
 
+
+
   return (
     <>
       {isAttendee ? (
@@ -447,13 +483,30 @@ function AttendeeRegistration({
             }`}</p>
           </div>
 
-          <Input
-            value={nickName}
-            onChange={(e) => setNickName(e.target.value)}
-            className="border-0 border-b rounded-none w-full max-w-[30em]"
-            placeholder="Enter Name"
-            type="text"
-          />
+          <div className="w-full flex justify-center items-end gap-x-2">
+            <button
+              onClick={() => {
+                toggleAvatarModal();
+              }}
+              className="text-white rounded-full h-11 w-11 flex items-center justify-center bg-[#001fcc]/20 flex-col"
+            >
+              {chosenAvatar ? (
+                <Avatar className="h-11 w-11 rounded-full" {...chosenAvatar} />
+              ) : (
+                <>
+                  <Plus size={24} />
+                  <p className="text-xs font-medium">Avatar</p>
+                </>
+              )}
+            </button>
+            <Input
+              value={nickName}
+              onChange={(e) => setNickName(e.target.value)}
+              className="border-0 border-b rounded-none w-full max-w-[26em]"
+              placeholder="Enter Name"
+              type="text"
+            />
+          </div>
 
           <Button
             disabled={loading}
@@ -512,6 +565,13 @@ function AttendeeRegistration({
           close={onClose}
           refetch={refetch}
           isAttendee={isAttendee}
+        />
+      )}
+      {isAvatarModal && (
+        <AvatarModal
+          close={toggleAvatarModal}
+          chosenAvatar={chosenAvatar}
+          setChosenAvatar={setChosenAvatar}
         />
       )}
     </>

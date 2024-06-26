@@ -17,6 +17,7 @@ export default function Page() {
   const message = search.get("message");
   const content = search.get("content");
   const email = search.get("email");
+  const type = search.get("type");
 
   useEffect(() => {
     const countdownInterval = setInterval(() => {
@@ -33,7 +34,7 @@ export default function Page() {
   }, []);
 
   async function verify() {
-    await verifyCode(email!, code)
+    await verifyCode(email!, code, type)
   }
   return (
     <div className="w-full h-full inset-0 fixed">
@@ -74,7 +75,7 @@ export default function Page() {
             className="bg-basePrimary gap-x-2 text-gray-50 mt-3  font-medium flex items-center justify-center w-full  h-12 2xl:h-14 rounded-lg"
           >
             {isVerifying && <LoaderAlt size={22} className="animate-spin" />}
-            <p>Verify</p>
+            <p>{type === "reset-password" ? "Verify OTP": 'Verify'}</p>
           </Button>
         </div>
 

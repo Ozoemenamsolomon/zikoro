@@ -26,3 +26,11 @@ export const quizQuestionSchema = z.object({
 export const joinLiveQuizSchema = z.object({
   code: z.string().min(5, { message: "Code is required" }),
 });
+
+
+export const sendMailQuizSchema = z.object({
+  email: z
+  .string()
+  .email({ message: "Email must be a valid email" })
+  .min(1, { message: "Email is required" }),
+});
