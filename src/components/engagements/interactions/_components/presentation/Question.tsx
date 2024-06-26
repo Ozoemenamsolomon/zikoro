@@ -268,6 +268,7 @@ export function Qusetion({
         liveMode: {
           startingAt,
           isShowAnswerMetric: true,
+          isOptionSelected: true,
           correctOptionId: currentQuestion?.options?.find(
             (i) => i?.isAnswer === i?.optionId
           )?.optionId,
@@ -392,9 +393,7 @@ export function Qusetion({
           liveMode: {
             startingAt: liveMode?.startingAt,
             isOptionSelected: true,
-            correctOptionId: currentQuestion?.options?.find(
-              (i) => i?.isAnswer === i?.optionId
-            )?.optionId,
+           
           },
         };
 
@@ -458,7 +457,7 @@ export function Qusetion({
         !isIdPresent && !isOrganizer && "col-span-full max-w-3xl mx-auto"
       )}
     >
-      <div className="w-full overflow-y-auto px-6 pt-12 space-y-3  h-[90%] pb-52 ">
+      <div className="w-full overflow-y-auto no-scrollbar px-6 pt-12 space-y-3  h-[90%] pb-52 ">
         <>
           {transiting ? (
             <Transition setShowTransiting={setShowTransiting} />
@@ -470,15 +469,7 @@ export function Qusetion({
               >
                 <Maximize2 size={20} />
               </Button>
-              <Button
-                onClick={toggleLeftBox}
-                className={cn(
-                  "absolute bottom-1 left-1",
-                  isLeftBox && "hidden"
-                )}
-              >
-                <Maximize2 size={20} />
-              </Button>
+            
               <div className=" gap-3 pb-2 w-full flex items-end justify-between">
                 <Button
                   onClick={goBack}
@@ -657,6 +648,15 @@ export function Qusetion({
                     Powered By Zikoro
                   </p>
                 )}
+                  <Button
+                onClick={toggleLeftBox}
+                className={cn(
+                  "absolute bottom-1 left-1",
+                  isLeftBox && "hidden"
+                )}
+              >
+                <Maximize2 size={20} />
+              </Button>
               </div>
             </>
           )}

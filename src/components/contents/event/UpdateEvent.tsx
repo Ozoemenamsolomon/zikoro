@@ -170,15 +170,16 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     }
 
     const promise = new Promise(async (resolve) => {
-      if (values.eventPoster && values.eventPoster.startsWith("http")) {
-        resolve(values.eventPoster);
-      } else if (values.eventPoster && values.eventPoster[0]) {
+      if (values.eventPoster && values.eventPoster[0]) {
         const img = await uploadFile(values.eventPoster[0], "image");
         resolve(img);
+      } else if (values.eventPoster && values.eventPoster?.startsWith("http")) {
+        resolve(values.eventPoster);
       } else {
-        return null;
+        resolve(null);
       }
     });
+
     const response = await promise;
 
     const payload: any = {
@@ -414,10 +415,10 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                       <InputOffsetLabel label={""}>
                         <ReactSelect
                           placeHolder="Enter event timezone"
-                          defaultValue={data?.eventTimeZone ?{
+                          defaultValue={{
                             label: data?.eventTimeZone,
                             value: data?.eventTimeZone,
-                          } :""}
+                          }}
                           {...form.register("eventTimeZone")}
                           options={formatZone}
                           label="Event Timezone"

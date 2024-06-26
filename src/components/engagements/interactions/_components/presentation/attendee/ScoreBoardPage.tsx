@@ -41,7 +41,7 @@ export default function ScoreBoardPage({ quizId }: { quizId: string }) {
 
   return (
     <>
-      {answers && quiz && (
+      {
         <ScoreBoard
           answers={answers}
           close={goBack}
@@ -50,7 +50,7 @@ export default function ScoreBoardPage({ quizId }: { quizId: string }) {
           isAttendee={true}
           actualQuiz={actualQuiz}
         />
-      )}
+      }
     </>
   );
 }
