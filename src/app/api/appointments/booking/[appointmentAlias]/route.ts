@@ -4,9 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { bookingId: string } }
+  { params }: { params: { appointmentAlias: string } }
 ) {
-  const { bookingId } = params;
+  const { appointmentAlias } = params;
   const supabase = createRouteHandlerClient({ cookies });
 
   if (req.method === "GET") {
@@ -14,9 +14,9 @@ export async function GET(
       const { data, error, status } = await supabase
         .from("appointmentLinks")
         .select("*")
-        .eq("id", bookingId)
+        .eq("appointmentAlias", appointmentAlias)
         .single();
-
+        console.log({data,error,appointmentAlias})
       if (error) {
         throw NextResponse.json({ error: error.message }, { status: 400 });
       }

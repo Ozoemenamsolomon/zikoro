@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { deploymentUrl } from "@/utils";
 import { AppointmentLink } from "@/types/appointments";
+import { generateSlug } from "@/lib/generateSlug";
 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -18,9 +19,11 @@ export async function POST(req: NextRequest) {
     const body: AppointmentLink = await req.json();
     console.log('POST',{ body });
 
+    const alias = generateSlug(body?.appointmentName)
+
     const { data, error } = await supabase
       .from('appointmentLinks')
-      .insert([body])
+      .insert([{...body, appointmentAlias:alias,}])
       .select('*')
       .single();
 

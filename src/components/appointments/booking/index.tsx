@@ -1,21 +1,25 @@
 "use client"
 
-import { AppointmentLink } from '@/types/appointments'
 import React from 'react'
 import Calender from './Calender'
 import {useGetBookingAppointment} from "@/hooks"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useAppointmentContext } from '../context/AppointmentContext'
 
-const Booking =  ({id}:{id:string}) => {
-    const {appointment: appointmnetLink} = useGetBookingAppointment(id)
+const Booking =  ({alias}:{alias:string}) => {
+    // const {isLoading:loading} = useAppointmentContext()
+  const {appointment: appointmnetLink, isLoading, getAppointment} = useGetBookingAppointment(alias)
+  console.log({appointmnetLink})
     
   return (
-    <main className='relative p-6 xl:p-12 xl:pb-6 bg-[#F2F2F2] min-h-screen flex flex-col justify-between gap-12'>
-        <section className="">
-            <header>
-                <h4 className="text-2xl font-semibold">Organization logo</h4>
-            </header>
+    <main className='relative pt-6 sm:px-6 xl:px-12  bg-white min-h-screen  space-y-4'>
+        <header >
+            <h4 className="text-2xl font-semibold">Organization logo</h4>
+        </header>
+        <section className="py-12  px-4 rounded-lg   w-full flex flex-col bg-[#F2F2F2] justify-between gap-12">
 
-            <section className="rounded-lg w-full max-w-7xl mx-auto py-12 grid lg:flex gap-6 lg:justify-center">
+            <section className="w-full max-w-7xl  mx-auto  grid lg:flex gap-6 lg:justify-center">
+
                 <div className="bg-white w-full lg:w-80  xl:w-96  flex-shrink-0 p-6 rounded-lg   title ">
                     <p className="">Appointment details</p>
 
@@ -44,20 +48,29 @@ const Booking =  ({id}:{id:string}) => {
                         </div>
                     </div>
                 </div>
-               {appointmnetLink && <Calender appointmnetLink={appointmnetLink}/>}
+               
+               <Calender appointmnetLink={appointmnetLink} fetchingData={isLoading}/>
+
             </section>
+
+            <footer className=' flex w-full gap-4 justify-center items-center '>
+                <div className="" onClick={async ()=>{
+                    const supabase = createClientComponentClient();
+                    const error = await supabase.auth.signOut();
+                    console.log({error})
+                }}>logout</div>
+                <p className="">Powered by</p>
+                <div className="flex-shrink-0 h-[47px] w-[47px] rounded-full  "
+                style={{background: 'linear-gradient(269.83deg, #9C00FE 0.14%, #001FCB 99.85%)'
+                }}></div>
+                <div className="">
+                    <p className="text-[#1F1F1F] text-[12px]">Zikoro</p>
+                    <h5 className="text-[#1F1F1F] text-[16px] font-semibold">Bookings</h5>
+                </div>
+            </footer>
         </section>
 
-         <footer className=' flex w-full gap-4 justify-center items-center '>
-            <p className="">Powered by</p>
-            <div className="flex-shrink-0 h-[47px] w-[47px] rounded-full  "
-            style={{background: 'linear-gradient(269.83deg, #9C00FE 0.14%, #001FCB 99.85%)'
-            }}></div>
-            <div className="">
-                <p className="text-[#1F1F1F] text-[12px]">Zikoro</p>
-                <h5 className="text-[#1F1F1F] text-[16px] font-semibold">Bookings</h5>
-            </div>
-        </footer>
+         
     </main>
   )
 }

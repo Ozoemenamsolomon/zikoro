@@ -34,8 +34,8 @@ const Generalsettings: React.FC<FormProps> = ({
       <div className="">
         <p className='pb-2'>Show <span className="font-semibold">unavailable</span> when core team {`member(s)`} is unavailable</p>
         <SelectInput
-              name='a'
-              value={formData?.a || ''}
+              name='teamMembers'
+              value={formData?.teamMembers || ''}
               options={[
                 {label:'Emma Udo',value:'Emma Udo'},
                 {label:'John Smith',value:'John Smith'},
