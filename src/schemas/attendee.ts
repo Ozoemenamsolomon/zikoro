@@ -18,14 +18,8 @@ export const AttendeeSchema = z.object({
   city: z.string().optional().nullable(),
   country: z.string().optional().nullable(),
   websiteUrl: z.string().optional().nullable(),
-  phoneNumber: z
-    .string()
-    .length(10, { message: "phone number must be 10 digits" }),
-  whatsappNumber: z
-    .string()
-    .length(10, { message: "whatsapp number must be 10 digits" })
-    .optional()
-    .nullable(),
+  phoneNumber: z.string(),
+  whatsappNumber: z.string().optional().nullable(),
   bio: z.string().optional().nullable(),
   x: z.string().optional().nullable(),
   linkedin: z.string().optional().nullable(),

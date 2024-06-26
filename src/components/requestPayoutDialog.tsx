@@ -49,6 +49,8 @@ const RequestPayoutDialog = ({
       transactionId: selectedRows.map(({ id }) => id.toString()),
       amount: totalRevenue - totalProcessingFee - totalAffiliateCommission,
       requestedFor: organization.id,
+      userName: user?.firstName,
+      userEmail: user?.userEmail,
     };
     await requestPayOut({ payload });
     await getEventTransactions();
