@@ -216,7 +216,7 @@ export function useRegistration() {
         //  saveCookie("user", data);
         toast.success("Registration  Successful");
         router.push(
-          `/verify-email?message=Verify your Account&content= Thank you for signing up! A verification code has been sent to your registered email address. Please check your inbox and enter the code to verify your account.&email=${values.email}`
+          `/verify-email?message=Verify your Account&content= Thank you for signing up! A verification code has been sent to your registered email address. Please check your inbox and enter the code to verify your account.&email=${values.email}&type=verify`
         );
       }
     } catch (error) {
@@ -309,7 +309,7 @@ export function useForgotPassword() {
         //  saveCookie("user", data);
 
         router.push(
-          `/verify-email?message=Reset Password&content=If the email you entered is registered, we've sent a password reset link to your inbox. Please check your email and follow the instructions to reset your password.`
+          `/verify-email?message=Reset Password&content=If the email you entered is registered, we've sent an OTP code to your inbox. Please check your email and follow the instructions to reset your password.&email=${email}&type=reset-password`
         );
       }
     } catch (error) {
@@ -379,7 +379,7 @@ export function useVerifyCode() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function verifyCode(email: string, token: string) {
+  async function verifyCode(email: string, token: string, type:string | null) {
     try {
       setLoading(true);
       const { data, error } = await supabase.auth.verifyOtp({
@@ -392,11 +392,18 @@ export function useVerifyCode() {
         throw error;
       }
 
+    if (type === "reset-password") {
+      router.push(
+        `${window.location.origin}/update-password`
+      );
+    }
+    else {
       router.push(
         `${
           window.location.origin
         }/onboarding?email=${email}&createdAt=${new Date().toISOString()}`
       );
+    }
     } catch (error: any) {
       toast.error(error?.message);
     } finally {

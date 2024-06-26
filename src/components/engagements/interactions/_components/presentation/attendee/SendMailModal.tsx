@@ -23,17 +23,22 @@ export function SendMailModal({
   quiz,
   id,
   isAttendee,
-  actualQuiz
+  actualQuiz,
+  attendeeEmail
 }: {
   close: () => void;
   quiz: TQuiz<TRefinedQuestion[]> | null;
   id: string;
   isAttendee: boolean;
   actualQuiz: TQuiz<TQuestion[]>|null
+  attendeeEmail?:string
 }) {
   const { updateQuiz, isLoading } = useSendQuizScore();
   const form = useForm<z.infer<typeof sendMailQuizSchema>>({
     resolver: zodResolver(sendMailQuizSchema),
+    defaultValues: {
+      email: attendeeEmail,
+    },
   });
 
   async function onSubmit(values: z.infer<typeof sendMailQuizSchema>) {
@@ -61,6 +66,7 @@ export function SendMailModal({
       },
     };
     await updateQuiz({ payload });
+    close()
   }
 
 
