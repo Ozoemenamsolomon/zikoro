@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -16,6 +16,7 @@ import { useGetUserReferrals } from "@/hooks";
 import { format } from "date-fns";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Copy } from "styled-icons/boxicons-regular";
+import { useGetData } from "@/hooks/services/request";
 
 const page = () => {
   const { user, setUser } = useUserStore();
@@ -28,6 +29,23 @@ const page = () => {
     userId: user?.id,
     referredBy: user?.referralCode,
   });
+
+  const {
+    data: subscriptions,
+    getData: getSubscriptions,
+    isLoading: subscriptionsIsLoading,
+  } = useGetData(
+    `subscription/all?users=${JSON.stringify(
+      userReferrals.map(({ id }) => id)
+    )}`,
+    false
+  );
+
+  useEffect(() => {
+    getSubscriptions();
+  }, [userReferrals]);
+
+  console.log(subscriptions);
 
   console.log(userReferrals);
 

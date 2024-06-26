@@ -7,7 +7,18 @@ export async function GET(req: NextRequest) {
 
   if (req.method === "GET") {
     try {
-      const { data, error } = await supabase.from("subscription").select();
+      const { searchParams } = new URL(req.url);
+      const users = searchParams.get("users");
+
+      console.log(users);
+
+      const query = supabase.from("subscription").select("*");
+
+      if (users) query.in("userId", JSON.parse(users));
+
+      const { data, error } = await query;
+
+      console.log(data);
 
       if (error) throw error;
 

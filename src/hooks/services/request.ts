@@ -20,7 +20,10 @@ type usePostResult<TData, TReturnData = any> = {
   }) => Promise<TReturnData | undefined>;
 } & RequestStatus;
 
-export const useGetData = <TData>(endpoint: string): UseGetResult<TData> => {
+export const useGetData = <TData>(
+  endpoint: string,
+  fetchInitial?: boolean = true
+): UseGetResult<TData> => {
   const [data, setData] = useState<TData | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -46,7 +49,7 @@ export const useGetData = <TData>(endpoint: string): UseGetResult<TData> => {
   };
 
   useEffect(() => {
-    getData();
+    fetchInitial && getData();
   }, []);
 
   return {
@@ -81,6 +84,7 @@ export const useMutateData = <TData, TReturnData = any>(
         payload,
       });
 
+      console.log(status);
       if (status !== 201) {
         throw data;
       }

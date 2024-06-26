@@ -122,7 +122,13 @@ type useRequestPayOutResult = {
   requestPayOut: ({
     payload,
   }: {
-    payload: { transactionId: string[]; amount: number; requestedFor: number };
+    payload: {
+      transactionId: string[];
+      amount: number;
+      requestedFor: number;
+      userEmail: string;
+      userName: string;
+    };
   }) => Promise<void>;
 } & RequestStatus;
 
@@ -137,7 +143,13 @@ export const useRequestPayOut = ({
   const requestPayOut = async ({
     payload,
   }: {
-    payload: { transactionId: string[]; amount: number; requestedFor: number };
+    payload: {
+      transactionId: string[];
+      amount: number;
+      requestedFor: number;
+      userEmail: string;
+      userName: string;
+    };
   }) => {
     setLoading(true);
     toast({
