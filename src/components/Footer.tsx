@@ -169,18 +169,36 @@ export default function Footer() {
         </ul>
       </div> */}
 
-       {/* temporary additions */}
-       {/* <div className="flex items-center">
+      {/* temporary additions */}
+      {/* <div className="flex items-center">
 
        </div> */}
-       <div className="px-5 lg:px-0 mt-12 lg:mt-12 grid grid-cols-3 lg:grid-cols-4 gap-x-1 gap-y-4 w-full max-w-full lg:max-w-2xl text-left lg:text-center mx-auto ">
-            <p onClick={() => router.push("/contact")} className="font-medium cursor-pointer text-[13px] lg:text-base">Contact us </p>
-            <p onClick={() => router.push("/explore")} className="font-medium cursor-pointer text-[13px] lg:text-base">Explore Events </p>
-            <p onClick={() => router.push("/verify")} className="font-medium cursor-pointer text-[13px] lg:text-base">Verify Certificate </p>
-            <p onClick={() => router.push("/pricing")} className="font-medium cursor-pointer text-[13px] lg:text-base">Pricing </p>
-            
-        </div>
-    
+      <div className="px-5 lg:px-0 mt-12 lg:mt-12 grid grid-cols-3 lg:grid-cols-4 gap-x-1 gap-y-4 w-full max-w-full lg:max-w-2xl text-left lg:text-center mx-auto ">
+        <p
+          onClick={() => router.push("/contact")}
+          className="font-medium cursor-pointer text-[13px] lg:text-base"
+        >
+          Contact us{" "}
+        </p>
+        <p
+          onClick={() => router.push("/explore")}
+          className="font-medium cursor-pointer text-[13px] lg:text-base"
+        >
+          Explore Events{" "}
+        </p>
+        <p
+          onClick={() => router.push("/verify")}
+          className="font-medium cursor-pointer text-[13px] lg:text-base"
+        >
+          Verify Certificate{" "}
+        </p>
+        <p
+          onClick={() => router.push("/pricing")}
+          className="font-medium cursor-pointer text-[13px] lg:text-base"
+        >
+          Pricing{" "}
+        </p>
+      </div>
 
       <div className="mt-16 lg:mt-20 border-t-[1px] border-indigo-500 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end  px-2 lg:px-0 py-2">
         <div className="py-4 lg:py-14 px-5 lg:px-0 flex  justify-between items-center max-w-6xl mx-auto ">

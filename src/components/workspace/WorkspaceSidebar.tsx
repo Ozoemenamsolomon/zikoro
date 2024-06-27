@@ -4,20 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { getCookie, useCheckTeamMember } from "@/hooks";
-import { AccessVerification } from "./composables";
 import { cn } from "@/lib";
-import { Button } from ".";
 import { ArrowExportLtr } from "@styled-icons/fluentui-system-filled/ArrowExportLtr";
 import { ArrowExportRtl } from "@styled-icons/fluentui-system-filled/ArrowExportRtl";
 import useUserStore from "@/store/globalUserStore";
 
-const Topbar = ({ eventId }: { eventId?: string }) => {
+const WorkspaceSidebar = ({ workspaceId }: { workspaceId?: string }) => {
   const pathname = usePathname();
   const [isShowNav, setShowNav] = useState(false);
   const [isScrolling, setScrolling] = useState(false);
   const [left, setLeft] = useState(false);
   const { user } = useUserStore();
-  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
+  //   const { isIdPresent, eventLoading } = useCheckTeamMember({ workspaceId });
 
   useEffect(() => {
     document.addEventListener("scroll", () => {
@@ -46,45 +44,20 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
 
   const links = [
     {
-      name: "Reception",
-      href: `${eventId}/reception`,
+      name: "General",
+      href: `${workspaceId}/general`,
     },
     {
-      name: "Contents",
-      href: `${eventId}/content/info`,
+      name: "Branding",
+      href: `${workspaceId}/branding`,
     },
     {
-      name: "Marketing",
-      href: `${eventId}/marketing`,
+      name: "Team",
+      href: `${workspaceId}/team`,
     },
     {
-      name: "People",
-      href: `${eventId}/people/all`,
-    },
-    {
-      name: "Agenda",
-      href: `${eventId}/agenda`,
-    },
-    {
-      name: "Partners",
-      href: `${eventId}/partners?p=sponsors`,
-    },
-    {
-      name: "Market Place",
-      href: `${eventId}/market-place/jobs`,
-    },
-
-    {
-      name: "Engagements",
-      href: `${eventId}/engagements/interactions`,
-    },
-    {
-      name: "Analytics",
-      href: ``, // ${eventId}/analytics
-    },
-    {
-      name: "Settings",
-      href: `${eventId}/settings`,
+      name: "Link Sharing",
+      href: `${workspaceId}/link-sharing`,
     },
   ];
 
@@ -93,13 +66,14 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
 
   const reformedLink = useMemo(() => {
     return links.filter((link) => {
-      if (!user || !user?.userEmail || !isIdPresent) {
+      if (!user || !user?.userEmail) {
         return !set.has(String(link?.name));
       } else {
         return links;
       }
     });
-  }, [user, isIdPresent]);
+    //   }, [user, isIdPresent]);
+  }, [user]);
 
   return (
     <>
@@ -154,11 +128,11 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
                   key={index}
                   className={`w-full p-2 text-sm ${
                     pathname.split("/")[3].includes(path)
-                      ? "bg-basePrimary/10  rounded-lg font-medium"
+                      ? "bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end   rounded-lg font-medium"
                       : ""
                   }`}
                 >
-                  <Link href={`/event/${href}`}>{name}</Link>
+                  <Link href={`/workspace/${href}`}>{name}</Link>
                 </li>
               );
             })}
@@ -177,4 +151,4 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
   );
 };
 
-export { Topbar };
+export { WorkspaceSidebar };
