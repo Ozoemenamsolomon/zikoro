@@ -43,3 +43,4 @@ tasks.txt
 # pnpm lock file
 .pnpm-lock.yaml
 .pnpm-lock.json
+.package-lock.json
