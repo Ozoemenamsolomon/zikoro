@@ -73,6 +73,7 @@ function EventCard({
   query: string | null;
 }) {
   const { isLoading: updating, publishEvent: update } = usePublishEvent();
+  const { user: userData, setUser } = useUserStore();
   const [isShowPublishModal, setShowPublishModal] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const {
@@ -91,7 +92,7 @@ function EventCard({
   }
 
   async function publishEvent() {
-    const { user: userData, setUser } = useUserStore();
+    
     // const userData = getCookie("user");
     const statusDetail = {
       createdAt: new Date().toISOString(),
