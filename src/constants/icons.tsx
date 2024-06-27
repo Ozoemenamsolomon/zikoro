@@ -2283,4 +2283,36 @@ export const Moon = () => {
   );
 };
 
-
+export const GeometryIcon = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M18.5 13C20.9853 13 23 10.9853 23 8.5C23 6.01472 20.9853 4 18.5 4C16.0147 4 14 6.01472 14 8.5C14 10.9853 16.0147 13 18.5 13Z"
+        stroke="#0D0D0D"
+        strokeWidth="2"
+        strokeMiterlimit="10"
+        strokeLinecap="square"
+      />
+      <path
+        d="M12 15H7C6.44772 15 6 15.4477 6 16V21C6 21.5523 6.44772 22 7 22H12C12.5523 22 13 21.5523 13 21V16C13 15.4477 12.5523 15 12 15Z"
+        stroke="#0D0D0D"
+        strokeWidth="2"
+        strokeMiterlimit="10"
+        strokeLinecap="square"
+      />
+      <path
+        d="M2 10L6 3L10 10H2Z"
+        stroke="#0D0D0D"
+        strokeWidth="2"
+        strokeMiterlimit="10"
+        strokeLinecap="square"
+      />
+    </svg>
+  );
+};

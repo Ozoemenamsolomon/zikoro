@@ -9,13 +9,12 @@ import { ArrowExportLtr } from "@styled-icons/fluentui-system-filled/ArrowExport
 import { ArrowExportRtl } from "@styled-icons/fluentui-system-filled/ArrowExportRtl";
 import useUserStore from "@/store/globalUserStore";
 
-const WorkspaceSidebar = ({ workspaceId }: { workspaceId?: string }) => {
+const WorkspaceSidebar = () => {
   const pathname = usePathname();
   const [isShowNav, setShowNav] = useState(false);
   const [isScrolling, setScrolling] = useState(false);
   const [left, setLeft] = useState(false);
   const { user } = useUserStore();
-  //   const { isIdPresent, eventLoading } = useCheckTeamMember({ workspaceId });
 
   useEffect(() => {
     document.addEventListener("scroll", () => {
@@ -45,35 +44,21 @@ const WorkspaceSidebar = ({ workspaceId }: { workspaceId?: string }) => {
   const links = [
     {
       name: "General",
-      href: `${workspaceId}/general`,
+      href: `/general`,
     },
     {
       name: "Branding",
-      href: `${workspaceId}/branding`,
+      href: `/branding`,
     },
     {
       name: "Team",
-      href: `${workspaceId}/team`,
+      href: `/team`,
     },
     {
       name: "Link Sharing",
-      href: `${workspaceId}/link-sharing`,
+      href: `/link-sharing`,
     },
   ];
-
-  const hideFromAttendee = ["Contents", "Analytics", "Settings", "Marketing"];
-  const set = new Set(hideFromAttendee);
-
-  const reformedLink = useMemo(() => {
-    return links.filter((link) => {
-      if (!user || !user?.userEmail) {
-        return !set.has(String(link?.name));
-      } else {
-        return links;
-      }
-    });
-    //   }, [user, isIdPresent]);
-  }, [user]);
 
   return (
     <>
@@ -118,35 +103,23 @@ const WorkspaceSidebar = ({ workspaceId }: { workspaceId?: string }) => {
               isShowNav && "flex"
             )}
           >
-            {reformedLink.map(({ name, href }, index) => {
-              //  console.log(href.split("/")[1].split("?"))
-              const path = href.includes("?")
-                ? href.split("/")[1].split("?")[0]
-                : href.split("/")[1];
+            {links.map(({ name, href }, index) => {
               return (
                 <li
                   key={index}
                   className={`w-full p-2 text-sm ${
-                    pathname.split("/")[3].includes(path)
+                    pathname.includes(href)
                       ? "bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end   rounded-lg font-medium"
                       : ""
                   }`}
                 >
-                  <Link href={`/workspace/${href}`}>{name}</Link>
+                  <Link href={`/workspace${href}`}>{name}</Link>
                 </li>
               );
             })}
           </ul>
         </div>
       </nav>
-
-      {/**
-           <AccessVerification
-        eventLoading={eventLoading}
-        isEventIdPresent={isIdPresent}
-        id={eventId}
-      />
-       */}
     </>
   );
 };
