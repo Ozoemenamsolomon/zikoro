@@ -1,16 +1,16 @@
 import React, { useState, useCallback } from 'react';
 import { format, parse } from 'date-fns';
-import { Booking } from '@/types/appointments';
 import { useAppointmentContext } from '../context/AppointmentContext';
 
 interface SubmitType {
   maxBookingLimit:number
   validate: any
+  setErrors:any
 }
 
-const SubmitBtn: React.FC<SubmitType> = ({maxBookingLimit, validate }) => {
+const SubmitBtn: React.FC<SubmitType> = ({maxBookingLimit, validate, setErrors }) => {
   
-  const {bookingFormData, setBookingFormData,slotCounts, setSlotCounts,inactiveSlots, setInactiveSlots} = useAppointmentContext()
+  const {bookingFormData, setBookingFormData,slotCounts, setSlotCounts,  setInactiveSlots} = useAppointmentContext()
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
@@ -20,7 +20,7 @@ const SubmitBtn: React.FC<SubmitType> = ({maxBookingLimit, validate }) => {
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setErrors({});
 
     if (isDisabled || !validate() ) {
       setLoading(false);
@@ -49,6 +49,7 @@ const SubmitBtn: React.FC<SubmitType> = ({maxBookingLimit, validate }) => {
           appointmentTime: null,
         }));
         console.log('Form submitted successfully', result);
+        // update inactiveSlots
         let slot: string = result?.data?.appointmentTime;
 
         const newSlotCounts = {...slotCounts} 
@@ -63,11 +64,11 @@ const SubmitBtn: React.FC<SubmitType> = ({maxBookingLimit, validate }) => {
         // push('/appointments/links')
       } else {
         console.error('Form submission failed', result);
-        setError(result.error);
+        setErrors({general: result.error});
       }
     } catch (error) {
       console.error('An error occurred:', error);
-      setError('An unexpected error occurred');
+        setErrors({general: 'An unexpected error occurred'});
     } finally {
       setLoading(false);
     }
@@ -77,7 +78,7 @@ const SubmitBtn: React.FC<SubmitType> = ({maxBookingLimit, validate }) => {
     <div className="w-full">
       <button
         onClick={handleSubmit}
-        type="button"
+        type="submit"
         disabled={isDisabled}
         className={`w-full px-4 py-3 rounded-md text-center bg-basePrimary text-white ${loading || isDisabled  ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
@@ -112,24 +113,4 @@ function generateAppointmentTime({ timeRange, selectedDate }: BookingInput): str
 
   console.log({ timeRange, selectedDate, startTime, appointmentDateTime });
   return format(appointmentDateTime, 'HH:mm:ss');
-}
-
-const s= {
-    "id": 7,
-    "created_at": "2024-06-26T03:31:09.402342+00:00",
-    "appointmentLinkId": 17,
-    "participantEmail": "ecudeji@gmail.com",
-    "appointmentDate": "2024-06-22",
-    "appointmentTime": null,
-    "scheduleColour": null,
-    "teamMembers": null,
-    "appointmentType": null,
-    "appointmentName": null,
-    "bookingStatus": null,
-    "firstName": null,
-    "lastName": null,
-    "phone": null,
-    "price": null,
-    "currency": null,
-    "feeType": null
 }

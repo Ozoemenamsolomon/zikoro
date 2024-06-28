@@ -19,6 +19,9 @@ export async function POST(req: NextRequest) {
     const body: AppointmentLink = await req.json();
     console.log('POST',{ body });
 
+    const user =await supabase.auth.getUser()
+    console.log({user})
+
     const alias = generateSlug(body?.appointmentName)
 
     const { data, error } = await supabase

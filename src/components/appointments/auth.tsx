@@ -7,7 +7,7 @@ export const fetchUser = async () => {
     const { data: authData, error: authError } = await supabase.auth.getUser();
 
     if (authError) {
-      console.error("Error fetching authenticated user:", authError);
+      console.error("Error fetching authenticated user:", );
       return null;
     }
 
@@ -19,7 +19,7 @@ export const fetchUser = async () => {
         .single();
 
       if (userError) {
-        console.error("Error fetching user details:", userError);
+        console.error("Error fetching user details:",);
         return null;
       }
 

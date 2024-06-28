@@ -1,16 +1,20 @@
 'use client'
 import { ChevronFirst, ChevronLast } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Sidebar from './Sidebar'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useClickOutside } from '@/lib'
 
 const Main = ({children}:{children:React.ReactNode}) => {
     const [show, setShow] = useState<boolean>(false)
+    const sidebar = useRef(null)
+
+    useClickOutside(sidebar,()=>setShow(false))
 
   return (
     <>
-        <aside className={`${show ? 'z-50 w-[252px]':' w-0 -z-10'} transform transition-all duration-300 ease-in-out overflow-x-hidden border-r bg-white h-screen overflow-y-auto fixed top-0 left-0 lg:hidden`}>
-            <div className="flex justify-end w-full">
+        <aside ref={sidebar} className={`${show ? 'z-50 w-[252px]':' w-0 -z-10'} transform transition-all duration-300 ease-in-out overflow-x-hidden border-r bg-white h-screen overflow-y-auto fixed top-0 left-0 lg:hidden `}>
+            <div className="absolute top-6 right-6 flex justify-end w-full">
                 <button type="button" onClick={()=>setShow(false)}><ChevronFirst size={18} className='text-gray-600'/></button>
             </div>
             <Sidebar/>
@@ -37,6 +41,7 @@ const Main = ({children}:{children:React.ReactNode}) => {
                         const data = await supabase.auth.signInWithPassword({email:'ecudeji@gmail.com', password:'cat89boy'});
                         console.log({data,})
                     }}>signin</div>
+                    
                     <div className="flex-shrink-0 h-[47px] w-[47px] rounded-full  "
                     style={{background: 'linear-gradient(269.83deg, #9C00FE 0.14%, #001FCB 99.85%)'
                     }}></div>

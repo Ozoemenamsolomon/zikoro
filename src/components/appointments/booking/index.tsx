@@ -4,17 +4,15 @@ import React from 'react'
 import Calender from './Calender'
 import {useGetBookingAppointment} from "@/hooks"
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useAppointmentContext } from '../context/AppointmentContext'
 
 const Booking =  ({alias}:{alias:string}) => {
-    // const {isLoading:loading} = useAppointmentContext()
   const {appointment: appointmnetLink, isLoading, getAppointment} = useGetBookingAppointment(alias)
   console.log({appointmnetLink})
     
   return (
-    <main className='relative pt-6 sm:px-6 xl:px-12  bg-white min-h-screen  space-y-4'>
+    <main className='relative pt-10 sm:px-6 xl:px-12  bg-white min-h-screen  space-y-4'>
         <header >
-            <h4 className="text-2xl font-semibold">Organization logo</h4>
+            <h4 className="text-2xl font-semibold max-sm:pl-4 ">Organization logo</h4>
         </header>
         <section className="py-12  px-4 rounded-lg   w-full flex flex-col bg-[#F2F2F2] justify-between gap-12">
 
@@ -41,6 +39,10 @@ const Booking =  ({alias}:{alias:string}) => {
                         <div className="flex  pb-2 w-full items-start">
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Price</p>
                             <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5 flex ">{appointmnetLink?.curency} {appointmnetLink?.amount}</p>
+                        </div>
+                        <div className="flex  pb-2 w-full items-start">
+                            <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Max booking</p>
+                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5 flex "> {appointmnetLink?.maxBooking}</p>
                         </div>
                         <div className="flex pb-2 w-full items-start">
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Desc</p>

@@ -6,7 +6,7 @@ import { SlotsResult } from './Calender';
 import { useAppointmentContext } from '../context/AppointmentContext';
 
 interface SlotsType {
-  selectedDate: Date | string;
+  selectedDate: Date | string |undefined;
   maxBookingLimit?:number;
   timeSlots: SlotsResult | null;
   appointmnetLink: AppointmentLink | null,
@@ -15,8 +15,8 @@ interface SlotsType {
 const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }) => {
   const {bookingFormData, setBookingFormData, slotCounts, setSlotCounts,inactiveSlots, setInactiveSlots, setIsFormUp} = useAppointmentContext()
 
-  const [loading, setLoading] = useState(false);
-  const maxBookingLimit = 2;
+  const [loading, setLoading] = useState(true);
+  const maxBookingLimit = appointmnetLink?.maxBooking;
 
   const [error, setError] = useState('')
 
@@ -24,7 +24,8 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
     setLoading(true)
     setError('')
     try {
-      const response = await fetch(`/api/appointments/booking/sessions/${format(selectedDate, 'yyyy-MM-dd')}`, 
+      // fetch slots based on appointmentLink.id and date
+      const response = await fetch(`/api/appointments/booking/sessions/${format(selectedDate!, 'yyyy-MM-dd')}?appointmentLinkId=${appointmnetLink?.id}`, 
         {
         method: 'GET',
         headers: {
@@ -51,7 +52,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
   const countBookingsBySlot = (bookings: Booking[]) => {
     const newSlotCounts:{ [key: string]: number } = {}
 
-    bookings.forEach((booking) => {
+    bookings?.forEach((booking) => {
       const slot = booking.appointmentTime;
       if (slot) {
         newSlotCounts[slot] = (newSlotCounts[slot] || 0) + 1;
@@ -78,8 +79,10 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
   const updateSlots = async () => {
     const bookings = await fetchBookedSlots();
     const slotCounts = countBookingsBySlot(bookings);
-    const inactiveSlots = getInactiveSlots(slotCounts, maxBookingLimit);
+    const inactiveSlots = getInactiveSlots(slotCounts, maxBookingLimit!);
     setInactiveSlots(inactiveSlots);
+    setLoading(false)
+    console.log({bookings})
   };
 
   useEffect(() => {
@@ -89,9 +92,8 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
 
   const isDisabled = !bookingFormData.appointmentDate || !bookingFormData.appointmentTime  
   
-  console.log({bookingFormData})
   return (
-    <div className="bg-white  md:w-80 flex-1 flex-shrink-0 p-4 rounded-lg  slots">
+    <div className="bg-white  md:w-80 flex-1 flex-shrink-0 p-4 rounded-lg  ">
       {loading ? 
         <div className="h-full w-full flex justify-center items-center">
           <p>loading...</p> 
@@ -111,7 +113,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
                             onClick={()=>setBookingFormData({
                                 ...bookingFormData,
                                 appointmentTime: slot.label,
-                                appointmentDate: format(selectedDate, 'yyyy-MM-dd')
+                                appointmentDate: format(selectedDate!, 'yyyy-MM-dd')
                             })}
                     > {slot.label}</button>
                 )
