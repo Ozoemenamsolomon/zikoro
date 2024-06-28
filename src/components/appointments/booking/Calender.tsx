@@ -51,8 +51,8 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
     const {bookingFormData, setBookingFormData} = useAppointmentContext()
 
     let today = startOfToday();
-	let [selectedDay, setSelectedDay] = useState<Date>();
-	let [timeSlots, setTimeSlots] = useState<SlotsResult | null >(null);
+    let [selectedDay, setSelectedDay] = useState<Date>();
+    let [timeSlots, setTimeSlots] = useState<SlotsResult | null >(null);
 	
     function getEnabledTimeDetails(): TimeDetail[] {
         if (!appointmnetLink || !appointmnetLink.timeDetails) {
@@ -143,7 +143,7 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
     const [categories, setCategories] = useState({
         category: 'Training 2'
     })
-console.log({selectedDay, first: days[0], truthy: days[0]===selectedDay, check: startOfToday()})
+// console.log({selectedDay, first: days[0], truthy: days[0]===selectedDay, check: startOfToday()})
     const normalizedSelectedDay = startOfDay(selectedDay!);
 
   return (

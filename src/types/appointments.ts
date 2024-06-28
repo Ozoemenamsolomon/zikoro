@@ -9,7 +9,7 @@ export interface AppointmentLink {
     loctionType: string;
     locationDetails: string;
     timeZone: string;
-    timeDetails: string | DaySchedule[] ;
+    timeDetails: string   ;
     curency: string;
     amount: number;
     paymentGateway: string;
@@ -66,15 +66,6 @@ export interface DetailItem {
   description: string;
   formComponent: React.FC<FormProps>;
 }
-
-// export interface Booking {
-//   id?: bigint;
-//   created_at?: Date;
-//   appointmentLinkId?: bigint;
-//   participantEmail?: string;
-//   appointmentDate?: Date | string | null;
-//   appointmentTime?: string | null;
-// }
 
 export interface Booking {
   id?: bigint;
