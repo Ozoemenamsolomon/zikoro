@@ -110,6 +110,11 @@ type useFinalizePayOutResult = {
       OTP: number;
       payOutRef: string;
       paidOutBy: number;
+      userEmail: string;
+      userName: string;
+      paidOutEmail: string;
+      paidOutName: string;
+      amount: number;
     };
   }) => Promise<{ reference: string | null; status: boolean }>;
 } & RequestStatus;
@@ -126,6 +131,11 @@ export const useFinalizePayOut = (): useFinalizePayOutResult => {
       OTP: number;
       payOutRef: string;
       paidOutBy: number;
+      userEmail: string;
+      userName: string;
+      paidOutEmail: string;
+      paidOutName: string;
+      amount: number;
     };
   }) => {
     setLoading(true);
