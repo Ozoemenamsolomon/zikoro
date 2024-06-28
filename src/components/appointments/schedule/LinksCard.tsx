@@ -89,7 +89,7 @@ const LinksCard = ({data,}:{data:AppointmentLink}) => {
 
 
       <div className="flex   justify-between gap-6 items-center">
-        <CopyLinkButton link={`https:/zikoro.com/booking/${item?.appointmentAlias}`}>
+        <CopyLinkButton link={`https://zikoro.com/booking/${item?.appointmentAlias}`}>
             <button  disabled={!item?.statusOn} type='button' className="underline">Copy link</button>
         </CopyLinkButton>
 
