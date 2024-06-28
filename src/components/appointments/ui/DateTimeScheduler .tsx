@@ -1,9 +1,8 @@
 import { Moon } from '@/constants';
 import { timezones as Timezones } from '@/constants/timezones';
-import { AppointmentLink } from '@/types/appointments';
+import { AppointmentFormData, AppointmentLink } from '@/types/appointments';
 import React, { useEffect, useState } from 'react';
 import { SelectInput } from './CustomSelect';
-
 
 export const generateTimeOptions = () => {
   const times: string[] = [];
@@ -15,13 +14,12 @@ export const generateTimeOptions = () => {
   }
   return times;
 };
-
   
 const timeOptions = generateTimeOptions();
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", ];
 const timezones = Timezones;
 
-interface DaySchedule {
+export interface DaySchedule {
   day: string;
   from: string;
   to: string;
@@ -29,39 +27,32 @@ interface DaySchedule {
 }
 interface DateTimeScheduler {
     setFormData: any;
-    formData: AppointmentLink;
+    formData: AppointmentFormData;
   }
-const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
-    
-  // const [timezone, setTimezone] = useState<string>(timezones[0].value);
-  const [schedules, setSchedules] = useState<DaySchedule[]>(
-                                                formData?.timeDetails ? formData?.timeDetails : 
-                                                daysOfWeek.map(day => ({
-                                                day,
-                                                from: '',
-                                                to: '',
-                                                enabled: false
-                                              })));
 
+const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
+  useEffect(() => {
+    formData?.timeDetails
+  }, [formData?.timeDetails])
+  
   const handleToggleDay = (day: string) => {
-    setSchedules(schedules.map(schedule => (
-      schedule.day === day ? { ...schedule, enabled: !schedule.enabled } : schedule
-    )));
+    setFormData({
+      ...formData,
+      timeDetails: formData.timeDetails.map((schedule => (
+        schedule.day === day ? { ...schedule, enabled: !schedule.enabled } : schedule
+      )))
+    })
   };
 
   const handleTimeChange = (day: string, type: "from" | "to", value: string) => {
-    setSchedules(schedules.map(schedule => (
-      schedule.day === day ? { ...schedule, [type]: value } : schedule
-    )));
-
     setFormData({
         ...formData,
-        timeDetails: schedules.map(schedule => (
+        timeDetails: formData.timeDetails.map(schedule => (
             schedule.day === day ? { ...schedule, [type]: value } : schedule
           ))
       })
   };
-// console.log({formData})
+
   return (
     <div className="w-full">
       <div className="pb-6">
@@ -75,7 +66,7 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
       </div>
       
       <div className="grid grid-cols-1 gap-6">
-        {schedules.map((schedule, idx) => (
+        {formData.timeDetails.map((schedule, idx) => (
             <div key={idx}  className="grid grid-cols-3 gap-6 mb-2">
                 <div className="col-span-1 flex w-full gap-2 items-center">
                     <div
@@ -119,7 +110,6 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
                     </select>
                 </div>
                 </div>
-
             </div>
         ))}
 

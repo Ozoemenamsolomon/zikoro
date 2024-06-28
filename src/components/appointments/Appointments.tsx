@@ -42,12 +42,15 @@ const Appointments = () => {
           <h4 className="text-2xl font-semibold">Appointments</h4>
         </div>
 
-        <div className="rounded-full bg-basePrimary p-0.5">
-          <button className="py-2 bg-white px-4  rounded-full flex gap-2 items-center text-sm">
-            <p>Upcoming appointment</p>
-            <ChevronDown size={18} />
-          </button>
+        <div className="flex justify-end">
+          <div className="rounded-full bg-basePrimary p-0.5">
+            <button className="py-2 bg-white px-4  rounded-full flex gap-2 items-center text-sm">
+              <p>Upcoming appointment</p>
+              <ChevronDown size={18} />
+            </button>
+          </div>
         </div>
+
       </header>
 
       <section className="w-full h-screen bg-white rounded-lg p-6 py-8">

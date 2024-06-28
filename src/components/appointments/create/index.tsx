@@ -9,10 +9,13 @@ import Payment from './Payment';
 import AppointmentDetails from './AppointmentDetails';
 import Branding from './Branding';
 import Generalsettings from './Generalsettings';
-import { DetailItem } from '@/types/appointments';
-import { AppointmentLink } from '@/types/appointments';
+import { AppointmentFormData, DetailItem } from '@/types/appointments';
 import { usePathname, useRouter } from 'next/navigation';
 import { fetchUser } from '../auth';
+import { toast } from 'react-toastify';
+import PageLoading from '../ui/Loading';
+import { useGetBookingAppointment } from '@/hooks';
+import { DaySchedule } from '../ui/DateTimeScheduler ';
 
 const detailsArray: DetailItem[] = [
   {
@@ -46,7 +49,8 @@ const detailsArray: DetailItem[] = [
     formComponent: Generalsettings,
   },
 ];
-// no validation fields = curency,amount,note,createdBy,businessName,branColor,teamMembers,zikoroBranding
+
+const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", ];
 const formdata = {
   appointmentName: '',
   category: '',
@@ -54,13 +58,18 @@ const formdata = {
   loctionType: 'Onsite',
   locationDetails: '',
   timeZone: '',
-  timeDetails: '',
+  timeDetails: daysOfWeek.map(day => ({
+    day,
+    from: '',
+    to: '',
+    enabled: false
+  })),
   curency: '',
   amount: 0,
   paymentGateway: 'Zikoro manage',
   maxBooking: 1,
   sessionBreak: 5,
-  statusOn: false,
+  statusOn: true,
   note: '',
   appointmentAlias: '',
   createdBy: null,
@@ -69,18 +78,32 @@ const formdata = {
   brandColour: '#0000FF',
   teamMembers: null,
   zikoroBranding: null,
-}
+};
 
 interface ValidationErrors {
   [key: string]: string;
 }
 
-const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) => {
-  const {push} = useRouter()
-  const pathname = usePathname()
-  const [formData, setFormData] = useState<AppointmentLink>(editData ? {...editData, timeDetails: JSON.parse(editData?.timeDetails)} : formdata);
-  const [errors, setErrors] = useState<any>({});
+const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
+  const { push } = useRouter();
+  const pathname = usePathname();
+
+  const { appointment, isLoading } = useGetBookingAppointment(alias!);
+
+  const [formData, setFormData] = useState<AppointmentFormData>(formdata);
+  const [errors, setErrors] = useState<{ [key: string]: string } | any>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (appointment) {
+      try {
+        const parsedTimeDetails = JSON.parse(appointment.timeDetails as unknown as string) as DaySchedule[];
+        setFormData({ ...appointment, timeDetails: parsedTimeDetails });
+      } catch (error) {
+        console.error('Error parsing timeDetails:', error);
+      }
+    }
+  }, [appointment]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -97,48 +120,48 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
       }));
     }
 
-    setErrors({
-      ...errors,
-      [name]: '',
-      general: ''
-    });
+    let newErrors = { ...errors };
+    delete newErrors[name];
+    delete newErrors['general'];
+
+    setErrors(newErrors);
   };
 
-  const validate = (data: AppointmentLink): boolean => {
+  const validate = (data: AppointmentFormData): boolean => {
     const error: ValidationErrors = {};
-  
+
     if (!formData.appointmentName) {
       error.appointmentName = 'Appointment Name is required';
     }
-  
+
     if (data.duration === null || data.duration <= 0) {
       error.duration = 'Duration must be a positive number';
     }
-  
+
     if (!data.loctionType) {
       error.loctionType = 'Location Type is required';
     }
-  
+
     if (!data.locationDetails) {
       error.locationDetails = 'Location Details are required';
     }
-  
+
     if (!data.timeZone) {
       error.timeZone = 'Time Zone is required';
     }
-  
+
     if (!data.timeDetails) {
       error.timeDetails = 'Time Details are required';
     }
-  
+
     if (data.maxBooking <= 0) {
       error.maxBooking = 'Max Booking must be a positive number';
     }
-  
+
     if (data.sessionBreak <= 0) {
       error.sessionBreak = 'Session Break must be a positive number';
     }
-    setErrors(error)
+    setErrors(error);
     return Object.keys(error).length > 0;
   };
 
@@ -147,19 +170,16 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
     setLoading(true);
     setErrors(null);
 
-    if(validate(formData)){
+    if (validate(formData)) {
       setLoading(false);
-      return
+      return;
     }
-  
+
     try {
       const payload = { ...formData, timeDetails: JSON.stringify(formData.timeDetails) };
-      
       let response;
-      
-      if(editData) {
-        console.log('EEEEE',{ formData,payload,  editData});
-        // edit link
+
+      if (alias) {
         response = await fetch('/api/appointments/edit', {
           method: 'PUT',
           headers: {
@@ -167,10 +187,7 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
           },
           body: JSON.stringify(payload),
         });
-
-      }else {
-        console.log('CCCC',{ formData,  editData});
-        // create new appointment link
+      } else {
         response = await fetch('/api/appointments/create', {
           method: 'POST',
           headers: {
@@ -178,42 +195,42 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
           },
           body: JSON.stringify(payload),
         });
-
       }
       const result = await response.json();
-  
+
       if (response.ok) {
         setFormData(formdata);
-        console.log('Form submitted successfully', result);
-        // Handle any additional success actions here
-        push('/appointments/schedule')
+        toast.success('Appointment created');
+        push('/appointments/schedule');
       } else {
-        console.error('Form submission failed', result);
-        setErrors(result.error);
+        setErrors({ general: result.error });
+        toast.error('Form submission failed!');
       }
     } catch (error) {
-      console.error('An error occurred:', error);
-      setErrors('An unexpected error occurred');
+      setErrors({ general: 'An unexpected error occurred' });
+      toast.error('An unexpected error occurred');
     } finally {
       setLoading(false);
     }
   };
-  
-    useEffect(() => {
-      const fetch = async () => {
-        const user = await fetchUser()
-        console.log({user})
-        setFormData({
-          ...formData,
-          createdBy: user?.id
-        })
+
+  useEffect(() => {
+    const fetch = async () => {
+      if (!alias) {
+        const user = await fetchUser();
+        setFormData((prev) => ({
+          ...prev,
+          createdBy: user?.id,
+        }));
       }
-      fetch()
-    }, [pathname])
+    };
+    fetch();
+  }, [pathname]);
 
   return (
-    <main className="p-4 sm:p-8">
-      <Link href={'/appointments'} type="button">
+    <main className="py-4 sm:p-8">
+      <PageLoading isLoading={loading || isLoading} />
+      <Link href={'/appointments/schedule'} type="button" className="max-sm:pl-4">
         <BentArrowLeft w={20} />
       </Link>
       <section className="py-4 flex w-full justify-center items-center">
@@ -221,9 +238,9 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
           {errors && Object.keys(errors).length > 0 && (
             <>
               {errors.general ? (
-                <p className="text-red-600 text-[12-px]">{errors.general}</p>
+                <p className="text-red-600 text-[12px]">{errors.general}</p>
               ) : (
-                <p className="text-red-600 text-[12-px]">{Object.values(errors).join(', ')}</p>
+                <p className="text-red-600 text-[12px]">{Object.values(errors).join(', ')}</p>
               )}
             </>
           )}
@@ -257,10 +274,11 @@ const CreateAppointments: React.FC<{editData: AppointmentLink}> = ({editData}) =
               />
             );
           })}
-          <button type="submit"
-            className='mt-6 py-3 text-center w-full rounded-md text-[#F2F2F2] font-semibold text-xl bg-basePrimary'
+          <button
+            type="submit"
+            className="mt-6 py-3 text-center w-full rounded-md text-[#F2F2F2] font-semibold text-xl bg-basePrimary"
           >
-            {loading ?  'Submiting...' : 'Create Appointment'}
+            {loading ? 'Submitting...' : 'Create Appointment'}
           </button>
         </form>
       </section>

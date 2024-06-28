@@ -1,13 +1,14 @@
 import { InputCustom } from '@/components/ui/input-custom';
-import React, { useEffect, useState } from 'react';
+import React, {  useEffect, useState } from 'react';
 import { useAppointmentContext } from '../context/AppointmentContext';
 import { AppointmentLink, Booking } from '@/types/appointments';
-import SubmitBtn from './SubmitBtn';
 import { XCircle } from 'lucide-react';
+import { submitBooking } from './submitBooking';
 
 const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null}) => {
-  const {bookingFormData, isFormUp, setIsFormUp, setBookingFormData} = useAppointmentContext()
-  const maxBookingLimit = 2;
+
+  const {bookingFormData, isFormUp, setIsFormUp, setBookingFormData, slotCounts, setSlotCounts,setInactiveSlots,} = useAppointmentContext()
+  const maxBookingLimit = appointmentLink?.maxBooking!;
 
   useEffect(() => {
     setBookingFormData({
@@ -21,12 +22,18 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
         // appointmentType: appointmentLink?.category,
         scheduleColour: appointmentLink?.brandColour,
         feeType: '',
+        firstName: '',
+        lastName:'',
+        phone:'',
+        participantEmail:'',
     })
   }, [appointmentLink])
   
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const [errors, setErrors] = useState<Partial<Booking>>({});
-  const [loading, setLoading] = useState<boolean>(false);
+  const isDisabled = !bookingFormData.appointmentDate || !bookingFormData.appointmentTime || !bookingFormData.appointmentLinkId || !bookingFormData.participantEmail;
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -43,7 +50,7 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
   };
 
   const validate = (): boolean => {
-    const error: Partial<Booking> = {};
+    const error: Record<string, string> = {};
     if (!bookingFormData.firstName) {
       error.firstName = 'First name is required';
     }
@@ -60,35 +67,32 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
     } else if (!/^\d+$/.test(bookingFormData.phone.toString())) {
       error.phone = 'Phone number is invalid';
     }
-
     setErrors(error);
     return Object.keys(error).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
-    setLoading(true);
-
-    delete bookingFormData["participantEmail"]
-
-    try {
-      console.log('Form data submitted:', bookingFormData);
-      setTimeout(() => {
-        setLoading(false);
-        setBookingFormData({}); 
-        alert('Form submitted successfully');
-      }, 1000);
-    } catch (error) {
-      console.error('Form submission error:', error);
-      setLoading(false);
-    }
+    await submitBooking({
+      setLoading,
+      setErrors,
+      validate,
+      bookingFormData,
+      setBookingFormData,
+      slotCounts,
+      setSlotCounts,
+      setInactiveSlots,
+      maxBookingLimit,
+      setSuccess,
+    });
   };
 
   return (
     <div className= {`${isFormUp ? ' visible translate-x-0':' -translate-x-full '} transform transition-all duration-300 w-full relative flex flex-col bg-white h-full px-6 py-20 rounded-lg shadow-md  justify-center items-center` } >
         <p className="pb-4">Enter your details</p>
-      <form className="space-y-3 max-w-sm w-full mx-auto" onSubmit={handleSubmit}>
+        {errors?.general ? <p className="pb-4 text-red-600">{errors?.general}</p> : null}
+        {success  ? <p className="pb-4 text-blue-600">{success}</p> : null}
+      <form className="space-y-3 max-w-sm w-full mx-auto" onSubmit={handleSubmit} >
         <div className="flex-1">
           <InputCustom
             label="First Name"
@@ -140,7 +144,16 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
 
         <XCircle onClick={()=>setIsFormUp(false)} size={20} className='text-gray-500 cursor-pointer absolute top-6 right-6'/>
 
-        <SubmitBtn validate={validate} maxBookingLimit={maxBookingLimit}/>
+         <div className="w-full">
+            <button
+              onClick={handleSubmit}
+              type="submit"
+              disabled={isDisabled}
+              className={`w-full px-4 py-3 rounded-md text-center bg-basePrimary text-white ${loading || isDisabled  ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {loading ? 'Submitting...' : 'Book Appointment'}
+            </button>
+        </div>
       </form>
     </div>
   );

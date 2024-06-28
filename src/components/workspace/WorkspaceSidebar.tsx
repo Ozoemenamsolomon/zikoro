@@ -47,8 +47,8 @@ const WorkspaceSidebar = () => {
       href: `/general`,
     },
     {
-      name: "Branding",
-      href: `/branding`,
+      name: "Domain",
+      href: `/domain`,
     },
     {
       name: "Team",

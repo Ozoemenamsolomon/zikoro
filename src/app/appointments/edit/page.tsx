@@ -1,19 +1,9 @@
-import CreateAppointments from '@/components/appointments/create'
+import CreateAppointments from '@/components/appointments/create';
 
-const EditAppointmentsPage = async ({ searchParams }: { searchParams: { [key: string]: string | string[] } }) => {
-  /**
-   const {data,error} = await supabaseServerClient
-                              .from('appointmentLinks')
-                              .select('*')
-                              .eq('id', searchParams?.d)
-                              .single()
-
-                              console.log({data})
-   */
-  const data = "" as any
+const EditAppointmentsPage = async ({ searchParams: { alias } }: { searchParams: { [key: string]: string } }) => {
   return (
-    <CreateAppointments editData={data}/>
-  )
-}
+    <CreateAppointments alias={alias} />
+  );
+};
 
-export default EditAppointmentsPage
+export default EditAppointmentsPage;
