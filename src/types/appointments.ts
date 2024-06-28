@@ -1,3 +1,5 @@
+import { DaySchedule } from "@/components/appointments/ui/DateTimeScheduler ";
+
 export interface AppointmentLink {
     id?: bigint;
     created_at?: string;
@@ -7,7 +9,7 @@ export interface AppointmentLink {
     loctionType: string;
     locationDetails: string;
     timeZone: string;
-    timeDetails: string;
+    timeDetails: string | DaySchedule[] ;
     curency: string;
     amount: number;
     paymentGateway: string;
@@ -23,10 +25,34 @@ export interface AppointmentLink {
     teamMembers: string | null;
     zikoroBranding: string | null;
 }
-
+export interface AppointmentFormData {
+  id?: bigint;
+  created_at?: string;
+  appointmentName: string;
+  category: string;
+  duration: number|null;
+  loctionType: string;
+  locationDetails: string;
+  timeZone: string;
+  timeDetails:  DaySchedule[] ;
+  curency: string;
+  amount: number;
+  paymentGateway: string;
+  maxBooking: number;
+  sessionBreak: number;
+  statusOn: boolean;
+  note: string;
+  appointmentAlias: string;
+  createdBy: number|null;
+  businessName: string | null;
+  logo: string | null;
+  brandColour: string | null;
+  teamMembers: string | null;
+  zikoroBranding: string | null;
+}
 export interface FormProps {
   formData?: AppointmentLink;
-  setFormData?: React.Dispatch<React.SetStateAction<AppointmentLink>>;
+  setFormData?: React.Dispatch<React.SetStateAction<AppointmentFormData>>;
   errors?: any;
   setErrors?: React.Dispatch<React.SetStateAction<any>>;
   loading?: boolean;
@@ -69,4 +95,26 @@ export interface Booking {
   email?:string;
   currency?: string | null;
   feeType?: string | null;
+}
+
+export interface UserType {
+  id: bigint;
+  created_at: string; // ISO 8601 date string
+  userEmail: string;
+  firstName: string;
+  lastName: string;
+  jobTitle?: string | null;
+  organization?: string | null;
+  city?: string | null;
+  country?: string | null;
+  phoneNumber: string;
+  whatsappNumber?: string | null;
+  profilePicture?: string | null;
+  bio?: string | null;
+  x?: string | null;
+  linkedin?: string | null;
+  instagram?: string | null;
+  facebook?: string | null;
+  referralCode?: string | null;
+  referredBy?: string | null;
 }

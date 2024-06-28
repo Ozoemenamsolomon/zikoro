@@ -20,16 +20,18 @@ const AppointmentCalender = () => {
           </p>
         </div>
 
-        <div className="rounded-full bg-basePrimary p-0.5">
-            <button
-              className="py-2 bg-white px-4  rounded-full flex gap-2 items-center text-sm"
-            >
-              <p>Month view</p><ChevronDown size={18}/>
-            </button>
+        <div className="flex justify-end">
+          <div className="rounded-full bg-basePrimary p-0.5">
+              <button
+                className="py-2 bg-white px-4  rounded-full flex gap-2 items-center text-sm"
+              >
+                <p>Month view</p><ChevronDown size={18}/>
+              </button>
+          </div>
         </div>
       </header>
 
-      <section className="w-full h-screen bg-gray-100 rounded-lg">
+      <section className="w-full h-[50vh] bg-gray-100 rounded-lg">
         Calendar
       </section>
     </>

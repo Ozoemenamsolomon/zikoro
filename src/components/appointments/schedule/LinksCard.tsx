@@ -4,13 +4,17 @@ import { ClockIcon, EditPenBoxIcon, MapPin, ShareIcon } from '@/constants'
 import { AppointmentLink } from '@/types/appointments'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { availableParallelism } from 'os'
 import React, { useState } from 'react'
+import { SettingsChat } from 'styled-icons/fluentui-system-filled'
+import Share from './Share'
+import CopyLinkButton from '../ui/CopyLinkButton'
 
-const LinksCard = ({data}:{data:AppointmentLink}) => {
+const LinksCard = ({data,}:{data:AppointmentLink}) => {
     const {push} = useRouter()
-    const [item, setItem] = useState(data)
-    const [laoding, setLoading] = useState(false)
+    const [item, setItem] = useState<AppointmentLink>(data)
+    const [laoding, setLoading] = useState(false) 
+    const [isShare, setIsShare] = useState<number|null|bigint>(null)
+    // const [isDisabled, setIsDisabled] = useState(data?.statusOn)
 
     const toast = useToast()
     const changeStatus = async (newState:boolean) => {
@@ -42,21 +46,30 @@ const LinksCard = ({data}:{data:AppointmentLink}) => {
             setLoading(false)
         }
     }
-// console.log({data})
+
+    const backgroundColor = hexToRgba(item?.brandColour!, 0.05); // 0.05 is the opacity value (5%)
+    const isDisabled = item?.statusOn === false
+
   return (
-    <div className={`w-72 p-4 border-2 space-y-2 rounded-lg `}>
-        <div className="flex justify-between gap-6 items-center">
+        <div
+        style={{
+            backgroundColor: !isDisabled ? backgroundColor : '',
+            borderColor: !isDisabled ?item?.brandColour! : '',
+        }}
+        className={` sm:w-72 p-4 border-2 space-y-2 rounded-lg h-full ${item?.statusOn ? '':'text-gray-300'} `}
+        >
+        <div className="flex  justify-between gap-6 items-center">
             <h4 className="text-lg font-medium">{item?.appointmentName}</h4>
-            <Link href={`/appointments/edit?d=${item.id}`}><EditPenBoxIcon/> </Link >
+            <Link className={item.statusOn ? '':'opacity-20'} aria-disabled={item?.statusOn} href={`/appointments/edit?alias=${item.appointmentAlias}`}><EditPenBoxIcon/> </Link >
         </div>
 
         <div className="">
             <div className=" flex  gap-4 items-center">
-                <div><ClockIcon/></div>
+                <div  className={item.statusOn ? '':'opacity-20'}><ClockIcon/></div>
                 <p className="">{item?.duration}</p>
             </div>
             <div className="flex  gap-4 items-center">
-                <div><MapPin/> </div>
+                <div className={item.statusOn ? '':'opacity-20'}><MapPin/> </div>
                 <p className="">{item?.loctionType}</p>
             </div>
         </div>
@@ -74,21 +87,38 @@ const LinksCard = ({data}:{data:AppointmentLink}) => {
 
         <hr className="font-bold border" />
 
-{/* links: /appointments/booking?b=${item.id} */}
 
-        <div className="flex justify-between gap-6 items-center">
-            <button className="underline">Copy link</button>
+      <div className="flex   justify-between gap-6 items-center">
+        <CopyLinkButton link={`https:/zikoro.com/booking/${item?.appointmentAlias}`}>
+            <button  disabled={!item?.statusOn} type='button' className="underline">Copy link</button>
+        </CopyLinkButton>
 
-            <button onClick={()=>push(`/appointments/booking?alias=${item.appointmentAlias}`)} className="flex  gap-1 items-center">
+            <button type='button' disabled={!item?.statusOn} onClick={()=>{setIsShare(data?.id!)}} className="flex  gap-1 items-center">
                 <p className="">Share</p>
-                <div><ShareIcon/> </div>
+                <div className={item.statusOn ? '':'opacity-20'}><ShareIcon/> </div>
             </button>
         </div>
 
-
+        <Share data={data} idx={data?.id!} isShare={isShare} setIsShare={setIsShare}/>
         
     </div>
   )
 }
 
 export default LinksCard
+
+
+// Helper function to convert hex to RGBA
+export const hexToRgba = (hex: string | null | undefined, alpha: number): string => {
+    if (!hex || hex[0] !== '#' || hex.length !== 7) {
+      // Return a default color (black) with the given alpha if the input is invalid
+      return `rgba(0, 0, 0, ${alpha})`;
+    }
+    
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+  
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+  

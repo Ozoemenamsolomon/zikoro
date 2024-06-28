@@ -16,7 +16,7 @@ import {
 	isToday,
 	parse,
 	isBefore,
-	startOfToday,startOfDay,
+	startOfToday,startOfDay,  addDays, 
 } from 'date-fns';
 import {  ChevronLeft, ChevronRight } from 'lucide-react'
 import { SelectInput } from '../ui/CustomSelect'
@@ -40,24 +40,18 @@ export interface SlotsResult {
 selectDay: string;
 slots: Slot[];
 }
-export interface BookingFormData {
-    appointmentLinkId: number | null;
-    participantEmail: string | null;
-    appointmentDate: string | null; 
-    appointmentTime: string | null;  
-  }
   interface CalendarProps {
     appointmnetLink: AppointmentLink | null;
     fetchingData: boolean;
   }
   
-  const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) => {
-
+const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) => {
+    const [slotsLoading, setSlotsLoading] = useState(true)
     const {isFormUp} = useAppointmentContext()
     const {bookingFormData, setBookingFormData} = useAppointmentContext()
 
     let today = startOfToday();
-	let [selectedDay, setSelectedDay] = useState<Date>(today);
+	let [selectedDay, setSelectedDay] = useState<Date>();
 	let [timeSlots, setTimeSlots] = useState<SlotsResult | null >(null);
 	
     function getEnabledTimeDetails(): TimeDetail[] {
@@ -101,13 +95,20 @@ export interface BookingFormData {
 
     // mount booked slots for the selected date
     useEffect(() => {
-        // Generate time slots
-        const selectedTimeSlots = generateSlots(
-            getEnabledTimeDetails(), appointmnetLink?.duration!, appointmnetLink?.sessionBreak || 1, selectedDay)
+        if(!selectedDay && appointmnetLink){
+            const nextAvailableDay = findNextAvailableDay(appointmnetLink?.timeDetails);
+            const nextAvailableDate = new Date(nextAvailableDay.date);
+            setSelectedDay(nextAvailableDate);
+        } else if(selectedDay) {
+            const selectedTimeSlots = generateSlots(
+                getEnabledTimeDetails(), appointmnetLink?.duration!, appointmnetLink?.sessionBreak || 1, selectedDay)
 
-        console.log({selectedTimeSlots})
-        setTimeSlots(selectedTimeSlots)
-    }, [selectedDay ]);
+                console.log({selectedTimeSlots})
+                setTimeSlots(selectedTimeSlots)
+                setSlotsLoading(false)
+        }
+
+    }, [selectedDay, appointmnetLink]);
 
     let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'));
 	let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
@@ -142,8 +143,12 @@ export interface BookingFormData {
     const [categories, setCategories] = useState({
         category: 'Training 2'
     })
+console.log({selectedDay, first: days[0], truthy: days[0]===selectedDay, check: startOfToday()})
+    const normalizedSelectedDay = startOfDay(selectedDay!);
 
   return (
+    <>
+    {
     isFormUp ?
         <DetailsForm appointmentLink={appointmnetLink}/>
         :
@@ -207,7 +212,7 @@ export interface BookingFormData {
 
                     <div className="grid grid-cols-7 mt-2 text-sm">
                         {days.map((day, dayIdx) => {
-                            
+                            const normalizedDay = startOfDay(day);
                             return <div
                                 key={day.toString()}
                                 className={classNames(
@@ -225,25 +230,25 @@ export interface BookingFormData {
                                         })
                                     }}
                                     className={classNames(
-                                        isEqual(day, selectedDay) && 'text-white',
-                                        !isEqual(day, selectedDay) &&
-                                            isToday(day) &&
+                                        isEqual(normalizedDay, normalizedSelectedDay) && 'text-white',
+                                        !isEqual(normalizedDay, normalizedSelectedDay) &&
+                                            isToday(normalizedDay) &&
                                             ' font-bold',
-                                        !isEqual(day, selectedDay) &&
-                                            !isToday(day) &&
-                                            isSameMonth(day, firstDayCurrentMonth) &&
+                                        !isEqual(normalizedDay, normalizedSelectedDay) &&
+                                            !isToday(normalizedDay) &&
+                                            isSameMonth(normalizedDay, firstDayCurrentMonth) &&
                                             'text-gray-90',
-                                        !isEqual(day, selectedDay) &&
-                                        !isSameMonth(day, firstDayCurrentMonth) &&
+                                        !isEqual(normalizedDay, normalizedSelectedDay) &&
+                                        !isSameMonth(normalizedDay, firstDayCurrentMonth) &&
                                             'text-gray-400',
                                         
                                         // isEqual(day, selectedDay) && isToday(day) && 'bg-orange-500',
-                                        isEqual(day, selectedDay)  && 'bg-zikoroBlue ',
-                                        !isEqual(day, selectedDay) && 'hover:bg-gray-200',
-                                        isDayDisabled(day) && 'disabled text-gray-400 cursor-not-allowed',
-                                        (isEqual(day, selectedDay) || isToday(day)) &&
+                                        isEqual((normalizedDay), normalizedSelectedDay)  && 'bg-zikoroBlue ',
+                                        !isEqual(normalizedDay, normalizedSelectedDay) && 'hover:bg-gray-200',
+                                        isDayDisabled(normalizedDay) && 'disabled text-gray-300 cursor-not-allowed',
+                                        (isEqual(normalizedDay, normalizedSelectedDay) || isToday(normalizedDay)) &&
                                             'font-bold',
-                                        'mx-auto flex h-8 w-8 items-center justify-center rounded-full',
+                                        'mx-auto flex h-8 w-8 items-center justify-center rounded-full ',
                                     )}>
                                     <time dateTime={format(day, 'yyyy-MM-dd')}>
                                         {format(day, 'd')}
@@ -255,9 +260,15 @@ export interface BookingFormData {
                 </div>
             </div>
 
-            <Slots appointmnetLink={appointmnetLink} selectedDate={selectedDay} timeSlots={timeSlots} />
+            {
+                slotsLoading ?
+                <div className="bg-white  md:w-80 flex-1 flex-shrink-0 p-4 rounded-lg w-full flex justify-center items-center">loading...</div>
+                :
+                <Slots appointmnetLink={appointmnetLink} selectedDate={selectedDay} timeSlots={timeSlots} />
+            }
         </div>
-        
+    }
+    </>
     )
 }
 
@@ -307,7 +318,7 @@ const generateSlots = (
   const slots: Slot[] = [];
 
   const daysOfTheWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const dayName = daysOfTheWeek[selectedDay.getDay()];
+  const dayName = selectedDay && daysOfTheWeek[selectedDay.getDay()];
 
   const selectedRange = timeRanges.find(range => range.day.toLowerCase() === dayName.toLowerCase() && range.enabled);
 
@@ -337,6 +348,44 @@ const generateSlots = (
     selectDay: format(selectedDay, 'yyyy-MM-dd'),
     slots,
   };
+};
+
+
+interface Schedule {
+  day: string;
+  from: string;
+  to: string;
+  enabled: boolean;
+}
+
+const findNextAvailableDay = (scheduleJson: string): Schedule & { date: string } => {
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  const today = startOfToday();
+  const todayDayOfWeek = getDay(today);
+
+  const schedule: Schedule[] = JSON.parse(scheduleJson);
+
+  // Check if today is enabled or find the next enabled day
+  for (let i = 0; i < 7; i++) {
+    const currentDayIndex = (todayDayOfWeek + i) % 7;
+    const currentDay = daysOfWeek[currentDayIndex];
+
+    const scheduleForCurrentDay = schedule.find(s => s.day === currentDay && s.enabled);
+
+    if (scheduleForCurrentDay) {
+      const nextDate = addDays(today, i);
+      return { ...scheduleForCurrentDay, date: format(nextDate, 'yyyy-MM-dd') };
+    }
+  }
+
+  // If no day is enabled, return the first available day in the schedule with the calculated date
+  const firstEnabledDay = schedule.find(s => s.enabled) || schedule[0];
+  const firstEnabledDayIndex = daysOfWeek.indexOf(firstEnabledDay.day);
+  const daysUntilNextOccurrence = (firstEnabledDayIndex - todayDayOfWeek + 7) % 7;
+  const nextDate = addDays(today, daysUntilNextOccurrence);
+
+  return { ...firstEnabledDay, date: format(nextDate, 'yyyy-MM-dd') };
 };
 
 let colStartClasses = [

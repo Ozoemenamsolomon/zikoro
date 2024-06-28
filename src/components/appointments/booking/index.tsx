@@ -4,17 +4,15 @@ import React from 'react'
 import Calender from './Calender'
 import {useGetBookingAppointment} from "@/hooks"
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useAppointmentContext } from '../context/AppointmentContext'
 
 const Booking =  ({alias}:{alias:string}) => {
-    // const {isLoading:loading} = useAppointmentContext()
   const {appointment: appointmnetLink, isLoading, getAppointment} = useGetBookingAppointment(alias)
   console.log({appointmnetLink})
     
   return (
-    <main className='relative pt-6 sm:px-6 xl:px-12  bg-white min-h-screen  space-y-4'>
+    <main className='relative pt-10 sm:px-6 xl:px-12  bg-white min-h-screen  space-y-4'>
         <header >
-            <h4 className="text-2xl font-semibold">Organization logo</h4>
+            <h4 className="text-2xl font-semibold max-sm:pl-4 ">Organization logo</h4>
         </header>
         <section className="py-12  px-4 rounded-lg   w-full flex flex-col bg-[#F2F2F2] justify-between gap-12">
 

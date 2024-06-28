@@ -71,6 +71,7 @@ const Generalsettings: React.FC<FormProps> = ({
                 name='sessionBreak'
                 value={formData?.sessionBreak || ''}
                 options={[
+                  {label:'5',value:5},
                   {label:'10',value:10},
                   {label:'15',value:15},
                   {label:'20',value:20},

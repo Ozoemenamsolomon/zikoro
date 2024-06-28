@@ -20,7 +20,7 @@ const navlinks = [
   },
   {
     icon: Link2,
-    label: 'Links',
+    label: 'Schedules',
     link: `/appointments/schedule`,
   },
   {
