@@ -1,4 +1,4 @@
-import { IPayOut, TOrganization } from "@/types";
+import { IPayOut, TOrganization, TUser } from "@/types";
 import React, { useState } from "react";
 import IntializePayOut from "./IntializePayOut";
 import TransferOTP from "./transferOTP";
@@ -8,11 +8,13 @@ const AuthorizePayOutDialog = ({
   payoutInfo,
   defaultStep,
   isRetry,
+  requestedBy,
 }: {
   organization: TOrganization;
   payoutInfo: IPayOut;
   defaultStep: number;
   isRetry: boolean;
+  requestedBy: TUser;
 }) => {
   const [step, setStep] = useState<number>(defaultStep);
   const [transferCode, setTransferCode] = useState<string>(
@@ -36,6 +38,8 @@ const AuthorizePayOutDialog = ({
         setStep={setStep}
         payOutRef={payoutInfo.payOutRef}
         isRetry={isRetry}
+        requestedBy={requestedBy}
+        amount={payoutInfo.Amount}
       />
     );
 };

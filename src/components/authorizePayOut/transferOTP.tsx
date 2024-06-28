@@ -26,6 +26,7 @@ import {
 } from "@/hooks/services/payout";
 import { useEffect, useRef, useState } from "react";
 import { getCookie } from "@/hooks";
+import { TUser } from "@/types";
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
@@ -38,11 +39,15 @@ export default function TransferOTP({
   setStep,
   payOutRef,
   isRetry,
+  requestedBy,
+  amount,
 }: {
   transferCode: string;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   payOutRef: string;
   isRetry: boolean;
+  requestedBy: TUser;
+  amount: number;
 }) {
   const user = getCookie("user");
 
@@ -87,6 +92,11 @@ export default function TransferOTP({
         OTP: parseInt(data.pin),
         payOutRef,
         paidOutBy: user.id,
+        userEmail: requestedBy.userEmail,
+        userName: requestedBy.firstName,
+        paidOutEmail: user.userEmail,
+        paidOutName: user.firstName,
+        amount,
       },
     });
 

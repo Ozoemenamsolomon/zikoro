@@ -9,13 +9,16 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
   const links = [
     {
       name: "Interactions",
-      href:"interaction"
+      href: "interaction",
     },
     {
       name: "StampCard",
       href: `stamp-card`,
-    }
-  
+    },
+    {
+      name: "Settings",
+      href: `settings`,
+    },
   ];
 
   /**
@@ -40,12 +43,17 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
           {links.map(({ name, href }, index) => {
             return (
               <li
-              key={index}
+                key={index}
                 className={` text-sm ${
                   pathname.includes(href) ? "text-basePrimary  font-medium" : ""
                 }`}
               >
-                <Link href={`/event/${eventId}/engagements/${href}`} className="whitespace-nowrap">{name}</Link>
+                <Link
+                  href={`/event/${eventId}/engagements/${href}`}
+                  className="whitespace-nowrap"
+                >
+                  {name}
+                </Link>
               </li>
             );
           })}

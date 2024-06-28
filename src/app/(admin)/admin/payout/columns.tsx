@@ -152,6 +152,7 @@ export const columns: ColumnDef<IPayOut>[] = [
     cell: ({ row }) => {
       const organization = row.original.organization;
       const payoutInfo = row.original;
+      const requestedBy = row.original.user;
 
       // if (payoutInfo.payOutStatus !== "requested") return;
 
@@ -176,6 +177,7 @@ export const columns: ColumnDef<IPayOut>[] = [
               organization={organization}
               defaultStep={payoutInfo.payOutStatus !== "requested" ? 2 : 1}
               isRetry={payoutInfo.payOutStatus !== "requested" ? true : false}
+              requestedBy={requestedBy}
             />
           </DialogContent>
         </Dialog>
