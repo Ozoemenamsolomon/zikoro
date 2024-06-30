@@ -301,12 +301,7 @@ export function Qusetion({
             ...item,
             isCorrect: item?.isAnswer === id,
           };
-        } else if (item?.optionId === item?.isAnswer) {
-          return {
-            ...item,
-            isCorrect: true,
-          };
-        }
+        } 
         return item;
       });
       setCurrentQuestion({ ...currentQuestion, options: updatedOptions });
