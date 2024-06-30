@@ -11,6 +11,7 @@ type TQuizParticipant = {
     joinedAt: string;
     participantImage: Required<AvatarFullConfig>;
     email?:string;
+    phone?:string;
     attemptedQuiz?: TQuiz<TRefinedQuestion[]>
 }
 export interface TQuiz<T> {
@@ -37,6 +38,8 @@ export interface TQuiz<T> {
     countdownTransition: boolean;
     disable: boolean;
     live: boolean;
+    isCollectPhone:boolean;
+    isCollectEmail:boolean;
   };
 }
 
@@ -79,6 +82,8 @@ export interface TAnswer {
   answerDuration: number;
   quizAlias: string;
   selectedOptionId: { optionId: string };
+  email:string;
+  phone:string;
   correctOptionId: { optionId: string };
 }
 

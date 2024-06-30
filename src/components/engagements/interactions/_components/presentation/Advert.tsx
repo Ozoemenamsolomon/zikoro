@@ -24,7 +24,7 @@ export function Advert({
   return (
     <div
       className={cn(
-        "w-full flex-col  rounded-l-xl h-[90vh]  items-start justify-between hidden col-span-3 md:hidden",
+        "w-full flex-col  rounded-l-xl h-[90vh] border-l border-y items-start justify-between hidden col-span-3 md:hidden",
         isLeftBox && "flex md:flex ",
         !isRightBox && "col-span-4"
       )}

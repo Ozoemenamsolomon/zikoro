@@ -9,7 +9,7 @@ import {
 } from "@/hooks";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { cn } from "@/lib";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import {
   InteractionCard,
   InteractionsSelectionModal,

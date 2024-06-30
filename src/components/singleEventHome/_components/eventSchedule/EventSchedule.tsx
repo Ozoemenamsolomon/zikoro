@@ -2,7 +2,7 @@
 
 import { useFormatEventData } from "@/hooks";
 import Image from "next/image";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
 import { AboutWidget } from "@/components/composables";
 import { CalendarDateFill } from "@styled-icons/bootstrap/CalendarDateFill";

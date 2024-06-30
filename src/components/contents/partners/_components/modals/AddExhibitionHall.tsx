@@ -7,7 +7,7 @@ import { hallSchema } from "@/schemas";
 import { useCreateEventExhibitionHall } from "@/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 export function AddExhibitionHall({

@@ -24,7 +24,7 @@ import {
 } from "@/utils";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { useCreateEvent, getCookie, useGetUserOrganizations } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import InputOffsetLabel from "../InputOffsetLabel";
 import _ from "lodash";
 import { useRouter } from "next/navigation";

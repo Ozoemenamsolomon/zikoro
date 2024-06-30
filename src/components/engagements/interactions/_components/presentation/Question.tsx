@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { Option } from "..";
 import { Button } from "@/components";
-import { Maximize2 } from "@styled-icons/feather/Maximize2";
+import { Maximize2 } from "styled-icons/feather";
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
-import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
+import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { useCreateAnswer, useUpdateQuiz, getCookie } from "@/hooks";
 import {
   TQuiz,
@@ -55,6 +55,8 @@ export function Qusetion({
     attendeeId: string | null;
     attendeeName: string;
     avatar: Required<AvatarFullConfig>;
+    email: string;
+    phone: string;
   };
   isOrganizer: boolean;
   isIdPresent: boolean;
@@ -451,7 +453,7 @@ export function Qusetion({
   return (
     <div
       className={cn(
-        "w-full h-[90vh]  bg-white relative    border-x  col-span-7",
+        "w-full h-[90vh]  bg-white relative    border-x border-y  col-span-7",
         isLeftBox && isRightBox && (isIdPresent || isOrganizer) && "col-span-5",
         !isLeftBox && !isRightBox && "col-span-full ",
         !isIdPresent && !isOrganizer && "col-span-full max-w-3xl mx-auto"

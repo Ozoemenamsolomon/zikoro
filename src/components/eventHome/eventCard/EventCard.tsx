@@ -5,7 +5,7 @@ import { ThreeDotsVertical } from "styled-icons/bootstrap";
 import { CalendarDateFill } from "@styled-icons/bootstrap/CalendarDateFill";
 import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
 import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Users } from "@styled-icons/fa-solid/Users";
 import { Dot } from "@styled-icons/bootstrap/Dot";
 import { Edit } from "@styled-icons/boxicons-solid/Edit";

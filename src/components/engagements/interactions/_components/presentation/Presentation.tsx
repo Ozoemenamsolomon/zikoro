@@ -29,7 +29,7 @@ import {
   useRealtimePresence,
   getCookie,
 } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import Image from "next/image";
 import { Button, Input } from "@/components";
 import { generateAlias } from "@/utils";
@@ -40,6 +40,24 @@ import Avatar, { genConfig, AvatarFullConfig } from "react-nice-avatar";
 import { Plus } from "@styled-icons/bootstrap/Plus";
 
 const supabase = createClientComponentClient();
+
+// audio instance
+function createAudioInstance() {
+  if (typeof window !== "undefined") {
+    const audio = new Audio("/audio/AylexCinematic.mp3");
+    //  audio.src = "audio/AylexCinematic.mp3";
+    audio.loop = true;
+
+    return audio;
+  }
+  return null;
+}
+
+type TPlayerDetail = {
+  phone: string;
+  email: string;
+  nickName: string;
+};
 
 export default function Presentation({
   eventId,
@@ -61,12 +79,19 @@ export default function Presentation({
   const [isSendMailModal, setIsSendMailModal] = useState(false);
   const [showScoreSheet, setShowScoreSheet] = useState(false);
   const [chosenAvatar, setChosenAvatar] =
-  useState<Required<AvatarFullConfig> | null>(null);
+    useState<Required<AvatarFullConfig> | null>(null);
   const [quizResult, setQuizResult] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
   const { answer, getAnswer } = useGetAnswer();
-  const [nickName, setNickName] = useState(attendee?.firstName || "");
+  // const [nickName, setNickName] = useState(attendee?.firstName || "");
+  const [playerDetail, setPlayerDetail] = useState<TPlayerDetail>({
+    phone: "",
+    email: "",
+    nickName: attendee?.firstName || "",
+  });
+  const player = getCookie<TConnectedUser>("player");
+  const audio = createAudioInstance();
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
@@ -135,7 +160,11 @@ export default function Presentation({
  */
 
   const id = useMemo(() => {
-    return generateAlias();
+    if (player) {
+      return player?.userId;
+    } else {
+      return generateAlias();
+    }
   }, []);
   function onClose() {
     setLeftBox((prev) => !prev);
@@ -200,6 +229,7 @@ export default function Presentation({
       if (quiz?.liveMode?.isEnded) {
         setShowScoreSheet(quiz?.liveMode?.isEnded);
         setIsSendMailModal(true);
+        if (audio) audio.pause();
       }
     }
   }, [quiz]);
@@ -217,7 +247,7 @@ export default function Presentation({
                   quiz={quizResult}
                   actualQuiz={quiz}
                   isAttendee={!isIdPresent && !isOrganizer}
-                  attendeeEmail={attendee?.email}
+                  attendeeEmail={attendee?.email || playerDetail?.email}
                 />
               ) : (
                 <ScoreBoard
@@ -253,16 +283,17 @@ export default function Presentation({
                     quiz={refinedQuizArray}
                     id={id}
                     attendeeId={attendeeId}
-                    nickName={nickName}
-                    setNickName={setNickName}
+                    playerDetail={playerDetail}
+                    setPlayerDetail={setPlayerDetail}
                     isLobby={isLobby}
                     setisLobby={setisLobby}
                     chosenAvatar={chosenAvatar}
                     setChosenAvatar={setChosenAvatar}
+                    audio={audio}
                   />
                 </div>
               ) : (
-                <div className="w-full mx-auto absolute inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
+                <div className="w-full mx-auto absolute px-4 sm:px-6  inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
                   {(isIdPresent || isOrganizer) && (
                     <Advert
                       quiz={refinedQuizArray}
@@ -289,7 +320,9 @@ export default function Presentation({
                     quizParticipantId={id}
                     attendeeDetail={{
                       attendeeId: attendeeId ? String(attendeeId) : null,
-                      attendeeName: nickName,
+                      attendeeName: playerDetail?.nickName,
+                      email: playerDetail?.email,
+                      phone: playerDetail?.phone,
                       avatar: chosenAvatar!,
                     }}
                     isIdPresent={isIdPresent}
@@ -325,13 +358,14 @@ function PlayersOnboarding({
   refetch,
   isAttendee,
   id,
-  nickName,
-  setNickName,
+  playerDetail,
+  setPlayerDetail,
   isLobby,
   setisLobby,
   attendeeId,
-  chosenAvatar, 
-  setChosenAvatar
+  chosenAvatar,
+  setChosenAvatar,
+  audio,
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -339,8 +373,8 @@ function PlayersOnboarding({
   refetch: () => Promise<any>;
   isAttendee: boolean;
   id: string;
-  nickName: string;
-  setNickName: React.Dispatch<React.SetStateAction<string>>;
+  playerDetail: TPlayerDetail;
+  setPlayerDetail: React.Dispatch<React.SetStateAction<TPlayerDetail>>;
   isLobby: boolean;
   setisLobby: React.Dispatch<React.SetStateAction<boolean>>;
   attendeeId?: number;
@@ -348,6 +382,7 @@ function PlayersOnboarding({
   setChosenAvatar: React.Dispatch<
     React.SetStateAction<Required<AvatarFullConfig> | null>
   >;
+  audio: HTMLAudioElement | null;
 }) {
   const { updateQuiz } = useUpdateQuiz();
 
@@ -355,6 +390,7 @@ function PlayersOnboarding({
   const [isAvatarModal, setAvatarModal] = useState(false);
   useRealtimePresence();
   const player = getCookie<TConnectedUser>("player");
+  const [isAvatar, setIsAvatar] = useState(false);
   //console.log("present", presentUser)
   // const [isLobby, setisLobby] = useState(false);
 
@@ -370,11 +406,29 @@ function PlayersOnboarding({
     };
   }, [quiz]);
 
+  function generateAvatars() {
+    const avatars = Array.from({ length: 10 }).map((_, index) => {
+      return {
+        avatar: genConfig(),
+      };
+    });
+
+    return avatars;
+  }
+  function toggleIsAvatar() {
+    setIsAvatar((prev) => !prev);
+  }
+
+  const avatars = useMemo(() => {
+    return generateAvatars();
+  }, [isAvatar]);
+
   function toggleAvatarModal() {
     setAvatarModal((prev) => !prev);
   }
-  async function submit() {
-    if (!nickName) {
+  async function submit(e: any) {
+    e.preventDefault();
+    if (!playerDetail?.nickName) {
       toast.error("Pls add a nickName");
       return;
     }
@@ -402,8 +456,8 @@ function PlayersOnboarding({
         ? [
             ...actualQuiz?.quizParticipants,
             {
-              id: quiz?.accessibility?.live ? player?.userId || "" : id,
-              nickName,
+              ...playerDetail,
+              id: player?.userId || id,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
               participantImage: chosenAvatar,
@@ -411,8 +465,8 @@ function PlayersOnboarding({
           ]
         : [
             {
+              ...playerDetail,
               id: quiz?.accessibility?.live ? player?.userId || "" : id,
-              nickName,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
               participantImage: chosenAvatar,
@@ -443,6 +497,7 @@ function PlayersOnboarding({
     refetch();
     setisLobby(true);
     setLoading(false);
+    // if (audio)  audio.play();
   }
 
   useEffect(() => {
@@ -455,12 +510,11 @@ function PlayersOnboarding({
     }, 2000);
   }, []);
 
-
-
   return (
     <>
       {isAttendee ? (
-        <div
+        <form
+          onSubmit={submit}
           className={cn(
             "w-full text-sm p-4 gap-y-4 col-span-full flex flex-col items-center mx-auto max-w-2xl rounded-lg bg-white",
             isLobby && "hidden"
@@ -469,7 +523,7 @@ function PlayersOnboarding({
           <Image
             src={quiz?.coverImage || "/quiztime.png"}
             alt="cover-image"
-            className="w-full h-[250px] object-cover"
+            className="w-full h-[200px] object-cover"
             width={2000}
             height={1000}
           />
@@ -483,15 +537,17 @@ function PlayersOnboarding({
             }`}</p>
           </div>
 
-          <div className="w-full flex justify-center items-end gap-x-2">
+          <div className="w-full flex justify-center items-start gap-x-2">
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
                 toggleAvatarModal();
               }}
-              className="text-white rounded-full h-14 w-14 flex items-center justify-center bg-black/50 flex-col"
+              className="text-white rounded-full h-20 w-20 flex items-center justify-center bg-black/50 flex-col"
             >
               {chosenAvatar ? (
-                <Avatar className="h-14 w-14 rounded-full" {...chosenAvatar} />
+                <Avatar className="h-20 w-20 rounded-full" {...chosenAvatar} />
               ) : (
                 <>
                   <Plus size={24} />
@@ -499,24 +555,59 @@ function PlayersOnboarding({
                 </>
               )}
             </button>
-            <Input
-              value={nickName}
-              onChange={(e) => setNickName(e.target.value)}
-              className="border-0 border-b rounded-none w-full max-w-[26em]"
-              placeholder="Enter Name"
-              type="text"
-            />
+            <div className="w-[70%] max-w-[26em] space-y-2">
+              <Input
+                value={playerDetail?.nickName}
+                onChange={(e) => {
+                  setPlayerDetail({
+                    ...playerDetail,
+                    nickName: e.target.value,
+                  });
+                }}
+                className="border-0 border-b rounded-none w-full"
+                placeholder="Enter Name"
+                type="text"
+              />
+              <Input
+                value={
+                  quiz.accessibility?.isCollectEmail
+                    ? playerDetail?.email
+                    : playerDetail?.phone
+                }
+                onChange={(e) => {
+                  setPlayerDetail({
+                    ...playerDetail,
+                    [quiz.accessibility?.isCollectEmail ? "email" : "phone"]:
+                      e.target.value,
+                  });
+                }}
+                className="border-0 border-b rounded-none w-full"
+                placeholder={
+                  quiz.accessibility?.isCollectEmail
+                    ? "Enter Email Address"
+                    : "Enter Phone Number"
+                }
+                required
+                type={quiz.accessibility?.isCollectEmail ? "email" : "tel"}
+              />
+              <div className="w-full  text-xs">
+                <p className="w-full text-gray-600 text-center">
+                  {`${quiz.accessibility?.isCollectEmail ? "Email": "Phone Number"} is required for this game to store your points and
+                  possible follow-up should you appear on the leaderboard.`}
+                </p>
+              </div>
+            </div>
           </div>
 
           <Button
             disabled={loading}
-            onClick={submit}
+            // onClick={submit}
             className="bg-basePrimary gap-x-2 px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
           >
             {loading && <LoaderAlt size={22} className="animate-spin" />}
             <p> Let's Go</p>
           </Button>
-        </div>
+        </form>
       ) : (
         <div
           className={cn(
@@ -572,6 +663,8 @@ function PlayersOnboarding({
           close={toggleAvatarModal}
           chosenAvatar={chosenAvatar}
           setChosenAvatar={setChosenAvatar}
+          toggleIsAvatar={toggleIsAvatar}
+          avatars={avatars}
         />
       )}
     </>

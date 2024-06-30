@@ -2,7 +2,7 @@
 
 import { CalendarCheck } from "@styled-icons/bootstrap/CalendarCheck";
 import { Button } from "@/components";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useCreateMyAgenda } from "@/hooks";
 import { cn } from "@/lib";
 export function AddToMyAgenda({

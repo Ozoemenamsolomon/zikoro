@@ -112,7 +112,7 @@ export function LeaderBoard({
   return (
     <div
       className={cn(
-        "w-full col-span-3 bg-white h-[90vh] rounded-r-xl hidden  md:hidden",
+        "w-full col-span-3 bg-white h-[90vh] border-r border-y rounded-r-xl hidden  md:hidden",
         isRightBox && "block md:block ",
         !isLeftBox && "col-span-4"
       )}

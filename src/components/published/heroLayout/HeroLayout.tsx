@@ -10,7 +10,7 @@ import DatePicker from "react-datepicker";
 import { Event } from "@/types";
 import _ from "lodash";
 import { DropDownCards } from "..";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEventFilterHook } from "@/context/EventFilterContext";

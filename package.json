@@ -115,7 +115,7 @@
     "react-verification-input": "^4.1.2",
     "react-zoom-pan-pinch": "^3.4.4",
     "slick-carousel": "^1.8.1",
-    "styled-icons": "^10.47.0",
+    "styled-icons": "^10.47.1",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "use-undo": "^1.1.1",
@@ -138,6 +138,6 @@
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.3.6",
-    "typescript": "^5.3.3"
+    "typescript": "^5.5.2"
   }
 }

@@ -7,7 +7,7 @@ import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
 import { Event } from "@/types";
 import { useForm } from "react-hook-form";
 import { useEffect, useMemo, useState } from "react";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { cn } from "@/lib";
 
 const eventWebsiteSettings = [

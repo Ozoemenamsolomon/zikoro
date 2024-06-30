@@ -3,7 +3,7 @@
 import { EventCards, EventHomeLayout } from ".";
 import { EmptyCard } from "../composables";
 import { useFetchOrganizationEvents } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 export default function OrganizationHome({
   organizationId,

@@ -19,7 +19,7 @@ import { ChevronDown } from "@styled-icons/bootstrap/ChevronDown";
 import { offerCreationSchema } from "@/schemas";
 import {  useUpdatePartners } from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useState } from "react";
 import {uploadFile, generateAlias} from "@/utils"
 import InputOffsetLabel from "@/components/InputOffsetLabel";

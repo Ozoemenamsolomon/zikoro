@@ -10,7 +10,7 @@ import Image from "next/image";
 import { EmptyCard } from "@/components/composables";
 import { useFetchPartners } from "@/hooks";
 import { useEffect, useState } from "react";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { TPartner } from "@/types";
 import { cn } from "@/lib";
 

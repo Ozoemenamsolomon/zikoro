@@ -3,7 +3,7 @@
 import { Form, FormField, Input, Button } from "@/components";
 import { useForm } from "react-hook-form";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useUpdateEvent } from "@/hooks";
 import { nanoid } from "nanoid";
 import { CreatedPreview } from "@/components/composables";

@@ -23,7 +23,8 @@ export async function middleware(req: NextRequest) {
   } = await supabase.auth.getSession();
 
 
-   // Check if the request path is included
+ /**
+  // Check if the request path is included
   const isIncludedPath = includedPaths.some((path) =>
     req.nextUrl.pathname.startsWith(path)
   );
@@ -47,6 +48,7 @@ export async function middleware(req: NextRequest) {
   return res;
  
  
+  */
 
 }
 

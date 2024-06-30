@@ -3,7 +3,7 @@
 import { PartnerCard } from "@/components/partners/sponsors/_components";
 import { useFetchPartners } from "@/hooks";
 import { Event } from "@/types";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { EmptyCard } from "@/components/composables";
 import { Button } from "@/components";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";

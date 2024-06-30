@@ -7,7 +7,7 @@ import Link from "next/link";
 import { EmailOutline } from "styled-icons/evaicons-outline";
 import { Whatsapp } from "styled-icons/remix-fill";
 import {CloseOutline} from "@styled-icons/evaicons-outline/CloseOutline"
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { sendMail, whatsapp } from "@/utils";
 export function DeleteEventModal({
   close,

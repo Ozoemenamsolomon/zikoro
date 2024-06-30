@@ -9,7 +9,7 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
   const links = [
     {
       name: "Interactions",
-      href: "interaction",
+      href: "interactions",
     },
     {
       name: "StampCard",

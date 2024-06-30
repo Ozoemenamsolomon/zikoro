@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { COUNTRY_CODE, uploadFile, generateAlias } from "@/utils";
 import { AddSponsorLevel } from "@/components/contents/partners/_components";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useEffect, useState, useMemo } from "react";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { cn } from "@/lib";

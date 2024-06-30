@@ -16,7 +16,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sendMailQuizSchema } from "@/schemas";
 import { TQuiz, TRefinedQuestion, TQuestion } from "@/types";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import {  useSendQuizScore } from "@/hooks";
 export function SendMailModal({
   close,

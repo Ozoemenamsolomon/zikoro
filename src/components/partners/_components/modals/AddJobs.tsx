@@ -21,7 +21,7 @@ import { ChevronDown } from "@styled-icons/bootstrap/ChevronDown";
 import { jobSchema } from "@/schemas";
 import { useAddPartnerJob, useUpdatePartners } from "@/hooks";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import {
   flexibiltiy,
   employemntType,

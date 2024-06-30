@@ -324,7 +324,7 @@ importers:
         specifier: ^1.8.1
         version: 1.8.1(jquery@3.7.1)
       styled-icons:
-        specifier: ^10.47.0
+        specifier: ^10.47.1
         version: 10.47.1(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       tailwind-merge:
         specifier: ^2.2.2
@@ -388,7 +388,7 @@ importers:
         specifier: ^3.3.6
         version: 3.4.4
       typescript:
-        specifier: ^5.3.3
+        specifier: ^5.5.2
         version: 5.5.2
 
 packages:
