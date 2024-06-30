@@ -78,7 +78,7 @@ export function Option({
               !option?.isCorrect &&
               showAnswerMetric &&
               "border-red-500 bg-red-500/20",
-            typeof option?.isCorrect === "boolean" &&
+
               isCorrectAnswer &&
               showAnswerMetric &&
               "border-green-500 bg-green-500/20 transform quiz-option-animation",
