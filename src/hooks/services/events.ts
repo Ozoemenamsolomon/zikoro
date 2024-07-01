@@ -383,7 +383,7 @@ export function usePublishEvent() {
 
       if (status !== 200) throw data;
 
-      toast("Agenda Published");
+      toast("Event Published");
       return data;
     } catch (error: any) {
       toast(error?.response?.data?.error);

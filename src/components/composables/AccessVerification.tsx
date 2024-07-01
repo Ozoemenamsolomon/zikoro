@@ -1,6 +1,6 @@
 "use client";
 
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { getCookie, useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";

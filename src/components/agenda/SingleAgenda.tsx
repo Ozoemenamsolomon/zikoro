@@ -2,7 +2,7 @@
 
 import { useGetAgenda, useFetchSingleEvent, useCheckTeamMember, useVerifyUserAccess } from "@/hooks";
 import { AboutSession, Engagement } from "./_components";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useGetAllAttendees } from "../../hooks/services/attendee";
 export default function SingleAgenda({
   agendaId,

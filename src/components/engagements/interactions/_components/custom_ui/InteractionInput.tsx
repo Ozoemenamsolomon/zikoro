@@ -18,10 +18,10 @@ export default function InteractionInput({
   placeholder?: string;
   error?:string;
 }) {
- 
+
 
   const quillModules = {
-    toolbar: {
+    toolbar:  {
       container: [
         ["blockquote"],
         [{ list: "ordered" }, { list: "bullet" }],
@@ -39,7 +39,7 @@ export default function InteractionInput({
 
         // ["imageResize", "imageTextAlternative"],
       ],
-    },
+    } ,
     history: {
       delay: 500,
       maxStack: 100,
@@ -72,15 +72,18 @@ export default function InteractionInput({
     
   };
 
+  
   return (
   <div className="w-full interaction-input">
       <QuillEditor
       value={content}
+    
       onChange={(e) => {
         handleEditorChange(e);
       }}
-      modules={ quillModules }
-      formats={quillFormats}
+      modules={ quillModules}
+      
+      formats={ quillFormats}
       theme="snow"
       placeholder={placeholder || "Enter description"}
       className="w-full bg-white ql-container focus:ring-1 ring-black h-[200px]"

@@ -10,14 +10,15 @@ import {
   Input,
 } from "@/components";
 import { useForm } from "react-hook-form";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
-import { Navigation } from "@styled-icons/feather/Navigation";
+import { CloseOutline } from "styled-icons/evaicons-outline";
+import { Navigation } from "styled-icons/feather";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sendMailQuizSchema } from "@/schemas";
 import { TQuiz, TRefinedQuestion, TQuestion } from "@/types";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import {  useSendQuizScore } from "@/hooks";
+import Link from "next/link";
 export function SendMailModal({
   close,
   quiz,
@@ -117,6 +118,8 @@ export function SendMailModal({
               <Navigation size={18} />
               {isLoading && <LoaderAlt size={20} className="animate-spin" />}
             </Button>
+
+            <Link href={`/event/${actualQuiz?.eventAlias}/engagements/interactions`} className="mt-2 text-basePrimary">Create your own quiz!</Link>
           </form>
         </Form>
       </div>

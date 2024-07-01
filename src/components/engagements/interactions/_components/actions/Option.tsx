@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@/lib";
-import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
-import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
+import { CloseCircle } from "styled-icons/ionicons-outline";
+import { CheckCircle } from "styled-icons/bootstrap";
 import { TAnswer, TQuiz, TQuestion } from "@/types";
 import { useMemo } from "react";
 
@@ -45,7 +45,7 @@ export function Option({
     return option?.isAnswer === option?.optionId;
   }, [option]);
 
-//  console.log(isCorrectAnswer, { isCorrect: option?.isCorrect });
+  //  console.log(isCorrectAnswer, { isCorrect: option?.isCorrect });
 
   return (
     <>
@@ -72,18 +72,22 @@ export function Option({
             "w-full px-4 text-gray-500 space-y-1  min-h-[44px] h-fit rounded-md border border-basePrimary bg-white",
             typeof option?.isCorrect === "boolean" &&
               option?.isCorrect &&
+              showAnswerMetric &&
               "border-green-500 bg-green-500/20",
             typeof option?.isCorrect === "boolean" &&
               !option?.isCorrect &&
+              showAnswerMetric &&
               "border-red-500 bg-red-500/20",
-            typeof option?.isCorrect === "boolean" &&
+
               isCorrectAnswer &&
-              "border-green-500 bg-green-500/20 transform quiz-option-animation"
+              showAnswerMetric &&
+              "border-green-500 bg-green-500/20 transform quiz-option-animation",
+            typeof option?.isCorrect === "boolean" && !showAnswerMetric && "bg-[#001fcc]/20"
           )}
         >
           <div className="w-full flex items-center justify-between">
             <div className="flex items-start gap-x-2 w-full">
-              {option?.isCorrect !== "default" && (
+              {option?.isCorrect !== "default" && showAnswerMetric && (
                 <>
                   {option?.isCorrect ? (
                     <CheckCircle className="text-green-500" size={18} />
@@ -140,7 +144,7 @@ export function OrganizerQuestOption({
   isCorrectAnswer,
   isCorrect,
   quiz,
-  optionId
+  optionId,
 }: {
   optionIndex: string;
   option: string;
@@ -149,7 +153,7 @@ export function OrganizerQuestOption({
   isCorrectAnswer?: boolean;
   isCorrect?: boolean;
   quiz?: TQuiz<TQuestion[]>;
-  optionId?:string;
+  optionId?: string;
 }) {
   return (
     <button
@@ -157,8 +161,8 @@ export function OrganizerQuestOption({
         "w-full px-4 text-gray-500 gap-y-1  min-h-[44px] h-fit rounded-md border border-gray-500 bg-gray-100",
         (isCorrect && isCorrectAnswer) ||
           (quiz?.accessibility?.live &&
-            quiz?.liveMode?.correctOptionId === optionId)&&
-            "border-green-500 bg-green-500/20 transform quiz-option-animation"
+            quiz?.liveMode?.correctOptionId === optionId &&
+            "border-green-500 bg-green-500/20 transform quiz-option-animation")
       )}
     >
       <div className="w-full flex items-center justify-between">

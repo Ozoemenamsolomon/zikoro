@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Download } from "@styled-icons/bootstrap/Download";
 import { Eye } from "@styled-icons/feather/Eye";
 import { Check2 } from "@styled-icons/bootstrap/Check2";

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 export function PublishCard({
   loading,

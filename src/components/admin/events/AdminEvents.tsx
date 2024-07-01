@@ -2,23 +2,23 @@
 
 import { useGetEvents } from "@/hooks";
 import { EventLayout } from "./_components";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Button } from "@/components";
 import { ThreeDotsVertical } from "styled-icons/bootstrap";
-import { CalendarDateFill } from "@styled-icons/bootstrap/CalendarDateFill";
-import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
-import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
-import { Users } from "@styled-icons/fa-solid/Users";
-import { Dot } from "@styled-icons/bootstrap/Dot";
-import { Edit } from "@styled-icons/boxicons-solid/Edit";
+import { CalendarDateFill } from "styled-icons/bootstrap";
+import { TimeFive } from "styled-icons/boxicons-solid";
+import { LocationDot } from "styled-icons/fa-solid";
+import { Users } from "styled-icons/fa-solid";
+import { Dot } from "styled-icons/bootstrap";
+import { Edit } from "styled-icons/boxicons-solid";
 import { AboutWidget, EventLocationType } from "@/components/composables";
 import { TOrgEvent } from "@/types";
 import { PublishCard } from "@/components/composables";
 import { PreviewModal } from "../../contents/_components/modal/PreviewModal";
 import { useMemo, useState } from "react";
 import { useFormatEventData, usePublishEvent, getCookie } from "@/hooks";
-import { Download } from "@styled-icons/bootstrap/Download";
-import { Eye } from "@styled-icons/feather/Eye";
+import { Download } from "styled-icons/bootstrap";
+import { Eye } from "styled-icons/feather";
 import { useSearchParams } from "next/navigation";
 import { EmptyCard } from "../../composables";
 import useUserStore from "@/store/globalUserStore";
@@ -73,7 +73,7 @@ function EventCard({
   query: string | null;
 }) {
   const { isLoading: updating, publishEvent: update } = usePublishEvent();
-  const { user: userData, setUser } = useUserStore();
+  const { user: userData, } = useUserStore();
   const [isShowPublishModal, setShowPublishModal] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const {

@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useMemo } from "react";
 import { COUNTRY_CODE } from "@/utils";
 import { useOnboarding } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useSearchParams } from "next/navigation"
 import { generateAlphanumericHash } from "@/utils/helpers";

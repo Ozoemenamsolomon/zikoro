@@ -11,14 +11,15 @@ import {
 } from "@/types";
 import { useMemo, useState } from "react";
 import { getCookie } from "@/hooks";
-import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
+import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { cn } from "@/lib";
-import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
-import { CloseOutline } from "@styled-icons/zondicons/CloseOutline";
+import { CheckCircle } from "styled-icons/bootstrap";
+import { CloseOutline } from "styled-icons/zondicons";
 import { useUpdateQuiz } from "@/hooks";
-import Avatar, { genConfig } from "react-nice-avatar";
+import Avatar from "react-nice-avatar";
 import { AvatarFullConfig } from "react-nice-avatar";
-import { ArrowUpwardOutline } from "@styled-icons/evaicons-outline/ArrowUpwardOutline";
+import { ArrowUpwardOutline } from "styled-icons/evaicons-outline";
+import { FeedStar } from "styled-icons/octicons";
 
 type TLeaderBoard = {
   quizParticipantId: string;
@@ -55,6 +56,7 @@ export function ScoreBoard({
   const player = getCookie<TConnectedUser>("player");
   const { updateQuiz, isLoading } = useUpdateQuiz();
 
+  console.log("dsds", quiz)
   const board = useMemo(() => {
     const participantGroup: { [key: string]: TParticipantScores } = {};
     if (Array.isArray(answers) && answers.length > 0) {
@@ -175,7 +177,7 @@ export function ScoreBoard({
               >
                 Go To Quiz Page
               </Button>
-              {isAttendee && (
+              {isAttendee && quiz?.accessibility?.showResult && (
                 <Button
                   onClick={onClose}
                   className="underline rounded-none px-2 h-10 w-fit"
@@ -194,7 +196,7 @@ export function ScoreBoard({
                       board[1]?.attendeeName && "visible"
                     )}
                   >
-                    <div className="flex flex-col items-center justify-center gap-y-2">
+                    <div className="flex flex-col mr-11 items-center justify-center gap-y-2">
                       {/*  <Image
                         src="/quizattendee.png"
                         className="w-[5rem]  h-[5rem]"
@@ -220,9 +222,9 @@ export function ScoreBoard({
                         width={150}
                         height={500}
                       />
-                      <div className="absolute inset-x-0 top-10 text-white mx-auto flex flex-col items-center justify-center">
+                      <div className="absolute mr-11 inset-x-0 top-10 text-white mx-auto flex flex-col items-center justify-center">
                         <p className="font-medium">2nd</p>
-                        <p className="text-tiny bg-white/20 rounded-3xl p-1">{`${
+                        <p className="text-tiny bg-white/20 rounded-3xl px-3 py-1">{`${
                           board[1]?.totalScore?.toFixed(0) ?? 0
                         }p`}</p>
                       </div>
@@ -262,7 +264,7 @@ export function ScoreBoard({
                       />
                       <div className="absolute inset-x-0 top-10 text-white mx-auto flex flex-col items-center justify-center">
                         <p className="font-medium text-sm">1st</p>
-                        <p className="text-tiny bg-white/20 rounded-3xl p-1">{`${
+                        <p className="text-tiny bg-white/20 rounded-3xl px-3 py-1">{`${
                           board[0]?.totalScore.toFixed(0) ?? 0
                         }p`}</p>
                       </div>
@@ -274,7 +276,7 @@ export function ScoreBoard({
                       board[2]?.attendeeName && "visible"
                     )}
                   >
-                    <div className="flex flex-col items-center justify-center gap-y-2">
+                    <div className="flex flex-col ml-11 items-center justify-center gap-y-2">
                       {/*  <Image
                         src="/quizattendee.png"
                         className="w-[5rem] h-[5rem]"
@@ -300,9 +302,9 @@ export function ScoreBoard({
                         width={150}
                         height={500}
                       />
-                      <div className="absolute inset-x-0 top-10 text-white mx-auto flex flex-col items-center justify-center">
+                      <div className="absolute inset-x-0 ml-11 top-10 text-white mx-auto flex flex-col items-center justify-center">
                         <p className="font-medium">3rd</p>
-                        <p className="text-tiny bg-white/20 rounded-3xl p-1">{`${
+                        <p className="text-tiny bg-white/20 rounded-3xl px-3 py-1">{`${
                           board[2]?.totalScore.toFixed(0) ?? 0
                         }p`}</p>
                       </div>
@@ -318,9 +320,9 @@ export function ScoreBoard({
                     board.slice(3, board?.length).map((player, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between w-full py-3 border-b px-2"
+                        className="grid grid-cols-3 items-center w-full py-3 border-b px-2"
                       >
-                        <div className="flex items-center gap-x-3">
+                        <div className="flex items-center col-span-2 gap-x-3">
                           <div className="flex flex-col items-center justify-center">
                             {/* <Image
                               src="/quizattendee.png"
@@ -338,10 +340,14 @@ export function ScoreBoard({
                           </div>
                           <p className="">{player?.attendeeName}</p>
                         </div>
-                        <div className="flex items-center gap-x-1">
-                          <p>{Number(player?.totalScore ?? 0).toFixed(0)}p</p>
+                        <div className="flex items-center justify-end gap-x-1">
+                          <p className="flex items-center">
+                            <span>{Number(player?.totalScore ?? 0).toFixed(0)}</span>
+
+                         p
+                          </p>
                           {player?.recentScore > 0 && (
-                            <div className="flex text-basePrimary items-center gap-x-1 text-xs">
+                            <div className="flex text-white bg-basePrimary rounded-3xl px-2 py-1 items-center gap-x-1 text-xs">
                               <ArrowUpwardOutline size={15} />
                               <p>{Number(player?.recentScore)?.toFixed(0)}</p>
                             </div>

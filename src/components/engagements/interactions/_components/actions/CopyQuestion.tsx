@@ -2,7 +2,7 @@
 
 import { Button } from "@/components";
 import { Copy } from "@styled-icons/ionicons-outline/Copy";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { TQuiz, TQuestion } from "@/types";
 import { nanoid } from "nanoid";
 import { useUpdateQuiz } from "@/hooks";

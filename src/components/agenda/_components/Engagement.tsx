@@ -4,7 +4,7 @@ import { Star } from "@styled-icons/fluentui-system-regular/Star";
 import { StarFullOutline } from "@styled-icons/typicons/StarFullOutline";
 import { Form, FormField, Button, Textarea } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib";

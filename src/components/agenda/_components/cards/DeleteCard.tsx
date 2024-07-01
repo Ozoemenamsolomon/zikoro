@@ -1,6 +1,6 @@
 "use client"
 
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Button, Portal } from "@/components";
 import {useEffect, useState} from "react"
 export function DeleteCard({

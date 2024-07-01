@@ -12,12 +12,12 @@ import {
   FormControl,
 } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { useFieldArray, useForm } from "react-hook-form";
 import { duration, points } from "..";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
-import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
+import { CloseCircle } from "styled-icons/ionicons-outline";
 import { nanoid } from "nanoid";
 import { cn } from "@/lib";
 import { quizQuestionSchema } from "@/schemas";

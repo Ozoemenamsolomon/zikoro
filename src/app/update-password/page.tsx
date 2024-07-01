@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Eye } from "@styled-icons/feather/Eye";
 import { EyeOff } from "@styled-icons/feather/EyeOff";
 import { useUpdatePassword } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 type FormValue = {
   password: string;
