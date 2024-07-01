@@ -583,6 +583,11 @@ export const links: NavLinkType[] = [
   {
     name: "Workspace",
     icon: WorkspaceIcon,
+    href: "/workspace/general",
+  },
+  {
+    name: "Analytics",
+    icon: AnalyticsIcon,
     href: "",
   },
   {
