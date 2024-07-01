@@ -1,24 +1,28 @@
 "use client";
 import { Button } from "@/components";
 import { cn } from "@/lib";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
-import React, { useEffect } from "react";
-import { useMemo, useState } from "react";
-import Avatar, { AvatarFullConfig, genConfig } from "react-nice-avatar";
+import { CloseOutline } from "styled-icons/evaicons-outline";
+import React from "react";
+import Avatar, { AvatarFullConfig} from "react-nice-avatar";
 export function AvatarModal({
   close,
   chosenAvatar,
   setChosenAvatar,
+  avatars,
+  toggleIsAvatar
 }: {
   close: () => void;
   chosenAvatar: Required<AvatarFullConfig> | null;
   setChosenAvatar: React.Dispatch<
     React.SetStateAction<Required<AvatarFullConfig> | null>
   >;
+  avatars:  {avatar: Required<AvatarFullConfig>}[];
+  toggleIsAvatar:() => void;
 }) {
  
-  const [avatars, setAvatars] = useState<{avatar: Required<AvatarFullConfig>}[]>([])
+ // const [avatars, setAvatars] = useState<{avatar: Required<AvatarFullConfig>}[]>([])
 
+/**
   function generateAvatars() {
     const avatars = Array.from({ length: 10 }).map((_, index) => {
       return {
@@ -32,6 +36,7 @@ export function AvatarModal({
   useEffect(() => {
     generateAvatars()
   },[])
+ */
 
  
   return (
@@ -60,6 +65,7 @@ export function AvatarModal({
                 onClick={(e) => {
                   e.stopPropagation();
                   setChosenAvatar(avatar);
+                  close()
                 }}
                 key={index}
                 className={cn(
@@ -76,7 +82,7 @@ export function AvatarModal({
           </div>
 
           <Button
-            onClick={generateAvatars}
+            onClick={toggleIsAvatar}
             className="w-[80%] bg-gray-100 border rounded-lg h-11 "
           >
             Regenerate Avatar

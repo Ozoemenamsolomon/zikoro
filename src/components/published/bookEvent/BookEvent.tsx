@@ -14,7 +14,7 @@ import { useFieldArray } from "react-hook-form";
 import { Form, FormField, Input } from "@/components";
 import { eventBookingValidationSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 import { OrganizerContact } from "@/types";
 import {

@@ -9,7 +9,7 @@ import {
   FormItem,
 } from "@/components";
 import { useForm } from "react-hook-form";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { cn } from "@/lib";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

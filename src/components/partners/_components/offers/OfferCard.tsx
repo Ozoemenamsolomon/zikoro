@@ -4,7 +4,7 @@ import Image from "next/image";
 import { AlertCircle } from "@styled-icons/feather/AlertCircle";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { Button, Textarea } from "@/components";
-import {LoaderAlt} from "@styled-icons/boxicons-regular/LoaderAlt"
+import {LoaderAlt} from "styled-icons/boxicons-regular"
 import { useMemo, useState } from "react";
 import { formatShortDate, sendMail, whatsapp } from "@/utils";
 import { PromotionalOfferType, TAttendee, TAllLeads } from "@/types";

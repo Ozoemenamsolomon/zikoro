@@ -4,7 +4,7 @@ import { Button } from "@/components";
 import { Copy } from "@styled-icons/ionicons-outline/Copy";
 import { TAgenda } from "@/types";
 import { useCreateAgenda } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { generateAlias } from "@/utils";
 
 export function Duplicate({ session, refetch }: {refetch?: ()=> Promise<any>; session: Partial<TAgenda> }) {

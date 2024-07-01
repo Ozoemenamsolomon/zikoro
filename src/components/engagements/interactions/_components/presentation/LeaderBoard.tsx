@@ -1,16 +1,14 @@
 "use client";
 
-import { Minimize2 } from "@styled-icons/feather/Minimize2";
+import { Minimize2 } from "styled-icons/feather";
 import { Button } from "@/components";
 import { cn } from "@/lib";
 import { useMemo, useEffect } from "react";
 import { TAnswer, TQuestion, TQuiz } from "@/types";
 import { QUser } from "@/constants";
 import Avatar from "react-nice-avatar";
-import Aos from "aos";
-import "aos/dist/aos.css";
 import { AvatarFullConfig } from "react-nice-avatar";
-import { ArrowUpwardOutline } from "@styled-icons/evaicons-outline/ArrowUpwardOutline";
+import { ArrowUpwardOutline } from "styled-icons/evaicons-outline";
 
 type TLeaderBoard = {
   quizParticipantId: string;
@@ -96,9 +94,7 @@ export function LeaderBoard({
     }
   }, [answers, quiz]);
 
-  useEffect(() => {
-    Aos.init();
-  }, []);
+
 
   /**
    const totalMaxPoints = useMemo(() => {
@@ -112,7 +108,7 @@ export function LeaderBoard({
   return (
     <div
       className={cn(
-        "w-full col-span-3 bg-white h-[90vh] rounded-r-xl hidden  md:hidden",
+        "w-full col-span-3 bg-white h-[90vh] border-r border-y rounded-r-xl hidden  md:hidden",
         isRightBox && "block md:block ",
         !isLeftBox && "col-span-4"
       )}
@@ -160,9 +156,7 @@ export function LeaderBoard({
             </div>
             {/**1st */}
             <div
-              //  data-aos="zoom-in"
-              // data-aos-easing="ease-in-out"
-              // data-aos-duration="500"
+            
               className={cn(
                 "flex items-center quiz-player-animation flex-col gap-y-1 justify-center invisible",
                 board[0]?.attendeeName && "flex visible"
@@ -188,9 +182,7 @@ export function LeaderBoard({
             </div>
             {/**3rd */}
             <div
-              //  data-aos="zoom-in"
-              //  data-aos-easing="ease-in-out"
-              // data-aos-duration="500"
+         
               className={cn(
                 "flex items-center quiz-player-animation flex-col gap-y-1 justify-center invisible",
                 board[2]?.attendeeName && " visible"
@@ -218,13 +210,13 @@ export function LeaderBoard({
         )}
       </div>
 
-      <div className="w-full overflow-y-auto h-full space-y-2">
+      <div className="w-full overflow-y-auto h-full pb-20 space-y-2">
         {Array.isArray(board) &&
           board.slice(3, board?.length)?.map((attendee, index) => (
             <div
               key={attendee?.quizParticipantId}
               className={cn(
-                "grid grid-cols-3 items-center tranform transition-all duration-300 ease-in-out gap-2 px-3 py-3",
+                "grid grid-cols-3 items-center tranform transition-all duration-1000 ease-in-out gap-2 px-3 py-3",
                 index % 2 !== 0 && "border-y bg-[#001FCC]/10"
               )}
             >
@@ -241,7 +233,7 @@ export function LeaderBoard({
               <div className="flex items-center gap-x-1">
                 <p>{(attendee?.totalScore ?? 0)?.toFixed(0)}p</p>
                 {attendee?.recentScore > 0 && (
-                  <div className="flex items-center gap-x-1 text-xs">
+                  <div className="flex text-white bg-basePrimary rounded-3xl p-1 items-center gap-x-1 text-xs">
                     <ArrowUpwardOutline size={15} />
                     <p>{attendee?.recentScore}</p>
                   </div>

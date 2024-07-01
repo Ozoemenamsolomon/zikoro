@@ -4,7 +4,7 @@ import { Button } from "@/components";
 import { cn } from "@/lib";
 import { useMemo, useState } from "react";
 import { useFetchSingleEvent, useDeleteEventExhibitionHall } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { EmptyCard } from "@/components/composables";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 import { Delete } from "@styled-icons/fluentui-system-regular/Delete";

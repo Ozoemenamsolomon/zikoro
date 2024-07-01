@@ -1,11 +1,9 @@
-import { Link45deg } from "@styled-icons/bootstrap/Link45deg";
-import { Minimize2 } from "@styled-icons/feather/Minimize2";
-import Image from "next/image";
-import { Button, CopyLink } from "@/components";
+import { Link45deg } from "styled-icons/bootstrap";
+import { Minimize2 } from "styled-icons/feather";
+import { Button } from "@/components";
 import { TQuiz, TRefinedQuestion } from "@/types";
 import QRCode from "react-qr-code";
 import { cn } from "@/lib";
-import Link from "next/link";
 import copy from "copy-to-clipboard";
 export function Advert({
   quiz,
@@ -24,7 +22,7 @@ export function Advert({
   return (
     <div
       className={cn(
-        "w-full flex-col  rounded-l-xl h-[90vh]  items-start justify-between hidden col-span-3 md:hidden",
+        "w-full flex-col  rounded-l-xl h-[90vh] border-l border-y items-start justify-between hidden col-span-3 md:hidden",
         isLeftBox && "flex md:flex ",
         !isRightBox && "col-span-4"
       )}
@@ -48,6 +46,7 @@ export function Advert({
           <input
             value={quizLink}
             type="text"
+            readOnly
             className="w-[70%] text-mobile h-11 border bg-white pl-4"
           />
           <Button

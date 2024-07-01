@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { TQuiz, TQuestion } from "@/types";
 import { useCreateQuiz } from "@/hooks";
 import { generateInteractionAlias } from "@/utils";

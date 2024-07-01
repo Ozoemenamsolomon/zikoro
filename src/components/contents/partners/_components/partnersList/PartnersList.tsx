@@ -1,4 +1,4 @@
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useDeletePartner, useFetchSingleEvent } from "@/hooks";
 import { PartnerWidget, ExhibitionHall, AddExhibitionHall } from "..";
 import { AddPartners } from "@/components/partners/_components";

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Form, FormField, Input, Button } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useForgotPassword } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 type FormValue = {
   email: string;

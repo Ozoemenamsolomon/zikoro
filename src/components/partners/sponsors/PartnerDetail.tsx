@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { AboutPartner, PartnerBanners, PromotionalOffer } from "./_components";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 // import { TPartner } from "@/types";
 import {
   getCookie,

@@ -18,7 +18,7 @@ import {
   // useGetEventAttendees,
 } from "@/hooks";
 import { generateDateRange } from "@/utils";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useRouter } from "next/navigation";
 export default function Agenda({
   eventId,

@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Input, Button } from "@/components";
 import { MinusCircle, PlusCircle } from "styled-icons/heroicons-outline";
 import { addDiscount } from "@/app/server-actions/addDiscount";

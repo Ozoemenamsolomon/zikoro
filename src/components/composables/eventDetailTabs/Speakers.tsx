@@ -3,7 +3,7 @@
 import { Button } from "@/components";
 import Image from "next/image";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import {
   FacebookIcon,
   InstagramIcon,

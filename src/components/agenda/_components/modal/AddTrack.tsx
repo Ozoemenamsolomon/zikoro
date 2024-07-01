@@ -5,7 +5,7 @@ import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
 import { useForm } from "react-hook-form";
 import { CirclePicker } from "react-color";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import React, { useState } from "react";
 import { CreatedPreview } from "@/components/composables";
 import { toast } from "@/components/ui/use-toast";

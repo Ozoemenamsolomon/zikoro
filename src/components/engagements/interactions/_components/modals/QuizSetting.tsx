@@ -3,8 +3,8 @@
 import { Form, FormField, Input, Button, Textarea } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { Switch } from "@/components/ui/switch";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { quizSettingSchema } from "@/schemas";
@@ -42,6 +42,10 @@ export function QuizSettings({
     countdownTransition: true,
     disable: false,
     live: true,
+    isCollectPhone: false,
+    isCollectEmail: false,
+    showAnswer: true,
+    showResult: true
   });
   const form = useForm<z.infer<typeof quizSettingSchema>>({
     resolver: zodResolver(quizSettingSchema),
@@ -256,11 +260,52 @@ export function QuizSettings({
                   setAccessibility({
                     ...accessibility,
                     visible: !accessibility.visible,
+                    isCollectEmail: !accessibility.visible,
+                    isCollectPhone: false,
                   })
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
               />
             </div>
+
+            {accessibility?.visible && (
+              <>
+                <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+                  <div className="flex flex-col items-start justify-start">
+                    <p>Collect player's Email</p>
+                  </div>
+                  <Switch
+                    disabled={loading}
+                    checked={accessibility?.isCollectEmail}
+                    onClick={() =>
+                      setAccessibility({
+                        ...accessibility,
+                        isCollectEmail: !accessibility.isCollectEmail,
+                        isCollectPhone: !accessibility.isCollectPhone,
+                      })
+                    }
+                    className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+                  />
+                </div>
+                <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+                  <div className="flex flex-col items-start justify-start">
+                    <p>Collect player's Phone Number</p>
+                  </div>
+                  <Switch
+                    disabled={loading}
+                    checked={accessibility?.isCollectPhone}
+                    onClick={() =>
+                      setAccessibility({
+                        ...accessibility,
+                        isCollectPhone: !accessibility.isCollectPhone,
+                        isCollectEmail: !accessibility.isCollectEmail,
+                      })
+                    }
+                    className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+                  />
+                </div>
+              </>
+            )}
 
             <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
               <div className="flex flex-col items-start justify-start">
@@ -277,6 +322,43 @@ export function QuizSettings({
                   setAccessibility({
                     ...accessibility,
                     review: !accessibility.review,
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+              <p>Question Answer Visibility</p>
+                
+              <Switch
+                disabled={loading}
+                checked={accessibility?.showAnswer}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    showAnswer:!accessibility.showAnswer,
+                   
+                  })
+                }
+                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              />
+            </div>
+            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+             
+              <div className="flex flex-col items-start justify-start">
+                <p>Show Quiz Result</p>
+                <p className="text-xs text-gray-500">
+                  Participants will see the score sheet immediately after taking the quiz.
+                </p>
+              </div>
+              <Switch
+                disabled={loading}
+                checked={accessibility?.showResult}
+                onClick={() =>
+                  setAccessibility({
+                    ...accessibility,
+                    showResult:!accessibility.showResult,
+                   
                   })
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"

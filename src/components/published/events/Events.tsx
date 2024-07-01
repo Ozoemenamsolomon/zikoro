@@ -5,7 +5,7 @@ import { HeroLayout, SingleEvent } from "..";
 import { useState, useEffect } from "react";
 import { useEventFilterHook } from "@/context/EventFilterContext";
 import { EmptyCard } from "@/components/composables";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useGetPublishedEvents } from "@/hooks";
 import {getCookie} from "@/hooks"
 export function Events({ id }: { id: string }) {

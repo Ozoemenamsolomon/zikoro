@@ -11,7 +11,7 @@ import { useState } from "react";
 import { Eye } from "@styled-icons/feather/Eye";
 import { EyeOff } from "@styled-icons/feather/EyeOff";
 import { useRegistration } from "@/hooks";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);

@@ -2,9 +2,9 @@
 
 import { Button } from "@/components";
 import { TQuiz, TQuestion } from "@/types";
-import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
+import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import Image from "next/image";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { cn } from "@/lib";
 import { useEffect, useMemo, useState } from "react";
 import { useUpdateQuiz } from "@/hooks";
@@ -15,14 +15,12 @@ export function QuizLobby({
   close,
   goBack,
   isAttendee,
-  submit,
   refetch,
 }: {
   close: () => void;
   goBack: () => void;
   quiz: TQuiz<TQuestion[]>;
   isAttendee: boolean;
-  submit: () => Promise<any>;
   refetch: () => Promise<any>;
 }) {
   const [loading, setLoading] = useState(false);

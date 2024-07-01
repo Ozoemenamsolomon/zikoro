@@ -9,7 +9,7 @@ import {
   Textarea,
 } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
 import { useForm } from "react-hook-form";
 import { AddTrack, activityType, sessionType } from "..";

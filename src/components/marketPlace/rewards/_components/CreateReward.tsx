@@ -4,7 +4,7 @@ import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { rewardSchema } from "@/schemas";
 import { useCreateReward } from "@/hooks";

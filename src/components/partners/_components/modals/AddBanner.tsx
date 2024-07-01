@@ -6,7 +6,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
 import { TPartner } from "@/types";
 import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addBannerSchema } from "@/schemas";
 import { useAddPartnerBanner } from "@/hooks";
