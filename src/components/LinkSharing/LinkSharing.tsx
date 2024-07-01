@@ -1,11 +1,17 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useUserStore from "@/store/globalUserStore";
 
 export default function LinkSharing() {
   const [isMonthly, setIsMonthly] = useState("");
-
+  const { user, setUser } = useUserStore();
   const handleToggle = () => {};
+
+  useEffect(() => {
+    console.log(user);
+  });
 
   return (
     <div className="mt-[60px] ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
@@ -49,6 +55,58 @@ export default function LinkSharing() {
 
           <p className="text-base font-normal ">Turn off filters</p>
         </div>
+      </div>
+
+      <div className="mt-10 w-full lg:w-[460px] lg:mx-auto overflow-x-hidden">
+        <Tabs defaultValue="link" className="px-6 py-8  w-full lg:w-[460px]">
+          <TabsList className="gap-x-20 px-16 border-b-[1px] border-gray-200 bg-white w-full lg:w-[380px] mx-auto">
+            <TabsTrigger value="link" className="w-full">
+              Link
+            </TabsTrigger>
+            <TabsTrigger value="embed">Embed</TabsTrigger>
+          </TabsList>
+          <TabsContent value="link" className="bg-white">
+            <div className="mt-4">
+              <p>Workspace name</p>
+              <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
+                https://www.zikoro.com/workspacename
+              </p>
+              <button className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6">
+                Copy Link
+              </button>
+            </div>
+          </TabsContent>
+          <TabsContent value="embed">
+            <div className="mt-4 ">
+              <div className="p-3 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-lg">
+                {/* 1st section */}
+                <div>
+                  <p className="font-medium">Button Preview</p>
+                  <button className="bg-zikoroBlue py-2 px-4 rounded-lg text-base font-medium mt-5 text-white">
+                    View all our evnts
+                  </button>
+                </div>
+
+                <div className="mt-8">
+                  <p className="text-[14px]">Edit button text</p>
+                  <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-2">
+                    View all our evnts
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <p>Workspace name</p>
+                <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
+                  Code here
+                </p>
+                <button className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6">
+                  Copy Embed Code
+                </button>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

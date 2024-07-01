@@ -11,7 +11,7 @@ type Props = {
   setChosenPlan: (plan: string | null) => void;
   setChosenPrice: (price: number | null) => void;
   setChosenCurrency: (currency: string) => void;
-  setChosenMonthly : (isMontly: boolean) => void
+  setChosenMonthly: (isMontly: boolean) => void;
 };
 
 //type annotation for the data being fetched
@@ -31,7 +31,7 @@ export default function PricingTable({
   setChosenCurrency,
   setChosenPlan,
   setChosenPrice,
-  setChosenMonthly
+  setChosenMonthly,
 }: Props) {
   const [freeFeatures, setFreeFeatures] = useState<boolean>(false);
   const [liteFeatures, setLiteFeatures] = useState<boolean>(false);
@@ -85,7 +85,7 @@ export default function PricingTable({
     const price = getPlanPrice(plan);
     setChosenPrice(price);
     setChosenPlan(plan);
-    setChosenMonthly(isMonthly)
+    setChosenMonthly(isMonthly);
     updateModalState();
   };
 

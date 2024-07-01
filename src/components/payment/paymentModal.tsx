@@ -1,6 +1,5 @@
 "use client";
-import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
-import { LoaderAlt } from "@styled-icons/boxicons-regular/LoaderAlt";
+import { ArrowBackOutline } from "styled-icons/evaicons-outline/";
 import React, { useEffect, useState } from "react";
 import { PaymentPlus, PaymentTick } from "@/constants";
 import { PlusCircle, PlusCircleFill } from "styled-icons/bootstrap";
