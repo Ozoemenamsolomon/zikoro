@@ -56,9 +56,10 @@ export async function PATCH(req: NextRequest) {
 <p>Your quiz score is now available. You can view your score here: <a style="color:#0001fcc;" href=${deploymentUrl}${mailto?.url}> Quiz Score</a></p>
 <br/>
 <p>Interested in creating your own quiz? It's easy on <a href="https://www.zikoro.com">www.zikoro.com</a>! Here's how:</p>
-<p>1.	Create a New Event: Start by creating a new event on our platform.</p>
-<p>2.	Engage Your Audience: Navigate to the "Engagement" tab and select " + Interaction".</p>
-<p>3.	Choose Quiz: Select "Quiz" as one of the interaction features to make your event even more engaging.</p>
+<p>1.	Create an account by signing up on <a href="https://www.zikoro.com">www.zikoro.com</a>.</p>
+<p>2.	Create a New Event: Start by creating a new event on our platform.</p>
+<p>3.	Engage Your Audience: Navigate to the "Engagement" tab and select " + Interaction".</p>
+<p>4.	Choose Quiz: Select "Quiz" as one of the interaction features to make your event even more engaging.</p>
 <br/>
 <p>Quizzes are just one of the many interactive features on <a href="https://www.zikoro.com">www.zikoro.com</a> designed to enhance your events. </p>
 

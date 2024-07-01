@@ -18,6 +18,7 @@ import { sendMailQuizSchema } from "@/schemas";
 import { TQuiz, TRefinedQuestion, TQuestion } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import {  useSendQuizScore } from "@/hooks";
+import Link from "next/link";
 export function SendMailModal({
   close,
   quiz,
@@ -117,6 +118,8 @@ export function SendMailModal({
               <Navigation size={18} />
               {isLoading && <LoaderAlt size={20} className="animate-spin" />}
             </Button>
+
+            <Link href={`/event/${actualQuiz?.eventAlias}/engagements/interactions`} className="mt-2 text-basePrimary">Create your own quiz!</Link>
           </form>
         </Form>
       </div>
