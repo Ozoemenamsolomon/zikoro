@@ -673,7 +673,7 @@ export function Qusetion({
                     Powered By Zikoro
                   </p>
                 )}
-                <Button
+               {quiz?.accessibility?.live && <Button
                   title={isAudioMuted ? "unmute" : "mute"}
                   onClick={toggleAudio}
                   className={cn(
@@ -686,7 +686,7 @@ export function Qusetion({
                   ) : (
                     <HiSpeakerWave className="text-2xl" />
                   )}
-                </Button>
+                </Button>}
                 <Button
                   onClick={toggleLeftBox}
                   className={cn(
