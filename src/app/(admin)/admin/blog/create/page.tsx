@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import TextEditor from "@/components/TextEditor";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
 import { AddTag } from "@/components/blog/modal/AddTag";
 import { useRouter } from "next/navigation";
 import {
@@ -17,6 +16,7 @@ import {
 import Image from "next/image";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { PlusCircleIcon } from "@/constants";
 
 type BlogData = {
   title: string;
@@ -271,7 +271,7 @@ export default function BlogCreate() {
                 value={formData.category}
                 onChange={handleChange}
                 required
-                className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none  hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer"
+                className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none  hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer text-indigo-600 font-medium"
               >
                 {categories.map((category, index) => (
                   <option
@@ -287,10 +287,10 @@ export default function BlogCreate() {
 
               <div
                 onClick={() => setTagModalOpen(true)}
-                className=" flex items-center px-4 rounded-lg h-[44px] border-[1px] border-indigo-600 hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gap-x-2 w-full lg:w-2/12 text-[15px] font-medium cursor-pointer"
+                className=" flex items-center px-4 rounded-lg h-[44px] border-[1px] border-indigo-600 hover:text-gray-50 bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gap-x-2 w-full lg:w-2/12 text-[15px] font-medium cursor-pointer"
               >
-                <PlusCircle size={22} />
-                <p>Tag</p>
+                <PlusCircleIcon />
+                <p className="text-white">Tag</p>
               </div>
             </div>
 

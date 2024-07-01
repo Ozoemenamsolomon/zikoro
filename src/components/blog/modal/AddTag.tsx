@@ -1,9 +1,8 @@
 "use client";
 import { Form, FormField, Input, Button } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
+import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { useForm } from "react-hook-form";
-import { LoaderAlt } from "styled-icons/boxicons-regular";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {

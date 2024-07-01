@@ -2604,3 +2604,37 @@ export const TeamIcon = () => {
     </svg>
   );
 };
+
+export const PlusCircleIcon = () => {
+  return (
+    <svg
+      width="25"
+      height="24"
+      viewBox="0 0 25 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12.3516 7.5V16.5"
+        stroke="white"
+        stroke-width="1.5"
+        stroke-miterlimit="10"
+        stroke-linecap="square"
+      />
+      <path
+        d="M16.8516 12H7.85156"
+        stroke="white"
+        stroke-width="1.5"
+        stroke-miterlimit="10"
+        stroke-linecap="square"
+      />
+      <path
+        d="M12.3516 22.5C18.1506 22.5 22.8516 17.799 22.8516 12C22.8516 6.20101 18.1506 1.5 12.3516 1.5C6.55257 1.5 1.85156 6.20101 1.85156 12C1.85156 17.799 6.55257 22.5 12.3516 22.5Z"
+        stroke="white"
+        stroke-width="1.5"
+        stroke-miterlimit="10"
+        stroke-linecap="square"
+      />
+    </svg>
+  );
+};

@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { getCookie, useCheckTeamMember } from "@/hooks";
+import { useEffect,useState } from "react";
 import { cn } from "@/lib";
-import { ArrowExportLtr } from "@styled-icons/fluentui-system-filled/ArrowExportLtr";
-import { ArrowExportRtl } from "@styled-icons/fluentui-system-filled/ArrowExportRtl";
+import { ArrowExportLtr } from "styled-icons/fluentui-system-filled";
+import { ArrowExportRtl } from "styled-icons/fluentui-system-filled";
 import useUserStore from "@/store/globalUserStore";
 
 const WorkspaceSidebar = () => {
