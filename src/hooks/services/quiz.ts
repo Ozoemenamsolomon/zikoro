@@ -473,7 +473,7 @@ export const useSendQuizScore = () => {
       if (status !== 200) throw data;
 
       toast({
-        description: "Quiz Updated successfully",
+        description: "Your score has been sent your mail.",
       });
       return data;
     } catch (error: any) {

@@ -7,7 +7,7 @@ import {
   useCheckTeamMember,
   useGetQuizzes,
 } from "@/hooks";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import { cn } from "@/lib";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import {

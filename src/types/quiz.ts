@@ -40,6 +40,8 @@ export interface TQuiz<T> {
     live: boolean;
     isCollectPhone:boolean;
     isCollectEmail:boolean;
+    showAnswer:boolean;
+    showResult: boolean;
   };
 }
 

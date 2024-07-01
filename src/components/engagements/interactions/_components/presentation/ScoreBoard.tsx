@@ -11,14 +11,14 @@ import {
 } from "@/types";
 import { useMemo, useState } from "react";
 import { getCookie } from "@/hooks";
-import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
+import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { cn } from "@/lib";
-import { CheckCircle } from "@styled-icons/bootstrap/CheckCircle";
-import { CloseOutline } from "@styled-icons/zondicons/CloseOutline";
+import { CheckCircle } from "styled-icons/bootstrap";
+import { CloseOutline } from "styled-icons/zondicons";
 import { useUpdateQuiz } from "@/hooks";
-import Avatar, { genConfig } from "react-nice-avatar";
+import Avatar from "react-nice-avatar";
 import { AvatarFullConfig } from "react-nice-avatar";
-import { ArrowUpwardOutline } from "@styled-icons/evaicons-outline/ArrowUpwardOutline";
+import { ArrowUpwardOutline } from "styled-icons/evaicons-outline";
 
 type TLeaderBoard = {
   quizParticipantId: string;

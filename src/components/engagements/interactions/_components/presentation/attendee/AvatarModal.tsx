@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components";
 import { cn } from "@/lib";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import React from "react";
 import Avatar, { AvatarFullConfig} from "react-nice-avatar";
 export function AvatarModal({
@@ -16,7 +16,7 @@ export function AvatarModal({
   setChosenAvatar: React.Dispatch<
     React.SetStateAction<Required<AvatarFullConfig> | null>
   >;
-  avatars:  Required<AvatarFullConfig>[];
+  avatars:  {avatar: Required<AvatarFullConfig>}[];
   toggleIsAvatar:() => void;
 }) {
  

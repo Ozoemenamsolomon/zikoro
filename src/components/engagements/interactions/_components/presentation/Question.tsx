@@ -19,6 +19,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { AvatarFullConfig } from "react-nice-avatar";
+import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 
 type ChosenAnswerStatus = {
   isCorrect: boolean;
@@ -43,6 +44,7 @@ export function Qusetion({
   onOpenScoreSheet,
   updateQuizResult,
   goBack,
+  audio,
 }: {
   isRightBox: boolean;
   isLeftBox: boolean;
@@ -68,6 +70,7 @@ export function Qusetion({
   onOpenScoreSheet: () => void;
   updateQuizResult: (q: TQuiz<TRefinedQuestion[]>) => void;
   goBack: () => void;
+  audio: HTMLAudioElement | null;
 }) {
   const [currentQuestion, setCurrentQuestion] =
     useState<TRefinedQuestion | null>(null);
@@ -78,6 +81,7 @@ export function Qusetion({
   const [showAnswerMetric, setShowAnswerMetric] = useState(false);
   const [transiting, setShowTransiting] = useState(false);
   const { updateQuiz: updatingQuiz, isLoading: isUpdating } = useUpdateQuiz();
+  const [isAudioMuted, setIsAudioMuted] = useState(false);
   const player = getCookie<TConnectedUser>("player");
   const [chosenAnswerStatus, setChosenAnswerStatus] =
     useState<ChosenAnswerStatus | null>(null);
@@ -160,7 +164,6 @@ export function Qusetion({
   // console.log("yu", quiz?.liveMode);
 
   const timing = useMemo(() => {
-
     const seconds = Math.floor(
       (millisecondsLeft % Number(currentQuestion?.duration)) / 1000
     );
@@ -189,7 +192,6 @@ export function Qusetion({
 
     return () => clearInterval(countdownInterval);
   }, [millisecondsLeft]);
-
 
   useEffect(() => {
     if (currentQuestion?.id) {
@@ -301,7 +303,7 @@ export function Qusetion({
             ...item,
             isCorrect: item?.isAnswer === id,
           };
-        } 
+        }
         return item;
       });
       setCurrentQuestion({ ...currentQuestion, options: updatedOptions });
@@ -390,7 +392,6 @@ export function Qusetion({
           liveMode: {
             startingAt: liveMode?.startingAt,
             isOptionSelected: true,
-           
           },
         };
 
@@ -408,40 +409,64 @@ export function Qusetion({
     setShowExplanation((prev) => !prev);
   }
 
+  // quiz result
+  async function openQuizResult() {
+    onOpenScoreSheet();
+    if (quiz?.accessibility?.live) {
+      const { questions, liveMode, ...restData } = quiz;
+      const payload: Partial<TQuiz<TQuestion[]>> = {
+        ...restData,
+        questions: quiz?.questions?.map((item) => {
+          return {
+            ...item,
+            options: item?.options?.map(({ isCorrect, ...rest }) => rest),
+          };
+        }),
+        liveMode: {
+          isEnded: true,
+          startingAt: liveMode?.startingAt,
+        },
+      };
+
+      await updatingQuiz({ payload });
+      refetchQuiz();
+      onOpenScoreSheet();
+    }
+  }
+
   async function onNextBtnClick() {
     if (
       showAnswerMetric &&
       currentQuestionIndex >= quiz?.questions?.length - 1
     ) {
-      onOpenScoreSheet();
-      if (quiz?.accessibility?.live) {
-        const { questions, liveMode, ...restData } = quiz;
-        const payload: Partial<TQuiz<TQuestion[]>> = {
-          ...restData,
-          questions: quiz?.questions?.map((item) => {
-            return {
-              ...item,
-              options: item?.options?.map(({ isCorrect, ...rest }) => rest),
-            };
-          }),
-          liveMode: {
-            isEnded: true,
-            startingAt: liveMode?.startingAt,
-          },
-        };
-
-        await updatingQuiz({ payload });
-        refetchQuiz();
-        onOpenScoreSheet();
-      }
+      await openQuizResult();
     } else if (
       showAnswerMetric &&
       currentQuestionIndex < quiz?.questions?.length - 1
     ) {
       nextQuestion();
       setShowAnswerMetric(false);
+    } else if (
+      !quiz.accessibility?.review &&
+      currentQuestionIndex < quiz?.questions?.length - 1
+    ) {
+      nextQuestion();
+      setShowAnswerMetric(false);
+    } else if (
+      !quiz.accessibility?.review &&
+      currentQuestionIndex >= quiz?.questions?.length - 1
+    ) {
+      await openQuizResult();
     } else {
       showMetric();
+    }
+  }
+
+  // change audio state
+  function toggleAudio() {
+    if (audio) {
+      setIsAudioMuted(!audio.muted);
+      audio.muted = !audio.muted;
     }
   }
 
@@ -466,7 +491,7 @@ export function Qusetion({
               >
                 <Maximize2 size={20} />
               </Button>
-            
+
               <div className=" gap-3 pb-2 w-full flex items-end justify-between">
                 <Button
                   onClick={goBack}
@@ -551,27 +576,30 @@ export function Qusetion({
               <div
                 className={cn(
                   "w-full flex items-start justify-between",
-                  chosenAnswerStatus === null && "items-end justify-end"
+                  (chosenAnswerStatus === null ||
+                    !quiz?.accessibility?.showAnswer) &&
+                    "items-end justify-end"
                 )}
               >
-                {chosenAnswerStatus !== null && (
-                  <div className="flex flex-col items-start justify-start text-mobile">
-                    <p
-                      className={cn(
-                        "text-green-500",
-                        !chosenAnswerStatus.isCorrect && "text-red-500"
-                      )}
-                    >
-                      You answered{" "}
-                      {chosenAnswerStatus.isCorrect
-                        ? "correctly"
-                        : "incorrectly"}
-                    </p>
-                    <p className="font-medium text-sm">{`Correct Answer is ${
-                      optionLetter[chosenAnswerStatus.correctOption]
-                    }`}</p>
-                  </div>
-                )}
+                {chosenAnswerStatus !== null &&
+                  quiz?.accessibility?.showAnswer && (
+                    <div className="flex flex-col items-start justify-start text-mobile">
+                      <p
+                        className={cn(
+                          "text-green-500",
+                          !chosenAnswerStatus.isCorrect && "text-red-500"
+                        )}
+                      >
+                        You answered{" "}
+                        {chosenAnswerStatus.isCorrect
+                          ? "correctly"
+                          : "incorrectly"}
+                      </p>
+                      <p className="font-medium text-sm">{`Correct Answer is ${
+                        optionLetter[chosenAnswerStatus.correctOption]
+                      }`}</p>
+                    </div>
+                  )}
                 <p className="self-end bg-basePrimary/20 rounded-3xl text-sm text-basePrimary px-2 py-1">{`${
                   currentQuestion?.points
                 } ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
@@ -645,15 +673,29 @@ export function Qusetion({
                     Powered By Zikoro
                   </p>
                 )}
-                  <Button
-                onClick={toggleLeftBox}
-                className={cn(
-                  "absolute bottom-1 left-1",
-                  isLeftBox && "hidden"
-                )}
-              >
-                <Maximize2 size={20} />
-              </Button>
+                <Button
+                  title={isAudioMuted ? "unmute" : "mute"}
+                  onClick={toggleAudio}
+                  className={cn(
+                    "px-0 w-fit text-gray-600 h-fit absolute bottom-3 right-1 hidden",
+                    (isOrganizer || isIdPresent) && "flex"
+                  )}
+                >
+                  {isAudioMuted ? (
+                    <HiSpeakerXMark className="text-2xl" />
+                  ) : (
+                    <HiSpeakerWave className="text-2xl" />
+                  )}
+                </Button>
+                <Button
+                  onClick={toggleLeftBox}
+                  className={cn(
+                    "absolute bottom-1 left-1",
+                    isLeftBox && "hidden"
+                  )}
+                >
+                  <Maximize2 size={20} />
+                </Button>
               </div>
             </>
           )}

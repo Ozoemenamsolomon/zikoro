@@ -37,7 +37,7 @@ import { cn } from "@/lib";
 import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Avatar, { genConfig, AvatarFullConfig } from "react-nice-avatar";
-import { Plus } from "@styled-icons/bootstrap/Plus";
+import { Plus } from "styled-icons/bootstrap";
 
 const supabase = createClientComponentClient();
 
@@ -91,7 +91,7 @@ export default function Presentation({
     nickName: attendee?.firstName || "",
   });
   const player = getCookie<TConnectedUser>("player");
-  const audio = createAudioInstance();
+ 
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
@@ -100,6 +100,7 @@ export default function Presentation({
   // subscribe to quiz
   useEffect(() => {
     function subscribeToUpdate() {
+      if (quiz?.accessibility?.live) {
       const channel = supabase
         .channel("live-quiz")
         .on(
@@ -111,7 +112,7 @@ export default function Presentation({
             filter: `quizAlias=eq.${quizId}`,
           },
           (payload) => {
-            console.log(payload);
+           // console.log(payload);
             setQuiz(payload.new as TQuiz<TQuestion[]>);
           }
         )
@@ -121,12 +122,15 @@ export default function Presentation({
         supabase.removeChannel(channel);
       };
     }
+    }
 
     const cleanUp = subscribeToUpdate();
 
     return cleanUp;
   }, [supabase, quiz]);
 
+  // memoized audio instance
+  const audio = useMemo(() => createAudioInstance(), []);
   /**
    // subscribe to answers
   useEffect(() => {
@@ -221,7 +225,14 @@ export default function Presentation({
   }
 
   function showSendMailModal() {
-    setIsSendMailModal((prev) => !prev);
+    if (quiz?.accessibility?.showAnswer) {
+      setIsSendMailModal((prev) => !prev);
+    }
+    else {
+      setShowScoreSheet(false)
+      setIsYetToStart(true)
+    }
+    
   }
   // show score sheet after live quiz
   useEffect(() => {
@@ -233,6 +244,8 @@ export default function Presentation({
       }
     }
   }, [quiz]);
+
+  //console.log(audio)
 
   return (
     <div className="w-full">
@@ -256,6 +269,7 @@ export default function Presentation({
                   close={() => {
                     setShowScoreSheet(false);
                     setIsYetToStart(true);
+                    if (audio)  audio.pause();
                   }}
                   id={id}
                   quiz={quizResult}
@@ -327,6 +341,7 @@ export default function Presentation({
                     }}
                     isIdPresent={isIdPresent}
                     isOrganizer={isOrganizer}
+                    audio={audio}
                   />
                   {(isIdPresent || isOrganizer) && quiz && (
                     <LeaderBoard
@@ -466,7 +481,7 @@ function PlayersOnboarding({
         : [
             {
               ...playerDetail,
-              id: quiz?.accessibility?.live ? player?.userId || "" : id,
+              id: player?.userId || id,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
               participantImage: chosenAvatar,
@@ -497,7 +512,7 @@ function PlayersOnboarding({
     refetch();
     setisLobby(true);
     setLoading(false);
-    // if (audio)  audio.play();
+     if (audio)  audio.play();
   }
 
   useEffect(() => {
@@ -652,7 +667,6 @@ function PlayersOnboarding({
         <QuizLobby
           goBack={() => setisLobby(false)}
           quiz={quiz}
-          submit={submit}
           close={onClose}
           refetch={refetch}
           isAttendee={isAttendee}
