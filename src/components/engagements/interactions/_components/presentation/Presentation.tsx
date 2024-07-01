@@ -84,7 +84,6 @@ export default function Presentation({
     TRefinedQuestion[]
   > | null>(null);
   const { answer, getAnswer } = useGetAnswer();
-  // const [nickName, setNickName] = useState(attendee?.firstName || "");
   const [playerDetail, setPlayerDetail] = useState<TPlayerDetail>({
     phone: "",
     email: "",
@@ -112,7 +111,6 @@ export default function Presentation({
             filter: `quizAlias=eq.${quizId}`,
           },
           (payload) => {
-           // console.log(payload);
             setQuiz(payload.new as TQuiz<TQuestion[]>);
           }
         )
@@ -225,14 +223,9 @@ export default function Presentation({
   }
 
   function showSendMailModal() {
-    if (quiz?.accessibility?.showAnswer) {
-      setIsSendMailModal((prev) => !prev);
-    }
-    else {
-      setShowScoreSheet(false)
-      setIsYetToStart(true)
-    }
-    
+    setIsSendMailModal(false);
+    setShowScoreSheet(true);
+   
   }
   // show score sheet after live quiz
   useEffect(() => {
@@ -472,7 +465,7 @@ function PlayersOnboarding({
             ...actualQuiz?.quizParticipants,
             {
               ...playerDetail,
-              id: player?.userId || id,
+              id:  id,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
               participantImage: chosenAvatar,
@@ -481,7 +474,7 @@ function PlayersOnboarding({
         : [
             {
               ...playerDetail,
-              id: player?.userId || id,
+              id: id,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
               participantImage: chosenAvatar,

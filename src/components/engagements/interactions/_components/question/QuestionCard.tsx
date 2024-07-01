@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Time } from "@styled-icons/ionicons-outline/Time";
-import { FeedStar } from "@styled-icons/octicons/FeedStar";
+import { Time } from "styled-icons/ionicons-outline";
+import { FeedStar } from "styled-icons/octicons";
 import { TQuestion, TQuiz } from "@/types";
 import { millisecondsToTime } from "@/utils";
 import { useMemo } from "react";
@@ -10,8 +10,7 @@ import { cn } from "@/lib";
 import { DeleteQuestion, CopyQuestion, EditQuestion, AddQuestion } from "..";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-// import { Quiz } from "styled-icons/material";
-import { Edit } from "@styled-icons/boxicons-solid/Edit";
+import { Edit } from "styled-icons/boxicons-solid";
 import { Button } from "@/components";
 import { useState } from "react";
 export function QuestionCard({

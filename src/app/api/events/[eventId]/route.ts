@@ -92,7 +92,7 @@ export async function PATCH(req: NextRequest) {
         htmlbody: `<div>
      
 
-        <p> Hi [Event Creator's Name],</p>
+        <p> Hello,</p>
          
         <p> Great news! Your event is officially live, and attendees can now register using the following link: ${deploymentUrl}/live-events/${params?.eventAlias} </p>
          

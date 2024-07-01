@@ -39,9 +39,11 @@ export default function ScoreBoardPage({ quizId }: { quizId: string }) {
       router.push(`/quiz/${actualQuiz?.eventAlias}/present/${quizId}`);
   }
 
+  console.log("actual", actualQuiz, quiz, id)
+
   return (
     <>
-      {
+     
         <ScoreBoard
           answers={answers}
           close={goBack}
@@ -50,7 +52,7 @@ export default function ScoreBoardPage({ quizId }: { quizId: string }) {
           isAttendee={true}
           actualQuiz={actualQuiz}
         />
-      }
+     
     </>
   );
 }

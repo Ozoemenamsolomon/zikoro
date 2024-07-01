@@ -270,15 +270,11 @@ const page = () => {
                           {Object.entries(innerObj).map(
                             ([ppty, value]) =>
                               ppty !== "status" &&
+                              ppty !== "maxPoints" &&
                               (engagement === "update profile" &&
                               ppty === "maxOccurrence" ? (
                                 <td className="py-2 px-4 border-b text-gray-500 text-center text-sm">
                                   Not Applicable
-                                </td>
-                              ) : engagement === "update profile" &&
-                                ppty === "maxPoints" ? (
-                                <td className="py-2 px-4 border-b text-gray-500 text-center text-sm">
-                                  16
                                 </td>
                               ) : (
                                 <td
@@ -349,6 +345,11 @@ const page = () => {
                                 </td>
                               ))
                           )}
+                          <td className="py-2 px-4 border-b text-gray-500 text-center text-sm">
+                            {(engagement === "update profile"
+                              ? 16
+                              : innerObj.maxOccurrence) * innerObj.points}
+                          </td>
                           <td className="py-2 px-4 border-b text-gray-500 flex justify-center">
                             <Switch
                               className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"

@@ -475,8 +475,8 @@ export function Qusetion({
       className={cn(
         "w-full h-[90vh]  bg-white relative    border-x border-y  col-span-7",
         isLeftBox && isRightBox && (isIdPresent || isOrganizer) && "col-span-5",
-        !isLeftBox && !isRightBox && "col-span-full ",
-        !isIdPresent && !isOrganizer && "col-span-full max-w-3xl mx-auto"
+        !isLeftBox && !isRightBox && "col-span-full rounded-xl max-w-4xl mx-auto",
+        !isIdPresent && !isOrganizer && "col-span-full rounded-xl max-w-3xl mx-auto"
       )}
     >
       <div className="w-full overflow-y-auto no-scrollbar px-6 pt-12 space-y-3  h-[90%] pb-52 ">
@@ -653,7 +653,7 @@ export function Qusetion({
             </div>
           */}
 
-              <div className="w-full flex flex-col items-center justify-center mx-auto absolute inset-x-0 bottom-0 gap-y-3  bg-white py-2">
+              <div className="w-full rounded-b-xl flex flex-col items-center justify-center mx-auto absolute inset-x-0 bottom-0 gap-y-3  bg-white py-2">
                 {quiz?.accessibility?.live &&
                 !isIdPresent &&
                 !isOrganizer ? null : (
