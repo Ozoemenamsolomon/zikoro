@@ -115,6 +115,7 @@
     "react-verification-input": "^4.1.2",
     "react-zoom-pan-pinch": "^3.4.4",
     "slick-carousel": "^1.8.1",
+    "styled-components": "^6.1.11",
     "styled-icons": "^10.47.0",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
