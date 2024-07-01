@@ -1,8 +1,20 @@
 "use client";
 import { GeneralImageIcon, GeometryIcon, TrashIcon } from "@/constants";
-import React from "react";
+import React, { useEffect } from "react";
+import useUserStore from "@/store/globalUserStore";
+import { useGetUserOrganization } from "@/hooks/services/userOrganization";
 
 export default function General() {
+  const { user, setUser } = useUserStore();
+  const userId = user?.id ?? 0;
+
+  const { data: organizationData, refetch: refetchOrganizationData } =
+    useGetUserOrganization(user?.id ?? 0);
+
+  useEffect(() => {
+    console.log(user);
+    console.log(organizationData)
+  });
   return (
     <div className="">
       {/* Settings sections */}
