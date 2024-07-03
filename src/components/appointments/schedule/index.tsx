@@ -13,7 +13,7 @@ const LinksPage = () => {
         {
             isLoading ? <div>Loading...</div> 
             :
-            <section className="pt-10 mx-auto max-sm:space-y-6  max-w-sm sm:max-w-full sm:flex sm:flex-wrap justify-center  gap-6">
+            <section className="pt-10 mx-auto max-sm:space-y-6  max-w-sm sm:max-w-full sm:flex sm:flex-wrap justify-  gap-6">
                 {
                     appointments?.map((item,idx)=>{
                         return (

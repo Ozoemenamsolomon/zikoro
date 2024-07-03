@@ -40,6 +40,14 @@ export const getAppointment = async (appointmentAlias:string) => {
   return  data.data;
 };
 
+export const getBookings = async ( ) => {
+  const { data, status } = await getRequest<Booking>({
+    endpoint: `/appointments/booking`,
+  });
+  return  data.data;
+};
+
+
 // export const useGetBookingAppointment = (appointmentAlias:string) => {
 //     const [appointment, setAppointment] = useState<AppointmentLink | null>(null);
 //     const [isLoading, setLoading] = useState<boolean>(false);
@@ -99,3 +107,71 @@ export const useGetBookingAppointment = (appointmentAlias: string) => {
 
   return { appointment, isLoading, error, getAppointment };
 };
+
+export const useGetBookingList = (appointmentAlias: string) => {
+  const [bookings, setBookings] = useState<AppointmentLink | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const getAppointment = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, status } = await getRequest<AppointmentLink>({
+        endpoint: `/appointments/booking/list/${appointmentAlias}`,
+      });
+
+      if (status === 200) {
+        setBookings(data.data);
+      } else {
+        setError(`Error: ${status}`);
+      }
+    } catch (err) {
+      setError('server error');
+    } finally {
+      setLoading(false);
+    }
+  }, [appointmentAlias]);
+
+  useEffect(() => {
+    if (appointmentAlias) {
+      getAppointment();
+    }
+  }, [appointmentAlias, getAppointment]);
+
+  return { bookings, isLoading, error, getAppointment };
+};
+
+
+//   const [appointment, setBookings] = useState<AppointmentLink | null>(null);
+//   const [isLoading, setLoading] = useState<boolean>(false);
+//   const [error, setError] = useState<string | null>(null);
+
+//   const getAppointment = useCallback(async () => {
+//     setLoading(true);
+//     setError(null);
+//     try {
+//       const { data, status } = await getRequest<AppointmentLink>({
+//         endpoint: `/appointments/booking`,
+//       });
+
+//       if (status === 200) {
+//         setBookings(data.data);
+//       } else {
+//         setError(`Error: ${status}`);
+//       }
+//     } catch (err) {
+//       setError('server error');
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     if () {
+//       getAppointment();
+//     }
+//   }, [appointmentAlias, getAppointment]);
+
+//   return { appointment, isLoading, error, getAppointment };
+// };

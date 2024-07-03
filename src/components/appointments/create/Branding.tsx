@@ -1,8 +1,9 @@
 import React from 'react';
-import { AppointmentLink, FormProps } from '@/types/appointments'; 
+import { AppointmentFormData, AppointmentLink, FormProps } from '@/types/appointments'; 
 import { InputCustom } from '@/components/ui/input-custom';
 import { ImgaeIcon } from '@/constants';
 import ColorPicker from '../ui/ColorPicker';
+import UploadImage from './uploadImage';
 
 const Branding: React.FC<FormProps> = ({
   formData,
@@ -15,8 +16,8 @@ const Branding: React.FC<FormProps> = ({
 }) => {
 
   const handleToggleZikoroBranding = () => {
-    if (setFormData) { // Check if setFormData is defined before using it
-      setFormData((prevFormData:AppointmentLink) => ({
+    if (setFormData) { 
+      setFormData((prevFormData:AppointmentFormData) => ({
         ...prevFormData,
         zikoroBranding: prevFormData?.zikoroBranding ? '' : 'yes'
       }));
@@ -39,11 +40,8 @@ const Branding: React.FC<FormProps> = ({
       </div>
 
       <div className="">
-        <p className="pb-4">Logo</p>
-        <div className="border-b px-2 flex items-center gap-3 text-gray-500 pb-2">
-          <ImgaeIcon/>
-          <p>Upload Logo</p>
-        </div>
+        
+        <UploadImage formData={formData!} setFormData={setFormData!} multiple={false}/>
       </div>
 
       <div className="">
@@ -60,7 +58,7 @@ const Branding: React.FC<FormProps> = ({
             <ColorPicker position='right' 
               onChange={(color)=>{
                 if(setFormData){
-                  setFormData((prev:AppointmentLink)=>({
+                  setFormData((prev:AppointmentFormData)=>({
                       ...prev,
                       brandColour: color
                     }

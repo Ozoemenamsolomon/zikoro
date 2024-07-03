@@ -16,6 +16,9 @@ import { toast } from 'react-toastify';
 import PageLoading from '../ui/Loading';
 import { useGetBookingAppointment } from '@/hooks';
 import { DaySchedule } from '../ui/DateTimeScheduler ';
+import SelectType from './SelectType';
+import { useAppointmentContext } from '../context/AppointmentContext';
+import { uploadImage } from './uploadImage';
 
 const detailsArray: DetailItem[] = [
   {
@@ -25,16 +28,16 @@ const detailsArray: DetailItem[] = [
     formComponent: AppointmentDetails,
   },
   {
-    title: 'Set Availability',
-    icon: <ClockIcon />,
-    description: 'Let guest know when you will be available',
-    formComponent: SetAvailability,
-  },
-  {
     title: 'Payment',
     icon: <AtmCardIcon />,
     description: 'Enable settings to receive payment ',
     formComponent: Payment,
+  },
+  {
+    title: 'Set Availability',
+    icon: <ClockIcon />,
+    description: 'Let guest know when you will be available',
+    formComponent: SetAvailability,
   },
   {
     title: 'Branding',
@@ -50,14 +53,14 @@ const detailsArray: DetailItem[] = [
   },
 ];
 
-const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", ];
+const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", ];
 const formdata = {
   appointmentName: '',
   category: '',
   duration: null,
   loctionType: 'Onsite',
   locationDetails: '',
-  timeZone: '',
+  timeZone: "(UTC+01:00) West Central Africa",
   timeDetails: daysOfWeek.map(day => ({
     day,
     from: '',
@@ -78,6 +81,7 @@ const formdata = {
   brandColour: '#0000FF',
   teamMembers: null,
   zikoroBranding: null,
+  files: [],
 };
 
 interface ValidationErrors {
@@ -87,8 +91,7 @@ interface ValidationErrors {
 const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
   const { push } = useRouter();
   const pathname = usePathname();
-
-  const { appointment, isLoading } = useGetBookingAppointment(alias!);
+  const { appointment, isLoading, } = useGetBookingAppointment(alias!);
 
   const [formData, setFormData] = useState<AppointmentFormData>(formdata);
   const [errors, setErrors] = useState<{ [key: string]: string } | any>(null);
@@ -174,11 +177,12 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
       setLoading(false);
       return;
     }
-
+    const logoUrl = await uploadImage(formData.files!)
+    delete formData['files']
     try {
-      const payload = { ...formData, timeDetails: JSON.stringify(formData.timeDetails) };
+      const payload = { ...formData, timeDetails: JSON.stringify(formData.timeDetails), logo: logoUrl || '' };
       let response;
-
+// console.log({formData,payload})
       if (alias) {
         response = await fetch('/api/appointments/edit', {
           method: 'PUT',
@@ -227,8 +231,11 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
     fetch();
   }, [pathname]);
 
+  const [isOpen, setIsOpen] = useState(true)
+
   return (
     <main className="py-4 sm:p-8">
+      <SelectType onClose={()=>setIsOpen(false)} isOpen={isOpen}/>
       <PageLoading isLoading={loading || isLoading} />
       <Link href={'/appointments/schedule'} type="button" className="max-sm:pl-4">
         <BentArrowLeft w={20} />
