@@ -43,15 +43,16 @@ export interface AppointmentFormData {
   statusOn: boolean;
   note: string;
   appointmentAlias: string;
-  createdBy: number|null;
+  createdBy: number;
   businessName: string | null;
   logo: string | null;
   brandColour: string | null;
   teamMembers: string | null;
   zikoroBranding: string | null;
+  files?:File[];
 }
 export interface FormProps {
-  formData?: AppointmentLink;
+  formData?: AppointmentFormData;
   setFormData?: React.Dispatch<React.SetStateAction<AppointmentFormData>>;
   errors?: any;
   setErrors?: React.Dispatch<React.SetStateAction<any>>;
@@ -83,6 +84,7 @@ export interface Booking {
   lastName?: string | null;
   phone?: string | null;
   price?: number |string| null;
+  createdBy: number;
   email?:string;
   currency?: string | null;
   feeType?: string | null;
@@ -91,6 +93,28 @@ export interface Booking {
 export interface UserType {
   id: bigint;
   created_at: string; // ISO 8601 date string
+  userEmail: string;
+  firstName: string;
+  lastName: string;
+  jobTitle?: string | null;
+  organization?: string | null;
+  city?: string | null;
+  country?: string | null;
+  phoneNumber: string;
+  whatsappNumber?: string | null;
+  profilePicture?: string | null;
+  bio?: string | null;
+  x?: string | null;
+  linkedin?: string | null;
+  instagram?: string | null;
+  facebook?: string | null;
+  referralCode?: string | null;
+  referredBy?: string | null;
+}
+
+export interface User {
+  id: bigint;
+  created_at: Date;
   userEmail: string;
   firstName: string;
   lastName: string;

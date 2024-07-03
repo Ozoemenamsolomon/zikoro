@@ -51,6 +51,7 @@ export const submitBooking = async ({
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ ...bookingFormData, appointmentTime: timeStamp }),
+            // body: JSON.stringify({ ...bookingFormData, appointmentTime: timeStamp }),
         });
 
         const result = await response.json();

@@ -89,57 +89,71 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
 
   return (
     <div className= {`${isFormUp ? ' visible translate-x-0':' -translate-x-full '} transform transition-all duration-300 w-full relative flex flex-col bg-white h-full px-6 py-20 rounded-lg shadow-md  justify-center items-center` } >
-        <p className="pb-4">Enter your details</p>
+        <p className="pb-4 text-lg font-semibold">Enter your details</p>
         {errors?.general ? <p className="pb-4 text-red-600">{errors?.general}</p> : null}
         {success  ? <p className="pb-4 text-blue-600">{success}</p> : null}
-      <form className="space-y-3 max-w-sm w-full mx-auto" onSubmit={handleSubmit} >
-        <div className="flex-1">
-          <InputCustom
-            label="First Name"
-            type="text"
-            error={errors?.firstName || ''}
-            name="firstName"
-            value={bookingFormData?.firstName || ''}
-            placeholder="Enter your first name"
-            className="py-6 w-full"
-            onChange={handleChange}
-          />
-        </div>
-        <div className="flex-1">
-          <InputCustom
-            label="Last Name"
-            type="text"
-            error={errors?.lastName || ''}
-            name="lastName"
-            value={bookingFormData?.lastName || ''}
-            placeholder="Enter your last name"
-            className="py-6 w-full"
-            onChange={handleChange}
-          />
-        </div>
-        <div className="flex-1">
-          <InputCustom
-            label="Email"
-            type="email"
-            error={errors?.participantEmail || ''}
-            name="participantEmail"
-            value={bookingFormData?.participantEmail || ''}
-            placeholder="Enter your email"
-            className="py-6 w-full"
-            onChange={handleChange}
-          />
-        </div>
-        <div className="flex-1">
-          <InputCustom
-            label="Phone"
-            type="text"
-            error={errors?.phone || ''}
-            name="phone"
-            value={bookingFormData?.phone || ''}
-            placeholder="Enter your phone number"
-            className="py-6 w-full"
-            onChange={handleChange}
-          />
+      <form className="max-w-2xl mx-auto space-y-4" onSubmit={handleSubmit} >
+        <div className="flex flex-col sm:flex-row gap-4 w-full">
+            <div className="space-y-3 flex-1">
+                <div className="flex-1">
+                  <InputCustom
+                    label="First Name"
+                    type="text"
+                    error={errors?.firstName || ''}
+                    name="firstName"
+                    value={bookingFormData?.firstName || ''}
+                    placeholder="Enter your first name"
+                    className="py-6 w-full"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="flex-1">
+                  <InputCustom
+                    label="Last Name"
+                    type="text"
+                    error={errors?.lastName || ''}
+                    name="lastName"
+                    value={bookingFormData?.lastName || ''}
+                    placeholder="Enter your last name"
+                    className="py-6 w-full"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="flex-1">
+                  <InputCustom
+                    label="Email"
+                    type="email"
+                    error={errors?.participantEmail || ''}
+                    name="participantEmail"
+                    value={bookingFormData?.participantEmail || ''}
+                    placeholder="Enter your email"
+                    className="py-6 w-full"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="flex-1">
+                  <InputCustom
+                    label="Phone"
+                    type="text"
+                    error={errors?.phone || ''}
+                    name="phone"
+                    value={bookingFormData?.phone || ''}
+                    placeholder="Enter your phone number"
+                    className="py-6 w-full"
+                    onChange={handleChange}
+                  />
+                </div>
+
+            </div>
+
+            <div className="flex-1  h-full grid  flex-col">
+              <p className='pb-3'>Add a note to about the appointment</p>
+                  <textarea 
+                    name="note" id="note"
+                    className='sm:h-72 focus:outline-none  p-3 h-24 border w-full rounded-xl'
+                    >
+                  </textarea>
+            </div>
         </div>
 
         <XCircle onClick={()=>setIsFormUp(false)} size={20} className='text-gray-500 cursor-pointer absolute top-6 right-6'/>
