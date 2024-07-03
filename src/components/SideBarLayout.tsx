@@ -28,6 +28,7 @@ import {
 import { sendMail, whatsapp } from "@/utils";
 import { TUser } from "@/types";
 import useUserStore from "@/store/globalUserStore";
+import { useGetUserOrganization } from "@/hooks/services/userOrganization";
 
 export function SideBarLayout({
   eventId,
@@ -72,18 +73,17 @@ export function SideBarLayout({
   }
 
   const {
-    userOrganizations,
+    data: userOrganizations,
     isLoading: organizationIsLoading,
-    getUserOrganizations,
-  } = useGetUserTeamOrganizations({ userEmail: user?.userEmail! });
+    refetch: getUserOrganizations,
+  } = useGetUserOrganization(user?.id ?? 0);
 
-  useEffect(() => {
-    return () => {
-      if (organizationIsLoading) return;
-
-      if (!userOrganizations) return router.push("/home");
-    };
-  }, [organizationIsLoading]);
+  // useEffect(() => {
+  //   return () => {
+  //     if (organizationIsLoading) return;
+  //     if (!userOrganizations) return router.push("/home");
+  //   };
+  // }, [organizationIsLoading]);
 
   return (
     <>

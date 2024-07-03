@@ -590,11 +590,7 @@ export const links: NavLinkType[] = [
     icon: AnalyticsIcon,
     href: "",
   },
-  {
-    name: "Analytics",
-    icon: AnalyticsIcon,
-    href: "",
-  },
+
 ];
 
 // #1F1F1F

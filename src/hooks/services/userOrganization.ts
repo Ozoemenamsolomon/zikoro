@@ -31,13 +31,14 @@ type organisationSchema = {
 //fetch user organization
 export function useGetUserOrganization(id: number) {
   const [data, setData] = useState<any>(null);
-
+  const [isLoading, setLoading] = useState(false);
   useEffect(() => {
     getUserOrganisation();
   }, []);
 
   async function getUserOrganisation() {
     try {
+      setLoading(true);
       // Fetch the event by ID
       const { data, error: fetchError } = await supabase
         .from("organization")
@@ -52,11 +53,14 @@ export function useGetUserOrganization(id: number) {
       setData(data);
     } catch (error) {
       return null;
+    } finally {
+      setLoading(false);
     }
   }
   return {
     data,
     refetch: getUserOrganisation,
+    isLoading,
   };
 }
 
