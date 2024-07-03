@@ -7,8 +7,8 @@ import { getCookie, useCheckTeamMember } from "@/hooks";
 import { AccessVerification } from "./composables";
 import { cn } from "@/lib";
 import { Button } from ".";
-import { ArrowExportLtr } from "@styled-icons/fluentui-system-filled/ArrowExportLtr";
-import { ArrowExportRtl } from "@styled-icons/fluentui-system-filled/ArrowExportRtl";
+import { ArrowExportLtr } from "styled-icons/fluentui-system-filled/";
+import { ArrowExportRtl } from "styled-icons/fluentui-system-filled/";
 import useUserStore from "@/store/globalUserStore";
 
 const Topbar = ({ eventId }: { eventId?: string }) => {
