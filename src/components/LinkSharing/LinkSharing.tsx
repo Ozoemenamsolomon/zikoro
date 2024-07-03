@@ -6,12 +6,7 @@ import useUserStore from "@/store/globalUserStore";
 
 export default function LinkSharing() {
   const [isMonthly, setIsMonthly] = useState("");
-  const { user, setUser } = useUserStore();
   const handleToggle = () => {};
-
-  useEffect(() => {
-    console.log(user);
-  });
 
   return (
     <div className="mt-[60px] ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
@@ -79,23 +74,6 @@ export default function LinkSharing() {
           <TabsContent value="embed">
             <div className="mt-4 ">
               <div className="p-3 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-lg">
-                {/* 1st section */}
-                <div>
-                  <p className="font-medium">Button Preview</p>
-                  <button className="bg-zikoroBlue py-2 px-4 rounded-lg text-base font-medium mt-5 text-white">
-                    View all our evnts
-                  </button>
-                </div>
-
-                <div className="mt-8">
-                  <p className="text-[14px]">Edit button text</p>
-                  <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-2">
-                    View all our evnts
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-8">
                 <p>Workspace name</p>
                 <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
                   Code here

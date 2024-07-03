@@ -93,15 +93,18 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
   const isDisabled = !bookingFormData.appointmentDate || !bookingFormData.appointmentTime  
   
   return (
-    <div className="bg-white  md:w-80 flex-1 flex-shrink-0 p-4 rounded-lg  ">
+    <div className="bg-white relative overflow-hidden md:w-80 flex-1 flex-shrink-0 rounded-lg  ">
       {loading ? 
         <div className="h-full w-full flex justify-center items-center">
           <p>loading...</p> 
         </div>
         : 
-        <div className="grid gap-3">
+        <>
+         <h5 className="text-md bg-white px-4 py-3 font-semibold">Choose Time</h5>
+        <div className="grid gap-3 overflow-auto h-full p-4 pb-32 ">
             {
               timeSlots?.slots?.map((slot,i)=>{
+                // console.log({timeSlots})
                 return (
                     <button key={i} 
                         type='button'
@@ -119,15 +122,19 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
                 )
                 })
             }
-            <button
-              onClick={()=>setIsFormUp(true)}
-              type="submit"
-              className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
-              disabled={loading || isDisabled}
-            >
-              Proceed
-            </button>
+            
         </div>
+        <div className="absolute bottom-0 bg-white py-3 z-10 px-4 w-full">
+        <button
+          onClick={()=>setIsFormUp(true)}
+          type="submit"
+          className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
+          disabled={loading || isDisabled}
+        >
+          Proceed
+        </button>
+        </div>
+        </>
       }
     </div>
   );

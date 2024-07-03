@@ -36,7 +36,6 @@ const Details: React.FC<DetailsProps> = ({
           <div>{icon}</div>
           <div className="space-y-">
             <h5 className="text-xl font-medium">{title}</h5>
-            {/* <h5 className="text-[20px] font-medium">{title}</h5> */}
             <p className="text-[#828282] text-[14px]">{description}</p>
           </div>
         </div>
@@ -48,7 +47,7 @@ const Details: React.FC<DetailsProps> = ({
       <div
         className={`transition-all duration-300  ${drop ? 'max-h-[100rem] ease-in' : 'max-h-0 ease-out overflow-hidden'} `}
       >
-        <div className="px-4 py-14">
+        <div className="px-4 py-8">
           {formComponent}
         </div>
       </div>

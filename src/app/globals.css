@@ -514,7 +514,7 @@ input[type="number"] {
 
 .interaction-input .ql-container.ql-snow {
   border: 1px solid #f3f3f3 !important;
-  height: 3rem;
+  height: 3.5rem;
   border-top: none;
   font-size: 14px;
   border-radius: 0px 0px 8px 8px;
@@ -588,21 +588,49 @@ input[type="number"] {
 }
 
 .quiz-player-animation {
-  height: 100%;
-  width:100%;
+  transform: rotate(0deg);
   transition: all;
-  animation: animatePlayer 0.5s linear;
+  animation: animatePlayer 1.5s infinite;
 }
 
 @keyframes animatePlayer {
   50% {
-    height:50%;
-    width: 50%;
+    transform: rotate(5deg);
     
   }
   100% {
-    height: 100%;
-    width: 100%;
+    transform: rotate(0deg);
+  }
+}
+
+.recent-anime {
+  transform: translateX(0px);
+  transition: all;
+  animation: animateRecent 3s linear;
+}
+
+@keyframes animateRecent {
+  50% {
+    transform: translateX(150%);
+    
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+.recent-score-opacity-transition {
+  opacity: 1;
+  animation: animateRecentTransition 0.5s linear;
+}
+
+@keyframes animateRecentTransition {
+  50% {
+    opacity: 1
+    
+  }
+  100% {
+    opacity: 0
   }
 }
 .label {

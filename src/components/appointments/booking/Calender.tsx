@@ -146,34 +146,36 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
 // console.log({selectedDay, first: days[0], truthy: days[0]===selectedDay, check: startOfToday()})
     const normalizedSelectedDay = startOfDay(selectedDay!);
 
+    const appointmentTypes: { label: string, value: string }[] = appointmnetLink?.category 
+  ? appointmnetLink.category.split(', ').map(item => ({
+      label: item,
+      value: item,
+    })) 
+  : [];
+
+
   return (
     <>
     {
     isFormUp ?
         <DetailsForm appointmentLink={appointmnetLink}/>
         :
-        <div className=" w-full gap-6 max-sm:space-y-6 sm:flex ">
+        <div className="w-full md:h-[70vh] gap-6 max-sm:space-y-6 sm:flex ">
             <div className=" bg-white  sm:w-3/5 p-4 rounded-lg  flex-shrink-0 ">
 
+                {appointmnetLink?.category ? 
                 <div className=" pb-6 space-y-1">
-                    <p>Select meeting category</p>
+                    <h5  className='font-semibold text-lg'>Select meeting category</h5  >
                     <SelectInput
-                        name='category'
-                        value={categories?.category}
-                        options={
-                            [
-                                {label: 'Training', value: 'Training'},
-                                {label: 'Training 2', value: 'Training 2'},
-                                {label: 'Training 3', value: 'Training 3'},
-                                {label: 'Training 4', value: 'Training 5'},
-                            ]
-                        }
-                        setFormData={setCategories}
+                        name='appointmentType'
+                        value={bookingFormData?.appointmentType || ''}
+                        options={appointmentTypes}
+                        setFormData={setBookingFormData}
                         className='w-4/5 z-30'
                     />
-                </div>
+                </div> : null}
 
-                <p className='pb-1'>Select day</p>
+                <p className='pb-1 font-semibold text-lg'>Select day</p>
 
                 <div className="shadow-md border rounded-lg border-gray-200/50 pt-6 py-4">
                     <div className="flex  items-center w-full justify-between gap-4 px-4">
@@ -226,7 +228,8 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
                                         setSelectedDay(day)
                                         setBookingFormData({
                                             ...bookingFormData,
-                                            appointmentDate: format(day, 'yyyy-MM-dd')
+                                            appointmentDate: format(day, 'yyyy-MM-dd'),
+                                            createdBy: appointmnetLink?.createdBy!,
                                         })
                                     }}
                                     className={classNames(

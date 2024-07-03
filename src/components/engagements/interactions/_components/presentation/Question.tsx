@@ -476,7 +476,9 @@ export function Qusetion({
         "w-full h-[90vh]  bg-white relative    border-x border-y  col-span-7",
         isLeftBox && isRightBox && (isIdPresent || isOrganizer) && "col-span-5",
         !isLeftBox && !isRightBox && "col-span-full rounded-xl max-w-4xl mx-auto",
-        !isIdPresent && !isOrganizer && "col-span-full rounded-xl max-w-3xl mx-auto"
+        !isIdPresent && !isOrganizer && "col-span-full rounded-xl max-w-3xl mx-auto",
+        isLeftBox && !isRightBox && "rounded-r-xl",
+        !isLeftBox && isRightBox && "rounded-l-xl",
       )}
     >
       <div className="w-full overflow-y-auto no-scrollbar px-6 pt-12 space-y-3  h-[90%] pb-52 ">
@@ -601,7 +603,7 @@ export function Qusetion({
                     </div>
                   )}
                 <p className="self-end bg-basePrimary/20 rounded-3xl text-sm text-basePrimary px-2 py-1">{`${
-                  currentQuestion?.points
+                  Number(currentQuestion?.points) 
                 } ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
               </div>
 
