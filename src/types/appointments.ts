@@ -43,7 +43,7 @@ export interface AppointmentFormData {
   statusOn: boolean;
   note: string;
   appointmentAlias: string;
-  createdBy: number|null;
+  createdBy: number;
   businessName: string | null;
   logo: string | null;
   brandColour: string | null;
@@ -84,6 +84,7 @@ export interface Booking {
   lastName?: string | null;
   phone?: string | null;
   price?: number |string| null;
+  createdBy: number;
   email?:string;
   currency?: string | null;
   feeType?: string | null;

@@ -15,7 +15,7 @@ export const useGetAppointments = () => {
     setLoading(true);
     //
     const { data, status, } = await getRequest<AppointmentLink[]>({
-      endpoint: `/appointments`,
+      endpoint: `/appointments/schedules`,
     });
     setLoading(false);
     if(status!==200){
@@ -32,6 +32,33 @@ export const useGetAppointments = () => {
 
   return { appointments, isLoading, getAppointments };
 };
+
+export const useGetBookings= () => {
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  
+  const getBookings = async () => {
+    setLoading(true);
+    //
+    const { data, status, } = await getRequest<Booking[]>({
+      endpoint: `/appointments`,
+    });
+    setLoading(false);
+    if(status!==200){
+      //useToast
+      toast.error('Error fetching schedules!')
+    }
+
+    return setBookings(data.data);
+  };
+
+  useEffect(() => {
+    getBookings();
+  }, []);
+
+  return { bookings, isLoading, getBookings };
+};
+
 
 export const getAppointment = async (appointmentAlias:string) => {
   const { data, status } = await getRequest<AppointmentLink>({

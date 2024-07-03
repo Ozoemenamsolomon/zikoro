@@ -33,21 +33,7 @@ const Main = ({children}:{children:React.ReactNode}) => {
                 </button>
 
                 <header className='flex w-full gap-4 justify-center items-center pb-8 '>
-                    {/* <div className="" onClick={async ()=>{
-                        const supabase = createClientComponentClient();
-                        const error = await supabase.auth.signOut();
-                        console.log({error})
-                    }}>logout</div>
-                    <div className="" onClick={async ()=>{
-                        const supabase = createClientComponentClient();
-                        const data = await supabase.auth.signInWithPassword({email:'ecudeji@gmail.com', password:'cat89boy'});
-                        console.log({data,})
-                    }}>signin</div> */}
-                    
-                    <div className="flex-shrink-0    ">
-                        <Image src={'/zikoro-b.png'} alt={'zikro icon'} height={200} width={150}/>
-                    </div>
-                    
+                    <Image src={'/zikoro-b.png'} alt={'zikro icon'} height={180} width={100}/>
                 </header>
 
                 {children}

@@ -1,39 +1,3 @@
-// import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-// import { cookies } from "next/headers";
-// import { NextRequest, NextResponse } from "next/server";
-
-// export async function GET(req: NextRequest) {
-//   const supabase = createRouteHandlerClient({ cookies });
-
-//   if (req.method !== "GET") {
-//     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
-//   }
-
-//   try {
-//     const { data, error } = await supabase.from("appointmentLinks").select("*").order('created_at', {ascending:false});
-
-//     if (error) {
-//       throw NextResponse.json({ error: error.message }, { status: 400 });
-//     }
-
-//     return NextResponse.json(
-//       {
-//         data,
-//       },
-//       {
-//         status: 200,
-//       }
-//     );
-//   } catch (error) {
-//     console.error({ error });
-
-//     return NextResponse.json(
-//       { error: "An error occurred while processing the request" },
-//       { status: 500 }
-//     );
-//   }
-// }
-
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { startOfDay } from "date-fns";
 import { cookies } from "next/headers";
@@ -79,14 +43,12 @@ export async function GET(req: NextRequest) {
     }
 
     const userId = userData.id;
-    const today = startOfDay(new Date()).toISOString()
 
     // Fetch appointment links created by the authenticated user
     const { data, error } = await supabase
-      .from("bookings")
+      .from("appointmentLinks")
       .select("*")
       .eq("createdBy", userId)
-      .gte('created_at', today)
       .order("created_at", { ascending: false });
 
     if (error) {
