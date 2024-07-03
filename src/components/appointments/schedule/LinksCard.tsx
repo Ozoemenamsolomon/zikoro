@@ -56,7 +56,8 @@ const LinksCard = ({data,}:{data:AppointmentLink}) => {
             backgroundColor: !isDisabled ? backgroundColor : '',
             borderColor: !isDisabled ?item?.brandColour! : '',
         }}
-        className={` sm:w-72 p-4 border-2 space-y-2 rounded-lg h-full ${item?.statusOn ? '':'text-gray-300'} `}
+        className={`w-full p-4 border-2 space-y-2 rounded-lg h-full ${item?.statusOn ? '':'text-gray-300'} `}
+        // className={` sm:w-72 p-4 border-2 space-y-2 rounded-lg h-full ${item?.statusOn ? '':'text-gray-300'} `}
         >
         <div className="flex  justify-between gap-6 items-center">
             <h4 className="text-lg font-medium">{item?.appointmentName}</h4>

@@ -1,6 +1,6 @@
 import { Moon } from '@/constants';
 import { timezones as Timezones } from '@/constants/timezones';
-import { AppointmentFormData, AppointmentLink } from '@/types/appointments';
+import { AppointmentFormData,  } from '@/types/appointments';
 import React, { useEffect, useState } from 'react';
 import { SelectInput } from './CustomSelect';
 
@@ -16,7 +16,7 @@ export const generateTimeOptions = () => {
 };
   
 const timeOptions = generateTimeOptions();
-const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", ];
+const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", ];
 const timezones = Timezones;
 
 export interface DaySchedule {
@@ -53,6 +53,8 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
       })
   };
 
+  const Unavailable = 0
+
   return (
     <div className="w-full">
       <div className="pb-6">
@@ -79,55 +81,47 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
                     <label className="text- font-medium text-gray-700">{schedule.day}</label>
                 </div>
             
-                <div className=" col-span-2 grid w-full grid-cols-2 gap-2">
-                <div className='p-2 w-full border rounded-md flex  items-center'>
-                    <label className=" text-gray-70">From</label>
-                    <select
-                    disabled={!schedule?.enabled}
-                    className=" w-full focus:outline-none "
-                    value={schedule.from || ''}
-                    onChange={(e) => handleTimeChange(schedule.day, 'from', e.target.value)}
-                    >
-                    {/* <option value="" disabled>Select time</option> */}
-                    {timeOptions.map((time, idx) => (
-                        <option key={idx} value={time}>{time}</option>
-                    ))}
-                    </select>
-                </div>
+                {
+                  schedule.enabled ?
+                  <div className=" col-span-2 grid w-full grid-cols-2 gap-2">
+                    <div className='p-2 w-full border rounded-md flex  items-center'>
+                        <label className=" text-gray-70">From</label>
+                        <select
+                        disabled={!schedule?.enabled}
+                        className=" w-full focus:outline-none "
+                        value={schedule.from || ''}
+                        onChange={(e) => handleTimeChange(schedule.day, 'from', e.target.value)}
+                        >
+                        {/* <option value="" disabled>Select time</option> */}
+                        {timeOptions.map((time, idx) => (
+                            <option key={idx} value={time}>{time}</option>
+                        ))}
+                        </select>
+                    </div>
 
-                <div className='p-2 border rounded-md flex gap-4 items-center'>
-                    <label className=" text-gray-70">To</label>
-                    <select
-                    disabled={!schedule?.enabled}
-                    className=" w-full focus:outline-none text-sm"
-                    value={schedule.to || ''}
-                    onChange={(e) => handleTimeChange(schedule.day, 'to', e.target.value)}
-                    >
-                    {/* <option value="" disabled>Select time</option> */}
-                    {timeOptions.map((time, idx) => (
-                        <option key={idx} value={time}>{time}</option>
-                    ))}
-                    </select>
+                    <div className='p-2 border rounded-md flex gap-4 items-center'>
+                        <label className=" text-gray-70">To</label>
+                        <select
+                        disabled={!schedule?.enabled}
+                        className=" w-full focus:outline-none text-sm"
+                        value={schedule.to || ''}
+                        onChange={(e) => handleTimeChange(schedule.day, 'to', e.target.value)}
+                        >
+                        {/* <option value="" disabled>Select time</option> */}
+                        {timeOptions.map((time, idx) => (
+                            <option key={idx} value={time}>{time}</option>
+                        ))}
+                        </select>
+                    </div>
                 </div>
+                :
+                <div className="col-span-2 p-2  bg-gray-500/10 border-gray-300 border rounded-lg w-full flex gap-4 items-center text-xl text-gray-500">
+                  <Moon /><p>Unavailable</p>
                 </div>
+                }
             </div>
         ))}
 
-        { ['Saturday', 'Sunday'].map((item)=><div key={item} className="grid grid-cols-3  items-center w-full gap-6">
-            <div className="col-span-1 flex gap-2 items-center">
-                <div className={` bg-gray-300 ring-2 ring-gray-300  w-14 h-6 p-1.5  relative flex items-center  rounded-full  cursor-pointer `} >   
-                    <div className="flex w-full justify-between font-semibold text-[9px]"> <p className='text-white'>ON</p><p className='text-gray-50'>OFF</p>  </div>
-                    <div className={`bg-white absolute inset-0 w-7 h-6 flex-shrink-0 rounded-full transition-transform duration-200 transform `}></div>
-                </div>
-                <p className="text-">{item}</p>
-            </div>
-
-            <div className="col-span-2 p-2  bg-gray-500/10 border-gray-300 border rounded-lg w-full flex gap-4 items-center text-xl text-gray-500">
-               <Moon/><p>Unavailable</p>
-            </div>
-        </div>)}
-
-        
       </div>
     </div>
   );

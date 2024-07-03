@@ -1,7 +1,8 @@
+import { Booking } from "@/types/appointments";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { BookingFormData } from "@/components/appointments/booking/Calender";
+
 
 export async function handler(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -34,7 +35,7 @@ export async function handler(req: NextRequest) {
     } 
     
     if (method === "POST") {
-      const body: BookingFormData = await req.json();
+      const body: Booking = await req.json();
 
       const { data, error } = await supabase
         .from('bookings')

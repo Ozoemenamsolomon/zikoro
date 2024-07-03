@@ -6,6 +6,7 @@ import { Bell, Calendar, Grip, HelpCircle, Link2, Menu, Plus, Settings, Briefcas
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useEffect } from 'react';
+import { useAppointmentContext } from './context/AppointmentContext';
 
 const navlinks = [
   {
@@ -37,15 +38,7 @@ const navlinks = [
 
 const Sidebar = () => {
   const pathanme = usePathname()
-  // const supabase = createClientComponentClient()
-
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     const user = await supabase.auth.getUser()
-  //     console.log({user},'hhhhhhhhhhhhhhh')
-  //   }
-  //   fetch()
-  // }, [])
+  const {user} = useAppointmentContext()
   
   return (
     <nav className="space-y-4 text-sm px-6 py-6 h-full w-full flex flex-col justify-between gap-6">
@@ -63,7 +56,7 @@ const Sidebar = () => {
           </div>
           <div>
             <p className="text-gray-500 leading-tight">Hello,</p>
-            <p className="text-base font-medium">Manuel</p>
+            <p className="text-base font-medium">{user?.firstName}</p>
           </div>
         </div>
 

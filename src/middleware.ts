@@ -59,5 +59,6 @@ export const config = {
     "/home/:path*",
     "/profile/:path*",
     "/referrals/:path*",
+    "/appointments/:path*",
   ],
 };
