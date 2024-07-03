@@ -3,13 +3,14 @@
 import { Minimize2 } from "styled-icons/feather";
 import { Button } from "@/components";
 import { cn } from "@/lib";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useCallback, useRef, useState } from "react";
 import { TAnswer, TQuestion, TQuiz } from "@/types";
 import { QUser } from "@/constants";
 import Avatar from "react-nice-avatar";
 import { AvatarFullConfig } from "react-nice-avatar";
 import { ArrowUpwardOutline } from "styled-icons/evaicons-outline";
 import { FeedStar } from "styled-icons/octicons";
+import { Plus } from "styled-icons/bootstrap";
 
 type TLeaderBoard = {
   quizParticipantId: string;
@@ -40,8 +41,12 @@ export function LeaderBoard({
   answers: TAnswer[];
   quiz: TQuiz<TQuestion[]>;
 }) {
+ 
   //console.log(answers);
-  const board = useMemo(() => {
+const [recentAnime, setRecentAnime] = useState(false)
+const observeEl = useRef<IntersectionObserver>();
+const [isLeaderBoardVisible, setIsLeaderBoardVisible] = useState(true)
+  const restructuredScores = useMemo(() => {
     const participantGroup: { [key: string]: TParticipantScores } = {};
     if (Array.isArray(answers) && answers.length > 0) {
       const filteredAnswers = answers?.filter((item) => {
@@ -86,7 +91,9 @@ export function LeaderBoard({
       );
 
       const data = result.sort((a, b) => {
-        return b?.totalScore - a?.totalScore;
+        const aScore = a?.totalScore - a?.recentScore;
+        const bScore = b?.totalScore - b?.recentScore;
+        return bScore - aScore;
       });
 
       return data;
@@ -95,6 +102,11 @@ export function LeaderBoard({
     }
   }, [answers, quiz]);
 
+  function onToggleBoardVisibility() {
+    close()
+    setRecentAnime(false)
+    
+  }
   /**
    const totalMaxPoints = useMemo(() => {
     const totalPoints = quiz?.questions?.reduce((acc, cur) => {
@@ -103,9 +115,187 @@ export function LeaderBoard({
     return totalPoints;
   }, [quiz]);
  */
+const board = useMemo(() => {
+
+  if (recentAnime && restructuredScores) {
+
+    const data = restructuredScores.sort((a, b) => {
+      const aScore = a?.totalScore 
+      const bScore = b?.totalScore 
+      return bScore - aScore;
+    })
+
+    return data
+  }
+ else if (restructuredScores) {
+    const data = restructuredScores.sort((a, b) => {
+      const aScore = a?.totalScore - a?.recentScore;
+      const bScore = b?.totalScore - b?.recentScore;
+      return bScore - aScore;
+    })
+
+    return data
+  }
+  else {
+    return []
+  }
+},[restructuredScores, recentAnime])
+
+
+// observe leader board
+const observingLeaderBoard = useCallback(
+  (node: any) => {
+    observeEl.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setIsLeaderBoardVisible(true)
+      }
+      else {
+        setIsLeaderBoardVisible(false)
+      }
+    });
+
+    if (node) observeEl.current.observe(node);
+  },
+  []
+);
+
+console.log(recentAnime, isLeaderBoardVisible)
+  function ScoreCounter({ num, attendee, score }: {score: number; attendee: TLeaderBoard; num: number }) {
+    const pTag = useRef<HTMLParagraphElement | null>(null);
+    const secondPTag = useRef<HTMLParagraphElement | null>(null);
+    
+
+    const firstElement = useCallback(() => {
+      if (pTag?.current && isLeaderBoardVisible) {
+        ///  console.log(pTag?.current)
+        let startTimestamp: any = null;
+        const step = (timestamp: number) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / 1000, 1);
+          if (pTag.current) {
+            //   console.log(pTag.current.innerHTML)
+            pTag.current.innerHTML = `${Math.floor(progress * (num - 0) + 0)}`;
+          }
+          if (progress < 1) {
+          //  console.log("fg",num, progress, Math.floor(progress * (num - 0) + 0))
+            window.requestAnimationFrame(step);
+          }
+         if ((num === Math.floor(progress * (num - 0) + 0)) && progress === 1) {
+          setRecentAnime(true)
+        }
+          if (secondPTag?.current && recentAnime) {
+            let totalStartTimestamp: any = null;
+            const totalScoreProgress = Math.min((timestamp - totalStartTimestamp) / 1000, 1);
+          
+            secondPTag.current.innerHTML = `${Math.floor(totalScoreProgress * (num - 0) + score)}`;
+
+
+            if (totalScoreProgress < 1) {
+              //  console.log("fg",num, progress, Math.floor(progress * (num - 0) + 0))
+                window.requestAnimationFrame(step);
+              }
+          } 
+        
+        
+         };
+        window.requestAnimationFrame(step);
+      }
+    }, [num]);
+
+    
+
+    return (
+      <>
+       <div
+       
+          className={cn(
+            "flex w-fit bg-gradient-to-r from-green-600  to-gray-700 rounded-3xl  px-2 py-1 items-center gap-x-1 text-tiny invisible",
+            attendee?.recentScore > 0 && "visible",
+            !recentAnime && " recent-anime ",
+            recentAnime && "invisible recent-score-opacity-transition"
+          )}
+        >
+          <Plus size={18} color="#ffffff" className="text-white" />
+          <p ref={firstElement} className="font-medium text-white">
+            {/*attendee?.recentScore?.toFixed(0)*/}
+          
+        <p ref={pTag}>{(num ?? 0)?.toFixed(0)}</p>
+       
+     
+          </p>
+        </div>
+
+        <div className="flex items-center gap-x-1">
+          {/*  <p className="flex items-center gap-x-1">
+                  <span>{(attendee?.totalScore ?? 0)?.toFixed(0)}</span>
+                  <FeedStar size={14} className="text-amber-600" />
+                </p>*/}
+          <p ref={secondPTag}>{score}</p>
+      <FeedStar size={15} className="text-amber-600" />
+        </div>
+      </>
+      
+    );
+  }
+
+  function OtherPlayers({
+    attendee,
+    index,
+  }: {
+    attendee: TLeaderBoard;
+    index: number;
+  }) {
+    const score = useMemo(() => {
+      //if (attendee?.totalScore) {
+      return attendee?.totalScore - attendee?.recentScore;
+      //}
+    }, []);
+
+   
+    {/**<ScoreCounter num={score} /> */}
+    return (
+      <div
+        className={cn(
+          "grid grid-cols-4 items-center tranform transition-all duration-1000 ease-in-out gap-2 px-3 py-3",
+          index % 2 !== 0 && "border-y "
+        )}
+      >
+        <div className="flex items-center col-span-2 w-full gap-x-2">
+          <p className="text-sm">{`${index + 4}th`}</p>
+
+          <Avatar
+            shape="circle"
+            className="w-[2.5rem] h-[2.5rem]"
+            {...attendee?.image}
+          />
+          <p className="text-sm">{attendee?.attendeeName ?? ""}</p>
+        </div>
+        <ScoreCounter num={Number(attendee?.recentScore?.toFixed(0))} attendee={attendee} score={score}/>
+       {/* <div
+          className={cn(
+            "flex w-fit bg-gradient-to-r from-green-600  to-gray-700 rounded-3xl  px-2 py-1 items-center gap-x-1 text-tiny invisible",
+            attendee?.recentScore > 0 && "visible"
+          )}
+        >
+          <Plus size={18} color="#ffffff" className="text-white" />
+          <p className="font-medium text-white">
+          
+             
+          </p>
+        </div>*/}
+
+       {/* <div className="flex items-center gap-x-1">
+          
+          <p>{score}</p>
+      <FeedStar size={15} className="text-amber-600" />
+        </div>*/}
+      </div>
+    );
+  }
 
   return (
     <div
+    ref={observingLeaderBoard}
       className={cn(
         "w-full col-span-3 bg-white h-[90vh] border-r border-y rounded-r-xl hidden  md:hidden",
         isRightBox && "block md:block ",
@@ -120,7 +310,7 @@ export function LeaderBoard({
               <QUser color="#ffffff" />
               <p>{board?.length || 0}</p>
             </div>
-            <Button onClick={close} className="px-0 h-fit w-fit">
+            <Button onClick={onToggleBoardVisibility} className="px-0 h-fit w-fit">
               <Minimize2 size={20} />
             </Button>
           </div>
@@ -130,24 +320,27 @@ export function LeaderBoard({
           <div className="flex items-end justify-center">
             <div
               className={cn(
-                "flex items-center quiz-player-animation flex-col gap-y-1 justify-center invisible",
+                "flex items-center  flex-col gap-y-1 justify-center invisible",
                 board[1]?.attendeeName && "flex visible"
               )}
             >
               {/**2nd */}
-              <p className="font-semibold text-lg mb-1">2nd</p>
-              {/*    <Image
+              <div className="quiz-player-animation gap-y-1 flex flex-col items-center justify-center">
+                <p className="font-semibold text-lg mb-1">2nd</p>
+                {/*    <Image
                 className="w-[4.0rem] h-[4.0rem]"
                 src="/quizattendee.png"
                 width={100}
                 height={100}
                 alt="quizplayer"
               />*/}
-              <Avatar
-                shape="circle"
-                className="w-[4.0rem] h-[4.0rem]"
-                {...board[1]?.image}
-              />
+                <Avatar
+                  shape="circle"
+                  className="w-[4.0rem]  h-[4.0rem]"
+                  {...board[1]?.image}
+                />
+              </div>
+
               <p className="font-medium">{board[1]?.attendeeName ?? ""}</p>
 
               <div className="w-fit flex items-center gap-x-1">
@@ -160,23 +353,25 @@ export function LeaderBoard({
             {/**1st */}
             <div
               className={cn(
-                "flex items-center quiz-player-animation flex-col gap-y-1 justify-center invisible",
+                "flex items-center  flex-col gap-y-1 justify-center invisible",
                 board[0]?.attendeeName && "flex visible"
               )}
             >
-              <p className="font-semibold text-xl mb-1">1st</p>
-              {/*   <Image
+              <div className="quiz-player-animation gap-y-1 flex flex-col items-center justify-center">
+                <p className="font-semibold text-xl mb-1">1st</p>
+                {/*   <Image
                 className="w-[5.5rem] h-[5.5rem]"
                 src="/quizattendee.png"
                 width={100}
                 height={100}
                 alt="quizplayer"
               />*/}
-              <Avatar
-                shape="circle"
-                className="w-[5.5rem] h-[5.5rem]"
-                {...board[0]?.image}
-              />
+                <Avatar
+                  shape="circle"
+                  className="w-[5.5rem] h-[5.5rem]"
+                  {...board[0]?.image}
+                />
+              </div>
               <p className="font-medium">{board[0]?.attendeeName ?? ""}</p>
               <div className="w-fit flex items-center gap-x-1">
                 <p className="font-medium text-gray-600">
@@ -188,23 +383,25 @@ export function LeaderBoard({
             {/**3rd */}
             <div
               className={cn(
-                "flex items-center quiz-player-animation flex-col gap-y-1 justify-center invisible",
+                "flex items-center  flex-col gap-y-1 justify-center invisible",
                 board[2]?.attendeeName && " visible"
               )}
             >
-              <p className="font-semibold text-base mb-1">3rd</p>
-              {/*  <Image
+              <div className="quiz-player-animation gap-y-1 flex flex-col items-center justify-center">
+                <p className="font-semibold text-base mb-1">3rd</p>
+                {/*  <Image
                 className="w-[3.5rem] h-[3.5rem]"
                 src="/quizattendee.png"
                 width={100}
                 height={100}
                 alt="quizplayer"
               />*/}
-              <Avatar
-                shape="circle"
-                className="w-[3.5rem] h-[3.5rem]"
-                {...board[2]?.image}
-              />
+                <Avatar
+                  shape="circle"
+                  className="w-[3.5rem] h-[3.5rem]"
+                  {...board[2]?.image}
+                />
+              </div>
               <p className="font-medium">{board[2]?.attendeeName ?? ""}</p>
               <div className="w-fit flex items-center gap-x-1">
                 <p className="font-medium text-gray-600">
@@ -219,40 +416,15 @@ export function LeaderBoard({
 
       <div className="w-full overflow-y-auto no-scrollbar h-full pb-20 space-y-2">
         {Array.isArray(board) &&
-          board.slice(3, board?.length)?.map((attendee, index) => (
-            <div
-              key={attendee?.quizParticipantId}
-              className={cn(
-                "grid grid-cols-4 items-center tranform transition-all duration-1000 ease-in-out gap-2 px-3 py-3",
-                index % 2 !== 0 && "border-y bg-[#001FCC]/10"
-              )}
-            >
-              <div className="flex items-center col-span-2 w-full gap-x-2">
-                <p className="text-sm">{`${index + 4}th`}</p>
-
-                <Avatar
-                  shape="circle"
-                  className="w-[2.5rem] h-[2.5rem]"
-                  {...attendee?.image}
-                />
-                <p className="text-sm">{attendee?.attendeeName ?? ""}</p>
-              </div>
-              <div className="flex items-center">
-                <p className="flex items-center gap-x-1">
-                  <span>{(attendee?.totalScore ?? 0)?.toFixed(0)}</span>
-                  <FeedStar size={14} className="text-amber-600" />
-                </p>
-              </div>
-              {attendee?.recentScore > 0 && (
-                <div className="flex w-fit text-white bg-gradient-to-r from-green-600  to-lime-200 rounded-3xl  px-2 py-1 items-center gap-x-1 text-tiny">
-                  <ArrowUpwardOutline size={12} />
-                  <p className="font-medium">
-                    {attendee?.recentScore?.toFixed(0)}
-                  </p>
-                </div>
-              )}
-            </div>
-          ))}
+          board
+            .slice(3, board?.length)
+            ?.map((attendee, index) => (
+              <OtherPlayers
+                key={attendee?.quizParticipantId}
+                attendee={attendee}
+                index={index}
+              />
+            ))}
       </div>
     </div>
   );

@@ -19,6 +19,10 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
       name: "Settings",
       href: `settings`,
     },
+    {
+      name: "LeaderBoard",
+      href: "leaderboard",
+    },
   ];
 
   /**

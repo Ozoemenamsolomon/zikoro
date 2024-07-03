@@ -2,16 +2,16 @@
 
 import { useForm } from "react-hook-form";
 import { InteractionLayout } from "../_components";
-import { Search } from "@styled-icons/evil/Search";
+import { Search } from "styled-icons/evil";
 import { Form, FormControl, FormField, FormItem, Input } from "@/components";
 import { ActiveStampCard, LightBulb } from "@/constants";
-import { Stamp } from "@styled-icons/fa-solid/Stamp";
+import { Stamp } from "styled-icons/fa-solid";
 import Image from "next/image";
 import { EmptyCard } from "@/components/composables";
 import { useFetchPartners } from "@/hooks";
 import { useEffect, useState } from "react";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { TPartner } from "@/types";
+import { TPartner, TExPartner } from "@/types";
 import { cn } from "@/lib";
 
 type FormValue = {
@@ -21,7 +21,7 @@ type FormValue = {
 export default function StampCard({ eventId }: { eventId: string }) {
   const { loading, data } = useFetchPartners(eventId);
   const [active, setActive] = useState(false);
-  const [partnerData, setPartnerData] = useState<TPartner[] | undefined>([]);
+  const [partnerData, setPartnerData] = useState<TExPartner[] | undefined>([]);
   const form = useForm<FormValue>({
     defaultValues: {
       search: "",
