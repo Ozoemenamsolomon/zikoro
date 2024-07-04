@@ -167,7 +167,7 @@ export default function Presentation({
     } else {
       return generateAlias();
     }
-  }, []);
+  }, [showScoreSheet, isSendMailModal]);
   function onClose() {
     setLeftBox((prev) => !prev);
   }
