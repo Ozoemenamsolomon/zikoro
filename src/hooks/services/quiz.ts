@@ -391,7 +391,7 @@ export const useRealtimePresence = (isLive: boolean) => {
       supabase.removeChannel(channel);
     };
   }
-  }, [supabase]);
+  }, [supabase, isLive]);
 };
 
 export function useBroadCastMessage() {

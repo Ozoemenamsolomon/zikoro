@@ -125,7 +125,7 @@ export function useLogin() {
   };
 }
 export function useValidateUser() {
-  const { user, setUser } = useUserStore();
+  const { user } = useUserStore();
   const router = useRouter();
 
   // using this to redirect new users to onboarding
