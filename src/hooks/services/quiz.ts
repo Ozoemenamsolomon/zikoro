@@ -356,8 +356,9 @@ export function useRealtimeQuestionUpdate({ quizId }: { quizId: string }) {
   }, [supabase]);
 }
 
-export const useRealtimePresence = () => {
+export const useRealtimePresence = (isLive: boolean) => {
   useEffect(() => {
+    if (isLive) {
     const channel = supabase.channel("live-quiz");
 
     channel
@@ -389,6 +390,7 @@ export const useRealtimePresence = () => {
     return () => {
       supabase.removeChannel(channel);
     };
+  }
   }, [supabase]);
 };
 

@@ -396,7 +396,7 @@ function PlayersOnboarding({
 
   const [loading, setLoading] = useState(false);
   const [isAvatarModal, setAvatarModal] = useState(false);
-  useRealtimePresence();
+  useRealtimePresence(quiz?.accessibility?.live);
   const player = getCookie<TConnectedUser>("player");
   const [isAvatar, setIsAvatar] = useState(false);
   //console.log("present", presentUser)

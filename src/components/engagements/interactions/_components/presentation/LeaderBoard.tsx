@@ -17,6 +17,7 @@ import { AvatarFullConfig } from "react-nice-avatar";
 import { ArrowUpwardOutline } from "styled-icons/evaicons-outline";
 import { FeedStar } from "styled-icons/octicons";
 import { Plus } from "styled-icons/bootstrap";
+import { Reorder } from "framer-motion";
 
 type TLeaderBoard = {
   quizParticipantId: string;
@@ -53,7 +54,7 @@ function ScoreCounter({
   const pTag = useRef<HTMLParagraphElement | null>(null);
   const secondPTag = useRef<HTMLParagraphElement | null>(null);
 
-//  console.log(isLeaderBoardVisible, recentAnime);
+  //  console.log(isLeaderBoardVisible, recentAnime);
 
   // This effect runs whenever isLeaderBoardVisible changes
   useEffect(() => {
@@ -65,8 +66,6 @@ function ScoreCounter({
 
   const firstElement = useCallback(() => {
     if (pTag.current && isLeaderBoardVisible) {
-    
-
       let startTimestamp: any = null;
       const step = (timestamp: any) => {
         if (!startTimestamp) startTimestamp = timestamp;
@@ -92,7 +91,10 @@ function ScoreCounter({
         if (!startTimestamp) startTimestamp = timestamp;
         const progress = Math.min((timestamp - startTimestamp) / 1000, 1);
         if (secondPTag.current) {
-          secondPTag.current.innerHTML = `${Math.floor(progress * num + score)}`;
+          const actual = score - num;
+          secondPTag.current.innerHTML = `${Math.floor(
+            progress * num + actual
+          )}`;
         }
         if (progress < 1) {
           window.requestAnimationFrame(step);
@@ -120,18 +122,14 @@ function ScoreCounter({
         )}
       >
         <Plus size={18} color="#ffffff" className="text-white" />
-        <p  className="font-medium text-white">
+        <p className="font-medium text-white">
           {/*attendee?.recentScore?.toFixed(0)*/}
 
           <p ref={pTag}>{(num ?? 0)?.toFixed(0)}</p>
         </p>
       </div>
 
-      <div  className="flex items-center gap-x-1">
-        {/*  <p className="flex items-center gap-x-1">
-                <span>{(attendee?.totalScore ?? 0)?.toFixed(0)}</span>
-                <FeedStar size={14} className="text-amber-600" />
-              </p>*/}
+      <div className="flex items-center gap-x-1">
         <p ref={secondPTag}>{score}</p>
         <FeedStar size={15} className="text-amber-600" />
       </div>
@@ -152,12 +150,6 @@ function OtherPlayers({
   index: number;
   isLeaderBoardVisible: boolean;
 }) {
-  const score = useMemo(() => {
-    //if (attendee?.totalScore) {
-    return attendee?.totalScore - attendee?.recentScore;
-    //}
-  }, []);
-
   {
     /**<ScoreCounter num={score} /> */
   }
@@ -183,7 +175,7 @@ function OtherPlayers({
         setRecentAnime={setRecentAnime}
         num={Number(attendee?.recentScore?.toFixed(0))}
         attendee={attendee}
-        score={score}
+        score={attendee?.totalScore}
         isLeaderBoardVisible={isLeaderBoardVisible}
       />
       {/* <div
@@ -223,6 +215,7 @@ export function LeaderBoard({
 }) {
   //console.log(answers);
   const [recentAnime, setRecentAnime] = useState(false);
+  const [board, setBoard] = useState<TLeaderBoard[]>([]);
   const observeEl = useRef<IntersectionObserver>();
   const [isLeaderBoardVisible, setIsLeaderBoardVisible] = useState(false);
   const restructuredScores = useMemo(() => {
@@ -269,13 +262,7 @@ export function LeaderBoard({
         })
       );
 
-      const data = result.sort((a, b) => {
-        const aScore = a?.totalScore - a?.recentScore;
-        const bScore = b?.totalScore - b?.recentScore;
-        return bScore - aScore;
-      });
-
-      return data;
+      return result;
     } else {
       return [];
     }
@@ -294,27 +281,37 @@ export function LeaderBoard({
     return totalPoints;
   }, [quiz]);
  */
-  const board = useMemo(() => {
-    if (recentAnime && restructuredScores) {
-      const data = restructuredScores.sort((a, b) => {
-        const aScore = a?.totalScore;
-        const bScore = b?.totalScore;
-        return bScore - aScore;
-      });
 
-      return data;
-    } else if (restructuredScores) {
-      const data = restructuredScores.sort((a, b) => {
-        const aScore = a?.totalScore - a?.recentScore;
-        const bScore = b?.totalScore - b?.recentScore;
-        return bScore - aScore;
-      });
+  useEffect(() => {
+    (() => {
+      if (recentAnime && restructuredScores) {
+        const data = restructuredScores.sort((a, b) => {
+          const aScore = a?.totalScore;
+          const bScore = b?.totalScore;
+          return bScore - aScore;
+        });
 
-      return data;
-    } else {
-      return [];
-    }
-  }, [restructuredScores, recentAnime]);
+        setBoard(data);
+      } else if (restructuredScores) {
+        const reformedData = restructuredScores.map((value) => {
+          return {
+            ...value,
+            totalScore: value?.totalScore - value?.recentScore,
+          };
+        });
+        const data = reformedData.sort((a, b) => {
+          const aScore = a?.totalScore;
+          const bScore = b?.totalScore;
+          return bScore - aScore;
+        });
+
+        setBoard(data);
+      } else {
+        setBoard([]);
+      }
+    })();
+  }),
+    [restructuredScores, recentAnime];
 
   // observe leader board
 
@@ -324,7 +321,7 @@ export function LeaderBoard({
       if (!entries[0].isIntersecting) {
         setRecentAnime(false);
         setIsLeaderBoardVisible(false);
-      //  
+        //
       } else {
         setIsLeaderBoardVisible(true);
       }
@@ -342,7 +339,7 @@ export function LeaderBoard({
         !isLeftBox && "col-span-4"
       )}
     >
-      <div className="w-full gap-y-2 flex bg-[#001fcc]/20 pb-2 flex-col rounded-tr-xl items-center justify-center">
+      <div className="w-full h-[37vh] gap-y-2 flex bg-[#001fcc]/20 pb-2 flex-col rounded-tr-xl items-center justify-center">
         <div className="flex items-center p-4 justify-between w-full">
           <h2 className="font-semibold  text-base sm:text-xl">LeaderBoard</h2>
           <div className="flex items-center gap-x-2">
@@ -457,20 +454,22 @@ export function LeaderBoard({
         )}
       </div>
 
-      <div className="w-full overflow-y-auto no-scrollbar h-full pb-20 space-y-2">
-        {Array.isArray(board) &&
-          board
-            .slice(3, board?.length)
-            ?.map((attendee, index) => (
-              <OtherPlayers
-                key={attendee?.quizParticipantId}
-                attendee={attendee}
-                index={index}
-                recentAnime={recentAnime}
-                setRecentAnime={setRecentAnime}
-                isLeaderBoardVisible={isLeaderBoardVisible}
-              />
+      <div className="w-full overflow-y-auto no-scrollbar h-[53vh] space-y-2">
+        <Reorder.Group values={board} onReorder={setBoard}>
+          {Array.isArray(board) &&
+            board.slice(3, board?.length)?.map((attendee, index) => (
+              <Reorder.Item as="div" key={attendee?.quizParticipantId} value={attendee?.totalScore}>
+                <OtherPlayers
+                  key={attendee?.quizParticipantId}
+                  attendee={attendee}
+                  index={index}
+                  recentAnime={recentAnime}
+                  setRecentAnime={setRecentAnime}
+                  isLeaderBoardVisible={isLeaderBoardVisible}
+                />
+              </Reorder.Item>
             ))}
+        </Reorder.Group>
       </div>
     </div>
   );
