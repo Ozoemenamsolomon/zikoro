@@ -78,13 +78,6 @@ export function SideBarLayout({
     refetch: getUserOrganizations,
   } = useGetUserOrganization(user?.id ?? 0);
 
-  // useEffect(() => {
-  //   return () => {
-  //     if (organizationIsLoading) return;
-  //     if (!userOrganizations) return router.push("/home");
-  //   };
-  // }, [organizationIsLoading]);
-
   return (
     <>
       <div
