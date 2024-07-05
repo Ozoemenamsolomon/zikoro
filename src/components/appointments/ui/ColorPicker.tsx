@@ -55,16 +55,19 @@ const ColorPicker: FC<ColorPickerProps> = ({ onChange, position, initialColor })
 
   // Handle click outside to close the dropdown
   useEffect(() => {
+    if(initialColor) setSelectedColor(initialColor)
+
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [dropdownRef]);
+  }, [dropdownRef,initialColor]);
   
   return (
     <div className="relative" ref={dropdownRef}>

@@ -57,7 +57,7 @@ const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Sat
 const formdata = {
   appointmentName: '',
   category: '',
-  duration: null,
+  duration: 15,
   loctionType: 'Onsite',
   locationDetails: '',
   timeZone: "(UTC+01:00) West Central Africa",
@@ -68,8 +68,8 @@ const formdata = {
     enabled: false
   })),
   curency: '',
-  amount: 0,
-  paymentGateway: 'Zikoro manage',
+  amount: null,
+  paymentGateway: '',
   maxBooking: 1,
   sessionBreak: 5,
   statusOn: true,
@@ -80,8 +80,9 @@ const formdata = {
   logo: null,
   brandColour: '#0000FF',
   teamMembers: null,
-  zikoroBranding: null,
+  zikoroBranding: 'true',
   files: [],
+  isPaidAppointment:false,
 };
 
 interface ValidationErrors {
@@ -91,7 +92,9 @@ interface ValidationErrors {
 const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
   const { push } = useRouter();
   const pathname = usePathname();
+  const {setselectedType} = useAppointmentContext()
   const { appointment, isLoading, } = useGetBookingAppointment(alias!);
+  const [isOpen, setIsOpen] = useState(true)
 
   const [formData, setFormData] = useState<AppointmentFormData>(formdata);
   const [errors, setErrors] = useState<{ [key: string]: string } | any>(null);
@@ -100,13 +103,32 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
   useEffect(() => {
     if (appointment) {
       try {
-        const parsedTimeDetails = JSON.parse(appointment.timeDetails as unknown as string) as DaySchedule[];
-        setFormData({ ...appointment, timeDetails: parsedTimeDetails });
+        // remove modal if it is edit mode.
+        setIsOpen(false)
+        // Parse timeDetails and category
+        const parsedTimeDetails = JSON.parse(appointment.timeDetails || "[]") as DaySchedule[];
+        const parsedCategory = JSON.parse(appointment.category || `""`) as string | string[];
+  
+        // Check if parsedCategory is an array and set isOpen
+        if (Array.isArray(parsedCategory)) {
+          setselectedType('multiple')
+        } else {
+          setselectedType('single')
+        }
+  
+        // Update formData with parsed values
+        setFormData({ ...appointment, timeDetails: parsedTimeDetails, category: parsedCategory, isPaidAppointment: appointment.amount ? true : false });
+  
+        // Debugging output
+        console.log({ parsedCategory, parsedTimeDetails, formData });
       } catch (error) {
-        console.error('Error parsing timeDetails:', error);
+        console.error('Error parsing appointment details:', error);
+      } finally {
+        setLoading(false)
       }
     }
   }, [appointment]);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -164,6 +186,18 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
     if (data.sessionBreak <= 0) {
       error.sessionBreak = 'Session Break must be a positive number';
     }
+
+    if (data.isPaidAppointment && !data?.amount ) {
+      error.amount = 'Amount is required';
+    }
+
+    if (data.isPaidAppointment && !data.curency ) {
+      error.curency = 'Currency is required';
+    }
+
+    if (data.isPaidAppointment && !data.paymentGateway) {
+      error.paymentGateway = 'Payment gateway is required';
+    }
     setErrors(error);
     return Object.keys(error).length > 0;
   };
@@ -179,6 +213,7 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
     }
     const logoUrl = await uploadImage(formData.files!)
     delete formData['files']
+    delete formData['isPaidAppointment']
     try {
       const payload = { ...formData, timeDetails: JSON.stringify(formData.timeDetails), logo: logoUrl || '' };
       let response;
@@ -231,7 +266,6 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
     fetch();
   }, [pathname]);
 
-  const [isOpen, setIsOpen] = useState(true)
 
   return (
     <main className="py-4 sm:p-8">
@@ -285,7 +319,7 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
             type="submit"
             className="mt-6 py-3 text-center w-full rounded-md text-[#F2F2F2] font-semibold text-xl bg-basePrimary"
           >
-            {loading ? 'Submitting...' : 'Create Appointment'}
+            {loading ? 'Submitting...' : pathname.includes('edit') ? 'Edit Appointment' : 'Create Appointment'}
           </button>
         </form>
       </section>

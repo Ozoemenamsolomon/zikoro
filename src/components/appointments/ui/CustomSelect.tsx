@@ -22,6 +22,7 @@ interface SelectInputProps {
   addNewItem?: any;
   className?: string;
   icon?: string
+  error?: string
 }
 
 export const SelectInput: React.FC<SelectInputProps> = ({
@@ -35,6 +36,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   disabled,icon,
   setError,
   addNewItem,
+  error,
 }) => {
   const containerRef: RefObject<HTMLDivElement> = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -81,6 +83,8 @@ export const SelectInput: React.FC<SelectInputProps> = ({
             <UpDownArrow/>
             }
         </button>
+        {error ? <p className="text-red-600 text-[12px] pt-1">{error}</p> : null}
+
         {isOpen && (
           <ul className={cn(` absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto `, className)}>
             {placeholder && !value && (

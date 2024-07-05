@@ -7,6 +7,7 @@ import RadioButtons from '../ui/RadioButtons';
 import { SelectInput } from '../ui/CustomSelect';
 import ColorPicker from '../ui/ColorPicker';
 import { useAppointmentContext } from '../context/AppointmentContext';
+import AddMultipleInput from './AddMultipleInput';
 
 const AppointmentDetails: React.FC<FormProps> = ({
   formData,
@@ -17,7 +18,6 @@ const AppointmentDetails: React.FC<FormProps> = ({
   setLoading,
   handleChange,
 }) => {
-  const [isPaidAppointment, setIsPaidAppointment] = useState(false)
   const {selectedType} = useAppointmentContext()
 
   return (
@@ -35,20 +35,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
             onChange={handleChange}
           />
         </div>
-        {/* <ColorPicker 
-          position='right' 
-          onChange={(color)=>{
-            if(setFormData){
-              setFormData((prev:AppointmentFormData)=>({
-                  ...prev,
-                  brandColour: color
-                }
-              ))
-            }}}
-        /> */}
       </div>
-
-     
 
       <div>
         <p className='label'>Duration in minutes</p>
@@ -56,11 +43,14 @@ const AppointmentDetails: React.FC<FormProps> = ({
           name='duration'
           value={formData?.duration || ''}
           options={[
-            {label:'20',value:20},
-            {label:'40',value:40},
+            {label:'15',value:15},
+            {label:'30',value:30},
             {label:'60',value:60},
-            {label:'80',value:80},
-            {label:'100',value:100},
+            {label:'90',value:90},
+            {label:'120',value:120},
+            {label:'180',value:180},
+            {label:'210',value:210},
+            {label:'360',value:360},
           ]}
           setFormData={setFormData!}
           setError={setErrors}
@@ -69,6 +59,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
         />
         
       </div>
+      
       <div>
         <label htmlFor="loctionType" className='pb-3'>Location type</label>
         <RadioButtons 
@@ -126,7 +117,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
                 </div>
               </div>
 
-              <p className="">You haven’t configured your google meet yet,</p>
+              <p className="">You haven’t configured your online meeting yet,</p>
               <p className="cursor-pointer text-zikoroBlue">Click here to do that now.</p>
             </div>
         }
@@ -135,21 +126,44 @@ const AppointmentDetails: React.FC<FormProps> = ({
 
         { selectedType==='single' ?
           <>
+          <div className=" gap-2 items-center">
+              <InputCustom
+                type='text'
+                label='Appointment Description (optional)'
+                error={errors?.note}
+                name='note'
+                value={formData?.note || ''}
+                placeholder='Add notes for appointment here'
+                className='py-6 w-full'
+                onChange={handleChange}
+              />
+            </div>
+
             <div className="flex gap-4 justify-between items-center">
             <div className="flex-1">
               <h5 className="label">Make this a paid appointment</h5>
               <p className="text-sm text-gray-600">Guests will be charged to book this appointment</p>
             </div>
             <div
-                className={` flex-shrink-0 ${isPaidAppointment ? 'bg-blue-600 ring-blue-600 ring-2 ' : 'bg-gray-300 ring-2 ring-gray-300'} mr- w-14 h-6 p-1.5  relative flex items-center  rounded-full  cursor-pointer `}
-                onClick={()=>setIsPaidAppointment(curr=>!curr)}
-            >   
+                className={` flex-shrink-0 ${formData?.isPaidAppointment ? 'bg-blue-600 ring-blue-600 ring-2 ' : 'bg-gray-300 ring-2 ring-gray-300'} mr- w-14 h-6 p-1.5  relative flex items-center  rounded-full  cursor-pointer `}
+                onClick={()=>{
+                  setFormData && setFormData((prev:AppointmentFormData)=>{
+                    return {
+                      ...prev,
+                      isPaidAppointment: !prev.isPaidAppointment,
+                      paymentGateway: prev.isPaidAppointment ? '' : 'Zikoro manage',
+                      curency: '',
+                      amount: null,
+                    }
+                  })
+                  }}
+              >   
                 <div className="flex w-full justify-between font-semibold text-[9px]"> <p className='text-white'>ON</p><p className='text-gray-50'>OFF</p>  </div>
-                <div className={`bg-white absolute inset-0 w-7 h-6 flex-shrink-0 rounded-full transition-transform duration-200 transform ${isPaidAppointment ? 'translate-x-7' : ''}`}></div>
+                <div className={`bg-white absolute inset-0 w-7 h-6 flex-shrink-0 rounded-full transition-transform duration-200 transform ${formData?.isPaidAppointment ? 'translate-x-7' : ''}`}></div>
             </div>
             </div> 
 
-            <div className={`${isPaidAppointment ? 'max-h-screen visible':'max-h-0 invisible overflow-hidden'}  relative z-30 transform  transition-all duration-300 pb-4`}>
+            <div className={`${formData?.isPaidAppointment ? 'max-h-screen visible':'max-h-0 invisible overflow-hidden'}  relative z-30 transform  transition-all duration-300  `}>
               <p className='pb-2 label'>Set curency and pricing</p>
               <div className="flex gap-8 items-center">
                   
@@ -165,8 +179,9 @@ const AppointmentDetails: React.FC<FormProps> = ({
                     ]}
                     setFormData={setFormData!}
                     placeholder='select'
-                    className='w-32 z-50 '
+                    className='w-40 z-50 '
                     setError={setErrors}
+                    error={errors?.currency }
                   />
                   <SelectInput
                     name='amount'
@@ -181,22 +196,10 @@ const AppointmentDetails: React.FC<FormProps> = ({
                     setFormData={setFormData!}
                     setError={setErrors}
                     placeholder='select'
-                    className='w-32 z-50 '
+                    className='w-40 z-50 '
+                    error={errors?.amount }
                   />
               </div>
-            </div>
-
-            <div className=" gap-2 items-center">
-              <InputCustom
-                type='text'
-                label='Appointment Description (optional)'
-                error={errors?.note}
-                name='note'
-                value={formData?.note || ''}
-                placeholder='Add notes for appointment here'
-                className='py-6 w-full'
-                onChange={handleChange}
-              />
             </div>
           </>
           :null
@@ -205,86 +208,103 @@ const AppointmentDetails: React.FC<FormProps> = ({
         {
           selectedType === 'multiple' ? 
           <>
-          <div>
-            <div className="rounded-md space-y-4 bg-slate-50 border relative p-4 pt-6 ">
-                  <h5 className="label px-1 bg-slate-5 absolute -top-3 bg-slate-50 left-3 ">Appointment Type 1</h5>
+          <div className="rounded-md space-y-4 bg-slate-50 border relative p-4 pt-6 ">
+                <h5 className="label px-1 bg-slate-5 absolute -top-3 bg-slate-50 left-3 ">Appointment Type 1</h5>
+                {/* <AddMultipleInput
+                  formData={formData}
+                  setFormData={setFormData!}
+                  label='Create appointment category (optional)'
+                  placeholder='Enter category name'
+                  inputType='text'
+                  formField='category'
+                  formError={errors?.category}
+                /> */}
+                <InputCustom
+                  label='Create appointment category (optional)'
+                  type='text'
+                  error={errors?.category}
+                  name='category'
+                  value={formData?.category || ''}
+                  placeholder='Enter category name'
+                  className='py-6'
+                  onChange={handleChange}
+                />
+
+                <div className="pb-2 gap-2 items-center">
                   <InputCustom
-                    label='Create appointment category (optional)'
                     type='text'
-                    error={errors?.category}
-                    name='category'
-                    value={formData?.category || ''}
-                    placeholder='Enter category name'
-                    className='py-6'
+                    label='Appointment Description (optional)'
+                    error={errors?.note}
+                    name='note'
+                    value={formData?.note || ''}
+                    placeholder='Add notes for appointment here'
+                    className='py-6 w-full'
                     onChange={handleChange}
                   />
+                </div>
 
-                  <div className="flex gap-4 justify-between items-center">
-                    <div className="flex-1">
-                      <h5 className="text-lg font-medium">Make this a paid appointment</h5>
-                      <p className="text-sm text-gray-600">Guests will be charged to book this appointment</p>
+                <div className="flex gap-4 justify-between items-center">
+                  <div className="flex-1">
+                    <h5 className="text-lg font-medium">Make this a paid appointment</h5>
+                    <p className="text-sm text-gray-600">Guests will be charged to book this appointment</p>
+                  </div>
+                  <div
+                      className={` flex-shrink-0 ${formData?.isPaidAppointment ? 'bg-blue-600 ring-blue-600 ring-2 ' : 'bg-gray-300 ring-2 ring-gray-300'} mr- w-14 h-6 p-1.5  relative flex items-center  rounded-full  cursor-pointer `}
+                      onClick={()=>{
+                        setFormData && setFormData((prev:AppointmentFormData)=>{
+                          return {
+                            ...prev,
+                            isPaidAppointment: !prev.isPaidAppointment,
+                            paymentGateway: prev.isPaidAppointment ? '' : 'Zikoro manage',
+                            curency: '',
+                            amount: null,
+                          }
+                        })
+                        }}
+                  >   
+                      <div className="flex w-full justify-between font-semibold text-[9px] text-gray-50"> <p className=''>ON</p><p className=''>OFF</p>  </div>
+                      <div className={`bg-white absolute inset-0 w-7 h-6 flex-shrink-0 rounded-full transition-transform duration-200 transform ${formData?.isPaidAppointment ? 'translate-x-7' : ''}`}></div>
+                  </div>
+                </div>
+
+                <div className={`${formData?.isPaidAppointment ? 'max-h-screen visible':'max-h-0 invisible  overflow-hidden' } transform relative z-10 transition-all duration-300 pb-`}>
+                  <p className='pb-2'>Set currency and pricing</p>
+                  <div className="flex gap-8 items-center">
+                      <SelectInput
+                        name='curency'
+                        value={formData?.curency || ''}
+                        options={[
+                          {label:'USD',value:'USD'},
+                          {label:'CAD',value:'CAD'},
+                          {label:'EUR',value:'EUR'},
+                          {label:'NGN',value:'NGN'},
+                          {label:'AUD',value:'AUD'},
+                        ]}
+                        setFormData={setFormData!}
+                        placeholder='select'
+                        className='w-40 z-50 '
+                        setError={setErrors}
+                        error={errors?.curency }
+                      />
+                      <SelectInput
+                        name='amount'
+                        value={formData?.amount || ''}
+                        options={[
+                          {label:'20',value:20},
+                          {label:'40',value:40},
+                          {label:'60',value:60},
+                          {label:'80',value:80},
+                          {label:'100',value:100},
+                        ]}
+                        setFormData={setFormData!}
+                        setError={setErrors}
+                        placeholder='select'
+                        className='w-40 z-50 '
+                        error={errors?.amount }
+                      />
                     </div>
-                    <div
-                        className={` flex-shrink-0 ${isPaidAppointment ? 'bg-blue-600 ring-blue-600 ring-2 ' : 'bg-gray-300 ring-2 ring-gray-300'} mr- w-14 h-6 p-1.5  relative flex items-center  rounded-full  cursor-pointer `}
-                        onClick={()=>setIsPaidAppointment(curr=>!curr)}
-                    >   
-                        <div className="flex w-full justify-between font-semibold text-[9px]"> <p className='text-white'>ON</p><p className='text-gray-50'>OFF</p>  </div>
-                        <div className={`bg-white absolute inset-0 w-7 h-6 flex-shrink-0 rounded-full transition-transform duration-200 transform ${isPaidAppointment ? 'translate-x-7' : ''}`}></div>
-                    </div>
-                  </div>
-
-                  <div className={`${isPaidAppointment ? 'max-h-screen visible':'max-h-0 invisible  overflow-hidden' } transform relative z-10 transition-all duration-300 pb-`}>
-                    <p className='pb-2'>Set currency and pricing</p>
-                    <div className="flex gap-8 items-center">
-                    <SelectInput
-                          name='curency'
-                          value={formData?.curency || ''}
-                          options={[
-                            {label:'USD',value:'USD'},
-                            {label:'CAD',value:'CAD'},
-                            {label:'EUR',value:'EUR'},
-                            {label:'NGN',value:'NGN'},
-                            {label:'AUD',value:'AUD'},
-                          ]}
-                          setFormData={setFormData!}
-                          placeholder='select'
-                          className='w-32 z-20'
-                          setError={setErrors}
-                        />
-                        <SelectInput
-                          name='amount'
-                          value={formData?.amount || ''}
-                          options={[
-                            {label:'20',value:20},
-                            {label:'40',value:40},
-                            {label:'60',value:60},
-                            {label:'80',value:80},
-                            {label:'100',value:100},
-                          ]}
-                          setFormData={setFormData!}
-                          setError={setErrors}
-                          placeholder='select'
-                          className='w-32 z-20'
-                        />
-                        
-                  </div>
-                  </div>
-
-                  <div className="pb-2 gap-2 items-center">
-                    <InputCustom
-                      type='text'
-                      label='Appointment Description (optional)'
-                      error={errors?.note}
-                      name='note'
-                      value={formData?.note || ''}
-                      placeholder='Add notes for appointment here'
-                      className='py-6 w-full'
-                      onChange={handleChange}
-                    />
-                  </div>
-            </div>
+                </div>
           </div>
-
           <div onClick={()=>console.log('cccccc')} className="text-zikoroBlue flex gap-2 pt-2 items-center">
               <PlusCircle size={14}/>
               <p>Create Appointment Category</p>

@@ -57,6 +57,9 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
     if (!bookingFormData.lastName) {
       error.lastName = 'Last name is required';
     }
+    if (!bookingFormData.notes) {
+      error.notes = 'Add a note';
+    }
     if (!bookingFormData.participantEmail) {
       error.participantEmail = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(bookingFormData.participantEmail)) {
@@ -92,9 +95,9 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
         <p className="pb-4 text-lg font-semibold">Enter your details</p>
         {errors?.general ? <p className="pb-4 text-red-600">{errors?.general}</p> : null}
         {success  ? <p className="pb-4 text-blue-600">{success}</p> : null}
-      <form className="max-w-2xl mx-auto space-y-4" onSubmit={handleSubmit} >
+      <form className="mx-auto space-y-4" onSubmit={handleSubmit} >
         <div className="flex flex-col sm:flex-row gap-4 w-full">
-            <div className="space-y-3 flex-1">
+            <div className="space-y-1 flex-1 w-full">
                 <div className="flex-1">
                   <InputCustom
                     label="First Name"
@@ -134,7 +137,7 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
                 <div className="flex-1">
                   <InputCustom
                     label="Phone"
-                    type="text"
+                    type="tel"
                     error={errors?.phone || ''}
                     name="phone"
                     value={bookingFormData?.phone || ''}
@@ -146,11 +149,14 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
 
             </div>
 
-            <div className="flex-1  h-full grid  flex-col">
-              <p className='pb-3'>Add a note to about the appointment</p>
+            <div className="flex-1 w-96 h-full grid  flex-col">
+              <p className='pb-3 flex-nowrap'> Add a note to this appointment</p>
                   <textarea 
-                    name="note" id="note"
-                    className='sm:h-72 focus:outline-none  p-3 h-24 border w-full rounded-xl'
+                    name="notes" id="notes"
+                    onChange={handleChange}
+                    value={bookingFormData?.notes || ''}
+                    required
+                    className={`${errors.notes ? 'ring-2 ring-red-600':''} sm:h-[17.6rem]  w-full focus:outline-none  p-3 h-24 border  rounded-xl `}
                     >
                   </textarea>
             </div>

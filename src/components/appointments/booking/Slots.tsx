@@ -116,7 +116,10 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
                             onClick={()=>setBookingFormData({
                                 ...bookingFormData,
                                 appointmentTime: slot.label,
-                                appointmentDate: format(selectedDate!, 'yyyy-MM-dd')
+                                appointmentDate: format(selectedDate!, 'yyyy-MM-dd'),
+                                appointmentTimeStr:  slot.label,
+                                appointmentDuration: appointmnetLink?.duration!,
+                                createdBy: appointmnetLink?.createdBy!,
                             })}
                     > {slot.label}</button>
                 )
