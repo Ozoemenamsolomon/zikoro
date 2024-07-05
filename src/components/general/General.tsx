@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
 import { useUpdateWorkspace } from "@/hooks/services/workspace";
+import { useDeleteWorkspace } from "@/hooks/services/workspace";
+import { useRouter } from "next/navigation";
 
 interface FormData {
   orgName: string;
@@ -47,6 +49,7 @@ export default function General() {
   const [isFaviconUploaded, setIsFaviconUploaded] = useState<boolean>(false);
   const [logoUrl, setLogoUrl] = useState<string>("");
   const [faviconUrl, setFaviconUrl] = useState<string>("");
+  const [reloadForm, setReloadForm] = useState<boolean>(false);
 
   const countryList = [
     "Afghanistan",
@@ -315,12 +318,16 @@ export default function General() {
     orgInstagram: "",
   });
 
+  // import update workspace function
   const { updateWorkspace } = useUpdateWorkspace(
     organization?.id ?? 0,
     formData,
     logoUrl,
     faviconUrl
   );
+
+  //import delete workspace function
+  const { deleteWorkspace } = useDeleteWorkspace(formData.orgName);
 
   // Sync formData with organization data
   useEffect(() => {
@@ -339,12 +346,13 @@ export default function General() {
         orgInstagram: organization.instagram || "",
       });
     }
-  }, [organization]);
+  }, [organization, reloadForm]);
 
-  //update setting
+  //update setting function
   const updateSetting = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     updateWorkspace();
+    console.log(formData);
   };
 
   //preview logo
@@ -837,6 +845,9 @@ export default function General() {
                       <button
                         disabled={delInput != organization.organizationName}
                         type="button"
+                        onClick={() => {
+                          deleteWorkspace().then(() => setReloadForm(!reloadForm));
+                        }}
                         className="bg-[#E74C3C] text-white py-1 w-full text-[15px] cursor-pointer  font-medium rounded-md "
                       >
                         Delete

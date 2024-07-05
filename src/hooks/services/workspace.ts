@@ -4,35 +4,6 @@ import toast from "react-hot-toast";
 
 const supabase = createClientComponentClient();
 
-type DBWorkspaceData = {
-  id: number;
-  created_at: string;
-  organizationName: string;
-  subscritionStartDate: string;
-  subscriptionEndDate: string;
-  organizationOwner: string;
-  BillingAddress: string;
-  TaxID: string;
-  payoutAccountDetails: string;
-  organizationOwnerId: string;
-  organizationType: string;
-  organizationLogo: string;
-  country: string;
-  eventPhoneNumber: string;
-  eventWhatsApp: string;
-  eventContactEmail: string;
-  x: string;
-  linkedIn: string;
-  instagram: string;
-  certificateAsset: string;
-  tiktok: string;
-  teamMembers: {
-    userId: number;
-    userEmail: string;
-    userRole: string;
-  };
-};
-
 interface FormDataType {
   orgName: string,
   orgType: string,
@@ -49,17 +20,20 @@ interface FormDataType {
 
 export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, orgLogoLink: string, orgFaviconLink: string) {
   async function updateWorkspace() {
-    const orgName = formData.orgName
-    const orgType = formData.orgType
-    const orgPlan = formData.orgPlan
-    const orgCountry = formData.orgCountry
-    const orgTel = formData.orgTel
-    const orgWhatsapp = formData.orgWhatsappNumber
-    const orgEmail = formData.orgEmail
-    const orgLinkedin = formData.orgLinkedin
-    const orgInstagram = formData.orgInstagram
-    const orgFacebook = formData.orgFacebook
-    const orgX = formData.orgX
+    const {
+      orgName,
+      orgType,
+      orgPlan,
+      orgCountry,
+      orgTel,
+      orgWhatsappNumber,
+      orgEmail,
+      orgLinkedin,
+      orgInstagram,
+      orgFacebook,
+      orgX
+    } = formData;
+
 
     try {
       const { data, error, status } = await supabase
@@ -71,7 +45,7 @@ export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, 
             subscriptionPlan: orgPlan,
             country: orgCountry,
             eventPhoneNumber: orgTel,
-            eventWhatsApp: orgWhatsapp,
+            eventWhatsApp: orgWhatsappNumber,
             eventContactEmail: orgEmail,
             organizationLogo: orgLogoLink,
             // organizationFavicon: orgFaviconLink,
@@ -79,9 +53,9 @@ export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, 
             linkedIn: orgLinkedin,
             facebook: orgFacebook,
             instagram: orgInstagram,
-          },
-        ])
-        .eq("id", workspaceId)
+          }
+        ]
+        )
         .eq("organizationName", orgName)
       if (error) {
         console.log(error.message);
@@ -90,7 +64,7 @@ export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, 
       if (status === 204 || status === 200) {
         toast.success("Workspace Updated");
       }
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error(error);
     }
   }
@@ -99,16 +73,14 @@ export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, 
   };
 }
 
-export function useDeleteWorkspace(workspaceId: number) {
-  const [loading, setLoading] = useState(false);
+export function useDeleteWorkspace(orgName: string) {
   async function deleteWorkspace() {
-    setLoading(true);
     try {
       // Delete the event by ID
       const { data, error, status } = await supabase
         .from("organization")
         .delete()
-        .eq("id", workspaceId);
+        .eq("organizationName", orgName);
 
       if (error) {
         toast.error(error.message);
