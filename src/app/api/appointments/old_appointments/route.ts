@@ -87,7 +87,7 @@ export async function GET(req: NextRequest) {
       .select("*")
       .eq("createdBy", userId)
       .lt('appointmentDate', today)
-      .order("created_at", { ascending: false });
+      .order("appointmentDate", { ascending: true });
 
     if (error) {
       console.error("Error fetching appointment links:", error.message);

@@ -16,7 +16,7 @@ const Booking =  ({alias}:{alias:string}) => {
         <header >
             {
                 isLoading ?
-                <div className='w-48 h-10 rounded-md animate-pulse bg-gray-200'></div>
+                <div className='w-20 h-10 rounded-md animate-pulse bg-gray-200'></div>
                 :
                 appointmnetLink?.logo ?
                 <div className=''>
@@ -34,33 +34,47 @@ const Booking =  ({alias}:{alias:string}) => {
             <section className="w-full max-w-7xl lg:h-[70vh] mx-auto  grid lg:flex gap-6 lg:justify-center">
 
                 <div className="bg-white w-full lg:w-80 overflow-auto xl:w-96  flex-shrink-0 p-6 rounded-lg   title ">
-                <h4 className="text-lg font-semibold ">{appointmnetLink?.appointmentName}</h4>
+                {isLoading ?
+                <div className='w-32 h-10 rounded-md animate-pulse bg-gray-200'></div> : 
+                <h4 className="text-lg font-semibold ">{appointmnetLink?.appointmentName}</h4>}
 
                     <div className="pt-24  pb-8">
                         <div className="flex pb-2 w-full items-start">
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Duration</p>
-                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5">{appointmnetLink?.duration} mins</p>
+                            {isLoading ?
+                            <div className='w-32 h-10 rounded-md animate-pulse bg-gray-200'></div> : 
+                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5">{appointmnetLink?.duration} mins</p>}
                         </div>
                         <div className="flex pb-2 w-full items-start">
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Location Type</p>
-                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5">{appointmnetLink?.loctionType}</p>
+                            {isLoading ?
+                            <div className='w-32 h-10 rounded-md animate-pulse bg-gray-200'></div> :
+                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5">{appointmnetLink?.loctionType}</p>}
                         </div>
                         <div className="flex pb-2 w-full items-start">
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Location</p>
-                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5">{appointmnetLink?.locationDetails}</p>
+                            {isLoading ?
+                            <div className='w-32 h-10 rounded-md animate-pulse bg-gray-200'></div> :
+                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5">{appointmnetLink?.locationDetails}</p>}
                         </div>
-                        <div className="flex  pb-2 w-full items-start">
+                        {appointmnetLink?.amount?<div className="flex  pb-2 w-full items-start">
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Price</p>
-                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5 flex ">{appointmnetLink?.curency} {appointmnetLink?.amount}</p>
-                        </div>
+                            {isLoading ?
+                            <div className='w-32 h-10 rounded-md animate-pulse bg-gray-200'></div> :
+                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5 flex ">{appointmnetLink?.curency} {appointmnetLink?.amount}</p>}
+                        </div>:null}
                         <div className="flex  pb-2 w-full items-start">
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Max booking</p>
-                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5 flex "> {appointmnetLink?.maxBooking}</p>
+                            {isLoading ?
+                            <div className='w-32 h-10 rounded-md animate-pulse bg-gray-200'></div> :
+                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5 flex "> {appointmnetLink?.maxBooking}</p>}
                         </div>
-                        <div className="flex pb-2 w-full items-start">
+                        {appointmnetLink?.note ? <div className="flex pb-2 w-full items-start">
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Desc</p>
-                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5">{appointmnetLink?.note}</p>
-                        </div>
+                            {isLoading ?
+                            <div className='w-32 h-10 rounded-md animate-pulse bg-gray-200'></div> :
+                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5">{appointmnetLink?.note}</p>}
+                        </div> : null}
                     </div>
                 </div>
                

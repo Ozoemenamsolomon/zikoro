@@ -104,7 +104,7 @@ export const getBookings = async ( ) => {
 
 export const useGetBookingAppointment = (appointmentAlias: string) => {
   const [appointment, setAppointment] = useState<AppointmentLink | null>(null);
-  const [isLoading, setLoading] = useState<boolean>(true);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const getAppointment = useCallback(async () => {

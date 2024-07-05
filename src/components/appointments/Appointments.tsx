@@ -29,7 +29,7 @@ const groupBookingsByDate = (bookings: Booking[]): GroupedBookings => {
 };
 
 const BookingRow = ({ booking }: { booking: Booking }) => {
-  const { participantEmail, lastName, firstName, phone, appointmentDate, appointmentTime, notes, appointmentType, id } = booking;
+  const { participantEmail, lastName, firstName, phone, appointmentDate,appointmentName, appointmentTime, notes, appointmentType, id } = booking;
   const dateTimeString = `${appointmentDate}T${appointmentTime}`;
   const dateTime = new Date(dateTimeString);
   return (
@@ -46,6 +46,7 @@ const BookingRow = ({ booking }: { booking: Booking }) => {
         </div>
       </td>
       <td className="py-2 px-4">{format(dateTime, "hh:mm a")}</td>
+      <td className="py-2 px-4">{appointmentName}</td>
       <td className="py-2 px-4">{appointmentType}</td>
       <td className="py-2 px-4">{notes}</td>
       <td className="py-2 px-4">
@@ -79,6 +80,7 @@ const BookingTable = ({ date, bookings }: { date: string, bookings: Booking[] })
             <tr className="bg-gray-50 text-gray-700">
               <th className="py-3 px-4 text-left text-sm font-medium">Name</th>
               <th className="py-3 px-4 text-left text-sm font-medium">Time</th>
+              <th className="py-3 px-4 text-left text-sm font-medium">Appointment Name</th>
               <th className="py-3 px-4 text-left text-sm font-medium">Appointment Type</th>
               <th className="py-3 px-4 text-left text-sm font-medium">Notes</th>
               <th className="py-3 px-4 text-left text-sm font-medium"></th>

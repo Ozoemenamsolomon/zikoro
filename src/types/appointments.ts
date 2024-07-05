@@ -36,7 +36,7 @@ export interface AppointmentFormData {
   timeZone: string;
   timeDetails:  DaySchedule[] ;
   curency: string;
-  amount: number;
+  amount: number|null;
   paymentGateway: string;
   maxBooking: number;
   sessionBreak: number;
@@ -49,7 +49,8 @@ export interface AppointmentFormData {
   brandColour: string | null;
   teamMembers: string | null;
   zikoroBranding: string | null;
-  files?:File[];
+  files?:File[] | null;
+  isPaidAppointment?: boolean;
 }
 export interface FormProps {
   formData?: AppointmentFormData;
@@ -84,7 +85,7 @@ export interface Booking {
   lastName?: string | null;
   phone?: string | null;
   price?: number |string| null;
-  createdBy: number;
+  createdBy?: number;
   email?:string;
   currency?: string | null;
   feeType?: string | null;

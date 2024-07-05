@@ -23,7 +23,6 @@ const Branding: React.FC<FormProps> = ({
       }));
     }
   };
-
   return (
     <div className="space-y-4">
       <div>
@@ -53,9 +52,10 @@ const Branding: React.FC<FormProps> = ({
 
           <p>Choose Brand Color</p>
 
-          <div className="flex pt-1 items-center gap-2 px-2   rounded-md bg-gray-200 border border-gray-300 text-gray-500 ">
+          <div className="flex pt-1 items-center gap-2 px-2 rounded-md bg-gray-100 border border-gray-200 text-gray-00 ">
             <p>{formData?.brandColour || '#00FFF'}</p>
             <ColorPicker position='right' 
+              initialColor={formData?.brandColour!}
               onChange={(color)=>{
                 if(setFormData){
                   setFormData((prev:AppointmentFormData)=>({

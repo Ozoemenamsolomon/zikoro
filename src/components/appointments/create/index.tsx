@@ -68,8 +68,8 @@ const formdata = {
     enabled: false
   })),
   curency: '',
-  amount: 0,
-  paymentGateway: 'Zikoro manage',
+  amount: null,
+  paymentGateway: '',
   maxBooking: 1,
   sessionBreak: 5,
   statusOn: true,
@@ -82,6 +82,7 @@ const formdata = {
   teamMembers: null,
   zikoroBranding: 'true',
   files: [],
+  isPaidAppointment:false,
 };
 
 interface ValidationErrors {
@@ -111,10 +112,12 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
         // Check if parsedCategory is an array and set isOpen
         if (Array.isArray(parsedCategory)) {
           setselectedType('multiple')
+        } else {
+          setselectedType('single')
         }
   
         // Update formData with parsed values
-        setFormData({ ...appointment, timeDetails: parsedTimeDetails, category: parsedCategory });
+        setFormData({ ...appointment, timeDetails: parsedTimeDetails, category: parsedCategory, isPaidAppointment: appointment.amount ? true : false });
   
         // Debugging output
         console.log({ parsedCategory, parsedTimeDetails, formData });
@@ -183,6 +186,18 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
     if (data.sessionBreak <= 0) {
       error.sessionBreak = 'Session Break must be a positive number';
     }
+
+    if (data.isPaidAppointment && !data?.amount ) {
+      error.amount = 'Amount is required';
+    }
+
+    if (data.isPaidAppointment && !data.curency ) {
+      error.curency = 'Currency is required';
+    }
+
+    if (data.isPaidAppointment && !data.paymentGateway) {
+      error.paymentGateway = 'Payment gateway is required';
+    }
     setErrors(error);
     return Object.keys(error).length > 0;
   };
@@ -198,6 +213,7 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
     }
     const logoUrl = await uploadImage(formData.files!)
     delete formData['files']
+    delete formData['isPaidAppointment']
     try {
       const payload = { ...formData, timeDetails: JSON.stringify(formData.timeDetails), logo: logoUrl || '' };
       let response;
