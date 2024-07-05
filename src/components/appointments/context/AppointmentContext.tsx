@@ -34,7 +34,7 @@ export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ childre
 
   const [bookingFormData, setBookingFormData] = useState<Booking>({})
   const [inactiveSlots, setInactiveSlots] = useState<string[]>([]);
-  const [selectedType, setselectedType] = useState<string>('');
+  const [selectedType, setselectedType] = useState<string>('single');
   const [slotCounts, setSlotCounts] = useState<{ [key: string]: number }>({});
 
   const contextValue: AppointmentContextProps = {

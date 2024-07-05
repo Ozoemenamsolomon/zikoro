@@ -29,27 +29,29 @@ export interface AppointmentFormData {
   id?: bigint;
   created_at?: string;
   appointmentName: string;
-  category: string;
+  category: string|string[];
   duration: number|null;
   loctionType: string;
   locationDetails: string;
   timeZone: string;
   timeDetails:  DaySchedule[] ;
   curency: string;
-  amount: number;
+  amount: number|null;
   paymentGateway: string;
   maxBooking: number;
   sessionBreak: number;
   statusOn: boolean;
   note: string;
   appointmentAlias: string;
-  createdBy: number;
+  createdBy: number|null;
   businessName: string | null;
   logo: string | null;
   brandColour: string | null;
   teamMembers: string | null;
   zikoroBranding: string | null;
-  files?:File[];
+  files?:File[] | null;
+  isPaidAppointment?: boolean;
+
 }
 export interface FormProps {
   formData?: AppointmentFormData;
@@ -84,10 +86,13 @@ export interface Booking {
   lastName?: string | null;
   phone?: string | null;
   price?: number |string| null;
-  createdBy: number;
+  createdBy?: number;
   email?:string;
   currency?: string | null;
   feeType?: string | null;
+  notes?: string | null;
+  appointmentTimeStr: string;
+  appointmentDuration: number;
 }
 
 export interface UserType {

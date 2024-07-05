@@ -2,6 +2,7 @@
 import { X } from 'lucide-react';
 import React from 'react';
 import { useAppointmentContext } from '../context/AppointmentContext';
+import { useParams, usePathname } from 'next/navigation';
 
 interface ModalProps {
   isOpen: boolean;
@@ -10,10 +11,11 @@ interface ModalProps {
 
 const SelectType: React.FC<ModalProps> = ({ isOpen, onClose,  }) => {
     const {setselectedType} = useAppointmentContext()
+    const pathname = usePathname()
   return (
     <div
       className={`fixed inset-0 z-50 bg-white flex items-center justify-center transition-transform duration-300 ${
-        isOpen ? 'scale-100' : 'scale-0'
+        isOpen && !pathname.includes('edit') ? 'scale-100' : 'scale-0'
       }`}
     >
       <X size={20} onClick={onClose}  className="absolute top-6 right-6 text-gray-500 hover:text-gray-600"/>

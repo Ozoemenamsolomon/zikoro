@@ -229,7 +229,6 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
                                         setBookingFormData({
                                             ...bookingFormData,
                                             appointmentDate: format(day, 'yyyy-MM-dd'),
-                                            createdBy: appointmnetLink?.createdBy!,
                                         })
                                     }}
                                     className={classNames(

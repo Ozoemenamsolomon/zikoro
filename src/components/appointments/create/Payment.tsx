@@ -7,6 +7,7 @@ import Image from 'next/image';
 const Payment: React.FC<FormProps> = ({
   formData,
   setFormData,
+  errors,
 }) => {
   const [drop, setDrop] = useState(false);
 
@@ -29,6 +30,7 @@ const Payment: React.FC<FormProps> = ({
         paymentGateway: gatewayName,
       }));
     }
+    delete errors.paymentGateway
     const selectedGateway = paymentGateways.find((gw) => gw.name === gatewayName);
     setGateway(selectedGateway?.component || null);
   };
@@ -44,10 +46,12 @@ const Payment: React.FC<FormProps> = ({
         <p className="pb-2">Connect your preferred payment gateway</p>
         <div className="w-full py-3">
           <div className="flex ">
-            <div className="border-2 cursor-pointer flex items-center justify-center  py-3 px-8 rounded-md hover:shadow-md duration-300">
+            {formData?.paymentGateway && gateway ? <div className="border-2 cursor-pointer flex items-center justify-center  py-3 px-8 rounded-md hover:shadow-md duration-300">
               {gateway}
-            </div>
+            </div> : null}
           </div>
+          {errors?.paymentGateway ? <p className="text-red-600 text-[12px] pt-1">{errors?.paymentGateway}</p> : null}
+
         </div>
         <p className="flex gap-4 items-center pb-4 cursor-pointer text-zikoroBlue" onClick={() => setDrop((curr) => !curr)}>
           <PlusCircle className='text-zikoroBlue' size={20} />

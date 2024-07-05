@@ -150,6 +150,7 @@ export function ScoreBoard({
       await updateQuiz({ payload });
       close();
     }
+     window.open(`/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`, "_self");
   }
 
   return (
