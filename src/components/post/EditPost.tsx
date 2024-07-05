@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import TextEditor from "@/components/TextEditor";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircleIcon } from "@/constants";
 import { AddTag } from "@/components/blog/modal/AddTag";
 import { useRouter } from "next/navigation";
 import { useFetchBlogPost } from "@/hooks/services/post";
@@ -219,14 +219,10 @@ export default function EditPost({ postId }: { postId: string }): JSX.Element {
                 {...register("category", { required: true })}
                 onChange={handleChange}
                 required
-                className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer"
+                className="w-full lg:w-2/12 h-[44px] bg-transparent rounded-lg border-[1px] text-[15px] border-indigo-600 px-4 outline-none hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end cursor-pointer text-indigo-700 font-medium"
               >
                 {categories.map((category, index) => (
-                  <option
-                    key={index}
-                    value={category.value}
-                    className="bg-transparent text-black text-[15px]"
-                  >
+                  <option key={index} value={category.value} className="">
                     {category.name}
                   </option>
                 ))}
@@ -234,9 +230,9 @@ export default function EditPost({ postId }: { postId: string }): JSX.Element {
 
               <div
                 onClick={() => setTagModalOpen(true)}
-                className="flex items-center px-4 rounded-lg h-[44px] border-[1px] border-indigo-600 hover:text-gray-50 hover:bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gap-x-2 w-full lg:w-2/12 text-[15px] font-medium cursor-pointer"
+                className="flex items-center px-4 rounded-lg h-[44px] border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gap-x-2 w-full lg:w-2/12 text-[15px] font-medium cursor-pointer text-white"
               >
-                <PlusCircle size={22} />
+                <PlusCircleIcon />
                 <p>Tag</p>
               </div>
             </div>
