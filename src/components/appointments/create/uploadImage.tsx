@@ -2,13 +2,13 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { AppointmentFormData } from '@/types/appointments';
-import { PlusCircle , XCircle} from 'lucide-react';
+import {  XCircle} from 'lucide-react';
 import { ImgaeIcon, } from '@/constants';
 
 
 
 export const uploadImage = async (files: File[]) => {
-    if(!files.length) return
+    if(!files?.length) return
 
     const formDataToSend = new FormData();
     files.forEach(file => {
@@ -107,11 +107,11 @@ const UploadImage: React.FC<UploadImageProps> = ({ formData, setFormData, multip
         
         <div className=" flex flex-wrap gap-4">
         {formData?.files?.map((file, index) => (
-          <div key={index} className="relative w-14 h-14 overflow-hidden border rounded-lg">
+          <div key={index} className="relative w-16 h-16 overflow-hidden border rounded-lg">
             <img
-              src={URL.createObjectURL(file)}
+              src={URL.createObjectURL(file) || formData?.logo || ''}
               alt={`preview ${index}`}
-              className="object-cover w-full h-full"
+              className="object-contain w-full h-full"
             />
           </div>
         ))}

@@ -29,7 +29,7 @@ export interface AppointmentFormData {
   id?: bigint;
   created_at?: string;
   appointmentName: string;
-  category: string;
+  category: string|string[];
   duration: number|null;
   loctionType: string;
   locationDetails: string;
@@ -43,7 +43,7 @@ export interface AppointmentFormData {
   statusOn: boolean;
   note: string;
   appointmentAlias: string;
-  createdBy: number;
+  createdBy: number|null;
   businessName: string | null;
   logo: string | null;
   brandColour: string | null;
@@ -88,6 +88,7 @@ export interface Booking {
   email?:string;
   currency?: string | null;
   feeType?: string | null;
+  notes?: string | null
 }
 
 export interface UserType {

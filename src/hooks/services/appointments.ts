@@ -33,32 +33,60 @@ export const useGetAppointments = () => {
   return { appointments, isLoading, getAppointments };
 };
 
-export const useGetBookings= () => {
+export const useGetBookings = (pastAppointments?: string) => {
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [isLoading, setLoading] = useState<boolean>(false);
-  
+  const [isLoading, setLoading] = useState<boolean>(true);
+
   const getBookings = async () => {
     setLoading(true);
-    //
-    const { data, status, } = await getRequest<Booking[]>({
-      endpoint: `/appointments`,
-    });
-    setLoading(false);
-    if(status!==200){
-      //useToast
-      toast.error('Error fetching schedules!')
+    try {
+      const { data, status } = await getRequest<Booking[]>({
+        endpoint: `/appointments`,
+      });
+      setLoading(false);
+      if (status !== 200) {
+        toast.error('Error fetching schedules!');
+        return;
+      }
+      setBookings(data.data);
+    } catch (error) {
+      setLoading(false);
+      toast.error('Error fetching schedules!');
+      console.error('Error fetching schedules:', error);
     }
+  };
 
-    return setBookings(data.data);
+  const getPastBookings = async () => {
+    setLoading(true);
+    try {
+      const { data, status } = await getRequest<Booking[]>({
+        endpoint: `/appointments/old_appointments?date=${new Date().toISOString()}`,
+      });
+      setLoading(false);
+      if (status !== 200) {
+        toast.error('Error fetching schedules!');
+        return;
+      }
+      setBookings(data.data);
+    } catch (error) {
+      setLoading(false);
+      toast.error('Error fetching past schedules!');
+      console.error('Error fetching past schedules:', error);
+    } finally {
+      setLoading(false)
+    }
   };
 
   useEffect(() => {
-    getBookings();
-  }, []);
+    if (pastAppointments) {
+      getPastBookings();
+    } else {
+      getBookings();
+    }
+  }, [pastAppointments]);
 
-  return { bookings, isLoading, getBookings };
+  return { bookings, isLoading, getBookings, getPastBookings };
 };
-
 
 export const getAppointment = async (appointmentAlias:string) => {
   const { data, status } = await getRequest<AppointmentLink>({
@@ -74,36 +102,9 @@ export const getBookings = async ( ) => {
   return  data.data;
 };
 
-
-// export const useGetBookingAppointment = (appointmentAlias:string) => {
-//     const [appointment, setAppointment] = useState<AppointmentLink | null>(null);
-//     const [isLoading, setLoading] = useState<boolean>(false);
-  
-//     const getAppointment = async () => {
-//       setLoading(true);
-//       const { data, status } = await getRequest<AppointmentLink>({
-//         endpoint: `/appointments/booking/${appointmentAlias}`,
-//       });
-  
-//       setLoading(false);
-  
-//       return setAppointment(data.data);
-//     };
-
-//     console.log({appointmentAlias,appointment})
-
-//     useEffect(() => {
-//       if(appointmentAlias){
-//         getAppointment();
-//       }
-//     }, [appointmentAlias]);
-  
-//     return { appointment, isLoading, getAppointment };
-//   };
-
 export const useGetBookingAppointment = (appointmentAlias: string) => {
   const [appointment, setAppointment] = useState<AppointmentLink | null>(null);
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const getAppointment = useCallback(async () => {
@@ -169,36 +170,3 @@ export const useGetBookingList = (appointmentAlias: string) => {
   return { bookings, isLoading, error, getAppointment };
 };
 
-
-//   const [appointment, setBookings] = useState<AppointmentLink | null>(null);
-//   const [isLoading, setLoading] = useState<boolean>(false);
-//   const [error, setError] = useState<string | null>(null);
-
-//   const getAppointment = useCallback(async () => {
-//     setLoading(true);
-//     setError(null);
-//     try {
-//       const { data, status } = await getRequest<AppointmentLink>({
-//         endpoint: `/appointments/booking`,
-//       });
-
-//       if (status === 200) {
-//         setBookings(data.data);
-//       } else {
-//         setError(`Error: ${status}`);
-//       }
-//     } catch (err) {
-//       setError('server error');
-//     } finally {
-//       setLoading(false);
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     if () {
-//       getAppointment();
-//     }
-//   }, [appointmentAlias, getAppointment]);
-
-//   return { appointment, isLoading, error, getAppointment };
-// };

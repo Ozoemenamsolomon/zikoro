@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
       .from("bookings")
       .select("*")
       .eq("createdBy", userId)
-      .gte('appointmentDate', today)
+      .lt('appointmentDate', today)
       .order("created_at", { ascending: false });
 
     if (error) {

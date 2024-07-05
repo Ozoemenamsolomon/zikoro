@@ -15,12 +15,17 @@ const Booking =  ({alias}:{alias:string}) => {
     <main className='relative pt-10 sm:px-6 xl:px-12  bg-white min-h-screen  space-y-4'>
         <header >
             {
+                isLoading ?
+                <div className='w-48 h-10 rounded-md animate-pulse bg-gray-200'></div>
+                :
                 appointmnetLink?.logo ?
                 <div className=''>
                     <Image src={appointmnetLink?.logo } alt='brand logo' width={35} height={20} />
                 </div>
                 :
-                <h4 className="text-xl font-semibold max-sm:pl-4 ">Organization logo</h4>
+                <div className=''>
+                    <Image src='/zikoro-b.png' alt='brand logo' width={100} height={50} />
+                </div>
             }
         </header>
 

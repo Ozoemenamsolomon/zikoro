@@ -7,6 +7,7 @@ import RadioButtons from '../ui/RadioButtons';
 import { SelectInput } from '../ui/CustomSelect';
 import ColorPicker from '../ui/ColorPicker';
 import { useAppointmentContext } from '../context/AppointmentContext';
+import AddMultipleInput from './AddMultipleInput';
 
 const AppointmentDetails: React.FC<FormProps> = ({
   formData,
@@ -35,20 +36,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
             onChange={handleChange}
           />
         </div>
-        {/* <ColorPicker 
-          position='right' 
-          onChange={(color)=>{
-            if(setFormData){
-              setFormData((prev:AppointmentFormData)=>({
-                  ...prev,
-                  brandColour: color
-                }
-              ))
-            }}}
-        /> */}
       </div>
-
-     
 
       <div>
         <p className='label'>Duration in minutes</p>
@@ -56,11 +44,14 @@ const AppointmentDetails: React.FC<FormProps> = ({
           name='duration'
           value={formData?.duration || ''}
           options={[
-            {label:'20',value:20},
-            {label:'40',value:40},
+            {label:'15',value:15},
+            {label:'30',value:30},
             {label:'60',value:60},
-            {label:'80',value:80},
-            {label:'100',value:100},
+            {label:'90',value:90},
+            {label:'120',value:120},
+            {label:'180',value:180},
+            {label:'210',value:210},
+            {label:'360',value:360},
           ]}
           setFormData={setFormData!}
           setError={setErrors}
@@ -69,6 +60,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
         />
         
       </div>
+      
       <div>
         <label htmlFor="loctionType" className='pb-3'>Location type</label>
         <RadioButtons 
@@ -135,6 +127,19 @@ const AppointmentDetails: React.FC<FormProps> = ({
 
         { selectedType==='single' ?
           <>
+          <div className=" gap-2 items-center">
+              <InputCustom
+                type='text'
+                label='Appointment Description (optional)'
+                error={errors?.note}
+                name='note'
+                value={formData?.note || ''}
+                placeholder='Add notes for appointment here'
+                className='py-6 w-full'
+                onChange={handleChange}
+              />
+            </div>
+
             <div className="flex gap-4 justify-between items-center">
             <div className="flex-1">
               <h5 className="label">Make this a paid appointment</h5>
@@ -186,18 +191,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
               </div>
             </div>
 
-            <div className=" gap-2 items-center">
-              <InputCustom
-                type='text'
-                label='Appointment Description (optional)'
-                error={errors?.note}
-                name='note'
-                value={formData?.note || ''}
-                placeholder='Add notes for appointment here'
-                className='py-6 w-full'
-                onChange={handleChange}
-              />
-            </div>
+            
           </>
           :null
         }
@@ -208,6 +202,15 @@ const AppointmentDetails: React.FC<FormProps> = ({
           <div>
             <div className="rounded-md space-y-4 bg-slate-50 border relative p-4 pt-6 ">
                   <h5 className="label px-1 bg-slate-5 absolute -top-3 bg-slate-50 left-3 ">Appointment Type 1</h5>
+                  {/* <AddMultipleInput
+                    formData={formData}
+                    setFormData={setFormData!}
+                    label='Create appointment category (optional)'
+                    placeholder='Enter category name'
+                    inputType='text'
+                    formField='category'
+                    formError={errors?.category}
+                  /> */}
                   <InputCustom
                     label='Create appointment category (optional)'
                     type='text'
@@ -218,6 +221,19 @@ const AppointmentDetails: React.FC<FormProps> = ({
                     className='py-6'
                     onChange={handleChange}
                   />
+
+                  <div className="pb-2 gap-2 items-center">
+                    <InputCustom
+                      type='text'
+                      label='Appointment Description (optional)'
+                      error={errors?.note}
+                      name='note'
+                      value={formData?.note || ''}
+                      placeholder='Add notes for appointment here'
+                      className='py-6 w-full'
+                      onChange={handleChange}
+                    />
+                  </div>
 
                   <div className="flex gap-4 justify-between items-center">
                     <div className="flex-1">
@@ -270,18 +286,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
                   </div>
                   </div>
 
-                  <div className="pb-2 gap-2 items-center">
-                    <InputCustom
-                      type='text'
-                      label='Appointment Description (optional)'
-                      error={errors?.note}
-                      name='note'
-                      value={formData?.note || ''}
-                      placeholder='Add notes for appointment here'
-                      className='py-6 w-full'
-                      onChange={handleChange}
-                    />
-                  </div>
+                 
             </div>
           </div>
 
