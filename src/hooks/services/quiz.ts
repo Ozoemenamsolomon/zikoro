@@ -370,7 +370,7 @@ export const useRealtimePresence = (isLive: boolean) => {
         }
       })
       .on("presence", { event: "join" }, ({ key, newPresences }) => {
-      //  console.log("join", key, newPresences[0]);
+       console.log("join", key, newPresences);
         saveCookie("player", {
           userId: newPresences[0]?.presence_ref,
           connectedAt: newPresences[0]?.online_at,
