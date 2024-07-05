@@ -51,6 +51,7 @@ export interface AppointmentFormData {
   zikoroBranding: string | null;
   files?:File[] | null;
   isPaidAppointment?: boolean;
+
 }
 export interface FormProps {
   formData?: AppointmentFormData;
@@ -89,7 +90,9 @@ export interface Booking {
   email?:string;
   currency?: string | null;
   feeType?: string | null;
-  notes?: string | null
+  notes?: string | null;
+  appointmentTimeStr: string;
+  appointmentDuration: number;
 }
 
 export interface UserType {
