@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components";
-import { TQuiz, TQuestion } from "@/types";
+import { TQuiz, TQuestion, TQuizParticipant } from "@/types";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import Image from "next/image";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
@@ -25,20 +25,23 @@ export function QuizLobby({
 }) {
   const [loading, setLoading] = useState(false);
   const { updateQuiz } = useUpdateQuiz();
+  const [players, setPlayers] = useState<TQuizParticipant[]>([]);
 
-  const players = useMemo(() => {
-    if (
-      Array.isArray(quiz?.quizParticipants) &&
-      quiz?.quizParticipants?.length > 0
-    ) {
-      return quiz?.quizParticipants?.filter(
-        (participant) =>
-          new Date(participant?.joinedAt).getTime() >
-          new Date(quiz?.liveMode?.startingAt).getTime()
-      );
-    } else {
-      return [];
-    }
+  useEffect(() => {
+    (() => {
+      if (
+        Array.isArray(quiz?.quizParticipants) &&
+        quiz?.quizParticipants?.length > 0
+      ) {
+        const filtered = quiz?.quizParticipants?.filter(
+          (participant) =>
+            new Date(participant?.joinedAt).getTime() >
+            new Date(quiz?.liveMode?.startingAt).getTime()
+        );
+
+        setPlayers(filtered);
+      }
+    })();
   }, [quiz]);
 
   // for an attendee

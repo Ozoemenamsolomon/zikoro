@@ -4,7 +4,7 @@ import { TAttendee } from ".";
 import { AvatarFullConfig } from "react-nice-avatar";
 
 
-type TQuizParticipant = {
+export type TQuizParticipant = {
   id: string;
     nickName: string;
     attendee?: TAttendee;

@@ -21,15 +21,36 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
+import toast from "react-hot-toast";
+import { useUpdateWorkspace } from "@/hooks/services/workspace";
+import { useDeleteWorkspace } from "@/hooks/services/workspace";
+import { useRouter } from "next/navigation";
+
+interface FormData {
+  orgName: string;
+  orgType: string;
+  orgPlan: string;
+  orgCountry: string;
+  orgTel: string;
+  orgWhatsappNumber: string;
+  orgEmail: string;
+  orgX: string;
+  orgLinkedin: string;
+  orgFacebook: string;
+  orgInstagram: string;
+}
 
 export default function General() {
   const { organization, setOrganization } = useOrganizationStore();
-  const [currentUser, setCurrentUser] = useState<any>(null);
   const [delInput, setDelInput] = useState<string>("");
+  const [logo, setLogo] = useState<any>(null);
+  const [favicon, setFavicon] = useState<any>(null);
+  const [isLogoUploaded, setIsLogoUploaded] = useState<boolean>(false);
+  const [isFaviconUploaded, setIsFaviconUploaded] = useState<boolean>(false);
+  const [logoUrl, setLogoUrl] = useState<string>("");
+  const [faviconUrl, setFaviconUrl] = useState<string>("");
+  const [reloadForm, setReloadForm] = useState<boolean>(false);
 
-  const updateSetting = (e: any) => {
-    e.prevntDefault();
-  };
   const countryList = [
     "Afghanistan",
     "Åland Islands",
@@ -282,331 +303,565 @@ export default function General() {
     "Zimbabwe",
   ];
 
+  //contain form details
+  const [formData, setFormData] = useState<FormData>({
+    orgName: "",
+    orgType: "",
+    orgPlan: "",
+    orgCountry: "",
+    orgTel: "",
+    orgWhatsappNumber: "",
+    orgEmail: "",
+    orgX: "",
+    orgLinkedin: "",
+    orgFacebook: "",
+    orgInstagram: "",
+  });
+
+  // import update workspace function
+  const { updateWorkspace } = useUpdateWorkspace(
+    organization?.id ?? 0,
+    formData,
+    logoUrl,
+    faviconUrl
+  );
+
+  //import delete workspace function
+  const { deleteWorkspace } = useDeleteWorkspace(formData.orgName);
+
+  // Sync formData with organization data
   useEffect(() => {
     if (organization) {
-      setCurrentUser(organization);
+      setFormData({
+        orgName: organization.organizationName || "",
+        orgType: organization.organizationType || "",
+        orgPlan: organization.subscriptionPlan || "",
+        orgCountry: organization.country || "",
+        orgTel: organization.eventPhoneNumber || "",
+        orgWhatsappNumber: organization.eventWhatsApp || "",
+        orgEmail: organization.eventContactEmail || "",
+        orgX: organization.x || "",
+        orgLinkedin: organization.linkedIn || "",
+        orgFacebook: organization.facebook || "",
+        orgInstagram: organization.instagram || "",
+      });
     }
-  }),
-    [organization];
+  }, [organization, reloadForm]);
 
+  //update setting function
+  const updateSetting = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    updateWorkspace();
+    console.log(formData);
+  };
+
+  //preview logo
+  const handleLogoPreview = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogo(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  //preview favicon
+  const handleFaviconPreview = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFavicon(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  //handles input change
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  //Upload Logo Function
+  const uploadLogo = async () => {
+    const logoFormData = new FormData();
+    logoFormData.append("file", logo);
+    logoFormData.append("upload_preset", "w5xbik6z");
+    logoFormData.append("folder", "ZIKORO");
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/zikoro/image/upload`,
+        {
+          method: "POST",
+          body: logoFormData,
+        }
+      );
+
+      if (res.ok) {
+        const data = await res.json();
+        toast.success("Image Uploaded");
+        setLogoUrl(data.url);
+        setIsLogoUploaded(true);
+      } else {
+        throw new Error("Logo Upload Failed");
+      }
+    } catch (error) {
+      toast.error(`Error uploading image: ${error}`);
+      throw error; // Rethrow the error to be caught by the caller
+    }
+  };
+
+  //Upload Favicon Function
+  const uploadFavicon = async () => {
+    const faviconFormData = new FormData();
+    faviconFormData.append("file", favicon);
+    faviconFormData.append("upload_preset", "w5xbik6z");
+    faviconFormData.append("folder", "ZIKORO");
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/zikoro/image/upload`,
+        {
+          method: "POST",
+          body: faviconFormData,
+        }
+      );
+
+      if (res.ok) {
+        const data = await res.json();
+        toast.success("Favicon Uploaded");
+        setFaviconUrl(data.url);
+        setIsFaviconUploaded(true);
+      } else {
+        throw new Error("Favicon Upload Failed");
+      }
+    } catch (error) {
+      toast.error(`Error uploading image: ${error}`);
+      throw error; // Rethrow the error to be caught by the caller
+    }
+  };
+
+  console.log(organization);
   return (
-    <div className="">
-      <form action="" onSubmit={(e) => updateSetting(e)}>
-        {/* Settings sections */}
-        <div className="mt-[60px] mb-8 ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px] ">
-          <div className="flex justify-between items-center pt-[32px]">
-            <div className="flex items-center gap-x-3 ">
-              <GeometryIcon />
-              <p className="text-xl font-semibold">Basic Settings</p>
-            </div>
-            <button className="py-2 px-4 text-white text-[14px] bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-md ">
-              Save
-            </button>
-          </div>
-
-          <div className="mt-8">
-            <label className="text-[14px] text-[#1f1f1f]">Workspace Name</label>
-            <div className="w-full h-[45px] mt-2 ">
-              <input
-                type="text"
-                value={currentUser?.organizationName}
-                name="orgName"
-                className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
-              />
-            </div>
-            <p className="mt-2 text-[12px] text-[#1f1f1f]">
-              Events are created inside this workspace. Pick a name that best
-              represents these events.
-            </p>
-          </div>
-
-          <div className="flex flex-col lg:flex-row gap-[22px] mt-8 ">
-            <div className=" w-full lg:w-1/2">
-              <label className="text-[14px] text-[#1f1f1f]">
-                Organization Type
-              </label>
-              <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
-                <select
-                  name="orgType"
-                  value=""
-                  className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[11px]"
-                >
-                  <option value="" className="">
-                    Private
-                  </option>
-
-                  <option value="" className="">
-                    Private
-                  </option>
-                </select>
-              </div>
-            </div>
-
-            <div className=" w-full lg:w-1/2">
-              <p className="text-[14px] text-[#1f1f1f]">Pricing Plan</p>
-              <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
-                <select
-                  name="orgPlan"
-                  value=""
-                  className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[11px]"
-                >
-                  <option value="" className="">
-                    Free
-                  </option>
-                  <option value="" className="">
-                    Lite
-                  </option>
-                  <option value="" className="">
-                    Professional
-                  </option>
-                  <option value="" className="">
-                    Enterprise
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col lg:flex-row gap-[22px] mt-8 ">
-            <div className=" w-full lg:w-1/2">
-              <p className="text-[14px] text-[#1f1f1f]">Country</p>
-              <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
-                <select
-                  name=""
-                  value="orgCountry"
-                  className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[11px]"
-                >
-                  {countryList.map((country) => (
-                    <option
-                      value={country}
-                      className="bg-transparent text-black"
-                    >
-                      {country}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className=" w-full lg:w-1/2">
-              <p className="text-[14px] text-[#1f1f1f]">Phone Number</p>
-              <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
-                <input
-                  type="tel"
-                  value=""
-                  name="orgTel"
-                  className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col lg:flex-row gap-[22px] mt-8 ">
-            <div className=" w-full lg:w-1/2">
-              <p className="text-[14px] text-[#1f1f1f]">Whatsapp Number</p>
-              <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
-                <input
-                  type="tel"
-                  value=""
-                  name="orgWhatsappNumber"
-                  className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
-                />
-              </div>
-            </div>
-
-            <div className=" w-full lg:w-1/2">
-              <p className="text-[14px] text-[#1f1f1f]">Email</p>
-              <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
-                <input
-                  type="email"
-                  value=""
-                  name="orgEmail"
-                  className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col lg:flex-row mt-8 px-0 lg:px-[206px] gap-[52px]  mb-8">
-            <div>
-              <p className="text-base font-medium">Logo</p>
-              <p className="text-[14px] font-normal mt-2">
-                The logo will be used on the event website, in emails, and as a
-                thumbnail for sharing the event link.
-              </p>
-              <div className="bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end h-[321px] items-center justify-center flex flex-col border-[1px] border-indigo-600 rounded-lg mt-4 ">
-                <div className="bg-white flex gap-x-2 border-[1px] border-white p-2 rounded-[32px] cursor-pointer ">
-                  <GeneralImageIcon />
-                  <p>Upload Logo</p>
+    <>
+      {organization ? (
+        <div className="">
+          <form action="" onSubmit={(e) => updateSetting(e)}>
+            <div className="mt-[60px] mb-8 ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px] ">
+              <div className="flex justify-between items-center pt-[32px]">
+                <div className="flex items-center gap-x-3 ">
+                  <GeometryIcon />
+                  <p className="text-xl font-semibold">Basic Settings</p>
                 </div>
-                <p className="text-[12px] mt-4">
-                  {" "}
-                  Image size should be 50px by 50px
-                </p>
-              </div>
-            </div>
-            <div>
-              <p className="text-base font-medium">Logo</p>
-              <p className="text-[14px] font-normal mt-2">
-                The logo will be used on the event website, in emails, and as a
-                thumbnail for sharing the event link.
-              </p>
-              <div className="bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end h-[321px] items-center justify-center flex flex-col border-[1px] border-indigo-600 rounded-lg mt-4  ">
-                <div className="bg-white flex gap-x-2 border-[1px] border-white p-2 rounded-[32px] cursor-pointer ">
-                  <GeneralImageIcon />
-                  <p>Upload Logo</p>
-                </div>
-                <p className="text-[12px] mt-4">
-                  {" "}
-                  Image size should be 50px by 50px
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Social media link */}
-        <div className="mt-8 mb-8 ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
-          <div className="flex items-center gap-x-3 pt-[32px]">
-            <SocialLinksIcon />
-            <p className="text-xl font-semibold">Social Media Links</p>
-          </div>
-
-          <div className="mt-8 flex items-center gap-x-2 w-full">
-            <div className="mt-8">
-              <DashboardXIcon />
-            </div>
-            <div className="flex-1">
-              <label className="text-[14px] text-[#1f1f1f]">Twitter</label>
-              <div className="w-full h-[45px] mt-2 ">
-                <input
-                  required
-                  type="text"
-                  value=""
-                  name="orgName"
-                  placeholder="Enter Link"
-                  className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 flex items-center gap-x-2 w-full">
-            <div className="mt-8">
-              <DashboardLinkendinIcon />
-            </div>
-            <div className="flex-1">
-              <label className="text-[14px] text-[#1f1f1f]">LinkendIn</label>
-              <div className="w-full h-[45px] mt-2 ">
-                <input
-                  required
-                  type="text"
-                  value=""
-                  name="orgName"
-                  placeholder="Enter Link"
-                  className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 flex items-center gap-x-2 w-full">
-            <div className="mt-8">
-              <DashboardFacebookIcon />
-            </div>
-            <div className="flex-1">
-              <label className="text-[14px] text-[#1f1f1f]">Facebook</label>
-              <div className="w-full h-[45px] mt-2 ">
-                <input
-                  required
-                  type="text"
-                  value=""
-                  name="orgName"
-                  placeholder="Enter Link"
-                  className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 flex items-center gap-x-2 w-full">
-            <div className="mt-8">
-              <DashboardInstagramIcon />
-            </div>
-            <div className="flex-1">
-              <label className="text-[14px] text-[#1f1f1f]">Instagram</label>
-              <div className="w-full h-[45px] mt-2 ">
-                <input
-                  required
-                  type="text"
-                  value=""
-                  name="orgName"
-                  placeholder="Enter Link"
-                  className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Delete Section */}
-
-        <div className="mt-8 ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px] py-8 mb-16 lg:mb-2 ">
-          <div className="flex gap-x-3">
-            <TrashIcon size={20} />
-            <p className="font-semibold ">Delete Workspace</p>
-          </div>
-          <p className="mt-[10px] text-base font-medium">
-            Deleting a portal will remove all events in the portal and you will
-            no longer be able to retrieve them.
-          </p>
-          <div className="flex justify-center lg:justify-end mt-8 ">
-            <Dialog>
-              <DialogTrigger asChild>
-                <button className="py-2 px-4 text-white text-[15px] bg-[#E74C3C] font-medium rounded-md ">
-                  Delete Workspace
+                <button
+                  type="submit"
+                  className="py-2 px-4 text-white text-[14px] bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-md "
+                >
+                  Save
                 </button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle className="boder-[1px] border-gray-200 pb-2">
-                    Delete Your Workspace
-                  </DialogTitle>
-                  <DialogDescription>
-                    This will permanently delete this workspace. Please enter
-                    <span className="font-semibold">
-                    {" "} {currentUser?.organizationName}{" "}
-                    </span>
-                    to confirm deletion
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="">
+              </div>
+
+              <div className="mt-8">
+                <label className="text-[14px] text-[#1f1f1f]">
+                  Workspace Name
+                </label>
+                <div className="w-full h-[45px] mt-2 ">
                   <input
-                    required
                     type="text"
-                    value={delInput}
-                    name="delInput"
-                    placeholder="Enter workspace name"
-                    className="w-full h-[37px] rounded-xl border-[1px] border-gray-200  to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-gray-400"
-                    onChange={(e) => setDelInput(e.target.value)}
+                    value={formData.orgName}
+                    name="orgName"
+                    onChange={(e) => handleInputChange(e)}
+                    className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
                   />
                 </div>
-                <DialogFooter className="sm:justify-start">
-                  <DialogClose asChild>
-                    <button
-                      disabled={delInput != currentUser?.organizationName}
-                      type="button"
-                      className="bg-[#E74C3C] text-white py-1 w-full text-[15px] cursor-pointer  font-medium rounded-md "
+                <p className="mt-2 text-[12px] text-[#1f1f1f]">
+                  Events are created inside this workspace. Pick a name that
+                  best represents these events.
+                </p>
+              </div>
+
+              <div className="flex flex-col lg:flex-row gap-[22px] mt-8 ">
+                <div className=" w-full lg:w-1/2">
+                  <label className="text-[14px] text-[#1f1f1f]">
+                    Organization Type
+                  </label>
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                    <select
+                      name="orgType"
+                      value={formData.orgType}
+                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[11px]"
+                      onChange={(e) => handleInputChange(e)}
                     >
-                      Delete
-                    </button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                      <option value="private" className="">
+                        Private
+                      </option>
+
+                      <option value="public" className="">
+                        Public
+                      </option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className=" w-full lg:w-1/2">
+                  <p className="text-[14px] text-[#1f1f1f]">Pricing Plan</p>
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                    <select
+                      name="orgPlan"
+                      value={formData.orgPlan}
+                      onChange={(e) => handleInputChange(e)}
+                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[11px]"
+                    >
+                      <option value="free" className="">
+                        Free
+                      </option>
+                      <option value="lite" className="">
+                        Lite
+                      </option>
+                      <option value="professional" className="">
+                        Professional
+                      </option>
+                      <option value="enterprise" className="">
+                        Enterprise
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col lg:flex-row gap-[22px] mt-8 ">
+                <div className=" w-full lg:w-1/2">
+                  <p className="text-[14px] text-[#1f1f1f]">Country</p>
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                    <select
+                      name="orgCountry"
+                      value={formData.orgCountry}
+                      onChange={(e) => handleInputChange(e)}
+                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[11px]"
+                    >
+                      {countryList.map((country) => (
+                        <option
+                          key={country}
+                          value={country}
+                          className="bg-transparent text-black"
+                          onChange={(e) => handleInputChange(e)}
+                        >
+                          {country}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className=" w-full lg:w-1/2">
+                  <p className="text-[14px] text-[#1f1f1f]">Phone Number</p>
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                    <input
+                      type="tel"
+                      value={formData.orgTel}
+                      onChange={(e) => handleInputChange(e)}
+                      name="orgTel"
+                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col lg:flex-row gap-[22px] mt-8 ">
+                <div className=" w-full lg:w-1/2">
+                  <p className="text-[14px] text-[#1f1f1f]">Whatsapp Number</p>
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                    <input
+                      type="tel"
+                      value={formData.orgWhatsappNumber}
+                      name="orgWhatsappNumber"
+                      onChange={handleInputChange}
+                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                    />
+                  </div>
+                </div>
+
+                <div className=" w-full lg:w-1/2">
+                  <p className="text-[14px] text-[#1f1f1f]">Email</p>
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                    <input
+                      type="email"
+                      value={formData.orgEmail}
+                      name="orgEmail"
+                      onChange={handleInputChange}
+                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col lg:flex-row mt-8 px-0 lg:px-[206px] gap-[52px] mb-8">
+                {/* Logo */}
+                <div className="w-full lg:w-[324px]">
+                  <p className="text-base font-medium">Logo</p>
+                  <p className="text-[14px] font-normal mt-2 h-full lg:h-[79px]">
+                    The logo will be used on the event website, in emails, and
+                    as a thumbnail for sharing the event link.
+                  </p>
+
+                  {logo ? (
+                    <div className="relative mt-4">
+                      <img
+                        src={logo}
+                        alt="logo"
+                        className="w-full h-[321px] object-cover rounded-lg"
+                      />
+
+                      {!isLogoUploaded && (
+                        <>
+                          <button
+                            className="absolute text-[13px] top-3 right-2 font-bold bg-white text-indigo-600 px-2 py-[2px] rounded-full"
+                            onClick={() => setLogo(null)}
+                          >
+                            x
+                          </button>
+
+                          <p
+                            onClick={() => uploadLogo()}
+                            className=" cursor-pointer absolute text-[13px] top-3 right-10 font-bold bg-white text-indigo-600 px-2 py-[2px] rounded-full"
+                          >
+                            Upload Now
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end h-[321px] items-center justify-center flex flex-col border-[1px] border-indigo-600 rounded-lg mt-4 ">
+                      <label className="bg-white flex items-center gap-x-2 border-[1px] border-white p-2 rounded-[32px] cursor-pointer ">
+                        <GeneralImageIcon />
+                        <p>Upload Logo</p>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoPreview}
+                          className="hidden"
+                        />
+                      </label>
+                      <p className="text-[12px] mt-4">
+                        {" "}
+                        Image size should be 50px by 50px
+                      </p>
+                    </div>
+                  )}
+                </div>
+                {/* Favicon */}
+                <div className="w-full lg:w-[324px]">
+                  <p className="text-base font-medium">Favicon</p>
+                  <p className="text-[14px] font-normal mt-2 h-full lg:h-[79px]">
+                    A favicon is a visual representation of your organization's
+                    webpage and appears in the browser tab when viewed.
+                  </p>
+
+                  {favicon ? (
+                    <div className="relative mt-4">
+                      <img
+                        src={favicon}
+                        alt="favicon"
+                        className="w-full h-[321px] object-cover rounded-lg"
+                      />
+
+                      {!isFaviconUploaded && (
+                        <>
+                          <button
+                            className="absolute text-[13px] top-3 right-2 font-bold bg-white text-indigo-600 px-2 py-[2px] rounded-full"
+                            onClick={() => setFavicon(null)}
+                          >
+                            x
+                          </button>
+
+                          <p
+                            onClick={() => uploadFavicon()}
+                            className=" cursor-pointer absolute text-[13px] top-3 right-10 font-bold bg-white text-indigo-600 px-2 py-[2px] rounded-full"
+                          >
+                            Upload Now
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end h-[321px] items-center justify-center flex flex-col border-[1px] border-indigo-600 rounded-lg mt-4 ">
+                      <label className="bg-white flex items-center gap-x-2 border-[1px] border-white p-2 rounded-[32px] cursor-pointer ">
+                        <GeneralImageIcon />
+                        <p>Upload Favicon</p>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFaviconPreview}
+                          className="hidden"
+                        />
+                      </label>
+                      <p className="text-[12px] mt-4">
+                        {" "}
+                        Image size should be 16px by 16px
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 mb-8 ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
+              <div className="flex items-center gap-x-3 pt-[32px]">
+                <SocialLinksIcon />
+                <p className="text-xl font-semibold">Social Media Links</p>
+              </div>
+
+              <div className="mt-8 flex items-center gap-x-2 w-full">
+                <div className="mt-8">
+                  <DashboardXIcon />
+                </div>
+                <div className="flex-1">
+                  <label className="text-[14px] text-[#1f1f1f]">Twitter</label>
+                  <div className="w-full h-[45px] mt-2 ">
+                    <input
+                      type="text"
+                      value={formData.orgX}
+                      name="orgXLink"
+                      placeholder="Enter Link"
+                      onChange={(e) => handleInputChange(e)}
+                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex items-center gap-x-2 w-full">
+                <div className="mt-8">
+                  <DashboardLinkendinIcon />
+                </div>
+                <div className="flex-1">
+                  <label className="text-[14px] text-[#1f1f1f]">
+                    LinkendIn
+                  </label>
+                  <div className="w-full h-[45px] mt-2 ">
+                    <input
+                      type="text"
+                      value={formData.orgLinkedin}
+                      name="orgLinkedinLink"
+                      placeholder="Enter Link"
+                      onChange={(e) => handleInputChange(e)}
+                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex items-center gap-x-2 w-full">
+                <div className="mt-8">
+                  <DashboardFacebookIcon />
+                </div>
+                <div className="flex-1">
+                  <label className="text-[14px] text-[#1f1f1f]">Facebook</label>
+                  <div className="w-full h-[45px] mt-2 ">
+                    <input
+                      type="text"
+                      value={formData.orgFacebook}
+                      name="orgFacebookLink"
+                      placeholder="Enter Link"
+                      onChange={(e) => handleInputChange(e)}
+                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex items-center gap-x-2 w-full">
+                <div className="mt-8">
+                  <DashboardInstagramIcon />
+                </div>
+                <div className="flex-1">
+                  <label className="text-[14px] text-[#1f1f1f]">
+                    Instagram
+                  </label>
+                  <div className="w-full h-[45px] mt-2 ">
+                    <input
+                      type="text"
+                      value={formData.orgInstagram}
+                      name="orgInstagramLink"
+                      placeholder="Enter Link"
+                      onChange={(e) => handleInputChange(e)}
+                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div className="mt-8 ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px] py-8 mb-16 lg:mb-2 ">
+            <div className="flex gap-x-3">
+              <TrashIcon size={20} />
+              <p className="font-semibold ">Delete Workspace</p>
+            </div>
+            <p className="mt-[10px] text-base font-medium">
+              Deleting a portal will remove all events in the portal and you
+              will no longer be able to retrieve them.
+            </p>
+            <div className="flex justify-center lg:justify-end mt-8 ">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="py-2 px-4 text-white text-[15px] bg-[#E74C3C] font-medium rounded-md ">
+                    Delete Workspace
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="boder-[1px] border-gray-200 pb-2">
+                      Delete Your Workspace
+                    </DialogTitle>
+                    <DialogDescription>
+                      This will permanently delete this workspace. Please enter
+                      <span className="font-semibold">
+                        {" "}
+                        {organization?.organizationName}{" "}
+                      </span>
+                      to confirm deletion
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="">
+                    <input
+                      type="text"
+                      value={delInput}
+                      name="delInput"
+                      placeholder="Enter workspace name"
+                      className="w-full h-[37px] rounded-xl border-[1px] border-gray-200  to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-gray-400"
+                      onChange={(e) => setDelInput(e.target.value)}
+                    />
+                  </div>
+                  <DialogFooter className="sm:justify-start">
+                    <DialogClose asChild>
+                      <button
+                        disabled={delInput != organization.organizationName}
+                        type="button"
+                        onClick={() => {
+                          deleteWorkspace().then(() => setReloadForm(!reloadForm));
+                        }}
+                        className="bg-[#E74C3C] text-white py-1 w-full text-[15px] cursor-pointer  font-medium rounded-md "
+                      >
+                        Delete
+                      </button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </div>
-      </form>
-    </div>
+      ) : (
+        <p className="text-sm">No organization found</p>
+      )}
+    </>
   );
 }
