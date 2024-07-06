@@ -43,7 +43,6 @@ export function Qusetion({
   onOpenScoreSheet,
   updateQuizResult,
   goBack,
- 
 }: {
   isRightBox: boolean;
   isLeftBox: boolean;
@@ -69,7 +68,6 @@ export function Qusetion({
   onOpenScoreSheet: () => void;
   updateQuizResult: (q: TQuiz<TRefinedQuestion[]>) => void;
   goBack: () => void;
-
 }) {
   const [currentQuestion, setCurrentQuestion] =
     useState<TRefinedQuestion | null>(null);
@@ -358,7 +356,7 @@ export function Qusetion({
         ...attendeeDetail,
         quizId: quiz?.id,
         questionId: currentQuestion?.id,
-        quizParticipantId:  quizParticipantId,
+        quizParticipantId: quizParticipantId,
 
         attendeePoints,
         answerDuration: millisecondsLeft,
@@ -458,17 +456,19 @@ export function Qusetion({
     }
   }
 
-
-
   return (
     <div
       className={cn(
         "w-full h-[90vh]  bg-white relative    border-x border-y  col-span-7",
         isLeftBox && isRightBox && (isIdPresent || isOrganizer) && "col-span-5",
-        !isLeftBox && !isRightBox && "col-span-full rounded-xl max-w-4xl mx-auto",
-        !isIdPresent && !isOrganizer && "col-span-full rounded-xl max-w-3xl mx-auto",
+        !isLeftBox &&
+          !isRightBox &&
+          "col-span-full rounded-xl max-w-4xl mx-auto",
+        !isIdPresent &&
+          !isOrganizer &&
+          "col-span-full rounded-xl max-w-3xl mx-auto",
         isLeftBox && !isRightBox && "rounded-r-xl",
-        !isLeftBox && isRightBox && "rounded-l-xl",
+        !isLeftBox && isRightBox && "rounded-l-xl"
       )}
     >
       <div className="w-full overflow-y-auto no-scrollbar px-6 pt-12 space-y-3  h-[90%] pb-52 ">
@@ -487,7 +487,10 @@ export function Qusetion({
               <div className=" gap-3 pb-2 w-full flex items-end justify-between">
                 <Button
                   onClick={goBack}
-                  className="gap-x-1 self-start w-fit h-fit px-2"
+                  className={cn(
+                    "gap-x-1 self-start w-fit h-fit px-2 invisible",
+                    (isIdPresent || isOrganizer) && "visible"
+                  )}
                 >
                   <ArrowBackOutline size={20} />
                   <p className="text-sm">Exit Quiz</p>
@@ -592,9 +595,9 @@ export function Qusetion({
                       }`}</p>
                     </div>
                   )}
-                <p className="self-end bg-basePrimary/20 rounded-3xl text-sm text-basePrimary px-2 py-1">{`${
-                  Number(currentQuestion?.points) 
-                } ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
+                <p className="self-end bg-basePrimary/20 rounded-3xl text-sm text-basePrimary px-2 py-1">{`${Number(
+                  currentQuestion?.points
+                )} ${Number(currentQuestion?.points) > 1 ? `pts` : `pt`}`}</p>
               </div>
 
               {quiz?.accessibility?.review && (
@@ -665,7 +668,7 @@ export function Qusetion({
                     Powered By Zikoro
                   </p>
                 )}
-  
+
                 <Button
                   onClick={toggleLeftBox}
                   className={cn(

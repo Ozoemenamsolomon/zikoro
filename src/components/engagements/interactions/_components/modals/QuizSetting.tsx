@@ -260,8 +260,7 @@ export function QuizSettings({
                   setAccessibility({
                     ...accessibility,
                     visible: !accessibility.visible,
-                    isCollectEmail: !accessibility.visible,
-                    isCollectPhone: false,
+                    
                   })
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
@@ -281,7 +280,7 @@ export function QuizSettings({
                       setAccessibility({
                         ...accessibility,
                         isCollectEmail: !accessibility.isCollectEmail,
-                        isCollectPhone: !accessibility.isCollectPhone,
+                        isCollectPhone: false
                       })
                     }
                     className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
@@ -298,7 +297,8 @@ export function QuizSettings({
                       setAccessibility({
                         ...accessibility,
                         isCollectPhone: !accessibility.isCollectPhone,
-                        isCollectEmail: !accessibility.isCollectEmail,
+                        isCollectEmail: false
+                        
                       })
                     }
                     className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"

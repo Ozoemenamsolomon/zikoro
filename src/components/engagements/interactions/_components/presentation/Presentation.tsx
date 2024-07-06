@@ -617,7 +617,7 @@ function PlayersOnboarding({
             }`}</p>
           </div>
 
-          <div className="w-full flex justify-center items-start gap-x-2">
+          <div className={cn("w-full flex justify-center items-end gap-x-2", (quiz.accessibility?.isCollectEmail || quiz.accessibility?.isCollectEmail) && "items-start")}>
             <button
               onClick={(e) => {
                 e.preventDefault()
@@ -648,7 +648,7 @@ function PlayersOnboarding({
                 placeholder="Enter Name"
                 type="text"
               />
-              <Input
+          {(quiz.accessibility?.isCollectEmail || quiz.accessibility?.isCollectEmail) &&    <Input
                 value={
                   quiz.accessibility?.isCollectEmail
                     ? playerDetail?.email
@@ -667,15 +667,15 @@ function PlayersOnboarding({
                     ? "Enter Email Address"
                     : "Enter Phone Number"
                 }
-                required
+                
                 type={quiz.accessibility?.isCollectEmail ? "email" : "tel"}
-              />
-              <div className="w-full  text-xs">
+              />}
+             {(quiz.accessibility?.isCollectEmail || quiz.accessibility?.isCollectEmail) && <div className="w-full  text-xs">
                 <p className="w-full text-gray-600 text-center">
                   {`${quiz.accessibility?.isCollectEmail ? "Email": "Phone Number"} is required for this game to store your points and
                   possible follow-up should you appear on the leaderboard.`}
                 </p>
-              </div>
+              </div>}
             </div>
           </div>
 
