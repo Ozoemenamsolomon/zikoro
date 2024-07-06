@@ -10,6 +10,7 @@ import {
   AvatarModal,
 } from "..";
 import { useState, useEffect, useMemo } from "react";
+import { Slider } from "@mui/material";
 import {
   useGetQuiz,
   useUpdateQuiz,
@@ -38,6 +39,8 @@ import toast from "react-hot-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Avatar, { genConfig, AvatarFullConfig } from "react-nice-avatar";
 import { Plus } from "styled-icons/bootstrap";
+import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
+
 
 const supabase = createClientComponentClient();
 
@@ -78,8 +81,12 @@ export default function Presentation({
   const { answers, getAnswers } = useGetQuizAnswer();
   const [isSendMailModal, setIsSendMailModal] = useState(false);
   const [showScoreSheet, setShowScoreSheet] = useState(false);
+  const [isAudioMuted, setIsAudioMuted] = useState(false);
+  const [volume, adjustVolume] = useState(0.8);
+  
   const [chosenAvatar, setChosenAvatar] =
     useState<Required<AvatarFullConfig> | null>(null);
+
   const [quizResult, setQuizResult] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
@@ -162,12 +169,12 @@ export default function Presentation({
  */
 
   const id = useMemo(() => {
-    if (player) {
-      return player?.userId;
-    } else {
+   // if (player) {
+    //  return player?.userId;
+   // } else {
       return generateAlias();
-    }
-  }, [showScoreSheet, isSendMailModal]);
+   // }
+  }, []);
   function onClose() {
     setLeftBox((prev) => !prev);
   }
@@ -238,8 +245,25 @@ export default function Presentation({
     }
   }, [quiz]);
 
-  //console.log(audio)
+    // change audio state
+    function toggleAudio() {
+      if (audio) {
+        setIsAudioMuted(!audio.muted);
+        audio.muted = !audio.muted;
+      }
+    }
+  //console.log(audio
+  /**
+                
+   */
 
+  function handleVolume(num: number) {
+ 
+    if (audio) {
+      adjustVolume(num);
+      audio.volume = num
+    }
+ }
   return (
     <div className="w-full">
       {refinedQuizArray && !loading && !isLoading && !eventLoading ? (
@@ -272,6 +296,54 @@ export default function Presentation({
             </>
           ) : (
             <>
+            {/** */}
+           
+            { quiz?.accessibility?.live && 
+            <div className={cn("absolute top-[0.5rem] right-[10rem] hidden items-start gap-x-2", (isOrganizer || isIdPresent) && "flex")}>
+              <Button
+                  title={isAudioMuted ? "unmute" : "mute"}
+                  onClick={toggleAudio}
+                  className={cn(
+                    "px-0 w-fit text-gray-500 h-fit "
+                  )}
+                >
+                  {isAudioMuted ? (
+                    <HiSpeakerXMark className="text-2xl" />
+                  ) : (
+                    <HiSpeakerWave className="text-2xl" />
+                  )}
+                </Button>
+               <div className="w-[80px]">
+               <Slider
+            min={0}
+            max={1}
+            step={0.1}
+            size="small"
+            value={volume}
+            className="w-full h-1"
+            onChange={(_, e) => {
+              handleVolume(e as number);
+            }}
+            sx={{
+              color: "#6b7280",
+              height: 4,
+              padding:0,
+              "& .MuiSlider-thumb": {
+                width: 8,
+                height: 8,
+                transition: "0.3s cubic-bezier(.47,1.64,.41,.8)",
+                "&:before": {
+                  boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
+                },
+                "&:hover, &.Mui-focusVisible": {
+                  boxShadow: `0px 0px 0px 6px #6b7280`,
+                },
+              },
+            }}
+          />
+               </div>
+            </div>
+            }
               {isYetTosStart ? (
                 <div className="w-full grid grid-cols-8 items-center h-full">
                   {(isIdPresent || isOrganizer) && isLobby && (
@@ -334,7 +406,7 @@ export default function Presentation({
                     }}
                     isIdPresent={isIdPresent}
                     isOrganizer={isOrganizer}
-                    audio={audio}
+                
                   />
                   {(isIdPresent || isOrganizer) && quiz && (
                     <LeaderBoard
@@ -510,7 +582,7 @@ function PlayersOnboarding({
 
   useEffect(() => {
     let interval = setInterval(() => {
-      if (!isAttendee && quiz?.liveMode?.startingAt) {
+      if ( isLobby && quiz?.liveMode?.startingAt) {
         refetch();
       } else {
         clearInterval(interval);

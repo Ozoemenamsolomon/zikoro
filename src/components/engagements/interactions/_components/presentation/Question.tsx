@@ -19,7 +19,6 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { AvatarFullConfig } from "react-nice-avatar";
-import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 
 type ChosenAnswerStatus = {
   isCorrect: boolean;
@@ -44,7 +43,7 @@ export function Qusetion({
   onOpenScoreSheet,
   updateQuizResult,
   goBack,
-  audio,
+ 
 }: {
   isRightBox: boolean;
   isLeftBox: boolean;
@@ -70,7 +69,7 @@ export function Qusetion({
   onOpenScoreSheet: () => void;
   updateQuizResult: (q: TQuiz<TRefinedQuestion[]>) => void;
   goBack: () => void;
-  audio: HTMLAudioElement | null;
+
 }) {
   const [currentQuestion, setCurrentQuestion] =
     useState<TRefinedQuestion | null>(null);
@@ -81,7 +80,6 @@ export function Qusetion({
   const [showAnswerMetric, setShowAnswerMetric] = useState(false);
   const [transiting, setShowTransiting] = useState(false);
   const { updateQuiz: updatingQuiz, isLoading: isUpdating } = useUpdateQuiz();
-  const [isAudioMuted, setIsAudioMuted] = useState(false);
   const player = getCookie<TConnectedUser>("player");
   const [chosenAnswerStatus, setChosenAnswerStatus] =
     useState<ChosenAnswerStatus | null>(null);
@@ -360,9 +358,7 @@ export function Qusetion({
         ...attendeeDetail,
         quizId: quiz?.id,
         questionId: currentQuestion?.id,
-        quizParticipantId: quiz?.accessibility?.live
-          ? player?.userId
-          : quizParticipantId,
+        quizParticipantId:  quizParticipantId,
 
         attendeePoints,
         answerDuration: millisecondsLeft,
@@ -462,13 +458,7 @@ export function Qusetion({
     }
   }
 
-  // change audio state
-  function toggleAudio() {
-    if (audio) {
-      setIsAudioMuted(!audio.muted);
-      audio.muted = !audio.muted;
-    }
-  }
+
 
   return (
     <div
@@ -675,20 +665,7 @@ export function Qusetion({
                     Powered By Zikoro
                   </p>
                 )}
-               {quiz?.accessibility?.live && <Button
-                  title={isAudioMuted ? "unmute" : "mute"}
-                  onClick={toggleAudio}
-                  className={cn(
-                    "px-0 w-fit text-gray-600 h-fit absolute bottom-3 right-1 hidden",
-                    (isOrganizer || isIdPresent) && "flex"
-                  )}
-                >
-                  {isAudioMuted ? (
-                    <HiSpeakerXMark className="text-2xl" />
-                  ) : (
-                    <HiSpeakerWave className="text-2xl" />
-                  )}
-                </Button>}
+  
                 <Button
                   onClick={toggleLeftBox}
                   className={cn(

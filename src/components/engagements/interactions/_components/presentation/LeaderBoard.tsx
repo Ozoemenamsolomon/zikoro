@@ -339,7 +339,7 @@ export function LeaderBoard({
         !isLeftBox && "col-span-4"
       )}
     >
-      <div className="w-full h-[37vh] gap-y-2 flex bg-[#001fcc]/20 pb-2 flex-col rounded-tr-xl items-center justify-center">
+      <div className="w-full h-[37vh] gap-y-2 flex bg-[#001fcc]/20 pb-2 flex-col rounded-tr-xl items-center ">
         <div className="flex items-center p-4 justify-between w-full">
           <h2 className="font-semibold  text-base sm:text-xl">LeaderBoard</h2>
           <div className="flex items-center gap-x-2">
