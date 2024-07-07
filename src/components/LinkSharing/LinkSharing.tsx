@@ -2,10 +2,17 @@
 import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import useUserStore from "@/store/globalUserStore";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 export default function LinkSharing() {
   const [isMonthly, setIsMonthly] = useState("");
+  const { organization, setOrganization } = useOrganizationStore();
+  const iframeCode = `<iframe
+    src="www.zikoro.com/workspaces?query=${organization?.organizationName}"
+    style={{ width: '90%', height: '80%' }}
+    title="Organization Page Preview"
+  ></iframe>`;
+
   const handleToggle = () => {};
 
   return (
@@ -64,7 +71,8 @@ export default function LinkSharing() {
             <div className="mt-4">
               <p>Workspace name</p>
               <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
-                https://www.zikoro.com/workspacename
+                https://www.zikoro.com/workspaces?query=
+                {organization?.organizationName}
               </p>
               <button className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6">
                 Copy Link
@@ -74,9 +82,11 @@ export default function LinkSharing() {
           <TabsContent value="embed">
             <div className="mt-4 ">
               <div className="p-3 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-lg">
-                <p>Workspace name</p>
+                <p className="font-semibold">{organization?.organizationName}</p>
                 <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
-                  Code here
+                  <pre>
+                    <code>{iframeCode}</code>
+                  </pre>
                 </p>
                 <button className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6">
                   Copy Embed Code
