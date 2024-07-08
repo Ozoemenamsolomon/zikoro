@@ -283,7 +283,7 @@ export function LeaderBoard({
  */
 
   useEffect(() => {
-    (() => {
+    const update = () => {
       if (recentAnime && restructuredScores) {
         const data = restructuredScores.sort((a, b) => {
           const aScore = a?.totalScore;
@@ -306,10 +306,12 @@ export function LeaderBoard({
         });
 
         setBoard(data);
-      } 
-    })();
-  }),
-    [restructuredScores, recentAnime];
+      }
+    }
+    update()
+  }, [restructuredScores, recentAnime])
+
+
 
   // observe leader board
 
@@ -456,7 +458,11 @@ export function LeaderBoard({
         <Reorder.Group values={board} onReorder={setBoard}>
           {Array.isArray(board) &&
             board.slice(3, board?.length)?.map((attendee, index) => (
-              <Reorder.Item as="div" key={attendee?.quizParticipantId} value={attendee?.totalScore}>
+              <Reorder.Item
+                as="div"
+                key={attendee?.quizParticipantId}
+                value={attendee?.totalScore}
+              >
                 <OtherPlayers
                   key={attendee?.quizParticipantId}
                   attendee={attendee}

@@ -348,8 +348,7 @@ export function Qusetion({
       // udpate chosen option state, if quiz is not live
       if (!quiz?.accessibility?.live) {
         updateQuiz(updatedQuiz);
-      } else {
-      }
+      } 
       updateQuizResult(updatedQuiz);
 
       const payload: Partial<TAnswer> = {

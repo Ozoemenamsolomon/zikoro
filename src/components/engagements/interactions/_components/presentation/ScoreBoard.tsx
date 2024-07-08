@@ -55,7 +55,6 @@ export function ScoreBoard({
   const player = getCookie<TConnectedUser>("player");
   const { updateQuiz, isLoading } = useUpdateQuiz();
 
-  console.log("dsds", quiz)
   const board = useMemo(() => {
     const participantGroup: { [key: string]: TParticipantScores } = {};
     if (Array.isArray(answers) && answers.length > 0) {
@@ -114,7 +113,7 @@ export function ScoreBoard({
     setQuizResult((prev) => !prev);
   }
 
- // console.log("quizresult", quiz);
+  // console.log("quizresult", quiz);
 
   const userPosition = useMemo(() => {
     if (isAttendee && actualQuiz) {
@@ -142,15 +141,17 @@ export function ScoreBoard({
       const payload = {
         ...actualQuiz,
         liveMode: {
-          ...actualQuiz?.liveMode,
           isEnded: null,
         },
       };
       await updateQuiz({ payload });
-      saveCookie("currentPlayer", null)
+      saveCookie("currentPlayer", null);
       close();
     }
-     window.open(`/quiz/${actualQuiz?.eventAlias}/present/${actualQuiz?.quizAlias}`, "_self");
+    window.open(
+      `/quiz/${actualQuiz?.eventAlias}/present/${actualQuiz?.quizAlias}`,
+      "_self"
+    );
   }
 
   return (
@@ -343,9 +344,10 @@ export function ScoreBoard({
                         </div>
                         <div className="flex items-center justify-end gap-x-1">
                           <p className="flex items-center">
-                            <span>{Number(player?.totalScore ?? 0).toFixed(0)}</span>
-
-                         p
+                            <span>
+                              {Number(player?.totalScore ?? 0).toFixed(0)}
+                            </span>
+                            p
                           </p>
                           {player?.recentScore > 0 && (
                             <div className="flex text-white bg-basePrimary rounded-3xl px-2 py-1 items-center gap-x-1 text-xs">

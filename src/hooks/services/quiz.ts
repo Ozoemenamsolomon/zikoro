@@ -1,6 +1,12 @@
 "use client";
 import { toast } from "@/components/ui/use-toast";
-import { TQuiz, TAnswer, TQuestion, TConnectedUser } from "@/types";
+import {
+  TQuiz,
+  TAnswer,
+  TQuestion,
+  TConnectedUser,
+  TLiveQuizParticipant,
+} from "@/types";
 import {
   postRequest,
   patchRequest,
@@ -109,10 +115,9 @@ export const useGetQuizzes = (eventId: string) => {
 };
 
 export const useFetchQuiz = () => {
-  
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const getQuiz = async (quizId:string) => {
+  const getQuiz = async (quizId: string) => {
     try {
       setLoading(true);
       const { data, status } = await getRequest<TQuiz<TQuestion[]>>({
@@ -122,7 +127,7 @@ export const useFetchQuiz = () => {
       if (status !== 200) {
         throw data;
       }
-      return data.data
+      return data.data;
     } catch (error: any) {
       toast({
         description: error?.response?.data?.error,
@@ -132,7 +137,6 @@ export const useFetchQuiz = () => {
       setLoading(false);
     }
   };
-
 
   return { isLoading, getQuiz };
 };
@@ -318,11 +322,9 @@ export const useGetQuizAnswer = () => {
     return setAnswers(data.data);
   };
 
-  function fetchAnswer(values: TAnswer[]) {
-    setAnswers(values);
-  }
 
-  return { answers, isLoading, getAnswers, setAnswers: fetchAnswer };
+
+  return { answers, isLoading, getAnswers, setAnswers };
 };
 
 export function useRealtimeQuestionUpdate({ quizId }: { quizId: string }) {
@@ -359,38 +361,102 @@ export function useRealtimeQuestionUpdate({ quizId }: { quizId: string }) {
 export const useRealtimePresence = (isLive: boolean) => {
   useEffect(() => {
     if (isLive) {
-    const channel = supabase.channel("live-quiz");
+      const channel = supabase.channel("live-quiz");
 
-    channel
-      .on("presence", { event: "sync" }, () => {
-        const newState = channel.presenceState();
-        // console.log("sync", newState);
-        for (let id in newState) {
-          //  console.log(newState[id][0])
-        }
-      })
-      .on("presence", { event: "join" }, ({ key, newPresences }) => {
-       console.log("join", key, newPresences);
-        saveCookie("player", {
-          userId: newPresences[0]?.presence_ref,
-          connectedAt: newPresences[0]?.online_at,
-        });
-      })
-      .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
-        // console.log("leave", key, leftPresences);
-      })
-      .subscribe(async (status) => {
-        if (status === "SUBSCRIBED") {
-          await channel.track({
-            online_at: new Date().toISOString(),
+      channel
+        .on("presence", { event: "sync" }, () => {
+          const newState = channel.presenceState();
+          // console.log("sync", newState);
+          for (let id in newState) {
+            //  console.log(newState[id][0])
+          }
+        })
+        .on("presence", { event: "join" }, ({ key, newPresences }) => {
+          console.log("join", key, newPresences);
+          saveCookie("player", {
+            userId: newPresences[0]?.presence_ref,
+            connectedAt: newPresences[0]?.online_at,
           });
-        }
-      });
+        })
+        .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
+          // console.log("leave", key, leftPresences);
+        })
+        .subscribe(async (status) => {
+          if (status === "SUBSCRIBED") {
+            await channel.track({
+              online_at: new Date().toISOString(),
+            });
+          }
+        });
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [supabase, isLive]);
+
+  useEffect(() => {
+    if (isLive) {
+      const channel = supabase.channel("live-players");
+
+      channel
+        .on("presence", { event: "sync" }, () => {
+          const newState = channel.presenceState();
+          // console.log("sync", newState);
+          for (let id in newState) {
+            //  console.log(newState[id][0])
+          }
+        })
+        .on("presence", { event: "join" }, ({ key, newPresences }) => {
+          // console.log("join", key, newPresences);
+        })
+        .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
+          // console.log("leave", key, leftPresences);
+        })
+        .subscribe(async (status) => {
+          if (status === "SUBSCRIBED") {
+            await channel.track({
+              online_at: new Date().toISOString(),
+            });
+          }
+        });
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [supabase, isLive]);
+
+  useEffect(() => {
+    if (isLive) {
+      const channel = supabase.channel("live-answer");
+
+      channel
+        .on("presence", { event: "sync" }, () => {
+          const newState = channel.presenceState();
+          // console.log("sync", newState);
+          for (let id in newState) {
+            //  console.log(newState[id][0])
+          }
+        })
+        .on("presence", { event: "join" }, ({ key, newPresences }) => {
+          // console.log("join", key, newPresences);
+        })
+        .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
+          // console.log("leave", key, leftPresences);
+        })
+        .subscribe(async (status) => {
+          if (status === "SUBSCRIBED") {
+            await channel.track({
+              online_at: new Date().toISOString(),
+            });
+          }
+        });
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
   }, [supabase, isLive]);
 };
 
@@ -422,12 +488,12 @@ export function useGetBroadCastMessage() {
 
     // Simple function to log any messages we receive
     function messageReceived(payload: any) {
-     // console.log("new message", payload);
+      // console.log("new message", payload);
     }
 
     // Subscribe to the Channel
     const channel = supabase.channel("live-quiz");
-   // console.log("listen yeee", channel);
+    // console.log("listen yeee", channel);
 
     channel.on("broadcast", { event: "cursor-pos" }, (payload) => {
       console.log("Cursor position received!", payload);
@@ -454,16 +520,12 @@ export function useGetBroadCastMessage() {
 
 type TQuizScore = {
   quiz: Partial<TQuiz<TQuestion[]>>;
-  mailto: {email:string; url:string}
-}
+  mailto: { email: string; url: string };
+};
 export const useSendQuizScore = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const updateQuiz = async ({
-    payload,
-  }: {
-    payload: TQuizScore;
-  }) => {
+  const updateQuiz = async ({ payload }: { payload: TQuizScore }) => {
     setLoading(true);
 
     try {
@@ -489,4 +551,76 @@ export const useSendQuizScore = () => {
   };
 
   return { updateQuiz, isLoading };
+};
+
+export const useGetLiveParticipant = ({quizId}:{quizId:string}) => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [liveQuizPlayers, setLiveQuizPlayers] = useState<
+    TLiveQuizParticipant[]
+  >([]);
+
+  const getLiveParticipant = async () => {
+    try {
+      setLoading(true);
+      const { data, status } = await getRequest<TLiveQuizParticipant[]>({
+        endpoint: `/quiz/participant/${quizId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setLiveQuizPlayers(data.data);
+    } catch (error: any) {
+      //
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getLiveParticipant();
+  }, [quizId]);
+
+  return { getLiveParticipant, liveQuizPlayers, isLoading, setLiveQuizPlayers };
+};
+
+export const useAddLiveParticipant = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const addLiveParticipant = async ({
+    payload,
+  }: {
+    payload: Partial<TLiveQuizParticipant>;
+  }) => {
+    try {
+      setLoading(true);
+      const { data, status } = await postRequest<TLiveQuizParticipant>({
+        endpoint: "/quiz/participant",
+        payload,
+      });
+
+      toast({
+        description: "Participant added successfully",
+      });
+      return data;
+    } catch (error: any) {
+      //
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { addLiveParticipant, isLoading };
+};
+
+export const useRealTimeParticipant = (isLive: boolean) => {
+
 };
