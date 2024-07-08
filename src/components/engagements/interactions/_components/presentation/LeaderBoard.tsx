@@ -306,9 +306,7 @@ export function LeaderBoard({
         });
 
         setBoard(data);
-      } else {
-        setBoard([]);
-      }
+      } 
     })();
   }),
     [restructuredScores, recentAnime];

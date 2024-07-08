@@ -26,7 +26,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Event } from "@/types";
 import { usePathname, useRouter } from "next/navigation";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import { ArrowBack } from "@styled-icons/material-outlined/ArrowBack";
+import { ArrowBack } from "styled-icons/material-outlined";
 import {formatTime, formatDate} from "@/utils"
 
 type TChosenAttendee = {

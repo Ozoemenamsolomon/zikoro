@@ -16,6 +16,7 @@ import {
   useUpdateQuiz,
   useGetAnswer,
   useGetQuizAnswer,
+  saveCookie,
 } from "@/hooks";
 import {
   TRefinedQuestion,
@@ -40,7 +41,6 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Avatar, { genConfig, AvatarFullConfig } from "react-nice-avatar";
 import { Plus } from "styled-icons/bootstrap";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
-
 
 const supabase = createClientComponentClient();
 
@@ -69,35 +69,35 @@ export default function Presentation({
   eventId: string;
   quizId: string;
 }) {
-  const { quiz, getQuiz, setQuiz } = useGetQuiz({ quizId });
-
-  const [isYetTosStart, setIsYetToStart] = useState(true);
+  const { quiz, getQuiz, setQuiz } = useGetQuiz({ quizId }); // hooks for fetching the a single quiz
+  const [isNotStarted, setIsNotStarted] = useState(true); // state to check whether the admin or attendee has started the quiz
   const { isOrganizer, attendeeId, attendee, loading, isLoading } =
-    useVerifyUserAccess(eventId);
-  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
-  const [isRightBox, setRightBox] = useState(true);
-  const [isLeftBox, setLeftBox] = useState(true);
-  const [isLobby, setisLobby] = useState(false);
-  const { answers, getAnswers } = useGetQuizAnswer();
-  const [isSendMailModal, setIsSendMailModal] = useState(false);
-  const [showScoreSheet, setShowScoreSheet] = useState(false);
+    useVerifyUserAccess(eventId); // verify user
+  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId }); // verify team member
+  const [isRightBox, setRightBox] = useState(true); // state to toggle advert panel visibility
+  const [isLeftBox, setLeftBox] = useState(true); // state to toggle leaderboard panel visibility
+  const [isLobby, setisLobby] = useState(false); // state to show the attendee's or player's lobby
+  const { answers, getAnswers } = useGetQuizAnswer(); // hook to fetch all quiz answers
+  const [isSendMailModal, setIsSendMailModal] = useState(false); // state to toggle send-mail modal after attendee finishes the quiz
+  const [showScoreSheet, setShowScoreSheet] = useState(false); // state to toggle show-score sheet after attendee finishes the quiz
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [volume, adjustVolume] = useState(0.8);
-  
+
   const [chosenAvatar, setChosenAvatar] =
     useState<Required<AvatarFullConfig> | null>(null);
 
+  // quiz result stores the state for quiz that is currently being answered by the attendee (for attendees only)
   const [quizResult, setQuizResult] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
-  const { answer, getAnswer } = useGetAnswer();
+  const { answer, getAnswer } = useGetAnswer(); // hook to fetch a single question answer
   const [playerDetail, setPlayerDetail] = useState<TPlayerDetail>({
     phone: "",
     email: "",
     nickName: attendee?.firstName || "",
   });
-  const player = getCookie<TConnectedUser>("player");
- 
+  // const player = getCookie<TConnectedUser>("player");
+
   const [refinedQuizArray, setRefinedQuizArray] = useState<TQuiz<
     TRefinedQuestion[]
   > | null>(null);
@@ -107,26 +107,26 @@ export default function Presentation({
   useEffect(() => {
     function subscribeToUpdate() {
       if (quiz?.accessibility?.live) {
-      const channel = supabase
-        .channel("live-quiz")
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "quiz",
-            filter: `quizAlias=eq.${quizId}`,
-          },
-          (payload) => {
-            setQuiz(payload.new as TQuiz<TQuestion[]>);
-          }
-        )
-        .subscribe();
+        const channel = supabase
+          .channel("live-quiz")
+          .on(
+            "postgres_changes",
+            {
+              event: "UPDATE",
+              schema: "public",
+              table: "quiz",
+              filter: `quizAlias=eq.${quizId}`,
+            },
+            (payload) => {
+              setQuiz(payload.new as TQuiz<TQuestion[]>);
+            }
+          )
+          .subscribe();
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    }
+        return () => {
+          supabase.removeChannel(channel);
+        };
+      }
     }
 
     const cleanUp = subscribeToUpdate();
@@ -168,25 +168,27 @@ export default function Presentation({
   }, [supabase, answers]);
  */
 
+  // generate a unique id for player
   const id = useMemo(() => {
-   // if (player) {
-    //  return player?.userId;
-   // } else {
-      return generateAlias();
-   // }
+    return generateAlias();
   }, []);
+
+  // toggle leaderboard
   function onClose() {
     setLeftBox((prev) => !prev);
   }
 
+  // toggle advert panel
   function onToggle() {
     setRightBox((prev) => !prev);
   }
 
+  // for updating current player quiz, but later restructured
   function updateQuiz(quiz: TQuiz<TRefinedQuestion[]>) {
     setRefinedQuizArray(quiz);
   }
 
+  // also for updating current player quiz, and used to show the answer sheet
   function updateQuizResult(quiz: TQuiz<TRefinedQuestion[]>) {
     setQuizResult(quiz);
   }
@@ -213,17 +215,20 @@ export default function Presentation({
     }
   }, [quiz]);
 
+  // toggle
   function close() {
-    setIsYetToStart(false);
+    setIsNotStarted(false);
   }
 
+  // end quiz
   function exitQuiz() {
-    setIsYetToStart(true);
+    setIsNotStarted(true);
   }
 
   function onCloseScoreSheet() {
     setShowScoreSheet(false);
   }
+
   function onOpenScoreSheet() {
     setShowScoreSheet(true);
     setIsSendMailModal(true);
@@ -232,8 +237,8 @@ export default function Presentation({
   function showSendMailModal() {
     setIsSendMailModal(false);
     setShowScoreSheet(true);
-   
   }
+
   // show score sheet after live quiz
   useEffect(() => {
     if (quiz && quiz?.accessibility?.live) {
@@ -245,25 +250,22 @@ export default function Presentation({
     }
   }, [quiz]);
 
-    // change audio state
-    function toggleAudio() {
-      if (audio) {
-        setIsAudioMuted(!audio.muted);
-        audio.muted = !audio.muted;
-      }
+  // change audio state
+  function toggleAudio() {
+    if (audio) {
+      setIsAudioMuted(!audio.muted);
+      audio.muted = !audio.muted;
     }
-  //console.log(audio
-  /**
-                
-   */
+  }
 
+  // audio volume change
   function handleVolume(num: number) {
- 
     if (audio) {
       adjustVolume(num);
-      audio.volume = num
+      audio.volume = num;
     }
- }
+  }
+
   return (
     <div className="w-full">
       {refinedQuizArray && !loading && !isLoading && !eventLoading ? (
@@ -285,8 +287,8 @@ export default function Presentation({
                   answers={answers}
                   close={() => {
                     setShowScoreSheet(false);
-                    setIsYetToStart(true);
-                    if (audio)  audio.pause();
+                    setIsNotStarted(true);
+                    if (audio) audio.pause();
                   }}
                   id={id}
                   quiz={quizResult}
@@ -296,55 +298,56 @@ export default function Presentation({
             </>
           ) : (
             <>
-            {/** */}
-           
-            { quiz?.accessibility?.live && 
-            <div className={cn("absolute top-[0.5rem] right-[10rem] hidden items-start gap-x-2", (isOrganizer || isIdPresent) && "flex")}>
-              <Button
-                  title={isAudioMuted ? "unmute" : "mute"}
-                  onClick={toggleAudio}
+              {quiz?.accessibility?.live && (
+                <div
                   className={cn(
-                    "px-0 w-fit text-gray-500 h-fit "
+                    "absolute top-[0.5rem] right-[10rem] hidden items-start gap-x-2",
+                    (isOrganizer || isIdPresent) && "flex"
                   )}
                 >
-                  {isAudioMuted ? (
-                    <HiSpeakerXMark className="text-2xl" />
-                  ) : (
-                    <HiSpeakerWave className="text-2xl" />
-                  )}
-                </Button>
-               <div className="w-[80px]">
-               <Slider
-            min={0}
-            max={1}
-            step={0.1}
-            size="small"
-            value={volume}
-            className="w-full h-1"
-            onChange={(_, e) => {
-              handleVolume(e as number);
-            }}
-            sx={{
-              color: "#6b7280",
-              height: 4,
-              padding:0,
-              "& .MuiSlider-thumb": {
-                width: 8,
-                height: 8,
-                transition: "0.3s cubic-bezier(.47,1.64,.41,.8)",
-                "&:before": {
-                  boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
-                },
-                "&:hover, &.Mui-focusVisible": {
-                  boxShadow: `0px 0px 0px 6px #6b7280`,
-                },
-              },
-            }}
-          />
-               </div>
-            </div>
-            }
-              {isYetTosStart ? (
+                  <Button
+                    title={isAudioMuted ? "unmute" : "mute"}
+                    onClick={toggleAudio}
+                    className={cn("px-0 w-fit text-gray-500 h-fit ")}
+                  >
+                    {isAudioMuted ? (
+                      <HiSpeakerXMark className="text-2xl" />
+                    ) : (
+                      <HiSpeakerWave className="text-2xl" />
+                    )}
+                  </Button>
+                  <div className="w-[80px]">
+                    <Slider
+                      min={0}
+                      max={1}
+                      step={0.1}
+                      size="small"
+                      value={volume}
+                      className="w-full h-1"
+                      onChange={(_, e) => {
+                        handleVolume(e as number);
+                      }}
+                      sx={{
+                        color: "#6b7280",
+                        height: 4,
+                        padding: 0,
+                        "& .MuiSlider-thumb": {
+                          width: 8,
+                          height: 8,
+                          transition: "0.3s cubic-bezier(.47,1.64,.41,.8)",
+                          "&:before": {
+                            boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
+                          },
+                          "&:hover, &.Mui-focusVisible": {
+                            boxShadow: `0px 0px 0px 6px #6b7280`,
+                          },
+                        },
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+              {isNotStarted ? (
                 <div className="w-full grid grid-cols-8 items-center h-full">
                   {(isIdPresent || isOrganizer) && isLobby && (
                     <Advert
@@ -406,7 +409,6 @@ export default function Presentation({
                     }}
                     isIdPresent={isIdPresent}
                     isOrganizer={isOrganizer}
-                
                   />
                   {(isIdPresent || isOrganizer) && quiz && (
                     <LeaderBoard
@@ -471,6 +473,7 @@ function PlayersOnboarding({
   useRealtimePresence(quiz?.accessibility?.live);
   const player = getCookie<TConnectedUser>("player");
   const [isAvatar, setIsAvatar] = useState(false);
+  const currentPlayerId = getCookie("currentPlayerId");
   //console.log("present", presentUser)
   // const [isLobby, setisLobby] = useState(false);
 
@@ -506,6 +509,7 @@ function PlayersOnboarding({
   function toggleAvatarModal() {
     setAvatarModal((prev) => !prev);
   }
+  // player start quiz
   async function submit(e: any) {
     e.preventDefault();
     if (!playerDetail?.nickName) {
@@ -537,7 +541,7 @@ function PlayersOnboarding({
             ...actualQuiz?.quizParticipants,
             {
               ...playerDetail,
-              id:  id,
+              id: id,
               attendee: attendee || undefined,
               joinedAt: player?.connectedAt || new Date().toISOString(),
               participantImage: chosenAvatar,
@@ -554,6 +558,7 @@ function PlayersOnboarding({
           ],
     };
     await updateQuiz({ payload });
+    saveCookie("currentPlayerId", id);
     setLoading(false);
     refetch();
     if (quiz?.accessibility?.live) {
@@ -567,6 +572,8 @@ function PlayersOnboarding({
     setisLobby(false);
     close();
   }
+
+  // organizer start live quiz
   async function startLiveQuiz() {
     setLoading(true);
     const payload: Partial<TQuiz<TQuestion[]>> = {
@@ -577,18 +584,38 @@ function PlayersOnboarding({
     refetch();
     setisLobby(true);
     setLoading(false);
-     if (audio)  audio.play();
+    if (audio) audio.play();
   }
 
   useEffect(() => {
     let interval = setInterval(() => {
-      if ( isLobby && quiz?.liveMode?.startingAt) {
+      if (isLobby && quiz?.liveMode?.startingAt) {
         refetch();
       } else {
         clearInterval(interval);
       }
     }, 2000);
   }, []);
+
+  // show the lobby if organizer has already started the quiz
+  useEffect(() => {
+    if (
+      !isAttendee &&
+      quiz?.accessibility?.live &&
+      quiz?.liveMode?.startingAt
+    ) {
+      setisLobby(true);
+      if (audio) audio.play();
+    }
+    if (
+      isAttendee &&
+      quiz?.accessibility?.live &&
+      quiz?.liveMode?.startingAt &&
+      currentPlayerId
+    ) {
+      setisLobby(true);
+    }
+  }, [isAttendee]);
 
   return (
     <>
@@ -617,11 +644,18 @@ function PlayersOnboarding({
             }`}</p>
           </div>
 
-          <div className={cn("w-full flex justify-center items-end gap-x-2", (quiz.accessibility?.isCollectEmail || quiz.accessibility?.isCollectEmail) && "items-start")}>
+          <div
+            className={cn(
+              "w-full flex justify-center items-end gap-x-2",
+              (quiz.accessibility?.isCollectEmail ||
+                quiz.accessibility?.isCollectEmail) &&
+                "items-start"
+            )}
+          >
             <button
               onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
+                e.preventDefault();
+                e.stopPropagation();
                 toggleAvatarModal();
               }}
               className="text-white rounded-full h-20 w-20 flex items-center justify-center bg-black/50 flex-col"
@@ -648,34 +682,43 @@ function PlayersOnboarding({
                 placeholder="Enter Name"
                 type="text"
               />
-          {(quiz.accessibility?.isCollectEmail || quiz.accessibility?.isCollectEmail) &&    <Input
-                value={
-                  quiz.accessibility?.isCollectEmail
-                    ? playerDetail?.email
-                    : playerDetail?.phone
-                }
-                onChange={(e) => {
-                  setPlayerDetail({
-                    ...playerDetail,
-                    [quiz.accessibility?.isCollectEmail ? "email" : "phone"]:
-                      e.target.value,
-                  });
-                }}
-                className="border-0 border-b rounded-none w-full"
-                placeholder={
-                  quiz.accessibility?.isCollectEmail
-                    ? "Enter Email Address"
-                    : "Enter Phone Number"
-                }
-                
-                type={quiz.accessibility?.isCollectEmail ? "email" : "tel"}
-              />}
-             {(quiz.accessibility?.isCollectEmail || quiz.accessibility?.isCollectEmail) && <div className="w-full  text-xs">
-                <p className="w-full text-gray-600 text-center">
-                  {`${quiz.accessibility?.isCollectEmail ? "Email": "Phone Number"} is required for this game to store your points and
+              {(quiz.accessibility?.isCollectEmail ||
+                quiz.accessibility?.isCollectEmail) && (
+                <Input
+                  value={
+                    quiz.accessibility?.isCollectEmail
+                      ? playerDetail?.email
+                      : playerDetail?.phone
+                  }
+                  onChange={(e) => {
+                    setPlayerDetail({
+                      ...playerDetail,
+                      [quiz.accessibility?.isCollectEmail ? "email" : "phone"]:
+                        e.target.value,
+                    });
+                  }}
+                  className="border-0 border-b rounded-none w-full"
+                  placeholder={
+                    quiz.accessibility?.isCollectEmail
+                      ? "Enter Email Address"
+                      : "Enter Phone Number"
+                  }
+                  type={quiz.accessibility?.isCollectEmail ? "email" : "tel"}
+                />
+              )}
+              {(quiz.accessibility?.isCollectEmail ||
+                quiz.accessibility?.isCollectEmail) && (
+                <div className="w-full  text-xs">
+                  <p className="w-full text-gray-600 text-center">
+                    {`${
+                      quiz.accessibility?.isCollectEmail
+                        ? "Email"
+                        : "Phone Number"
+                    } is required for this game to store your points and
                   possible follow-up should you appear on the leaderboard.`}
-                </p>
-              </div>}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
