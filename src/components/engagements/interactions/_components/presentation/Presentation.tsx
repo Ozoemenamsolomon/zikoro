@@ -473,7 +473,7 @@ function PlayersOnboarding({
   useRealtimePresence(quiz?.accessibility?.live);
   const player = getCookie<TConnectedUser>("player");
   const [isAvatar, setIsAvatar] = useState(false);
-  const currentPlayerId = getCookie("currentPlayerId");
+  const currentPlayer = getCookie("currentPlayer");
   //console.log("present", presentUser)
   // const [isLobby, setisLobby] = useState(false);
 
@@ -558,7 +558,7 @@ function PlayersOnboarding({
           ],
     };
     await updateQuiz({ payload });
-    saveCookie("currentPlayerId", id);
+    saveCookie("currentPlayer", {id});
     setLoading(false);
     refetch();
     if (quiz?.accessibility?.live) {
@@ -607,15 +607,16 @@ function PlayersOnboarding({
       setisLobby(true);
       if (audio) audio.play();
     }
-    if (
+   else if (
       isAttendee &&
       quiz?.accessibility?.live &&
       quiz?.liveMode?.startingAt &&
-      currentPlayerId
+      currentPlayer?.id
     ) {
       setisLobby(true);
     }
-  }, [isAttendee]);
+  }, [isAttendee, currentPlayer]);
+
 
   return (
     <>
