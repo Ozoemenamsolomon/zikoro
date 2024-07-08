@@ -10,7 +10,7 @@ import {
   TConnectedUser,
 } from "@/types";
 import { useMemo, useState } from "react";
-import { getCookie } from "@/hooks";
+import { getCookie, saveCookie } from "@/hooks";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { cn } from "@/lib";
 import { CheckCircle } from "styled-icons/bootstrap";
@@ -148,6 +148,7 @@ export function ScoreBoard({
         },
       };
       await updateQuiz({ payload });
+      saveCookie("currentPlayer", null)
       close();
     }
      window.open(`/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`, "_self");
