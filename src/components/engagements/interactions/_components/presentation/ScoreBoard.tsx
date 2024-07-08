@@ -150,7 +150,7 @@ export function ScoreBoard({
       saveCookie("currentPlayer", null)
       close();
     }
-     window.open(`/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`, "_self");
+     window.open(`/quiz/${actualQuiz?.eventAlias}/present/${actualQuiz?.quizAlias}`, "_self");
   }
 
   return (

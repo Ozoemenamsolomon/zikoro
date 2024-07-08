@@ -105,33 +105,33 @@ export default function Presentation({
 
   // subscribe to quiz
   useEffect(() => {
-    function subscribeToUpdate() {
-      if (quiz?.accessibility?.live) {
-        const channel = supabase
-          .channel("live-quiz")
-          .on(
-            "postgres_changes",
-            {
-              event: "UPDATE",
-              schema: "public",
-              table: "quiz",
-              filter: `quizAlias=eq.${quizId}`,
-            },
-            (payload) => {
-              setQuiz(payload.new as TQuiz<TQuestion[]>);
-            }
-          )
-          .subscribe();
+    // function subscribeToUpdate() {
+    if (!quiz?.accessibility?.live) return;
+    const channel = supabase
+      .channel("live-quiz")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "quiz",
+          filter: `quizAlias=eq.${quizId}`,
+        },
+        (payload) => {
+          setQuiz(payload.new as TQuiz<TQuestion[]>);
+        }
+      )
+      .subscribe();
 
-        return () => {
-          supabase.removeChannel(channel);
-        };
-      }
-    }
+    return () => {
+      if (isIdPresent || isOrganizer) supabase.removeChannel(channel);
+    };
+    // }
+    //  }
 
-    const cleanUp = subscribeToUpdate();
+    // const cleanUp = subscribeToUpdate();
 
-    return cleanUp;
+    //  return cleanUp;
   }, [supabase, quiz]);
 
   // memoized audio instance
@@ -558,7 +558,7 @@ function PlayersOnboarding({
           ],
     };
     await updateQuiz({ payload });
-    saveCookie("currentPlayer", {id});
+    saveCookie("currentPlayer", { id });
     setLoading(false);
     refetch();
     if (quiz?.accessibility?.live) {
@@ -606,8 +606,7 @@ function PlayersOnboarding({
     ) {
       setisLobby(true);
       if (audio) audio.play();
-    }
-   else if (
+    } else if (
       isAttendee &&
       quiz?.accessibility?.live &&
       quiz?.liveMode?.startingAt &&
@@ -616,7 +615,6 @@ function PlayersOnboarding({
       setisLobby(true);
     }
   }, [isAttendee, currentPlayer]);
-
 
   return (
     <>

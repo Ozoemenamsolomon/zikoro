@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import { Button } from "..";
 import { cn } from "@/lib";
 import { useState, useMemo } from "react";
-import { Printer } from "@styled-icons/evaicons-solid/Printer";
-import { ScanDash } from "@styled-icons/fluentui-system-regular/ScanDash";
+import { Printer } from "styled-icons/evaicons-solid";
+import { ScanDash } from "styled-icons/fluentui-system-regular";
 import { Custom, AddSession, FullScreenView } from "./_components";
 import {
   getCookie,
