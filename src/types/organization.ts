@@ -13,6 +13,7 @@ export interface TOrganization {
   organizationOwnerId: number;
   organizationType: string;
   organizationLogo: string;
+  favicon: string;
   country: string;
   eventPhoneNumber: string;
   eventWhatsApp: string;

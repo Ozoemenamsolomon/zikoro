@@ -69,7 +69,9 @@ export default function LinkSharing() {
           </TabsList>
           <TabsContent value="link" className="bg-white">
             <div className="mt-4">
-              <p>Workspace name</p>
+              <p className="font-semibold uppercase">
+                {organization?.organizationName}
+              </p>
               <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
                 https://www.zikoro.com/workspaces?query=
                 {organization?.organizationName}
@@ -82,12 +84,13 @@ export default function LinkSharing() {
           <TabsContent value="embed">
             <div className="mt-4 ">
               <div className="p-3 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-lg">
-                <p className="font-semibold">{organization?.organizationName}</p>
-                <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
-                  <pre>
-                    <code>{iframeCode}</code>
-                  </pre>
+                <p className="font-semibold uppercase">
+                  {organization?.organizationName}
                 </p>
+
+                <pre className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
+                  <code>{iframeCode}</code>
+                </pre>
                 <button className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6">
                   Copy Embed Code
                 </button>
