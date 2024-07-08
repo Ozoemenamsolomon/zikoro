@@ -44,6 +44,7 @@ export function QuizLobby({
     })();
   }, [quiz]);
 
+  console.log("quiz", quiz)
   // for an attendee
   useEffect(() => {
     if (isAttendee && quiz?.liveMode?.isStarting) {

@@ -132,7 +132,7 @@ export default function Presentation({
     // const cleanUp = subscribeToUpdate();
 
     //  return cleanUp;
-  }, [supabase, quiz]);
+  }, [supabase, quiz, isIdPresent, isOrganizer]);
 
   // memoized audio instance
   const audio = useMemo(() => createAudioInstance(), []);
@@ -243,6 +243,7 @@ export default function Presentation({
   useEffect(() => {
     if (quiz && quiz?.accessibility?.live) {
       if (quiz?.liveMode?.isEnded) {
+        saveCookie("currentPlayer", null);
         setShowScoreSheet(quiz?.liveMode?.isEnded);
         setIsSendMailModal(true);
         if (audio) audio.pause();
@@ -347,7 +348,7 @@ export default function Presentation({
                   </div>
                 </div>
               )}
-              {isNotStarted ? (
+              {isNotStarted && quiz ? (
                 <div className="w-full grid grid-cols-8 items-center h-full">
                   {(isIdPresent || isOrganizer) && isLobby && (
                     <Advert
@@ -362,7 +363,8 @@ export default function Presentation({
                     close={close}
                     isAttendee={!isIdPresent && !isOrganizer}
                     refetch={getQuiz}
-                    quiz={refinedQuizArray}
+                    refinedQuiz={refinedQuizArray}
+                    quiz={quiz}
                     id={id}
                     attendeeId={attendeeId}
                     playerDetail={playerDetail}
@@ -435,7 +437,7 @@ export default function Presentation({
 
 function PlayersOnboarding({
   close,
-  quiz,
+  refinedQuiz,
   attendee,
   refetch,
   isAttendee,
@@ -448,10 +450,11 @@ function PlayersOnboarding({
   chosenAvatar,
   setChosenAvatar,
   audio,
+  quiz
 }: {
   close: () => void;
   attendee?: TAttendee;
-  quiz: TQuiz<TRefinedQuestion[]>;
+  refinedQuiz: TQuiz<TRefinedQuestion[]>;
   refetch: () => Promise<any>;
   isAttendee: boolean;
   id: string;
@@ -465,6 +468,7 @@ function PlayersOnboarding({
     React.SetStateAction<Required<AvatarFullConfig> | null>
   >;
   audio: HTMLAudioElement | null;
+  quiz: TQuiz<TQuestion[]>;
 }) {
   const { updateQuiz } = useUpdateQuiz();
 
@@ -473,21 +477,11 @@ function PlayersOnboarding({
   useRealtimePresence(quiz?.accessibility?.live);
   const player = getCookie<TConnectedUser>("player");
   const [isAvatar, setIsAvatar] = useState(false);
-  const currentPlayer = getCookie("currentPlayer");
+ const currentPlayer = getCookie("currentPlayer");
   //console.log("present", presentUser)
   // const [isLobby, setisLobby] = useState(false);
 
-  const actualQuiz: TQuiz<TQuestion[]> = useMemo(() => {
-    return {
-      ...quiz,
-      questions: quiz?.questions?.map((item) => {
-        return {
-          ...item,
-          options: item?.options?.map(({ isCorrect, ...rest }) => rest),
-        };
-      }),
-    };
-  }, [quiz]);
+
 
   function generateAvatars() {
     const avatars = Array.from({ length: 10 }).map((_, index) => {
@@ -526,7 +520,7 @@ function PlayersOnboarding({
       return;
     }
 
-    const isAttemptedQuiz = actualQuiz?.quizParticipants?.some(
+    const isAttemptedQuiz = quiz?.quizParticipants?.some(
       (participant) => Number(participant.attendee?.id) === Number(attendeeId)
     );
     if (isAttendee && isAttemptedQuiz) {
@@ -535,15 +529,15 @@ function PlayersOnboarding({
 
     setLoading(true);
     const payload: Partial<TQuiz<TQuestion[]>> = {
-      ...actualQuiz,
-      quizParticipants: actualQuiz?.quizParticipants
+      ...quiz,
+      quizParticipants: quiz?.quizParticipants
         ? [
-            ...actualQuiz?.quizParticipants,
+            ...quiz?.quizParticipants,
             {
               ...playerDetail,
               id: id,
               attendee: attendee || undefined,
-              joinedAt: player?.connectedAt || new Date().toISOString(),
+              joinedAt: new Date().toISOString(), 
               participantImage: chosenAvatar,
             },
           ]
@@ -552,7 +546,7 @@ function PlayersOnboarding({
               ...playerDetail,
               id: id,
               attendee: attendee || undefined,
-              joinedAt: player?.connectedAt || new Date().toISOString(),
+              joinedAt: new Date().toISOString(),
               participantImage: chosenAvatar,
             },
           ],
@@ -577,7 +571,7 @@ function PlayersOnboarding({
   async function startLiveQuiz() {
     setLoading(true);
     const payload: Partial<TQuiz<TQuestion[]>> = {
-      ...actualQuiz,
+      ...quiz,
       liveMode: { startingAt: new Date().toISOString() },
     };
     await updateQuiz({ payload });
@@ -606,7 +600,8 @@ function PlayersOnboarding({
     ) {
       setisLobby(true);
       if (audio) audio.play();
-    } else if (
+    } 
+    else if (
       isAttendee &&
       quiz?.accessibility?.live &&
       quiz?.liveMode?.startingAt &&
@@ -615,6 +610,10 @@ function PlayersOnboarding({
       setisLobby(true);
     }
   }, [isAttendee, currentPlayer]);
+
+  /**
+   
+   */
 
   return (
     <>
