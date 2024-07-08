@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components";
-import { TQuiz, TQuestion, TQuizParticipant } from "@/types";
+import { TQuiz, TQuestion, TQuizParticipant, TLiveQuizParticipant } from "@/types";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { cn } from "@/lib";
@@ -9,41 +9,55 @@ import { useEffect, useMemo, useState } from "react";
 import { useUpdateQuiz } from "@/hooks";
 import { QLUsers } from "@/constants";
 import Avatar from "react-nice-avatar";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
+const supabase = createClientComponentClient();
 export function QuizLobby({
   quiz,
   close,
   goBack,
   isAttendee,
   refetch,
+  liveQuizPlayers
 }: {
   close: () => void;
   goBack: () => void;
   quiz: TQuiz<TQuestion[]>;
   isAttendee: boolean;
   refetch: () => Promise<any>;
+  liveQuizPlayers: TLiveQuizParticipant[];
 }) {
   const [loading, setLoading] = useState(false);
   const { updateQuiz } = useUpdateQuiz();
+ 
   const [players, setPlayers] = useState<TQuizParticipant[]>([]);
 
   useEffect(() => {
     (() => {
       if (
-        Array.isArray(quiz?.quizParticipants) &&
-        quiz?.quizParticipants?.length > 0
+        Array.isArray(liveQuizPlayers) &&
+        liveQuizPlayers?.length > 0
       ) {
-        const filtered = quiz?.quizParticipants?.filter(
+        const filtered = liveQuizPlayers?.filter(
           (participant) =>
             new Date(participant?.joinedAt).getTime() >
             new Date(quiz?.liveMode?.startingAt).getTime()
         );
 
-        setPlayers(filtered);
+        const mappedPlayers = filtered?.map((player) => {
+          const {quizAlias, ...rest} = player
+          return {
+            ...rest,
+            id: player?.quizParticipantId,
+
+          }
+        })
+       
+        setPlayers(mappedPlayers);
       }
     })();
-  }, [quiz]);
+  }, [liveQuizPlayers]);
 
-  console.log("quiz", quiz)
   // for an attendee
   useEffect(() => {
     if (isAttendee && quiz?.liveMode?.isStarting) {
@@ -57,12 +71,13 @@ export function QuizLobby({
     const payload: Partial<TQuiz<TQuestion[]>> = {
       ...quiz,
       liveMode: { startingAt, isStarting: true },
+      quizParticipants: [...quiz?.quizParticipants, ...players]
     };
     await updateQuiz({ payload });
     refetch();
     close();
   }
-  //  px-4 sm:px-8
+
   return (
     <div
       className={cn(

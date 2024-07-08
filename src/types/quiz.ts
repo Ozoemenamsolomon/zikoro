@@ -3,17 +3,27 @@ import { quizQuestionSchema } from "@/schemas";
 import { TAttendee } from ".";
 import { AvatarFullConfig } from "react-nice-avatar";
 
-
+export interface TLiveQuizParticipant {
+  quizParticipantId: string;
+  quizAlias: string;
+  nickName: string;
+  attendee?: TAttendee;
+  joinedAt: string;
+  participantImage: Required<AvatarFullConfig>;
+  email?: string;
+  phone?: string;
+  attemptedQuiz?: TQuiz<TRefinedQuestion[]>;
+}
 export type TQuizParticipant = {
   id: string;
-    nickName: string;
-    attendee?: TAttendee;
-    joinedAt: string;
-    participantImage: Required<AvatarFullConfig>;
-    email?:string;
-    phone?:string;
-    attemptedQuiz?: TQuiz<TRefinedQuestion[]>
-}
+  nickName: string;
+  attendee?: TAttendee;
+  joinedAt: string;
+  participantImage: Required<AvatarFullConfig>;
+  email?: string;
+  phone?: string;
+  attemptedQuiz?: TQuiz<TRefinedQuestion[]>;
+};
 export interface TQuiz<T> {
   id: number;
   created_at: string;
@@ -38,9 +48,9 @@ export interface TQuiz<T> {
     countdownTransition: boolean;
     disable: boolean;
     live: boolean;
-    isCollectPhone:boolean;
-    isCollectEmail:boolean;
-    showAnswer:boolean;
+    isCollectPhone: boolean;
+    isCollectEmail: boolean;
+    showAnswer: boolean;
     showResult: boolean;
   };
 }
@@ -48,9 +58,6 @@ export interface TQuiz<T> {
 export type TQuestion = z.infer<typeof quizQuestionSchema> & {
   id: string;
 };
-
-
-
 
 export type TRefinedQuestion = {
   id: string;
@@ -84,8 +91,8 @@ export interface TAnswer {
   answerDuration: number;
   quizAlias: string;
   selectedOptionId: { optionId: string };
-  email:string;
-  phone:string;
+  email: string;
+  phone: string;
   correctOptionId: { optionId: string };
 }
 
@@ -93,4 +100,3 @@ export interface TConnectedUser {
   connectedAt: string;
   userId: string;
 }
-

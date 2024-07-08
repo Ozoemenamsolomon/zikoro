@@ -17,6 +17,8 @@ import {
   useGetAnswer,
   useGetQuizAnswer,
   saveCookie,
+  useAddLiveParticipant,
+  useGetLiveParticipant,
 } from "@/hooks";
 import {
   TRefinedQuestion,
@@ -24,6 +26,8 @@ import {
   TQuestion,
   TAttendee,
   TConnectedUser,
+  TLiveQuizParticipant,
+  TAnswer
 } from "@/types";
 import {
   useCheckTeamMember,
@@ -77,11 +81,12 @@ export default function Presentation({
   const [isRightBox, setRightBox] = useState(true); // state to toggle advert panel visibility
   const [isLeftBox, setLeftBox] = useState(true); // state to toggle leaderboard panel visibility
   const [isLobby, setisLobby] = useState(false); // state to show the attendee's or player's lobby
-  const { answers, getAnswers } = useGetQuizAnswer(); // hook to fetch all quiz answers
+  const { answers, getAnswers, setAnswers } = useGetQuizAnswer(); // hook to fetch all quiz answers
   const [isSendMailModal, setIsSendMailModal] = useState(false); // state to toggle send-mail modal after attendee finishes the quiz
   const [showScoreSheet, setShowScoreSheet] = useState(false); // state to toggle show-score sheet after attendee finishes the quiz
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [volume, adjustVolume] = useState(0.8);
+  
 
   const [chosenAvatar, setChosenAvatar] =
     useState<Required<AvatarFullConfig> | null>(null);
@@ -124,7 +129,7 @@ export default function Presentation({
       .subscribe();
 
     return () => {
-      if (isIdPresent || isOrganizer) supabase.removeChannel(channel);
+      supabase.removeChannel(channel);
     };
     // }
     //  }
@@ -136,12 +141,13 @@ export default function Presentation({
 
   // memoized audio instance
   const audio = useMemo(() => createAudioInstance(), []);
-  /**
+ 
+
    // subscribe to answers
   useEffect(() => {
-    function subscribeToUpdate() {
+    if (!quiz?.accessibility?.live) return;
       const channel = supabase
-        .channel("live-quiz")
+        .channel("live-answer")
         .on(
           "postgres_changes",
           {
@@ -151,8 +157,8 @@ export default function Presentation({
             filter: `quizId=eq.${quiz?.id}`,
           },
           (payload) => {
-            console.log(payload);
-            setAnswers(payload.new as TAnswer[]);
+          
+            setAnswers((prev) => [...prev, payload.new as TAnswer]);
           }
         )
         .subscribe();
@@ -160,13 +166,11 @@ export default function Presentation({
       return () => {
         supabase.removeChannel(channel);
       };
-    }
+    
 
-    const cleanUp = subscribeToUpdate();
+  
+  }, [supabase, quiz]);
 
-    return cleanUp;
-  }, [supabase, answers]);
- */
 
   // generate a unique id for player
   const id = useMemo(() => {
@@ -192,6 +196,8 @@ export default function Presentation({
   function updateQuizResult(quiz: TQuiz<TRefinedQuestion[]>) {
     setQuizResult(quiz);
   }
+
+ 
 
   useEffect(() => {
     if (quiz) {
@@ -471,15 +477,45 @@ function PlayersOnboarding({
   quiz: TQuiz<TQuestion[]>;
 }) {
   const { updateQuiz } = useUpdateQuiz();
-
+  const { addLiveParticipant } = useAddLiveParticipant();
   const [loading, setLoading] = useState(false);
   const [isAvatarModal, setAvatarModal] = useState(false);
   useRealtimePresence(quiz?.accessibility?.live);
   const player = getCookie<TConnectedUser>("player");
   const [isAvatar, setIsAvatar] = useState(false);
+  const { liveQuizPlayers, setLiveQuizPlayers } = useGetLiveParticipant({
+    quizId: quiz?.quizAlias,
+  });
   // const currentPlayer = getCookie("currentPlayer");
-  //console.log("present", presentUser)
-  // const [isLobby, setisLobby] = useState(false);
+
+
+  // subscribe to player
+  useEffect(() => {
+    if (!quiz?.accessibility?.live) return;
+    const channel = supabase
+      .channel("live-players")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "quizLobby",
+          filter: `quizAlias=eq.${quiz?.quizAlias}`,
+        },
+        (payload) => {
+          console.log("new", payload.new);
+          setLiveQuizPlayers((prev) => [
+            ...prev,
+            payload.new as TLiveQuizParticipant,
+          ]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase, quiz]);
 
   function generateAvatars() {
     const avatars = Array.from({ length: 10 }).map((_, index) => {
@@ -526,30 +562,44 @@ function PlayersOnboarding({
     }
 
     setLoading(true);
-    const payload: Partial<TQuiz<TQuestion[]>> = {
-      ...quiz,
-      quizParticipants: quiz?.quizParticipants
-        ? [
-            ...quiz?.quizParticipants,
-            {
-              ...playerDetail,
-              id: id,
-              attendee: attendee || undefined,
-              joinedAt: new Date().toISOString(),
-              participantImage: chosenAvatar,
-            },
-          ]
-        : [
-            {
-              ...playerDetail,
-              id: id,
-              attendee: attendee || undefined,
-              joinedAt: new Date().toISOString(),
-              participantImage: chosenAvatar,
-            },
-          ],
-    };
-    await updateQuiz({ payload });
+    if (quiz?.accessibility?.live) {
+      const payload: TLiveQuizParticipant = {
+        ...playerDetail,
+        quizAlias: quiz?.quizAlias,
+        quizParticipantId: id,
+        attendee: attendee || undefined,
+        joinedAt: new Date().toISOString(),
+        participantImage: chosenAvatar,
+      };
+
+      await addLiveParticipant({ payload });
+    } else {
+      const payload: Partial<TQuiz<TQuestion[]>> = {
+        ...quiz,
+        quizParticipants: quiz?.quizParticipants
+          ? [
+              ...quiz?.quizParticipants,
+              {
+                ...playerDetail,
+                id: id,
+                attendee: attendee || undefined,
+                joinedAt: new Date().toISOString(),
+                participantImage: chosenAvatar,
+              },
+            ]
+          : [
+              {
+                ...playerDetail,
+                id: id,
+                attendee: attendee || undefined,
+                joinedAt: new Date().toISOString(),
+                participantImage: chosenAvatar,
+              },
+            ],
+      };
+      await updateQuiz({ payload });
+    }
+
     //  saveCookie("currentPlayer", { id });
     setLoading(false);
     refetch();
@@ -773,6 +823,7 @@ function PlayersOnboarding({
           close={onClose}
           refetch={refetch}
           isAttendee={isAttendee}
+          liveQuizPlayers={liveQuizPlayers}
         />
       )}
       {isAvatarModal && (
