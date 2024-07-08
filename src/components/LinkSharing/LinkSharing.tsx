@@ -3,15 +3,41 @@ import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import toast from "react-hot-toast";
 
 export default function LinkSharing() {
   const [isMonthly, setIsMonthly] = useState("");
   const { organization, setOrganization } = useOrganizationStore();
+
   const iframeCode = `<iframe
     src="www.zikoro.com/workspaces?query=${organization?.organizationName}"
     style={{ width: '90%', height: '80%' }}
     title="Organization Page Preview"
   ></iframe>`;
+
+  const webLink = `https://www.zikoro.com/workspaces?query=${organization?.organizationName}`;
+
+  const copyCodeToClipboard = () => {
+    navigator.clipboard
+      .writeText(iframeCode)
+      .then(() => {
+        toast.success("Code copied to clipboard");
+      })
+      .catch((err) => {
+        toast.error("Failed to copy code");
+      });
+  };
+
+  const copyLinkToClipboard = () => {
+    navigator.clipboard
+      .writeText(webLink)
+      .then(() => {
+        toast.success("Link copied to clipboard");
+      })
+      .catch((err) => {
+        toast.error("Failed to copy link");
+      });
+  };
 
   const handleToggle = () => {};
 
@@ -73,10 +99,12 @@ export default function LinkSharing() {
                 {organization?.organizationName}
               </p>
               <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
-                https://www.zikoro.com/workspaces?query=
-                {organization?.organizationName}
+                {webLink}
               </p>
-              <button className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6">
+              <button
+                className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6"
+                onClick={copyLinkToClipboard}
+              >
                 Copy Link
               </button>
             </div>
@@ -91,7 +119,10 @@ export default function LinkSharing() {
                 <pre className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
                   <code>{iframeCode}</code>
                 </pre>
-                <button className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6">
+                <button
+                  className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6"
+                  onClick={copyCodeToClipboard}
+                >
                   Copy Embed Code
                 </button>
               </div>
