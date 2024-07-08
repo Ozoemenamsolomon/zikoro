@@ -3,7 +3,6 @@
 import { Button } from "@/components";
 import { TQuiz, TQuestion, TQuizParticipant } from "@/types";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
-import Image from "next/image";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { cn } from "@/lib";
 import { useEffect, useMemo, useState } from "react";
