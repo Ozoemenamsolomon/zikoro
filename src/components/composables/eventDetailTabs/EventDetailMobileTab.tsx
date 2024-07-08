@@ -1,7 +1,7 @@
 "use client";
 
-import { Bag } from "@styled-icons/bootstrap/Bag";
-import { Handshake } from "@styled-icons/fa-regular/Handshake";
+import { Bag } from "styled-icons/bootstrap";
+import { Handshake } from "styled-icons/fa-regular";
 import { useRouter } from "next/navigation";
 import {
   MarketingIcon,
