@@ -87,7 +87,7 @@ export function useCreateUserOrganization(
       if (status === 204 || status === 200) {
         toast.success("Organization created successfully");
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   return {
