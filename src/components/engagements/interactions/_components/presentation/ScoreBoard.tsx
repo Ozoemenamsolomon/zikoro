@@ -19,7 +19,6 @@ import { useUpdateQuiz } from "@/hooks";
 import Avatar from "react-nice-avatar";
 import { AvatarFullConfig } from "react-nice-avatar";
 import { ArrowUpwardOutline } from "styled-icons/evaicons-outline";
-import { FeedStar } from "styled-icons/octicons";
 
 type TLeaderBoard = {
   quizParticipantId: string;
