@@ -243,7 +243,7 @@ export default function Presentation({
   useEffect(() => {
     if (quiz && quiz?.accessibility?.live) {
       if (quiz?.liveMode?.isEnded) {
-        saveCookie("currentPlayer", null);
+        // saveCookie("currentPlayer", null);
         setShowScoreSheet(quiz?.liveMode?.isEnded);
         setIsSendMailModal(true);
         if (audio) audio.pause();
@@ -450,7 +450,7 @@ function PlayersOnboarding({
   chosenAvatar,
   setChosenAvatar,
   audio,
-  quiz
+  quiz,
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -477,11 +477,9 @@ function PlayersOnboarding({
   useRealtimePresence(quiz?.accessibility?.live);
   const player = getCookie<TConnectedUser>("player");
   const [isAvatar, setIsAvatar] = useState(false);
- const currentPlayer = getCookie("currentPlayer");
+  // const currentPlayer = getCookie("currentPlayer");
   //console.log("present", presentUser)
   // const [isLobby, setisLobby] = useState(false);
-
-
 
   function generateAvatars() {
     const avatars = Array.from({ length: 10 }).map((_, index) => {
@@ -537,7 +535,7 @@ function PlayersOnboarding({
               ...playerDetail,
               id: id,
               attendee: attendee || undefined,
-              joinedAt: new Date().toISOString(), 
+              joinedAt: new Date().toISOString(),
               participantImage: chosenAvatar,
             },
           ]
@@ -552,7 +550,7 @@ function PlayersOnboarding({
           ],
     };
     await updateQuiz({ payload });
-    saveCookie("currentPlayer", { id });
+    //  saveCookie("currentPlayer", { id });
     setLoading(false);
     refetch();
     if (quiz?.accessibility?.live) {
@@ -600,8 +598,11 @@ function PlayersOnboarding({
     ) {
       setisLobby(true);
       if (audio) audio.play();
-    } 
-    else if (
+    }
+  }, [isAttendee]);
+
+  /**
+   else if (
       isAttendee &&
       quiz?.accessibility?.live &&
       quiz?.liveMode?.startingAt &&
@@ -609,10 +610,6 @@ function PlayersOnboarding({
     ) {
       setisLobby(true);
     }
-  }, [isAttendee, currentPlayer]);
-
-  /**
-   
    */
 
   return (
