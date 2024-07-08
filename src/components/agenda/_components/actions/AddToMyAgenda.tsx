@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarCheck } from "@styled-icons/bootstrap/CalendarCheck";
+import { CalendarCheck } from "styled-icons/bootstrap";
 import { Button } from "@/components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useCreateMyAgenda } from "@/hooks";
