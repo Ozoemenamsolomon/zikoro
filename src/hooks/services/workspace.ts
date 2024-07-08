@@ -34,11 +34,10 @@ export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, 
       orgX
     } = formData;
 
-
     try {
       const { data, error, status } = await supabase
         .from("organization")
-        .update([
+        .update(
           {
             organizationName: orgName,
             organizationType: orgType,
@@ -48,25 +47,30 @@ export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, 
             eventWhatsApp: orgWhatsappNumber,
             eventContactEmail: orgEmail,
             organizationLogo: orgLogoLink,
-            // organizationFavicon: orgFaviconLink,
+            favicon: orgFaviconLink,
             x: orgX,
             linkedIn: orgLinkedin,
             facebook: orgFacebook,
             instagram: orgInstagram,
           }
-        ]
         )
-        .eq("organizationName", orgName)
+        .eq("id", workspaceId)
+        .select()
+        .maybeSingle()
+
+      console.log(data)
       if (error) {
         console.log(error.message);
         return;
       }
       if (status === 204 || status === 200) {
         toast.success("Workspace Updated");
+        return data
       }
     } catch (error: any) {
       toast.error(error);
     }
+
   }
   return {
     updateWorkspace,

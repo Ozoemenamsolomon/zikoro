@@ -107,7 +107,7 @@ export function useCreateBlogTag() {
       if (status === 204 || status === 200) {
         toast.success("Tag created successfully");
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   return {
@@ -120,11 +120,11 @@ export function useUpdatePostView() {
     try {
       const { data, error, status } = await supabase
         .from("blog")
-        .update([
+        .update(
           {
             views: currentView + 1,
           },
-        ])
+        )
         .eq("id", postId);
 
       if (error) {
@@ -134,7 +134,7 @@ export function useUpdatePostView() {
 
       if (status === 204 || status === 200) {
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   return {
@@ -147,11 +147,11 @@ export function useUpdatePostshare() {
     try {
       const { data, error, status } = await supabase
         .from("blog")
-        .update([
+        .update(
           {
             shares: currentShare + 1,
           },
-        ])
+        )
         .eq("id", postId);
 
       if (error) {
@@ -162,7 +162,7 @@ export function useUpdatePostshare() {
       if (status === 204 || status === 200) {
         console.log("post view updated");
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   return {

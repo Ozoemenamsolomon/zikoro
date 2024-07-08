@@ -48,7 +48,6 @@ export default function General() {
   const [isFaviconUploaded, setIsFaviconUploaded] = useState<boolean>(false);
   const [logoUrl, setLogoUrl] = useState<string>("");
   const [faviconUrl, setFaviconUrl] = useState<string>("");
-  const [reloadForm, setReloadForm] = useState<boolean>(false);
 
   const countryList = [
     "Afghanistan",
@@ -344,14 +343,35 @@ export default function General() {
         orgFacebook: organization.facebook || "",
         orgInstagram: organization.instagram || "",
       });
+      setLogoUrl(organization.organizationLogo);
+      setFaviconUrl(organization.favicon);
+
+      console.log(organization)
     }
-  }, [organization, reloadForm]);
+  }, [organization]);
 
   //update setting function
-  const updateSetting = (e: React.FormEvent<HTMLFormElement>) => {
+  const updateSetting = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    updateWorkspace();
-    console.log(formData);
+    const updatedOrganization = await updateWorkspace();
+    if (organization) {
+      setFormData({
+        orgName: organization.organizationName || "",
+        orgType: organization.organizationType || "",
+        orgPlan: organization.subscriptionPlan || "",
+        orgCountry: organization.country || "",
+        orgTel: organization.eventPhoneNumber || "",
+        orgWhatsappNumber: organization.eventWhatsApp || "",
+        orgEmail: organization.eventContactEmail || "",
+        orgX: organization.x || "",
+        orgLinkedin: organization.linkedIn || "",
+        orgFacebook: organization.facebook || "",
+        orgInstagram: organization.instagram || "",
+      });
+      setLogoUrl(organization.organizationLogo);
+      setFaviconUrl(organization.favicon);
+      setOrganization(updatedOrganization);
+    }
   };
 
   //preview logo
@@ -447,7 +467,8 @@ export default function General() {
     }
   };
 
-  console.log(organization);
+  console.log("org", organization);
+
   return (
     <>
       {organization ? (
@@ -727,7 +748,7 @@ export default function General() {
                     <input
                       type="text"
                       value={formData.orgX}
-                      name="orgXLink"
+                      name="orgX"
                       placeholder="Enter Link"
                       onChange={(e) => handleInputChange(e)}
                       className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
@@ -748,7 +769,7 @@ export default function General() {
                     <input
                       type="text"
                       value={formData.orgLinkedin}
-                      name="orgLinkedinLink"
+                      name="orgLinkedin"
                       placeholder="Enter Link"
                       onChange={(e) => handleInputChange(e)}
                       className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
@@ -767,7 +788,7 @@ export default function General() {
                     <input
                       type="text"
                       value={formData.orgFacebook}
-                      name="orgFacebookLink"
+                      name="orgFacebook"
                       placeholder="Enter Link"
                       onChange={(e) => handleInputChange(e)}
                       className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
@@ -788,7 +809,7 @@ export default function General() {
                     <input
                       type="text"
                       value={formData.orgInstagram}
-                      name="orgInstagramLink"
+                      name="orgInstagram"
                       placeholder="Enter Link"
                       onChange={(e) => handleInputChange(e)}
                       className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
@@ -845,7 +866,7 @@ export default function General() {
                         disabled={delInput != organization.organizationName}
                         type="button"
                         onClick={() => {
-                          deleteWorkspace().then(() => setReloadForm(!reloadForm));
+                          deleteWorkspace();
                         }}
                         className="bg-[#E74C3C] text-white py-1 w-full text-[15px] cursor-pointer  font-medium rounded-md "
                       >
