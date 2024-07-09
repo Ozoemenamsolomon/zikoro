@@ -15,6 +15,8 @@ import { TEventTransaction } from "@/types/billing";
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
 import useUserStore from "@/store/globalUserStore";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const affiliateLinkFilter: TFilter<TAffiliateLink>[] = [
   {
@@ -134,12 +136,11 @@ const affiliateLinkFilter: TFilter<TAffiliateLink>[] = [
 ];
 
 const Performance = () => {
+  const router = useRouter();
   const { user, setUser } = useUserStore();
   const { affiliateLinks, getAffiliateLinks, isLoading } = useGetAffiliateLinks(
     { userId: user?.id || 0 }
   );
-
-  
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
@@ -148,8 +149,6 @@ const Performance = () => {
       data: affiliateLinks || [],
       dataFilters: affiliateLinkFilter,
     });
-
-  // 
 
   const totalRevenue = filteredData
     .reduce(
@@ -230,7 +229,15 @@ const Performance = () => {
   }, [isLoading]);
 
   return (
-    <section className="p-4 space-y-4">
+    <section className="p-4 space-y-4 w-full">
+      <div className="w-full flex justify-end">
+      <Button
+        className="bg-basePrimary px-4 w-fit"
+        onClick={() => router.push("/affiliates/link/create")}
+      >
+        Create Link
+      </Button>
+      </div>
       <div className="w-full overflow-x-auto no-scrollbar">
         <div className="flex md:justify-end gap-4">
           <div className="px-4 py-2 flex flex-col gap-2 bg-gray-100 border-gray-200 border-2 rounded-md min-w-[200px]">
@@ -365,7 +372,7 @@ const Performance = () => {
           data={affiliateLinks || []}
           rowStyle={{
             display: "grid",
-            gridTemplateColumns: `auto 1.5fr repeat(${
+            gridTemplateColumns: `1fr 1.5fr repeat(${
               columns.length - 3
             }, minmax(0, 1fr)) auto`,
           }}

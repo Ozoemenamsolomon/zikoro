@@ -9,20 +9,10 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
+import { updateSearchParam } from "@/utils";
 
 export default function page() {
-  function updateSearchParam(
-    searchParams: ReadonlyURLSearchParams,
-    param: string,
-    value: string
-  ): URLSearchParams {
-    const currentSearchParams = new URLSearchParams(
-      Array.from(searchParams.entries())
-    );
-    currentSearchParams.set(param, value);
-
-    return currentSearchParams;
-  }
+ 
 
   const searchParams = useSearchParams();
   const router = useRouter();

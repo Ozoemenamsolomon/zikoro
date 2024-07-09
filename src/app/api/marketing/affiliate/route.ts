@@ -10,11 +10,17 @@ export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
       const userId = searchParams.get("userId");
+      const organizationId = searchParams.get("organizationId");
 
-      const { data, error, status } = await supabase
-        .from("affiliate")
-        .select("*")
-        .eq("userId", userId);
+      console.log(organizationId);
+
+      const query = supabase.from("affiliate").select("*");
+
+      if (userId) query.eq("userId", userId);
+
+      if (organizationId) query.eq("organizationId", organizationId);
+
+      const { data, error, status } = await query;
 
       if (error) throw error;
 

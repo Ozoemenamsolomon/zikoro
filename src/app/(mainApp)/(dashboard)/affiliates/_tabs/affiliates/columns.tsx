@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import CreateAffiliateForm from "@/components/forms/createAffiliateForm";
 import useUserStore from "@/store/globalUserStore";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 export const columns: ColumnDef<TAffiliate>[] = [
   // {
@@ -103,16 +104,15 @@ export const columns: ColumnDef<TAffiliate>[] = [
       const status = row.original.affliateStatus;
       const affiliateId = row.original.id;
 
-      
-
       const { updateAffiliate, isLoading } = useUpdateAffiliate({
         affiliateId: affiliateId as number,
       });
 
       const { user, setUser } = useUserStore();
+      const { organization, setOrganization } = useOrganizationStore();
 
       const { getAffiliates, isLoading: affiliatesIsLoading } =
-        useGetAffiliates({ userId: user?.id || 0 });
+        useGetAffiliates({ organizationId: organization?.id });
 
       const updateAffiliateStatus = async (affliateStatus: boolean) => {
         await updateAffiliate({ payload: { affliateStatus } });
@@ -133,8 +133,10 @@ export const columns: ColumnDef<TAffiliate>[] = [
     id: "edit",
     cell: ({ row }) => {
       const { user, setUser } = useUserStore();
+      const { organization, setOrganization } = useOrganizationStore();
+
       const { getAffiliates } = useGetAffiliates({
-        userId: user?.id || 0,
+        organizationId: organization?.id,
       });
 
       return (

@@ -22,6 +22,7 @@ import useEventStore from "@/store/globalEventStore";
 import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
 import useUserStore from "@/store/globalUserStore";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const Affiliates = () => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -29,9 +30,12 @@ const Affiliates = () => {
   const currentEvent = useEventStore((state) => state.event);
 
   const { user, setUser } = useUserStore();
+  const { organization } = useOrganizationStore();
+
+  console.log(organization.id)
 
   const { getAffiliates, affiliates, isLoading } = useGetAffiliates({
-    userId: user?.id || 0,
+    organizationId: organization?.id,
   });
 
   const { searchTerm, searchedData, setSearchTerm } = useSearch<TAffiliate>({
