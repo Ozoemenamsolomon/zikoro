@@ -19,7 +19,6 @@ import {
   startOfMonth,
   endOfMonth,
 } from "date-fns";
-import { ClipboardCode } from "styled-icons/fluentui-system-regular";
 import toast from "react-hot-toast";
 import OrganizationNavbar from "@/components/OrganizationNavbar";
 
@@ -38,6 +37,9 @@ type DBFeaturedEvent = {
   expectedParticipants: number;
   registered: number;
   organisationId: number;
+  organization: {
+    organizationName: "";
+  };
 };
 
 interface CategorizedButtons {
@@ -109,7 +111,7 @@ export default function Workspaces() {
   useEffect(() => {
     //fetch events from database
     async function fetchEventFeautured() {
-      fetch("/api/explore/featured?query", {
+      fetch("/api/workspaces?query", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -219,7 +221,10 @@ export default function Workspaces() {
         // event.eventCity.toLowerCase().includes(lowerSearchQuery ?? "") ||
         // event.eventCategory.toLowerCase().includes(lowerSearchQuery ?? "")
         // event.organisationId.toString().includes(query ?? "")
-        console.log(event)
+        event.organization.organizationName
+          .toLowerCase()
+          .includes(lowerSearchQuery ?? "")
+        // event.organisationName?.toLowerCase().includes(lowerSearchQuery ?? "")
       );
     })
     .filter((event) => {
@@ -269,6 +274,8 @@ export default function Workspaces() {
       });
     });
 
+  console.log(filteredEvents);
+
   return (
     <>
       {eventData && eventData.length > 0 && (
@@ -292,12 +299,6 @@ export default function Workspaces() {
                           <FilterIcon />
                           <p className="text-xl font-semibold"> Filters</p>
                         </div>
-
-                        <ClipboardCode
-                          size={28}
-                          className="cursor-pointer"
-                          onClick={() => copyPageUrl()}
-                        />
                       </div>
 
                       <div className="flex flex-col gap-y-12 mt-7">
@@ -502,7 +503,7 @@ export default function Workspaces() {
                       </div>
 
                       {/* bottom h-[1485px] */}
-                      <div className="py-2 px-4 h-auto flex flex-col justify-start border-t-[1px] border-gray-200  items-center overflow-y-auto no-scrollbar pt-8 pb-0 lg:pb-[50px]">
+                      <div className="py-2 px-4 min-h-screen h-auto flex flex-col justify-start border-t-[1px] border-gray-200  items-center  pt-8 pb-0 lg:pb-[50px]">
                         <div className="grid grid-cols-3 gap-4 mt-8 ">
                           {filteredEvents &&
                             (showMore
@@ -594,7 +595,7 @@ export default function Workspaces() {
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-center mt-16 mb-20 ">
+                    <div className="flex flex-col items-center mt-16 min-h-screen mb-20 ">
                       <div className="grid grid-cols-1 gap-4 w-full ">
                         {filteredEvents &&
                           (showMore
