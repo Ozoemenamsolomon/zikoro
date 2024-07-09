@@ -6,8 +6,25 @@ import useOrganizationStore from "@/store/globalOrganizationStore";
 import toast from "react-hot-toast";
 
 export default function LinkSharing() {
-  const [isMonthly, setIsMonthly] = useState("");
   const { organization, setOrganization } = useOrganizationStore();
+  const [isCategory, setIsCategory] = useState<boolean>(false);
+  const [isFeaturedEvent, setIsFeaturedEvent] = useState<boolean>(false);
+  const [isFilter, setIsFilter] = useState<boolean>(false);
+
+  //handles category toggle
+  const handleCategoryToggle = () => {
+    setIsCategory(!isCategory);
+  };
+
+  //handles featuredEvent toggle
+  const handleFeaturedEventToggle = () => {
+    setIsFeaturedEvent(!isFeaturedEvent);
+  };
+
+  //handles filter feature toggle
+  const handleCategorySelect = () => {
+    setIsFilter(!isFilter);
+  };
 
   const iframeCode = `<iframe
     src="www.zikoro.com/workspaces?query=${organization?.organizationName}"
@@ -39,8 +56,6 @@ export default function LinkSharing() {
       });
   };
 
-  const handleToggle = () => {};
-
   return (
     <div className="mt-[60px] ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
       <div className="">
@@ -57,8 +72,8 @@ export default function LinkSharing() {
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
-            checked={!isMonthly}
-            onCheckedChange={handleToggle}
+            checked={isCategory}
+            onCheckedChange={handleCategoryToggle}
           />
 
           <p className="text-base font-normal ">Show Categories</p>
@@ -67,8 +82,8 @@ export default function LinkSharing() {
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
-            checked={!isMonthly}
-            onCheckedChange={handleToggle}
+            checked={isFeaturedEvent}
+            onCheckedChange={handleFeaturedEventToggle}
           />
 
           <p className="text-base font-normal ">Turn off featured events</p>
@@ -77,8 +92,8 @@ export default function LinkSharing() {
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
-            checked={!isMonthly}
-            onCheckedChange={handleToggle}
+            checked={isFilter}
+            onCheckedChange={handleCategorySelect}
           />
 
           <p className="text-base font-normal ">Turn off filters</p>

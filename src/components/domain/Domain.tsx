@@ -1,8 +1,12 @@
 "use client";
 import React from "react";
 import { GlobeIcon, PencilIcon } from "@/constants";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 export default function Domain() {
+  const { organization, setOrganization } = useOrganizationStore();
+  const webLink = `https://www.zikoro.com/workspaces?query=${organization?.organizationName}`;
+
   return (
     <div>
       {/* Custom Domain sections */}
@@ -47,7 +51,7 @@ export default function Domain() {
             <input
               required
               type="text"
-              value="Techies"
+              value={organization?.organizationName}
               name=""
               placeholder="https://"
               className="w-full lg:w-[841px] h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
@@ -60,9 +64,7 @@ export default function Domain() {
               </p>
             </div>
           </div>
-          <p className="mt-2 text-[12px] text-[#1f1f1f]">
-            https://techies.zikoro.com
-          </p>
+          <p className="mt-2 text-[12px] text-[#1f1f1f]">{webLink}</p>
         </div>
 
         <div className="mt-8">
@@ -71,7 +73,7 @@ export default function Domain() {
             <input
               required
               type="text"
-              value="techies.zikoro.com"
+              value={webLink}
               name=""
               placeholder="https://"
               className="w-full  h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
