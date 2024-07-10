@@ -139,7 +139,7 @@ function ReviewComment({
           return;
         }
 
-        await sendReview({ ...payload,  points: myAgendapointsAllocation?.points });
+        await sendReview({payload :{...payload,  points: myAgendapointsAllocation?.points} });
       }
       else {
         await sendReview({ payload });
