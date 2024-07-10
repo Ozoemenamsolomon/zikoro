@@ -7,32 +7,37 @@ import toast from "react-hot-toast";
 
 export default function LinkSharing() {
   const { organization, setOrganization } = useOrganizationStore();
-  const [isCategory, setIsCategory] = useState<boolean>(false);
-  const [isFeaturedEvent, setIsFeaturedEvent] = useState<boolean>(false);
-  const [isFilter, setIsFilter] = useState<boolean>(false);
+  const [showCategory, setShowCategory] = useState<boolean>(true);
+  const [showFeaturedEvent, setShowFeaturedEvent] = useState<boolean>(true);
+  const [showFilter, setShowFilter] = useState<boolean>(true);
+
+  const confirmedSubDomainUrl =
+    organization?.subDomain == null || ""
+      ? organization?.organizationName
+      : organization?.subDomain;
 
   //handles category toggle
   const handleCategoryToggle = () => {
-    setIsCategory(!isCategory);
+    setShowCategory(!showCategory);
   };
 
   //handles featuredEvent toggle
   const handleFeaturedEventToggle = () => {
-    setIsFeaturedEvent(!isFeaturedEvent);
+    setShowFeaturedEvent(!showFeaturedEvent);
   };
 
   //handles filter feature toggle
   const handleCategorySelect = () => {
-    setIsFilter(!isFilter);
+    setShowFilter(!showFilter);
   };
 
-  const iframeCode = `<iframe
-    src="www.zikoro.com/workspaces?query=${organization?.organizationName}"
-    style={{ width: '90%', height: '80%' }}
-    title="Organization Page Preview"
-  ></iframe>`;
+  const webLink = `https://www.zikoro.com/workspaces?domain=${confirmedSubDomainUrl}&showCategories=${showCategory}&showEvents=${showFeaturedEvent}&showFilter=${showFilter}`; //add showCategory, showFeaturedEvent, showFilter as a query
 
-  const webLink = `https://www.zikoro.com/workspaces?query=${organization?.organizationName}`;
+  const iframeCode = `<iframe
+  src=${webLink}
+  style={{ width: '90%', height: '80%' }}
+  title="Organization Page Preview"
+></iframe>`;
 
   const copyCodeToClipboard = () => {
     navigator.clipboard
@@ -72,7 +77,7 @@ export default function LinkSharing() {
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
-            checked={isCategory}
+            checked={showCategory}
             onCheckedChange={handleCategoryToggle}
           />
 
@@ -82,7 +87,7 @@ export default function LinkSharing() {
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
-            checked={isFeaturedEvent}
+            checked={showFeaturedEvent}
             onCheckedChange={handleFeaturedEventToggle}
           />
 
@@ -92,7 +97,7 @@ export default function LinkSharing() {
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
-            checked={isFilter}
+            checked={showFilter}
             onCheckedChange={handleCategorySelect}
           />
 
@@ -113,7 +118,7 @@ export default function LinkSharing() {
               <p className="font-semibold uppercase">
                 {organization?.organizationName}
               </p>
-              <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
+              <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6 break-all">
                 {webLink}
               </p>
               <button
@@ -131,9 +136,10 @@ export default function LinkSharing() {
                   {organization?.organizationName}
                 </p>
 
-                <pre className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
-                  <code>{iframeCode}</code>
+                <pre className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6 break-all overflow-auto">
+                  <code className="">{iframeCode}</code>
                 </pre>
+
                 <button
                   className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6"
                   onClick={copyCodeToClipboard}

@@ -22,6 +22,7 @@ export interface TOrganization {
   linkedIn: string;
   instagram: string;
   facebook: string;
+  subDomain:string;
   certificateAsset: TCertificateAsset;
   teamMembers: TOrganizationTeamMember[];
 }

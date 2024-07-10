@@ -880,7 +880,7 @@ export default function General() {
           </div>
         </div>
       ) : (
-        <p className="text-sm">No organization found</p>
+        <p className="text-sm">No organization found, please create one</p>
       )}
     </>
   );

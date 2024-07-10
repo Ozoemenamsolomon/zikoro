@@ -1,11 +1,22 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { GlobeIcon, PencilIcon } from "@/constants";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 
 export default function Domain() {
   const { organization, setOrganization } = useOrganizationStore();
-  const webLink = `https://www.zikoro.com/workspaces?query=${organization?.organizationName}`;
+  const [subdomain, setSubDomain] = useState<string>("");
+  const [editDomain, setEditDomain] = useState<string>("");
+  const confirmedSubDomainUrl =
+    organization?.subDomain == null || ""
+      ? organization?.organizationName
+      : organization?.subDomain;
+
+  const webLink = `https://www.zikoro.com/workspaces?query=${confirmedSubDomainUrl}`;
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+  };
 
   return (
     <div>
@@ -18,23 +29,26 @@ export default function Domain() {
 
         <div className="mt-8">
           <p className="text-[14px] text-[#1f1f1f]">Add custom domain</p>
-          <div className=" w-full h-[45px] mt-2 flex gap-x-4 lg:gap-x-8">
+          <form
+            className=" w-full h-[45px] mt-2 flex gap-x-4 lg:gap-x-8"
+            onSubmit={(e) => handleSubmit(e)}
+          >
             <input
               required
               type="text"
-              value=""
+              value={subdomain}
               name=""
-              placeholder="https://"
+              onChange={(e) => setSubDomain(e.target.value)}
+              placeholder={`Enter your custom domain name here (i.e ${organization?.organizationName} )`}
               className="w-full lg:w-[501px] h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
             />
-            <button className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white h-full rounded-md px-8 font-medium ">
+            <button
+              className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white h-full rounded-md px-8 font-medium"
+              type="submit"
+            >
               Save
             </button>
-          </div>
-          {/* <p className="mt-2 text-[12px] text-[#1f1f1f]">
-            Events are created inside this workspace. Pick a name that best
-            represents these events.
-          </p> */}
+          </form>
         </div>
       </div>
 
@@ -51,7 +65,7 @@ export default function Domain() {
             <input
               required
               type="text"
-              value={organization?.organizationName}
+              value={confirmedSubDomainUrl}
               name=""
               placeholder="https://"
               className="w-full lg:w-[841px] h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
