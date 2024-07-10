@@ -1,12 +1,14 @@
 
 import { BriefCase, CircleArrowRight, CalenderIcon } from '@/constants';
-import { getUser } from '@/hooks';
+import { getUser, useLogOut } from '@/hooks';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Bell, Calendar, Grip, HelpCircle, Link2, Menu, Plus, Settings, BriefcaseIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppointmentContext } from './context/AppointmentContext';
+import MenuBox from './ui/MenuBox';
+import useUserStore from '@/store/globalUserStore';
 
 const navlinks = [
   {
@@ -24,21 +26,31 @@ const navlinks = [
     label: 'Schedules',
     link: `/appointments/schedule`,
   },
-  {
-    icon: Bell,
-    label: 'Notification',
-    link: `/appointments/notification`,
-  },
-  {
-    icon: Settings,
-    label: 'Settings',
-    link: `/appointments/settings`,
-  },
+  // {
+  //   icon: Bell,
+  //   label: 'Notification',
+  //   link: `/appointments/notification`,
+  // },
+  // {
+  //   icon: Settings,
+  //   label: 'Settings',
+  //   link: `/appointments/settings`,
+  // },
 ];
 
 const Sidebar = () => {
   const pathanme = usePathname()
   const {user} = useAppointmentContext()
+  // const {user} = useUserStore()
+  const {logOut} = useLogOut()
+  console.log({user})
+  const [open, setOpen] = useState('')
+
+  // useEffect(() => {
+  //   if(!user){
+  //     logOut()
+  //   }
+  // }, [user])
   
   return (
     <nav className="space-y-4 text-sm px-6 py-6 h-full w-full flex flex-col justify-between gap-6">
@@ -96,12 +108,14 @@ const Sidebar = () => {
         </div>
 
         <div className="space-y-2 py-4 border-y">
-          <Link href={'/appointments/tools'} className={`flex gap-4 items-center p-2 rounded-md  hover:bg-gradient-to-r hover:from-slate-200  hover:to-purple-200 duration-300 group`}>
+          <button onClick={()=>setOpen(open==='moretools' ? '' : 'moretools')} className={`relative flex gap-4 items-center p-2 rounded-md  hover:bg-gradient-to-r hover:from-slate-200  hover:to-purple-200 duration-300 group`}>
             <div className="group-hover:text-purple-800 duration-300">
               <Grip size={18}/>
             </div>
             <p className="group-hover:text-blue-700 font-medium duration-300">More Tools</p>
-          </Link>
+
+            <MenuBox open={open} setOpen={setOpen} />
+          </button>
 
           <Link href={'/appointments/help'} className={`flex gap-4 items-center p-2 rounded-md  hover:bg-gradient-to-r hover:from-slate-200  hover:to-purple-200 duration-300 group`}>
             <div className="group-hover:text-purple-800 duration-300">
@@ -113,7 +127,7 @@ const Sidebar = () => {
 
       </div>
 
-      <button type="button" className="flex w-full gap-4 items-center p-2 rounded-md hover:bg-gradient-to-r hover:from-slate-200  hover:to-purple-200 duration-300 group">
+      <button onClick={()=>logOut()} type="button" className="flex w-full gap-4 items-center p-2 rounded-md hover:bg-gradient-to-r hover:from-slate-200  hover:to-purple-200 duration-300 group">
       <div className="group-hover:text-purple-700 duration-300">
         <CircleArrowRight />
       </div>

@@ -10,27 +10,35 @@ import { toast } from "react-toastify";
 export const useGetAppointments = () => {
   const [appointments, setAppointments] = useState<AppointmentLink[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   
   const getAppointments = async () => {
-    setLoading(true);
-    //
-    const { data, status, } = await getRequest<AppointmentLink[]>({
-      endpoint: `/appointments/schedules`,
-    });
-    setLoading(false);
-    if(status!==200){
-      //useToast
-      toast.error('Error fetching schedules!')
+    try {
+        setLoading(true);
+        setError('')
+        const { data, status, } = await getRequest<AppointmentLink[]>({
+          endpoint: `/appointments/schedules`,
+        });
+        console.log({ data, status, } )
+        
+        if(status!==200){
+          setError('Error fetching schedules!')
+          toast.error('Error fetching schedules!')
+        }
+        setAppointments(data.data)
+    } catch (error) {
+        setError('Error fetching schedules!')
+        toast.error('Error fetching schedules!')
+    } finally { 
+        setLoading(false) 
     }
-
-    return setAppointments(data.data);
   };
 
   useEffect(() => {
     getAppointments();
   }, []);
 
-  return { appointments, isLoading, getAppointments };
+  return { appointments, isLoading,error,getAppointments };
 };
 
 export const useGetBookings = (pastAppointments?: string) => {

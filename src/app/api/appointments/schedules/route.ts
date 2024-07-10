@@ -19,12 +19,12 @@ export async function GET(req: NextRequest) {
 
     if (authError) {
       console.error("Authentication error:", authError.message);
-      return NextResponse.json({ error: "Authentication failed" }, { status: 401 });
+      return NextResponse.json({ error: "Authentication failed", data:null }, { status: 401 });
     }
 
     if (!user) {
       console.error("No user found in session");
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+      return NextResponse.json({ error: "Not authenticated", data:null  }, { status: 401 });
     }
 
     const {
@@ -34,12 +34,12 @@ export async function GET(req: NextRequest) {
 
     if (userError) {
       console.error("Error fetching user from database:", userError.message);
-      return NextResponse.json({ error: "User fetch failed" }, { status: 401 });
+      return NextResponse.json({ error: "User fetch failed", data:null  }, { status: 401 });
     }
 
     if (!userData) {
       console.error("No user data found for email:", userData.userEmail);
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+      return NextResponse.json({ error: "Not authenticated", data:null  }, { status: 401 });
     }
 
     const userId = userData.id;
@@ -57,14 +57,14 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { data },
+      { data, error:null  },
       { status: 200 }
     );
   } catch (error) {
     console.error("Unhandled error:", error);
 
     return NextResponse.json(
-      { error: "An error occurred while processing the request" },
+      { error: "An error occurred while processing the request", data:null  },
       { status: 500 }
     );
   }
