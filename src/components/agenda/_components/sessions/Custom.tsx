@@ -1,21 +1,22 @@
 "use client";
 
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
-import { Eye } from "@styled-icons/feather/Eye";
+import { Eye } from "styled-icons/feather";
 import { SessionCard, Deletes, Duplicate, Edit, AddToMyAgenda } from "..";
 import { Button } from "@/components";
-import { CheckmarkDone } from "@styled-icons/ionicons-solid/CheckmarkDone";
-import { Star } from "@styled-icons/bootstrap/Star";
+import { CheckmarkDone } from "styled-icons/ionicons-solid";
+import { Star } from "styled-icons/bootstrap";
 import { EventLocationType } from "@/components/composables";
-import { LocationPin } from "@styled-icons/entypo/LocationPin";
+import { LocationPin } from "styled-icons/entypo";
 import Image from "next/image";
 import { cn } from "@/lib";
 import { useMemo } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { TSessionAgenda, TAgenda, Event } from "@/types";
+import { TSessionAgenda, TAgenda,TMyAgenda, Event } from "@/types";
 import { useRouter } from "next/navigation";
+import { EngagementsSettings } from "@/types/engagements";
 export function Custom({
   sessionAgenda,
   className,
@@ -26,7 +27,9 @@ export function Custom({
   isIdPresent,
   isOrganizer,
   isFullScreen,
-  isReception
+  isReception,
+  myAgendas,
+  engagementsSettings
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
@@ -37,7 +40,9 @@ export function Custom({
   isIdPresent: boolean;
   isOrganizer: boolean;
   isFullScreen?: boolean;
-  isReception?:boolean
+  isReception?:boolean;
+  myAgendas?: TMyAgenda[];
+  engagementsSettings?: EngagementsSettings | null
 }) {
   const settings = {
     dots: true,
@@ -73,6 +78,8 @@ export function Custom({
               isIdPresent={isIdPresent}
               isOrganizer={isOrganizer}
               isFullScreen={isFullScreen}
+              myAgendas={myAgendas}
+              engagementsSettings={engagementsSettings}
             />
           ))}
         </Comp>
@@ -90,6 +97,8 @@ function Widget({
   isIdPresent,
   isOrganizer,
   isFullScreen,
+  myAgendas,
+  engagementsSettings
 }: {
   session: TAgenda;
   event?: Event | null;
@@ -99,6 +108,8 @@ function Widget({
   isIdPresent: boolean;
   isOrganizer: boolean;
   isFullScreen?: boolean;
+  myAgendas?: TMyAgenda[];
+  engagementsSettings?: EngagementsSettings | null
 }) {
   const router = useRouter();
 
@@ -184,6 +195,8 @@ function Widget({
               isMyAgenda={session?.isMyAgenda}
               sessionAlias={session?.sessionAlias}
               refetch={refetchSession}
+              engagementsSettings={engagementsSettings}
+              myAgendas={myAgendas}
             />
           </div>
         </div>

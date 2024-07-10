@@ -64,10 +64,13 @@ export async function GET(
 
       if (error) throw error;
 
+     
+
       const { data: myAgendas, error: myAgendaFetchError } = await supabase
         .from("myAgenda")
         .select("*");
 
+        console.log('dsadsadsdsadasd',myAgendas)
       if (myAgendaFetchError) {
         return NextResponse.json(
           {

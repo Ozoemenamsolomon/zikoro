@@ -10,7 +10,7 @@ import {
   TConnectedUser,
 } from "@/types";
 import { useMemo, useState } from "react";
-import { getCookie, saveCookie } from "@/hooks";
+import { getCookie, saveCookie, useDeleteQuizLobby } from "@/hooks";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { cn } from "@/lib";
 import { CheckCircle } from "styled-icons/bootstrap";
@@ -54,6 +54,7 @@ export function ScoreBoard({
   const [isQuizResult, setQuizResult] = useState(false);
   const player = getCookie<TConnectedUser>("player");
   const { updateQuiz, isLoading } = useUpdateQuiz();
+  const {deleteQuizLobby} = useDeleteQuizLobby(actualQuiz?.quizAlias!)
 
   const board = useMemo(() => {
     const participantGroup: { [key: string]: TParticipantScores } = {};
@@ -145,6 +146,7 @@ export function ScoreBoard({
         },
       };
       await updateQuiz({ payload });
+      await deleteQuizLobby()
       saveCookie("currentPlayer", null);
       close();
     }

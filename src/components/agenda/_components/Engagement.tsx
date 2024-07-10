@@ -1,17 +1,20 @@
 "use client";
 import { useMemo, useState } from "react";
-import { Star } from "@styled-icons/fluentui-system-regular/Star";
-import { StarFullOutline } from "@styled-icons/typicons/StarFullOutline";
+import { Star } from "styled-icons/fluentui-system-regular";
+import { StarFullOutline } from "styled-icons/typicons";
 import { Form, FormField, Button, Textarea } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib";
-import { TAgenda, TAttendee } from "@/types";
-import { getCookie, useSendReview } from "@/hooks";
-import { Like } from "@styled-icons/foundation/Like";
+import { TAgenda, TAttendee, TReview } from "@/types";
+import {  useSendReview, useGetEventReviews } from "@/hooks";
+import { Like } from "styled-icons/foundation";
 import useUserStore from "@/store/globalUserStore";
+import { useGetData } from "@/hooks/services/request";
+import { EngagementsSettings } from "@/types/engagements";
+import toast from "react-hot-toast";
 export function Engagement({
   agenda,
   id,
@@ -23,6 +26,11 @@ export function Engagement({
 }) {
   const [rating, setRating] = useState(0);
   const { user, setUser } = useUserStore();
+  const {reviews} = useGetEventReviews(id)
+  const { data: engagementsSettings } = useGetData<EngagementsSettings>(
+    `engagements/${id}/settings`
+  );
+  
   // const user = getCookie("user");
 
   const attendeeId = useMemo(() => {
@@ -49,6 +57,8 @@ export function Engagement({
             sessionAlias={agenda?.sessionAlias}
             attendeeId={attendeeId}
             eventId={id}
+            reviews={reviews}
+            engagementsSettings={engagementsSettings}
           />
         ) : (
           <div className="w-full flex flex-col p-6 items-start justify-start gap-y-2">
@@ -90,26 +100,52 @@ function ReviewComment({
   rating,
   sessionAlias,
   attendeeId,
-  eventId
+  eventId,
+  reviews,
+  engagementsSettings
 }: {
   sessionAlias?: string;
   rating: number;
   attendeeId?: number;
   eventId?:string
+  reviews: TReview[];
+  engagementsSettings: EngagementsSettings | null;
 }) {
   const form = useForm<FormValue>({});
   const { sendReview, isLoading } = useSendReview();
   const [isSend, setSend] = useState(false);
 
   async function onSubmit(values: FormValue) {
-    const payload = {
-      ...values,
-      rating,
-      sessionAlias,
-      attendeeId,
-      eventAlias: eventId 
-    };
-    await sendReview({ payload });
+    //
+    const myAgendapointsAllocation =
+      engagementsSettings?.pointsAllocation["rate a session"];
+      const payload: Partial<TReview> = {
+        ...values,
+        rating,
+        sessionAlias,
+        attendeeId,
+        eventAlias: eventId 
+      };
+      if (myAgendapointsAllocation?.status && attendeeId) {
+        const isMaxPointsReached = reviews?.some(
+          (review) =>
+            review.attendeeId === attendeeId &&
+            review.points >=
+              myAgendapointsAllocation?.points *
+                myAgendapointsAllocation?.maxOccurrence
+        );
+        if (isMaxPointsReached) {
+          toast.error("You have reached the maximum points for this session");
+          return;
+        }
+
+        await sendReview({ ...payload,  points: myAgendapointsAllocation?.points });
+      }
+      else {
+        await sendReview({ payload });
+      }
+ 
+   
     setSend(true);
   }
   return (

@@ -324,7 +324,7 @@ export const useDeleteAgenda = () => {
 export const useSendReview = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const sendReview = async ({ payload }: { payload: TReview }) => {
+  const sendReview = async ({ payload }: { payload: Partial<TReview> }) => {
     setLoading(true);
 
     try {
@@ -456,7 +456,7 @@ export const useCreateMyAgenda = () => {
   return { createMyAgenda, isLoading };
 };
 
-export const useGetMyAgendas = () => {
+export const useGetMyAgendas = ({eventId}:{eventId: string}) => {
   const [myAgendas, setMyAgendas] = useState<TMyAgenda[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
@@ -464,7 +464,7 @@ export const useGetMyAgendas = () => {
     setLoading(true);
 
     const { data, status } = await getRequest<TMyAgenda[]>({
-      endpoint: `/agenda/myagenda`,
+      endpoint: `/agenda/myagenda/${eventId}`,
     });
 
     setLoading(false);
