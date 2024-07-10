@@ -2,7 +2,7 @@
 import { BriefCase, CircleArrowRight, CalenderIcon } from '@/constants';
 import { getUser, useLogOut } from '@/hooks';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Bell, Calendar, Grip, HelpCircle, Link2, Menu, Plus, Settings, BriefcaseIcon } from 'lucide-react';
+import { Bell, Calendar, Grip, HelpCircle, Link2, Menu, Plus, Settings, BriefcaseIcon, Users, BarChartBig } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -26,16 +26,26 @@ const navlinks = [
     label: 'Schedules',
     link: `/appointments/schedule`,
   },
+  {
+    icon: Users,
+    label: 'Contacts',
+    link: `/appointments/contacts`,
+  },
+  {
+    icon: BarChartBig,
+    label: 'Analytics',
+    link: `/appointments/analytics`,
+  },
   // {
   //   icon: Bell,
   //   label: 'Notification',
   //   link: `/appointments/notification`,
   // },
-  // {
-  //   icon: Settings,
-  //   label: 'Settings',
-  //   link: `/appointments/settings`,
-  // },
+  {
+    icon: Settings,
+    label: 'Settings',
+    link: `/appointments/settings`,
+  },
 ];
 
 const Sidebar = () => {
@@ -43,7 +53,6 @@ const Sidebar = () => {
   const {user} = useAppointmentContext()
   // const {user} = useUserStore()
   const {logOut} = useLogOut()
-  console.log({user})
   const [open, setOpen] = useState('')
 
   // useEffect(() => {
@@ -53,10 +62,10 @@ const Sidebar = () => {
   // }, [user])
   
   return (
-    <nav className="space-y-4 text-sm px-6 py-6 h-full w-full flex flex-col justify-between gap-6">
+    <nav className="space-y-4 text-sm px-6 py-6 h-full w-full flex flex-col justify-between gap-">
       <div className="w-full space-y-2">
 
-        <div className="flex gap-4 items-center w-full pb-6">
+        <div className="flex gap-4 items-center w-full pb-2">
           <div className=" h-14 w-14 flex-shrink-0 rounded-full flex justify-center items-center " 
           style={{background: `linear-gradient(153.33deg, #001FCC -41.59%, #FFFFFF 104.99%) `}}
           >

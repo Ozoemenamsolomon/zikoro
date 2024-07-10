@@ -90,7 +90,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
     console.log('=====',{bookingFormData,selectedDate,timeSlots:timeSlots?.selectDay})
   }, [selectedDate]);
 
-  const isDisabled = !bookingFormData.appointmentDate || !bookingFormData.appointmentTime  
+  const isDisabled = !bookingFormData?.appointmentDate || !bookingFormData?.appointmentTime  
   
   return (
     <div className="bg-white relative overflow-hidden md:w-80 flex-1 flex-shrink-0 rounded-lg  ">

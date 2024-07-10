@@ -93,6 +93,7 @@ export interface Booking {
   notes?: string | null;
   appointmentTimeStr: string;
   appointmentDuration: number;
+  type?: string;
 }
 
 export interface UserType {

@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
     // Fetch appointment links created by the authenticated user
     const { data, error } = await supabase
       .from("appointmentLinks")
-      .select("*")
+      .select(`*`)
       .eq("createdBy", userId)
       .order("created_at", { ascending: false });
 

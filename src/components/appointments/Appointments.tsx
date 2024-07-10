@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, RefreshCw, XCircle } from "lucide-react";
+import { ChevronDown, Edit, RefreshCw, XCircle } from "lucide-react";
 import React, { Suspense, useRef, useState } from "react";
 import { useGetBookings } from "@/hooks/services/appointments";
 import { format, parseISO } from "date-fns";
@@ -8,10 +8,90 @@ import { Booking } from "@/types/appointments";
 import PageLoading from "./ui/Loading";
 import NoAppointments from "./NoAppointments";
 import { useEffect } from "react";
-import { useClickOutside } from "@/lib";
+import { cn, useClickOutside } from "@/lib";
+import { AntiClock, CalenderIcon, CancelX, EditPenIcon } from "@/constants";
+import { useAppointmentContext } from "./context/AppointmentContext";
 
 interface GroupedBookings {
   [date: string]: Booking[];
+}
+
+export const Reschedule = () => {
+  const {bookingFormData, setBookingFormData,} = useAppointmentContext()
+console.log({bookingFormData})
+  return (
+    <section onClick={()=>setBookingFormData(null)} className={cn(`${bookingFormData?.type ? 'animate-float-in block' : 'translate-y-10 opacity-0 invisible '} z-50 transform fixed transition-all duration-300 inset-0  bg-slate-500/10 p-6 flex justify-center items-center`, ) }>
+      
+      {
+      bookingFormData?.type==='reschedule' && 
+      <div onClick={(e)=>e.stopPropagation()} className="w-full text-center sm:w-[28rem] bg-white rounded-md shadow-lg max-h-full  p-6 sm:p-10 space-y-4 py-12 flex flex-col justify-center relative overflow-y-auto">
+
+        <XCircle onClick={()=>setBookingFormData(null)} size={20} className="absolute right-6 top-6 text-slate-500"/>
+
+       <div className="flex justify-center w-full"> <AntiClock /></div>
+
+        <h5 className="text-xl font-medium text-basePrimary">Reschedule Appointment</h5>
+        <p className="text-[12px]">{`You are about to reschedule this appointment ${bookingFormData?.firstName} ${bookingFormData?.lastName}  ${bookingFormData?.appointmentTimeStr || '10:30 AM – 12:30 PM'} Location: ${'Virtual'}`}</p>
+        <div className="flex justify-center items-center gap-4">
+          <p>{'x'}</p>
+          <CalenderIcon/>
+        </div>
+
+        <h6 className="font-semibold">Choose time</h6>
+
+        <div className="h-96">
+
+        </div>
+
+        <div className="w-full flex items-center gap-1">
+              <EditPenIcon/>
+              {/* <Edit size={20} className="shrink-0 text-slate-500" /> */}
+          <input 
+            type="text" 
+            id="reason" 
+            name="reason" 
+            placeholder="Add notes to let invitees know why you rescheduled"
+            className="p-2 border bg-transparent focus:outline-none rounded-md focus:bg-transaparent text-slate-700 w-full placeholder:text-[12px]" 
+          />
+        </div>
+
+        <div className="flex justify-center w-full ">
+            <button className='bg-basePrimary rounded-md text-white font-medium py-2 px-6'>Reschedule Appointment</button>
+        </div>
+      </div>
+      }
+
+      {
+      bookingFormData?.type==='cancel' && 
+      <div onClick={(e)=>e.stopPropagation()} className="w-full text-center sm:w-[28rem] bg-white rounded-md shadow-lg max-h-full  p-6 sm:p-10 space-y-4 py-12 flex flex-col justify-center relative overflow-y-auto">
+
+          <XCircle onClick={()=>setBookingFormData(null)} size={20} className="absolute right-6 top-6 text-slate-500 cursor-pointer"/>
+
+          <div className="flex justify-center w-full"> <CancelX /></div>
+            <h5 className="text-xl font-medium text-red-600">Cancel Appointment</h5>
+
+            <p className="text-[12px]">{`You are about to cancel this appointment ${bookingFormData?.firstName} ${bookingFormData?.lastName}  ${bookingFormData?.appointmentTimeStr || '10:30 AM – 12:30 PM'} Location: ${'Virtual'}`}</p>
+
+            <div className="w-full pt-8 flex items-center gap-1">
+              {/* <Edit size={20} className="shrink-0 text-slate-500" /> */}
+              <EditPenIcon/>
+              <input 
+                type="text" 
+                id="reason" 
+                name="reason" 
+                placeholder="Add notes to let invitees know why you canceled"
+                className="p-2 border bg-transparent focus:outline-none rounded-md focus:bg-transaparent text-slate-700 w-full placeholder:text-[12px]" 
+              />
+            </div>
+
+            <div className="flex justify-center w-full ">
+                <button className='bg-red-600 rounded-md text-white font-medium py-2 px-6'>Cancel Appointment</button>
+            </div>
+      </div>
+      }
+
+    </section>
+  )
 }
 
 const groupBookingsByDate = (bookings: Booking[]): GroupedBookings => {
@@ -32,6 +112,8 @@ const BookingRow = ({ booking }: { booking: Booking }) => {
   const { participantEmail, lastName, firstName, phone, appointmentDate,appointmentName, appointmentTime, notes, appointmentType, id } = booking;
   const dateTimeString = `${appointmentDate}T${appointmentTime}`;
   const dateTime = new Date(dateTimeString);
+
+  const {  setBookingFormData,} = useAppointmentContext()
   return (
     <tr className="bg-white border-b">
       <td className="py-4 px-4">
@@ -51,10 +133,10 @@ const BookingRow = ({ booking }: { booking: Booking }) => {
       <td className="py-2 px-4">{notes}</td>
       <td className="py-2 px-4">
         <div className="flex space-x-2">
-          <button className="text-blue-500 hover:text-blue-700">
+          <button onClick={()=>setBookingFormData({...booking, type:'reschedule'})} className="text-blue-500 hover:text-blue-700">
             <RefreshCw size={18} />
           </button>
-          <button className="text-red-500 hover:text-red-700">
+          <button onClick={()=>setBookingFormData({...booking, type:'cancel'})} className="text-red-500 hover:text-red-700">
             <XCircle size={18} />
           </button>
         </div>
@@ -132,6 +214,7 @@ const Appointments: React.FC = () => {
 
   return (
     <>
+    <Reschedule/>
     <header className="flex w-full justify-between gap-4 flex-col sm:flex-row pb-10">
     <div>
       <h4 className="text-2xl font-semibold">Appointments</h4>
