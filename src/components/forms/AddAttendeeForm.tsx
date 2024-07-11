@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useCreateAttendee } from "@/hooks/services/attendee";
 import { AttendeeSchema } from "@/schemas/attendee";
-import { TAttendee, TAttendeeType } from "@/types/attendee";
+import { TAttendee, TAttendeeType, TCompletedFields } from "@/types/attendee";
 import {
   Select,
   SelectContent,
@@ -35,6 +35,10 @@ import { attendeeTypeOptions } from "@/data/attendee";
 import { uploadFile, uploadFiles } from "@/utils/helpers";
 import { useParams } from "next/navigation";
 import { getCookie } from "@/hooks";
+import { useGetData } from "@/hooks/services/request";
+import { EngagementsSettings } from "@/types/engagements";
+import useUserStore from "@/store/globalUserStore";
+import useEventStore from "@/store/globalEventStore";
 
 export default function AddAttendeeForm({
   attendee,
@@ -47,9 +51,11 @@ export default function AddAttendeeForm({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  console.log(attendee?.completedFields);
   const { toast } = useToast();
   const { eventId } = useParams();
-  const user = getCookie("user");
+  const { user } = useUserStore();
+  const { event } = useEventStore();
 
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>(
     attendee && attendee.phoneNumber
@@ -79,6 +85,14 @@ export default function AddAttendeeForm({
   });
 
   const {
+    data: engagementsSettings,
+    isLoading: engagementsSettingsIsLoading,
+    getData: getEngagementsSettings,
+  } = useGetData<EngagementsSettings>(
+    `engagements/${event.eventAlias}/settings`
+  );
+
+  const {
     watch,
     setValue,
     formState: { errors },
@@ -99,8 +113,6 @@ export default function AddAttendeeForm({
       attendee.whatsappNumber ? attendee.whatsappNumber?.slice(0, 3) : "+234"
     );
   }, [attendee]);
-
-  
 
   const attendeeType = watch("attendeeType");
   const country = watch("country");
@@ -132,8 +144,9 @@ export default function AddAttendeeForm({
   };
 
   async function onSubmit(data: z.infer<typeof AttendeeSchema>) {
-    
-    const payload: TAttendee = {
+    if (!user) return null;
+
+    const payload: Partial<TAttendee> = {
       ...data,
       phoneNumber: data.phoneNumber
         ? phoneCountryCode + data.phoneNumber
@@ -149,12 +162,46 @@ export default function AddAttendeeForm({
       registrationDate: new Date().toISOString(),
     };
 
+    let completedFields: TCompletedFields =
+      attendee && attendee.completedFields ? [...attendee.completedFields] : [];
+
     if (attendee) {
       payload.id = attendee.id;
     }
 
+    const attendeeProfilePoints = parseInt(
+      engagementsSettings?.pointsAllocation["update profile"].points || 0
+    );
+
+    let newProfilePoints = attendee?.attendeeProfilePoints ?? 0;
+
+    console.log(completedFields);
+    console.log(newProfilePoints);
+
+    for (const [key, value] of Object.entries(data)) {
+      console.log(key, completedFields.includes(key), value);
+      if (!completedFields.includes(key) && value) {
+        console.log(key);
+        newProfilePoints += attendeeProfilePoints;
+        completedFields.push(key);
+      }
+
+      if (completedFields.includes(key) && !value) {
+        newProfilePoints -= attendeeProfilePoints;
+        completedFields = completedFields.filter((field) => field !== key);
+      }
+    }
+
+    console.log(newProfilePoints);
+    console.log(completedFields);
+
+    await action({
+      ...payload,
+      completedFields,
+      attendeeProfilePoints: newProfilePoints,
+    });
+
     onClose();
-    await action(payload);
   }
 
   const [profilePictureIsUploading, setProfilePictureUploading] =
@@ -170,7 +217,6 @@ export default function AddAttendeeForm({
       alert("File uploaded successfully");
 
       setValue("profilePicture", url || "");
-      
     } catch (error) {
       alert("error uploading profile picture");
       console.error("Error uploading file:", error);
@@ -571,7 +617,7 @@ export default function AddAttendeeForm({
             )}
           />
           <Button
-            disabled={profilePictureIsUploading}
+            disabled={profilePictureIsUploading || engagementsSettingsIsLoading}
             type="submit"
             className="bg-basePrimary w-full"
           >

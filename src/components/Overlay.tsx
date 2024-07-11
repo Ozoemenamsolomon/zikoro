@@ -12,7 +12,7 @@ const Overlay = ({ isOpen, onClose, title, children }: TOverlayProps) => {
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 py-4 max-h-screen">
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black bg-opacity-50 py-4 max-h-screen">
           <div className="bg-white p-4 rounded-md max-w-lg w-full relative max-h-full overflow-auto">
             <div className="mb-4 flex justify-between items-center">
               <h2 className="font-semibold text-gray-800 text-lg">{title}</h2>

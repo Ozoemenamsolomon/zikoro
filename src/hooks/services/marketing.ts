@@ -15,7 +15,7 @@ export const useSendMarketingEmail = (): usePostResult<
 
   const sendMarketingEmail = async ({ payload }: { payload: TSentEmail }) => {
     setLoading(true);
-    
+
     toast({
       description: "sending email...",
     });
@@ -41,8 +41,10 @@ export const useSendMarketingEmail = (): usePostResult<
 
 export const useGetAffiliates = ({
   userId,
+  organizationId,
 }: {
-  userId: number;
+  userId?: number;
+  organizationId?: number;
 }): UseGetResult<TAffiliate[], "affiliates", "getAffiliates"> => {
   const [affiliates, setAffiliates] = useState<TAffiliate[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -51,9 +53,18 @@ export const useGetAffiliates = ({
   const getAffiliates = async () => {
     setLoading(true);
 
+    console.log(organizationId, userId);
+
     try {
+      console.log(
+        `marketing/affiliate?${userId && `userId=${userId}&`}${
+          organizationId && `organizationId=${organizationId}`
+        }`
+      );
       const { data, status } = await getRequest<TAffiliate[]>({
-        endpoint: `marketing/affiliate?userId=${userId}`,
+        endpoint: `marketing/affiliate?${userId ? `userId=${userId}&` : ""}${
+          organizationId ? `organizationId=${organizationId}` : ""
+        }`,
       });
 
       if (status !== 200) {
@@ -69,7 +80,7 @@ export const useGetAffiliates = ({
 
   useEffect(() => {
     getAffiliates();
-  }, []);
+  }, [userId, organizationId]);
 
   return {
     affiliates,
@@ -143,14 +154,10 @@ export const useCreateAffiliateLink = (): usePostResult<
       description: "sending email...",
     });
     try {
-      
       const { data, status } = await postRequest({
         endpoint: `marketing/affiliate/link`,
         payload: { payload, affiliateName, organizationName, eventPoster },
       });
-      
-
-      
 
       if (status !== 201) throw data.data;
       toast({
@@ -158,7 +165,7 @@ export const useCreateAffiliateLink = (): usePostResult<
       });
     } catch (error) {
       setError(true);
-      
+
       toast({
         description: "An error occurred",
         variant: "destructive",
@@ -307,7 +314,6 @@ export const useUpdateAffiliate = ({
       description: "updating affiliate...",
     });
     try {
-      
       const { data, status } = await postRequest({
         endpoint: `marketing/affiliate/${affiliateId}`,
         payload,

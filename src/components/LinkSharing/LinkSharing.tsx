@@ -3,17 +3,63 @@ import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import toast from "react-hot-toast";
 
 export default function LinkSharing() {
-  const [isMonthly, setIsMonthly] = useState("");
   const { organization, setOrganization } = useOrganizationStore();
-  const iframeCode = `<iframe
-    src="www.zikoro.com/workspaces?query=${organization?.organizationName}"
-    style={{ width: '90%', height: '80%' }}
-    title="Organization Page Preview"
-  ></iframe>`;
+  const [showCategory, setShowCategory] = useState<boolean>(true);
+  const [showFeaturedEvent, setShowFeaturedEvent] = useState<boolean>(true);
+  const [showFilter, setShowFilter] = useState<boolean>(true);
 
-  const handleToggle = () => {};
+  const confirmedSubDomainUrl =
+    organization?.subDomain == null || ""
+      ? organization?.organizationName
+      : organization?.subDomain;
+
+  //handles category toggle
+  const handleCategoryToggle = () => {
+    setShowCategory(!showCategory);
+  };
+
+  //handles featuredEvent toggle
+  const handleFeaturedEventToggle = () => {
+    setShowFeaturedEvent(!showFeaturedEvent);
+  };
+
+  //handles filter feature toggle
+  const handleCategorySelect = () => {
+    setShowFilter(!showFilter);
+  };
+
+  const webLink = `https://www.zikoro.com/workspaces?domain=${confirmedSubDomainUrl}&showCategories=${showCategory}&showEvents=${showFeaturedEvent}&showFilter=${showFilter}`; //add showCategory, showFeaturedEvent, showFilter as a query
+
+  const iframeCode = `<iframe
+  src=${webLink}
+  style={{ width: '90%', height: '80%' }}
+  title="Organization Page Preview"
+></iframe>`;
+
+  const copyCodeToClipboard = () => {
+    navigator.clipboard
+      .writeText(iframeCode)
+      .then(() => {
+        toast.success("Code copied to clipboard");
+      })
+      .catch((err) => {
+        toast.error("Failed to copy code");
+      });
+  };
+
+  const copyLinkToClipboard = () => {
+    navigator.clipboard
+      .writeText(webLink)
+      .then(() => {
+        toast.success("Link copied to clipboard");
+      })
+      .catch((err) => {
+        toast.error("Failed to copy link");
+      });
+  };
 
   return (
     <div className="mt-[60px] ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
@@ -31,8 +77,8 @@ export default function LinkSharing() {
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
-            checked={!isMonthly}
-            onCheckedChange={handleToggle}
+            checked={showCategory}
+            onCheckedChange={handleCategoryToggle}
           />
 
           <p className="text-base font-normal ">Show Categories</p>
@@ -41,8 +87,8 @@ export default function LinkSharing() {
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
-            checked={!isMonthly}
-            onCheckedChange={handleToggle}
+            checked={showFeaturedEvent}
+            onCheckedChange={handleFeaturedEventToggle}
           />
 
           <p className="text-base font-normal ">Turn off featured events</p>
@@ -51,8 +97,8 @@ export default function LinkSharing() {
         <div className="mt-6 flex gap-x-3 items-center ">
           <Switch
             className="data-[state=checked]:bg-zikoroBlue"
-            checked={!isMonthly}
-            onCheckedChange={handleToggle}
+            checked={showFilter}
+            onCheckedChange={handleCategorySelect}
           />
 
           <p className="text-base font-normal ">Turn off filters</p>
@@ -72,11 +118,13 @@ export default function LinkSharing() {
               <p className="font-semibold uppercase">
                 {organization?.organizationName}
               </p>
-              <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
-                https://www.zikoro.com/workspaces?query=
-                {organization?.organizationName}
+              <p className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6 break-all">
+                {webLink}
               </p>
-              <button className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6">
+              <button
+                className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6"
+                onClick={copyLinkToClipboard}
+              >
                 Copy Link
               </button>
             </div>
@@ -88,10 +136,14 @@ export default function LinkSharing() {
                   {organization?.organizationName}
                 </p>
 
-                <pre className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6">
-                  <code>{iframeCode}</code>
+                <pre className="text-[11px] lg:text-[13px] py-2 px-3 text-black bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-md mt-6 break-all overflow-auto">
+                  <code className="">{iframeCode}</code>
                 </pre>
-                <button className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6">
+
+                <button
+                  className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-white text-base rounded-md font-medium py-2 px-4 mt-6"
+                  onClick={copyCodeToClipboard}
+                >
                   Copy Embed Code
                 </button>
               </div>
