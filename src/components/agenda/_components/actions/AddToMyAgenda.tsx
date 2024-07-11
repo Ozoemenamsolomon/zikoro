@@ -33,25 +33,33 @@ export function AddToMyAgenda({
 
       // from myAgenda table, check if attendee already earned the max. points
       // return if is true, else do give him points
-      const isMaxPointsReached = myAgendas?.some(
-        (agenda) =>
-          agenda.attendeeId === attendeeId &&
-          agenda.points >=
-            myAgendapointsAllocation?.points *
-              myAgendapointsAllocation?.maxOccurrence
+      const addedAgendas = myAgendas?.filter(
+        (agenda) => agenda?.attendeeId === attendeeId
       );
-      if (isMaxPointsReached) {
-        toast.error("You have reached the maximum points for this session");
-        return;
+      if (addedAgendas && addedAgendas?.length > 0) {
+        const sum = addedAgendas?.reduce(
+          (acc, agenda) => acc + agenda.points,
+          0
+        );
+        if (
+          sum >=
+          myAgendapointsAllocation?.points *
+            myAgendapointsAllocation?.maxOccurrence
+        ) {
+          toast.error("You have reached the maximum points for this session");
+          return;
+        }
+
+        await createMyAgenda({
+          payload: {
+            sessionAlias,
+            attendeeId,
+            points: myAgendapointsAllocation?.points,
+          },
+        });
       }
 
-      await createMyAgenda({
-        payload: {
-          sessionAlias,
-          attendeeId,
-          points: myAgendapointsAllocation?.points,
-        },
-      });
+    
     } else {
       await createMyAgenda({ payload: { sessionAlias, attendeeId } });
     }

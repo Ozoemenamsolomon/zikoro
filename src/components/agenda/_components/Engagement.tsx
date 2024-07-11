@@ -9,7 +9,7 @@ import { CloseOutline } from "styled-icons/evaicons-outline";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib";
 import { TAgenda, TAttendee, TReview } from "@/types";
-import {  useSendReview, useGetEventReviews } from "@/hooks";
+import { useSendReview, useGetEventReviews } from "@/hooks";
 import { Like } from "styled-icons/foundation";
 import useUserStore from "@/store/globalUserStore";
 import { useGetData } from "@/hooks/services/request";
@@ -26,17 +26,16 @@ export function Engagement({
 }) {
   const [rating, setRating] = useState(0);
   const { user, setUser } = useUserStore();
-  const {reviews} = useGetEventReviews(id)
+  const { reviews } = useGetEventReviews(id);
   const { data: engagementsSettings } = useGetData<EngagementsSettings>(
     `engagements/${id}/settings`
   );
-  
+
   // const user = getCookie("user");
 
   const attendeeId = useMemo(() => {
     return attendees?.find(
-      ({ email, eventAlias }) =>
-      eventAlias=== id && email === user?.userEmail
+      ({ email, eventAlias }) => eventAlias === id && email === user?.userEmail
     )?.id;
   }, [attendees]);
   return (
@@ -102,12 +101,12 @@ function ReviewComment({
   attendeeId,
   eventId,
   reviews,
-  engagementsSettings
+  engagementsSettings,
 }: {
   sessionAlias?: string;
   rating: number;
   attendeeId?: number;
-  eventId?:string
+  eventId?: string;
   reviews: TReview[];
   engagementsSettings: EngagementsSettings | null;
 }) {
@@ -119,33 +118,39 @@ function ReviewComment({
     //
     const myAgendapointsAllocation =
       engagementsSettings?.pointsAllocation["rate a session"];
-      const payload: Partial<TReview> = {
-        ...values,
-        rating,
-        sessionAlias,
-        attendeeId,
-        eventAlias: eventId 
-      };
-      if (myAgendapointsAllocation?.status && attendeeId) {
-        const isMaxPointsReached = reviews?.some(
-          (review) =>
-            review.attendeeId === attendeeId &&
-            review.points >=
-              myAgendapointsAllocation?.points *
-                myAgendapointsAllocation?.maxOccurrence
+    const payload: Partial<TReview> = {
+      ...values,
+      rating,
+      sessionAlias,
+      attendeeId,
+      eventAlias: eventId,
+    };
+    if (myAgendapointsAllocation?.status && attendeeId) {
+      const filtered = reviews?.filter(
+        (review) => review?.attendeeId === attendeeId
+      );
+      if (filtered && filtered?.length > 0) {
+        const sum = filtered?.reduce(
+          (acc, review) => acc + review?.points,
+          0
         );
-        if (isMaxPointsReached) {
+        if (
+          sum >=
+          myAgendapointsAllocation?.points *
+            myAgendapointsAllocation?.maxOccurrence
+        ) {
           toast.error("You have reached the maximum points for this session");
           return;
         }
 
-        await sendReview({payload :{...payload,  points: myAgendapointsAllocation?.points} });
+        await sendReview({
+          payload: { ...payload, points: myAgendapointsAllocation?.points },
+        });
       }
-      else {
-        await sendReview({ payload });
-      }
- 
-   
+    } else {
+      await sendReview({ payload });
+    }
+
     setSend(true);
   }
   return (
