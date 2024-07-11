@@ -118,7 +118,7 @@ function ReviewComment({
     //
     const myAgendapointsAllocation =
       engagementsSettings?.pointsAllocation["rate a session"];
-    const payload: Partial<TReview> = {
+    let payload: Partial<TReview> = {
       ...values,
       rating,
       sessionAlias,
@@ -131,7 +131,7 @@ function ReviewComment({
       );
       if (filtered && filtered?.length > 0) {
         const sum = filtered?.reduce(
-          (acc, review) => acc + review?.points,
+          (acc, review) => acc + (review?.points || 0),
           0
         );
         if (
@@ -139,17 +139,23 @@ function ReviewComment({
           myAgendapointsAllocation?.points *
             myAgendapointsAllocation?.maxOccurrence
         ) {
-          toast.error("You have reached the maximum points for this session");
+          payload = payload;
           return;
         }
 
-        await sendReview({
-          payload: { ...payload, points: myAgendapointsAllocation?.points },
-        });
+        payload = {
+          ...payload,
+          points: sum + myAgendapointsAllocation?.points,
+        };
+      } else {
+        payload = {
+          ...payload,
+          points: 0 + myAgendapointsAllocation?.points,
+        };
       }
-    } else {
-      await sendReview({ payload });
     }
+
+    await sendReview({ payload });
 
     setSend(true);
   }

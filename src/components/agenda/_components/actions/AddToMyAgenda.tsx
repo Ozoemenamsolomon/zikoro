@@ -26,6 +26,10 @@ export function AddToMyAgenda({
   const { createMyAgenda, isLoading } = useCreateMyAgenda();
 
   async function add() {
+    let payload: Partial<TMyAgenda> = {
+      sessionAlias,
+      attendeeId,
+    };
     const myAgendapointsAllocation =
       engagementsSettings?.pointsAllocation["add to agenda"];
     if (myAgendapointsAllocation?.status && attendeeId) {
@@ -38,7 +42,7 @@ export function AddToMyAgenda({
       );
       if (addedAgendas && addedAgendas?.length > 0) {
         const sum = addedAgendas?.reduce(
-          (acc, agenda) => acc + agenda.points,
+          (acc, agenda) => acc + (agenda.points || 0),
           0
         );
         if (
@@ -46,23 +50,25 @@ export function AddToMyAgenda({
           myAgendapointsAllocation?.points *
             myAgendapointsAllocation?.maxOccurrence
         ) {
-          toast.error("You have reached the maximum points for this session");
+          payload = payload;
           return;
         }
 
-        await createMyAgenda({
-          payload: {
-            sessionAlias,
-            attendeeId,
-            points: myAgendapointsAllocation?.points,
-          },
-        });
+        payload = {
+          sessionAlias,
+          attendeeId,
+          points: sum + myAgendapointsAllocation?.points,
+        };
+      } else {
+        payload = {
+          sessionAlias,
+          attendeeId,
+          points: 0 + myAgendapointsAllocation?.points,
+        };
       }
-
-    
-    } else {
-      await createMyAgenda({ payload: { sessionAlias, attendeeId } });
     }
+
+    await createMyAgenda({ payload });
 
     if (refetch) refetch();
   }

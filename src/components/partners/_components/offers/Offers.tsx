@@ -1,9 +1,33 @@
+"use client"
+
 import { cn } from "@/lib";
 import { OfferCard } from "./OfferCard";
 import { PromotionalOfferType, TAttendee } from "@/types";
+import { useGetData } from "@/hooks/services/request";
+import { EngagementsSettings } from "@/types/engagements";
+import {  TLeadsInterest } from "@/types";
+import { TLead } from "@/types";
+export function Offers({
+  className,
+  data,
+  attendee,
+  isOrganizer,
+  eventId
+}: {
+  className?: string;
+  data: PromotionalOfferType[] | undefined;
+  isOrganizer: boolean;
+  attendee?: TAttendee;
+  eventId?:string;
+}) {
 
-export function Offers({ className, data, attendee, isOrganizer }: { className?: string, data: PromotionalOfferType[] | undefined; isOrganizer: boolean;
-  attendee?:TAttendee; }) {
+  const { data: engagementsSettings } = useGetData<EngagementsSettings>(
+    `engagements/${eventId}/settings`
+  );
+  const { data: leadsInterests } = useGetData<TLeadsInterest[]>(
+    `leads/interests/${eventId}`
+  );
+  const { data: leads } = useGetData<TLead[]>(`leads/event/${eventId}`);
   return (
     <div
       className={cn(
@@ -11,9 +35,18 @@ export function Offers({ className, data, attendee, isOrganizer }: { className?:
         className
       )}
     >
-      {Array.isArray(data) && data?.map((item) => (
-        <OfferCard key={item.partnerId} offer={item} attendee={attendee} isOrganizer={isOrganizer} />
-      ))}
+      {Array.isArray(data) &&
+        data?.map((item) => (
+          <OfferCard
+            key={item.partnerId}
+            offer={item}
+            attendee={attendee}
+            isOrganizer={isOrganizer}
+            engagementsSettings={engagementsSettings}
+            leadsInterests={leadsInterests}
+            leads={leads}
+          />
+        ))}
     </div>
   );
 }
