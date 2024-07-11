@@ -5,6 +5,8 @@ import { TFavouriteContact } from "@/types/favourites";
 import { format, isToday, isWithinInterval } from "date-fns";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGetData } from "@/hooks/services/request";
+import { EngagementsSettings } from "@/types/engagements";
 
 type AttendeeProps = {
   attendee: TAttendee;
@@ -32,6 +34,14 @@ const Attendee: React.FC<AttendeeProps> = ({
   isLead,
 }) => {
   const router = useRouter();
+
+  const {
+    data: engagementsSettings,
+    isLoading: engagementsSettingsIsLoading,
+    getData: getEngagementsSettings,
+  } = useGetData<EngagementsSettings>(
+    `engagements/${event.eventAlias}/settings`
+  );
   const {
     id,
     firstName,
@@ -42,7 +52,14 @@ const Attendee: React.FC<AttendeeProps> = ({
     attendeeType,
     checkin,
     profilePicture,
+    checkInPoints,
+    attendeeProfilePoints,
   } = attendee;
+
+  console.log(checkInPoints, firstName);
+
+  console.log(attendeeProfilePoints, firstName, "points");
+  console.log(checkInPoints, "points");
 
   const isFavourite =
     (favourites &&
@@ -50,7 +67,8 @@ const Attendee: React.FC<AttendeeProps> = ({
       !!favourites.attendees.find((attendeeId) => id === attendeeId)) ||
     false;
 
-  const { updateAttendees } = useUpdateAttendees();
+  const { updateAttendees, isLoading: updatingAttendees } =
+    useUpdateAttendees();
 
   const recentCheckin =
     checkin &&
@@ -63,6 +81,14 @@ const Attendee: React.FC<AttendeeProps> = ({
 
   const toggleCheckin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    const allocatedcheckInPoints =
+      engagementsSettings?.pointsAllocation["Checked in for an event"]
+        ?.points ?? 0;
+
+    console.log(
+      allocatedcheckInPoints,
+      engagementsSettings?.pointsAllocation["Checked in for an event"]
+    );
 
     if (
       !isWithinInterval(new Date(), {
@@ -76,7 +102,7 @@ const Attendee: React.FC<AttendeeProps> = ({
     const newDate = new Date();
 
     const updatedCheckin = checkin
-      ? recentCheckin && isToday(recentCheckin?.date)
+      ? isCheckedInToday
         ? checkin.filter((elm) => elm !== recentCheckin)
         : [
             ...checkin,
@@ -92,7 +118,17 @@ const Attendee: React.FC<AttendeeProps> = ({
           },
         ];
 
-    const payload: TAttendee[] = [{ ...attendee, checkin: updatedCheckin }];
+    const payload: TAttendee[] = [
+      {
+        ...attendee,
+        checkin: updatedCheckin,
+        checkInPoints: checkin
+          ? isCheckedInToday
+            ? checkInPoints - allocatedcheckInPoints
+            : checkInPoints + allocatedcheckInPoints
+          : 1,
+      },
+    ];
 
     await updateAttendees({
       payload,
@@ -247,6 +283,7 @@ const Attendee: React.FC<AttendeeProps> = ({
                   ? ""
                   : "hidden"
               } ${checkCheckin ? "text-basePrimary" : "text-gray-700"}`}
+              disabled={engagementsSettingsIsLoading || updatingAttendees}
             >
               <div className="flex-1">
                 <svg

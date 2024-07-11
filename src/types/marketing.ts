@@ -1,4 +1,3 @@
-
 import { AffiliateSchema } from "@/schemas/marketing";
 import { z } from "zod";
 import { TEventTransaction } from "./billing";
@@ -36,6 +35,7 @@ export interface TSentEmail {
 
 export interface TAffiliate extends z.TypeOf<typeof AffiliateSchema> {
   affliateCode: string;
+  organizationId: number;
 }
 
 export interface TAffiliateLink {

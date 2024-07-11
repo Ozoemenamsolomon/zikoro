@@ -45,6 +45,7 @@ import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useUserStore from "@/store/globalUserStore";
+import { useRouter } from "next/navigation";
 
 const CreateAffiliateSchema = z.object({
   event: z.string(),
@@ -59,6 +60,7 @@ const CreateAffiliateSchema = z.object({
 type TCreateAffiliate = z.infer<typeof CreateAffiliateSchema>;
 
 const Create = () => {
+  const router = useRouter();
   const defaultValues: Partial<TCreateAffiliate> = {
     commissionType: "percentage",
     value: 5,
@@ -74,7 +76,7 @@ const Create = () => {
   const { user, setUser } = useUserStore();
 
   const { affiliates, isLoading: affiliatesIsLoading } = useGetAffiliates({
-    userId: user?.id || 0,
+    organizationId: organization?.id,
   });
 
   const { events, isLoading: eventsIsLoading } = useGetUserEvents({
@@ -130,11 +132,34 @@ const Create = () => {
         },
       },
     });
+
+    form.reset();
+    router.push("/affiliates?tab=performance");
   };
 
   return (
     <section className="p-4 space-y-8">
-      <h1 className="text-gray-700 text-lg font-medium">Affiliates</h1>
+      <div className="flex gap-8 items-center">
+        <button
+          onClick={router.back}
+          className="flex items-center gap-0.5 text-gray-600 font-medium text-md"
+        >
+          <svg
+            stroke="currentColor"
+            fill="currentColor"
+            strokeWidth={0}
+            viewBox="0 0 24 24"
+            height="1em"
+            width="1em"
+          >
+            <path d="M21 11L6.414 11 11.707 5.707 10.293 4.293 2.586 12 10.293 19.707 11.707 18.293 6.414 13 21 13z" />
+          </svg>
+          Back
+        </button>
+        <h1 className="text-gray-700 text-lg font-medium">
+          Create Affiliate Link
+        </h1>
+      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -169,7 +194,7 @@ const Create = () => {
                                 : "Loading..."
                             }
                             className={cn(
-                              "placeholder:text-sm w-full",
+                              "placeholder:text-sm w-full py-4",
                               !field.value ? "text-gray-200" : "text-gray-700"
                             )}
                           />
@@ -220,7 +245,7 @@ const Create = () => {
                               !eventsIsLoading ? "Select event" : "Loading..."
                             }
                             className={cn(
-                              "placeholder:text-sm w-full",
+                              "placeholder:text-sm w-full py-4",
                               !field.value ? "text-gray-200" : "text-gray-700"
                             )}
                           />
@@ -263,7 +288,7 @@ const Create = () => {
                           <SelectValue
                             placeholder="Select schedule"
                             className={cn(
-                              "placeholder:text-sm w-full",
+                              "placeholder:text-sm w-full py-4",
                               !field.value ? "text-gray-200" : "text-gray-700"
                             )}
                           />
@@ -406,7 +431,7 @@ const Create = () => {
                       onInput={(e) =>
                         field.onChange(parseInt(e.currentTarget.value))
                       }
-                      className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                      className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 py-4"
                     />
                   </InputOffsetLabel>
                 )}
@@ -428,7 +453,7 @@ const Create = () => {
                           <Button
                             variant={"outline"}
                             className={cn(
-                              "flex gap-4 items-center w-full px-4 justify-start font-normal",
+                              "flex gap-4 items-center w-full px-4 justify-start font-normal py-4",
                               !field.value && "text-muted-foreground"
                             )}
                           >
@@ -475,7 +500,7 @@ const Create = () => {
                           <SelectValue
                             placeholder="Select goal"
                             className={cn(
-                              "placeholder:text-sm w-full",
+                              "placeholder:text-sm w-full py-4",
                               !field.value ? "text-gray-200" : "text-gray-700"
                             )}
                           />

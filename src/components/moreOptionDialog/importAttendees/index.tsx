@@ -243,7 +243,6 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
           headers={headers}
           getAttendees={getAttendees}
           setStep={setStep}
-          getAttendees={getAttendees}
         />
       )}
     </div>

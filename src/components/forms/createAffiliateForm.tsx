@@ -17,6 +17,7 @@ import { TUser } from "@/types";
 import { getCookie } from "@/hooks";
 import { generateAlphanumericHash } from "@/utils/helpers";
 import useUserStore from "@/store/globalUserStore";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 export default function CreateAffiliateForm({
   affiliate,
@@ -27,8 +28,7 @@ export default function CreateAffiliateForm({
 }) {
   const currentEvent = useEventStore((state) => state.event);
   const { user, setUser } = useUserStore();
-
-  
+  const { organization } = useOrganizationStore();
 
   const defaultValues: Partial<TAffiliate> = affiliate || {
     userEmail: user?.userEmail,
@@ -39,6 +39,7 @@ export default function CreateAffiliateForm({
       accountNumber: "",
       accountName: "",
       bankName: "",
+      bankCode: "",
     },
     affliateStatus: true,
   };
@@ -54,14 +55,10 @@ export default function CreateAffiliateForm({
     formState: { dirtyFields, errors },
   } = form;
 
-  
-
   const clsBtnRef = useRef<HTMLButtonElement>(null);
 
   async function onSubmit(data: TAffiliate) {
-    
-
-    if (!clsBtnRef) return;
+    if (!clsBtnRef.current) return;
 
     clsBtnRef.current.click();
 
@@ -72,10 +69,14 @@ export default function CreateAffiliateForm({
       payload.affliateCode = affliateCode;
     }
 
-    await createAffiliate({ payload });
+    await createAffiliate({
+      payload: { ...payload, organizationId: organization?.id ?? 0 },
+    });
 
     await getAffiliates();
   }
+
+  console.log(errors);
 
   return (
     <Form {...form}>

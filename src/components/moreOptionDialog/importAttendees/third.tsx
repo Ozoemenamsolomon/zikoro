@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useRef } from "react";
 import { THeaders } from "./";
 // import { DialogClose } from "../../ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -9,13 +9,15 @@ import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
 import useEventStore from "@/store/globalEventStore";
 import useUserStore from "@/store/globalUserStore";
+import { EngagementsSettings } from "@/types/engagements";
+import { useGetData } from "@/hooks/services/request";
 
 const Third = ({
   data,
   headers,
   getAttendees,
   excelHeaders,
-  setStep
+  setStep,
 }: {
   data: any[][];
   excelHeaders: any[];
@@ -26,15 +28,30 @@ const Third = ({
   getAttendees: () => Promise<void>;
   setStep: Dispatch<SetStateAction<number>>;
 }) => {
+  const event = useEventStore((state) => state.event);
+  const {
+    data: engagementsSettings,
+    isLoading: engagementsSettingsIsLoading,
+    getData: getEngagementsSettings,
+  } = useGetData<EngagementsSettings>(
+    `engagements/${event.eventAlias}/settings`
+  );
+
   const headerMap = new Map(
     excelHeaders.map((header, index) => [header, index])
   );
   const { uploadAttendees } = useUploadAttendees();
 
   const { user, setUser } = useUserStore();
-  const event = useEventStore((state) => state.event);
+
+  const clsBtnRef = useRef<HTMLButtonElement>(null);
 
   const submitAttendees = async () => {
+    const attendeeProfilePoints = parseInt(
+      engagementsSettings
+        ? engagementsSettings?.pointsAllocation["update profile"].points
+        : 0
+    );
     const payload: Partial<TAttendee>[] = data.map((row, index) => {
       const attendee: Partial<TAttendee> = {
         userEmail: user?.userEmail,
@@ -45,27 +62,40 @@ const Third = ({
         ticketType: "in-house",
       };
 
+      const completedFields: TCompletedFields = [];
+
       Array.from(headers).forEach(([key, value]) => {
-        const rowValue = headerMap.get(value);
+        const rowValue = headerMap.get(value) ?? "";
         attendee[key.value] = row[rowValue];
+
+        console.log(key.value, row[rowValue]);
+        completedFields?.push(key.value);
       });
 
-      return attendee;
+      attendee.attendeeProfilePoints =
+        Object.keys(attendee).length * attendeeProfilePoints;
+
+      console.log(
+        attendee.attendeeProfilePoints,
+        engagementsSettings?.pointsAllocation["update profile"],
+        Object.keys(attendee).length
+      );
+
+      ("");
+      return { ...attendee, completedFields };
     });
 
-    
     await uploadAttendees({ payload });
     await getAttendees();
+    clsBtnRef.current?.click();
   };
 
   const showRow = (value: any, row: any[]) => {
     if (!value) return;
     const rowValue = headerMap.get(value);
-    
+
     return row[rowValue];
   };
-
-  
 
   return (
     <>
@@ -100,10 +130,17 @@ const Third = ({
         <Button onClick={() => setStep(2)} className="bg-basePrimary w-full">
           Back
         </Button>
+        <Button
+          className="bg-basePrimary w-full"
+          onClick={submitAttendees}
+          disabled={engagementsSettingsIsLoading}
+        >
+          Import Attendees
+        </Button>
         <DialogClose asChild>
-          <Button className="bg-basePrimary w-full" onClick={submitAttendees}>
-            Import Attendees
-          </Button>
+          <button ref={clsBtnRef} className="hidden">
+            hidden
+          </button>
         </DialogClose>
       </div>
     </>

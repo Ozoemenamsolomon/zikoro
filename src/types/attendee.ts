@@ -7,6 +7,7 @@ import { z } from "zod";
 
 export type TCheckin = z.infer<typeof checkinSchema>;
 
+export type TCompletedFields = Array<keyof z.infer<typeof AttendeeSchema>>;
 export type TAttendee = z.infer<typeof AttendeeSchema> & {
   id?: number;
   eventRegistrationRef?: string;
@@ -24,6 +25,9 @@ export type TAttendee = z.infer<typeof AttendeeSchema> & {
   checkin?: { date: Date; checkin: boolean }[];
   inviteSource: string | null;
   attendeeAlias: string;
+  checkInPoints: number;
+  attendeeProfilePoints: number;
+  completedFields: TCompletedFields;
 };
 
 export type TAttendeeNote = z.infer<typeof attendeeNoteSchema>;

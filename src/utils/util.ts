@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import { ReadonlyURLSearchParams } from "next/navigation";
 // call phone
 export function phoneCall(number?: string) {
   window.open(`tel:${number}`, "_blank");
@@ -119,4 +120,17 @@ export function saveContact(contact: Contact): void {
 
   // Programmatically click the anchor to trigger the download
   newLink.click();
+}
+
+export function updateSearchParam(
+  searchParams: ReadonlyURLSearchParams,
+  param: string,
+  value: string
+): URLSearchParams {
+  const currentSearchParams = new URLSearchParams(
+    Array.from(searchParams.entries())
+  );
+  currentSearchParams.set(param, value);
+
+  return currentSearchParams;
 }

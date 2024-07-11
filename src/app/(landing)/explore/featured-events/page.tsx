@@ -487,7 +487,7 @@ export default function FeaturedEvents() {
 
                       {/* bottom h-[1485px] */}
                       <div className="py-2 px-4 h-auto flex flex-col justify-start border-t-[1px] border-gray-200  items-center overflow-y-auto no-scrollbar pt-8 pb-0 lg:pb-[50px]">
-                        <div className="grid grid-cols-3 gap-4 mt-8 ">
+                        <div className="grid grid-cols-3 gap-4 mt-8 min-h-screen">
                           {filteredEvents &&
                             (showMore
                               ? filteredEvents
@@ -579,7 +579,7 @@ export default function FeaturedEvents() {
                     </div>
 
                     <div className="flex flex-col items-center mt-16 mb-20 ">
-                      <div className="grid grid-cols-1 gap-4 w-full ">
+                      <div className="grid grid-cols-1 gap-4 w-full min-h-screen">
                         {filteredEvents &&
                           (showMore
                             ? filteredEvents

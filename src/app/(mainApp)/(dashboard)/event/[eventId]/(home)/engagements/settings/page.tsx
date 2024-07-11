@@ -119,7 +119,7 @@ function EmptyState({
   addPointsAllocation,
   updatePointsAllocationIsLoading,
 }: {
-  addPointsAllocation: () => Promise<void>;
+  addPointsAllocation: (pointsAllocation: TPointsAllocation) => Promise<void>;
   updatePointsAllocationIsLoading: boolean;
 }) {
   return (
@@ -234,8 +234,8 @@ const page = () => {
               >
                 <p>Update Allocations</p>
               </Button>
-              <div className="overflow-x-auto max-w-full">
-                <table className="min-w-full bg-white border border-gray-300">
+              <div className="overflow-x-auto">
+                <table className="min-w-max bg-white border border-gray-300">
                   <thead className="font-bold">
                     <tr className="bg-[#001FCC]/10 grid grid-cols-5 text-gray-800">
                       <th className="py-2 px-4 border-b capitalize text-lg font-medium ">
