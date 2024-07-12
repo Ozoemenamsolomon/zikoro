@@ -56,7 +56,6 @@ export default function Workspaces() {
   const domain = params.get("domain");
   const showFilter = params.get("showFilter");
   const showCategories = params.get("showCategories");
-  const showEvents = params.get("showEvents");
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
   const [isEventTypeUp, setEventTypeUp] = useState(false);
@@ -259,19 +258,21 @@ export default function Workspaces() {
               <div>
                 {/* big screen */}
                 <div className="px-0 max-w-full lg:max-w-7xl mx-auto  lg:mt-28 hidden lg:block ">
-                  {/* mt-12       */}
-
                   {/* main section */}
-                  <div className="flex flex-col lg:flex-row justify-between mt-[50px] border-l-[1px] border-gray-200 rounded-none">
+                  <div
+                    className={`flex flex-col  lg:flex-row  justify-between mt-[50px] ${
+                      showFilter == "false" ? "border-l-0" : "border-l-[1px]"
+                    }  border-gray-200 rounded-none`}
+                  >
                     {/* left */}
-                    <div className="border-t-[1px] border-gray-200 h-full pb-12 w-full lg:w-3/12 ">
-                      <div className="flex py-[42px] px-[30px] border-b-[1px] border-gray-200 items-center justify-between">
-                        <div className="flex gap-x-3 items-center ">
-                          <FilterIcon />
-                          <p className="text-xl font-semibold"> Filters</p>
+                    {showFilter?.toString() === "true" && (
+                      <div className="border-t-[1px] border-gray-200 h-full pb-12 w-full lg:w-3/12 ">
+                        <div className="flex py-[42px] px-[30px] border-b-[1px] border-gray-200 items-center justify-between">
+                          <div className="flex gap-x-3 items-center ">
+                            <FilterIcon />
+                            <p className="text-xl font-semibold"> Filters</p>
+                          </div>
                         </div>
-                      </div>
-                      {showFilter?.toString() === "true" && (
                         <div className="flex flex-col gap-y-12 mt-7">
                           {/* 1st section */}
                           <div className="px-8 cursor-pointer">
@@ -452,15 +453,19 @@ export default function Workspaces() {
                             )}
                           </div>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     {/* Right */}
-                    <div className=" border-t-[1px] border-gray-200 border-l-[1px] border-r-[1px] w-full lg:w-9/12 py-[3px] ">
+                    <div
+                      className={` border-t-[1px] border-gray-200 border-l-[1px] border-r-[1px] w-full lg:w-9/12 py-[3px] ${
+                        showCategories == "false" ? "flex mx-auto border-t-0" : ""
+                      } `}
+                    >
                       {/* top */}
                       <div className="flex">
                         {showCategories?.toString() === "true" && (
-                          <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] ">
+                          <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-[25px] gap-x-[10px]  ">
                             {filterCategories
                               .filter(
                                 (category, i, self) =>
@@ -483,35 +488,39 @@ export default function Workspaces() {
                       </div>
 
                       {/* bottom h-[1485px] */}
-                      <div className="py-2 px-4 min-h-screen h-auto flex flex-col justify-start border-t-[1px] border-gray-200  items-center  pt-8 pb-0 lg:pb-[50px]">
-                        {showEvents?.toString() == "true" && (
-                          <div className="grid grid-cols-3 gap-4 mt-8 ">
-                            {filteredEvents &&
-                              (showMore
-                                ? filteredEvents
-                                : filteredEvents.slice(0, 20)
-                              ).map((event, index) => (
-                                <FeaturedEvent
-                                  key={event.id}
-                                  id={event.id}
-                                  eventPoster={event.eventPoster}
-                                  eventTitle={event.eventTitle}
-                                  eventCity={event.eventCity}
-                                  eventCountry={event.eventCountry}
-                                  eventCategory={event.eventCategory}
-                                  eventAlias={event.eventAlias}
-                                  locationType={event.locationType}
-                                  pricing={event.pricing}
-                                  pricingCurrency={event.pricingCurrency}
-                                  startDateTime={event.startDateTime}
-                                  expectedParticipants={
-                                    event.expectedParticipants
-                                  }
-                                  registered={event.registered}
-                                />
-                              ))}
-                          </div>
-                        )}
+                      <div
+                        className={`py-2 px-4 min-h-screen h-auto flex flex-col justify-start ${
+                          showCategories == "false"
+                            ? "border-t-0 pt-[82px]"
+                            : "border-t-[1px] pt-8 "
+                        } border-gray-200 items-center pb-0 lg:pb-[50px]`}
+                      >
+                        <div className="grid grid-cols-3 gap-4 mt-8 ">
+                          {filteredEvents &&
+                            (showMore
+                              ? filteredEvents
+                              : filteredEvents.slice(0, 20)
+                            ).map((event, index) => (
+                              <FeaturedEvent
+                                key={event.id}
+                                id={event.id}
+                                eventPoster={event.eventPoster}
+                                eventTitle={event.eventTitle}
+                                eventCity={event.eventCity}
+                                eventCountry={event.eventCountry}
+                                eventCategory={event.eventCategory}
+                                eventAlias={event.eventAlias}
+                                locationType={event.locationType}
+                                pricing={event.pricing}
+                                pricingCurrency={event.pricingCurrency}
+                                startDateTime={event.startDateTime}
+                                expectedParticipants={
+                                  event.expectedParticipants
+                                }
+                                registered={event.registered}
+                              />
+                            ))}
+                        </div>
 
                         {eventData && eventData.length > 20 && !showMore && (
                           <div className="flex justify-center items-center pt-12">
@@ -555,47 +564,43 @@ export default function Workspaces() {
                       )}
                     </div>
 
-                    {showEvents?.toString() == "true" && (
-                      <div className="flex flex-col items-center mt-16 min-h-screen mb-20 ">
-                        <div className="grid grid-cols-1 gap-4 w-full ">
-                          {filteredEvents &&
-                            (showMore
-                              ? filteredEvents
-                              : filteredEvents.slice(0, 20)
-                            ).map((event, index) => (
-                              <FeaturedEvent
-                                key={event.id}
-                                id={event.id}
-                                eventPoster={event.eventPoster}
-                                eventTitle={event.eventTitle}
-                                eventCity={event.eventCity}
-                                eventAlias={event.eventAlias}
-                                eventCountry={event.eventCountry}
-                                eventCategory={event.eventCategory}
-                                locationType={event.locationType}
-                                pricing={event.pricing}
-                                pricingCurrency={event.pricingCurrency}
-                                startDateTime={event.startDateTime}
-                                expectedParticipants={
-                                  event.expectedParticipants
-                                }
-                                registered={event.registered}
-                              />
-                            ))}
-                        </div>
-
-                        {eventData && eventData.length > 20 && !showMore && (
-                          <div className="flex justify-center items-center pt-12">
-                            <button
-                              onClick={handleSeeMoreClick}
-                              className="text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white"
-                            >
-                              See more
-                            </button>
-                          </div>
-                        )}
+                    <div className="flex flex-col items-center mt-16 min-h-screen mb-20 ">
+                      <div className="grid grid-cols-1 gap-4 w-full ">
+                        {filteredEvents &&
+                          (showMore
+                            ? filteredEvents
+                            : filteredEvents.slice(0, 20)
+                          ).map((event, index) => (
+                            <FeaturedEvent
+                              key={event.id}
+                              id={event.id}
+                              eventPoster={event.eventPoster}
+                              eventTitle={event.eventTitle}
+                              eventCity={event.eventCity}
+                              eventAlias={event.eventAlias}
+                              eventCountry={event.eventCountry}
+                              eventCategory={event.eventCategory}
+                              locationType={event.locationType}
+                              pricing={event.pricing}
+                              pricingCurrency={event.pricingCurrency}
+                              startDateTime={event.startDateTime}
+                              expectedParticipants={event.expectedParticipants}
+                              registered={event.registered}
+                            />
+                          ))}
                       </div>
-                    )}
+
+                      {eventData && eventData.length > 20 && !showMore && (
+                        <div className="flex justify-center items-center pt-12">
+                          <button
+                            onClick={handleSeeMoreClick}
+                            className="text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-5 rounded-md border border-white"
+                          >
+                            See more
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
