@@ -27,5 +27,5 @@ jobs:
 
       - name: Push Changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.UPDATE_FORK_TOKEN }}
         run: git push origin staging  # Change 'main' to the branch you want to update
