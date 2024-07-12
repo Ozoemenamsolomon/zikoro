@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Copy } from "styled-icons/boxicons-regular";
 import { useGetData } from "@/hooks/services/request";
+import { ISubscription } from "@/types/subscription";
 
 const page = () => {
   const { user, setUser } = useUserStore();
@@ -34,7 +35,7 @@ const page = () => {
     data: subscriptions,
     getData: getSubscriptions,
     isLoading: subscriptionsIsLoading,
-  } = useGetData(
+  } = useGetData<ISubscription[]>(
     `subscription/all?users=${JSON.stringify(
       userReferrals.map(({ id }) => id)
     )}`,
@@ -112,7 +113,7 @@ const page = () => {
               </svg>
               <div className="flex flex-col gap-1">
                 <h3 className="text-greyBlack font-medium">
-                  {userReferrals && userReferrals.length} Registrations
+                  {userReferrals ? userReferrals.length : 0} Registrations
                 </h3>
                 <p className="text-gray-500 font-medium text-sm">
                   People who have signed up using your referral link
@@ -137,7 +138,9 @@ const page = () => {
                 <line x1={23} y1={11} x2={17} y2={11} />
               </svg>
               <div className="flex flex-col gap-1">
-                <h3 className="text-greyBlack font-medium">0 Subscriptions</h3>
+                <h3 className="text-greyBlack font-medium">
+                  {subscriptions ? subscriptions.length : 0} Subscriptions
+                </h3>
                 <p className="text-gray-500 font-medium text-sm">
                   People who have purchased a subscription using your referral
                   link
@@ -149,30 +152,61 @@ const page = () => {
             <h2 className="font-medium text-xl text-gray-800">
               Your referrals
             </h2>
-            {isLoading ? (
+            {isLoading && subscriptionsIsLoading ? (
               <div>Loading...</div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Date Registered</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {userReferrals &&
-                    userReferrals.map(({ firstName, lastName, created_at }) => (
-                      <TableRow>
-                        <TableCell className="font-medium">
-                          {firstName} {lastName}
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          {format(created_at, "PPP")}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
+              <>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Date Registered</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {userReferrals &&
+                      userReferrals.map(
+                        ({ firstName, lastName, created_at }) => (
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              {firstName} {lastName}
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {format(created_at, "PPP")}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      )}
+                  </TableBody>
+                </Table>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Subscription Type</TableHead>
+                      <TableHead>Commission</TableHead>
+                      <TableHead>Date Registered</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {subscriptions &&
+                      subscriptions.map(
+                        ({ subscriptionType, amountPayed, created_at }) => (
+                          <TableRow>
+                            <TableCell className="font-medium">
+                              subscriptionType
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {amountPayed * 0.3}
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {format(created_at, "PPP")}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      )}
+                  </TableBody>
+                </Table>
+              </>
             )}
           </div>
         </div>

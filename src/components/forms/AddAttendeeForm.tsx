@@ -57,16 +57,6 @@ export default function AddAttendeeForm({
   const { user } = useUserStore();
   const { event } = useEventStore();
 
-  const [phoneCountryCode, setPhoneCountryCode] = useState<string>(
-    attendee && attendee.phoneNumber
-      ? attendee.phoneNumber?.slice(0, 3)
-      : "+234"
-  );
-  const [whatsappCountryCode, setWhatsAppCountryCode] = useState<string>(
-    attendee && attendee.whatsappNumber
-      ? attendee.whatsappNumber?.slice(0, 3)
-      : "+234"
-  );
   const defaultValues: Partial<TAttendee> = attendee
     ? {
         ...attendee,
@@ -107,25 +97,22 @@ export default function AddAttendeeForm({
       whatsappNumber:
         attendee.whatsappNumber && attendee.whatsappNumber.substring(4),
     });
-
-    setPhoneCountryCode(attendee.phoneNumber?.slice(0, 3));
-    setWhatsAppCountryCode(
-      attendee.whatsappNumber ? attendee.whatsappNumber?.slice(0, 3) : "+234"
-    );
   }, [attendee]);
 
   const attendeeType = watch("attendeeType");
   const country = watch("country");
+  const phoneNumber = watch("phoneNumber");
   const profilePicture = watch("profilePicture");
 
   useEffect(() => {
-    const newCountry = COUNTRY_CODE.find(({ name }) => country === name);
-
-    if (newCountry) {
-      setPhoneCountryCode(newCountry.dial_code);
-      setWhatsAppCountryCode(newCountry.dial_code);
-    }
-  }, [country]);
+    console.log(
+      !!COUNTRY_CODE.find(
+        ({ dial_code }) =>
+          phoneNumber &&
+          dial_code === phoneNumber?.substring(0, dial_code.length - 1)
+      )
+    );
+  }, [phoneNumber]);
 
   const toggleAttendeeType = (value: string) => {
     const newAttendeeType = () => {
@@ -148,12 +135,6 @@ export default function AddAttendeeForm({
 
     const payload: Partial<TAttendee> = {
       ...data,
-      phoneNumber: data.phoneNumber
-        ? phoneCountryCode + data.phoneNumber
-        : "N/A",
-      whatsappNumber: data.whatsappNumber
-        ? whatsappCountryCode + data.whatsappNumber
-        : "N/A",
       eventId: Array.isArray(eventId) ? eventId[0] : eventId,
       ticketType: "in-house",
       registrationCompleted: true,
@@ -370,19 +351,9 @@ export default function AddAttendeeForm({
                       Phone number
                       <sup className="text-red-700">*</sup>
                     </FormLabel>
-                    <input
-                      title="phone country code"
-                      type="text"
-                      maxLength={4}
-                      className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-gray-700 z-10 font-medium h-full w-fit max-w-[36px] border-y-[1px]"
-                      value={phoneCountryCode}
-                      onInput={(e) =>
-                        setPhoneCountryCode(e.currentTarget.value)
-                      }
-                    />
                     <FormControl>
                       <Input
-                        className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-12"
+                        className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                         placeholder="Enter phone number"
                         {...field}
                         type="number"
@@ -402,19 +373,9 @@ export default function AddAttendeeForm({
                     <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
                       WhatsApp number
                     </FormLabel>
-                    <input
-                      title="whatsapp country code"
-                      type="text"
-                      className="!mt-0 text-sm absolute top-1/2 -translate-y-1/2 left-2 text-gray-700 z-10 font-medium h-10 w-fit max-w-[36px] border-y-[1px]"
-                      value={whatsappCountryCode}
-                      onInput={(e) =>
-                        setWhatsAppCountryCode(e.currentTarget.value)
-                      }
-                      maxLength={4}
-                    />
                     <FormControl>
                       <Input
-                        className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-12"
+                        className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
                         placeholder="Enter whatsapp number"
                         {...field}
                         type="number"

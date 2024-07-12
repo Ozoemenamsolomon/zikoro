@@ -141,7 +141,10 @@ const ThirdColumn = ({
             Percentage Retrieved
           </h3>
           <span className="text-xl font-bold">
-            {leads.length > 0 ? Number((leads.length / attendees.length) * 100).toFixed() : 0}%
+            {leads.length > 0
+              ? Number((leads.length / attendees.length) * 100).toFixed()
+              : 0}
+            %
           </span>
           <span>
             You've retrieved <b>{leads.length}</b>
@@ -219,7 +222,9 @@ const ThirdColumn = ({
             <span className="text-xl font-bold">
               {leads.length > 0
                 ? Number(
-                    (leads.filter(({ leadType }) => !leadType).length /
+                    (leads.filter(
+                      ({ leadType }) => !leadType || leadType === "unknown"
+                    ).length /
                       leads.length) *
                       100
                   ).toFixed()
@@ -228,7 +233,9 @@ const ThirdColumn = ({
             </span>
             <span className="text-xs text-center text-gray-700">
               <b className="text-gray-900">
-                {leads.filter(({ leadType }) => !leadType).length ?? 0}
+                {leads.filter(
+                  ({ leadType }) => !leadType || leadType === "unknown"
+                ).length ?? 0}
               </b>{" "}
               out of <b className="text-gray-900">{leads.length}</b> scanned
             </span>
@@ -283,7 +290,7 @@ const ThirdColumn = ({
                 <div className="flex flex-col">
                   <span className="font-medium text-gray-800">{label}</span>
                   <span className="font-medium text-gray-600">
-                    {(leads && (value / leads.length) * 100) +
+                    {(leads && Number((value / leads.length) * 100).toFixed()) +
                       "%         (" +
                       (leads && value) +
                       ")"}

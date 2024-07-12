@@ -8,6 +8,7 @@ import { useGetContactRequests } from "@/hooks/services/contacts";
 import SecondColumn from "./_columns/SecondColumn";
 import ThirdColumn from "./_columns/ThirdColumn";
 import useEventStore from "@/store/globalEventStore";
+import { useFetchSinglePartner } from "@/hooks";
 
 const page = ({
   params: { partnerId, eventId },
@@ -15,6 +16,8 @@ const page = ({
   params: { partnerId: string; eventId: string };
 }) => {
   const { user, setUser } = useUserStore();
+  const { data: partner, loading: partnerIsLoading } =
+    useFetchSinglePartner(partnerId);
   const {
     userContactRequests,
     isLoading: contactRequestIsLoading,
@@ -53,11 +56,12 @@ const page = ({
       <section className="md:col-span-3 border-r-[1px] border-[#F3F3F3] md:pt-2">
         <FirstColumn
           leads={leads ?? []}
-          isLoading={isLoading}
+          isLoading={isLoading && partnerIsLoading}
           getLeads={getLeads}
           onSelectLead={onSelectLead}
           selectedLead={selectedLead}
           partnerId={partnerId}
+          partner={partner}
         />
       </section>
       <div className="hidden md:contents">
@@ -68,7 +72,7 @@ const page = ({
                 lead={selectedLead}
                 getLeads={getLeads}
                 userContactRequests={userContactRequests}
-                isLoading={contactRequestIsLoading}
+                isLoading={contactRequestIsLoading && partnerIsLoading}
                 getContactRequests={getContactRequests}
                 setSelectedLead={onSelectLead}
               />
