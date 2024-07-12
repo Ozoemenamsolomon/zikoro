@@ -1,7 +1,12 @@
 "use client";
 
 import { Button } from "@/components";
-import { TQuiz, TQuestion, TQuizParticipant, TLiveQuizParticipant } from "@/types";
+import {
+  TQuiz,
+  TQuestion,
+  TQuizParticipant,
+  TLiveQuizParticipant,
+} from "@/types";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { cn } from "@/lib";
@@ -18,7 +23,7 @@ export function QuizLobby({
   goBack,
   isAttendee,
   refetch,
-  liveQuizPlayers
+  liveQuizPlayers,
 }: {
   close: () => void;
   goBack: () => void;
@@ -28,19 +33,15 @@ export function QuizLobby({
   liveQuizPlayers: TLiveQuizParticipant[];
 }) {
   const [loading, setLoading] = useState(false);
-  const {deleteQuizLobby} = useDeleteQuizLobby(quiz?.quizAlias)
+  const { deleteQuizLobby } = useDeleteQuizLobby(quiz?.quizAlias);
   const { updateQuiz } = useUpdateQuiz();
- 
+
   const [players, setPlayers] = useState<TQuizParticipant[]>([]);
 
   useEffect(() => {
     (() => {
-      if (
-        Array.isArray(liveQuizPlayers) &&
-        liveQuizPlayers?.length > 0
-      ) {
-
-       /**
+      if (Array.isArray(liveQuizPlayers) && liveQuizPlayers?.length > 0) {
+        /**
          const filtered = liveQuizPlayers?.filter(
           (participant) =>
             new Date(participant?.joinedAt).getTime() >
@@ -49,14 +50,13 @@ export function QuizLobby({
         */
 
         const mappedPlayers = liveQuizPlayers?.map((player) => {
-          const {quizAlias, ...rest} = player
+          const { quizAlias, ...rest } = player;
           return {
             ...rest,
             id: player?.quizParticipantId,
+          };
+        });
 
-          }
-        })
-       
         setPlayers(mappedPlayers);
       }
     })();
@@ -75,13 +75,16 @@ export function QuizLobby({
     const payload: Partial<TQuiz<TQuestion[]>> = {
       ...quiz,
       liveMode: { startingAt, isStarting: true },
-      quizParticipants: [...quiz?.quizParticipants, ...players]
+      quizParticipants:
+      quiz?.quizParticipants && quiz?.quizParticipants?.length > 0
+          ? [...quiz?.quizParticipants, ...players]
+          : [...players],
     };
     await updateQuiz({ payload });
-    await deleteQuizLobby()
+    await deleteQuizLobby();
     refetch();
-    
-    setLoading(false)
+
+    setLoading(false);
     close();
   }
 
@@ -149,7 +152,7 @@ export function QuizLobby({
       <div className="w-full flex flex-col items-center justify-center absolute inset-x-0 bottom-0 gap-y-3  mx-auto bg-white py-2">
         {!isAttendee && (
           <Button
-          disabled={loading}
+            disabled={loading}
             onClick={openQuestion}
             className="bg-basePrimary gap-x-2 px-10 h-12 w-fit rounded-lg text-gray-50 transform transition-all duration-400 "
           >
