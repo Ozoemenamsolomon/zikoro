@@ -8,50 +8,100 @@ export async function GET(
 ) {
   const supabase = createRouteHandlerClient({ cookies });
 
-
   const tables = [
     "attendees",
     "sessionReviews",
-    "eventPartners",
     "quizAnswer",
+    "Leads",
     "leadsInterests",
-    "Leads"
+  ];
 
-  ]
+  //   "quizAnswer", "leadsInterests",
 
   if (req.method === "GET") {
     try {
       const { eventId } = params;
 
+      let scoreData: { [key: string]: any[] } = {
+        checkInAttendees: [],
+        attendeeProfile: [],
+        quizAnswer: [],
+        leadsInterests: [],
+        sessionReviews: [],
+        Leads: [],
+      };
 
-    for (let table of tables) {
+      for (let table of tables) {
         const query = supabase
-        .from(table)
-        .select("*")
-        .eq("eventAlias", eventId)
-      
+          .from(table)
+          .select(table !== "attendees" ? "*, attendees!inner(*)" : "*")
+          .eq("eventAlias", eventId);
 
-      const { data, error, status } = await query;
+        const { data, error, status } = await query;
 
-    
-
-      if (error) {
-        return NextResponse.json(
-          {
-            error: error?.message,
-          },
-          {
-            status: 400,
+        if (table === "attendees") {
+          if (data && data.length > 0) {
+            const mappedData = data?.map((item: any) => {
+              const { checkInPoints, ...restData } = item;
+              return {
+                ...restData,
+                points: item?.checkInPoints || 0,
+              };
+            });
+            scoreData["checkInAttendees"] = mappedData;
+            // console.log(scoreData[table])
           }
-        );
-      }
-    }
+          if (data && data.length > 0) {
+            const mappedData = data?.map((item: any) => {
+              const { attendeeProfilePoints, ...restData } = item;
+              return {
+                ...restData,
+                points: item?.attendeeProfilePoints || 0,
+              };
+            });
+            scoreData["attendeeProfile"] = mappedData;
+            // console.log(scoreData[table])
+          }
+        } else if (table === "quizAnswer") {
+          if (data && data.length > 0) {
+            const mappedData = data?.map((item: any) => {
+              return {
+                ...item?.attendees,
+                points: item?.attendeePoint || 0,
+              };
+            });
+            scoreData["quizAnswer"] = mappedData;
+            // console.log(scoreData[table])
+          }
+        } else {
+          // points
+          if (data && data.length > 0) {
+            const mappedData = data?.map((item: any) => {
+              return {
+                ...item?.attendees,
+                points: item?.points || 0,
+              };
+            });
+            scoreData[table] = mappedData;
+            // console.log(scoreData[table])
+          }
+        }
 
-     
+        if (error) {
+          return NextResponse.json(
+            {
+              error: error?.message,
+            },
+            {
+              status: 400,
+            }
+          );
+        }
+      }
 
       return NextResponse.json(
         {
-          data:"",
+          data: scoreData,
         },
         {
           status: 200,

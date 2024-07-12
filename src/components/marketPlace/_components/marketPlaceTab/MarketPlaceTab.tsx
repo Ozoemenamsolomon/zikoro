@@ -21,9 +21,10 @@ export function MarketPlaceTab({eventId}:{eventId?:string}) {
   ];
   return (
     <ul className="py-4 pl-[60px] lg:pl-[20px] flex gap-x-8 px-4 text-gray-700">
-      {links.map(({ name, href }) => {
+      {links.map(({ name, href }, index) => {
         return (
           <li
+          key={index}
             className={` text-sm ${
               pathname.includes(href) ? "text-basePrimary  font-medium" : ""
             }`}

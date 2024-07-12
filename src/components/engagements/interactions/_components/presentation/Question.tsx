@@ -354,6 +354,7 @@ export function Qusetion({
       const payload: Partial<TAnswer> = {
         ...attendeeDetail,
         quizId: quiz?.id,
+        eventAlias: quiz?.eventAlias,
         questionId: currentQuestion?.id,
         quizParticipantId: quizParticipantId,
 

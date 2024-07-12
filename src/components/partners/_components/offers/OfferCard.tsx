@@ -319,6 +319,8 @@ function ActionWidget({
       attendee?.id &&
       boothPointsAllocation
     ) {
+
+   
       const attendeeLeads = leads?.filter(
         (lead) => lead?.attendeeId === attendee?.id
       );
@@ -387,7 +389,6 @@ function ActionWidget({
         }
       }
       else if (attendeeLeads && attendeeLeads?.length > 0) {
-
         const leadSum =
         attendeeLeads && attendeeLeads?.length > 0
           ? attendeeLeads?.reduce(
@@ -414,6 +415,7 @@ function ActionWidget({
           },
           points: 0 + boothPointsAllocation?.points,
         }
+      
       }
     } 
 
@@ -487,7 +489,7 @@ function ActionWidget({
               <Button
                 disabled={isLoading}
                 type="submit"
-                className="bg-basePrimary rounded-lg text-white w-[150px] gap-x-2"
+                className="bg-basePrimary rounded-lg text-white w-[130px] gap-x-2"
               >
                 {isLoading && <LoaderAlt size={22} className="animate-spin" />}
                 <p> Submit</p>

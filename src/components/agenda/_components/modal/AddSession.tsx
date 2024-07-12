@@ -10,10 +10,10 @@ import {
 } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { useForm } from "react-hook-form";
 import { AddTrack, activityType, sessionType } from "..";
-import { CloseCircle } from "@styled-icons/evaicons-solid/CloseCircle";
+import { CloseCircle } from "styled-icons/evaicons-solid";
 import { cn } from "@/lib";
 import { Portal } from "@/components";
 import {
@@ -30,10 +30,10 @@ import { sessionSchema } from "@/schemas";
 import Image from "next/image";
 import { Event } from "@/types";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import { nanoid } from "nanoid";
 import { formatFileSize, generateAlias, uploadFile } from "@/utils";
-import { FilePdf } from "@styled-icons/fa-regular/FilePdf";
+import { FilePdf } from "styled-icons/fa-regular";
 
 type TSessionFile<T> = {
   size: string;

@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib";
 import Image from "next/image";
-import { CloseCircle } from "@styled-icons/evaicons-solid/CloseCircle";
+import { CloseCircle } from "styled-icons/evaicons-solid";
 import { Button } from "@/components";
 
 export function BoothStaffWidget({

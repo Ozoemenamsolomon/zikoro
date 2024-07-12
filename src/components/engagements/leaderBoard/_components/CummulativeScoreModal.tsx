@@ -4,7 +4,22 @@ import { Button } from "@/components";
 import Image from "next/image";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 
-export function CummulativeScoreModal({ close }: { close: () => void }) {
+type TAllocation = {
+  [key: string]: {
+    title: string;
+    icon: string;
+    score: number;
+  };
+};
+export function CummulativeScoreModal({
+  close,
+  totalScore,
+  attendeepointsAllocation,
+}: {
+  totalScore: number;
+  attendeepointsAllocation: TAllocation;
+  close: () => void;
+}) {
   return (
     <div
       onClick={close}
@@ -14,7 +29,7 @@ export function CummulativeScoreModal({ close }: { close: () => void }) {
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="w-[95%] max-w-2xl rounded-lg bg-white absolute m-auto inset-0 h-fit p-4"
+        className="w-[95%] max-w-2xl rounded-lg bg-white absolute m-auto inset-0 h-fit max-h-[85%] overflow-y-auto p-4"
       >
         <div className="w-full flex items-end justify-end mb-3">
           <Button onClick={close}>
@@ -29,7 +44,7 @@ export function CummulativeScoreModal({ close }: { close: () => void }) {
           <div className="w-full h-full bg-[#001fcc]/10 border">
             <div className="w-full bg-white p-2 flex items-center justify-between">
               <p className="font-semibold text-sm sm:text-lg">Total Points</p>
-              <div className="text-white gap-x-2 font-semibold text-base sm:text-xl flex items-center justify-center p-2 rounded-md">
+              <div className="text-white bg-basePrimary gap-x-2 font-semibold text-base sm:text-xl flex items-center justify-center p-2 rounded-md">
                 <Image
                   src="/medal.png"
                   alt=""
@@ -37,11 +52,56 @@ export function CummulativeScoreModal({ close }: { close: () => void }) {
                   width={40}
                   height={40}
                 />
-                <p>1000 pts</p>
+                <p>{totalScore} pts</p>
               </div>
             </div>
             <div className="w-full h-full grid grid-cols-3 sm:grid-cols-4 gap-3 p-2">
-              <PointWidget
+              {Object.entries(attendeepointsAllocation).map(([key, value]) => (
+                <PointWidget
+                  key={key}
+                  points={value?.score}
+                  title={value?.title}
+                  icon={value?.icon}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PointWidget({
+  points,
+  title,
+  icon,
+}: {
+  points: number;
+  title: string;
+  icon: string;
+}) {
+  return (
+    <div className="w-full font-medium bg-white rounded-2xl p-2 flex flex-col items-center justify-center gap-y-2 shadow">
+      <div className-="w-full flex gap-x-2 items-center">
+        <Image
+          src="/medal.png"
+          alt=""
+          className="w-fit h-fit"
+          width={80}
+          height={80}
+        />
+        <p className="font-medium">{points} pts</p>
+      </div>
+      <Image src={icon} alt="" className="size-[28px]" width={100} height={100} />
+      <p className="text-center">{title}</p>
+    </div>
+  );
+}
+
+
+/**
+    <PointWidget
                 points={10000}
                 title="Checked IN for event"
                 icon="/images/verified-user.png"
@@ -124,39 +184,6 @@ export function CummulativeScoreModal({ close }: { close: () => void }) {
               <PointWidget
                 points={10000}
                 title="Share on social media"
-                icon="/images/love.png"
+                icon="/images/share.png"
               />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PointWidget({
-  points,
-  title,
-  icon,
-}: {
-  points: number;
-  title: string;
-  icon: string;
-}) {
-  return (
-    <div className="w-full font-medium bg-white rounded-2xl p-2 flex flex-col items-center justify-center gap-y-2 shadow">
-      <div className-="w-full flex gap-x-2 items-center">
-        <Image
-          src="/medal.png"
-          alt=""
-          className="w-fit h-fit"
-          width={40}
-          height={40}
-        />
-        <p className="font-medium">{points} pts</p>
-      </div>
-      <Image src={icon} alt="" className="w-fit h-fit" width={80} height={80} />
-      <p>{title}</p>
-    </div>
-  );
-}
+ */

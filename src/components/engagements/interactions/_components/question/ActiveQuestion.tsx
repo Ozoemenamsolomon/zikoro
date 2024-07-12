@@ -2,14 +2,13 @@
 
 import { QUsers } from "@/constants";
 import Image from "next/image";
-import { Time } from "@styled-icons/ionicons-outline/Time";
-import { FeedStar } from "@styled-icons/octicons/FeedStar";
+import { Time } from "styled-icons/ionicons-outline";
+import { FeedStar } from "styled-icons/octicons";
 import { Button } from "@/components";
-import {useCreateAnswer, useGetAnswer} from "@/hooks";
+import { useGetAnswer} from "@/hooks";
 import { useRef, useEffect, useMemo, useState } from "react";
-import { TQuestion, TQuiz, TAnswer } from "@/types";
+import { TQuestion, TQuiz } from "@/types";
 import { cn } from "@/lib";
-import toast from "react-hot-toast"
 import { OrganizerQuestOption } from "..";
 
 
@@ -28,7 +27,6 @@ export function ActiveQuestion({
 }) {
   const divRef = useRef<HTMLDivElement | null>(null);
   const {answer, getAnswer} = useGetAnswer()
-  const {createAnswer} = useCreateAnswer()
   const [millisecondsLeft, setMillisecondsLeft] = useState<number>(
     Number(activeQuestion?.duration)
   );
