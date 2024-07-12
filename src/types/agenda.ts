@@ -43,6 +43,8 @@ export interface TReview {
   sessionId?: number;
   attendeeId?: number;
   eventAlias?:string
+  points: number;
+  sessionAlias: string
 }
 
 export type TFeedBack = TReview & {
@@ -53,4 +55,5 @@ export interface TMyAgenda {
   sessionId: number;
   attendeeId: number;
   sessionAlias: string;
+  points: number
 }

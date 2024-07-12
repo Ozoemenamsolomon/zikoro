@@ -3,8 +3,8 @@
 import { Button, Textarea } from "@/components";
 import { Location } from "styled-icons/fluentui-system-regular";
 import { Bag } from "styled-icons/ionicons-solid";
-import {LoaderAlt} from "styled-icons/boxicons-regular"
-import {  User } from "styled-icons/boxicons-regular";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
+import { User } from "styled-icons/boxicons-regular";
 import { BoxSeam } from "styled-icons/bootstrap";
 import { PartnerJobType, TAttendee, TAllLeads } from "@/types";
 import { CloseOutline } from "styled-icons/evaicons-outline";
@@ -15,17 +15,23 @@ import { cn } from "@/lib";
 import { AlertCircle } from "styled-icons/feather";
 import { useForm } from "react-hook-form";
 import { useCreateLeads } from "@/hooks";
-
+import { TLead } from "@/types";
+import { EngagementsSettings } from "@/types/engagements";
+import toast from "react-hot-toast";
 export function JobWidget({
   job,
   className,
   attendee,
   isOrganizer,
+  leads,
+  engagementsSettings,
 }: {
   job: PartnerJobType;
   className: string;
   attendee?: TAttendee;
   isOrganizer: boolean;
+  engagementsSettings?: EngagementsSettings | null;
+  leads?: TLead[] | null;
 }) {
   const [isOpen, setOpen] = useState(false);
   const [isApply, setApply] = useState(false);
@@ -128,6 +134,8 @@ export function JobWidget({
           apply={apply}
           attendee={attendee}
           job={job}
+          engagementsSettings={engagementsSettings}
+          leads={leads}
         />
       )}
     </>
@@ -239,11 +247,15 @@ function ActionWidget({
   close,
   apply,
   attendee,
+  engagementsSettings,
+  leads,
 }: {
   job: PartnerJobType;
   close: () => void;
   apply: () => void;
   attendee?: TAttendee;
+  leads?: TLead[] | null;
+  engagementsSettings?: EngagementsSettings | null;
 }) {
   const [isShow, setShow] = useState(false);
   const { isLoading, createLeads } = useCreateLeads();
@@ -273,34 +285,62 @@ function ActionWidget({
       country: attendee?.country,
       phoneNumber: attendee?.phoneNumber,
       whatsappNumber: attendee?.whatsappNumber,
-      attendeeAlias: attendee?.attendeeAlias
+      attendeeAlias: attendee?.attendeeAlias,
     };
   };
 
   async function onSubmit(values: any) {
     const leadAttendee = getLeadAttendee(attendee);
+    const boothPointsAllocation =
+      engagementsSettings?.pointsAllocation["visit exhibitor booth"];
 
-    const payload: Partial<TAllLeads> = {
+    let payload: Partial<TAllLeads> = {
       ...leadAttendee,
       eventPartnerAlias: job?.partnerId,
       stampCard: true,
       jobTitle: job?.jobTitle,
       firstContactChannel: "Job",
-      interests: 
-        { 
-          partnerInterestId: job?.id || "",
-          interestType: "Job",
-          attendeeAlias: attendee?.attendeeAlias,
-          attendeeId: attendee?.id,
-          eventAlias: attendee?.eventAlias,
-          eventPartnerAlias: job?.partnerId,
-          title: job?.jobTitle,
-          note: values?.note,
-        },
-      
+      interests: {
+        partnerInterestId: job?.id || "",
+        interestType: "Job",
+        attendeeAlias: attendee?.attendeeAlias,
+        attendeeId: attendee?.id,
+        eventAlias: attendee?.eventAlias,
+        eventPartnerAlias: job?.partnerId,
+        title: job?.jobTitle,
+        note: values?.note,
+      },
     };
+    if (boothPointsAllocation?.status && attendee?.id) {
+      const attendeeLeads = leads?.filter(
+        (lead) => lead?.attendeeId === attendee?.id
+      );
+      if (attendeeLeads && attendeeLeads?.length > 0) {
+        const sum = attendeeLeads?.reduce((acc, lead) => acc + lead.points, 0);
+
+        if (
+          sum >=
+          boothPointsAllocation?.points * boothPointsAllocation?.maxOccurrence
+        ) {
+          payload = payload;
+          return;
+        }
+
+        payload = {
+          ...payload,
+          points: sum + boothPointsAllocation?.points,
+        };
+      } else {
+        payload = {
+          ...payload,
+          points: 0 + boothPointsAllocation?.points,
+        };
+        return;
+      }
+    }
 
     await createLeads({ payload });
+
     if (job?.applicationLink) {
       window.open(job.applicationLink, "_blank");
     }
@@ -313,7 +353,7 @@ function ActionWidget({
     if (job?.email) {
       sendMail(job?.email);
     }
-    close()
+    close();
   }
 
   return (
@@ -368,7 +408,7 @@ function ActionWidget({
               <Button
                 disabled={isLoading}
                 type="submit"
-                className="bg-basePrimary rounded-lg text-white w-[150px] gap-x-2"
+                className="bg-basePrimary rounded-lg text-white  w-[130px] gap-x-2"
               >
                 {isLoading && <LoaderAlt size={22} className="animate-spin" />}
                 <p> Submit</p>

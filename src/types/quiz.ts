@@ -94,6 +94,7 @@ export interface TAnswer {
   email: string;
   phone: string;
   correctOptionId: { optionId: string };
+  eventAlias: string;
 }
 
 export interface TConnectedUser {

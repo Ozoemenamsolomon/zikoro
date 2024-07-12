@@ -4,23 +4,73 @@ import { CalendarCheck } from "styled-icons/bootstrap";
 import { Button } from "@/components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useCreateMyAgenda } from "@/hooks";
+import { EngagementsSettings } from "@/types/engagements";
 import { cn } from "@/lib";
+import { TMyAgenda } from "@/types";
+import toast from "react-hot-toast";
 export function AddToMyAgenda({
   attendeeId,
   sessionAlias,
   isMyAgenda,
-  refetch
+  refetch,
+  myAgendas,
+  engagementsSettings,
 }: {
   sessionAlias: string;
   attendeeId?: number;
   isMyAgenda: boolean;
-  refetch?: () => Promise<any>
+  refetch?: () => Promise<any>;
+  myAgendas?: TMyAgenda[];
+  engagementsSettings?: EngagementsSettings | null;
 }) {
   const { createMyAgenda, isLoading } = useCreateMyAgenda();
 
   async function add() {
-    await createMyAgenda({ payload: { sessionAlias, attendeeId } });
-    if (refetch) refetch()
+    let payload: Partial<TMyAgenda> = {
+      sessionAlias,
+      attendeeId,
+    };
+    const myAgendapointsAllocation =
+      engagementsSettings?.pointsAllocation["add to agenda"];
+    if (myAgendapointsAllocation?.status && attendeeId) {
+      // points
+
+      // from myAgenda table, check if attendee already earned the max. points
+      // return if is true, else do give him points
+      const addedAgendas = myAgendas?.filter(
+        (agenda) => agenda?.attendeeId === attendeeId
+      );
+      if (addedAgendas && addedAgendas?.length > 0) {
+        const sum = addedAgendas?.reduce(
+          (acc, agenda) => acc + (agenda.points || 0),
+          0
+        );
+        if (
+          sum >=
+          myAgendapointsAllocation?.points *
+            myAgendapointsAllocation?.maxOccurrence
+        ) {
+          payload = payload;
+          return;
+        }
+
+        payload = {
+          sessionAlias,
+          attendeeId,
+          points: sum + myAgendapointsAllocation?.points,
+        };
+      } else {
+        payload = {
+          sessionAlias,
+          attendeeId,
+          points: 0 + myAgendapointsAllocation?.points,
+        };
+      }
+    }
+
+    await createMyAgenda({ payload });
+
+    if (refetch) refetch();
   }
 
   return (

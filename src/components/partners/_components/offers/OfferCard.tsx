@@ -1,23 +1,37 @@
 "use client";
 
 import Image from "next/image";
-import { AlertCircle } from "@styled-icons/feather/AlertCircle";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { AlertCircle } from "styled-icons/feather";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { Button, Textarea } from "@/components";
-import {LoaderAlt} from "styled-icons/boxicons-regular"
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useMemo, useState } from "react";
 import { formatShortDate, sendMail, whatsapp } from "@/utils";
-import { PromotionalOfferType, TAttendee, TAllLeads } from "@/types";
+import {
+  PromotionalOfferType,
+  TAttendee,
+  TAllLeads,
+  TLeadsInterest,
+  TLead,
+} from "@/types";
 import { useForm } from "react-hook-form";
 import { useCreateLeads } from "@/hooks";
+import { EngagementsSettings } from "@/types/engagements";
+import { cn } from "@/lib";
 export function OfferCard({
   offer,
   isOrganizer,
   attendee,
+  leadsInterests,
+  engagementsSettings,
+  leads,
 }: {
   isOrganizer: boolean;
   attendee?: TAttendee;
   offer: PromotionalOfferType;
+  leadsInterests?: TLeadsInterest[] | null;
+  engagementsSettings?: EngagementsSettings | null;
+  leads?: TLead[] | null;
 }) {
   const [isOpen, setOpen] = useState(false);
   const [isApply, setApply] = useState(false);
@@ -99,7 +113,10 @@ export function OfferCard({
             onClick={() => {
               toggleApply();
             }}
-            className="text-basePrimary text-sm font-semibold"
+            className={cn(
+              "text-basePrimary text-sm font-semibold visible",
+              isOrganizer && "invisible"
+            )}
           >
             Get Offer
           </button>
@@ -115,6 +132,9 @@ export function OfferCard({
           offer={offer}
           attendee={attendee}
           apply={apply}
+          leadsInterests={leadsInterests}
+          engagementsSettings={engagementsSettings}
+          leads={leads}
         />
       )}
     </>
@@ -227,15 +247,21 @@ function ActionWidget({
   close,
   apply,
   attendee,
+  leadsInterests,
+  engagementsSettings,
+  leads,
 }: {
   offer: PromotionalOfferType;
   close: () => void;
   apply: () => void;
   attendee?: TAttendee;
+  leadsInterests?: TLeadsInterest[] | null;
+  engagementsSettings?: EngagementsSettings | null;
+  leads?: TLead[] | null;
 }) {
   const [isShow, setShow] = useState(false);
   const { isLoading, createLeads } = useCreateLeads();
-  const form = useForm({})
+  const form = useForm({});
 
   function toggleShow() {
     setShow((prev) => !prev);
@@ -261,14 +287,18 @@ function ActionWidget({
       country: attendee?.country,
       phoneNumber: attendee?.phoneNumber,
       whatsappNumber: attendee?.whatsappNumber,
-      attendeeAlias: attendee?.attendeeAlias
+      attendeeAlias: attendee?.attendeeAlias,
     };
   };
 
   async function onSubmit(values: any) {
     const leadAttendee = getLeadAttendee(attendee);
-
-    const payload: Partial<TAllLeads> = {
+    const boothPointsAllocation =
+      engagementsSettings?.pointsAllocation["visit exhibitor booth"];
+    const offerPointsAllocation =
+      engagementsSettings?.pointsAllocation["buy products"];
+// 
+    let payload: Partial<TAllLeads> = {
       ...leadAttendee,
       eventPartnerAlias: offer?.partnerId,
       stampCard: true,
@@ -284,21 +314,128 @@ function ActionWidget({
         note: values?.note,
       },
     };
+    if (
+      offerPointsAllocation?.status &&
+      attendee?.id &&
+      boothPointsAllocation
+    ) {
+
+   
+      const attendeeLeads = leads?.filter(
+        (lead) => lead?.attendeeId === attendee?.id
+      );
+      const attendeeLeadsInterests = leadsInterests?.filter(
+        (lead) => lead?.attendeeId === attendee?.id
+      );
+
+      if (attendeeLeadsInterests && attendeeLeadsInterests?.length > 0) {
+        const sum = attendeeLeadsInterests?.reduce(
+          (acc, lead) => acc + (lead?.points || 0)!,
+          0
+        );
+        const leadSum =
+          attendeeLeads && attendeeLeads?.length > 0
+            ? attendeeLeads?.reduce(
+                (acc, lead) => acc + (lead?.points || 0)!,
+                0
+              )
+            : 0;
+
+        if (
+          sum >=
+            offerPointsAllocation?.points *
+              offerPointsAllocation?.maxOccurrence &&
+          sum <=
+            boothPointsAllocation?.points * boothPointsAllocation?.maxOccurrence
+        ) {
+          payload = {
+            ...payload,
+            points: leadSum + boothPointsAllocation?.points,
+          }
+          return;
+        } else if (
+          sum >=
+            boothPointsAllocation?.points *
+              boothPointsAllocation?.maxOccurrence &&
+          sum <=
+            offerPointsAllocation?.points * offerPointsAllocation?.maxOccurrence
+        ) {
+          payload = {
+            ...payload,
+            interests: {
+              ...payload?.interests!,
+              points: sum + offerPointsAllocation?.points,
+            },
+          }
+
+          return;
+        } else if (
+          sum >=
+            offerPointsAllocation?.points *
+              offerPointsAllocation?.maxOccurrence &&
+          sum >=
+            boothPointsAllocation?.points * boothPointsAllocation?.maxOccurrence
+        ) {
+          payload = payload 
+          return;
+        }
+        payload = {
+          ...payload,
+          interests: {
+            ...payload?.interests!,
+            points: sum + offerPointsAllocation?.points,
+          },
+          points: leadSum + boothPointsAllocation?.points,
+        }
+      }
+      else if (attendeeLeads && attendeeLeads?.length > 0) {
+        const leadSum =
+        attendeeLeads && attendeeLeads?.length > 0
+          ? attendeeLeads?.reduce(
+              (acc, lead) => acc + (lead?.points || 0)!,
+              0
+            )
+          : 0;
+        payload= {
+          ...payload,
+          interests: {
+            ...payload?.interests!,
+            points: 0 + offerPointsAllocation?.points,
+          },
+          points: leadSum + boothPointsAllocation?.points,
+        }
+        return
+      }
+      else {
+        payload= {
+          ...payload,
+          interests: {
+            ...payload?.interests!,
+            points: 0 + offerPointsAllocation?.points,
+          },
+          points: 0 + boothPointsAllocation?.points,
+        }
+      
+      }
+    } 
 
     await createLeads({ payload });
+
     if (offer?.url) {
       visitOfferPage(offer?.url);
     }
     if (offer?.whatsApp) {
       whatsapp(
         offer?.whatsApp,
-        `I'm interested in the ${offer?.serviceTitle ?? ""} offer. ${values.note}`
+        `I'm interested in the ${offer?.serviceTitle ?? ""} offer. ${
+          values.note
+        }`
       );
     }
     if (offer?.email) {
       sendMail(offer?.email);
     }
-    close()
+    close();
   }
   return (
     <div
@@ -306,7 +443,7 @@ function ActionWidget({
       onClick={close}
       className="w-full h-full inset-0  fixed z-[100] bg-black/50"
     >
-    <div
+      <div
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -352,7 +489,7 @@ function ActionWidget({
               <Button
                 disabled={isLoading}
                 type="submit"
-                className="bg-basePrimary rounded-lg text-white w-[150px] gap-x-2"
+                className="bg-basePrimary rounded-lg text-white w-[130px] gap-x-2"
               >
                 {isLoading && <LoaderAlt size={22} className="animate-spin" />}
                 <p> Submit</p>

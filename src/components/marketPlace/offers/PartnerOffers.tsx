@@ -4,7 +4,7 @@ import { Offers } from "@/components/partners/_components";
 import { MarketPlaceLayout } from "../_components";
 import { useFetchPartnersOffers, useVerifyUserAccess } from "@/hooks";
 import { EmptyCard } from "@/components/composables";
-import { Search } from "@styled-icons/evil/Search";
+import { Search } from "styled-icons/evil";
 import { Loader2 } from "styled-icons/remix-fill";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, Input } from "@/components";
@@ -96,6 +96,7 @@ export function PartnerOffers({ eventId }: { eventId: string }) {
           className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
           isOrganizer={isOrganizer}
           attendee={attendee}
+          eventId={eventId}
         />
       )}
     </MarketPlaceLayout>

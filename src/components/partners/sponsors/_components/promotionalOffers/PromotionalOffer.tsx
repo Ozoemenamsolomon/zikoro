@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import { CreatePromo, Offers } from "@/components/partners/_components";
 import { TPartner, TAttendee } from "@/types";
 

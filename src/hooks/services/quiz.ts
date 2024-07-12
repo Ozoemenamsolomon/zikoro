@@ -322,8 +322,6 @@ export const useGetQuizAnswer = () => {
     return setAnswers(data.data);
   };
 
-
-
   return { answers, isLoading, getAnswers, setAnswers };
 };
 
@@ -553,7 +551,7 @@ export const useSendQuizScore = () => {
   return { updateQuiz, isLoading };
 };
 
-export const useGetLiveParticipant = ({quizId}:{quizId:string}) => {
+export const useGetLiveParticipant = ({ quizId }: { quizId: string }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [liveQuizPlayers, setLiveQuizPlayers] = useState<
     TLiveQuizParticipant[]
@@ -621,6 +619,30 @@ export const useAddLiveParticipant = () => {
   return { addLiveParticipant, isLoading };
 };
 
-export const useRealTimeParticipant = (isLive: boolean) => {
+export const useDeleteQuizLobby = (quizId: string) => {
+  const [isLoading, setLoading] = useState<boolean>(false);
 
+  const deleteQuizLobby = async () => {
+    try {
+      setLoading(true);
+      const { data, status } = await deleteRequest<TLiveQuizParticipant[]>({
+        endpoint: `/quiz/participant/${quizId}`,
+      });
+
+      toast({
+        description: "Participant deleted successfully",
+      });
+      return data;
+    } catch (error: any) {
+      //
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { deleteQuizLobby, isLoading };
 };

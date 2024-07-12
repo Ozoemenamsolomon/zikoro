@@ -5,8 +5,8 @@ import { TQuiz, TQuestion, TQuizParticipant, TLiveQuizParticipant } from "@/type
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { cn } from "@/lib";
-import { useEffect, useMemo, useState } from "react";
-import { useUpdateQuiz } from "@/hooks";
+import { useEffect, useState } from "react";
+import { useUpdateQuiz, useDeleteQuizLobby } from "@/hooks";
 import { QLUsers } from "@/constants";
 import Avatar from "react-nice-avatar";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -28,6 +28,7 @@ export function QuizLobby({
   liveQuizPlayers: TLiveQuizParticipant[];
 }) {
   const [loading, setLoading] = useState(false);
+  const {deleteQuizLobby} = useDeleteQuizLobby(quiz?.quizAlias)
   const { updateQuiz } = useUpdateQuiz();
  
   const [players, setPlayers] = useState<TQuizParticipant[]>([]);
@@ -38,13 +39,16 @@ export function QuizLobby({
         Array.isArray(liveQuizPlayers) &&
         liveQuizPlayers?.length > 0
       ) {
-        const filtered = liveQuizPlayers?.filter(
+
+       /**
+         const filtered = liveQuizPlayers?.filter(
           (participant) =>
             new Date(participant?.joinedAt).getTime() >
             new Date(quiz?.liveMode?.startingAt).getTime()
         );
+        */
 
-        const mappedPlayers = filtered?.map((player) => {
+        const mappedPlayers = liveQuizPlayers?.map((player) => {
           const {quizAlias, ...rest} = player
           return {
             ...rest,
@@ -74,7 +78,10 @@ export function QuizLobby({
       quizParticipants: [...quiz?.quizParticipants, ...players]
     };
     await updateQuiz({ payload });
+    await deleteQuizLobby()
     refetch();
+    
+    setLoading(false)
     close();
   }
 
@@ -142,6 +149,7 @@ export function QuizLobby({
       <div className="w-full flex flex-col items-center justify-center absolute inset-x-0 bottom-0 gap-y-3  mx-auto bg-white py-2">
         {!isAttendee && (
           <Button
+          disabled={loading}
             onClick={openQuestion}
             className="bg-basePrimary gap-x-2 px-10 h-12 w-fit rounded-lg text-gray-50 transform transition-all duration-400 "
           >

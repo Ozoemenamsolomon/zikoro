@@ -64,6 +64,7 @@ export interface TLead {
   stampCard: boolean;
   eventPartnerId: number;
   eventPartnerAlias: string;
+  points: number
 }
 
 export interface TLeadsInterest {
@@ -77,6 +78,7 @@ export interface TLeadsInterest {
   title: string;
   partnerInterestId:string
   note: string;
+  points?: number;
 }
 
 export interface TAllLeads extends TLead {

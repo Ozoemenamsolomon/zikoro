@@ -1,15 +1,15 @@
 "use client";
 
 import { Button } from "@/components";
-import { Whatsapp } from "@styled-icons/remix-fill/Whatsapp";
-import { World } from "@styled-icons/boxicons-regular/World";
-import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
-import { Email } from "@styled-icons/evaicons-solid/Email";
+import { Whatsapp } from "styled-icons/remix-fill";
+import { World } from "styled-icons/boxicons-regular";
+import { ArrowBack } from "styled-icons/boxicons-regular";
+import { Email } from "styled-icons/evaicons-solid";
 import { BoothStaffWidget, Edit, JobWidget, SponsoredSessionWidget } from "..";
 import Image from "next/image";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
-import { Location } from "@styled-icons/fluentui-system-regular/Location";
-import { PhoneCall } from "@styled-icons/boxicons-solid/PhoneCall";
+import { PlusCircle } from "styled-icons/bootstrap";
+import { Location } from "styled-icons/fluentui-system-regular";
+import { PhoneCall } from "styled-icons/boxicons-solid";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { EmptyCard } from "@/components/composables";

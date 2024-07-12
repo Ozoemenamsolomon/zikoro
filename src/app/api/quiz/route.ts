@@ -56,7 +56,8 @@ export async function PATCH(req: NextRequest) {
             ...params,
           },
         ])
-        .eq("quizAlias", params?.quizAlias);
+        .eq("quizAlias", params?.quizAlias)
+      
 
       if (error) {
         return NextResponse.json(

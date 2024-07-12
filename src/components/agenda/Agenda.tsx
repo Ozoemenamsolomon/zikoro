@@ -15,11 +15,14 @@ import {
   useGetAgendas,
   useVerifyUserAccess,
   useCheckTeamMember,
+  useGetMyAgendas,
   // useGetEventAttendees,
 } from "@/hooks";
 import { generateDateRange } from "@/utils";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useRouter } from "next/navigation";
+import { useGetData } from "@/hooks/services/request";
+import { EngagementsSettings } from "@/types/engagements";
 export default function Agenda({
   eventId,
   isReception,
@@ -49,6 +52,10 @@ export default function Agenda({
     activeDateQuery || currentEvent?.startDate,
     queryParam
   );
+  const { myAgendas } = useGetMyAgendas({ eventId });
+  const { data: engagementsSettings } = useGetData<EngagementsSettings>(
+    `engagements/${eventId}/settings`
+  );
 
   const dateRange = useMemo(() => {
     if (data) {
@@ -68,28 +75,6 @@ export default function Agenda({
     setFullScreen((prev) => !prev);
   }
 
-  /**
-   const attendeeId = useMemo(() => {
-    return attendees?.find(
-      ({ email, eventAlias }) =>
-        eventAlias === eventId && email === user?.userEmail
-    )?.id;
-  }, [attendees]);
-
-  const isOrganizer = useMemo(() => {
-    if (attendeeId && eventAttendees) {
-      return eventAttendees?.some(
-        ({ attendeeType, id }) =>
-          id === attendeeId && attendeeType.includes("organizer")
-      );
-    } else {
-      return false;
-    }
-  }, [eventAttendees, attendees, attendeeId]);
- */
-
-  // 
-
   return (
     <>
       <div>
@@ -100,7 +85,9 @@ export default function Agenda({
                 href={`/event/${eventId}/agenda?date=${
                   activeDateQuery || currentEvent?.startDate
                 }`}
-                className={`pl-2 ${(!queryParam || queryParam === null) && "text-basePrimary"}`}
+                className={`pl-2 ${
+                  (!queryParam || queryParam === null) && "text-basePrimary"
+                }`}
               >
                 Agenda
               </Link>
@@ -202,6 +189,8 @@ export default function Agenda({
                   isReception={isReception}
                   refetchEvent={refetch}
                   attendeeId={attendeeId}
+                  myAgendas={myAgendas}
+                  engagementsSettings={engagementsSettings}
                 />
               );
             })}

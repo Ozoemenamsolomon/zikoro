@@ -16,7 +16,7 @@ import {
   useUpdateQuiz,
   useGetAnswer,
   useGetQuizAnswer,
-  saveCookie,
+  useDeleteQuizLobby,
   useAddLiveParticipant,
   useGetLiveParticipant,
 } from "@/hooks";
@@ -86,6 +86,8 @@ export default function Presentation({
   const [showScoreSheet, setShowScoreSheet] = useState(false); // state to toggle show-score sheet after attendee finishes the quiz
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [volume, adjustVolume] = useState(0.8);
+ // const {liveQuizPlayers} = useGetLiveParticipant({quizId})
+  const {deleteQuizLobby} = useDeleteQuizLobby(quizId)
   
 
   const [chosenAvatar, setChosenAvatar] =
@@ -131,12 +133,7 @@ export default function Presentation({
     return () => {
       supabase.removeChannel(channel);
     };
-    // }
-    //  }
-
-    // const cleanUp = subscribeToUpdate();
-
-    //  return cleanUp;
+   
   }, [supabase, quiz, isIdPresent, isOrganizer]);
 
   // memoized audio instance
@@ -247,14 +244,20 @@ export default function Presentation({
 
   // show score sheet after live quiz
   useEffect(() => {
-    if (quiz && quiz?.accessibility?.live) {
-      if (quiz?.liveMode?.isEnded) {
-        // saveCookie("currentPlayer", null);
-        setShowScoreSheet(quiz?.liveMode?.isEnded);
-        setIsSendMailModal(true);
-        if (audio) audio.pause();
+    ( async () => {
+      if (quiz && quiz?.accessibility?.live) {
+        if (quiz?.liveMode?.isEnded) {
+          // saveCookie("currentPlayer", null);
+          setShowScoreSheet(quiz?.liveMode?.isEnded);
+          setIsSendMailModal(true);
+          if (audio) audio.pause();
+        //  if (liveQuizPlayers?.length > 0) {
+            await deleteQuizLobby()
+        //  }
+        
+        }
       }
-    }
+    })()
   }, [quiz]);
 
   // change audio state
