@@ -2,7 +2,7 @@
 
 import { useGetData } from "@/hooks/services/request";
 import { InteractionLayout } from "../_components";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { TAttendee } from "@/types";
 import { Button } from "@/components";
 import { useVerifyUserAccess, useCheckTeamMember } from "@/hooks";
@@ -25,7 +25,7 @@ type TAllocation = {
 export default function LeaderBoard({ eventId }: { eventId: string }) {
   const { isOrganizer, attendeeId } = useVerifyUserAccess(eventId);
   const [isOpen, setOpen] = useState(false)
-  const divRef = useRef<HTMLDivElement | null>(null);
+ // const divRef = useRef<HTMLDivElement | null>(null);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const { data } = useGetData<TBoardData>(
     `/engagements/${eventId}/leaderboard`
