@@ -365,13 +365,8 @@ export default function FirstColumn({
 
   return (
     <>
-      <div className="border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2">
-        <h1 className="font-semibold leading-normal text-greyBlack text-xl">
-          {partner?.companyName}
-        </h1>
-      </div>
-      <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2">
-        <h2 className="font-semibold leading-normal text-greyBlack ">leads</h2>
+      <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 px-2">
+        <h2 className="font-semibold leading-normal text-greyBlack ">Leads</h2>
         <Dialog>
           <DialogTrigger asChild>
             <button
