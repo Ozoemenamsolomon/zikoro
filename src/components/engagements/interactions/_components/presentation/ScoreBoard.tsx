@@ -10,7 +10,7 @@ import {
   TConnectedUser,
 } from "@/types";
 import { useMemo, useState } from "react";
-import { getCookie, saveCookie, useDeleteQuizLobby } from "@/hooks";
+import { getCookie, useDeleteQuizLobby } from "@/hooks";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { cn } from "@/lib";
 import { CheckCircle } from "styled-icons/bootstrap";
@@ -118,7 +118,7 @@ export function ScoreBoard({
 
   const userPosition = useMemo(() => {
     if (isAttendee && actualQuiz) {
-      const playerId = actualQuiz?.accessibility?.live ? player?.userId : id;
+      const playerId =  id;
       const index = board?.findIndex(
         ({ quizParticipantId }) => quizParticipantId === playerId
       );
@@ -128,7 +128,7 @@ export function ScoreBoard({
   }, [board]);
   const userScore = useMemo(() => {
     if (isAttendee && actualQuiz) {
-      const playerId = actualQuiz?.accessibility?.live ? player?.userId : id;
+      const playerId =  id;
       const score = board?.find(
         ({ quizParticipantId }) => quizParticipantId === playerId
       );
@@ -147,7 +147,7 @@ export function ScoreBoard({
       };
       await updateQuiz({ payload });
       await deleteQuizLobby()
-      saveCookie("currentPlayer", null);
+     
       close();
     }
     window.open(
@@ -384,8 +384,6 @@ function AttendeeScore({
   userScore?: number;
 }) {
   const [isAnswers, setIsAnswer] = useState(false);
-
-  //const player = getCookie<TConnectedUser>("player");
 
   function showAnswers() {
     setIsAnswer((prev) => !prev);
