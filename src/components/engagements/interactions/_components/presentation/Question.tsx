@@ -78,7 +78,7 @@ export function Qusetion({
   const [showAnswerMetric, setShowAnswerMetric] = useState(false);
   const [transiting, setShowTransiting] = useState(false);
   const { updateQuiz: updatingQuiz, isLoading: isUpdating } = useUpdateQuiz();
-  const player = getCookie<TConnectedUser>("player");
+  const [isOptionSelected, setIsOptionSelected] = useState(false);
   const [chosenAnswerStatus, setChosenAnswerStatus] =
     useState<ChosenAnswerStatus | null>(null);
   const { createAnswer } = useCreateAnswer();
@@ -348,7 +348,7 @@ export function Qusetion({
       // udpate chosen option state, if quiz is not live
       if (!quiz?.accessibility?.live) {
         updateQuiz(updatedQuiz);
-      } 
+      }
       updateQuizResult(updatedQuiz);
 
       const payload: Partial<TAnswer> = {
@@ -370,7 +370,7 @@ export function Qusetion({
               ?.optionId || "",
         },
       };
-
+      setIsOptionSelected(true);
       await createAnswer({ payload });
 
       if (quiz?.accessibility?.live) {
@@ -429,6 +429,7 @@ export function Qusetion({
   }
 
   async function onNextBtnClick() {
+    setIsOptionSelected(false);
     if (
       showAnswerMetric &&
       currentQuestionIndex >= quiz?.questions?.length - 1
@@ -557,7 +558,8 @@ export function Qusetion({
                     isDisabled={
                       timing === 0 ||
                       arr?.some(
-                        ({ isCorrect }) => typeof isCorrect === "boolean"
+                        ({ isCorrect }) =>
+                          typeof isCorrect === "boolean" || isOptionSelected
                       )
                     }
                     isIdPresent={isIdPresent}
