@@ -36,7 +36,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
   const visibleQuizzes = useMemo(() => {
     if (!isIdPresent && !isOrganizer) {
       const filteredQuizzes = quizzes?.filter(
-        (quiz) => quiz?.accessibility?.visible
+        (quiz) => !quiz?.accessibility?.disable
       );
 
       return filteredQuizzes;
