@@ -4,21 +4,25 @@ import { AppointmentLink, Booking } from '@/types/appointments';
 import {format,parse,} from 'date-fns';
 import { SlotsResult } from './Calender';
 import { useAppointmentContext } from '../context/AppointmentContext';
+import { usePathname } from 'next/navigation';
 
 interface SlotsType {
   selectedDate: Date | string |undefined;
   maxBookingLimit?:number;
   timeSlots: SlotsResult | null;
   appointmnetLink: AppointmentLink | null,
+  reschedule?: any
 }
 
-const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }) => {
+const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, reschedule }) => {
   const {bookingFormData, setBookingFormData, slotCounts, setSlotCounts,inactiveSlots, setInactiveSlots, setIsFormUp} = useAppointmentContext()
 
   const [loading, setLoading] = useState(true);
   const maxBookingLimit = appointmnetLink?.maxBooking;
 
   const [error, setError] = useState('')
+  const pathname = usePathname()
+  const isBooking = pathname.includes('booking')
 
   const fetchBookedSlots = async () => {
     setLoading(true)
@@ -34,10 +38,10 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
       });
       const result = await response.json();
       if (response.ok) {
-        console.log('Books fetched successfully', result);
+        // console.log('Books fetched successfully', result);
         return result?.data
       } else {
-        console.error('Bookings failed', result);
+        // console.error('Bookings failed', result);
         setError(result.error);
         return []
       }
@@ -59,7 +63,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
       }
     });
     setSlotCounts(newSlotCounts)
-    console.log({newSlotCounts})
+    // console.log({newSlotCounts})
 
     return newSlotCounts;
   };
@@ -72,7 +76,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
         inactiveSlots.push(slot);
       }
     });
-    console.log(inactiveSlots)
+    // console.log({inactiveSlots})
     return inactiveSlots;
   };
 
@@ -82,26 +86,27 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
     const inactiveSlots = getInactiveSlots(slotCounts, maxBookingLimit!);
     setInactiveSlots(inactiveSlots);
     setLoading(false)
-    console.log({bookings})
+    // console.log({bookings})
   };
 
   useEffect(() => {
     updateSlots();
-    console.log('=====',{bookingFormData,selectedDate,timeSlots:timeSlots?.selectDay})
-  }, [selectedDate]);
+    // console.log('=====',{bookingFormData,selectedDate,timeSlots:timeSlots?.selectDay})
+  }, [selectedDate && isBooking]);
 
-  const isDisabled = !bookingFormData.appointmentDate || !bookingFormData.appointmentTime  
-  
+  const isDisabled = !bookingFormData?.appointmentDate || !bookingFormData?.appointmentTime  
+
+
   return (
     <div className="bg-white relative overflow-hidden md:w-80 flex-1 flex-shrink-0 rounded-lg  ">
-      {loading ? 
+      {loading && isBooking ? 
         <div className="h-full w-full flex justify-center items-center">
           <p>loading...</p> 
         </div>
         : 
         <>
-         <h5 className="text-md bg-white px-4 py-3 font-semibold">Choose Time</h5>
-        <div className="grid gap-3 overflow-auto h-full p-4 pb-32 ">
+         {isBooking ? <h5 className="text-md bg-white px-4 py-3 font-semibold">Choose Time</h5> : null}
+         <div className={` grid gap-3 overflow-auto h-full p-4 ${isBooking ? 'pb-32' : ''} `}>
             {
               timeSlots?.slots?.map((slot,i)=>{
                 // console.log({timeSlots})
@@ -109,34 +114,50 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, }
                     <button key={i} 
                         type='button'
                         disabled={inactiveSlots.includes(slot.value)}
+
                         className={`
                             ${bookingFormData?.appointmentTime===slot.label ? 'bg-purple-100':'border'}  
                             ${inactiveSlots.includes(slot.value) ? 'disabled cursor-not-allowed opacity-30' : ''}
                             px-4 py-3 text-center rounded-md `}
-                            onClick={()=>setBookingFormData({
+                            onClick={
+                              isBooking ? ()=>setBookingFormData({
                                 ...bookingFormData,
                                 appointmentTime: slot.label,
                                 appointmentDate: format(selectedDate!, 'yyyy-MM-dd'),
                                 appointmentTimeStr:  slot.label,
                                 appointmentDuration: appointmnetLink?.duration!,
-                                createdBy: appointmnetLink?.createdBy!,
-                            })}
+                                createdBy: appointmnetLink?.createdBy?.id!,
+                            }) 
+                            :
+                            ()=>setBookingFormData({
+                              ...bookingFormData,
+                              appointmentTime: slot.label,
+                              appointmentTimeStr:  slot.label,
+                          }) 
+                          }
                     > {slot.label}</button>
                 )
                 })
             }
             
         </div>
-        <div className="absolute bottom-0 bg-white py-3 z-10 px-4 w-full">
-        <button
-          onClick={()=>setIsFormUp(true)}
-          type="submit"
-          className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
-          disabled={loading || isDisabled}
-        >
-          Proceed
-        </button>
-        </div>
+        {
+          isBooking  ?  
+          <div className="absolute bottom-0 bg-white py-3 z-10 px-4 w-full">
+          <button
+            onClick={()=>{
+              setIsFormUp(true) 
+            }}
+            type="submit"
+            className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading  || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
+            disabled={loading || isDisabled}
+          >
+            Proceed
+          </button> 
+          </div> 
+          : null
+        }
+
         </>
       }
     </div>

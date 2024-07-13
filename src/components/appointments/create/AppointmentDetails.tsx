@@ -45,6 +45,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
           options={[
             {label:'15',value:15},
             {label:'30',value:30},
+            {label:'45',value:45},
             {label:'60',value:60},
             {label:'90',value:90},
             {label:'120',value:120},

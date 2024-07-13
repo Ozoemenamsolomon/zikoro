@@ -7,11 +7,18 @@ import { ILead, TLeadsInterest } from "@/types/leads";
 import { useGetData } from "@/hooks/services/request";
 import { useDrawingArea } from "@mui/x-charts/hooks";
 import { styled } from "@mui/material/styles";
+import { DefaultizedPieValueType } from "@mui/x-charts/models";
 
 const size = {
   width: 400,
   height: 200,
 };
+
+const StyledText = styled("text")(({ theme }) => ({
+  fill: theme.palette.text.primary,
+  textAnchor: "middle",
+  dominantBaseline: "central",
+}));
 
 interface TitleCountResult {
   titles: string[];
@@ -58,6 +65,7 @@ interface ContactChannel {
   id: number;
   value: number;
   label: string;
+  color: string;
 }
 
 const colorMap: { [key: string]: string } = {
@@ -141,10 +149,13 @@ const ThirdColumn = ({
             Percentage Retrieved
           </h3>
           <span className="text-xl font-bold">
-            {leads.length > 0 ? Number((leads.length / attendees.length) * 100).toFixed() : 0}%
+            {leads.length > 0
+              ? Number((leads.length / attendees.length) * 100).toFixed()
+              : 0}
+            %
           </span>
           <span>
-            You've retrieved <b>{leads.length}</b>
+            You've retrieved <b>{leads.length}</b> leads
           </span>
           <span>
             out of <b>{attendees.length}</b> attendees
@@ -219,7 +230,9 @@ const ThirdColumn = ({
             <span className="text-xl font-bold">
               {leads.length > 0
                 ? Number(
-                    (leads.filter(({ leadType }) => !leadType).length /
+                    (leads.filter(
+                      ({ leadType }) => !leadType || leadType === "unknown"
+                    ).length /
                       leads.length) *
                       100
                   ).toFixed()
@@ -228,7 +241,9 @@ const ThirdColumn = ({
             </span>
             <span className="text-xs text-center text-gray-700">
               <b className="text-gray-900">
-                {leads.filter(({ leadType }) => !leadType).length ?? 0}
+                {leads.filter(
+                  ({ leadType }) => !leadType || leadType === "unknown"
+                ).length ?? 0}
               </b>{" "}
               out of <b className="text-gray-900">{leads.length}</b> scanned
             </span>
@@ -245,7 +260,7 @@ const ThirdColumn = ({
             series={[
               {
                 data: leadsDataset,
-                innerRadius: 80,
+                innerRadius: 110,
                 outerRadius: 120,
                 cx: (containerDivRef.current?.offsetWidth ?? 100) / 2,
                 cy: 150,
@@ -269,7 +284,25 @@ const ThirdColumn = ({
               },
             }}
             margin={{ top: 2 }}
-          />
+          >
+            <StyledText
+              fill={"#0a0e2e"}
+              x={180}
+              y={140}
+              fontWeight={600}
+              fontSize={48}
+            >
+              {leads.length}
+            </StyledText>
+            <StyledText
+              fill={"#4b5563"}
+              x={180}
+              y={170}
+              fontSize={16}
+            >
+              Total Leads
+            </StyledText>
+          </PieChart>
           <div className="px-2">
             {leadsDataset.map(({ label, value, color, id }) => (
               <div
@@ -283,7 +316,7 @@ const ThirdColumn = ({
                 <div className="flex flex-col">
                   <span className="font-medium text-gray-800">{label}</span>
                   <span className="font-medium text-gray-600">
-                    {(leads && (value / leads.length) * 100) +
+                    {(leads && Number((value / leads.length) * 100).toFixed()) +
                       "%         (" +
                       (leads && value) +
                       ")"}

@@ -1,6 +1,6 @@
 'use client'
 
-import { AppointmentLink, Booking } from '@/types/appointments'
+import { AppointmentFormData, AppointmentLink, Booking } from '@/types/appointments'
 import { DatePicker } from '@mui/x-date-pickers'
 import React , { useEffect, useState } from 'react'
 import Slots from './Slots'
@@ -26,7 +26,7 @@ import DetailsForm from './DetailsForm'
 function classNames(...classes: (string | false)[]): string {
     return classes.filter(Boolean).join(' ');
 }
-interface TimeDetail {
+export interface TimeDetail {
     day: string;
     from: string;
     to: string;
@@ -44,6 +44,7 @@ slots: Slot[];
     appointmnetLink: AppointmentLink | null;
     fetchingData: boolean;
   }
+
   
 const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) => {
     const [slotsLoading, setSlotsLoading] = useState(true)
@@ -71,7 +72,7 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
     // Determine disabled days from the appointmentLink/timeDetails
     const isDayDisabled = (day: Date): boolean => {
         const enabledDays = getEnabledTimeDetails()
-		const dayOfWeek = new Date(day).getDay();
+        const dayOfWeek = new Date(day).getDay();
         const daysMap: { [key: number]: string } = {
             0: 'Sunday',
             1: 'Monday',
@@ -81,6 +82,7 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
             5: 'Friday',
             6: 'Saturday'
         };
+
 		// Disable days before today
 		const startOfDayToCheck = startOfDay(day);
 		if (isBefore(startOfDayToCheck, startOfToday())) {
@@ -103,7 +105,6 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
             const selectedTimeSlots = generateSlots(
                 getEnabledTimeDetails(), appointmnetLink?.duration!, appointmnetLink?.sessionBreak || 1, selectedDay)
 
-                console.log({selectedTimeSlots})
                 setTimeSlots(selectedTimeSlots)
                 setSlotsLoading(false)
         }
@@ -128,25 +129,9 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
 		setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'));
 	}
 
-	// function previousDay() {
-	// 	const previousDay = add(selectedDay, { days: -1 });
-	// 	setSelectedDay(previousDay);
-	// 	setCurrentMonth(format(previousDay, 'MMM-yyyy'));
-	// }
+  const normalizedSelectedDay = startOfDay(selectedDay!);
 
-	// function nextDay() {
-	// 	const nextDay = add(selectedDay, { days: 1 });
-	// 	setSelectedDay(nextDay);
-	// 	setCurrentMonth(format(nextDay, 'MMM-yyyy'));
-	// }
-    
-    const [categories, setCategories] = useState({
-        category: 'Training 2'
-    })
-// console.log({selectedDay, first: days[0], truthy: days[0]===selectedDay, check: startOfToday()})
-    const normalizedSelectedDay = startOfDay(selectedDay!);
-
-    const appointmentTypes: { label: string, value: string }[] = appointmnetLink?.category 
+  const appointmentTypes: { label: string, value: string }[] = appointmnetLink?.category 
   ? appointmnetLink.category.split(', ').map(item => ({
       label: item,
       value: item,
@@ -311,7 +296,7 @@ function formatTimeString(startTime: string, selectedDate: Date): string {
 }
 
 // Generate slots for a given day, time range, duration, and session break
-const generateSlots = (
+export const generateSlots = (
   timeRanges: TimeDetail[],
   duration: number,
   sessionBreak: number,

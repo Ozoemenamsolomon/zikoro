@@ -31,7 +31,7 @@ import { TFavouriteContact } from "@/types/favourites";
 import useSearch from "@/hooks/common/useSearch";
 import { Button } from "@/components/ui/button";
 import { useGetData, useMutateData } from "@/hooks/services/request";
-import { TUser } from "@/types";
+import { TExPartner, TUser } from "@/types";
 
 function ViewAttendeesSection({
   attendees,
@@ -271,6 +271,7 @@ export default function FirstColumn({
   onSelectLead,
   selectedLead,
   partnerId,
+  partner,
 }: {
   leads: ILead[];
   isLoading: boolean;
@@ -278,6 +279,7 @@ export default function FirstColumn({
   onSelectLead: (lead: ILead) => void;
   selectedLead: ILead;
   partnerId: string;
+  partner: TExPartner;
 }) {
   const { event } = useEventStore();
   const {
@@ -363,8 +365,8 @@ export default function FirstColumn({
 
   return (
     <>
-      <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2">
-        <h1 className="font-semibold leading-normal text-greyBlack ">leads</h1>
+      <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 px-2">
+        <h2 className="font-semibold leading-normal text-greyBlack ">Leads</h2>
         <Dialog>
           <DialogTrigger asChild>
             <button

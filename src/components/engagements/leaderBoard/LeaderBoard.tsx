@@ -10,10 +10,11 @@ import { cn } from "@/lib";
 import Image from "next/image";
 import { CummulativeScoreModal } from "./_components/CummulativeScoreModal";
 
-type TBoardData = { [key: string]: any[] };
 type TAttendeeGroup = TAttendee & {
   points: number;
 };
+type TBoardData = { [key: string]: any[] };
+
 type TAllocation = {
   [key: string]: {
     title: string;
@@ -39,7 +40,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
   const ranks = useMemo(() => {
     if (data) {
       const allData = Object.values(data).flat();
-      console.log(allData);
+    //  console.log(allData);
       allData.forEach((attendee) => {
         const key = attendee?.id;
         if (!attendeeGroup[key]) {

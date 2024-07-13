@@ -12,9 +12,11 @@ export async function GET(req: NextRequest) {
 
       console.log(users);
 
-      const query = supabase.from("subscription").select("*");
+      const query = supabase
+        .from("subscription")
+        .select("*, user:user!inner(*)");
 
-      if (users) query.in("userId", JSON.parse(users));
+      // if (users) query.in("userId", JSON.parse(users));
 
       const { data, error } = await query;
 

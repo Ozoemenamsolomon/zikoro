@@ -9,14 +9,14 @@ export interface AppState {
   setLoading: (loading: boolean) => void;
   isFormUp: boolean;
   setIsFormUp: (loading: boolean) => void;
-  bookingFormData: Booking; 
-  setBookingFormData: React.Dispatch<React.SetStateAction<Booking>>;
+  bookingFormData: Booking|null; 
+  setBookingFormData: React.Dispatch<React.SetStateAction<Booking|null>>;
   selectedType: string; 
   setselectedType: React.Dispatch<React.SetStateAction<string>>;
   inactiveSlots: string[]; 
   setInactiveSlots: React.Dispatch<React.SetStateAction<string[]>>;
-  slotCounts: { [key: string]: number }; 
-  setSlotCounts: React.Dispatch<React.SetStateAction<{ [key: string]: number }>>;
+  slotCounts: { [key: string]: number } |null; 
+  setSlotCounts: React.Dispatch<React.SetStateAction<{ [key: string]: number }|null>>;
   user: UserType | null; 
   setUser: React.Dispatch<React.SetStateAction<UserType|null>>;
 }
@@ -32,10 +32,10 @@ export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [isFormUp, setIsFormUp] = useState<boolean>(false);
   const [user, setUser] = useState<UserType|null>(null);
 
-  const [bookingFormData, setBookingFormData] = useState<Booking>({})
+  const [bookingFormData, setBookingFormData] = useState<Booking|null>(null)
   const [inactiveSlots, setInactiveSlots] = useState<string[]>([]);
   const [selectedType, setselectedType] = useState<string>('single');
-  const [slotCounts, setSlotCounts] = useState<{ [key: string]: number }>({});
+  const [slotCounts, setSlotCounts] = useState<{ [key: string]: number }|null>(null);
 
   const contextValue: AppointmentContextProps = {
     isLoading,setLoading,

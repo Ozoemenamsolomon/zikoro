@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 export default function LinkSharing() {
   const { organization, setOrganization } = useOrganizationStore();
   const [showCategory, setShowCategory] = useState<boolean>(true);
-  const [showFeaturedEvent, setShowFeaturedEvent] = useState<boolean>(true);
   const [showFilter, setShowFilter] = useState<boolean>(true);
 
   const confirmedSubDomainUrl =
@@ -21,17 +20,12 @@ export default function LinkSharing() {
     setShowCategory(!showCategory);
   };
 
-  //handles featuredEvent toggle
-  const handleFeaturedEventToggle = () => {
-    setShowFeaturedEvent(!showFeaturedEvent);
-  };
-
   //handles filter feature toggle
   const handleCategorySelect = () => {
     setShowFilter(!showFilter);
   };
 
-  const webLink = `https://www.zikoro.com/workspaces?domain=${confirmedSubDomainUrl}&showCategories=${showCategory}&showEvents=${showFeaturedEvent}&showFilter=${showFilter}`; //add showCategory, showFeaturedEvent, showFilter as a query
+  const webLink = `https://www.zikoro.com/workspaces?domain=${confirmedSubDomainUrl}&showCategories=${showCategory}&showFilter=${showFilter}`; //add showCategory, showFeaturedEvent, showFilter as a query
 
   const iframeCode = `<iframe
   src=${webLink}
@@ -82,16 +76,6 @@ export default function LinkSharing() {
           />
 
           <p className="text-base font-normal ">Show Categories</p>
-        </div>
-
-        <div className="mt-6 flex gap-x-3 items-center ">
-          <Switch
-            className="data-[state=checked]:bg-zikoroBlue"
-            checked={showFeaturedEvent}
-            onCheckedChange={handleFeaturedEventToggle}
-          />
-
-          <p className="text-base font-normal ">Turn off featured events</p>
         </div>
 
         <div className="mt-6 flex gap-x-3 items-center ">
