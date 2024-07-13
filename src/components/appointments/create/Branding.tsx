@@ -19,7 +19,7 @@ const Branding: React.FC<FormProps> = ({
     if (setFormData) { 
       setFormData((prevFormData:AppointmentFormData) => ({
         ...prevFormData,
-        zikoroBranding: prevFormData?.zikoroBranding ? '' : 'yes'
+        zikoroBranding: prevFormData?.zikoroBranding ? false : true
       }));
     }
   };

@@ -13,13 +13,14 @@ export async function GET(
   const appointmentLinkId = url.searchParams.get("appointmentLinkId");
 
   const supabase = createRouteHandlerClient({ cookies });
-
+  // FETCH bookings excluding 'CANCELLED' bookings.
   try {
     const { data, error, status } = await supabase
       .from("bookings")
       .select("*")
       .eq("appointmentDate", appointmentDate)
       .eq("appointmentLinkId", appointmentLinkId)
+      .neq("bookingStatus", 'CANCELLED')
       .order('created_at', { ascending: false });
 
     console.log({ data, error, appointmentDate, appointmentLinkId });

@@ -80,7 +80,7 @@ const formdata = {
   logo: null,
   brandColour: '#0000FF',
   teamMembers: null,
-  zikoroBranding: 'true',
+  zikoroBranding: true,
   files: [],
   isPaidAppointment:false,
 };
