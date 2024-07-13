@@ -14,6 +14,7 @@ export async function GET(
     "quizAnswer",
     "Leads",
     "leadsInterests",
+    "myAgenda"
   ];
 
   //   "quizAnswer", "leadsInterests",
@@ -29,6 +30,7 @@ export async function GET(
         leadsInterests: [],
         sessionReviews: [],
         Leads: [],
+        myAgenda: []
       };
 
       for (let table of tables) {
