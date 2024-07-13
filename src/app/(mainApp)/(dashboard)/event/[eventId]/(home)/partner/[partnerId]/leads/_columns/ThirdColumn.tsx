@@ -147,7 +147,7 @@ const ThirdColumn = ({
             %
           </span>
           <span>
-            You've retrieved <b>{leads.length}</b>
+            You've retrieved <b>{leads.length}</b> leads
           </span>
           <span>
             out of <b>{attendees.length}</b> attendees
