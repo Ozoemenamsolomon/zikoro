@@ -3,6 +3,8 @@ import { X } from 'lucide-react';
 import React from 'react';
 import { useAppointmentContext } from '../context/AppointmentContext';
 import { useParams, usePathname } from 'next/navigation';
+import { MultipleIcon, SingleIcon } from '@/constants';
+import Image from 'next/image';
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,15 +16,17 @@ const SelectType: React.FC<ModalProps> = ({ isOpen, onClose,  }) => {
     const pathname = usePathname()
   return (
     <div
-      className={`fixed inset-0 z-50 bg-white flex items-center justify-center transition-transform duration-300 ${
+      className={`fixed inset-0 z-50 bg-white p-6 px-10 overflow-auto flex items-center justify-center transition-transform duration-300 ${
         isOpen && !pathname.includes('edit') ? 'scale-100' : 'scale-0'
       }`}
     >
       <X size={20} onClick={onClose}  className="absolute top-6 right-6 text-gray-500 hover:text-gray-600"/>
       <div className="bg-white grid text-center gap-4 sm:flex max-w-2xl">
-        <div className="h- w-full p-4 rounded-lg shadow-md space-y-4">
-            <div className="rounded-lg bg-[#D9D9D9] w-full h-40"></div>
-            <div className="flex flex-col h-44 justify-between gap-4">
+        <div className="h- w-full p-4 rounded-lg shadow-md space-y-4 ">
+            <div className="rounded-lg bg-slate-200 w-full h-40 overflow-hidden flex justify-center items-center ">
+              <Image src={'/singleIcon.png'} alt='s' width={300} height={300} className='w-full h-full object-contain'/>
+            </div>
+            <div className="flex flex-col h-40 justify-between gap-4">
             <div>
                 <h4 className="text-xl font-semibold pb-2">Simple schedule</h4>
                 <p className="pb-2">
@@ -40,10 +44,12 @@ const SelectType: React.FC<ModalProps> = ({ isOpen, onClose,  }) => {
             </button>
             </div>
         </div>
-
+        {/* bg-[#D9D9D9] */}
         <div className="h- w-full p-4 rounded-lg shadow-md space-y-4">
-            <div className="rounded-lg bg-[#D9D9D9] w-full h-40"></div>
-            <div className="flex flex-col h-44 justify-between gap-4">
+            <div className="rounded-lg bg-slate-200 w-full h-40 overflow-hidden flex justify-center items-center ">
+                <Image src={'/multiple.png'} alt='s' width={300} height={300} className='w-full h-full object-contain'/>
+            </div>
+            <div className="flex flex-col h-40 justify-between gap-4">
             <div>
                 <h4 className="text-xl font-semibold pb-2">Multi schedule</h4>
                 <p className="pb-2">

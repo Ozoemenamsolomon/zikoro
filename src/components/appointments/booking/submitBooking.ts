@@ -1,5 +1,8 @@
 import { format, parse } from "date-fns";
-import { Booking } from "@/types/appointments";
+import { AppointmentLink, Booking } from "@/types/appointments";
+import { createClient } from "@/utils/supabase/client";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 type ValidateFunction = () => boolean;
@@ -8,13 +11,15 @@ interface SubmitBookingProps {
     setLoading: SetState<boolean>;
     setErrors: SetState<Record<string, string>>;
     validate: ValidateFunction;
-    bookingFormData: Booking;
-    setBookingFormData: SetState<Booking>;
-    slotCounts: Record<string, number>;
-    setSlotCounts: SetState<Record<string, number>>;
+    bookingFormData: Booking | null;
+    setBookingFormData: SetState<Booking| null>;
+    slotCounts: Record<string, number>| null
+    setSlotCounts: SetState<Record<string, number>| null>;
     setInactiveSlots: SetState<string[]>;
     setSuccess: SetState<string>;
     maxBookingLimit: number;
+    appointmentLink:AppointmentLink|null;
+    pathname:any;
 }
 
 export const submitBooking = async ({
@@ -27,23 +32,25 @@ export const submitBooking = async ({
     setSlotCounts,
     setInactiveSlots,
     setSuccess,
-    maxBookingLimit
+    maxBookingLimit,
+    appointmentLink,
+    pathname,
 }: SubmitBookingProps): Promise<void> => {
     setLoading(true);
     setErrors({});
     setSuccess('')
 
-    if (!validate()) {
+    if (!validate() && !pathname.includes('bookings')) {
         setLoading(false);
         return;
     }
 
     const timeStamp = generateAppointmentTime({
-        timeRange: bookingFormData.appointmentTime!,
-        selectedDate: bookingFormData.appointmentDate!
+        timeRange: bookingFormData?.appointmentTime!,
+        selectedDate: bookingFormData?.appointmentDate!
     });
 
-    // TODO: before submitting check if the particular slot has been booked max booking limit. To achieve this add a column in the booking table to record and track  the number of times this particular slot ha been booked. e.g (booking[bookingStage] += 1)
+
     try {
         const response = await fetch('/api/appointments/booking', {
             method: 'POST',
@@ -51,23 +58,39 @@ export const submitBooking = async ({
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ ...bookingFormData, appointmentTime: timeStamp }),
-            // body: JSON.stringify({ ...bookingFormData, appointmentTime: timeStamp }),
         });
 
         const result = await response.json();
-        console.log({ result, form: { ...bookingFormData, appointmentTime: timeStamp } });
 
         if (response.ok) {
-            setBookingFormData((prevData: Booking) => ({
-                ...prevData,
+            setBookingFormData((prevData: Booking| null) => ({
+                ...prevData!,
                 appointmentTime: null,
             }));
-            console.log('Form submitted successfully', result);
 
-            setSuccess('Booking was successful')
+            // send email
+            const res  = await fetch('/api/email/send-bookings-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    bookingFormData:{ ...bookingFormData, appointmentTime: timeStamp },
+                    appointmentLink,
+                }),
+            });
+            // console.log({email: await res.json()})
+            if(res.ok){
+                setSuccess('Booking was successful, email reminder sent')
+            } else {
+                setSuccess(`Booking successful, some emails couldn't send`)
+               
+            }
+            // console.log('Form submitted successfully',{bookingFormData, appointmentLink, result}, await res.json());
 
+            // setSuccess('Booking was successful')
             const slot: string = result?.data?.appointmentTime;
-
+            // update slot bookin count
             const newSlotCounts = { ...slotCounts };
             newSlotCounts[slot] = (newSlotCounts[slot] || 0) + 1;
             setSlotCounts(newSlotCounts);
@@ -93,9 +116,8 @@ interface BookingInput {
     selectedDate: Date | string | null;
   }
 
-function generateAppointmentTime({ timeRange, selectedDate }: BookingInput): string | null {
+export function generateAppointmentTime({ timeRange, selectedDate }: BookingInput): string | null {
     if (!timeRange) {
-      console.error("Invalid timeRange:", timeRange);
       return null;
     }
   
@@ -107,8 +129,6 @@ function generateAppointmentTime({ timeRange, selectedDate }: BookingInput): str
       console.error("Invalid startTime format:", startTime);
       return null;
     }
-  
-    console.log({ timeRange, selectedDate, startTime, appointmentDateTime });
     return format(appointmentDateTime, 'HH:mm:ss');
   }
   

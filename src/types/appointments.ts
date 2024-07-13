@@ -18,12 +18,13 @@ export interface AppointmentLink {
     statusOn: boolean;
     note: string;
     appointmentAlias: string;
-    createdBy: number|null;
+    createdBy: any;
     businessName: string | null;
     logo: string | null;
     brandColour: string | null;
     teamMembers: string | null;
     zikoroBranding: string | null;
+    isPaidAppointment?: boolean;
 }
 export interface AppointmentFormData {
   id?: bigint;
@@ -43,12 +44,12 @@ export interface AppointmentFormData {
   statusOn: boolean;
   note: string;
   appointmentAlias: string;
-  createdBy: number|null;
+  createdBy: any;
   businessName: string | null;
   logo: string | null;
   brandColour: string | null;
   teamMembers: string | null;
-  zikoroBranding: string | null;
+  zikoroBranding: string | null | boolean;
   files?:File[] | null;
   isPaidAppointment?: boolean;
 
@@ -73,7 +74,7 @@ export interface DetailItem {
 export interface Booking {
   id?: bigint;
   created_at?: string;
-  appointmentLinkId?: bigint | null;
+  appointmentLinkId?: any;
   participantEmail?: string;
   appointmentDate?: Date | string | null;
   appointmentTime?: string | null;
@@ -86,13 +87,16 @@ export interface Booking {
   lastName?: string | null;
   phone?: string | null;
   price?: number |string| null;
-  createdBy?: number;
+  createdBy?: any;
   email?:string;
   currency?: string | null;
   feeType?: string | null;
   notes?: string | null;
-  appointmentTimeStr: string;
-  appointmentDuration: number;
+  appointmentTimeStr?: string;
+  appointmentDuration?: number;
+  type?: string;
+  reason?: string;
+  timeStr?: string;
 }
 
 export interface UserType {
