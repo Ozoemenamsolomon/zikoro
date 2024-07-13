@@ -4,15 +4,19 @@ import { useAppointmentContext } from '../context/AppointmentContext';
 import { AppointmentLink, Booking } from '@/types/appointments';
 import { XCircle } from 'lucide-react';
 import { submitBooking } from './submitBooking';
+import { createClient } from '@/utils/supabase/client';
+import { usePathname } from 'next/navigation';
 
 const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null}) => {
 
   const {bookingFormData, isFormUp, setIsFormUp, setBookingFormData, slotCounts, setSlotCounts,setInactiveSlots,} = useAppointmentContext()
   const maxBookingLimit = appointmentLink?.maxBooking!;
 
-  useEffect(() => {
+    const pathname = usePathname()
+
+    useEffect(() => {
     setBookingFormData({
-        ...bookingFormData,
+        ...bookingFormData!,
         appointmentLinkId: appointmentLink?.id,
         currency: appointmentLink?.curency,
         price: appointmentLink?.amount,
@@ -21,7 +25,7 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
         teamMembers: appointmentLink?.teamMembers,
         // appointmentType: appointmentLink?.category,
         scheduleColour: appointmentLink?.brandColour,
-        feeType: '',
+        feeType: appointmentLink?.isPaidAppointment ? 'Paid appointment' : 'Free',
         firstName: '',
         lastName:'',
         phone:'',
@@ -33,13 +37,13 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
   const [success, setSuccess] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const isDisabled = !bookingFormData.appointmentDate || !bookingFormData.appointmentTime || !bookingFormData.appointmentLinkId || !bookingFormData.participantEmail;
+  const isDisabled = !bookingFormData?.appointmentDate || !bookingFormData?.appointmentTime || !bookingFormData?.appointmentLinkId || !bookingFormData?.participantEmail;
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     setBookingFormData((prev) => ({
-      ...prev,
+      ...prev!,
       [name]: value,
     }));
 
@@ -51,23 +55,23 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
 
   const validate = (): boolean => {
     const error: Record<string, string> = {};
-    if (!bookingFormData.firstName) {
+    if (!bookingFormData?.firstName) {
       error.firstName = 'First name is required';
     }
-    if (!bookingFormData.lastName) {
+    if (!bookingFormData?.lastName) {
       error.lastName = 'Last name is required';
     }
-    if (!bookingFormData.notes) {
+    if (!bookingFormData?.notes) {
       error.notes = 'Add a note';
     }
-    if (!bookingFormData.participantEmail) {
+    if (!bookingFormData?.participantEmail) {
       error.participantEmail = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(bookingFormData.participantEmail)) {
+    } else if (!/\S+@\S+\.\S+/.test(bookingFormData?.participantEmail)) {
       error.participantEmail = 'Email is invalid';
     }
-    if (!bookingFormData.phone) {
+    if (!bookingFormData?.phone) {
       error.phone = 'Phone number is required';
-    } else if (!/^\d+$/.test(bookingFormData.phone.toString())) {
+    } else if (!/^\d+$/.test(bookingFormData?.phone.toString())) {
       error.phone = 'Phone number is invalid';
     }
     setErrors(error);
@@ -87,14 +91,16 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
       setInactiveSlots,
       maxBookingLimit,
       setSuccess,
+      appointmentLink,
+      pathname,
     });
   };
 
   return (
     <div className= {`${isFormUp ? ' visible translate-x-0':' -translate-x-full '} transform transition-all duration-300 w-full relative flex flex-col bg-white h-full px-6 py-20 rounded-lg shadow-md  justify-center items-center` } >
         <p className="pb-4 text-lg font-semibold">Enter your details</p>
-        {errors?.general ? <p className="pb-4 text-red-600">{errors?.general}</p> : null}
-        {success  ? <p className="pb-4 text-blue-600">{success}</p> : null}
+        {errors?.general ? <p className="pb-4 text-red-600 max-w-lg text-wrap">{errors?.general}</p> : null}
+        {success  ? <p className="pb-4 max-w-lg text-wrap text-blue-600">{success}</p> : null}
       <form className="mx-auto space-y-4" onSubmit={handleSubmit} >
         <div className="flex flex-col sm:flex-row gap-4 w-full">
             <div className="space-y-1 flex-1 w-full">
