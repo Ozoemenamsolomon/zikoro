@@ -7,11 +7,18 @@ import { ILead, TLeadsInterest } from "@/types/leads";
 import { useGetData } from "@/hooks/services/request";
 import { useDrawingArea } from "@mui/x-charts/hooks";
 import { styled } from "@mui/material/styles";
+import { DefaultizedPieValueType } from "@mui/x-charts/models";
 
 const size = {
   width: 400,
   height: 200,
 };
+
+const StyledText = styled("text")(({ theme }) => ({
+  fill: theme.palette.text.primary,
+  textAnchor: "middle",
+  dominantBaseline: "central",
+}));
 
 interface TitleCountResult {
   titles: string[];
@@ -58,6 +65,7 @@ interface ContactChannel {
   id: number;
   value: number;
   label: string;
+  color: string;
 }
 
 const colorMap: { [key: string]: string } = {
@@ -252,7 +260,7 @@ const ThirdColumn = ({
             series={[
               {
                 data: leadsDataset,
-                innerRadius: 80,
+                innerRadius: 110,
                 outerRadius: 120,
                 cx: (containerDivRef.current?.offsetWidth ?? 100) / 2,
                 cy: 150,
@@ -276,7 +284,25 @@ const ThirdColumn = ({
               },
             }}
             margin={{ top: 2 }}
-          />
+          >
+            <StyledText
+              fill={"#0a0e2e"}
+              x={180}
+              y={140}
+              fontWeight={600}
+              fontSize={48}
+            >
+              {leads.length}0000
+            </StyledText>
+            <StyledText
+              fill={"#4b5563"}
+              x={180}
+              y={170}
+              fontSize={16}
+            >
+              Total Leads
+            </StyledText>
+          </PieChart>
           <div className="px-2">
             {leadsDataset.map(({ label, value, color, id }) => (
               <div

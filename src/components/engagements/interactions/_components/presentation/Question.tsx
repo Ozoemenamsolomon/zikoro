@@ -7,7 +7,7 @@ import { Maximize2 } from "styled-icons/feather";
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
-import { useCreateAnswer, useUpdateQuiz, getCookie } from "@/hooks";
+import { useCreateAnswer, useUpdateQuiz } from "@/hooks";
 import {
   TQuiz,
   TRefinedQuestion,

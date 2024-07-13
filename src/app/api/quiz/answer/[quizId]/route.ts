@@ -16,6 +16,7 @@ export async function GET(
         .from("quizAnswer")
         .select("*")
         .eq("quizId", quizId)
+        .limit(100000)
 
       // 
       if (error) {

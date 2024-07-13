@@ -122,8 +122,8 @@ ${event?.eventTitle} Organizing Team
       payload: {
         Message: message,
         InviteDetails: Object.entries(invitees).map(([key, value]) => value),
-        eventName: event?.eventTitle,
-        eventId: event?.id,
+        eventName: event?.eventTitle ?? "",
+        eventId: event?.eventAlias ?? 0,
       },
     });
     await getEmailInvites();
