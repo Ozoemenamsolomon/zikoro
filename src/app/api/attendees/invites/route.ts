@@ -1,6 +1,9 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { convertToICSFormat } from "../../payment/route";
+import { Event, TOrganization } from "@/types";
+import { format } from "date-fns";
 
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -43,7 +46,9 @@ export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     try {
       const params = await req.json();
-      const { InviteDetails, Message, eventName } = params;
+      const { InviteDetails, Message, eventName, eventId } = params;
+
+      console.log(eventId);
 
       var { SendMailClient } = require("zeptomail");
 
@@ -52,10 +57,78 @@ export async function POST(req: NextRequest) {
         token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
       });
 
+      const { data: currentEvent, error: eventError } = await supabase
+        .from("events")
+        .select("*, organization!inner(*)")
+        .eq("eventAlias", eventId)
+        .maybeSingle();
+
+      if (eventError) throw eventError.code;
+
+      const {
+        startDateTime,
+        email,
+        eventAddress,
+        organisationName,
+        eventTitle,
+        endDateTime,
+        eventPoster,
+      } = currentEvent as never as Event & { organization: TOrganization };
+
+      const ics = require("ics");
+
+      const date = new Date();
+      // format Date
+
+      const options: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      };
+
+      const formattedDate: string = new Intl.DateTimeFormat(
+        "en-US",
+        options
+      ).format(date);
+
+      // convert date to ics format
+      const icsDateFormat = convertToICSFormat(startDateTime);
+
+      // Create iCalendar event
+      const icsEvent = {
+        ...icsDateFormat,
+        title: eventTitle,
+        location: eventAddress,
+        attendees: [
+          {
+            name: `${params.firstName} ${params.lastName}`,
+            email: params.email,
+          },
+        ],
+        organizer: {
+          name: organisationName,
+          email: currentEvent.organization.eventContactEmail,
+        },
+        // Add other event details as needed
+        //  organizerContact?.email
+      };
+
+      // Generate iCalendar content
+      const { error: icsError, value: iCalendarContent }: any =
+        await new Promise((resolve) => {
+          ics.createEvent(icsEvent, (error: Error, value: string) => {
+            resolve({ error, value });
+          });
+        });
+
+      if (icsError) {
+        throw icsError;
+      }
+
       const senderAddress = process.env.NEXT_PUBLIC_EMAIL;
       const senderName = "Zikoro";
       const subject = `Invite from to ${eventName}`;
-      const htmlBody = `<div>${Message}</div>`;
+      const htmlbody = `<div>${Message}</div>`;
 
       for (const { email } of InviteDetails) {
         try {
@@ -73,7 +146,14 @@ export async function POST(req: NextRequest) {
               },
             ],
             subject,
-            htmlbody: htmlBody,
+            htmlbody,
+            attachments: [
+              {
+                name: "event.ics",
+                content: iCalendarContent,
+                mime_type: "text/calendar",
+              },
+            ],
           });
           console.log(`Email sent to ${email}:`, resp);
         } catch (error) {
