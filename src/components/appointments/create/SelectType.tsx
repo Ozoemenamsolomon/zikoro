@@ -23,8 +23,8 @@ const SelectType: React.FC<ModalProps> = ({ isOpen, onClose,  }) => {
       <X size={20} onClick={onClose}  className="absolute top-6 right-6 text-gray-500 hover:text-gray-600"/>
       <div className="bg-white grid text-center gap-4 sm:flex max-w-2xl">
         <div className="h- w-full p-4 rounded-lg shadow-md space-y-4 ">
-        <div className="rounded-lg bg-[#D9D9D9] w-full h-40  overflow-hidden flex justify-center items-center overflow-hidd">
-                <Image src={'/singleIcon.png'} alt='s' width={300} height={300} className='w-full h-full object-contain'/>
+            <div className="rounded-lg bg-slate-200 w-full h-40 overflow-hidden flex justify-center items-center ">
+              <Image src={'/singleIcon.png'} alt='s' width={300} height={300} className='w-full h-full object-contain'/>
             </div>
             <div className="flex flex-col h-40 justify-between gap-4">
             <div>
@@ -44,9 +44,9 @@ const SelectType: React.FC<ModalProps> = ({ isOpen, onClose,  }) => {
             </button>
             </div>
         </div>
-
+        {/* bg-[#D9D9D9] */}
         <div className="h- w-full p-4 rounded-lg shadow-md space-y-4">
-            <div className="rounded-lg bg-[#D9D9D9] w-full h-40 overflow-hidden flex justify-center items-center overflow-hidd">
+            <div className="rounded-lg bg-slate-200 w-full h-40 overflow-hidden flex justify-center items-center ">
                 <Image src={'/multiple.png'} alt='s' width={300} height={300} className='w-full h-full object-contain'/>
             </div>
             <div className="flex flex-col h-40 justify-between gap-4">

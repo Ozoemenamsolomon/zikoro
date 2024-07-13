@@ -46,12 +46,11 @@ export async function GET(req: NextRequest) {
 
     const userId = userData.id;
     const today = startOfDay(new Date()).toISOString()
-
+    // , createdBy(userEmail,organization,firstName,lastName,phoneNumber)
     // Fetch appointment links created by the authenticated user
     const { data, error } = await supabase
       .from("bookings")
-      .select(`*`)
-      // .select(`*, appointmentLinkId(*)`)
+      .select(`*, appointmentLinkId(*, createdBy(userEmail,organization,firstName,lastName,phoneNumber))`)
       .eq("createdBy", userId)
       .gte('appointmentDate', today)
       .order("appointmentDate", { ascending: true });

@@ -1,98 +1,231 @@
 "use client";
 
-import { ChevronDown, Edit, RefreshCw, XCircle } from "lucide-react";
+import { ChevronDown,Calendar, Edit, RefreshCw, XCircle } from "lucide-react";
 import React, { Suspense, useRef, useState } from "react";
 import { useGetBookings } from "@/hooks/services/appointments";
 import { format, parseISO } from "date-fns";
-import { Booking } from "@/types/appointments";
+import { AppointmentLink, Booking } from "@/types/appointments";
 import PageLoading from "./ui/Loading";
 import NoAppointments from "./NoAppointments";
 import { useEffect } from "react";
 import { cn, useClickOutside } from "@/lib";
 import { AntiClock, CalenderIcon, CancelX, EditPenIcon } from "@/constants";
 import { useAppointmentContext } from "./context/AppointmentContext";
+import { generateSlots, SlotsResult, TimeDetail } from "./booking/Calender";
+import Slots from "./booking/Slots";
+import { generateAppointmentTime } from "./booking/submitBooking";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import { P } from "styled-icons/fa-solid";
 
 interface GroupedBookings {
   [date: string]: Booking[];
 }
 
-export const Reschedule = () => {
-  const {bookingFormData, setBookingFormData,} = useAppointmentContext()
-console.log({bookingFormData})
+export function getEnabledTimeDetails(appointmnetLink: AppointmentLink): TimeDetail[] {
+  if (!appointmnetLink || !appointmnetLink.timeDetails) {
+    return [];
+  }
+  try {
+    const timeDetails: TimeDetail[] = JSON.parse(appointmnetLink.timeDetails);
+    return timeDetails.filter(item => item.enabled);
+  } catch (error) {
+    console.error('Failed to parse timeDetails:', error);
+    return [];
+  }
+}
+
+const cancelSchedule = async (bookingFormData: Booking, refresh:any, setBookingFormData:any, setIsLoading:React.Dispatch<React.SetStateAction<boolean>>, setError:(state:string)=>void) => {
+  // console.log({ bookingFormData });
+
+  setError('')
+
+  const timeStamp =  generateAppointmentTime({
+    timeRange: bookingFormData?.appointmentTime!,
+    selectedDate: bookingFormData?.appointmentDate!
+  });
+
+  if(!bookingFormData?.reason){
+    setError('Provide a reason.')
+  }
+
+  try {
+    setIsLoading(true)
+    const res = await fetch('/api/email/send-cancelSchedule-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({bookingFormData:{ ...bookingFormData, appointmentTime: timeStamp }}),
+    });
+
+    if (res.ok) {
+      // console.log('Successfully cancelled appointment, email reminder sent', await res.json());
+      toast.success('Successfull, email sent.')
+      refresh()
+      setBookingFormData()
+    } else {
+      toast.error('Unsuccessful')
+      setError('Error rescheduling appointment')
+      // console.log('Error cancelled appointment', await res.json());
+    }
+  } catch (error) {
+      setError('Server error.')
+    // console.log('Error from server', error);
+  }finally {
+    setIsLoading(false)
+  }
+
+};
+
+const reschedule = async (bookingFormData: Booking, refresh:any, setBookingFormData:any, setIsLoading:React.Dispatch<React.SetStateAction<boolean>>, setError:(state:string)=>void) => {
+  // console.log({ bookingFormData });
+  setError('')
+
+  const timeStamp =  generateAppointmentTime({
+    timeRange: bookingFormData?.appointmentTime!,
+    selectedDate: bookingFormData?.appointmentDate!
+  });
+
+  if(!bookingFormData?.reason){
+    setError('Provide a reason.')
+    return
+  }
+
+  try {
+    setIsLoading(true)
+    const res = await fetch('/api/email/send-rescheduling-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({bookingFormData:{ ...bookingFormData, appointmentTime: timeStamp }}),
+    });
+    if (res.ok) {
+      toast.success('Successfully, email reminder sent')
+      // console.log('Successfully rescheduled appointment, email reminder sent', await res.json());
+      refresh()
+      setBookingFormData(null)
+    } else {
+      toast.error('Unsuccessfull')
+      setError('Error rescheduling appointment')
+      // console.log('Error rescheduling appointment', await res.json());
+    } 
+  } catch (error) {
+      toast.error('Server error.')
+      setError('Server error.')
+    // console.log('Error from server', error);
+  }finally {
+    setIsLoading(false)
+  }
+};
+
+export const Reschedule = ({refresh}:{refresh:() => void}) => {
+  const { bookingFormData, setBookingFormData } = useAppointmentContext();
+  const [timeSlots, setTimeSlots] = useState<SlotsResult | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  // const [isSelected, setIsSelected] = useState<string>('');
+
+  useEffect(() => {
+    const fetchSlots = async () => {
+      const getTimeSlots = await generateSlots(
+        getEnabledTimeDetails(bookingFormData?.appointmentLinkId),
+        bookingFormData?.appointmentLinkId?.duration!,
+        bookingFormData?.appointmentLinkId?.sessionBreak || 1,
+        new Date(bookingFormData?.appointmentDate!),
+      );
+      setTimeSlots(getTimeSlots);
+    };
+    fetchSlots();
+  }, [bookingFormData]);
+
   return (
-    <section onClick={()=>setBookingFormData(null)} className={cn(`${bookingFormData?.type ? 'animate-float-in block' : 'translate-y-10 opacity-0 invisible '} z-50 transform fixed transition-all duration-300 inset-0  bg-slate-500/10 p-6 flex justify-center items-center`, ) }>
+    <section onClick={() => setBookingFormData(null)} 
+    className={cn(`${bookingFormData?.type ? 'animate-float-in block' : 'translate-y-10 opacity-0 invisible '} z-50 transform fixed transition-all duration-300 inset-0 bg-slate-500/10 p-6 flex justify-center items-center`)}>
       
       {
-      bookingFormData?.type==='reschedule' && 
-      <div onClick={(e)=>e.stopPropagation()} className="w-full text-center sm:w-[28rem] bg-white rounded-md shadow-lg max-h-full  p-6 sm:p-10 space-y-4 py-12 flex flex-col justify-center relative overflow-y-auto">
-
-        <XCircle onClick={()=>setBookingFormData(null)} size={20} className="absolute right-6 top-6 text-slate-500"/>
-
-       <div className="flex justify-center w-full"> <AntiClock /></div>
-
-        <h5 className="text-xl font-medium text-basePrimary">Reschedule Appointment</h5>
-        <p className="text-[12px]">{`You are about to reschedule this appointment ${bookingFormData?.firstName} ${bookingFormData?.lastName}  ${bookingFormData?.appointmentTimeStr || '10:30 AM – 12:30 PM'} Location: ${'Virtual'}`}</p>
-        <div className="flex justify-center items-center gap-4">
-          <p>{'x'}</p>
-          <CalenderIcon/>
-        </div>
-
-        <h6 className="font-semibold">Choose time</h6>
-
-        <div className="h-96">
-
-        </div>
-
-        <div className="w-full flex items-center gap-1">
-              <EditPenIcon/>
-              {/* <Edit size={20} className="shrink-0 text-slate-500" /> */}
-          <input 
-            type="text" 
-            id="reason" 
-            name="reason" 
-            placeholder="Add notes to let invitees know why you rescheduled"
-            className="p-2 border bg-transparent focus:outline-none rounded-md focus:bg-transaparent text-slate-700 w-full placeholder:text-[12px]" 
-          />
-        </div>
-
-        <div className="flex justify-center w-full ">
-            <button className='bg-basePrimary rounded-md text-white font-medium py-2 px-6'>Reschedule Appointment</button>
-        </div>
-      </div>
+        isLoading && <div onClick={(e) => e.stopPropagation()} className="absolute inset-0 bg-black/10 z-40"></div>
       }
 
-      {
-      bookingFormData?.type==='cancel' && 
-      <div onClick={(e)=>e.stopPropagation()} className="w-full text-center sm:w-[28rem] bg-white rounded-md shadow-lg max-h-full  p-6 sm:p-10 space-y-4 py-12 flex flex-col justify-center relative overflow-y-auto">
+      {bookingFormData?.type === 'reschedule' && (
+        <div onClick={(e) => e.stopPropagation()} className="w-full text-center sm:w-[28rem] bg-white rounded-md shadow-lg max-h-full p-6 sm:p-10 space-y-4 py-12 flex flex-col justify-center relative overflow-y-auto">
+          <XCircle onClick={() => setBookingFormData(null)} size={20} className="absolute right-6 top-6 text-slate-500" />
+          <div className="flex justify-center w-full">
+            <AntiClock />
+          </div>
 
-          <XCircle onClick={()=>setBookingFormData(null)} size={20} className="absolute right-6 top-6 text-slate-500 cursor-pointer"/>
+          <h5 className="text-xl font-medium text-basePrimary">Reschedule Appointment</h5>
+          <p className="text-[12px]">{`You are about to reschedule this appointment ${bookingFormData?.firstName} ${bookingFormData?.lastName} ${bookingFormData?.timeStr}. Location: ${bookingFormData?.appointmentLinkId?.locationDetails}`}</p>
 
-          <div className="flex justify-center w-full"> <CancelX /></div>
-            <h5 className="text-xl font-medium text-red-600">Cancel Appointment</h5>
+          {error && <p className="text-center text-red-600 pb-1">{error}</p>}
 
-            <p className="text-[12px]">{`You are about to cancel this appointment ${bookingFormData?.firstName} ${bookingFormData?.lastName}  ${bookingFormData?.appointmentTimeStr || '10:30 AM – 12:30 PM'} Location: ${'Virtual'}`}</p>
+          <div className="flex justify-center items-center gap-2">
+            <p>{format(new Date(bookingFormData?.appointmentDate!), "EEEE, d MMM. yyyy")}</p>
+            <Calendar size={20} className="text-slate-500" />
+          </div>
 
-            <div className="w-full pt-8 flex items-center gap-1">
-              {/* <Edit size={20} className="shrink-0 text-slate-500" /> */}
-              <EditPenIcon/>
-              <input 
-                type="text" 
-                id="reason" 
-                name="reason" 
-                placeholder="Add notes to let invitees know why you canceled"
-                className="p-2 border bg-transparent focus:outline-none rounded-md focus:bg-transaparent text-slate-700 w-full placeholder:text-[12px]" 
-              />
-            </div>
+          <h6 className="font-semibold">Choose time</h6>
+          <div className="h-96 overflow-y-auto mx-auto max-w-80">
+            <Slots appointmnetLink={bookingFormData?.appointmentLinkId} timeSlots={timeSlots} selectedDate={new Date(bookingFormData.appointmentDate!)} />
+          </div>
+          <div className="w-full flex items-center gap-1">
+            <EditPenIcon />
+            <input
+              type="text"
+              id="reason"
+              name="reason"
+              onChange={(e) => {
+                setBookingFormData({ ...bookingFormData, reason: e.target.value })
+                setError('')
+              }}
+              placeholder="Add notes to let invitees know why you rescheduled"
+              className={`${error ? 'border-red-600 ': ''} p-2 border bg-transparent focus:outline-none rounded-md focus:bg-transaparent text-slate-700 w-full placeholder:text-[12px]`}
+            />
+          </div>
+          <div className="flex justify-center w-full">
+            <button onClick={() => reschedule(bookingFormData, refresh, setBookingFormData, setIsLoading, setError)} className="bg-basePrimary rounded-md text-white font-medium py-2 px-6">
+              {isLoading ? 'Submiting...':'Reschedule Appointment'}
+            </button>
+          </div>
+        </div>
+      )}
+     
+      {bookingFormData?.type === 'cancel' && (
+        <div onClick={(e) => e.stopPropagation()} className="w-full text-center sm:w-[28rem] bg-white rounded-md shadow-lg max-h-full p-6 sm:p-10 space-y-4 py-12 flex flex-col justify-center relative overflow-y-auto">
+          <XCircle onClick={() => setBookingFormData(null)} size={20} className="absolute right-6 top-6 text-slate-500 cursor-pointer" />
+          <div className="flex justify-center w-full">
+            <CancelX />
+          </div>
+          <h5 className="text-xl font-medium text-red-600">Cancel Appointment</h5>
+          <p className="text-[12px]">{`You are about to cancel this appointment ${bookingFormData?.firstName} ${bookingFormData?.lastName} ${bookingFormData?.timeStr}. Location: ${bookingFormData?.appointmentLinkId?.locationDetails}`}</p>
+          {error && <p className="text-center text-red-600 pb-1">{error}</p>}
+          
+          <div className="w-full pt-8 flex items-center gap-1">
+            <EditPenIcon />
+            <input
+              type="text"
+              id="reason"
+              name="reason"
+              onChange={(e) => {
+                setBookingFormData({ ...bookingFormData, reason: e.target.value })
+                setError('')
+              }}
+              placeholder="Add notes to let invitees know why you canceled"
+              className={`${error ? 'border-red-600 ': ''} p-2 border bg-transparent focus:outline-none rounded-md focus:bg-transaparent text-slate-700 w-full placeholder:text-[12px]`}
+            />
+          </div>
 
-            <div className="flex justify-center w-full ">
-                <button className='bg-red-600 rounded-md text-white font-medium py-2 px-6'>Cancel Appointment</button>
-            </div>
-      </div>
-      }
-
+          <div className="flex justify-center w-full">
+            <button onClick={()=>cancelSchedule(bookingFormData, refresh, setBookingFormData, setIsLoading, setError)} className="bg-red-600 rounded-md text-white font-medium py-2 px-6">
+              {isLoading ? 'Submiting...':'Cancel Appointment'}
+            </button>
+          </div>
+        </div>
+      )}
     </section>
-  )
-}
+  );
+};
 
 const groupBookingsByDate = (bookings: Booking[]): GroupedBookings => {
   return bookings.reduce((acc: GroupedBookings, booking: Booking) => {
@@ -109,16 +242,16 @@ const groupBookingsByDate = (bookings: Booking[]): GroupedBookings => {
 };
 
 const BookingRow = ({ booking }: { booking: Booking }) => {
-  const { participantEmail, lastName, firstName, phone, appointmentDate,appointmentName, appointmentTime, notes, appointmentType, id } = booking;
+  const { participantEmail, lastName, firstName,appointmentTimeStr, phone, appointmentDate,appointmentName, appointmentTime, notes, bookingStatus, appointmentType, id } = booking;
   const dateTimeString = `${appointmentDate}T${appointmentTime}`;
   const dateTime = new Date(dateTimeString);
 
   const {  setBookingFormData,} = useAppointmentContext()
   return (
-    <tr className="bg-white border-b">
-      <td className="py-4 px-4">
+    <tr className={` bg-white border-b `}>
+      <td className="py-4 px-4 ">
         <div className="flex items-center">
-          <div className="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center text-gray-700 font-semibold mr-2" style={{ background: 'linear-gradient(269.83deg, rgba(156, 0, 254, 0.12) 0.14%, rgba(0, 31, 203, 0.12) 99.85%)' }}>
+          <div className="capitalize flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center text-gray-700 font-semibold mr-2" style={{ background: 'linear-gradient(269.83deg, rgba(156, 0, 254, 0.12) 0.14%, rgba(0, 31, 203, 0.12) 99.85%)' }}>
             {(firstName + " " + lastName).split(" ").map((n) => n[0]).join("")}
           </div>
           <div>
@@ -127,16 +260,22 @@ const BookingRow = ({ booking }: { booking: Booking }) => {
           </div>
         </div>
       </td>
-      <td className="py-2 px-4">{format(dateTime, "hh:mm a")}</td>
+      <td className="py-2 px-4">{appointmentTimeStr}</td>
       <td className="py-2 px-4">{appointmentName}</td>
       <td className="py-2 px-4">{appointmentType}</td>
       <td className="py-2 px-4">{notes}</td>
-      <td className="py-2 px-4">
+      <td className={`py-2 px-4 ${bookingStatus === 'CANCELLED' ? 'text-red-700' : bookingStatus === 'RESCHEDULED' ? 'text-green-700' : 'text-zikoroBlue'}`}>
+        {bookingStatus || 'ACTIVE'}
+      </td>
+
+      <td className="py-2 px-4 relative">
         <div className="flex space-x-2">
-          <button onClick={()=>setBookingFormData({...booking, type:'reschedule'})} className="text-blue-500 hover:text-blue-700">
+          <button 
+          // disabled={bookingStatus==='CANCELLED'}
+           onClick={()=>setBookingFormData({...booking, type:'reschedule', timeStr:booking?.appointmentTimeStr})} className="text-blue-500 hover:text-blue-700 disabled:text-slate-300">
             <RefreshCw size={18} />
           </button>
-          <button onClick={()=>setBookingFormData({...booking, type:'cancel'})} className="text-red-500 hover:text-red-700">
+          <button disabled={bookingStatus==='CANCELLED'} onClick={()=>setBookingFormData({...booking, type:'cancel', timeStr:booking?.appointmentTimeStr})} className="text-red-500 hover:text-red-700 disabled:text-slate-300">
             <XCircle size={18} />
           </button>
         </div>
@@ -165,6 +304,7 @@ const BookingTable = ({ date, bookings }: { date: string, bookings: Booking[] })
               <th className="py-3 px-4 text-left text-sm font-medium">Appointment Name</th>
               <th className="py-3 px-4 text-left text-sm font-medium">Appointment Type</th>
               <th className="py-3 px-4 text-left text-sm font-medium">Notes</th>
+              <th className="py-3 px-4 text-left text-sm font-medium">Status</th>
               <th className="py-3 px-4 text-left text-sm font-medium"></th>
             </tr>
           </thead>
@@ -189,11 +329,12 @@ const GroupedBookingSections = ({ groupedBookings }: { groupedBookings: GroupedB
 );
 
 const Appointments: React.FC = () => {
-  const { bookings, isLoading, getPastBookings,getBookings } = useGetBookings();
+  const { bookings,error, isLoading, getPastBookings, getBookings } = useGetBookings();
   const [list, setList] = useState<Booking[]>([]);
   const [drop, setDrop] = useState(false);
   const [filter, setFilter] = useState('upcoming');
   const dropRef = useRef(null)
+  // console.log({bookings})
 
   useClickOutside(dropRef, ()=>setDrop(false))
 
@@ -210,57 +351,81 @@ const Appointments: React.FC = () => {
     // setLoading(isLoading);
   }, [bookings,]);
 
+  const refresh = async () => {
+    if(filter!=='upcoming'){
+      getPastBookings();
+    } else {
+      getBookings()
+    }
+  }
+
   const groupedBookings = groupBookingsByDate(list);
 
   return (
     <>
-    <Reschedule/>
+    <Reschedule refresh={()=>setFilter(new Date().toISOString())}/>
+
     <header className="flex w-full justify-between gap-4 flex-col sm:flex-row pb-10">
     <div>
       <h4 className="text-2xl font-semibold">Appointments</h4>
     </div>
-    <div className="relative w-[15.5rem]">
-      <div className="rounded-full w-[15.5rem] bg-basePrimary p-0.5">
-        <button onClick={()=>setDrop(curr=>!curr)} className="py-2 w-full bg-white px-4 rounded-full flex justify-between gap-2 items-center text-sm">
-          <p>{filter === 'upcoming' ? 'Upcoming appointments' : 'Past appointments'}</p>
-          <ChevronDown size={18} className={`${drop ? 'rotate-180':' rotate-0 '} transform transition-all duration-300 ease-linear`}/>
-        </button>
-      </div>
-      <div ref={dropRef} className={`${drop ? 'max-h-screen':'max-h-0 '} transform transition-all duration-300 ease-linear absolute right-0 w-full mt-1 bg-white rounded-md shadow-lg z-10 overflow-hidden`}>
-        <ul className="py-1">
-          <li
-            className={`block px-4 py-2 text-sm text-gray-700 cursor-pointer ${filter === 'upcoming' ? 'bg-gray-100' : ''}`}
-            onClick={() => {
-              setDrop(false)
-              setFilter('upcoming')}}
-          >
-            Upcoming appointments
-          </li>
-          <li
-            className={`block px-4 py-2 text-sm text-gray-700 cursor-pointer ${filter === 'past' ? 'bg-gray-100' : ''}`}
-            onClick={() => {
-              setDrop(false)
-              setFilter('past')}}
-          >
-            Past appointments
-          </li>
-        </ul>
-      </div>
-    </div>
-  </header>
+    
 
-  <Suspense fallback={<div className="p-40 text-center">Loading...</div>}>
-    {
-     isLoading ? 
-     <PageLoading isLoading={isLoading} />
-     :
-    list.length === 0 ? (
-      <NoAppointments handleClick={() => setFilter('past')} />
-    ) : (
-      <GroupedBookingSections groupedBookings={groupedBookings} />
-    )}
-  </Suspense>
-</>
+    <div className="flex items-center gap-3">
+      
+        <div  className="">
+          <button onClick={refresh} className="p-1.5 rounded-md bg-slate-200 text-slate-700 hover:shadow duration-200"><RefreshCw size={20}/></button>
+        </div>
+
+        <div  ref={dropRef}  className=" w-[15.5rem]">
+          <div className=" relative rounded-full w-[15.5rem] bg-basePrimary p-0.5">
+            <button onClick={()=>setDrop(curr=>!curr)} className="py-2 w-full bg-white px-4 rounded-full flex justify-between gap-2 items-center text-sm">
+              <p>{filter !== 'past' ? 'Upcoming appointments' : 'Past appointments'}</p>
+              <ChevronDown size={18} className={`${drop ? 'rotate-180':' rotate-0 '} transform transition-all duration-300 ease-linear`}/>
+            </button>
+
+            <div className={`${drop ? 'max-h-screen':'max-h-0 '} transform transition-all duration-300 ease-linear absolute right-0 w-full mt-1 bg-white rounded-md shadow-lg z-10 overflow-hidden`}>
+            <ul className="py-1">
+              <li
+                className={`block px-4 py-2 text-sm text-gray-700 cursor-pointer ${filter === 'upcoming' ? 'bg-gray-100' : ''}`}
+                onClick={() => {
+                  setDrop(false)
+                  setFilter('upcoming')}}
+              >
+                Upcoming appointments
+              </li>
+              <li
+                className={`block px-4 py-2 text-sm text-gray-700 cursor-pointer ${filter === 'past' ? 'bg-gray-100' : ''}`}
+                onClick={() => {
+                  setDrop(false)
+                  setFilter('past')}}
+              >
+                Past appointments
+              </li>
+            </ul>
+          </div>
+          </div>
+        </div>
+    </div>
+
+    
+    </header>
+
+    <Suspense fallback={<div className="p-40 text-center">Loading...</div>}>
+      {
+      isLoading ? 
+      <PageLoading isLoading={isLoading} />
+      :
+      error ? 
+      <section className="py-20 text-center w-full">{error}</section>
+      :
+      list.length === 0 ? (
+        <NoAppointments handleClick={() => setFilter('past')} />
+      ) : (
+        <GroupedBookingSections groupedBookings={groupedBookings} />
+      )}
+    </Suspense>
+  </>
   );
 };
 

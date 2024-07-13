@@ -13,7 +13,7 @@ export async function GET(
     try {
       const { data, error, status } = await supabase
         .from("appointmentLinks")
-        .select("*")
+        .select(`*, createdBy(userEmail,id,profilePicture,organization,firstName,lastName,phoneNumber)`)
         .eq("appointmentAlias", appointmentAlias)
         .single();
         console.log({data,error,appointmentAlias})

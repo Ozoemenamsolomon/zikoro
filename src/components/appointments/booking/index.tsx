@@ -3,16 +3,22 @@
 import React from 'react'
 import Calender from './Calender'
 import {useGetBookingAppointment} from "@/hooks"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import Image from 'next/image'
 
 const Booking =  ({alias}:{alias:string}) => {
-  const {appointment: appointmnetLink, isLoading, getAppointment} = useGetBookingAppointment(alias)
-
+  const {appointment: appointmnetLink, isLoading, error, } = useGetBookingAppointment(alias)
   console.log({appointmnetLink})
     
   return (
     <main className='relative pt-10 sm:px-6 xl:px-12  bg-white min-h-screen  space-y-4'>
+        {
+            error ? 
+            <section className='z-50 fixed flex-col gap-2 inset-0 bg-slate-500/20 text-red-600 flex items-center text-center justify-center w-full'>
+                    <p>{error}</p>
+                    <p>Refresh page</p>
+            </section>
+            :null
+        }
         <header className='max-md:pl-4'>
             {
                 isLoading ?
@@ -43,7 +49,7 @@ const Booking =  ({alias}:{alias:string}) => {
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Duration</p>
                             {isLoading ?
                             <div className='w-32 h-10 rounded-md animate-pulse bg-slate-100'></div> : 
-                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5">{appointmnetLink?.duration} mins</p>}
+                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5">{appointmnetLink?.duration ? appointmnetLink?.duration + 'mins':''}</p>}
                         </div>
                         <div className="flex pb-2 w-full items-start">
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Location Type</p>

@@ -5,7 +5,8 @@ import { AppointmentLink, Booking } from "@/types/appointments";
 import { getRequest } from "@/utils/api";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+
 
 export const useGetAppointments = () => {
   const [appointments, setAppointments] = useState<AppointmentLink[]>([]);
@@ -44,6 +45,7 @@ export const useGetAppointments = () => {
 export const useGetBookings = (pastAppointments?: string) => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const getBookings = async () => {
     setLoading(true);
@@ -51,18 +53,21 @@ export const useGetBookings = (pastAppointments?: string) => {
       const { data, status } = await getRequest<Booking[]>({
         endpoint: `/appointments`,
       });
-      setLoading(false);
       if (status !== 200) {
-        toast.error('Error fetching schedules!');
+          setError('Error fetching schedules!')
+          toast.error('Error fetching schedules!');
         return;
       }
       setBookings(data.data);
     } catch (error) {
+      setError('Error fetching schedules!')
       setLoading(false);
       toast.error('Error fetching schedules!');
       console.error('Error fetching schedules:', error);
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   const getPastBookings = async () => {
     setLoading(true);
@@ -70,16 +75,16 @@ export const useGetBookings = (pastAppointments?: string) => {
       const { data, status } = await getRequest<Booking[]>({
         endpoint: `/appointments/old_appointments?date=${new Date().toISOString()}`,
       });
-      setLoading(false);
       if (status !== 200) {
+        setError('Error fetching schedules!')
         toast.error('Error fetching schedules!');
         return;
       }
       setBookings(data.data);
     } catch (error) {
-      setLoading(false);
-      toast.error('Error fetching past schedules!');
-      console.error('Error fetching past schedules:', error);
+        setError('Error fetching schedules!')
+        toast.error('Error fetching past schedules!');
+        console.error('Error fetching past schedules:', error);
     } finally {
       setLoading(false)
     }
@@ -93,7 +98,7 @@ export const useGetBookings = (pastAppointments?: string) => {
     }
   }, [pastAppointments]);
 
-  return { bookings, isLoading, getBookings, getPastBookings };
+  return { bookings, isLoading,error, getBookings, getPastBookings };
 };
 
 export const getAppointment = async (appointmentAlias:string) => {
@@ -126,10 +131,10 @@ export const useGetBookingAppointment = (appointmentAlias: string) => {
       if (status === 200) {
         setAppointment(data.data);
       } else {
-        setError(`Error: ${status}`);
+        setError(`Error fetching data! Check Your network`);
       }
     } catch (err) {
-      setError('server error');
+      setError(`Error fetching data! Check Your network`);
     } finally {
       setLoading(false);
     }

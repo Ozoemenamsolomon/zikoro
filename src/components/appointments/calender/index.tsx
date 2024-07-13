@@ -6,10 +6,11 @@ import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import PageLoading from '../ui/Loading';
 
 const AppointmentCalender = () => {
   let today = format(new Date(), 'MMMM yyyy')
-  const { bookings, isLoading, getPastBookings,getBookings } = useGetBookings();
+  const { bookings, isLoading,error, getPastBookings,getBookings } = useGetBookings();
 
   return (
     <section className='flex flex-col gap-8 h-full'>
@@ -25,7 +26,7 @@ const AppointmentCalender = () => {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            {bookings?.length} meetings
+            {!isLoading ? bookings?.length + 'meetings' : null}
           </p>
         </div>
 
@@ -41,6 +42,12 @@ const AppointmentCalender = () => {
       </div>
 
       {
+        isLoading ? 
+        <PageLoading isLoading={isLoading} />
+        :
+        error ? 
+        <section className="py-20 text-center w-full">{error}</section>
+        :
         !bookings?.length ?
         <section className="w-full min-h-screen relative pt-40 ">
           <div className='absolute top-0 w-full h-full overflow-hidden'>
