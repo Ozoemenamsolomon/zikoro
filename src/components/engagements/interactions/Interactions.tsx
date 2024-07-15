@@ -127,11 +127,11 @@ function EmptyState({
         height={150}
       />
       <h2 className="text-basePrimary font-semibold text-base sm:text-2xl">
-        You have not created any interaction yet.
+        {!isNotAttendee ? "No Interaction Yet":"You have not created any interaction yet."}
       </h2>
-      <p className="text-gray-500 text-xs sm:text-sm">
+      {isNotAttendee && <p className="text-gray-500 text-xs sm:text-sm">
         Let's go, create your first interaction
-      </p>
+      </p>}
 
       <Button
         onClick={toggleInteractionModal}

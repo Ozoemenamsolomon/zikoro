@@ -2,7 +2,7 @@
 
 import { useGetData } from "@/hooks/services/request";
 import { InteractionLayout } from "../_components";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { TAttendee } from "@/types";
 import { Button } from "@/components";
 import { useVerifyUserAccess, useCheckTeamMember } from "@/hooks";
@@ -23,30 +23,124 @@ type TAllocation = {
   };
 };
 
+let pointsAllocation: TAllocation = {
+  checkInAttendees: {
+    title: "Checked IN for event",
+    icon: "/images/verified-user.png",
+    score: 0,
+  },
+  attendeeProfile: {
+    title: "Updated Profile",
+    icon: "/images/muser.png",
+    score: 0,
+  },
+  appointments: {
+    title: "Scheduled appointment",
+    icon: "/images/calendar-schedule.png",
+    score: 0,
+  },
+  contacts: {
+    title: "Exchanged Contact",
+    icon: "/images/outgoing-call.png",
+    score: 0,
+  },
+  myAgenda: {
+    title: "Added to Agenda",
+    icon: "/images/agenda.png",
+    score: 0,
+  },
+  sessionReviews: {
+    title: "Rated a Session",
+    icon: "/images/star.png",
+    score: 0,
+  },
+  presentationFile: {
+    title: "Downloaded presentation file",
+    icon: "/images/download.png",
+    score: 0,
+  },
+  leadsInterests: {
+    title: "Bought products",
+    icon: "/images/checkout.png",
+    score: 0,
+  },
+  polls: {
+    title: "Participate in Polls",
+    icon: "/images/poll.png",
+    score: 0,
+  },
+  quizAnswer: {
+    title: "Participate in Quiz",
+    icon: "/images/quiz.png",
+    score: 0,
+  },
+  askQuestion: {
+    title: "Ask a Question",
+    icon: "/images/chat-question.png",
+    score: 0,
+  },
+  likeQuestion: {
+    title: "Like a Question",
+    icon: "/images/love.png",
+    score: 0,
+  },
+
+  Leads: {
+    title: "Visit Exhibitor Booth",
+    icon: "/images/ticket-booth.png",
+    score: 0,
+  },
+  discussions: {
+    title: "Engage in Discussions",
+    icon: "/images/discussion.png",
+    score: 0,
+  },
+  exhibitorCatalogue: {
+    title: "Exhibitor Catalogue",
+    icon: "/images/catalogue.png",
+    score: 0,
+  },
+  checkedInForSession: {
+    title: "Checked IN for session",
+    icon: "/images/verified-user.png",
+    score: 0,
+  },
+  shareOnSocialMedia: {
+    title: "Share on social media",
+    icon: "/images/share.png",
+    score: 0,
+  },
+};
+
 export default function LeaderBoard({ eventId }: { eventId: string }) {
   const { isOrganizer, attendeeId } = useVerifyUserAccess(eventId);
-  const [isOpen, setOpen] = useState(false)
- // const divRef = useRef<HTMLDivElement | null>(null);
+  const [totalScore, setTotalScore] = useState(0);
+  const [ranks, setRanks] = useState<TAttendeeGroup[]>([])
+  const [attendeepointsAllocation, setAttendeesAllocation] =
+    useState(pointsAllocation);
+  const [isOpen, setOpen] = useState(false);
+  // const divRef = useRef<HTMLDivElement | null>(null);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const { data } = useGetData<TBoardData>(
     `/engagements/${eventId}/leaderboard`
   );
 
   function onClose() {
-    setOpen((prev) =>!prev);
+    setOpen((prev) => !prev);
   }
 
   const attendeeGroup: { [key: string]: TAttendeeGroup } = {};
-  const ranks = useMemo(() => {
+   useEffect(() => {
     if (data) {
       const allData = Object.values(data).flat();
-    //  console.log(allData);
+      console.log(allData)
       allData.forEach((attendee) => {
         const key = attendee?.id;
         if (!attendeeGroup[key]) {
-          attendeeGroup[key] = { ...attendee };
+          attendeeGroup[key] = { ...attendee, points:0 };
         }
         attendeeGroup[key].points += attendee?.points || 0;
+       
       });
 
       const result = Object.entries(attendeeGroup)?.map(([id, data]) => ({
@@ -54,117 +148,34 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
       }));
 
       const sortedResult = result.sort((a, b) => b.points - a.points);
-      return sortedResult;
-    } else {
-      return [];
-    }
+      setRanks(sortedResult);
+    } 
   }, [data]);
 
-
-const totalScore = {total:0}
-  const pointsAllocation: TAllocation = {
-    checkInAttendees: {
-      title: "Checked IN for event",
-      icon: "/images/verified-user.png",
-      score: 0,
-    },
-    attendeeProfile: {
-      title: "Updated Profile",
-      icon: "/images/muser.png",
-      score: 0,
-    },
-    appointments: {
-      title: "Scheduled appointment",
-      icon: "/images/calendar-schedule.png",
-      score: 0,
-    },
-    contacts: {
-      title: "Exchanged Contact",
-      icon: "/images/outgoing-call.png",
-      score: 0,
-    },
-    myAgenda: {
-      title: "Added to Agenda",
-      icon: "/images/agenda.png",
-      score: 0,
-    },
-    sessionReviews: {
-      title: "Rated a Session",
-      icon: "/images/star.png",
-      score: 0,
-    },
-    presentationFile: {
-      title: "Downloaded presentation file",
-      icon: "/images/download.png",
-      score: 0,
-    },
-    leadsInterests: {
-      title: "Bought products",
-      icon: "/images/checkout.png",
-      score: 0,
-    },
-    polls: {
-      title: "Participate in Polls",
-      icon: "/images/poll.png",
-      score: 0,
-    },
-    quizAnswer: {
-      title: "Participate in Quiz",
-      icon: "/images/quiz.png",
-      score: 0,
-    },
-    askQuestion: {
-      title: "Ask a Question",
-      icon: "/images/chat-question.png",
-      score: 0,
-    },
-    likeQuestion: {
-      title: "Like a Question",
-      icon: "/images/love.png",
-      score: 0,
-    },
-
-    Leads: {
-      title: "Visit Exhibitor Booth",
-      icon: "/images/ticket-booth.png",
-      score: 0,
-    },
-    discussions: {
-      title: "Engage in Discussions",
-      icon: "/images/discussion.png",
-      score: 0,
-    },
-    exhibitorCatalogue: {
-      title: "Exhibitor Catalogue",
-      icon: "/images/catalogue.png",
-      score: 0,
-    },
-    checkedInForSession: {
-      title: "Checked IN for session",
-      icon: "/images/verified-user.png",
-      score: 0,
-    },
-    shareOnSocialMedia: {
-      title: "Share on social media",
-      icon: "/images/share.png",
-      score: 0,
-    },
-  };
-
-  useMemo(() => {
+  useEffect(() => {
     if (data && attendeeId) {
+      let total = 0;
       Object.entries(data)?.forEach(([key, value]) => {
         const sum = value
-          ?.filter((item) => item?.id === attendeeId)
+          ?.filter((item) => Number(item?.id) === attendeeId)
           ?.reduce((acc, val) => acc + (val?.points || 0), 0);
 
         pointsAllocation[key].score = sum;
-        totalScore.total += sum;
+        setAttendeesAllocation({
+          ...attendeepointsAllocation,
+          [key]: {
+            ...attendeepointsAllocation[key],
+            score: attendeepointsAllocation[key].score = sum,
+          },
+        });
+        total += sum;
       });
+      setTotalScore(total);
     }
   }, [data, attendeeId]);
 
-  console.log(pointsAllocation);
+  console.log( data, ranks, pointsAllocation);
+
   return (
     <InteractionLayout eventId={eventId}>
       <div className="w-full mx-auto relative pt-8 bg-[url('/scoresheetbg.png')]  min-h-screen overflow-hidden">
@@ -175,10 +186,10 @@ const totalScore = {total:0}
           <div className="mx-auto w-fit flex px-2 mb-6 items-center gap-x-8 sm:gap-x-20 bg-white h-10 rounded-3xl">
             {(!isOrganizer || !isIdPresent) && (
               <Button
-                  onClick={onClose}
+                onClick={onClose}
                 className="underline rounded-none px-2 h-10 w-fit"
               >
-                View your Result
+                View your Points
               </Button>
             )}
           </div>
@@ -374,7 +385,13 @@ const totalScore = {total:0}
           </div>
         </div>
       </div>
-      {isOpen && <CummulativeScoreModal totalScore={totalScore?.total} close={onClose} attendeepointsAllocation={pointsAllocation}/>}
+      {isOpen && (
+        <CummulativeScoreModal
+          totalScore={totalScore}
+          close={onClose}
+          attendeepointsAllocation={attendeepointsAllocation}
+        />
+      )}
     </InteractionLayout>
   );
 }

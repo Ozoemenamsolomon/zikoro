@@ -14,9 +14,8 @@ import { useEffect, useState } from "react";
 import { useUpdateQuiz, useDeleteQuizLobby } from "@/hooks";
 import { QLUsers } from "@/constants";
 import Avatar from "react-nice-avatar";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-const supabase = createClientComponentClient();
+
 export function QuizLobby({
   quiz,
   close,
@@ -108,7 +107,7 @@ export function QuizLobby({
         </h2>
         <p className="w-1 h-1"></p>
       </div>
-      <div className="w-full ">
+      <div className="w-full h-full ">
         <div className=" flex w-full  px-3 py-3 items-center justify-between">
           <div className="flex items-center w-fit  gap-x-2 rounded-3xl p-1 bg-[#001fcc]/20">
             <div className="h-7 w-7 rounded-full flex items-center justify-center bg-basePrimary">
@@ -124,7 +123,7 @@ export function QuizLobby({
 
         <div
           className={cn(
-            "w-full grid grid-cols-1 px-4 py-6  gap-3 sm:grid-cols-2 md:grid-cols-4",
+            "w-full grid grid-cols-1 px-4 py-6 overflow-y-auto pb-20 gap-3 sm:grid-cols-2 md:grid-cols-4",
             isAttendee && "md:grid-cols-4 lg:grid-cols-5"
           )}
         >

@@ -5,7 +5,7 @@ import Sidebar from './Sidebar'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useClickOutside } from '@/lib'
 import Image from 'next/image'
-import { NotificationIcon } from '@/constants'
+import { NotifyIcon } from '@/constants'
 import Notification from './Notification'
 
 
@@ -44,7 +44,7 @@ const Main = ({children}:{children:React.ReactNode}) => {
 
                     <div ref={ref} className="relative">
                         <button onClick={()=>setDrop(curr=>!curr)} className="hover:shadow-sm duration-300 relative">
-                            <NotificationIcon/>
+                            <NotifyIcon/>
                             <div className="bg-basePrimary rounded-full focus:outline-none h-6 absolute -right-1 top-0 w-6  flex justify-center items-center ring ring-white text-white text-[12px]">22</div>
                         </button >
 

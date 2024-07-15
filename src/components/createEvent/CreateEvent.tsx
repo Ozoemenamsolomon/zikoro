@@ -22,7 +22,7 @@ import {
   parseFormattedDate,
   uploadFile,
 } from "@/utils";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import { useCreateEvent, getCookie, useGetUserOrganizations } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import InputOffsetLabel from "../InputOffsetLabel";
@@ -30,10 +30,10 @@ import _ from "lodash";
 import { useRouter } from "next/navigation";
 import { CreateOrganization } from "../eventHome";
 import useUserStore from "@/store/globalUserStore";
-import { ArrowBack } from "@styled-icons/material-outlined/ArrowBack";
-import { ImageAdd } from "@styled-icons/boxicons-regular/ImageAdd";
+import { ArrowBack } from "styled-icons/material-outlined";
+import { ImageAdd } from "styled-icons/boxicons-regular";
 import DatePicker from "react-datepicker";
-import { DateRange } from "@styled-icons/material-outlined/DateRange";
+import { DateRange } from "styled-icons/material-outlined";
 import { cn } from "@/lib";
 type OrganizationListType = {
   label: string;
