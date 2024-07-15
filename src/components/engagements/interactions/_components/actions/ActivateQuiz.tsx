@@ -23,10 +23,10 @@ export function ActivateQuiz({quiz, refetch}:{refetch: () => Promise<any>; quiz:
     return (
         <>
          <div className="w-full px-4 text-xs flex items-center justify-between ">
-            <p>Activate</p>
+            <p>Disabled</p>
             <Switch
             onClick={updateStatus}
-            checked={!quiz.accessibility?.disable}
+            checked={quiz.accessibility?.disable}
             disabled={isLoading} className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary" />
           </div>
         </>

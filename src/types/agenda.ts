@@ -55,5 +55,6 @@ export interface TMyAgenda {
   sessionId: number;
   attendeeId: number;
   sessionAlias: string;
-  points: number
+  points: number;
+  eventAlias: string;
 }

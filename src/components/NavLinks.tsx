@@ -32,7 +32,7 @@ export const NavLinks = ({
   }, [isHaveEvent]);
 
   return (
-    <ul className="flex text-mobile sm:text-sm flex-col px-3 gap-y-1 items-start h-[30vh] sm:h-[45vh] pb-32 overflow-hidden  no-scrollbar overflow-y-auto  justify-start w-full">
+    <ul className={cn("flex text-mobile sm:text-sm flex-col px-3 gap-y-1 items-start  pb-32 overflow-hidden  no-scrollbar overflow-y-auto  justify-start w-full h-[30vh] sm:h-[45vh]", !isHaveEvent && "h-[20vh] sm:h-[30vh]")}>
       {navs.map(({ href, name, icon: Icon }, idx) => {
         if (idx === links.length - 1) {
           return (

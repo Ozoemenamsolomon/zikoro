@@ -61,6 +61,7 @@ export function AddQuestion({
 
   async function onSubmit(values: z.infer<typeof quizQuestionSchema>) {
     // console.log('val',values)
+    
     setLoading(true);
     if (!quiz) return;
     const image = new Promise(async (resolve) => {

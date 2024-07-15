@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useMemo } from "react";
 
-export function InteractionTabs({ eventId }: { eventId: string }) {
+export function InteractionTabs({ eventId, isAttendee }: { eventId: string; isAttendee: boolean}) {
   const pathname = usePathname();
 
   const links = [
@@ -25,6 +26,21 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
     },
   ];
 
+  const hideFromAttendees = ["Settings", "LeaderBoard"]
+  const set = new Set(hideFromAttendees);
+
+  const navlinks = useMemo(() => {
+    if (isAttendee) {
+      
+      return links.filter((link) => {
+        return !set.has(String(link?.name));
+      })
+    }
+    else {
+      return links
+    }
+  },[isAttendee])
+
   /**
        {
       name: "Photos",
@@ -34,10 +50,7 @@ export function InteractionTabs({ eventId }: { eventId: string }) {
       name: "Social Wall",
       href: "social-wall",
     },
-    {
-      name: "LeaderBoard",
-      href: "leaderboard",
-    },
+  
    */
 
   return (

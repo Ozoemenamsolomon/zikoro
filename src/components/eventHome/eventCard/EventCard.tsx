@@ -2,13 +2,13 @@
 
 import { Button } from "@/components";
 import { ThreeDotsVertical } from "styled-icons/bootstrap";
-import { CalendarDateFill } from "@styled-icons/bootstrap/CalendarDateFill";
-import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
-import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
+import { CalendarDateFill } from "styled-icons/bootstrap";
+import { TimeFive } from "styled-icons/boxicons-solid";
+import { LocationDot } from "styled-icons/fa-solid";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { Users } from "@styled-icons/fa-solid/Users";
-import { Dot } from "@styled-icons/bootstrap/Dot";
-import { Edit } from "@styled-icons/boxicons-solid/Edit";
+import { Users } from "styled-icons/fa-solid";
+import { Dot } from "styled-icons/bootstrap";
+import { Edit } from "styled-icons/boxicons-solid";
 import { useState } from "react";
 import { AboutWidget, EventLocationType } from "@/components/composables";
 import { TOrgEvent } from "@/types";

@@ -13,9 +13,6 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      
-      
-
       if (!params.id) {
         const { data, error: checkIfRegisteredError } = await supabase
           .from("attendees")

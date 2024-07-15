@@ -24,6 +24,7 @@ import {
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import {Quiz} from "styled-icons/material"
 
 export function EventDetailMobileTab({
   changeActiveState,
@@ -87,6 +88,13 @@ export function EventDetailMobileTab({
         className="flex flex-col gap-y-2 items-center justify-center">
           <MobileAgendaIcon />
           <p>Agenda</p>
+        </button>
+
+        <button 
+         onClick={() => router.push(`/event/${eventId}/engagements/interactions`)}
+        className="flex flex-col gap-y-2 items-center justify-center">
+          <Quiz size={20} />
+          <p>Quiz</p>
         </button>
 
         <button className="flex flex-col gap-y-2 items-center justify-center">

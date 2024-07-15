@@ -41,6 +41,8 @@ export async function GET(
 
         const { data, error, status } = await query;
 
+        console.log(table, data)
+
         if (table === "attendees") {
           if (data && data.length > 0) {
             const mappedData = data?.map((item: any) => {

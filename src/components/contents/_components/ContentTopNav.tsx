@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import useDisclose from "@/hooks/common/useDisclose";
 import { ContentSetting } from ".";
-import { Settings } from "@styled-icons/feather/Settings";
+import { Settings } from "styled-icons/feather";
 
 export function ContentTopNav({ eventId }: { eventId: string | string[] }) {
   const pathname = usePathname();

@@ -7,13 +7,13 @@ import { useCreateMyAgenda } from "@/hooks";
 import { EngagementsSettings } from "@/types/engagements";
 import { cn } from "@/lib";
 import { TMyAgenda } from "@/types";
-import toast from "react-hot-toast";
 export function AddToMyAgenda({
   attendeeId,
   sessionAlias,
   isMyAgenda,
   refetch,
   myAgendas,
+  eventAlias,
   engagementsSettings,
 }: {
   sessionAlias: string;
@@ -21,14 +21,17 @@ export function AddToMyAgenda({
   isMyAgenda: boolean;
   refetch?: () => Promise<any>;
   myAgendas?: TMyAgenda[];
+  eventAlias:string;
   engagementsSettings?: EngagementsSettings | null;
 }) {
   const { createMyAgenda, isLoading } = useCreateMyAgenda();
 
   async function add() {
+    console.log("alias",eventAlias)
     let payload: Partial<TMyAgenda> = {
       sessionAlias,
       attendeeId,
+      eventAlias
     };
     const myAgendapointsAllocation =
       engagementsSettings?.pointsAllocation["add to agenda"];
@@ -57,12 +60,14 @@ export function AddToMyAgenda({
         payload = {
           sessionAlias,
           attendeeId,
+          eventAlias,
           points: sum + myAgendapointsAllocation?.points,
         };
       } else {
         payload = {
           sessionAlias,
           attendeeId,
+          eventAlias,
           points: 0 + myAgendapointsAllocation?.points,
         };
       }
