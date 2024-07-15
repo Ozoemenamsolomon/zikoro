@@ -10,10 +10,7 @@ export default function LinkSharing() {
   const [showCategory, setShowCategory] = useState<boolean>(true);
   const [showFilter, setShowFilter] = useState<boolean>(true);
 
-  const confirmedSubDomainUrl =
-    organization?.subDomain == null || ""
-      ? organization?.organizationName
-      : organization?.subDomain;
+  const confirmedSubDomainUrl = organization?.organizationName;
 
   //handles category toggle
   const handleCategoryToggle = () => {
