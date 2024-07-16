@@ -22,8 +22,10 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
-import { useUpdateWorkspace } from "@/hooks/services/workspace";
-import { useDeleteWorkspace } from "@/hooks/services/workspace";
+import {
+  useDeleteWorkspace,
+  useUpdateWorkspace,
+} from "@/hooks/services/workspace";
 import Image from "next/image";
 
 interface FormData {
@@ -38,6 +40,7 @@ interface FormData {
   orgLinkedin: string;
   orgFacebook: string;
   orgInstagram: string;
+  orgId: number;
 }
 
 export default function General() {
@@ -315,6 +318,7 @@ export default function General() {
     orgLinkedin: "",
     orgFacebook: "",
     orgInstagram: "",
+    orgId: 0,
   });
 
   // import update workspace function
@@ -326,7 +330,7 @@ export default function General() {
   );
 
   //import delete workspace function
-  const { deleteWorkspace } = useDeleteWorkspace(formData.orgName);
+  const { deleteWorkspace } = useDeleteWorkspace(formData.orgId);
 
   // Sync formData with organization data
   useEffect(() => {
@@ -343,11 +347,10 @@ export default function General() {
         orgLinkedin: organization.linkedIn || "",
         orgFacebook: organization.facebook || "",
         orgInstagram: organization.instagram || "",
+        orgId: organization.id,
       });
       setLogoUrl(organization.organizationLogo);
       setFaviconUrl(organization.favicon);
-
-      console.log(organization);
     }
   }, [organization]);
 
@@ -368,6 +371,7 @@ export default function General() {
         orgLinkedin: organization.linkedIn || "",
         orgFacebook: organization.facebook || "",
         orgInstagram: organization.instagram || "",
+        orgId: organization.id,
       });
       setLogoUrl(organization.organizationLogo);
       setFaviconUrl(organization.favicon);
@@ -673,7 +677,9 @@ export default function General() {
                         {" "}
                         Logo size should be 50px by 50px
                       </p>
-                      <p className="text-[12px] mt-4 font-semibold">Current Logo</p>
+                      <p className="text-[12px] mt-4 font-semibold">
+                        Current Logo
+                      </p>
                       <img
                         src={organization.organizationLogo}
                         alt="logo"
@@ -731,7 +737,9 @@ export default function General() {
                         {" "}
                         Favicon size should be 16px by 16px
                       </p>
-                      <p className="text-[12px] mt-4 font-semibold">Current Favicon</p>
+                      <p className="text-[12px] mt-4 font-semibold">
+                        Current Favicon
+                      </p>
                       <img
                         src={organization.organizationLogo}
                         alt="logo"
