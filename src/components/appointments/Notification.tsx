@@ -14,17 +14,17 @@ const Notification: React.FC<NotificationProps> = ({ drop, className, setDrop })
     const [action, setAction] = useState('recent')
 
   return (
-    <div className={cn(`${drop ? 'animate-float-in block' : 'animate-float-out hidden'} z-50 transform absolute transition-all duration-500 tr right-0 w-96 sm:w-[28rem] shadow-xl bg-slate-50  pb-12 `, className) }>
+    <div className={cn(`${drop ? 'animate-float-in block' : 'animate-float-out hidden'} z-50 transform fixed right-0 top-0 bottom-0  transition-all duration-500 w-96 sm:w-[32rem] shadow-xl bg-slate-50  pb-6 `, className) }>
 
-        <div className="absolute top-0 w-full bg-gradient-to-r from-slate-100 to-purple-100 px-4 pb-4 pt-12 flex justify-between items-center">
+        <div onClick={(e)=>e.stopPropagation()} className="absolute z-50 top-0 w-full bg-gradient-to-r from-slate-100 to-purple-100 px-4 pb-4 pt-12 flex justify-between items-center">
             <h4 className="text-xl font-medium">Notifications</h4>
             <div className="flex gap-2 items-center">
                 <Delete size={20}/>
-                <XCircle size={20}/>
+                <XCircle onClick={()=>setDrop(false)}  size={20}/>
             </div>
         </div>
 
-        <div className=" px-6 space-y-6 overflow-y-auto h-full max-h-[77vh] pt-24">
+        <div className=" px-6 space-y-6 overflow-y-auto h-full pt-24">
             <div className="pt-4 flex gap-1 justify-center items center">
                 <div className="bg-white p-0.5 flex rounded-md border">
                     <button 

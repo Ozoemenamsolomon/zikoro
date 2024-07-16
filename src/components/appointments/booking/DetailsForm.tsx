@@ -61,9 +61,9 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
     if (!bookingFormData?.lastName) {
       error.lastName = 'Last name is required';
     }
-    if (!bookingFormData?.notes) {
-      error.notes = 'Add a note';
-    }
+    // if (!bookingFormData?.notes) {
+    //   error.notes = 'Add a note';
+    // }
     if (!bookingFormData?.participantEmail) {
       error.participantEmail = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(bookingFormData?.participantEmail)) {

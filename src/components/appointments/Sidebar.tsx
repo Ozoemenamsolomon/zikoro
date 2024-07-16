@@ -11,11 +11,11 @@ import MenuBox from './ui/MenuBox';
 import useUserStore from '@/store/globalUserStore';
 
 const navlinks = [
-  {
-    icon: Calendar,
-    label: 'Calender',
-    link: `/appointments/calender`,
-  },
+  // {
+  //   icon: Calendar,
+  //   label: 'Calender',
+  //   link: `/appointments/calender`,
+  // },
   {
     icon: BriefCase,
     label: 'Appointments',
@@ -26,26 +26,26 @@ const navlinks = [
     label: 'Schedules',
     link: `/appointments/schedule`,
   },
-  {
-    icon: Users,
-    label: 'Contacts',
-    link: `/appointments/contacts`,
-  },
-  {
-    icon: BarChartBig,
-    label: 'Analytics',
-    link: `/appointments/analytics`,
-  },
+  // {
+  //   icon: Users,
+  //   label: 'Contacts',
+  //   link: `/appointments/contacts`,
+  // },
+  // {
+  //   icon: BarChartBig,
+  //   label: 'Analytics',
+  //   link: `/appointments/analytics`,
+  // },
   // {
   //   icon: Bell,
   //   label: 'Notification',
   //   link: `/appointments/notification`,
   // },
-  {
-    icon: Settings,
-    label: 'Settings',
-    link: `/appointments/settings`,
-  },
+  // {
+  //   icon: Settings,
+  //   label: 'Settings',
+  //   link: `/appointments/settings`,
+  // },
 ];
 
 const Sidebar = () => {
@@ -116,7 +116,7 @@ const Sidebar = () => {
           })}
         </div>
 
-        <div className="space-y-2 py-4 border-y">
+        {/* <div className="space-y-2 py-4 border-y">
           <button onClick={()=>setOpen(open==='moretools' ? '' : 'moretools')} className={`relative flex gap-4 items-center p-2 rounded-md  hover:bg-gradient-to-r hover:from-slate-200  hover:to-purple-200 duration-300 group`}>
             <div className="group-hover:text-purple-800 duration-300">
               <Grip size={18}/>
@@ -132,7 +132,7 @@ const Sidebar = () => {
             </div>
             <p className="group-hover:text-blue-700 font-medium duration-300">User Help</p>
           </Link>
-        </div>
+        </div> */}
 
       </div>
 

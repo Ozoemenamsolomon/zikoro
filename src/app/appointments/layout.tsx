@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <AppointmentProvider>
-      <main className="bg-basebody min-h-screen">{children}</main>
+      <main className="bg-[#F9FAFF] min-h-screen">{children}</main>
     </AppointmentProvider>
 )
 }

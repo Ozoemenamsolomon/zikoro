@@ -1,10 +1,11 @@
+import { Category } from "@/components/appointments/create/CategoryForm";
 import { DaySchedule } from "@/components/appointments/ui/DateTimeScheduler ";
 
 export interface AppointmentLink {
     id?: bigint;
     created_at?: string;
     appointmentName: string;
-    category: string;
+    category: any;
     duration: number|null;
     loctionType: string;
     locationDetails: string;
@@ -30,7 +31,7 @@ export interface AppointmentFormData {
   id?: bigint;
   created_at?: string;
   appointmentName: string;
-  category: string|string[];
+  category: string|Category[];
   duration: number|null;
   loctionType: string;
   locationDetails: string;
@@ -39,8 +40,8 @@ export interface AppointmentFormData {
   curency: string;
   amount: number|null;
   paymentGateway: string;
-  maxBooking: number;
-  sessionBreak: number;
+  maxBooking: number|null;
+  sessionBreak: number|null;
   statusOn: boolean;
   note: string;
   appointmentAlias: string;

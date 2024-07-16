@@ -56,8 +56,8 @@ const detailsArray: DetailItem[] = [
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", ];
 const formdata = {
   appointmentName: '',
-  category: '',
-  duration: 15,
+  category: "",
+  duration: null,
   loctionType: 'Onsite',
   locationDetails: '',
   timeZone: "(UTC+01:00) West Central Africa",
@@ -70,8 +70,8 @@ const formdata = {
   curency: '',
   amount: null,
   paymentGateway: '',
-  maxBooking: 1,
-  sessionBreak: 5,
+  maxBooking: null,
+  sessionBreak: null,
   statusOn: true,
   note: '',
   appointmentAlias: '',
@@ -92,7 +92,7 @@ interface ValidationErrors {
 const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
   const { push } = useRouter();
   const pathname = usePathname();
-  const {setselectedType} = useAppointmentContext()
+  const {setselectedType,selectedType} = useAppointmentContext()
   const { appointment, isLoading, } = useGetBookingAppointment(alias!);
   const [isOpen, setIsOpen] = useState(true)
 
@@ -101,13 +101,19 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    // when creating new item and it is multiple 
+    setFormData({...formData, category: selectedType==='multiple' ? [] : ''})
+  }, [selectedType])
+  
+
+  useEffect(() => {
     if (appointment) {
       try {
         // remove modal if it is edit mode.
         setIsOpen(false)
         // Parse timeDetails and category
         const parsedTimeDetails = JSON.parse(appointment.timeDetails || "[]") as DaySchedule[];
-        const parsedCategory = JSON.parse(appointment.category || `""`) as string | string[];
+        const parsedCategory = JSON.parse(appointment.category || `""`) as string | any[];
   
         // Check if parsedCategory is an array and set isOpen
         if (Array.isArray(parsedCategory)) {
@@ -146,6 +152,9 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
     }
 
     let newErrors = { ...errors };
+    if(name==='loctionType'){
+      delete newErrors['locationDetails']
+    }
     delete newErrors[name];
     delete newErrors['general'];
 
@@ -159,7 +168,7 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
       error.appointmentName = 'Appointment Name is required';
     }
 
-    if (data.duration === null || data.duration <= 0) {
+    if (data.duration === null || data.duration <= 0 && !/^\d+$/.test(data?.duration.toString())) {
       error.duration = 'Duration must be a positive number';
     }
 
@@ -179,15 +188,15 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
       error.timeDetails = 'Time Details are required';
     }
 
-    if (data.maxBooking <= 0) {
+    if (data?.maxBooking && data?.maxBooking <= 0 && !/^\d+$/.test(data?.maxBooking.toString()) ) {
       error.maxBooking = 'Max Booking must be a positive number';
     }
 
-    if (data.sessionBreak <= 0) {
-      error.sessionBreak = 'Session Break must be a positive number';
+    if (data?.sessionBreak && !/^\d+$/.test(data.sessionBreak.toString())) {
+      error.sessionBreak = 'Session Break must be a positive whole number';
     }
 
-    if (data.isPaidAppointment && !data?.amount ) {
+    if (data.isPaidAppointment && data?.amount && data?.amount <= 0  ) {
       error.amount = 'Amount is required';
     }
 
@@ -215,7 +224,12 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
     delete formData['files']
     delete formData['isPaidAppointment']
     try {
-      const payload = { ...formData, timeDetails: JSON.stringify(formData.timeDetails), logo: logoUrl || '' };
+      const payload = { 
+        ...formData, 
+        timeDetails: JSON.stringify(formData.timeDetails), 
+        category: JSON.stringify(formData.category), 
+        logo: logoUrl || '', 
+      };
       let response;
 // console.log({formData,payload})
       if (alias) {
@@ -266,7 +280,7 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
     fetch();
   }, [pathname]);
 
-
+console.log({errors, formData})
   return (
     <main className="py-4 sm:p-8">
       <SelectType onClose={()=>setIsOpen(false)} isOpen={isOpen}/>
@@ -275,16 +289,23 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
         <BentArrowLeft w={20} />
       </Link>
       <section className="py-4 flex w-full justify-center items-center">
-        <form onSubmit={handleSubmit} className="w-full max-w-2xl bg-white rounded-[6px] p-6 sm:p-[60px] grid gap-0.5">
+        <form onSubmit={handleSubmit} className="w-full max-w-2xl bg-white rounded-[6px] p-6 sm:p-[60px] grid gap-0.5 overflow-hidden">
           {errors && Object.keys(errors).length > 0 && (
-            <>
+            <div className='grid overflow-hidden -96'>
               {errors.general ? (
-                <p className="text-red-600 text-[12px]">{errors.general}</p>
+                <div className="flex flex-wrap">
+                  <p className="text-red-600 text-[12px] text-wrap">{errors.general}</p>
+                </div>
               ) : (
-                <p className="text-red-600 text-[12px]">{Object.values(errors).join(', ')}</p>
+                <div className="flex flex-wrap">
+                  <p className="text-red-600 text-[12px] text-wrap">
+                    {Object.values(errors).filter(error => error).join(', ')}
+                  </p>
+                </div>
               )}
-            </>
+            </div>
           )}
+
 
           {detailsArray.map((detail, index) => {
             const FormComponent = detail.formComponent;
@@ -315,12 +336,11 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
               />
             );
           })}
-          <button
-            type="submit"
+          <div onClick={handleSubmit}
             className="mt-6 py-3 text-center w-full rounded-md text-[#F2F2F2] font-semibold text-xl bg-basePrimary"
           >
             {loading ? 'Submitting...' : pathname.includes('edit') ? 'Edit Appointment' : 'Create Appointment'}
-          </button>
+          </div>
         </form>
       </section>
     </main>

@@ -39,10 +39,7 @@ const Generalsettings: React.FC<FormProps> = ({
         return {...prev,
           teamMembers: newTeamList || '',}
         });
-    // setFormData({
-    //   ...formData,
-    //   teamMembers: newTeamList,
-    // });
+
   };
 
   return (
@@ -91,6 +88,7 @@ const Generalsettings: React.FC<FormProps> = ({
           ]}
           setFormData={setFormData!}
           className="w-32 z-50"
+          type='number'
           setError={setErrors}
         />
       </div>
@@ -109,6 +107,7 @@ const Generalsettings: React.FC<FormProps> = ({
           ]}
           setFormData={setFormData!}
           className="w-32"
+          type='number'
           setError={setErrors}
         />
       </div>

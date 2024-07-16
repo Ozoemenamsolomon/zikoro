@@ -1,9 +1,10 @@
+
 import { UpDownArrow } from "@/constants";
 import { cn } from "@/lib";
 import { useClickOutside } from "@/lib/useClickOutside";
-import { AppointmentFormData, AppointmentLink } from "@/types/appointments";
+import { AppointmentLink } from "@/types/appointments";
 import { ChevronDown } from "lucide-react";
-import { useRef, useState, RefObject, useEffect } from "react";
+import { useRef, useState, RefObject } from "react";
 
 interface Option {
   label: string;
@@ -19,44 +20,41 @@ interface SelectInputProps {
   placeholder?: string;
   disabled?: boolean;
   setError?: React.Dispatch<React.SetStateAction<any>>;
+  addNewItem?: any;
   className?: string;
   icon?: string;
   error?: string;
-  type?:string;
-  onChange?: (name: string, value: string | number) => void;
+  onChange?: (name: string, value: string | number) => void; // New onChange prop
 }
 
-export const SelectInput: React.FC<SelectInputProps> = ({
-  options,
-  setFormData,
-  name,
-  value,
-  label,
-  placeholder = 'select',
-  className,
-  disabled,
-  icon,
-  setError,
-  error,
-  onChange,
-  type,
-}) => {
+
+const SelectOnly: React.FC<SelectInputProps> = ({
+    options,
+    setFormData,
+    name,
+    value,
+    label,
+    placeholder = 'select',
+    className,
+    disabled,
+    icon,
+    setError,
+    addNewItem,
+    error,
+    onChange,
+  }) => {
+ 
   const containerRef: RefObject<HTMLDivElement> = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [inputValue, setInputValue] = useState(value || '');
-
-  useEffect(() => {
-    if(value) setInputValue(value)
-  }, [value])
 
   const handleChange = (selectedValue: string | number) => {
-    setInputValue(selectedValue.toString());
     if (onChange) {
       onChange(name, selectedValue);
     } else {
       setFormData((prev: AppointmentLink | any) => ({ ...prev, [name]: selectedValue }));
     }
     setIsOpen(false);
+
     setError &&
       setError((prev: AppointmentLink | any) => {
         return {
@@ -69,22 +67,11 @@ export const SelectInput: React.FC<SelectInputProps> = ({
 
   useClickOutside(containerRef, () => setIsOpen(false));
 
-  const filteredOptions = options.filter(option =>
-    String(option.value).toLowerCase().includes(String(inputValue).toLowerCase())
-  );
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-    setIsOpen(true);
-    setFormData((prev:AppointmentFormData)=>{
-      console.log({prev})
-      return {
-        ...prev,
-        [e.target.name]: e.target.value
-      }
-    })
+  const handleAddNewItem = () => {
+    addNewItem && addNewItem();
+    setIsOpen(false);
   };
-console.log({inputValue,value})
+
   return (
     <div ref={containerRef} className={cn("relative z-30", className)}>
       {label && (
@@ -93,27 +80,22 @@ console.log({inputValue,value})
         </label>
       )}
       <div className={cn("relative w-full", className)}>
-        <input
-          type={type||"text"}
+        <button
+          type="button"
           disabled={disabled}
-          name={name}
-          value={inputValue}
-          onChange={handleInputChange}
           onClick={() => setIsOpen(!isOpen)}
-          className={cn(`appearance-none w-full border px-2 py-2 rounded-md focus:outline-none focus:shadow-outline focus:border-blue-500 ${
+          className={cn(`flex justify-between items-center gap-4 appearance-none w-full border  px-2 py-2 rounded-md focus:outline-none focus:shadow-outline focus:border-blue-500 ${
             disabled ? 'cursor-not-allowed border-gray-300 bg-gray-100' : 'border-gray-300'
-          }`, className)}
-          placeholder={placeholder}
-        />
-        <div className="absolute right-2 top-3 pointer-events-none">
-          {icon ? <ChevronDown size={14} /> : <UpDownArrow  />}
-        </div>
-        
+          }`, className )}
+        >
+          <p>{value ? (options.find((option) => option.value === value)?.label) : placeholder}</p>
+          {icon ? <ChevronDown size={14}/> : <UpDownArrow/>}
+        </button>
         {error ? <p className="text-red-600 text-[12px] pt-1">{error}</p> : null}
 
         {isOpen && (
           <ul className={cn(`absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto`, className)}>
-            {placeholder && !inputValue && (
+            {placeholder && !value && (
               <li
                 onClick={() => handleChange('')}
                 className="cursor-pointer hover:bg-gray-200 px-4 py-2 text-gray-700"
@@ -121,18 +103,25 @@ console.log({inputValue,value})
                 {placeholder}
               </li>
             )}
-            {filteredOptions.map((option, index) => (
+            {options.map((option, index) => (
               <li
                 key={index}
                 onClick={() => handleChange(option.value)}
-                className={`cursor-pointer capitalize hover:bg-gray-200 px-4 py-1 ${option.value === inputValue ? 'bg-gray-100' : ''}`}
+                className={`cursor-pointer capitalize hover:bg-gray-200 px-4 py-1 ${option.value === value ? 'bg-gray-100' : ''}`}
               >
                 {option.label}
               </li>
             ))}
+            {addNewItem && (
+              <div className="p-2 hover:bg-blue-500/30 text-blue-500 cursor-pointer" onClick={handleAddNewItem}>
+                Add new item
+              </div>
+            )}
           </ul>
         )}
       </div>
     </div>
   );
 };
+
+export default SelectOnly

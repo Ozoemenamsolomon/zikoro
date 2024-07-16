@@ -2,8 +2,7 @@
 import { X } from 'lucide-react';
 import React from 'react';
 import { useAppointmentContext } from '../context/AppointmentContext';
-import { useParams, usePathname } from 'next/navigation';
-import { MultipleIcon, SingleIcon } from '@/constants';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 
 interface ModalProps {
@@ -26,7 +25,7 @@ const SelectType: React.FC<ModalProps> = ({ isOpen, onClose,  }) => {
             <div className="rounded-lg bg-slate-200 w-full h-40 overflow-hidden flex justify-center items-center ">
               <Image src={'/singleIcon.png'} alt='s' width={300} height={300} className='w-full h-full object-contain'/>
             </div>
-            <div className="flex flex-col h-40 justify-between gap-4">
+            <div className="flex flex-col h-48 justify-between gap-4">
             <div>
                 <h4 className="text-xl font-semibold pb-2">Simple schedule</h4>
                 <p className="pb-2">
@@ -49,7 +48,7 @@ const SelectType: React.FC<ModalProps> = ({ isOpen, onClose,  }) => {
             <div className="rounded-lg bg-slate-200 w-full h-40 overflow-hidden flex justify-center items-center ">
                 <Image src={'/multiple.png'} alt='s' width={300} height={300} className='w-full h-full object-contain'/>
             </div>
-            <div className="flex flex-col h-40 justify-between gap-4">
+            <div className="flex flex-col h-48 justify-between gap-4">
             <div>
                 <h4 className="text-xl font-semibold pb-2">Multi schedule</h4>
                 <p className="pb-2">
