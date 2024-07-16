@@ -77,14 +77,14 @@ export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, 
   };
 }
 
-export function useDeleteWorkspace(orgName: string) {
+export function useDeleteWorkspace(workspaceId: number) {
   async function deleteWorkspace() {
     try {
       // Delete the event by ID
       const { data, error, status } = await supabase
         .from("organization")
         .delete()
-        .eq("organizationName", orgName);
+        .eq("organizationName", workspaceId);
 
       if (error) {
         toast.error(error.message);
@@ -99,5 +99,57 @@ export function useDeleteWorkspace(orgName: string) {
   }
   return {
     deleteWorkspace,
+  };
+}
+
+export function useCreateDomain(workspaceId: number, workspaceSubdomain: string) {
+  async function createDomain() {
+    try {
+      const { data, error, status } = await supabase
+        .from("organization")
+        .update({
+          subDomain: workspaceSubdomain
+        })
+        .eq("id", workspaceId);
+
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+      if (status === 204 || status === 200) {
+        toast.success('Created Successfully');
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  return {
+    createDomain
+  };
+}
+
+export function useUpdateSubdomain(workspaceId: number, workspaceSubdomain: string) {
+  async function updateSubdomain() {
+    try {
+      const { data, error, status } = await supabase
+        .from("organization")
+        .update({
+          subDomain: workspaceSubdomain
+        })
+        .eq("id", workspaceId);
+
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+      if (status === 204 || status === 200) {
+        toast.success('Updated Successfully');
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  return {
+    updateSubdomain
   };
 }

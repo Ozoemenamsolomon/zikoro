@@ -16,6 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import { ExternalLink } from "styled-icons/remix-fill";
 import {
   getCookie,
   useCheckTeamMember,
@@ -88,6 +89,7 @@ const MainTopBar = ({
       {pathname.includes("event") ? (
         <>
           {isIdPresent || isOrganizer ? (
+            <div className="flex items-center gap-x-2">
             <Selector
               options={(events ?? [])?.map(({ eventAlias, eventTitle }) => ({
                 label: eventTitle,
@@ -102,6 +104,14 @@ const MainTopBar = ({
                 }
               }
             />
+            <button
+            onClick={() => {
+              window.open(`/live-events/${eventId}`)
+            }}
+            >
+                 <ExternalLink size={20} />
+            </button>
+            </div>
           ) : (
             <div>
               <div className="flex items-center pb-[0.31rem] pt-[0.4rem] gap-x-3">

@@ -150,7 +150,7 @@ function SideNavs({
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className=" py-3 sm:py-4 group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px] flex flex-col items-center justify-between relative h-full bg-white  cursor-pointer border-r"
+          className=" py-3 sm:py-4 transform transition-all duration-300 group-hover:w-[180px] group-hover:sm:w-[180px] w-[60px] flex flex-col items-center justify-between relative h-full bg-white  cursor-pointer border-r"
         >
           <div className="flex  flex-col gap-y-10 items-start w-full">
             <Image

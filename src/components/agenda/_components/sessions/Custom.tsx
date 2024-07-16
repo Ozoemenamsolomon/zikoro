@@ -197,6 +197,7 @@ function Widget({
               refetch={refetchSession}
               engagementsSettings={engagementsSettings}
               myAgendas={myAgendas}
+              eventAlias={event?.eventAlias!}
             />
           </div>
         </div>

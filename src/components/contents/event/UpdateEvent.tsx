@@ -1,14 +1,14 @@
 "use client";
 import { useState, useMemo, useEffect } from "react";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { Download } from "@styled-icons/bootstrap/Download";
-import { Eye } from "@styled-icons/feather/Eye";
-import { Check2 } from "@styled-icons/bootstrap/Check2";
+import { Download } from "styled-icons/bootstrap";
+import { Eye } from "styled-icons/feather";
+import { Check2 } from "styled-icons/bootstrap";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
-import { Camera } from "@styled-icons/feather/Camera";
+import { Camera } from "styled-icons/feather";
 import { COUNTRY_CODE } from "@/utils";
 import TextEditor from "@/components/TextEditor";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import { useForm, useFieldArray, UseFormReturn } from "react-hook-form";
 import * as z from "zod";
 import { cn } from "@/lib";
@@ -16,7 +16,7 @@ import { uploadFile } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { updateEventSchema } from "@/schemas";
-import { CloseCircle } from "@styled-icons/ionicons-outline/CloseCircle";
+import { CloseCircle } from "styled-icons/ionicons-outline";
 import { Form, FormField, Input, Button, ReactSelect } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { PublishCard } from "@/components/composables";
@@ -26,7 +26,7 @@ import { toast } from "@/components/ui/use-toast";
 import { TIME_ZONES } from "@/utils";
 import { PreviewModal } from "../_components/modal/PreviewModal";
 import { formateJSDate, parseFormattedDate } from "@/utils";
-import { DateRange } from "@styled-icons/material-outlined/DateRange";
+import { DateRange } from "styled-icons/material-outlined";
 import {
   industryArray,
   categories,
@@ -103,6 +103,16 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       return formateJSDate(new Date());
     }
   }, [end]);
+
+  const minimumDate = useMemo(() => {
+    if (start) {
+      return parseFormattedDate(start)
+    }
+    else {
+      return new Date()
+    }
+   
+},[start])
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -362,6 +372,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                                 className="sm:left-0 right-0"
                                 name="startDateTime"
                                 form={form}
+
                                 close={() => setStartDate((prev) => !prev)}
                               />
                             )}
@@ -399,6 +410,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                                 value={endDate}
                                 form={form}
                                 name="endDateTime"
+                                minimumDate={minimumDate}
                                 close={() => setEndDate((prev) => !prev)}
                               />
                             )}
@@ -852,17 +864,19 @@ function SelectDate({
   close,
   name,
   value,
+  minimumDate
 }: {
   form: UseFormReturn<z.infer<typeof updateEventSchema>, any, any>;
   close: () => void;
   className?: string;
   name: any;
   value: string;
+  minimumDate?:Date
 }) {
   const selectedDate = useMemo(() => {
     return parseFormattedDate(value);
   }, [value]);
-  console.log("ddddddd", value, selectedDate);
+
   return (
     <div
       onClick={(e) => {
@@ -886,7 +900,7 @@ function SelectDate({
         <DatePicker
           selected={selectedDate}
           showTimeSelect
-          minDate={selectedDate}
+          minDate={minimumDate || new Date()}
           onChange={(date) => {
             // console.log(formateJSDate(date!));
             form.setValue(name, formateJSDate(date!));

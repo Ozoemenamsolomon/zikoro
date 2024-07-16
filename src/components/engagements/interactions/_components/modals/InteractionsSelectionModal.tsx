@@ -2,7 +2,7 @@
 
 import { Button } from "@/components";
 import Image from "next/image";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 export function InteractionsSelectionModal({
   close,
   toggleQuiz,
