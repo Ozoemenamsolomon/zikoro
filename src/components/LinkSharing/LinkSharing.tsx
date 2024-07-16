@@ -22,7 +22,7 @@ export default function LinkSharing() {
     setShowFilter(!showFilter);
   };
 
-  const webLink = `https://www.zikoro.com/workspaces?domain=${confirmedSubDomainUrl}&showCategories=${showCategory}&showFilter=${showFilter}`; //add showCategory, showFeaturedEvent, showFilter as a query
+  const webLink = `https://www.zikoro.com/workspaces?name=${confirmedSubDomainUrl}&showCategories=${showCategory}&showFilter=${showFilter}`; //add showCategory, showFeaturedEvent, showFilter as a query
 
   const iframeCode = `<iframe
   src=${webLink}
