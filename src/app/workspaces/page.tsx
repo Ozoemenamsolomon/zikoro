@@ -53,7 +53,7 @@ interface DateRange {
 export default function Workspaces() {
   const [showMore, setShowMore] = useState(false);
   const params = useSearchParams();
-  const domain = params.get("domain");
+  const name = params.get("name");
   const showFilter = params.get("showFilter");
   const showCategories = params.get("showCategories");
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
@@ -62,7 +62,7 @@ export default function Workspaces() {
   const [isCountryUp, setCountryUp] = useState(false);
   const [isCityUp, setCityUp] = useState(false);
   const [isFilterOpen, setFilterOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(domain);
+  const [searchQuery, setSearchQuery] = useState(name);
   const [eventData, setEventData] = useState<DBFeaturedEvent[] | undefined>(
     undefined
   );
@@ -104,10 +104,10 @@ export default function Workspaces() {
   }, []);
 
   useEffect(() => {
-    if (domain) {
-      setSelectedButtons(domain.split(","));
+    if (name) {
+      setSelectedButtons(name.split(","));
     }
-  }, [domain]);
+  }, [name]);
 
   const getStartAndEndDates = (filterType: string): DateRange => {
     switch (filterType) {
