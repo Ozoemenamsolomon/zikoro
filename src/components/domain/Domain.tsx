@@ -130,12 +130,14 @@
 //   );
 // }
 
-
 "use client";
 import React, { useEffect, useState, useCallback } from "react";
 import { GlobeIcon, PencilIcon } from "@/constants";
 import useOrganizationStore from "@/store/globalOrganizationStore";
-import { useUpdateSubdomain, useCreateDomain } from "@/hooks/services/workspace";
+import {
+  useUpdateSubdomain,
+  useCreateDomain,
+} from "@/hooks/services/workspace";
 
 export default function Domain() {
   const { organization } = useOrganizationStore();
@@ -143,22 +145,34 @@ export default function Domain() {
   const [editDomain, setEditDomain] = useState<string>("");
   const [isReadOnly, setIsReadOnly] = useState<boolean>(true);
 
-  const { updateSubdomain } = useUpdateSubdomain(organization?.id ?? 0, editDomain);
+  const { updateSubdomain } = useUpdateSubdomain(
+    organization?.id ?? 0,
+    editDomain
+  );
   const { createDomain } = useCreateDomain(organization?.id ?? 0, subdomain);
 
-  const handleEditDomainChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditDomain(e.target.value);
-  }, []);
+  const handleEditDomainChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setEditDomain(e.target.value);
+    },
+    []
+  );
 
-  const handleCreateDomain = useCallback((e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    createDomain();
-  }, [createDomain]);
+  const handleCreateDomain = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      createDomain();
+    },
+    [createDomain]
+  );
 
-  const handleEditDomain = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    updateSubdomain();
-  }, [updateSubdomain]);
+  const handleEditDomain = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      updateSubdomain();
+    },
+    [updateSubdomain]
+  );
 
   useEffect(() => {
     setEditDomain(organization?.subDomain ?? "");
@@ -175,7 +189,10 @@ export default function Domain() {
 
         <div className="mt-8">
           <p className="text-[14px] text-[#1f1f1f]">Add custom domain</p>
-          <form className="w-full h-[45px] mt-2 flex gap-x-4 lg:gap-x-8" onSubmit={handleCreateDomain}>
+          <form
+            className="w-full h-[45px] mt-2 flex gap-x-4 lg:gap-x-8"
+            onSubmit={handleCreateDomain}
+          >
             <input
               type="text"
               value={subdomain}
@@ -242,4 +259,3 @@ export default function Domain() {
     </div>
   );
 }
-
