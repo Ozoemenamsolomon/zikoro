@@ -25,7 +25,7 @@ export const AttendeeSchema = z.object({
         value,
         COUNTRY_CODE.find(
           ({ dial_code }) =>
-            dial_code === value.substring(0, dial_code.length - 1)
+            dial_code === "+" + value.substring(0, dial_code.length - 1)
         )
       );
 
@@ -33,7 +33,7 @@ export const AttendeeSchema = z.object({
         value &&
         !!COUNTRY_CODE.find(
           ({ dial_code }) =>
-            dial_code === value.substring(0, dial_code.length - 1)
+            dial_code === "+" + value.substring(0, dial_code.length - 1)
         )
       );
     },
@@ -43,9 +43,28 @@ export const AttendeeSchema = z.object({
   ),
   whatsappNumber: z
     .string()
-    .refine((value) => value && /^\+\d{1,3}/.test(value), {
-      message: "Phone number must start with a country code",
-    })
+    .refine(
+      (value) => {
+        console.log(
+          value,
+          COUNTRY_CODE.find(
+            ({ dial_code }) =>
+              dial_code === "+" + value.substring(0, dial_code.length - 1)
+          )
+        );
+
+        return (
+          value &&
+          !!COUNTRY_CODE.find(
+            ({ dial_code }) =>
+              dial_code === "+" + value.substring(0, dial_code.length - 1)
+          )
+        );
+      },
+      {
+        message: "Phone number must start with a country code",
+      }
+    )
     .optional()
     .nullable(),
   bio: z.string().optional().nullable(),
@@ -55,6 +74,7 @@ export const AttendeeSchema = z.object({
   facebook: z.string().optional().nullable(),
   profilePicture: z.string().optional().nullable(),
   attendeeType: z.array(z.string()),
+  appointmentLink: z.string().nullable(),
 });
 
 export const attendeeNoteSchema = z.object({
