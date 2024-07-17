@@ -33,12 +33,12 @@ const Main = ({children}:{children:React.ReactNode}) => {
         </aside>
 
         <article className="lg:pl-[252px] w-full  h-full">
-            <div className="p-4 sm:p-8 xl:px-14" >
-                <button className='lg:hidden' type="button" onClick={()=>setShow(true)}>
+            <div className="p-4 relative" >
+                <button className='lg:hidden absolute left-4 top-6' type="button" onClick={()=>setShow(true)}>
                     <ChevronLast size={18} className='text-gray-600'/>
                 </button>
 
-                <header className='flex justify-between w-full gap-4  items-center pb-8 '>
+                <header className='flex justify-between w-full gap-4  items-center pb-2 '>
                     <div></div>
                     <Image src={'/zikoro-b.png'} alt={'zikro icon'} height={180} width={100}/>
 
