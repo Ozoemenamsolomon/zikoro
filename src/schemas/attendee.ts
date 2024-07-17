@@ -19,19 +19,28 @@ export const AttendeeSchema = z.object({
   city: z.string().optional().nullable(),
   country: z.string().optional().nullable(),
   websiteUrl: z.string().optional().nullable(),
-  phoneNumber: z
-    .string()
-    .refine(
-      (value) =>
+  phoneNumber: z.string().refine(
+    (value) => {
+      console.log(
+        value,
+        COUNTRY_CODE.find(
+          ({ dial_code }) =>
+            dial_code === value.substring(0, dial_code.length - 1)
+        )
+      );
+
+      return (
         value &&
         !!COUNTRY_CODE.find(
           ({ dial_code }) =>
             dial_code === value.substring(0, dial_code.length - 1)
-        ),
-      {
-        message: "Phone number must start with a country code",
-      }
-    ),
+        )
+      );
+    },
+    {
+      message: "Phone number must start with a country code",
+    }
+  ),
   whatsappNumber: z
     .string()
     .refine((value) => value && /^\+\d{1,3}/.test(value), {
