@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     const emailList = [participantEmail, hostEmail, ];
     const uniqueEmailArray = mergeEmailLists(teamMembers, emailList);
-
+console.log(emailList,uniqueEmailArray,teamMembers, hostEmail)
     const subject = `Booking Details for ${appointmentName}`;
     const htmlBody = `
           <!DOCTYPE html>
@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
 
     try {
       for (const email of uniqueEmailArray) {
-        await client.sendMail({
+       const response= await client.sendMail({
           from: {
             address: senderAddress,
             name: senderName,

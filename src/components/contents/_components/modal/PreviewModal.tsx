@@ -1,6 +1,6 @@
 "use client";
 
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import {
   Form,
   FormField,
@@ -14,16 +14,23 @@ import QRCode from "react-qr-code";
 import { useForm } from "react-hook-form";
 import copy from "copy-to-clipboard";
 import { ExternalLinkOutline } from "styled-icons/evaicons-outline";
-import { Copy } from "@styled-icons/feather/Copy";
+import { Copy } from "styled-icons/feather";
 import Link from "next/link";
 import { useState } from "react";
-import { TriangleDown } from "@styled-icons/entypo/TriangleDown";
+import { TriangleDown } from "styled-icons/entypo";
 import { getCookie } from "@/hooks";
-import {Event} from "@/types"
+import { Event } from "@/types";
 
-export function PreviewModal({ close, eventDetail }: {eventDetail?: Event | null; close: () => void }) {
+export function PreviewModal({
+  close,
+  eventDetail,
+  url,
+}: {
+  eventDetail?: Event | null;
+  close: () => void;
+  url: string;
+}) {
   const form = useForm({});
-  const event = getCookie("currentEvent");
 
   // rating numbers
 
@@ -39,15 +46,17 @@ export function PreviewModal({ close, eventDetail }: {eventDetail?: Event | null
         className="w-[95%] sm:w-[500px] box-animation h-fit flex flex-col gap-y-6 rounded-lg bg-white m-auto absolute inset-0 py-6 px-3 sm:px-4"
       >
         <div className="w-full flex items-center justify-between">
-          <h2 className="font-medium text-lg sm:text-xl">Preview</h2>
+          <h2 className="font-medium text-lg sm:text-xl">
+            {eventDetail?.published ? "Event Registration" : "Preview"}
+          </h2>
           <Button onClick={close} className="px-1 h-fit w-fit">
             <CloseOutline size={22} />
           </Button>
         </div>
         <Form {...form}>
           <form className="flex items-start w-full flex-col gap-y-3">
-            <p className="text-mobile sm:text-sm">{`Open link to preview ${
-              eventDetail?.eventTitle || event?.eventName || ""
+            <p className="text-mobile sm:text-sm">{`Open link to view ${
+              eventDetail?.eventTitle || ""
             }`}</p>
             <FormField
               control={form.control}
@@ -58,10 +67,8 @@ export function PreviewModal({ close, eventDetail }: {eventDetail?: Event | null
                     Link
                   </FormLabel>
                   <div className="flex absolute top-2 z-10 bg-white justify-center h-[60%] right-2 items-center gap-x-2">
-                    <CopyLink
-                      link={`${window.location.origin}/preview/${eventDetail?.eventAlias ||event?.eventId }`}
-                    />
-                    <Link target="_blank" href={`/preview/${eventDetail?.eventAlias || event?.eventId}`}>
+                    <CopyLink link={`${window.location.origin}${url}`} />
+                    <Link target="_blank" href={url}>
                       <ExternalLinkOutline size={16} />
                     </Link>
                   </div>
@@ -69,7 +76,7 @@ export function PreviewModal({ close, eventDetail }: {eventDetail?: Event | null
                     <Input
                       type="text"
                       placeholder=""
-                      defaultValue={`${window.location.origin}/preview/${eventDetail?.eventAlias || event?.eventId}`}
+                      defaultValue={`${window.location.origin}${url}`}
                       readOnly
                       className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
                     />
@@ -79,13 +86,12 @@ export function PreviewModal({ close, eventDetail }: {eventDetail?: Event | null
             />
             <div className="w-full flex mt-6 items-center justify-between">
               <p className="text-xs sm:text-sm flex flex-col items-start ">
-               <span> Scan QRCode to preview</span>
-                <span className="font-semibold capitalize">{eventDetail?.eventTitle  || event?.eventName || ""}</span>
+                <span> Scan QRCode to preview</span>
+                <span className="font-semibold capitalize">
+                  {eventDetail?.eventTitle}
+                </span>
               </p>
-              <QRCode
-                size={150}
-                value={`${window.location.origin}/preview/${eventDetail?.eventAlias || event?.eventId}`}
-              />
+              <QRCode size={150} value={`${window.location.origin}${url}`} />
             </div>
 
             <Button

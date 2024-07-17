@@ -1,4 +1,7 @@
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+"use client";
+
+import { useEffect, useMemo } from "react";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { Form, FormField, Input, Button } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
@@ -7,37 +10,88 @@ import * as z from "zod";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { rewardSchema } from "@/schemas";
-import { useCreateReward } from "@/hooks";
+import { useCreateReward, useUpdateReward } from "@/hooks";
 import { uploadFile } from "@/utils";
+import { Reward } from "@/types";
+import Image from "next/image";
 
 export function CreateReward({
   close,
   eventId,
   eventName,
   refetch,
+  reward,
 }: {
   eventId: string;
   eventName?: string;
   close: () => void;
   refetch: () => Promise<any>;
+  reward?: Reward;
 }) {
   const form = useForm<z.infer<typeof rewardSchema>>({
     resolver: zodResolver(rewardSchema),
   });
   const { createReward, loading } = useCreateReward();
+  const { updateReward, loading: updating } = useUpdateReward();
 
   async function onSubmit(values: z.infer<typeof rewardSchema>) {
-    const img = await uploadFile(values.image[0], "image");
-
-    await createReward({
-      ...values,
-      image: img,
-      eventAlias: eventId,
-      eventName,
+    const image = await new Promise(async (resolve) => {
+      if (typeof values?.image === "string") {
+        resolve(values?.image);
+      } else if (values?.image && values?.image[0]) {
+        const img = await uploadFile(values.image[0], "image");
+        resolve(img);
+      } else {
+        resolve("");
+      }
     });
+
+    const payload: Partial<Reward> = reward?.id
+      ? {
+          ...reward,
+          ...values,
+          quantity: Number(values?.quantity),
+          point: Number(values?.point),
+          image: image as string,
+          eventAlias: eventId,
+          eventName,
+        }
+      : {
+          ...values,
+          image: image as string,
+          eventAlias: eventId,
+          quantity: Number(values?.quantity),
+        point: Number(values?.point),
+          eventName,
+        };
+    const queryFn = reward?.id ? updateReward : createReward;
+    await queryFn(payload);
     refetch();
-    close()
+    close();
   }
+
+  useEffect(() => {
+    if (reward) {
+      form.reset({
+        rewardTitle: reward?.rewardTitle,
+        image: reward?.image,
+        quantity: String(reward?.quantity),
+        point: String(reward?.point),
+      });
+    }
+  }, [reward]);
+
+  const watchedImage = form.watch("image");
+  const addedImage = useMemo(() => {
+    if (typeof watchedImage === "string") {
+      return watchedImage;
+    } else if (watchedImage && watchedImage[0]) {
+      return URL.createObjectURL(watchedImage[0]);
+    } else {
+      return null;
+    }
+  }, [watchedImage]);
+
   return (
     <div
       role="button"
@@ -50,7 +104,7 @@ export function CreateReward({
         className="w-[95%] sm:w-[500px] box-animation h-fit flex flex-col gap-y-6 rounded-lg bg-white m-auto absolute inset-0 py-6 px-3 sm:px-4"
       >
         <div className="w-full flex items-center justify-between">
-          <h2 className="font-medium text-lg sm:text-xl">Create Reward</h2>
+          <h2 className="font-medium text-lg sm:text-xl">Add Reward</h2>
           <Button onClick={close} className="px-1 h-fit w-fit">
             <CloseOutline size={22} />
           </Button>
@@ -89,7 +143,15 @@ export function CreateReward({
                 </InputOffsetLabel>
               )}
             />
-
+            {addedImage && (
+              <Image
+                className="w-[100px] h-[100px]"
+                width={200}
+                height={200}
+                src={addedImage}
+                alt=""
+              />
+            )}
             <FormField
               control={form.control}
               name="quantity"
@@ -120,11 +182,11 @@ export function CreateReward({
             />
 
             <Button
-              disabled={loading}
+              disabled={loading || updating}
               className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-basePrimary h-12 rounded-md text-gray-50 font-medium"
             >
               {loading && <LoaderAlt size={22} className="animate-spin" />}
-              <span>Create Reward</span>
+              <span>Add Reward</span>
             </Button>
           </form>
         </Form>

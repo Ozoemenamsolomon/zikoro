@@ -10,10 +10,7 @@ export default function LinkSharing() {
   const [showCategory, setShowCategory] = useState<boolean>(true);
   const [showFilter, setShowFilter] = useState<boolean>(true);
 
-  const confirmedSubDomainUrl =
-    organization?.subDomain == null || ""
-      ? organization?.organizationName
-      : organization?.subDomain;
+  const confirmedSubDomainUrl = organization?.organizationName;
 
   //handles category toggle
   const handleCategoryToggle = () => {
@@ -25,7 +22,7 @@ export default function LinkSharing() {
     setShowFilter(!showFilter);
   };
 
-  const webLink = `https://www.zikoro.com/workspaces?domain=${confirmedSubDomainUrl}&showCategories=${showCategory}&showFilter=${showFilter}`; //add showCategory, showFeaturedEvent, showFilter as a query
+  const webLink = `https://www.zikoro.com/workspaces?name=${confirmedSubDomainUrl}&showCategories=${showCategory}&showFilter=${showFilter}`; //add showCategory, showFeaturedEvent, showFilter as a query
 
   const iframeCode = `<iframe
   src=${webLink}

@@ -1,12 +1,11 @@
 "use client";
 
 import { MarketPlaceLayout } from "../_components";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import { Button } from "@/components";
 import { useState } from "react";
 import {
   useFetchSingleEvent,
-  useFetchRewards,
   useVerifyUserAccess,
   useCheckTeamMember,
 } from "@/hooks";
@@ -15,6 +14,7 @@ import { EmptyCard } from "@/components/composables";
 import { Loader2 } from "styled-icons/remix-fill";
 import { Reward } from "@/types";
 import { cn } from "@/lib";
+import { useGetData } from "@/hooks/services/request";
 export default function Rewards({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
   const { data: singleEvent } = useFetchSingleEvent(eventId);
@@ -22,10 +22,9 @@ export default function Rewards({ eventId }: { eventId: string }) {
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const {
     data,
-    loading,
-    refetch,
-  }: { data: Reward[]; loading: boolean; refetch: () => Promise<any> } =
-    useFetchRewards(eventId);
+    isLoading: loading,
+    getData: refetch,
+  } = useGetData<Reward[]>(`/rewards/${eventId}`);
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -57,7 +56,14 @@ export default function Rewards({ eventId }: { eventId: string }) {
         )}
 
         {Array.isArray(data) &&
-          data?.map((item, index) => <RewardCard key={index} reward={item} />)}
+          data?.map((item, index) => (
+            <RewardCard
+              key={index}
+              refetch={refetch}
+              reward={item}
+              isOrganizer={isOrganizer || isIdPresent}
+            />
+          ))}
       </div>
 
       {isOpen && (

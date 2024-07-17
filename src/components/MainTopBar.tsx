@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import useOrganizationStore from "@/store/globalOrganizationStore";
-import { ExternalLink } from "styled-icons/remix-fill";
+import { ExternalLink } from "styled-icons/feather";
 import {
   getCookie,
   useCheckTeamMember,
@@ -108,6 +108,7 @@ const MainTopBar = ({
             onClick={() => {
               window.open(`/live-events/${eventId}`)
             }}
+            className="text-zinc-700 mb-1"
             >
                  <ExternalLink size={20} />
             </button>

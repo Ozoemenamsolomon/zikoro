@@ -18,6 +18,8 @@ import { useForm } from "react-hook-form";
 import { useCreateLeads } from "@/hooks";
 import { EngagementsSettings } from "@/types/engagements";
 import { cn } from "@/lib";
+import { CreatePromo } from "../modals/CreatePromo";
+import { Edit } from "styled-icons/material";
 export function OfferCard({
   offer,
   isOrganizer,
@@ -25,16 +27,23 @@ export function OfferCard({
   leadsInterests,
   engagementsSettings,
   leads,
+  refetch,
 }: {
-  isOrganizer: boolean;
+  isOrganizer?: boolean;
   attendee?: TAttendee;
   offer: PromotionalOfferType;
   leadsInterests?: TLeadsInterest[] | null;
   engagementsSettings?: EngagementsSettings | null;
   leads?: TLead[] | null;
+  refetch: () => Promise<any>;
 }) {
   const [isOpen, setOpen] = useState(false);
   const [isApply, setApply] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+
+  function toggleEdit() {
+    setIsEdit((prev) => !prev);
+  }
 
   function toggleApply() {
     setApply((prev) => !prev);
@@ -92,9 +101,16 @@ export function OfferCard({
               {offer?.companyName ?? ""}
             </p>
           </div>
-          <button onClick={onClose}>
-            <AlertCircle className="text-gray-600" size={22} />
-          </button>
+          <div className="flex items-center gap-x-2">
+            {isOrganizer && (
+              <button onClick={toggleEdit}>
+                <Edit className="text-gray-600" size={22} />
+              </button>
+            )}
+            <button onClick={onClose}>
+              <AlertCircle className="text-gray-600" size={22} />
+            </button>
+          </div>
         </div>
         <div className="flex px-3 items-center gap-x-3">
           <p className="font-semibold">
@@ -135,6 +151,15 @@ export function OfferCard({
           leadsInterests={leadsInterests}
           engagementsSettings={engagementsSettings}
           leads={leads}
+        />
+      )}
+      {isEdit && (
+        <CreatePromo
+          close={toggleEdit}
+          companyName={offer?.companyName}
+          offer={offer}
+          partnerId={offer?.partnerId}
+          refetch={refetch}
         />
       )}
     </>
@@ -297,7 +322,7 @@ function ActionWidget({
       engagementsSettings?.pointsAllocation["visit exhibitor booth"];
     const offerPointsAllocation =
       engagementsSettings?.pointsAllocation["buy products"];
-// 
+    //
     let payload: Partial<TAllLeads> = {
       ...leadAttendee,
       eventPartnerAlias: offer?.partnerId,
@@ -319,8 +344,6 @@ function ActionWidget({
       attendee?.id &&
       boothPointsAllocation
     ) {
-
-   
       const attendeeLeads = leads?.filter(
         (lead) => lead?.attendeeId === attendee?.id
       );
@@ -351,7 +374,7 @@ function ActionWidget({
           payload = {
             ...payload,
             points: leadSum + boothPointsAllocation?.points,
-          }
+          };
           return;
         } else if (
           sum >=
@@ -366,7 +389,7 @@ function ActionWidget({
               ...payload?.interests!,
               points: sum + offerPointsAllocation?.points,
             },
-          }
+          };
 
           return;
         } else if (
@@ -376,7 +399,7 @@ function ActionWidget({
           sum >=
             boothPointsAllocation?.points * boothPointsAllocation?.maxOccurrence
         ) {
-          payload = payload 
+          payload = payload;
           return;
         }
         payload = {
@@ -386,38 +409,35 @@ function ActionWidget({
             points: sum + offerPointsAllocation?.points,
           },
           points: leadSum + boothPointsAllocation?.points,
-        }
-      }
-      else if (attendeeLeads && attendeeLeads?.length > 0) {
+        };
+      } else if (attendeeLeads && attendeeLeads?.length > 0) {
         const leadSum =
-        attendeeLeads && attendeeLeads?.length > 0
-          ? attendeeLeads?.reduce(
-              (acc, lead) => acc + (lead?.points || 0)!,
-              0
-            )
-          : 0;
-        payload= {
+          attendeeLeads && attendeeLeads?.length > 0
+            ? attendeeLeads?.reduce(
+                (acc, lead) => acc + (lead?.points || 0)!,
+                0
+              )
+            : 0;
+        payload = {
           ...payload,
           interests: {
             ...payload?.interests!,
             points: 0 + offerPointsAllocation?.points,
           },
           points: leadSum + boothPointsAllocation?.points,
-        }
-        return
-      }
-      else {
-        payload= {
+        };
+        return;
+      } else {
+        payload = {
           ...payload,
           interests: {
             ...payload?.interests!,
             points: 0 + offerPointsAllocation?.points,
           },
           points: 0 + boothPointsAllocation?.points,
-        }
-      
+        };
       }
-    } 
+    }
 
     await createLeads({ payload });
 
@@ -447,7 +467,7 @@ function ActionWidget({
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="w-[95%] max-w-xl m-auto h-[300px] absolute  inset-0 rounded-lg bg-white py-10 px-4 flex  flex-col "
+        className="w-[95%] max-w-xl m-auto h-fit max-h-[300px] absolute  inset-0 rounded-lg bg-white py-10 px-4 flex  flex-col "
       >
         {!isShow ? (
           <div className="w-full flex gap-y-16 flex-col items-center justify-center h-full">

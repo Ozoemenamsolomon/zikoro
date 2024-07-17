@@ -9,6 +9,7 @@ import {
   useFetchSinglePartner,
   useVerifyUserAccess,
   useGetEventAttendees,
+  useCheckTeamMember
 } from "@/hooks";
 import { useMemo } from "react";
 import useUserStore from "@/store/globalUserStore";
@@ -16,6 +17,7 @@ import useUserStore from "@/store/globalUserStore";
 export function PartnerDetails({ partnerId, eventId }: { eventId:string; partnerId: string }) {
   const { data, refetch, loading } = useFetchSinglePartner(partnerId);
   const {attendee, isOrganizer} = useVerifyUserAccess(eventId)
+  const {isIdPresent} = useCheckTeamMember({eventId})
   const {user} = useUserStore()
   const search = useSearchParams();
   const id: any = search.get("event");
@@ -52,7 +54,7 @@ export function PartnerDetails({ partnerId, eventId }: { eventId:string; partner
             isHaveAccess={isHaveAccess}
             partner={data}
             partnerId={partnerId}
-            isOrganizer={isOrganizer}
+            isOrganizer={isOrganizer || isIdPresent}
             attendee={attendee}
             refetch={refetch}
           />
@@ -68,7 +70,7 @@ export function PartnerDetails({ partnerId, eventId }: { eventId:string; partner
               partner={data}
               refetch={refetch}
               partnerId={partnerId}
-              isOrganizer={isOrganizer}
+              isOrganizer={isOrganizer || isIdPresent}
               attendee={attendee}
             />
           </div>

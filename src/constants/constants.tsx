@@ -570,16 +570,7 @@ export const links: NavLinkType[] = [
     icon: PublishedEventsIcon,
     href: "/live-events",
   },
-  {
-    name: "Notification",
-    icon: NotificationOutlineIcon,
-    href: "",
-  },
-  {
-    name: "Notes",
-    icon: NoteIcon,
-    href: "",
-  },
+
   {
     name: "Workspace",
     icon: WorkspaceIcon,
@@ -598,10 +589,15 @@ export const links: NavLinkType[] = [
 // "#717171"
 
 /**
-   {
-    name: "Events",
-    icon: EventIcon,
-    href: "/events",
+    {
+    name: "Notification",
+    icon: NotificationOutlineIcon,
+    href: "",
+  },
+  {
+    name: "Notes",
+    icon: NoteIcon,
+    href: "",
   },
  */
 export const adminLinks: AdminNavLinkType[] = [

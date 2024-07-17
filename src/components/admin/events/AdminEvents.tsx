@@ -73,7 +73,7 @@ function EventCard({
   query: string | null;
 }) {
   const { isLoading: updating, publishEvent: update } = usePublishEvent();
-  const { user: userData, } = useUserStore();
+  const { user: userData } = useUserStore();
   const [isShowPublishModal, setShowPublishModal] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const {
@@ -92,7 +92,6 @@ function EventCard({
   }
 
   async function publishEvent() {
-    
     // const userData = getCookie("user");
     const statusDetail = {
       createdAt: new Date().toISOString(),
@@ -112,8 +111,7 @@ function EventCard({
             : [statusDetail],
       },
       eventId: String(event?.eventAlias),
-      email: event?.organization?.eventContactEmail
-
+      email: event?.organization?.eventContactEmail,
     });
     refetch();
   }
@@ -252,7 +250,13 @@ function EventCard({
           message={`Are you sure you want to publish this event?.`}
         />
       )}
-      {isOpen && <PreviewModal close={onClose} eventDetail={event} />}
+      {isOpen && (
+        <PreviewModal
+          close={onClose}
+          eventDetail={event}
+          url={`/preview/${event?.eventAlias}`}
+        />
+      )}
     </>
   );
 }

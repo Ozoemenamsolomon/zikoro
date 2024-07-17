@@ -83,7 +83,7 @@ const AddMultipleInput: React.FC<Props> = ({
 
       {formData[formField] ? (
         <div className="space-y-2 pt-2">
-          {formData[formField].split(', ').map((item:string, idx:number) => (
+          {formData[formField] && formData[formField]?.split(', ').map((item:string, idx:number) => (
             <div
               key={idx}
               className="flex max-w-lg justify-between gap-6 items-center h-12 py-1 px-2 border rounded bg-gray-300/10"

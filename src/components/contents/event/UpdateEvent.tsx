@@ -23,10 +23,10 @@ import { PublishCard } from "@/components/composables";
 import DatePicker from "react-datepicker";
 import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
-import { TIME_ZONES } from "@/utils";
 import { PreviewModal } from "../_components/modal/PreviewModal";
 import { formateJSDate, parseFormattedDate } from "@/utils";
 import { DateRange } from "styled-icons/material-outlined";
+import { Unpublished } from "styled-icons/material-outlined";
 import {
   industryArray,
   categories,
@@ -35,6 +35,7 @@ import {
 } from "../_components/utils";
 import { TOrgEvent } from "@/types";
 import useUserStore from "@/store/globalUserStore";
+import { timezones } from "@/constants/timezones";
 
 interface ImageFile {
   url: string | undefined;
@@ -106,13 +107,11 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   const minimumDate = useMemo(() => {
     if (start) {
-      return parseFormattedDate(start)
+      return parseFormattedDate(start);
+    } else {
+      return new Date();
     }
-    else {
-      return new Date()
-    }
-   
-},[start])
+  }, [start]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -233,17 +232,6 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   //
 
-  const formatZone = useMemo(() => {
-    return TIME_ZONES.flatMap(({ zones }) => {
-      return zones.map(({ label, value }) => {
-        return {
-          label: `${label}  ${value}`,
-          value,
-        };
-      });
-    });
-  }, [TIME_ZONES]);
-
   // update event
   async function publishEvent() {
     if (!data) return;
@@ -277,6 +265,32 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     setIsPublishing(false);
     showPublishModal();
   }
+
+  async function unpublishEvent() {
+    if (!data) return;
+    setIsPublishing(true);
+
+    const statusDetail = {
+      createdAt: new Date().toISOString(),
+      status: "new",
+      user: userData?.userEmail!,
+    };
+    const { organization, ...restData } = data;
+    await update(
+      {
+        ...restData,
+        eventStatus: "new",
+        published: false,
+        eventStatusDetails:
+          data?.eventStatusDetails && data?.eventStatusDetails !== null
+            ? [...data?.eventStatusDetails, statusDetail]
+            : [statusDetail],
+      },
+      eventId
+    );
+    setIsPublishing(false);
+  }
+
   return (
     <DateAndTimeAdapter>
       <>
@@ -294,9 +308,9 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     className="gap-x-2"
                   >
                     {!publishing && updating && (
-                      <LoaderAlt size={22} className="animate-spin" />
+                      <LoaderAlt size={20} className="animate-spin" />
                     )}
-                    <Check2 size={22} className="text-basePrimary" />
+                    <Check2 size={20} className="text-basePrimary" />
                     <p>Save</p>
                   </Button>
                   <Button
@@ -308,8 +322,14 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     }}
                     className="text-gray-50 bg-basePrimary gap-x-2 w-fit"
                   >
-                    <Eye size={22} />
-                    <p>Preview</p>
+                    {data?.published ? (
+                      <p>Live Event</p>
+                    ) : (
+                      <>
+                        <Eye size={20} />
+                        <p>Preview</p>
+                      </>
+                    )}
                   </Button>
                   <Button
                     onClick={(e) => {
@@ -318,10 +338,22 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                       showPublishModal();
                     }}
                     type="submit"
-                    className="text-basePrimary border border-basePrimary gap-x-2"
+                    className={cn(
+                      "text-basePrimary border border-basePrimary gap-x-2",
+                      data?.published && "text-gray-600 border-gray-600"
+                    )}
                   >
-                    <Download size={22} />
-                    <p>Publish</p>
+                    {data?.published ? (
+                      <>
+                        <Unpublished size={20} />
+                        <p>Unpublish</p>
+                      </>
+                    ) : (
+                      <>
+                        <Download size={20} />
+                        <p>Publish</p>
+                      </>
+                    )}
                   </Button>
                 </div>
               </div>
@@ -372,7 +404,6 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                                 className="sm:left-0 right-0"
                                 name="startDateTime"
                                 form={form}
-
                                 close={() => setStartDate((prev) => !prev)}
                               />
                             )}
@@ -432,7 +463,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                             value: data?.eventTimeZone,
                           }}
                           {...form.register("eventTimeZone")}
-                          options={formatZone}
+                          options={timezones}
                           label="Event Timezone"
                         />
                       </InputOffsetLabel>
@@ -789,7 +820,17 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
             approves it.`}
           />
         )}
-        {isOpen && <PreviewModal close={onClose} eventDetail={data} />}
+        {isOpen && (
+          <PreviewModal
+            close={onClose}
+            eventDetail={data}
+            url={
+              data?.published
+                ? `/live-events/${data?.eventAlias}`
+                : `/preview/${data?.eventAlias}`
+            }
+          />
+        )}
       </>
     </DateAndTimeAdapter>
   );
@@ -864,14 +905,14 @@ function SelectDate({
   close,
   name,
   value,
-  minimumDate
+  minimumDate,
 }: {
   form: UseFormReturn<z.infer<typeof updateEventSchema>, any, any>;
   close: () => void;
   className?: string;
   name: any;
   value: string;
-  minimumDate?:Date
+  minimumDate?: Date;
 }) {
   const selectedDate = useMemo(() => {
     return parseFormattedDate(value);

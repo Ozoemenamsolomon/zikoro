@@ -8,6 +8,7 @@ import { SelectInput } from '../ui/CustomSelect';
 import ColorPicker from '../ui/ColorPicker';
 import { useAppointmentContext } from '../context/AppointmentContext';
 import AddMultipleInput from './AddMultipleInput';
+import CategoryForm from './CategoryForm';
 
 const AppointmentDetails: React.FC<FormProps> = ({
   formData,
@@ -19,6 +20,8 @@ const AppointmentDetails: React.FC<FormProps> = ({
   handleChange,
 }) => {
   const {selectedType} = useAppointmentContext()
+
+
 
   return (
     <div className=" space-y-6">
@@ -57,6 +60,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
           setError={setErrors}
           placeholder='select'
           className='w-48'
+          type='number'
         />
         
       </div>
@@ -122,8 +126,6 @@ const AppointmentDetails: React.FC<FormProps> = ({
               <p className="cursor-pointer text-zikoroBlue">Click here to do that now.</p>
             </div>
         }
-
-        
 
         { selectedType==='single' ?
           <>
@@ -199,6 +201,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
                     placeholder='select'
                     className='w-40 z-50 '
                     error={errors?.amount }
+                    type='number'
                   />
               </div>
             </div>
@@ -208,110 +211,122 @@ const AppointmentDetails: React.FC<FormProps> = ({
 
         {
           selectedType === 'multiple' ? 
-          <>
-          <div className="rounded-md space-y-4 bg-slate-50 border relative p-4 pt-6 ">
-                <h5 className="label px-1 bg-slate-5 absolute -top-3 bg-slate-50 left-3 ">Appointment Type 1</h5>
-                {/* <AddMultipleInput
-                  formData={formData}
-                  setFormData={setFormData!}
-                  label='Create appointment category (optional)'
-                  placeholder='Enter category name'
-                  inputType='text'
-                  formField='category'
-                  formError={errors?.category}
-                /> */}
-                <InputCustom
-                  label='Create appointment category (optional)'
-                  type='text'
-                  error={errors?.category}
-                  name='category'
-                  value={formData?.category || ''}
-                  placeholder='Enter category name'
-                  className='py-6'
-                  onChange={handleChange}
-                />
+          <CategoryForm
+            formData={formData!}
+            setFormData={setFormData!}
+            errors={errors}
+            setErrors={setErrors!}
+          />
+          :
+          null
+        }
 
-                <div className="pb-2 gap-2 items-center">
-                  <InputCustom
-                    type='text'
-                    label='Appointment Description (optional)'
-                    error={errors?.note}
-                    name='note'
-                    value={formData?.note || ''}
-                    placeholder='Add notes for appointment here'
-                    className='py-6 w-full'
-                    onChange={handleChange}
-                  />
-                </div>
+        {
+          // selectedType === 'multiple' ? 
+          // <>
+          // <div className="rounded-md space-y-4 bg-slate-50 border relative p-4 pt-6 ">
+          //       <h5 className="label px-1 bg-slate-5 absolute -top-3 bg-slate-50 left-3 ">Appointment Type 1</h5>
+          //       {/* <AddMultipleInput
+          //         formData={formData}
+          //         setFormData={setFormData!}
+          //         label='Create appointment category (optional)'
+          //         placeholder='Enter category name'
+          //         inputType='text'
+          //         formField='category'
+          //         formError={errors?.category}
+          //       /> */}
+          //       <InputCustom
+          //         label='Create appointment category (optional)'
+          //         type='text'
+          //         error={errors?.category}
+          //         name='category'
+          //         value={formData?.category || ''}
+          //         placeholder='Enter category name'
+          //         className='py-6'
+          //         onChange={handleChange}
+          //       />
 
-                <div className="flex gap-4 justify-between items-center">
-                  <div className="flex-1">
-                    <h5 className="text-lg font-medium">Make this a paid appointment</h5>
-                    <p className="text-sm text-gray-600">Guests will be charged to book this appointment</p>
-                  </div>
-                  <div
-                      className={` flex-shrink-0 ${formData?.isPaidAppointment ? 'bg-blue-600 ring-blue-600 ring-2 ' : 'bg-gray-300 ring-2 ring-gray-300'} mr- w-14 h-6 p-1.5  relative flex items-center  rounded-full  cursor-pointer `}
-                      onClick={()=>{
-                        setFormData && setFormData((prev:AppointmentFormData)=>{
-                          return {
-                            ...prev,
-                            isPaidAppointment: !prev.isPaidAppointment,
-                            paymentGateway: prev.isPaidAppointment ? '' : 'Zikoro manage',
-                            curency: '',
-                            amount: null,
-                          }
-                        })
-                        }}
-                  >   
-                      <div className="flex w-full justify-between font-semibold text-[9px] text-gray-50"> <p className=''>ON</p><p className=''>OFF</p>  </div>
-                      <div className={`bg-white absolute inset-0 w-7 h-6 flex-shrink-0 rounded-full transition-transform duration-200 transform ${formData?.isPaidAppointment ? 'translate-x-7' : ''}`}></div>
-                  </div>
-                </div>
+          //       <div className="pb-2 gap-2 items-center">
+          //         <InputCustom
+          //           type='text'
+          //           label='Appointment Description (optional)'
+          //           error={errors?.note}
+          //           name='note'
+          //           value={formData?.note || ''}
+          //           placeholder='Add notes for appointment here'
+          //           className='py-6 w-full'
+          //           onChange={handleChange}
+          //         />
+          //       </div>
 
-                <div className={`${formData?.isPaidAppointment ? 'max-h-screen visible':'max-h-0 invisible  overflow-hidden' } transform relative z-10 transition-all duration-300 pb-`}>
-                  <p className='pb-2'>Set currency and pricing</p>
-                  <div className="flex gap-8 items-center">
-                      <SelectInput
-                        name='curency'
-                        value={formData?.curency || ''}
-                        options={[
-                          {label:'USD',value:'USD'},
-                          {label:'CAD',value:'CAD'},
-                          {label:'EUR',value:'EUR'},
-                          {label:'NGN',value:'NGN'},
-                          {label:'AUD',value:'AUD'},
-                        ]}
-                        setFormData={setFormData!}
-                        placeholder='select'
-                        className='w-40 z-50 '
-                        setError={setErrors}
-                        error={errors?.curency }
-                      />
-                      <SelectInput
-                        name='amount'
-                        value={formData?.amount || ''}
-                        options={[
-                          {label:'20',value:20},
-                          {label:'40',value:40},
-                          {label:'60',value:60},
-                          {label:'80',value:80},
-                          {label:'100',value:100},
-                        ]}
-                        setFormData={setFormData!}
-                        setError={setErrors}
-                        placeholder='select'
-                        className='w-40 z-50 '
-                        error={errors?.amount }
-                      />
-                    </div>
-                </div>
-          </div>
-          <div onClick={()=>console.log('cccccc')} className="text-zikoroBlue flex gap-2 pt-2 items-center">
-              <PlusCircle size={14}/>
-              <p>Create Appointment Category</p>
-          </div>
-          </>
-          : null
+          //       <div className="flex gap-4 justify-between items-center">
+          //         <div className="flex-1">
+          //           <h5 className="text-lg font-medium">Make this a paid appointment</h5>
+          //           <p className="text-sm text-gray-600">Guests will be charged to book this appointment</p>
+          //         </div>
+          //         <div
+          //             className={` flex-shrink-0 ${formData?.isPaidAppointment ? 'bg-blue-600 ring-blue-600 ring-2 ' : 'bg-gray-300 ring-2 ring-gray-300'} mr- w-14 h-6 p-1.5  relative flex items-center  rounded-full  cursor-pointer `}
+          //             onClick={()=>{
+          //               setFormData && setFormData((prev:AppointmentFormData)=>{
+          //                 return {
+          //                   ...prev,
+          //                   isPaidAppointment: !prev.isPaidAppointment,
+          //                   paymentGateway: prev.isPaidAppointment ? '' : 'Zikoro manage',
+          //                   curency: '',
+          //                   amount: null,
+          //                 }
+          //               })
+          //               }}
+          //         >   
+          //             <div className="flex w-full justify-between font-semibold text-[9px] text-gray-50"> <p className=''>ON</p><p className=''>OFF</p>  </div>
+          //             <div className={`bg-white absolute inset-0 w-7 h-6 flex-shrink-0 rounded-full transition-transform duration-200 transform ${formData?.isPaidAppointment ? 'translate-x-7' : ''}`}></div>
+          //         </div>
+          //       </div>
+
+          //       <div className={`${formData?.isPaidAppointment ? 'max-h-screen visible':'max-h-0 invisible  overflow-hidden' } transform relative z-10 transition-all duration-300 pb-`}>
+          //         <p className='pb-2'>Set currency and pricing</p>
+          //         <div className="flex gap-8 items-center">
+          //             <SelectInput
+          //               name='curency'
+          //               value={formData?.curency || ''}
+          //               options={[
+          //                 {label:'USD',value:'USD'},
+          //                 {label:'CAD',value:'CAD'},
+          //                 {label:'EUR',value:'EUR'},
+          //                 {label:'NGN',value:'NGN'},
+          //                 {label:'AUD',value:'AUD'},
+          //               ]}
+          //               setFormData={setFormData!}
+          //               placeholder='select'
+          //               className='w-40 z-50 '
+          //               setError={setErrors}
+          //               error={errors?.curency }
+          //             />
+          //             <SelectInput
+          //               name='amount'
+          //               value={formData?.amount || ''}
+          //               options={[
+          //                 {label:'20',value:20},
+          //                 {label:'40',value:40},
+          //                 {label:'60',value:60},
+          //                 {label:'80',value:80},
+          //                 {label:'100',value:100},
+          //               ]}
+          //               setFormData={setFormData!}
+          //               setError={setErrors}
+          //               placeholder='select'
+          //               className='w-40 z-50 '
+          //               error={errors?.amount }
+          //             />
+          //           </div>
+          //       </div>
+          // </div>
+          // <button onClick={addNewCategory} className="text-zikoroBlue flex gap-2 pt-2 items-center">
+          //     <PlusCircle size={14}/>
+          //     <p>Create Appointment Category</p>
+          // </button>
+          // </>
+          // : null
         }
 
     </div>

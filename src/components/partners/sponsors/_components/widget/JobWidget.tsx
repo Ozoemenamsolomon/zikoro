@@ -18,6 +18,8 @@ import { useCreateLeads } from "@/hooks";
 import { TLead } from "@/types";
 import { EngagementsSettings } from "@/types/engagements";
 import toast from "react-hot-toast";
+import { Edit } from "styled-icons/material";
+import { AddJob } from "@/components/partners/_components";
 export function JobWidget({
   job,
   className,
@@ -25,19 +27,26 @@ export function JobWidget({
   isOrganizer,
   leads,
   engagementsSettings,
+  refetch,
 }: {
   job: PartnerJobType;
   className: string;
   attendee?: TAttendee;
-  isOrganizer: boolean;
+  isOrganizer?: boolean;
   engagementsSettings?: EngagementsSettings | null;
   leads?: TLead[] | null;
+  refetch: () => Promise<any>;
 }) {
   const [isOpen, setOpen] = useState(false);
   const [isApply, setApply] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
 
   function toggleApply() {
     setApply((prev) => !prev);
+  }
+
+  function toggleEdit() {
+    setIsEdit((prev) => !prev);
   }
 
   function onClose() {
@@ -83,9 +92,19 @@ export function JobWidget({
             <p className="text-gray-600 text-sm">{job.companyName ?? ""}</p>
           </div>
 
-          <Button onClick={onClose} className="px-0 w-fit h-fit">
-            <AlertCircle size={22} className="text-gray-500" />
-          </Button>
+          <div className="flex items-center gap-x-2">
+            {isOrganizer && (
+              <Button
+                onClick={toggleEdit}
+                className="px-0 w-fit h-fit"
+              >
+                <Edit size={22} className="text-gray-500" />
+              </Button>
+            )}
+            <Button onClick={onClose} className="px-0 w-fit h-fit">
+              <AlertCircle size={22} className="text-gray-500" />
+            </Button>
+          </div>
         </div>
 
         {/* <p className="text-[#717171] uppercase">{job.companyName}</p> */}
@@ -118,14 +137,12 @@ export function JobWidget({
           </div>
         </div>
 
-        {!isOrganizer && (
-          <Button
-            onClick={toggleApply}
-            className="hover:text-gray-50 w-full sm:w-fit mt-3 transform border transition-all duration-300 ease-in-out  border-basePrimary hover:bg-basePrimary text-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
-          >
-            Apply Now
-          </Button>
-        )}
+        <Button
+          onClick={toggleApply}
+          className="hover:text-gray-50 w-full sm:w-fit mt-3 transform border transition-all duration-300 ease-in-out  border-basePrimary hover:bg-basePrimary text-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
+        >
+          Apply Now
+        </Button>
       </div>
       {isOpen && <JobCardModal close={onClose} job={job} />}
       {isApply && (
@@ -136,6 +153,15 @@ export function JobWidget({
           job={job}
           engagementsSettings={engagementsSettings}
           leads={leads}
+        />
+      )}
+      {isEdit && (
+        <AddJob
+          refetch={refetch}
+          companyName={job?.companyName}
+          jobs={job}
+          partnerId={job?.partnerId}
+          close={toggleEdit}
         />
       )}
     </>
@@ -366,7 +392,7 @@ function ActionWidget({
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="w-[95%] max-w-xl m-auto h-[300px] absolute  inset-0 rounded-lg bg-white py-10 px-4 flex  flex-col "
+        className="w-[95%] max-w-xl m-auto h-fit max-h-[300px] absolute  inset-0 rounded-lg bg-white py-10 px-4 flex  flex-col "
       >
         {!isShow ? (
           <div className="w-full flex gap-y-16 flex-col items-center justify-center h-full">

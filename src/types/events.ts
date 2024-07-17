@@ -135,10 +135,11 @@ export type TOrgEvent = Event & {
 export interface Reward {
   rewardTitle: string;
   image: string;
-  quantity: string;
-  point: string;
-  eventId: string;
+  quantity: number;
+  point: number;
+  eventAlias: string;
   eventName: string;
+  id: number;
 }
 
 export interface TPayment {
