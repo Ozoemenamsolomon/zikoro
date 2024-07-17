@@ -12,7 +12,7 @@ import {
   TOrgEvent,
 } from "@/types";
 import _ from "lodash";
-import {  useUpdateAttendees } from "@/hooks";
+import { useUpdateAttendees } from "@/hooks";
 import { getRequest, postRequest, patchRequest } from "@/utils/api";
 import { UseGetResult } from "@/types/request";
 import { useGetAllAttendees, useGetEventAttendees } from "@/hooks";
@@ -27,6 +27,7 @@ import {
 import { useGetOrganizations } from "./organization";
 import useUserStore from "@/store/globalUserStore";
 import { generateAlphanumericHash } from "@/utils/helpers";
+import { Reward } from "@/types";
 
 const supabase = createClientComponentClient();
 
@@ -159,7 +160,7 @@ export const useGetEvents = (): UseGetResult<
 };
 
 export function useCreateOrganisation() {
-  const {user: userData} = useUserStore();
+  const { user: userData } = useUserStore();
   const [loading, setLoading] = useState(false);
 
   async function organisation(values: z.infer<typeof organizationSchema>) {
@@ -202,7 +203,7 @@ export function useCreateOrganisation() {
 }
 
 export function useGetUserHomePageEvents() {
-  const {user: userData } = useUserStore()
+  const { user: userData } = useUserStore();
   const [userEvents, setUserEvents] = useState<TOrgEvent[]>([] as TOrgEvent[]);
   const [firstSetEvents, setFirstSetEvents] = useState<TOrgEvent[]>(
     [] as TOrgEvent[]
@@ -664,7 +665,7 @@ export function useFetchSingleEvent(eventId: string) {
 }
 
 export function useBookingEvent() {
-  const {user:userData} = useUserStore()
+  const { user: userData } = useUserStore();
   const [loading, setLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
 
@@ -734,7 +735,7 @@ export function useBookingEvent() {
 
 export function useTransactionDetail() {
   const [loading, setLoading] = useState(false);
-  const {user: userData} = useUserStore()
+  const { user: userData } = useUserStore();
   async function sendTransactionDetail(
     allowPayment: (bool: boolean) => void,
     values: any
@@ -1024,25 +1025,24 @@ export function useDiscount() {
 
 export function useCreateReward() {
   const [loading, setLoading] = useState(false);
-  async function createReward(values: any) {
+
+  async function createReward(payload: Partial<Reward>) {
     setLoading(true);
 
     try {
-      const { error, status } = await supabase
-        .from("rewards")
-        .upsert([{ ...values }]);
+      const { data, status } = await postRequest<Partial<Reward>>({
+        endpoint: "/rewards",
+        payload,
+      });
 
-      if (error) {
-        toast.error(error.message);
-
-        return;
-      }
-
-      if (status === 201 || status === 200) {
-        setLoading(false);
-        toast.success("Reward created successfully");
-      }
-    } catch (error) {}
+      toast.success("Rewards created successfully");
+      return data;
+    } catch (error: any) {
+      //
+      toast.error(error?.response?.data?.error);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return {
@@ -1051,38 +1051,30 @@ export function useCreateReward() {
   };
 }
 
-export function useFetchRewards(eventId: string | number) {
+export function useUpdateReward() {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<any[]>([]);
-  useEffect(() => {
-    fetchRewards();
-  }, []);
 
-  async function fetchRewards() {
+  async function updateReward(payload: Partial<Reward>) {
     setLoading(true);
     try {
-      const { data, error: fetchError } = await supabase
-        .from("rewards")
-        .select("*")
-        .eq("eventAlias", eventId);
+      const { data, status } = await patchRequest<Partial<Reward>>({
+        endpoint: "/rewards",
+        payload,
+      });
 
-      if (fetchError) {
-        setLoading(false);
-        return null;
-      }
-
-      setData(data);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
+      toast.success("Rewards Updated successfully");
+      return data;
+    } catch (error: any) {
       //
+      toast.error(error?.response?.data?.error);
+    } finally {
+      setLoading(false);
     }
   }
 
   return {
-    data,
+    updateReward,
     loading,
-    refetch: fetchRewards,
   };
 }
 
@@ -1153,7 +1145,7 @@ export function useFormatEventData(event?: Event | null) {
 
 export function useAttenedeeEvents() {
   const { events, isLoading } = useGetEvents();
-  const {user} = useUserStore() 
+  const { user } = useUserStore();
   const { attendees, isLoading: loading } = useGetAllAttendees();
   const [registeredEvents, setRegisteredEvents] = useState<Event[] | undefined>(
     []
@@ -1216,7 +1208,7 @@ export function useVerifyUserAccess(eventId: string) {
   const [attendeeId, setAttendeeId] = useState<number | undefined>();
   const [attendee, setAttendee] = useState<TAttendee | undefined>();
   const [isOrganizer, setIsOrganizer] = useState(false);
-  const {user} = useUserStore()
+  const { user } = useUserStore();
 
   useEffect(() => {
     if (!loading && !isLoading) {

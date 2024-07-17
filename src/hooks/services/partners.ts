@@ -2,8 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Event, TPartner, PartnerJobType, TExPartner, PromotionalOfferType } from "@/types";
-import { postRequest, patchRequest, getRequest } from "@/utils/api";
+import {
+  Event,
+  TPartner,
+  PartnerJobType,
+  TExPartner,
+  PromotionalOfferType,
+} from "@/types";
+import {
+  postRequest,
+  patchRequest,
+  getRequest,
+  deleteRequest,
+} from "@/utils/api";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
 import { toast } from "@/components/ui/use-toast";
@@ -21,7 +32,7 @@ export function useAddPartners() {
     };
 
     try {
-      const { data, status } = await postRequest({
+      const { data, status } = await postRequest<Partial<TPartner>>({
         endpoint: "/partner",
         payload,
       });
@@ -37,7 +48,7 @@ export function useAddPartners() {
       });
       return data;
     } catch (error: any) {
-      // 
+      //
       toast({
         description: error?.response?.data?.error,
         variant: "destructive",
@@ -63,7 +74,7 @@ export function useFetchPartners(eventId: string) {
 
   async function fetchPartners() {
     setLoading(true);
-    
+
     try {
       const { data: result, status } = await getRequest<TExPartner[]>({
         endpoint: `/partner/${eventId}`,
@@ -76,7 +87,7 @@ export function useFetchPartners(eventId: string) {
       return setData(result.data);
     } catch (error) {
       setLoading(false);
-      //  
+      //
     }
   }
 
@@ -609,7 +620,7 @@ export function useFetchPartnersJob(eventId: string) {
   return {
     jobs: allPartnersJob,
     loading,
-    refetch
+    refetch,
   };
 }
 
@@ -631,7 +642,7 @@ export function useFetchPartnersOffers(eventId: string) {
   return {
     offers: allPartnersOffers,
     loading,
-    refetch
+    refetch,
   };
 }
 
@@ -759,18 +770,17 @@ export function useDeleteEventExhibitionHall(eventId: string) {
   };
 }
 
-
 export function useUpdatePartnersOpportunities<T>() {
   const [loading, setLoading] = useState(false);
 
-  async function update(payload: Partial<T>, type:string) {
+  async function update(payload: Partial<T>, type: string) {
     try {
       const { data, status } = await patchRequest<T>({
         endpoint: `/partner/opportunities?type=${type}`,
         payload,
       });
 
-      if ( status !== 201) throw data;
+      if (status !== 201) throw data;
 
       toast({
         description: "Partner Updated successfully",
@@ -788,6 +798,37 @@ export function useUpdatePartnersOpportunities<T>() {
 
   return {
     update,
+    loading,
+  };
+}
+
+export function useDeletePartnersOpportunities<T>() {
+  const [loading, setLoading] = useState(false);
+
+  async function deletes(id: string, type: string) {
+    try {
+      const { data, status } = await deleteRequest<T>({
+        endpoint: `/partner/opportunities?type=${type}&id=${id}`,
+      });
+
+      //  if ( status !== 201) throw data;
+
+      toast({
+        description: "Partner Updated successfully",
+      });
+      return data;
+    } catch (error: any) {
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return {
+    deletes,
     loading,
   };
 }

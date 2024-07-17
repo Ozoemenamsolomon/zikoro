@@ -291,13 +291,6 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     setIsPublishing(false);
   }
 
-  function onBtnClick() {
-    if (data?.published) {
-      window.open(`/live-events/${data?.eventAlias}`);
-    } else {
-      onClose();
-    }
-  }
   return (
     <DateAndTimeAdapter>
       <>
@@ -325,7 +318,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      onBtnClick();
+                      onClose();
                     }}
                     className="text-gray-50 bg-basePrimary gap-x-2 w-fit"
                   >
@@ -345,21 +338,22 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                       showPublishModal();
                     }}
                     type="submit"
-                    className={cn("text-basePrimary border border-basePrimary gap-x-2", data?.published && "text-gray-600 border-gray-600")}
+                    className={cn(
+                      "text-basePrimary border border-basePrimary gap-x-2",
+                      data?.published && "text-gray-600 border-gray-600"
+                    )}
                   >
-                   {data?.published ? 
-                    <>
-                    <Unpublished size={20} />
-                   <p>Unpublish</p>
-                   </> 
-                  :
-                  <>
-                  <Download size={20} />
-                  <p>Publish</p>
-                  </>
-                  
-                  }
-                   
+                    {data?.published ? (
+                      <>
+                        <Unpublished size={20} />
+                        <p>Unpublish</p>
+                      </>
+                    ) : (
+                      <>
+                        <Download size={20} />
+                        <p>Publish</p>
+                      </>
+                    )}
                   </Button>
                 </div>
               </div>
@@ -826,7 +820,17 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
             approves it.`}
           />
         )}
-        {isOpen && <PreviewModal close={onClose} eventDetail={data} />}
+        {isOpen && (
+          <PreviewModal
+            close={onClose}
+            eventDetail={data}
+            url={
+              data?.published
+                ? `/live-events/${data?.eventAlias}`
+                : `/preview/${data?.eventAlias}`
+            }
+          />
+        )}
       </>
     </DateAndTimeAdapter>
   );
