@@ -22,6 +22,8 @@ import {  ChevronLeft, ChevronRight } from 'lucide-react'
 import { SelectInput } from '../ui/CustomSelect'
 import { useAppointmentContext } from '../context/AppointmentContext'
 import DetailsForm from './DetailsForm'
+import { Category } from '../create/CategoryForm'
+import SelectOnly from '../ui/SeectInput'
 
 function classNames(...classes: (string | false)[]): string {
     return classes.filter(Boolean).join(' ');
@@ -131,12 +133,33 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
 
   const normalizedSelectedDay = startOfDay(selectedDay!);
 
-  const appointmentTypes: { label: string, value: string }[] = appointmnetLink?.category 
-  ? appointmnetLink.category.split(', ').map(item => ({
-      label: item,
-      value: item,
-    })) 
+  const appointmentTypeJson: Category[] = JSON.parse(appointmnetLink?.category || `[]`);
+
+const appointmentTypes: { label: string, value: string }[] = appointmentTypeJson ?
+  appointmentTypeJson.map((item: Category) => ({
+    label: item.name || '',
+    value: item.name || '',
+  }))
   : [];
+
+  // useEffect(() => {
+  //   setBookingFormData((prev) => ({
+  //     ...prev,
+  //     appointmentType: appointmentTypeJson[0]?.name || '',
+  //   }));
+  // }, [appointmentTypeJson]);
+
+  // useEffect(() => {
+  //   if (appointmentTypeJson.length) {
+  //     const selectedAppointmentType = appointmentTypeJson.find((item: Category) => item.name === bookingFormData?.appointmentType) || appointmentTypeJson[0];
+  //     setBookingFormData((prev) => ({
+  //       ...prev,
+  //       price: selectedAppointmentType.amount,
+  //       currency: selectedAppointmentType.curency,
+  //     }));
+  //   }
+  //   // Add `appointmentTypeJson` and `bookingFormData.appointmentType` as dependencies to avoid infinite loops
+  // }, [appointmentTypeJson, bookingFormData?.appointmentType]);
 
 
   return (
@@ -149,14 +172,14 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
             <div className=" bg-white  sm:w-3/5 p-4 rounded-lg  flex-shrink-0 ">
 
                 {appointmnetLink?.category ? 
-                <div className=" pb-6 space-y-1">
+                <div className="w-full pb-6 space-y-1">
                     <h5  className='font-semibold text-lg'>Select meeting category</h5  >
-                    <SelectInput
+                    <SelectOnly
                         name='appointmentType'
                         value={bookingFormData?.appointmentType || ''}
                         options={appointmentTypes}
                         setFormData={setBookingFormData}
-                        className='w-4/5 z-30'
+                        className='w-10/12 z-30'
                     />
                 </div> : null}
 

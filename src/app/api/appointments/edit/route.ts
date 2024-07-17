@@ -17,10 +17,11 @@ export async function PUT(req: NextRequest) {
   try {
     const body: AppointmentLink = await req.json();
     console.log('PUT',{ body });
-
+    let newForm={...body, createdBy:body?.createdBy?.id}
+    
     const { data, error } = await supabase
       .from('appointmentLinks')
-      .update(body)
+      .update(newForm)
       .eq('id', body.id)
       .select('*')
       .single();

@@ -22,8 +22,11 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
-import { useUpdateWorkspace } from "@/hooks/services/workspace";
-import { useDeleteWorkspace } from "@/hooks/services/workspace";
+import {
+  useDeleteWorkspace,
+  useUpdateWorkspace,
+} from "@/hooks/services/workspace";
+import Image from "next/image";
 
 interface FormData {
   orgName: string;
@@ -37,6 +40,7 @@ interface FormData {
   orgLinkedin: string;
   orgFacebook: string;
   orgInstagram: string;
+  orgId: number;
 }
 
 export default function General() {
@@ -314,6 +318,7 @@ export default function General() {
     orgLinkedin: "",
     orgFacebook: "",
     orgInstagram: "",
+    orgId: 0,
   });
 
   // import update workspace function
@@ -325,7 +330,7 @@ export default function General() {
   );
 
   //import delete workspace function
-  const { deleteWorkspace } = useDeleteWorkspace(formData.orgName);
+  const { deleteWorkspace } = useDeleteWorkspace(formData.orgId);
 
   // Sync formData with organization data
   useEffect(() => {
@@ -342,11 +347,10 @@ export default function General() {
         orgLinkedin: organization.linkedIn || "",
         orgFacebook: organization.facebook || "",
         orgInstagram: organization.instagram || "",
+        orgId: organization.id,
       });
       setLogoUrl(organization.organizationLogo);
       setFaviconUrl(organization.favicon);
-
-      console.log(organization)
     }
   }, [organization]);
 
@@ -367,6 +371,7 @@ export default function General() {
         orgLinkedin: organization.linkedIn || "",
         orgFacebook: organization.facebook || "",
         orgInstagram: organization.instagram || "",
+        orgId: organization.id,
       });
       setLogoUrl(organization.organizationLogo);
       setFaviconUrl(organization.favicon);
@@ -622,9 +627,8 @@ export default function General() {
                 </div>
               </div>
 
-              <div className="flex flex-col lg:flex-row mt-8 px-0 lg:px-[206px] gap-[52px] mb-8">
-                {/* Logo */}
-                <div className="w-full lg:w-[324px]">
+              <div className="flex flex-col lg:flex-row mt-8 px-0  xl:px-[206px] gap-[52px] mb-8">
+                <div className="w-full lg:w-full xl:w-1/2">
                   <p className="text-base font-medium">Logo</p>
                   <p className="text-[14px] font-normal mt-2 h-full lg:h-[79px]">
                     The logo will be used on the event website, in emails, and
@@ -671,13 +675,20 @@ export default function General() {
                       </label>
                       <p className="text-[12px] mt-4">
                         {" "}
-                        Image size should be 50px by 50px
+                        Logo size should be 50px by 50px
                       </p>
+                      <p className="text-[12px] mt-4 font-semibold">
+                        Current Logo
+                      </p>
+                      <img
+                        src={organization.organizationLogo}
+                        alt="logo"
+                        className="w-[50px] h-[50px] rounded-full mt-4"
+                      />
                     </div>
                   )}
                 </div>
-                {/* Favicon */}
-                <div className="w-full lg:w-[324px]">
+                <div className="w-full lg:w-full xl:w-1/2">
                   <p className="text-base font-medium">Favicon</p>
                   <p className="text-[14px] font-normal mt-2 h-full lg:h-[79px]">
                     A favicon is a visual representation of your organization's
@@ -724,8 +735,16 @@ export default function General() {
                       </label>
                       <p className="text-[12px] mt-4">
                         {" "}
-                        Image size should be 16px by 16px
+                        Favicon size should be 16px by 16px
                       </p>
+                      <p className="text-[12px] mt-4 font-semibold">
+                        Current Favicon
+                      </p>
+                      <img
+                        src={organization.organizationLogo}
+                        alt="logo"
+                        className="w-[50px] h-[50px] rounded-full mt-4"
+                      />
                     </div>
                   )}
                 </div>

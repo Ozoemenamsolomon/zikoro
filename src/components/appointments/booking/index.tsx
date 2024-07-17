@@ -4,10 +4,13 @@ import React from 'react'
 import Calender from './Calender'
 import {useGetBookingAppointment} from "@/hooks"
 import Image from 'next/image'
+import { useAppointmentContext } from '../context/AppointmentContext'
 
 const Booking =  ({alias}:{alias:string}) => {
   const {appointment: appointmnetLink, isLoading, error, } = useGetBookingAppointment(alias)
+  const {bookingFormData} = useAppointmentContext()
   console.log({appointmnetLink})
+
     
   return (
     <main className='relative pt-10 sm:px-6 xl:px-12  bg-white min-h-screen  space-y-4'>
@@ -22,7 +25,7 @@ const Booking =  ({alias}:{alias:string}) => {
         <header className='max-md:pl-4'>
             {
                 isLoading ?
-                <div className='w-20 h-10 rounded-md animate-pulse bg-slate-100'></div>
+                <div className='w-20 h-10 rounded-md animate-pulse bg-[#F9FAFF]'></div>
                 :
                 appointmnetLink?.logo ?
                 <div className=''>
@@ -35,7 +38,7 @@ const Booking =  ({alias}:{alias:string}) => {
             }
         </header>
 
-        <section className="py-10  px-4 rounded-lg   w-full flex flex-col bg-[#F2F2F2] justify-between gap-12">
+        <section className="py-10  px-4 rounded-lg   w-full flex flex-col bg-[#F9FAFF] justify-between gap-12">
 
             <section className="w-full max-w-7xl lg:h-[70vh] mx-auto  grid lg:flex gap-6 lg:justify-center">
 

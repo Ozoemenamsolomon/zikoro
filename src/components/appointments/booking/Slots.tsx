@@ -106,54 +106,60 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
         : 
         <>
          {isBooking ? <h5 className="text-md bg-white px-4 py-3 font-semibold">Choose Time</h5> : null}
-         <div className={` grid gap-3 overflow-auto h-full p-4 ${isBooking ? 'pb-32' : ''} `}>
-            {
-              timeSlots?.slots?.map((slot,i)=>{
-                // console.log({timeSlots})
-                return (
-                    <button key={i} 
-                        type='button'
-                        disabled={inactiveSlots.includes(slot.value)}
+         <div className="overflow-auto h-full  w-full  ">
+            <div className={` flex flex-col w-full gap-2 h-full p-4 ${isBooking ? 'pb-32' : ''} `}>
+              {
+                timeSlots?.slots?.map((slot,i)=>{
+                  // console.log({timeSlots})
+                  return (
+                      <button key={i} 
+                          type='button'
+                          disabled={inactiveSlots.includes(slot.value)}
 
-                        className={`
-                            ${bookingFormData?.appointmentTime===slot.label ? 'bg-purple-100':'border'}  
-                            ${inactiveSlots.includes(slot.value) ? 'disabled cursor-not-allowed opacity-30' : ''}
-                            px-4 py-3 text-center rounded-md `}
-                            onClick={
-                              isBooking ? ()=>setBookingFormData({
+                          className={`w-full flex-shrink-0  h-12 p-0.5
+                              ${bookingFormData?.appointmentTime===slot.label ? ' bg-basePrimary':'border'}  
+                              ${inactiveSlots.includes(slot.value) ? 'disabled cursor-not-allowed opacity-30' : ''}
+                              rounded-md hover:shadow duration-200`}
+                              onClick={
+                                isBooking ? ()=>setBookingFormData({
+                                  ...bookingFormData,
+                                  appointmentTime: slot.label,
+                                  appointmentDate: format(selectedDate!, 'yyyy-MM-dd'),
+                                  appointmentTimeStr:  slot.label,
+                                  appointmentDuration: appointmnetLink?.duration!,
+                                  createdBy: appointmnetLink?.createdBy?.id!,
+                              }) 
+                              :
+                              ()=>setBookingFormData({
                                 ...bookingFormData,
                                 appointmentTime: slot.label,
-                                appointmentDate: format(selectedDate!, 'yyyy-MM-dd'),
                                 appointmentTimeStr:  slot.label,
-                                appointmentDuration: appointmnetLink?.duration!,
-                                createdBy: appointmnetLink?.createdBy?.id!,
                             }) 
-                            :
-                            ()=>setBookingFormData({
-                              ...bookingFormData,
-                              appointmentTime: slot.label,
-                              appointmentTimeStr:  slot.label,
-                          }) 
-                          }
-                    > {slot.label}</button>
-                )
-                })
-            }
-            
+                            }
+                      >
+                        <div className={`w-full h-full rounded flex justify-center items-center text-center ${bookingFormData?.appointmentTime===slot.label ? ' bg-gradient-to-r from-white/90 to-pink-100':''} `}>
+                          {slot.label}
+                        </div> 
+                      </button>
+                  )
+                  })
+              }
+              
+            </div>
         </div>
         {
           isBooking  ?  
           <div className="absolute bottom-0 bg-white py-3 z-10 px-4 w-full">
-          <button
-            onClick={()=>{
-              setIsFormUp(true) 
-            }}
-            type="submit"
-            className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading  || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
-            disabled={loading || isDisabled}
-          >
-            Proceed
-          </button> 
+            <button
+              onClick={()=>{
+                setIsFormUp(true) 
+              }}
+              type="submit"
+              className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading  || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
+              disabled={loading || isDisabled}
+            >
+              Proceed
+            </button> 
           </div> 
           : null
         }

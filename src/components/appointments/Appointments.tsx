@@ -45,9 +45,9 @@ const cancelSchedule = async (bookingFormData: Booking, refresh:any, setBookingF
     selectedDate: bookingFormData?.appointmentDate!
   });
 
-  if(!bookingFormData?.reason){
-    setError('Provide a reason.')
-  }
+  // if(!bookingFormData?.reason){
+  //   setError('Provide a reason.')
+  // }
 
   try {
     setIsLoading(true)
@@ -87,10 +87,10 @@ const reschedule = async (bookingFormData: Booking, refresh:any, setBookingFormD
     selectedDate: bookingFormData?.appointmentDate!
   });
 
-  if(!bookingFormData?.reason){
-    setError('Provide a reason.')
-    return
-  }
+  // if(!bookingFormData?.reason){
+  //   setError('Provide a reason.')
+  //   return
+  // }
 
   try {
     setIsLoading(true)
