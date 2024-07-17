@@ -12,14 +12,14 @@ export function PromotionalOffer({
   refetch,
   isHaveAccess,
   isOrganizer,
-  attendee
+  attendee,
 }: {
   partner: TPartner | null;
   refetch: () => Promise<null | undefined>;
   partnerId: string;
   isHaveAccess: boolean;
   isOrganizer: boolean;
-  attendee?:TAttendee;
+  attendee?: TAttendee;
 }) {
   const [isOpen, setOpen] = useState(false);
 
@@ -32,18 +32,25 @@ export function PromotionalOffer({
         <div className="flex p-3 border-y items-center justify-between w-full">
           <p className="font-medium">Promotional Offers</p>
 
-         {isHaveAccess && <Button onClick={onClose} className="px-1 h-fit w-fit">
-            <PlusCircle size={24} />
-          </Button>}
+          {isHaveAccess && (
+            <Button onClick={onClose} className="px-1 h-fit w-fit">
+              <PlusCircle size={24} />
+            </Button>
+          )}
         </div>
 
-        <Offers isOrganizer={isOrganizer} attendee={attendee} data={partner?.offers}/>
+        <Offers
+          isOrganizer={isOrganizer}
+          attendee={attendee}
+          data={partner?.offers}
+          refetch={refetch}
+        />
       </div>
 
       {isOpen && (
         <CreatePromo
           close={onClose}
-          partner={partner}
+          companyName={partner?.companyName || ""}
           partnerId={partnerId}
           refetch={refetch}
         />

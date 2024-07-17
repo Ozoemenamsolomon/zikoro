@@ -78,15 +78,19 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
       name: "Engagements",
       href: `${eventId}/engagements/interactions`,
     },
-    {
-      name: "Analytics",
-      href: ``, // ${eventId}/analytics
-    },
+ 
     {
       name: "Settings",
       href: `${eventId}/settings`,
     },
   ];
+
+  /***
+      {
+      name: "Analytics",
+      href: ``, // ${eventId}/analytics
+    },
+   */
 
   const hideFromAttendee = ["Contents", "Analytics", "Settings", "Marketing"];
   const set = new Set(hideFromAttendee);

@@ -17,10 +17,14 @@ import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown } from "@styled-icons/bootstrap/ChevronDown";
+import { ChevronDown } from "styled-icons/bootstrap";
 import { jobSchema } from "@/schemas";
-import { useAddPartnerJob, useUpdatePartners } from "@/hooks";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import {
+  useAddPartnerJob,
+  useUpdatePartners,
+  useUpdatePartnersOpportunities,
+} from "@/hooks";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import {
   flexibiltiy,
@@ -29,34 +33,37 @@ import {
   qualification,
   workExperience,
 } from "@/constants";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TPartner, PartnerJobType } from "@/types";
 import { cn } from "@/lib";
-import {generateAlias} from "@/utils"
+import { generateAlias } from "@/utils";
 
 export function AddJob({
   close,
   partnerId,
   refetch,
-  partner,
+  jobs,
+  companyName,
 }: {
   partnerId: string;
-  partner: TPartner | null;
   refetch: () => Promise<null | undefined>;
   close: () => void;
+  jobs?: PartnerJobType;
+  companyName: string;
 }) {
-  //const { loading, addPartnerJob } = useAddPartnerJob();
-  const [currencyCode, setcurrencyCode] = useState("NGN");
-  const { update} = useUpdatePartners();
-  const [loading, setLoading] = useState(false)
+  const [currencyCode, setcurrencyCode] = useState(jobs?.currencyCode || "NGN");
+  const { update } = useUpdatePartnersOpportunities<PartnerJobType>();
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof jobSchema>>({
     resolver: zodResolver(jobSchema),
   });
 
+  console.log("partnerId", partnerId);
+
   async function onSubmit(values: z.infer<typeof jobSchema>) {
-    setLoading(true)
-     // maually checking
-     if (values.applicationMode === "url" && !values.applicationLink) {
+    setLoading(true);
+    // maually checking
+    if (values.applicationMode === "url" && !values.applicationLink) {
       form.setError("applicationLink", {
         type: "manual",
         message: "Please Provide a Url",
@@ -81,38 +88,49 @@ export function AddJob({
       return; /// stop submission
     }
 
-    
-    const id = generateAlias()
-    const jobs: PartnerJobType[] =
-      Array.isArray(partner?.jobs) && partner?.jobs?.length > 0
-        ? [
-            ...partner?.jobs,
-            {
-              ...values,
-              id,
-              partnerId,
-              currencyCode,
-              companyName: partner ? partner?.companyName : "",
-            },
-          ]
-        : [
-            {
-              ...values,
-              id,
-              partnerId,
-              currencyCode,
-              companyName: partner ? partner?.companyName : "",
-            },
-          ];
-      const payload = {
-        ...partner,
-        jobs
-      }
-    await update(payload);
-    setLoading(false)
+    const id = generateAlias();
+    const payload: Partial<PartnerJobType> = jobs?.id
+      ? {
+          ...jobs,
+          ...values,
+          currencyCode,
+          companyName,
+          partnerId,
+        }
+      : {
+          ...values,
+          id,
+          partnerId,
+          currencyCode,
+          companyName,
+        };
+    await update(payload, "job");
+    setLoading(false);
     refetch();
     close();
   }
+
+  useEffect(() => {
+    if (jobs) {
+      form.reset({
+        jobTitle: jobs?.jobTitle,
+        employmentType: jobs?.employmentType,
+        qualification: jobs?.qualification,
+        applicationMode: jobs?.applicationMode as any,
+        applicationLink: jobs?.applicationLink,
+        whatsApp: jobs?.whatsApp,
+        email: jobs?.email,
+        description: jobs?.description,
+        minSalary: jobs?.minSalary,
+        maxSalary: jobs?.maxSalary,
+        salaryDuration: jobs?.salaryDuration,
+        flexibility: jobs?.flexibility,
+        country: jobs?.country,
+        city: jobs?.city,
+        experienceLevel: jobs?.experienceLevel,
+      });
+    }
+  }, [jobs]);
   return (
     <div
       role="button"
@@ -203,12 +221,25 @@ export function AddJob({
                 control={form.control}
                 name="salaryDuration"
                 render={({ field }) => (
-                  <ReactSelect
-                    {...field}
-                    placeHolder=""
-                    label="SalaryDuration"
-                    options={duration}
-                  />
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <ReactSelect
+                        {...field}
+                        defaultValue={
+                          jobs
+                            ? {
+                                value: jobs?.salaryDuration,
+                                label: jobs?.salaryDuration,
+                              }
+                            : ""
+                        }
+                        placeHolder="Select Duration"
+                        label="SalaryDuration"
+                        options={duration}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
             </div>
@@ -216,12 +247,25 @@ export function AddJob({
               control={form.control}
               name="flexibility"
               render={({ field }) => (
-                <ReactSelect
-                  {...field}
-                  placeHolder="Enter the Flexibility Type"
-                  label="Flexibility"
-                  options={flexibiltiy}
-                />
+                <FormItem className="w-full">
+                  <FormControl>
+                    <ReactSelect
+                      {...field}
+                      defaultValue={
+                        jobs
+                          ? {
+                              value: jobs?.flexibility,
+                              label: jobs?.flexibility,
+                            }
+                          : ""
+                      }
+                      placeHolder="Select the Flexibility Type"
+                      label="Flexibility"
+                      options={flexibiltiy}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
             <FormField
@@ -272,12 +316,25 @@ export function AddJob({
               control={form.control}
               name="employmentType"
               render={({ field }) => (
-                <ReactSelect
-                  {...field}
-                  placeHolder="Enter the Employment Type"
-                  label="Employment Type"
-                  options={employemntType}
-                />
+                <FormItem className="w-full">
+                  <FormControl>
+                    <ReactSelect
+                      {...field}
+                      defaultValue={
+                        jobs
+                          ? {
+                              value: jobs?.employmentType?.toLowerCase(),
+                              label: jobs?.employmentType,
+                            }
+                          : ""
+                      }
+                      placeHolder="Enter the Employment Type"
+                      label="Employment Type"
+                      options={employemntType}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
 
@@ -285,24 +342,50 @@ export function AddJob({
               control={form.control}
               name="experienceLevel"
               render={({ field }) => (
-                <ReactSelect
-                  {...field}
-                  placeHolder="Enter the Experience Level"
-                  label="Experience Level"
-                  options={workExperience}
-                />
+                <FormItem className="w-full">
+                  <FormControl>
+                    <ReactSelect
+                      {...field}
+                      defaultValue={
+                        jobs
+                          ? {
+                              value: jobs?.experienceLevel,
+                              label: jobs?.experienceLevel,
+                            }
+                          : ""
+                      }
+                      placeHolder="Enter the Experience Level"
+                      label="Experience Level"
+                      options={workExperience}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
             <FormField
               control={form.control}
               name="qualification"
               render={({ field }) => (
-                <ReactSelect
-                  {...field}
-                  placeHolder="Enter the Qualification"
-                  label="Qualification"
-                  options={qualification}
-                />
+                <FormItem className="w-full">
+                  <FormControl>
+                    <ReactSelect
+                      {...field}
+                      defaultValue={
+                        jobs
+                          ? {
+                              value: jobs?.qualification,
+                              label: jobs?.qualification,
+                            }
+                          : ""
+                      }
+                      placeHolder="Enter the Qualification"
+                      label="Qualification"
+                      options={qualification}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
 
@@ -322,6 +405,7 @@ export function AddJob({
                         <input
                           type="radio"
                           {...field}
+                          defaultChecked={jobs?.applicationMode === value}
                           value={value}
                           className="accent-basePrimary h-[20px] pt-3 w-[20px] mr-4"
                         />

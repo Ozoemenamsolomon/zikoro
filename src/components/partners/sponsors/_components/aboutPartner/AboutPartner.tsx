@@ -232,6 +232,7 @@ export function AboutPartner({
                   isOrganizer={isOrganizer}
                   attendee={attendee}
                   job={job}
+                  refetch={refetch}
                   className={
                     index === partner?.jobs?.length - 1
                       ? "border-b-0"
@@ -245,7 +246,7 @@ export function AboutPartner({
 
       {isAddJob && (
         <AddJob
-          partner={partner}
+          companyName={partner?.companyName || ""}
           refetch={refetch}
           close={onOpen}
           partnerId={partnerId}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Event, TPartner, PartnerJobType, TExPartner } from "@/types";
+import { Event, TPartner, PartnerJobType, TExPartner, PromotionalOfferType } from "@/types";
 import { postRequest, patchRequest, getRequest } from "@/utils/api";
 import { uploadFile } from "@/utils";
 import _ from "lodash";
@@ -592,9 +592,9 @@ export function useUpdateSponsor() {
 }
 
 export function useFetchPartnersJob(eventId: string) {
-  const { data, loading } = useFetchPartners(eventId);
+  const { data, loading, refetch } = useFetchPartners(eventId);
 
-  let allPartnersJob: any[] = [];
+  let allPartnersJob: PartnerJobType[] = [];
 
   data.map((item) => {
     const { jobs } = item;
@@ -609,13 +609,14 @@ export function useFetchPartnersJob(eventId: string) {
   return {
     jobs: allPartnersJob,
     loading,
+    refetch
   };
 }
 
 export function useFetchPartnersOffers(eventId: string) {
-  const { data, loading } = useFetchPartners(eventId);
+  const { data, loading, refetch } = useFetchPartners(eventId);
 
-  let allPartnersOffers: any[] = [];
+  let allPartnersOffers: PromotionalOfferType[] = [];
 
   data.map((item) => {
     const { offers } = item;
@@ -630,6 +631,7 @@ export function useFetchPartnersOffers(eventId: string) {
   return {
     offers: allPartnersOffers,
     loading,
+    refetch
   };
 }
 
@@ -756,78 +758,36 @@ export function useDeleteEventExhibitionHall(eventId: string) {
     deleteAll,
   };
 }
-/**
- 
-export function useAddSponsorsType() {
+
+
+export function useUpdatePartnersOpportunities<T>() {
   const [loading, setLoading] = useState(false);
 
-  async function addSponsors(
-    levelData: { type: string; id: string }[] | undefined,
-    close: () => void,
-    eventId: string,
-    payload: { id: string; type: string }
-  ) {
+  async function update(payload: Partial<T>, type:string) {
     try {
-      setLoading(true);
-      const { data } = await supabase
-        .from("events")
-        .select("*")
-        .eq("eventAlias", eventId)
-        .single();
+      const { data, status } = await patchRequest<T>({
+        endpoint: `/partner/opportunities?type=${type}`,
+        payload,
+      });
 
-      const { sponsorCategory: type, ...restData } = data;
+      if (status !== 200) throw data;
 
-      // initialize an empty array
-      let sponsorCategory: { type: string; id: string }[] = [];
-
-      if (data) {
-        const isLevelExist = levelData
-          ?.map(({ type }) => type)
-          .includes(payload.type);
-
-        if (isLevelExist && levelData) {
-          toast({variant:"destructive",description:"Sponsor Level already exist"});
-
-          sponsorCategory = [...levelData];
-
-          return;
-        }
-
-        // when there is no ex. hall
-        if (type === null) {
-          sponsorCategory = [payload];
-        } else {
-          // when there is/are  sponsor
-          sponsorCategory = [...type, payload];
-        }
-      }
-
-      const { error, status } = await supabase
-        .from("events")
-        .update({ ...restData, sponsorCategory })
-        .eq("eventAlias", eventId);
-
-      if (error) {
-        toast({variant:"destructive",description: error.message});
-        setLoading(false);
-        return;
-      }
-
-      if (status === 204 || status === 200) {
-        //
-        toast({description:"Sponsor Type created successfully"});
-        // close();
-        setLoading(false);
-      }
-    } catch (error) {
+      toast({
+        description: "Partner Updated successfully",
+      });
+      return data;
+    } catch (error: any) {
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
       setLoading(false);
     }
   }
 
   return {
-    addSponsors,
+    update,
     loading,
   };
 }
-
- */

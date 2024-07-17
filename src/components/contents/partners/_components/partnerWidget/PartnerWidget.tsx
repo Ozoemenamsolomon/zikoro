@@ -1,8 +1,8 @@
 "use client";
 
 import { sendMail, phoneCall, whatsapp } from "@/utils";
-import { ArrowIosDownward } from "@styled-icons/evaicons-solid/ArrowIosDownward";
-import { Phone } from "@styled-icons/feather/Phone";
+import { ArrowIosDownward } from "styled-icons/evaicons-solid";
+import { Phone } from "styled-icons/feather";
 import { cn } from "@/lib";
 import { Switch } from "@/components/ui/switch";
 import { useState, useMemo, useEffect } from "react";

@@ -2,7 +2,7 @@
 
 import { Offers } from "@/components/partners/_components";
 import { MarketPlaceLayout } from "../_components";
-import { useFetchPartnersOffers, useVerifyUserAccess } from "@/hooks";
+import { useCheckTeamMember, useFetchPartnersOffers, useVerifyUserAccess } from "@/hooks";
 import { EmptyCard } from "@/components/composables";
 import { Search } from "styled-icons/evil";
 import { Loader2 } from "styled-icons/remix-fill";
@@ -17,7 +17,8 @@ type FormValue = {
 
 export function PartnerOffers({ eventId }: { eventId: string }) {
   const {attendee, isOrganizer} = useVerifyUserAccess(eventId)
-  const { offers, loading } = useFetchPartnersOffers(eventId);
+  const {isIdPresent} = useCheckTeamMember({eventId})
+  const { offers, loading, refetch } = useFetchPartnersOffers(eventId);
   const [offerData, setOfferData] = useState<
     PromotionalOfferType[] | undefined
   >([]);
@@ -94,9 +95,10 @@ export function PartnerOffers({ eventId }: { eventId: string }) {
         <Offers
           data={offerData || offers}
           className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-          isOrganizer={isOrganizer}
           attendee={attendee}
           eventId={eventId}
+          refetch={refetch}
+          isOrganizer={isOrganizer || isIdPresent}
         />
       )}
     </MarketPlaceLayout>

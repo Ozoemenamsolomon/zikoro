@@ -12,13 +12,15 @@ export function Offers({
   data,
   attendee,
   isOrganizer,
-  eventId
+  eventId,
+  refetch
 }: {
   className?: string;
   data: PromotionalOfferType[] | undefined;
-  isOrganizer: boolean;
+  isOrganizer?: boolean;
   attendee?: TAttendee;
   eventId?:string;
+  refetch: () => Promise<any>;
 }) {
 
   const { data: engagementsSettings } = useGetData<EngagementsSettings>(
@@ -45,6 +47,7 @@ export function Offers({
             engagementsSettings={engagementsSettings}
             leadsInterests={leadsInterests}
             leads={leads}
+            refetch={refetch}
           />
         ))}
     </div>

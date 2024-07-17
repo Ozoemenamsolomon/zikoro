@@ -1,6 +1,6 @@
 "use client";
 
-import { useFetchPartnersJob, useVerifyUserAccess } from "@/hooks";
+import { useFetchPartnersJob, useVerifyUserAccess, useCheckTeamMember } from "@/hooks";
 import { MarketPlaceLayout } from "../_components";
 import { JobWidget } from "@/components/partners/sponsors/_components";
 import { EmptyCard } from "@/components/composables";
@@ -9,8 +9,9 @@ import { useGetData } from "@/hooks/services/request";
 import { EngagementsSettings } from "@/types/engagements";
 import { TLead, TLeadsInterest } from "@/types";
 export function Jobs({ eventId }: { eventId: string }) {
-  const { jobs, loading } = useFetchPartnersJob(eventId);
+  const { jobs, loading, refetch } = useFetchPartnersJob(eventId);
   const { attendee, isOrganizer } = useVerifyUserAccess(eventId);
+  const {isIdPresent} = useCheckTeamMember({eventId})
   const { data: engagementsSettings } = useGetData<EngagementsSettings>(
     `engagements/${eventId}/settings`
   );
@@ -35,11 +36,12 @@ export function Jobs({ eventId }: { eventId: string }) {
           jobs?.map((job, index) => (
             <JobWidget
               attendee={attendee}
-              isOrganizer={isOrganizer}
               key={index}
               job={job}
+              isOrganizer={isOrganizer || isIdPresent}
               engagementsSettings={engagementsSettings}
               leads={leads}
+              refetch={refetch}
               className={"border rounded-lg py-4 px-3"}
             />
           ))}

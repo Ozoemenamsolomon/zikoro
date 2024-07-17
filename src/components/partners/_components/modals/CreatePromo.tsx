@@ -15,13 +15,13 @@ import {
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown } from "@styled-icons/bootstrap/ChevronDown";
+import { ChevronDown } from "styled-icons/bootstrap";
 import { offerCreationSchema } from "@/schemas";
-import {  useUpdatePartners } from "@/hooks";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { useUpdatePartnersOpportunities } from "@/hooks";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { useState } from "react";
-import {uploadFile, generateAlias} from "@/utils"
+import { useEffect, useState } from "react";
+import { uploadFile, generateAlias } from "@/utils";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { TPartner, PromotionalOfferType } from "@/types";
 import { cn } from "@/lib";
@@ -30,22 +30,26 @@ export function CreatePromo({
   close,
   partnerId,
   refetch,
-  partner,
+  companyName,
+  offer,
 }: {
   partnerId: string;
-  partner: TPartner | null;
+  companyName: string;
+  offer?: PromotionalOfferType;
   refetch: () => Promise<any>;
   close: () => void;
 }) {
-  const [currencyCode, setcurrencyCode] = useState("NGN");
-  const { update } = useUpdatePartners();
-  const [loading, setLoading] = useState(false)
+  const [currencyCode, setcurrencyCode] = useState(
+    offer?.currencyCode || "NGN"
+  );
+  const [loading, setLoading] = useState(false);
+  const { update } = useUpdatePartnersOpportunities();
   const form = useForm<z.infer<typeof offerCreationSchema>>({
     resolver: zodResolver(offerCreationSchema),
   });
 
   async function onSubmit(values: z.infer<typeof offerCreationSchema>) {
-    setLoading(true)
+    setLoading(true);
     // maually checking
     if (values.redeem === "url" && !values.url) {
       form.setError("url", {
@@ -71,43 +75,60 @@ export function CreatePromo({
 
       return; /// stop submission
     }
-   
-    const image = await uploadFile(values?.productImage[0], "image")
-   const id = generateAlias()
-    const promo: PromotionalOfferType[] =
-      Array.isArray(partner?.offers) && partner?.offers?.length > 0
-        ? [
-            ...partner?.offers,
-            {
-              ...values,
-              id,
-              partnerId,
-              currencyCode,
-              productImage: image,
-              companyName: partner ? partner?.companyName : "",
-            },
-          ]
-        : [
-            {
-              ...values,
-              partnerId,
-              id,
-              currencyCode,
-              productImage: image,
-              companyName: partner ? partner?.companyName : "",
-            },
-          ];
-    const payload: Partial<TPartner> = {
-      ...partner,
-      offers: promo,
-    };
-   
 
-    await update(payload);
-    setLoading(false)
+    const image = await new Promise(async (resolve) => {
+      if (typeof values?.productImage === "string") {
+        resolve(values?.productImage);
+      } else if (values?.productImage && values?.productImage[0]) {
+        const img = await uploadFile(values?.productImage[0], "image");
+        resolve(img);
+      } else {
+        resolve("");
+      }
+    });
+    const id = generateAlias();
+
+    const payload: Partial<PromotionalOfferType> = offer?.id
+      ? {
+          ...offer,
+          ...values,
+          partnerId,
+          currencyCode,
+          productImage: image as string,
+          companyName: companyName,
+        }
+      : {
+          ...values,
+          id,
+          partnerId,
+          currencyCode,
+          productImage: image as string,
+          companyName: companyName,
+        };
+
+    await update(payload, "offer");
+    setLoading(false);
     refetch();
     close();
   }
+
+  useEffect(() => {
+    if (offer) {
+      form.reset({
+        serviceTitle: offer?.serviceTitle,
+        productImage: offer?.productImage,
+        endDate: offer?.endDate,
+        productPrice: offer?.productPrice,
+        productPromo: offer?.productPromo,
+        offerDetails: offer?.offerDetails,
+        voucherCode: offer?.voucherCode,
+        redeem: offer?.redeem as any,
+        url: offer?.url,
+        whatsApp: offer?.whatsApp,
+        email: offer?.email,
+      })
+    }
+  },[offer])
   return (
     <div
       role="button"
@@ -260,6 +281,7 @@ export function CreatePromo({
                         <input
                           type="radio"
                           {...field}
+                          defaultChecked={offer?.redeem === value}
                           value={value}
                           className="accent-basePrimary h-[20px] pt-3 w-[20px] mr-4"
                         />

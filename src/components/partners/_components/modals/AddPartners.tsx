@@ -15,10 +15,10 @@ import {
 import { useForm } from "react-hook-form";
 import { COUNTRY_CODE, uploadFile, generateAlias } from "@/utils";
 import { AddSponsorLevel } from "@/components/contents/partners/_components";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useEffect, useState, useMemo } from "react";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import { cn } from "@/lib";
 import { AddIndustry } from "..";
 import {
