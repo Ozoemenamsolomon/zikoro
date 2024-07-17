@@ -19,6 +19,7 @@ import { useCreateLeads } from "@/hooks";
 import { EngagementsSettings } from "@/types/engagements";
 import { cn } from "@/lib";
 import { CreatePromo } from "../modals/CreatePromo";
+import { Edit } from "styled-icons/material";
 export function OfferCard({
   offer,
   isOrganizer,
@@ -100,9 +101,16 @@ export function OfferCard({
               {offer?.companyName ?? ""}
             </p>
           </div>
-          <button onClick={onClose}>
-            <AlertCircle className="text-gray-600" size={22} />
-          </button>
+          <div className="flex items-center gap-x-2">
+            {isOrganizer && (
+              <button onClick={toggleEdit}>
+                <Edit className="text-gray-600" size={22} />
+              </button>
+            )}
+            <button onClick={onClose}>
+              <AlertCircle className="text-gray-600" size={22} />
+            </button>
+          </div>
         </div>
         <div className="flex px-3 items-center gap-x-3">
           <p className="font-semibold">

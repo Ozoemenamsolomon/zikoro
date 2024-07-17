@@ -20,11 +20,12 @@ import { offerCreationSchema } from "@/schemas";
 import { useUpdatePartnersOpportunities } from "@/hooks";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { uploadFile, generateAlias } from "@/utils";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { TPartner, PromotionalOfferType } from "@/types";
 import { cn } from "@/lib";
+import Image from "next/image";
 
 export function CreatePromo({
   close,
@@ -126,9 +127,20 @@ export function CreatePromo({
         url: offer?.url,
         whatsApp: offer?.whatsApp,
         email: offer?.email,
-      })
+      });
     }
-  },[offer])
+  }, [offer]);
+
+  const watchedImage = form.watch("productImage");
+  const addedImage = useMemo(() => {
+    if (typeof watchedImage === "string") {
+      return watchedImage;
+    } else if (watchedImage && watchedImage[0]) {
+      return URL.createObjectURL(watchedImage[0]);
+    } else {
+      return null;
+    }
+  }, [watchedImage]);
   return (
     <div
       role="button"
@@ -141,7 +153,7 @@ export function CreatePromo({
         className="w-[95%] sm:w-[500px] box-animation h-[90vh] overflow-auto flex flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4"
       >
         <div className="w-full flex items-center justify-between">
-          <h2 className="font-medium text-lg sm:text-xl">Create Promo</h2>
+          <h2 className="font-medium text-lg sm:text-xl">Add Promo</h2>
           <Button onClick={close} className="px-1 h-fit w-fit">
             <CloseOutline size={22} />
           </Button>
@@ -161,6 +173,14 @@ export function CreatePromo({
                   className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
                 />
               </InputOffsetLabel>
+
+             {addedImage && <Image
+                className="w-[100px] h-[100px]"
+                width={200}
+                height={200}
+                src={addedImage}
+                alt=""
+              />}
             </div>
             <FormField
               control={form.control}
@@ -345,7 +365,7 @@ export function CreatePromo({
               className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-basePrimary h-12 rounded-md text-gray-50 font-medium"
             >
               {loading && <LoaderAlt size={22} className="animate-spin" />}
-              <span>Create Promo</span>
+              <span>Add Promo</span>
             </Button>
           </form>
         </Form>

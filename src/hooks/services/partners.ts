@@ -770,7 +770,7 @@ export function useUpdatePartnersOpportunities<T>() {
         payload,
       });
 
-      if (status !== 200) throw data;
+      if ( status !== 201) throw data;
 
       toast({
         description: "Partner Updated successfully",
