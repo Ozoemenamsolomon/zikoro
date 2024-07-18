@@ -361,7 +361,7 @@ export const useGetReviews = () => {
   const [rating, setRating] = useState<string>("0");
   const [isLoading, setLoading] = useState<boolean>(false);
 
-  const getRating = async ({agendaId}:{agendaId: number}) => {
+  const getRating = async ({agendaId}:{agendaId: string}) => {
     try {
       setLoading(true);
       const { data, status } = await getRequest<string>({

@@ -15,7 +15,8 @@ export async function GET(
       const { data, error } = await supabase
         .from("sessionReviews")
         .select("*")
-        .eq("sessionId", agendaId);
+        .eq("sessionAlias", agendaId)
+
 
       // 
       let ratingCount = 0
@@ -27,6 +28,7 @@ export async function GET(
       else if (Array.isArray(data) && data?.length > 0) {
         const mappedReviews = data?.map((item) => Number(item?.rating))
         ratingCount = mappedReviews?.reduce((a, b) => a + b, 0)
+        console.log(mappedReviews?.reduce((a, b) => a + b, 0))
       }
 
       if (error) {
@@ -47,7 +49,7 @@ export async function GET(
 
       return NextResponse.json(
         {
-          data: formatReviewNumber(ratingCount),
+          data: formatReviewNumber(ratingCount), reviews: data
         },
         {
           status: 200,

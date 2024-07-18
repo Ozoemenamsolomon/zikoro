@@ -8,7 +8,7 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib";
-import { TAgenda, TAttendee, TReview } from "@/types";
+import { TAgenda, TAttendee, TFeedBack, TReview } from "@/types";
 import { useSendReview, useGetEventReviews } from "@/hooks";
 import { Like } from "styled-icons/foundation";
 import useUserStore from "@/store/globalUserStore";
@@ -19,14 +19,16 @@ export function Engagement({
   agenda,
   id,
   attendees,
+  reviews
 }: {
   id: string;
   attendees: TAttendee[];
   agenda: TAgenda | null;
+  reviews: TFeedBack[]
 }) {
   const [rating, setRating] = useState(0);
   const { user, setUser } = useUserStore();
-  const { reviews } = useGetEventReviews(id);
+  //const { reviews } = useGetEventReviews(id);
   const { data: engagementsSettings } = useGetData<EngagementsSettings>(
     `engagements/${id}/settings`
   );

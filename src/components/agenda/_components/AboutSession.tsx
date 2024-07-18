@@ -67,7 +67,7 @@ export function AboutSession({
   useEffect(() => {
     (async () => {
       if (agenda) {
-        getRating({ agendaId: agenda?.id });
+        getRating({ agendaId: agenda?.sessionAlias });
       }
     })();
   }, [agenda]);
