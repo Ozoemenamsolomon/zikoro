@@ -26,6 +26,7 @@ import {
   useDeleteWorkspace,
   useUpdateWorkspace,
 } from "@/hooks/services/workspace";
+import { useRouter } from "next/navigation";
 
 interface FormData {
   orgName: string;
@@ -51,6 +52,7 @@ export default function General() {
   const [isFaviconUploaded, setIsFaviconUploaded] = useState<boolean>(false);
   const [logoUrl, setLogoUrl] = useState<string>("");
   const [faviconUrl, setFaviconUrl] = useState<string>("");
+  const router = useRouter();
 
   const countryList = [
     "Afghanistan",
@@ -331,6 +333,15 @@ export default function General() {
   //import delete workspace function
   const { deleteWorkspace } = useDeleteWorkspace(formData.orgId);
 
+  //function to delete workspace
+  const handleDelete = async () => {
+    const successfulDelete = await deleteWorkspace();
+    if (successfulDelete) {
+      setOrganization(null);
+      router.push("/home");
+    }
+  };
+
   // Sync formData with organization data
   useEffect(() => {
     if (organization) {
@@ -470,8 +481,6 @@ export default function General() {
       throw error; // Rethrow the error to be caught by the caller
     }
   };
-
-  console.log("org", organization);
 
   return (
     <>
@@ -679,11 +688,15 @@ export default function General() {
                       <p className="text-[12px] mt-4 font-semibold">
                         Current Logo
                       </p>
-                      <img
-                        src={organization.organizationLogo}
-                        alt="logo"
-                        className="w-[50px] h-[50px] rounded-full mt-4"
-                      />
+                      {organization.organizationLogo ? (
+                        <img
+                          src={organization.organizationLogo}
+                          alt="logo"
+                          className="w-[50px] h-[50px] rounded-full mt-4"
+                        />
+                      ) : (
+                        <p className="text-[11px] mt-4">No Previous Logo</p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -739,11 +752,16 @@ export default function General() {
                       <p className="text-[12px] mt-4 font-semibold">
                         Current Favicon
                       </p>
-                      <img
-                        src={organization.organizationLogo}
-                        alt="logo"
-                        className="w-[50px] h-[50px] rounded-full mt-4"
-                      />
+
+                      {organization.favicon ? (
+                        <img
+                          src={organization.favicon}
+                          alt="logo"
+                          className="w-[50px] h-[50px] rounded-full mt-4"
+                        />
+                      ) : (
+                        <p className="text-[11px] mt-4">No Previous favicon</p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -883,9 +901,7 @@ export default function General() {
                       <button
                         disabled={delInput != organization.organizationName}
                         type="button"
-                        onClick={() => {
-                          deleteWorkspace();
-                        }}
+                        onClick={handleDelete}
                         className="bg-[#E74C3C] text-white py-1 w-full text-[15px] cursor-pointer  font-medium rounded-md "
                       >
                         Delete
