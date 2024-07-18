@@ -28,7 +28,7 @@ export async function GET(
       else if (Array.isArray(data) && data?.length > 0) {
         const mappedReviews = data?.map((item) => Number(item?.rating))
         ratingCount = mappedReviews?.reduce((a, b) => a + b, 0)
-        console.log(mappedReviews?.reduce((a, b) => a + b, 0))
+       
       }
 
       if (error) {
