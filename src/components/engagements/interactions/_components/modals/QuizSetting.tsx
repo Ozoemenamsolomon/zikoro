@@ -41,7 +41,7 @@ export function QuizSettings({
     timer: true,
     countdownTransition: true,
     disable: false,
-    live: true,
+    live: false,
     isCollectPhone: false,
     isCollectEmail: false,
     showAnswer: true,
@@ -445,8 +445,9 @@ export function QuizSettings({
                   All quiz participants will attempt the quiz at the same time.
                 </p>
               </div>
+              {/***={loading} */}
               <Switch
-                disabled={loading}
+                disabled
                 checked={accessibility.live}
                 onClick={() =>
                   setAccessibility({

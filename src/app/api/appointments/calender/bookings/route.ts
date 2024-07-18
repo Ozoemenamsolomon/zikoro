@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 //       appointments = formatAppointmentsByWeek(data);
 //     }
 
-    // return NextResponse.json({ appointments }, { status: 200 });
+     return NextResponse.json({ appointments: [] }, { status: 200 });
   } catch (error) {
     console.error("Unhandled error:", error);
     return NextResponse.json(
