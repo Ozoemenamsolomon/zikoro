@@ -24,11 +24,14 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ appointments, currentWeek }) =>
                         <Clock />
                     </div>
 
-                    {days.map((day, idx) => (
-                        <div key={idx} className={` flex-1 border p-2 text-center bg-slate-100 ${idx === 0 ? 'rounded-tl-xl' : idx === 6 ? 'rounded-tr-xl' : ''}`}>
-                            <h3 className="text font-medium">{format(day, 'eee dd')}</h3>
+                    {days.map((day, idx) => {
+                        const today = format(new Date(), 'eee dd')
+                        const active = today === format(day, 'eee dd')
+                        return (
+                        <div key={idx} className={` flex-1  flex-nowrap overflow-hidden border p-2 text-center bg-slate-100 ${idx === 0 ? 'rounded-tl-xl' : idx === 6 ? 'rounded-tr-xl' : ''}`}>
+                            <h3 className={`${active ? 'bg-zikoroBlue text-white':''} text font-medium py-1 rounded-md px-2 `}>{format(day, 'eee dd')}</h3>
                         </div>
-                    ))}
+                    )})}
                 </div>
 
                 {/* Rows with hours and appointments */}
