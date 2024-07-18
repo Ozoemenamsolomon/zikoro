@@ -115,7 +115,7 @@ let pointsAllocation: TAllocation = {
 export default function LeaderBoard({ eventId }: { eventId: string }) {
   const { isOrganizer, attendeeId } = useVerifyUserAccess(eventId);
   const [totalScore, setTotalScore] = useState(0);
-  const [ranks, setRanks] = useState<TAttendeeGroup[]>([])
+  const [ranks, setRanks] = useState<TAttendeeGroup[]>([]);
   const [attendeepointsAllocation, setAttendeesAllocation] =
     useState(pointsAllocation);
   const [isOpen, setOpen] = useState(false);
@@ -130,17 +130,16 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
   }
 
   const attendeeGroup: { [key: string]: TAttendeeGroup } = {};
-   useEffect(() => {
+  useEffect(() => {
     if (data) {
       const allData = Object.values(data).flat();
-      console.log(allData)
+      console.log(allData);
       allData.forEach((attendee) => {
         const key = attendee?.id;
         if (!attendeeGroup[key]) {
-          attendeeGroup[key] = { ...attendee, points:0 };
+          attendeeGroup[key] = { ...attendee, points: 0 };
         }
         attendeeGroup[key].points += attendee?.points || 0;
-       
       });
 
       const result = Object.entries(attendeeGroup)?.map(([id, data]) => ({
@@ -149,7 +148,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
 
       const sortedResult = result.sort((a, b) => b.points - a.points);
       setRanks(sortedResult);
-    } 
+    }
   }, [data]);
 
   useEffect(() => {
@@ -165,7 +164,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
           ...attendeepointsAllocation,
           [key]: {
             ...attendeepointsAllocation[key],
-            score: attendeepointsAllocation[key].score = sum,
+            score: (attendeepointsAllocation[key].score = sum),
           },
         });
         total += sum;
@@ -174,7 +173,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
     }
   }, [data, attendeeId]);
 
- // console.log( data, ranks, pointsAllocation);
+  // console.log( data, ranks, pointsAllocation);
 
   return (
     <InteractionLayout eventId={eventId}>
@@ -184,7 +183,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
             LeaderBoard
           </h2>
           <div className="mx-auto w-fit flex px-2 mb-6 items-center gap-x-8 sm:gap-x-20 bg-white h-10 rounded-3xl">
-            {(!isOrganizer || !isIdPresent) && (
+            {!isOrganizer && !isIdPresent && (
               <Button
                 onClick={onClose}
                 className="underline rounded-none px-2 h-10 w-fit"
@@ -213,7 +212,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                         height={150}
                       />
                     ) : (
-                      <div className="size-[5rem]  bg-gray-100  rounded-full flex items-center justify-center">
+                      <div className="w-[5rem] h-[5rem]  bg-gray-100  rounded-full flex items-center justify-center">
                         <p className="text-gray-700 text-2xl uppercase">{`${ranks[1]?.firstName.charAt(
                           0
                         )}${ranks[1]?.lastName.charAt(0)}`}</p>
@@ -251,7 +250,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     {ranks[0]?.profilePicture ? (
                       <Image
                         src={ranks[0]?.profilePicture}
-                        className="size-[5rem] "
+                        className="w-[5rem] h-[5rem] "
                         alt=""
                         width={150}
                         height={150}
@@ -295,7 +294,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     {ranks[2]?.profilePicture ? (
                       <Image
                         src={ranks[2]?.profilePicture}
-                        className=" size-[5rem]"
+                        className=" w-[5rem] h-[5rem]"
                         alt=""
                         width={150}
                         height={150}

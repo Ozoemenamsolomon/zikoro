@@ -93,7 +93,7 @@ function PointWidget({
         />
         <p className="font-medium">{points} pts</p>
       </div>
-      <Image src={icon} alt="" className="size-[28px]" width={100} height={100} />
+      <Image src={icon} alt="" className="h-[28px] w-[28px]" width={100} height={100} />
       <p className="text-center">{title}</p>
     </div>
   );
