@@ -12,11 +12,14 @@ export function RewardCard({
   reward,
   isOrganizer,
   refetch,
+  attendeePoints,
 }: {
   refetch: () => Promise<any>;
   isOrganizer: boolean;
   reward: Reward;
+  attendeePoints: number;
 }) {
+  const [isAlert, setAlert] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [isEdit, setEdit] = useState(false);
   function onClose() {
@@ -25,6 +28,17 @@ export function RewardCard({
 
   function toggleEdit() {
     setEdit((prev) => !prev);
+  }
+
+  function onAlert() {
+    setAlert((alert) => !alert);
+  }
+
+  function redeem() {
+    if (Number(reward?.point) > Number(attendeePoints)) {
+      onAlert();
+    } else {
+    }
   }
 
   return (
@@ -61,12 +75,13 @@ export function RewardCard({
           </div>
           <div className="w-full flex text-gray-500 items-center justify-between">
             <p>{`Redeem for ${reward?.point} points`}</p>
-            <p>{`Available points:  ${reward?.point}`}</p>
+            <p>{`Available points:  ${attendeePoints}`}</p>
           </div>
         </div>
         <div className="px-3 w-full mt-1 flex items-center justify-between">
           <button
-            onClick={() => {}}
+           
+            onClick={redeem}
             className="text-basePrimary text-sm font-semibold"
           >
             Redeem Reward
@@ -83,6 +98,7 @@ export function RewardCard({
         />
       )}
       {isOpen && <RewardCardModal close={onClose} reward={reward} />}
+      {isAlert && <AlertModal close={onAlert} redeemPoint={reward?.point} />}
     </>
   );
 }
@@ -155,6 +171,53 @@ function RewardCardModal({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function AlertModal({
+  close,
+  redeemPoint,
+}: {
+  close: () => void;
+  redeemPoint: number;
+}) {
+  return (
+    <div
+      role="button"
+      onClick={close}
+      className="w-full h-full fixed z-[100]  inset-0 bg-black/50"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        role="button"
+        className="w-[95%] max-w-lg  h-fit max-h-[85%] overflow-y-auto flex flex-col gap-y-3 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4"
+      >
+        <Button onClick={close} className="px-1 self-end h-fit w-fit">
+          <CloseOutline size={22} />
+        </Button>
+
+
+        <h2 className="w-full text-center text-basePrimary font-semibold text-base sm:text-xl">
+        Oops! Not Enough Point{" "}
+      </h2>
+      <p className="w-full text-center ">
+        You need at least <span className="font-medium">{redeemPoint}</span> points to
+        redeem this reward
+      </p>
+
+      <div className="w-full flex my-3 flex-col items-start justify-start gap-y-2">
+        <h2 className="text-mobile sm:text-base font-semibold">
+          What can you do
+        </h2>
+        <ul className="list-disc space-y-2 pl-8">
+          <li>Earn more points by engaging with the platform</li>
+          <li>Check other reward within your poinst range</li>
+        </ul>
+      </div>
+      <p className="font-semibold ">Keep earning! You are almost there</p>
+      </div>
+    
     </div>
   );
 }

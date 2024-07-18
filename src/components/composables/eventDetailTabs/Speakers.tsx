@@ -2,7 +2,7 @@
 
 import { Button } from "@/components";
 import Image from "next/image";
-import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
+import { ArrowBack } from "styled-icons/boxicons-regular";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import {
   FacebookIcon,
@@ -16,22 +16,26 @@ import { TAttendee } from "@/types";
 import Link from "next/link";
 
 export function Speakers({
-  changeMajorActiveState,
   eventId,
 }: {
-  changeMajorActiveState: (n: number) => void;
+  // changeMajorActiveState: (n: number) => void;
   eventId: string;
 }) {
   const { attendees, isLoading } = useGetEventAttendees(eventId);
+  const [selectedAttendee, setSelectedAttendee] = useState<TAttendee | null>(null)
 
   const [active, setActive] = useState(1);
+
+  function setAttendee(attendee: TAttendee) {
+    setSelectedAttendee(attendee)
+  }
 
   function changeActiveState(active: number) {
     setActive(active);
   }
 
   const formattedAttendees = useMemo(() => {
-    return attendees?.filter(({ attendeeType }) => {
+    return attendees?.filter(({ attendeeType, speakingAt }) => {
       return attendeeType?.includes("speaker");
     });
   }, [attendees]);
@@ -72,10 +76,16 @@ export function Speakers({
                 changeActiveState={changeActiveState}
                 isViewProfile
                 attendee={attendee}
-                active={active}
+                setAttendee={setAttendee}
               />
             ))}
         </div>
+      )}
+        {active === 2 && selectedAttendee && (
+        <SpeakerInfo
+          attendee={selectedAttendee}
+          changeActiveState={changeActiveState}
+        />
       )}
     </>
   );
@@ -85,26 +95,34 @@ function SpeakerWidget({
   changeActiveState,
   isViewProfile,
   attendee,
-  active,
+  setAttendee
 }: {
   changeActiveState: (v: number) => void;
   isViewProfile?: boolean;
   attendee: TAttendee;
-  active?: number;
+  setAttendee?: (a: TAttendee) => void;
 }) {
   return (
     <>
       <div className="w-full sm:w-[250px] flex flex-col gap-y-2 items-center justify-center p-4 border rounded-lg">
-        <Image
-          src={
-            attendee?.profilePicture ||
-            "/b92cf7b1b06acc1b9a0759b6f97724c349488816.webp"
-          }
-          width={300}
-          height={300}
-          className="rounded-full w-24 h-24"
-          alt="speaker"
-        />
+        {attendee?.profilePicture ? (
+          <Image
+            src={
+              attendee?.profilePicture ||
+              "/b92cf7b1b06acc1b9a0759b6f97724c349488816.webp"
+            }
+            width={300}
+            height={300}
+            className="rounded-full w-24 h-24"
+            alt="speaker"
+          />
+        ) : (
+          <div className="w-24 bg-gray-100 h-24 rounded-full flex items-center justify-center">
+            <p className="text-gray-700 text-3xl">{`${attendee?.firstName
+              ?.split(" ")[0]
+              .charAt(0)}${attendee?.lastName?.split(" ")[0].charAt(0)}`}</p>
+          </div>
+        )}
         <button className=" flex items-center justify-center w-fit bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-b-md">
           {attendee?.ticketType}
         </button>
@@ -116,19 +134,17 @@ function SpeakerWidget({
 
         {isViewProfile && (
           <Button
-            onClick={() => changeActiveState(2)}
+            onClick={() => {
+              changeActiveState(2)
+            if (setAttendee)  setAttendee(attendee)
+            }}
             className="px-0 h-fit w-fit  bg-none  text-mobile"
           >
             <span className="text-basePrimary">View Profile</span>
           </Button>
         )}
       </div>
-      {active === 2 && (
-        <SpeakerInfo
-          attendee={attendee}
-          changeActiveState={changeActiveState}
-        />
-      )}
+    
     </>
   );
 }

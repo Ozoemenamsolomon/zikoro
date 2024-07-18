@@ -143,7 +143,7 @@ export function EventDetailTabs({
         {active === EventDetailTab.SPEAKERS_TAB && event && (
           <Speakers
             eventId={String(event.eventAlias)}
-            changeMajorActiveState={changeActiveState}
+           // changeMajorActiveState={changeActiveState}
           />
         )}
         {active === EventDetailTab.AGENDA_TAB && event && (

@@ -4,6 +4,7 @@ import {
   checkinSchema,
 } from "@/schemas/attendee";
 import { z } from "zod";
+import { TAgenda } from "./agenda";
 
 export type TCheckin = z.infer<typeof checkinSchema>;
 
@@ -28,6 +29,8 @@ export type TAttendee = z.infer<typeof AttendeeSchema> & {
   checkInPoints: number;
   attendeeProfilePoints: number;
   completedFields: TCompletedFields;
+  speakingAt: {session: TAgenda, sessionLink:string}[];
+  moderatingAt: {session: TAgenda, sessionLink:string}[]
 };
 
 export type TAttendeeNote = z.infer<typeof attendeeNoteSchema>;

@@ -8,6 +8,7 @@ import {
   useFetchSingleEvent,
   useVerifyUserAccess,
   useCheckTeamMember,
+  useGetUserPoint,
 } from "@/hooks";
 import { CreateReward, RewardCard } from "./_components";
 import { EmptyCard } from "@/components/composables";
@@ -20,6 +21,7 @@ export default function Rewards({ eventId }: { eventId: string }) {
   const { data: singleEvent } = useFetchSingleEvent(eventId);
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
+  const { totalPoints } = useGetUserPoint(eventId);
   const {
     data,
     isLoading: loading,
@@ -61,6 +63,7 @@ export default function Rewards({ eventId }: { eventId: string }) {
               key={index}
               refetch={refetch}
               reward={item}
+              attendeePoints={totalPoints}
               isOrganizer={isOrganizer || isIdPresent}
             />
           ))}

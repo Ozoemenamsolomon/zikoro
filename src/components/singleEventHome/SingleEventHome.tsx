@@ -3,7 +3,9 @@
 import {
   useFetchSingleEvent,
   useFetchPartners,
-  useFetchRewards,
+  useVerifyUserAccess,
+  useCheckTeamMember,
+  useGetUserPoint,
 } from "@/hooks";
 import { EventSchedule } from "./_components";
 import { EventDetailTabs } from "../composables";
@@ -16,13 +18,18 @@ import Image from "next/image";
 import { Reward } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { RewardCard } from "../marketPlace/rewards/_components";
+import { useGetData } from "@/hooks/services/request";
 export function SingleEventHome({ eventId }: { eventId: string }) {
   const { data, loading } = useFetchSingleEvent(eventId);
   const [active, setActive] = useState(1);
   const {
     data: rewards,
-    loading: loadingRewards,
-  }: { data: Reward[]; loading: boolean } = useFetchRewards(eventId);
+    isLoading: loadingRewards,
+    getData: refetch,
+  } = useGetData<Reward[]>(`/rewards/${eventId}`);
+  const { isOrganizer } = useVerifyUserAccess(eventId);
+  const { isIdPresent } = useCheckTeamMember({ eventId });
+  const { totalPoints } = useGetUserPoint(eventId);
   const { data: partnersData, loading: partnersLoading } =
     useFetchPartners(eventId);
 
@@ -100,15 +107,23 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
                 <LoaderAlt size={30} className="animate-spin" />
               </div>
             )}
-            {!loadingRewards && Array.isArray(rewards) && rewards?.length === 0 && (
-              <div className="w-full col-span-full h-[300px] flex items-center justify-center">
-                <p className="font-semibold text-sm">No Available Reward</p>
-              </div>
-            )}
+            {!loadingRewards &&
+              Array.isArray(rewards) &&
+              rewards?.length === 0 && (
+                <div className="w-full col-span-full h-[300px] flex items-center justify-center">
+                  <p className="font-semibold text-sm">No Available Reward</p>
+                </div>
+              )}
             {!loadingRewards &&
               Array.isArray(rewards) &&
               rewards?.map((reward, index) => (
-                <RewardCard key={index} reward={reward} />
+                <RewardCard
+                  key={index}
+                  refetch={refetch}
+                  attendeePoints={totalPoints}
+                  isOrganizer={isOrganizer || isIdPresent}
+                  reward={reward}
+                />
               ))}
           </div>
         </div>
