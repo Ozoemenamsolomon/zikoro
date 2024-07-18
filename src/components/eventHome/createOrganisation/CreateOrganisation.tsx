@@ -1,6 +1,6 @@
 "use client"
 
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import {
   Form,
   FormField,

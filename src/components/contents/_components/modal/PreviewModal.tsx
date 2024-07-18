@@ -18,7 +18,6 @@ import { Copy } from "styled-icons/feather";
 import Link from "next/link";
 import { useState } from "react";
 import { TriangleDown } from "styled-icons/entypo";
-import { getCookie } from "@/hooks";
 import { Event } from "@/types";
 
 export function PreviewModal({
@@ -86,7 +85,7 @@ export function PreviewModal({
             />
             <div className="w-full flex mt-6 items-center justify-between">
               <p className="text-xs sm:text-sm flex flex-col items-start ">
-                <span> Scan QRCode to preview</span>
+                <span> Scan QRCode to view</span>
                 <span className="font-semibold capitalize">
                   {eventDetail?.eventTitle}
                 </span>

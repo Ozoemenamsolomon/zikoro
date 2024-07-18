@@ -71,7 +71,7 @@ export async function GET(
             const mappedData = data?.map((item: any) => {
               return {
                 ...item?.attendees,
-                points: item?.attendeePoint || 0,
+                points: item?.attendeePoints || 0,
               };
             });
             scoreData["quizAnswer"] = mappedData;

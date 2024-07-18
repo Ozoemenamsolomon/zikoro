@@ -23,6 +23,7 @@ import { cn } from "@/lib";
 import { quizQuestionSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import toast from "react-hot-toast"
 import { TQuiz, TAnswer, TQuestion } from "@/types";
 import { useUpdateQuiz } from "@/hooks";
 import Image from "next/image";
@@ -61,10 +62,19 @@ export function AddQuestion({
 
   async function onSubmit(values: z.infer<typeof quizQuestionSchema>) {
     // console.log('val',values)
-    
-    setLoading(true);
     if (!quiz) return;
-    const image = new Promise(async (resolve) => {
+    const isCorrectAnswerNotSelected = values?.options?.every(
+      (value) => value?.isAnswer?.length <= 0
+    );
+
+    if (isCorrectAnswerNotSelected) {
+      toast.error("You have not selected the correct answer")
+      return
+    };
+   
+    setLoading(true);
+   
+    const image = await new Promise(async (resolve) => {
       if (typeof values?.questionImage === "string") {
         resolve(values?.questionImage);
       } else if (values?.questionImage && values?.questionImage[0]) {
@@ -75,12 +85,10 @@ export function AddQuestion({
       }
     });
 
-    const promise: any = await image;
-
     const updatedQuestion = {
       ...values,
       id: nanoid(),
-      questionImage: promise,
+      questionImage: image as string,
     };
 
     // filter question
@@ -97,7 +105,11 @@ export function AddQuestion({
           ? editingQuestion?.id
             ? [
                 ...filteredQuestion,
-                { ...editingQuestion, ...values, questionImage: promise },
+                {
+                  ...editingQuestion,
+                  ...values,
+                  questionImage: image as string,
+                },
               ]
             : [...quiz?.questions, { ...updatedQuestion }]
           : [{ ...updatedQuestion }],
@@ -148,7 +160,6 @@ export function AddQuestion({
 
     form.setValue("options", updatedField);
   }
-  console.log("options", form.watch("options"));
 
   useEffect(() => {
     if (question) {
