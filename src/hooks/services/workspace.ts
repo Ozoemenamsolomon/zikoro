@@ -160,3 +160,39 @@ export function useUpdateSubdomain(workspaceId: number, workspaceSubdomain: stri
     updateSubdomain
   };
 }
+
+
+export function useCreateTeamMember() {
+  async function createTeamMember(workspaceId:number, workspaceSubdomain:string) {
+    try {
+      const { data, error, status } = await supabase
+        .from("organization")
+        .update({
+          subDomain: workspaceSubdomain
+        })
+        .eq("id", workspaceId);
+
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+      if (status === 204 || status === 200) {
+        toast.success('Updated Successfully');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function updateTeamMembers(members:any) {
+    for (const member of members) {
+      const { workspaceId, workspaceSubdomain } = member;
+      await createTeamMember(workspaceId, workspaceSubdomain);
+    }
+  }
+
+  return {
+    createTeamMember,
+    updateTeamMembers
+  };
+}
