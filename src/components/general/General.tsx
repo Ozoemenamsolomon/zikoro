@@ -496,13 +496,13 @@ export default function General() {
                 <label className="text-[14px] text-[#1f1f1f]">
                   Workspace Name
                 </label>
-                <div className="w-full h-[45px] mt-2 ">
+                <div className="w-full h-[45px] mt-2 p-1 border-[1px] border-indigo-600 rounded-xl">
                   <input
                     type="text"
                     value={formData.orgName}
                     name="orgName"
                     onChange={(e) => handleInputChange(e)}
-                    className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                    className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
                   />
                 </div>
                 <p className="mt-2 text-[12px] text-[#1f1f1f]">
@@ -516,11 +516,11 @@ export default function General() {
                   <label className="text-[14px] text-[#1f1f1f]">
                     Organization Type
                   </label>
-                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
                     <select
                       name="orgType"
                       value={formData.orgType}
-                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[11px]"
+                      className="w-full h-full bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[7px] rounded-xl"
                       onChange={(e) => handleInputChange(e)}
                     >
                       <option value="private" className="">
@@ -536,12 +536,12 @@ export default function General() {
 
                 <div className=" w-full lg:w-1/2">
                   <p className="text-[14px] text-[#1f1f1f]">Pricing Plan</p>
-                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
                     <select
                       name="orgPlan"
                       value={formData.orgPlan}
                       onChange={(e) => handleInputChange(e)}
-                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[11px]"
+                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[7px]"
                     >
                       <option value="free" className="">
                         Free
@@ -563,12 +563,12 @@ export default function General() {
               <div className="flex flex-col lg:flex-row gap-[22px] mt-8 ">
                 <div className=" w-full lg:w-1/2">
                   <p className="text-[14px] text-[#1f1f1f]">Country</p>
-                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
                     <select
                       name="orgCountry"
                       value={formData.orgCountry}
                       onChange={(e) => handleInputChange(e)}
-                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[11px]"
+                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[7px]"
                     >
                       {countryList.map((country) => (
                         <option
@@ -586,13 +586,13 @@ export default function General() {
 
                 <div className=" w-full lg:w-1/2">
                   <p className="text-[14px] text-[#1f1f1f]">Phone Number</p>
-                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
                     <input
                       type="tel"
                       value={formData.orgTel}
                       onChange={(e) => handleInputChange(e)}
                       name="orgTel"
-                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
                     />
                   </div>
                 </div>
@@ -601,26 +601,26 @@ export default function General() {
               <div className="flex flex-col lg:flex-row gap-[22px] mt-8 ">
                 <div className=" w-full lg:w-1/2">
                   <p className="text-[14px] text-[#1f1f1f]">Whatsapp Number</p>
-                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
                     <input
                       type="tel"
                       value={formData.orgWhatsappNumber}
                       name="orgWhatsappNumber"
                       onChange={handleInputChange}
-                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
                     />
                   </div>
                 </div>
 
                 <div className=" w-full lg:w-1/2">
                   <p className="text-[14px] text-[#1f1f1f]">Email</p>
-                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f]">
+                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
                     <input
                       type="email"
                       value={formData.orgEmail}
                       name="orgEmail"
                       onChange={handleInputChange}
-                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
                     />
                   </div>
                 </div>
@@ -762,14 +762,14 @@ export default function General() {
                 </div>
                 <div className="flex-1">
                   <label className="text-[14px] text-[#1f1f1f]">Twitter</label>
-                  <div className="w-full h-[45px] mt-2 ">
+                  <div className="w-full h-[45px] mt-2 p-1 border-[1px] border-indigo-600 rounded-xl ">
                     <input
                       type="text"
                       value={formData.orgX}
                       name="orgX"
                       placeholder="Enter Link"
                       onChange={(e) => handleInputChange(e)}
-                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
+                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
                     />
                   </div>
                 </div>
@@ -783,14 +783,14 @@ export default function General() {
                   <label className="text-[14px] text-[#1f1f1f]">
                     LinkendIn
                   </label>
-                  <div className="w-full h-[45px] mt-2 ">
+                  <div className="w-full h-[45px] mt-2 p-1 border-[1px] border-indigo-600 rounded-xl">
                     <input
                       type="text"
                       value={formData.orgLinkedin}
                       name="orgLinkedin"
                       placeholder="Enter Link"
                       onChange={(e) => handleInputChange(e)}
-                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
+                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
                     />
                   </div>
                 </div>
@@ -802,14 +802,14 @@ export default function General() {
                 </div>
                 <div className="flex-1">
                   <label className="text-[14px] text-[#1f1f1f]">Facebook</label>
-                  <div className="w-full h-[45px] mt-2 ">
+                  <div className="w-full h-[45px] mt-2 p-1 border-[1px] border-indigo-600 rounded-xl">
                     <input
                       type="text"
                       value={formData.orgFacebook}
                       name="orgFacebook"
                       placeholder="Enter Link"
                       onChange={(e) => handleInputChange(e)}
-                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
+                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
                     />
                   </div>
                 </div>
@@ -823,14 +823,14 @@ export default function General() {
                   <label className="text-[14px] text-[#1f1f1f]">
                     Instagram
                   </label>
-                  <div className="w-full h-[45px] mt-2 ">
+                  <div className="w-full h-[45px] mt-2 p-1 border-[1px] border-indigo-600 rounded-xl ">
                     <input
                       type="text"
                       value={formData.orgInstagram}
                       name="orgInstagram"
                       placeholder="Enter Link"
                       onChange={(e) => handleInputChange(e)}
-                      className="w-full h-full rounded-xl border-[1px] border-indigo-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
+                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f] placeholder-black"
                     />
                   </div>
                 </div>
