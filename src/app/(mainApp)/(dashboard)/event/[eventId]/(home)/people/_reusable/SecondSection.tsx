@@ -54,6 +54,7 @@ import useUserStore from "@/store/globalUserStore";
 import { saveContact } from "@/utils";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Copy } from "styled-icons/boxicons-regular";
+import QRCode from "react-qr-code";
 
 function AttendeeNotesSection(props) {
   return (
@@ -504,7 +505,7 @@ export default function SecondSection({
       />
       <section className="space-y-6 p-4 pt-0">
         <div className="space-y-2">
-          {attendeeAlias && attendeeIsUser && (
+          {/* {attendeeAlias && attendeeIsUser && (
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-gray-700">
                 Attendee Code: {attendeeAlias}
@@ -529,7 +530,7 @@ export default function SecondSection({
                 )}
               </span>
             </div>
-          )}
+          )} */}
           {user &&
             (String(event?.createdBy) === String(user.id) ||
               email === user.userEmail) && (
@@ -598,7 +599,7 @@ export default function SecondSection({
             </button>
           )}
           {appointmentLink && !attendeeIsUser ? (
-            <a href={appointmentLink}>
+            <a target="_blank" rel="noopener noreferrer" href={appointmentLink}>
               <div className="flex-1 flex flex-col gap-2 items-center justify-center">
                 <div className=" w-12 h-12 rounded-[50%] bg-[#F3F3F3] flex justify-center items-center">
                   <svg
@@ -676,6 +677,56 @@ export default function SecondSection({
                   ))}
                 </ul>
               )}
+            </div>
+          )}
+          {attendeeAlias && attendeeIsUser && (
+            <div className="flex flex-1 flex-col gap-2 p-4 border items-center justify-center">
+              <div
+                style={{
+                  height: "auto",
+                  margin: "0 auto",
+                  maxWidth: 64,
+                  width: "100%",
+                }}
+              >
+                <QRCode
+                  size={256}
+                  style={{
+                    height: "auto",
+                    maxWidth: "100%",
+                    width: "100%",
+                  }}
+                  value={`www.zikoro.com/event/${event.eventAlias}/${id}`}
+                  viewBox={`0 0 256 256`}
+                />
+              </div>
+              <span className="text-gray-700 font-medium text-xs text-center">
+                Scan to share
+              </span>
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-xs font-medium text-gray-700">
+                  {attendeeAlias}
+                </span>
+                <span className="bg-white h-full flex items-center px-2">
+                  {hasCopiedText ? (
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth={0}
+                      viewBox="0 0 24 24"
+                      height="1.25em"
+                      width="1.25em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M2.394 13.742L7.137 17.362 14.753 8.658 13.247 7.342 6.863 14.638 3.606 12.152zM21.753 8.658L20.247 7.342 13.878 14.621 13.125 14.019 11.875 15.581 14.122 17.379z" />
+                    </svg>
+                  ) : (
+                    <button onClick={() => copyToClipboard(attendeeAlias)}>
+                      <Copy className="w-5 h-5 text-gray-700" />
+                    </button>
+                  )}
+                </span>
+              </div>
             </div>
           )}
         </div>

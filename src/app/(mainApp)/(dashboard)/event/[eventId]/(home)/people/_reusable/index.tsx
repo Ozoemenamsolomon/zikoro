@@ -4,7 +4,7 @@ import AddAttendeeForm from "@/components/forms/AddAttendeeForm";
 import useDisclose from "@/hooks/common/useDisclose";
 import { TAttendee } from "@/types/attendee";
 import { calculateAndSetMaxHeight } from "@/utils/helpers";
-import { useRef, useState, useLayoutEffect, useMemo } from "react";
+import { useRef, useState, useLayoutEffect, useMemo, useEffect } from "react";
 import FirstSection from "./FirstSection";
 import SecondSection from "./SecondSection";
 import ThirdSection from "./ThirdSection";
@@ -51,12 +51,17 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const onGetAttendees = async () => {
     await getAttendees();
+  };
+
+  useEffect(() => {
+    if (isLoading) return;
     const updatedAttendee = attendees.find(
       ({ id }) => selectedAttendee && selectedAttendee.id === id
     );
+    console.log(updatedAttendee, "running");
 
     selectAttendee(updatedAttendee);
-  };
+  }, [attendees]);
 
   const divRef = useRef<HTMLDivElement>(null);
 

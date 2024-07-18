@@ -161,7 +161,7 @@ export const useGetAttendees = ({
 
   useEffect(() => {
     getAttendees();
-  }, []);
+  }, [eventId]);
 
   return { attendees, isLoading, error, getAttendees };
 };

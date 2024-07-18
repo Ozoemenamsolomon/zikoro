@@ -11,8 +11,8 @@ export async function POST(req: NextRequest) {
       const { interests, ...restData } = params;
       const leads = {
         ...restData,
-        createdAt: new Date().toISOString()
-      }
+        createdAt: new Date().toISOString(),
+      };
 
       const {
         data,
@@ -48,7 +48,6 @@ export async function POST(req: NextRequest) {
           attendeeAlias === leads?.attendeeAlias
       );
 
-
       // post to leadsinterset only if an applicant already has his detail with a partner
       if (isAttendeeInPartner) {
         // dont't post if an applicant has already applied for a particular job or promo before.
@@ -57,7 +56,7 @@ export async function POST(req: NextRequest) {
             partnerInterestId === interests?.partnerInterestId
         );
         if (isAlreadyApplied) {
-       //   console.log("in alredy appleid")
+          //   console.log("in alredy appleid")
           return NextResponse.json(
             { error: "You already applied for this job or offer" },
             {
@@ -79,7 +78,7 @@ export async function POST(req: NextRequest) {
         }
       } else {
         // post to leads and leadsinterest if they are empty
-      //  console.log(" appleid")
+        //  console.log(" appleid")
         // post to leadsinterset and leads if an applicant does not have his detail with a partner
         const { error: leadsError } = await supabase
           .from("Leads")

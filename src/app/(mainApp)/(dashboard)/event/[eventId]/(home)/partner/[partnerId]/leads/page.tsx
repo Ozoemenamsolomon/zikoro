@@ -9,12 +9,16 @@ import SecondColumn from "./_columns/SecondColumn";
 import ThirdColumn from "./_columns/ThirdColumn";
 import useEventStore from "@/store/globalEventStore";
 import { useFetchSinglePartner } from "@/hooks";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components";
 
 const page = ({
   params: { partnerId, eventId },
 }: {
   params: { partnerId: string; eventId: string };
 }) => {
+  const router = useRouter();
   const { user, setUser } = useUserStore();
   const { data: partner, loading: partnerIsLoading } =
     useFetchSinglePartner(partnerId);
@@ -50,10 +54,33 @@ const page = ({
 
   return (
     <section>
-      <div className="border-b-[1px] border-[#F3F3F3] py-4 px-2">
-        <h1 className="font-semibold leading-normal text-greyBlack text-lg">
-          {partner?.companyName}
-        </h1>
+      <div className="border-b-[1px] border-[#F3F3F3] py-4 px-2 grid grid-cols-6 items-center pl-16 md:pl-0">
+        <div className="col-span-5">
+          <div className="max-w-full">
+            <h1 className="font-semibold leading-normal text-greyBlack text-lg truncate">
+              {partner?.companyName}
+            </h1>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <Button
+            className="bg-white border-[1px] border-basePrimary text-basePrimary flex gap-2 items-center w-fit px-2"
+            onClick={() => router.push("leads/analytics")}
+          >
+            <svg
+              stroke="currentColor"
+              fill="currentColor"
+              strokeWidth={0}
+              viewBox="0 0 1024 1024"
+              height="1.5em"
+              width="1.5em"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M888 792H200V168c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v688c0 4.4 3.6 8 8 8h752c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm-600-80h56c4.4 0 8-3.6 8-8V560c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v144c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V384c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v320c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V462c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v242c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V304c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v400c0 4.4 3.6 8 8 8z" />
+            </svg>
+          </Button>
+        </div>
       </div>
       <section
         className="relative h-fit md:border-t w-full grid md:grid-cols-10"
@@ -173,7 +200,7 @@ const page = ({
                 </g>
               </svg>
               <p className="text-sm px-2 font-medium text-gray-700 text-center w-1/2">
-                Select an lead from the list to view their profile information.
+                Select a lead from the list to view their profile information.
               </p>
             </div>
           )}

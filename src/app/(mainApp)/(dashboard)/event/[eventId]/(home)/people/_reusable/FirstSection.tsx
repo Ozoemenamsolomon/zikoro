@@ -313,7 +313,7 @@ export default function FirstSection({
     setShowFilter((prevShowFilter) => !prevShowFilter);
 
   const exportAttendees = () => {
-    const omittedFields = [
+    const omittedFields: (keyof TAttendee)[] = [
       "id",
       "eventId",
       "userId",
@@ -324,21 +324,32 @@ export default function FirstSection({
       "eventRegistrationRef",
       "paymentLink",
       "registrationCompleted",
+      "checkInPoints",
+      "attendeeAlias",
+      "attendeeProfilePoints",
+      "completedFields",
+      "speakingAt",
+      "moderatingAt",
+      "appointmentLink",
     ];
+
     const normalizedData = convertCamelToNormal<TAttendee>(
       mappedAttendees.map((obj) =>
         Object.keys(obj).reduce((newObj, key) => {
-          if (!omittedFields.includes(key)) {
-            newObj[key] =
+          if (!omittedFields.includes(key as keyof TAttendee)) {
+            (newObj as any)[key] =
               key === "registrationDate"
-                ? format(new Date(obj[key]), "MM/dd/yyyy")
-                : obj[key];
+                ? format(new Date((obj as any)[key]), "MM/dd/yyyy")
+                : key === "attendeeType"
+                ? obj[key].join(", ")
+                : (obj as any)[key];
           }
           return newObj;
-        }, {})
-      ),
+        }, {} as Partial<TAttendee>)
+      ) as TAttendee[],
       " "
     );
+
     const worksheet = XLSX.utils.json_to_sheet(normalizedData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
@@ -351,7 +362,9 @@ export default function FirstSection({
   return (
     <>
       <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2">
-        <h1 className="font-semibold leading-normal text-greyBlack ">Attendees</h1>
+        <h1 className="font-semibold leading-normal text-greyBlack ">
+          Attendees
+        </h1>
         {user && String(event?.createdBy) === String(user.id) && (
           <div className="flex gap-4 items-center">
             <button
