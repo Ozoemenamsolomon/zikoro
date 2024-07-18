@@ -26,7 +26,6 @@ import {
   useDeleteWorkspace,
   useUpdateWorkspace,
 } from "@/hooks/services/workspace";
-import Image from "next/image";
 
 interface FormData {
   orgName: string;
@@ -899,7 +898,9 @@ export default function General() {
           </div>
         </div>
       ) : (
-        <p className="text-sm">No organization found, please create one</p>
+        <p className="text-sm mt-[60px] mb-8 ml-0 lg:ml-[12px]">
+          No organization found, please create one
+        </p>
       )}
     </>
   );

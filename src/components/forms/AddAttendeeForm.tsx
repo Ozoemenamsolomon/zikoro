@@ -144,7 +144,8 @@ export default function AddAttendeeForm({
     };
 
     let completedFields: TCompletedFields =
-      attendee && attendee.completedFields ? [...attendee.completedFields] : [];
+      // attendee && attendee.completedFields ? [...attendee.completedFields] : [];
+      [];
 
     if (attendee) {
       payload.id = attendee.id;
@@ -457,6 +458,49 @@ export default function AddAttendeeForm({
               </InputOffsetLabel>
             )}
           />
+          <div className="flex flex-col gap-0.5">
+            <FormField
+              control={form.control}
+              name="appointmentLink"
+              render={({ field }) => (
+                <FormItem className="relative">
+                  <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+                    Appointment Link
+                  </FormLabel>
+                  <span className="text-sm absolute translate-y-1/2 right-4 text-gray-700 z-10 font-medium">
+                    <svg
+                      stroke="currentColor"
+                      fill="currentColor"
+                      strokeWidth={0}
+                      viewBox="0 0 24 24"
+                      height="1em"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M4.222 19.778c.975.975 2.255 1.462 3.535 1.462 1.281-.001 2.562-.487 3.536-1.462l2.828-2.829-1.414-1.414-2.828 2.829c-1.169 1.167-3.072 1.169-4.243 0-1.169-1.17-1.169-3.073 0-4.243l2.829-2.828L7.051 9.879l-2.829 2.828C2.273 14.656 2.273 17.829 4.222 19.778zM19.778 11.293c1.948-1.949 1.948-5.122 0-7.071-1.95-1.95-5.123-1.948-7.071 0L9.879 7.051l1.414 1.414 2.828-2.829c1.17-1.167 3.073-1.169 4.243 0 1.169 1.17 1.169 3.073 0 4.243l-2.829 2.828 1.414 1.414L19.778 11.293z" />
+                      <path
+                        transform="rotate(-134.999 12 12)"
+                        d="M11 5.999H13V18H11z"
+                      />
+                    </svg>
+                  </span>
+                  <FormControl>
+                    <Input
+                      className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 pr-12"
+                      placeholder="https://appointment.link"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <a href="http://www.zikoro.com/appointments/schedule">
+            <span className="text-xs font-medium text-basePrimary">
+              create your appointment link with this URL
+            </span>
+            </a>
+          </div>
           <FormField
             control={form.control}
             name="x"

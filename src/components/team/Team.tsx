@@ -1,7 +1,17 @@
 "use client";
 import React from "react";
-import { PlusCircleIcon, TeamIcon } from "@/constants";
+import { PlusCircleIcon, TeamIcon, TeamRemoveIcon } from "@/constants";
 import { SearchAlt2 } from "styled-icons/boxicons-regular";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
 
 export default function Team() {
   return (
@@ -23,15 +33,25 @@ export default function Team() {
           />
         </div>
         {/* Invite team members */}
-        <div className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end flex w-full lg:w-[343px] rounded-md gap-x-3 items-center px-[20px] h-[52px] cursor-pointer">
-          <PlusCircleIcon />
-          <p className="font-medium text-white text-[12px] lg:text-base">
-            Invite team members
-          </p>
-        </div>
+        <Dialog>
+          <DialogTrigger className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end flex w-full lg:w-[343px] rounded-md gap-x-3 items-center px-[20px] h-[52px] cursor-pointer">
+            <PlusCircleIcon />
+            <p className="font-medium text-white text-[12px] lg:text-base">
+              Invite team members
+            </p>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Invite Team Member</DialogTitle>
+              <DialogDescription>
+                <div></div>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
 
-      <div className="mt-8 overflow-y-auto lg:overflow-y-hidden ">
+      <div className="mt-8 overflow-y-auto hide-scrollbar  lg:overflow-y-hidden ">
         <table className="w-full">
           <thead className="px-2 py-4">
             <tr className=" bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-l-md rounded-r-md">
@@ -55,17 +75,37 @@ export default function Team() {
                     MP
                   </p>
                   <div className="flex flex-col gap-y-1">
-                    <p className="text-base">Manuel Peters</p>
+                    <p className="text-base ">Manuel Peters</p>
                     <p className="text-[14px]">ManuelPeters@gmail.com</p>
                   </div>
                 </div>
               </td>
               <td className="text-base w-1/3 text-left px-2 py-4">Owner</td>
               <td className="text-base w-1/3 px-2 py-4 cursor-pointer">
-                <p className="text-sm font-bold text-[#E74C3C]">Remove</p>
+                <Dialog>
+                  <DialogTrigger className="text-sm font-bold text-[#E74C3C]">
+                    Remove
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogDescription className="my-16 flex flex-col justify-center items-center ">
+                        <TeamRemoveIcon />
+                        <p className="mt-6 text-[#E74C3C] font-semibold text-2xl text-center ">
+                          Remove Team Member
+                        </p>
+                        <p className="mt-3 text-base text-center">
+                          You are about to remove this team member, are you sure
+                          you want to proceed ?
+                        </p>
+                        <button className="bg-[#E74C3C] text-white text-base rounded-[8px] px-[10px] py-[20px] mt-6">
+                          Yes, remove team member
+                        </button>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
               </td>
             </tr>
-
           </tbody>
         </table>
       </div>

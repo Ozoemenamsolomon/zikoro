@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib";
 import { ArrowExportLtr } from "styled-icons/fluentui-system-filled";
 import { ArrowExportRtl } from "styled-icons/fluentui-system-filled";
@@ -10,8 +10,8 @@ import useUserStore from "@/store/globalUserStore";
 
 const WorkspaceSidebar = () => {
   const pathname = usePathname();
-  const [isShowNav, setShowNav] = useState(false);
-  const [isScrolling, setScrolling] = useState(false);
+  const [isShowNav, setShowNav] = useState<boolean>(false);
+  const [isScrolling, setScrolling] = useState<boolean>(false);
   const [left, setLeft] = useState(false);
   const { user } = useUserStore();
 
