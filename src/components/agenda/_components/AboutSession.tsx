@@ -1,13 +1,13 @@
 "use client";
 
 import { Button } from "@/components";
-import { Eye } from "@styled-icons/feather/Eye";
-import { Star } from "@styled-icons/bootstrap/Star";
+import { Eye } from "styled-icons/feather";
+import { Star } from "styled-icons/bootstrap";
 import { EventLocationType } from "@/components/composables";
-import { Link2Outline } from "@styled-icons/evaicons-outline/Link2Outline";
-import { LocationPin } from "@styled-icons/entypo/LocationPin";
+import { Link2Outline } from "styled-icons/evaicons-outline";
+import { LocationPin } from "styled-icons/entypo";
 import { CollapsibleWidget, Duplicate, Edit, Deletes } from ".";
-import { FilePdf } from "@styled-icons/fa-regular/FilePdf";
+import { FilePdf } from "styled-icons/fa-regular";
 import Image from "next/image";
 import { TAgenda, Event } from "@/types";
 import { Player } from "@/components/composables";
@@ -67,7 +67,7 @@ export function AboutSession({
   useEffect(() => {
     (async () => {
       if (agenda) {
-        getRating({ agendaId: agenda?.id });
+        getRating({ agendaId: agenda?.sessionAlias });
       }
     })();
   }, [agenda]);

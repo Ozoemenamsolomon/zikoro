@@ -28,6 +28,7 @@ import { useGetOrganizations } from "./organization";
 import useUserStore from "@/store/globalUserStore";
 import { generateAlphanumericHash } from "@/utils/helpers";
 import { Reward } from "@/types";
+import { useGetData } from "@/hooks/services/request";
 
 const supabase = createClientComponentClient();
 
@@ -1238,5 +1239,33 @@ export function useVerifyUserAccess(eventId: string) {
     isOrganizer,
     loading,
     isLoading,
+  };
+}
+
+type TBoardData = { [key: string]: any[] };
+
+export function useGetUserPoint(eventId: string) {
+  const { attendeeId } = useVerifyUserAccess(eventId);
+  const [totalPoints, setTotalPoints] = useState(0);
+  const { data, isLoading } = useGetData<TBoardData>(
+    `/engagements/${eventId}/leaderboard`
+  );
+
+  useEffect(() => {
+    if (!isLoading && data && attendeeId) {
+      let total = 0;
+      Object.entries(data)?.forEach(([key, value]) => {
+        const sum = value
+          ?.filter((item) => Number(item?.id) === attendeeId)
+          ?.reduce((acc, val) => acc + (val?.points || 0), 0);
+
+        total += sum;
+      });
+      setTotalPoints(total);
+    }
+  }, [isLoading, data, attendeeId]);
+
+  return {
+    totalPoints,
   };
 }

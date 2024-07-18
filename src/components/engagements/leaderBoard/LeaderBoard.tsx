@@ -174,7 +174,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
     }
   }, [data, attendeeId]);
 
-  console.log( data, ranks, pointsAllocation);
+ // console.log( data, ranks, pointsAllocation);
 
   return (
     <InteractionLayout eventId={eventId}>

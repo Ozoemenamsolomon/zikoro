@@ -49,6 +49,15 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const selectAttendee = (attendee: TAttendee) => setSelectedAttendee(attendee);
 
+  const onGetAttendees = async () => {
+    await getAttendees();
+    const updatedAttendee = attendees.find(
+      ({ id }) => selectedAttendee && selectedAttendee.id === id
+    );
+
+    selectAttendee(updatedAttendee);
+  };
+
   const divRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -112,7 +121,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
           selectedAttendee={selectedAttendee}
           attendees={attendees}
           isLoading={isLoading}
-          getAttendees={getAttendees}
+          getAttendees={onGetAttendees}
           event={event}
         />
       </section>
@@ -122,7 +131,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
             <section className="md:col-span-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">
               <SecondSection
                 attendee={selectedAttendee}
-                getAttendees={getAttendees}
+                getAttendees={onGetAttendees}
                 event={event}
                 onOpen={onOpenAttendeeForm}
                 eventAgendas={eventAgendas}

@@ -85,10 +85,7 @@ const Attendee: React.FC<AttendeeProps> = ({
       engagementsSettings?.pointsAllocation["Checked in for an event"]
         ?.points ?? 0;
 
-    console.log(
-      allocatedcheckInPoints,
-      engagementsSettings?.pointsAllocation["Checked in for an event"]
-    );
+    console.log(allocatedcheckInPoints, checkInPoints);
 
     if (
       !isWithinInterval(new Date(), {
@@ -124,7 +121,9 @@ const Attendee: React.FC<AttendeeProps> = ({
         checkin: updatedCheckin,
         checkInPoints: checkin
           ? isCheckedInToday
-            ? checkInPoints - allocatedcheckInPoints
+            ? checkInPoints - allocatedcheckInPoints > 0
+              ? checkInPoints - allocatedcheckInPoints
+              : 0
             : checkInPoints + allocatedcheckInPoints
           : 1,
       },

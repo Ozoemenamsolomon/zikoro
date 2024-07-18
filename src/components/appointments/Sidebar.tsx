@@ -11,11 +11,11 @@ import MenuBox from './ui/MenuBox';
 import useUserStore from '@/store/globalUserStore';
 
 const navlinks = [
-  // {
-  //   icon: Calendar,
-  //   label: 'Calender',
-  //   link: `/appointments/calender`,
-  // },
+  {
+    icon: Calendar,
+    label: 'Calender',
+    link: `/appointments/calender`,
+  },
   {
     icon: BriefCase,
     label: 'Appointments',
