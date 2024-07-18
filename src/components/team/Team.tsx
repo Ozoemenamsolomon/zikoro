@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { PlusCircleIcon, TeamIcon, TeamRemoveIcon } from "@/constants";
 import { SearchAlt2 } from "styled-icons/boxicons-regular";
 import {
@@ -13,7 +13,36 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
+type FormDataType = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+};
+
 export default function Team() {
+  const [formData, setFormData] = useState<FormDataType>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "",
+  });
+
+  const handlelSubmitForm = (e: any) => {
+    e.PreventDefault();
+  };
+
+  //handles input change
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const roles = ["owner", "editor", "collaborator"];
+
   return (
     <div className="mt-[60px] ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
       <div className="flex items-center gap-x-3">
@@ -34,17 +63,100 @@ export default function Team() {
         </div>
         {/* Invite team members */}
         <Dialog>
-          <DialogTrigger className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end flex w-full lg:w-[343px] rounded-md gap-x-3 items-center px-[20px] h-[52px] cursor-pointer">
+          <DialogTrigger className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end flex w-full lg:w-auto rounded-md gap-x-3 items-center px-[20px] h-[52px] cursor-pointer">
             <PlusCircleIcon />
-            <p className="font-medium text-white text-[12px] lg:text-base">
+            <p className="font-medium text-white text-base">
               Invite team members
             </p>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="w-full max-w-full lg:max-w-[1000px]  xl:max-w-[1120px] px-1 lg:px-10">
             <DialogHeader>
-              <DialogTitle>Invite Team Member</DialogTitle>
-              <DialogDescription>
-                <div></div>
+              <DialogDescription className="mt-8">
+                <p className="text-2xl font-semibold text-black">
+                  Invite Team Member
+                </p>
+
+                <form action="" onSubmit={handlelSubmitForm} className="my-10">
+                  <div className="flex flex-col lg:flex-row gap-4 mt-10 ">
+                    <div className=" w-full lg:w-[450px] xl:w-[500px]">
+                      <p className="text-[14px] text-[#1f1f1f] text-left">
+                        First Name
+                      </p>
+                      <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
+                        <input
+                          type="text"
+                          value={formData.firstName}
+                          name="firstName"
+                          onChange={handleInputChange}
+                          className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className=" w-full lg:w-[450px] xl:w-[500px]">
+                      <p className="text-[14px] text-[#1f1f1f] text-left">
+                        Last Name
+                      </p>
+                      <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
+                        <input
+                          type="text"
+                          value={formData.lastName}
+                          name="lastName"
+                          onChange={handleInputChange}
+                          className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col lg:flex-row gap-4 mt-8 ">
+                    <div className=" w-full lg:w-[450px] xl:w-[500px]">
+                      <p className="text-[14px] text-[#1f1f1f] text-left">
+                        Email
+                      </p>
+                      <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
+                        <input
+                          type="email"
+                          value={formData.email}
+                          name="email"
+                          onChange={handleInputChange}
+                          className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                        />
+                      </div>
+                    </div>
+                    <div className="w-full lg:w-[450px] xl:w-[500px]">
+                      <p className="text-[14px] text-[#1f1f1f] text-left">
+                        Role
+                      </p>
+                      <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
+                        <select
+                          name="orgCountry"
+                          value={formData.role}
+                          onChange={handleInputChange}
+                          className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[7px]"
+                        >
+                          {roles.map((role) => (
+                            <option
+                              key={role}
+                              value={role}
+                              className="bg-transparent text-black"
+                              onChange={(e) => handleInputChange(e)}
+                            >
+                              {role}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-8 mr-0 lg:mr-3 xl:mr-6">
+                    <button
+                      className=" py-2 px-4 text-white text-[14px] bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-lg"
+                      type="submit"
+                    >
+                      Invite
+                    </button>
+                  </div>
+                </form>
               </DialogDescription>
             </DialogHeader>
           </DialogContent>
@@ -75,7 +187,7 @@ export default function Team() {
                     MP
                   </p>
                   <div className="flex flex-col gap-y-1">
-                    <p className="text-base ">Manuel Peters</p>
+                    <p className="text-base font-semibold ">Manuel Peters</p>
                     <p className="text-[14px]">ManuelPeters@gmail.com</p>
                   </div>
                 </div>
@@ -88,7 +200,7 @@ export default function Team() {
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogDescription className="my-16 flex flex-col justify-center items-center ">
+                      <DialogDescription className="my-16 mx-4 lg:mx-8 flex flex-col justify-center items-center ">
                         <TeamRemoveIcon />
                         <p className="mt-6 text-[#E74C3C] font-semibold text-2xl text-center ">
                           Remove Team Member

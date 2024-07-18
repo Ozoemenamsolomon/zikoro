@@ -45,7 +45,7 @@ const Calendar: React.FC = () => {
                 setDateDisplay(`${start} - ${end}`);
             }
 
-            const res = await fetch(`/api/appointments/calender?view=${view}&startDate=${startDate}&endDate=${endDate}&userId=${user?.id}`);
+            const res = await fetch(`/api/appointments/calender?view=${view}&startDate=${startDate}&endDate=${endDate}&userId=${user?.id}`); 
             const data = await res.json();
             console.log({RESULT:data})
 
