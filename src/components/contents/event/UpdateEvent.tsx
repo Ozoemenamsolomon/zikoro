@@ -264,6 +264,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     );
     setIsPublishing(false);
     showPublishModal();
+    window.open(window.location.href, "_self");
   }
 
   async function unpublishEvent() {
