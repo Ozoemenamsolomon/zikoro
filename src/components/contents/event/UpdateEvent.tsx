@@ -813,10 +813,11 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         )}
         {isShowPublishModal && (
           <PublishCard
-            asyncPublish={publishEvent}
+            asyncPublish={data?.published ? unpublishEvent :publishEvent}
             close={showPublishModal}
             loading={publishing}
-            message={` You are about to publish an event. You will be notified when the admin
+            isPublished={data?.published}
+            message={data?.published ? `You are about to unpublish your event. Do you wish to continue?` : ` You are about to publish an event. You will be notified when the admin
             approves it.`}
           />
         )}
