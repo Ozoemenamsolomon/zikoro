@@ -158,7 +158,7 @@ export function AboutSession({
               </p>
             )}
             {(isIdPresent || isOrganizer) && (
-              <div className="flex items-center px-4 gap-x-2">
+              <div className="flex items-center px-4 gap-x-6">
                 <Edit
                   session={agenda}
                   event={event}
