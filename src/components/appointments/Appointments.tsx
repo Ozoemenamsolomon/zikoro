@@ -429,9 +429,9 @@ const BookingTable = ({
   bookings: Booking[];
 }) => {
   const formattedDate = format(parseISO(date), "EEEE, d MMMM, yyyy");
-
+  
   return (
-    <section className="w-full bg-white rounded-lg p-6 py-8">
+    <section id={format(parseISO(date), 'yyyy-MM-dd')} className="w-full bg-white rounded-lg p-6 py-8">
       <div className="flex gap-4 items-center pb-6">
         <h5 className="font-semibold">{formattedDate}</h5>
         <p>–</p>
@@ -510,7 +510,16 @@ const Appointments: React.FC = () => {
     } else {
       getBookings();
     }
-  };
+  }
+  useEffect(() => {
+    if (!isLoading && !error && list.length > 0) {
+      const dateHash = window.location.hash.substring(1)?.split('?')[0];
+      const element = document.getElementById(dateHash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [list, isLoading, error]);
 
   const groupedBookings = groupBookingsByDate(list);
 
