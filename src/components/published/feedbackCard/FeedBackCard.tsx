@@ -2,7 +2,7 @@
 
 import { DoubleColumnIcon } from "@/constants";
 import { StarFill } from "styled-icons/bootstrap";
-import { Star } from "@styled-icons/bootstrap/Star";
+import { Star } from "styled-icons/bootstrap";
 import { Verified } from "styled-icons/material";
 import { TFeedBack } from "@/types";
 import { cn } from "@/lib";

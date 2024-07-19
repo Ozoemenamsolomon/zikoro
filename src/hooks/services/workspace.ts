@@ -78,25 +78,32 @@ export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, 
 }
 
 export function useDeleteWorkspace(workspaceId: number) {
-  async function deleteWorkspace() {
+  async function deleteWorkspace(): Promise<Boolean> {
     try {
       // Delete the event by ID
       const { data, error, status } = await supabase
         .from("organization")
         .delete()
-        .eq("organizationName", workspaceId);
-
+        .eq("id", workspaceId);
+  
       if (error) {
         toast.error(error.message);
         return false;
       }
+
       if (status === 204 || status === 200) {
         toast.success("Workspace deleted successfully");
+        return true;
+      } else {
+        toast.error("Unexpected status code: " + status);
+        return false;
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      return false;
     }
   }
+  
   return {
     deleteWorkspace,
   };
@@ -151,5 +158,41 @@ export function useUpdateSubdomain(workspaceId: number, workspaceSubdomain: stri
   }
   return {
     updateSubdomain
+  };
+}
+
+
+export function useCreateTeamMember() {
+  async function createTeamMember(workspaceId:number, workspaceSubdomain:string) {
+    try {
+      const { data, error, status } = await supabase
+        .from("organization")
+        .update({
+          subDomain: workspaceSubdomain
+        })
+        .eq("id", workspaceId);
+
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+      if (status === 204 || status === 200) {
+        toast.success('Updated Successfully');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function updateTeamMembers(members:any) {
+    for (const member of members) {
+      const { workspaceId, workspaceSubdomain } = member;
+      await createTeamMember(workspaceId, workspaceSubdomain);
+    }
+  }
+
+  return {
+    createTeamMember,
+    updateTeamMembers
   };
 }

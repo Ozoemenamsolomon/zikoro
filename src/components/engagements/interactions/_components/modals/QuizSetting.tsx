@@ -10,10 +10,10 @@ import * as z from "zod";
 import { quizSettingSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo, useEffect, useState } from "react";
-import { TQuiz, TQuestion } from "@/types";
+import { TQuiz, TQuestion, TOrgEvent } from "@/types";
 import Image from "next/image";
 import { generateInteractionAlias, uploadFile } from "@/utils";
-import { useCreateQuiz, useUpdateQuiz } from "@/hooks";
+import { useCreateQuiz, useUpdateQuiz, useFetchSingleEvent } from "@/hooks";
 
 type QuizSettingsProp = {
   eventAlias: string;
@@ -28,6 +28,11 @@ export function QuizSettings({
   refetch,
 }: QuizSettingsProp) {
   const { createQuiz } = useCreateQuiz();
+  const {
+    data: event,
+  }: {
+    data: TOrgEvent | null;
+  } = useFetchSingleEvent(eventAlias);
   const { updateQuiz } = useUpdateQuiz();
   const [branding, setBranding] = useState({
     eventName: false,
@@ -45,7 +50,7 @@ export function QuizSettings({
     isCollectPhone: false,
     isCollectEmail: false,
     showAnswer: true,
-    showResult: true
+    showResult: true,
   });
   const form = useForm<z.infer<typeof quizSettingSchema>>({
     resolver: zodResolver(quizSettingSchema),
@@ -127,6 +132,7 @@ export function QuizSettings({
       setAccessibility(quiz?.accessibility);
     }
   }, [quiz]);
+  console.log("ewewe", event);
 
   return (
     <div
@@ -260,7 +266,6 @@ export function QuizSettings({
                   setAccessibility({
                     ...accessibility,
                     visible: !accessibility.visible,
-                    
                   })
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
@@ -280,7 +285,7 @@ export function QuizSettings({
                       setAccessibility({
                         ...accessibility,
                         isCollectEmail: !accessibility.isCollectEmail,
-                        isCollectPhone: false
+                        isCollectPhone: false,
                       })
                     }
                     className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
@@ -297,8 +302,7 @@ export function QuizSettings({
                       setAccessibility({
                         ...accessibility,
                         isCollectPhone: !accessibility.isCollectPhone,
-                        isCollectEmail: false
-                        
+                        isCollectEmail: false,
                       })
                     }
                     className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
@@ -329,26 +333,25 @@ export function QuizSettings({
             </div>
             <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
               <p>Question Answer Visibility</p>
-                
+
               <Switch
                 disabled={loading}
                 checked={accessibility?.showAnswer}
                 onClick={() =>
                   setAccessibility({
                     ...accessibility,
-                    showAnswer:!accessibility.showAnswer,
-                   
+                    showAnswer: !accessibility.showAnswer,
                   })
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
               />
             </div>
             <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
-             
               <div className="flex flex-col items-start justify-start">
                 <p>Show Quiz Result</p>
                 <p className="text-xs text-gray-500">
-                  Participants will see the score sheet immediately after taking the quiz.
+                  Participants will see the score sheet immediately after taking
+                  the quiz.
                 </p>
               </div>
               <Switch
@@ -357,8 +360,7 @@ export function QuizSettings({
                 onClick={() =>
                   setAccessibility({
                     ...accessibility,
-                    showResult:!accessibility.showResult,
-                   
+                    showResult: !accessibility.showResult,
                   })
                 }
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
@@ -442,12 +444,14 @@ export function QuizSettings({
               <div className="flex flex-col items-start justify-start">
                 <p>Live Mode</p>
                 <p className="text-xs text-gray-500">
-                  All quiz participants will attempt the quiz at the same time.
+                  {event && event?.organization?.subscriptionPlan === "Free"
+                    ? "Upgrade to higher subscription to use this feature."
+                    : "All quiz participants will attempt the quiz at the same time."}
                 </p>
               </div>
               {/***={loading} */}
               <Switch
-                disabled
+                disabled={event?.organization?.subscriptionPlan === "Free"}
                 checked={accessibility.live}
                 onClick={() =>
                   setAccessibility({

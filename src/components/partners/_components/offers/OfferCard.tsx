@@ -328,6 +328,7 @@ function ActionWidget({
       eventPartnerAlias: offer?.partnerId,
       stampCard: true,
       firstContactChannel: "Offer",
+      leadType: "unknown",
       interests: {
         interestType: "Offer",
         partnerInterestId: offer?.id || "",

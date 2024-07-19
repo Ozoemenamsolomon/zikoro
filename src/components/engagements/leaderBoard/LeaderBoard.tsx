@@ -182,17 +182,16 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
           <h2 className="w-full text-white  text-center mb-3 font-semibold text-lg sm:text-2xl">
             LeaderBoard
           </h2>
-          <div className="mx-auto w-fit flex px-2 mb-6 items-center gap-x-8 sm:gap-x-20 bg-white h-10 rounded-3xl">
-            {!isOrganizer && !isIdPresent && (
+          {!isOrganizer && !isIdPresent && (
+            <div className="mx-auto w-fit flex px-2 mb-6 items-center gap-x-8 sm:gap-x-20 bg-white h-10 rounded-3xl">
               <Button
                 onClick={onClose}
                 className="underline rounded-none px-2 h-10 w-fit"
               >
                 View your Points
               </Button>
-            )}
-          </div>
-
+            </div>
+          )}
           <div className="mx-auto w-full relative">
             {Array.isArray(ranks) && ranks?.length > 0 && (
               <div className=" flex w-full justify-center text-sm">
@@ -220,7 +219,9 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     )}
 
                     <p className="text-white font-medium">
-                      {`${ranks[1]?.firstName} ${ranks[1]?.lastName}` ?? ""}
+                      {`${ranks[1]?.firstName.charAt(0)}. ${
+                        ranks[1]?.lastName
+                      }` ?? ""}
                     </p>
                   </div>
 
@@ -264,7 +265,9 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     )}
 
                     <p className="text-white font-medium text-sm">
-                      {`${ranks[0]?.firstName} ${ranks[0]?.lastName}` ?? ""}
+                      {`${ranks[0]?.firstName.charAt(0)}. ${
+                        ranks[0]?.lastName
+                      }` ?? ""}
                     </p>
                   </div>
 
@@ -308,7 +311,9 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     )}
 
                     <p className="text-white font-medium">
-                      {`${ranks[2]?.firstName} ${ranks[2]?.lastName}` ?? ""}
+                      {`${ranks[2]?.firstName.charAt(0)}. ${
+                        ranks[2]?.lastName
+                      }` ?? ""}
                     </p>
                   </div>
 

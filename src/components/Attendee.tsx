@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetData } from "@/hooks/services/request";
 import { EngagementsSettings } from "@/types/engagements";
+import { cn } from "@/lib";
 
 type AttendeeProps = {
   attendee: TAttendee;
@@ -272,16 +273,18 @@ const Attendee: React.FC<AttendeeProps> = ({
             </button>
             <button
               onClick={toggleCheckin}
-              className={`text-[8px] flex items-center gap-0.5 ${
+              className={cn(
+                "text-[8px] flex items-center gap-0.5",
                 user &&
-                String(event?.createdBy) === String(user.id) &&
-                isWithinInterval(new Date(), {
-                  start: event.startDateTime,
-                  end: event.endDateTime,
-                })
+                  String(event?.createdBy) === String(user.id) &&
+                  isWithinInterval(new Date(), {
+                    start: event.startDateTime,
+                    end: event.endDateTime,
+                  })
                   ? ""
-                  : "hidden"
-              } ${checkCheckin ? "text-basePrimary" : "text-gray-700"}`}
+                  : "hidden",
+                checkCheckin ? "text-basePrimary" : "text-gray-700"
+              )}
               disabled={engagementsSettingsIsLoading || updatingAttendees}
             >
               <div className="flex-1">

@@ -292,7 +292,7 @@ const ThirdColumn = ({
               fontWeight={600}
               fontSize={48}
             >
-              {leads.length}6
+              {leads.length}
             </StyledText>
             <StyledText
               fill={"#4b5563"}
