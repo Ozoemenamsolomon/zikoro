@@ -1,9 +1,10 @@
 import { Booking } from '@/types/appointments'
 import { format } from 'date-fns'
-import { Delete, MoveUpRight, PlusCircle, Trash, XCircle } from 'lucide-react'
+import { Delete, MoveUpRight, PlusCircle, XCircle } from 'lucide-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { Arrow90degRight } from 'styled-icons/bootstrap'
+import TimePicker from './TimePicker'
 
 const Action = ({appointment}:{
     appointment:Booking
@@ -11,7 +12,6 @@ const Action = ({appointment}:{
     const [isOpen, setIsOpen] = useState(false)
     const date = format(new Date(appointment?.appointmentDate!), 'eeee, dd MMMM, yyyy' )
 
-    console.log({appointment})
   return (
     <React.Fragment>
         <div className="absolute inset-0 z-40 flex h-full flex-col gap-2 justify-center text-center p-2 pt-6"
@@ -42,27 +42,8 @@ const Action = ({appointment}:{
                 <h5 className="text-large pb-4 font-semibold tex-center">
                     {date}
                 </h5>
-
-                <div className="border rounded-md border-zikoroBlue px-3 py-4">
-                    <div className="bg-purple-100 rounded-md p-3 text-center mb-4">
-                        <h6 className="text-base  font-medium">Edit unavailability</h6>
-                        <p className="text-sm">Add time when you will be unavailable today</p>
-                    </div>
-
-                    <div className="flex mb-3 justify-center gap-3 items-center w-full">
-                        <div className="bg-purple-100 p-2 rounded-md shrink-0">00:00 AM</div>
-                        <p className="">-</p>
-                        <div className="bg-purple-100 p-2 rounded-md shrink-0">00:00 AM</div>
-                        <button><Trash size={20}/></button>
-                    </div>
-
-                    <div className="flex gap-2 items-center text-zikoroBlue">
-                        <PlusCircle size={18} />
-                        <p>Add Time</p>
-                    </div>
-                </div>
-
-                <button className='bg-basePrimary rounded-md p-3  text-center w-full text-white' >Apply</button>
+                <TimePicker booking={appointment}/>
+                
             </div>
         </div>
 
