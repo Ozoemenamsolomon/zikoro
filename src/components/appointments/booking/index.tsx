@@ -9,7 +9,7 @@ import { useAppointmentContext } from '../context/AppointmentContext'
 const Booking =  ({alias}:{alias:string}) => {
   const {appointment: appointmnetLink, isLoading, error, } = useGetBookingAppointment(alias)
   const {bookingFormData} = useAppointmentContext()
-  console.log({appointmnetLink})
+//   console.log({appointmnetLink})
 
     
   return (
