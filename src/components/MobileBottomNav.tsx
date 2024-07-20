@@ -4,7 +4,6 @@ import {
   AgendaIcon,
   Hamburger,
   HomeIcon,
-  NotificationIcon,
   UserIcon,
 } from "@/constants";
 import Link from "next/link";

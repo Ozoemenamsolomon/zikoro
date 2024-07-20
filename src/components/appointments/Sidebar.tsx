@@ -13,8 +13,8 @@ import useUserStore from '@/store/globalUserStore';
 const navlinks = [
   {
     icon: Calendar,
-    label: 'Calender',
-    link: `/appointments/calender`,
+    label: 'Calendar',
+    link: `/appointments/calendar`,
   },
   {
     icon: BriefCase,

@@ -81,14 +81,14 @@ export interface Event {
   explore: boolean;
   eventAppAccess: string;
   eventWebsiteSettings: { title: string; status: boolean }[];
-  sessionTrack: {name: string; color: string}[]
+  sessionTrack: { name: string; color: string }[];
 }
 
 export interface PaymentConfigProps {
   email: string;
   amount?: number;
   reference: string;
-  currency?:string
+  currency?: string;
 }
 
 export interface DiscountCodeType {
@@ -125,13 +125,12 @@ export interface Organization {
   facebook: string;
   certificateAsset: string;
   tiktok: string;
-
 }
 
 export type TOrgEvent = Event & {
-  organization: TOrganization
-  }
-  
+  organization: TOrganization;
+};
+
 export interface Reward {
   rewardTitle: string;
   image: string;
@@ -140,6 +139,16 @@ export interface Reward {
   eventAlias: string;
   eventName: string;
   id: number;
+}
+
+export interface RedeemPoint {
+  id: number;
+  created_at: string;
+  attendeeId: number;
+  eventAlias: string;
+  rewardId: number;
+  rewardPoints: number;
+  rewardTitle: string;
 }
 
 export interface TPayment {

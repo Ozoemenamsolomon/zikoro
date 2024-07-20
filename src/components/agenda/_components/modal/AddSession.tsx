@@ -264,7 +264,7 @@ export function AddSession({
           if (typeof file === "string") {
             resolve({ ...restItems, file });
           } else {
-            const fileString = await uploadFile(file, "image");
+            const fileString = await uploadFile(file, "pdf");
             resolve({ ...restItems, file: fileString });
           }
         });

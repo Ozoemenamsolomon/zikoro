@@ -296,7 +296,7 @@ export function useForgotPassword() {
     try {
       setLoading(true);
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/update-password`,
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/update-password`,
       });
 
       if (error) {

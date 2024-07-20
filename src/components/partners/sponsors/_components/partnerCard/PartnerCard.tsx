@@ -5,7 +5,7 @@ import Link from "next/link";
 import { TExPartner } from "@/types";
 import { useMemo } from "react";
 
-import { Location } from "@styled-icons/fluentui-system-regular/Location";
+import { Location } from "styled-icons/fluentui-system-regular";
 import { useRouter } from "next/navigation";
 import useUserStore from "@/store/globalUserStore";
 
@@ -26,12 +26,7 @@ export function PartnerCard({
   }, [sponsor.companyLogo]);
 
   const { user } = useUserStore();
-  console.log(
-    sponsor.boothStaff.map(({ email }) => email),
-    sponsor.companyName,
-    user.userEmail,
-    sponsor.boothStaff.find(({ email }) => user?.userEmail === email)
-  );
+
   return (
     <Link
       href={`/event/${eventId}/partner/${sponsor.partnerAlias}`}
@@ -69,16 +64,20 @@ export function PartnerCard({
               !!sponsor.exhibitionHall && ","
             }`}</p>
           )}
-          {sponsor.boothNumber && <p>{`Booth ${sponsor.boothNumber || ""}`}</p>}
+          {sponsor.boothNumber && (
+            <p>{`Booth ${sponsor.boothNumber?.toString() || ""}`}</p>
+          )}
         </div>
 
         <div className="flex items-center gap-x-3">
-          <div className="flex items-center gap-x-2">
-            <Location size={16} className="text-[#717171]" />
-            <p>{`${sponsor.city ?? "City"}, ${
-              sponsor.country ?? "Country"
-            }`}</p>
-          </div>
+          {!sponsor?.city && !sponsor?.country ? null : (
+            <div className="flex items-center gap-x-2">
+              <Location size={16} className="text-[#717171]" />
+              <p>{`${sponsor.city || "City"}, ${
+                sponsor.country || "Country"
+              }`}</p>
+            </div>
+          )}
           {sponsor.industry !== undefined && (
             <div className="flex items-center gap-x-2">
               <IndustryIcon />

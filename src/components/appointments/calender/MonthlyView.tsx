@@ -1,8 +1,9 @@
 import { MoreHorizontal } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay } from 'date-fns';
 import { Booking } from '@/types/appointments';
 import { cn } from '@/lib';
+import Action from './Action';
 
 interface MonthlyViewProps {
     appointments: Record<string, Booking[]>;
@@ -10,6 +11,8 @@ interface MonthlyViewProps {
 }
 
 const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth }) => {
+    const [isHovered, setIsHovered] = useState('')
+
     const startDate = startOfMonth(currentMonth);
     const endDate = endOfMonth(currentMonth);
     const days = eachDayOfInterval({ start: startDate, end: endDate });
@@ -40,7 +43,11 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth })
                     const today = format(new Date(), 'd')
                     const active = today === format(day, 'd')
                     return (
-                        <div  key={dayString} className="relative border bg-white p-2  w-full">
+                        <div  key={dayString} 
+                        onMouseEnter={()=>setIsHovered(list?.length ? dayString : '')}
+                        onMouseLeave={()=>setIsHovered('')}
+                        className="relative border bg-white p-2  w-full"
+                        >
                             <div className={cn("flex flex-col justify-between h-32 overflow-hidden")}>
                                
                                 <div className="flex justify-between shrink-0 gap-1 items-center pb-2">
@@ -51,23 +58,28 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth })
                                     {list?.length ? <p className="text-[8px] shrink-0 md:text-[12px]">{list.length + ' ' + 'appt.'}</p> : null}
                                 </div>
 
-                                <div className="h-full flex flex-col gap-1 flex-start">
-                                    {list?.length ? list?.slice(0,3)?.map(appointment => (
-                                        <div key={appointment.id} className="flex  gap-1 items-center text-[10px] xl:text-sm">
-                                            <div className="h-3 w-3 rounded shrink-0 "
-                                                style={{
-                                                    backgroundColor: appointment?.appointmentLinkId?.brandColour
-                                                }}
-                                            ></div>
-                                            <p className=' flex-shrink-0  '>{appointment.appointmentTimeStr}</p>
-                                        </div>
-                                    )) : null}
-                                </div>
+                                {
+                                    isHovered===dayString ? 
+                                    <Action appointment={list[0]}/> 
+                                    :
+                                    <div className="h-full flex flex-col gap-1 flex-start">
+                                        {list?.length ? list?.slice(0,3)?.map(appointment => (
+                                            <div key={appointment.id} className="flex  gap-1 items-center text-[10px] xl:text-sm">
+                                                <div className="h-3 w-3 rounded shrink-0 "
+                                                    style={{
+                                                        backgroundColor: appointment?.appointmentLinkId?.brandColour
+                                                    }}
+                                                ></div>
+                                                <p className=' flex-shrink-0  '>{appointment.appointmentTimeStr}</p>
+                                            </div>
+                                        )) : null}
+                                    </div>
+                                }
 
                                 {
                                 list?.length > 3 ?
                                 <div className="flex w-full shrink-0 justify-center ">
-                                    <button type="button"><MoreHorizontal size={14}/></button>
+                                    <div ><MoreHorizontal size={14}/></div>
                                 </div> : null
                                 }
 

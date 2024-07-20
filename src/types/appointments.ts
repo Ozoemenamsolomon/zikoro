@@ -1,5 +1,5 @@
 import { Category } from "@/components/appointments/create/CategoryForm";
-import { DaySchedule } from "@/components/appointments/ui/DateTimeScheduler ";
+import { DaySchedule } from "@/components/appointments/ui/DateTimeScheduler";
 
 export interface AppointmentLink {
     id?: bigint;
@@ -142,4 +142,12 @@ export interface User {
   facebook?: string | null;
   referralCode?: string | null;
   referredBy?: string | null;
+}
+
+export interface AppointmentUnavailability {
+  id?: number;
+  created_at?: string; 
+  createdBy?: number | null; 
+  startDateTime?: string | null;
+  endDateTime?: string | null;
 }

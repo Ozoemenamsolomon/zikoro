@@ -1,7 +1,6 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { formatReviewNumber } from "@/utils";
 export async function GET(
   req: NextRequest,
   { params }: { params: { agendaId: string } }
@@ -15,20 +14,19 @@ export async function GET(
       const { data, error } = await supabase
         .from("sessionReviews")
         .select("*")
-        .eq("sessionAlias", agendaId)
+        .eq("sessionAlias", agendaId);
 
+      //
+      let ratingCount = 0;
+      let ratingAverage = 0;
 
-      // 
-      let ratingCount = 0
-
-      if ( !data || (Array.isArray(data) && data?.length === 0) ) {
-
-        ratingCount = 0
-      }
-      else if (Array.isArray(data) && data?.length > 0) {
-        const mappedReviews = data?.map((item) => Number(item?.rating))
-        ratingCount = mappedReviews?.reduce((a, b) => a + b, 0)
-       
+      if (!data || (Array.isArray(data) && data?.length === 0)) {
+        ratingCount = 0;
+      } else if (Array.isArray(data) && data?.length > 0) {
+        const mappedReviews = data?.map((item) => Number(item?.rating));
+        ratingCount = mappedReviews?.reduce((a, b) => a + b, 0);
+        // assuming having 50 reviews is a 5 star
+        ratingAverage = (ratingCount / 50) * 5;
       }
 
       if (error) {
@@ -44,12 +42,10 @@ export async function GET(
 
       if (error) throw error;
 
-
-   
-
       return NextResponse.json(
         {
-          data: formatReviewNumber(ratingCount), reviews: data
+          data: { average: Math.round(ratingAverage), rating: ratingCount },
+          reviews: data,
         },
         {
           status: 200,

@@ -3,7 +3,7 @@
 import { Input } from "..";
 import { HeaderTab } from "./_components";
 import Filter from "@/components/Filter";
-import { Search } from "@styled-icons/evil/Search";
+import { Search } from "styled-icons/evil";
 import useSearch from "@/hooks/common/useSearch";
 import { Sponsors } from "./sponsors/Sponsors";
 import { Exhibitors } from "./sponsors/Exhibitors";

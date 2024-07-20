@@ -15,7 +15,7 @@ import { fetchUser } from '../auth';
 import { toast } from 'react-toastify';
 import PageLoading from '../ui/Loading';
 import { useGetBookingAppointment } from '@/hooks';
-import { DaySchedule } from '../ui/DateTimeScheduler ';
+import { DaySchedule } from '../ui/DateTimeScheduler';
 import SelectType from './SelectType';
 import { useAppointmentContext } from '../context/AppointmentContext';
 import { uploadImage } from './uploadImage';

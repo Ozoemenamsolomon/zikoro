@@ -30,7 +30,7 @@ export async function PATCH(req: NextRequest) {
 
       let payload = data;
 
-      console.log("res", data)
+      //console.log("res", data)
       if (type === "job") {
         payload = {
           ...payload,

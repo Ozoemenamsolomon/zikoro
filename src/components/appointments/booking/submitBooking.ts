@@ -1,8 +1,5 @@
 import { format, parse } from "date-fns";
 import { AppointmentLink, Booking } from "@/types/appointments";
-import { createClient } from "@/utils/supabase/client";
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 type ValidateFunction = () => boolean;
@@ -50,7 +47,6 @@ export const submitBooking = async ({
         selectedDate: bookingFormData?.appointmentDate!
     });
 
-
     try {
         const response = await fetch('/api/appointments/booking', {
             method: 'POST',
@@ -79,7 +75,7 @@ export const submitBooking = async ({
                     appointmentLink,
                 }),
             });
-            // console.log({email: await res.json()})
+            console.log({email: await res.json()})
             if(res.ok){
                 setSuccess('Booking was successful, email reminder sent')
             } else {
@@ -88,7 +84,6 @@ export const submitBooking = async ({
             }
             // console.log('Form submitted successfully',{bookingFormData, appointmentLink, result}, await res.json());
 
-            // setSuccess('Booking was successful')
             const slot: string = result?.data?.appointmentTime;
             // update slot bookin count
             const newSlotCounts = { ...slotCounts };

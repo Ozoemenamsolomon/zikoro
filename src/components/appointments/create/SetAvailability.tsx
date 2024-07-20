@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormProps } from '@/types/appointments'; 
-import DateTimeScheduler from '../ui/DateTimeScheduler ';
+import DateTimeScheduler from '../ui/DateTimeScheduler';
 
 const SetAvailability: React.FC<FormProps> = ({
   formData,

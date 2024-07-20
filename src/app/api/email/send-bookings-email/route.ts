@@ -1,8 +1,13 @@
+import { generateBookingICS } from "@/lib/generateICS";
 import { mergeEmailLists } from "@/lib/mergeEmails";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { addMinutes, parse } from "date-fns";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { SendMailClient } from 'zeptomail';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 
 const client = new SendMailClient({
   url: process.env.NEXT_PUBLIC_ZEPTO_URL,
@@ -13,29 +18,42 @@ const senderAddress = process.env.NEXT_PUBLIC_EMAIL;
 const senderName = "Zikoro";
 
 export async function POST(req: NextRequest) {
-  const supabase = createRouteHandlerClient({ cookies });
 
   if (req.method !== "POST") {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
   }
-
+  const { bookingFormData, appointmentLink } = await req.json();
+  console.log('R0UTEE', { bookingFormData, appointmentLink });
 
   try {
-    const { bookingFormData, appointmentLink } = await req.json();
 
     if (!bookingFormData || !appointmentLink) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    console.log('R0UTEE', { bookingFormData, appointmentLink });
+    const { userEmail: hostEmail, organization: hostOrg, firstName: hostfName, lastName: hostlName, phoneNumber: hostPhone, } = appointmentLink.createdBy;
 
-    const {userEmail:hostEmail, organization:hostOrg,firstName:hostfName, lastName:hostlName, phoneNumber:hostPhone,} = appointmentLink.createdBy
+    const { appointmentName, appointmentDuration, appointmentTime, appointmentDate, appointmentTimeStr, firstName, lastName, notes, participantEmail, teamMembers, phone } = bookingFormData;
 
-    const {  appointmentName, appointmentDuration, appointmentDate,appointmentTimeStr,firstName,lastName, notes, participantEmail,teamMembers, phone} = bookingFormData;
-
-    const emailList = [participantEmail, hostEmail, ];
+    const emailList = [participantEmail, hostEmail];
     const uniqueEmailArray = mergeEmailLists(teamMembers, emailList);
-console.log(emailList,uniqueEmailArray,teamMembers, hostEmail)
+    console.log(emailList, uniqueEmailArray, teamMembers, hostEmail);
+
+    const appointmentDateTime = parse(`${appointmentDate}T${appointmentTime}`, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+    const appointmentEndDateTime = addMinutes(appointmentDateTime, appointmentDuration);
+
+    const appointment = {
+      start: appointmentDateTime,
+      end: appointmentEndDateTime,
+      summary: appointmentName,
+      description: `Appointment with ${firstName} ${lastName}. Notes: ${notes}`,
+      location: appointmentLink?.location
+    };
+
+    const icsContent = generateBookingICS(appointment);
+    const icsFilePath = path.join(os.tmpdir(), 'appointment.ics');
+    fs.writeFileSync(icsFilePath, icsContent);
+
     const subject = `Booking Details for ${appointmentName}`;
     const htmlBody = `
           <!DOCTYPE html>
@@ -99,30 +117,40 @@ console.log(emailList,uniqueEmailArray,teamMembers, hostEmail)
             </html>
           `;
 
-    try {
-      for (const email of uniqueEmailArray) {
-       const response= await client.sendMail({
+    const emailPromises = uniqueEmailArray.map(email => {
+      return fetch('https://api.zeptomail.com/v1.1/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ZEPTO_TOKEN}`
+        },
+        body: JSON.stringify({
           from: {
             address: senderAddress,
             name: senderName,
           },
-          to: [
-            {
-              email_address: {
-                address: email,
-                name: "attendee",
-              },
+          to: [{
+            email_address: {
+              address: email,
+              name: "attendee",
             },
-          ],
+          }],
           subject,
           htmlbody: htmlBody,
-        });
-      }
-      return NextResponse.json({ message: 'Emails sent successfully' }, { status: 200 });
-    } catch (error) {
-      console.error('Error sending email:', error);
-      return NextResponse.json({ error: 'Error sending emails' }, { status: 500 });
-    }
+          attachments: [
+            {
+              filename: 'appointment.ics',
+              path: icsFilePath,
+              contentType: 'text/calendar'
+            }
+          ]
+        })
+      });
+    });
+
+    await Promise.all(emailPromises);
+
+    return NextResponse.json({ message: 'Emails sent successfully' }, { status: 200 });
   } catch (error) {
     console.error("Unhandled error:", error);
     return NextResponse.json(
