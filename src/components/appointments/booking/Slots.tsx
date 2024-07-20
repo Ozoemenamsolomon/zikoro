@@ -23,7 +23,6 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
   const [error, setError] = useState('')
   const pathname = usePathname()
   const isBooking = pathname.includes('booking')
-
   const fetchBookedSlots = async () => {
     setLoading(true)
     setError('')
@@ -81,18 +80,19 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
   };
 
   const updateSlots = async () => {
+    // console.log({selectedDate, y:selectedDate && isBooking})
     const bookings = await fetchBookedSlots();
     const slotCounts = countBookingsBySlot(bookings);
     const inactiveSlots = getInactiveSlots(slotCounts, maxBookingLimit!);
     setInactiveSlots(inactiveSlots);
     setLoading(false)
-    // console.log({bookings})
   };
 
   useEffect(() => {
-    updateSlots();
-    // console.log('=====',{bookingFormData,selectedDate,timeSlots:timeSlots?.selectDay})
-  }, [selectedDate && isBooking]);
+    if(isBooking){
+      updateSlots();
+    }
+  }, [selectedDate]);
 
   const isDisabled = !bookingFormData?.appointmentDate || !bookingFormData?.appointmentTime  
 
