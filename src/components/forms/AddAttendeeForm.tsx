@@ -211,7 +211,7 @@ export default function AddAttendeeForm({
     <Overlay
       isOpen={isOpen}
       onClose={onClose}
-      title={`${attendee ? "Update" : "Create"}Attendee`}
+      title={`${attendee ? "Update" : "Create"} Attendee`}
     >
       <Form {...form}>
         <form

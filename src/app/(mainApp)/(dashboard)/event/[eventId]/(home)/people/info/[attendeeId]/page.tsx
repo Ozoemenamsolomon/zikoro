@@ -1,7 +1,7 @@
 "use client";
 import { useCreateAttendee, useGetAttendee } from "@/hooks/services/attendee";
 import { useParams, useRouter } from "next/navigation";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import ThirdSection from "../../_reusable/ThirdSection";
 import SecondSection from "../../_reusable/SecondSection";
 import { toast } from "@/components/ui/use-toast";
@@ -21,11 +21,22 @@ import useUserStore from "@/store/globalUserStore";
 const page = () => {
   const router = useRouter();
   const { attendeeId, eventId } = useParams();
-  
+  const firstLoad = useRef<boolean>(true);
 
   const { attendee, isLoading, getAttendee } = useGetAttendee({
     attendeeId,
   });
+
+  // useEffect(() => {
+  //   console.log(firstLoad.current);
+  //   if (firstLoad.current) {
+  //     firstLoad.current = false;
+  //     return;
+  //   }
+
+  //   router.push(`/event/${eventId}/content/info`);
+  //   firstLoad.current = true;
+  // }, [eventId]);
 
   const {
     isOpen: attendeeFormIsOpen,
@@ -44,7 +55,6 @@ const page = () => {
   } = useGetEventAgendas({
     eventId: event.id,
   });
-  
 
   const { createAttendee } = useCreateAttendee();
 

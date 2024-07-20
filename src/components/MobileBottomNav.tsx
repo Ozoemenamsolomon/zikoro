@@ -8,10 +8,15 @@ import {
   UserIcon,
 } from "@/constants";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { Dot } from "styled-icons/bootstrap";
 import { Bell } from "styled-icons/feather";
 import { getCookie } from "@/hooks";
+import useEventStore from "@/store/globalEventStore";
+import { useGetData } from "@/hooks/services/request";
+import useUserStore from "@/store/globalUserStore";
+import { TAttendee } from "@/types";
+import { useEffect } from "react";
 
 export function MobileBottomNav({
   toggleSideNav,
@@ -21,11 +26,25 @@ export function MobileBottomNav({
   toggleSideNav: () => void;
 }) {
   const pathname = usePathname();
-  const event = getCookie("currentEvent");
+  const { event } = useEventStore();
+  const { user } = useUserStore();
   const router = useRouter();
-  
+  const { eventId } = useParams();
+
+  const {
+    data: attendee,
+    isLoading,
+    getData,
+  } = useGetData<TAttendee>(
+    `/attendees/email/${user?.userEmail}?eventId=${eventId}`
+  );
+
+  useEffect(() => {
+    getData();
+  }, [eventId]);
+
   return (
-    <nav className="w-full flex sm:hidden items-center justify-between border-t z-[99999] px-4 py-2 fixed bottom-0 inset-x-0 bg-white">
+    <nav className="w-full flex sm:hidden items-center justify-between border-t z-[49] px-4 py-2 fixed bottom-0 inset-x-0 bg-white">
       <button
         onClick={toggleSideNav}
         className="flex flex-col items-center justify-center"
@@ -34,23 +53,27 @@ export function MobileBottomNav({
         <Dot size={10} color={pathname === "/" ? "#001ffc" : "#ffffff"} />
       </button>
 
-      <Link
-        className="flex flex-col items-center justify-center"
-        href={"/profile"}
-      >
-        <UserIcon
-          color={pathname.includes("profile") ? "#001ffc" : "#000000"}
-        />
-        <Dot
-          size={10}
-          color={pathname.includes("profile") ? "#001ffc" : "#ffffff"}
-        />
-      </Link>
+      {!isLoading && attendee && (
+        <Link
+          className="flex flex-col items-center justify-center"
+          href={`/event/${event?.eventAlias}/people/info/${attendee.id}`}
+        >
+          <UserIcon
+            color={pathname.includes("profile") ? "#001ffc" : "#000000"}
+          />
+          <Dot
+            size={10}
+            color={pathname.includes("profile") ? "#001ffc" : "#ffffff"}
+          />
+        </Link>
+      )}
       <Link
         className="flex flex-col items-center justify-center"
         href={`/event/${event?.eventAlias}/reception`}
       >
-        <HomeIcon color={pathname.includes("reception") ? "#001ffc" : "#000000"} />
+        <HomeIcon
+          color={pathname.includes("reception") ? "#001ffc" : "#000000"}
+        />
         <Dot
           size={10}
           color={pathname.includes("reception") ? "#001ffc" : "#ffffff"}

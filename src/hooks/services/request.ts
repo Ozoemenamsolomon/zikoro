@@ -22,7 +22,7 @@ type usePostResult<TData, TReturnData = any> = {
 
 export const useGetData = <TData>(
   endpoint: string,
-  fetchInitial?: boolean = true
+  fetchInitial: boolean = true
 ): UseGetResult<TData> => {
   const [data, setData] = useState<TData | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
