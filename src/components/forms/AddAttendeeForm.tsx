@@ -79,7 +79,7 @@ export default function AddAttendeeForm({
     isLoading: engagementsSettingsIsLoading,
     getData: getEngagementsSettings,
   } = useGetData<EngagementsSettings>(
-    `engagements/${event.eventAlias}/settings`
+    `engagements/${eventId}/settings`
   );
 
   const {
