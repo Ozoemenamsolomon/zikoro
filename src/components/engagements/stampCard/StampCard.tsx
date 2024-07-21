@@ -8,20 +8,28 @@ import { ActiveStampCard, LightBulb } from "@/constants";
 import { Stamp } from "styled-icons/fa-solid";
 import Image from "next/image";
 import { EmptyCard } from "@/components/composables";
-import { useFetchPartners } from "@/hooks";
-import { useEffect, useState } from "react";
+import { useVerifyUserAccess } from "@/hooks";
+import { useEffect, useState, useMemo } from "react";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { TPartner, TExPartner } from "@/types";
+import { TExPartner, TLead } from "@/types";
 import { cn } from "@/lib";
+import { useGetData } from "@/hooks/services/request";
 
 type FormValue = {
   search: string;
 };
 
+type TStampData = TExPartner & {
+  leads: TLead[];
+};
+
 export default function StampCard({ eventId }: { eventId: string }) {
-  const { loading, data } = useFetchPartners(eventId);
+  const { attendeeId } = useVerifyUserAccess(eventId);
   const [active, setActive] = useState(false);
-  const [partnerData, setPartnerData] = useState<TExPartner[] | undefined>([]);
+  const { data, isLoading: loading } = useGetData<TStampData[]>(
+    `/partner/${eventId}/stamp`
+  );
+  const [partnerData, setPartnerData] = useState<TStampData[] | undefined>([]);
   const form = useForm<FormValue>({
     defaultValues: {
       search: "",
@@ -37,7 +45,7 @@ export default function StampCard({ eventId }: { eventId: string }) {
   // exhibitionHall
   // filter by partner's name
   function onSubmit(value: FormValue) {
-    // 
+    //
     if (Array.isArray(data)) {
       const filtered = data.filter((partner) => {
         const isPresent =
@@ -64,6 +72,17 @@ export default function StampCard({ eventId }: { eventId: string }) {
       setPartnerData(undefined);
     }
   }, [active, data]);
+
+  // checking if attendee is present in partner's lead
+  const isAttendeeInLead = useMemo(() => {
+    if (attendeeId && data && partnerData) {
+      return (partnerData || data).some((partner) => {
+        return partner?.leads.some((lead) => lead.attendeeId === attendeeId);
+      });
+    } else {
+      return false;
+    }
+  }, [attendeeId, data, partnerData]);
   return (
     <InteractionLayout eventId={eventId}>
       <div className="w-full px-4 flex flex-col sm:flex-row gap-2 items-start md:items-center justify-start md:justify-between py-3">
@@ -120,43 +139,47 @@ export default function StampCard({ eventId }: { eventId: string }) {
             <LoaderAlt size={50} className="animate-spin" />
           </div>
         )}
-        {!loading && (partnerData || data).length === 0 && (
+        {!loading && data && (partnerData || data).length === 0 && (
           <EmptyCard text="No available stamp card" />
         )}
 
-        {Array.isArray(partnerData || data) &&
-          (partnerData || data).map((partner) => (
-            <div
-              key={eventId}
-              className="w-full h-64 overflow-hidden rounded-lg border p-3 flex flex-col gap-y-2"
-            >
-              {partner?.companyLogo ? (
-                <Image
-                  src={partner?.companyLogo}
-                  width={300}
-                  height={300}
-                  className="w-fit h-24 object-cover"
-                  alt="partner-logo"
-                />
-              ) : (
-                <div className="w-full h-24 animate-pulse bg-gray-300"></div>
-              )}
-              <p className="font-semibold w-full text-ellipsis overflow-hidden whitespace-nowrap">
-                {partner?.companyName ?? ""}
-              </p>
-              <p className="text-mobile text-gray-600">{`${
-                partner?.exhibitionHall ? `${partner?.exhibitionHall},` : ""
-              } Booth ${
-                partner?.boothNumber ? partner?.boothNumber?.toString() : ""
-              }`}</p>
+        {data &&
+          Array.isArray(partnerData || data) &&
+          (partnerData || data)
+            .filter((v) => v?.stampIt)
+            .map((partner) => (
+              <div
+                key={eventId}
+                className="w-full h-64 overflow-hidden rounded-lg border p-3 flex flex-col gap-y-2"
+              >
+                {partner?.companyLogo ? (
+                  <Image
+                    src={partner?.companyLogo}
+                    width={300}
+                    height={300}
+                    className="w-fit h-24 object-cover"
+                    alt="partner-logo"
+                  />
+                ) : (
+                  <div className="w-full h-24 animate-pulse bg-gray-300"></div>
+                )}
+                <p className="font-semibold w-full text-ellipsis overflow-hidden whitespace-nowrap">
+                  {partner?.companyName ?? ""}
+                </p>
+                <p className="text-mobile text-gray-600">
+                  {partner?.exhibitionHall ? `${partner?.exhibitionHall}` : ""}{" "}
+                  {partner?.boothNumber
+                    ? `, Booth ${partner?.boothNumber?.toString()}`
+                    : ""}
+                </p>
 
-              {partner?.stampIt ? (
-                <ActiveStampCard />
-              ) : (
-                <p className="w-[50px] h-[50px]"></p>
-              )}
-            </div>
-          ))}
+                {isAttendeeInLead ? (
+                  <ActiveStampCard />
+                ) : (
+                  <p className="w-[50px] h-[50px]"></p>
+                )}
+              </div>
+            ))}
       </div>
     </InteractionLayout>
   );

@@ -18,7 +18,28 @@ import { isEventLive, formatTime, formatLongDate } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import Link from "next/link";
 import useUserStore from "@/store/globalUserStore";
+import { FaStar, FaRegStar } from "react-icons/fa";
+import { FaRegStarHalfStroke } from "react-icons/fa6";
 
+function Rating({ rating }: { rating: number }) {
+  const ratings = [1, 2, 3, 4, 5];
+
+  return (
+    <div className="flex items-center  gap-x-1">
+      {ratings.map((value) => {
+        return (
+          <button key={value} className="">
+            {value <= rating ? (
+              <FaStar size={18} className="text-basePrimary" />
+            ) : (
+              <FaRegStar size={18} />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 export function AboutSession({
   agenda,
   event,
@@ -34,7 +55,7 @@ export function AboutSession({
   isIdPresent: boolean;
   isOrganizer: boolean;
 }) {
-  const {user} = useUserStore()
+  const { user } = useUserStore();
   const router = useRouter();
   const { rating, getRating } = useGetReviews();
   const { updateAgenda } = useUpdateAgenda();
@@ -174,10 +195,9 @@ export function AboutSession({
                   </p>
                 </Button>
                 <Button className="h-fit gap-x-2 w-fit px-0">
-                  <Star size={20} />
-                  <div className="text-gray-500 flex items-center text-xs sm:text-sm gap-x-1">
-                    <p>{rating}</p>
-                    <p>Reviews</p>
+                  <Rating rating={rating.average} />
+                  <div className="text-gray-500 flex items-center text-xs sm:text-sm">
+                    <p>{`(${rating.rating} Reviews)`}</p>
                   </div>
                 </Button>
               </div>
