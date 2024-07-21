@@ -320,7 +320,11 @@ export default function ThirdSection({
                   </clipPath>
                 </defs>
               </svg>
-              <span className="text-xs font-medium">12300 pts</span>
+              <span className="text-xs font-medium">
+                {(attendee.attendeeProfilePoints ?? 0) +
+                  (attendee.checkInPoints ?? 0)}{" "}
+                pts
+              </span>
             </button>
           </div>
           <div className=" rounded-lg bg-white grid grid-cols-3 gap-2 p-2 flex-wrap">
