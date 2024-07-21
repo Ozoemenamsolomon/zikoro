@@ -1,11 +1,11 @@
 import Main from '@/components/appointments/Main'
-import AppointmentCalender from '@/components/appointments/calender'
 import React from 'react'
+import Calender from '@/components/appointments/calender/Calender'
 
 const CalenderPage = () => {
   return (
     <Main>
-        <AppointmentCalender/>
+        <Calender />
     </Main>
   )
 }

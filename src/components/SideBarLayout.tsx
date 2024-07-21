@@ -206,7 +206,7 @@ function SideNavs({
             </div>
           )
         */}
-            <Link href={"/profile"}>
+            <Link href={""}>
               <div className="flex items-center gap-2">
                 <Image
                   src={"/images/profile%201.png"}
@@ -231,7 +231,7 @@ function SideNavs({
               <div className="flex items-center gap-2">
                 <ReferralIcon />
                 <p className="font-medium group-hover:block hidden">
-                  Refer a friend
+                  Refer & Earn
                 </p>
               </div>
             </Link>

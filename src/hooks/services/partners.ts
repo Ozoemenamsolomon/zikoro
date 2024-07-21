@@ -98,6 +98,8 @@ export function useFetchPartners(eventId: string) {
   };
 }
 
+
+
 export function useUpdatePartners() {
   const [loading, setLoading] = useState(false);
 

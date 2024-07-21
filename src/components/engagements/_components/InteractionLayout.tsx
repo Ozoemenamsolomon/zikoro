@@ -15,7 +15,7 @@ export function InteractionLayout({
 
   return (
     <div className="w-full ">
-      <InteractionTabs eventId={eventId} isAttendee={!isOrganizer || !isIdPresent} />
+      <InteractionTabs eventId={eventId} isAttendee={!isOrganizer && !isIdPresent} />
       <div className="w-full ">{children}</div>
     </div>
   );

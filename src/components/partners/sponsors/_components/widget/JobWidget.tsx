@@ -326,6 +326,7 @@ function ActionWidget({
       stampCard: true,
       jobTitle: job?.jobTitle,
       firstContactChannel: "Job",
+      leadType: "unknown",
       interests: {
         partnerInterestId: job?.id || "",
         interestType: "Job",

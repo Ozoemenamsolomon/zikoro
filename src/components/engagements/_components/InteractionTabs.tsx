@@ -57,7 +57,7 @@ export function InteractionTabs({ eventId, isAttendee }: { eventId: string; isAt
     <>
       <nav className="bg-white w-full flex pl-[60px] lg:pl-[28px] overflow-x-auto no-scrollbar items-center justify-between px-4 py-4 h-max border-b">
         <ul className="flex gap-x-8 text-gray-700">
-          {links.map(({ name, href }, index) => {
+          {navlinks.map(({ name, href }, index) => {
             return (
               <li
                 key={index}
