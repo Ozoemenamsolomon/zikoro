@@ -135,32 +135,43 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
 
   const appointmentTypeJson: Category[] = JSON.parse(appointmnetLink?.category || `[]`);
 
-const appointmentTypes: { label: string, value: string }[] = appointmentTypeJson ?
-  appointmentTypeJson.map((item: Category) => ({
-    label: item.name || '',
-    value: item.name || '',
-  }))
-  : [];
+  const appointmentTypes: { label: string, value: string }[] = appointmentTypeJson ?
+    appointmentTypeJson.map((item: Category) => ({
+      label: item.name || '',
+      value: item.name || '',
+    }))
+    : [];
 
   // useEffect(() => {
   //   setBookingFormData((prev) => ({
-  //     ...prev,
-  //     appointmentType: appointmentTypeJson[0]?.name || '',
-  //   }));
-  // }, [appointmentTypeJson]);
-
-  // useEffect(() => {
-  //   if (appointmentTypeJson.length) {
-  //     const selectedAppointmentType = appointmentTypeJson.find((item: Category) => item.name === bookingFormData?.appointmentType) || appointmentTypeJson[0];
-  //     setBookingFormData((prev) => ({
   //       ...prev,
-  //       price: selectedAppointmentType.amount,
-  //       currency: selectedAppointmentType.curency,
+  //       appointmentType: appointmentTypeJson[0]?.name || '',
   //     }));
-  //   }
-  //   // Add `appointmentTypeJson` and `bookingFormData.appointmentType` as dependencies to avoid infinite loops
-  // }, [appointmentTypeJson, bookingFormData?.appointmentType]);
+  //   }, []);
 
+    useEffect(() => {
+      if(!bookingFormData?.appointmentType){
+        const selectedAppointmentType = appointmentTypeJson.find((item: Category) => item.name === bookingFormData?.appointmentType) || appointmentTypeJson[0];
+        setBookingFormData((prev) => ({
+          ...prev,
+          appointmentType: appointmentTypeJson[0]?.name || '',
+          price: selectedAppointmentType?.amount || appointmnetLink?.amount,
+          currency: selectedAppointmentType?.curency || appointmnetLink?.curency || '',
+        }));
+        console.log('aaaaaaa', {bookingFormData})
+      } else {
+        if (appointmentTypeJson.length) {
+          const selectedAppointmentType = appointmentTypeJson.find((item: Category) => item.name === bookingFormData?.appointmentType) || appointmentTypeJson[0];
+          setBookingFormData((prev) => ({
+            ...prev,
+            price: selectedAppointmentType.amount,
+            currency: selectedAppointmentType.curency,
+          }));
+        }
+        console.log('bbbbbbb', {bookingFormData, appointmentTypeJson})
+      }
+    // Add `appointmentTypeJson` and `bookingFormData.appointmentType` as dependencies to avoid infinite loops
+  }, [ bookingFormData?.appointmentType]);
 
   return (
     <>

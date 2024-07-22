@@ -23,6 +23,7 @@ interface SelectInputProps {
   icon?: string;
   error?: string;
   type?:string;
+  pattern?:string;
   onChange?: (name: string, value: string | number) => void;
 }
 
@@ -32,7 +33,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   name,
   value,
   label,
-  placeholder = 'select',
+  placeholder = 'Select',
   className,
   disabled,
   icon,
@@ -40,6 +41,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   error,
   onChange,
   type,
+  pattern,
 }) => {
   const containerRef: RefObject<HTMLDivElement> = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -74,6 +76,9 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if(type==='number'){
+
+    }
     setInputValue(e.target.value);
     setIsOpen(true);
     setFormData((prev:AppointmentFormData)=>{
@@ -86,6 +91,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   };
 console.log({inputValue,value})
   return (
+    <>
     <div ref={containerRef} className={cn("relative z-30", className)}>
       {label && (
         <label className="block font- mb-2" htmlFor={name}>
@@ -94,29 +100,39 @@ console.log({inputValue,value})
       )}
       <div className={cn("relative w-full", className)}>
         <input
-          type={type||"text"}
+          type={"text"}
           disabled={disabled}
           name={name}
           value={inputValue}
-          onChange={handleInputChange}
+          // onChange={handleInputChange}
+          onChange={(e) => {
+            // Ensure the value only contains positive digits
+            if(type==='number'){
+              const value = e.target.value;
+              e.target.value = value.replace(/\D/g, ''); // Remove non-digit characters
+              handleInputChange(e);
+            } else {
+              handleInputChange(e);
+            }
+          }}
           onClick={() => setIsOpen(!isOpen)}
           className={cn(`appearance-none w-full border px-2 py-2 rounded-md focus:outline-none focus:shadow-outline focus:border-blue-500 ${
             disabled ? 'cursor-not-allowed border-gray-300 bg-gray-100' : 'border-gray-300'
           }`, className)}
-          placeholder={placeholder}
+          placeholder={placeholder }
+          pattern={pattern||''}
         />
         <div className="absolute right-2 top-3 pointer-events-none">
           {icon ? <ChevronDown size={14} /> : <UpDownArrow  />}
         </div>
         
-        {error ? <p className="text-red-600 text-[12px] pt-1">{error}</p> : null}
 
         {isOpen && (
-          <ul className={cn(`absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto`, className)}>
+          <ul className={cn(`absolute py-2 z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto hide-scrollbar`, className)}>
             {placeholder && !inputValue && (
               <li
                 onClick={() => handleChange('')}
-                className="cursor-pointer hover:bg-gray-200 px-4 py-2 text-gray-700"
+                className="cursor-pointer hover:bg-gray-200 px-4 py-1 text-gray-700"
               >
                 {placeholder}
               </li>
@@ -125,7 +141,7 @@ console.log({inputValue,value})
               <li
                 key={index}
                 onClick={() => handleChange(option.value)}
-                className={`cursor-pointer capitalize hover:bg-gray-200 px-4 py-1 ${option.value === inputValue ? 'bg-gray-100' : ''}`}
+                className={`cursor-pointer capitalize hover:bg-gray-200 px-4 py- ${option.value === inputValue ? 'bg-gray-100' : ''}`}
               >
                 {option.label}
               </li>
@@ -134,5 +150,7 @@ console.log({inputValue,value})
         )}
       </div>
     </div>
+    {error ? <p className="text-red-600 text-[12px] pt-1">{error}</p> : null}
+    </>
   );
 };
