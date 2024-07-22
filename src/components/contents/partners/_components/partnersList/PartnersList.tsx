@@ -3,11 +3,11 @@ import { useDeletePartner, useFetchSingleEvent } from "@/hooks";
 import { PartnerWidget, ExhibitionHall, AddExhibitionHall } from "..";
 import { AddPartners } from "@/components/partners/_components";
 import { useState } from "react";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
-import { Eye } from "@styled-icons/evil/Eye";
+import { PlusCircle } from "styled-icons/bootstrap";
+import { Eye } from "styled-icons/evil";
 import { Button } from "@/components";
 import {TPartner} from "@/types"
-import { Delete } from "@styled-icons/fluentui-system-regular/Delete";
+import { Delete } from "styled-icons/fluentui-system-regular";
 
 import { cn } from "@/lib";
 import Image from "next/image";

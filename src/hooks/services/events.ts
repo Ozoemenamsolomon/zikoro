@@ -164,13 +164,13 @@ export function useCreateOrganisation() {
   const { user: userData } = useUserStore();
   const [loading, setLoading] = useState(false);
 
-  async function organisation(values: z.infer<typeof organizationSchema>) {
+  async function organisation(values: Partial<z.infer<typeof organizationSchema>>) {
     setLoading(true);
-
+    const {firstName, lastName, userEmail, ...restData} = values;
     try {
       const { error, status } = await supabase.from("organization").upsert([
         {
-          ...values,
+          ...restData,
           organizationOwner: userData?.userEmail,
           organizationOwnerId: userData?.id,
           teamMembers: [

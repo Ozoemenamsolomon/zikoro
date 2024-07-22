@@ -8,6 +8,15 @@ export async function GET(req: NextRequest) {
   if (req.method === "GET") {
     try {
       const { data, error } = await supabase.from("pricing").select("*");
+
+      if (error) {
+        return NextResponse.json({
+          data: error?.message
+        },
+      {
+        status: 400
+      })
+      }
       if (error) throw error;
       return NextResponse.json(
         {

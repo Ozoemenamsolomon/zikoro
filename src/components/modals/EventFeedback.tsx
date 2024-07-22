@@ -35,7 +35,7 @@ export function EventFeedBack({ close }: { close: () => void }) {
   );
 }
 
-export function FeedBackComp({ close }: { close?: () => void }) {
+export function FeedBackComp({ close }: { close: () => void }) {
   const { loading, sendFeedback } = useEventFeedBack();
   const form = useForm<z.infer<typeof eventFeedBackSchema>>({
     resolver: zodResolver(eventFeedBackSchema),
@@ -47,7 +47,7 @@ export function FeedBackComp({ close }: { close?: () => void }) {
       ratings: Number(values.ratings),
     };
     await sendFeedback(payload);
-    if (close) close();
+   close();
   }
 
   // console.log(form.watch("ratings"))
