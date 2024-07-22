@@ -52,7 +52,7 @@ export default function Team() {
 
   const roles = ["owner", "editor", "collaborator"];
 
-  const handleCreateTeamMember = (e: any) => {
+  const handleCreateTeamMember = async (e: any) => {
     e.preventDefault();
     const newTeamMember = {
       id: uuidv4(), // Generate a unique ID
@@ -66,14 +66,14 @@ export default function Team() {
       ...currentTeamMembers,
       teamMembers: [...currentTeamMembers?.teamMembers, newTeamMember],
     };
-    createTeamMember(payload);
+    await createTeamMember(payload);
+    createTeamMember();
   };
 
   const handleDeleteTeamMember = async (memberId: string) => {
     await deleteTeamMember(memberId);
     fetchTeamMembers();
   };
-  console.log(currentTeamMembers);
   return (
     <div className="mt-[60px] ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
       <div className="flex items-center gap-x-3">

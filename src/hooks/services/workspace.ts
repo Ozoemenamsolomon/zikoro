@@ -235,7 +235,7 @@ export function useDeleteTeamMember(workspaceId: number) {
 
   async function deleteTeamMember(memberId: string) {
     try {
-      const updatedTeamMembers = currentTeamMembers.teamMembers?.filter((member: any) => member.id !== memberId);
+      const updatedTeamMembers = currentTeamMembers.teamMembers.filter((member: any) => member.id !== memberId);
 
       const { data, error } = await supabase
         .from("organization")
@@ -256,10 +256,6 @@ export function useDeleteTeamMember(workspaceId: number) {
       return false;
     }
   }
-
-  useEffect(() => {
-    fetchTeamMembers
-  }, [workspaceId])
 
   return {
     currentTeamMembers,
