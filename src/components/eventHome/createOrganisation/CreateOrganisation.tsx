@@ -51,6 +51,7 @@ export function CreateOrganization({
   const { user } = useUserStore();
   const router = useRouter()
   const [isMonthly, setIsMonthly] = useState(true);
+  const { organisation, loading } = useCreateOrganisation();
   const [selectedPricing, setSelectedPricing] = useState<TPricingPlan | null>(
     null
   );
@@ -59,31 +60,37 @@ export function CreateOrganization({
   });
   const [isDiscount, setDiscount] = useState(false);
   async function onSubmit(values: z.infer<typeof organizationSchema>) {
-    // getOrganizations();
-    // if (refetch) refetch();
-    // close();
+    
+    if (values.subscriptionPlan === "Free") {
+      await organisation(values)
+    if (refetch) refetch();
+    close();
 
-    const url = `/payment?name=${encodeURIComponent(
-      values?.firstName || ""
-    )}&id=${encodeURIComponent(user?.id || "")}&email=${encodeURIComponent(
-      values?.userEmail || ""
-    )}&plan=${encodeURIComponent(
-      selectedPricing?.plan || "Free"
-    )}&isMonthly=${encodeURIComponent(isMonthly)}&total=${encodeURIComponent(
-      isMonthly
-        ? selectedPricing?.monthPrice || 0
-        : selectedPricing?.yearPrice || 0
-    )}&currency=${encodeURIComponent(
-      "NGN"
-    )}&organizationName=${encodeURIComponent(
-      values.organizationName
-    )}&organizationType=${encodeURIComponent(
-      values.organizationType
-    )}&subscriptionPlan=${encodeURIComponent(
-      values.subscriptionPlan
-    )}&redirectUrl=${encodeURIComponent(window.location.href)}&isCreate=${encodeURIComponent(true)}`;
-
-    router.push(url);
+    }
+    else {
+      const url = `/payment?name=${encodeURIComponent(
+        values?.firstName || ""
+      )}&id=${encodeURIComponent(user?.id || "")}&email=${encodeURIComponent(
+        values?.userEmail || ""
+      )}&plan=${encodeURIComponent(
+        selectedPricing?.plan || "Free"
+      )}&isMonthly=${encodeURIComponent(isMonthly)}&total=${encodeURIComponent(
+        isMonthly
+          ? selectedPricing?.monthPrice || 0
+          : selectedPricing?.yearPrice || 0
+      )}&currency=${encodeURIComponent(
+        "NGN"
+      )}&organizationName=${encodeURIComponent(
+        values.organizationName
+      )}&organizationType=${encodeURIComponent(
+        values.organizationType
+      )}&subscriptionPlan=${encodeURIComponent(
+        values.subscriptionPlan
+      )}&redirectUrl=${encodeURIComponent(window.location.href)}&isCreate=${encodeURIComponent(true)}`;
+  
+      router.push(url);
+    }
+   
   }
 
   useEffect(() => {
@@ -446,8 +453,9 @@ export function CreateOrganization({
                 </Button>
               </div>
 
-              <Button className="w-full h-11 bg-basePrimary text-white font-medium">
-                <p>Continue</p>
+              <Button className="w-full h-11 gap-x-2 bg-basePrimary text-white font-medium">
+               {loading && <LoaderAlt size={20} className="animate-spin"/>}
+                <p>Create</p>
               </Button>
             </div>
           </form>
