@@ -34,10 +34,7 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
 
   useEffect(() => {
     
-    if (!eventDate) return;
-    
-
-    
+    if (!eventDate) return;    
 
     setMappedAttendees(
       attendees.filter(({ checkin }) => {
@@ -76,7 +73,6 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
 
     const newDate = new Date(eventDate);
     
-
     const payload = selectedAttendees.map((attendee) => {
       const existingCheckin = attendee.checkin || [];
       const newCheckin =

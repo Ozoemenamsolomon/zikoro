@@ -8,6 +8,7 @@ import { useGetData } from "@/hooks/services/request";
 import { useDrawingArea } from "@mui/x-charts/hooks";
 import { styled } from "@mui/material/styles";
 import { DefaultizedPieValueType } from "@mui/x-charts/models";
+import { useParams } from "next/navigation";
 
 const size = {
   width: 400,
@@ -115,10 +116,11 @@ const ThirdColumn = ({
     eventId: event?.eventAlias,
   });
 
+  const {eventId} =useParams()
   const { data: leadInterests, isLoading: interestsIsLoading } = useGetData<
     TLeadsInterest[]
   >(
-    `/leads/interests?eventAlias=${event.eventAlias}&eventPartnerAlias=${partnerId}&interestType=Offer`
+    `/leads/interests?eventAlias=${eventId}&eventPartnerAlias=${partnerId}&interestType=Offer`
   );
 
   console.log(leadInterests);

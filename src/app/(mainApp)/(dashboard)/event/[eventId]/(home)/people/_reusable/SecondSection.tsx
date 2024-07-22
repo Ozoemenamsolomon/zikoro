@@ -405,11 +405,16 @@ export default function SecondSection({
   const isEventOwner = user && String(event?.createdBy) === String(user.id);
   const attendeeIsUser = user.userEmail === email;
 
-  console.log(user.userEmail, email, attendeeIsUser);
-
   const attendeeExchangedContacts = userContactRequests.find(
     ({ senderUserEmail, receiverUserEmail }) =>
       senderUserEmail === email || receiverUserEmail === email
+  );
+
+  console.log(
+    user.userEmail,
+    email,
+    attendeeExchangedContacts,
+    userContactRequests
   );
 
   return (
