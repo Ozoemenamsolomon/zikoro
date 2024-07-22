@@ -1639,8 +1639,8 @@ export function PaymentTick() {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M16.8349 5.71182C17.1321 6.0003 17.1392 6.47513 16.8507 6.77236L8.60069 15.2724C8.45821 15.4192 8.26195 15.5014 8.05739 15.5C7.85282 15.4986 7.6577 15.4137 7.51724 15.265L3.26724 10.765C2.98283 10.4638 2.9964 9.98915 3.29753 9.70474C3.59867 9.42033 4.07335 9.43389 4.35776 9.73503L8.0699 13.6655L15.7743 5.72764C16.0628 5.43041 16.5376 5.42333 16.8349 5.71182Z"
         fill="url(#paint0_linear_1599_3380)"
       />
@@ -1653,8 +1653,8 @@ export function PaymentTick() {
           y2="10.5"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#001FCC" />
-          <stop offset="1" stop-color="#9D00FF" />
+          <stop stopColor="#001FCC" />
+          <stop offset="1" stopColor="#9D00FF" />
         </linearGradient>
       </defs>
     </svg>
@@ -1683,8 +1683,8 @@ export function PaymentPlus() {
           y2="7.49992"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#001FCC" />
-          <stop offset="1" stop-color="#9D00FF" />
+          <stop stopColor="#001FCC" />
+          <stop offset="1" stopColor="#9D00FF" />
         </linearGradient>
       </defs>
     </svg>

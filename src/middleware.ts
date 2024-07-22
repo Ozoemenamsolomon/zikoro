@@ -12,6 +12,7 @@ const includedPaths = [
   "/profile",
   "/referrals",
   "/appointments",
+  "/create"
 ];
 
 export async function middleware(req: NextRequest) {

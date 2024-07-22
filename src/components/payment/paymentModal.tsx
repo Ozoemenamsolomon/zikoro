@@ -95,7 +95,7 @@ export function PaymentModal({
       isChosenMonthly || ""
     )}&total=${encodeURIComponent(
       totalPrice.toString()
-    )}&currency=${encodeURIComponent(chosenCurrency)}`;
+    )}&currency=${encodeURIComponent(chosenCurrency)}&redirectUrl=${encodeURIComponent(window.location.href)}`;
     router.push(url);
   };
 
