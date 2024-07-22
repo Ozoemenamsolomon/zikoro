@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PlusCircleIcon, TeamIcon, TeamRemoveIcon } from "@/constants";
 import { SearchAlt2 } from "styled-icons/boxicons-regular";
 import {
@@ -7,30 +7,39 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
-  DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
+import {
+  useCreateTeamMember,
+  useDeleteTeamMember,
+} from "@/hooks/services/workspace";
+import useOrganizationStore from "@/store/globalOrganizationStore";
+import { v4 as uuidv4 } from "uuid";
 
 type FormDataType = {
+  id: string;
   firstName: string;
   lastName: string;
-  email: string;
-  role: string;
+  userEmail: string;
+  userRole: string;
 };
 
 export default function Team() {
   const [formData, setFormData] = useState<FormDataType>({
+    id: "",
     firstName: "",
     lastName: "",
-    email: "",
-    role: "",
+    userEmail: "",
+    userRole: "",
   });
-
-  const handlelSubmitForm = (e: any) => {
-    e.PreventDefault();
-  };
+  const { organization } = useOrganizationStore();
+  const { currentTeamMembers, createTeamMember } = useCreateTeamMember(
+    organization?.id ?? 0
+  );
+  const { deleteTeamMember, fetchTeamMembers } = useDeleteTeamMember(
+    organization?.id ?? 0
+  );
 
   //handles input change
   const handleInputChange = (e: any) => {
@@ -42,6 +51,34 @@ export default function Team() {
   };
 
   const roles = ["owner", "editor", "collaborator"];
+
+  const handleCreateTeamMember = (e: any) => {
+    e.preventDefault();
+
+    const newTeamMember = {
+      id: uuidv4(), // Generate a unique ID
+      userFirstName: formData.firstName,
+      userLastName: formData.lastName,
+      userEmail: formData.userEmail,
+      userRole: formData.userRole,
+    };
+
+    const payload = {
+      ...currentTeamMembers,
+      teamMembers: [...currentTeamMembers?.teamMembers, newTeamMember],
+    };
+
+    createTeamMember(payload);
+  };
+
+  useEffect(() => {
+    fetchTeamMembers();
+  }, [organization?.id]);
+
+  const handleDeleteTeamMember = async (memberId: string) => {
+    await deleteTeamMember(memberId);
+    fetchTeamMembers();
+  };
 
   return (
     <div className="mt-[60px] ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
@@ -69,14 +106,18 @@ export default function Team() {
               Invite team members
             </p>
           </DialogTrigger>
-          <DialogContent className="w-full max-w-full lg:max-w-[1000px]  xl:max-w-[1120px] px-1 lg:px-10">
+          <DialogContent className="w-full max-w-full lg:max-w-[1000px] xl:max-w-[1120px] px-1 lg:px-10">
             <DialogHeader>
               <DialogDescription className="mt-8">
                 <p className="text-2xl font-semibold text-black">
                   Invite Team Member
                 </p>
 
-                <form action="" onSubmit={handlelSubmitForm} className="my-10">
+                <form
+                  action=""
+                  onSubmit={handleCreateTeamMember}
+                  className="my-10"
+                >
                   <div className="flex flex-col lg:flex-row gap-4 mt-10 ">
                     <div className=" w-full lg:w-[450px] xl:w-[500px]">
                       <p className="text-[14px] text-[#1f1f1f] text-left">
@@ -116,8 +157,8 @@ export default function Team() {
                       <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
                         <input
                           type="email"
-                          value={formData.email}
-                          name="email"
+                          value={formData.userEmail}
+                          name="userEmail"
                           onChange={handleInputChange}
                           className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
                         />
@@ -129,8 +170,8 @@ export default function Team() {
                       </p>
                       <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
                         <select
-                          name="orgCountry"
-                          value={formData.role}
+                          name="userRole"
+                          value={formData.userRole}
                           onChange={handleInputChange}
                           className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[7px]"
                         >
@@ -139,7 +180,6 @@ export default function Team() {
                               key={role}
                               value={role}
                               className="bg-transparent text-black"
-                              onChange={(e) => handleInputChange(e)}
                             >
                               {role}
                             </option>
@@ -148,14 +188,17 @@ export default function Team() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex justify-end mt-8 mr-0 lg:mr-3 xl:mr-6">
+                  <DialogClose
+                    asChild
+                    className="flex justify-end mt-8 mr-0 lg:mr-3 xl:mr-6"
+                  >
                     <button
                       className=" py-2 px-4 text-white text-[14px] bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-lg"
                       type="submit"
                     >
                       Invite
                     </button>
-                  </div>
+                  </DialogClose>
                 </form>
               </DialogDescription>
             </DialogHeader>
@@ -179,45 +222,68 @@ export default function Team() {
             </tr>
           </thead>
           <tbody>
-            {/* 1st section */}
-            <tr className="px-2 py-4 border-b-[1px] border-gray-200 ">
-              <td className="w-1/3 px-2 py-4">
-                <div className="flex gap-x-3">
-                  <p className="px-2 py-[10px] bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-full text-white text-2xl font-medium">
-                    MP
-                  </p>
-                  <div className="flex flex-col gap-y-1">
-                    <p className="text-base font-semibold ">Manuel Peters</p>
-                    <p className="text-[14px]">ManuelPeters@gmail.com</p>
-                  </div>
-                </div>
-              </td>
-              <td className="text-base w-1/3 text-left px-2 py-4">Owner</td>
-              <td className="text-base w-1/3 px-2 py-4 cursor-pointer">
-                <Dialog>
-                  <DialogTrigger className="text-sm font-bold text-[#E74C3C]">
-                    Remove
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogDescription className="my-16 mx-4 lg:mx-8 flex flex-col justify-center items-center ">
-                        <TeamRemoveIcon />
-                        <p className="mt-6 text-[#E74C3C] font-semibold text-2xl text-center ">
-                          Remove Team Member
+            {/* display all team-members */}
+            {currentTeamMembers ? (
+              currentTeamMembers?.teamMembers?.map(
+                (member: any, index: number) => (
+                  <tr
+                    key={index}
+                    className="px-2 py-4 border-b-[1px] border-gray-200 "
+                  >
+                    <td className="w-1/3 px-2 py-4">
+                      <div className="flex gap-x-3">
+                        <p className="px-2 py-[10px] bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-full text-white text-2xl font-medium">
+                          {member?.userFirstName?.charAt(0).toUpperCase()}
+                          {member?.userLastName?.charAt(0).toUpperCase()}
                         </p>
-                        <p className="mt-3 text-base text-center">
-                          You are about to remove this team member, are you sure
-                          you want to proceed ?
-                        </p>
-                        <button className="bg-[#E74C3C] text-white text-base rounded-[8px] px-[10px] py-[20px] mt-6">
-                          Yes, remove team member
-                        </button>
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-              </td>
-            </tr>
+                        <div className="flex flex-col gap-y-1">
+                          <p className="text-base font-semibold ">
+                            {`${member?.userFirstName} ${member?.userLastName}`}
+                          </p>
+                          <p className="text-[14px]">{member.userEmail}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="text-base w-1/3 text-left px-2 py-4">
+                      {member.useRole}
+                    </td>
+                    <td className="text-base w-1/3 px-2 py-4 cursor-pointer">
+                      <Dialog>
+                        <DialogTrigger className="text-sm font-bold text-[#E74C3C]">
+                          Remove
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogDescription className="my-16 mx-4 lg:mx-8 flex flex-col justify-center items-center ">
+                              <TeamRemoveIcon />
+                              <p className="mt-6 text-[#E74C3C] font-semibold text-2xl text-center ">
+                                Remove Team Member
+                              </p>
+                              <p className="mt-3 text-base text-center">
+                                You are about to remove this team member, are
+                                you sure you want to proceed?
+                              </p>
+                              <DialogClose asChild className="">
+                                <button
+                                  className="bg-[#E74C3C] text-white text-base rounded-[8px] px-[10px] py-[20px] mt-6"
+                                  onClick={() =>
+                                    handleDeleteTeamMember(member.id)
+                                  }
+                                >
+                                  Yes, remove team member
+                                </button>
+                              </DialogClose>
+                            </DialogDescription>
+                          </DialogHeader>
+                        </DialogContent>
+                      </Dialog>
+                    </td>
+                  </tr>
+                )
+              )
+            ) : (
+              <p className="text-[12px]">No Team Member</p>
+            )}
           </tbody>
         </table>
       </div>

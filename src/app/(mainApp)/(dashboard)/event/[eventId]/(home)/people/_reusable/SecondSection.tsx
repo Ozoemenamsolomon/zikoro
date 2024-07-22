@@ -164,6 +164,7 @@ export default function SecondSection({
     appointmentLink,
   } = attendee;
 
+  console.log(attendeeAlias);
   const { user, setUser } = useUserStore();
   // const user = getCookie("user");
 
@@ -403,6 +404,8 @@ export default function SecondSection({
 
   const isEventOwner = user && String(event?.createdBy) === String(user.id);
   const attendeeIsUser = user.userEmail === email;
+
+  console.log(user.userEmail, email, attendeeIsUser);
 
   const attendeeExchangedContacts = userContactRequests.find(
     ({ senderUserEmail, receiverUserEmail }) =>

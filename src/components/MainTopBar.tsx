@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -25,12 +25,13 @@ import {
   useGetUserTeamOrganizations,
   useVerifyUserAccess,
 } from "@/hooks";
-import { TOrganization, TUser } from "@/types";
+import { TAttendee, TOrganization, TUser } from "@/types";
 import useEventStore from "@/store/globalEventStore";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserIcon } from "@/constants";
 import useUserStore from "@/store/globalUserStore";
+import { useGetData } from "@/hooks/services/request";
 
 const MainTopBar = ({
   eventId,
@@ -51,6 +52,18 @@ const MainTopBar = ({
   const { organization, setOrganization } = useOrganizationStore();
   const { event, setEvent } = useEventStore();
   // console.log(event);
+
+  const {
+    data: attendee,
+    isLoading,
+    getData,
+  } = useGetData<TAttendee>(
+    `/attendees/email/${user?.userEmail}?eventId=${eventId}`
+  );
+
+  useEffect(() => {
+    getData();
+  }, [eventId]);
 
   const {
     events,
@@ -74,7 +87,7 @@ const MainTopBar = ({
     const currentEvent = events?.find(({ eventAlias }) => eventAlias === value);
     if (!currentEvent) return;
     setEvent(currentEvent);
-    router.push(`/event/${currentEvent.eventAlias}/content/info`);
+    router.push(`/event/${currentEvent.eventAlias}/reception`);
   };
 
   if (pathname.includes("home") || pathname.includes("referrals")) return;
@@ -90,28 +103,29 @@ const MainTopBar = ({
         <>
           {isIdPresent || isOrganizer ? (
             <div className="flex items-center gap-x-2">
-            <Selector
-              options={(events ?? [])?.map(({ eventAlias, eventTitle }) => ({
-                label: eventTitle,
-                value: eventAlias,
-              }))}
-              onSelect={setCurrentEvent}
-              label="event"
-              initialValue={
-                event && {
-                  label: event.eventTitle,
-                  value: event.eventAlias,
+              <Selector
+                heading={"Your Workspaces"}
+                options={(events ?? [])?.map(({ eventAlias, eventTitle }) => ({
+                  label: eventTitle,
+                  value: eventAlias,
+                }))}
+                onSelect={setCurrentEvent}
+                label="event"
+                initialValue={
+                  event && {
+                    label: event.eventTitle,
+                    value: event.eventAlias,
+                  }
                 }
-              }
-            />
-            <button
-            onClick={() => {
-              window.open(`/live-events/${eventId}`)
-            }}
-            className="text-zinc-700 mb-1"
-            >
-                 <ExternalLink size={20} />
-            </button>
+              />
+              <button
+                onClick={() => {
+                  window.open(`/live-events/${eventId}`);
+                }}
+                className="text-zinc-700 mb-1"
+              >
+                <ExternalLink size={20} />
+              </button>
             </div>
           ) : (
             <div>
@@ -131,14 +145,18 @@ const MainTopBar = ({
         <div></div>
       )}
 
-      {pathname.includes("event") && (
-        <Link className="block sm:hidden" href="/profile">
+      {pathname.includes("event") && !isLoading && attendee && (
+        <Link
+          className="block sm:hidden"
+          href={`/event/${event?.eventAlias}/people/info/${attendee.id}`}
+        >
           <UserIcon color="#717171" />
         </Link>
       )}
 
       {!pathname.includes("event") && (
         <Selector
+          heading={"Your Events"}
           options={(userOrganizations ?? [])?.map(
             ({ id, organizationName }) => ({
               label: organizationName,
@@ -166,11 +184,13 @@ export function Selector({
   onSelect,
   label,
   initialValue,
+  heading,
 }: {
   options: { label: string; value: string }[];
   onSelect: (value: string) => void;
   label: string;
   initialValue?: { label: string; value: string } | null;
+  heading: string;
 }) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(initialValue?.value || "");
@@ -195,7 +215,7 @@ export function Selector({
           <CommandInput placeholder={`enter ${label}...`} />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Your Organizations">
+            <CommandGroup heading={heading}>
               {Array.isArray(options) &&
                 options?.map((option) => (
                   <CommandItem

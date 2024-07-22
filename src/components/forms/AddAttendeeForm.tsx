@@ -79,7 +79,7 @@ export default function AddAttendeeForm({
     isLoading: engagementsSettingsIsLoading,
     getData: getEngagementsSettings,
   } = useGetData<EngagementsSettings>(
-    `engagements/${event.eventAlias}/settings`
+    `engagements/${eventId}/settings`
   );
 
   const {
@@ -211,7 +211,7 @@ export default function AddAttendeeForm({
     <Overlay
       isOpen={isOpen}
       onClose={onClose}
-      title={`${attendee ? "Update" : "Create"}Attendee`}
+      title={`${attendee ? "Update" : "Create"} Attendee`}
     >
       <Form {...form}>
         <form

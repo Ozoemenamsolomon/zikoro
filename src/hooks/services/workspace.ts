@@ -85,7 +85,7 @@ export function useDeleteWorkspace(workspaceId: number) {
         .from("organization")
         .delete()
         .eq("id", workspaceId);
-  
+
       if (error) {
         toast.error(error.message);
         return false;
@@ -103,7 +103,7 @@ export function useDeleteWorkspace(workspaceId: number) {
       return false;
     }
   }
-  
+
   return {
     deleteWorkspace,
   };
@@ -162,37 +162,104 @@ export function useUpdateSubdomain(workspaceId: number, workspaceSubdomain: stri
 }
 
 
-export function useCreateTeamMember() {
-  async function createTeamMember(workspaceId:number, workspaceSubdomain:string) {
+export function useCreateTeamMember(workspaceId: number) {
+  const [currentTeamMembers, setCurrentTeamMembers] = useState<any>({})
+  async function createTeamMember(payload?: any) {
+    try {
+      if (payload) {
+        const { data, error } = await supabase
+          .from('organization')
+          .update(payload)
+          .eq("id", workspaceId);
+
+        if (error) {
+          toast.error(error.message)
+        }
+        toast.success('Team Member Added Successfully');
+        setCurrentTeamMembers(data);
+      } else {
+        const { data, error, status } = await supabase
+          .from("organization")
+          .select()
+          .eq("id", workspaceId)
+          .single();
+
+        if (error) {
+          toast.error(error.message);
+          return false;
+        }
+
+        if (status === 204 || status == 200) {
+          setCurrentTeamMembers(data);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  useEffect(() => {
+    createTeamMember();
+  }, [workspaceId]);
+
+  return {
+    currentTeamMembers,
+    createTeamMember,
+  };
+}
+
+
+export function useDeleteTeamMember(workspaceId: number) {
+  const [currentTeamMembers, setCurrentTeamMembers] = useState<any>({});
+
+  async function fetchTeamMembers() {
     try {
       const { data, error, status } = await supabase
         .from("organization")
-        .update({
-          subDomain: workspaceSubdomain
-        })
-        .eq("id", workspaceId);
+        .select()
+        .eq("id", workspaceId)
+        .single();
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      if (status === 200 || status === 204) {
+        setCurrentTeamMembers(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function deleteTeamMember(memberId: string) {
+    try {
+      const updatedTeamMembers = currentTeamMembers.teamMembers.filter((member: any) => member.id !== memberId);
+
+      const { data, error } = await supabase
+        .from("organization")
+        .update({ teamMembers: updatedTeamMembers })
+        .eq("id", workspaceId)
+        .single();
 
       if (error) {
         toast.error(error.message);
         return false;
       }
-      if (status === 204 || status === 200) {
-        toast.success('Updated Successfully');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
-  async function updateTeamMembers(members:any) {
-    for (const member of members) {
-      const { workspaceId, workspaceSubdomain } = member;
-      await createTeamMember(workspaceId, workspaceSubdomain);
+      setCurrentTeamMembers(data);
+      toast.error("Team member removed successfully");
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
     }
   }
 
   return {
-    createTeamMember,
-    updateTeamMembers
+    currentTeamMembers,
+    deleteTeamMember,
+    fetchTeamMembers,
   };
 }

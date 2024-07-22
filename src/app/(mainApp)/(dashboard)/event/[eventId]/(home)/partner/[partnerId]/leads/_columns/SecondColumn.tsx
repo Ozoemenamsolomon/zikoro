@@ -172,7 +172,7 @@ export default function SecondColumn({
     userEmail,
     firstName,
     lastName,
-    email,
+    attendeeEmail,
     jobTitle,
     organization,
     city,
@@ -233,7 +233,7 @@ export default function SecondColumn({
   }
 
   const sendMail = () => {
-    const to = email;
+    const to = attendeeEmail;
     const subject = "";
     const body = `Hi ${firstName}`;
 
@@ -348,7 +348,7 @@ export default function SecondColumn({
                   await requestContact({
                     payload: {
                       senderUserEmail: user.userEmail,
-                      receiverUserEmail: email,
+                      receiverUserEmail: attendeeEmail,
                     },
                   });
                 }}
@@ -368,7 +368,7 @@ export default function SecondColumn({
       <AttendeeCard
         firstName={firstName}
         lastName={lastName}
-        email={email}
+        email={attendeeEmail}
         jobTitle={jobTitle}
         organization={organization}
         phoneNumber={phoneNumber}
@@ -400,7 +400,7 @@ export default function SecondColumn({
                 saveContact({
                   name: `${firstName} ${lastName}`,
                   phone: phoneNumber,
-                  email,
+                  email: attendeeEmail,
                 })
               }
               className="flex-1 flex flex-col gap-2 items-center justify-center"
