@@ -6,13 +6,13 @@ import { ArrowBack } from "styled-icons/ionicons-outline";
 import { useRouter } from "next/navigation";
 import { paymentConfig } from "@/hooks/common/usePayStackPayment";
 import { Button } from "@/components";
-import { Lock } from "@styled-icons/fa-solid/Lock";
+import { Lock } from "styled-icons/fa-solid";
 import { PaystackButton } from "react-paystack";
 import toast from "react-hot-toast";
+import { useCreateOrganisation } from "@/hooks";
 import { useCreateOrgSubscription } from "@/hooks/services/subscription";
 
 export default function PaymentPage() {
-  const [loading, setLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const params = useSearchParams();
   const name = params.get("name");
@@ -22,9 +22,14 @@ export default function PaymentPage() {
   const total = params.get("total");
   const monthly = params.get("isMonthly");
   const currency = params.get("currency") ?? "";
+  const orgName = params.get("organizationName");
+  const orgType = params.get("organizationType");
+  const subPlan = params.get("subscriptionPlan");
+  const redirectUrl = params.get("redirectUrl");
+  const isCreate = params.get("isCreate");
   const router = useRouter();
   const isMonthly = monthly?.toString() ?? "";
-
+  const { organisation, loading } = useCreateOrganisation();
   const { createOrgSubscription } = useCreateOrgSubscription(
     id,
     totalPrice,
@@ -34,13 +39,42 @@ export default function PaymentPage() {
   );
 
   async function handleSuccess(reference: any) {
-    await createOrgSubscription().then(() => {
-      toast("Payment Successfull");
-      router.push("/events");
+    const isCreating = decodeURIComponent(isCreate!);
+    await createOrgSubscription().then(async () => {
+      toast.success("Payment Successfull");
+
+      if (isCreating === "true") {
+        const organizationName = decodeURIComponent(orgName!);
+        const organizationType = decodeURIComponent(orgType!);
+        const subscriptionPlan = decodeURIComponent(subPlan!);
+        await organisation({
+          organizationName,
+          organizationType,
+          subscriptionPlan,
+        });
+      }
+      const redirect = decodeURIComponent(redirectUrl!);
+
+      router.push(redirect);
     });
   }
 
-  async function submit() {}
+  async function submit() {
+    const isCreating = decodeURIComponent(isCreate!);
+    if (isCreating === "true") {
+      const organizationName = decodeURIComponent(orgName!);
+      const organizationType = decodeURIComponent(orgType!);
+      const subscriptionPlan = decodeURIComponent(subPlan!);
+      await organisation({
+        organizationName,
+        organizationType,
+        subscriptionPlan,
+      });
+    }
+    const redirect = decodeURIComponent(redirectUrl!);
+
+    router.push(redirect);
+  }
 
   //paystack props
   const config = paymentConfig({
@@ -62,8 +96,6 @@ export default function PaymentPage() {
     onSuccess: (reference: any) => handleSuccess(reference),
   };
 
-  
-
   useEffect(() => {
     setTotalPrice(Number(total));
   }, [total]);
@@ -71,7 +103,7 @@ export default function PaymentPage() {
   return (
     <div className="bg-[#F9FAFF] h-screen flex flex-col justify-center items-center px-3">
       <div
-        className="w-full flex justify-start max-w-full lg:max-w-[489px]"
+        className="w-full flex justify-start  max-w-[489px]"
         onClick={() => router.back()}
       >
         <ArrowBack size={25} className="cursor-pointer" />

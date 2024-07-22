@@ -205,7 +205,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                     {ranks[1]?.profilePicture ? (
                       <Image
                         src={ranks[1]?.profilePicture}
-                        className=" size-[5rem]"
+                        className=" w-[5rem] h-[5rem]"
                         alt=""
                         width={150}
                         height={150}
@@ -257,7 +257,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                         height={150}
                       />
                     ) : (
-                      <div className="size-[5rem] bg-gray-100  rounded-full flex items-center justify-center">
+                      <div className=" w-[5rem] h-[5rem] bg-gray-100  rounded-full flex items-center justify-center">
                         <p className="text-gray-700 text-2xl uppercase">{`${ranks[0]?.firstName.charAt(
                           0
                         )}${ranks[0]?.lastName.charAt(0)}`}</p>
@@ -303,7 +303,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                         height={150}
                       />
                     ) : (
-                      <div className="size-[5rem] bg-gray-100 rounded-full flex items-center justify-center">
+                      <div className=" w-[5rem] h-[5rem] bg-gray-100 rounded-full flex items-center justify-center">
                         <p className="text-gray-700 text-2xl uppercase">{`${ranks[2]?.firstName.charAt(
                           0
                         )}${ranks[2]?.lastName.charAt(0)}`}</p>
@@ -365,7 +365,7 @@ export default function LeaderBoard({ eventId }: { eventId: string }) {
                           <p>{`${index + 4}th`}</p>
                         </div>
                         <p className="">
-                          {`${attendee?.firstName} ${attendee?.lastName}` ?? ""}
+                          {`${attendee?.firstName?.charAt(0)}. ${attendee?.lastName}` ?? ""}
                         </p>
                       </div>
                       <div className="flex items-center justify-end gap-x-1">

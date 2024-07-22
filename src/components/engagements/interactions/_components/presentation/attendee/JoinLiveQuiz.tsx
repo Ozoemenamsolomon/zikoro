@@ -14,7 +14,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { joinLiveQuizSchema } from "@/schemas";
-import { usePathname } from "next/navigation";
 import { useFetchQuiz } from "@/hooks";
 export default function JoinLIveQuiz() {
   const { getQuiz, isLoading } = useFetchQuiz();

@@ -8,6 +8,7 @@ const Generalsettings: React.FC<FormProps> = ({
   formData,
   setFormData,
   setErrors,
+  errors,
 }) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState(false);
@@ -89,7 +90,9 @@ const Generalsettings: React.FC<FormProps> = ({
           setFormData={setFormData!}
           className="w-32 z-50"
           type='number'
+          error={errors?.maxBooking}
           setError={setErrors}
+          pattern="\d+"
         />
       </div>
 
@@ -109,8 +112,12 @@ const Generalsettings: React.FC<FormProps> = ({
           className="w-32"
           type='number'
           setError={setErrors}
+          error={errors?.sessionBreak}
+          pattern="\d+"
         />
       </div>
+
+      
     </div>
   );
 };

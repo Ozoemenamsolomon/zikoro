@@ -8,7 +8,7 @@ import { PlusCircle } from "styled-icons/bootstrap";
 export function Exhibitors({
   exhibitors,
   loading,
-  eventId
+  eventId,
 }: {
   exhibitors: TExPartner[];
   loading: boolean;
