@@ -56,6 +56,7 @@ export default function Workspaces() {
   const name = params.get("name");
   const showFilter = params.get("showFilter");
   const showCategories = params.get("showCategories");
+  const logoLink = params.get("logo");
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
   const [isEventTypeUp, setEventTypeUp] = useState(false);
@@ -253,7 +254,7 @@ export default function Workspaces() {
           {/* normal screen */}
           {!isFilterOpen && (
             <div>
-              <OrganizationNavbar />
+              <OrganizationNavbar logoUrl={logoLink ?? ""} />
               {/* header */}
               <div>
                 {/* big screen */}
@@ -459,7 +460,9 @@ export default function Workspaces() {
                     {/* Right */}
                     <div
                       className={` border-t-[1px] border-gray-200 border-l-[1px] border-r-[1px] w-full lg:w-9/12 py-[3px] ${
-                        showCategories == "false" ? "flex mx-auto border-t-0" : ""
+                        showCategories == "false"
+                          ? "flex mx-auto border-t-0"
+                          : ""
                       } `}
                     >
                       {/* top */}
