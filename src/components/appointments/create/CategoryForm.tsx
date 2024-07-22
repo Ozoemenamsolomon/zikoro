@@ -129,12 +129,12 @@ console.log({categories})
                   ]}
                   setFormData={(data: any) => handleCategoryChange(index, 'amount', data)}
                   setError={() => {}}
-                  placeholder="select"
                   className="w-40 z-50"
                   error={errors?.amount}
                   onChange={(name, value) => handleCategoryChange(index, name, value)}
-
-                />
+                  placeholder='Enter price'
+                  pattern="\d+"
+                  />
               </div>
             </div>
           )}

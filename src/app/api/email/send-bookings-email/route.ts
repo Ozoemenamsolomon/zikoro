@@ -37,7 +37,8 @@ export async function POST(req: NextRequest) {
 
     const emailList = [participantEmail, hostEmail];
     const uniqueEmailArray = mergeEmailLists(teamMembers, emailList);
-    console.log(emailList, uniqueEmailArray, teamMembers, hostEmail);
+
+    console.log(emailList, uniqueEmailArray, );
 
     const appointmentDateTime = parse(`${appointmentDate}T${appointmentTime}`, "yyyy-MM-dd'T'HH:mm:ss", new Date());
     const appointmentEndDateTime = addMinutes(appointmentDateTime, appointmentDuration);
@@ -118,17 +119,11 @@ export async function POST(req: NextRequest) {
           `;
 
     const emailPromises = uniqueEmailArray.map(email => {
-      return fetch('https://api.zeptomail.com/v1.1/email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_ZEPTO_TOKEN}`
+      return client.sendMail({
+        from: {
+          address: senderAddress,
+          name: senderName,
         },
-        body: JSON.stringify({
-          from: {
-            address: senderAddress,
-            name: senderName,
-          },
           to: [{
             email_address: {
               address: email,
@@ -137,16 +132,15 @@ export async function POST(req: NextRequest) {
           }],
           subject,
           htmlbody: htmlBody,
-          attachments: [
-            {
-              filename: 'appointment.ics',
-              path: icsFilePath,
-              contentType: 'text/calendar'
-            }
-          ]
+          // attachments: [
+          //   {
+          //     filename: 'appointment.ics',
+          //     path: icsFilePath,
+          //     contentType: 'text/calendar'
+          //   }
+          // ]
         })
-      });
-    });
+    })
 
     await Promise.all(emailPromises);
 

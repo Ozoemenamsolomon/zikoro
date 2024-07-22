@@ -28,9 +28,10 @@ export interface DaySchedule {
 interface DateTimeScheduler {
     setFormData: any;
     formData: AppointmentFormData;
+    errors?:AppointmentFormData;
   }
 
-const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
+const DateTimeScheduler = ({setFormData,errors,formData}:DateTimeScheduler) => {
   useEffect(() => {
     formData?.timeDetails
   }, [formData?.timeDetails])
@@ -62,7 +63,9 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
         <SelectInput 
           options={timezones}
           name='timeZone'
-          value={formData?.timeZone || timezones[12].value}
+          error={errors?.timeZone}
+          value={formData?.timeZone  }
+          // value={formData?.timeZone || timezones[12].value}
           setFormData={setFormData}
         />
       </div>
@@ -84,11 +87,11 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
                 {
                   schedule.enabled ?
                   <div className=" col-span-2 grid w-full grid-cols-2 gap-2">
-                    <div className='p-2 w-full border rounded-md flex  items-center'>
-                        <label className=" text-gray-70">From</label>
+                    <div className='p-2 py-3 w-full border rounded-md flex  items-center'>
+                        <label className=" text-gray-70 text-sm">From</label>
                         <select
                         disabled={!schedule?.enabled}
-                        className=" w-full focus:outline-none "
+                        className=" w-full focus:outline-none text-sm"
                         value={schedule.from || ''}
                         onChange={(e) => handleTimeChange(schedule.day, 'from', e.target.value)}
                         >
@@ -100,7 +103,7 @@ const DateTimeScheduler = ({setFormData,formData}:DateTimeScheduler) => {
                     </div>
 
                     <div className='p-2 border rounded-md flex gap-4 items-center'>
-                        <label className=" text-gray-70">To</label>
+                        <label className=" text-gray-70 text-sm">To</label>
                         <select
                         disabled={!schedule?.enabled}
                         className=" w-full focus:outline-none text-sm"
