@@ -12,6 +12,7 @@ import {
 } from "@/components";
 import { useForm } from "react-hook-form";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline/";
+import { ChevronDown } from "styled-icons/bootstrap";
 import * as z from "zod";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,11 +22,13 @@ import { useCreateOrganisation, useGetUserOrganizations } from "@/hooks";
 import { PaymentPlus, PaymentTick } from "@/constants";
 import { useGetData } from "@/hooks/services/request";
 import useUserStore from "@/store/globalUserStore";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Plus } from "styled-icons/bootstrap";
 import { Minus } from "styled-icons/feather";
 import { cn } from "@/lib";
 import { useRouter } from "next/navigation";
+import React from "react";
+import toast from "react-hot-toast";
 
 const orgType = ["Private", "Business"];
 const pricingPlan = ["Free", "Lite", "Professional", "Enterprise"];
@@ -35,11 +38,89 @@ type TPricingPlan = {
   created_at: string;
   currency: string;
   id: number;
-  monthPrice: string | null;
+  monthPrice: number | null;
   plan: string | null;
   productType: string;
-  yearPrice: string | null;
+  yearPrice: number | null;
 };
+
+type TCurrencyConverter = {
+  id: number;
+  created_at: string;
+  currency: string;
+  amount: number;
+};
+
+type TZikoroDiscount = {
+  id: number;
+  created_at: string;
+  discountCode: string;
+  validUntil: string;
+  discountAmount: number;
+  discountPercentage: string;
+};
+
+const currencies = ["ZAR", "GHC", "NGN", "KES"];
+
+function CurrencyDropDown({
+  currencyCode,
+  setcurrencyCode,
+}: {
+  currencyCode: string;
+  setcurrencyCode: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  const [isOpen, setOpen] = useState(false);
+  return (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setOpen((prev) => !prev);
+      }}
+      className=" text-mobile relative sm:text-desktop"
+    >
+      <div className="flex items-center gap-x-1 p-2 rounded-sm  border">
+        <p>{currencyCode}</p>
+
+        <ChevronDown size={16} />
+      </div>
+      <div className="absolute left-0 top-10 w-full">
+        {isOpen && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setOpen(false);
+            }}
+            className="w-full z-[400] h-full fixed inset-0"
+          ></button>
+        )}
+        {isOpen && (
+          <ul className="relative shadow z-[600] w-[80px] bg-white py-2 rounded-md">
+            {currencies.map((item, index) => (
+              <li
+                key={index}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setcurrencyCode(item);
+                  setOpen(false);
+                }}
+                className={cn(
+                  "py-2 px-1",
+                  currencyCode === item && "bg-[#001fcc]/10"
+                )}
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </button>
+  );
+}
+
 export function CreateOrganization({
   close,
   refetch,
@@ -48,9 +129,16 @@ export function CreateOrganization({
   close: () => void;
 }) {
   const { data: pricing } = useGetData<TPricingPlan[]>("/pricing");
+  const { data: zikoroDiscounts } =
+    useGetData<TZikoroDiscount[]>("/pricing/discount");
+  const [selectedCurrency, setSelectedCurrency] = useState("NGN");
+  const [code, setCode] = useState("");
+  const { data: currencyConverter } =
+    useGetData<TCurrencyConverter[]>(`/pricing/currency`);
   const { user } = useUserStore();
-  const router = useRouter()
+  const router = useRouter();
   const [isMonthly, setIsMonthly] = useState(true);
+  const [discount, setDiscount] = useState<TZikoroDiscount | null>(null);
   const { organisation, loading } = useCreateOrganisation();
   const [selectedPricing, setSelectedPricing] = useState<TPricingPlan | null>(
     null
@@ -58,40 +146,7 @@ export function CreateOrganization({
   const form = useForm<z.infer<typeof organizationSchema>>({
     resolver: zodResolver(organizationSchema),
   });
-  const [isDiscount, setDiscount] = useState(false);
-  async function onSubmit(values: z.infer<typeof organizationSchema>) {
-    
-    if (values.subscriptionPlan === "Free") {
-      await organisation(values)
-    if (refetch) refetch();
-    close();
-
-    }
-    else {
-      const url = `/payment?name=${encodeURIComponent(
-        values?.firstName || ""
-      )}&id=${encodeURIComponent(user?.id || "")}&email=${encodeURIComponent(
-        values?.userEmail || ""
-      )}&plan=${encodeURIComponent(
-        selectedPricing?.plan || "Free"
-      )}&isMonthly=${encodeURIComponent(isMonthly)}&total=${encodeURIComponent(
-        isMonthly
-          ? selectedPricing?.monthPrice || 0
-          : selectedPricing?.yearPrice || 0
-      )}&currency=${encodeURIComponent(
-        "NGN"
-      )}&organizationName=${encodeURIComponent(
-        values.organizationName
-      )}&organizationType=${encodeURIComponent(
-        values.organizationType
-      )}&subscriptionPlan=${encodeURIComponent(
-        values.subscriptionPlan
-      )}&redirectUrl=${encodeURIComponent(window.location.href)}&isCreate=${encodeURIComponent(true)}`;
-  
-      router.push(url);
-    }
-   
-  }
+  const [isDiscount, setIsDiscount] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -111,26 +166,104 @@ export function CreateOrganization({
     }
   }, [pricing, watchedSubSelection]);
 
+  const subPlanPrice = useMemo(() => {
+    if (selectedPricing && currencyConverter) {
+      const amount = currencyConverter?.find(
+        (v) => v?.currency === selectedCurrency
+      )?.amount;
+      return isMonthly
+        ? Number(selectedPricing?.monthPrice || 0) * (amount || 0)
+        : Number(selectedPricing?.yearPrice || 0) * (amount || 0);
+    } else {
+      return 0;
+    }
+  }, [selectedPricing, isMonthly, currencyConverter, selectedCurrency]);
+
+  const total = useMemo(() => {
+    if (subPlanPrice) {
+      return isDiscount
+        ? subPlanPrice -
+            ((Number(discount?.discountPercentage) || 0) / 100) * subPlanPrice
+        : subPlanPrice;
+    } else {
+      return 0;
+    }
+  }, [subPlanPrice, discount]);
+
+  async function onSubmit(values: z.infer<typeof organizationSchema>) {
+    if (values.subscriptionPlan === "Free") {
+      await organisation(values);
+      if (refetch) refetch();
+      close();
+    } else {
+      const url = `/payment?name=${encodeURIComponent(
+        values?.firstName || ""
+      )}&id=${encodeURIComponent(user?.id || "")}&email=${encodeURIComponent(
+        values?.userEmail || ""
+      )}&plan=${encodeURIComponent(
+        selectedPricing?.plan || "Free"
+      )}&isMonthly=${encodeURIComponent(isMonthly)}&total=${encodeURIComponent(
+        total
+      )}&currency=${encodeURIComponent(
+        selectedCurrency
+      )}&organizationName=${encodeURIComponent(
+        values.organizationName
+      )}&organizationType=${encodeURIComponent(
+        values.organizationType
+      )}&subscriptionPlan=${encodeURIComponent(
+        values.subscriptionPlan
+      )}&redirectUrl=${encodeURIComponent(
+        window.location.href
+      )}&isCreate=${encodeURIComponent(true)}`;
+
+      router.push(url);
+    }
+  }
+
+  function applyDiscount() {
+    if (!zikoroDiscounts) return;
+
+    const percent = zikoroDiscounts?.find((v) => v?.discountCode === code);
+    if (percent) {
+      if (percent.validUntil && new Date(percent.validUntil) < new Date()) {
+        toast.error("Oops! Discount code has expired. Try another one");
+        return;
+      }
+      setDiscount(percent);
+      toast.success("Greate move!. Discount has been applied");
+      setIsDiscount(true);
+      return;
+    } else {
+      setDiscount(null);
+      toast.error("Oops! Discount code is incorrect. Try again");
+      return;
+    }
+  }
+
   return (
     <div
       role="button"
       onClick={close}
-      className="w-full h-full fixed z-[100] inset-0 bg-black/50"
+      className="w-full h-full fixed  overflow-y-auto no-scrollbar z-[100] inset-0 bg-black/50"
     >
       <div
         onClick={(e) => e.stopPropagation()}
         role="button"
-        className="w-[95%] max-w-5xl grid grid-cols-1 md:grid-cols-9 box-animation h-fit  bg-white m-auto absolute inset-0 "
+        className="w-[95%] max-w-5xl grid grid-cols-1 md:grid-cols-9 box-animation h-fit  bg-white mx-auto my-12  md:my-auto absolute inset-x-0 md:inset-y-0 "
       >
         <div className="w-full grid grid-cols-1 items-start justify-start bg-[#001fcc]/10 py-8 sm:py-10 px-4 sm:px-8 lg:px-10 md:col-span-4">
-          <Button className="w-fit h-fit px-0">
+          <Button onClick={close} className="w-fit h-fit px-0">
             <ArrowBackOutline size={22} />
           </Button>
 
-          <h2 className="font-medium text-base sm:text-xl mb-3">
-            Selected Plan
-          </h2>
-          <div className="flex items-center flex-row g gap-x-3 ">
+          <div className="w-full flex items-center mb-3 gap-x-2">
+            <h2 className="font-medium text-base sm:text-xl ">Selected Plan</h2>
+            <CurrencyDropDown
+              currencyCode={selectedCurrency}
+              setcurrencyCode={setSelectedCurrency}
+            />
+          </div>
+          <div className="flex items-center flex-row gap-x-3 ">
             <p className="text-mobile sm:text-desktop font-medium ">Monthly</p>
             <Switch
               className="data-[state=unchecked]:bg-gray-400 data-[state=checked]:bg-zikoroBlue"
@@ -153,18 +286,16 @@ export function CreateOrganization({
                 <h1 className="font-bold text-lg capitalize sm:text-2xl">
                   {selectedPricing ? selectedPricing?.plan : "Free"}
                 </h1>
-                <p className="bg-basePrimary hidden text-white rounded-3xl text-sm h-6  items-center justify-center px-4">
-                  Discount
-                </p>
+                {discount && (
+                  <p className="bg-basePrimary flex text-white rounded-3xl text-sm h-6  items-center justify-center px-4">
+                    Discount
+                  </p>
+                )}
               </div>
               <p className="text-sm sm:text-lg">
                 {selectedPricing
-                  ? `₦${Number(
-                      isMonthly
-                        ? selectedPricing?.monthPrice
-                        : selectedPricing?.yearPrice
-                    ).toLocaleString()}`
-                  : `₦0`}{" "}
+                  ? `${selectedCurrency}${total?.toLocaleString()}`
+                  : `${selectedCurrency}0`}{" "}
                 per {isMonthly ? "month" : "year"}
               </p>
             </div>
@@ -200,22 +331,14 @@ export function CreateOrganization({
                 </p>
                 <p className="font-medium text-base sm:text-xl">
                   {selectedPricing
-                    ? `₦${Number(
-                        isMonthly
-                          ? selectedPricing?.monthPrice
-                          : selectedPricing?.yearPrice
-                      ).toLocaleString()}`
-                    : `₦0`}
+                    ? `${selectedCurrency}${total?.toLocaleString()}`
+                    : `${selectedCurrency}0`}
                 </p>
               </div>
               <p className="text-xs sm:text-mobile">
                 {selectedPricing
-                  ? `₦${Number(
-                      isMonthly
-                        ? selectedPricing?.monthPrice
-                        : selectedPricing?.yearPrice
-                    ).toLocaleString()}`
-                  : `₦0`}{" "}
+                  ? `${selectedCurrency}${total?.toLocaleString()}`
+                  : `${selectedCurrency}0`}{" "}
                 per {isMonthly ? "month" : "year"}
               </p>
             </div>
@@ -225,12 +348,8 @@ export function CreateOrganization({
             <p className="text-xl font-medium">Total Cost</p>
             <p className="text-xl font-medium">
               {selectedPricing
-                ? `₦${Number(
-                    isMonthly
-                      ? selectedPricing?.monthPrice
-                      : selectedPricing?.yearPrice
-                  ).toLocaleString()}`
-                : `₦0`}
+                ? `${selectedCurrency}${total?.toLocaleString()}`
+                : `${selectedCurrency}0`}
             </p>
           </div>
         </div>
@@ -422,7 +541,7 @@ export function CreateOrganization({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setDiscount(true);
+                  setIsDiscount(true);
                 }}
                 className={cn(
                   "text-xs sm:text-mobile text-basePrimary",
@@ -439,14 +558,18 @@ export function CreateOrganization({
               >
                 <input
                   type="text"
-                  //value={code}
-                  // onChange={(e) => setCode(e.target.value)}
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
                   placeholder="Enter a valid discount code"
                   className="bg-transparent h-10 rounded-l-md px-3 outline-none placeholder:text-gray-300 border border-gray-300 w-[75%]"
                 />
                 <Button
-                  // disabled={code === ""}
-                  //onClick={redeem}
+                  disabled={code === ""}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    applyDiscount();
+                  }}
                   className="h-10 text-white rounded-r-md rounded-l-none bg-gray-500 font-medium px-0 w-[25%]"
                 >
                   {"" ? "Verifying..." : "Redeem"}
@@ -454,7 +577,7 @@ export function CreateOrganization({
               </div>
 
               <Button className="w-full h-11 gap-x-2 bg-basePrimary text-white font-medium">
-               {loading && <LoaderAlt size={20} className="animate-spin"/>}
+                {loading && <LoaderAlt size={20} className="animate-spin" />}
                 <p>Create</p>
               </Button>
             </div>
@@ -464,71 +587,3 @@ export function CreateOrganization({
     </div>
   );
 }
-
-/**
-  <div className="w-full flex items-center justify-between">
-          <h2 className="font-medium text-lg sm:text-xl">
-            Create a Workspace
-          </h2>
-          <Button onClick={close} className="px-1 h-fit w-fit">
-            <CloseOutline size={22} />
-          </Button>
-        </div>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex items-start w-full flex-col gap-y-3"
-          >
-            <FormField
-              control={form.control}
-              name="organizationName"
-              render={({ field }) => (
-                <InputOffsetLabel label="Name">
-                  <Input
-                    type="text"
-                    placeholder="Enter Workspace Name"
-                    {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
-                  />
-                </InputOffsetLabel>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="organizationType"
-              render={({ field }) => (
-                <ReactSelect
-                  {...form.register("organizationType")}
-                  label="Workspace Type"
-                  options={orgType.map((value) => {
-                    return { value, label: value };
-                  })}
-                  placeHolder="Select Workspace"
-                />
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="subscriptionPlan"
-              render={({ field }) => (
-                <ReactSelect
-                  {...form.register("subscriptionPlan")}
-                  label="Pricing Plan"
-                  options={pricingPlan.map((value) => {
-                    return { value, label: value };
-                  })}
-                  placeHolder="Select Subscription Plan"
-                />
-              )}
-            />
-
-            <Button
-              disabled={loading}
-              className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-basePrimary h-12 rounded-md text-gray-50 font-medium"
-            >
-              {loading && <LoaderAlt size={22} className="animate-spin" />}
-              <span>Create Workspace</span>
-            </Button>
-          </form>
-        </Form>
- */
