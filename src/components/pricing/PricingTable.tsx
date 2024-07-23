@@ -15,7 +15,7 @@ type Props = {
 };
 
 //type annotation for the data being fetched
-type DBPricingTypes = {
+type DBDefaultPriceType = {
   id: number;
   created_at: string;
   currency: string;
@@ -24,6 +24,13 @@ type DBPricingTypes = {
   yearPrice: number | null;
   productType: string;
   amount: number | null;
+};
+
+type DBOtherCurrienciesType = {
+  id: number;
+  created_at: string;
+  currency: string;
+  amount: number;
 };
 
 export default function PricingTable({
@@ -37,15 +44,19 @@ export default function PricingTable({
   const [liteFeatures, setLiteFeatures] = useState<boolean>(false);
   const [profFeatures, setProfFeatures] = useState<boolean>(false);
   const [busFeatures, setBusFeatures] = useState<boolean>(false);
-  const [selectedCurrency, setSelectedCurrency] = useState<string>("NGN");
-  const [pricingData, setPricingData] = useState<DBPricingTypes[] | undefined>(
-    undefined
-  );
+  const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
+  const [defaultPriceData, setDefaultPriceData] = useState<
+    DBDefaultPriceType[] | undefined
+  >(undefined);
+  const [otherCurrenciesData, setOtherCurrenciesData] = useState<
+    DBOtherCurrienciesType[] | undefined
+  >(undefined);
+
   const [isMonthly, setIsMonthly] = useState<boolean>(false);
   const router = useRouter();
 
   //currencies list
-  const currencies = ["NGN", "USD", "GHC", "ZAR", "KES"];
+  const currencies = ["USD", "NGN", "GHC", "ZAR", "KES"];
 
   //toggler functions
   const handlePlanToogle = () => {
@@ -62,27 +73,59 @@ export default function PricingTable({
           },
         });
         const data = await response.json();
-        setPricingData(data.data);
+        setDefaultPriceData(data.data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+
+    async function fetchOtherCurrenciesPricing() {
+      try {
+        const response = await fetch("/api/currenciesPricing", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        setOtherCurrenciesData(data.data);
       } catch (error) {
         console.error("Error:", error);
       }
     }
 
     fetchPricingData();
+    fetchOtherCurrenciesPricing();
   }, []);
 
   //get plan price
-  const getPlanPrice = (plan: string) => {
-    if (!pricingData) return null;
-    const planData = pricingData.find(
-      (data) => data.plan === plan && data.currency === selectedCurrency
+  const getPlanPrice = (
+    plan: string,
+    selectedCurrency: string,
+    otherCurrenciesData: DBOtherCurrienciesType[] | undefined
+  ): number | null => {
+    if (!defaultPriceData) return null;
+    const planData = defaultPriceData.find(
+      (data) => data.plan === plan && data.currency === "USD" // Assuming default price data is in USD
     );
     if (!planData) return null;
-    return isMonthly ? planData.monthPrice : planData.yearPrice;
+
+    let planPrice = isMonthly ? planData.monthPrice : planData.yearPrice;
+
+    if (selectedCurrency !== "USD" && otherCurrenciesData) {
+      const currencyData = otherCurrenciesData.find(
+        (data) => data.currency === selectedCurrency
+      );
+      if (currencyData && planPrice) {
+        planPrice *= currencyData.amount;
+      }
+    }
+
+    return planPrice;
   };
 
   const handleSelectPlan = (plan: string) => {
-    const price = getPlanPrice(plan);
+    const price = getPlanPrice(plan, selectedCurrency, otherCurrenciesData);
     setChosenPrice(price);
     setChosenPlan(plan);
     setChosenMonthly(isMonthly);
@@ -205,7 +248,8 @@ export default function PricingTable({
             <p className="text-2xl font-bold text-zikoroBlue mt-6">
               {" "}
               {convertCurrencyCodeToSymbol(selectedCurrency)}{" "}
-              {getPlanPrice("Lite") ?? "N/A"}{" "}
+              {getPlanPrice("Lite", selectedCurrency, otherCurrenciesData) ??
+                "N/A"}{" "}
               <span className="text-[14px] text-gray-400">/month</span>{" "}
             </p>
             <div className="px-1 my-6">
@@ -262,7 +306,11 @@ export default function PricingTable({
 
             <p className="text-2xl font-bold mt-6">
               {convertCurrencyCodeToSymbol(selectedCurrency)}{" "}
-              {getPlanPrice("Professional") ?? "N/A"}{" "}
+              {getPlanPrice(
+                "Professional",
+                selectedCurrency,
+                otherCurrenciesData
+              ) ?? "N/A"}{" "}
               <span className="text-[14px] text-gray-400 ">/month</span>{" "}
             </p>
             <div className="px-1 my-6">
@@ -322,7 +370,11 @@ export default function PricingTable({
             <p className="text-2xl font-bold text-zikoroBlue mt-6">
               {" "}
               {convertCurrencyCodeToSymbol(selectedCurrency)}{" "}
-              {getPlanPrice("Enterprise") ?? "N/A"}{" "}
+              {getPlanPrice(
+                "Enterprise",
+                selectedCurrency,
+                otherCurrenciesData
+              ) ?? "N/A"}{" "}
               <span className="text-[14px] text-gray-400">/month</span>{" "}
             </p>
             <div className="px-1 my-6">
