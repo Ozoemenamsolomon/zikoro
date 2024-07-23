@@ -31,7 +31,7 @@ export default function PaymentPage() {
   const email = params.get("email");
   const plan = params.get("plan") ?? "";
   const total = params.get("total");
-  const currentCoupon = params.get("coupon");
+  const currentCoupon = params.get("coupon" ?? "");
   const monthly = params.get("isMonthly");
   const currency = params.get("currency") ?? "";
   const orgName = params.get("organizationName");
@@ -52,7 +52,10 @@ export default function PaymentPage() {
     totalPrice,
     currency,
     plan,
-    isMonthly
+    isMonthly,
+    total,
+    currentCoupon,
+    discount
   );
 
   async function handleSuccess(reference: any) {
@@ -77,18 +80,20 @@ export default function PaymentPage() {
 
   async function submit() {
     const isCreating = decodeURIComponent(isCreate!);
-    if (isCreating === "true") {
-      const organizationName = decodeURIComponent(orgName!);
-      const organizationType = decodeURIComponent(orgType!);
-      const subscriptionPlan = decodeURIComponent(subPlan!);
-      await organisation({
-        organizationName,
-        organizationType,
-        subscriptionPlan,
-      });
-    }
-    const redirect = decodeURIComponent(redirectUrl!);
-    router.push(redirect);
+    await createOrgSubscription().then(async () => {
+      if (isCreating === "true") {
+        const organizationName = decodeURIComponent(orgName!);
+        const organizationType = decodeURIComponent(orgType!);
+        const subscriptionPlan = decodeURIComponent(subPlan!);
+        await organisation({
+          organizationName,
+          organizationType,
+          subscriptionPlan,
+        });
+      }
+      const redirect = decodeURIComponent(redirectUrl!);
+      router.push(redirect);
+    });
   }
 
   //paystack props
@@ -137,14 +142,7 @@ export default function PaymentPage() {
       const coupon = coupons.find((c) => c.discountCode === currentCoupon);
 
       if (coupon) {
-        const now = new Date();
-        const today = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate()
-        );
-        
-        
+        //check if the coupn validity has passed
         if (checkDateEqualToday(coupon.validUntil)) {
           setIsCouponValid(false);
         } else {

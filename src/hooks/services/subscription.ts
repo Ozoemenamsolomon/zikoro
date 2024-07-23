@@ -10,7 +10,10 @@ export function useCreateOrgSubscription(
   totalPrice: number,
   currency: string,
   plan: string,
-  isMonthly: string
+  isMonthly: string,
+  initialTotal: string | null,
+  couponCode: string | null,
+  discountAmount: number | null
 ) {
   async function createOrgSubscription() {
     try {
@@ -21,6 +24,7 @@ export function useCreateOrgSubscription(
       // Format the start date
       const startDate = new Date();
       const formattedStartDate = startDate.toISOString().split("T")[0]; // 'YYYY-MM-DD' format
+      const iniPrice = Number(initialTotal)
 
       // Calculate the expiration date
       const expirationDate = new Date(startDate);
@@ -42,10 +46,11 @@ export function useCreateOrgSubscription(
           amountPayed: totalPriceNum,
           startDate: formattedStartDate,
           expirationDate: formattedExpirationDate,
-          discountCode: "",
-          discountValue: 0,
           currency: currency,
           monthYear: isMonthlyValue,
+          planPrice: iniPrice,
+          discountValue: discountAmount,
+          discountCode: couponCode
         });
 
       if (error) {
