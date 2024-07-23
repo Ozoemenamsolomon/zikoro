@@ -64,9 +64,9 @@ export function PartnerCard({
               !!sponsor.exhibitionHall && ","
             }`}</p>
           )}
-          {sponsor.boothNumber && (
-            <p>{`Booth ${sponsor.boothNumber?.toString() || ""}`}</p>
-          )}
+          {sponsor?.boothNumber === "undefined"
+            ? ""
+            : `, Booth ${sponsor?.boothNumber?.toString()}`}
         </div>
 
         <div className="flex items-center gap-x-3">
