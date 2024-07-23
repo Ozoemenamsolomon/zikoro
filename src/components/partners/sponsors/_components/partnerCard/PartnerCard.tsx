@@ -4,9 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { TExPartner } from "@/types";
 import { useMemo } from "react";
-
 import { Location } from "styled-icons/fluentui-system-regular";
-import { useRouter } from "next/navigation";
 import useUserStore from "@/store/globalUserStore";
 
 export function PartnerCard({
@@ -64,9 +62,9 @@ export function PartnerCard({
               !!sponsor.exhibitionHall && ","
             }`}</p>
           )}
-          {sponsor.boothNumber && (
-            <p>{`Booth ${sponsor.boothNumber?.toString() || ""}`}</p>
-          )}
+          {sponsor?.boothNumber === "undefined"
+            ? ""
+            : `, Booth ${sponsor?.boothNumber?.toString()}`}
         </div>
 
         <div className="flex items-center gap-x-3">

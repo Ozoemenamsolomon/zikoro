@@ -66,11 +66,11 @@ const Booking =  ({alias}:{alias:string}) => {
                             <div className='w-32 h-10 rounded-md animate-pulse bg-slate-100'></div> :
                             <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5">{appointmnetLink?.locationDetails}</p>}
                         </div>
-                        {appointmnetLink?.amount?<div className="flex  pb-2 w-full items-start">
+                        {appointmnetLink?.amount || bookingFormData?.currency ? <div className="flex  pb-2 w-full items-start">
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Price</p>
                             {isLoading ?
                             <div className='w-32 h-10 rounded-md animate-pulse bg-slate-100'></div> :
-                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5 flex ">{appointmnetLink?.curency} {appointmnetLink?.amount}</p>}
+                            <p className=" w-2/3 sm:w-4/5 md:w-7/8 lg:w-3/5 flex ">{bookingFormData?.currency ? bookingFormData?.currency : appointmnetLink?.curency} {bookingFormData?.price ? bookingFormData?.price  : appointmnetLink?.amount}</p>}
                         </div>:null}
                         <div className="flex  pb-2 w-full items-start">
                             <p className="font-medium w-1/3 sm:w-1/5 md:w-1/8 lg:w-2/5 ">Max booking</p>

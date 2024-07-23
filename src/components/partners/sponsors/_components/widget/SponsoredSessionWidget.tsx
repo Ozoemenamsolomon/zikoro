@@ -1,6 +1,6 @@
 "use client";
 
-import { EditBox } from "@styled-icons/remix-line/EditBox";
+import { EditBox } from "styled-icons/remix-line";
 import { cn } from "@/lib";
 import { TAgenda } from "@/types";
 import {formatTime, formatDate} from "@/utils";

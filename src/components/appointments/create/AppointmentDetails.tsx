@@ -34,7 +34,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
             name='appointmentName'
             value={formData?.appointmentName || ''}
             placeholder='Enter Appointment Name'
-            className='py-6'
+            className='py-6 text-base'
             onChange={handleChange}
           />
         </div>
@@ -58,11 +58,11 @@ const AppointmentDetails: React.FC<FormProps> = ({
           ]}
           setFormData={setFormData!}
           setError={setErrors}
-          placeholder='select'
+          placeholder='Select'
           className='w-48'
-          type='number'
+          error={errors?.duration}
+          pattern="^(\d*|0|5|[1-9]\d*0|[1-9]\d*5)$"        
         />
-        
       </div>
       
       <div>
@@ -80,8 +80,9 @@ const AppointmentDetails: React.FC<FormProps> = ({
       
       {
         formData?.loctionType==='Onsite' ? 
-          <div className={` flex gap-2 items-center `}>
-              <MapPin size={18} className='shrink-0 text-[#1F1F1F]'/>
+          <div className={` flex gap-2 items- `}>
+              <MapPin size={24} className='mt-2 flex-shrink-0 text-gray-600'/>
+              <div className="w-full">
               <InputCustom
                 type='text'
                 error={errors?.locationDetails}
@@ -91,7 +92,8 @@ const AppointmentDetails: React.FC<FormProps> = ({
                 className='py-6 w-full'
                 onChange={handleChange}
               />
-            </div>
+              </div>
+          </div>
             :
             <div className={`space-y-`}>
               
@@ -181,7 +183,7 @@ const AppointmentDetails: React.FC<FormProps> = ({
                       {label:'AUD',value:'AUD'},
                     ]}
                     setFormData={setFormData!}
-                    placeholder='select'
+                    placeholder='Select'
                     className='w-40 z-50 '
                     setError={setErrors}
                     error={errors?.currency }
@@ -198,10 +200,11 @@ const AppointmentDetails: React.FC<FormProps> = ({
                     ]}
                     setFormData={setFormData!}
                     setError={setErrors}
-                    placeholder='select'
+                    placeholder='Enter price'
                     className='w-40 z-50 '
                     error={errors?.amount }
                     type='number'
+                    pattern="\d+"
                   />
               </div>
             </div>

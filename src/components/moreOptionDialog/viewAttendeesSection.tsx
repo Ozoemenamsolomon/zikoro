@@ -24,43 +24,44 @@ export default function ViewAttendeesSection({
   attendeesTags?: TAttendeeTags[];
   favourites?: TFavouriteContact;
 }) {
+  console.log(favourites);
   const attendeeFilter: TFilter<TAttendee>[] = [
-    {
-      label: "checked-in",
-      accessor: "checkin",
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-        >
-          <path
-            d="M5.33333 8.32312L8.162 11.1518L13.818 5.49512M2 8.32312L4.82867 11.1518M10.4853 5.49512L8.33333 7.66645"
-            stroke="#CFCFCF"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      ),
-      options: [
-        { label: "07/01/2024", value: "01/07/2024" },
-        { label: "08/01/2024", value: "01/08/2024" },
-        { label: "09/01/2024", value: "01/09/2024" },
-      ],
-      onFilter: (attendee: TAttendee, date: string[]) => {
-        return date.some(
-          (compareDate) =>
-            attendee.checkin &&
-            attendee.checkin.find(({ date }) => {
-              return isWithinTimeRange(date, compareDate);
-            })
-        );
-      },
-      type: "multiple",
-    },
+    // {
+    //   label: "checked-in",
+    //   accessor: "checkin",
+    //   icon: (
+    //     <svg
+    //       xmlns="http://www.w3.org/2000/svg"
+    //       width="16"
+    //       height="16"
+    //       viewBox="0 0 16 16"
+    //       fill="none"
+    //     >
+    //       <path
+    //         d="M5.33333 8.32312L8.162 11.1518L13.818 5.49512M2 8.32312L4.82867 11.1518M10.4853 5.49512L8.33333 7.66645"
+    //         stroke="#CFCFCF"
+    //         stroke-width="1.5"
+    //         stroke-linecap="round"
+    //         stroke-linejoin="round"
+    //       />
+    //     </svg>
+    //   ),
+    //   options: [
+    //     { label: "07/01/2024", value: "01/07/2024" },
+    //     { label: "08/01/2024", value: "01/08/2024" },
+    //     { label: "09/01/2024", value: "01/09/2024" },
+    //   ],
+    //   onFilter: (attendee: TAttendee, date: string[]) => {
+    //     return date.some(
+    //       (compareDate) =>
+    //         attendee.checkin &&
+    //         attendee.checkin.find(({ date }) => {
+    //           return isWithinTimeRange(date, compareDate);
+    //         })
+    //     );
+    //   },
+    //   type: "multiple",
+    // },
     {
       label: "ticket type",
       accessor: "ticketType",
@@ -135,6 +136,7 @@ export default function ViewAttendeesSection({
         (isFavourite
           ? favourites.attendees.includes(attendee.id)
           : !favourites.attendees.includes(attendee.id)),
+      type: "single",
     },
     {
       label: "tags",
@@ -176,7 +178,6 @@ export default function ViewAttendeesSection({
       onFilter: (attendee: TAttendee, selectedTags: string[]) => {
         if (!attendeesTags) return false;
         const attendeeTags = attendeesTags.find((attendeeTag) => {
-          
           return attendeeTag.attendeeId === attendee.id;
         });
 
@@ -209,6 +210,7 @@ export default function ViewAttendeesSection({
     data: attendees,
     dataFilters: attendeeFilter,
   });
+  console.log(filters);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
