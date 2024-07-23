@@ -13,13 +13,13 @@ import {
 import { CreateReward, RewardCard } from "./_components";
 import { EmptyCard } from "@/components/composables";
 import { Loader2 } from "styled-icons/remix-fill";
-import { Reward } from "@/types";
+import { Reward, RedeemPoint } from "@/types";
 import { cn } from "@/lib";
 import { useGetData } from "@/hooks/services/request";
 export default function Rewards({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
   const { data: singleEvent } = useFetchSingleEvent(eventId);
-  const { isOrganizer } = useVerifyUserAccess(eventId);
+  const { isOrganizer, attendeeId } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const { totalPoints } = useGetUserPoint(eventId);
   const {
@@ -27,10 +27,13 @@ export default function Rewards({ eventId }: { eventId: string }) {
     isLoading: loading,
     getData: refetch,
   } = useGetData<Reward[]>(`/rewards/${eventId}`);
+  const {data: redeemedRewards, getData} = useGetData<RedeemPoint[]>(`/rewards/${eventId}/redeemed`)
 
   function onClose() {
     setOpen((prev) => !prev);
   }
+
+
 
   return (
     <MarketPlaceLayout eventId={eventId}>
@@ -50,7 +53,7 @@ export default function Rewards({ eventId }: { eventId: string }) {
       <div className="w-full mt-3 sm:mt-5  grid gap-4 px-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {loading && (
           <div className="w-full col-span-full h-[60vh] flex items-center justify-center">
-            <Loader2 size={50} className="animate-spin" />
+            <Loader2 size={30} className="animate-spin" />
           </div>
         )}
         {!loading && Array.isArray(data) && data?.length === 0 && (
@@ -62,6 +65,8 @@ export default function Rewards({ eventId }: { eventId: string }) {
             <RewardCard
               key={index}
               refetch={refetch}
+              redeemedRewards={redeemedRewards}
+              attendeeId={attendeeId}
               reward={item}
               attendeePoints={totalPoints}
               isOrganizer={isOrganizer || isIdPresent}
