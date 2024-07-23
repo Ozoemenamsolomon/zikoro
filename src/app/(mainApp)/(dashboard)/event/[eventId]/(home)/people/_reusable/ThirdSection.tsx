@@ -18,6 +18,7 @@ import useUserStore from "@/store/globalUserStore";
 import { Progress } from "@/components/ui/progress";
 import { useGetData } from "@/hooks/services/request";
 import { EngagementsSettings } from "@/types/engagements";
+import { useRouter } from "next/navigation";
 
 interface RewardData {
   imgSrc: string;
@@ -38,6 +39,7 @@ export default function ThirdSection({
   sponsors: TExPartner;
   loading: boolean;
 }) {
+  const router = useRouter();
   const { eventRegistrationRef, id } = attendee;
   const { user, setUser } = useUserStore();
   const { attendeeEventTransactions, isLoading, getAttendeeEventTransactions } =
@@ -292,6 +294,9 @@ export default function ThirdSection({
                 {totalAttendeePoints} pts
               </span>
               <button
+                onClick={() =>
+                  router.push(`/event/${event.eventAlias}/market-place/rewards`)
+                }
                 disabled={engagementsSettingsIsLoading}
                 className="rounded-xl bg-white/30 py-1 px-2 text-sm"
               >
