@@ -169,7 +169,6 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
           </ul>
         </div>
       </nav>
-
       <AccessVerification
         eventLoading={eventLoading}
         isEventIdPresent={isIdPresent}
