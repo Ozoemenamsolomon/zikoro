@@ -181,7 +181,10 @@ export function CreateOrganization({
 
   const total = useMemo(() => {
     if (subPlanPrice) {
-      return isDiscount ? subPlanPrice - ((Number(discount?.discountPercentage) || 0)/100 * subPlanPrice) : subPlanPrice;
+      return isDiscount
+        ? subPlanPrice -
+            ((Number(discount?.discountPercentage) || 0) / 100) * subPlanPrice
+        : subPlanPrice;
     } else {
       return 0;
     }
@@ -222,16 +225,19 @@ export function CreateOrganization({
 
     const percent = zikoroDiscounts?.find((v) => v?.discountCode === code);
     if (percent) {
+      if (percent.validUntil && new Date(percent.validUntil) < new Date()) {
+        toast.error("Oops! Discount code has expired. Try another one");
+        return;
+      }
       setDiscount(percent);
       toast.success("Greate move!. Discount has been applied");
       setIsDiscount(true);
-      return
+      return;
     } else {
       setDiscount(null);
       toast.error("Oops! Discount code is incorrect. Try again");
-      return
+      return;
     }
-    
   }
 
   return (
@@ -246,7 +252,7 @@ export function CreateOrganization({
         className="w-[95%] max-w-5xl grid grid-cols-1 md:grid-cols-9 box-animation h-fit  bg-white mx-auto my-12  md:my-auto absolute inset-x-0 md:inset-y-0 "
       >
         <div className="w-full grid grid-cols-1 items-start justify-start bg-[#001fcc]/10 py-8 sm:py-10 px-4 sm:px-8 lg:px-10 md:col-span-4">
-          <Button className="w-fit h-fit px-0">
+          <Button onClick={close} className="w-fit h-fit px-0">
             <ArrowBackOutline size={22} />
           </Button>
 
@@ -280,9 +286,11 @@ export function CreateOrganization({
                 <h1 className="font-bold text-lg capitalize sm:text-2xl">
                   {selectedPricing ? selectedPricing?.plan : "Free"}
                 </h1>
-              {discount &&  <p className="bg-basePrimary flex text-white rounded-3xl text-sm h-6  items-center justify-center px-4">
-                  Discount
-                </p>}
+                {discount && (
+                  <p className="bg-basePrimary flex text-white rounded-3xl text-sm h-6  items-center justify-center px-4">
+                    Discount
+                  </p>
+                )}
               </div>
               <p className="text-sm sm:text-lg">
                 {selectedPricing
@@ -558,9 +566,9 @@ export function CreateOrganization({
                 <Button
                   disabled={code === ""}
                   onClick={(e) => {
-                    e.stopPropagation()
-                    e.preventDefault()
-                    applyDiscount()
+                    e.stopPropagation();
+                    e.preventDefault();
+                    applyDiscount();
                   }}
                   className="h-10 text-white rounded-r-md rounded-l-none bg-gray-500 font-medium px-0 w-[25%]"
                 >
