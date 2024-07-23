@@ -7,6 +7,7 @@ import { cn } from "@/lib";
 import useEventStore from "@/store/globalEventStore";
 import { EngagementsSettings, TPointsAllocation } from "@/types/engagements";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 
@@ -150,6 +151,7 @@ function EmptyState({
 }
 
 const page = () => {
+  const {eventId} = useParams()
   const [pointsAllocation, setAllocation] = useState<TPointsAllocation>(
     DEFAULT_POINTS_ALLOCATION
   );
@@ -159,7 +161,7 @@ const page = () => {
     isLoading: engagementsSettingsIsLoading,
     getData: getEngagementsSettings,
   } = useGetData<EngagementsSettings>(
-    `engagements/${event.eventAlias}/settings`
+    `engagements/${eventId}/settings`
   );
 
   console.log(engagementsSettings);
@@ -174,7 +176,7 @@ const page = () => {
     mutateData: updatePointsAllocation,
     isLoading: updatePointsAllocationIsLoading,
   } = useMutateData<Omit<EngagementsSettings, "id" | "created_at">>(
-    `engagements/${event.eventAlias}/settings`
+    `engagements/${eventId}/settings`
   );
 
   const handleInputChange = (key: string, ppty: string, newValue: any) => {
@@ -193,11 +195,11 @@ const page = () => {
       payload: engagementsSettings
         ? {
             ...engagementsSettings,
-            eventAlias: event.eventAlias,
+            eventAlias: eventId,
             pointsAllocation,
           }
         : {
-            eventAlias: event.eventAlias,
+            eventAlias: eventId,
             pointsAllocation,
           },
     });

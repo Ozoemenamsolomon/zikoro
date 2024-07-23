@@ -48,12 +48,10 @@ export async function GET(req: NextRequest) {
       const query = supabase
         .from("contactRequest")
         .select("*")
-        .eq("receiverUserEmail", userEmail)
+        .or(`receiverUserEmail.eq.${userEmail},senderUserEmail.eq.${userEmail}`)
         // .eq("status", "pending");
 
-      const { data, error, status } = await query;
-
-      
+      const { data, error, status } = await query;      
 
       if (error) throw error;
 
@@ -64,8 +62,6 @@ export async function GET(req: NextRequest) {
             .select("*")
             .eq("userEmail", item.senderUserEmail)
             .maybeSingle();
-
-          
 
           if (senderError) throw senderError;
 
