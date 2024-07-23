@@ -60,7 +60,7 @@ const formdata = {
   duration: null,
   loctionType: 'Onsite',
   locationDetails: '',
-  timeZone: "(UTC+01:00) West Central Africa",
+  timeZone: "",
   timeDetails: daysOfWeek.map(day => ({
     day,
     from: '',
@@ -168,8 +168,8 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
       error.appointmentName = 'Appointment Name is required';
     }
 
-    if (data.duration === null || data.duration <= 0 && !/^\d+$/.test(data?.duration.toString())) {
-      error.duration = 'Duration must be a positive number';
+    if (data.duration === null || data.duration <= 0 || data.duration % 5 !== 0 || !/^\d+$/.test(data?.duration.toString())) {
+      error.duration = 'Duration must be a positive multiple of 5';
     }
 
     if (!data.loctionType) {
@@ -188,12 +188,12 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
       error.timeDetails = 'Time Details are required';
     }
 
-    if (data?.maxBooking && data?.maxBooking <= 0 && !/^\d+$/.test(data?.maxBooking.toString()) ) {
+    if (data?.maxBooking === null || data?.maxBooking <= 0 || !/^\d+$/.test(data?.maxBooking.toString())) {
       error.maxBooking = 'Max Booking must be a positive number';
     }
-
-    if (data?.sessionBreak && !/^\d+$/.test(data.sessionBreak.toString())) {
-      error.sessionBreak = 'Session Break must be a positive whole number';
+    
+    if (data?.sessionBreak === null || data?.sessionBreak <= 0 || !/^\d+$/.test(data.sessionBreak.toString())) {
+      error.sessionBreak = 'Session Break must be a positive number';
     }
 
     if (data.isPaidAppointment && data?.amount && data?.amount <= 0  ) {
@@ -337,7 +337,7 @@ console.log({errors, formData})
             );
           })}
           <div onClick={handleSubmit}
-            className="mt-6 py-3 text-center w-full rounded-md text-[#F2F2F2] font-semibold text-xl bg-basePrimary"
+            className="mt-6 py-3 text-center w-full rounded-md text-[#F2F2F2] font-semibold text-xl bg-basePrimary cursor-pointer"
           >
             {loading ? 'Submitting...' : pathname.includes('edit') ? 'Edit Appointment' : 'Create Appointment'}
           </div>

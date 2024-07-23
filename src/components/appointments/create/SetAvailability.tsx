@@ -12,7 +12,7 @@ const SetAvailability: React.FC<FormProps> = ({
 }) => {
 
   return (
-      <DateTimeScheduler setFormData={setFormData} formData={formData!}/>
+      <DateTimeScheduler setFormData={setFormData} formData={formData!} errors={errors}/>
   );
 };
 
