@@ -3,20 +3,17 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { convertToICSFormat, generateQRCode } from "../../payment/route";
 import { Event, TAttendee, TOrganization } from "@/types";
-import { uploadFile } from "@/utils";
+import { createICSContent, uploadFile } from "@/utils";
 import { format } from "date-fns";
 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
-    
     try {
       const params = await req.json();
 
       const { error } = await supabase.from("attendees").insert(params);
       if (error) throw error;
-
-      
 
       const { data: event, error: eventSelectError } = await supabase
         .from("events")
@@ -25,13 +22,10 @@ export async function POST(req: NextRequest) {
         .maybeSingle();
 
       if (eventSelectError) {
-        
         throw eventSelectError.code;
       }
 
       if (!event) throw "event not found";
-
-      
 
       const { data: currentEvent, error: eventError } = await supabase
         .from("events")
@@ -50,9 +44,10 @@ export async function POST(req: NextRequest) {
         eventTitle,
         endDateTime,
         eventPoster,
+        description,
+        organization: { organizationName, eventContactEmail },
+        eventAlias,
       } = currentEvent as never as Event & { organization: TOrganization };
-
-      
 
       console.log(
         startDateTime,
@@ -64,94 +59,43 @@ export async function POST(req: NextRequest) {
         eventPoster
       );
 
-      const ics = require("ics");
+      var { SendMailClient } = require("zeptomail");
 
-      const date = new Date(params[0].registrationDate);
-      // format Date
-      
-
-      const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      };
-
-      const formattedDate: string = new Intl.DateTimeFormat(
-        "en-US",
-        options
-      ).format(date);
-      
-
-      // convert date to ics format
-      const icsDateFormat = convertToICSFormat(startDateTime);
-
-      
-
-      // Create iCalendar event
-      const icsEvent = {
-        ...icsDateFormat,
-        title: eventTitle,
-        location: eventAddress,
-        attendees: params.map((attendee: TAttendee) => ({
-          name: `${attendee.firstName} ${attendee.lastName}`,
-          email: attendee.email,
-        })),
-        organizer: {
-          name: organisationName,
-          email: currentEvent.organization.eventContactEmail,
-        },
-        // Add other event details as needed
-        //  organizerContact?.email
-      };
-
-      
-
-      // Generate iCalendar content
-      const { error: icsError, value: iCalendarContent }: any =
-        await new Promise((resolve) => {
-          ics.createEvent(icsEvent, (error: Error, value: string) => {
-            resolve({ error, value });
-          });
-        });
-
-      if (icsError) {
-        throw icsError;
-      }
-
-      
-
-      // // Generate QR code
-      // const qrCodeB64 = await generateQRCode(
-      //   `${params.firstName} ${params.lastName}`
-      // );
-
-      // 
-
-      // // generate cloud url
-      // const qrCodeUrl = await uploadFile(qrCodeB64, "image");
-      // 
-
-      let nodemailer = require("nodemailer");
-      const transporter = nodemailer.createTransport({
-        host: "smtp.zoho.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.NEXT_PUBLIC_EMAIL,
-          pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
-        },
+      let client = new SendMailClient({
+        url: process.env.NEXT_PUBLIC_ZEPTO_URL,
+        token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
       });
 
-      
+      const senderAddress = process.env.NEXT_PUBLIC_EMAIL;
+      const senderName = "Zikoro";
+      const subject = `Invite from to ${eventTitle}`;
 
       (params as TAttendee[]).forEach(async (attendee: TAttendee) => {
         try {
-          // Send email to individual recipient
-          await transporter.sendMail({
-            from: `Zikoro <${process.env.NEXT_PUBLIC_EMAIL}>`,
-            to: attendee.email,
-            subject: `Confirmation to attend ${eventTitle}`,
-            html: `
+          const calendarICS = createICSContent(
+            startDateTime,
+            endDateTime,
+            description,
+            eventAddress,
+            { name: organizationName, email: eventContactEmail },
+            { email }
+          );
+
+          const resp = await client.sendMail({
+            from: {
+              address: senderAddress,
+              name: senderName,
+            },
+            to: [
+              {
+                email_address: {
+                  address: email,
+                  name: "attendee",
+                },
+              },
+            ],
+            subject,
+            htmlbody: `
             <div
            style=" background: "#000000"
           >
@@ -427,19 +371,17 @@ export async function POST(req: NextRequest) {
             attachments: [
               {
                 name: "event.ics",
-                content: iCalendarContent,
+                content: Buffer.from(calendarICS).toString("base64"),
                 mime_type: "text/calendar",
               },
             ],
           });
-
-          
+          console.log(`Email sent to ${email}:`, resp);
         } catch (error) {
           console.error(`Error sending email to ${attendee.email}:`, error);
         }
       });
 
-      
       return NextResponse.json(
         { msg: "attendee created successfully" },
         {
@@ -447,9 +389,6 @@ export async function POST(req: NextRequest) {
         }
       );
     } catch (error) {
-      
-      
-      
       console.error(error, "error");
       return NextResponse.json(
         {

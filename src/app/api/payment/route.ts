@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
         //  organizerContact?.email
       };
 
-   //   console.log("tyhejscs", icsEvent);
+      //   console.log("tyhejscs", icsEvent);
       // Generate iCalendar content
       const { error: icsError, value: iCalendarContent }: any =
         await new Promise((resolve) => {
@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
         });
 
       if (icsError) {
-     //   console.log("error", icsError);
+        //   console.log("error", icsError);
         throw icsError;
       }
 
@@ -537,22 +537,51 @@ export async function generateQRCode(user: string) {
   }
 }
 
+type ICSFormat = {
+  start: number[];
+  duration: { hours: number; minutes: number };
+};
+
 export const convertToICSFormat = (
-  dateTimeString: string
-): { start: number[]; duration: { hours: number; minutes: number } } => {
-  const dateTime = new Date(dateTimeString);
+  startDateTimeString: string,
+  endDateTimeString?: string // Optional end date parameter
+): ICSFormat => {
+  const startDateTime = new Date(startDateTimeString);
 
-  // Extract date components
-  const year = dateTime.getFullYear();
-  const month = dateTime.getMonth() + 1;
-  const day = dateTime.getDate();
+  // Set the end date to one day after the start date if not provided
+  let endDateTime: Date;
+  if (endDateTimeString) {
+    endDateTime = new Date(endDateTimeString);
+  } else {
+    endDateTime = new Date(startDateTime);
+    endDateTime.setDate(startDateTime.getDate() + 1);
+  }
 
-  // Extract time components
-  const hours = dateTime.getHours();
-  const minutes = dateTime.getMinutes();
+  // Extract start date components
+  const startYear = startDateTime.getFullYear();
+  const startMonth = startDateTime.getMonth() + 1; // Months are zero-based
+  const startDay = startDateTime.getDate();
+  const startHours = startDateTime.getHours();
+  const startMinutes = startDateTime.getMinutes();
+
+  // Extract end date components
+  const endYear = endDateTime.getFullYear();
+  const endMonth = endDateTime.getMonth() + 1;
+  const endDay = endDateTime.getDate();
+  const endHours = endDateTime.getHours();
+  const endMinutes = endDateTime.getMinutes();
+
+  // Calculate duration in milliseconds
+  const durationMillis = endDateTime.getTime() - startDateTime.getTime();
+
+  // Calculate duration in hours and minutes
+  const durationHours = Math.floor(durationMillis / (1000 * 60 * 60));
+  const durationMinutes = Math.floor(
+    (durationMillis % (1000 * 60 * 60)) / (1000 * 60)
+  );
 
   return {
-    start: [year, month, day, hours, minutes],
-    duration: { hours: 6, minutes: 30 },
+    start: [startYear, startMonth, startDay, startHours, startMinutes],
+    duration: { hours: durationHours, minutes: durationMinutes },
   };
 };
