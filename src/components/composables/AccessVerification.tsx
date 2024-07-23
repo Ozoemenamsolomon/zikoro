@@ -3,7 +3,7 @@
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { getCookie, useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
 import useUserStore from "@/store/globalUserStore";
 
@@ -16,7 +16,8 @@ export function AccessVerification({
   isEventIdPresent: boolean;
   id?: string | any;
 }) {
-  const {user} = useUserStore()
+  const pathname = usePathname();
+  const { user } = useUserStore();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
@@ -24,6 +25,7 @@ export function AccessVerification({
   const [notRegistered, setNotRegistered] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const { data, loading: singleEventLoading } = useFetchSingleEvent(id);
+  const [notAuthorized, setNotAuthorized] = useState(false);
 
   useEffect(() => {
     if (data && !singleEventLoading) {
@@ -68,7 +70,8 @@ export function AccessVerification({
 
       // checked if the user is an attendee
       const isPresent = attendees?.some(
-        ({ email, eventAlias }) => eventAlias === id && email === user?.userEmail
+        ({ email, eventAlias }) =>
+          eventAlias === id && email === user?.userEmail
       );
 
       if (isEventIdPresent) {
@@ -81,15 +84,18 @@ export function AccessVerification({
         (timeRemaining <= 0 && isPresent)
       ) {
         // user is an attendee
-
-        setLoading(false);
+        if (pathname.includes("content")) {
+          setNotAuthorized(true);
+        } else {
+          setLoading(false);
+        }
 
         return () => clearInterval(interval);
       } else {
         if (!isPresent) setNotRegistered(true);
         // router.push("/login");
         // pls remove after all the event have app access date on creation
-       // if (isPresent) setLoading(false);
+        // if (isPresent) setLoading(false);
         return () => clearInterval(interval);
       }
 
@@ -147,12 +153,14 @@ export function AccessVerification({
         <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
           <p>User is not a registered attendee for this event</p>
         </div>
+      ) : notAuthorized ? (
+        <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
+          <p>You are not authorized to view this page</p>
+        </div>
       ) : (
         <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
           <LoaderAlt size={30} className="animate-spin text-basePrimary" />
-          <p className="text-[13px] sm:text-sm">
-            Authenticating...
-          </p>
+          <p className="text-[13px] sm:text-sm">Authenticating...</p>
         </div>
       )}
     </div>

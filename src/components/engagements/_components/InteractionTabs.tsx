@@ -26,7 +26,7 @@ export function InteractionTabs({ eventId, isAttendee }: { eventId: string; isAt
     },
   ];
 
-  const hideFromAttendees = ["Settings", "LeaderBoard"]
+  const hideFromAttendees = ["Settings"]
   const set = new Set(hideFromAttendees);
 
   const navlinks = useMemo(() => {

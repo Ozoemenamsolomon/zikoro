@@ -170,13 +170,11 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
         </div>
       </nav>
 
-      {/**
-           <AccessVerification
+      <AccessVerification
         eventLoading={eventLoading}
         isEventIdPresent={isIdPresent}
         id={eventId}
       />
-       */}
     </>
   );
 };
