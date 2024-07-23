@@ -6,12 +6,13 @@ import PricingHeader from "@/components/pricing/PricingHeader";
 import PricingTable from "@/components/pricing/PricingTable";
 import { PaymentModal } from "@/components/payment/paymentModal";
 
+//type annotation for the data being fetched
 export default function Pricing() {
   const [paymentModalOpen, setPaymentModalOpen] = useState<boolean>(false);
   const [chosenPlan, setChosenPlan] = useState<string | null>(null);
   const [chosenPrice, setChosenPrice] = useState<number | null>(0);
   const [isChosenMonthly, setChosenMonthly] = useState<boolean>(false);
-  const [chosenCurrency, setChosenCurrency] = useState<string>("NGN");
+  const [chosenCurrency, setChosenCurrency] = useState<string>("USD");
 
   return (
     <div className="">

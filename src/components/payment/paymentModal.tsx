@@ -18,6 +18,16 @@ import {
 } from "@/components/ui/popover";
 import toast from "react-hot-toast";
 
+//type annotation for the data being fetched
+type DBDiscountsType = {
+  id: number;
+  created_at: string;
+  discountCode: string;
+  validUntil: string | null;
+  discountAmount: number | null;
+  discountPercentage: number | null;
+};
+
 type Props = {
   updateModalState: () => void;
   setChosenPlan: (plan: string | null) => void;
@@ -64,18 +74,21 @@ export function PaymentModal({
   const [loading, setLoading] = useState(false);
   const [haveCoupon, setHaveCoupon] = useState<boolean>(false);
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
+  const [isRedeemed, setIsRedeemed] = useState<boolean>(false);
   const [orgName, setOrgName] = useState<string>("");
   const [totalPrice, setTotalprice] = useState<number>(0);
+  const [isCouponValid, setIsCouponValid] = useState<boolean>(false);
   const [closeForm, setCloseForm] = useState<boolean>(false);
+  const [coupons, setCoupons] = useState<DBDiscountsType[] | undefined>(
+    undefined
+  );
+  const [couponText, setCouponText] = useState<string>("");
   const router = useRouter();
   const pathname = usePathname();
-
   const userId = user?.id ?? 0;
   const userName = user?.firstName ?? "";
-
   const { data: organizationData, refetch: refetchOrganizationData } =
     useGetUserOrganization(user?.id ?? 0);
-
   const { createUserOrganization } = useCreateUserOrganization(
     userId,
     orgName,
@@ -95,8 +108,51 @@ export function PaymentModal({
       isChosenMonthly || ""
     )}&total=${encodeURIComponent(
       totalPrice.toString()
-    )}&currency=${encodeURIComponent(chosenCurrency)}&redirectUrl=${encodeURIComponent(window.location.href)}`;
+    )}&currency=${encodeURIComponent(
+      chosenCurrency
+    )}&coupon=${encodeURIComponent(
+      couponText
+    )}&redirectUrl=${encodeURIComponent(window.location.href)}`;
     router.push(url);
+  };
+
+  //create organization form
+  const createOrgDetails = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCloseForm(true);
+    try {
+      createUserOrganization();
+      updateModalState();
+    } catch (error: any) {
+      toast.error(`Error: ${error}`);
+    }
+  };
+
+  // Function to check if the coupon code is valid
+  const checkCoupon = (couponCode: string) => {
+    if (couponCode === "") return null;
+    const coupon = coupons?.find((c) => c.discountCode === couponCode);
+    if (coupon) {
+      // Additional checks can be added here, such as validity period
+      setIsCouponValid(true);
+    } else {
+      setIsCouponValid(false);
+    }
+  };
+
+  //Handle redeem code
+  const handleReedemCode = () => {
+    checkCoupon(couponText);
+    toast.success("Congratulation, Coupon Redeemed Successfully");
+    setIsRedeemed(true);
+  };
+
+  // Handle coupon code input change
+  const handleCouponChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const code = e.target.value;
+    setCouponText(code);
+    checkCoupon(code);
   };
 
   //useEffect
@@ -113,18 +169,24 @@ export function PaymentModal({
     }
   }, [user, chosenPrice, isChosenMonthly, router]);
 
-  //create organization form
-  const createOrgDetails = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCloseForm(true);
-    try {
-      createUserOrganization();
-      updateModalState();
-    } catch (error: any) {
-      toast.error(`Error: ${error}`);
+  useEffect(() => {
+    async function fetchAllCouponCodes() {
+      try {
+        const response = await fetch("/api/discounts", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        setCoupons(data.data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
-  };
+
+    fetchAllCouponCodes();
+  }, []);
 
   return (
     <div className="w-full h-full fixed z-[100] inset-0 bg-black/50 overflow-y-auto ">
@@ -324,26 +386,51 @@ export function PaymentModal({
               </div>
             </div>
 
-            {!haveCoupon ? (
-              <p
-                className=" text-[14px] text-zikoroBlue cursor-pointer mt-7"
-                onClick={() => setHaveCoupon(true)}
-              >
-                Have a discount code? click here to enter code{" "}
-              </p>
+            {!isRedeemed ? (
+              <>
+                {!haveCoupon ? (
+                  <p
+                    className=" text-[14px] text-zikoroBlue cursor-pointer mt-7"
+                    onClick={() => setHaveCoupon(true)}
+                  >
+                    Have a discount code? click here to enter code{" "}
+                  </p>
+                ) : (
+                  <>
+                    <div className="h-[50px] mt-5">
+                      <input
+                        type="text"
+                        value={couponText}
+                        onChange={(e) => handleCouponChange(e)}
+                        placeholder="Enter a valid discount code"
+                        className="h-full p-2 text-[12px] w-8/12 placeholder-gray-500 outline-none border-[1px] border-gray-200"
+                      />
+                      <button
+                        className={`text-base text-white h-full px-3 lg:px-8 w-4/12 ${
+                          isCouponValid ? "bg-zikoroBlue" : "bg-gray-400"
+                        }`}
+                        disabled={!isCouponValid}
+                        onClick={handleReedemCode}
+                      >
+                        Redeem
+                      </button>
+                    </div>
+                    {couponText !== "" && (
+                      <p
+                        className={`text-[10px] mt-2 text-center ${
+                          isCouponValid ? "text-zikoroBlue" : "text-red-500"
+                        }`}
+                      >
+                        {isCouponValid ? "Valid Coupon" : "Invalid Coupon"}
+                      </p>
+                    )}
+                  </>
+                )}
+              </>
             ) : (
-              <div className="h-[50px] mt-5">
-                <input
-                  type="text"
-                  name=""
-                  id=""
-                  placeholder="Enter a valid discount code"
-                  className="h-full p-2 text-[12px] w-8/12 placeholder-gray-500 outline-none border-[1px] border-gray-200"
-                />
-                <button className="text-base text-white bg-zikoroBlue h-full px-3 lg:px-8 w-4/12 ">
-                  Redeem
-                </button>
-              </div>
+              <p className="text-[14px] text-green-500 mt-7">
+                Coupon Redeemed Successfully!
+              </p>
             )}
 
             <button

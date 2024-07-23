@@ -11,6 +11,17 @@ import { PaystackButton } from "react-paystack";
 import toast from "react-hot-toast";
 import { useCreateOrganisation } from "@/hooks";
 import { useCreateOrgSubscription } from "@/hooks/services/subscription";
+import checkDateEqualToday from "@/utils/checkDateEqualToday";
+
+//type annotation for the data being fetched
+type DBDiscountsType = {
+  id: number;
+  created_at: string;
+  discountCode: string;
+  validUntil: string | null;
+  discountAmount: number;
+  discountPercentage: number | null;
+};
 
 export default function PaymentPage() {
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -20,12 +31,18 @@ export default function PaymentPage() {
   const email = params.get("email");
   const plan = params.get("plan") ?? "";
   const total = params.get("total");
+  const currentCoupon = params.get("coupon");
   const monthly = params.get("isMonthly");
   const currency = params.get("currency") ?? "";
   const orgName = params.get("organizationName");
   const orgType = params.get("organizationType");
   const subPlan = params.get("subscriptionPlan");
   const redirectUrl = params.get("redirectUrl");
+  const [coupons, setCoupons] = useState<DBDiscountsType[] | undefined>(
+    undefined
+  );
+  const [discount, setDiscount] = useState<number>(0);
+  const [isCouponValid, setIsCouponValid] = useState<boolean>(false);
   const isCreate = params.get("isCreate");
   const router = useRouter();
   const isMonthly = monthly?.toString() ?? "";
@@ -54,7 +71,6 @@ export default function PaymentPage() {
         });
       }
       const redirect = decodeURIComponent(redirectUrl!);
-
       router.push(redirect);
     });
   }
@@ -72,7 +88,6 @@ export default function PaymentPage() {
       });
     }
     const redirect = decodeURIComponent(redirectUrl!);
-
     router.push(redirect);
   }
 
@@ -97,8 +112,59 @@ export default function PaymentPage() {
   };
 
   useEffect(() => {
+    async function fetchAllCouponCodes() {
+      try {
+        const response = await fetch("/api/discounts", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        setCoupons(data.data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+
+    fetchAllCouponCodes();
+  }, []);
+
+  useEffect(() => {
     setTotalPrice(Number(total));
-  }, [total]);
+
+    if (coupons && currentCoupon) {
+      const coupon = coupons.find((c) => c.discountCode === currentCoupon);
+
+      if (coupon) {
+        const now = new Date();
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        );
+        
+        
+        if (checkDateEqualToday(coupon.validUntil)) {
+          setIsCouponValid(false);
+        } else {
+          setIsCouponValid(true);
+        }
+
+        if (isCouponValid) {
+          if (coupon.discountAmount !== null) {
+            setDiscount(coupon.discountAmount);
+            setTotalPrice((prevPrice) => prevPrice - coupon.discountAmount!);
+          } else if (coupon.discountPercentage !== null) {
+            const discountValue =
+              totalPrice * (coupon.discountPercentage! / 100);
+            setDiscount(discountValue);
+            setTotalPrice((prevPrice) => prevPrice - discountValue);
+          }
+        }
+      }
+    }
+  }, [coupons, currentCoupon]);
 
   return (
     <div className="bg-[#F9FAFF] h-screen flex flex-col justify-center items-center px-3">
@@ -120,13 +186,14 @@ export default function PaymentPage() {
               <p className="">Subtotal</p>
               <p>
                 {convertCurrencyCodeToSymbol(currency || "")}
-                {total}
+                {Number(total)}
               </p>
             </div>
             <div className="flex justify-between text-base">
               <p className="">Discount</p>
               <p>
-                - {convertCurrencyCodeToSymbol(currency || "")} {0}
+                - {convertCurrencyCodeToSymbol(currency || "")}
+                {discount}
               </p>
             </div>
             <div className="flex justify-between text-base">
