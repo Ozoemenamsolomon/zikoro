@@ -5,9 +5,11 @@ import { AlertCircle } from "styled-icons/feather";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 import { Button } from "@/components";
 import { useMemo, useState } from "react";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Reward, RedeemPoint } from "@/types";
 import { Edit } from "styled-icons/material";
 import { CreateReward } from "./CreateReward";
+import { useRedeemReward } from "@/hooks";
 export function RewardCard({
   reward,
   isOrganizer,
@@ -27,6 +29,7 @@ export function RewardCard({
   const [isOpen, setOpen] = useState(false);
   const [isEdit, setEdit] = useState(false);
   const [isRedeem, setIsRedeem] = useState(false);
+  const { redeemAReward, loading } = useRedeemReward();
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -62,7 +65,18 @@ export function RewardCard({
     }
   }, [attendeeId, redeemedRewards]);
 
-  async function redeem() {}
+  async function redeem() {
+    const payload = {
+      rewardId: reward?.id,
+      attendeeId: attendeeId,
+      rewardPoints: reward?.point,
+      rewardTitle: reward?.rewardTitle,
+      eventAlias: reward?.eventAlias,
+    };
+    await redeemAReward(payload);
+    onRedeem();
+    refetch();
+  }
 
   function onSubmit() {
     if (Number(reward?.point) > Number(availableAttendeepoint)) {
@@ -130,7 +144,7 @@ export function RewardCard({
       )}
       {isOpen && <RewardCardModal close={onClose} reward={reward} />}
       {isAlert && <AlertModal close={onAlert} redeemPoint={reward?.point} />}
-      {isRedeem && <RedeemModal close={onRedeem} submit={redeem} />}
+      {isRedeem && <RedeemModal close={onRedeem} submit={redeem} loading={loading} />}
     </>
   );
 }
@@ -180,9 +194,7 @@ function RewardCardModal({
               <p className="font-semibold">{`QTY: ${
                 reward?.quantity ?? "0"
               }`}</p>
-              <p className=" text-gray-400 ">
-                0 redeemed
-              </p>
+              <p className=" text-gray-400 ">0 redeemed</p>
             </div>
             <div className="w-full flex text-gray-500 items-center justify-between">
               <p>{`Redeem for ${reward?.point} points`}</p>
@@ -255,9 +267,11 @@ function AlertModal({
 function RedeemModal({
   close,
   submit,
+  loading
 }: {
   submit: () => Promise<any>;
   close: () => void;
+  loading:boolean;
 }) {
   return (
     <div
@@ -281,9 +295,10 @@ function RedeemModal({
           </Button>
           <Button
             onClick={submit}
-            className="text-white font-medium w-fit bg-basePrimary"
+            className="text-white font-medium gap-x-2 w-fit bg-basePrimary"
           >
-            Redeem
+            {loading && <LoaderAlt className="animate-spin" size={20}/>}
+           <p> Redeem</p>
           </Button>
         </div>
       </div>
