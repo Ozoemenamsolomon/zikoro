@@ -3,8 +3,8 @@ import { TIssuedCertificate } from "@/types";
 import { formatDate } from "@/utils";
 import { AboutWidget } from "@/components/composables";
 import Image from "next/image";
-import { Users } from "@styled-icons/heroicons-outline/Users";
-import { Check2 } from "@styled-icons/bootstrap/Check2";
+import { Users } from "styled-icons/heroicons-outline";
+import { Check2 } from "styled-icons/bootstrap";
 import { CheckmarkDone } from "styled-icons/ionicons-outline";
 export function CertificateWidget({
   certificate,

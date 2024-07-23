@@ -1,9 +1,9 @@
 
 "use client"
 
-import { CalendarDateFill } from "@styled-icons/bootstrap/CalendarDateFill";
-import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
-import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
+import { CalendarDateFill } from "styled-icons/bootstrap";
+import { TimeFive } from "styled-icons/boxicons-solid";
+import { LocationDot } from "styled-icons/fa-solid";
 import { AboutWidget } from "@/components/composables";
 import Image from "next/image";
 import { saveCookie } from "@/hooks";

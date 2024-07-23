@@ -29,7 +29,7 @@ import { cn } from "@/lib";
 import { useRouter } from "next/navigation";
 import React from "react";
 import toast from "react-hot-toast";
-
+import { plansData } from "./_plansData";
 const orgType = ["Private", "Business"];
 const pricingPlan = ["Free", "Lite", "Professional", "Enterprise"];
 
@@ -60,7 +60,7 @@ type TZikoroDiscount = {
   discountPercentage: string;
 };
 
-const currencies = ["ZAR", "GHC", "NGN", "KES"];
+const currencies = ["ZAR", "GHC", "NGN", "KES", "USD"];
 
 function CurrencyDropDown({
   currencyCode,
@@ -173,7 +173,7 @@ export function CreateOrganization({
       )?.amount;
       return isMonthly
         ? Number(selectedPricing?.monthPrice || 0) * (amount || 0)
-        : Number(selectedPricing?.yearPrice || 0) * (amount || 0);
+        : Number(selectedPricing?.yearPrice || 0) * (amount || 0) * 12;
     } else {
       return 0;
     }
@@ -240,6 +240,19 @@ export function CreateOrganization({
     }
   }
 
+  const selectedPlandData = useMemo(() => {
+    if (selectedPricing) {
+      const data = plansData.find(
+        (i) => i.plan === selectedPricing?.plan
+      )?.data;
+
+      return data;
+    } else {
+      const data = plansData.find((i) => i.plan === "Free")?.data;
+      return data;
+    }
+  }, [selectedPricing]);
+
   return (
     <div
       role="button"
@@ -292,29 +305,39 @@ export function CreateOrganization({
                   </p>
                 )}
               </div>
-              <p className="text-sm sm:text-lg">
-                {selectedPricing
-                  ? `${selectedCurrency}${total?.toLocaleString()}`
-                  : `${selectedCurrency}0`}{" "}
-                per {isMonthly ? "month" : "year"}
-              </p>
+              <div className="flex items-center gap-x-2">
+                {discount && (
+                  <p className="text-sm text-zinc-600 line-through sm:text-lg">
+                    {subPlanPrice.toLocaleString()}
+                  </p>
+                )}
+
+                <p className="text-sm sm:text-lg">
+                  {selectedPricing
+                    ? `${selectedCurrency}${
+                        isMonthly
+                          ? total?.toLocaleString()
+                          : (total / 12).toLocaleString()
+                      }`
+                    : `${selectedCurrency}0`}{" "}
+                  per month
+                </p>
+              </div>
             </div>
 
             <div className="w-full pb-3 flex items-start justify-start  flex-col gap-y-1">
               <p className="font-medium mb-2">Plan Features</p>
 
-              <div className="w-full text-mobile sm:text-sm gap-x-2 flex items-center">
-                <PaymentTick />
-                <p>Unlimited events</p>
-              </div>
-              <div className="w-full text-mobile  sm:text-sm gap-x-2 flex items-center">
-                <PaymentTick />
-                <p>Multiple sponsors</p>
-              </div>
-              <div className="w-full text-mobile  sm:text-sm gap-x-2 flex items-center">
-                <PaymentTick />
-                <p>Unlimited custom certificates</p>
-              </div>
+              {selectedPlandData?.map((value, index) => (
+                <div
+                  key={index}
+                  className="w-full text-mobile sm:text-sm gap-x-2 flex items-center"
+                >
+                  <PaymentTick />
+                  <p>{value}</p>
+                </div>
+              ))}
+
               <div className="w-full text-mobile  sm:text-sm gap-x-3 flex items-center">
                 <PaymentPlus />
                 <p>Show more features</p>
@@ -337,9 +360,13 @@ export function CreateOrganization({
               </div>
               <p className="text-xs sm:text-mobile">
                 {selectedPricing
-                  ? `${selectedCurrency}${total?.toLocaleString()}`
+                  ? `${selectedCurrency}${
+                      isMonthly
+                        ? total?.toLocaleString()
+                        : (total / 12).toLocaleString()
+                    }`
                   : `${selectedCurrency}0`}{" "}
-                per {isMonthly ? "month" : "year"}
+                per {isMonthly ? "month" : "month x 12"}
               </p>
             </div>
           </div>
@@ -375,7 +402,7 @@ export function CreateOrganization({
                         placeholder="Enter First Name"
                         {...field}
                         readOnly
-                        className="placeholder:text-sm h-10 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
+                        className="placeholder:text-sm h-11 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
                       />
                     </FormControl>
                     <FormMessage />
@@ -393,7 +420,7 @@ export function CreateOrganization({
                         placeholder="Enter Last Name"
                         {...field}
                         readOnly
-                        className="placeholder:text-sm h-10 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
+                        className="placeholder:text-sm h-11 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
                       />
                     </FormControl>
                     <FormMessage />
@@ -411,7 +438,7 @@ export function CreateOrganization({
                         placeholder="Enter Email Address"
                         {...field}
                         readOnly
-                        className="placeholder:text-sm h-10 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
+                        className="placeholder:text-sm h-11 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
                       />
                     </FormControl>
                     <FormMessage />
@@ -428,7 +455,7 @@ export function CreateOrganization({
                         type="text"
                         placeholder="Enter Workspace Name"
                         {...field}
-                        className="placeholder:text-sm h-10  border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
+                        className="placeholder:text-sm h-11  border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
                       />
                     </FormControl>
                     <FormMessage />
@@ -481,7 +508,7 @@ export function CreateOrganization({
               />
             </div>
 
-            <div className="w-full flex flex-col items-start justify-start gap-y-2">
+            <div className="w-full hidden flex-col items-start justify-start gap-y-2">
               <h2 className="font-semibold text-base sm:text-xl mb-2">
                 Add-Ons
               </h2>

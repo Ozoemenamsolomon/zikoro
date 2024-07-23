@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import Image from "next/image";
 import Link from "next/link";
 import { AddBanners } from "@/components/partners/_components";

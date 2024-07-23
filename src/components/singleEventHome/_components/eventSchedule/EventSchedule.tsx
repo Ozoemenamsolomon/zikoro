@@ -3,10 +3,10 @@
 import { useFormatEventData } from "@/hooks";
 import Image from "next/image";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
+import { TimeFive } from "styled-icons/boxicons-solid";
 import { AboutWidget } from "@/components/composables";
-import { CalendarDateFill } from "@styled-icons/bootstrap/CalendarDateFill";
-import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
+import { CalendarDateFill } from "styled-icons/bootstrap";
+import { LocationDot } from "styled-icons/fa-solid";
 import { Event } from "@/types";
 import { CountDown } from "..";
 export function EventSchedule({

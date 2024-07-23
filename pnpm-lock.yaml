@@ -305,9 +305,6 @@ importers:
       react-quill:
         specifier: ^2.0.0
         version: 2.0.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      react-resizable:
-        specifier: ^3.0.5
-        version: 3.0.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-rnd:
         specifier: ^10.4.1
         version: 10.4.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -4585,11 +4582,6 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
-
-  react-resizable@3.0.5:
-    resolution: {integrity: sha512-vKpeHhI5OZvYn82kXOs1bC8aOXktGU5AmKAgaZS4F5JPburCtbmDPqE7Pzp+1kN4+Wb81LlF33VpGwWwtXem+w==}
-    peerDependencies:
-      react: '>= 16.3'
 
   react-rnd@10.4.1:
     resolution: {integrity: sha512-0m887AjQZr6p2ADLNnipquqsDq4XJu/uqVqI3zuoGD19tRm6uB83HmZWydtkilNp5EWsOHbLGF4IjWMdd5du8Q==}
@@ -10361,14 +10353,6 @@ snapshots:
       use-sidecar: 1.1.2(@types/react@18.2.45)(react@18.2.0)
     optionalDependencies:
       '@types/react': 18.2.45
-
-  react-resizable@3.0.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
-    dependencies:
-      prop-types: 15.8.1
-      react: 18.2.0
-      react-draggable: 4.4.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-    transitivePeerDependencies:
-      - react-dom
 
   react-rnd@10.4.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
