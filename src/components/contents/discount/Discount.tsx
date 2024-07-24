@@ -1,5 +1,5 @@
 "use client";
-import { AddCircle } from "@styled-icons/fluentui-system-regular/AddCircle";
+import { AddCircle } from "styled-icons/fluentui-system-regular";
 import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib";
