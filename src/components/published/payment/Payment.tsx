@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components";
-import { Lock } from "@styled-icons/fa-solid/Lock";
+import { Lock } from "styled-icons/fa-solid";
 import { PaystackButton } from "react-paystack";
 import { useState } from "react";
 // import { OrganizerContact, TPayment } from "@/types";
@@ -10,7 +10,7 @@ import {
   useGetEventTransactionDetail,
   useUpdateTransactionDetail,
 } from "@/hooks";
-import { CheckCircleFill } from "@styled-icons/bootstrap/CheckCircleFill";
+import { CheckCircleFill } from "styled-icons/bootstrap";
 import { useSearchParams } from "next/navigation";
 
 type QueryData = {

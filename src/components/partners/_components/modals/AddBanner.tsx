@@ -1,11 +1,11 @@
 "use client";
 
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { Form, FormField, Input, Button } from "@/components";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
 import { TPartner } from "@/types";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
+import { PlusCircle } from "styled-icons/bootstrap";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addBannerSchema } from "@/schemas";

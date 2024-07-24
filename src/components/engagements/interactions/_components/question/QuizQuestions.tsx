@@ -2,10 +2,10 @@
 
 import { Button } from "@/components";
 import { InteractionLayout } from "../../../_components";
-import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
-import { PlayBtn } from "@styled-icons/bootstrap/PlayBtn";
-import { Settings } from "@styled-icons/feather/Settings";
+import { ArrowBackOutline } from "styled-icons/evaicons-outline";
+import { PlusCircle } from "styled-icons/bootstrap";
+import { PlayBtn } from "styled-icons/bootstrap";
+import { Settings } from "styled-icons/feather";
 import Image from "next/image";
 import { ActiveQuestion, QuestionCard, QuizSettings, AddQuestion } from "..";
 import { useState, useEffect } from "react";

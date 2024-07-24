@@ -7,7 +7,6 @@ import { Button, MobileBottomNav, NavLinks } from ".";
 import Link from "next/link";
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import { EventFeedBack } from "./modals/EventFeedback";
-import { VipCrown2 } from "styled-icons/remix-fill";
 import MainTopBar from "@/components/MainTopBar";
 import { PlusCircle } from "styled-icons/bootstrap";
 import {

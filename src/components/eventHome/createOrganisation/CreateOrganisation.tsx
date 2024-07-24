@@ -29,7 +29,7 @@ import { cn } from "@/lib";
 import { useRouter } from "next/navigation";
 import React from "react";
 import toast from "react-hot-toast";
-
+import { plansData } from "./_plansData";
 const orgType = ["Private", "Business"];
 const pricingPlan = ["Free", "Lite", "Professional", "Enterprise"];
 
@@ -240,6 +240,19 @@ export function CreateOrganization({
     }
   }
 
+  const selectedPlandData = useMemo(() => {
+    if (selectedPricing) {
+      const data = plansData.find(
+        (i) => i.plan === selectedPricing?.plan
+      )?.data;
+
+      return data;
+    } else {
+      const data = plansData.find((i) => i.plan === "Free")?.data;
+      return data;
+    }
+  }, [selectedPricing]);
+
   return (
     <div
       role="button"
@@ -315,18 +328,16 @@ export function CreateOrganization({
             <div className="w-full pb-3 flex items-start justify-start  flex-col gap-y-1">
               <p className="font-medium mb-2">Plan Features</p>
 
-              <div className="w-full text-mobile sm:text-sm gap-x-2 flex items-center">
-                <PaymentTick />
-                <p>Unlimited events</p>
-              </div>
-              <div className="w-full text-mobile  sm:text-sm gap-x-2 flex items-center">
-                <PaymentTick />
-                <p>Multiple sponsors</p>
-              </div>
-              <div className="w-full text-mobile  sm:text-sm gap-x-2 flex items-center">
-                <PaymentTick />
-                <p>Unlimited custom certificates</p>
-              </div>
+              {selectedPlandData?.map((value, index) => (
+                <div
+                  key={index}
+                  className="w-full text-mobile sm:text-sm gap-x-2 flex items-center"
+                >
+                  <PaymentTick />
+                  <p>{value}</p>
+                </div>
+              ))}
+
               <div className="w-full text-mobile  sm:text-sm gap-x-3 flex items-center">
                 <PaymentPlus />
                 <p>Show more features</p>

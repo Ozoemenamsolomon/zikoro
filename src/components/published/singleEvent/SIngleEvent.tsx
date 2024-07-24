@@ -1,19 +1,19 @@
 "use client";
 
-import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
-import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
-import { CalendarDateFill } from "@styled-icons/bootstrap/CalendarDateFill";
+import { TimeFive } from "styled-icons/boxicons-solid";
+import { LocationDot } from "styled-icons/fa-solid";
+import { CalendarDateFill } from "styled-icons/bootstrap";
 import { Telephone } from "styled-icons/bootstrap";
 import { Whatsapp } from "styled-icons/remix-fill";
 import { EmailOutline } from "styled-icons/evaicons-outline";
 import Image from "next/image";
 import { Button } from "@/components";
-import { Share } from "@styled-icons/bootstrap/Share";
+import { Share } from "styled-icons/bootstrap";
 import { LinkedinShareButton } from "next-share";
 import { EventLocationType, AboutWidget } from "@/components/composables";
 import Link from "next/link";
 import { cn } from "@/lib";
-import { Users } from "@styled-icons/fa-solid/Users";
+import { Users } from "styled-icons/fa-solid";
 import useUserStore from "@/store/globalUserStore";
 import {
   dateFormatting,
