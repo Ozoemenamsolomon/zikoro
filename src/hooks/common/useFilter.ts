@@ -1,4 +1,5 @@
 "use client";
+
 import {
   TFilter,
   TFilterType,
@@ -8,7 +9,7 @@ import {
   onFilterProps,
 } from "@/types/filter";
 import { getProperty } from "@/utils/helpers";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface UseFilterProps<T> {
   data: T[];
@@ -22,12 +23,11 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
     []
   );
 
-  useEffect(() => {
+  // Memoize the filter application function to avoid unnecessary re-renders
+  const applyFilters = useCallback(() => {
     let result = [...data];
 
     selectedFilters.forEach(({ key, value, type, onFilter }) => {
-      // Assuming `key` is the accessor and `value` is the selected values array
-
       result = result.filter((item) => {
         const pptyVal = getProperty<T>(item, key);
 
@@ -48,7 +48,6 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
               return pptyVal <= value;
             case "single":
               return value === pptyVal;
-
             default:
               return value.some((elm: any) => pptyVal && pptyVal.includes(elm));
           }
@@ -57,7 +56,11 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
     });
 
     setFilteredData(result);
-  }, [data, filters, selectedFilters]);
+  }, [data, selectedFilters]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   const applyFilter: applyFilterProps<T> = (
     key,
@@ -85,15 +88,19 @@ export const useFilter = <T>({ data, dataFilters }: UseFilterProps<T>) => {
   };
 
   const setOptions = (key: keyof T, options: TOption[]) => {
-    const newFilter = filters.find((filter) => filter.accessor === key);
+    setFilters((prevFilters) => {
+      const newFilter = prevFilters.find((filter) => filter.accessor === key);
 
-    if (newFilter) {
-      newFilter.options = options;
-      setFilters((prevFilters) => [
-        ...prevFilters.filter((filter) => filter.accessor !== key),
-        newFilter,
-      ]);
-    }
+      if (newFilter) {
+        newFilter.options = options;
+        return [
+          ...prevFilters.filter((filter) => filter.accessor !== key),
+          newFilter,
+        ];
+      }
+
+      return prevFilters;
+    });
   };
 
   return { filteredData, filters, selectedFilters, applyFilter, setOptions };

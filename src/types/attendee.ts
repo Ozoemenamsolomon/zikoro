@@ -29,8 +29,8 @@ export type TAttendee = z.infer<typeof AttendeeSchema> & {
   checkInPoints: number;
   attendeeProfilePoints: number;
   completedFields: TCompletedFields;
-  speakingAt: {session: TAgenda, sessionLink:string}[];
-  moderatingAt: {session: TAgenda, sessionLink:string}[]
+  speakingAt: { session: TAgenda; sessionLink: string }[];
+  moderatingAt: { session: TAgenda; sessionLink: string }[];
 };
 
 export type TAttendeeNote = z.infer<typeof attendeeNoteSchema>;
@@ -45,11 +45,14 @@ export type TInviteDetails = {
   attendeeType: string;
 };
 
-export type TAttendeeEmailInvites = {
+export type TAttendeeInvites = {
   id?: number;
   created_at?: string;
-  eventId: number;
-  eventName: string;
-  Message?: string | null;
-  InviteDetails: TInviteDetails[];
+  eventAlias: string;
+  name: string;
+  email: string;
+  response: "pending" | "attending" | "not attending";
+  trackingId: string;
+  role: string;
+  method: string;
 };
