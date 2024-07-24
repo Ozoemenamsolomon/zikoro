@@ -6,7 +6,7 @@ import { useFilter, useGetEmailInvites } from "@/hooks";
 import useEventStore from "@/store/globalEventStore";
 import { TAttendeeInvites, TFilter } from "@/types";
 import { RowSelectionState } from "@tanstack/react-table";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { columns } from "./columns";
 import { extractUniqueTypes } from "@/utils/helpers";
@@ -110,6 +110,7 @@ const DUMMY_DATA: TAttendeeInvites[] = [
 ];
 
 const page = () => {
+  const router = useRouter();
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<TAttendeeInvites>({
       data: DUMMY_DATA,
@@ -146,7 +147,10 @@ const page = () => {
           <h1 className="text-xl font-semibold text-gray-800">
             Invite Analytics
           </h1>
-          <Button className="bg-basePrimary flex gap-2 px-2 text-white">
+          <Button
+            onClick={() => router.push("invites/send")}
+            className="bg-basePrimary flex gap-2 px-2 text-white"
+          >
             <span className="font-medium">Invite</span>
             <svg
               stroke="currentColor"

@@ -1,6 +1,10 @@
 "use client";
 import { toast } from "@/components/ui/use-toast";
-import { TAttendee, TAttendeeEmailInvites } from "@/types/attendee";
+import {
+  TAttendee,
+  TAttendeeEmailInvites,
+  TAttendeeInvites,
+} from "@/types/attendee";
 import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
@@ -315,7 +319,15 @@ export const useInviteAttendees = () => {
   const inviteAttendees = async ({
     payload,
   }: {
-    payload: TAttendeeEmailInvites;
+    payload: {
+      message: string;
+      invitees: {
+        email: string;
+        name: string;
+        attendeeType: string;
+      }[];
+      eventAlias: string;
+    };
   }) => {
     setLoading(true);
 
