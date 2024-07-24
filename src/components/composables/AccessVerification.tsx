@@ -1,30 +1,34 @@
 "use client";
 
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { getCookie, useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
+import {
+  getCookie,
+  useFetchSingleEvent,
+  useGetAllAttendees,
+  useCheckTeamMember,
+  useVerifyUserAccess,
+} from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
 import useUserStore from "@/store/globalUserStore";
 
-export function AccessVerification({
-  id,
-  eventLoading,
-  isEventIdPresent,
-}: {
-  eventLoading: boolean;
-  isEventIdPresent: boolean;
-  id?: string | any;
-}) {
+export function AccessVerification({ id }: { id?: string | any }) {
   const pathname = usePathname();
+  const {
+    isOrganizer,
+    attendeeId,
+    isLoading: verifyingLoading,
+  } = useVerifyUserAccess(id!);
+  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId: id });
   const { user } = useUserStore();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
   const { attendees, isLoading } = useGetAllAttendees();
-  const [notRegistered, setNotRegistered] = useState(false);
+  const [notRegistered, setNotRegistered] = useState(true);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
-  const { data, loading: singleEventLoading } = useFetchSingleEvent(id);
+  const { data, loading: singleEventLoading, refetch } = useFetchSingleEvent(id);
   const [notAuthorized, setNotAuthorized] = useState(false);
 
   useEffect(() => {
@@ -40,12 +44,26 @@ export function AccessVerification({
       }
     }
   }, [data, singleEventLoading]);
+
+  useEffect(() => {
+    if (pathname) {
+      refetch()
+    }
+  },[pathname])
+
   useEffect(() => {
     if (!user) {
-      router.push("/api/auth/login");
+      router.push("/login");
       return;
     }
-    if (!isLoading && user && !eventLoading && !singleEventLoading && data) {
+    if (
+      !isLoading &&
+      user &&
+      !eventLoading &&
+      !singleEventLoading &&
+      data &&
+      !verifyingLoading
+    ) {
       const appAccess = data?.eventAppAccess;
 
       let remainder = remainingTime;
@@ -74,15 +92,17 @@ export function AccessVerification({
           eventAlias === id && email === user?.userEmail
       );
 
-      if (isEventIdPresent) {
-        // user is a team member
+      if (isOrganizer || isIdPresent) {
+        // user is a team member or an organizer
         setLoading(false);
+        
 
         return () => clearInterval(interval);
       } else if (
         (appAccess === "now" && isPresent) ||
         (timeRemaining <= 0 && isPresent)
       ) {
+       
         // user is an attendee
         if (pathname.includes("content")) {
           setNotAuthorized(true);
@@ -96,12 +116,20 @@ export function AccessVerification({
         // router.push("/login");
         // pls remove after all the event have app access date on creation
         // if (isPresent) setLoading(false);
+        
         return () => clearInterval(interval);
       }
 
       // return () => clearInterval(interval);
     }
-  }, [user, isLoading, eventLoading, singleEventLoading]);
+  }, [
+    user,
+    isLoading,
+    eventLoading,
+    singleEventLoading,
+    verifyingLoading,
+    pathname,
+  ]);
 
   const isLoadedAll = useMemo(() => {
     return !isLoading && user && !eventLoading && !singleEventLoading && data;

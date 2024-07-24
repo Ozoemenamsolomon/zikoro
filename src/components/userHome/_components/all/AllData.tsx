@@ -3,7 +3,7 @@
 import { EventWidget, CertificateWidget } from "..";
 import { Event, TIssuedCertificate } from "@/types";
 import { Button } from "@/components";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 
 export function AllDatas<T>({
   data,

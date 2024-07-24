@@ -81,7 +81,7 @@ export function SideBarLayout({
     <>
       <div
         className={cn(
-          "w-full sm:w-[calc(100%-60px)]  bg-white float-right right-0 z-[49] fixed flex justify-between items-center ",
+          "w-full sm:w-[calc(100%-60px)]  bg-white float-right right-0 z-[48] fixed flex justify-between items-center ",
           isNav && "w-[calc(100%-60px)]"
         )}
       >
