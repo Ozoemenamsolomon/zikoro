@@ -59,6 +59,7 @@ export function BookEvent({
   availableSlot,
   eventTitle,
   eventLocation,
+  trackingId
 }: {
   eventId?: string;
   eventDate?: string;
@@ -74,13 +75,14 @@ export function BookEvent({
   close: () => void;
   eventLocation?: string;
   currency: string | undefined;
+  trackingId?: string | null;
 }) {
   const pathname = usePathname();
   const router = useRouter();
  // const [chosenPrice, setChosenPrice] = useState<number | undefined>();
   const [code, setCode] = useState("");
   const [active, setActive] = useState(1);
-  const [priceCategory, setPriceCategory] = useState<string | undefined>("");
+  // const [priceCategory, setPriceCategory] = useState<string | undefined>("");
   const { sendTransactionDetail } = useTransactionDetail();
   const [chosenAttendee, setChosenAttendee] = useState<TChosenAttendee[]>([]);
   const [description, setDescription] = useState("");
@@ -229,6 +231,7 @@ export function BookEvent({
           eventImage,
           address,
           startDate,
+          trackingId,
           endDate,
           organization,
           eventLocation,

@@ -24,6 +24,7 @@ type QueryData = {
   amountPayable: string;
   total: string;
   processingFee: string;
+  trackingId?: string | null
 };
 export function Payment({
   eventRegistrationRef,
@@ -64,6 +65,7 @@ export function Payment({
       paymentDate: new Date(),
       expiredAt: null,
       amountPaid: Number(parsedData?.total),
+      trackingId: parsedData?.trackingId,
       attendees: data?.attendees,
       discountValue: data?.discountValue,
       referralSource: data?.referralSource,
@@ -114,6 +116,7 @@ export function Payment({
       paymentDate: new Date(),
       expiredAt: null,
       amountPaid: parsedData?.total,
+      trackingId: parsedData?.trackingId,
       attendees: data?.attendees,
       discountValue: data?.discountValue,
       referralSource: data?.referralSource,
