@@ -246,7 +246,9 @@ export function CreateOrganization({
         className="w-[95%] max-w-5xl grid grid-cols-1 md:grid-cols-9 box-animation h-fit  bg-white mx-auto my-12  md:my-auto absolute inset-x-0 md:inset-y-0 "
       >
         <div className="w-full grid grid-cols-1 items-start justify-start bg-[#001fcc]/10 py-8 sm:py-10 px-4 sm:px-8 lg:px-10 md:col-span-4">
-          <Button className="w-fit h-fit px-0">
+          <Button 
+           onClick={close}
+          className="w-fit h-fit px-0">
             <ArrowBackOutline size={22} />
           </Button>
 
