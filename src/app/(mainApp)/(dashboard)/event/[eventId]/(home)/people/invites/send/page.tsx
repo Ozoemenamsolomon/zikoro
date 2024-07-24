@@ -26,7 +26,7 @@ import {
 } from "@/utils/helpers";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Users } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 import { Copy } from "styled-icons/boxicons-regular";
 import { PlusCircleOutline } from "styled-icons/evaicons-outline";
@@ -40,6 +40,7 @@ type TInviteDetail = {
 };
 
 export default function Page() {
+  const router = useRouter();
   const { eventId } = useParams();
   const { event } = useEventStore();
   if (!event) return;
@@ -47,7 +48,7 @@ export default function Page() {
     [generateAlphanumericHash(8)]: {
       name: "",
       email: "",
-      role: "",
+      role: "attendee",
     },
   });
 
@@ -91,9 +92,10 @@ ${event?.eventTitle} Organizing Team
         eventAlias: eventId,
       },
     });
+    router.back();
   }
 
-  const updateInvitee = (key: string, newVal: Partial<TInviteDetails>) => {
+  const updateInvitee = (key: string, newVal: Partial<TInviteDetail>) => {
     setInvitees((prevInvitees) => {
       const prevVal = prevInvitees[key];
       return { ...prevInvitees, [key]: { ...prevVal, ...newVal } };
@@ -108,7 +110,7 @@ ${event?.eventTitle} Organizing Team
         [key]: {
           name: "",
           email: "",
-          role: "",
+          role: "attendee",
         },
       };
     });
@@ -139,93 +141,98 @@ ${event?.eventTitle} Organizing Team
         <div className="p-4 border rounded-md bg-white space-y-2 w-full">
           <h1 className="text-gray-900 font-medium">Invite with Email</h1>
           <div className="space-y-4">
-            {Object.entries(invitees).map(([key, { email, role }], index) => (
-              <div className="grid md:grid-cols-12 gap-4 w-full">
-                <div className="md:col-span-4 w-full rounded-md bg-background text-sm relative">
-                  <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-                    Name
-                  </span>
-                  <Input
-                    className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
-                    onInput={(e) =>
-                      updateInvitee(key, { email: e.currentTarget.value })
-                    }
-                    placeholder="Enter invitee full name"
-                    required
-                  />
-                </div>
-                <div className="md:col-span-4 w-full rounded-md bg-background text-sm relative">
-                  <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-                    Email
-                  </span>
-                  <Input
-                    className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
-                    onInput={(e) =>
-                      updateInvitee(key, { email: e.currentTarget.value })
-                    }
-                    placeholder="Enter invitee email"
-                    required
-                  />
-                </div>
-                <div
-                  className={cn(
-                    "w-full rounded-md bg-background text-sm relative",
-                    index === 0 ? "md:col-span-4" : "md:col-span-3"
-                  )}
-                >
-                  <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-                    Attendee Type
-                  </span>
-                  <Select
-                    onValueChange={(value) =>
-                      updateInvitee(key, { role: value })
-                    }
-                    defaultValue={"attendee"}
-                    required
+            {Object.entries(invitees).map(
+              ([key, { name, email, role }], index) => (
+                <div className="grid md:grid-cols-12 gap-4 w-full">
+                  <div className="md:col-span-4 w-full rounded-md bg-background text-sm relative">
+                    <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+                      Name
+                    </span>
+                    <Input
+                      className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                      onInput={(e) =>
+                        updateInvitee(key, { name: e.currentTarget.value })
+                      }
+                      placeholder="Enter invitee full name"
+                      required
+                      value={name}
+                    />
+                  </div>
+                  <div className="md:col-span-4 w-full rounded-md bg-background text-sm relative">
+                    <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+                      Email
+                    </span>
+                    <Input
+                      className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                      onInput={(e) =>
+                        updateInvitee(key, { email: e.currentTarget.value })
+                      }
+                      placeholder="Enter invitee email"
+                      required
+                      value={email}
+                    />
+                  </div>
+                  <div
+                    className={cn(
+                      "w-full rounded-md bg-background text-sm relative",
+                      index === 0 ? "md:col-span-4" : "md:col-span-3"
+                    )}
                   >
-                    <SelectTrigger>
-                      <SelectValue
-                        className="text-tiny md:text-sm text-gray-200"
-                        placeholder="select Attendee type"
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {attendeeTypeOptions.map(({ label, value }) => (
-                        <SelectItem
-                          className="text-gray-700"
-                          key={label}
-                          value={value}
-                        >
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                {index > 0 && (
-                  <button type="button" onClick={() => deleteInvitee(key)}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={24}
-                      height={24}
-                      viewBox="0 0 24 24"
-                      fill="none"
+                    <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+                      Attendee Type
+                    </span>
+                    <Select
+                      onValueChange={(value) =>
+                        updateInvitee(key, { role: value })
+                      }
+                      defaultValue={"attendee"}
+                      required
+                      value={role}
                     >
-                      <path
-                        d="M8 11C7.73478 11 7.48043 11.1054 7.29289 11.2929C7.10536 11.4804 7 11.7348 7 12C7 12.2652 7.10536 12.5196 7.29289 12.7071C7.48043 12.8946 7.73478 13 8 13H16C16.2652 13 16.5196 12.8946 16.7071 12.7071C16.8946 12.5196 17 12.2652 17 12C17 11.7348 16.8946 11.4804 16.7071 11.2929C16.5196 11.1054 16.2652 11 16 11H8Z"
-                        fill="#CFCFCF"
-                      />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M23 12C23 18.075 18.075 23 12 23C5.925 23 1 18.075 1 12C1 5.925 5.925 1 12 1C18.075 1 23 5.925 23 12ZM21 12C21 13.1819 20.7672 14.3522 20.3149 15.4442C19.8626 16.5361 19.1997 17.5282 18.364 18.364C17.5282 19.1997 16.5361 19.8626 15.4442 20.3149C14.3522 20.7672 13.1819 21 12 21C10.8181 21 9.64778 20.7672 8.55585 20.3149C7.46392 19.8626 6.47177 19.1997 5.63604 18.364C4.80031 17.5282 4.13738 16.5361 3.68508 15.4442C3.23279 14.3522 3 13.1819 3 12C3 9.61305 3.94821 7.32387 5.63604 5.63604C7.32387 3.94821 9.61305 3 12 3C14.3869 3 16.6761 3.94821 18.364 5.63604C20.0518 7.32387 21 9.61305 21 12Z"
-                        fill="#CFCFCF"
-                      />
-                    </svg>
-                  </button>
-                )}
-              </div>
-            ))}
+                      <SelectTrigger>
+                        <SelectValue
+                          className="text-tiny md:text-sm text-gray-200"
+                          placeholder="select Attendee type"
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {attendeeTypeOptions.map(({ label, value }) => (
+                          <SelectItem
+                            className="text-gray-700"
+                            key={label}
+                            value={value}
+                          >
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {index > 0 && (
+                    <button type="button" onClick={() => deleteInvitee(key)}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width={24}
+                        height={24}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M8 11C7.73478 11 7.48043 11.1054 7.29289 11.2929C7.10536 11.4804 7 11.7348 7 12C7 12.2652 7.10536 12.5196 7.29289 12.7071C7.48043 12.8946 7.73478 13 8 13H16C16.2652 13 16.5196 12.8946 16.7071 12.7071C16.8946 12.5196 17 12.2652 17 12C17 11.7348 16.8946 11.4804 16.7071 11.2929C16.5196 11.1054 16.2652 11 16 11H8Z"
+                          fill="#CFCFCF"
+                        />
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M23 12C23 18.075 18.075 23 12 23C5.925 23 1 18.075 1 12C1 5.925 5.925 1 12 1C18.075 1 23 5.925 23 12ZM21 12C21 13.1819 20.7672 14.3522 20.3149 15.4442C19.8626 16.5361 19.1997 17.5282 18.364 18.364C17.5282 19.1997 16.5361 19.8626 15.4442 20.3149C14.3522 20.7672 13.1819 21 12 21C10.8181 21 9.64778 20.7672 8.55585 20.3149C7.46392 19.8626 6.47177 19.1997 5.63604 18.364C4.80031 17.5282 4.13738 16.5361 3.68508 15.4442C3.23279 14.3522 3 13.1819 3 12C3 9.61305 3.94821 7.32387 5.63604 5.63604C7.32387 3.94821 9.61305 3 12 3C14.3869 3 16.6761 3.94821 18.364 5.63604C20.0518 7.32387 21 9.61305 21 12Z"
+                          fill="#CFCFCF"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              )
+            )}
             <button
               type="button"
               onClick={createNewInvitee}

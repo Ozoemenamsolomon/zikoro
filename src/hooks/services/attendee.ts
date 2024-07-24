@@ -361,7 +361,7 @@ export const useInviteAttendees = () => {
 
 type UseGetEmailInvitesResult = {
   emailInvites: TAttendeeEmailInvites[];
-  getEmailInvites: ({ eventId }: { eventId: string }) => Promise<void>;
+  getEmailInvites: () => Promise<void>;
 } & RequestStatus;
 
 export const useGetEmailInvites = ({

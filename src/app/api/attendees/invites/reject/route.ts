@@ -1,46 +1,7 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { convertToICSFormat } from "../../payment/route";
 import { Event, TOrganization } from "@/types";
-import { format } from "date-fns";
-import { createICSContent } from "@/utils";
-
-export async function GET(req: NextRequest) {
-  const supabase = createRouteHandlerClient({ cookies });
-  if (req.method === "GET") {
-    try {
-      const { searchParams } = new URL(req.url);
-      const eventId = searchParams.get("eventId");
-
-      const { data, error, status } = await supabase
-        .from("attendeeEmailInvites")
-        .select("*")
-        .eq("eventAlias", eventId);
-
-      if (error) throw error;
-
-      return NextResponse.json(
-        { data },
-        {
-          status: 200,
-        }
-      );
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json(
-        {
-          error: "An error occurred while making the request.",
-        },
-        {
-          status: 500,
-        }
-      );
-    }
-  } else {
-    return NextResponse.json({ error: "Method not allowed" });
-  }
-}
 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -64,7 +25,7 @@ export async function POST(req: NextRequest) {
         .eq("eventAlias", eventAlias)
         .maybeSingle();
 
-      if (eventError) throw eventError;
+      if (eventError) throw eventError.code;
 
       const {
         startDateTime,
@@ -92,7 +53,7 @@ export async function POST(req: NextRequest) {
       ">
         <h1 style="font-weight: 600; text-transform: uppercase; font-size: 20px">
           Invitation to attend ${eventTitle}
-        </h1>
+        </p>
         <div style="width: 100%; height: 250px">
           <img
             src=${eventPoster}
@@ -165,32 +126,16 @@ export async function POST(req: NextRequest) {
           ><a href="#" style="color: #001fcc; text-decoration: none;">Privacy Policy </a> | <a href="#" style="text-decoration: none; color: #001fcc">Terms and Conditions</a></div>
         </div>`;
 
-      for (const { name, email, role } of invitees) {
-        const { data: existingInvitees, error } = await supabase
-          .from("attendeeEmailInvites")
-          .select("email")
-          .eq("email", email)
-          .eq("eventAlias", eventAlias);
-
-        if (error) {
-          console.error(`Error checking invitees: ${error}`);
-          continue;
-        }
-
-        if (existingInvitees && existingInvitees.length > 0) {
-          console.log(`Email already sent to ${email}`);
-          continue;
-        }
-
+      for (const { name, email } of invitees) {
         try {
-          // const calendarICS = createICSContent(
-          //   startDateTime,
-          //   endDateTime,
-          //   description,
-          //   eventAddress,
-          //   { name: organizationName, email: eventContactEmail },
-          //   { name, email }
-          // );
+          const calendarICS = createICSContent(
+            startDateTime,
+            endDateTime,
+            description,
+            eventAddress,
+            { name: organizationName, email: eventContactEmail },
+            { name, email }
+          );
           const resp = await client.sendMail({
             from: {
               address: senderAddress,
@@ -206,34 +151,31 @@ export async function POST(req: NextRequest) {
             ],
             subject,
             htmlbody,
-            // attachments: [
-            //   {
-            //     name: "event.ics",
-            //     content: Buffer.from(calendarICS).toString("base64"),
-            //     mime_type: "text/calendar",
-            //   },
-            // ],
+            attachments: [
+              {
+                name: "event.ics",
+                content: Buffer.from(calendarICS).toString("base64"),
+                mime_type: "text/calendar",
+              },
+            ],
           });
           console.log(`Email sent to ${email}:`, resp);
-
-          const { error: insertError } = await supabase
-            .from("attendeeEmailInvites")
-            .insert({
-              name,
-              email,
-              role,
-              Message: message,
-              method: "email",
-              response: "pending",
-              eventAlias,
-            });
-
-          if (insertError) continue;
         } catch (error) {
           console.error(`Failed to send email to ${email}:`, error);
         }
       }
 
+      const { error } = await supabase.from("attendeeEmailInvites").insert(
+        invitees.map((invitee) => ({
+          ...invitee,
+          Message: message,
+          method: "email",
+          response: "pending",
+          eventAlias,
+        }))
+      );
+
+      if (error) throw error;
       return NextResponse.json(
         { msg: "invites sent successfully" },
         {

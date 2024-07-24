@@ -56,4 +56,5 @@ export type TAttendeeInvites = {
   response: "pending" | "attending" | "not attending";
   method: string;
   Message: string;
+  lastResendAt?: Date;
 };

@@ -1,11 +1,16 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useMutateData } from "@/hooks/services/request";
 import { cn } from "@/lib";
 import { TAttendeeInvites } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
+import { format } from "date-fns";
 
-export const columns: ColumnDef<TAttendeeInvites>[] = [
+export const columns: (
+  getEmailInvites: () => Promise<void>
+) => ColumnDef<TAttendeeInvites>[] = (getEmailInvites) => [
   {
     accessorKey: "select",
     header: ({ table }) => (
@@ -61,6 +66,62 @@ export const columns: ColumnDef<TAttendeeInvites>[] = [
         >
           {response || "N/A"}
         </div>
+      );
+    },
+  },
+  {
+    id: "created_at",
+    accessorFn: (row) =>
+      row.created_at ? format(row.created_at, "PPP") : "N/A",
+  },
+  {
+    id: "lastResendAt",
+    header: "Last Resend",
+    accessorFn: (row) =>
+      row.lastResendAt ? format(row.lastResendAt, "PPP") : "N/A",
+  },
+  {
+    id: "resend",
+    header: "Resend",
+    cell: ({ row }) => {
+      const { mutateData, isLoading } = useMutateData(
+        "/attendees/invites/resend"
+      );
+
+      const response = row.original.response;
+      if (response !== "pending") return;
+
+      const resendInvite = async () => {
+        await mutateData({
+          payload: {
+            email: row.original.email,
+            eventAlias: row.original.eventAlias,
+          },
+        });
+        await getEmailInvites();
+      };
+
+      return (
+        <Button
+          disabled={isLoading}
+          onClick={resendInvite}
+          className="bg-basePrimary flex gap-2 px-4 text-white"
+        >
+          <svg
+            stroke="currentColor"
+            fill="none"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            height="1em"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,13 2,6" />
+          </svg>
+        </Button>
       );
     },
   },
