@@ -253,7 +253,7 @@ export default function FeaturedEvents() {
                 {/* big screen */}
                 <div className="px-0 max-w-full lg:max-w-7xl mx-auto mt-40 lg:mt-48 hidden lg:block ">
                   <div className="mt-24 text-center">
-                    <p className="text-[40px]  gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
+                    <p className="text-[40px] gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
                       Featured Events
                     </p>
                     <p className="text-[24px] font-normal">
