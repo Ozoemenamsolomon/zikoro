@@ -22,7 +22,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
   } = useVerifyUserAccess(id!);
   const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId: id });
   const { user } = useUserStore();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
   const { attendees, isLoading } = useGetAllAttendees();
