@@ -1,22 +1,26 @@
 "use client";
 
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { getCookie, useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
+import {
+  getCookie,
+  useFetchSingleEvent,
+  useGetAllAttendees,
+  useCheckTeamMember,
+  useVerifyUserAccess,
+} from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
 import useUserStore from "@/store/globalUserStore";
 
-export function AccessVerification({
-  id,
-  eventLoading,
-  isEventIdPresent,
-}: {
-  eventLoading: boolean;
-  isEventIdPresent: boolean;
-  id?: string | any;
-}) {
+export function AccessVerification({ id }: { id?: string | any }) {
   const pathname = usePathname();
+  const {
+    isOrganizer,
+    attendeeId,
+    isLoading: verifyingLoading,
+  } = useVerifyUserAccess(id!);
+  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId: id });
   const { user } = useUserStore();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -42,10 +46,17 @@ export function AccessVerification({
   }, [data, singleEventLoading]);
   useEffect(() => {
     if (!user) {
-      router.push("/api/auth/login");
+      router.push("/login");
       return;
     }
-    if (!isLoading && user && !eventLoading && !singleEventLoading && data) {
+    if (
+      !isLoading &&
+      user &&
+      !eventLoading &&
+      !singleEventLoading &&
+      data &&
+      !verifyingLoading
+    ) {
       const appAccess = data?.eventAppAccess;
 
       let remainder = remainingTime;
@@ -74,8 +85,8 @@ export function AccessVerification({
           eventAlias === id && email === user?.userEmail
       );
 
-      if (isEventIdPresent) {
-        // user is a team member
+      if (isOrganizer || isIdPresent) {
+        // user is a team member or an organizer
         setLoading(false);
 
         return () => clearInterval(interval);
@@ -101,7 +112,7 @@ export function AccessVerification({
 
       // return () => clearInterval(interval);
     }
-  }, [user, isLoading, eventLoading, singleEventLoading]);
+  }, [user, isLoading, eventLoading, singleEventLoading, verifyingLoading, pathname]);
 
   const isLoadedAll = useMemo(() => {
     return !isLoading && user && !eventLoading && !singleEventLoading && data;

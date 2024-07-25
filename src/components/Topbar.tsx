@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { getCookie, useCheckTeamMember } from "@/hooks";
+import { getCookie, useCheckTeamMember, useVerifyUserAccess } from "@/hooks";
 import { AccessVerification } from "./composables";
 import { cn } from "@/lib";
 import { Button } from ".";
@@ -13,6 +13,7 @@ import useUserStore from "@/store/globalUserStore";
 
 const Topbar = ({ eventId }: { eventId?: string }) => {
   const pathname = usePathname();
+
   const [isShowNav, setShowNav] = useState(false);
   const [isScrolling, setScrolling] = useState(false);
   const [left, setLeft] = useState(false);
@@ -169,11 +170,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
           </ul>
         </div>
       </nav>
-      <AccessVerification
-        eventLoading={eventLoading}
-        isEventIdPresent={isIdPresent}
-        id={eventId}
-      />
+      <AccessVerification id={eventId} />
     </>
   );
 };
