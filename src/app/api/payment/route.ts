@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
         organizerContact,
         organization,
         eventImage,
+        trackingId,
         ...restItem
       } = params;
       const {
@@ -144,6 +145,11 @@ export async function POST(req: NextRequest) {
           }
         );
       }
+      // AttendeeEmailInvites
+      const { error: updateError, status: updateStatus } = await supabase
+        .from("events")
+        .update({ response: "attending" })
+        .eq("trackingId", trackingId);
 
       // create attendee arraY
       const resolveAttendees = attendeesDetails.map(

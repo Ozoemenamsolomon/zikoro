@@ -1,35 +1,36 @@
 "use client";
 
-import Image from "next/image";
 import { EventDetail } from "@/components/published";
 import Link from "next/link";
 import { Footer } from "@/components";
-import {
-  useFetchSingleEvent,
-  useFetchSingleOrganization,
-} from "@/hooks";
+import { useFetchSingleEvent, useFetchSingleOrganization } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { SingleEvent } from "@/components/published";
-import  {useEffect} from "react"
+import { useEffect } from "react";
+
 export default function SinglePublishedEvent({ id }: { id: string }) {
+  const params = useSearchParams();
+  const trackingId = params.get("trackingId");
   const { data: eventDetail } = useFetchSingleEvent(id);
-  const { data, refetch } = useFetchSingleOrganization(eventDetail?.organization?.id);
+  const { data, refetch } = useFetchSingleOrganization(
+    eventDetail?.organization?.id
+  );
   const pathname = usePathname();
   // console.log(id)
   // useValidateUser()
 
-  useEffect(() =>{
+  useEffect(() => {
     if (eventDetail?.organization) {
-      refetch()
+      refetch();
     }
-
-  },[eventDetail])
+  }, [eventDetail]);
   return (
     <>
       {eventDetail ? (
         <div className="w-full h-full bg-gray-50 fixed overflow-y-auto ">
           <SingleEvent
+            trackingId={trackingId}
             isDetail={true}
             organization={eventDetail?.organisationName}
             organizationLogo={data?.organizationLogo}
@@ -40,7 +41,6 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
               "rounded-t-none sm:rounded-l-none rounded-tr-none sm:rounded-tl-none sm:rounded-l-none"
             }
             className="w-full bg-none  shadow-none"
-            
           />
 
           <div className=" ">

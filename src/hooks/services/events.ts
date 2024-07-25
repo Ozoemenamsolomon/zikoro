@@ -165,9 +165,11 @@ export function useCreateOrganisation() {
   const { user: userData } = useUserStore();
   const [loading, setLoading] = useState(false);
 
-  async function organisation(values: Partial<z.infer<typeof organizationSchema>>) {
+  async function organisation(
+    values: Partial<z.infer<typeof organizationSchema>>
+  ) {
     setLoading(true);
-    const {firstName, lastName, userEmail, ...restData} = values;
+    const { firstName, lastName, userEmail, ...restData } = values;
     try {
       const { error, status } = await supabase.from("organization").upsert([
         {
@@ -1273,8 +1275,6 @@ export function useGetUserPoint(eventId: string) {
   };
 }
 
-
-
 export function useRedeemReward() {
   const [loading, setLoading] = useState(false);
 
@@ -1290,7 +1290,6 @@ export function useRedeemReward() {
         endpoint: `/rewards/${values?.eventAlias}/redeemed`,
         payload,
       });
-
 
       toast.success("Reward redeemed successfully");
       return data;

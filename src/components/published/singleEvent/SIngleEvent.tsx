@@ -42,6 +42,7 @@ export function SingleEvent({
   eventId,
   imageClassName,
   organizationLogo,
+  trackingId
 }: {
   isDetail?: boolean;
   className?: string;
@@ -51,6 +52,7 @@ export function SingleEvent({
   useDiv?: boolean;
   imageClassName?: string;
   organizationLogo?:string;
+  trackingId?:string | null
 }) {
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
@@ -396,6 +398,7 @@ export function SingleEvent({
           organizerContact={organizerContact}
           eventTitle={event?.eventTitle}
           close={onClose}
+          trackingId={trackingId}
           eventLocation={`${event?.eventCity ?? ""}${!removeComma && ","} ${
             event?.eventCountry ?? ""
           }`}
