@@ -147,8 +147,11 @@ export async function POST(req: NextRequest) {
       }
       // AttendeeEmailInvites
       const { error: updateError, status: updateStatus } = await supabase
-        .from("events")
-        .update({ response: "attending" })
+        .from("attendeeEmailInvites")
+        .update({
+          response: "attending",
+          responseDate: new Date().toISOString(),
+        })
         .eq("trackingId", trackingId);
 
       // create attendee arraY
