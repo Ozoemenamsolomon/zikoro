@@ -65,6 +65,7 @@ export default function Rewards({ eventId }: { eventId: string }) {
             <RewardCard
               key={index}
               refetch={refetch}
+              refetchRedeemed={getData}
               redeemedRewards={redeemedRewards}
               attendeeId={attendeeId}
               reward={item}

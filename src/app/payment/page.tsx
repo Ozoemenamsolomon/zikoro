@@ -110,7 +110,7 @@ export default function PaymentPage() {
     children: (
       <Button className="w-full sm:w-[405px] gap-x-2 bg-basePrimary text-gray-50 font-medium">
         <Lock size={22} />
-        <span>{`Pay ${currency ?? "NGN"} ${totalPrice}`}</span>
+        <span>{`Pay ${currency ?? "USD"} ${totalPrice}`}</span>
       </Button>
     ),
     onSuccess: (reference: any) => handleSuccess(reference),

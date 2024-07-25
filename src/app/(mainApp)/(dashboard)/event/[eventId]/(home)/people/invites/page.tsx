@@ -6,7 +6,7 @@ import { useFilter, useGetEmailInvites } from "@/hooks";
 import useEventStore from "@/store/globalEventStore";
 import { TAttendeeInvites, TFilter } from "@/types";
 import { RowSelectionState } from "@tanstack/react-table";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { columns } from "./columns";
 import { extractUniqueTypes } from "@/utils/helpers";
@@ -110,23 +110,27 @@ const DUMMY_DATA: TAttendeeInvites[] = [
 ];
 
 const page = () => {
-  const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
-    useFilter<TAttendeeInvites>({
-      data: DUMMY_DATA,
-      dataFilters: InvitesFilter,
-    });
+  const router = useRouter();
   const { eventId } = useParams();
   const { event } = useEventStore();
-  // if (!event) return;
+  if (!event) return;
 
-  // const { emailInvites, isLoading, getEmailInvites } = useGetEmailInvites({
-  //   eventId: event.id,
-  // });
+  const { emailInvites, isLoading, getEmailInvites } = useGetEmailInvites({
+    eventId: eventId,
+  });
+
+  console.log(emailInvites);
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
+  const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
+    useFilter<TAttendeeInvites>({
+      data: emailInvites ?? [],
+      dataFilters: InvitesFilter,
+    });
+
   useEffect(() => {
-    // if (isLoading) return;
+    if (isLoading) return;
 
     filters
       .filter((filter) => filter.optionsFromData)
@@ -136,9 +140,10 @@ const page = () => {
           extractUniqueTypes<TAttendeeInvites>(DUMMY_DATA, accessor)
         );
       });
-    // }, [isLoading]);
-  }, []);
+  }, [isLoading]);
+  // }, []);
 
+  const refreshableColumns = columns(getEmailInvites);
   return (
     <section className="space-y-8 pl-4 pr-8 bg-[#f9faff] py-8 min-h-full">
       <div className="space-y-8">
@@ -146,7 +151,10 @@ const page = () => {
           <h1 className="text-xl font-semibold text-gray-800">
             Invite Analytics
           </h1>
-          <Button className="bg-basePrimary flex gap-2 px-2 text-white">
+          <Button
+            onClick={() => router.push("invites/send")}
+            className="bg-basePrimary flex gap-2 px-2 text-white"
+          >
             <span className="font-medium">Invite</span>
             <svg
               stroke="currentColor"
@@ -189,7 +197,7 @@ const page = () => {
           />
           <div className="space-y-2 max-w-full overflow-auto">
             <DataTable<TAttendeeInvites>
-              columns={columns}
+              columns={refreshableColumns}
               data={filteredData}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}
@@ -197,7 +205,7 @@ const page = () => {
               rowStyle={{
                 display: "grid",
                 gridTemplateColumns: `auto 1.5fr repeat(${
-                  columns.length - 2
+                  refreshableColumns.length - 2
                 }, minmax(0, 1fr))`,
               }}
             />

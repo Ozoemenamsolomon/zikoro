@@ -24,9 +24,10 @@ export async function GET(
         ratingCount = 0;
       } else if (Array.isArray(data) && data?.length > 0) {
         const mappedReviews = data?.map((item) => Number(item?.rating));
-        ratingCount = mappedReviews?.reduce((a, b) => a + b, 0);
+        ratingCount = mappedReviews?.length;
+        const reduced = mappedReviews?.reduce((a, b) => a + b, 0);
         // assuming having 50 reviews is a 5 star
-        ratingAverage = (ratingCount / 50) * 5;
+        ratingAverage = reduced / ratingCount;
       }
 
       if (error) {
