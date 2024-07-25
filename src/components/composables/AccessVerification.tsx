@@ -28,7 +28,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
   const { attendees, isLoading } = useGetAllAttendees();
   const [notRegistered, setNotRegistered] = useState(true);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
-  const { data, loading: singleEventLoading } = useFetchSingleEvent(id);
+  const { data, loading: singleEventLoading, refetch } = useFetchSingleEvent(id);
   const [notAuthorized, setNotAuthorized] = useState(false);
 
   useEffect(() => {
@@ -44,6 +44,12 @@ export function AccessVerification({ id }: { id?: string | any }) {
       }
     }
   }, [data, singleEventLoading]);
+
+  useEffect(() => {
+    if (pathname) {
+      refetch()
+    }
+  },[pathname])
 
   useEffect(() => {
     if (!user) {
@@ -89,12 +95,14 @@ export function AccessVerification({ id }: { id?: string | any }) {
       if (isOrganizer || isIdPresent) {
         // user is a team member or an organizer
         setLoading(false);
+        
 
         return () => clearInterval(interval);
       } else if (
         (appAccess === "now" && isPresent) ||
         (timeRemaining <= 0 && isPresent)
       ) {
+       
         // user is an attendee
         if (pathname.includes("content")) {
           setNotAuthorized(true);
@@ -108,12 +116,20 @@ export function AccessVerification({ id }: { id?: string | any }) {
         // router.push("/login");
         // pls remove after all the event have app access date on creation
         // if (isPresent) setLoading(false);
+        
         return () => clearInterval(interval);
       }
 
       // return () => clearInterval(interval);
     }
-  }, [user, isLoading, eventLoading, singleEventLoading, verifyingLoading, pathname]);
+  }, [
+    user,
+    isLoading,
+    eventLoading,
+    singleEventLoading,
+    verifyingLoading,
+    pathname,
+  ]);
 
   const isLoadedAll = useMemo(() => {
     return !isLoading && user && !eventLoading && !singleEventLoading && data;
