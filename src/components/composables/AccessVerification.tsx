@@ -22,11 +22,11 @@ export function AccessVerification({ id }: { id?: string | any }) {
   } = useVerifyUserAccess(id!);
   const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId: id });
   const { user } = useUserStore();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
   const { attendees, isLoading } = useGetAllAttendees();
-  const [notRegistered, setNotRegistered] = useState(false);
+  const [notRegistered, setNotRegistered] = useState(true);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const { data, loading: singleEventLoading } = useFetchSingleEvent(id);
   const [notAuthorized, setNotAuthorized] = useState(false);
@@ -44,6 +44,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
       }
     }
   }, [data, singleEventLoading]);
+
   useEffect(() => {
     if (!user) {
       router.push("/login");
