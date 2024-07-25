@@ -6,13 +6,13 @@ import { useMutateData } from "@/hooks/services/request";
 import { cn } from "@/lib";
 import { TAttendeeInvites } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
+import { format, add, isAfter } from "date-fns";
 
 export const columns: (
   getEmailInvites: () => Promise<void>
 ) => ColumnDef<TAttendeeInvites>[] = (getEmailInvites) => [
   {
-    accessorKey: "select",
+    id: "select",
     header: ({ table }) => (
       <div className="pl-2">
         <Checkbox
@@ -23,6 +23,17 @@ export const columns: (
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
+        />
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="pl-2">
+        <Checkbox
+          className="data-[state=checked]:bg-basePrimary"
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          disabled={!row.getCanSelect()}
         />
       </div>
     ),
@@ -89,6 +100,8 @@ export const columns: (
       );
 
       const response = row.original.response;
+      const lastResendAt = row.original.lastResendAt;
+
       if (response !== "pending") return;
 
       const resendInvite = async () => {
@@ -101,9 +114,14 @@ export const columns: (
         await getEmailInvites();
       };
 
+      const isAtLeast24HoursAfter = (date: Date): boolean =>
+        isAfter(new Date(), add(date, { hours: 24 }));
+
       return (
         <Button
-          disabled={isLoading}
+          disabled={
+            isLoading || (lastResendAt && !isAtLeast24HoursAfter(lastResendAt))
+          }
           onClick={resendInvite}
           className="bg-basePrimary flex gap-2 px-4 text-white"
         >

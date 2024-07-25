@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { SendMailClient } from "zeptomail";
 import { cookies } from "next/headers";
+import { generateAlphanumericHash } from "@/utils/helpers";
 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -144,7 +145,9 @@ export async function POST(req: NextRequest) {
 
       const { error: updateError } = await supabase
         .from("attendeeEmailInvites")
-        .update({ lastResendAt: new Date().toISOString() })
+        .update({
+          lastResendAt: new Date().toISOString(),
+        })
         .eq("email", email)
         .eq("eventAlias", eventAlias);
 

@@ -324,7 +324,7 @@ export const useInviteAttendees = () => {
       invitees: {
         email: string;
         name: string;
-        attendeeType: string;
+        role: string;
       }[];
       eventAlias: string;
     };

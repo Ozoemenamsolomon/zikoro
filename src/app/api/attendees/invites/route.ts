@@ -16,7 +16,8 @@ export async function GET(req: NextRequest) {
       const { data, error, status } = await supabase
         .from("attendeeEmailInvites")
         .select("*")
-        .eq("eventAlias", eventId);
+        .eq("eventAlias", eventId)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
 
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest) {
       const senderAddress = process.env.NEXT_PUBLIC_EMAIL;
       const senderName = "Zikoro";
       const subject = `Invite from ${organizationName} to ${eventTitle}`;
-      const htmlbody = `<div 
+      const htmlbody = (trackingId: string) => `<div 
       style="
         max-width: 600px;
         margin: 0 auto;
@@ -113,7 +114,14 @@ export async function POST(req: NextRequest) {
           To respond to this email, choose one of the following options
         </p>
         <div style="display:flex; gap:10px">
-        <button
+        <a
+          href=${
+            process.env.NEXT_PUBLIC_HOME_URL +
+            "live-events/" +
+            eventAlias +
+            "?trackingId=" +
+            trackingId
+          }
           style="
           width:100%;
           max-width: 600px;
@@ -132,8 +140,13 @@ export async function POST(req: NextRequest) {
           "
         >
           <p style="margin:0; width:100%; text-align:center; color:white">Register for Event</p>
-        </button>
-        <button
+        </a>
+        <a
+          href=${
+            process.env.NEXT_PUBLIC_HOME_URL +
+            "/api/attendees/invites/reject?trackingId=" +
+            trackingId
+          }
           style="
           width:100%;
           max-width: 600px;
@@ -152,7 +165,7 @@ export async function POST(req: NextRequest) {
           "
         >
           <p style="margin:0; width:100%; text-align:center; color:white">Not Attending</p>
-        </button>
+        </a>
         </div>
       </div>
   <div style="max-width:600px; margin:0 auto; font-size: 14px; color: #b4b4b4">
@@ -165,7 +178,7 @@ export async function POST(req: NextRequest) {
           ><a href="#" style="color: #001fcc; text-decoration: none;">Privacy Policy </a> | <a href="#" style="text-decoration: none; color: #001fcc">Terms and Conditions</a></div>
         </div>`;
 
-      for (const { name, email, role } of invitees) {
+      for (const { name, email, role, trackingId } of invitees) {
         const { data: existingInvitees, error } = await supabase
           .from("attendeeEmailInvites")
           .select("email")
@@ -205,7 +218,7 @@ export async function POST(req: NextRequest) {
               },
             ],
             subject,
-            htmlbody,
+            htmlbody: htmlbody(trackingId),
             // attachments: [
             //   {
             //     name: "event.ics",
@@ -219,6 +232,7 @@ export async function POST(req: NextRequest) {
           const { error: insertError } = await supabase
             .from("attendeeEmailInvites")
             .insert({
+              trackingId,
               name,
               email,
               role,
