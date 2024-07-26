@@ -45,11 +45,13 @@ export function AccessVerification({ id }: { id?: string | any }) {
     }
   }, [data, singleEventLoading]);
 
-  useEffect(() => {
+/**
+   useEffect(() => {
     if (pathname) {
       refetch()
     }
   },[pathname])
+ */
 
   useEffect(() => {
     if (!user) {

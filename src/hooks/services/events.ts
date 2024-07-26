@@ -1263,11 +1263,15 @@ export function useGetUserPoint(eventId: string) {
         const sum = value
           ?.filter((item) => Number(item?.id) === attendeeId)
           ?.reduce((acc, val) => acc + (val?.points || 0), 0);
-
+      
         total += sum;
+       
+        setTotalPoints(totalPoints + sum)
       });
-      setTotalPoints(total);
+      console.log("um", total)
+     setTotalPoints(total);
     }
+    console.log("um", totalPoints)
   }, [isLoading, data, attendeeId]);
 
   return {

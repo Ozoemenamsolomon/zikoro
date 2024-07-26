@@ -17,6 +17,7 @@ export function RewardCard({
   redeemedRewards,
   attendeeId,
   attendeePoints,
+  refetchRedeemed
 }: {
   refetch: () => Promise<any>;
   isOrganizer: boolean;
@@ -24,6 +25,7 @@ export function RewardCard({
   attendeePoints: number;
   attendeeId?: number;
   redeemedRewards: RedeemPoint[] | null;
+  refetchRedeemed:() => Promise<any>;
 }) {
   const [isAlert, setAlert] = useState(false);
   const [isOpen, setOpen] = useState(false);
@@ -63,7 +65,9 @@ export function RewardCard({
     } else {
       return attendeePoints - 0;
     }
-  }, [attendeeId, redeemedRewards]);
+  }, [attendeeId, redeemedRewards, attendeePoints]);
+
+
 
   async function redeem() {
     const payload = {
@@ -76,6 +80,7 @@ export function RewardCard({
     await redeemAReward(payload);
     onRedeem();
     refetch();
+    refetchRedeemed()
   }
 
   function onSubmit() {
@@ -127,6 +132,7 @@ export function RewardCard({
         <div className="px-3 w-full mt-1 flex items-center justify-between">
           <button
             onClick={onSubmit}
+            disabled={loading}
             className="text-basePrimary text-sm font-semibold"
           >
             Redeem Reward
@@ -144,7 +150,9 @@ export function RewardCard({
       )}
       {isOpen && <RewardCardModal close={onClose} reward={reward} />}
       {isAlert && <AlertModal close={onAlert} redeemPoint={reward?.point} />}
-      {isRedeem && <RedeemModal close={onRedeem} submit={redeem} loading={loading} />}
+      {isRedeem && (
+        <RedeemModal close={onRedeem} submit={redeem} loading={loading} />
+      )}
     </>
   );
 }
@@ -267,11 +275,11 @@ function AlertModal({
 function RedeemModal({
   close,
   submit,
-  loading
+  loading,
 }: {
   submit: () => Promise<any>;
   close: () => void;
-  loading:boolean;
+  loading: boolean;
 }) {
   return (
     <div
@@ -297,8 +305,8 @@ function RedeemModal({
             onClick={submit}
             className="text-white font-medium gap-x-2 w-fit bg-basePrimary"
           >
-            {loading && <LoaderAlt className="animate-spin" size={20}/>}
-           <p> Redeem</p>
+            {loading && <LoaderAlt className="animate-spin" size={20} />}
+            <p> Redeem</p>
           </Button>
         </div>
       </div>
