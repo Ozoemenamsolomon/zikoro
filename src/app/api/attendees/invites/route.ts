@@ -16,7 +16,8 @@ export async function GET(req: NextRequest) {
       const { data, error, status } = await supabase
         .from("attendeeEmailInvites")
         .select("*")
-        .eq("eventId", eventId);
+        .eq("eventAlias", eventId)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
 
@@ -47,9 +48,9 @@ export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     try {
       const params = await req.json();
-      const { InviteDetails, Message, eventName, eventId } = params;
+      const { invitees, message, eventAlias } = params;
 
-      console.log(eventId);
+      console.log(eventAlias);
 
       var { SendMailClient } = require("zeptomail");
 
@@ -61,10 +62,10 @@ export async function POST(req: NextRequest) {
       const { data: currentEvent, error: eventError } = await supabase
         .from("events")
         .select("*, organization!inner(*)")
-        .eq("eventAlias", eventId)
+        .eq("eventAlias", eventAlias)
         .maybeSingle();
 
-      if (eventError) throw eventError.code;
+      if (eventError) throw eventError;
 
       const {
         startDateTime,
@@ -80,19 +81,129 @@ export async function POST(req: NextRequest) {
 
       const senderAddress = process.env.NEXT_PUBLIC_EMAIL;
       const senderName = "Zikoro";
-      const subject = `Invite from to ${eventName}`;
-      const htmlbody = `<div>${Message}</div>`;
+      const subject = `Invite from ${organizationName} to ${eventTitle}`;
+      const htmlbody = (trackingId: string) => `<div 
+      style="
+        max-width: 600px;
+        margin: 0 auto;
+        display: block;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #b4b4b4;
+      ">
+        <h1 style="font-weight: 600; text-transform: uppercase; font-size: 20px">
+          Invitation to attend ${eventTitle}
+        </h1>
+        <div style="width: 100%; height: 250px">
+          <img
+            src=${eventPoster}
+            alt="event-image"
+            style="
+              width: 100%;
+              height: 100%;
+              border-radius: 8px;
+              object-fit: cover;
+              margin-bottom: 8px;
+            "
+          >
+        </div>
+        <p style="font-size: 14px; margin-bottom:10px;">
+          You have officially been invited to ${eventTitle} by ${organizationName}
+        </p>
+        <p style="font-size: 14px; margin-bottom:10px;">
+          To respond to this email, choose one of the following options
+        </p>
+        <div style="display:flex; gap:10px">
+        <a
+          href=${
+            process.env.NEXT_PUBLIC_HOME_URL +
+            "live-events/" +
+            eventAlias +
+            "?trackingId=" +
+            trackingId
+          }
+          style="
+          width:100%;
+          max-width: 600px;
+          margin:0 auto;
+        padding:0.8rem;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+          font-size: 14px;
+          color: white;
+          text-align: center;
+          text-decoration: none;
+          background-color: rgb(0, 31, 204);
+          border-radius: 6px;
+          border: 0;
+          "
+        >
+          <p style="margin:0; width:100%; text-align:center; color:white">Register for Event</p>
+        </a>
+        <a
+          href=${
+            process.env.NEXT_PUBLIC_HOME_URL +
+            "/api/attendees/invites/reject?trackingId=" +
+            trackingId
+          }
+          style="
+          width:100%;
+          max-width: 600px;
+          margin:0 auto;
+        padding:0.8rem;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+          font-size: 14px;
+          color: white;
+          text-align: center;
+          text-decoration: none;
+          background-color: red;
+          border-radius: 6px;
+          border: 0;
+          "
+        >
+          <p style="margin:0; width:100%; text-align:center; color:white">Not Attending</p>
+        </a>
+        </div>
+      </div>
+  <div style="max-width:600px; margin:0 auto; font-size: 14px; color: #b4b4b4">
+            This event is managed by ${organizationName} and powered by
+            <a href="www.zikoro.com" style="color: #001fcc">Zikoro</a>. For assistance, visit our
+            <a href="www.zikoro.com/help" style="color: #001fcc">help center</a>.
+          </div>
+          <div
+          style="max-width:600px; margin:0.3rem auto; font-size: 14px; text-align:center;"
+          ><a href="#" style="color: #001fcc; text-decoration: none;">Privacy Policy </a> | <a href="#" style="text-decoration: none; color: #001fcc">Terms and Conditions</a></div>
+        </div>`;
 
-      for (const { email } of InviteDetails) {
+      for (const { name, email, role, trackingId } of invitees) {
+        const { data: existingInvitees, error } = await supabase
+          .from("attendeeEmailInvites")
+          .select("email")
+          .eq("email", email)
+          .eq("eventAlias", eventAlias);
+
+        if (error) {
+          console.error(`Error checking invitees: ${error}`);
+          continue;
+        }
+
+        if (existingInvitees && existingInvitees.length > 0) {
+          console.log(`Email already sent to ${email}`);
+          continue;
+        }
+
         try {
-          const calendarICS = createICSContent(
-            startDateTime,
-            endDateTime,
-            description,
-            eventAddress,
-            { name: organizationName, email: eventContactEmail },
-            { email }
-          );
+          // const calendarICS = createICSContent(
+          //   startDateTime,
+          //   endDateTime,
+          //   description,
+          //   eventAddress,
+          //   { name: organizationName, email: eventContactEmail },
+          //   { name, email }
+          // );
           const resp = await client.sendMail({
             from: {
               address: senderAddress,
@@ -102,30 +213,41 @@ export async function POST(req: NextRequest) {
               {
                 email_address: {
                   address: email,
-                  name: "attendee",
+                  name,
                 },
               },
             ],
             subject,
-            htmlbody,
-            attachments: [
-              {
-                name: "event.ics",
-                content: Buffer.from(calendarICS).toString("base64"),
-                mime_type: "text/calendar",
-              },
-            ],
+            htmlbody: htmlbody(trackingId),
+            // attachments: [
+            //   {
+            //     name: "event.ics",
+            //     content: Buffer.from(calendarICS).toString("base64"),
+            //     mime_type: "text/calendar",
+            //   },
+            // ],
           });
           console.log(`Email sent to ${email}:`, resp);
+
+          const { error: insertError } = await supabase
+            .from("attendeeEmailInvites")
+            .insert({
+              trackingId,
+              name,
+              email,
+              role,
+              Message: message,
+              method: "email",
+              response: "pending",
+              eventAlias,
+            });
+
+          if (insertError) continue;
         } catch (error) {
           console.error(`Failed to send email to ${email}:`, error);
         }
       }
 
-      const { error } = await supabase
-        .from("attendeeEmailInvites")
-        .insert(params);
-      if (error) throw error;
       return NextResponse.json(
         { msg: "invites sent successfully" },
         {

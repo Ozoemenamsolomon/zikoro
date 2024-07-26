@@ -51,8 +51,10 @@ export type TAttendeeInvites = {
   eventAlias: string;
   name: string;
   email: string;
-  response: "pending" | "attending" | "not attending";
   trackingId: string;
   role: string;
+  response: "pending" | "attending" | "not attending";
   method: string;
+  Message: string;
+  lastResendAt?: Date;
 };
