@@ -23,27 +23,27 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-      // Check if the request path is included
-  const isIncludedPath = includedPaths.some((path) =>
-    req.nextUrl.pathname.startsWith(path)
-  );
+  //     // Check if the request path is included
+  // const isIncludedPath = includedPaths.some((path) =>
+  //   req.nextUrl.pathname.startsWith(path)
+  // );
 
-  if (isIncludedPath && !session) {
-    // If user is not authenticated and path is included, redirect to the login page
-    if (req.nextUrl.pathname.startsWith("/api")) {
-      return NextResponse.json(
-        { error: "Authorization failed" },
-        { status: 403 }
-      );
-    } else {
-      const redirectUrl = new URL("/login", req.url);
-      redirectUrl.searchParams.set("redirectedFrom", req.nextUrl.pathname);
-      return NextResponse.redirect(redirectUrl);
-    }
-  }
+  // if (isIncludedPath && !session) {
+  //   // If user is not authenticated and path is included, redirect to the login page
+  //   if (req.nextUrl.pathname.startsWith("/api")) {
+  //     return NextResponse.json(
+  //       { error: "Authorization failed" },
+  //       { status: 403 }
+  //     );
+  //   } else {
+  //     const redirectUrl = new URL("/login", req.url);
+  //     redirectUrl.searchParams.set("redirectedFrom", req.nextUrl.pathname);
+  //     return NextResponse.redirect(redirectUrl);
+  //   }
+  // }
 
-  // Allow the request to proceed if user is authenticated or the path is not included
-  return res;
+  // // Allow the request to proceed if user is authenticated or the path is not included
+  // return res;
   
 
 }

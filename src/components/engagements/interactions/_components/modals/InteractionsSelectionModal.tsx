@@ -6,9 +6,11 @@ import { CloseOutline } from "styled-icons/evaicons-outline";
 export function InteractionsSelectionModal({
   close,
   toggleQuiz,
+  togglePoll
 }: {
   close: () => void;
   toggleQuiz: () => void;
+  togglePoll:() => void;
 }) {
 
 
@@ -23,6 +25,7 @@ export function InteractionsSelectionModal({
     {
       image: "/ipoll.png",
       header: "Poll",
+      asynFn: togglePoll,
       description:
         "Allow participants to share their opinion by choosing from a list of options.",
     },

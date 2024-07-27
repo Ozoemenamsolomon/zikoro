@@ -40,18 +40,16 @@ export async function GET(
 ) {
   const { attendeeId } = params;
   const supabase = createRouteHandlerClient({ cookies });
-
-  
+  const { searchParams } = new URL(req.url);
+  const isAlias = searchParams.get("isAlias");
 
   if (req.method === "GET") {
     try {
       const { data, error, status } = await supabase
         .from("attendees")
         .select("*")
-        .eq("id", attendeeId)
+        .eq(isAlias == 1 ? "attendeeAlias" : "id", attendeeId)
         .maybeSingle();
-
-      
 
       if (error) throw error;
 

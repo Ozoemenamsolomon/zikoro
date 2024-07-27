@@ -14,23 +14,32 @@ const optionsSchema = z.array(
   })
 );
 
-export const quizQuestionSchema = z.object({
-  question: z.string().min(3, { message: " Question is required" }),
-  questionImage: z.any(),
-  duration: z.string().min(1, { message: "Duration is required" }),
-  points: z.string().min(1, { message: "Points is required" }),
-  feedBack: z.any(),
-  options: optionsSchema,
-});
+export const quizQuestionSchema = z
+  .object({
+    question: z.string().min(3, { message: " Question is required" }),
+    questionImage: z.any(),
+    duration: z.string().optional(),
+    points: z.string().optional(),
+    feedBack: z.any(),
+    options: optionsSchema,
+    interactionType: z.string(),
+  })
+  .refine((data) => data.interactionType === "poll" || data.duration, {
+    message: "Duration is required",
+    path: ["duration"],
+  })
+  .refine((data) => data.interactionType === "poll" || data.points, {
+    message: "Point is required'",
+    path: ["points"],
+  });
 
 export const joinLiveQuizSchema = z.object({
   code: z.string().min(5, { message: "Code is required" }),
 });
 
-
 export const sendMailQuizSchema = z.object({
   email: z
-  .string()
-  .email({ message: "Email must be a valid email" })
-  .min(1, { message: "Email is required" }),
+    .string()
+    .email({ message: "Email must be a valid email" })
+    .min(1, { message: "Email is required" }),
 });

@@ -9,11 +9,12 @@ import Image from "next/image";
 import { QUser, QUsers } from "@/constants";
 import { useRouter } from "next/navigation";
 import { TQuiz, TQuestion } from "@/types";
+import { cn } from "@/lib";
 
 export function InteractionCard({
   quiz,
   refetch,
-  isNotAttendee
+  isNotAttendee,
 }: {
   refetch: () => Promise<any>;
   quiz: TQuiz<TQuestion[]>;
@@ -43,34 +44,35 @@ export function InteractionCard({
     <div
       onClick={() => {
         if (isNotAttendee) {
-         
           router.push(
             `/event/${quiz?.eventAlias}/engagements/interactions/${quiz?.quizAlias}`
-          )
+          );
+        } else {
+          router.push(`/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`);
         }
-        else {
-          router.push(
-            `/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`
-          )
-        }
-      
-       } }
+      }}
       role="button"
       className="w-full text-mobile  sm:text-sm bg-white rounded-md flex flex-col items-start justify-start"
     >
       <div className="w-full relative">
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-          className="px-0 p-1 bg-gray-200/50 w-fit absolute right-2 top-3 h-fit"
-        >
-          <ThreeDotsVertical size={20} />
-          {isOpen && (
-            <ActionModal refetch={refetch} close={onClose} quiz={quiz} />
-          )}
-        </Button>
+        <div className="absolute flex items-center justify-between inset-x-0 w-full  top-3 px-3">
+          <p className="text-xs w-fit sm:text-sm rounded-3xl bg-basePrimary text-white px-3 py-1">
+            {quiz?.interactionType === "poll" ? "Poll" : "Quiz"}
+          </p>
+         {isNotAttendee && <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            className="px-0 p-1 bg-gray-200/50 w-fit h-fit"
+          >
+            <ThreeDotsVertical size={20} />
+            {isOpen && (
+              <ActionModal refetch={refetch} close={onClose} quiz={quiz} />
+            )}
+          </Button>}
+        </div>
+
         {quiz?.coverImage ? (
           <Image
             className="w-full rounded-t-md h-48 object-cover"
@@ -91,10 +93,17 @@ export function InteractionCard({
         </p>
         <div className="text-gray-500 px-3 pb-3 text-xs ms:text-mobile flex items-center justify-between w-full">
           <p className="flex items-center gap-x-2">
-            <span className="border-r pr-2 border-gray-500">{`${
-              quiz?.questions?.length || 0
-            } ${quiz?.questions?.length > 1 ? "Questions" : "Question"}`}</span>
-            <span>{`${points} ${points > 0 ? `points` : `point`}`}</span>
+            <span
+              className={cn(
+                "border-r pr-2 border-gray-500",
+                !points && "border-0"
+              )}
+            >{`${quiz?.questions?.length || 0} ${
+              quiz?.questions?.length > 1 ? "Questions" : "Question"
+            }`}</span>
+            {!points ? null : (
+              <span>{`${points} ${points > 0 ? `points` : `point`}`}</span>
+            )}
           </p>
           <p className="flex items-center gap-x-1">
             <QUsers />
@@ -128,7 +137,7 @@ function ActionModal({
         >
           <CopyQuiz quiz={quiz} refetch={refetch} />
 
-         <ActivateQuiz quiz={quiz}  refetch={refetch}/>
+          <ActivateQuiz quiz={quiz} refetch={refetch} />
 
           <DeleteQuiz quizAlias={quiz?.quizAlias} refetch={refetch} />
         </div>

@@ -41,6 +41,12 @@ export const columns: (
     enableHiding: false,
   },
   {
+    accessorKey: "name",
+    cell: ({ row }) => (
+      <span className="text-gray-800 capitalize">{row.original.name}</span>
+    ),
+  },
+  {
     accessorKey: "email",
     header: "Email",
   },
@@ -51,10 +57,6 @@ export const columns: (
   {
     accessorKey: "method",
     header: "Method",
-  },
-  {
-    accessorKey: "trackingId",
-    header: "Tracking ID",
   },
   {
     accessorKey: "response",
@@ -75,19 +77,26 @@ export const columns: (
               : "bg-gray-100 text-gray-600 border-gray-600"
           )}
         >
-          {response || "N/A"}
+          {response === "pending" ? "Awaiting Response" : response || "N/A"}
         </div>
       );
     },
   },
   {
     id: "created_at",
+    header: "First Invite",
     accessorFn: (row) =>
       row.created_at ? format(row.created_at, "PPP") : "N/A",
   },
   {
+    id: "responseDate",
+    header: "Response Date",
+    accessorFn: (row) =>
+      row.responseDate ? format(row.responseDate, "PPP") : "N/A",
+  },
+  {
     id: "lastResendAt",
-    header: "Last Resend",
+    header: "Last Sent",
     accessorFn: (row) =>
       row.lastResendAt ? format(row.lastResendAt, "PPP") : "N/A",
   },
@@ -96,7 +105,7 @@ export const columns: (
     header: "Resend",
     cell: ({ row }) => {
       const { mutateData, isLoading } = useMutateData(
-        "/attendees/invites/resend"
+        "/attendees/invites/resend?trackingId=" + row.original.trackingId
       );
 
       const response = row.original.response;
@@ -119,9 +128,10 @@ export const columns: (
 
       return (
         <Button
-          disabled={
-            isLoading || (lastResendAt && !isAtLeast24HoursAfter(lastResendAt))
-          }
+          // disabled={
+          //   isLoading
+          //   // || (lastResendAt && !isAtLeast24HoursAfter(lastResendAt))
+          // }
           onClick={resendInvite}
           className="bg-basePrimary flex gap-2 px-4 text-white"
         >

@@ -68,7 +68,7 @@ export function useOnboarding() {
         setUser(user);
         setLoading(false);
         toast.success("Profile Updated Successfully");
-        router.push("/appointments/calender");
+        router.push("/home");
       }
     } catch (error: any) {
       toast.error(error?.message);

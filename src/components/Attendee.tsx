@@ -55,6 +55,7 @@ const Attendee: React.FC<AttendeeProps> = ({
     profilePicture,
     checkInPoints,
     attendeeProfilePoints,
+    attendeeAlias,
   } = attendee;
 
   console.log(checkInPoints, firstName);
@@ -122,11 +123,9 @@ const Attendee: React.FC<AttendeeProps> = ({
         checkin: updatedCheckin,
         checkInPoints: checkin
           ? isCheckedInToday
-            ? checkInPoints - allocatedcheckInPoints > 0
-              ? checkInPoints - allocatedcheckInPoints
-              : 0
+            ? Math.max(checkInPoints - allocatedcheckInPoints, 0)
             : checkInPoints + allocatedcheckInPoints
-          : 1,
+          : allocatedcheckInPoints,
       },
     ];
 
@@ -150,7 +149,7 @@ const Attendee: React.FC<AttendeeProps> = ({
       onClick={() =>
         window.innerWidth > 768
           ? selectAttendee(attendee)
-          : router.push(isLead ? `leads/info/${id}` : `info/${id}`)
+          : router.push(isLead ? `leads/info/${id}` : `info/${attendeeAlias}`)
       }
     >
       <div className="col-span-2">

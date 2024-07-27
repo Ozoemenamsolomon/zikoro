@@ -4,7 +4,7 @@ import { Button } from "@/components";
 import { TQuiz, TQuestion } from "@/types";
 import { useState } from "react";
 import { useUpdateQuiz } from "@/hooks";
-import { DeleteOutline } from "@styled-icons/material/DeleteOutline";
+import { DeleteOutline } from "styled-icons/material";
 import { DeleteModal } from "..";
 export function DeleteQuestion({
   quiz,

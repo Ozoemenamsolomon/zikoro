@@ -217,6 +217,7 @@ export function AboutSession({
           <CollapsibleWidget
             title="Speakers"
             session={agenda}
+            isNotAttendee={isIdPresent || isOrganizer}
             event={event}
             refetch={refetch}
           >
@@ -243,6 +244,7 @@ export function AboutSession({
           <CollapsibleWidget
             title="Moderator"
             session={agenda}
+            isNotAttendee={isIdPresent || isOrganizer}
             event={event}
             refetch={refetch}
           >
@@ -270,6 +272,7 @@ export function AboutSession({
             title="Sponsors"
             session={agenda}
             event={event}
+            isNotAttendee={isIdPresent || isOrganizer}
             refetch={refetch}
           >
             <div className="w-full px-3 py-4 grid grid-cols-2 md:grid-cols-4 items-center gap-4">
@@ -294,6 +297,7 @@ export function AboutSession({
           <CollapsibleWidget
             title="File"
             session={agenda}
+            isNotAttendee={isIdPresent || isOrganizer}
             event={event}
             refetch={refetch}
           >

@@ -131,13 +131,11 @@ export default function PaymentPage() {
         console.error("Error:", error);
       }
     }
-
     fetchAllCouponCodes();
   }, []);
 
   useEffect(() => {
     setTotalPrice(Number(total));
-
     if (coupons && currentCoupon) {
       const coupon = coupons.find((c) => c.discountCode === currentCoupon);
 
@@ -148,7 +146,6 @@ export default function PaymentPage() {
         } else {
           setIsCouponValid(true);
         }
-
         if (isCouponValid) {
           if (coupon.discountAmount !== null) {
             setDiscount(coupon.discountAmount);

@@ -105,7 +105,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
       }
     });
   }, [user, isIdPresent]);
-
+// key={pathname}
   return (
     <>
       <nav
@@ -163,14 +163,16 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
                       : ""
                   }`}
                 >
-                  <Link href={`/event/${href}`}>{name}</Link>
+                  <Link
+                  onClick={() => setShowNav((prev) => !prev)}
+                  href={`/event/${href}`}>{name}</Link>
                 </li>
               );
             })}
           </ul>
         </div>
       </nav>
-      <AccessVerification key={pathname} id={eventId} />
+      <AccessVerification  id={eventId} />
     </>
   );
 };

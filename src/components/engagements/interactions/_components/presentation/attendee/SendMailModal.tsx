@@ -17,22 +17,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { sendMailQuizSchema } from "@/schemas";
 import { TQuiz, TRefinedQuestion, TQuestion } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import {  useSendQuizScore } from "@/hooks";
+import { useSendQuizScore } from "@/hooks";
 import Link from "next/link";
-export function SendMailModal({
+export function SendMailModal<T>({
   close,
   quiz,
   id,
   isAttendee,
   actualQuiz,
-  attendeeEmail
+  attendeeEmail,
 }: {
   close: () => void;
-  quiz: TQuiz<TRefinedQuestion[]> | null;
+  quiz: TQuiz<T[]> | null;
   id: string;
   isAttendee: boolean;
-  actualQuiz: TQuiz<TQuestion[]>|null
-  attendeeEmail?:string
+  actualQuiz: TQuiz<TQuestion[]> | null;
+  attendeeEmail?: string;
 }) {
   const { updateQuiz, isLoading } = useSendQuizScore();
   const form = useForm<z.infer<typeof sendMailQuizSchema>>({
@@ -43,7 +43,7 @@ export function SendMailModal({
   });
 
   async function onSubmit(values: z.infer<typeof sendMailQuizSchema>) {
-   // console.log(values);
+    // console.log(values);
     const updatedQuiz: Partial<TQuiz<TQuestion[]>> = {
       ...actualQuiz,
       quizParticipants: actualQuiz?.quizParticipants?.map((participant) => {
@@ -51,8 +51,7 @@ export function SendMailModal({
           return {
             ...participant,
             email: values?.email,
-            attemptedQuiz: quiz!
-
+            attemptedQuiz: quiz!,
           };
         }
         return { ...participant };
@@ -63,14 +62,15 @@ export function SendMailModal({
       quiz: updatedQuiz,
       mailto: {
         email: values?.email,
-        url: `/interaction/quiz/scoreboard/${actualQuiz?.quizAlias}?id=${id}`,
+        url:
+          quiz?.interactionType !== "poll"
+            ? `/interaction/quiz/scoreboard/${actualQuiz?.quizAlias}?id=${id}`
+            : `/interaction/poll/sheet/${actualQuiz?.quizAlias}?id=${id}`,
       },
     };
     await updateQuiz({ payload });
-    close()
+    close();
   }
-
-
 
   return (
     <div className="w-full h-full inset-0 fixed overflow-y-auto bg-gray-100">
@@ -119,7 +119,12 @@ export function SendMailModal({
               {isLoading && <LoaderAlt size={20} className="animate-spin" />}
             </Button>
 
-            <Link href={`/event/${actualQuiz?.eventAlias}/engagements/interactions`} className="mt-2 text-basePrimary">Create your own quiz!</Link>
+            <Link
+              href={`/event/${actualQuiz?.eventAlias}/engagements/interactions`}
+              className="mt-2 text-basePrimary"
+            >
+              Create your own quiz!
+            </Link>
           </form>
         </Form>
       </div>

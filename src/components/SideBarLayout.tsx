@@ -161,6 +161,7 @@ function SideNavs({
             />
             {/**nav links */}
             <NavLinks
+            close={close}
               isHaveEvent={isHaveEvent}
               query={query}
               id={organizationId}
@@ -169,6 +170,7 @@ function SideNavs({
           <div className="flex items-start text-[#717171] justify-start w-full flex-col gap-4 border-t p-4 border-basebody">
             <div className="w-full flex items-center gap-x-2 ">
               <Link
+
                 href={`/create`}
                 className="text-mobile sm:text-sm text-basePrimary font-medium hover:underline "
               >
@@ -226,7 +228,9 @@ function SideNavs({
                 Give feedback
               </p>
             </button>
-            <Link href={"/referrals"}>
+            <Link 
+            onClick={close}
+            href={"/referrals"}>
               <div className="flex items-center gap-2">
                 <ReferralIcon />
                 <p className="font-medium group-hover:block hidden">
