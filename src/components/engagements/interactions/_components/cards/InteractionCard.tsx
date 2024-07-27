@@ -101,7 +101,7 @@ export function InteractionCard({
             >{`${quiz?.questions?.length || 0} ${
               quiz?.questions?.length > 1 ? "Questions" : "Question"
             }`}</span>
-            {points && (
+            {!points ? null : (
               <span>{`${points} ${points > 0 ? `points` : `point`}`}</span>
             )}
           </p>
