@@ -253,7 +253,7 @@ export async function POST(req: NextRequest) {
           </div>
           <!--end-->
             <a
-            href="www.zikoro.com/event/${currentEvent.eventAlias}/home"
+            href="www.zikoro.com/live-events/${currentEvent.eventAlias}"
             style="max-width:600px; margin:0 auto;"
             >
             <button
