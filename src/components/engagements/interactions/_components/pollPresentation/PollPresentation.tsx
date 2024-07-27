@@ -189,7 +189,7 @@ export default function PollPresentation({
     setPollResult(quiz);
   }
 
-  console.log("ansers", answers)
+  console.log("ansers", answers);
 
   return (
     <div className="w-full">
@@ -213,6 +213,7 @@ export default function PollPresentation({
                   close={() => {
                     setShowScoreSheet(false);
                     setIsNotStarted(true);
+                    window.open(window.location.href, "_self");
                   }}
                 />
               )}
