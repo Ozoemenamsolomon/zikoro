@@ -163,7 +163,9 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
                       : ""
                   }`}
                 >
-                  <Link href={`/event/${href}`}>{name}</Link>
+                  <Link
+                  onClick={() => setShowNav((prev) => !prev)}
+                  href={`/event/${href}`}>{name}</Link>
                 </li>
               );
             })}
