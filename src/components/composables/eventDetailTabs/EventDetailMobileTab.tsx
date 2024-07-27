@@ -102,19 +102,6 @@ export function EventDetailMobileTab({
           <p>Quiz</p>
         </button>
 
-        <button className="hidden flex-col gap-y-2 items-center justify-center">
-          <ImageIcon />
-          <p>Photo</p>
-        </button>
-
-        <button className="hidden flex-col gap-y-2 items-center justify-center">
-          <DiscussionIcon />
-          <p>Discussion</p>
-        </button>
-        <button className="hidden flex-col gap-y-2 items-center justify-center">
-          <SocialWallIcon />
-          <p>Social Wall</p>
-        </button>
         <button
           onClick={() =>
             router.push(`/event/${eventId}/engagements/leaderboard`)
@@ -141,9 +128,6 @@ export function EventDetailMobileTab({
           <RewardIcon />
           <p>Reward</p>
         </button>
-      </div>
-
-      <div className="sm:hidden w-full mb-8 grid grid-cols-3 gap-8 items-center justify-center">
         <button
           onClick={() =>
             router.push(`/event/${eventId}/engagements/interactions`)
@@ -153,8 +137,25 @@ export function EventDetailMobileTab({
           <StampCardIcon />
           <p>StampCard</p>
         </button>
+      </div>
 
-        <button className="hidden flex-col gap-y-2 items-center justify-center">
+    </div>
+  );
+}
+
+
+/**
+ * 
+ * 
+ * 
+      <div className="sm:hidden w-full mb-8 grid grid-cols-3 gap-8 items-center justify-center">
+       
+
+     
+
+    
+      </div>
+ *    <button className="hidden flex-col gap-y-2 items-center justify-center">
           <MapIcon />
           <p>Map</p>
         </button>
@@ -162,8 +163,7 @@ export function EventDetailMobileTab({
           <FileIcon />
           <p>Files</p>
         </button>
-
-        <button className="hidden flex-col gap-y-2 items-center justify-center">
+ *     <button className="hidden flex-col gap-y-2 items-center justify-center">
           <ResourcesIcon />
           <p>Resources</p>
         </button>
@@ -176,7 +176,17 @@ export function EventDetailMobileTab({
           <QAIcon />
           <p>Q & A</p>
         </button>
-      </div>
-    </div>
-  );
-}
+     <button className="hidden flex-col gap-y-2 items-center justify-center">
+          <ImageIcon />
+          <p>Photo</p>
+        </button>
+
+        <button className="hidden flex-col gap-y-2 items-center justify-center">
+          <DiscussionIcon />
+          <p>Discussion</p>
+        </button>
+        <button className="hidden flex-col gap-y-2 items-center justify-center">
+          <SocialWallIcon />
+          <p>Social Wall</p>
+        </button>
+ */
