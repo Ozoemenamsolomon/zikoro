@@ -154,7 +154,7 @@ export function OrganizerQuestOption({
             <span>{numOfChosen ?? 0}</span>
           </div>
           <div className="text-mobile">
-            <span>{`${chosen ?? "0"}%`}</span>
+            <span>{isNaN(chosen as any) ? "0%" : `${chosen ?? "0"}%`}</span>
           </div>
         </div>
       </div>
@@ -162,7 +162,7 @@ export function OrganizerQuestOption({
         <div className="w-full relative h-2 rounded-3xl bg-gray-200">
           <span
             style={{
-              width: `${chosen ?? "0"}%`,
+              width: isNaN(chosen as any) ? "0%" : `${chosen ?? "0"}%`,
             }}
             className="absolute rounded-3xl inset-0 bg-basePrimary h-full"
           ></span>
