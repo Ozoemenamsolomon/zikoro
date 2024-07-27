@@ -386,22 +386,26 @@ export function AddQuestion({
               <PlusCircle size={18} />
               <p>Options</p>
             </Button>
-            {(defaultFeedBackValue || !question) && (
-              <FormField
-                control={form.control}
-                name="feedBack"
-                render={({ field }) => (
-                  <InputOffsetLabel label="Additional FeedBack">
-                    <InteractionInput
-                      placeholder="Enter the feedBack"
-                      defaultValue={defaultFeedBackValue}
-                      onChange={(value) => {
-                        form.setValue("feedBack", value);
-                      }}
-                    />
-                  </InputOffsetLabel>
+            {quiz?.interactionType !== "poll" && (
+              <>
+                {(defaultFeedBackValue || !question) && (
+                  <FormField
+                    control={form.control}
+                    name="feedBack"
+                    render={({ field }) => (
+                      <InputOffsetLabel label="Additional FeedBack">
+                        <InteractionInput
+                          placeholder="Enter the feedBack"
+                          defaultValue={defaultFeedBackValue}
+                          onChange={(value) => {
+                            form.setValue("feedBack", value);
+                          }}
+                        />
+                      </InputOffsetLabel>
+                    )}
+                  />
                 )}
-              />
+              </>
             )}
 
             <Button

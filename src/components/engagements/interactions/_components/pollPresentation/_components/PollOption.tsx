@@ -3,6 +3,7 @@
 import { cn } from "@/lib";
 import { TAnswer, TQuiz, TQuestion } from "@/types";
 import { useMemo } from "react";
+import { QUser, QUsers } from "@/constants";
 
 type TOption = {
   optionId: string;
@@ -38,13 +39,6 @@ export function PollOption({
     return i?.length || 0;
   }, [answer]);
 
-  console.log(
-    chosedOption,
-    answer?.length,
-    chosedOption / answer?.length,
-    (chosedOption / answer?.length) * 100
-  );
-
   // organizer will only see the question and how ppl answer it
   // players will be able to click the question and immeditely see how ppl answered it.
   return (
@@ -55,6 +49,7 @@ export function PollOption({
           option={option?.option ?? ""}
           showAnswerMetric={showAnswerMetric}
           chosen={((chosedOption / answer?.length) * 100).toFixed(0)}
+          numOfChosen={chosedOption}
           poll={poll}
         />
       ) : (
@@ -85,18 +80,24 @@ export function PollOption({
             </div>
 
             {showAnswerMetric && (
-              <div className="text-mobile">
-                <span>
-                  {chosedOption
-                    ? `${((chosedOption / answer?.length) * 100).toFixed(0)}%`
-                    : "0%"}
-                </span>
+              <div className="flex items-center gap-x-1">
+                <div className="text-mobile border-r flex items-center gap-x-1">
+                  <QUsers />
+                  <span>{chosedOption || 0}</span>
+                </div>
+                <div className="text-mobile">
+                  <span>
+                    {chosedOption
+                      ? `${((chosedOption / answer?.length) * 100).toFixed(0)}%`
+                      : "0%"}
+                  </span>
+                </div>
               </div>
             )}
           </div>
 
           {showAnswerMetric && (
-            <div className="w-full relative h-1 rounded-3xl bg-gray-200">
+            <div className="w-full relative h-2 rounded-3xl bg-gray-200">
               <span
                 style={{
                   width: chosedOption
@@ -119,18 +120,20 @@ export function OrganizerQuestOption({
   showAnswerMetric,
   chosen,
   poll,
+  numOfChosen,
 }: {
   optionIndex: string;
   option: string;
   showAnswerMetric?: boolean;
   chosen?: string;
+  numOfChosen: number;
 
   poll?: TQuiz<TQuestion[]>;
 }) {
   return (
     <button
       className={cn(
-        "w-full px-4 text-gray-500 gap-y-1  min-h-[44px] h-fit rounded-md border border-gray-500 bg-gray-100"
+        "w-full px-4 text-gray-500 gap-y-1  min-h-[44px] h-fit rounded-md border border-basePrimary bg-gray-100"
       )}
     >
       <div className="w-full flex items-center justify-between">
@@ -144,22 +147,29 @@ export function OrganizerQuestOption({
             }}
           />
         </div>
-        {showAnswerMetric && (
-          <div className="text-mobile">
-            <span>{`${chosen || 0}%`}</span>
+
+        <div className="flex items-center gap-x-1">
+          <div className="text-mobile border-r flex items-center gap-x-1">
+            <QUsers />
+            <span>{numOfChosen || 0}</span>
           </div>
-        )}
+          <div className="text-mobile">
+            <span>{`${chosen || "0"}%`}</span>
+          </div>
+        </div>
       </div>
-      {showAnswerMetric && (
-        <div className="w-full relative h-1 rounded-3xl bg-gray-200">
+      {
+        <div className="w-full relative h-2 rounded-3xl bg-gray-200">
           <span
             style={{
-              width: `${chosen || 0}%`,
+              width: `${chosen || "0"}%`,
             }}
             className="absolute rounded-3xl inset-0 bg-basePrimary h-full"
           ></span>
         </div>
-      )}
+      }
     </button>
   );
 }
+
+// showAnswerMetric && showAnswerMetric &&
