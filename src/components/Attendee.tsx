@@ -122,11 +122,9 @@ const Attendee: React.FC<AttendeeProps> = ({
         checkin: updatedCheckin,
         checkInPoints: checkin
           ? isCheckedInToday
-            ? checkInPoints - allocatedcheckInPoints > 0
-              ? checkInPoints - allocatedcheckInPoints
-              : 0
+            ? Math.max(checkInPoints - allocatedcheckInPoints, 0)
             : checkInPoints + allocatedcheckInPoints
-          : 1,
+          : allocatedcheckInPoints,
       },
     ];
 
