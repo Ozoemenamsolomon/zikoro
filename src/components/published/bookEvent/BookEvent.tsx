@@ -24,6 +24,7 @@ import {
 } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
 import { Event } from "@/types";
+import { generateAlphanumericHash } from "@/utils/helpers";
 import { usePathname, useRouter } from "next/navigation";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { ArrowBack } from "styled-icons/material-outlined";
@@ -36,6 +37,7 @@ type TChosenAttendee = {
   email: string;
   ticketType: string;
   price: number;
+  attendeeAlias: string;
   id: number;
 };
 
@@ -345,6 +347,7 @@ export function BookEvent({
       lastName: "",
       email: "",
       phoneNumber: "",
+      attendeeAlias: generateAlphanumericHash(7),
       ticketType,
       price,
       id,

@@ -2,7 +2,7 @@
 
 import useUserStore from "@/store/globalUserStore";
 import { ActionCard, UserCertificates, UserEvents } from "./_components";
-import { getCookie } from "@/hooks";
+
 
 export default function Home() {
   const { user, setUser } = useUserStore();
