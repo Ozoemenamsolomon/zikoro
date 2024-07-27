@@ -19,6 +19,7 @@ import {
   useDeleteQuizLobby,
   useAddLiveParticipant,
   useGetLiveParticipant,
+  useFetchSingleEvent
 } from "@/hooks";
 import {
   TRefinedQuestion,
@@ -86,6 +87,7 @@ export default function Presentation({
   const [showScoreSheet, setShowScoreSheet] = useState(false); // state to toggle show-score sheet after attendee finishes the quiz
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [volume, adjustVolume] = useState(0.8);
+  const {data} = useFetchSingleEvent(eventId)
  // const {liveQuizPlayers} = useGetLiveParticipant({quizId})
   const {deleteQuizLobby} = useDeleteQuizLobby(quizId)
   
@@ -361,7 +363,8 @@ export default function Presentation({
                 <div className="w-full grid grid-cols-8 items-center h-full">
                   {(isIdPresent || isOrganizer) && isLobby && (
                     <Advert
-                      quiz={refinedQuizArray}
+                      quiz={quiz}
+                      eventName={data?.eventTitle ?? ""}
                       isRightBox={isRightBox}
                       isLeftBox={isLeftBox}
                       close={onClose}
@@ -372,7 +375,6 @@ export default function Presentation({
                     close={close}
                     isAttendee={!isIdPresent && !isOrganizer}
                     refetch={getQuiz}
-                    refinedQuiz={refinedQuizArray}
                     quiz={quiz}
                     id={id}
                     attendeeId={attendeeId}
@@ -387,9 +389,10 @@ export default function Presentation({
                 </div>
               ) : (
                 <div className="w-full mx-auto absolute px-4 sm:px-6  inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
-                  {(isIdPresent || isOrganizer) && (
+                  {(isIdPresent || isOrganizer) && quiz && (
                     <Advert
-                      quiz={refinedQuizArray}
+                      quiz={quiz}
+                      eventName={data?.eventTitle ?? ""}
                       isRightBox={isRightBox}
                       isLeftBox={isLeftBox}
                       close={onClose}
@@ -444,9 +447,8 @@ export default function Presentation({
   );
 }
 
-function PlayersOnboarding({
+export function PlayersOnboarding({
   close,
-  refinedQuiz,
   attendee,
   refetch,
   isAttendee,
@@ -463,7 +465,6 @@ function PlayersOnboarding({
 }: {
   close: () => void;
   attendee?: TAttendee;
-  refinedQuiz: TQuiz<TRefinedQuestion[]>;
   refetch: () => Promise<any>;
   isAttendee: boolean;
   id: string;
@@ -476,7 +477,7 @@ function PlayersOnboarding({
   setChosenAvatar: React.Dispatch<
     React.SetStateAction<Required<AvatarFullConfig> | null>
   >;
-  audio: HTMLAudioElement | null;
+  audio?: HTMLAudioElement | null;
   quiz: TQuiz<TQuestion[]>;
 }) {
   const { updateQuiz } = useUpdateQuiz();
@@ -814,7 +815,7 @@ function PlayersOnboarding({
             className="bg-basePrimary gap-x-2 px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
           >
             {loading && <LoaderAlt size={22} className="animate-spin" />}
-            Start Quiz
+           <p>{quiz?.interactionType !== "poll" ? "Start Quiz" : "Start Poll" }</p>
           </Button>
         </div>
       )}

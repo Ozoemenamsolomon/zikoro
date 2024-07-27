@@ -105,7 +105,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
       }
     });
   }, [user, isIdPresent]);
-
+// key={pathname}
   return (
     <>
       <nav
@@ -170,7 +170,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
           </ul>
         </div>
       </nav>
-      <AccessVerification key={pathname} id={eventId} />
+      <AccessVerification  id={eventId} />
     </>
   );
 };

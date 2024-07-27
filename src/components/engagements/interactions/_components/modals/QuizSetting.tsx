@@ -15,17 +15,24 @@ import Image from "next/image";
 import { generateInteractionAlias, uploadFile } from "@/utils";
 import { useCreateQuiz, useUpdateQuiz, useFetchSingleEvent } from "@/hooks";
 
+//******** */
+// NB: This modal is used for creating, and updating quiz and poll
+// interactionType is either 'quiz' or 'poll'
+//******* */
+
 type QuizSettingsProp = {
   eventAlias: string;
   close: () => void;
   quiz?: TQuiz<TQuestion[]> | null;
   refetch?: () => Promise<any>;
+  interactionType?: string;
 };
 export function QuizSettings({
   close,
   eventAlias,
   quiz,
   refetch,
+  interactionType,
 }: QuizSettingsProp) {
   const { createQuiz } = useCreateQuiz();
   const {
@@ -49,8 +56,8 @@ export function QuizSettings({
     live: false,
     isCollectPhone: false,
     isCollectEmail: false,
-    showAnswer: true,
-    showResult: true,
+    showAnswer: interactionType === "quiz" ? true : false,
+    showResult: interactionType === "quiz" ? true : false,
   });
   const form = useForm<z.infer<typeof quizSettingSchema>>({
     resolver: zodResolver(quizSettingSchema),
@@ -91,6 +98,7 @@ export function QuizSettings({
           ...values,
           branding,
           eventAlias,
+          interactionType: interactionType,
           accessibility,
           quizAlias,
           lastUpdated_at: new Date().toISOString(),
@@ -132,7 +140,10 @@ export function QuizSettings({
       setAccessibility(quiz?.accessibility);
     }
   }, [quiz]);
-  console.log("ewewe", event);
+
+  const isQuiz = useMemo(() => {
+    return interactionType === "quiz";
+  }, [interactionType]);
 
   return (
     <div
@@ -147,7 +158,9 @@ export function QuizSettings({
         className="py-6 px-4 w-[95%] max-w-xl m-auto rounded-lg bg-white absolute inset-0 overflow-y-auto max-h-[85%] h-fit"
       >
         <div className="flex mb-4 items-center justify-between w-full">
-          <h2 className="font-semibold text-lg sm:text-2xl">Quiz Settings</h2>
+          <h2 className="font-semibold text-lg sm:text-2xl">
+            {isQuiz ? "Quiz" : "Poll"} Settings
+          </h2>
           <Button onClick={close}>
             <CloseOutline size={22} />
           </Button>
@@ -201,7 +214,6 @@ export function QuizSettings({
                 )}
               />
             )}
-
             {addedImage && (
               <div className="w-[100px] relative h-[100px]">
                 <Button
@@ -253,10 +265,10 @@ export function QuizSettings({
 
             <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
               <div className="flex flex-col items-start justify-start">
-                <p>Make Quiz Visible to Everyone?</p>
+                <p>Make{isQuiz ? " Quiz " : " Poll "}Visible to Everyone?</p>
                 <p className="text-xs text-gray-500">
                   Users who are not registered for your event can access your
-                  quiz
+                  {isQuiz ? "quiz" : "poll"}
                 </p>
               </div>
               <Switch
@@ -311,47 +323,51 @@ export function QuizSettings({
               </>
             )}
 
-            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
-              <div className="flex flex-col items-start justify-start">
-                <p>Review answers after each question</p>
-                <p className="text-xs text-gray-500">
-                  You will see how people answered each question before the next
-                  question appears.
-                </p>
+            {isQuiz && (
+              <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+                <div className="flex flex-col items-start justify-start">
+                  <p>Review answers after each question</p>
+                  <p className="text-xs text-gray-500">
+                    You will see how people answered each question before the
+                    next question appears.
+                  </p>
+                </div>
+                <Switch
+                  disabled={loading}
+                  checked={accessibility?.review}
+                  onClick={() =>
+                    setAccessibility({
+                      ...accessibility,
+                      review: !accessibility.review,
+                    })
+                  }
+                  className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+                />
               </div>
-              <Switch
-                disabled={loading}
-                checked={accessibility?.review}
-                onClick={() =>
-                  setAccessibility({
-                    ...accessibility,
-                    review: !accessibility.review,
-                  })
-                }
-                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
-              />
-            </div>
-            <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
-              <p>Question Answer Visibility</p>
+            )}
+            {isQuiz && (
+              <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
+                <p>Question Answer Visibility</p>
 
-              <Switch
-                disabled={loading}
-                checked={accessibility?.showAnswer}
-                onClick={() =>
-                  setAccessibility({
-                    ...accessibility,
-                    showAnswer: !accessibility.showAnswer,
-                  })
-                }
-                className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
-              />
-            </div>
+                <Switch
+                  disabled={loading}
+                  checked={accessibility?.showAnswer}
+                  onClick={() =>
+                    setAccessibility({
+                      ...accessibility,
+                      showAnswer: !accessibility.showAnswer,
+                    })
+                  }
+                  className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+                />
+              </div>
+            )}
             <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
               <div className="flex flex-col items-start justify-start">
-                <p>Show Quiz Result</p>
+                <p>Show {isQuiz ? "Quiz" : "Poll"} Result</p>
                 <p className="text-xs text-gray-500">
-                  Participants will see the score sheet immediately after taking
-                  the quiz.
+                  Participants will see the score sheet immediately after the{" "}
+                  {isQuiz ? "quiz" : "poll"}.
                 </p>
               </div>
               <Switch
@@ -423,9 +439,10 @@ export function QuizSettings({
 
             <div className="flex w-full text-mobile sm:text-sm items-center justify-between">
               <div className="flex flex-col items-start justify-start">
-                <p>Disable quiz</p>
+                <p>Disable {isQuiz ? "quiz" : "poll"}</p>
                 <p className="text-xs text-gray-500">
-                  Participants will no longer be able to join this quiz.
+                  Participants will no longer be able to join this{" "}
+                  {isQuiz ? "quiz" : "poll"}.
                 </p>
               </div>
               <Switch
@@ -445,8 +462,12 @@ export function QuizSettings({
                 <p>Live Mode</p>
                 <p className="text-xs text-gray-500">
                   {event && event?.organization?.subscriptionPlan === "Free"
-                    ? "Upgrade to higher subscription to use this feature."
-                    : "All quiz participants will attempt the quiz at the same time."}
+                    ? `Upgrade to higher subscription to use this feature.`
+                    : `All ${
+                        isQuiz ? `quiz` : `poll`
+                      } participants will attempt the ${
+                        isQuiz ? `quiz` : `poll`
+                      } at the same time.`}
                 </p>
               </div>
               {/***={loading} */}
@@ -462,7 +483,6 @@ export function QuizSettings({
                 className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
               />
             </div>
-
             <Button
               disabled={loading}
               type="submit"

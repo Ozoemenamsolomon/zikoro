@@ -32,6 +32,7 @@ export interface TQuiz<T> {
   coverTitle: string;
   liveMode: any;
   description: string;
+  interactionType: string;
   coverImage: string;
   branding: { poweredBy: boolean; eventName: boolean };
   questions: T;
@@ -63,8 +64,9 @@ export type TRefinedQuestion = {
   id: string;
   question: string;
   questionImage?: any;
-  duration: string;
-  points: string;
+  duration?: string;
+  points?: string;
+  interactionType: string;
   feedBack?: any;
   options: {
     optionId: string;

@@ -165,7 +165,7 @@ export function ActiveQuestion({
           </div>
           <div className="w-full text-mobile sm:text-sm py-3 bg-white rounded-md flex flex-col items-start justify-start gap-y-3">
             <div className="border-b text-gray-500 px-3 border-gray-600 gap-3 pb-2 w-full flex items-center justify-between">
-              <div className="flex w-full items-center px-3 justify-between">
+            {quiz?.interactionType !== "poll" &&  <div className="flex w-full items-center px-3 justify-between">
                 <div className="flex bg-basePrimary/10 px-2 py-1 items-center font-medium text-xs text-basePrimary gap-x-1">
                   <p>{`${activeQuestion?.points ?? "0"}pts`}</p>
                   <FeedStar size={15} />
@@ -174,7 +174,7 @@ export function ActiveQuestion({
                   <p>{timing ?? 0}</p>
                   <Time size={15} />
                 </div>
-              </div>
+              </div>}
             </div>
 
             <div className="w-full px-3">

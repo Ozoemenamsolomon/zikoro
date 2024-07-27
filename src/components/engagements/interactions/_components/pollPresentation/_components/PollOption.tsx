@@ -1,8 +1,6 @@
 "use client";
 
 import { cn } from "@/lib";
-import { CloseCircle } from "styled-icons/ionicons-outline";
-import { CheckCircle } from "styled-icons/bootstrap";
 import { TAnswer, TQuiz, TQuestion } from "@/types";
 import { useMemo } from "react";
 
@@ -10,9 +8,8 @@ type TOption = {
   optionId: string;
   isAnswer: string;
   option: string;
-  isCorrect: boolean | string;
 };
-export function Option({
+export function PollOption({
   optionIndex,
   option,
   selectOption,
@@ -21,7 +18,7 @@ export function Option({
   answer,
   showAnswerMetric,
   isDisabled,
-  quiz,
+  poll,
 }: {
   optionIndex: string;
   option: TOption;
@@ -31,7 +28,7 @@ export function Option({
   answer: TAnswer[];
   showAnswerMetric?: boolean;
   isDisabled: boolean;
-  quiz: TQuiz<TQuestion[]>;
+  poll: TQuiz<TQuestion[]>;
 }) {
   const chosedOption = useMemo(() => {
     const i = answer?.filter((ans) => {
@@ -41,12 +38,9 @@ export function Option({
     return i?.length || 0;
   }, [answer]);
 
-  const isCorrectAnswer = useMemo(() => {
-    return option?.isAnswer === option?.optionId;
-  }, [option]);
-
   //  console.log(isCorrectAnswer, { isCorrect: option?.isCorrect });
-
+  // organizer will only see the question and how ppl answer it
+  // players will be able to click the question and immeditely see how ppl answered it.
   return (
     <>
       {isOrganizer || isIdPresent ? (
@@ -55,10 +49,7 @@ export function Option({
           option={option?.option ?? ""}
           showAnswerMetric={showAnswerMetric}
           chosen={((chosedOption / answer?.length) * 100).toFixed(0)}
-          isCorrect={typeof option?.isCorrect === "boolean"}
-          isCorrectAnswer={isCorrectAnswer}
-          quiz={quiz}
-          optionId={option?.optionId}
+          poll={poll}
         />
       ) : (
         <button
@@ -70,33 +61,11 @@ export function Option({
           }}
           className={cn(
             "w-full px-4 text-gray-500 space-y-1  min-h-[44px] h-fit rounded-md border border-basePrimary bg-white",
-            typeof option?.isCorrect === "boolean" &&
-              option?.isCorrect &&
-              showAnswerMetric &&
-              "border-green-500 bg-green-500/20",
-            typeof option?.isCorrect === "boolean" &&
-              !option?.isCorrect &&
-              showAnswerMetric &&
-              "border-red-500 bg-red-500/20",
-
-              isCorrectAnswer &&
-              showAnswerMetric &&
-              "border-green-500 bg-green-500/20 transform quiz-option-animation",
-            typeof option?.isCorrect === "boolean" && !showAnswerMetric && "bg-[#001fcc]/20"
+            option?.optionId === option?.isAnswer && "bg-[#001fcc]/10"
           )}
         >
           <div className="w-full flex items-center justify-between">
-            <div className="flex items-start gap-x-2 w-full">
-              {option?.isCorrect !== "default" && showAnswerMetric && (
-                <>
-                  {option?.isCorrect ? (
-                    <CheckCircle className="text-green-500" size={18} />
-                  ) : (
-                    <CloseCircle className="text-red-500" size={20} />
-                  )}
-                </>
-              )}
-
+            <div className="flex items-start w-full">
               <div className="w-full flex items-start gap-x-1">
                 <span>{optionIndex}.</span>
 
@@ -122,9 +91,9 @@ export function Option({
             <div className="w-full relative h-1 rounded-3xl bg-gray-200">
               <span
                 style={{
-                  width: `${((chosedOption|| 0 / answer?.length) * 100).toFixed(
-                    0
-                  )}%`,
+                  width: `${(
+                    (chosedOption || 0 / answer?.length) * 100
+                  ).toFixed(0)}%`,
                 }}
                 className="absolute rounded-3xl inset-0 bg-basePrimary h-full"
               ></span>
@@ -141,28 +110,19 @@ export function OrganizerQuestOption({
   option,
   showAnswerMetric,
   chosen,
-  isCorrectAnswer,
-  isCorrect,
-  quiz,
-  optionId,
+  poll,
 }: {
   optionIndex: string;
   option: string;
   showAnswerMetric?: boolean;
   chosen?: string;
-  isCorrectAnswer?: boolean;
-  isCorrect?: boolean;
-  quiz?: TQuiz<TQuestion[]>;
-  optionId?: string;
+
+  poll?: TQuiz<TQuestion[]>;
 }) {
   return (
     <button
       className={cn(
-        "w-full px-4 text-gray-500 gap-y-1  min-h-[44px] h-fit rounded-md border border-gray-500 bg-gray-100",
-        (isCorrect && isCorrectAnswer) ||
-          (quiz?.accessibility?.live &&
-            quiz?.liveMode?.correctOptionId === optionId &&
-            "border-green-500 bg-green-500/20 transform quiz-option-animation")
+        "w-full px-4 text-gray-500 gap-y-1  min-h-[44px] h-fit rounded-md border border-gray-500 bg-gray-100"
       )}
     >
       <div className="w-full flex items-center justify-between">
@@ -186,7 +146,7 @@ export function OrganizerQuestOption({
         <div className="w-full relative h-1 rounded-3xl bg-gray-200">
           <span
             style={{
-              width: `${chosen ||0}%`,
+              width: `${chosen || 0}%`,
             }}
             className="absolute rounded-3xl inset-0 bg-basePrimary h-full"
           ></span>

@@ -13,7 +13,7 @@ import { TQuiz, TQuestion } from "@/types";
 export function InteractionCard({
   quiz,
   refetch,
-  isNotAttendee
+  isNotAttendee,
 }: {
   refetch: () => Promise<any>;
   quiz: TQuiz<TQuestion[]>;
@@ -43,34 +43,35 @@ export function InteractionCard({
     <div
       onClick={() => {
         if (isNotAttendee) {
-         
           router.push(
             `/event/${quiz?.eventAlias}/engagements/interactions/${quiz?.quizAlias}`
-          )
+          );
+        } else {
+          router.push(`/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`);
         }
-        else {
-          router.push(
-            `/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`
-          )
-        }
-      
-       } }
+      }}
       role="button"
       className="w-full text-mobile  sm:text-sm bg-white rounded-md flex flex-col items-start justify-start"
     >
       <div className="w-full relative">
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-          className="px-0 p-1 bg-gray-200/50 w-fit absolute right-2 top-3 h-fit"
-        >
-          <ThreeDotsVertical size={20} />
-          {isOpen && (
-            <ActionModal refetch={refetch} close={onClose} quiz={quiz} />
-          )}
-        </Button>
+        <div className="absolute flex items-center justify-between inset-x-0 w-full  top-3 px-3">
+          <p className="text-xs w-fit sm:text-sm rounded-3xl bg-basePrimary text-white px-3 py-1">
+            {quiz?.interactionType === "poll" ? "Poll" : "Quiz"}
+          </p>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            className="px-0 p-1 bg-gray-200/50 w-fit h-fit"
+          >
+            <ThreeDotsVertical size={20} />
+            {isOpen && (
+              <ActionModal refetch={refetch} close={onClose} quiz={quiz} />
+            )}
+          </Button>
+        </div>
+
         {quiz?.coverImage ? (
           <Image
             className="w-full rounded-t-md h-48 object-cover"
@@ -128,7 +129,7 @@ function ActionModal({
         >
           <CopyQuiz quiz={quiz} refetch={refetch} />
 
-         <ActivateQuiz quiz={quiz}  refetch={refetch}/>
+          <ActivateQuiz quiz={quiz} refetch={refetch} />
 
           <DeleteQuiz quizAlias={quiz?.quizAlias} refetch={refetch} />
         </div>

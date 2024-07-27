@@ -22,6 +22,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
   const [isOpenInteractionModal, setOpenInteractionModal] = useState(false);
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
+  const [interactionType, setInteractionType] = useState("")
   const { quizzes, isLoading, getQuizzes } = useGetQuizzes(eventId);
 
   function onClose() {
@@ -98,12 +99,20 @@ export default function Interactions({ eventId }: { eventId: string }) {
           refetch={getQuizzes}
           eventAlias={eventId}
           close={onClose}
+          interactionType={interactionType}
         />
       )}
       {isOpenInteractionModal && (
         <InteractionsSelectionModal
           close={toggleInteractionModal}
-          toggleQuiz={onClose}
+          toggleQuiz={() => {
+            setInteractionType("quiz")
+            onClose();
+          } }
+          togglePoll={() => {
+            setInteractionType("poll")
+            onClose();
+          }}
         />
       )}
     </InteractionLayout>
