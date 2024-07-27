@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  AgendaIcon,
-  Hamburger,
-  HomeIcon,
-  UserIcon,
-} from "@/constants";
+import { AgendaIcon, Hamburger, HomeIcon, UserIcon } from "@/constants";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { Dot } from "styled-icons/bootstrap";
@@ -43,7 +38,7 @@ export function MobileBottomNav({
   }, [eventId]);
 
   return (
-    <nav className="w-full flex sm:hidden items-center justify-between border-t z-[49] px-4 py-2 fixed bottom-0 inset-x-0 bg-white">
+    <nav className="w-full flex sm:hidden items-center justify-between border-t z-[70] px-4 py-2 fixed bottom-0 inset-x-0 bg-white">
       <button
         onClick={toggleSideNav}
         className="flex flex-col items-center justify-center"
