@@ -16,7 +16,7 @@ export async function GET(
         .from("quizAnswer")
         .select("*")
         .eq("quizId", quizId)
-        .range(1000, 10000)
+        .range(0,100000)
 
       // 
       if (error) {

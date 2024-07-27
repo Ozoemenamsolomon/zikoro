@@ -189,6 +189,8 @@ export default function PollPresentation({
     setPollResult(quiz);
   }
 
+  console.log("ansers", answers)
+
   return (
     <div className="w-full">
       {poll && !loading && !isLoading && !eventLoading ? (
