@@ -62,7 +62,10 @@ export function SendMailModal<T>({
       quiz: updatedQuiz,
       mailto: {
         email: values?.email,
-        url: `/interaction/quiz/scoreboard/${actualQuiz?.quizAlias}?id=${id}`,
+        url:
+          quiz?.interactionType !== "poll"
+            ? `/interaction/quiz/scoreboard/${actualQuiz?.quizAlias}?id=${id}`
+            : `/interaction/poll/sheet/${actualQuiz?.quizAlias}?id=${id}`,
       },
     };
     await updateQuiz({ payload });
