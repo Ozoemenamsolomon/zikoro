@@ -12,8 +12,9 @@ export function AnswerSheet({
 }: {
   poll: TQuiz<TQuestion[]> | null;
   answers: TAnswer[];
-  close: () => void;
+  close?: () => void;
 }) {
+console.log(answers)
   const answerSheet = useMemo(() => {
     if (poll && answers) {
     
@@ -44,16 +45,16 @@ export function AnswerSheet({
   return (
     <div className="w-full h-full inset-0 fixed overflow-y-auto bg-gray-100">
       <div className="w-full max-w-3xl absolute top-0 mx-auto inset-x-0 bg-white p-4">
-        <Button onClick={close} className="gap-x-1 self-start w-fit h-fit px-2">
+      {close &&  <Button onClick={close} className="gap-x-1 self-start w-fit h-fit px-2">
           <ArrowBackOutline size={20} />
           <p className="text-sm">Back</p>
-        </Button>
+        </Button>}
 
         <div className="W-full max-w-xl mx-auto mt-8 flex gap-y-3 flex-col items-start justify-start">
           {Array.isArray(answerSheet) &&
             answerSheet?.map((question, index) => {
               return (
-                <div className="w-full grid grid-cols-1 gap-y-3">
+                <div className="w-full grid grid-cols-1 mb-4 gap-y-3">
                   <h2>{`Question ${index + 1}`}</h2>
 
                   <div
@@ -64,7 +65,7 @@ export function AnswerSheet({
                   />
                   {question?.questionImage && (
                     <Image
-                      className="w-full h-40 "
+                      className="w-full h-48 "
                       src={question?.questionImage}
                       width={700}
                       height={300}

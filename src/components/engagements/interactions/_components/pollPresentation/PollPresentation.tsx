@@ -127,6 +127,12 @@ export default function PollPresentation({
     setLeftBox((prev) => !prev);
   }
 
+  useEffect(() => {
+    if (poll) {
+      getAnswers(poll?.id);
+    }
+  }, [poll]);
+
   // toggle
   function close() {
     setIsNotStarted(false);
