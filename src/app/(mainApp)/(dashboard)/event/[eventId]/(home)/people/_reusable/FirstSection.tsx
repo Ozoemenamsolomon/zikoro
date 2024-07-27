@@ -594,7 +594,7 @@ export default function FirstSection({
                 user={user}
               />
             ))}
-          <div className="bg-gray-200 w-full h-[25px]" />
+          {!isLoading && <div className="bg-gray-200 w-full h-[25px]" />}
         </div>
       </div>
     </>
