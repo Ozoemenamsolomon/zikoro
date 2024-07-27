@@ -50,7 +50,7 @@ export function MobileBottomNav({
       {!isLoading && attendee && (
         <Link
           className="flex flex-col items-center justify-center"
-          href={`/event/${event?.eventAlias}/people/info/${attendee.id}`}
+          href={`/event/${event?.eventAlias}/people/info/${attendee.attendeeAlias}`}
         >
           <UserIcon
             color={pathname.includes("profile") ? "#001ffc" : "#000000"}
