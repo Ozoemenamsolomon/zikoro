@@ -81,7 +81,7 @@ export function PollOption({
 
             {showAnswerMetric && (
               <div className="flex items-center gap-x-1">
-                <div className="text-mobile border-r flex items-center gap-x-1">
+                <div className="text-mobile border-r bordder-gray-300 px-1 flex items-center gap-x-1">
                   <QUsers />
                   <span>{chosedOption || 0}</span>
                 </div>
@@ -133,7 +133,7 @@ export function OrganizerQuestOption({
   return (
     <button
       className={cn(
-        "w-full px-4 text-gray-500 gap-y-1  min-h-[44px] h-fit rounded-md border border-basePrimary bg-gray-100"
+        "w-full px-4 text-gray-500 gap-y-2  min-h-[44px] h-fit rounded-md border border-basePrimary bg-gray-100"
       )}
     >
       <div className="w-full flex items-center justify-between">
@@ -149,12 +149,12 @@ export function OrganizerQuestOption({
         </div>
 
         <div className="flex items-center gap-x-1">
-          <div className="text-mobile border-r flex items-center gap-x-1">
+          <div className="text-mobile border-r px-1 border-gray-300 flex items-center gap-x-1">
             <QUsers />
-            <span>{numOfChosen || 0}</span>
+            <span>{numOfChosen ?? 0}</span>
           </div>
           <div className="text-mobile">
-            <span>{`${chosen || "0"}%`}</span>
+            <span>{`${chosen ?? "0"}%`}</span>
           </div>
         </div>
       </div>
@@ -162,7 +162,7 @@ export function OrganizerQuestOption({
         <div className="w-full relative h-2 rounded-3xl bg-gray-200">
           <span
             style={{
-              width: `${chosen || "0"}%`,
+              width: `${chosen ?? "0"}%`,
             }}
             className="absolute rounded-3xl inset-0 bg-basePrimary h-full"
           ></span>
