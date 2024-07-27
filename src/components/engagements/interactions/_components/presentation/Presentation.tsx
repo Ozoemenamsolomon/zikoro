@@ -19,7 +19,7 @@ import {
   useDeleteQuizLobby,
   useAddLiveParticipant,
   useGetLiveParticipant,
-  useFetchSingleEvent
+  useFetchSingleEvent,
 } from "@/hooks";
 import {
   TRefinedQuestion,
@@ -28,7 +28,7 @@ import {
   TAttendee,
   TConnectedUser,
   TLiveQuizParticipant,
-  TAnswer
+  TAnswer,
 } from "@/types";
 import {
   useCheckTeamMember,
@@ -87,10 +87,9 @@ export default function Presentation({
   const [showScoreSheet, setShowScoreSheet] = useState(false); // state to toggle show-score sheet after attendee finishes the quiz
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [volume, adjustVolume] = useState(0.8);
-  const {data} = useFetchSingleEvent(eventId)
- // const {liveQuizPlayers} = useGetLiveParticipant({quizId})
-  const {deleteQuizLobby} = useDeleteQuizLobby(quizId)
-  
+  const { data } = useFetchSingleEvent(eventId);
+  // const {liveQuizPlayers} = useGetLiveParticipant({quizId})
+  const { deleteQuizLobby } = useDeleteQuizLobby(quizId);
 
   const [chosenAvatar, setChosenAvatar] =
     useState<Required<AvatarFullConfig> | null>(null);
@@ -135,41 +134,34 @@ export default function Presentation({
     return () => {
       supabase.removeChannel(channel);
     };
-   
   }, [supabase, quiz, isIdPresent, isOrganizer]);
 
   // memoized audio instance
   const audio = useMemo(() => createAudioInstance(), []);
- 
 
-   // subscribe to answers
+  // subscribe to answers
   useEffect(() => {
     if (!quiz?.accessibility?.live) return;
-      const channel = supabase
-        .channel("live-answer")
-        .on(
-          "postgres_changes",
-          {
-            event: "UPDATE",
-            schema: "public",
-            table: "quizAnswer",
-            filter: `quizId=eq.${quiz?.id}`,
-          },
-          (payload) => {
-          
-            setAnswers((prev) => [...prev, payload.new as TAnswer]);
-          }
-        )
-        .subscribe();
+    const channel = supabase
+      .channel("live-answer")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "quizAnswer",
+          filter: `quizId=eq.${quiz?.id}`,
+        },
+        (payload) => {
+          setAnswers((prev) => [...prev, payload.new as TAnswer]);
+        }
+      )
+      .subscribe();
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    
-
-  
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [supabase, quiz]);
-
 
   // generate a unique id for player
   const id = useMemo(() => {
@@ -195,8 +187,6 @@ export default function Presentation({
   function updateQuizResult(quiz: TQuiz<TRefinedQuestion[]>) {
     setQuizResult(quiz);
   }
-
- 
 
   useEffect(() => {
     if (quiz) {
@@ -246,20 +236,19 @@ export default function Presentation({
 
   // show score sheet after live quiz
   useEffect(() => {
-    ( async () => {
+    (async () => {
       if (quiz && quiz?.accessibility?.live) {
         if (quiz?.liveMode?.isEnded) {
           // saveCookie("currentPlayer", null);
           setShowScoreSheet(quiz?.liveMode?.isEnded);
           setIsSendMailModal(true);
           if (audio) audio.pause();
-        //  if (liveQuizPlayers?.length > 0) {
-            await deleteQuizLobby()
-        //  }
-        
+          //  if (liveQuizPlayers?.length > 0) {
+          await deleteQuizLobby();
+          //  }
         }
       }
-    })()
+    })();
   }, [quiz]);
 
   // change audio state
@@ -491,7 +480,6 @@ export function PlayersOnboarding({
     quizId: quiz?.quizAlias,
   });
   // const currentPlayer = getCookie("currentPlayer");
-
 
   // subscribe to player
   useEffect(() => {
@@ -728,7 +716,7 @@ export function PlayersOnboarding({
                   });
                 }}
                 className="border-0 border-b rounded-none w-full"
-                placeholder="Enter Name"
+                placeholder="Enter Nickame"
                 type="text"
               />
               {(quiz.accessibility?.isCollectEmail ||
@@ -755,18 +743,22 @@ export function PlayersOnboarding({
                   type={quiz.accessibility?.isCollectEmail ? "email" : "tel"}
                 />
               )}
-              {(quiz.accessibility?.isCollectEmail ||
-                quiz.accessibility?.isCollectEmail) && (
-                <div className="w-full  text-xs">
-                  <p className="w-full text-gray-600 text-center">
-                    {`${
-                      quiz.accessibility?.isCollectEmail
-                        ? "Email"
-                        : "Phone Number"
-                    } is required for this game to store your points and
+              {quiz?.interactionType !== "poll" && (
+                <>
+                  {(quiz.accessibility?.isCollectEmail ||
+                    quiz.accessibility?.isCollectEmail) && (
+                    <div className="w-full  text-xs">
+                      <p className="w-full text-gray-600 text-center">
+                        {`${
+                          quiz.accessibility?.isCollectEmail
+                            ? "Email"
+                            : "Phone Number"
+                        } is required for this game to store your points and
                   possible follow-up should you appear on the leaderboard.`}
-                  </p>
-                </div>
+                      </p>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -815,7 +807,9 @@ export function PlayersOnboarding({
             className="bg-basePrimary gap-x-2 px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
           >
             {loading && <LoaderAlt size={22} className="animate-spin" />}
-           <p>{quiz?.interactionType !== "poll" ? "Start Quiz" : "Start Poll" }</p>
+            <p>
+              {quiz?.interactionType !== "poll" ? "Start Quiz" : "Start Poll"}
+            </p>
           </Button>
         </div>
       )}
