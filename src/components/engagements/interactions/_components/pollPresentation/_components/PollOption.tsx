@@ -38,7 +38,13 @@ export function PollOption({
     return i?.length || 0;
   }, [answer]);
 
-  //  console.log(isCorrectAnswer, { isCorrect: option?.isCorrect });
+  console.log(
+    chosedOption,
+    answer?.length,
+    chosedOption / answer?.length,
+    (chosedOption / answer?.length) * 100
+  );
+
   // organizer will only see the question and how ppl answer it
   // players will be able to click the question and immeditely see how ppl answered it.
   return (
@@ -80,9 +86,11 @@ export function PollOption({
 
             {showAnswerMetric && (
               <div className="text-mobile">
-                <span>{`${((chosedOption || 0 / answer?.length) * 100).toFixed(
-                  0
-                )}%`}</span>
+                <span>
+                  {chosedOption
+                    ? `${((chosedOption / answer?.length) * 100).toFixed(0)}%`
+                    : "0%"}
+                </span>
               </div>
             )}
           </div>
@@ -91,9 +99,9 @@ export function PollOption({
             <div className="w-full relative h-1 rounded-3xl bg-gray-200">
               <span
                 style={{
-                  width: `${(
-                    (chosedOption || 0 / answer?.length) * 100
-                  ).toFixed(0)}%`,
+                  width: chosedOption
+                    ? `${((chosedOption / answer?.length) * 100).toFixed(0)}%`
+                    : "0%",
                 }}
                 className="absolute rounded-3xl inset-0 bg-basePrimary h-full"
               ></span>
