@@ -186,7 +186,7 @@ export default function PollPresentation({
       {poll  && !loading && !isLoading && !eventLoading ? (
         <>
           {isNotStarted && poll ? (
-            <div className="w-full grid grid-cols-8 items-center h-full">
+            <div className="w-full grid grid-cols-8 bg-white items-center h-full">
               {(isIdPresent || isOrganizer) && isLobby && (
                 <Advert
                   quiz={poll}

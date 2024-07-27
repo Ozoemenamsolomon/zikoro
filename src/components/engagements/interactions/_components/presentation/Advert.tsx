@@ -18,8 +18,7 @@ export function Advert({
   isRightBox: boolean;
   eventName: string;
 }) {
-
-  console.log("ileft", isLeftBox, isRightBox)
+  console.log("ileft", isLeftBox, isRightBox);
   const quizLink =
     quiz?.interactionType === "poll"
       ? `${window.location.origin}/poll/${quiz?.eventAlias}/present/${quiz?.quizAlias}`
@@ -29,7 +28,7 @@ export function Advert({
       className={cn(
         "w-full flex-col  rounded-l-xl h-[90vh] border-l border-y items-start justify-between hidden col-span-3 md:hidden",
         isLeftBox && "flex md:flex ",
-        !isRightBox && "col-span-4"
+        !isRightBox && "col-span-3"
       )}
     >
       {quiz?.branding?.eventName ? (

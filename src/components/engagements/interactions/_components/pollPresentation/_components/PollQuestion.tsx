@@ -120,6 +120,26 @@ export function PollQuestion({
     })();
   }, [poll]);
 
+  //attendee
+  useEffect(() => {
+    if (poll && poll?.accessibility?.live && !isOrganizer && !isIdPresent) {
+      if (poll?.liveMode?.current) {
+        setCurrentQuestion(poll?.liveMode?.current);
+        setShowAnswerMetric(false);
+      }
+      if (typeof poll?.liveMode?.questionIndex === "number") {
+        setCurrentQuestionIndex(poll?.liveMode?.questionIndex);
+      }
+      if (poll?.liveMode?.isTransitioning) {
+        setShowTransiting(poll?.liveMode?.isTransitioning);
+      }
+
+      //   if (typeof poll?.liveMode?.isShowAnswerMetric === "boolean") {
+      //     setShowAnswerMetric(poll?.liveMode?.isShowAnswerMetric);
+      //   }
+    }
+  }, [poll]);
+
   const timing = useMemo(() => {
     const seconds = Math.floor(
       (millisecondsLeft % Number(currentQuestion?.duration)) / 1000
