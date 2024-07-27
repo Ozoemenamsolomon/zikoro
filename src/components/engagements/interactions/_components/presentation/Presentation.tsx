@@ -274,7 +274,7 @@ export default function Presentation({
           {showScoreSheet ? (
             <>
               {isSendMailModal && !isOrganizer && !isIdPresent ? (
-                <SendMailModal
+                <SendMailModal<TRefinedQuestion>
                   close={showSendMailModal}
                   id={id}
                   quiz={quizResult}

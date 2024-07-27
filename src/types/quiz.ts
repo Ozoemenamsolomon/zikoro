@@ -22,7 +22,7 @@ export type TQuizParticipant = {
   participantImage: Required<AvatarFullConfig>;
   email?: string;
   phone?: string;
-  attemptedQuiz?: TQuiz<TRefinedQuestion[]>;
+  attemptedQuiz?: TQuiz<any[]>;
 };
 export interface TQuiz<T> {
   id: number;

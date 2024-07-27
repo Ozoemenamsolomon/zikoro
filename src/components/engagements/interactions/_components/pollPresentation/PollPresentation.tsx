@@ -18,6 +18,8 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Advert } from "../presentation/Advert";
 import { PlayersOnboarding } from "../presentation/Presentation";
 import { PollQuestion } from "./_components/PollQuestion";
+import { SendMailModal } from "../presentation/attendee/SendMailModal";
+import { AnswerSheet } from "./_components/AnswerSheet";
 type TPlayerDetail = {
   phone: string;
   email: string;
@@ -183,71 +185,97 @@ export default function PollPresentation({
 
   return (
     <div className="w-full">
-      {poll  && !loading && !isLoading && !eventLoading ? (
+      {poll && !loading && !isLoading && !eventLoading ? (
         <>
-          {isNotStarted && poll ? (
-            <div className="w-full grid grid-cols-8 bg-white items-center h-full">
-              {(isIdPresent || isOrganizer) && isLobby && (
-                <Advert
-                  quiz={poll}
-                  eventName={data?.eventTitle ?? ""}
-                  isRightBox={false}
-                  isLeftBox={isLeftBox}
-                  close={onClose}
+          {showScoreSheet ? (
+            <>
+              {isSendMailModal && !isOrganizer && !isIdPresent ? (
+                <SendMailModal<TQuestion>
+                  close={showSendMailModal}
+                  id={id}
+                  quiz={pollResult}
+                  actualQuiz={poll}
+                  isAttendee={!isIdPresent && !isOrganizer}
+                  attendeeEmail={attendee?.email || playerDetail?.email}
+                />
+              ) : (
+                <AnswerSheet
+                  poll={pollResult} // change it to pull
+                  answers={answers}
+                  close={() => {
+                    setShowScoreSheet(false);
+                    setIsNotStarted(true);
+                  }}
                 />
               )}
-              <PlayersOnboarding
-                attendee={attendee}
-                close={close}
-                isAttendee={!isIdPresent && !isOrganizer}
-                refetch={getPoll}
-                quiz={poll }
-                id={id}
-                attendeeId={attendeeId}
-                playerDetail={playerDetail}
-                setPlayerDetail={setPlayerDetail}
-                isLobby={isLobby}
-                setisLobby={setisLobby}
-                chosenAvatar={chosenAvatar}
-                setChosenAvatar={setChosenAvatar}
-              />
-            </div>
+            </>
           ) : (
-            <div className="w-full mx-auto absolute px-4 sm:px-6 bg-white inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
-              {(isIdPresent || isOrganizer) && poll && (
-                <Advert
-                  quiz={poll}
-                  eventName={data?.eventTitle ?? ""}
-                  isRightBox={false}
-                  isLeftBox={isLeftBox}
-                  close={onClose}
-                />
+            <>
+              {isNotStarted && poll ? (
+                <div className="w-full grid grid-cols-8 bg-white items-center h-full">
+                  {(isIdPresent || isOrganizer) && isLobby && (
+                    <Advert
+                      quiz={poll}
+                      eventName={data?.eventTitle ?? ""}
+                      isRightBox={false}
+                      isLeftBox={isLeftBox}
+                      close={onClose}
+                    />
+                  )}
+                  <PlayersOnboarding
+                    attendee={attendee}
+                    close={close}
+                    isAttendee={!isIdPresent && !isOrganizer}
+                    refetch={getPoll}
+                    quiz={poll}
+                    id={id}
+                    attendeeId={attendeeId}
+                    playerDetail={playerDetail}
+                    setPlayerDetail={setPlayerDetail}
+                    isLobby={isLobby}
+                    setisLobby={setisLobby}
+                    chosenAvatar={chosenAvatar}
+                    setChosenAvatar={setChosenAvatar}
+                  />
+                </div>
+              ) : (
+                <div className="w-full mx-auto absolute px-4 sm:px-6 bg-white inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
+                  {(isIdPresent || isOrganizer) && poll && (
+                    <Advert
+                      quiz={poll}
+                      eventName={data?.eventTitle ?? ""}
+                      isRightBox={false}
+                      isLeftBox={isLeftBox}
+                      close={onClose}
+                    />
+                  )}
+                  <PollQuestion
+                    isLeftBox={isLeftBox}
+                    answer={answer}
+                    quizAnswer={answers}
+                    getAnswer={getAnswer}
+                    refetchQuiz={getPoll}
+                    refetchQuizAnswers={getAnswers}
+                    poll={poll || refinedPollArray}
+                    toggleLeftBox={onClose}
+                    onOpenScoreSheet={onOpenScoreSheet}
+                    goBack={exitPoll}
+                    updateQuiz={updatePoll}
+                    updateQuizResult={updatePollResult}
+                    pollParticipantId={id}
+                    attendeeDetail={{
+                      attendeeId: attendeeId ? String(attendeeId) : null,
+                      attendeeName: playerDetail?.nickName,
+                      email: playerDetail?.email,
+                      phone: playerDetail?.phone,
+                      avatar: chosenAvatar!,
+                    }}
+                    isIdPresent={isIdPresent}
+                    isOrganizer={isOrganizer}
+                  />
+                </div>
               )}
-              <PollQuestion
-                isLeftBox={isLeftBox}
-                answer={answer}
-                quizAnswer={answers}
-                getAnswer={getAnswer}
-                refetchQuiz={getPoll}
-                refetchQuizAnswers={getAnswers}
-                poll={poll || refinedPollArray}
-                toggleLeftBox={onClose}
-                onOpenScoreSheet={onOpenScoreSheet}
-                goBack={exitPoll}
-                updateQuiz={updatePoll}
-                updateQuizResult={updatePollResult}
-                pollParticipantId={id}
-                attendeeDetail={{
-                  attendeeId: attendeeId ? String(attendeeId) : null,
-                  attendeeName: playerDetail?.nickName,
-                  email: playerDetail?.email,
-                  phone: playerDetail?.phone,
-                  avatar: chosenAvatar!,
-                }}
-                isIdPresent={isIdPresent}
-                isOrganizer={isOrganizer}
-              />
-            </div>
+            </>
           )}
         </>
       ) : (
