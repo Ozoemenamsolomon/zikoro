@@ -294,7 +294,7 @@ export async function POST(req: NextRequest) {
               }</p>
             
               <a
-               href="www.zikoro.com/event/${params.eventId}/people/info/${
+               href="www.zikoro.com/event/${eventAlias}/people/info/${
             attendee?.attendeeAlias
           }" 
               style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
