@@ -129,7 +129,7 @@ export function PollQuestion({
     return seconds;
   }, [millisecondsLeft, currentQuestion]);
   useEffect(() => {
-    if (Number(currentQuestion?.duration) > 0 ) {
+    if (Number(currentQuestion?.duration) > 0) {
       setMillisecondsLeft(Number(currentQuestion?.duration));
     }
   }, [currentQuestion?.id]);
@@ -206,27 +206,27 @@ export function PollQuestion({
     }
   }
 
-//   async function showMetric() {
-//     if (!poll?.accessibility?.live) {
-//       setShowAnswerMetric(true);
-//     } else {
-//      // if (timing > 0) return;
-//       const { questions, liveMode, ...restData } = poll;
-//       const { startingAt } = liveMode;
-//       const payload: Partial<TQuiz<TQuestion[]>> = {
-//         ...restData,
-//         liveMode: {
-//           startingAt,
-//           isShowAnswerMetric: true,
-//           isOptionSelected: true,
-//         },
-//       };
+  //   async function showMetric() {
+  //     if (!poll?.accessibility?.live) {
+  //       setShowAnswerMetric(true);
+  //     } else {
+  //      // if (timing > 0) return;
+  //       const { questions, liveMode, ...restData } = poll;
+  //       const { startingAt } = liveMode;
+  //       const payload: Partial<TQuiz<TQuestion[]>> = {
+  //         ...restData,
+  //         liveMode: {
+  //           startingAt,
+  //           isShowAnswerMetric: true,
+  //           isOptionSelected: true,
+  //         },
+  //       };
 
-//       await updatingQuiz({ payload });
-//       setShowAnswerMetric(true);
-//       refetchQuiz();
-//     }
-//   }
+  //       await updatingQuiz({ payload });
+  //       setShowAnswerMetric(true);
+  //       refetchQuiz();
+  //     }
+  //   }
 
   const optionLetter = ["A", "B", "C", "D"];
 
@@ -300,7 +300,7 @@ export function PollQuestion({
       await getAnswer(currentQuestion?.id);
       refetchQuizAnswers(poll?.id);
       setLoading(false);
-      setShowAnswerMetric(true)
+      setShowAnswerMetric(true);
     }
   }
 
@@ -403,7 +403,7 @@ export function PollQuestion({
                   <div
                     className={cn(
                       "flex flex-col items-center justify-center gap-y-2",
-                !currentQuestion?.duration && "invisible"
+                      !currentQuestion?.duration && "invisible"
                     )}
                   >
                     <div className="w-[70px] h-[70px]">
@@ -443,16 +443,18 @@ export function PollQuestion({
               <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {currentQuestion?.options.map((option, index, arr) => (
                   <PollOption
-                  key={index}
-                  selectOption={selectOption}
-                  option={option}
-                  answer={answer}
-                  isDisabled={arr?.some(({isAnswer}) => isAnswer?.length > 0)}
-                  showAnswerMetric={showAnswerMetric}
-                  isOrganizer={isOrganizer}
-                  isIdPresent={isIdPresent}
-                  optionIndex={optionLetter[index]}
-                  poll={poll}
+                    key={index}
+                    selectOption={selectOption}
+                    option={option}
+                    answer={answer}
+                    isDisabled={arr?.some(
+                      ({ isAnswer }) => isAnswer?.length > 0
+                    )}
+                    showAnswerMetric={showAnswerMetric}
+                    isOrganizer={isOrganizer}
+                    isIdPresent={isIdPresent}
+                    optionIndex={optionLetter[index]}
+                    poll={poll}
                   />
                 ))}
               </div>

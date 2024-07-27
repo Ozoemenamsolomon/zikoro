@@ -9,6 +9,7 @@ import Image from "next/image";
 import { QUser, QUsers } from "@/constants";
 import { useRouter } from "next/navigation";
 import { TQuiz, TQuestion } from "@/types";
+import { cn } from "@/lib";
 
 export function InteractionCard({
   quiz,
@@ -92,10 +93,17 @@ export function InteractionCard({
         </p>
         <div className="text-gray-500 px-3 pb-3 text-xs ms:text-mobile flex items-center justify-between w-full">
           <p className="flex items-center gap-x-2">
-            <span className="border-r pr-2 border-gray-500">{`${
-              quiz?.questions?.length || 0
-            } ${quiz?.questions?.length > 1 ? "Questions" : "Question"}`}</span>
-            <span>{`${points} ${points > 0 ? `points` : `point`}`}</span>
+            <span
+              className={cn(
+                "border-r pr-2 border-gray-500",
+                !points && "border-0"
+              )}
+            >{`${quiz?.questions?.length || 0} ${
+              quiz?.questions?.length > 1 ? "Questions" : "Question"
+            }`}</span>
+            {points && (
+              <span>{`${points} ${points > 0 ? `points` : `point`}`}</span>
+            )}
           </p>
           <p className="flex items-center gap-x-1">
             <QUsers />
