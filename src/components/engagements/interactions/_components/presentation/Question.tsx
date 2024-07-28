@@ -50,7 +50,7 @@ type TQuestionProps = {
   onOpenScoreSheet: () => void;
   updateQuizResult: (q: TQuiz<TRefinedQuestion[]>) => void;
   goBack: () => void;
-}
+};
 export function Qusetion({
   isRightBox,
   isLeftBox,
@@ -152,11 +152,11 @@ export function Qusetion({
     }
   }, [quiz]);
 
-  // isOptionSelected
+  // isOptionSelected quiz?.liveMode?.isOptionSelected &&
   useEffect(() => {
     (async () => {
       if (quiz && quiz?.accessibility?.live && (isOrganizer || isIdPresent)) {
-        if (quiz?.liveMode?.isOptionSelected && currentQuestion) {
+        if (currentQuestion) {
           await getAnswer(currentQuestion?.id);
         }
       }
@@ -376,7 +376,7 @@ export function Qusetion({
               ?.optionId || "",
         },
       };
-      setIsOptionSelected(true);
+
       await createAnswer({ payload });
 
       if (quiz?.accessibility?.live) {
@@ -391,7 +391,7 @@ export function Qusetion({
           }),
           liveMode: {
             startingAt: liveMode?.startingAt,
-            isOptionSelected: true,
+            isOptionSelected: false,
           },
         };
 
@@ -463,7 +463,7 @@ export function Qusetion({
     }
   }
 
-  console.log("trhh", isOptionSelected, )
+  console.log("trhh", isOptionSelected);
 
   return (
     <div
@@ -561,6 +561,7 @@ export function Qusetion({
                     key={index}
                     option={option}
                     isOrganizer={isOrganizer}
+                    setIsOptionSelected={setIsOptionSelected}
                     showAnswerMetric={showAnswerMetric}
                     answer={answer}
                     isDisabled={
