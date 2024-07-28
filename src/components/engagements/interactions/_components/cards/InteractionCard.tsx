@@ -59,7 +59,7 @@ export function InteractionCard({
           <p className="text-xs w-fit sm:text-sm rounded-3xl bg-basePrimary text-white px-3 py-1">
             {quiz?.interactionType === "poll" ? "Poll" : "Quiz"}
           </p>
-          <Button
+         {isNotAttendee && <Button
             onClick={(e) => {
               e.stopPropagation();
               onClose();
@@ -70,7 +70,7 @@ export function InteractionCard({
             {isOpen && (
               <ActionModal refetch={refetch} close={onClose} quiz={quiz} />
             )}
-          </Button>
+          </Button>}
         </div>
 
         {quiz?.coverImage ? (
