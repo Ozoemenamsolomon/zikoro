@@ -216,6 +216,7 @@ export function Qusetion({
           isTransitioning: quiz?.accessibility?.countdown,
           answerStatus: null,
           explanation: false,
+          isOptionSelected: false,
         },
       };
       if (isIdPresent || isOrganizer) {
