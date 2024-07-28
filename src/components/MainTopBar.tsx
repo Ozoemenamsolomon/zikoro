@@ -148,7 +148,7 @@ const MainTopBar = ({
       {pathname.includes("event") && !isLoading && attendee && (
         <Link
           className="block sm:hidden"
-          href={`/event/${event?.eventAlias}/people/info/${attendee.id}`}
+          href={`/event/${event?.eventAlias}/people/info/${attendee.attendeeAlias}`}
         >
           <UserIcon color="#717171" />
         </Link>

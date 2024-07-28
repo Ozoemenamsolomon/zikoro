@@ -23,9 +23,11 @@ const page = () => {
   const { attendeeId, eventId } = useParams();
   const firstLoad = useRef<boolean>(true);
 
+  console.log(attendeeId);
+
   const { attendee, isLoading, getAttendee } = useGetAttendee({
     attendeeId,
-    isAlias
+    isAlias: true,
   });
 
   // useEffect(() => {
@@ -88,10 +90,10 @@ const page = () => {
     getContactRequests,
   } = useGetContactRequests({ userEmail: user.userEmail });
 
-  //   if (!isLoading && !attendee) {
-  //     toast({ variant: "destructive", description: "attendee does not exist" });
-  //     router.push("/people/all");
-  //   }
+  // if (!isLoading && !attendee) {
+  //   toast({ variant: "destructive", description: "attendee does not exist" });
+  //   router.push("all");
+  // }
 
   return (
     <div className="pb-12">
