@@ -14,7 +14,7 @@ export function InteractionLayout({
   const { isIdPresent } = useCheckTeamMember({ eventId });
 
   return (
-    <div className="w-full ">
+    <div className="w-full pb-32">
       <InteractionTabs eventId={eventId} isAttendee={!isOrganizer && !isIdPresent} />
       <div className="w-full ">{children}</div>
     </div>
