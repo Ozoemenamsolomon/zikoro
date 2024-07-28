@@ -9,9 +9,9 @@ export async function GET(req: NextRequest) {
     try {
       const { data, error } = await supabase
         .from("events")
-        .select()
+        .select('*')
         .eq("published", true)
-        .eq('explore', true)
+        .eq("explore", true)
 
       if (error) throw error;
 

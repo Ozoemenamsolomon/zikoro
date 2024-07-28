@@ -86,7 +86,7 @@ export default function FeaturedEvents() {
   useEffect(() => {
     //fetch events from database
     async function fetchEventFeautured() {
-      fetch("/api/explore/featured?query", {
+      fetch("/api/explore/featured", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -239,6 +239,8 @@ export default function FeaturedEvents() {
         );
       });
     });
+
+  console.log(eventData);
 
   return (
     <>
@@ -489,10 +491,7 @@ export default function FeaturedEvents() {
                       <div className="py-2 px-4 h-auto flex flex-col justify-start border-t-[1px] border-gray-200  items-center overflow-y-auto no-scrollbar pt-8 pb-0 lg:pb-[50px]">
                         <div className="grid grid-cols-3 gap-4 mt-8 min-h-screen">
                           {filteredEvents &&
-                            (showMore
-                              ? filteredEvents
-                              : filteredEvents.slice(0, 20)
-                            ).map((event, index) => (
+                            filteredEvents.map((event, index) => (
                               <FeaturedEvent
                                 key={event.id}
                                 id={event.id}
