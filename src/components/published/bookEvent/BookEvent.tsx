@@ -362,9 +362,9 @@ export function BookEvent({
 
   useEffect(() => {
     if (chosenAttendee?.length > 0) {
-      const attendee = chosenAttendee.map(({firstName, lastName, phoneNumber,email, ticketType}) => {
+      const attendee = chosenAttendee.map(({firstName, lastName, phoneNumber,email, ticketType, attendeeAlias}) => {
         return {
-          firstName, lastName, phoneNumber, ticketType, email
+          firstName, lastName, phoneNumber, ticketType, email,attendeeAlias
         }
       })
       form.reset({
