@@ -55,6 +55,7 @@ const Attendee: React.FC<AttendeeProps> = ({
     profilePicture,
     checkInPoints,
     attendeeProfilePoints,
+    attendeeAlias,
   } = attendee;
 
   console.log(checkInPoints, firstName);
@@ -148,7 +149,7 @@ const Attendee: React.FC<AttendeeProps> = ({
       onClick={() =>
         window.innerWidth > 768
           ? selectAttendee(attendee)
-          : router.push(isLead ? `leads/info/${id}` : `info/${id}`)
+          : router.push(isLead ? `leads/info/${attendeeAlias}` : `info/${id}`)
       }
     >
       <div className="col-span-2">
