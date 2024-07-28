@@ -479,7 +479,6 @@ export function PlayersOnboarding({
   const { liveQuizPlayers, setLiveQuizPlayers } = useGetLiveParticipant({
     quizId: quiz?.quizAlias,
   });
-  // const currentPlayer = getCookie("currentPlayer");
 
   // subscribe to player
   useEffect(() => {
