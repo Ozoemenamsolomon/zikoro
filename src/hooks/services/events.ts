@@ -691,7 +691,6 @@ export function useBookingEvent() {
           ...attendee,
           eventId,
           eventAlias,
-          attendeeAlias: generateAlphanumericHash(7),
           attendeeType: [attendants],
           registrationDate: new Date(),
           paymentLink,

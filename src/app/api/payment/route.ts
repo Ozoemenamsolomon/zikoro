@@ -161,11 +161,13 @@ export async function POST(req: NextRequest) {
           firstName,
           lastName,
           ticketType,
+          attendeeAlias,
         }: {
           email: string;
           firstName: string;
           lastName: string;
           ticketType: string;
+          attendeeAlias: string;
         }) => {
           return new Promise(async (resolve) => {
             // Generate QR code
@@ -179,6 +181,7 @@ export async function POST(req: NextRequest) {
               name: `${firstName} ${lastName}`,
               qrCode: qrCodeUrl,
               ticketType,
+              attendeeAlias,
             });
           });
         }
@@ -189,6 +192,7 @@ export async function POST(req: NextRequest) {
         name: string;
         qrCode: string;
         ticketType: string;
+        attendeeAlias: string;
       }[] = await Promise.all(resolveAttendees);
       // sending email
 
@@ -290,7 +294,9 @@ export async function POST(req: NextRequest) {
               }</p>
             
               <a
-               href="www.zikoro.com/event/${params.eventId}/people/info/571" 
+               href="www.zikoro.com/event/${params.eventId}/people/info/${
+            attendee?.attendeeAlias
+          }" 
               style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
               >
               Update Profile</a>

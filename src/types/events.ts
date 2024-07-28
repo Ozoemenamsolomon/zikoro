@@ -183,6 +183,7 @@ interface TAttendeeDetail {
   lastName: string;
   phoneNumber: string;
   whatsappNumber: string;
+  attendeeAlias: string;
 }
 export interface TEventTransactionDetail {
   affiliateCode: string;
