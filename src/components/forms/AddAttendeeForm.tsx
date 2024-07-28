@@ -32,7 +32,11 @@ import {
 import { useEffect, useState } from "react";
 import { COUNTRY_CODE } from "@/utils/countryCode";
 import { attendeeTypeOptions } from "@/data/attendee";
-import { uploadFile, uploadFiles } from "@/utils/helpers";
+import {
+  generateAlphanumericHash,
+  uploadFile,
+  uploadFiles,
+} from "@/utils/helpers";
 import { useParams } from "next/navigation";
 import { getCookie } from "@/hooks";
 import { useGetData } from "@/hooks/services/request";
@@ -78,9 +82,7 @@ export default function AddAttendeeForm({
     data: engagementsSettings,
     isLoading: engagementsSettingsIsLoading,
     getData: getEngagementsSettings,
-  } = useGetData<EngagementsSettings>(
-    `engagements/${eventId}/settings`
-  );
+  } = useGetData<EngagementsSettings>(`engagements/${eventId}/settings`);
 
   const {
     watch,
@@ -149,6 +151,8 @@ export default function AddAttendeeForm({
 
     if (attendee) {
       payload.id = attendee.id;
+    } else {
+      payload.attendeeAlias = generateAlphanumericHash(7);
     }
 
     const attendeeProfilePoints = parseInt(
