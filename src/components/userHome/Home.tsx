@@ -15,7 +15,7 @@ export default function Home() {
       href: "/events",
     },
     {
-      title: "Refer a Friend",
+      title: "Refer & Earn",
       subTitle: "Invite a friend to use zikoro and get paid",
       image: "/images/referral.svg",
       href: "/referrals",
