@@ -2,12 +2,9 @@ import { uploadFile } from "@/utils";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-
+import { createICSContent } from "@/utils";
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
-
-  // intialize ics
-  const ics = require("ics");
 
   if (req.method === "POST") {
     try {
@@ -15,12 +12,14 @@ export async function POST(req: NextRequest) {
       const {
         count,
         startDate,
+        
         endDate,
         address,
         organizerContact,
         organization,
         eventImage,
         trackingId,
+        eventEndDate,
         ...restItem
       } = params;
       const {
@@ -71,30 +70,6 @@ export async function POST(req: NextRequest) {
         }
       );
 
-      // Create iCalendar event
-      const icsEvent = {
-        ...icsDateFormat,
-        title: event,
-        location: address,
-        attendees: attendeesNames,
-        organizer: { name: organization, email: organizerContact?.email },
-        // Add other event details as needed
-        //  organizerContact?.email
-      };
-
-      //   console.log("tyhejscs", icsEvent);
-      // Generate iCalendar content
-      const { error: icsError, value: iCalendarContent }: any =
-        await new Promise((resolve) => {
-          ics.createEvent(icsEvent, (error: Error, value: string) => {
-            resolve({ error, value });
-          });
-        });
-
-      if (icsError) {
-        //   console.log("error", icsError);
-        throw icsError;
-      }
 
       const { error: firstError, status: firstStatus } = await supabase
         .from("eventTransactions")
@@ -204,7 +179,17 @@ export async function POST(req: NextRequest) {
           url: process.env.NEXT_PUBLIC_ZEPTO_URL,
           token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
         });
-
+        const calendarICS = createICSContent(
+          eventDate,
+          eventEndDate,
+          event,
+          address,
+          { name: organization, email: organizerContact?.email },
+          {
+            name: attendee.name,
+            email: attendee.email,
+          }
+        );
         await client.sendMail({
           from: {
             address: process.env.NEXT_PUBLIC_EMAIL,
@@ -504,7 +489,7 @@ export async function POST(req: NextRequest) {
           attachments: [
             {
               name: "event.ics",
-              content: iCalendarContent,
+              content: Buffer.from(calendarICS).toString("base64"),
               mime_type: "text/calendar",
             },
           ],

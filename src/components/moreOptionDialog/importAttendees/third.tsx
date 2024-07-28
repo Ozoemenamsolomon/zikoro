@@ -11,6 +11,8 @@ import useEventStore from "@/store/globalEventStore";
 import useUserStore from "@/store/globalUserStore";
 import { EngagementsSettings } from "@/types/engagements";
 import { useGetData } from "@/hooks/services/request";
+import { generateAlias } from "@/utils";
+import { generateAlphanumericHash } from "@/utils/helpers";
 
 const Third = ({
   data,
@@ -60,6 +62,7 @@ const Third = ({
         registrationDate: new Date().toISOString(),
         attendeeType: ["attendee"],
         ticketType: "in-house",
+        attendeeAlias: generateAlphanumericHash(7),
       };
 
       const completedFields: TCompletedFields = [];

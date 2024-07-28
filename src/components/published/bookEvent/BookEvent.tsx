@@ -61,7 +61,8 @@ export function BookEvent({
   availableSlot,
   eventTitle,
   eventLocation,
-  trackingId
+  trackingId,
+  eventEndDate
 }: {
   eventId?: string;
   eventDate?: string;
@@ -78,6 +79,7 @@ export function BookEvent({
   eventLocation?: string;
   currency: string | undefined;
   trackingId?: string | null;
+  eventEndDate?: string;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -239,6 +241,7 @@ export function BookEvent({
           eventLocation,
           total,
           processingFee,
+          eventEndDate,
           organizerContact: JSON.stringify(organizerContact),
           amountPayable: processingFee ? total - processingFee : total,
         })}`
