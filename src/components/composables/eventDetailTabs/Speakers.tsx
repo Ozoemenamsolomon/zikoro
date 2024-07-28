@@ -60,7 +60,7 @@ export function Speakers({
         </div>
       )}
       {active === 1 && (
-        <div className=" w-full grid grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
+        <div className=" w-full grid grid-cols-1 sm:grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
           {isLoading && (
             <div className="col-span-full h-[200px] flex items-center justify-center">
               <LoaderAlt size={30} className="animate-spin" />

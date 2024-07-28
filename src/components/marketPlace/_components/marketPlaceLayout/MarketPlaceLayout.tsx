@@ -1,6 +1,4 @@
  "use client"
-
-import { SideBarLayout } from "@/components";
 import { MarketPlaceTab } from "..";
 
 export function MarketPlaceLayout({

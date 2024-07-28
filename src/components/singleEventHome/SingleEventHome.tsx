@@ -15,7 +15,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import Image from "next/image";
-import { Reward } from "@/types";
+import { Reward, RedeemPoint } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { RewardCard } from "../marketPlace/rewards/_components";
 import { useGetData } from "@/hooks/services/request";
@@ -27,9 +27,13 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     isLoading: loadingRewards,
     getData: refetch,
   } = useGetData<Reward[]>(`/rewards/${eventId}`);
+  const { totalPoints } = useGetUserPoint(eventId);
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
-  const { totalPoints } = useGetUserPoint(eventId);
+  const { data: redeemedRewards, getData } = useGetData<RedeemPoint[]>(
+    `/rewards/${eventId}/redeemed`
+  );
+
   const { data: partnersData, loading: partnersLoading } =
     useFetchPartners(eventId);
 
@@ -51,7 +55,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     Array.isArray(partnersData) && partnersData?.length > 1 ? Slider : "div";
   return (
     <>
-      <div className="w-full grid grid-cols-1 md:grid-cols-9 items-center sm:items-start ">
+      <div className="w-full grid grid-cols-1 md:grid-cols-9 items-center justify-center sm:justify-start sm:items-start ">
         <div className="w-full col-span-full md:col-span-6 flex flex-col gap-y-4  items-start justify-start border-r">
           <div className={cn("w-full", active > 1 && "hidden sm:block")}>
             <EventSchedule event={data} loading={loading} />
@@ -120,6 +124,8 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
                 <RewardCard
                   key={index}
                   refetch={refetch}
+                  refetchRedeemed={getData}
+                  redeemedRewards={redeemedRewards}
                   attendeePoints={totalPoints}
                   isOrganizer={isOrganizer || isIdPresent}
                   reward={reward}
