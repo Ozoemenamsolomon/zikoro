@@ -2,7 +2,7 @@
 
 import { Button } from "@/components";
 import { cn } from "@/lib";
-import { NavigateNext } from "@styled-icons/material-rounded/NavigateNext";
+import { NavigateNext } from "styled-icons/material-rounded";
 import { useState } from "react";
 import {Edit} from "."
 import {TAgenda, Event} from "@/types"
@@ -11,12 +11,14 @@ export function CollapsibleWidget({
   title,
   session,
   event,
+  isNotAttendee,
   refetch
 }: {
   children: React.ReactNode;
   title: string;
   session: TAgenda; 
   event?: Event | null;
+  isNotAttendee:boolean;
   refetch?: () => Promise<any>;
 }) {
   const [isVisible, setVisibility] = useState(false);
@@ -34,7 +36,7 @@ export function CollapsibleWidget({
       onClick={toggleVisibility}
       className="w-full flex items-center justify-between px-3 py-3 border-b ">
         <p className="font-semibold text-base sm:text-xl">{title}</p>
-        <div className="flex items-center gap-x-2">
+      {isNotAttendee &&  <div className="flex items-center gap-x-2">
           <p>{title}</p>
           <Edit session={session} event={event} refetch={refetch} />
           <Button className="w-fit h-fit px-1">
@@ -45,7 +47,7 @@ export function CollapsibleWidget({
               size={20}
             />
           </Button>
-        </div>
+        </div>}
       </div>
       {isVisible && (
         <div
