@@ -290,7 +290,7 @@ export async function POST(req: NextRequest) {
               }</p>
             
               <a
-               href="www.zikoro.com/profile" 
+               href="www.zikoro.com/event/${params.eventId}/people/info/571" 
               style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
               >
               Update Profile</a>
@@ -371,14 +371,7 @@ export async function POST(req: NextRequest) {
               <p style="color: #b4b4b4; font-size: 14px; margin: 0">
                 ${startDate} - ${endDate}
               </p>
-              <div style="display: flex; align-items: center; gap: 0.5rem">
-                <p style="color: #b4b4b4; font-size: 14px; margin: 0;">Add to</p>
-                <a
-                  style="text-decoration: none; color: #001fcc; font-size: 14px; margin-left:3px;"
-                  href="#"
-                  >Google</a
-                >
-              </div>
+            
             </div>
           </div>
           <!--end-->
