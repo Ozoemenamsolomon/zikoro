@@ -12,12 +12,14 @@ export async function POST(req: NextRequest) {
       const {
         count,
         startDate,
+        
         endDate,
         address,
         organizerContact,
         organization,
         eventImage,
         trackingId,
+        eventEndDate,
         ...restItem
       } = params;
       const {
@@ -178,8 +180,8 @@ export async function POST(req: NextRequest) {
           token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
         });
         const calendarICS = createICSContent(
-          startDate,
-          endDate,
+          eventDate,
+          eventEndDate,
           event,
           address,
           { name: organization, email: organizerContact?.email },
