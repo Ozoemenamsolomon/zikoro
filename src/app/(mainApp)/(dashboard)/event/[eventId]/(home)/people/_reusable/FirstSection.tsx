@@ -241,7 +241,9 @@ export default function FirstSection({
   const { updateAttendees } = useUpdateAttendees();
 
   useEffect(() => {
-    calculateAndSetMaxHeight(divRef);
+    if (window.innerWidth > 768) {
+      calculateAndSetMaxHeight(divRef);
+    }
   }, [mappedAttendees]);
 
   // useEffect(() => {
@@ -594,6 +596,7 @@ export default function FirstSection({
                 user={user}
               />
             ))}
+          <div className="bg-gray-200 w-full h-[25px]" />
         </div>
       </div>
     </>
