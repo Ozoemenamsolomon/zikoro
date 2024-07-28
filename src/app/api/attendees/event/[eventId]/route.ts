@@ -11,6 +11,7 @@ export async function GET(
   const { eventId } = params;
   if (req.method === "GET") {
     try {
+
       const { data, error, status } = await supabase
         .from("attendees")
         .select("*")

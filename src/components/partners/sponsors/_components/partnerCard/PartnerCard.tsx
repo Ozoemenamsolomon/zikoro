@@ -67,9 +67,9 @@ export function PartnerCard({
             : `, Booth ${sponsor?.boothNumber?.toString()}`}
         </div>
 
-        <div className="flex items-center gap-x-3">
+        <div className="flex flex-col sm:flex-row items-center gap-x-3">
           {!sponsor?.city && !sponsor?.country ? null : (
-            <div className="flex items-center gap-x-2">
+            <div className="flex items-start gap-x-2">
               <Location size={16} className="text-[#717171]" />
               <p>{`${sponsor.city || "City"}, ${
                 sponsor.country || "Country"
@@ -77,7 +77,7 @@ export function PartnerCard({
             </div>
           )}
           {sponsor.industry !== undefined && (
-            <div className="flex items-center gap-x-2">
+            <div className="flex items-start gap-x-2">
               <IndustryIcon />
               <p>{sponsor.industry}</p>
             </div>

@@ -25,6 +25,7 @@ type QueryData = {
   total: string;
   processingFee: string;
   trackingId?: string | null
+  eventEndDate: string;
 };
 export function Payment({
   eventRegistrationRef,
@@ -81,6 +82,7 @@ export function Payment({
       endDate: parsedData?.endDate,
       registrationCompleted: reference.status === "success",
       eventDate: data?.eventDate,
+      eventEndDate: parsedData?.eventEndDate,
       payOutStatus: "new",
       ticketCategory: data?.ticketCategory,
       event: data?.event,
@@ -132,6 +134,7 @@ export function Payment({
       endDate: parsedData?.endDate,
       registrationCompleted: true,
       eventDate: data?.eventDate,
+      eventEndDate: parsedData?.eventEndDate,
       ticketCategory: data?.ticketCategory,
       event: data?.event,
       attendeesDetails: data?.attendeesDetails,

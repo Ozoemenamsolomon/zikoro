@@ -24,26 +24,8 @@ type ChosenAnswerStatus = {
   isCorrect: boolean;
   correctOption: number;
 };
-export function Qusetion({
-  isRightBox,
-  isLeftBox,
-  toggleRightBox,
-  toggleLeftBox,
-  quiz,
-  updateQuiz,
-  attendeeDetail,
-  isOrganizer,
-  isIdPresent,
-  quizParticipantId,
-  answer,
-  getAnswer,
-  refetchQuizAnswers,
-  quizAnswer,
-  refetchQuiz,
-  onOpenScoreSheet,
-  updateQuizResult,
-  goBack,
-}: {
+
+type TQuestionProps = {
   isRightBox: boolean;
   isLeftBox: boolean;
   quizParticipantId: string;
@@ -68,7 +50,27 @@ export function Qusetion({
   onOpenScoreSheet: () => void;
   updateQuizResult: (q: TQuiz<TRefinedQuestion[]>) => void;
   goBack: () => void;
-}) {
+}
+export function Qusetion({
+  isRightBox,
+  isLeftBox,
+  toggleRightBox,
+  toggleLeftBox,
+  quiz,
+  updateQuiz,
+  attendeeDetail,
+  isOrganizer,
+  isIdPresent,
+  quizParticipantId,
+  answer,
+  getAnswer,
+  refetchQuizAnswers,
+  quizAnswer,
+  refetchQuiz,
+  onOpenScoreSheet,
+  updateQuizResult,
+  goBack,
+}: TQuestionProps) {
   const [currentQuestion, setCurrentQuestion] =
     useState<TRefinedQuestion | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -214,6 +216,7 @@ export function Qusetion({
           isTransitioning: quiz?.accessibility?.countdown,
           answerStatus: null,
           explanation: false,
+          isOptionSelected: false,
         },
       };
       if (isIdPresent || isOrganizer) {

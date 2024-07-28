@@ -565,34 +565,37 @@ export default function FirstSection({
           </button>
         </div>
       </div>
-      <div className="overflow-auto hide-scrollbar" ref={divRef}>
-        {mappedAttendees
-          .filter(
-            ({ firstName, lastName, organization, jobTitle }) =>
-              firstName?.toLowerCase().includes(searchTerm) ||
-              lastName?.toLowerCase().includes(searchTerm) ||
-              jobTitle?.toLowerCase().includes(searchTerm) ||
-              organization?.toLowerCase().includes(searchTerm)
-          )
-          .sort((a, b) =>
-            sortOrder === "asc"
-              ? a.firstName.localeCompare(b.firstName)
-              : b.firstName.localeCompare(a.firstName)
-          )
-          .map((attendee) => (
-            <Attendee
-              key={attendee.id}
-              attendee={attendee}
-              isSelected={attendee.id === selectedAttendee?.id}
-              selectAttendee={onSelectAttendee}
-              getAttendees={getAttendees}
-              favourites={favourites}
-              favouriteIsLoading={favouriteIsLoading}
-              toggleFavourites={toggleFavourites}
-              event={event}
-              user={user}
-            />
-          ))}
+      <div className="overflow-auto hide-scrollbar md:pb-32" ref={divRef}>
+        <div className="min-h-max">
+          {mappedAttendees
+            .filter(
+              ({ firstName, lastName, organization, jobTitle }) =>
+                firstName?.toLowerCase().includes(searchTerm) ||
+                lastName?.toLowerCase().includes(searchTerm) ||
+                jobTitle?.toLowerCase().includes(searchTerm) ||
+                organization?.toLowerCase().includes(searchTerm)
+            )
+            .sort((a, b) =>
+              sortOrder === "asc"
+                ? a.firstName.localeCompare(b.firstName)
+                : b.firstName.localeCompare(a.firstName)
+            )
+            .map((attendee) => (
+              <Attendee
+                key={attendee.id}
+                attendee={attendee}
+                isSelected={attendee.id === selectedAttendee?.id}
+                selectAttendee={onSelectAttendee}
+                getAttendees={getAttendees}
+                favourites={favourites}
+                favouriteIsLoading={favouriteIsLoading}
+                toggleFavourites={toggleFavourites}
+                event={event}
+                user={user}
+              />
+            ))}
+          {!isLoading && <div className="bg-gray-200 w-full h-[25px]" />}
+        </div>
       </div>
     </>
   );

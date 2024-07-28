@@ -389,6 +389,7 @@ export function SingleEvent({
         <BookEvent
           event={event}
           eventDate={event?.startDateTime}
+          eventEndDate={event?.endDateTime}
           endDate={endDate}
           address={event?.eventAddress}
           eventImage={event?.eventPoster}

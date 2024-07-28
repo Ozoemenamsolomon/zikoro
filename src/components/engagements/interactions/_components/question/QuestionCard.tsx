@@ -81,14 +81,14 @@ export function QuestionCard({
             />
           </p>
           <div className="flex items-center gap-x-2">
-            <div className="flex bg-basePrimary/10 px-2 py-1 items-center font-medium text-xs text-basePrimary gap-x-1">
+           {quiz?.interactionType !== "poll" && <div className="flex bg-basePrimary/10 px-2 py-1 items-center font-medium text-xs text-basePrimary gap-x-1">
               <p>{`${question?.points ?? "0"}pts`}</p>
               <FeedStar size={15} />
-            </div>
-            <div className="flex  items-center font-medium text-xs text-basePrimary gap-x-1">
+            </div>}
+            {quiz?.interactionType !== "poll" && <div className="flex  items-center font-medium text-xs text-basePrimary gap-x-1">
               <p>{duration ?? 0}</p>
               <Time size={15} />
-            </div>
+            </div>}
             <DeleteQuestion
               refetch={refetch}
               quiz={quiz}

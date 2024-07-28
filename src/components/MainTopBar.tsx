@@ -130,7 +130,7 @@ const MainTopBar = ({
           ) : (
             <div>
               <div className="flex items-center pb-[0.31rem] pt-[0.4rem] gap-x-3">
-                <h2 className="text-base sm:text-xl  w-[200px] text-ellipsis whitespace-nowrap overflow-hidden sm:w-fit  font-semibold">
+                <h2 className="text-base sm:text-xl  max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden sm:w-fit  font-semibold">
                   {event?.eventTitle ?? ""}
                 </h2>
 
@@ -148,7 +148,7 @@ const MainTopBar = ({
       {pathname.includes("event") && !isLoading && attendee && (
         <Link
           className="block sm:hidden"
-          href={`/event/${event?.eventAlias}/people/info/${attendee.id}`}
+          href={`/event/${event?.eventAlias}/people/info/${attendee.attendeeAlias}`}
         >
           <UserIcon color="#717171" />
         </Link>

@@ -691,7 +691,6 @@ export function useBookingEvent() {
           ...attendee,
           eventId,
           eventAlias,
-          attendeeAlias: generateAlphanumericHash(7),
           attendeeType: [attendants],
           registrationDate: new Date(),
           paymentLink,
@@ -704,7 +703,6 @@ export function useBookingEvent() {
       const { error, status } = await supabase
         .from("attendees")
         .upsert([...attendees]);
-
       if (error) {
         if (
           error.message ===
@@ -840,8 +838,9 @@ export function useUpdateTransactionDetail() {
       });
 
       if (status === 204 || status === 200) {
+  
         const { data: attendees, status } = await getRequest<TAttendee[]>({
-          endpoint: `/attendees/event/${payload?.eventId}`,
+          endpoint: `/attendees/event/${payload?.eventAlias}`,
         });
 
         const registeredAttendee = attendees?.data
@@ -1263,15 +1262,15 @@ export function useGetUserPoint(eventId: string) {
         const sum = value
           ?.filter((item) => Number(item?.id) === attendeeId)
           ?.reduce((acc, val) => acc + (val?.points || 0), 0);
-      
+
         total += sum;
-       
-        setTotalPoints(totalPoints + sum)
+
+        setTotalPoints(totalPoints + sum);
       });
-      console.log("um", total)
-     setTotalPoints(total);
+      console.log("um", total);
+      setTotalPoints(total);
     }
-    console.log("um", totalPoints)
+    console.log("um", totalPoints);
   }, [isLoading, data, attendeeId]);
 
   return {

@@ -24,6 +24,7 @@ import {
 } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
 import { Event } from "@/types";
+import { generateAlphanumericHash } from "@/utils/helpers";
 import { usePathname, useRouter } from "next/navigation";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { ArrowBack } from "styled-icons/material-outlined";
@@ -36,6 +37,7 @@ type TChosenAttendee = {
   email: string;
   ticketType: string;
   price: number;
+  attendeeAlias: string;
   id: number;
 };
 
@@ -59,7 +61,8 @@ export function BookEvent({
   availableSlot,
   eventTitle,
   eventLocation,
-  trackingId
+  trackingId,
+  eventEndDate
 }: {
   eventId?: string;
   eventDate?: string;
@@ -76,6 +79,7 @@ export function BookEvent({
   eventLocation?: string;
   currency: string | undefined;
   trackingId?: string | null;
+  eventEndDate?: string;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -237,6 +241,7 @@ export function BookEvent({
           eventLocation,
           total,
           processingFee,
+          eventEndDate,
           organizerContact: JSON.stringify(organizerContact),
           amountPayable: processingFee ? total - processingFee : total,
         })}`
@@ -345,6 +350,7 @@ export function BookEvent({
       lastName: "",
       email: "",
       phoneNumber: "",
+      attendeeAlias: generateAlphanumericHash(7),
       ticketType,
       price,
       id,
@@ -359,9 +365,9 @@ export function BookEvent({
 
   useEffect(() => {
     if (chosenAttendee?.length > 0) {
-      const attendee = chosenAttendee.map(({firstName, lastName, phoneNumber,email, ticketType}) => {
+      const attendee = chosenAttendee.map(({firstName, lastName, phoneNumber,email, ticketType, attendeeAlias}) => {
         return {
-          firstName, lastName, phoneNumber, ticketType, email
+          firstName, lastName, phoneNumber, ticketType, email,attendeeAlias
         }
       })
       form.reset({

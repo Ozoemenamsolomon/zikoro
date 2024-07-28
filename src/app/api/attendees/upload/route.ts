@@ -12,7 +12,10 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      const { error } = await supabase.from("attendees").insert(params);
+      const { data: attendees, error } = await supabase
+        .from("attendees")
+        .insert(params)
+        .select("*");
       if (error) throw error;
 
       const { data: event, error: eventSelectError } = await supabase
@@ -70,7 +73,9 @@ export async function POST(req: NextRequest) {
       const senderName = "Zikoro";
       const subject = `Invite from to ${eventTitle}`;
 
-      (params as TAttendee[]).forEach(async (attendee: TAttendee) => {
+      console.log(attendees);
+
+      (attendees as TAttendee[]).forEach(async (attendee: TAttendee) => {
         try {
           const calendarICS = createICSContent(
             startDateTime,
@@ -78,7 +83,10 @@ export async function POST(req: NextRequest) {
             description,
             eventAddress,
             { name: organizationName, email: eventContactEmail },
-            { email }
+            {
+              name: attendee.firstName + " " + attendee.lastName,
+              email: attendee.email,
+            }
           );
 
           const resp = await client.sendMail({
@@ -89,8 +97,8 @@ export async function POST(req: NextRequest) {
             to: [
               {
                 email_address: {
-                  address: email,
-                  name: "attendee",
+                  address: attendee.email,
+                  name: attendee.firstName + " " + attendee.lastName,
                 },
               },
             ],
@@ -133,7 +141,10 @@ export async function POST(req: NextRequest) {
                   justify-content: space-between;
                 "
               >
-                <p style="font-size: 13px; color: #b4b4b4; width: 50%;">Order Date: ${formattedDate}</p>
+                <p style="font-size: 13px; color: #b4b4b4; width: 50%;">Order Date: ${format(
+                  new Date(),
+                  "PPP"
+                )}</p>
                 <p style="font-size: 13px; color: #b4b4b4 width:50%; text-align: end;">Reference <span style="color:black; margin-left:3px; font-weight: 500;">In-house</span></p>
               </div>
             </div>
@@ -170,7 +181,9 @@ export async function POST(req: NextRequest) {
               }</p>
             
               <a
-               href="www.zikoro.com/profile" 
+               href="www.zikoro.com/event/${
+                 currentEvent.eventAlias
+               }/people/info/${attendee.id}" 
               style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
               >
               Update Profile</a>
@@ -253,7 +266,7 @@ export async function POST(req: NextRequest) {
           </div>
           <!--end-->
             <a
-            href="www.zikoro.com/event/${currentEvent.eventAlias}/home"
+            href="www.zikoro.com/event/${currentEvent.eventAlias}/reception"
             style="max-width:600px; margin:0 auto;"
             >
             <button
