@@ -44,6 +44,7 @@ export function CollapsibleWidget({
               className={`transform transition-all duration-300 ease-in-out ${
                 isVisible ? "-rotate-90" : "rotate-90"
               }`}
+              
               size={20}
             />
           </Button>
