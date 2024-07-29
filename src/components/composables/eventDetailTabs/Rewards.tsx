@@ -29,10 +29,10 @@ export function Rewards({
     `/rewards/${eventId}/redeemed`
   );
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <div
         className={cn(
-          "  w-full grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 gap-4  ",
+          "  w-full grid grid-cols-1 px-4 sm:grid-cols-2 md:grid-cols-3 gap-4  ",
           isEventHome && "md:grid-cols-2"
         )}
       >

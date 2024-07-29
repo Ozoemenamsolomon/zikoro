@@ -147,7 +147,7 @@ export function EventDetailTabs({
         {active === EventDetailTab.SPEAKERS_TAB && event && (
           <Speakers
             eventId={String(event.eventAlias)}
-           // changeMajorActiveState={changeActiveState}
+            // changeMajorActiveState={changeActiveState}
           />
         )}
         {active === EventDetailTab.AGENDA_TAB && event && (
@@ -156,12 +156,8 @@ export function EventDetailTabs({
         {active === EventDetailTab.EXIHIBITORS_TAB && event && (
           <Sponsors event={event} changeMajorActiveState={changeActiveState} />
         )}
-           {active === EventDetailTab.REWARD_TAB && event && (
-          <Rewards
-            eventId={String(event.eventAlias)}
-            isEventHome
-           // changeMajorActiveState={changeActiveState}
-          />
+        {active === EventDetailTab.REWARD_TAB && event && (
+          <Rewards eventId={String(event.eventAlias)} isEventHome />
         )}
       </div>
     </>
