@@ -28,7 +28,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     getData: refetch,
   } = useGetData<Reward[]>(`/rewards/${eventId}`);
   const { totalPoints } = useGetUserPoint(eventId);
-  const { isOrganizer } = useVerifyUserAccess(eventId);
+  const { isOrganizer, attendeeId } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const { data: redeemedRewards, getData } = useGetData<RedeemPoint[]>(
     `/rewards/${eventId}/redeemed`
@@ -126,6 +126,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
                   refetch={refetch}
                   refetchRedeemed={getData}
                   redeemedRewards={redeemedRewards}
+                  attendeeId={attendeeId}
                   attendeePoints={totalPoints}
                   isOrganizer={isOrganizer || isIdPresent}
                   reward={reward}
