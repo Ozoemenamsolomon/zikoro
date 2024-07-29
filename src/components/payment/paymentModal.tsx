@@ -295,7 +295,9 @@ export function PaymentModal({
                       </li>
                       <div
                         className="text-zikoroBlue flex gap-x-2 text-[14px] font-normal items-center mt-4 cursor-pointer"
-                        onClick={() => setShowMoreProfessional(!showMoreProfessional)}
+                        onClick={() =>
+                          setShowMoreProfessional(!showMoreProfessional)
+                        }
                       >
                         {" "}
                         <ArrowheadUpOutline size={16} /> Show less features{" "}
@@ -304,7 +306,9 @@ export function PaymentModal({
                   ) : (
                     <div
                       className="text-zikoroBlue flex gap-x-2 text-[14px] font-normal items-center mt-4 cursor-pointer"
-                      onClick={() => setShowMoreProfessional(!showMoreProfessional)}
+                      onClick={() =>
+                        setShowMoreProfessional(!showMoreProfessional)
+                      }
                     >
                       {" "}
                       <ArrowheadDownOutline size={16} /> Show more features{" "}
@@ -343,9 +347,7 @@ export function PaymentModal({
                   ) : (
                     <div
                       className="text-zikoroBlue flex gap-x-2 text-[14px] font-normal items-center mt-4 cursor-pointer"
-                      onClick={() =>
-                        setShowMoreEnterprise(!showMoreEnterprise)
-                      }
+                      onClick={() => setShowMoreEnterprise(!showMoreEnterprise)}
                     >
                       {" "}
                       <ArrowheadDownOutline size={16} /> Show more features{" "}
