@@ -18,6 +18,10 @@ export function MarketPlaceTab({eventId}:{eventId?:string}) {
       href: `rewards`,
       name: "Rewards",
     },
+    {
+      href: `stamp-card`,
+      name: "StampCard",
+    },
   ];
   return (
     <ul className="py-4 pl-[60px] lg:pl-[20px] flex gap-x-8 px-4 text-gray-700">

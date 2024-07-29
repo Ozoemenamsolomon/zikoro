@@ -13,10 +13,6 @@ export function InteractionTabs({ eventId, isAttendee }: { eventId: string; isAt
       href: "interactions",
     },
     {
-      name: "StampCard",
-      href: `stamp-card`,
-    },
-    {
       name: "Settings",
       href: `settings`,
     },

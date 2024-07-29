@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { InteractionLayout } from "../_components";
+import { InteractionLayout } from "../../engagements/_components";
 import { Search } from "styled-icons/evil";
 import { Form, FormControl, FormField, FormItem, Input } from "@/components";
 import { ActiveStampCard, LightBulb } from "@/constants";
