@@ -2,12 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import CopyrightFooter from "@/components/CopyrightFooter";
-import {
-  FilterIcon,
-  ArrowDownIcon,
-  ArrowUpIcon,
-  CloseIcon,
-} from "@/constants/icons";
+import { FilterIcon, ArrowDownIcon, ArrowUpIcon } from "@/constants/icons";
 import { ArrowBackCircle } from "styled-icons/ionicons-outline";
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
 import { useSearchParams } from "next/navigation";
@@ -183,7 +178,7 @@ export default function FeaturedEvents() {
     return categories;
   };
 
-  //filter function
+  // //filter function
   const filteredEvents = eventData
     ?.filter((event) => {
       const lowerSearchQuery = searchQuery.toLowerCase();
@@ -239,8 +234,6 @@ export default function FeaturedEvents() {
         );
       });
     });
-
-  console.log(eventData);
 
   return (
     <>
@@ -491,26 +484,31 @@ export default function FeaturedEvents() {
                       <div className="py-2 px-4 h-auto flex flex-col justify-start border-t-[1px] border-gray-200  items-center overflow-y-auto no-scrollbar pt-8 pb-0 lg:pb-[50px]">
                         <div className="grid grid-cols-3 gap-4 mt-8 min-h-screen">
                           {filteredEvents &&
-                            filteredEvents.map((event, index) => (
-                              <FeaturedEvent
-                                key={event.id}
-                                id={event.id}
-                                eventPoster={event.eventPoster}
-                                eventTitle={event.eventTitle}
-                                eventCity={event.eventCity}
-                                eventCountry={event.eventCountry}
-                                eventCategory={event.eventCategory}
-                                eventAlias={event.eventAlias}
-                                locationType={event.locationType}
-                                pricing={event.pricing}
-                                pricingCurrency={event.pricingCurrency}
-                                startDateTime={event.startDateTime}
-                                expectedParticipants={
-                                  event.expectedParticipants
-                                }
-                                registered={event.registered}
-                              />
-                            ))}
+                            (showMore
+                              ? filteredEvents
+                              : filteredEvents.slice(0, 20)
+                            ).map((event, index) => {
+                              return (
+                                <FeaturedEvent
+                                  key={event.id}
+                                  id={event.id}
+                                  eventPoster={event.eventPoster}
+                                  eventTitle={event.eventTitle}
+                                  eventCity={event.eventCity}
+                                  eventAlias={event.eventAlias}
+                                  eventCountry={event.eventCountry}
+                                  eventCategory={event.eventCategory}
+                                  locationType={event.locationType}
+                                  pricing={event.pricing}
+                                  pricingCurrency={event.pricingCurrency}
+                                  startDateTime={event.startDateTime}
+                                  expectedParticipants={
+                                    event.expectedParticipants
+                                  }
+                                  registered={event.registered}
+                                />
+                              );
+                            })}
                         </div>
 
                         {eventData && eventData.length > 20 && !showMore && (
@@ -583,24 +581,28 @@ export default function FeaturedEvents() {
                           (showMore
                             ? filteredEvents
                             : filteredEvents.slice(0, 20)
-                          ).map((event, index) => (
-                            <FeaturedEvent
-                              key={event.id}
-                              id={event.id}
-                              eventPoster={event.eventPoster}
-                              eventTitle={event.eventTitle}
-                              eventCity={event.eventCity}
-                              eventAlias={event.eventAlias}
-                              eventCountry={event.eventCountry}
-                              eventCategory={event.eventCategory}
-                              locationType={event.locationType}
-                              pricing={event.pricing}
-                              pricingCurrency={event.pricingCurrency}
-                              startDateTime={event.startDateTime}
-                              expectedParticipants={event.expectedParticipants}
-                              registered={event.registered}
-                            />
-                          ))}
+                          ).map((event, index) => {
+                            return (
+                              <FeaturedEvent
+                                key={event.id}
+                                id={event.id}
+                                eventPoster={event.eventPoster}
+                                eventTitle={event.eventTitle}
+                                eventCity={event.eventCity}
+                                eventAlias={event.eventAlias}
+                                eventCountry={event.eventCountry}
+                                eventCategory={event.eventCategory}
+                                locationType={event.locationType}
+                                pricing={event.pricing}
+                                pricingCurrency={event.pricingCurrency}
+                                startDateTime={event.startDateTime}
+                                expectedParticipants={
+                                  event.expectedParticipants
+                                }
+                                registered={event.registered}
+                              />
+                            );
+                          })}
                       </div>
 
                       {eventData && eventData.length > 20 && !showMore && (
