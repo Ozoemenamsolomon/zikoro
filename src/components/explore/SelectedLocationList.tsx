@@ -180,7 +180,7 @@ export default function SelectedLocationList({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-0 md:gap-x-4 lg:gap-x-4 gap-y-5 lg:gap-y-0 mt-[10px] lg:mt-[50px] bg-white">
         {filteredEvents?.length ? (
           filteredEvents
-            .slice(0, 5)
+            .slice(0, 4)
             .map((event) => (
               <SelectedLocation
                 key={event.id}

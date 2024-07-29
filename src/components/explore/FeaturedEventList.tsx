@@ -80,24 +80,26 @@ export default function FeaturedEventList({ searchQuery }: selectedEventProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-5 lg:gap-y-0 mt-[50px] bg-white ">
             {filteredEvents &&
               filteredEvents?.length &&
-              filteredEvents.map((event, index) => (
-                <FeaturedEvent
-                  key={event.id}
-                  id={event.id}
-                  eventPoster={event.eventPoster}
-                  eventTitle={event.eventTitle}
-                  eventAlias={event.eventAlias}
-                  eventCity={event.eventCity}
-                  eventCountry={event.eventCountry}
-                  eventCategory={event.eventCategory}
-                  locationType={event.locationType}
-                  pricing={event.pricing}
-                  pricingCurrency={event.pricingCurrency}
-                  startDateTime={event.startDateTime}
-                  expectedParticipants={event.expectedParticipants}
-                  registered={event.registered}
-                />
-              ))}
+              filteredEvents
+                .slice(0, 4)
+                .map((event, index) => (
+                  <FeaturedEvent
+                    key={event.id}
+                    id={event.id}
+                    eventPoster={event.eventPoster}
+                    eventTitle={event.eventTitle}
+                    eventAlias={event.eventAlias}
+                    eventCity={event.eventCity}
+                    eventCountry={event.eventCountry}
+                    eventCategory={event.eventCategory}
+                    locationType={event.locationType}
+                    pricing={event.pricing}
+                    pricingCurrency={event.pricingCurrency}
+                    startDateTime={event.startDateTime}
+                    expectedParticipants={event.expectedParticipants}
+                    registered={event.registered}
+                  />
+                ))}
           </div>
 
           <div
