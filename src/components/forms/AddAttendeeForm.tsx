@@ -61,12 +61,11 @@ export default function AddAttendeeForm({
   const { user } = useUserStore();
   const { event } = useEventStore();
 
+  const isEventOwner = user && String(event?.createdBy) === String(user.id);
+
   const defaultValues: Partial<TAttendee> = attendee
     ? {
         ...attendee,
-        phoneNumber: attendee.phoneNumber && attendee.phoneNumber.substring(4),
-        whatsappNumber:
-          attendee.whatsappNumber && attendee.whatsappNumber.substring(4),
       }
     : {
         attendeeType: ["attendee"],
@@ -95,9 +94,6 @@ export default function AddAttendeeForm({
 
     form.reset({
       ...attendee,
-      phoneNumber: attendee.phoneNumber && attendee.phoneNumber.substring(4),
-      whatsappNumber:
-        attendee.whatsappNumber && attendee.whatsappNumber.substring(4),
     });
   }, [attendee]);
 
@@ -423,32 +419,34 @@ export default function AddAttendeeForm({
               />
             </div>
           </div>
-
-          {/* <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
-            <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-              Attendee Type
-            </span>
-            <div className="flex gap-2 flex-wrap justify-between">
-              {attendeeTypeOptions.map(({ label, value }) => (
-                <button
-                  className={`text-sm p-1.5 mx-auto border-2 rounded font-medium",
+          {isEventOwner && (
+            <div className="flex flex-col gap-4 w-full rounded-md border border-input bg-background px-3 py-4 text-sm relative">
+              <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+                Attendee Type
+              </span>
+              <div className="flex gap-2 flex-wrap justify-between">
+                {attendeeTypeOptions.map(({ label, value }) => (
+                  <button
+                    className={`text-sm p-1.5 mx-auto border-2 rounded font-medium",
                     ${
                       attendeeType && attendeeType.includes(value)
                         ? "text-earlyBirdColor border-earlyBirdColor bg-[#EEF0FF]"
                         : "border-gray-600 text-gray-600 bg-white"
                     }
                   `}
-                  type="button"
-                  onClick={() => toggleAttendeeType(value)}
-                >
-                  {label}
-                </button>
-              ))}
+                    type="button"
+                    onClick={() => toggleAttendeeType(value)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <span className="text-tiny font-medium text-gray-500">
+                You can assign multiple roles to the attendee
+              </span>
             </div>
-            <span className="text-tiny font-medium text-gray-500">
-              You can assign multiple roles to the attendee
-            </span>
-          </div> */}
+          )}
+
           <FormField
             control={form.control}
             name="bio"

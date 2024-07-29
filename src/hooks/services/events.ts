@@ -852,7 +852,7 @@ export function useUpdateTransactionDetail() {
             return {
               ...value,
               registrationCompleted: true,
-              role: payload.role,
+              role: payload.role ?? ["attendee"],
             };
           });
 
