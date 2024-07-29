@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
         organization,
         eventImage,
         trackingId,
+        role,
         eventEndDate,
         ...restItem
       } = params;
