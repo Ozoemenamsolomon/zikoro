@@ -17,6 +17,7 @@ export enum EventDetailTab {
   AGENDA_TAB,
   SPEAKERS_TAB,
   EXIHIBITORS_TAB,
+  REWARD_TAB
 }
 
 interface PricingType {

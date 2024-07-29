@@ -6,6 +6,7 @@ import {
   useVerifyUserAccess,
   useCheckTeamMember,
   useGetUserPoint,
+  useFetchPartnersOffers,
 } from "@/hooks";
 import { EventSchedule } from "./_components";
 import { EventDetailTabs } from "../composables";
@@ -19,6 +20,7 @@ import { Reward, RedeemPoint } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { RewardCard } from "../marketPlace/rewards/_components";
 import { useGetData } from "@/hooks/services/request";
+import { Offers } from "../partners/_components";
 export function SingleEventHome({ eventId }: { eventId: string }) {
   const { data, loading } = useFetchSingleEvent(eventId);
   const [active, setActive] = useState(1);
@@ -28,11 +30,13 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     getData: refetch,
   } = useGetData<Reward[]>(`/rewards/${eventId}`);
   const { totalPoints } = useGetUserPoint(eventId);
-  const { isOrganizer, attendeeId } = useVerifyUserAccess(eventId);
+  const { attendee, isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
-  const { data: redeemedRewards, getData } = useGetData<RedeemPoint[]>(
-    `/rewards/${eventId}/redeemed`
-  );
+  const {
+    offers,
+    loading: isLoading,
+    refetch: refetchOffer,
+  } = useFetchPartnersOffers(eventId);
 
   const { data: partnersData, loading: partnersLoading } =
     useFetchPartners(eventId);
@@ -103,36 +107,15 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
           />
         </div>
         <div className="hidden md:block md:col-span-3 w-full p-3 md:overflow-y-auto">
-          <h2 className="font-semibold text-base sm:text-xl mb-4">Rewards</h2>
+          <h2 className="font-semibold text-base sm:text-xl mb-4">Offers</h2>
 
-          <div className="  w-full grid grid-cols-1 gap-2 items-start justify-start ">
-            {loadingRewards && (
-              <div className="w-full col-span-full h-[300px] flex items-center justify-center">
-                <LoaderAlt size={30} className="animate-spin" />
-              </div>
-            )}
-            {!loadingRewards &&
-              Array.isArray(rewards) &&
-              rewards?.length === 0 && (
-                <div className="w-full col-span-full h-[300px] flex items-center justify-center">
-                  <p className="font-semibold text-sm">No Available Reward</p>
-                </div>
-              )}
-            {!loadingRewards &&
-              Array.isArray(rewards) &&
-              rewards?.map((reward, index) => (
-                <RewardCard
-                  key={index}
-                  refetch={refetch}
-                  refetchRedeemed={getData}
-                  redeemedRewards={redeemedRewards}
-                  attendeeId={attendeeId}
-                  attendeePoints={totalPoints}
-                  isOrganizer={isOrganizer || isIdPresent}
-                  reward={reward}
-                />
-              ))}
-          </div>
+          <Offers
+            data={offers}
+            attendee={attendee}
+            eventId={eventId}
+            refetch={refetchOffer}
+            isOrganizer={isOrganizer || isIdPresent}
+          />
         </div>
       </div>
     </>
