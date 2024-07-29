@@ -146,6 +146,9 @@ export function Qusetion({
       if (typeof quiz?.liveMode?.explanation === "boolean") {
         setShowExplanation(quiz?.liveMode?.explanation);
       }
+      if (typeof quiz?.liveMode?.isOptionSelected === "boolean") {
+        setIsOptionSelected(quiz?.liveMode?.isOptionSelected);
+      }
     }
   }, [quiz]);
 
@@ -271,7 +274,7 @@ export function Qusetion({
         liveMode: {
           startingAt,
           isShowAnswerMetric: true,
-          isOptionSelected: true,
+          isOptionSelected: false,
           correctOptionId: currentQuestion?.options?.find(
             (i) => i?.isAnswer === i?.optionId
           )?.optionId,
@@ -459,6 +462,8 @@ export function Qusetion({
       showMetric();
     }
   }
+
+  console.log("trhh", isOptionSelected, )
 
   return (
     <div
