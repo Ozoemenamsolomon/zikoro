@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
       const params = await req.json();
       const {
         count,
-        startDate,
+      startDate,
         
         endDate,
         address,
