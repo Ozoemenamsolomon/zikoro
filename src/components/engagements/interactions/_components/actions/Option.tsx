@@ -16,6 +16,7 @@ export function Option({
   optionIndex,
   option,
   selectOption,
+  setIsOptionSelected,
   isOrganizer,
   isIdPresent,
   answer,
@@ -30,6 +31,7 @@ export function Option({
   isIdPresent: boolean;
   answer: TAnswer[];
   showAnswerMetric?: boolean;
+  setIsOptionSelected?: React.Dispatch<React.SetStateAction<boolean>>;
   isDisabled: boolean;
   quiz: TQuiz<TQuestion[]>;
 }) {
@@ -66,6 +68,9 @@ export function Option({
           onClick={() => {
             if (selectOption) {
               selectOption(option?.optionId);
+            }
+            if (setIsOptionSelected) {
+              setIsOptionSelected(true);
             }
           }}
           className={cn(

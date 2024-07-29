@@ -50,7 +50,7 @@ type TQuestionProps = {
   onOpenScoreSheet: () => void;
   updateQuizResult: (q: TQuiz<TRefinedQuestion[]>) => void;
   goBack: () => void;
-}
+};
 export function Qusetion({
   isRightBox,
   isLeftBox,
@@ -146,14 +146,17 @@ export function Qusetion({
       if (typeof quiz?.liveMode?.explanation === "boolean") {
         setShowExplanation(quiz?.liveMode?.explanation);
       }
+      if (typeof quiz?.liveMode?.isOptionSelected === "boolean") {
+        setIsOptionSelected(quiz?.liveMode?.isOptionSelected);
+      }
     }
   }, [quiz]);
 
-  // isOptionSelected
+  // isOptionSelected quiz?.liveMode?.isOptionSelected &&
   useEffect(() => {
     (async () => {
       if (quiz && quiz?.accessibility?.live && (isOrganizer || isIdPresent)) {
-        if (quiz?.liveMode?.isOptionSelected && currentQuestion) {
+        if (currentQuestion) {
           await getAnswer(currentQuestion?.id);
         }
       }
@@ -271,7 +274,7 @@ export function Qusetion({
         liveMode: {
           startingAt,
           isShowAnswerMetric: true,
-          isOptionSelected: true,
+          isOptionSelected: false,
           correctOptionId: currentQuestion?.options?.find(
             (i) => i?.isAnswer === i?.optionId
           )?.optionId,
@@ -373,7 +376,7 @@ export function Qusetion({
               ?.optionId || "",
         },
       };
-      setIsOptionSelected(true);
+
       await createAnswer({ payload });
 
       if (quiz?.accessibility?.live) {
@@ -388,7 +391,7 @@ export function Qusetion({
           }),
           liveMode: {
             startingAt: liveMode?.startingAt,
-            isOptionSelected: true,
+            isOptionSelected: false,
           },
         };
 
@@ -459,6 +462,8 @@ export function Qusetion({
       showMetric();
     }
   }
+
+  console.log("trhh", isOptionSelected);
 
   return (
     <div
@@ -556,6 +561,7 @@ export function Qusetion({
                     key={index}
                     option={option}
                     isOrganizer={isOrganizer}
+                    setIsOptionSelected={setIsOptionSelected}
                     showAnswerMetric={showAnswerMetric}
                     answer={answer}
                     isDisabled={
