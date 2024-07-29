@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { InteractionLayout } from "../../engagements/_components";
 import { Search } from "styled-icons/evil";
 import { Form, FormControl, FormField, FormItem, Input } from "@/components";
 import { ActiveStampCard, LightBulb } from "@/constants";
@@ -14,6 +13,7 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { TExPartner, TLead } from "@/types";
 import { cn } from "@/lib";
 import { useGetData } from "@/hooks/services/request";
+import { MarketPlaceLayout } from "../_components";
 
 type FormValue = {
   search: string;
@@ -86,7 +86,7 @@ export default function StampCard({ eventId }: { eventId: string }) {
     }
   }, [attendeeId, data, partnerData]);
   return (
-    <InteractionLayout eventId={eventId}>
+    <MarketPlaceLayout eventId={eventId}>
       <div className="w-full px-4 flex flex-col sm:flex-row gap-2 items-start md:items-center justify-start md:justify-between py-3">
         <div className="p-2 rounded-md border w-full md:w-96 flex items-center gap-x-2">
           <LightBulb />
@@ -183,6 +183,6 @@ export default function StampCard({ eventId }: { eventId: string }) {
               </div>
             ))}
       </div>
-    </InteractionLayout>
+    </MarketPlaceLayout>
   );
 }
