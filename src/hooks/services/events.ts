@@ -838,7 +838,6 @@ export function useUpdateTransactionDetail() {
       });
 
       if (status === 204 || status === 200) {
-  
         const { data: attendees, status } = await getRequest<TAttendee[]>({
           endpoint: `/attendees/event/${payload?.eventAlias}`,
         });
@@ -853,6 +852,7 @@ export function useUpdateTransactionDetail() {
             return {
               ...value,
               registrationCompleted: true,
+              role: payload.role,
             };
           });
 

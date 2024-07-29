@@ -12,6 +12,7 @@ import { useEffect } from "react";
 export default function SinglePublishedEvent({ id }: { id: string }) {
   const params = useSearchParams();
   const trackingId = params.get("trackingId");
+  const role = params.get("role");
   const { data: eventDetail } = useFetchSingleEvent(id);
   const { data, refetch } = useFetchSingleOrganization(
     eventDetail?.organization?.id
@@ -31,6 +32,7 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
         <div className="w-full h-full bg-gray-50 fixed overflow-y-auto ">
           <SingleEvent
             trackingId={trackingId}
+            role={role}
             isDetail={true}
             organization={eventDetail?.organisationName}
             organizationLogo={data?.organizationLogo}
