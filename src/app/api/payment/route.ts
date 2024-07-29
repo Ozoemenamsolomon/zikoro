@@ -127,6 +127,7 @@ export async function POST(req: NextRequest) {
         .update({
           response: "attending",
           responseDate: new Date().toISOString(),
+          guests: attendeesDetails?.map((v: any) => v?.attendeeAlias)
         })
         .eq("trackingId", trackingId);
 
