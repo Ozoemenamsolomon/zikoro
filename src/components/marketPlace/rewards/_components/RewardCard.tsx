@@ -70,7 +70,18 @@ export function RewardCard({
     }
   }, [attendeeId, redeemedRewards, attendeePoints]);
 
-  console.log("available", availableAttendeepoint, attendeeId);
+  const isAttendeeAlreadyRedeemed = useMemo(() => {
+    return redeemedRewards && attendeeId
+      ? redeemedRewards?.some((v) => v?.attendeeId === attendeeId)
+      : false;
+  }, [attendeeId, redeemedRewards]);
+
+  console.log(
+    "available",
+    availableAttendeepoint,
+    attendeeId,
+    isAttendeeAlreadyRedeemed
+  );
 
   async function redeem() {
     const payload = {
@@ -132,7 +143,8 @@ export function RewardCard({
             <p>{`Available points:  ${availableAttendeepoint}`}</p>
           </div>
         </div>
-        {reward?.quantity - numberOfRedeemed !== 0 && (
+        {reward?.quantity - numberOfRedeemed === 0 ||
+        isAttendeeAlreadyRedeemed ? null : (
           <div className="px-3 w-full mt-1 flex items-center justify-between">
             <button
               onClick={onSubmit}
