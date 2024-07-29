@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
       const senderAddress = process.env.NEXT_PUBLIC_EMAIL;
       const senderName = "Zikoro";
       const subject = `Invite from ${organizationName} to ${eventTitle}`;
-      const htmlbody = (trackingId: string) => `<div
+      const htmlbody = (trackingId: string, role: string) => `<div
   style="
     max-width: 600px;
     margin: 0 auto;
@@ -121,7 +121,9 @@ export async function POST(req: NextRequest) {
         "/live-events/" +
         eventAlias +
         "?trackingId=" +
-        trackingId
+        trackingId +
+        "&role=" +
+        role
       }"
       style="
         width: 100%;
@@ -200,7 +202,7 @@ export async function POST(req: NextRequest) {
 `;
 
       for (const { name, email, role, trackingId } of invitees) {
-        console.log(htmlbody(trackingId));
+        // console.log(htmlbody(trackingId));
 
         const { data: existingInvitees, error } = await supabase
           .from("attendeeEmailInvites")
@@ -241,7 +243,7 @@ export async function POST(req: NextRequest) {
               },
             ],
             subject,
-            htmlbody: htmlbody(trackingId),
+            htmlbody: htmlbody(trackingId, role),
             // attachments: [
             //   {
             //     name: "event.ics",
