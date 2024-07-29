@@ -24,7 +24,7 @@ type TStampData = TExPartner & {
 };
 
 export default function StampCard({ eventId }: { eventId: string }) {
-  const { attendeeId } = useVerifyUserAccess(eventId);
+  const { attendeeId, attendee } = useVerifyUserAccess(eventId);
   const [active, setActive] = useState(false);
   const { data, isLoading: loading } = useGetData<TStampData[]>(
     `/partner/${eventId}/stamp`
@@ -77,7 +77,9 @@ export default function StampCard({ eventId }: { eventId: string }) {
   const isAttendeeInLead = useMemo(() => {
     if (attendeeId && data && partnerData) {
       return (partnerData || data).some((partner) => {
-        return partner?.leads.some((lead) => lead.attendeeId === attendeeId);
+        return partner?.leads.some(
+          (lead) => lead.attendeeAlias === attendee?.attendeeAlias
+        );
       });
     } else {
       return false;
