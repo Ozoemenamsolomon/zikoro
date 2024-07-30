@@ -83,9 +83,10 @@ export default function Team() {
     createTeamMember();
   };
 
+  //delete team member
   const handleDeleteTeamMember = async (memberId: string) => {
     await deleteTeamMember(memberId);
-    fetchTeamMembers();
+    createTeamMember();    
   };
 
   // Filter team members based on search query
