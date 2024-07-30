@@ -238,11 +238,6 @@ export function useDeleteTeamMember(workspaceId: number) {
       const teamMembers = currentTeamMembers.teamMembers || [];
       const updatedTeamMembers = teamMembers.filter((member: any) => member.id !== memberId);
 
-      // if (updatedTeamMembers.length === teamMembers.length) {
-      //   toast.error("Team member not found.");
-      //   return false;
-      // }
-
       const { data, error } = await supabase
         .from("organization")
         .update({ teamMembers: updatedTeamMembers })
@@ -270,6 +265,5 @@ export function useDeleteTeamMember(workspaceId: number) {
   return {
     currentTeamMembers,
     deleteTeamMember,
-    fetchTeamMembers,
   };
 }

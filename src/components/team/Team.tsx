@@ -38,9 +38,7 @@ export default function Team() {
   const { currentTeamMembers, createTeamMember } = useCreateTeamMember(
     organization?.id ?? 0
   );
-  const { deleteTeamMember, fetchTeamMembers } = useDeleteTeamMember(
-    organization?.id ?? 0
-  );
+  const { deleteTeamMember } = useDeleteTeamMember(organization?.id ?? 0);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const roles = ["owner", "editor", "collaborator"];
 
@@ -86,7 +84,7 @@ export default function Team() {
   //delete team member
   const handleDeleteTeamMember = async (memberId: string) => {
     await deleteTeamMember(memberId);
-    createTeamMember();    
+    createTeamMember();
   };
 
   // Filter team members based on search query
