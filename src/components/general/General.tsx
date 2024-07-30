@@ -8,6 +8,7 @@ import {
   DashboardLinkendinIcon,
   DashboardInstagramIcon,
   DashboardFacebookIcon,
+  PencilIcon,
 } from "@/constants";
 import React, { useEffect, useState } from "react";
 import useOrganizationStore from "@/store/globalOrganizationStore";
@@ -49,6 +50,7 @@ export default function General() {
   const [logo, setLogo] = useState<any>(null);
   const [favicon, setFavicon] = useState<any>(null);
   const [isLogoUploaded, setIsLogoUploaded] = useState<boolean>(false);
+  const [isReadOnly, setIsReadOnly] = useState<boolean>(true);
   const [isFaviconUploaded, setIsFaviconUploaded] = useState<boolean>(false);
   const [logoUrl, setLogoUrl] = useState<string>("");
   const [faviconUrl, setFaviconUrl] = useState<string>("");
@@ -342,6 +344,11 @@ export default function General() {
     }
   };
 
+  //edit plan functionality
+  const editPlan = () => {
+    router.push("/pricing");
+  };
+
   // Sync formData with organization data
   useEffect(() => {
     if (organization) {
@@ -545,26 +552,19 @@ export default function General() {
 
                 <div className=" w-full lg:w-1/2">
                   <p className="text-[14px] text-[#1f1f1f]">Pricing Plan</p>
-                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
-                    <select
-                      name="orgPlan"
+                  <div className="w-full flex items-center gap-x-2 h-[45px] mt-2 p-1 border-[1px] border-indigo-600 rounded-xl">
+                    <input
+                      type="text"
                       value={formData.orgPlan}
+                      name="orgName"
+                      readOnly={isReadOnly}
                       onChange={(e) => handleInputChange(e)}
-                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[7px]"
-                    >
-                      <option value="free" className="">
-                        Free
-                      </option>
-                      <option value="lite" className="">
-                        Lite
-                      </option>
-                      <option value="professional" className="">
-                        Professional
-                      </option>
-                      <option value="enterprise" className="">
-                        Enterprise
-                      </option>
-                    </select>
+                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                    />
+
+                    <div className="cursor-pointer" onClick={() => editPlan()}>
+                      <PencilIcon />
+                    </div>
                   </div>
                 </div>
               </div>
