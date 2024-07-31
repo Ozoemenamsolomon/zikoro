@@ -2,11 +2,28 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useMutateData } from "@/hooks/services/request";
 import { cn } from "@/lib";
 import { TAttendeeInvites } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { format, add, isAfter } from "date-fns";
+import Link from "next/link";
+
+const getResponseStyles = (response: string): string => {
+  const styles = {
+    attending: "bg-green-100 text-green-600 border-green-600",
+    pending: "bg-yellow-100 text-yellow-600 border-yellow-600",
+    "not attending": "bg-red-100 text-red-600 border-red-600",
+    default: "bg-gray-100 text-gray-600 border-gray-600",
+  };
+  return styles[response] || styles.default;
+};
 
 export const columns: (
   getEmailInvites: () => Promise<void>
@@ -14,7 +31,7 @@ export const columns: (
   {
     id: "select",
     header: ({ table }) => (
-      <div className="pl-2">
+      <div className="px-2">
         <Checkbox
           className="data-[state=checked]:bg-basePrimary"
           checked={
@@ -27,7 +44,7 @@ export const columns: (
       </div>
     ),
     cell: ({ row }) => (
-      <div className="pl-2">
+      <div className="px-2">
         <Checkbox
           className="data-[state=checked]:bg-basePrimary"
           checked={row.getIsSelected()}
@@ -41,40 +58,36 @@ export const columns: (
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    id: "inviteeInfo",
+    header: "Invitee Info",
     cell: ({ row }) => (
-      <span className="text-gray-800 capitalize">{row.original.name}</span>
+      <div className="space-y-1">
+        <span className="text-sm font-medium text-gray-700 truncate block">
+          {row.original.name}
+        </span>
+        <span className="truncate text-gray-500 block text-xs">
+          {row.original.email}
+        </span>
+      </div>
     ),
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
   },
   {
     accessorKey: "role",
     header: "Role",
-  },
-  {
-    accessorKey: "method",
-    header: "Method",
+    cell: ({ row }) => <span className="capitalize">{row.original.role}</span>,
   },
   {
     accessorKey: "response",
     header: "Status",
     cell: ({ row }) => {
       const response = row.original.response?.toLowerCase();
+      const responseStyles = getResponseStyles(response);
 
       return (
         <div
           className={cn(
             "max-w-full truncate p-1 border rounded w-fit text-sm capitalize",
-            response === "attending"
-              ? "bg-green-100 text-green-600 border-green-600"
-              : response === "pending"
-              ? "bg-yellow-100 text-yellow-600 border-yellow-600"
-              : response === "not attending"
-              ? "bg-red-100 text-red-600 border-red-600"
-              : "bg-gray-100 text-gray-600 border-gray-600"
+            responseStyles
           )}
         >
           {response === "pending" ? "Awaiting Response" : response || "N/A"}
@@ -83,22 +96,88 @@ export const columns: (
     },
   },
   {
-    id: "created_at",
-    header: "First Invite",
-    accessorFn: (row) =>
-      row.created_at ? format(row.created_at, "PPP") : "N/A",
+    id: "dates",
+    header: "Dates",
+    cell: ({ row }) => (
+      <div className="flex flex-col text-tiny text-gray-700">
+        {row.original.created_at && (
+          <span>
+            First Sent on: <b>{format(row.original.created_at, "PPP")}</b>
+          </span>
+        )}
+        {row.original.lastResendAt && (
+          <span>
+            Last sent on: <b>{format(row.original.lastResendAt, "PPP")}</b>
+          </span>
+        )}
+        {row.original.responseDate && (
+          <span>
+            Responded on: <b>{format(row.original.responseDate, "PPP")}</b>
+          </span>
+        )}
+      </div>
+    ),
   },
   {
-    id: "responseDate",
-    header: "Response Date",
-    accessorFn: (row) =>
-      row.responseDate ? format(row.responseDate, "PPP") : "N/A",
-  },
-  {
-    id: "lastResendAt",
-    header: "Last Sent",
-    accessorFn: (row) =>
-      row.lastResendAt ? format(row.lastResendAt, "PPP") : "N/A",
+    accessorKey: "guests",
+    header: "Guests",
+    cell: ({ row }) => {
+      return (
+        <Dialog>
+          <DialogTrigger asChild>
+            <button
+              className={cn(
+                "text-sky-500 underline",
+                (!row.original.guests || !row.original.guests.length) &&
+                  "hidden"
+              )}
+            >
+              View Guests ({row.original.guests && row.original.guests.length})
+            </button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>Guests</DialogHeader>
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="py-2 px-4 border-b capitalize font-medium text-gray-600">
+                    Name
+                  </th>
+                  <th className="py-2 px-4 border-b capitalize font-medium text-gray-600">
+                    Email
+                  </th>
+                  <th className="py-2 px-4 border-b capitalize font-medium text-gray-600">
+                    Info
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {row.original.guests &&
+                  row.original.guests.map(
+                    ({ firstName, lastName, email, attendeeAlias }) => (
+                      <tr>
+                        <td className="py-2 px-4 border-b text-gray-500">
+                          {firstName + " " + lastName}
+                        </td>
+                        <td className="py-2 px-4 border-b text-gray-500">
+                          {email}
+                        </td>
+                        <td className="py-2 px-4 border-b text-gray-500">
+                          <Link href={`all?attendeeAlias=${attendeeAlias}`}>
+                            <span className={cn("text-sky-500 underline")}>
+                              View
+                            </span>
+                          </Link>
+                        </td>
+                      </tr>
+                    )
+                  )}
+              </tbody>
+            </table>
+          </DialogContent>
+        </Dialog>
+      );
+    },
   },
   {
     id: "resend",
@@ -111,7 +190,7 @@ export const columns: (
       const response = row.original.response;
       const lastResendAt = row.original.lastResendAt;
 
-      if (response !== "pending") return;
+      if (response !== "pending") return <div />;
 
       const resendInvite = async () => {
         await mutateData({
@@ -128,12 +207,11 @@ export const columns: (
 
       return (
         <Button
-          // disabled={
-          //   isLoading
-          //   // || (lastResendAt && !isAtLeast24HoursAfter(lastResendAt))
-          // }
+          disabled={
+            isLoading || (lastResendAt && !isAtLeast24HoursAfter(lastResendAt))
+          }
           onClick={resendInvite}
-          className="bg-basePrimary flex gap-2 px-4 text-white"
+          className="bg-basePrimary flex gap-2 px-4 text-white mx-2"
         >
           <svg
             stroke="currentColor"
