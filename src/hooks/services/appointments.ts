@@ -1,6 +1,6 @@
 "use client";
 
-import { AppointmentLink, Booking } from "@/types/appointments";
+import { AppointmentLink, AppointmentUnavailability, Booking } from "@/types/appointments";
 
 import { getRequest } from "@/utils/api";
 import { useSearchParams } from "next/navigation";
@@ -182,4 +182,40 @@ export const useGetBookingList = (appointmentAlias: string) => {
 
   return { bookings, isLoading, error, getAppointment };
 };
+
+export const useGetUnavailableDates = (userId: bigint,) => {
+  const [unavailableDates, setUnavailableDates] = useState<AppointmentUnavailability[] | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const getUnavailableDates = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, status } = await getRequest<AppointmentUnavailability[] | null>({
+        endpoint: `/appointments/calender/fetchUnavailability?userId=${userId}`,
+      });
+
+      if (status === 200) {
+        setUnavailableDates(data.data);
+      } else {
+        console.log({error})
+        setError(`Error: ${error}`);
+      }
+    } catch (err) {
+      setError('Server error');
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      getUnavailableDates();
+    }
+  }, [userId, getUnavailableDates]);
+
+  return { unavailableDates, isLoading, error, getUnavailableDates };
+};
+
 

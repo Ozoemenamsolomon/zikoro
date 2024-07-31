@@ -487,7 +487,7 @@ const Appointments: React.FC = () => {
   const [drop, setDrop] = useState(false);
   const [filter, setFilter] = useState("upcoming");
   const dropRef = useRef(null);
-  // console.log({bookings})
+  console.log({bookings})
 
   useClickOutside(dropRef, () => setDrop(false));
 

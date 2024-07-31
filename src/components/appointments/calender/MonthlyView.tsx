@@ -1,16 +1,17 @@
 import { MoreHorizontal } from 'lucide-react';
 import React, { useState } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay } from 'date-fns';
-import { Booking } from '@/types/appointments';
+import { AppointmentUnavailability, Booking } from '@/types/appointments';
 import { cn } from '@/lib';
 import Action from './Action';
 
 interface MonthlyViewProps {
     appointments: Record<string, Booking[]>;
     currentMonth: Date;
+    unavailableDates:AppointmentUnavailability[]
 }
 
-const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth }) => {
+const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth, unavailableDates }) => {
     const [isHovered, setIsHovered] = useState('')
 
     const startDate = startOfMonth(currentMonth);
@@ -21,15 +22,15 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth })
     const startDay = getDay(startDate);
 
     return (
-        <section className="">
+        <section className="text-xs sm:text-sm 2xl-text-base">
             <div className=" grid grid-cols-7 pb-3 text-slate-500">
-                <div>Sunday</div>
-                <div>Monday</div>
-                <div>Tuesday</div>
-                <div>Wednesday</div>
-                <div>Thursday</div>
-                <div>Friday</div>
-                <div>Saturday</div>
+                <div className='px-0.5 overflow-hidden'>Sunday</div>
+                <div className='px-0.5 overflow-hidden'>Monday</div>
+                <div className='px-0.5 overflow-hidden'>Tuesday</div>
+                <div className='px-0.5 overflow-hidden'>Wednesday</div>
+                <div className='px-0.5 overflow-hidden'>Thursday</div>
+                <div className='px-0.5 overflow-hidden'>Friday</div>
+                <div className='px-0.5 overflow-hidden'>Saturday</div>
             </div>
 
             <div className="grid grid-cols-7  ">
@@ -44,7 +45,7 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth })
                     const active = today === format(day, 'd')
                     return (
                         <div  key={dayString} 
-                        onMouseEnter={()=>setIsHovered(list?.length ? dayString : '')}
+                        onMouseEnter={()=>setIsHovered( dayString )}
                         onMouseLeave={()=>setIsHovered('')}
                         className="relative border bg-white p-2  w-full"
                         >
@@ -60,7 +61,7 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth })
 
                                 {
                                     isHovered===dayString ? 
-                                    <Action appointment={list[0]}/> 
+                                    <Action unavailableDates={unavailableDates} appointment={list[0]} list={list} dayString={dayString}/> 
                                     :
                                     <div className="h-full flex flex-col gap-1 flex-start">
                                         {list?.length ? list?.slice(0,3)?.map(appointment => (
