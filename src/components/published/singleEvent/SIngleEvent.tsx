@@ -1,19 +1,19 @@
 "use client";
 
-import { TimeFive } from "@styled-icons/boxicons-solid/TimeFive";
-import { LocationDot } from "@styled-icons/fa-solid/LocationDot";
-import { CalendarDateFill } from "@styled-icons/bootstrap/CalendarDateFill";
+import { TimeFive } from "styled-icons/boxicons-solid";
+import { LocationDot } from "styled-icons/fa-solid";
+import { CalendarDateFill } from "styled-icons/bootstrap";
 import { Telephone } from "styled-icons/bootstrap";
 import { Whatsapp } from "styled-icons/remix-fill";
 import { EmailOutline } from "styled-icons/evaicons-outline";
 import Image from "next/image";
 import { Button } from "@/components";
-import { Share } from "@styled-icons/bootstrap/Share";
+import { Share } from "styled-icons/bootstrap";
 import { LinkedinShareButton } from "next-share";
 import { EventLocationType, AboutWidget } from "@/components/composables";
 import Link from "next/link";
 import { cn } from "@/lib";
-import { Users } from "@styled-icons/fa-solid/Users";
+import { Users } from "styled-icons/fa-solid";
 import useUserStore from "@/store/globalUserStore";
 import {
   dateFormatting,
@@ -31,7 +31,11 @@ import { useState, useMemo } from "react";
 import { BookEvent } from "..";
 import { usePathname, useRouter } from "next/navigation";
 import { Event, OrganizerContact } from "@/types";
-import { useFetchSingleOrganization, getCookie, useFormatEventData } from "@/hooks";
+import {
+  useFetchSingleOrganization,
+  getCookie,
+  useFormatEventData,
+} from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
 
 export function SingleEvent({
@@ -42,6 +46,8 @@ export function SingleEvent({
   eventId,
   imageClassName,
   organizationLogo,
+  trackingId,
+  role,
 }: {
   isDetail?: boolean;
   className?: string;
@@ -50,15 +56,17 @@ export function SingleEvent({
   eventId?: string;
   useDiv?: boolean;
   imageClassName?: string;
-  organizationLogo?:string;
+  organizationLogo?: string;
+  trackingId?: string | null;
+  role?: string | null;
 }) {
   const Comp = useDiv ? "div" : "button";
   const [isOpen, setOpen] = useState(false);
-  const {user} = useUserStore()
+  const { user } = useUserStore();
   const [isShareDropDown, showShareDropDown] = useState(false);
-  const pathname = usePathname()
+  const pathname = usePathname();
   const org = getCookie("currentOrganization");
-  const {startDate,endDate, startTime, endTime } = useFormatEventData(event)
+  const { startDate, endDate, startTime, endTime } = useFormatEventData(event);
   const { data } = useFetchSingleOrganization(org?.id);
   const router = useRouter();
 
@@ -66,8 +74,6 @@ export function SingleEvent({
     // if (isDetail) return;
     setOpen((prev) => !prev);
   }
-
-
 
   const createdAt = useMemo(
     () => dateFormatting(event?.createdAt ?? "0"),
@@ -107,8 +113,6 @@ export function SingleEvent({
     return event?.eventCity === null || event?.eventCountry === null;
   }, [event?.eventCity, event?.eventCountry]);
 
-
-
   const isAllSocialUnavailable = useMemo(() => {
     return (
       data?.x === null &&
@@ -139,7 +143,6 @@ export function SingleEvent({
     phoneNumber: data?.eventPhoneNumber,
     email: data?.eventContactEmail,
   };
-
 
   const price = useMemo(() => {
     if (Array.isArray(event?.pricing)) {
@@ -173,10 +176,18 @@ export function SingleEvent({
           {isExpired && (
             <div className="w-full h-full inset-0 absolute z-10 bg-white/50"></div>
           )}
-          <div className={cn("w-full grid grid-cols-1 h-fit gap-4 lg:grid-cols-8 items-start", isDetail && "lg:grid-cols-1")}>
-            <div className={cn("w-full h-72 sm:h-[350px] relative lg:h-[400px] flex lg:col-span-4 flex-col items-start justify-start",
-            isDetail && "sm:h-[400px] lg:h-[500px]"
-            )}>
+          <div
+            className={cn(
+              "w-full grid grid-cols-1 h-fit gap-4 lg:grid-cols-8 items-start",
+              isDetail && "lg:grid-cols-1"
+            )}
+          >
+            <div
+              className={cn(
+                "w-full h-72 sm:h-[350px] relative lg:h-[400px] flex lg:col-span-4 flex-col items-start justify-start",
+                isDetail && "sm:h-[400px] lg:h-[500px]"
+              )}
+            >
               {event?.eventPoster ? (
                 <Image
                   src={event?.eventPoster}
@@ -194,24 +205,36 @@ export function SingleEvent({
                   <div className="w-full h-full bg-gray-200"></div>
                 </div>
               )}
-              <div className={cn("absolute left-10 bottom-0 bg-white px-3 py-2 rounded-t-lg hidden", isDetail && "block")}>
-              <Image
-              src={organizationLogo || "/logo.png"}
-              alt="logo"
-              width={300}
-              height={300}
-              className="w-fit h-fit max-h-[40px]"
-            />
+              <div
+                className={cn(
+                  "absolute left-10 bottom-0 bg-white px-3 py-2 rounded-t-lg hidden",
+                  isDetail && "block"
+                )}
+              >
+                <Image
+                  src={organizationLogo || "/logo.png"}
+                  alt="logo"
+                  width={300}
+                  height={300}
+                  className="w-fit h-fit max-h-[40px]"
+                />
               </div>
             </div>
             {/** */}
-            <div className={cn("w-full lg:col-span-4 flex flex-col gap-y-3 py-4 px-4 sm:px-10 sm:py-6 items-start justify-start", isDetail && "mx-auto lg:col-span-1 max-w-2xl")}>
-             <div className="flex w-full items-center justify-between">
-             <p className="text-base text-start w-full  sm:text-2xl font-medium  ">
-                {event?.eventTitle}
-              </p>
-                <Button className="text-white bg-basePrimary h-10 text-sm rounded-3xl">{event?.locationType}</Button>
-             </div>
+            <div
+              className={cn(
+                "w-full lg:col-span-4 flex flex-col gap-y-3 py-4 px-4 sm:px-10 sm:py-6 items-start justify-start",
+                isDetail && "mx-auto lg:col-span-1 max-w-2xl"
+              )}
+            >
+              <div className="flex w-full items-center justify-between">
+                <p className="text-base text-start w-full  sm:text-2xl font-medium  ">
+                  {event?.eventTitle}
+                </p>
+                <Button className="text-white bg-basePrimary h-10 text-sm rounded-3xl">
+                  {event?.locationType}
+                </Button>
+              </div>
               <div className="flex items-center justify-between w-full">
                 <AboutWidget
                   Icon={CalendarDateFill}
@@ -229,7 +252,7 @@ export function SingleEvent({
                     </div>
                   }
                 />
-              {/*  <EventLocationType
+                {/*  <EventLocationType
                   locationType={event?.locationType}
                   className="w-fit px-4 h-10 text-xs"
                 />*/}
@@ -246,10 +269,10 @@ export function SingleEvent({
                 }
               />
 
-              
-
               <div className="w-full flex items-center justify-between">
-                {Array.isArray(event?.pricing) && event?.pricing?.length > 0 && Number(price) > 0 ? (
+                {Array.isArray(event?.pricing) &&
+                event?.pricing?.length > 0 &&
+                Number(price) > 0 ? (
                   <p className="font-semibold text-xl">{`${
                     currency ? currency : "₦"
                   }${price}`}</p>
@@ -272,7 +295,6 @@ export function SingleEvent({
                 onClick={(e) => {
                   e.stopPropagation();
                   e.stopPropagation();
-              
 
                   onClose();
                 }}
@@ -320,42 +342,52 @@ export function SingleEvent({
                   </div>
                 </div>
               )}
-              <div className={cn("w-full flex  justify-between items-start flex-col gap-3 ", isDetail && "flex-col sm:flex-row items-start sm:items-center")}>
-              <div className=" flex items-center gap-x-6 justify-start">
-                <h3>Speak with the Event Team</h3>
+              <div
+                className={cn(
+                  "w-full flex  justify-between items-start flex-col gap-3 ",
+                  isDetail && "flex-col sm:flex-row items-start sm:items-center"
+                )}
+              >
+                <div className=" flex items-center gap-x-6 justify-start">
+                  <h3>Speak with the Event Team</h3>
 
-                <div className={cn("flex items-center gap-x-2", pathname.includes("preview") && "hidden")}>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      phoneCall();
-                    }}
-                    className={cn("text-black h-fit w-fit px-0")}
+                  <div
+                    className={cn(
+                      "flex items-center gap-x-2",
+                      pathname.includes("preview") && "hidden"
+                    )}
                   >
-                    <Telephone size={20} />
-                  </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        phoneCall();
+                      }}
+                      className={cn("text-black h-fit w-fit px-0")}
+                    >
+                      <Telephone size={20} />
+                    </Button>
 
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      whatsapp();
-                    }}
-                    className={cn("text-black h-fit w-fit px-0")}
-                  >
-                    <Whatsapp size={22} />
-                  </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        whatsapp();
+                      }}
+                      className={cn("text-black h-fit w-fit px-0")}
+                    >
+                      <Whatsapp size={22} />
+                    </Button>
 
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      sendMail();
-                    }}
-                    className={cn("text-black h-fit w-fit px-0")}
-                  >
-                    <EmailOutline size={22} />
-                  </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        sendMail();
+                      }}
+                      className={cn("text-black h-fit w-fit px-0")}
+                    >
+                      <EmailOutline size={22} />
+                    </Button>
+                  </div>
                 </div>
-              </div>
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -387,6 +419,7 @@ export function SingleEvent({
         <BookEvent
           event={event}
           eventDate={event?.startDateTime}
+          eventEndDate={event?.endDateTime}
           endDate={endDate}
           address={event?.eventAddress}
           eventImage={event?.eventPoster}
@@ -396,6 +429,8 @@ export function SingleEvent({
           organizerContact={organizerContact}
           eventTitle={event?.eventTitle}
           close={onClose}
+          trackingId={trackingId}
+          role={role}
           eventLocation={`${event?.eventCity ?? ""}${!removeComma && ","} ${
             event?.eventCountry ?? ""
           }`}

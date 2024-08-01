@@ -1,6 +1,10 @@
 "use client";
 import { toast } from "@/components/ui/use-toast";
-import { TAttendee, TAttendeeEmailInvites } from "@/types/attendee";
+import {
+  TAttendee,
+  TAttendeeEmailInvites,
+  TAttendeeInvites,
+} from "@/types/attendee";
 import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
@@ -166,7 +170,13 @@ export const useGetAttendees = ({
   return { attendees, isLoading, error, getAttendees };
 };
 
-export const useGetAttendee = ({ attendeeId }: { attendeeId: string }) => {
+export const useGetAttendee = ({
+  attendeeId,
+  isAlias = false,
+}: {
+  attendeeId: string;
+  isAlias: boolean;
+}) => {
   const [attendee, setAttendee] = useState<TAttendee | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -175,7 +185,7 @@ export const useGetAttendee = ({ attendeeId }: { attendeeId: string }) => {
     try {
       setLoading(true);
       const { data, status } = await getRequest<TAttendee>({
-        endpoint: `/attendees/${attendeeId}`,
+        endpoint: `/attendees/${attendeeId}?isAlias=${isAlias ? 1 : 0}`,
       });
 
       if (status !== 200) {
@@ -315,7 +325,15 @@ export const useInviteAttendees = () => {
   const inviteAttendees = async ({
     payload,
   }: {
-    payload: TAttendeeEmailInvites;
+    payload: {
+      message: string;
+      invitees: {
+        email: string;
+        name: string;
+        role: string;
+      }[];
+      eventAlias: string;
+    };
   }) => {
     setLoading(true);
 
@@ -349,7 +367,7 @@ export const useInviteAttendees = () => {
 
 type UseGetEmailInvitesResult = {
   emailInvites: TAttendeeEmailInvites[];
-  getEmailInvites: ({ eventId }: { eventId: string }) => Promise<void>;
+  getEmailInvites: () => Promise<void>;
 } & RequestStatus;
 
 export const useGetEmailInvites = ({

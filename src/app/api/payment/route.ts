@@ -2,24 +2,25 @@ import { uploadFile } from "@/utils";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-
+import { createICSContent } from "@/utils";
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
-
-  // intialize ics
-  const ics = require("ics");
 
   if (req.method === "POST") {
     try {
       const params = await req.json();
       const {
         count,
-        startDate,
+      startDate,
+        
         endDate,
         address,
         organizerContact,
         organization,
         eventImage,
+        trackingId,
+        role,
+        eventEndDate,
         ...restItem
       } = params;
       const {
@@ -70,30 +71,6 @@ export async function POST(req: NextRequest) {
         }
       );
 
-      // Create iCalendar event
-      const icsEvent = {
-        ...icsDateFormat,
-        title: event,
-        location: address,
-        attendees: attendeesNames,
-        organizer: { name: organization, email: organizerContact?.email },
-        // Add other event details as needed
-        //  organizerContact?.email
-      };
-
-   //   console.log("tyhejscs", icsEvent);
-      // Generate iCalendar content
-      const { error: icsError, value: iCalendarContent }: any =
-        await new Promise((resolve) => {
-          ics.createEvent(icsEvent, (error: Error, value: string) => {
-            resolve({ error, value });
-          });
-        });
-
-      if (icsError) {
-     //   console.log("error", icsError);
-        throw icsError;
-      }
 
       const { error: firstError, status: firstStatus } = await supabase
         .from("eventTransactions")
@@ -144,6 +121,15 @@ export async function POST(req: NextRequest) {
           }
         );
       }
+      // AttendeeEmailInvites
+      const { error: updateError, status: updateStatus } = await supabase
+        .from("attendeeEmailInvites")
+        .update({
+          response: "attending",
+          responseDate: new Date().toISOString(),
+          guests: attendeesDetails?.map((v: any) => v?.attendeeAlias)
+        })
+        .eq("trackingId", trackingId);
 
       // create attendee arraY
       const resolveAttendees = attendeesDetails.map(
@@ -152,11 +138,13 @@ export async function POST(req: NextRequest) {
           firstName,
           lastName,
           ticketType,
+          attendeeAlias,
         }: {
           email: string;
           firstName: string;
           lastName: string;
           ticketType: string;
+          attendeeAlias: string;
         }) => {
           return new Promise(async (resolve) => {
             // Generate QR code
@@ -170,6 +158,7 @@ export async function POST(req: NextRequest) {
               name: `${firstName} ${lastName}`,
               qrCode: qrCodeUrl,
               ticketType,
+              attendeeAlias,
             });
           });
         }
@@ -180,6 +169,7 @@ export async function POST(req: NextRequest) {
         name: string;
         qrCode: string;
         ticketType: string;
+        attendeeAlias: string;
       }[] = await Promise.all(resolveAttendees);
       // sending email
 
@@ -191,7 +181,17 @@ export async function POST(req: NextRequest) {
           url: process.env.NEXT_PUBLIC_ZEPTO_URL,
           token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
         });
-
+        const calendarICS = createICSContent(
+          eventDate,
+          eventEndDate,
+          event,
+          address,
+          { name: organization, email: organizerContact?.email },
+          {
+            name: attendee.name,
+            email: attendee.email,
+          }
+        );
         await client.sendMail({
           from: {
             address: process.env.NEXT_PUBLIC_EMAIL,
@@ -281,7 +281,9 @@ export async function POST(req: NextRequest) {
               }</p>
             
               <a
-               href="www.zikoro.com/profile" 
+               href="www.zikoro.com/event/${eventAlias}/people/info/${
+            attendee?.attendeeAlias
+          }" 
               style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
               >
               Update Profile</a>
@@ -362,14 +364,7 @@ export async function POST(req: NextRequest) {
               <p style="color: #b4b4b4; font-size: 14px; margin: 0">
                 ${startDate} - ${endDate}
               </p>
-              <div style="display: flex; align-items: center; gap: 0.5rem">
-                <p style="color: #b4b4b4; font-size: 14px; margin: 0;">Add to</p>
-                <a
-                  style="text-decoration: none; color: #001fcc; font-size: 14px; margin-left:3px;"
-                  href="#"
-                  >Google</a
-                >
-              </div>
+            
             </div>
           </div>
           <!--end-->
@@ -496,7 +491,7 @@ export async function POST(req: NextRequest) {
           attachments: [
             {
               name: "event.ics",
-              content: iCalendarContent,
+              content: Buffer.from(calendarICS).toString("base64"),
               mime_type: "text/calendar",
             },
           ],
@@ -537,22 +532,51 @@ export async function generateQRCode(user: string) {
   }
 }
 
+type ICSFormat = {
+  start: number[];
+  duration: { hours: number; minutes: number };
+};
+
 export const convertToICSFormat = (
-  dateTimeString: string
-): { start: number[]; duration: { hours: number; minutes: number } } => {
-  const dateTime = new Date(dateTimeString);
+  startDateTimeString: string,
+  endDateTimeString?: string // Optional end date parameter
+): ICSFormat => {
+  const startDateTime = new Date(startDateTimeString);
 
-  // Extract date components
-  const year = dateTime.getFullYear();
-  const month = dateTime.getMonth() + 1;
-  const day = dateTime.getDate();
+  // Set the end date to one day after the start date if not provided
+  let endDateTime: Date;
+  if (endDateTimeString) {
+    endDateTime = new Date(endDateTimeString);
+  } else {
+    endDateTime = new Date(startDateTime);
+    endDateTime.setDate(startDateTime.getDate() + 1);
+  }
 
-  // Extract time components
-  const hours = dateTime.getHours();
-  const minutes = dateTime.getMinutes();
+  // Extract start date components
+  const startYear = startDateTime.getFullYear();
+  const startMonth = startDateTime.getMonth() + 1; // Months are zero-based
+  const startDay = startDateTime.getDate();
+  const startHours = startDateTime.getHours();
+  const startMinutes = startDateTime.getMinutes();
+
+  // Extract end date components
+  const endYear = endDateTime.getFullYear();
+  const endMonth = endDateTime.getMonth() + 1;
+  const endDay = endDateTime.getDate();
+  const endHours = endDateTime.getHours();
+  const endMinutes = endDateTime.getMinutes();
+
+  // Calculate duration in milliseconds
+  const durationMillis = endDateTime.getTime() - startDateTime.getTime();
+
+  // Calculate duration in hours and minutes
+  const durationHours = Math.floor(durationMillis / (1000 * 60 * 60));
+  const durationMinutes = Math.floor(
+    (durationMillis % (1000 * 60 * 60)) / (1000 * 60)
+  );
 
   return {
-    start: [year, month, day, hours, minutes],
-    duration: { hours: 6, minutes: 30 },
+    start: [startYear, startMonth, startDay, startHours, startMinutes],
+    duration: { hours: durationHours, minutes: durationMinutes },
   };
 };

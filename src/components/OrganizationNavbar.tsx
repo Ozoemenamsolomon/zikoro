@@ -29,7 +29,7 @@ const OrganizationNavbar: React.FC<OrganizationNavbarProps> = ({ logoUrl }) => {
         <div className="flex mx-auto lg:max-w-6xl justify-between items-center pb-2">
           { isValidUrl(logoUrl) && (
             <Image
-              className="cursor-pointer"
+              className="cursor-pointer w-[128px] h-[35px]"
               onClick={() => router.push("/")}
               src={logoUrl as string}
               alt="logo"

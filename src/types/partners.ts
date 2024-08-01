@@ -50,7 +50,7 @@ export enum PartnersEnum {
 
   export interface TExPartner {
     banners: PartnerBannerType[];
-    boothNumber: string;
+    boothNumber: string[];
     boothStaff: TAttendee[];
     city: string;
     companyLogo: string;

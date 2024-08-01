@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components";
-import { Lock } from "@styled-icons/fa-solid/Lock";
+import { Lock } from "styled-icons/fa-solid";
 import { PaystackButton } from "react-paystack";
 import { useState } from "react";
 // import { OrganizerContact, TPayment } from "@/types";
@@ -10,7 +10,7 @@ import {
   useGetEventTransactionDetail,
   useUpdateTransactionDetail,
 } from "@/hooks";
-import { CheckCircleFill } from "@styled-icons/bootstrap/CheckCircleFill";
+import { CheckCircleFill } from "styled-icons/bootstrap";
 import { useSearchParams } from "next/navigation";
 
 type QueryData = {
@@ -24,6 +24,9 @@ type QueryData = {
   amountPayable: string;
   total: string;
   processingFee: string;
+  trackingId?: string | null
+  role?: string | null
+  eventEndDate: string;
 };
 export function Payment({
   eventRegistrationRef,
@@ -64,6 +67,8 @@ export function Payment({
       paymentDate: new Date(),
       expiredAt: null,
       amountPaid: Number(parsedData?.total),
+      trackingId: parsedData?.trackingId,
+      role: parsedData?.role,
       attendees: data?.attendees,
       discountValue: data?.discountValue,
       referralSource: data?.referralSource,
@@ -79,6 +84,7 @@ export function Payment({
       endDate: parsedData?.endDate,
       registrationCompleted: reference.status === "success",
       eventDate: data?.eventDate,
+      eventEndDate: parsedData?.eventEndDate,
       payOutStatus: "new",
       ticketCategory: data?.ticketCategory,
       event: data?.event,
@@ -114,6 +120,8 @@ export function Payment({
       paymentDate: new Date(),
       expiredAt: null,
       amountPaid: parsedData?.total,
+      trackingId: parsedData?.trackingId,
+      role: parsedData?.role,
       attendees: data?.attendees,
       discountValue: data?.discountValue,
       referralSource: data?.referralSource,
@@ -129,6 +137,7 @@ export function Payment({
       endDate: parsedData?.endDate,
       registrationCompleted: true,
       eventDate: data?.eventDate,
+      eventEndDate: parsedData?.eventEndDate,
       ticketCategory: data?.ticketCategory,
       event: data?.event,
       attendeesDetails: data?.attendeesDetails,

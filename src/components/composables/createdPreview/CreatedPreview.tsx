@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Button } from "@/components";
 import { cn } from "@/lib";
-import { CheckCircleFill } from "@styled-icons/bootstrap/CheckCircleFill";
+import { CheckCircleFill } from "styled-icons/bootstrap";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 
 export function CreatedPreview({ color, name, remove }: { remove?:() => Promise<void>; color?: string; name: string }) {

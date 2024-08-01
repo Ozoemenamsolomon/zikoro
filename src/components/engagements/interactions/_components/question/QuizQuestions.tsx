@@ -2,10 +2,10 @@
 
 import { Button } from "@/components";
 import { InteractionLayout } from "../../../_components";
-import { ArrowBackOutline } from "@styled-icons/evaicons-outline/ArrowBackOutline";
-import { PlusCircle } from "@styled-icons/bootstrap/PlusCircle";
-import { PlayBtn } from "@styled-icons/bootstrap/PlayBtn";
-import { Settings } from "@styled-icons/feather/Settings";
+import { ArrowBackOutline } from "styled-icons/evaicons-outline";
+import { PlusCircle } from "styled-icons/bootstrap";
+import { PlayBtn } from "styled-icons/bootstrap";
+import { Settings } from "styled-icons/feather";
 import Image from "next/image";
 import { ActiveQuestion, QuestionCard, QuizSettings, AddQuestion } from "..";
 import { useState, useEffect } from "react";
@@ -37,6 +37,21 @@ import {
   arrayMove,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
+
+function EmptyState() {
+  return (
+    <div className="w-full flex flex-col gap-y-3 items-center justify-center h-[24rem]">
+      <Image
+        className="w-fit h-fit"
+        src="/emptyquiz.png"
+        alt="empty"
+        width={250}
+        height={350}
+      />
+      <p className="text-gray-500">No Question</p>
+    </div>
+  );
+}
 
 export default function QuizQuestion({
   quizId,
@@ -153,7 +168,11 @@ export default function QuizQuestion({
                   <p>Question</p>
                 </Button>
                 <Link
-                  href={`/quiz/${eventId}/present/${quiz?.quizAlias}`}
+                  href={
+                    quiz?.interactionType === "poll"
+                      ? `/poll/${eventId}/present/${quiz?.quizAlias}`
+                      : `/quiz/${eventId}/present/${quiz?.quizAlias}`
+                  }
                   className="text-basePrimary px-0 w-fit h-fit  hover:text-black gap-x-2 font-medium flex"
                 >
                   <PlayBtn size={20} />
@@ -230,23 +249,9 @@ export default function QuizQuestion({
           eventAlias={quiz?.eventAlias}
           close={onClose}
           quiz={quiz}
+          interactionType={quiz?.interactionType || "quiz"}
         />
       )}
     </InteractionLayout>
-  );
-}
-
-function EmptyState() {
-  return (
-    <div className="w-full flex flex-col gap-y-3 items-center justify-center h-[24rem]">
-      <Image
-        className="w-fit h-fit"
-        src="/emptyquiz.png"
-        alt="empty"
-        width={250}
-        height={350}
-      />
-      <p className="text-gray-500">No Quiz</p>
-    </div>
   );
 }

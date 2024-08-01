@@ -33,7 +33,7 @@ const page = ({
     isLoading,
     getData: getLeads,
   } = useGetData<ILead[]>(
-    `/leads?eventAlias=${event.eventAlias}&partnerId=${partnerId}`
+    `/leads?eventAlias=${eventId}&partnerId=${partnerId}`
   );
   console.log(leads);
   const [selectedLead, onSelectLead] = useState<ILead | null>();

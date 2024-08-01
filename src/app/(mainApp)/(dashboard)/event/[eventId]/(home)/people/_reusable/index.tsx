@@ -17,7 +17,12 @@ import {
 } from "@/hooks";
 import useEventStore from "@/store/globalEventStore";
 import { TExPartner } from "@/types";
-import { useParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useGetContactRequests } from "@/hooks/services/contacts";
 import useUserStore from "@/store/globalUserStore";
 
@@ -53,15 +58,46 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     await getAttendees();
   };
 
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname() || "/";
+
+  const attendeeAlias = searchParams.get("attendeeAlias");
+  const [initialSelectionMade, setInitialSelectionMade] =
+    useState<boolean>(false);
+
   useEffect(() => {
     if (isLoading) return;
+
+    if (!initialSelectionMade && attendeeAlias) {
+      console.log("here");
+      const attendeeFromUrl = attendees.find(
+        (attendee) => attendee.attendeeAlias === attendeeAlias
+      );
+      if (attendeeFromUrl) {
+        selectAttendee(attendeeFromUrl);
+        setInitialSelectionMade(true);
+        return;
+      }
+    }
+
     const updatedAttendee = attendees.find(
       ({ id }) => selectedAttendee && selectedAttendee.id === id
     );
-    console.log(updatedAttendee, "running");
-
     selectAttendee(updatedAttendee);
-  }, [attendees]);
+  }, [attendees, isLoading, attendeeAlias]);
+
+  // useEffect(() => {
+  //   if (selectedAttendee) {
+  //     router.replace({
+  //       pathname,
+  //       query: {
+  //         ...router.query,
+  //         attendeeAlias: selectedAttendee.attendeeAlias,
+  //       },
+  //     });
+  //   }
+  // }, [selectedAttendee, router]);
 
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -116,7 +152,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   return (
     <section
-      className="relative h-fit md:border-t w-full grid md:grid-cols-10 overflow-hidden"
+      className="relative h-fit md:border-t w-full grid md:grid-cols-10 overflow-hidden pb-12"
       ref={divRef}
     >
       <section className="md:col-span-3 border-r-[1px] border-[#F3F3F3] md:pt-2">

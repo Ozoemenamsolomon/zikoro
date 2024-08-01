@@ -16,6 +16,7 @@ export function Option({
   optionIndex,
   option,
   selectOption,
+  setIsOptionSelected,
   isOrganizer,
   isIdPresent,
   answer,
@@ -30,6 +31,7 @@ export function Option({
   isIdPresent: boolean;
   answer: TAnswer[];
   showAnswerMetric?: boolean;
+  setIsOptionSelected?: React.Dispatch<React.SetStateAction<boolean>>;
   isDisabled: boolean;
   quiz: TQuiz<TQuestion[]>;
 }) {
@@ -67,6 +69,9 @@ export function Option({
             if (selectOption) {
               selectOption(option?.optionId);
             }
+            if (setIsOptionSelected) {
+              setIsOptionSelected(true);
+            }
           }}
           className={cn(
             "w-full px-4 text-gray-500 space-y-1  min-h-[44px] h-fit rounded-md border border-basePrimary bg-white",
@@ -79,10 +84,12 @@ export function Option({
               showAnswerMetric &&
               "border-red-500 bg-red-500/20",
 
-              isCorrectAnswer &&
+            isCorrectAnswer &&
               showAnswerMetric &&
               "border-green-500 bg-green-500/20 transform quiz-option-animation",
-            typeof option?.isCorrect === "boolean" && !showAnswerMetric && "bg-[#001fcc]/20"
+            typeof option?.isCorrect === "boolean" &&
+              !showAnswerMetric &&
+              "bg-[#001fcc]/20"
           )}
         >
           <div className="w-full flex items-center justify-between">
@@ -111,9 +118,11 @@ export function Option({
 
             {showAnswerMetric && (
               <div className="text-mobile">
-                <span>{`${((chosedOption / answer?.length) * 100).toFixed(
-                  0
-                )}%`}</span>
+                <span>
+                  {chosedOption
+                    ? `${((chosedOption / answer?.length) * 100).toFixed(0)}%`
+                    : "0%"}
+                </span>
               </div>
             )}
           </div>
@@ -122,9 +131,9 @@ export function Option({
             <div className="w-full relative h-1 rounded-3xl bg-gray-200">
               <span
                 style={{
-                  width: `${((chosedOption / answer?.length) * 100).toFixed(
-                    0
-                  )}%`,
+                  width: chosedOption
+                    ? `${((chosedOption / answer?.length) * 100).toFixed(0)}%`
+                    : "0%",
                 }}
                 className="absolute rounded-3xl inset-0 bg-basePrimary h-full"
               ></span>
@@ -178,7 +187,7 @@ export function OrganizerQuestOption({
         </div>
         {showAnswerMetric && (
           <div className="text-mobile">
-            <span>{`${chosen}%`}</span>
+            <span>{`${chosen || 0}%`}</span>
           </div>
         )}
       </div>
@@ -186,7 +195,7 @@ export function OrganizerQuestOption({
         <div className="w-full relative h-1 rounded-3xl bg-gray-200">
           <span
             style={{
-              width: `${chosen}%`,
+              width: `${chosen || 0}%`,
             }}
             className="absolute rounded-3xl inset-0 bg-basePrimary h-full"
           ></span>

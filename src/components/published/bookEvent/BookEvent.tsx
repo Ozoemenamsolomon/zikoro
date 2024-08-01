@@ -24,10 +24,11 @@ import {
 } from "@/hooks";
 import { toast } from "@/components/ui/use-toast";
 import { Event } from "@/types";
+import { generateAlphanumericHash } from "@/utils/helpers";
 import { usePathname, useRouter } from "next/navigation";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { ArrowBack } from "styled-icons/material-outlined";
-import {formatTime, formatDate} from "@/utils"
+import { formatTime, formatDate } from "@/utils";
 
 type TChosenAttendee = {
   firstName: string;
@@ -36,6 +37,7 @@ type TChosenAttendee = {
   email: string;
   ticketType: string;
   price: number;
+  attendeeAlias: string;
   id: number;
 };
 
@@ -59,6 +61,9 @@ export function BookEvent({
   availableSlot,
   eventTitle,
   eventLocation,
+  trackingId,
+  role,
+  eventEndDate,
 }: {
   eventId?: string;
   eventDate?: string;
@@ -74,13 +79,16 @@ export function BookEvent({
   close: () => void;
   eventLocation?: string;
   currency: string | undefined;
+  trackingId?: string | null;
+  eventEndDate?: string;
+  role: string;
 }) {
   const pathname = usePathname();
   const router = useRouter();
- // const [chosenPrice, setChosenPrice] = useState<number | undefined>();
+  // const [chosenPrice, setChosenPrice] = useState<number | undefined>();
   const [code, setCode] = useState("");
   const [active, setActive] = useState(1);
-  const [priceCategory, setPriceCategory] = useState<string | undefined>("");
+  // const [priceCategory, setPriceCategory] = useState<string | undefined>("");
   const { sendTransactionDetail } = useTransactionDetail();
   const [chosenAttendee, setChosenAttendee] = useState<TChosenAttendee[]>([]);
   const [description, setDescription] = useState("");
@@ -135,9 +143,9 @@ export function BookEvent({
       0
     );
     return discountAmount !== null
-      ? Number(discountAmount) 
-      : ((Number(totalTicketPrice) * Number(discountPercentage)) / 100)
-  }, [ chosenAttendeesTicket, discountAmount, discountPercentage]);
+      ? Number(discountAmount)
+      : (Number(totalTicketPrice) * Number(discountPercentage)) / 100;
+  }, [chosenAttendeesTicket, discountAmount, discountPercentage]);
 
   // calculating the processing Fee
   const processingFee = useMemo(() => {
@@ -146,9 +154,9 @@ export function BookEvent({
         (curr, { price }) => curr + price,
         0
       );
-      return ((Number(totalTicketPrice - discount) * 5) / 100) 
+      return (Number(totalTicketPrice - discount) * 5) / 100;
     }
-  }, [ chosenAttendeesTicket]);
+  }, [chosenAttendeesTicket]);
 
   const computedPrice = useMemo(() => {
     const totalTicketPrice = chosenAttendeesTicket?.reduce(
@@ -156,15 +164,11 @@ export function BookEvent({
       0
     );
     if (totalTicketPrice && event?.attendeePayProcessingFee) {
-      return totalTicketPrice ;
+      return totalTicketPrice;
     } else if (totalTicketPrice && processingFee) {
       return totalTicketPrice - processingFee;
     }
-  }, [
-    chosenAttendeesTicket,
-    processingFee,
-    event?.attendeePayProcessingFee,
-  ]);
+  }, [chosenAttendeesTicket, processingFee, event?.attendeePayProcessingFee]);
 
   // calculating total
   const total = useMemo(() => {
@@ -186,16 +190,15 @@ export function BookEvent({
     if (Array.isArray(event?.pricing)) {
       return event?.pricing?.map(
         ({ price, validity, ticketQuantity, attendeeType, description }) => {
-          let discountPrice = 0
+          let discountPrice = 0;
           if (!price || Number(price) === 0) {
-            discountPrice = 0
-          }
-          else {
+            discountPrice = 0;
+          } else {
             discountPrice =
-            discountAmount !== null
-              ? Number(price) - Number(discountAmount)
-              : Number(price) -
-                (Number(price) * Number(discountPercentage)) / 100;
+              discountAmount !== null
+                ? Number(price) - Number(discountAmount)
+                : Number(price) -
+                  (Number(price) * Number(discountPercentage)) / 100;
           }
 
           return {
@@ -204,9 +207,11 @@ export function BookEvent({
             discountPrice,
             price: Number(price),
             ticketQuantity,
-            discountPercentage: discountPrice > 0
-              ? ((Number(price) - Number(discountPrice)) / Number(price)) * 100
-              : 0,
+            discountPercentage:
+              discountPrice > 0
+                ? ((Number(price) - Number(discountPrice)) / Number(price)) *
+                  100
+                : 0,
             attendeeType,
           };
         }
@@ -214,7 +219,7 @@ export function BookEvent({
     }
   }, [event?.pricing, discountAmount, discountPercentage]);
 
- //  console.log('dcdv d', pricingArray, 'refvedcvd', event?.pricing)
+  //  console.log('dcdv d', pricingArray, 'refvedcvd', event?.pricing)
   /// verifying and redeeming a discount code'
   async function redeem() {
     await verifyDiscountCode(code, String(eventId));
@@ -229,11 +234,14 @@ export function BookEvent({
           eventImage,
           address,
           startDate,
+          role,
+          trackingId,
           endDate,
           organization,
           eventLocation,
           total,
           processingFee,
+          eventEndDate,
           organizerContact: JSON.stringify(organizerContact),
           amountPayable: processingFee ? total - processingFee : total,
         })}`
@@ -244,16 +252,15 @@ export function BookEvent({
   async function onSubmit(
     values: z.infer<typeof eventBookingValidationSchema>
   ) {
+    // maually checking
+    if (!values.aboutUs) {
+      form.setError("aboutUs", {
+        type: "manual",
+        message: "Please Select an Option",
+      });
 
-      // maually checking
-      if (!values.aboutUs) {
-        form.setError("aboutUs", {
-          type: "manual",
-          message: "Please Select an Option",
-        });
-  
-        return; /// stop submission
-      }
+      return; /// stop submission
+    }
     // maually checking for "others"
     if (values.aboutUs === "others" && !values.others) {
       form.setError("others", {
@@ -287,7 +294,7 @@ export function BookEvent({
       organizerContact: JSON.stringify(organizerContact),
       amountPayable: processingFee ? total - processingFee : total,
     })}`;
-   
+
     await registerAttendees(
       eventReference,
       values,
@@ -325,7 +332,7 @@ export function BookEvent({
       registrationCompleted: false,
       eventDate,
       event: eventTitle,
-      eventPrice:chosenAttendeesTicket?.reduce(
+      eventPrice: chosenAttendeesTicket?.reduce(
         (curr, { price }) => curr + price,
         0
       ),
@@ -342,30 +349,43 @@ export function BookEvent({
       lastName: "",
       email: "",
       phoneNumber: "",
+      attendeeAlias: generateAlphanumericHash(7),
       ticketType,
       price,
       id,
     };
     setChosenAttendee((prev) => [...prev, update]);
-   
   }
   function removeChosenAttendee(id: number) {
     setChosenAttendee((prev) => prev.filter((attendee) => attendee?.id !== id));
-    
   }
 
   useEffect(() => {
     if (chosenAttendee?.length > 0) {
-      const attendee = chosenAttendee.map(({firstName, lastName, phoneNumber,email, ticketType}) => {
-        return {
-          firstName, lastName, phoneNumber, ticketType, email
+      const attendee = chosenAttendee.map(
+        ({
+          firstName,
+          lastName,
+          phoneNumber,
+          email,
+          ticketType,
+          attendeeAlias,
+        }) => {
+          return {
+            firstName,
+            lastName,
+            phoneNumber,
+            ticketType,
+            email,
+            attendeeAlias,
+          };
         }
-      })
+      );
       form.reset({
-        attendeeApplication: attendee
-      })
+        attendeeApplication: attendee,
+      });
     }
-  },[chosenAttendee])
+  }, [chosenAttendee]);
 
   function selectedAttendeesLength(id: number) {
     const result = chosenAttendee?.filter(
@@ -375,7 +395,7 @@ export function BookEvent({
     return result;
   }
 
-  // 
+  //
 
   function formatTicketPrice(attendees: TChosenAttendee[]): TChosenTicket[] {
     // init a Map to hold the sum of prices for each ticketType
@@ -468,7 +488,12 @@ export function BookEvent({
                   >
                     <p>{`${item?.count}x ${item?.ticketType}:`}</p>
                     {item?.price > 0 ? (
-                      <p> {` ${currency ?? "NGN"}${item?.price?.toLocaleString()}`}</p>
+                      <p>
+                        {" "}
+                        {` ${
+                          currency ?? "NGN"
+                        }${item?.price?.toLocaleString()}`}
+                      </p>
                     ) : (
                       <p>---</p>
                     )}
@@ -478,7 +503,10 @@ export function BookEvent({
               <div className=" flex items-center text-sm justify-between w-full">
                 <p>{`${fields.length}x Discount:`}</p>
                 {discount > 0 ? (
-                  <p> {`-  ${currency ?? "NGN"}${discount?.toLocaleString()}`}</p>
+                  <p>
+                    {" "}
+                    {`-  ${currency ?? "NGN"}${discount?.toLocaleString()}`}
+                  </p>
                 ) : (
                   <p>---</p>
                 )}
@@ -486,7 +514,10 @@ export function BookEvent({
               <div className=" flex items-center text-sm justify-between w-full">
                 <p>{`${fields.length}x Processing fee:`}</p>
                 {processingFee ? (
-                  <p> {` ${currency ?? "NGN"}${processingFee?.toLocaleString()}`}</p>
+                  <p>
+                    {" "}
+                    {` ${currency ?? "NGN"}${processingFee?.toLocaleString()}`}
+                  </p>
                 ) : (
                   <p>---</p>
                 )}
@@ -494,7 +525,9 @@ export function BookEvent({
 
               <div className="border-t border-gray-300 font-semibold py-2 mt-3 w-full flex items-center justify-between">
                 <p className="">Total</p>
-                {computedPrice && <p>{` ${currency ?? "NGN"}${total?.toLocaleString()}`}</p>}
+                {computedPrice && (
+                  <p>{` ${currency ?? "NGN"}${total?.toLocaleString()}`}</p>
+                )}
               </div>
             </div>
           </div>
@@ -588,7 +621,6 @@ export function BookEvent({
                                   )?.toLocaleString()}`}</p>
                                 )}
                               </div>
-
                             </div>
                             <div className="flex items-end mt-2 justify-between w-full">
                               <div
@@ -600,9 +632,9 @@ export function BookEvent({
                                 )}
                               >
                                 {v?.validity ? (
-                                  <p className="text-xs sm:text-mobile">{`Valid till ${
-                                    formatDate(v?.validity || "0")
-                                  } ${formatTime(v?.validity || "0")}`}</p>
+                                  <p className="text-xs sm:text-mobile">{`Valid till ${formatDate(
+                                    v?.validity || "0"
+                                  )} ${formatTime(v?.validity || "0")}`}</p>
                                 ) : (
                                   <p className="w-1 h-1"></p>
                                 )}
@@ -683,12 +715,16 @@ export function BookEvent({
                   </div>
                 </div>
                 <Button
-                  disabled={chosenAttendee?.length === 0 ||pathname.includes("preview")}
+                  disabled={
+                    chosenAttendee?.length === 0 || pathname.includes("preview")
+                  }
                   type="submit"
                   onClick={() => setActive(2)}
                   className={cn(
                     "h-14 w-full gap-x-2 bg-basePrimary hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium",
-                    (chosenAttendee?.length === 0 || pathname.includes("preview")) && "bg-gray-200 text-black"
+                    (chosenAttendee?.length === 0 ||
+                      pathname.includes("preview")) &&
+                      "bg-gray-200 text-black"
                   )}
                 >
                   <span>Continue</span>
@@ -836,7 +872,11 @@ export function BookEvent({
 
                     <div className="w-full flex flex-col items-start justify-start gap-y-2">
                       <p className="mb-4">How do you hear about us?</p>
-                      {form.formState?.errors?.aboutUs?.message &&  <p className="text-sm  text-red-500">{form.formState.errors.aboutUs?.message}</p>}           
+                      {form.formState?.errors?.aboutUs?.message && (
+                        <p className="text-sm  text-red-500">
+                          {form.formState.errors.aboutUs?.message}
+                        </p>
+                      )}
                       {["instagram", "facebook", "x", "linkedIn", "others"].map(
                         (value) => (
                           <FormField
@@ -857,7 +897,6 @@ export function BookEvent({
                           />
                         )
                       )}
-                   
                     </div>
                     {form.watch("aboutUs") === "others" && (
                       <FormField

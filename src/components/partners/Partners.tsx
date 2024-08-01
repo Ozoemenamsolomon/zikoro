@@ -209,7 +209,7 @@ export function Partners({ eventId }: { eventId: string }) {
           : false,
         industry: value?.industry,
         jobs: Array.isArray(value?.jobs) ? value?.jobs?.length > 0 : false,
-        boothNumber: String(value?.boothNumber?.length),
+        
       };
     });
   }, [data]);

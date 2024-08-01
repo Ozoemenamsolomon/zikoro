@@ -2,7 +2,7 @@
 
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { useFetchSingleEvent, useUpdateEvent } from "@/hooks";
 import { Event } from "@/types";
 import { useForm } from "react-hook-form";
@@ -17,6 +17,7 @@ const eventWebsiteSettings = [
   { title: "Speakers", status: true },
   { title: "Partners", status: true },
   { title: "Reviews", status: true },
+  { title: "Rewards", status: true },
 ];
 type FormValue = {
   attendeePayProcessingFee: boolean;

@@ -11,10 +11,12 @@ import { HomeIcon } from "@/constants";
 export const NavLinks = ({
   query,
   id,
+  close,
   isHaveEvent,
 }: {
   id: string;
   query: string | null;
+  close: () => void;
   isHaveEvent?: boolean;
 }) => {
   const pathname = usePathname();
@@ -56,6 +58,7 @@ export const NavLinks = ({
               <ul className="w-full group-hover:flex hidden  flex-col gap-y-1 pl-12 text-xs sm:text-sm items-start justify-start">
                 <li className="w-full">
                   <Link
+                  onClick={close}
                     prefetch={false}
                     href={`${href}/${id}?organization=${query}`}
                   >
@@ -70,6 +73,7 @@ export const NavLinks = ({
         return (
           <li key={name} className="w-full">
             <Link
+            onClick={close}
               prefetch={false}
               href={
                 href === "/live-events"

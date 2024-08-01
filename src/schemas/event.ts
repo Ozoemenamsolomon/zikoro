@@ -6,6 +6,7 @@ export const attendeeValidationSchema = z.array(
     firstName: z.string().min(3, { message: "First Name is required" }),
     ticketType: z.string(),
     lastName: z.string().min(3, { message: "Last Name is required" }),
+    attendeeAlias: z.string(),
     phoneNumber: z
       .string()
       .refine((value) => value && /^\d{11,}$/.test(value.replace(/\D/g, "")), {
@@ -14,6 +15,7 @@ export const attendeeValidationSchema = z.array(
       .refine((value) => value && /^\+\d{1,3}/.test(value), {
         message: "Phone number must include start with a country code",
       }),
+    
   })
 );
 

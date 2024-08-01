@@ -24,26 +24,8 @@ type ChosenAnswerStatus = {
   isCorrect: boolean;
   correctOption: number;
 };
-export function Qusetion({
-  isRightBox,
-  isLeftBox,
-  toggleRightBox,
-  toggleLeftBox,
-  quiz,
-  updateQuiz,
-  attendeeDetail,
-  isOrganizer,
-  isIdPresent,
-  quizParticipantId,
-  answer,
-  getAnswer,
-  refetchQuizAnswers,
-  quizAnswer,
-  refetchQuiz,
-  onOpenScoreSheet,
-  updateQuizResult,
-  goBack,
-}: {
+
+type TQuestionProps = {
   isRightBox: boolean;
   isLeftBox: boolean;
   quizParticipantId: string;
@@ -68,7 +50,27 @@ export function Qusetion({
   onOpenScoreSheet: () => void;
   updateQuizResult: (q: TQuiz<TRefinedQuestion[]>) => void;
   goBack: () => void;
-}) {
+};
+export function Qusetion({
+  isRightBox,
+  isLeftBox,
+  toggleRightBox,
+  toggleLeftBox,
+  quiz,
+  updateQuiz,
+  attendeeDetail,
+  isOrganizer,
+  isIdPresent,
+  quizParticipantId,
+  answer,
+  getAnswer,
+  refetchQuizAnswers,
+  quizAnswer,
+  refetchQuiz,
+  onOpenScoreSheet,
+  updateQuizResult,
+  goBack,
+}: TQuestionProps) {
   const [currentQuestion, setCurrentQuestion] =
     useState<TRefinedQuestion | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -144,14 +146,17 @@ export function Qusetion({
       if (typeof quiz?.liveMode?.explanation === "boolean") {
         setShowExplanation(quiz?.liveMode?.explanation);
       }
+      if (typeof quiz?.liveMode?.isOptionSelected === "boolean") {
+        setIsOptionSelected(quiz?.liveMode?.isOptionSelected);
+      }
     }
   }, [quiz]);
 
-  // isOptionSelected
+  // isOptionSelected quiz?.liveMode?.isOptionSelected &&
   useEffect(() => {
     (async () => {
       if (quiz && quiz?.accessibility?.live && (isOrganizer || isIdPresent)) {
-        if (quiz?.liveMode?.isOptionSelected && currentQuestion) {
+        if (currentQuestion) {
           await getAnswer(currentQuestion?.id);
         }
       }
@@ -214,6 +219,7 @@ export function Qusetion({
           isTransitioning: quiz?.accessibility?.countdown,
           answerStatus: null,
           explanation: false,
+          isOptionSelected: false,
         },
       };
       if (isIdPresent || isOrganizer) {
@@ -268,7 +274,7 @@ export function Qusetion({
         liveMode: {
           startingAt,
           isShowAnswerMetric: true,
-          isOptionSelected: true,
+          isOptionSelected: false,
           correctOptionId: currentQuestion?.options?.find(
             (i) => i?.isAnswer === i?.optionId
           )?.optionId,
@@ -370,7 +376,7 @@ export function Qusetion({
               ?.optionId || "",
         },
       };
-      setIsOptionSelected(true);
+
       await createAnswer({ payload });
 
       if (quiz?.accessibility?.live) {
@@ -385,7 +391,7 @@ export function Qusetion({
           }),
           liveMode: {
             startingAt: liveMode?.startingAt,
-            isOptionSelected: true,
+            isOptionSelected: false,
           },
         };
 
@@ -456,6 +462,8 @@ export function Qusetion({
       showMetric();
     }
   }
+
+  console.log("trhh", isOptionSelected);
 
   return (
     <div
@@ -553,6 +561,7 @@ export function Qusetion({
                     key={index}
                     option={option}
                     isOrganizer={isOrganizer}
+                    setIsOptionSelected={setIsOptionSelected}
                     showAnswerMetric={showAnswerMetric}
                     answer={answer}
                     isDisabled={

@@ -17,6 +17,8 @@ import { isWithinTimeRange } from "@/utils/date";
 import { DialogClose } from "../ui/dialog";
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import { MoreOptionsProps } from "@/app/(mainApp)/(dashboard)/event/[eventId]/(home)/people/_reusable/FirstSection";
+import { useGetData } from "@/hooks/services/request";
+import { EngagementsSettings } from "@/types/engagements";
 
 const checkinMultiple: React.FC<MoreOptionsProps> = ({
   attendees,
@@ -25,19 +27,22 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
   favourites,
   event,
 }) => {
-  
   const [mappedAttendees, setMappedAttendees] =
     useState<TAttendee[]>(attendees);
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
   const [eventDate, setEventDate] = useState<string | null>(null);
   const [action, setAction] = useState<"checkin" | "undo">("checkin");
 
-  useEffect(() => {
-    
-    if (!eventDate) return;
-    
+  const {
+    data: engagementsSettings,
+    isLoading: engagementsSettingsIsLoading,
+    getData: getEngagementsSettings,
+  } = useGetData<EngagementsSettings>(
+    `engagements/${event.eventAlias}/settings`
+  );
 
-    
+  useEffect(() => {
+    if (!eventDate) return;
 
     setMappedAttendees(
       attendees.filter(({ checkin }) => {
@@ -75,22 +80,30 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
     if (!eventDate) return;
 
     const newDate = new Date(eventDate);
-    
 
     const payload = selectedAttendees.map((attendee) => {
-      const existingCheckin = attendee.checkin || [];
+      const existingCheckin = attendee.checkin ?? [];
+      const allocatedcheckInPoints =
+        engagementsSettings?.pointsAllocation["Checked in for an event"]
+          ?.points ?? 0;
+      const existingCheckinPoints = attendee.checkInPoints ?? 0;
       const newCheckin =
         action === "checkin"
           ? [...(existingCheckin ?? []), { date: newDate, checkin: true }]
           : existingCheckin.filter(({ date }) => !isSameDay(newDate, date));
 
+      const checkInPoints = existingCheckin
+        ? action === "checkin"
+          ? Math.max(existingCheckinPoints - allocatedcheckInPoints, 0)
+          : existingCheckinPoints + allocatedcheckInPoints
+        : allocatedcheckInPoints;
+
       return {
         ...attendee,
         checkin: newCheckin,
+        checkInPoints,
       };
     });
-
-    
 
     await updateAttendees({ payload });
     await getAttendees();
@@ -177,7 +190,11 @@ const checkinMultiple: React.FC<MoreOptionsProps> = ({
       />
       <DialogClose asChild>
         <Button
-          disabled={selectedAttendees.length === 0 || !eventDate}
+          disabled={
+            selectedAttendees.length === 0 ||
+            !eventDate ||
+            engagementsSettingsIsLoading
+          }
           className="bg-basePrimary w-full"
           onClick={onSubmit}
         >

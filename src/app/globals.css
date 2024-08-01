@@ -633,6 +633,32 @@ input[type="number"] {
     opacity: 0
   }
 }
+
+.box-animation {
+  animation: fadeInAndSlide 0.6s ease-out;
+}
+@keyframes fadeInAndSlide {
+  from {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeInAndSlide {
+  from {
+    -webkit-transform: translateY(-4px);
+    -webkit-opacity: 0;
+  }
+  to {
+    -webkit-transform: translateY(0);
+    -webkit-opacity: 1;
+  }
+}
+
 .label {
   @apply text-base font-medium pb-1
 }

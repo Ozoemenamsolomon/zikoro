@@ -97,7 +97,9 @@ export default function AttendeeCard(props) {
                     )}
                   </div>
                 </div>
-                {(props.isEventOwner || props.attendeeIsUser) && (
+                {(props.isEventOwner ||
+                  props.attendeeIsUser ||
+                  props.attendeeExchangedContacts) && (
                   <div className="flex justify-between gap-2 items-start">
                     {props.phoneNumber && (
                       <div className="flex-1">

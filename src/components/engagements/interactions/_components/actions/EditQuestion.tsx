@@ -1,8 +1,8 @@
 "use client";
 
 import { TQuiz, TQuestion } from "@/types";
-import { Button, Portal } from "@/components";
-import { Edit } from "@styled-icons/boxicons-solid/Edit";
+import { Button } from "@/components";
+import { Edit } from "styled-icons/boxicons-solid";
 import { useState } from "react";
 import { AddQuestion } from "..";
 export function EditQuestion({

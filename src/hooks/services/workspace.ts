@@ -211,7 +211,7 @@ export function useCreateTeamMember(workspaceId: number) {
 
 
 export function useDeleteTeamMember(workspaceId: number) {
-  const [currentTeamMembers, setCurrentTeamMembers] = useState<any>({});
+  const [currentTeamMembers, setCurrentTeamMembers] = useState<any>({ teamMembers: [] });
 
   async function fetchTeamMembers() {
     try {
@@ -235,7 +235,8 @@ export function useDeleteTeamMember(workspaceId: number) {
 
   async function deleteTeamMember(memberId: string) {
     try {
-      const updatedTeamMembers = currentTeamMembers.teamMembers.filter((member: any) => member.id !== memberId);
+      const teamMembers = currentTeamMembers.teamMembers || [];
+      const updatedTeamMembers = teamMembers.filter((member: any) => member.id !== memberId);
 
       const { data, error } = await supabase
         .from("organization")
@@ -249,7 +250,7 @@ export function useDeleteTeamMember(workspaceId: number) {
       }
 
       setCurrentTeamMembers(data);
-      toast.error("Team member removed successfully");
+      toast.success("Team member removed successfully");
       return true;
     } catch (error) {
       console.error(error);
@@ -257,9 +258,12 @@ export function useDeleteTeamMember(workspaceId: number) {
     }
   }
 
+  useEffect(() => {
+    fetchTeamMembers();
+  }, [workspaceId]);
+
   return {
     currentTeamMembers,
     deleteTeamMember,
-    fetchTeamMembers,
   };
 }

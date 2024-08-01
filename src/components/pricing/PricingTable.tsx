@@ -15,7 +15,7 @@ type Props = {
 };
 
 //type annotation for the data being fetched
-type DBPricingTypes = {
+type DBDefaultPriceType = {
   id: number;
   created_at: string;
   currency: string;
@@ -24,6 +24,13 @@ type DBPricingTypes = {
   yearPrice: number | null;
   productType: string;
   amount: number | null;
+};
+
+type DBOtherCurrienciesType = {
+  id: number;
+  created_at: string;
+  currency: string;
+  amount: number;
 };
 
 export default function PricingTable({
@@ -37,15 +44,19 @@ export default function PricingTable({
   const [liteFeatures, setLiteFeatures] = useState<boolean>(false);
   const [profFeatures, setProfFeatures] = useState<boolean>(false);
   const [busFeatures, setBusFeatures] = useState<boolean>(false);
-  const [selectedCurrency, setSelectedCurrency] = useState<string>("NGN");
-  const [pricingData, setPricingData] = useState<DBPricingTypes[] | undefined>(
-    undefined
-  );
+  const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
+  const [defaultPriceData, setDefaultPriceData] = useState<
+    DBDefaultPriceType[] | undefined
+  >(undefined);
+  const [otherCurrenciesData, setOtherCurrenciesData] = useState<
+    DBOtherCurrienciesType[] | undefined
+  >(undefined);
+
   const [isMonthly, setIsMonthly] = useState<boolean>(false);
   const router = useRouter();
 
   //currencies list
-  const currencies = ["NGN", "USD", "GHC", "ZAR", "KES"];
+  const currencies = ["USD", "NGN", "GHC", "ZAR", "KES"];
 
   //toggler functions
   const handlePlanToogle = () => {
@@ -62,27 +73,59 @@ export default function PricingTable({
           },
         });
         const data = await response.json();
-        setPricingData(data.data);
+        setDefaultPriceData(data.data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+
+    async function fetchOtherCurrenciesPricing() {
+      try {
+        const response = await fetch("/api/currenciesPricing", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        setOtherCurrenciesData(data.data);
       } catch (error) {
         console.error("Error:", error);
       }
     }
 
     fetchPricingData();
+    fetchOtherCurrenciesPricing();
   }, []);
 
   //get plan price
-  const getPlanPrice = (plan: string) => {
-    if (!pricingData) return null;
-    const planData = pricingData.find(
-      (data) => data.plan === plan && data.currency === selectedCurrency
+  const getPlanPrice = (
+    plan: string,
+    selectedCurrency: string,
+    otherCurrenciesData: DBOtherCurrienciesType[] | undefined
+  ): number | null => {
+    if (!defaultPriceData) return null;
+    const planData = defaultPriceData.find(
+      (data) => data.plan === plan && data.currency === "USD" // Assuming default price data is in USD
     );
     if (!planData) return null;
-    return isMonthly ? planData.monthPrice : planData.yearPrice;
+
+    let planPrice = isMonthly ? planData.monthPrice : planData.yearPrice;
+
+    if (selectedCurrency !== "USD" && otherCurrenciesData) {
+      const currencyData = otherCurrenciesData.find(
+        (data) => data.currency === selectedCurrency
+      );
+      if (currencyData && planPrice) {
+        planPrice *= currencyData.amount;
+      }
+    }
+
+    return planPrice;
   };
 
   const handleSelectPlan = (plan: string) => {
-    const price = getPlanPrice(plan);
+    const price = getPlanPrice(plan, selectedCurrency, otherCurrenciesData);
     setChosenPrice(price);
     setChosenPlan(plan);
     setChosenMonthly(isMonthly);
@@ -164,27 +207,37 @@ export default function PricingTable({
                 Try it
               </button>
             </div>
-            {/* 
+
             {!freeFeatures ? (
               <div
                 className="flex gap-x-2 items-center justify-center text-base cursor-pointer"
                 onClick={() => setFreeFeatures(true)}
               >
-                <p className="font-medium">Show Features </p>
-                <ChevronDown size={16} className="text-sm" />
+                <p className="font-medium text-zikoroBlue">Show Features </p>
+                <ChevronDown size={16} className="text-zikoroBlue" />
               </div>
             ) : (
               <div>
-                <p className="text-base font-normal">Features</p>
+                <ul>
+                  <li className="text-base font-semibold gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end">
+                    Features
+                  </li>
+                  <li className="text-base font-normal">Unlimited events</li>
+                  <li className="text-base font-normal">Attendee check-in</li>
+                  <li className="text-base font-normal">3 discount coupons</li>
+                  <li className="text-base font-normal">
+                    No engagement Feature
+                  </li>
+                </ul>
                 <div
                   className="flex gap-x-2 items-center justify-center text-base cursor-pointer mt-4"
                   onClick={() => setFreeFeatures(false)}
                 >
-                  <p className="font-medium">Hide Features </p>
-                  <ChevronUp size={16} className="text-sm" />
+                  <p className="font-medium text-zikoroBlue">Hide Features </p>
+                  <ChevronUp size={16} className="text-sm text-zikoroBlue" />
                 </div>
               </div>
-            )} */}
+            )}
           </div>
         </div>
 
@@ -205,7 +258,8 @@ export default function PricingTable({
             <p className="text-2xl font-bold text-zikoroBlue mt-6">
               {" "}
               {convertCurrencyCodeToSymbol(selectedCurrency)}{" "}
-              {getPlanPrice("Lite") ?? "N/A"}{" "}
+              {getPlanPrice("Lite", selectedCurrency, otherCurrenciesData) ??
+                "N/A"}{" "}
               <span className="text-[14px] text-gray-400">/month</span>{" "}
             </p>
             <div className="px-1 my-6">
@@ -225,26 +279,43 @@ export default function PricingTable({
               </button>
             </div>
 
-            {/* {!liteFeatures ? (
+            {!liteFeatures ? (
               <div
                 className="flex gap-x-2 items-center justify-center text-base cursor-pointer"
                 onClick={() => setLiteFeatures(true)}
               >
-                <p className="font-medium">Show Features </p>
-                <ChevronDown size={16} className="text-sm" />
+                <p className="font-medium text-zikoroBlue">Show Features </p>
+                <ChevronDown size={16} className="text-sm text-zikoroBlue" />
               </div>
             ) : (
               <div>
-                <p className="text-base font-normal">Features</p>
+                <ul>
+                  <li className="text-base font-semibold gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end">
+                    Features
+                  </li>
+                  <li className="text-base font-normal">
+                    Everything in Free Plus
+                  </li>
+                  <li className="text-base font-normal">
+                    200 attendees/ engagement feature
+                  </li>
+                  <li className="text-base font-normal">
+                    RSVP responses & tracking
+                  </li>
+                  <li className="text-base font-normal">Data inport/export</li>
+                  <li className="text-base font-normal">
+                    3 Live quiz, 3 polls & Unlimited Q&A
+                  </li>
+                </ul>
                 <div
                   className="flex gap-x-2 items-center justify-center text-base cursor-pointer mt-4"
                   onClick={() => setLiteFeatures(false)}
                 >
-                  <p className="font-medium">Hide Features </p>
-                  <ChevronUp size={16} className="text-sm" />
+                  <p className="font-medium text-zikoroBlue">Hide Features </p>
+                  <ChevronUp size={16} className="text-sm text-zikoroBlue" />
                 </div>
               </div>
-            )} */}
+            )}
           </div>
         </div>
 
@@ -262,7 +333,11 @@ export default function PricingTable({
 
             <p className="text-2xl font-bold mt-6">
               {convertCurrencyCodeToSymbol(selectedCurrency)}{" "}
-              {getPlanPrice("Professional") ?? "N/A"}{" "}
+              {getPlanPrice(
+                "Professional",
+                selectedCurrency,
+                otherCurrenciesData
+              ) ?? "N/A"}{" "}
               <span className="text-[14px] text-gray-400 ">/month</span>{" "}
             </p>
             <div className="px-1 my-6">
@@ -282,7 +357,7 @@ export default function PricingTable({
               </button>
             </div>
 
-            {/* {!profFeatures ? (
+            {!profFeatures ? (
               <div
                 className="flex gap-x-2 items-center justify-center text-base cursor-pointer"
                 onClick={() => setProfFeatures(true)}
@@ -292,7 +367,24 @@ export default function PricingTable({
               </div>
             ) : (
               <div>
-                <p className="text-base font-normal">Features</p>
+                <ul>
+                  <li className="text-base font-semibold  ">Features</li>
+                  <li className="text-base font-normal">
+                    Everything in Lite plus
+                  </li>
+                  <li className="text-base font-normal">
+                    1000 attendees/ engagement features
+                  </li>
+                  <li className="text-base font-normal">
+                    Unlimited Affiliates
+                  </li>
+                  <li className="text-base font-normal">
+                    5 partner virtual booth
+                  </li>
+                  <li className="text-base font-normal">
+                    Unlimited sessions/event
+                  </li>
+                </ul>
                 <div
                   className="flex gap-x-2 items-center justify-center text-base cursor-pointer mt-4"
                   onClick={() => setProfFeatures(false)}
@@ -301,7 +393,7 @@ export default function PricingTable({
                   <ChevronUp size={16} className="text-sm" />
                 </div>
               </div>
-            )} */}
+            )}
           </div>
         </div>
 
@@ -322,7 +414,11 @@ export default function PricingTable({
             <p className="text-2xl font-bold text-zikoroBlue mt-6">
               {" "}
               {convertCurrencyCodeToSymbol(selectedCurrency)}{" "}
-              {getPlanPrice("Enterprise") ?? "N/A"}{" "}
+              {getPlanPrice(
+                "Enterprise",
+                selectedCurrency,
+                otherCurrenciesData
+              ) ?? "N/A"}{" "}
               <span className="text-[14px] text-gray-400">/month</span>{" "}
             </p>
             <div className="px-1 my-6">
@@ -342,26 +438,43 @@ export default function PricingTable({
               </button>
             </div>
 
-            {/* {!busFeatures ? (
+            {!busFeatures ? (
               <div
                 className="flex gap-x-2 items-center justify-center text-base cursor-pointer"
                 onClick={() => setBusFeatures(true)}
               >
-                <p className="font-medium">Show Features </p>
-                <ChevronDown size={16} className="text-sm" />
+                <p className="font-medium text-zikoroBlue">Show Features </p>
+                <ChevronDown size={16} className="text-sm text-zikoroBlue" />
               </div>
             ) : (
               <div>
-                <p className="text-base font-normal">Features</p>
+                <ul>
+                  <li className="text-base font-semibold text-zikoroBlue">Features</li>
+                  <li className="text-base font-normal">
+                    Everything in Professional Plus
+                  </li>
+                  <li className="text-base font-normal">
+                    15000 Attendees/ engagement features
+                  </li>
+                  <li className="text-base font-normal">
+                    Unlimited engagement features
+                  </li>
+                  <li className="text-base font-normal">
+                    10 partner virtual booth
+                  </li>
+                  <li className="text-base font-normal">
+                    Unlimited discount coupons/ event
+                  </li>
+                </ul>
                 <div
                   className="flex gap-x-2 items-center justify-center text-base cursor-pointer mt-4"
                   onClick={() => setBusFeatures(false)}
                 >
-                  <p className="font-medium">Hide Features </p>
-                  <ChevronUp size={16} className="text-sm" />
+                  <p className="font-medium text-zikoroBlue">Hide Features </p>
+                  <ChevronUp size={16} className="text-sm text-zikoroBlue" />
                 </div>
               </div>
-            )} */}
+            )}
           </div>
         </div>
       </div>

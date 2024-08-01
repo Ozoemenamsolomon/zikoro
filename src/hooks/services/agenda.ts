@@ -255,20 +255,19 @@ export const useSendReview = () => {
   return { sendReview, isLoading };
 };
 
+interface TCalculatedReview {
+  average: number;
+  rating: number
+  review: TFeedBack[]
+}
 export const useGetReviews = () => {
-  const [rating, setRating] = useState<{ average: number; rating: number }>({
-    average: 0,
-    rating: 0,
-  });
+  const [rating, setRating] = useState<TCalculatedReview | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
 
   const getRating = async ({ agendaId }: { agendaId: string }) => {
     try {
       setLoading(true);
-      const { data, status } = await getRequest<{
-        average: number;
-        rating: number;
-      }>({
+      const { data, status } = await getRequest<TCalculatedReview>({
         endpoint: `/agenda/review/${agendaId}`,
       });
 

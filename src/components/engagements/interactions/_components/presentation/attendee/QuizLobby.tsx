@@ -156,7 +156,7 @@ export function QuizLobby({
             className="bg-basePrimary gap-x-2 px-10 h-12 w-fit rounded-lg text-gray-50 transform transition-all duration-400 "
           >
             {loading && <LoaderAlt size={22} className="animate-spin" />}
-            Start Quiz
+           <p>{quiz?.interactionType !== "poll" ? "Start Quiz" : "Start Poll"}</p>
           </Button>
         )}
 

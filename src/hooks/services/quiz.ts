@@ -35,7 +35,7 @@ export const useCreateQuiz = () => {
       });
 
       toast({
-        description: "Quiz created successfully",
+        description: "Creation Attempt Successful",
       });
       return data;
     } catch (error: any) {
@@ -71,7 +71,7 @@ export const useUpdateQuiz = () => {
       if (status !== 200) throw data;
 
       toast({
-        description: "Quiz Updated successfully",
+        description: " Update successful",
       });
       return data;
     } catch (error: any) {
@@ -190,7 +190,7 @@ export const useDeleteQuiz = () => {
 
       if (status !== 201) throw data.data;
       toast({
-        description: "Quiz deleted successfully",
+        description: " Delete successful",
       });
 
       return data.data;

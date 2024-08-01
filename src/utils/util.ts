@@ -134,3 +134,132 @@ export function updateSearchParam(
 
   return currentSearchParams;
 }
+
+type Attendee = {
+  name?: string;
+  email: string;
+};
+
+export const createICSContent = (
+  startDateTimeString: string,
+  endDateTimeString: string,
+  description: string,
+  location: string,
+  organizer: { name: string; email: string },
+  attendee: Attendee
+): string => {
+  const startDateTime = new Date(startDateTimeString)
+    .toISOString()
+    .replace(/-|:|\.\d+/g, "");
+  const endDateTime = new Date(endDateTimeString)
+    .toISOString()
+    .replace(/-|:|\.\d+/g, "");
+  const duration =
+    new Date(endDateTimeString).getTime() -
+    new Date(startDateTimeString).getTime();
+  const durationHours = Math.floor(duration / (1000 * 60 * 60));
+  const durationMinutes = Math.floor(
+    (duration % (1000 * 60 * 60)) / (1000 * 60)
+  );
+
+  return `BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nPRODID:adamgibbons/ics\nMETHOD:PUBLISH\nX-PUBLISHED-TTL:PT1H\nBEGIN:VEVENT\nUID:dR3_ekmfOhjKQu4yHG7j0\nSUMMARY:this is an event\nDTSTAMP:${new Date()
+    .toISOString()
+    .replace(
+      /-|:|\.\d+/g,
+      ""
+    )}\nDTSTART:${startDateTime}\nLOCATION:${location}\nORGANIZER;CN="${
+    organizer.name
+  }":MAILTO:${organizer.email}\nATTENDEE;CN="${
+    attendee.name ?? "attendee"
+  }":mailto:${
+    attendee.email
+  }\nDURATION:PT${durationHours}H${durationMinutes}M\nEND:VEVENT\nEND:VCALENDAR`;
+};
+
+export const subscriptionPlans = [
+  {
+    plan: "Free",
+    features: [
+      { value: "unlimitedEvent", label: "Unlimited Event" },
+      { value: "attendeeCheckedIn", label: "Attendeee Check-in" },
+      { value: "3DiscountCoupon", label: "3 Discount Coupons" },
+      { value: "noEngagementfeature", label: "No Engagement Feature" },
+    ],
+  },
+  {
+    plan: "Lite",
+    features: [
+      { value: "unlimitedEvent", label: "Unlimited Event" },
+      { value: "attendeeCheckedIn", label: "Attendeee Check-in" },
+      { value: "3discountCoupon", label: "3 Discount Coupons" },
+      { value: "200attendeeandengagementfeature", label: "Engagement Feature" },
+      { value: "trackingRSVP", label: "RSVP responses & tracking" },
+      { value: "importAndExportOfData", label: "Data inport/export" },
+      {
+        Value: "3LiveQuiz3pollsAndunlimitedQA",
+        label: "3 Live quiz, 3 polls & Unlimited Q&A",
+      },
+    ],
+  },
+  {
+    plan: "Professional",
+    features: [
+      { value: "unlimitedEvent", label: "Unlimited Event" },
+      { value: "attendeeCheckedIn", label: "Attendeee Check-in" },
+      { value: "3discountCoupon", label: "3 Discount Coupons" },
+      {
+        value: "1000attendeeandengagementfeature",
+        label: "Engagement Feature",
+      },
+      { value: "trackingRSVP", label: "RSVP responses & tracking" },
+      { value: "importAndExportOfData", label: "Data inport/export" },
+      {
+        Value: "3LiveQuiz3pollsAndunlimitedQA",
+        label: "3 Live quiz, 3 polls & Unlimited Q&A",
+      },
+      { value: "unliimitedSessions", label: "Unlimited sessions/event" },
+      { value: "unlimitedAffiliates", label: "Unlimited Affiliates" },
+      { value: "5partnerVirtualBooth", label: "5 partner virtual booth" },
+    ],
+  },
+  {
+    plan: "Enterprise",
+    features: [
+      { value: "unlimitedEvent", label: "Unlimited Event" },
+      { value: "attendeeCheckedIn", label: "Attendeee Check-in" },
+      {
+        value: "unlimiteddiscountCoupon",
+        label: "Unlimited discount coupons/ event",
+      },
+      {
+        value: "1500attendeeandengagementfeature",
+        label: "15000 Attendees/ engagement features",
+      },
+      { value: "trackingRSVP", label: "RSVP responses & tracking" },
+      { value: "importAndExportOfData", label: "Data inport/export" },
+      {
+        Value: "3LiveQuiz3pollsAndunlimitedQA",
+        label: "3 Live quiz, 3 polls & Unlimited Q&A",
+      },
+      { value: "unliimitedSessions", label: "Unlimited sessions/event" },
+      { value: "unlimitedAffiliates", label: "Unlimited Affiliates" },
+      { value: "10partnerVirtualBooth", label: "10 partner virtual booth" },
+    ],
+  },
+];
+
+export function verifyingAccess(textContent: string, isEnterPrise?: boolean) {
+  const subModal = document.getElementById("subscription-modal")
+  const contentDiv = document.getElementById("content");
+  const upgradeButton = document.getElementById("upgrade-button");
+  
+  if (contentDiv && subModal) {
+    subModal.style.display = "block"
+    contentDiv.textContent = textContent;
+  }
+  if (isEnterPrise && upgradeButton) {
+    upgradeButton.style.display = "none";
+  }
+
+  return;
+}

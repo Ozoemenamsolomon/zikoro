@@ -7,7 +7,6 @@ import { Button, MobileBottomNav, NavLinks } from ".";
 import Link from "next/link";
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import { EventFeedBack } from "./modals/EventFeedback";
-import { VipCrown2 } from "styled-icons/remix-fill";
 import MainTopBar from "@/components/MainTopBar";
 import { PlusCircle } from "styled-icons/bootstrap";
 import {
@@ -82,7 +81,7 @@ export function SideBarLayout({
     <>
       <div
         className={cn(
-          "w-full sm:w-[calc(100%-60px)]  bg-white float-right right-0 z-[55] fixed flex justify-between items-center ",
+          "w-full sm:w-[calc(100%-60px)]  bg-white float-right right-0 z-[48] fixed flex justify-between items-center ",
           isNav && "w-[calc(100%-60px)]"
         )}
       >
@@ -162,6 +161,7 @@ function SideNavs({
             />
             {/**nav links */}
             <NavLinks
+            close={close}
               isHaveEvent={isHaveEvent}
               query={query}
               id={organizationId}
@@ -170,6 +170,7 @@ function SideNavs({
           <div className="flex items-start text-[#717171] justify-start w-full flex-col gap-4 border-t p-4 border-basebody">
             <div className="w-full flex items-center gap-x-2 ">
               <Link
+
                 href={`/create`}
                 className="text-mobile sm:text-sm text-basePrimary font-medium hover:underline "
               >
@@ -227,7 +228,9 @@ function SideNavs({
                 Give feedback
               </p>
             </button>
-            <Link href={"/referrals"}>
+            <Link 
+            onClick={close}
+            href={"/referrals"}>
               <div className="flex items-center gap-2">
                 <ReferralIcon />
                 <p className="font-medium group-hover:block hidden">

@@ -17,6 +17,7 @@ export enum EventDetailTab {
   AGENDA_TAB,
   SPEAKERS_TAB,
   EXIHIBITORS_TAB,
+  REWARD_TAB
 }
 
 interface PricingType {
@@ -183,6 +184,7 @@ interface TAttendeeDetail {
   lastName: string;
   phoneNumber: string;
   whatsappNumber: string;
+  attendeeAlias: string;
 }
 export interface TEventTransactionDetail {
   affiliateCode: string;

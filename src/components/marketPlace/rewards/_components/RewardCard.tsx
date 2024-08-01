@@ -17,6 +17,7 @@ export function RewardCard({
   redeemedRewards,
   attendeeId,
   attendeePoints,
+  refetchRedeemed,
 }: {
   refetch: () => Promise<any>;
   isOrganizer: boolean;
@@ -24,6 +25,7 @@ export function RewardCard({
   attendeePoints: number;
   attendeeId?: number;
   redeemedRewards: RedeemPoint[] | null;
+  refetchRedeemed: () => Promise<any>;
 }) {
   const [isAlert, setAlert] = useState(false);
   const [isOpen, setOpen] = useState(false);
@@ -58,12 +60,28 @@ export function RewardCard({
     if (redeemedRewards && attendeeId) {
       const points = redeemedRewards
         ?.filter((v) => v?.attendeeId === attendeeId)
-        ?.reduce((acc, curr) => acc + curr.rewardPoints || 0, 0);
+        ?.reduce((acc, curr) => acc + Number(curr.rewardPoints) || 0, 0);
+
+      console.log("p", points, attendeePoints);
+
       return attendeePoints - points;
     } else {
       return attendeePoints - 0;
     }
+  }, [attendeeId, redeemedRewards, attendeePoints]);
+
+  const isAttendeeAlreadyRedeemed = useMemo(() => {
+    return redeemedRewards && attendeeId
+      ? redeemedRewards?.some((v) => v?.attendeeId === attendeeId)
+      : false;
   }, [attendeeId, redeemedRewards]);
+
+  console.log(
+    "available",
+    availableAttendeepoint,
+    attendeeId,
+    isAttendeeAlreadyRedeemed
+  );
 
   async function redeem() {
     const payload = {
@@ -76,6 +94,7 @@ export function RewardCard({
     await redeemAReward(payload);
     onRedeem();
     refetch();
+    refetchRedeemed();
   }
 
   function onSubmit() {
@@ -124,14 +143,18 @@ export function RewardCard({
             <p>{`Available points:  ${availableAttendeepoint}`}</p>
           </div>
         </div>
-        <div className="px-3 w-full mt-1 flex items-center justify-between">
-          <button
-            onClick={onSubmit}
-            className="text-basePrimary text-sm font-semibold"
-          >
-            Redeem Reward
-          </button>
-        </div>
+        {reward?.quantity - numberOfRedeemed === 0 ||
+        isAttendeeAlreadyRedeemed ? null : (
+          <div className="px-3 w-full mt-1 flex items-center justify-between">
+            <button
+              onClick={onSubmit}
+              disabled={loading}
+              className="text-basePrimary text-sm font-semibold"
+            >
+              Redeem Reward
+            </button>
+          </div>
+        )}
       </div>
       {isEdit && (
         <CreateReward
@@ -144,7 +167,9 @@ export function RewardCard({
       )}
       {isOpen && <RewardCardModal close={onClose} reward={reward} />}
       {isAlert && <AlertModal close={onAlert} redeemPoint={reward?.point} />}
-      {isRedeem && <RedeemModal close={onRedeem} submit={redeem} loading={loading} />}
+      {isRedeem && (
+        <RedeemModal close={onRedeem} submit={redeem} loading={loading} />
+      )}
     </>
   );
 }
@@ -267,11 +292,11 @@ function AlertModal({
 function RedeemModal({
   close,
   submit,
-  loading
+  loading,
 }: {
   submit: () => Promise<any>;
   close: () => void;
-  loading:boolean;
+  loading: boolean;
 }) {
   return (
     <div
@@ -297,8 +322,8 @@ function RedeemModal({
             onClick={submit}
             className="text-white font-medium gap-x-2 w-fit bg-basePrimary"
           >
-            {loading && <LoaderAlt className="animate-spin" size={20}/>}
-           <p> Redeem</p>
+            {loading && <LoaderAlt className="animate-spin" size={20} />}
+            <p> Redeem</p>
           </Button>
         </div>
       </div>

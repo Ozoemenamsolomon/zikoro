@@ -23,7 +23,7 @@ import { cn } from "@/lib";
 import { quizQuestionSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 import { TQuiz, TAnswer, TQuestion } from "@/types";
 import { useUpdateQuiz } from "@/hooks";
 import Image from "next/image";
@@ -67,13 +67,13 @@ export function AddQuestion({
       (value) => value?.isAnswer?.length <= 0
     );
 
-    if (isCorrectAnswerNotSelected) {
-      toast.error("You have not selected the correct answer")
-      return
-    };
-   
+    if (isCorrectAnswerNotSelected && quiz?.interactionType !== "poll") {
+      toast.error("You have not selected the correct answer");
+      return;
+    }
+
     setLoading(true);
-   
+
     const image = await new Promise(async (resolve) => {
       if (typeof values?.questionImage === "string") {
         resolve(values?.questionImage);
@@ -115,12 +115,12 @@ export function AddQuestion({
           : [{ ...updatedQuestion }],
       totalDuration:
         quiz?.totalDuration > 0
-          ? Number(quiz?.totalDuration) + Number(values?.duration)
-          : Number(values?.duration),
+          ? Number(quiz?.totalDuration) + Number(values?.duration || 0)
+          : Number(values?.duration || 0),
       totalPoints:
         quiz?.totalDuration > 0
-          ? Number(quiz?.totalPoints) + Number(values?.points)
-          : Number(values?.points),
+          ? Number(quiz?.totalPoints) + Number(values?.points || 0)
+          : Number(values?.points || 0),
       lastUpdated_at: new Date().toISOString(),
     };
     await updateQuiz({ payload });
@@ -192,6 +192,12 @@ export function AddQuestion({
     }
   }, [feedBackValue]);
 
+  useEffect(() => {
+    if (quiz?.interactionType) {
+      form.setValue("interactionType", quiz?.interactionType);
+    }
+  }, [quiz?.interactionType]);
+
   //console.log({defaultQuestionValue, defaultFeedBackValue})
   return (
     <div
@@ -259,54 +265,58 @@ export function AddQuestion({
                 height={300}
               />
             )}
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem className="relative w-full h-fit">
-                  <FormControl>
-                    <ReactSelect
-                      defaultValue={
-                        question
-                          ? duration?.find(
-                              ({ value }) => value === question?.duration
-                            )
-                          : ""
-                      }
-                      placeHolder="Select duration"
-                      options={duration}
-                      {...form.register("duration")}
-                      label="Duration"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="points"
-              render={({ field }) => (
-                <FormItem className="relative w-full h-fit">
-                  <FormControl>
-                    <ReactSelect
-                      defaultValue={
-                        question
-                          ? points?.find(
-                              ({ value }) => value === question?.points
-                            )
-                          : ""
-                      }
-                      placeHolder="Select points"
-                      options={points}
-                      {...form.register("points")}
-                      label="Points"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {quiz?.interactionType !== "poll" && (
+              <FormField
+                control={form.control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem className="relative w-full h-fit">
+                    <FormControl>
+                      <ReactSelect
+                        defaultValue={
+                          question
+                            ? duration?.find(
+                                ({ value }) => value === question?.duration
+                              )
+                            : ""
+                        }
+                        placeHolder="Select duration"
+                        options={duration}
+                        {...form.register("duration")}
+                        label="Duration"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {quiz?.interactionType !== "poll" && (
+              <FormField
+                control={form.control}
+                name="points"
+                render={({ field }) => (
+                  <FormItem className="relative w-full h-fit">
+                    <FormControl>
+                      <ReactSelect
+                        defaultValue={
+                          question
+                            ? points?.find(
+                                ({ value }) => value === question?.points
+                              )
+                            : ""
+                        }
+                        placeHolder="Select points"
+                        options={points}
+                        {...form.register("points")}
+                        label="Points"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             {fields.map((field, index) => (
               <div
                 key={field.id}
@@ -327,7 +337,12 @@ export function AddQuestion({
                       errors?.options ? errors?.options[index]?.message : ""
                     }
                   />
-                  <label className="flex absolute right-2 top-[3.5rem] ">
+                  <label
+                    className={cn(
+                      "flex absolute right-2 top-[3.5rem] ",
+                      quiz?.interactionType === "poll" && "hidden"
+                    )}
+                  >
                     <input
                       {...form.register(`options.${index}.isAnswer` as const)}
                       type="radio"
@@ -371,22 +386,26 @@ export function AddQuestion({
               <PlusCircle size={18} />
               <p>Options</p>
             </Button>
-            {(defaultFeedBackValue || !question) && (
-              <FormField
-                control={form.control}
-                name="feedBack"
-                render={({ field }) => (
-                  <InputOffsetLabel label="Additional FeedBack">
-                    <InteractionInput
-                      placeholder="Enter the feedBack"
-                      defaultValue={defaultFeedBackValue}
-                      onChange={(value) => {
-                        form.setValue("feedBack", value);
-                      }}
-                    />
-                  </InputOffsetLabel>
+            {quiz?.interactionType !== "poll" && (
+              <>
+                {(defaultFeedBackValue || !question) && (
+                  <FormField
+                    control={form.control}
+                    name="feedBack"
+                    render={({ field }) => (
+                      <InputOffsetLabel label="Additional FeedBack">
+                        <InteractionInput
+                          placeholder="Enter the feedBack"
+                          defaultValue={defaultFeedBackValue}
+                          onChange={(value) => {
+                            form.setValue("feedBack", value);
+                          }}
+                        />
+                      </InputOffsetLabel>
+                    )}
+                  />
                 )}
-              />
+              </>
             )}
 
             <Button

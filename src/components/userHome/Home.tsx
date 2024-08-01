@@ -2,7 +2,7 @@
 
 import useUserStore from "@/store/globalUserStore";
 import { ActionCard, UserCertificates, UserEvents } from "./_components";
-import { getCookie } from "@/hooks";
+
 
 export default function Home() {
   const { user, setUser } = useUserStore();
@@ -15,7 +15,7 @@ export default function Home() {
       href: "/events",
     },
     {
-      title: "Refer a Friend",
+      title: "Refer & Earn",
       subTitle: "Invite a friend to use zikoro and get paid",
       image: "/images/referral.svg",
       href: "/referrals",

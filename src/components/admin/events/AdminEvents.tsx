@@ -22,6 +22,8 @@ import { Eye } from "styled-icons/feather";
 import { useSearchParams } from "next/navigation";
 import { EmptyCard } from "../../composables";
 import useUserStore from "@/store/globalUserStore";
+import { ExternalLink } from "styled-icons/feather";
+import Link from "next/link";
 
 export default function AdminEvents() {
   const { events, getEvents: refetch, isLoading: loading } = useGetEvents();
@@ -229,16 +231,21 @@ function EventCard({
               className="text-basePrimary border border-basePrimary gap-x-2"
             >
               <Download size={22} />
-              <p>Publish</p>
+              <p>Publish</p>f
             </Button>
           </div>
         )}
         {query === "published" && (
-          <div className="py-4 w-full border-t flex-col  p-4 flex items-start justify-start gap-x-2">
-            <p>Published By</p>
-            <p className="text-gray-500 w-full text-ellipsis overflow-hidden whitespace-nowrap">{` ${
-              publisher ?? ""
-            }`}</p>
+          <div className="py-4 w-full border-t   p-4 flex items-start justify-between ">
+            <div>
+              <p className="text-mobile sm:text-sm">Published By</p>
+              <p className="text-gray-500 w-full text-mobile sm:text-sm ">{` ${
+                publisher ?? ""
+              }`}</p>
+            </div>
+            <Link href={`/live-events/${event?.eventAlias}`} target="_blank">
+              <ExternalLink size={22} />
+            </Link>
           </div>
         )}
       </div>

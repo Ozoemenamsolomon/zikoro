@@ -2,12 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import CopyrightFooter from "@/components/CopyrightFooter";
-import {
-  FilterIcon,
-  ArrowDownIcon,
-  ArrowUpIcon,
-  CloseIcon,
-} from "@/constants/icons";
+import { FilterIcon, ArrowDownIcon, ArrowUpIcon } from "@/constants/icons";
 import { ArrowBackCircle } from "styled-icons/ionicons-outline";
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
 import { useSearchParams } from "next/navigation";
@@ -86,7 +81,7 @@ export default function FeaturedEvents() {
   useEffect(() => {
     //fetch events from database
     async function fetchEventFeautured() {
-      fetch("/api/explore/featured?query", {
+      fetch("/api/explore/featured", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -183,7 +178,7 @@ export default function FeaturedEvents() {
     return categories;
   };
 
-  //filter function
+  // //filter function
   const filteredEvents = eventData
     ?.filter((event) => {
       const lowerSearchQuery = searchQuery.toLowerCase();
@@ -253,7 +248,7 @@ export default function FeaturedEvents() {
                 {/* big screen */}
                 <div className="px-0 max-w-full lg:max-w-7xl mx-auto mt-40 lg:mt-48 hidden lg:block ">
                   <div className="mt-24 text-center">
-                    <p className="text-[40px]  gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
+                    <p className="text-[40px] gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
                       Featured Events
                     </p>
                     <p className="text-[24px] font-normal">
@@ -492,26 +487,28 @@ export default function FeaturedEvents() {
                             (showMore
                               ? filteredEvents
                               : filteredEvents.slice(0, 20)
-                            ).map((event, index) => (
-                              <FeaturedEvent
-                                key={event.id}
-                                id={event.id}
-                                eventPoster={event.eventPoster}
-                                eventTitle={event.eventTitle}
-                                eventCity={event.eventCity}
-                                eventCountry={event.eventCountry}
-                                eventCategory={event.eventCategory}
-                                eventAlias={event.eventAlias}
-                                locationType={event.locationType}
-                                pricing={event.pricing}
-                                pricingCurrency={event.pricingCurrency}
-                                startDateTime={event.startDateTime}
-                                expectedParticipants={
-                                  event.expectedParticipants
-                                }
-                                registered={event.registered}
-                              />
-                            ))}
+                            ).map((event, index) => {
+                              return (
+                                <FeaturedEvent
+                                  key={event.id}
+                                  id={event.id}
+                                  eventPoster={event.eventPoster}
+                                  eventTitle={event.eventTitle}
+                                  eventCity={event.eventCity}
+                                  eventAlias={event.eventAlias}
+                                  eventCountry={event.eventCountry}
+                                  eventCategory={event.eventCategory}
+                                  locationType={event.locationType}
+                                  pricing={event.pricing}
+                                  pricingCurrency={event.pricingCurrency}
+                                  startDateTime={event.startDateTime}
+                                  expectedParticipants={
+                                    event.expectedParticipants
+                                  }
+                                  registered={event.registered}
+                                />
+                              );
+                            })}
                         </div>
 
                         {eventData && eventData.length > 20 && !showMore && (
@@ -584,24 +581,28 @@ export default function FeaturedEvents() {
                           (showMore
                             ? filteredEvents
                             : filteredEvents.slice(0, 20)
-                          ).map((event, index) => (
-                            <FeaturedEvent
-                              key={event.id}
-                              id={event.id}
-                              eventPoster={event.eventPoster}
-                              eventTitle={event.eventTitle}
-                              eventCity={event.eventCity}
-                              eventAlias={event.eventAlias}
-                              eventCountry={event.eventCountry}
-                              eventCategory={event.eventCategory}
-                              locationType={event.locationType}
-                              pricing={event.pricing}
-                              pricingCurrency={event.pricingCurrency}
-                              startDateTime={event.startDateTime}
-                              expectedParticipants={event.expectedParticipants}
-                              registered={event.registered}
-                            />
-                          ))}
+                          ).map((event, index) => {
+                            return (
+                              <FeaturedEvent
+                                key={event.id}
+                                id={event.id}
+                                eventPoster={event.eventPoster}
+                                eventTitle={event.eventTitle}
+                                eventCity={event.eventCity}
+                                eventAlias={event.eventAlias}
+                                eventCountry={event.eventCountry}
+                                eventCategory={event.eventCategory}
+                                locationType={event.locationType}
+                                pricing={event.pricing}
+                                pricingCurrency={event.pricingCurrency}
+                                startDateTime={event.startDateTime}
+                                expectedParticipants={
+                                  event.expectedParticipants
+                                }
+                                registered={event.registered}
+                              />
+                            );
+                          })}
                       </div>
 
                       {eventData && eventData.length > 20 && !showMore && (

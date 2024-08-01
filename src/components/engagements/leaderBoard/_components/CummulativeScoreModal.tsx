@@ -52,7 +52,7 @@ export function CummulativeScoreModal({
                   width={40}
                   height={40}
                 />
-                <p>{totalScore} pts</p>
+                <p>{(totalScore || 0)?.toFixed(0)} pts</p>
               </div>
             </div>
             <div className="w-full h-full grid grid-cols-3 sm:grid-cols-4 gap-3 p-2">
@@ -93,12 +93,17 @@ function PointWidget({
         />
         <p className="font-medium">{points} pts</p>
       </div>
-      <Image src={icon} alt="" className="h-[28px] w-[28px]" width={100} height={100} />
+      <Image
+        src={icon}
+        alt=""
+        className="h-[28px] w-[28px]"
+        width={100}
+        height={100}
+      />
       <p className="text-center">{title}</p>
     </div>
   );
 }
-
 
 /**
     <PointWidget
