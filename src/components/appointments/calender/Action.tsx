@@ -6,8 +6,8 @@ import React, { useState } from 'react'
 import { Arrow90degRight } from 'styled-icons/bootstrap'
 import TimePicker from './TimePicker'
 
-const Action = ({appointment, list, dayString, unavailableDates}:{
-    appointment:Booking, list:Booking[], dayString:string, unavailableDates:AppointmentUnavailability[]
+const Action = ({appointment, list, dayString,  }:{
+    appointment:Booking, list:Booking[], dayString:string, unavailableDates?:AppointmentUnavailability[]
 }) => {
     const [isOpen, setIsOpen] = useState<string>('')
   return (
@@ -46,7 +46,7 @@ const Action = ({appointment, list, dayString, unavailableDates}:{
                 <h5 className="text-lg pb-4 font-semibold tex-center">
                     {dayString}
                 </h5>
-                <TimePicker unavailableDates={unavailableDates} booking={appointment} isOpen={isOpen} dayString={dayString}/>
+                <TimePicker   booking={appointment} isOpen={isOpen} dayString={dayString}/>
                 
             </div>
         </div>

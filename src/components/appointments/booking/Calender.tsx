@@ -110,10 +110,9 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
                 setTimeSlots(selectedTimeSlots)
                 setSlotsLoading(false)
         }
-
     }, [selectedDay, appointmnetLink]);
 
-    let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'));
+  let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'));
 	let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
 
 	let days = eachDayOfInterval({

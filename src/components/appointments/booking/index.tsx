@@ -13,16 +13,17 @@ const Booking =  ({alias}:{alias:string}) => {
 
     
   return (
-    <main className='relative pt-10 sm:px-6 xl:px-12  bg-white min-h-screen  space-y-4'>
+    <main className='relative py-8 md:py-4 sm:px-6 xl:px-12 flex flex-col gap-2 bg-white  min-h-screen   '>
         {
-            error ? 
-            <section className='z-50 fixed flex-col gap-2 inset-0 bg-slate-500/20 text-red-600 flex items-center text-center justify-center w-full'>
+            !isLoading && error ? 
+            <section className='z-50 fixed flex-col gap-2 inset-0 bg-slate-950/10 text-red-600 flex items-center text-center justify-center w-full'>
                     <p>{error}</p>
-                    <p>Refresh page</p>
+                    <p>Refresh the page</p>
             </section>
-            :null
+            : null
         }
-        <header className='max-md:pl-4'>
+
+        <header className='max-md:pl-4 shrink-0'>
             {
                 isLoading ?
                 <div className='w-20 h-10 rounded-md animate-pulse bg-[#F9FAFF]'></div>
@@ -38,9 +39,9 @@ const Booking =  ({alias}:{alias:string}) => {
             }
         </header>
 
-        <section className="py-10  px-4 rounded-lg   w-full flex flex-col bg-[#F9FAFF] justify-between gap-12">
+        <section className="py-10  px-4 rounded-lg h-full  w-full flex  items-center bg-[#F9FAFF] justify-center gap-12">
 
-            <section className="w-full max-w-7xl lg:h-[70vh] mx-auto  grid lg:flex gap-6 lg:justify-center">
+            <section className="w-full max-w-7xl lg:h-[70vh] mx-auto  grid lg:flex gap-6 lg:justify-center ">
 
                 <div className="bg-white w-full lg:w-80 overflow-auto xl:w-96  flex-shrink-0 p-6 rounded-lg   title ">
                 {isLoading ?
@@ -90,14 +91,17 @@ const Booking =  ({alias}:{alias:string}) => {
                <Calender appointmnetLink={appointmnetLink} fetchingData={isLoading}/>
 
             </section>
-
-            {appointmnetLink?.zikoroBranding ? <footer className=' flex w-full gap-4 justify-center items-center '>
-                <p className="">Create your bookings with</p>
-                <Image src={'/zikoro-b.png'} alt='zikoro booking' width={110} height={55}/>
-            </footer> : null}
+            
         </section>
 
-         
+        {
+            appointmnetLink?.zikoroBranding ? 
+            <footer className='shrink-0 flex w-full gap-4 justify-center items-center '>
+                <p className="">Create your bookings with</p>
+                <Image src={'/zikoro-b.png'} alt='zikoro booking' width={110} height={55}/>
+            </footer> 
+            : null
+        }
     </main>
   )
 }

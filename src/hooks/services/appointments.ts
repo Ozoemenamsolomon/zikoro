@@ -1,9 +1,8 @@
 "use client";
 
+import { useAppointmentContext } from "@/components/appointments/context/AppointmentContext";
 import { AppointmentLink, AppointmentUnavailability, Booking } from "@/types/appointments";
-
 import { getRequest } from "@/utils/api";
-import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 
@@ -42,64 +41,86 @@ export const useGetAppointments = () => {
   return { appointments, isLoading,error,getAppointments };
 };
 
-export const useGetBookings = (pastAppointments?: string) => {
+export const useGetBookings = () => {
+  const { user } = useAppointmentContext();
+
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const getBookings = async () => {
+  const getBookings = async (date: Date | string) => {
     setLoading(true);
     try {
-      const { data, status } = await getRequest<Booking[]>({
-        endpoint: `/appointments`,
+      const response = await fetch(`/api/appointments?date=${date}&userId=${user?.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
-      if (status !== 200) {
-          setError('Error fetching schedules!')
-          toast.error('Error fetching schedules!');
+
+      if (!response.ok) {
+        setError('Error fetching schedules!');
+        toast.error('Error fetching schedules!');
         return;
       }
+
+      const data = await response.json();
+      console.log('Fetched Appointments:', data);
+
+      if (data?.error) {
+        setError('Error fetching schedules!');
+        toast.error('Error fetching schedules!');
+        return;
+      }
+
       setBookings(data.data);
     } catch (error) {
-      setError('Error fetching schedules!')
-      setLoading(false);
-      toast.error('Error fetching schedules!');
       console.error('Error fetching schedules:', error);
+      setError('Error fetching schedules!');
+      toast.error('Error fetching schedules!');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const getPastBookings = async () => {
     setLoading(true);
     try {
-      const { data, status } = await getRequest<Booking[]>({
-        endpoint: `/appointments/old_appointments?date=${new Date().toISOString()}`,
+      const response = await fetch(`/api/appointments/old_appointments?userId=${user?.id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
-      if (status !== 200) {
-        setError('Error fetching schedules!')
+
+      if (!response.ok) {
+        setError('Error fetching schedules!');
         toast.error('Error fetching schedules!');
         return;
       }
+
+      const data = await response.json();
+      console.log('Fetched Appointments:', data);
+
+      if (data?.error) {
+        setError('Error fetching schedules!');
+        toast.error('Error fetching schedules!');
+        return;
+      }
+
       setBookings(data.data);
     } catch (error) {
-        setError('Error fetching schedules!')
-        toast.error('Error fetching past schedules!');
-        console.error('Error fetching past schedules:', error);
+      console.error('Error fetching schedules:', error);
+      setError('Error fetching schedules!');
+      toast.error('Error fetching schedules!');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (pastAppointments) {
-      getPastBookings();
-    } else {
-      getBookings();
-    }
-  }, [pastAppointments]);
-
-  return { bookings, isLoading,error, getBookings, getPastBookings };
+  return { bookings, isLoading, error, getBookings, getPastBookings };
 };
+
 
 export const getAppointment = async (appointmentAlias:string) => {
   const { data, status } = await getRequest<AppointmentLink>({
@@ -215,7 +236,7 @@ export const useGetUnavailableDates = (userId: bigint,) => {
     }
   }, [userId, getUnavailableDates]);
 
-  return { unavailableDates, isLoading, error, getUnavailableDates };
+  return { unavailableDates,setUnavailableDates, isLoading, error, getUnavailableDates };
 };
 
 
