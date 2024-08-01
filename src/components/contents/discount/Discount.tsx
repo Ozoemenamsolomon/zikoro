@@ -76,7 +76,7 @@ export default function Discount({ eventId }: { eventId: string }) {
       <div className="px-4">
         <div className="flex w-full items-center sm:items-end justify-start sm:justify-end my-3">
           {Array.isArray(formattedData) && formattedData?.length > 0 && (
-            <DialogDemo getDiscount={getDiscount} eventId={eventId} />
+            <DialogDemo data={formattedData} getDiscount={getDiscount} eventId={eventId} />
           )}
         </div>
         <div className="overflow-x-auto w-full partner-scroll-style">
@@ -114,7 +114,7 @@ export default function Discount({ eventId }: { eventId: string }) {
                     <p className="text-[#717171] font-medium">
                       This page is empty. Discount will appear here.
                     </p>
-                    <DialogDemo getDiscount={getDiscount} eventId={eventId} />
+                    <DialogDemo data={formattedData} getDiscount={getDiscount} eventId={eventId} />
                   </div>
                 </div>
               </>
@@ -208,15 +208,18 @@ const DiscountList: React.FC<{
 const DialogDemo = ({
   getDiscount,
   eventId,
+  data
 }: {
   getDiscount: () => Promise<void>;
   eventId: string;
+  data: any[]
 }) => {
   const [minQty, setMinQty] = useState<number>(1);
   const [quantity, setQuantity] = useState<number>(1);
   const [percentage, setPercentage] = useState<number>(1);
   const [isAmtChecked, setIsAmtChecked] = useState<boolean>(true);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [isSubscribe, setSubscribe] = useState<boolean>(false);
   const { createDiscount, loading } = useDiscount();
   const [discountData, setDiscountData] = useState({
     discountCode: "",
@@ -225,6 +228,9 @@ const DialogDemo = ({
   });
 
   async function submit() {
+
+    
+
     const { discountAmount, ...restData } = discountData;
 
     const payload = isAmtChecked
