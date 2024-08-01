@@ -13,7 +13,7 @@ export async function GET(
     try {
       const { data, error } = await supabase
         .from("sessionReviews")
-        .select("*")
+        .select("*, attendees!inner(*)")
         .eq("sessionAlias", agendaId);
 
       //
@@ -45,7 +45,7 @@ export async function GET(
 
       return NextResponse.json(
         {
-          data: { average: Math.round(ratingAverage), rating: ratingCount },
+          data: { average: Math.round(ratingAverage), rating: ratingCount, review: data },
           reviews: data,
         },
         {
