@@ -18,6 +18,7 @@ const useSearch = <T>({ data, accessorKey }: UseSearchProps<T>) => {
 
   // Memoize the searchedData calculation for performance optimization
   const searchedData = useMemo(() => {
+    console.log(searchTerm);
     return data.filter((item) =>
       accessorKey.some((key) => {
         if (!searchTerm) return true; // If searchTerm is empty, include all items

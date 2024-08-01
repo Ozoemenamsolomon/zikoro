@@ -3,43 +3,56 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { convertToICSFormat } from "../../payment/route";
 import { Event, TOrganization } from "@/types";
-import { format } from "date-fns";
-import { createICSContent } from "@/utils";
 
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
-  if (req.method === "GET") {
-    try {
-      const { searchParams } = new URL(req.url);
-      const eventId = searchParams.get("eventId");
 
-      const { data, error, status } = await supabase
-        .from("attendeeEmailInvites")
-        .select("*")
-        .eq("eventAlias", eventId)
-        .order("created_at", { ascending: false });
+  try {
+    const { searchParams } = new URL(req.url);
+    const eventId = searchParams.get("eventId");
 
-      if (error) throw error;
+    const {
+      data: emailInvites,
+      error,
+      status,
+    } = await supabase
+      .from("attendeeEmailInvites")
+      .select("*")
+      .eq("eventAlias", eventId)
+      .order("created_at", { ascending: false });
 
-      return NextResponse.json(
-        { data },
-        {
-          status: 200,
-        }
-      );
-    } catch (error) {
+    if (error) {
       console.error(error);
-      return NextResponse.json(
-        {
-          error: "An error occurred while making the request.",
-        },
-        {
-          status: 500,
-        }
-      );
+      return NextResponse.json({ error: error.message }, { status });
     }
-  } else {
-    return NextResponse.json({ error: "Method not allowed" });
+
+    const emailInvitesWithGuests = await Promise.all(
+      emailInvites.map(async ({ guests, ...rest }) => {
+        if (guests && guests.length > 0) {
+          const { data: guestsData, error: guestsError } = await supabase
+            .from("attendees")
+            .select("*")
+            .in("attendeeAlias", guests);
+
+          if (guestsError) {
+            console.error(guestsError);
+            throw new Error("Error fetching guest data");
+          }
+
+          return { ...rest, guests: guestsData };
+        } else {
+          return { ...rest, guests: [] };
+        }
+      })
+    );
+
+    return NextResponse.json({ data: emailInvitesWithGuests }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "An error occurred while making the request." },
+      { status: 500 }
+    );
   }
 }
 

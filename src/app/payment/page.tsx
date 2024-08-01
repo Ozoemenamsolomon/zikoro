@@ -138,13 +138,12 @@ export default function PaymentPage() {
     setTotalPrice(Number(total));
     if (coupons && currentCoupon) {
       const coupon = coupons.find((c) => c.discountCode === currentCoupon);
-
       if (coupon) {
         //check if the coupn validity has passed
         if (checkDateEqualToday(coupon.validUntil)) {
-          setIsCouponValid(false);
-        } else {
           setIsCouponValid(true);
+        } else {
+          setIsCouponValid(false);
         }
         if (isCouponValid) {
           if (coupon.discountAmount !== null) {

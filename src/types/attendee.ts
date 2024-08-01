@@ -58,4 +58,5 @@ export type TAttendeeInvites = {
   Message: string;
   lastResendAt?: Date;
   responseDate?: Date;
+  guests?: TAttendee[];
 };
