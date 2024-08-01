@@ -18,17 +18,28 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
   }
 
+  let data, error
   try {
-    const { data, error } = await supabase
+    if(date){
+      const { data:dataa, error:err } = await supabase
       .from('appointmentUnavailability')
       .select('*')
       .eq("createdBy", userId)
-
+      .eq("appointmentDate", date)
+      data=dataa, error=err
+    } else {
+      const { data:dataa, error:err } = await supabase
+      .from('appointmentUnavailability')
+      .select('*')
+      .eq("createdBy", userId)
+      data=dataa, error=err
+    }
+    
     if (error) {
       console.error("Error fetching unavailability schedules:", error.message);
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
-    else if (data.length === 0) {
+    else if (data?.length === 0) {
       console.log("No matching records found or 'createdBy' field does not exist.", error);
       return NextResponse.json({ error: 'No data found for user'}, { status: 400 });
     } 

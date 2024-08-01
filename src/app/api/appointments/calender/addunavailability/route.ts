@@ -11,7 +11,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const result= await supabase
       .from('appointmentUnavailability')
-      .insert(body);
+      .insert(body)
+      .select('*')
+      .single()
 
     if (result?.error) {
       console.error("Error inserting data:", result?.error.message);

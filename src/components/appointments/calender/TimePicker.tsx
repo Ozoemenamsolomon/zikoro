@@ -14,26 +14,25 @@ interface BookingInput {
   selectedDate: Date | string | null;
 }
 
-const TimePicker = ({ booking, isOpen,dayString, unavailableDates }: { dayString:string, booking: Booking, isOpen:string , unavailableDates:AppointmentUnavailability[]}) => {
+const TimePicker = ({ booking, isOpen,dayString,  }: { dayString:string, booking: Booking, isOpen:string , unavailableDates?:AppointmentUnavailability[]}) => {
   const { user } = useAppointmentContext();
-  const {  isLoading, error: fetchError, getUnavailableDates } = useGetUnavailableDates(user?.id!);
-
+  const {  isLoading, unavailableDates,  error: fetchError, getUnavailableDates } = useGetUnavailableDates(user?.id!);
   const [slot, setSlot] = useState<{ from: string, to: string }>({ from: '', to: '' });
   const [slotList, setSlotList] = useState<{ from: string, to: string, id: bigint|number }[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const filteredSlots = unavailableDates
-      .filter(item => format(new Date(item.appointmentDate!), 'yyyy-MM-dd') === format(new Date(dayString), 'yyyy-MM-dd'))
+    const filteredSlots = unavailableDates?.filter(item => format(new Date(item.appointmentDate!), 'yyyy-MM-dd') === format(new Date(dayString), 'yyyy-MM-dd'))
       .map((item: AppointmentUnavailability) => ({
         from: format(item?.startDateTime!, 'hh:mm a'),
         to: format(item?.endDateTime!, 'hh:mm a'),
         id: item?.id!,
         appointmentDate: format(item?.appointmentDate!, 'eee MMM dd yyyy'),
       }));
-    setSlotList(filteredSlots);
-    console.log({isLoading, filteredSlots,unavailableDates, d:format(new Date(dayString), 'yyyy-MM-dd'), p:format(new Date(unavailableDates[0].appointmentDate!), 'yyyy-MM-dd'), c:unavailableDates
+    setSlotList(filteredSlots||[]);
+
+    unavailableDates&&console.log({isLoading, filteredSlots,unavailableDates, d:format(new Date(dayString), 'yyyy-MM-dd'), p:format(new Date(unavailableDates[0]?.appointmentDate!), 'yyyy-MM-dd'), c:unavailableDates
       .filter(item => format(new Date(item.appointmentDate!), 'yyyy-MM-dd') === format(new Date(dayString), 'yyyy-MM-dd'))})
 
   }, [unavailableDates, isOpen]);
@@ -78,13 +77,13 @@ try {
       });
 
       const result = await response.json();
-      console.log('Form submitted:', result);
-console.log({result})
+
       if (!response.ok) {
         setError('Failed to submit form. Please try again.');
       } else {
         toast.success('Form submitted');
         setSlot({ from: '', to: '' });
+       
         setSlotList(prev=>[...prev, {
           from: slot.from,
           to: slot.to,
@@ -153,6 +152,7 @@ console.log({result})
                 >
                   <option value="" disabled>Start time</option>
                   {timeOptions.map((time: string, idx: number) => {
+                    
                     const exists = !!slotList.find(item => item.from === time);
                     return (
                       <option key={idx} value={time} disabled={exists}>{time}</option>

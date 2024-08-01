@@ -12,7 +12,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import WeeklyView from './WeeklyView';
 import { formatAppointmentsByMonth, formatAppointmentsByWeek } from '@/lib';
 import { usePathname, useRouter,  } from 'next/navigation';
-import { useGetUnavailableDates } from '@/hooks';
 
 interface SearchParams {
     viewing: 'month' | 'week';
@@ -23,7 +22,6 @@ const Calendar: React.FC<SearchParams> = ({viewing,date}) => {
     const {replace} = useRouter()
     const pathname = usePathname()
     const {user} = useAppointmentContext()
-    const { unavailableDates, isLoading, error: fetchError, getUnavailableDates } = useGetUnavailableDates(user?.id!);
 
     const [apiData, setApiData] = useState<{count:number, data:Booking[]} | null>(null);
     const [loading, setLoading] = useState(false)
@@ -235,7 +233,7 @@ const Calendar: React.FC<SearchParams> = ({viewing,date}) => {
                 <section className="py-20 text-center w-full">{error}</section>
                 :
                 view === 'month' ? (
-                    <MonthlyView appointments={appointments as Record<string, Booking[]>} currentMonth={currentDate} unavailableDates={unavailableDates!} />
+                    <MonthlyView appointments={appointments as Record<string, Booking[]>} currentMonth={currentDate}  />
                 ) : (
                     <WeeklyView appointments={appointments as Record<string, Record<number, Booking[]>>} currentDate={currentDate} />
                 )

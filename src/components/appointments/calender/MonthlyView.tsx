@@ -8,10 +8,10 @@ import Action from './Action';
 interface MonthlyViewProps {
     appointments: Record<string, Booking[]>;
     currentMonth: Date;
-    unavailableDates:AppointmentUnavailability[]
+    unavailableDates?:AppointmentUnavailability[]
 }
 
-const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth, unavailableDates }) => {
+const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth, }) => {
     const [isHovered, setIsHovered] = useState('')
 
     const startDate = startOfMonth(currentMonth);
@@ -41,8 +41,8 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth, u
                 {days.map((day, dayIdx) => {
                     const dayString = format(day, 'eee MMM dd yyyy');
                     const list = appointments[dayString] || []
-                    const today = format(new Date(), 'd')
-                    const active = today === format(day, 'd')
+                    const today = format(new Date(), 'dd MM yyyy')
+                    const active = today === format(day, 'dd MM yyyy')
                     return (
                         <div  key={dayString} 
                         onMouseEnter={()=>setIsHovered( dayString )}
@@ -61,7 +61,7 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ appointments, currentMonth, u
 
                                 {
                                     isHovered===dayString ? 
-                                    <Action unavailableDates={unavailableDates} appointment={list[0]} list={list} dayString={dayString}/> 
+                                    <Action  appointment={list[0]} list={list} dayString={dayString}/> 
                                     :
                                     <div className="h-full flex flex-col gap-1 flex-start">
                                         {list?.length ? list?.slice(0,3)?.map(appointment => (

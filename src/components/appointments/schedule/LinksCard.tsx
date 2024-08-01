@@ -1,22 +1,20 @@
 'use client'
-import { useToast } from '@/components/ui/use-toast'
 import { ClockIcon, EditPenBoxIcon, MapPin, ShareIcon } from '@/constants'
 import { AppointmentLink } from '@/types/appointments'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
-import { SettingsChat } from 'styled-icons/fluentui-system-filled'
 import Share from './Share'
 import CopyLinkButton from '../ui/CopyLinkButton'
+import toast from 'react-hot-toast'
 
-const LinksCard = ({data,}:{data:AppointmentLink}) => {
+const LinksCard = ({data,}:{data:AppointmentLink|any}) => {
     const {push} = useRouter()
     const [item, setItem] = useState<AppointmentLink>(data)
     const [laoding, setLoading] = useState(false) 
     const [isShare, setIsShare] = useState<number|null|bigint>(null)
     // const [isDisabled, setIsDisabled] = useState(data?.statusOn)
 
-    const toast = useToast()
     const changeStatus = async (newState:boolean) => {
         setLoading(true)
         setItem({...item, statusOn: newState})
@@ -31,9 +29,9 @@ const LinksCard = ({data,}:{data:AppointmentLink}) => {
               });
             const result = await response.json();
             if (response.ok) {
-                // setItem(result?.data);
                 //toast.success
-                console.log('Status changed successfully', result);
+                toast.success('Status changed successfully')
+                // console.log('Status changed successfully', result);
               } else {
                 setItem({...item, statusOn: !newState})
                 console.error('Failed to complete task', result);
@@ -57,11 +55,10 @@ const LinksCard = ({data,}:{data:AppointmentLink}) => {
             borderColor: !isDisabled ?item?.brandColour! : '',
         }}
         className={`w-full p-4 border-2 space-y-2 rounded-lg h-full ${item?.statusOn ? '':'text-gray-300'} `}
-        // className={` sm:w-72 p-4 border-2 space-y-2 rounded-lg h-full ${item?.statusOn ? '':'text-gray-300'} `}
         >
         <div className="flex  justify-between gap-6 items-center">
             <h4 className="text-lg font-medium">{item?.appointmentName}</h4>
-            <Link className={item.statusOn ? '':'opacity-20'} aria-disabled={item?.statusOn} href={`/appointments/edit?alias=${item.appointmentAlias}`}><EditPenBoxIcon/> </Link >
+            <Link className={item?.statusOn ? '':'opacity-20'} aria-disabled={item?.statusOn} href={`/appointments/edit?alias=${item?.appointmentAlias}`}><EditPenBoxIcon/> </Link >
         </div>
 
         <div className="">
@@ -96,7 +93,7 @@ const LinksCard = ({data,}:{data:AppointmentLink}) => {
 
             <button type='button' disabled={!item?.statusOn} onClick={()=>{setIsShare(data?.id!)}} className="flex  gap-1 items-center">
                 <p className="">Share</p>
-                <div className={item.statusOn ? '':'opacity-20'}><ShareIcon/> </div>
+                <div className={item?.statusOn ? '':'opacity-20'}><ShareIcon/> </div>
             </button>
         </div>
 
