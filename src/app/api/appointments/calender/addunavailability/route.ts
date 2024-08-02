@@ -9,16 +9,19 @@ export async function POST(req: NextRequest) {
   }
   try {
     const body = await req.json();
-    const { data, error } = await supabase
+    const result= await supabase
       .from('appointmentUnavailability')
-      .insert(body);
+      .insert(body)
+      .select('*')
+      .single()
 
-    if (error) {
-      console.error("Error inserting data:", error.message);
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    if (result?.error) {
+      console.error("Error inserting data:", result?.error.message);
+      return NextResponse.json({ error: result?.error.message }, { status: 400 });
     }
 
-    return NextResponse.json({ data }, { status: 200 });
+    console.log('ADD UNAVAILABILITY RESULT:', result)
+    return NextResponse.json({ result }, { status: 200 });
   } catch (error) {
     console.error("Unhandled error:", error);
     return NextResponse.json(

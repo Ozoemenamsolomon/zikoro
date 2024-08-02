@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
-import { AppointmentLink, Booking } from '@/types/appointments';
-import {format,parse,} from 'date-fns';
+import { AppointmentLink, AppointmentUnavailability, Booking } from '@/types/appointments';
+import {format,parse,addMinutes, isBefore, isWithinInterval} from 'date-fns';
 import { SlotsResult } from './Calender';
 import { useAppointmentContext } from '../context/AppointmentContext';
 import { usePathname } from 'next/navigation';
@@ -15,14 +15,16 @@ interface SlotsType {
 }
 
 const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, reschedule }) => {
-  const {bookingFormData, setBookingFormData, slotCounts, setSlotCounts,inactiveSlots, setInactiveSlots, setIsFormUp} = useAppointmentContext()
+  const {bookingFormData, setBookingFormData, slotCounts, setSlotCounts,inactiveSlots, setInactiveSlots, setIsFormUp,} = useAppointmentContext()
 
   const [loading, setLoading] = useState(true);
+  const [unavailbleDates, setUnavailableDates] = useState(null);
   const maxBookingLimit = appointmnetLink?.maxBooking;
 
   const [error, setError] = useState('')
   const pathname = usePathname()
   const isBooking = pathname.includes('booking')
+
   const fetchBookedSlots = async () => {
     setLoading(true)
     setError('')
@@ -37,7 +39,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
       });
       const result = await response.json();
       if (response.ok) {
-        // console.log('Books fetched successfully', result);
+        console.log('Books fetched successfully', result);
         return result?.data
       } else {
         // console.error('Bookings failed', result);
@@ -52,9 +54,38 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
     }
   };
 
-  const countBookingsBySlot = (bookings: Booking[]) => {
-    const newSlotCounts:{ [key: string]: number } = {}
+  const fetchUnavailbleDates = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      // fetch users navailable dates based on user.id and selected date
+      const response = await fetch(`/api/appointments/calender/fetchUnavailability?date=${format(selectedDate!, 'yyyy-MM-dd')}&userId=${appointmnetLink?.createdBy?.id}`, 
+        {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const result = await response.json();
+      if (response.ok) {
+        console.log('Books fetched successfully', result);
+        // format result
+        return result?.data
+      } else {
+        // console.error('Bookings failed', result);
+        setError(result.error);
+        return []
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      setError('An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const countBookingsBySlot = (bookings: Booking[], unavailableDates: AppointmentUnavailability[]) => {
+    const newSlotCounts:{ [key: string]: number } = {}
     bookings?.forEach((booking) => {
       const slot = booking.appointmentTime;
       if (slot) {
@@ -75,17 +106,20 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
         inactiveSlots.push(slot);
       }
     });
-    // console.log({inactiveSlots})
+    console.log({inactiveSlots})
     return inactiveSlots;
   };
 
   const updateSlots = async () => {
     // console.log({selectedDate, y:selectedDate && isBooking})
     const bookings = await fetchBookedSlots();
-    const slotCounts = countBookingsBySlot(bookings);
+    const unavailableSlots = await fetchUnavailbleDates()
+    const slotCounts = countBookingsBySlot(bookings, unavailableSlots);
     const inactiveSlots = getInactiveSlots(slotCounts, maxBookingLimit!);
     setInactiveSlots(inactiveSlots);
     setLoading(false)
+
+    setUnavailableDates(unavailableSlots)
   };
 
   useEffect(() => {
@@ -95,7 +129,6 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
   }, [selectedDate]);
 
   const isDisabled = !bookingFormData?.appointmentDate || !bookingFormData?.appointmentTime  
-
 
   return (
     <div className="bg-white relative overflow-hidden md:w-80 flex-1 flex-shrink-0 rounded-lg  ">
@@ -111,14 +144,23 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
               {
                 timeSlots?.slots?.map((slot,i)=>{
                   // console.log({timeSlots})
+                  const isNotAvailable = isTimeWithinAppointments(
+                    slot.value,
+                    selectedDate as Date,
+                    unavailbleDates!
+                  )
                   return (
                       <button key={i} 
                           type='button'
-                          disabled={inactiveSlots.includes(slot.value)}
+                          disabled={
+                            inactiveSlots.includes(slot.value) ||
+                            isNotAvailable
+                          }
 
                           className={`w-full flex-shrink-0  h-12 p-0.5
                               ${bookingFormData?.appointmentTime===slot.label ? ' bg-basePrimary':'border'}  
-                              ${inactiveSlots.includes(slot.value) ? 'disabled cursor-not-allowed opacity-30' : ''}
+                              ${inactiveSlots.includes(slot.value) || isNotAvailable
+                                 ? 'disabled cursor-not-allowed opacity-30' : ''}
                               rounded-md hover:shadow duration-200`}
                               onClick={
                                 isBooking ? ()=>setBookingFormData({
@@ -171,3 +213,80 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
 };
 
 export default Slots
+
+interface Slot {
+  [key:string]:number
+}
+
+// function generateSlots(
+//   slotDuration: number, 
+//   breakBetweenSlots: number, 
+//   limit:number,
+//   unavailableDates: AppointmentUnavailability[]
+// ): Slot[] {
+//   const slots: Slot[] = [];
+
+//   unavailableDates.forEach(appointment => {
+//     let currentStartTime = new Date(appointment.startDateTime!);
+//     const endTime = new Date(appointment.endDateTime!);
+
+//     while (isBefore(currentStartTime, endTime)) {
+//       const currentEndTime = addMinutes(currentStartTime, slotDuration);
+
+//       if (isBefore(currentEndTime, endTime) || currentEndTime.getTime() === endTime.getTime()) {
+//         const slotLabel = `${format(currentStartTime, 'hh:mm:ss')}`;
+
+//         const slot: Slot = {
+//           [slotLabel]: limit + 1,
+//         };
+
+//         slots.push(slot);
+//         currentStartTime = addMinutes(currentEndTime, breakBetweenSlots);
+//       } else {
+//         break;
+//       }
+//     }
+//   });
+
+//   return slots;
+// }
+
+
+function isTimeWithinAppointments(
+  time: string, 
+  selectedDay: Date,
+  appointments: AppointmentUnavailability[]
+): boolean {
+  const parsedTime = parse(time, 'HH:mm:ss', selectedDay);
+
+  // console.log(`Parsed Time: ${parsedTime}`);
+
+  return appointments.some(appointment => {
+    const startTime = new Date(appointment.startDateTime!);
+    const endTime = new Date(appointment.endDateTime!);
+    
+    // Create target time on the selected day using the parsed time
+    const targetTime = new Date(
+      selectedDay.getFullYear(),
+      selectedDay.getMonth(),
+      selectedDay.getDate(),
+      parsedTime.getHours(),
+      parsedTime.getMinutes(),
+      parsedTime.getSeconds()
+    );
+
+    const bool = isWithinInterval(targetTime, { start: startTime, end: endTime });
+
+    // console.log({
+    //   time,
+    //   startTime,
+    //   endTime,
+    //   targetTime,
+    //   parsedTime,
+    //   selectedDay,
+    //   bool
+    // });
+
+    return bool;
+  });
+}

@@ -11,30 +11,39 @@ export async function GET(req: NextRequest) {
   }
 
   const { searchParams } = new URL(req.url);
-  const view = searchParams.get('view'); // 'month' or 'week'
   const userId = searchParams.get('userId');
+  const date = searchParams.get('date');
 
-  if ( !userId || !view) {
+  if ( !userId  ) {
     return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
   }
 
+  let data, error
   try {
-    // check if user id exist in the table
-
-    const { data, error } = await supabase
-      .from('bookings')
-      .select('*, appointmentLinkId(*, createdBy(userEmail, organization, firstName, lastName, phoneNumber))')
+    if(date){
+      const { data:dataa, error:err } = await supabase
+      .from('appointmentUnavailability')
+      .select('*')
       .eq("createdBy", userId)
-
+      .eq("appointmentDate", date)
+      data=dataa, error=err
+    } else {
+      const { data:dataa, error:err } = await supabase
+      .from('appointmentUnavailability')
+      .select('*')
+      .eq("createdBy", userId)
+      data=dataa, error=err
+    }
+    
     if (error) {
-      console.error("Error fetching bookings:", error.message);
+      console.error("Error fetching unavailability schedules:", error.message);
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
-    else if (data.length === 0) {
+    else if (data?.length === 0) {
       console.log("No matching records found or 'createdBy' field does not exist.", error);
-      return NextResponse.json({ error: 'This is a new user'}, { status: 400 });
+      return NextResponse.json({ error: 'No data found for user'}, { status: 400 });
     } 
-    console.log({view, userId,error,data})
+    console.log({  userId,error,data})
     return NextResponse.json({ data, count:data?.length }, { status: 200 });
   } catch (error) {
     console.error("Unhandled error:", error);
