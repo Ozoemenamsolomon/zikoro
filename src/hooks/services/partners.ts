@@ -66,7 +66,7 @@ export function useAddPartners() {
 
 export function useFetchPartners(eventId: string) {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<TExPartner[]>([]);
+  const [data, setData] = useState<TPartner[]>([]);
 
   useEffect(() => {
     fetchPartners();
@@ -76,7 +76,7 @@ export function useFetchPartners(eventId: string) {
     setLoading(true);
 
     try {
-      const { data: result, status } = await getRequest<TExPartner[]>({
+      const { data: result, status } = await getRequest<TPartner[]>({
         endpoint: `/partner/${eventId}`,
       });
 

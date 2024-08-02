@@ -6,7 +6,7 @@ import { Event } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { EmptyCard } from "@/components/composables";
 import { Button } from "@/components";
-import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
+import { ArrowBack } from "styled-icons/boxicons-regular";
 
 export function Sponsors({
   event,

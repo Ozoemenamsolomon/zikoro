@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { TExPartner } from "@/types";
+import { TPartner } from "@/types";
 import { useMemo } from "react";
 import { Location } from "styled-icons/fluentui-system-regular";
 import useUserStore from "@/store/globalUserStore";
@@ -12,7 +12,7 @@ export function PartnerCard({
   eventId,
 }: {
   eventId: string;
-  sponsor: TExPartner;
+  sponsor: TPartner;
 }) {
   const image = useMemo(() => {
     const regex = /^[https://]/;
