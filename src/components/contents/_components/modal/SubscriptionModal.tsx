@@ -6,7 +6,7 @@ export function SubscriptionModal() {
   function close() {
     const subModal = document.getElementById("subscription-modal");
     if (subModal) {
-      subModal.remove();
+      subModal.style.display = "none";
     }
   }
 
