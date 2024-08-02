@@ -1,7 +1,7 @@
 "use client";
 import { AddCircle } from "styled-icons/fluentui-system-regular";
 import { Switch } from "@/components/ui/switch";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,6 +19,7 @@ import { addDiscount } from "@/app/server-actions/addDiscount";
 import { useDiscount } from "@/hooks";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import { verifyingAccess } from "@/utils";
 import useOrganizationStore from "@/store/globalOrganizationStore";
@@ -230,9 +231,12 @@ const DialogDemo = ({
     validUntil: "",
   });
 
+  const isMaxReached = useMemo(() => {
+    return data?.length >= 3 && organization?.subscriptionPlan !== "Enterprise";
+  }, [data, organization]);
   async function submit() {
     // min. of 3 discount coupon - Free, Lite, Professional
-    // min. of 10 discount coupon - Enterprise
+    // unlimited discount coupon - Enterprise
     if (data?.length >= 3 && organization?.subscriptionPlan !== "Enterprise") {
       verifyingAccess({
         textContent:
@@ -443,12 +447,24 @@ const DialogDemo = ({
             </div>
             <button
               onClick={submit}
-              className="bg-basePrimary h-12 flex items-center justify-center gap-x-2 text-white px-[12px] py-[8px] rounded-[5px] w-full"
+              disabled={isMaxReached}
+              className={cn(
+                "bg-basePrimary h-12 flex items-center justify-center gap-x-2 text-white px-[12px] py-[8px] rounded-[5px] w-full",
+                isMaxReached && "bg-gray-400"
+              )}
               type="submit"
             >
               {loading && <LoaderAlt size={22} />}
               <p> Done</p>
             </button>
+            {isMaxReached && (
+              <p className="text-center mt-2">
+                Your have reached the limit of 3 discount coupons.{" "}
+                <Link className="text-basePrimary" href="/pricing">
+                  Upgrade
+                </Link>
+              </p>
+            )}
           </form>
         </DialogContent>
       </Dialog>

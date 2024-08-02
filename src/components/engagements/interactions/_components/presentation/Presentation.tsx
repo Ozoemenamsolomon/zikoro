@@ -857,7 +857,7 @@ export function PlayersOnboarding({
               disabled={isMaxParticipant || isMaxLiveParticipant}
               className={cn(
                 "bg-basePrimary gap-x-2 px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 ",
-                isMaxParticipant && "bg-opacity-80"
+                isMaxParticipant && "bg-gray-400"
               )}
             >
               {loading && <LoaderAlt size={22} className="animate-spin" />}
