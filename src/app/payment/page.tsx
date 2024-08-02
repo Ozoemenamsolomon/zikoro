@@ -28,6 +28,7 @@ export default function PaymentPage() {
   const params = useSearchParams();
   const name = params.get("name");
   const id = params.get("id") ?? "";
+  const orgId = params.get("orgId") ?? "";
   const email = params.get("email");
   const plan = params.get("plan") ?? "";
   const total = params.get("total");
@@ -55,7 +56,8 @@ export default function PaymentPage() {
     isMonthly,
     total,
     currentCoupon,
-    discount
+    discount,
+    orgId
   );
 
   async function handleSuccess(reference: any) {
@@ -137,7 +139,10 @@ export default function PaymentPage() {
   useEffect(() => {
     setTotalPrice(Number(total));
     if (coupons && currentCoupon) {
-      const coupon = coupons.find((c) => c.discountCode === currentCoupon);
+      const coupon = coupons?.find((c) => c.discountCode === currentCoupon);
+      console.log(coupons)
+      console.log(coupon)
+      console.log(currentCoupon)
       if (coupon) {
         //check if the coupn validity has passed
         if (checkDateEqualToday(coupon.validUntil)) {
@@ -145,7 +150,7 @@ export default function PaymentPage() {
         } else {
           setIsCouponValid(false);
         }
-        if (isCouponValid) {
+        if (isCouponValid || coupon.validUntil === null) {
           if (coupon.discountAmount !== null) {
             setDiscount(coupon.discountAmount);
             setTotalPrice((prevPrice) => prevPrice - coupon.discountAmount!);
@@ -159,6 +164,7 @@ export default function PaymentPage() {
       }
     }
   }, [coupons, currentCoupon]);
+
 
   return (
     <div className="bg-[#F9FAFF] h-screen flex flex-col justify-center items-center px-3">
