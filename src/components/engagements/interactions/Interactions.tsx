@@ -58,7 +58,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
     if (liveQuizCount >= 3) {
       verifyingAccess({
         textContent:
-          "You have reached the maximum limit of 3 Live Quiz. You can delete some quiz to creare a new one.",
+          "You have reached the maximum limit of 3 Live Quiz. You can delete some quiz to create a new one.",
         isNotUpgrading: true,
       });
       return;
@@ -74,7 +74,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
     if (pollCount >= 3) {
       verifyingAccess({
         textContent:
-          "You have reached the maximum limit of 3 polls. You can delete some polls to creare a new one.",
+          "You have reached the maximum limit of 3 polls. You can delete some polls to create a new one.",
         isNotUpgrading: true,
       });
       return;
