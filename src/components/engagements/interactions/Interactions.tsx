@@ -17,12 +17,15 @@ import {
 } from "./_components";
 import { useMemo, useState } from "react";
 import Image from "next/image";
+import useOrganizationStore from "@/store/globalOrganizationStore";
+import { verifyingAccess } from "@/utils";
 export default function Interactions({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
   const [isOpenInteractionModal, setOpenInteractionModal] = useState(false);
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
-  const [interactionType, setInteractionType] = useState("")
+  const [interactionType, setInteractionType] = useState("");
+  const { organization } = useOrganizationStore();
   const { quizzes, isLoading, getQuizzes } = useGetQuizzes(eventId);
 
   function onClose() {
@@ -47,6 +50,38 @@ export default function Interactions({ eventId }: { eventId: string }) {
   }, [quizzes, isIdPresent, isOrganizer]);
 
   //console.log({ visibleQuizzes, quizzes, isIdPresent, isOrganizer });
+
+  function toggleQuiz() {
+    const liveQuizCount = quizzes?.filter(
+      ({ accessibility }) => accessibility?.live
+    )?.length;
+    if (liveQuizCount >= 3) {
+      verifyingAccess({
+        textContent:
+          "You have reached the maximum limit of 3 Live Quiz. You can delete some quiz to creare a new one.",
+        isNotUpgrading: true,
+      });
+      return;
+    }
+    setInteractionType("quiz");
+    onClose();
+  }
+
+  function togglePoll() {
+    const pollCount = quizzes?.filter(
+      ({ interactionType }) => interactionType === "poll"
+    )?.length;
+    if (pollCount >= 3) {
+      verifyingAccess({
+        textContent:
+          "You have reached the maximum limit of 3 polls. You can delete some polls to creare a new one.",
+        isNotUpgrading: true,
+      });
+      return;
+    }
+    setInteractionType("poll");
+    onClose();
+  }
 
   return (
     <InteractionLayout eventId={eventId}>
@@ -105,14 +140,8 @@ export default function Interactions({ eventId }: { eventId: string }) {
       {isOpenInteractionModal && (
         <InteractionsSelectionModal
           close={toggleInteractionModal}
-          toggleQuiz={() => {
-            setInteractionType("quiz")
-            onClose();
-          } }
-          togglePoll={() => {
-            setInteractionType("poll")
-            onClose();
-          }}
+          toggleQuiz={toggleQuiz}
+          togglePoll={togglePoll}
         />
       )}
     </InteractionLayout>
@@ -136,11 +165,15 @@ function EmptyState({
         height={150}
       />
       <h2 className="text-basePrimary font-semibold text-base sm:text-2xl">
-        {!isNotAttendee ? "No Interaction Yet":"You have not created any interaction yet."}
+        {!isNotAttendee
+          ? "No Interaction Yet"
+          : "You have not created any interaction yet."}
       </h2>
-      {isNotAttendee && <p className="text-gray-500 text-xs sm:text-sm">
-        Let's go, create your first interaction
-      </p>}
+      {isNotAttendee && (
+        <p className="text-gray-500 text-xs sm:text-sm">
+          Let's go, create your first interaction
+        </p>
+      )}
 
       <Button
         onClick={toggleInteractionModal}

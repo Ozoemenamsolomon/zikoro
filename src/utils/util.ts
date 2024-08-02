@@ -250,10 +250,10 @@ export const subscriptionPlans = [
 
 export function verifyingAccess({
   textContent,
-  isEnterPrise,
+  isNotUpgrading,
 }: {
   textContent: string;
-  isEnterPrise?: boolean;
+  isNotUpgrading?: boolean;
 }) {
   const subModal = document.getElementById("subscription-modal");
   const contentDiv = document.getElementById("content");
@@ -263,7 +263,7 @@ export function verifyingAccess({
     subModal.style.display = "block";
     contentDiv.textContent = textContent;
   }
-  if (isEnterPrise && upgradeButton) {
+  if (isNotUpgrading && upgradeButton) {
     upgradeButton.style.display = "none";
   }
 

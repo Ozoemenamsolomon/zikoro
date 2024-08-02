@@ -239,15 +239,6 @@ const DialogDemo = ({
           "You have reached the limit of 3 discount coupons. Upgrade to higher plan",
       });
       return;
-    } else if (
-      data?.length >= 10 &&
-      organization?.subscriptionPlan === "Enterprise"
-    ) {
-      verifyingAccess({
-        textContent: "You have reached the limit of 10 discount coupons.",
-        isEnterPrise: true,
-      });
-      return;
     }
 
     const { discountAmount, ...restData } = discountData;
