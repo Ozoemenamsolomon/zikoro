@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { useUpdateQuiz, useDeleteQuizLobby } from "@/hooks";
 import { QLUsers } from "@/constants";
 import Avatar from "react-nice-avatar";
-
+import Link from "next/link";
 
 export function QuizLobby({
   quiz,
@@ -23,6 +23,7 @@ export function QuizLobby({
   isAttendee,
   refetch,
   liveQuizPlayers,
+  isMaxLiveParticipant,
 }: {
   close: () => void;
   goBack: () => void;
@@ -30,6 +31,7 @@ export function QuizLobby({
   isAttendee: boolean;
   refetch: () => Promise<any>;
   liveQuizPlayers: TLiveQuizParticipant[];
+  isMaxLiveParticipant: boolean;
 }) {
   const [loading, setLoading] = useState(false);
   const { deleteQuizLobby } = useDeleteQuizLobby(quiz?.quizAlias);
@@ -75,7 +77,7 @@ export function QuizLobby({
       ...quiz,
       liveMode: { startingAt, isStarting: true },
       quizParticipants:
-      quiz?.quizParticipants && quiz?.quizParticipants?.length > 0
+        quiz?.quizParticipants && quiz?.quizParticipants?.length > 0
           ? [...quiz?.quizParticipants, ...players]
           : [...players],
     };
@@ -117,7 +119,23 @@ export function QuizLobby({
               {players?.length || 0}
             </p>
           </div>
-          <h2 className=" w-full text-center">Waiting for Players to Join</h2>
+          <div className="flex flex-col items-center justify-center">
+            <h2 className=" w-full text-center">Waiting for Players to Join</h2>
+            {isMaxLiveParticipant && (
+              <p className="text-xs sm:text-mobile text-gray-600">
+                Maximum Live Player has been reached.
+                <Link
+                  href="/pricing"
+                  className={cn(
+                    "text-basePrimary font-medium",
+                    isAttendee && "hidden"
+                  )}
+                >
+                  Upgrade
+                </Link>
+              </p>
+            )}
+          </div>
           <p className="w-1 h-1"></p>
         </div>
 
@@ -156,7 +174,9 @@ export function QuizLobby({
             className="bg-basePrimary gap-x-2 px-10 h-12 w-fit rounded-lg text-gray-50 transform transition-all duration-400 "
           >
             {loading && <LoaderAlt size={22} className="animate-spin" />}
-           <p>{quiz?.interactionType !== "poll" ? "Start Quiz" : "Start Poll"}</p>
+            <p>
+              {quiz?.interactionType !== "poll" ? "Start Quiz" : "Start Poll"}
+            </p>
           </Button>
         )}
 

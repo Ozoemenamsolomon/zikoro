@@ -19,16 +19,17 @@ import { addDiscount } from "@/app/server-actions/addDiscount";
 import { useDiscount } from "@/hooks";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
+import { verifyingAccess } from "@/utils";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-const supabase = createClientComponentClient()
+const supabase = createClientComponentClient();
 
 export default function Discount({ eventId }: { eventId: string }) {
   const [discountData, setDiscountData] = useState<[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-
 
   const getDiscount = async () => {
     try {
@@ -39,11 +40,10 @@ export default function Discount({ eventId }: { eventId: string }) {
         .eq("eventId", eventId);
       if (error) {
         setError(true);
-        
+
         throw error;
       }
       if (data) {
-        
         setDiscountData(data as any);
         setError(false);
         revalidatePath("/content/discount");
@@ -68,15 +68,16 @@ export default function Discount({ eventId }: { eventId: string }) {
     };
   });
 
-
-
   return (
     <>
-    
       <div className="px-4">
         <div className="flex w-full items-center sm:items-end justify-start sm:justify-end my-3">
           {Array.isArray(formattedData) && formattedData?.length > 0 && (
-            <DialogDemo data={formattedData} getDiscount={getDiscount} eventId={eventId} />
+            <DialogDemo
+              data={formattedData}
+              getDiscount={getDiscount}
+              eventId={eventId}
+            />
           )}
         </div>
         <div className="overflow-x-auto w-full partner-scroll-style">
@@ -114,7 +115,11 @@ export default function Discount({ eventId }: { eventId: string }) {
                     <p className="text-[#717171] font-medium">
                       This page is empty. Discount will appear here.
                     </p>
-                    <DialogDemo data={formattedData} getDiscount={getDiscount} eventId={eventId} />
+                    <DialogDemo
+                      data={formattedData}
+                      getDiscount={getDiscount}
+                      eventId={eventId}
+                    />
                   </div>
                 </div>
               </>
@@ -135,7 +140,6 @@ export default function Discount({ eventId }: { eventId: string }) {
                   getDiscount={getDiscount}
                 />
               ))}
-          
           </div>
         </div>
       </div>
@@ -170,10 +174,9 @@ const DiscountList: React.FC<{
   const { updating, updateDiscount } = useDiscount();
 
   async function submit(value: boolean) {
- 
-    if ( validUntil < new Date().toISOString().split("T")[0]) {
-      toast.error("Validity date has exceeded")
-      return 
+    if (validUntil < new Date().toISOString().split("T")[0]) {
+      toast.error("Validity date has exceeded");
+      return;
     }
 
     setValue(value);
@@ -208,19 +211,19 @@ const DiscountList: React.FC<{
 const DialogDemo = ({
   getDiscount,
   eventId,
-  data
+  data,
 }: {
   getDiscount: () => Promise<void>;
   eventId: string;
-  data: any[]
+  data: any[];
 }) => {
   const [minQty, setMinQty] = useState<number>(1);
   const [quantity, setQuantity] = useState<number>(1);
   const [percentage, setPercentage] = useState<number>(1);
   const [isAmtChecked, setIsAmtChecked] = useState<boolean>(true);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [isSubscribe, setSubscribe] = useState<boolean>(false);
   const { createDiscount, loading } = useDiscount();
+  const { organization } = useOrganizationStore();
   const [discountData, setDiscountData] = useState({
     discountCode: "",
     discountAmount: "",
@@ -228,8 +231,24 @@ const DialogDemo = ({
   });
 
   async function submit() {
-
-    
+    // min. of 3 discount coupon - Free, Lite, Professional
+    // min. of 10 discount coupon - Enterprise
+    if (data?.length >= 3 && organization?.subscriptionPlan !== "Enterprise") {
+      verifyingAccess({
+        textContent:
+          "You have reached the limit of 3 discount coupons. Upgrade to higher plan",
+      });
+      return;
+    } else if (
+      data?.length >= 10 &&
+      organization?.subscriptionPlan === "Enterprise"
+    ) {
+      verifyingAccess({
+        textContent: "You have reached the limit of 10 discount coupons.",
+        isEnterPrise: true,
+      });
+      return;
+    }
 
     const { discountAmount, ...restData } = discountData;
 

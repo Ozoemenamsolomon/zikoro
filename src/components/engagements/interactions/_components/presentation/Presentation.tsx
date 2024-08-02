@@ -11,6 +11,7 @@ import {
 } from "..";
 import { useState, useEffect, useMemo } from "react";
 import { Slider } from "@mui/material";
+import Link from "next/link";
 import {
   useGetQuiz,
   useUpdateQuiz,
@@ -46,6 +47,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Avatar, { genConfig, AvatarFullConfig } from "react-nice-avatar";
 import { Plus } from "styled-icons/bootstrap";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const supabase = createClientComponentClient();
 
@@ -473,12 +475,60 @@ export function PlayersOnboarding({
   const { addLiveParticipant } = useAddLiveParticipant();
   const [loading, setLoading] = useState(false);
   const [isAvatarModal, setAvatarModal] = useState(false);
+  const { organization } = useOrganizationStore();
   useRealtimePresence(quiz?.accessibility?.live);
-  const player = getCookie<TConnectedUser>("player");
   const [isAvatar, setIsAvatar] = useState(false);
   const { liveQuizPlayers, setLiveQuizPlayers } = useGetLiveParticipant({
     quizId: quiz?.quizAlias,
   });
+
+  const isMaxParticipant = useMemo(() => {
+    if (
+      !quiz?.accessibility?.live &&
+      quiz?.quizParticipants?.length >= 15000 &&
+      organization?.subscriptionPlan === "Enterprise"
+    ) {
+      return true;
+    } else if (
+      !quiz?.accessibility?.live &&
+      quiz?.quizParticipants?.length >= 1000 &&
+      organization?.subscriptionPlan === "Professional"
+    ) {
+      return true;
+    } else if (
+      !quiz?.accessibility?.live &&
+      quiz?.quizParticipants?.length >= 200 &&
+      organization?.subscriptionPlan === "Lite"
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [quiz?.accessibility?.live, quiz, organization]);
+
+  const isMaxLiveParticipant = useMemo(() => {
+    if (
+      quiz?.accessibility?.live &&
+      liveQuizPlayers?.length >= 15000 &&
+      organization?.subscriptionPlan === "Enterprise"
+    ) {
+      return true;
+    } else if (
+      quiz?.accessibility?.live &&
+      liveQuizPlayers?.length >= 1000 &&
+      organization?.subscriptionPlan === "Professional"
+    ) {
+      return true;
+    } else if (
+      quiz?.accessibility?.live &&
+      liveQuizPlayers?.length >= 200 &&
+      organization?.subscriptionPlan === "Lite"
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }, [quiz?.accessibility?.live, quiz, liveQuizPlayers, organization]);
 
   // subscribe to player
   useEffect(() => {
@@ -494,7 +544,7 @@ export function PlayersOnboarding({
           filter: `quizAlias=eq.${quiz?.quizAlias}`,
         },
         (payload) => {
-          console.log("new", payload.new);
+          // console.log("new", payload.new);
           setLiveQuizPlayers((prev) => [
             ...prev,
             payload.new as TLiveQuizParticipant,
@@ -795,21 +845,32 @@ export function PlayersOnboarding({
               <p className="text-sm">{quiz?.description ?? ""}</p>
             </div>
           )}
-          <Button
-            onClick={() => {
-              if (quiz?.accessibility?.live) {
-                startLiveQuiz();
-              } else {
-                close();
-              }
-            }}
-            className="bg-basePrimary gap-x-2 px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 "
-          >
-            {loading && <LoaderAlt size={22} className="animate-spin" />}
-            <p>
-              {quiz?.interactionType !== "poll" ? "Start Quiz" : "Start Poll"}
-            </p>
-          </Button>
+          <div className="w-full flex items-center justify-center flex-col gap-y-2">
+            <Button
+              onClick={() => {
+                if (quiz?.accessibility?.live) {
+                  startLiveQuiz();
+                } else {
+                  close();
+                }
+              }}
+              disabled={isMaxParticipant || isMaxLiveParticipant}
+              className={cn(
+                "bg-basePrimary gap-x-2 px-10 h-12 rounded-lg text-gray-50 transform transition-all duration-400 ",
+                isMaxParticipant && "bg-opacity-80"
+              )}
+            >
+              {loading && <LoaderAlt size={22} className="animate-spin" />}
+              <p>
+                {quiz?.interactionType !== "poll" ? "Start Quiz" : "Start Poll"}
+              </p>
+            </Button>
+            {(isMaxParticipant || isMaxLiveParticipant) && (
+              <p className="text-xs sm:text-mobile text-gray-600">
+                Maximum limit has been reached.{" "}
+              </p>
+            )}
+          </div>
         </div>
       )}
 
@@ -820,6 +881,7 @@ export function PlayersOnboarding({
           close={onClose}
           refetch={refetch}
           isAttendee={isAttendee}
+          isMaxLiveParticipant={isMaxLiveParticipant}
           liveQuizPlayers={liveQuizPlayers}
         />
       )}
