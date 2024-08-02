@@ -142,7 +142,6 @@ export default function PaymentPage() {
       const coupon = coupons?.find((c) => c.discountCode === currentCoupon);
       console.log(coupons)
       console.log(coupon)
-      console.log(coupons?.find((c) => c.discountCode === currentCoupon))
       console.log(currentCoupon)
       if (coupon) {
         //check if the coupn validity has passed
