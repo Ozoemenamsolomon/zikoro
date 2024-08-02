@@ -344,9 +344,12 @@ export default function General() {
     }
   };
 
-  //edit plan functionality
+  //edit plan
   const editPlan = () => {
-    router.push("/pricing");
+    const url = `/pricing?redirectUrl=${encodeURIComponent(
+      '/workspace/general'
+    )}`;
+    router.push(url);
   };
 
   // Sync formData with organization data

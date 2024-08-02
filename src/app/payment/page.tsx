@@ -28,6 +28,7 @@ export default function PaymentPage() {
   const params = useSearchParams();
   const name = params.get("name");
   const id = params.get("id") ?? "";
+  const orgId = params.get("orgId") ?? "";
   const email = params.get("email");
   const plan = params.get("plan") ?? "";
   const total = params.get("total");
@@ -55,7 +56,8 @@ export default function PaymentPage() {
     isMonthly,
     total,
     currentCoupon,
-    discount
+    discount,
+    orgId
   );
 
   async function handleSuccess(reference: any) {
