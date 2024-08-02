@@ -46,30 +46,42 @@ function Rating({ rating }: { rating: number }) {
   );
 }
 
-function SessionReviewsModal({ rating, close }: {close:() => void; rating: TCalculatedReview }) {
+function SessionReviewsModal({
+  rating,
+  close,
+}: {
+  close: () => void;
+  rating: TCalculatedReview;
+}) {
   const aggregateRate = useMemo(() => {
     if (rating?.review?.length <= 3) {
-      return `${rating?.review?.length} Reviews`;
+      return `${
+        rating?.review?.length === 1
+          ? `${rating?.review?.length} Review`
+          : "Reviews"
+      } `;
     } else {
       return `3 Reviews of ${rating?.review?.length} Total`;
     }
   }, [rating]);
   return (
-    <div 
-    onClick={close}
-    className="w-full bg-black/40 fixed inset-0 h-full z-[100]">
+    <div
+      onClick={close}
+      className="w-full bg-black/40 fixed inset-0 h-full z-[100]"
+    >
       <div
-      onClick={(e) => e.stopPropagation()}
-      className="w-[95%] max-w-2xl m-auto absolute inset-0 bg-basePrimary/10 rounded-lg h-fit max-h-[85%] p-3">
-        <div className="w-full bg-white h-full flex flex-col p-3 items-start justify-start gap-y-3">
-         <div className="w-full flex items-center justify-between mb-4">
-         <h2 className="font-semibold text-base sm:text-xl">
-            Customer Reviews
-          </h2>
-          <Button onClick={close}>
-            <CloseOutline size={22} />
-          </Button>
-         </div>
+        onClick={(e) => e.stopPropagation()}
+        className="w-[95%] max-w-xl m-auto absolute inset-0 bg-basePrimary rounded-lg h-fit max-h-[85%] p-4"
+      >
+        <div className="w-full bg-white h-full rounded-lg flex flex-col p-3 items-start justify-start gap-y-3">
+          <div className="w-full flex items-center justify-between mb-4">
+            <h2 className="font-semibold text-base sm:text-xl">
+              Customer Reviews
+            </h2>
+            <Button onClick={close}>
+              <CloseOutline size={22} />
+            </Button>
+          </div>
 
           <div className="w-full p-3 bg-white rounded-lg shadow grid grid-cols-1 gap-y-2">
             <div className="w-full flex items-center gap-x-2">
@@ -87,7 +99,10 @@ function SessionReviewsModal({ rating, close }: {close:() => void; rating: TCalc
                 ({ rating }) => Number(rating) === val
               )?.length;
               return (
-                <div key={index} className="w-full grid grid-cols-10">
+                <div
+                  key={index}
+                  className="w-full items-center grid grid-cols-10"
+                >
                   <p className="font-medium">{val}</p>
                   <div className="col-span-9 relative w-full rounded-3xl h-3 bg-gray-200">
                     <span
@@ -107,7 +122,7 @@ function SessionReviewsModal({ rating, close }: {close:() => void; rating: TCalc
             })}
           </div>
 
-          <div className="w-full">{aggregateRate}</div>
+          <div className="w-full font-medium">{aggregateRate}</div>
 
           <div className="w-full flex flex-col items-start justify-start gap-y-2">
             {rating?.review?.map((rev, index) => (

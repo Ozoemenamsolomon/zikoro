@@ -576,11 +576,7 @@ export const links: NavLinkType[] = [
     icon: WorkspaceIcon,
     href: "/workspace/general",
   },
-  {
-    name: "Analytics",
-    icon: AnalyticsIcon,
-    href: "",
-  },
+
 
 ];
 
@@ -589,6 +585,11 @@ export const links: NavLinkType[] = [
 // "#717171"
 
 /**
+ *   {
+    name: "Analytics",
+    icon: AnalyticsIcon,
+    href: "",
+  },
     {
     name: "Notification",
     icon: NotificationOutlineIcon,

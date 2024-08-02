@@ -248,16 +248,22 @@ export const subscriptionPlans = [
   },
 ];
 
-export function verifyingAccess(textContent: string, isEnterPrise?: boolean) {
-  const subModal = document.getElementById("subscription-modal")
+export function verifyingAccess({
+  textContent,
+  isNotUpgrading,
+}: {
+  textContent: string;
+  isNotUpgrading?: boolean;
+}) {
+  const subModal = document.getElementById("subscription-modal");
   const contentDiv = document.getElementById("content");
   const upgradeButton = document.getElementById("upgrade-button");
-  
+
   if (contentDiv && subModal) {
-    subModal.style.display = "block"
+    subModal.style.display = "block";
     contentDiv.textContent = textContent;
   }
-  if (isEnterPrise && upgradeButton) {
+  if (isNotUpgrading && upgradeButton) {
     upgradeButton.style.display = "none";
   }
 

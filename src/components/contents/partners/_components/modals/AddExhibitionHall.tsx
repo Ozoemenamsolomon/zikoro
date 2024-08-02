@@ -6,9 +6,10 @@ import * as z from "zod";
 import { hallSchema } from "@/schemas";
 import { useCreateEventExhibitionHall } from "@/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CloseOutline } from "@styled-icons/evaicons-outline/CloseOutline";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 export function AddExhibitionHall({
   close,
@@ -19,6 +20,7 @@ export function AddExhibitionHall({
   close: () => void;
   refetch: () => Promise<any>;
 }) {
+  const {organization} = useOrganizationStore()
   const form = useForm<z.infer<typeof hallSchema>>({
     resolver: zodResolver(hallSchema),
   });
@@ -77,6 +79,7 @@ export function AddExhibitionHall({
                 <InputOffsetLabel label="Hall Capacity">
                   <Input
                     type="number"
+                    max={organization?.subscriptionPlan === "Enterprise"? "10" : "5"}
                     placeholder="Enter the Hall Capacity"
                     {...field}
                     className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"

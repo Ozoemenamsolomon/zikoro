@@ -6,7 +6,7 @@ export function SubscriptionModal() {
   function close() {
     const subModal = document.getElementById("subscription-modal");
     if (subModal) {
-      subModal.remove();
+      subModal.style.display = "none";
     }
   }
 
@@ -18,9 +18,9 @@ export function SubscriptionModal() {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-[95%] max-w-xl box-animation m-auto flex flex-col items-center py-6 px-4 justify-center gap-y-12 absolute inset-0 bg-white rounded-lg h-fit  p-3"
+        className="w-[95%] max-w-xl box-animation m-auto flex flex-col items-center py-10 px-4 justify-center gap-y-12 absolute inset-0 bg-white rounded-lg h-fit  p-3"
       >
-        <p id="content"></p>
+        <p className="text-center leading-8" id="content"></p>
 
         <Button
           id="upgrade-button"

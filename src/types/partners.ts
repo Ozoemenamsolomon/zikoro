@@ -73,6 +73,7 @@ export enum PartnersEnum {
     website: string;
     whatsApp: string;
     eventAlias: string;
+    sponsoredSession: {session: TAgenda, sessionLink: string}[];
     partnerAlias:string;
   }
   

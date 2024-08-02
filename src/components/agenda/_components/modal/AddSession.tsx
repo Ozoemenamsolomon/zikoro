@@ -23,7 +23,7 @@ import {
   useUpdateAgenda,
 } from "@/hooks";
 import { useEffect, useMemo, useState } from "react";
-import { TAttendee, TExPartner, TAgenda } from "@/types";
+import { TAttendee, TExPartner, TAgenda, TPartner } from "@/types";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { sessionSchema } from "@/schemas";
@@ -59,7 +59,7 @@ export function AddSession({
   session?: TAgenda;
 }) {
   const { attendees } = useGetEventAttendees(eventId);
-  const { data }: { data: TExPartner[] } = useFetchPartners(eventId);
+  const { data }: { data: TPartner[] } = useFetchPartners(eventId);
   const { createAgenda } = useCreateAgenda();
   const { updateAgenda } = useUpdateAgenda();
   const [loading, setLoading] = useState(false);
@@ -119,20 +119,6 @@ export function AddSession({
     });
   }, [attendees]);
 
-  /**
-   // speakers
-  const speakers = useMemo(() => {
-    const filtered = attendees?.filter(({ ticketType }) => {
-      return ticketType === "Speaker";
-    });
-    return filtered?.map(({ firstName, lastName, email }) => {
-      return {
-        label: `${firstName} ${lastName}`,
-        value: email,
-      };
-    });
-  }, [attendees]);
-  */
 
   // session tracks
   const formattedSessions = useMemo(() => {

@@ -80,7 +80,8 @@ export function useCreateOrgSubscription(
   isMonthly: string,
   initialTotal: string | null,
   couponCode: string | null,
-  discountAmount: number | null
+  discountAmount: number | null,
+  orgId: string | null
 ) {
   async function createOrgSubscription() {
     try {
@@ -89,7 +90,7 @@ export function useCreateOrgSubscription(
       const isMonthlyValue = isMonthly === "true" ? "month" : "year";
       const initialTotalNum = initialTotal ? Number(initialTotal) : null;
       const discountAmountNum = discountAmount ? Number(discountAmount) : null;
-
+      const orgIdNum = orgId ? Number(orgId) : null;
       // Format the start date
       const startDate = new Date();
       const formattedStartDate = startDate.toISOString().split("T")[0];
@@ -107,7 +108,7 @@ export function useCreateOrgSubscription(
       const { data: existingSubscription, error: fetchError } = await supabase
         .from("subscription")
         .select("*")
-        .eq("userId", userIdNum)
+        .eq("organizationId", orgIdNum)
         .single();
 
       if (fetchError && fetchError.code !== 'PGRST116') {
@@ -119,9 +120,8 @@ export function useCreateOrgSubscription(
       const { data, error, status } = await supabase
         .from("subscription")
         .upsert({
-          id: existingSubscription ? existingSubscription.id : undefined, // Use the existing subscription ID if it exists
           userId: userIdNum,
-          organizationId: userIdNum,
+          organizationId: existingSubscription ? existingSubscription.id : orgIdNum, // Use the existing org ID if it exists
           subscriptionType: plan,
           amountPayed: totalPriceNum,
           startDate: formattedStartDate,
