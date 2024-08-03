@@ -121,7 +121,7 @@ export function useCreateOrgSubscription(
         .from("subscription")
         .upsert({
           userId: userIdNum,
-          organizationId: existingSubscription ? existingSubscription.id : orgIdNum, // Use the existing org ID if it exists
+          organizationId: existingSubscription ? existingSubscription.organizationId : orgIdNum, // Use the existing org ID if it exists
           subscriptionType: plan,
           amountPayed: totalPriceNum,
           startDate: formattedStartDate,

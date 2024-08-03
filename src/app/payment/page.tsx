@@ -11,7 +11,6 @@ import { PaystackButton } from "react-paystack";
 import toast from "react-hot-toast";
 import { useCreateOrganisation } from "@/hooks";
 import { useCreateOrgSubscription } from "@/hooks/services/subscription";
-import checkDateEqualToday from "@/utils/checkDateEqualToday";
 
 //type annotation for the data being fetched
 type DBDiscountsType = {
@@ -32,18 +31,15 @@ export default function PaymentPage() {
   const email = params.get("email");
   const plan = params.get("plan") ?? "";
   const total = params.get("total");
-  const currentCoupon = params.get("coupon" ?? "");
+  const currentCoupon = params.get("coupon");
   const monthly = params.get("isMonthly");
   const currency = params.get("currency") ?? "";
   const orgName = params.get("organizationName");
   const orgType = params.get("organizationType");
   const subPlan = params.get("subscriptionPlan");
   const redirectUrl = params.get("redirectUrl");
-  const [coupons, setCoupons] = useState<DBDiscountsType[] | undefined>(
-    undefined
-  );
+  const [coupons, setCoupons] = useState<DBDiscountsType[]>([]);
   const [discount, setDiscount] = useState<number>(0);
-  const [isCouponValid, setIsCouponValid] = useState<boolean>(false);
   const isCreate = params.get("isCreate");
   const router = useRouter();
   const isMonthly = monthly?.toString() ?? "";
@@ -76,7 +72,7 @@ export default function PaymentPage() {
         });
       }
       const redirect = decodeURIComponent(redirectUrl!);
-      router.push(redirect);
+      router.push(redirect || "/workspace/general");
     });
   }
 
@@ -94,7 +90,7 @@ export default function PaymentPage() {
         });
       }
       const redirect = decodeURIComponent(redirectUrl!);
-      router.push(redirect);
+      router.push(redirect || "/workspace/general");
     });
   }
 
@@ -136,35 +132,79 @@ export default function PaymentPage() {
     fetchAllCouponCodes();
   }, []);
 
+  // useEffect(() => {
+  //   const updateTotalPrice = () => {
+  //     let calculatedTotalPrice = Number(total);
+
+  //     if (coupons && currentCoupon) {
+  //       const trimmedCoupon = currentCoupon.trim();
+  //       const coupon = coupons.find((c) => c.discountCode === trimmedCoupon);
+
+  //       if (coupon) {
+  //         if (checkDateEqualToday(coupon.validUntil) || coupon.validUntil === null) {
+  //           if (coupon.discountAmount !== null) {
+  //             const discountAmount = Number(coupon.discountAmount);
+  //             setDiscount(discountAmount);
+  //             calculatedTotalPrice = Math.max(calculatedTotalPrice - discountAmount, 0);
+  //           } else if (coupon.discountPercentage !== null) {
+  //             const discountPercentage = Number(coupon.discountPercentage);
+  //             const discountValue = (calculatedTotalPrice * discountPercentage) / 100;
+  //             setDiscount(discountValue);
+  //             calculatedTotalPrice -= discountValue;
+  //           }
+  //         } else{
+  //           calculatedTotalPrice = 0
+  //         }
+  //       }
+  //     }
+
+  //     setTotalPrice(calculatedTotalPrice);
+  //   };
+
+  //   updateTotalPrice();
+  // }, [coupons, currentCoupon, total]);
+
   useEffect(() => {
-    setTotalPrice(Number(total));
-    if (coupons && currentCoupon) {
-      const coupon = coupons?.find((c) => c.discountCode === currentCoupon);
-      console.log(coupons)
-      console.log(coupon)
-      console.log(currentCoupon)
-      if (coupon) {
-        //check if the coupn validity has passed
-        if (checkDateEqualToday(coupon.validUntil)) {
-          setIsCouponValid(true);
-        } else {
-          setIsCouponValid(false);
-        }
-        if (isCouponValid || coupon.validUntil === null) {
-          if (coupon.discountAmount !== null) {
-            setDiscount(coupon.discountAmount);
-            setTotalPrice((prevPrice) => prevPrice - coupon.discountAmount!);
-          } else if (coupon.discountPercentage !== null) {
-            const discountValue =
-              totalPrice * (coupon.discountPercentage! / 100);
-            setDiscount(discountValue);
-            setTotalPrice((prevPrice) => prevPrice - discountValue);
+    const updateTotalPrice = () => {
+      let calculatedTotalPrice = Number(total);
+      let discountValue = 0;
+
+      if (coupons && currentCoupon) {
+        const trimmedCoupon = currentCoupon.trim();
+        const coupon = coupons.find((c) => c.discountCode === trimmedCoupon);
+
+        if (coupon) {
+          // Check if the coupon is valid (validUntil is today or earlier)
+          const today = new Date();
+          const validUntilDate = coupon.validUntil
+            ? new Date(coupon.validUntil)
+            : null;
+
+          if (!validUntilDate || validUntilDate >= today) {
+            if (coupon.discountAmount !== null) {
+              discountValue = Number(coupon.discountAmount);
+              calculatedTotalPrice = Math.max(
+                calculatedTotalPrice - discountValue,
+                0
+              );
+            } else if (coupon.discountPercentage !== null) {
+              const discountPercentage = Number(coupon.discountPercentage);
+              discountValue = (calculatedTotalPrice * discountPercentage) / 100;
+              calculatedTotalPrice = Math.max(
+                calculatedTotalPrice - discountValue,
+                0
+              );
+            }
           }
         }
       }
-    }
-  }, [coupons, currentCoupon]);
 
+      setDiscount(discountValue);
+      setTotalPrice(calculatedTotalPrice);
+    };
+
+    updateTotalPrice();
+  }, [coupons, currentCoupon, total]);
 
   return (
     <div className="bg-[#F9FAFF] h-screen flex flex-col justify-center items-center px-3">
