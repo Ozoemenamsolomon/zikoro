@@ -40,7 +40,7 @@ export const NavLinks = ({
           return (
             <li
               key={name}
-              className={cn("h-fit w-full", query === null && "hidden")}
+              className={cn("h-fit w-full")}
             >
               <Button
                 className={cn(
@@ -62,7 +62,7 @@ export const NavLinks = ({
                     prefetch={false}
                     href={`${href}/${id}?organization=${query}`}
                   >
-                    {query}
+                    {query || ""}
                   </Link>
                 </li>
               </ul>
