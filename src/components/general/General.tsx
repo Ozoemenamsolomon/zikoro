@@ -346,10 +346,7 @@ export default function General() {
 
   //edit plan
   const editPlan = () => {
-    const url = `/pricing?redirectUrl=${encodeURIComponent(
-      '/workspace/general'
-    )}`;
-    router.push(url);
+    router.push('/pricing');
   };
 
   // Sync formData with organization data
