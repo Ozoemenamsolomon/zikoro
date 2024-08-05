@@ -19,11 +19,17 @@ import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import Link from "next/link";
 import useUserStore from "@/store/globalUserStore";
 import { FaStar, FaRegStar } from "react-icons/fa";
-
+import { formatDistanceToNowStrict } from 'date-fns';
 interface TCalculatedReview {
   average: number;
   rating: number;
   review: TFeedBack[];
+}
+
+ function formatTimeToNow(date: Date): string {
+  return formatDistanceToNowStrict(date, {
+    addSuffix: true,
+  });
 }
 
 function Rating({ rating }: { rating: number }) {
@@ -64,14 +70,16 @@ function SessionReviewsModal({
       return `3 Reviews of ${rating?.review?.length} Total`;
     }
   }, [rating]);
+
+
   return (
     <div
       onClick={close}
-      className="w-full bg-black/40 fixed inset-0 h-full z-[100]"
+      className="w-full  fixed inset-0 h-full z-[100]"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-[95%] max-w-xl m-auto absolute inset-0 bg-basePrimary rounded-lg h-fit max-h-[85%] p-4"
+        className="w-[95%] max-w-xl m-auto absolute inset-0 bg-white shadow rounded-lg h-fit max-h-[85%] "
       >
         <div className="w-full bg-white h-full rounded-lg flex flex-col p-3 items-start justify-start gap-y-3">
           <div className="w-full flex items-center justify-between mb-4">
@@ -130,10 +138,11 @@ function SessionReviewsModal({
                 key={index}
                 className="w-full bg-white rounded-lg shadow p-3 grid grid-cols-1 gap-y-3"
               >
-                <></>
+                 <Rating rating={rev?.rating || 0} />
+                 {/* <p className="text-gray-500">{rev?.createdAt ||""}</p> */}
                 <p className="text-base sm:text-xl font-medium">{`${
                   rev?.attendees?.firstName
-                } ${rev?.attendees?.lastName?.charAt(0)}`}</p>
+                } ${rev?.attendees?.lastName?.charAt(0)}.`}</p>
 
                 <p className="w-full text-start line-clamp-3 text-xs sm:text-mobile">
                   {rev?.comments ?? ""}

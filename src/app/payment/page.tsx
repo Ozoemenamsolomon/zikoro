@@ -71,8 +71,8 @@ export default function PaymentPage() {
           subscriptionPlan,
         });
       }
-      const redirect = decodeURIComponent(redirectUrl!);
-      router.push(redirect || "/workspace/general");
+      const redirect = "/workspace/general";
+      router.push(redirect);
     });
   }
 
@@ -89,8 +89,8 @@ export default function PaymentPage() {
           subscriptionPlan,
         });
       }
-      const redirect = decodeURIComponent(redirectUrl!);
-      router.push(redirect || "/workspace/general");
+      const redirect = "/workspace/general";
+      router.push(redirect);
     });
   }
 
@@ -131,38 +131,6 @@ export default function PaymentPage() {
     }
     fetchAllCouponCodes();
   }, []);
-
-  // useEffect(() => {
-  //   const updateTotalPrice = () => {
-  //     let calculatedTotalPrice = Number(total);
-
-  //     if (coupons && currentCoupon) {
-  //       const trimmedCoupon = currentCoupon.trim();
-  //       const coupon = coupons.find((c) => c.discountCode === trimmedCoupon);
-
-  //       if (coupon) {
-  //         if (checkDateEqualToday(coupon.validUntil) || coupon.validUntil === null) {
-  //           if (coupon.discountAmount !== null) {
-  //             const discountAmount = Number(coupon.discountAmount);
-  //             setDiscount(discountAmount);
-  //             calculatedTotalPrice = Math.max(calculatedTotalPrice - discountAmount, 0);
-  //           } else if (coupon.discountPercentage !== null) {
-  //             const discountPercentage = Number(coupon.discountPercentage);
-  //             const discountValue = (calculatedTotalPrice * discountPercentage) / 100;
-  //             setDiscount(discountValue);
-  //             calculatedTotalPrice -= discountValue;
-  //           }
-  //         } else{
-  //           calculatedTotalPrice = 0
-  //         }
-  //       }
-  //     }
-
-  //     setTotalPrice(calculatedTotalPrice);
-  //   };
-
-  //   updateTotalPrice();
-  // }, [coupons, currentCoupon, total]);
 
   useEffect(() => {
     const updateTotalPrice = () => {

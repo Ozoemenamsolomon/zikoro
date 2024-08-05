@@ -10,7 +10,7 @@ import { EmptyCard } from "@/components/composables";
 import { useVerifyUserAccess } from "@/hooks";
 import { useEffect, useState, useMemo } from "react";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { TExPartner, TLead } from "@/types";
+import { TExPartner, TLead, TAttendee } from "@/types";
 import { cn } from "@/lib";
 import { useGetData } from "@/hooks/services/request";
 import { MarketPlaceLayout } from "../_components";
@@ -22,14 +22,53 @@ type FormValue = {
 type TStampData = TExPartner & {
   leads: TLead[];
 };
+type PartnerStampWidgetProp = TExPartner & {
+  leads: TLead[];
+  isVisited: boolean;
+};
+function PartnerStampWidget({ partner }: { partner: PartnerStampWidgetProp }) {
 
+  return (
+    <div className="w-full h-64 overflow-hidden rounded-lg border p-3 flex flex-col gap-y-2">
+      {partner?.companyLogo ? (
+        <Image
+          src={partner?.companyLogo}
+          width={300}
+          height={300}
+          className="w-fit h-24 object-cover"
+          alt="partner-logo"
+        />
+      ) : (
+        <div className="w-full h-24 animate-pulse bg-gray-300"></div>
+      )}
+      <p className="font-semibold w-full text-ellipsis overflow-hidden whitespace-nowrap">
+        {partner?.companyName ?? ""}
+      </p>
+      <p className="text-mobile text-gray-600">
+        {partner?.exhibitionHall ? `${partner?.exhibitionHall}` : ""}{" "}
+        {partner?.boothNumber
+          ? `, Booth ${partner?.boothNumber?.toString()}`
+          : ""}
+      </p>
+
+      {partner?.isVisited ? (
+        <ActiveStampCard />
+      ) : (
+        <p className="w-[50px] h-[50px]"></p>
+      )}
+    </div>
+  );
+}
 export default function StampCard({ eventId }: { eventId: string }) {
-  const { attendeeId, attendee } = useVerifyUserAccess(eventId);
+  const { attendee } = useVerifyUserAccess(eventId);
   const [active, setActive] = useState(false);
   const { data, isLoading: loading } = useGetData<TStampData[]>(
     `/partner/${eventId}/stamp`
   );
-  const [partnerData, setPartnerData] = useState<TStampData[] | undefined>([]);
+  const [filteredData, setFilteredData] = useState<
+    PartnerStampWidgetProp[] | undefined
+  >([]);
+
   const form = useForm<FormValue>({
     defaultValues: {
       search: "",
@@ -39,15 +78,33 @@ export default function StampCard({ eventId }: { eventId: string }) {
   // set to initial state when the search field is empty
   useEffect(() => {
     if (form.watch("search") === "") {
-      setPartnerData(undefined);
+      setFilteredData(undefined);
     }
   }, [form.watch("search")]);
+
+  const partnersData = useMemo(() => {
+    if (Array.isArray(data) && attendee) {
+      return data.map((partner) => {
+        return {
+          ...partner,
+          isVisited: partner?.leads.some(
+            (lead) =>
+              lead.attendeeAlias === attendee?.attendeeAlias ||
+              lead.attendeeId === attendee?.id
+          ),
+        };
+      });
+    } else {
+      return [];
+    }
+  }, [data, attendee]);
+
   // exhibitionHall
   // filter by partner's name
   function onSubmit(value: FormValue) {
     //
-    if (Array.isArray(data)) {
-      const filtered = data.filter((partner) => {
+    if (Array.isArray(partnersData)) {
+      const filtered = partnersData.filter((partner) => {
         const isPresent =
           value.search.length === 0 ||
           partner.exhibitionHall
@@ -57,34 +114,23 @@ export default function StampCard({ eventId }: { eventId: string }) {
         return isPresent;
       });
 
-      setPartnerData(filtered);
+      setFilteredData(filtered);
     }
   }
 
   useEffect(() => {
-    if (active && Array.isArray(data)) {
-      const filtered = data.filter((partner) => {
-        return partner?.stampIt;
+    if (active && Array.isArray(partnersData)) {
+      const filtered = partnersData.filter((partner) => {
+        return partner?.isVisited;
       });
 
-      setPartnerData(filtered);
-    } else {
-      setPartnerData(undefined);
+      setFilteredData(filtered);
+    } else if (partnersData) {
+      setFilteredData(partnersData);
     }
-  }, [active, data]);
+  }, [active, partnersData]);
 
-  // checking if attendee is present in partner's lead
-  const isAttendeeInLead = useMemo(() => {
-    if (attendeeId && data && partnerData) {
-      return (partnerData || data).some((partner) => {
-        return partner?.leads.some(
-          (lead) => lead.attendeeAlias === attendee?.attendeeAlias
-        );
-      });
-    } else {
-      return false;
-    }
-  }, [attendeeId, data, partnerData]);
+
   return (
     <MarketPlaceLayout eventId={eventId}>
       <div className="w-full px-4 flex flex-col sm:flex-row gap-2 items-start md:items-center justify-start md:justify-between py-3">
@@ -138,49 +184,19 @@ export default function StampCard({ eventId }: { eventId: string }) {
       <div className="w-full grid mt-3 px-4 sm:mt-6 grid-cols-1 sm:grid-cols-3 xl:grid-cols-4 gap-4 items-center">
         {loading && (
           <div className="w-full col-span-full h-[300px] flex items-center justify-center">
-            <LoaderAlt size={50} className="animate-spin" />
+            <LoaderAlt size={30} className="animate-spin" />
           </div>
         )}
-        {!loading && data && (partnerData || data).length === 0 && (
+        {!loading && filteredData && filteredData.length === 0 && (
           <EmptyCard text="No available stamp card" />
         )}
 
-        {data &&
-          Array.isArray(partnerData || data) &&
-          (partnerData || data)
+        {!loading &&
+          Array.isArray(filteredData) &&
+          filteredData
             .filter((v) => v?.stampIt)
-            .map((partner) => (
-              <div
-                key={eventId}
-                className="w-full h-64 overflow-hidden rounded-lg border p-3 flex flex-col gap-y-2"
-              >
-                {partner?.companyLogo ? (
-                  <Image
-                    src={partner?.companyLogo}
-                    width={300}
-                    height={300}
-                    className="w-fit h-24 object-cover"
-                    alt="partner-logo"
-                  />
-                ) : (
-                  <div className="w-full h-24 animate-pulse bg-gray-300"></div>
-                )}
-                <p className="font-semibold w-full text-ellipsis overflow-hidden whitespace-nowrap">
-                  {partner?.companyName ?? ""}
-                </p>
-                <p className="text-mobile text-gray-600">
-                  {partner?.exhibitionHall ? `${partner?.exhibitionHall}` : ""}{" "}
-                  {partner?.boothNumber
-                    ? `, Booth ${partner?.boothNumber?.toString()}`
-                    : ""}
-                </p>
-
-                {isAttendeeInLead ? (
-                  <ActiveStampCard />
-                ) : (
-                  <p className="w-[50px] h-[50px]"></p>
-                )}
-              </div>
+            .map((partner, index) => (
+              <PartnerStampWidget partner={partner} key={index} />
             ))}
       </div>
     </MarketPlaceLayout>
