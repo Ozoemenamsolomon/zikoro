@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import toast from "react-hot-toast";
 
@@ -58,7 +58,6 @@ export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, 
         .select()
         .maybeSingle()
 
-      console.log(data)
       if (error) {
         console.log(error.message);
         return;
