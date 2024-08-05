@@ -71,9 +71,7 @@ export default function PaymentPage() {
           subscriptionPlan,
         });
       }
-      const redirect = redirectUrl
-        ? decodeURIComponent(redirectUrl)
-        : "/workspace/general";
+      const redirect = "/workspace/general";
       router.push(redirect);
     });
   }
@@ -91,9 +89,7 @@ export default function PaymentPage() {
           subscriptionPlan,
         });
       }
-      const redirect = redirectUrl
-        ? decodeURIComponent(redirectUrl)
-        : "/workspace/general";
+      const redirect = "/workspace/general";
       router.push(redirect);
     });
   }

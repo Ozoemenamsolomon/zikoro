@@ -121,7 +121,8 @@ export function PaymentModal({
     )}&currency=${encodeURIComponent(
       chosenCurrency
     )}&coupon=${encodeURIComponent(couponText)}
-    &orgId=${encodeURIComponent(orgId)}`;
+    &orgId=${encodeURIComponent(orgId)}
+    &redirectUrl=${encodeURIComponent(window.location.href)}`;
     router.push(url);
   };
 
