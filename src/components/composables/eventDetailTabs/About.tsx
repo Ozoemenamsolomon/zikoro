@@ -4,7 +4,7 @@ import { ScrollableCards } from "@/components";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import { GoogleMap, Marker, InfoWindow, useLoadScript } from "@react-google-maps/api";
 import { FeedBackCard } from "../../published";
 import { cn } from "@/lib";
 import { geocodeAddress, isEventLive } from "@/utils";
@@ -32,6 +32,7 @@ export function About({
     lat: number;
     lng: number;
   } | null>(null);
+  const [infoWindowOpen, setInfoWindowOpen] = useState(false);
   const settings = {
     dots: true,
     infinite: true,
@@ -108,7 +109,7 @@ export function About({
                   {coordinates && (
                     <Link
                       target="_blank"
-                      href={`https://www.google.com/maps/@${coordinates?.lat},${coordinates?.lng},15z?hl=en-US&entry=ttu`}
+                      href={`https://www.google.com/maps/dir//${event?.eventAddress}/@${coordinates?.lat},${coordinates?.lng},15z?hl=en-US&entry=ttu`}
                       title="View Direction"
                     >
                       <ExternalLink size={20} className="text-basePrimary" />
@@ -125,7 +126,19 @@ export function About({
                       center={coordinates}
                       zoom={15}
                     >
-                      <Marker position={coordinates} />
+                      <Marker
+                        position={coordinates}
+                        onClick={() => setInfoWindowOpen(true)}
+                      >
+                        {infoWindowOpen && (
+                          <InfoWindow
+                            position={coordinates}
+                            onCloseClick={() => setInfoWindowOpen(false)}
+                          >
+                            <div>{event?.eventAddress}</div>
+                          </InfoWindow>
+                        )}
+                      </Marker>
                     </GoogleMap>
                   ) : (
                     <div>Loading...</div>
