@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-    
+
   const supabase = createRouteHandlerClient({ cookies });
 
   if (req.method === "GET") {
@@ -12,7 +12,8 @@ export async function GET(req: NextRequest) {
         .from("events")
         .select("eventCity")
         .eq("published", true)
-        .eq('explore', true)
+        .eq("explore", true)
+        .gte("startDateTime", new Date().toISOString()) // Filter non-expired events
 
       if (error) throw error;
 
