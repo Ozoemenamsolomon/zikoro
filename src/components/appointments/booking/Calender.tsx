@@ -19,7 +19,6 @@ import {
 	startOfToday,startOfDay,  addDays, 
 } from 'date-fns';
 import {  ChevronLeft, ChevronRight } from 'lucide-react'
-import { SelectInput } from '../ui/CustomSelect'
 import { useAppointmentContext } from '../context/AppointmentContext'
 import DetailsForm from './DetailsForm'
 import { Category } from '../create/CategoryForm'
