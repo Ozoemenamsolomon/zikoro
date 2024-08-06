@@ -83,6 +83,11 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
     },
 
     {
+      name: "Analytics",
+      href: `${eventId}/analytics`,
+    },
+
+    {
       name: "Settings",
       href: `${eventId}/settings`,
     },

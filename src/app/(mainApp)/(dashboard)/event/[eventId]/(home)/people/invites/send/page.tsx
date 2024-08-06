@@ -130,10 +130,7 @@ ${event?.eventTitle} Organizing Team
   }, [invitees]);
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="flex flex-col items-center gap-8"
-    >
+    <form onSubmit={onSubmit} className="flex flex-col items-center gap-8">
       <div className="p-4 border rounded-md bg-white space-y-2 w-full">
         <h1 className="text-gray-900 font-medium">Invite with Email</h1>
         <div className="space-y-4">
@@ -265,12 +262,10 @@ export default function Page() {
     {
       label: "Link",
       content: (
-        <div className="space-y-4 bg-white border px-2">
+        <div className="space-y-4 bg-white border px-2 py-2">
           <h2 className="text-lg font-medium">Invite with Link</h2>
-          <div className="max-w-full overflow-hidden">
-            <span className="max-w-full truncate text-sm md:text-base bg-basePrimary/20 px-2 py-1 rounded-md">
-              {window.location.host}/live-events/{eventId}?source=link
-            </span>
+          <div className="max-w-full overflow-hidden truncate text-sm md:text-base bg-basePrimary/10 px-2 py-1 rounded-md">
+            {window.location.host}/live-events/{eventId}?source=link
           </div>
           <Button
             onClick={() =>
@@ -281,7 +276,7 @@ export default function Page() {
             className="bg-basePrimary flex gap-2 px-4 text-white"
           >
             <span>Copy Link</span>
-            <Copy className="w-5 h-5 text-gray-700" />
+            <Copy className="w-5 h-5 text-white" />
           </Button>
         </div>
       ),

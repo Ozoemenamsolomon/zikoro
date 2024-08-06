@@ -40,11 +40,11 @@ export const NavLinks = ({
           return (
             <li
               key={name}
-              className={cn("h-fit w-full", query === null && "hidden")}
+              className={cn("h-fit w-full")}
             >
               <Button
                 className={cn(
-                  "p-3 px-0 h-fit flex    items-center font-medium rounded-lg justify-start gap-x-2 text-[#717171] group-hover:w-full w-fit",
+                  "py-3 px-3 h-fit flex    items-center font-medium rounded-lg justify-start gap-x-2 text-[#717171] group-hover:w-full w-fit",
                   pathname.includes(href) &&
                     "bg-basePrimary/10 text-[#1F1F1F]  "
                 )}
@@ -62,7 +62,7 @@ export const NavLinks = ({
                     prefetch={false}
                     href={`${href}/${id}?organization=${query}`}
                   >
-                    {query}
+                    {query || ""}
                   </Link>
                 </li>
               </ul>

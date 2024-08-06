@@ -18,16 +18,17 @@ export function Engagement({
   agenda,
   id,
   attendees,
-  reviews
+  reviews,
 }: {
   id: string;
   attendees: TAttendee[];
   agenda: TAgenda | null;
-  reviews: TFeedBack[]
+  reviews: TFeedBack[];
 }) {
   const [rating, setRating] = useState(0);
   const { user, setUser } = useUserStore();
   //const { reviews } = useGetEventReviews(id);
+  const [isSent, setSent] = useState(false);
   const { data: engagementsSettings } = useGetData<EngagementsSettings>(
     `engagements/${id}/settings`
   );
@@ -39,6 +40,14 @@ export function Engagement({
       ({ email, eventAlias }) => eventAlias === id && email === user?.userEmail
     )?.id;
   }, [attendees]);
+
+  useMemo(() => {
+    if (attendeeId && reviews) {
+      setSent(reviews?.some((review) => review?.attendeeId === attendeeId));
+    } else {
+      setSent(false);
+    }
+  }, [attendeeId, reviews]);
   return (
     <div className="lg:col-span-3 p-2 lg:p-4 w-full">
       <div className="w-full h-fit bg-gray-100 rounded-xl">
@@ -46,12 +55,12 @@ export function Engagement({
           <h2 className="text-base sm:text-xl font-semibold  text-start">
             Reviews
           </h2>
-          <Button className="w-fit h-fit px-0" onClick={() => setRating(0)}>
+         {!isSent && <Button className="w-fit h-fit px-0" onClick={() => setRating(0)}>
             <CloseOutline size={22} />
-          </Button>
+          </Button>}
         </div>
 
-        {rating > 0 ? (
+        {rating > 0 || isSent ? (
           <ReviewComment
             rating={rating}
             sessionAlias={agenda?.sessionAlias}
@@ -59,6 +68,8 @@ export function Engagement({
             eventId={id}
             reviews={reviews}
             engagementsSettings={engagementsSettings}
+            isSent={isSent}
+            setSent={setSent}
           />
         ) : (
           <div className="w-full flex flex-col p-6 items-start justify-start gap-y-2">
@@ -103,6 +114,8 @@ function ReviewComment({
   eventId,
   reviews,
   engagementsSettings,
+  isSent,
+  setSent,
 }: {
   sessionAlias?: string;
   rating: number;
@@ -110,10 +123,11 @@ function ReviewComment({
   eventId?: string;
   reviews: TReview[];
   engagementsSettings: EngagementsSettings | null;
+  isSent: boolean;
+  setSent: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const form = useForm<FormValue>({});
   const { sendReview, isLoading } = useSendReview();
-  const [isSend, setSend] = useState(false);
 
   async function onSubmit(values: FormValue) {
     //
@@ -158,12 +172,12 @@ function ReviewComment({
 
     await sendReview({ payload });
 
-    setSend(true);
+    setSent(true);
   }
   return (
     <div className="w-full ">
       <>
-        {!isSend ? (
+        {!isSent ? (
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
