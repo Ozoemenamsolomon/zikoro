@@ -1,22 +1,19 @@
 "use client";
 
-import { ChevronDown, Calendar, Edit, RefreshCw, XCircle } from "lucide-react";
+import { ChevronDown, Calendar,  RefreshCw, XCircle } from "lucide-react";
 import React, { Suspense, useRef, useState } from "react";
 import { useGetBookings } from "@/hooks/services/appointments";
 import { format, parseISO } from "date-fns";
 import { AppointmentLink, Booking } from "@/types/appointments";
 import PageLoading from "./ui/Loading";
-import NoAppointments from "./NoAppointments";
 import { useEffect } from "react";
 import { cn, useClickOutside } from "@/lib";
-import { AntiClock, CalenderIcon, CancelX, EditPenIcon } from "@/constants";
+import { AntiClock, CancelX, EditPenIcon } from "@/constants";
 import { useAppointmentContext } from "./context/AppointmentContext";
 import { generateSlots, SlotsResult, TimeDetail } from "./booking/Calender";
 import Slots from "./booking/Slots";
 import { generateAppointmentTime } from "./booking/submitBooking";
-import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { P } from "styled-icons/fa-solid";
 import Empty from "./calender/Empty";
 
 export function getEnabledTimeDetails(
@@ -117,13 +114,11 @@ const reschedule = async (
     });
     if (res.ok) {
       toast.success("Successfully, email reminder sent");
-      // console.log('Successfully rescheduled appointment, email reminder sent', await res.json());
       refresh();
       setBookingFormData(null);
     } else {
       toast.error("Unsuccessfull");
       setError("Error rescheduling appointment");
-      // console.log('Error rescheduling appointment', await res.json());
     }
   } catch (error) {
     toast.error("Server error.");
@@ -134,13 +129,13 @@ const reschedule = async (
   }
 };
 
-export const Reschedule = ({ refresh }: { refresh: () => void }) => {
-  const { bookingFormData, setBookingFormData } = useAppointmentContext();
+const Reschedule = ({ refresh }: { refresh: () => void }) => {
+  const { bookingFormData, setBookingFormData, selectedItem } = useAppointmentContext();
   const [timeSlots, setTimeSlots] = useState<SlotsResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   // const [isSelected, setIsSelected] = useState<string>('');
-
+  console.log({bookingFormData})
   useEffect(() => {
     const fetchSlots = async () => {
       const getTimeSlots = await generateSlots(
@@ -153,6 +148,10 @@ export const Reschedule = ({ refresh }: { refresh: () => void }) => {
     };
     fetchSlots();
   }, [bookingFormData]);
+
+  const updatingFunc = (callback: () => void) => {
+    callback()
+  }
 
   return (
     <section
@@ -208,7 +207,8 @@ export const Reschedule = ({ refresh }: { refresh: () => void }) => {
             <Slots
               appointmnetLink={bookingFormData?.appointmentLinkId}
               timeSlots={timeSlots}
-              selectedDate={new Date(bookingFormData.appointmentDate!)}
+              selectedDate={new Date(selectedItem)}
+              updatingFunc={updatingFunc}
             />
           </div>
           <div className="w-full flex items-center gap-1">
@@ -337,7 +337,7 @@ const BookingRow = ({ booking, showNote, setShowNote }: { booking: Booking, show
     }
   };
 
-  const { setBookingFormData } = useAppointmentContext();
+  const { setBookingFormData, setSelectedItem } = useAppointmentContext();
   useClickOutside(notesRef, ()=>setShowNote(null))
   
   return (
@@ -390,25 +390,28 @@ const BookingRow = ({ booking, showNote, setShowNote }: { booking: Booking, show
     <td className="py-2 px-4 relative">
       <div className="flex space-x-2">
         <button
-          onClick={() =>
+          onClick={() =>{
             setBookingFormData({
               ...booking,
               type: "reschedule",
               timeStr: booking?.appointmentTimeStr,
             })
-          }
+            setSelectedItem(dateTime)
+          }}
           className="text-blue-500 hover:text-blue-700"
         >
           <RefreshCw size={18} />
         </button>
         <button
           disabled={bookingStatus === "CANCELLED"}
-          onClick={() =>
+          onClick={() =>{
             setBookingFormData({
               ...booking,
               type: "cancel",
               timeStr: booking?.appointmentTimeStr,
             })
+            // setSelectedItem(dateTimeString)
+          }
           }
           className="text-red-500 hover:text-red-700 disabled:text-slate-300"
         >
@@ -468,7 +471,6 @@ const BookingTable = ({
   );
 };
 
-
 interface GroupedBookings {
   [date: string]: Booking[];
 }
@@ -502,8 +504,8 @@ const groupBookingsByDate = (bookings: Booking[]): GroupedBookings => {
 };
 
 const Appointments: React.FC = () => {
-  const {user} = useAppointmentContext()
-
+  const {user,selectedItem} = useAppointmentContext()
+console.log({selectedItem})
   const { bookings, error, isLoading, getPastBookings, getBookings } = useGetBookings();
   const [groupedBookings, setGroupBookings] = useState<GroupedBookings>();
   const [drop, setDrop] = useState(false);
@@ -556,7 +558,7 @@ const Appointments: React.FC = () => {
   
   return (
     <>
-      <Reschedule refresh={() => setFilter(new Date().toISOString())} />
+      <Reschedule refresh={refresh} />
 
       <header className="flex w-full justify-between gap-4 flex-col sm:flex-row pb-10">
         <div>
