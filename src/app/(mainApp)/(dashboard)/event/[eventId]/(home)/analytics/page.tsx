@@ -1,9 +1,98 @@
 "use client";
 import TargetIcon from "@/public/icons/Target";
 import UsersIcon from "@/public/icons/Users";
-import { LineChart } from "@mui/x-charts";
+import { BarChart, LineChart, lineElementClasses } from "@mui/x-charts";
 import React, { ReactNode } from "react";
 import { AccountBalanceWallet } from "styled-icons/material";
+
+export const dataset = [
+  {
+    london: 59,
+    paris: 57,
+    newYork: 86,
+    seoul: 21,
+    month: "Jan",
+  },
+  {
+    london: 50,
+    paris: 52,
+    newYork: 78,
+    seoul: 28,
+    month: "Feb",
+  },
+  {
+    london: 47,
+    paris: 53,
+    newYork: 106,
+    seoul: 41,
+    month: "Mar",
+  },
+  {
+    london: 54,
+    paris: 56,
+    newYork: 92,
+    seoul: 73,
+    month: "Apr",
+  },
+  {
+    london: 57,
+    paris: 69,
+    newYork: 92,
+    seoul: 99,
+    month: "May",
+  },
+  {
+    london: 60,
+    paris: 63,
+    newYork: 103,
+    seoul: 144,
+    month: "June",
+  },
+  {
+    london: 59,
+    paris: 60,
+    newYork: 105,
+    seoul: 319,
+    month: "July",
+  },
+  {
+    london: 65,
+    paris: 60,
+    newYork: 106,
+    seoul: 249,
+    month: "Aug",
+  },
+  {
+    london: 51,
+    paris: 51,
+    newYork: 95,
+    seoul: 131,
+    month: "Sept",
+  },
+  {
+    london: 60,
+    paris: 65,
+    newYork: 97,
+    seoul: 55,
+    month: "Oct",
+  },
+  {
+    london: 67,
+    paris: 64,
+    newYork: 76,
+    seoul: 48,
+    month: "Nov",
+  },
+  {
+    london: 61,
+    paris: 70,
+    newYork: 103,
+    seoul: 25,
+    month: "Dec",
+  },
+];
+
+const valueFormatter = (value: number | null) => `${value}mm`;
 
 const AnalyticsInfoCard = ({
   label,
@@ -108,24 +197,83 @@ const page = () => {
           value={"12"}
         />
       </section>
-      <section className="bg-white p-4 space-y-4">
+      <section className="bg-white p-4 space-y-4 rounded-md border">
         <h2 className="text-gray-600 font-medium text-sm">
           Daily Registrations
         </h2>
         <LineChart
           colors={["#001FCC"]}
+          sx={{
+            [`& .${lineElementClasses.root}`]: {
+              display: "none",
+            },
+            "& .MuiAreaElement-series-yaxis": {
+              fill: "url('#lineGradient')",
+            },
+          }}
           xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
           series={[
             {
+              id: "yaxis",
               data: [2, 5.5, 2, 8.5, 1.5, 5],
               area: true,
-              color: "#001FCC80",
+              showMark: false,
             },
           ]}
           height={300}
           margin={{ left: 30, right: 30, top: 30, bottom: 30 }}
           //   grid={{ vertical: true, horizontal: true }}
-        />
+        >
+          <defs>
+            <linearGradient
+              id="lineGradient"
+              // gradientTransform="rotate(90)"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop
+                // offset="5%"
+                style={{ stopColor: "#001FCC80", stopOpacity: 1 }}
+              >
+                <stop
+                  // offset="50%"
+                  style={{ stopColor: "#ffffff", stopOpacity: 1 }}
+                ></stop>
+              </stop>
+            </linearGradient>
+          </defs>
+        </LineChart>
+      </section>
+      <section className="grid grid-cols-2 gap-8">
+        <section className="bg-white p-4 space-y-4 border rounded-md">
+          <h2 className="text-gray-600 font-medium text-sm">
+            Daily Registrations
+          </h2>
+
+          <BarChart
+            dataset={dataset}
+            yAxis={[
+              {
+                scaleType: "band",
+                dataKey: "month",
+                categoryGapRatio: 0.5,
+                barGapRatio: 0.5,
+              },
+            ]}
+            series={[
+              { dataKey: "seoul", label: "Seoul rainfall", valueFormatter },
+            ]}
+            layout="horizontal"
+            grid={{ vertical: true }}
+            margin={{ left: 100, top: 5 }}
+            leftAxis={{ disableLine: true, disableTicks: true }}
+            bottomAxis={{ disableLine: true, tickSize: 10 }}
+            borderRadius={20}
+            height={200}
+            xAxis={[{ tickMinStep: 1 }]}
+            layout="horizontal"
+            height={200}
+          />
+        </section>
       </section>
     </section>
   );
