@@ -12,10 +12,11 @@ interface SlotsType {
   timeSlots: SlotsResult | null;
   appointmnetLink: AppointmentLink | null,
   reschedule?: any
+  updatingFunc?:(callback:any)=>void
 }
 
-const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, reschedule }) => {
-  const {bookingFormData, setBookingFormData, slotCounts, setSlotCounts,inactiveSlots, setInactiveSlots, setIsFormUp,} = useAppointmentContext()
+const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, updatingFunc }) => {
+  const {bookingFormData, setBookingFormData, slotCounts, setSlotCounts,inactiveSlots, setInactiveSlots, setIsFormUp, selectedItem} = useAppointmentContext()
 
   const [loading, setLoading] = useState(true);
   const [unavailbleDates, setUnavailableDates] = useState(null);
@@ -111,7 +112,6 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
   };
 
   const updateSlots = async () => {
-    // console.log({selectedDate, y:selectedDate && isBooking})
     const bookings = await fetchBookedSlots();
     const unavailableSlots = await fetchUnavailbleDates()
     const slotCounts = countBookingsBySlot(bookings, unavailableSlots);
@@ -125,8 +125,14 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
   useEffect(() => {
     if(isBooking){
       updateSlots();
+    } 
+  }, [selectedDate, ]);
+
+   useEffect(() => {
+    if(!isBooking){
+      updateSlots();
     }
-  }, [selectedDate]);
+  }, [selectedItem]);
 
   const isDisabled = !bookingFormData?.appointmentDate || !bookingFormData?.appointmentTime  
 
@@ -214,54 +220,16 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, r
 
 export default Slots
 
-interface Slot {
-  [key:string]:number
-}
-
-// function generateSlots(
-//   slotDuration: number, 
-//   breakBetweenSlots: number, 
-//   limit:number,
-//   unavailableDates: AppointmentUnavailability[]
-// ): Slot[] {
-//   const slots: Slot[] = [];
-
-//   unavailableDates.forEach(appointment => {
-//     let currentStartTime = new Date(appointment.startDateTime!);
-//     const endTime = new Date(appointment.endDateTime!);
-
-//     while (isBefore(currentStartTime, endTime)) {
-//       const currentEndTime = addMinutes(currentStartTime, slotDuration);
-
-//       if (isBefore(currentEndTime, endTime) || currentEndTime.getTime() === endTime.getTime()) {
-//         const slotLabel = `${format(currentStartTime, 'hh:mm:ss')}`;
-
-//         const slot: Slot = {
-//           [slotLabel]: limit + 1,
-//         };
-
-//         slots.push(slot);
-//         currentStartTime = addMinutes(currentEndTime, breakBetweenSlots);
-//       } else {
-//         break;
-//       }
-//     }
-//   });
-
-//   return slots;
-// }
-
-
-function isTimeWithinAppointments(
+export function isTimeWithinAppointments(
   time: string, 
   selectedDay: Date,
   appointments: AppointmentUnavailability[]
 ): boolean {
   const parsedTime = parse(time, 'HH:mm:ss', selectedDay);
 
-  // console.log(`Parsed Time: ${parsedTime}`);
+  console.log(`Parsed Time: ${parsedTime}`, {appointments});
 
-  return appointments.some(appointment => {
+  return appointments?.some(appointment => {
     const startTime = new Date(appointment.startDateTime!);
     const endTime = new Date(appointment.endDateTime!);
     

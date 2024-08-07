@@ -8,6 +8,7 @@ import { SendMailClient } from 'zeptomail';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import { createICSContent } from "@/utils";
 
 const client = new SendMailClient({
   url: process.env.NEXT_PUBLIC_ZEPTO_URL,
@@ -23,7 +24,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
   }
   const { bookingFormData, appointmentLink } = await req.json();
-  console.log('R0UTEE', { bookingFormData, appointmentLink });
 
   try {
 
@@ -48,10 +48,20 @@ export async function POST(req: NextRequest) {
       end: appointmentEndDateTime,
       summary: appointmentName,
       description: `Appointment with ${firstName} ${lastName}. Notes: ${notes}`,
-      location: appointmentLink?.location
+      location: appointmentLink?.locationDetails
     };
 
-    const icsContent = generateBookingICS(appointment);
+    const icsContent = generateBookingICS(
+      new Date(appointmentDateTime).toISOString(),
+      new Date(appointmentEndDateTime).toISOString(),
+      appointment?.description,
+      appointment?.location,
+      {name:`${hostfName} ${hostlName}`,email:hostEmail},
+      {name:`${firstName} ${lastName}`,email:participantEmail},
+      appointment?.summary,
+    );
+    
+
     const icsFilePath = path.join(os.tmpdir(), 'appointment.ics');
     fs.writeFileSync(icsFilePath, icsContent);
 
@@ -132,13 +142,13 @@ export async function POST(req: NextRequest) {
           }],
           subject,
           htmlbody: htmlBody,
-          // attachments: [
-          //   {
-          //     filename: 'appointment.ics',
-          //     path: icsFilePath,
-          //     contentType: 'text/calendar'
-          //   }
-          // ]
+          attachments: [
+            {
+              name: 'appointment.ics',
+              content: Buffer.from(icsContent).toString('base64'),
+              mime_type: 'text/calendar'
+            }
+          ]
         })
     })
 

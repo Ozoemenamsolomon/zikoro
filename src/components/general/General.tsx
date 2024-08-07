@@ -346,7 +346,7 @@ export default function General() {
 
   //edit plan
   const editPlan = () => {
-    router.push('/pricing');
+    router.push("/pricing");
   };
 
   // Sync formData with organization data
@@ -495,7 +495,7 @@ export default function General() {
         <div className="">
           <form action="" onSubmit={(e) => updateSetting(e)}>
             <div className="mt-[60px] mb-8 ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px] ">
-              <div className="flex justify-between items-center pt-[32px]">
+              <div className="flex justify-between items-center pt-[32px] ">
                 <div className="flex items-center gap-x-3 ">
                   <GeometryIcon />
                   <p className="text-xl font-semibold">Basic Settings</p>

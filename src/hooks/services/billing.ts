@@ -23,12 +23,14 @@ export const useGetEventTransactions = ({
   registrationCompleted,
   payOutStatus,
   organizationId,
+  eventId,
 }: {
   organizationId?: number;
   userId?: number;
   userEmail?: string;
   registrationCompleted?: number;
   payOutStatus?: number;
+  eventId?: string;
 }): UseGetEventTransactionsResult => {
   const [eventTransactions, setEventTransactions] = useState<
     TEventTransaction[]
@@ -49,7 +51,7 @@ export const useGetEventTransactions = ({
             : ""
         }${payOutStatus ? "payOutStatus=" + payOutStatus + "&" : ""}${
           organizationId ? "organizationId=" + organizationId + "&" : ""
-        }`,
+        }${eventId ? "eventId=" + eventId + "&" : ""}`,
       });
 
       if (status !== 200) {

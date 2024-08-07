@@ -2,11 +2,12 @@
 import { ClockIcon, EditPenBoxIcon, MapPin, ShareIcon } from '@/constants'
 import { AppointmentLink } from '@/types/appointments'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 import Share from './Share'
 import CopyLinkButton from '../ui/CopyLinkButton'
 import toast from 'react-hot-toast'
+import { url } from 'inspector'
 
 const LinksCard = ({data,}:{data:AppointmentLink|any}) => {
     const {push} = useRouter()
@@ -48,6 +49,12 @@ const LinksCard = ({data,}:{data:AppointmentLink|any}) => {
     const backgroundColor = hexToRgba(item?.brandColour!, 0.05); // 0.05 is the opacity value (5%)
     const isDisabled = item?.statusOn === false
 
+    const [linkorigin, setLink] = useState('')
+    useEffect(() => {
+      const url = window.location.origin
+      setLink(url)
+    }, [ ])
+    
   return (
         <div
         style={{
@@ -87,7 +94,10 @@ const LinksCard = ({data,}:{data:AppointmentLink|any}) => {
 
 
       <div className="flex   justify-between gap-6 items-center">
-        <CopyLinkButton link={`https://zikoro.com/booking/${item?.appointmentAlias}`}>
+        <CopyLinkButton 
+            link={`${linkorigin}/booking/${item?.appointmentAlias}`}
+            // link={`https://zikoro.com/booking/${item?.appointmentAlias}`}
+        >
             <button  disabled={!item?.statusOn} type='button' className="underline">Copy link</button>
         </CopyLinkButton>
 

@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
 
     const {data,error} = await supabase
       .from("bookings")
-      .select("*")
+      .select(`*, appointmentLinkId(*, createdBy(id, userEmail,organization,firstName,lastName,phoneNumber))`)
       .eq("createdBy", userId)
       .lt('appointmentDate', today)
       .order("appointmentDate", { ascending: true });
