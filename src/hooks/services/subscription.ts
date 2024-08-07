@@ -1,4 +1,5 @@
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const supabase = createClientComponentClient();
@@ -40,6 +41,8 @@ export function useCreateOrgSubscription(
       const { error } = await supabase
         .from("subscription")
         .update({
+          userId: userId,
+          organizationId: orgId,
           subscriptionType: plan,
           amountPayed: totalPriceNum,
           startDate: formattedStartDate,
@@ -66,5 +69,40 @@ export function useCreateOrgSubscription(
 
   return {
     createOrgSubscription,
+  };
+}
+
+
+export function useGetUserSubscription(id: number, orgId: number) {
+  const [data, setData] = useState<any>(null);
+  const [isLoading, setLoading] = useState(false);
+  useEffect(() => {
+    getUserOrganisation();
+  }, []);
+
+  async function getUserOrganisation() {
+    try {
+      setLoading(true);
+      // Fetch the event by ID
+      const { data, error: fetchError } = await supabase
+        .from("organization")
+        .select("*")
+        .eq("organizationOwnerId", id)
+
+      if (fetchError) {
+        toast.error(fetchError.message);
+        return null;
+      }
+      setData(data);
+    } catch (error) {
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }
+  return {
+    data,
+    refetch: getUserOrganisation,
+    isLoading,
   };
 }

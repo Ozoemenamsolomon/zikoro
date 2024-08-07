@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { PlusCircleIcon, TeamIcon, TeamRemoveIcon } from "@/constants";
 import { SearchAlt2 } from "styled-icons/boxicons-regular";
 import {
@@ -90,9 +90,9 @@ export default function Team() {
   // Filter team members based on search query
   const filteredTeamMembers = currentTeamMembers?.teamMembers?.filter(
     (member: any) =>
-      member.userFirstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.userLastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.userEmail.toLowerCase().includes(searchQuery.toLowerCase())
+      member?.userFirstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member?.userEmail?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
