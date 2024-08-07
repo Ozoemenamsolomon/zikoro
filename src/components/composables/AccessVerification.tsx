@@ -57,6 +57,8 @@ export function AccessVerification({ id }: { id?: string | any }) {
   },[pathname])
  */
 
+  
+
   useEffect(() => {
     if (!user) {
       router.push("/login");
@@ -64,10 +66,10 @@ export function AccessVerification({ id }: { id?: string | any }) {
     }
     if (
       !isLoading &&
-      user &&
+      user !== null &&
       !eventLoading &&
       !singleEventLoading &&
-      data &&
+      data !== null &&
       !verifyingLoading
     ) {
       const appAccess = data?.eventAppAccess;
@@ -96,17 +98,12 @@ export function AccessVerification({ id }: { id?: string | any }) {
       const isPresent = attendees?.some(({ email, eventAlias }) => {
         return eventAlias === id && email === user?.userEmail;
       });
-      console.log(
-        "dsfgsfdhgjkhthhhhhfhfhfhfhfhf",
-        isPresent,
-        attendees?.filter(({ email, eventAlias }) => {
-          return email === user?.userEmail
-        })
-      );
-
+    
+   
       if (isOrganizer || isIdPresent) {
         // user is a team member or an organizer
         setLoading(false);
+        console.log("here")
 
         return () => clearInterval(interval);
       } else if (
@@ -150,7 +147,6 @@ export function AccessVerification({ id }: { id?: string | any }) {
       data !== null
     );
   }, [isLoading, user, eventLoading, singleEventLoading, data]);
-
   const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
   const hours = Math.floor(
     (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
