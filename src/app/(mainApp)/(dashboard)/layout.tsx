@@ -2,23 +2,24 @@
 import { Toaster } from "@/components/ui/toaster";
 import { useLayoutEffect, useRef } from "react";
 import { SideBarLayout } from "@/components/SideBarLayout";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { TUser } from "@/types";
-import { getCookie } from "@/hooks";
+import { useParams } from "next/navigation";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useEventStore from "@/store/globalEventStore";
 import useUserStore from "@/store/globalUserStore";
+import { useAttendee } from "@/hooks";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, setUser } = useUserStore();
-  const router = useRouter();
-  const pathname = usePathname().split("/");
+  const {user, loading} = useAttendee();
+  
+ 
 
-  console.log(user);
+
+
+ // console.log(user);
 
   const divRef = useRef<HTMLDivElement>(null);
   const { eventId }: { eventId: string } = useParams();
@@ -45,10 +46,10 @@ export default function RootLayout({
   const isEventOwner =
     user && event && String(event?.createdBy) === String(user.id);
 
-  console.log(user);
+  console.log("layout", user);
 
   if (!user) {
-    return <div>You are not logged in, redirecting to login...</div>;
+    return <div>Validating User...</div>;
   }
 
   return (

@@ -16,9 +16,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import Image from "next/image";
-import { Reward, RedeemPoint } from "@/types";
-import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { RewardCard } from "../marketPlace/rewards/_components";
+import { Reward } from "@/types";
 import { useGetData } from "@/hooks/services/request";
 import { Offers } from "../partners/_components";
 export function SingleEventHome({ eventId }: { eventId: string }) {

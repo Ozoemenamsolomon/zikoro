@@ -18,7 +18,7 @@ export default function SingleAgenda({
   agendaId: string;
 }) {
   const { data, loading, refetch } = useFetchSingleEvent(eventId);
-  const { attendees, isLoading: fetching } = useGetAllAttendees();
+  const { attendees, isLoading: fetching } = useGetAllAttendees(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const { reviews } = useGetEventReviews(eventId);
   const { attendeeId, isOrganizer } = useVerifyUserAccess(eventId);

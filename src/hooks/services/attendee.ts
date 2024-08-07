@@ -432,7 +432,7 @@ export const useGetAttendeesWithNotes = ({ userId }: { userId: string }) => {
   return { attendees, isLoading, error, getAttendees };
 };
 
-export const useGetAllAttendees = () => {
+export const useGetAllAttendees = (eventId:string) => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -440,7 +440,7 @@ export const useGetAllAttendees = () => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAttendee[]>({
-      endpoint: "/attendees/all",
+      endpoint: `/attendees/all/${eventId}`,
     });
 
     setLoading(false);

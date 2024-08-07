@@ -852,7 +852,7 @@ export function useUpdateTransactionDetail() {
             return {
               ...value,
               registrationCompleted: true,
-              role: payload.role ?? ["attendee"],
+              attendeeType: payload.role ?? ["attendee"],
             };
           });
 
@@ -1150,21 +1150,36 @@ export function useFormatEventData(event?: Event | null) {
 
 export function useAttenedeeEvents() {
   const { events, isLoading } = useGetEvents();
+  const [loading, setLoading] = useState(false);
   const { user } = useUserStore();
-  const { attendees, isLoading: loading } = useGetAllAttendees();
+  const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [registeredEvents, setRegisteredEvents] = useState<Event[] | undefined>(
     []
   );
+  // events/attendee/${email}
+  const getAttendeeRecord = async () => {
+    if (user) {
+      try {
+        setLoading(true);
+        const { data, status } = await getRequest<TAttendee[]>({
+          endpoint: `/events/attendee/${user?.userEmail}`,
+        });
+        setAttendees(data.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   useEffect(() => {
+    getAttendeeRecord();
+  }, [user]);
+  useEffect(() => {
     if (!loading && !isLoading) {
-      // console.log({attendees})
-      // filter attendees based on attendees email
-      const filteredAttendees = attendees?.filter(({ email }) => {
-        return email === user?.userEmail;
-      });
       //   console.log({filteredAttendees})
-      const mappedEventId = filteredAttendees?.map((attendee) =>
+      const mappedEventId = attendees?.map((attendee) =>
         String(attendee?.eventAlias)
       );
       const filtered = events?.filter((event) => {
@@ -1207,7 +1222,7 @@ export function useCheckTeamMember({ eventId }: { eventId?: string }) {
 }
 
 export function useVerifyUserAccess(eventId: string) {
-  const { attendees, isLoading } = useGetAllAttendees();
+  const { attendees, isLoading } = useGetAllAttendees(eventId);
   const { attendees: eventAttendees, isLoading: loading } =
     useGetEventAttendees(eventId);
   const [attendeeId, setAttendeeId] = useState<number | undefined>();

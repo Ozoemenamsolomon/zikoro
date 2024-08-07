@@ -25,10 +25,14 @@ export function AccessVerification({ id }: { id?: string | any }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
-  const { attendees, isLoading } = useGetAllAttendees();
+  const { attendees, isLoading } = useGetAllAttendees(id);
   const [notRegistered, setNotRegistered] = useState(true);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
-  const { data, loading: singleEventLoading, refetch } = useFetchSingleEvent(id);
+  const {
+    data,
+    loading: singleEventLoading,
+    refetch,
+  } = useFetchSingleEvent(id);
   const [notAuthorized, setNotAuthorized] = useState(false);
 
   useEffect(() => {
@@ -45,7 +49,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
     }
   }, [data, singleEventLoading]);
 
-/**
+  /**
    useEffect(() => {
     if (pathname) {
       refetch()
@@ -89,22 +93,26 @@ export function AccessVerification({ id }: { id?: string | any }) {
       }
 
       // checked if the user is an attendee
-      const isPresent = attendees?.some(
-        ({ email, eventAlias }) =>
-          eventAlias === id && email === user?.userEmail
+      const isPresent = attendees?.some(({ email, eventAlias }) => {
+        return eventAlias === id && email === user?.userEmail;
+      });
+      console.log(
+        "dsfgsfdhgjkhthhhhhfhfhfhfhfhf",
+        isPresent,
+        attendees?.filter(({ email, eventAlias }) => {
+          return email === user?.userEmail
+        })
       );
 
       if (isOrganizer || isIdPresent) {
         // user is a team member or an organizer
         setLoading(false);
-        
 
         return () => clearInterval(interval);
       } else if (
         (appAccess === "now" && isPresent) ||
         (timeRemaining <= 0 && isPresent)
       ) {
-       
         // user is an attendee
         if (pathname.includes("content")) {
           setNotAuthorized(true);
@@ -118,7 +126,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
         // router.push("/login");
         // pls remove after all the event have app access date on creation
         // if (isPresent) setLoading(false);
-        
+
         return () => clearInterval(interval);
       }
 
@@ -134,7 +142,13 @@ export function AccessVerification({ id }: { id?: string | any }) {
   ]);
 
   const isLoadedAll = useMemo(() => {
-    return !isLoading && user && !eventLoading && !singleEventLoading && data;
+    return (
+      !isLoading &&
+      user !== null &&
+      !eventLoading &&
+      !singleEventLoading &&
+      data !== null
+    );
   }, [isLoading, user, eventLoading, singleEventLoading, data]);
 
   const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
@@ -179,11 +193,11 @@ export function AccessVerification({ id }: { id?: string | any }) {
             </div>
           </div>
         </div>
-      ) : notRegistered ? (
+      ) : isLoadedAll && notRegistered ? (
         <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
           <p>User is not a registered attendee for this event</p>
         </div>
-      ) : notAuthorized ? (
+      ) : isLoadedAll && notAuthorized ? (
         <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
           <p>You are not authorized to view this page</p>
         </div>
