@@ -203,7 +203,7 @@ const Reschedule = ({ refresh }: { refresh: () => void }) => {
           </div>
 
           <h6 className="font-semibold">Choose time</h6>
-          <div className="h-96 overflow-y-auto mx-auto max-w-80">
+          <div className="h-96 hide-scrollbar overflow-auto mx-auto max-w-sm">
             <Slots
               appointmnetLink={bookingFormData?.appointmentLinkId}
               timeSlots={timeSlots}
@@ -241,7 +241,7 @@ const Reschedule = ({ refresh }: { refresh: () => void }) => {
                   setError
                 )
               }
-              className="bg-basePrimary rounded-md text-white font-medium py-2 px-6"
+              className="bg-basePrimary rounded-md text-white font-medium py-2 px-6 w-full flex justify-center"
             >
               {isLoading ? "Submiting..." : "Reschedule Appointment"}
             </button>
@@ -441,7 +441,7 @@ const BookingTable = ({
         <p className="text-purple-600">{bookings.length} appointment(s)</p>
       </div>
 
-      <div className="text-xs sm:text-sm xl:text-base overflow-x-auto overflow-y-hidden h-full hide-scrollbar w-full">
+      <div className="text-xs sm:text-sm xl:text-base overflow-x-auto overflow-y-visible h-full hide-scrollbar w-full">
         <table className="w-full bg-white  ">
           <thead>
             <tr className="bg-gray-50 text-gray-700">

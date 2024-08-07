@@ -1,5 +1,7 @@
+import { generateBookingICS } from "@/lib/generateICS";
 import { mergeEmailLists } from "@/lib/mergeEmails";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { addMinutes, parse } from "date-fns";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { SendMailClient } from 'zeptomail';
@@ -54,10 +56,32 @@ export async function POST(req: NextRequest) {
 
     const {businessName,logo, locationDetails, note} = bookingFormData.appointmentLinkId;
 
-    const { appointmentName, appointmentDuration, appointmentDate, appointmentTimeStr, firstName, lastName, notes, participantEmail, phone, teamMembers, reason } = bookingFormData;
+    const { appointmentName, appointmentDuration, appointmentDate, appointmentTimeStr, firstName, lastName, notes, participantEmail, phone, teamMembers, reason, appointmentTime } = bookingFormData;
 
     const emailList = [participantEmail, hostEmail, ];
     const uniqueEmailArray = mergeEmailLists(teamMembers, emailList);
+
+    const appointmentDateTime = parse(`${appointmentDate}T${appointmentTime}`, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+    const appointmentEndDateTime = addMinutes(appointmentDateTime, appointmentDuration);
+
+    const appointment = {
+      start: appointmentDateTime,
+      end: appointmentEndDateTime,
+      summary: appointmentName,
+      description: `Appointment with ${firstName} ${lastName}. Notes: ${notes}`,
+      location: bookingFormData?.appointmentLinkId?.locationDetails
+    };
+
+    const icsContent = generateBookingICS(
+      new Date(appointmentDateTime).toISOString(),
+      new Date(appointmentEndDateTime).toISOString(),
+      appointment?.description,
+      appointment?.location,
+      {name:`${hostFirstName} ${hostLastName}`, email:hostEmail},
+      {name:`${firstName} ${lastName}`,email:participantEmail},
+      appointment?.summary,
+    );
+    
 
     const subject = `Rescheduled Appointment Details for ${appointmentName}`;
     const htmlBody = `
@@ -89,7 +113,7 @@ export async function POST(req: NextRequest) {
           </div>
           <div class="content">
           <p>Hi,</p>
-          <p>Your appointment with ${hostFirstName} ${hostLastName} has been reschedule. </p>
+          <p>Your appointment with ${hostFirstName} ${hostLastName} has been rescheduled. </p>
           <h2>Here is the appointment details</h2>
             <table class="details-table">
               <tr><th>Schedule Name</th><td>${appointmentName}</td></tr>
@@ -142,6 +166,13 @@ export async function POST(req: NextRequest) {
             ],
             subject,
             htmlbody: htmlBody,
+            attachments: [
+              {
+                name: 'appointment.ics',
+                content: Buffer.from(icsContent).toString('base64'),
+                mime_type: 'text/calendar'
+              }
+            ]
           });
         }
         console.log('Emails sent successfully');
