@@ -97,7 +97,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
         return eventAlias === id && email === user?.userEmail;
       });
 
-      // console.log("sdfrr", isIdPresent, isOrganizer);
+       console.log("sdfrr", isIdPresent, isOrganizer);
       if (isOrganizer || isIdPresent) {
         // user is a team member or an organizer
         setLoading(false);
