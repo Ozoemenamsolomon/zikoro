@@ -76,9 +76,11 @@ export function useCreateOrgSubscription(
 export function useGetWorkspaceSubscriptionPlan(userId: number | undefined, orgId: number | undefined) {
   const [data, setData] = useState<any>(null);
   const [isLoading, setLoading] = useState(false);
+
   useEffect(() => {
-    getWorkspaceSubscriptionPlan();
-  }, []);
+    if (userId && orgId)
+      getWorkspaceSubscriptionPlan();
+  }, [userId, orgId]);
 
   async function getWorkspaceSubscriptionPlan() {
     try {
