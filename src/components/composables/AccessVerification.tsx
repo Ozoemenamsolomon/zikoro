@@ -57,6 +57,15 @@ export function AccessVerification({ id }: { id?: string | any }) {
   },[pathname])
  */
 
+  console.log(
+    "event",
+    eventLoading,
+    "attndee",
+    verifyingLoading,
+    "single event",
+    singleEventLoading
+  );
+
   useEffect(() => {
     // if (!user) {
     //   router.push("/login");
@@ -97,7 +106,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
         return eventAlias === id && email === user?.userEmail;
       });
 
-       console.log("sdfrr", isIdPresent, isOrganizer);
+      console.log("sdfrr", isIdPresent, isOrganizer);
       if (isOrganizer || isIdPresent) {
         // user is a team member or an organizer
         setLoading(false);
@@ -119,6 +128,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
       } else {
         if (!isPresent) {
           window.open(`/live-events/${id}`, "_self");
+          console.log("here");
           setNotRegistered(true);
         }
         // router.push("/login");
@@ -148,7 +158,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
       data !== null
     );
   }, [isLoading, user, eventLoading, singleEventLoading, data]);
-    console.log("sdf", isIdPresent, isOrganizer, loading);
+  console.log("sdf", isIdPresent, isOrganizer, loading);
   const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
   const hours = Math.floor(
     (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
