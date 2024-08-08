@@ -184,7 +184,12 @@ export function useCreateTeamMember(workspaceId: number) {
           .single();
 
         if (error) {
-          toast.error(error.message);
+          if (status === 406) { // Status 406 means no rows found
+            setCurrentTeamMembers({ teamMembers: [] }); // Set an empty team members array
+            toast.error("No team members found.");
+          } else {
+            toast.error(error.message);
+          }
           return false;
         }
 

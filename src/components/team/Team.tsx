@@ -90,7 +90,9 @@ export default function Team() {
   // Filter team members based on search query
   const filteredTeamMembers = currentTeamMembers?.teamMembers?.filter(
     (member: any) =>
-      member?.userFirstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member?.userFirstName
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
       member?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member?.userEmail?.toLowerCase().includes(searchQuery.toLowerCase())
   );
