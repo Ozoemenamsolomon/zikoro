@@ -228,7 +228,7 @@ export function useGetUserHomePageEvents() {
   }
   useEffect(() => {
     if (!isLoading && !orgLoading && events && organizations) {
-      setLoading(false);
+     
       // checking if the user is a team member of any of the organizations
       // getting the organization id
       const filteredOrganizations = organizations?.filter((organization) => {
@@ -251,6 +251,7 @@ export function useGetUserHomePageEvents() {
       setFirstSetEvents(firstSet);
 
       setUserEvents(matchingEvents);
+      setLoading(false);
     }
   }, [events, organizations]);
 
@@ -1204,7 +1205,7 @@ export function useCheckTeamMember({ eventId }: { eventId?: string }) {
   const [isIdPresent, setIsIdPresent] = useState(false);
   const { events, loading: eventLoading } = useGetUserHomePageEvents();
   const [isLoading, setIsLoading] = useState(true);
-
+  console.log("isEventLoading", eventLoading)
   useEffect(() => {
     if (!eventLoading) {
       //checked if the eventid is present in the event array
@@ -1233,6 +1234,7 @@ export function useVerifyUserAccess(eventId: string) {
   const { user } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log("isAttendeeLoading", loading)
   useEffect(() => {
     if (!loading) {
       const atId = eventAttendees?.find(
