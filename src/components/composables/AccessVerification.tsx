@@ -148,7 +148,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
       data !== null
     );
   }, [isLoading, user, eventLoading, singleEventLoading, data]);
-  //  console.log("sdf", isIdPresent, isOrganizer, loading);
+    console.log("sdf", isIdPresent, isOrganizer, loading);
   const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
   const hours = Math.floor(
     (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
