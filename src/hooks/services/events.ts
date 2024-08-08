@@ -1245,7 +1245,7 @@ export function useVerifyUserAccess(eventId: string) {
 
       setAttendeeId(atId);
       setAttendee(attendee);
-
+      
       const isPresent = eventAttendees?.some(
         ({ attendeeType, id }) =>
           id === atId && attendeeType.includes("organizer")
