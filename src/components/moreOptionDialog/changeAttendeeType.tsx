@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 // import { DialogClose } from "../ui/dialog";
 import ViewAttendeesSection from "./viewAttendeesSection";
 import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
+import { DialogClose } from "../ui/dialog";
 
 const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
   attendees,
@@ -44,7 +45,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
       ? selectedAttendees.filter((item) => item !== value)
       : [...selectedAttendees, value];
 
-    console.log(updatedValue);
+    
 
     setSelectedAttendees(updatedValue);
   };
@@ -144,7 +145,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
       />
-      {/* <DialogClose asChild>
+      <DialogClose asChild>
         <Button
           disabled={
             selectedAttendees.length === 0 || selectedAttendeeType.length === 0
@@ -154,7 +155,7 @@ const ChangeAttendeeType: React.FC<MoreOptionsProps> = ({
         >
           Save
         </Button>
-      </DialogClose> */}
+      </DialogClose>
     </div>
   );
 };

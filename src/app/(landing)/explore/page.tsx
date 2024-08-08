@@ -1,31 +1,25 @@
 "use client";
-import React from "react";
-import Navbar from "@/components/Navbar2";
-import Footer from "@/components/Footer";
+import React, { useState } from "react";
+import Navbar from "@/components/Navbar";
+import CopyrightFooter from "@/components/CopyrightFooter";
 import EventHeader from "@/components/explore/EventHeader";
-import { Montserrat } from "next/font/google";
-import EventList from "@/components/explore/EventList";
+import EventList from "@/components/explore/SelectedLocationList";
 import FeaturedEventList from "@/components/explore/FeaturedEventList";
 import CitiesEventList from "@/components/explore/CitiesEventList";
 import CategoryEventList from "@/components/explore/CategoryEventsList";
 
-const montserrat = Montserrat({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-  display: "swap",
-  fallback: ["Arial", "sans-serif"],
-});
+export default function Explore() {
+  const [searchQuery, setSearchQuery] = useState("");
 
-export default function Events() {
   return (
-    <div className={`${montserrat.className} `}>
+    <div className="">
       <Navbar />
-      <EventHeader />
-      <EventList />
-      <FeaturedEventList />
+      <EventHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <EventList  searchQuery={searchQuery} />
+      <FeaturedEventList searchQuery={searchQuery}  />
       <CitiesEventList />
       <CategoryEventList />
-      <Footer />
+      <CopyrightFooter/>
     </div>
   );
 }

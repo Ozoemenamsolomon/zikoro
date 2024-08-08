@@ -3,7 +3,7 @@ import First from "./first";
 import Second from "./second";
 import Third from "./third";
 import { TAttendee } from "@/types/attendee";
-import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
+import { MoreOptionsProps } from "@/app/(mainApp)/(dashboard)/event/[eventId]/(home)/people/_reusable/FirstSection";
 
 export type THeaders = {
   firstName: number | null;
@@ -28,11 +28,7 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
       [{ label: "Last name", value: "lastName", isRequired: true }, null],
       [{ label: "Email", value: "email", isRequired: true }, null],
       [{ label: "Phone number", value: "phoneNumber", isRequired: true }, null],
-      [{ label: "WhatsApp", value: "whatsappNumber", isRequired: true }, null],
-      [
-        { label: "Attendee Type", value: "attendeeType", isRequired: false },
-        null,
-      ],
+      [{ label: "WhatsApp", value: "whatsappNumber", isRequired: false }, null],
       [{ label: "jobTitle", value: "jobTitle", isRequired: false }, null],
       [
         { label: "organization", value: "organization", isRequired: false },
@@ -52,7 +48,7 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
     key: { label: string; value: keyof TAttendee; isRequired: boolean },
     value: string
   ) => {
-    console.log(value);
+    
     setHeaders((prevHeaders) => {
       prevHeaders.set(key, value);
       return prevHeaders;
@@ -246,6 +242,7 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
           data={excelResult.filter((row, index) => index > 0)}
           headers={headers}
           getAttendees={getAttendees}
+          setStep={setStep}
         />
       )}
     </div>

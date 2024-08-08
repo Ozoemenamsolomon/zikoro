@@ -55,8 +55,8 @@ const Sidebar = () => {
           height={100}
         ></Image>
         <NavLinks />
+        <UserActions />
       </div>
-      <UserActions />
     </div>
   );
 };

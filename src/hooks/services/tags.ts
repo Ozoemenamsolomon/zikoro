@@ -1,3 +1,5 @@
+"use client";
+
 import { toast } from "@/components/ui/use-toast";
 import { RequestStatus } from "@/types/request";
 import { TAttendeeTags, TTags } from "@/types/tags";
@@ -109,22 +111,22 @@ export const useUpdateAttendeeTags = ({
     });
 
     try {
-      console.log(payload, "starting update attendee tag");
+      
       const { data, status } = await postRequest({
         endpoint: `/attendees/${attendeeId}/tags`,
         payload,
       });
 
-      console.log("finish update attendee tag");
+      
       if (status !== 201) throw data;
       toast({
         description: "Attendee tags updated successfully",
       });
     } catch (error) {
-      console.log(error);
+      
       setError(true);
     } finally {
-      console.log("done");
+      
       setLoading(false);
     }
   };
@@ -176,7 +178,11 @@ type UseGetAttendeesTagsResult = {
   getAttendeesTags: () => Promise<void>;
 } & RequestStatus;
 
-export const useGetAttendeesTags = (): UseGetAttendeesTagsResult => {
+export const useGetAttendeesTags = ({
+  userId,
+}: {
+  userId: number;
+}): UseGetAttendeesTagsResult => {
   const [attendeesTags, setTags] = useState<TAttendeeTags[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -186,7 +192,7 @@ export const useGetAttendeesTags = (): UseGetAttendeesTagsResult => {
 
     try {
       const { data, status } = await getRequest<TAttendeeTags[]>({
-        endpoint: `/attendees/tags`,
+        endpoint: `/attendees/tags/${userId}`,
       });
 
       if (status !== 200) throw data;

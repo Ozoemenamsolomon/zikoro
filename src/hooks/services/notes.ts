@@ -1,3 +1,5 @@
+"use client"
+
 import { TAttendeeNote } from "@/types/attendee";
 import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest } from "@/utils/api";
@@ -16,7 +18,7 @@ export const useUpdatenote = ({
   const [error, setError] = useState<boolean>(false);
 
   const updatenote = async ({ payload }: { payload: TAttendeeNote }) => {
-    console.log(attendeeId, "attendeeId");
+    
     setLoading(true);
 
     const { data, status } = await postRequest({
@@ -28,7 +30,7 @@ export const useUpdatenote = ({
 
     if (status !== 201) return setError(true);
 
-    console.log(data);
+    
   };
 
   return { updatenote, isLoading, error };

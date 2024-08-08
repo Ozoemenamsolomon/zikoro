@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/menubar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
+import { cn } from "@/lib";
 import { FilterOptionsProps, FilterProps } from "@/types/filter";
 import React, { useEffect } from "react";
 
@@ -65,7 +66,6 @@ function DateRangeFilter<T>({
   const { type, accessor, onFilter, label: filterLabel } = filter;
   const date = selectedFilters.find(({ key }) => key === accessor);
 
-  console.log(date, "here");
   return (
     <Calendar
       mode="range"
@@ -138,9 +138,8 @@ function SingleFilter<T>({
   const singleValue = selectedFilters.find(({ key }) => key === accessor);
 
   useEffect(() => {
-    console.log("is default set?", defaultValue);
     if (!defaultValue) return;
-    console.log("default set", defaultValue);
+
     applyFilter(accessor, filterLabel, defaultValue, onFilter, type);
   }, []);
 
@@ -295,16 +294,17 @@ function Filter<T>({
           return (
             <MenubarMenu key={accessor as unknown as string}>
               <MenubarTrigger
-                className={`flex gap-0.5 items-center w-full min-w-fit justify-center px-0.5 ${
-                  index > 0 ? "border-l-[1px]" : ""
-                }`}
+                className={cn(
+                  "flex gap-0.5 items-center w-full min-w-fit justify-center px-0.5",
+                  index > 0 && "border-l-[1px]"
+                )}
               >
                 {icon}
                 <span className="text-xs font-medium text-ticketColor capitalize">
                   {label}
                 </span>
               </MenubarTrigger>
-              <MenubarContent className="space-y-2 w-fit">
+              <MenubarContent className="space-y-2 w-fit max-h-[250px] overflow-auto">
                 <FilterOptions<T>
                   filter={filter}
                   selectedFilters={selectedFilters}

@@ -1,71 +1,192 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { getCookie, useCheckTeamMember, useVerifyUserAccess } from "@/hooks";
+import { AccessVerification } from "./composables";
+import { cn } from "@/lib";
+import { Button } from ".";
+import { ArrowExportLtr } from "styled-icons/fluentui-system-filled/";
+import { ArrowExportRtl } from "styled-icons/fluentui-system-filled/";
+import useUserStore from "@/store/globalUserStore";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
-const links = [
-  {
-    name: "Content",
-    href: "content",
-  },
-  {
-    name: "People",
-    href: "people/all",
-  },
-  {
-    name: "Agenda",
-    href: "agenda",
-  },
-  {
-    name: "Partners",
-    href: "partners",
-  },
-  {
-    name: "Products",
-    href: "products",
-  },
-  {
-    name: "Interactions",
-    href: "interactions",
-  },
-  {
-    name: "Documents",
-    href: "documents",
-  },
-  {
-    name: "Analytics",
-    href: "analytics",
-  },
-  {
-    name: "Settings",
-    href: "settings",
-  },
-];
+const Topbar = ({ eventId }: { eventId?: string }) => {
+  const pathname = usePathname();
 
-const Topbar = () => {
-  const pathnames = usePathname().split("/");
-  const currentLink = pathnames[pathnames.length - 2];
+  const [isShowNav, setShowNav] = useState(false);
+  const [isScrolling, setScrolling] = useState(false);
+  const [left, setLeft] = useState(false);
+  const { user } = useUserStore();
+  const { organization } = useOrganizationStore();
+  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
 
+  useEffect(() => {
+    document.addEventListener("scroll", () => {
+      if (window.scrollY === 0) {
+        setScrolling(false);
+      } else if (window.scrollY > 0) {
+        setScrolling(true);
+      } else {
+        setScrolling(false);
+      }
+    });
+
+    document.addEventListener("click", () => {
+      const sideBar = document.getElementById("sidebar");
+      if (sideBar) {
+        const sideBarStyle = window.getComputedStyle(sideBar);
+        // console.log(sideBarStyle.display);
+        if (sideBarStyle.display === "none") {
+          setLeft(false);
+        } else {
+          setLeft(true);
+        }
+      }
+    });
+  }, []);
+
+  const links = [
+    {
+      name: "Reception",
+      href: `${eventId}/reception`,
+    },
+    {
+      name: "Contents",
+      href: `${eventId}/content/info`,
+    },
+    {
+      name: "Marketing",
+      href: `${eventId}/marketing`,
+    },
+    {
+      name: "Attendees",
+      href: `${eventId}/people/all`,
+    },
+    {
+      name: "Agenda",
+      href: `${eventId}/agenda`,
+    },
+    {
+      name: "Partners",
+      href: `${eventId}/partners?p=sponsors`,
+    },
+    {
+      name: "Market Place",
+      href: `${eventId}/market-place/jobs`,
+    },
+
+    {
+      name: "Engagements",
+      href: `${eventId}/engagements/interactions`,
+    },
+
+    {
+      name: "Analytics",
+      href: `${eventId}/analytics`,
+    },
+
+    {
+      name: "Settings",
+      href: `${eventId}/settings`,
+    },
+  ];
+
+  /***
+      {
+      name: "Analytics",
+      href: ``, // ${eventId}/analytics
+    },
+   */
+
+  const hideFromAttendee = ["Contents", "Analytics", "Settings", "Marketing"];
+  const set = new Set(hideFromAttendee);
+
+  const reformedLink = useMemo(() => {
+    return links.filter((link) => {
+      if (!user || !user?.userEmail || !isIdPresent) {
+        return !set.has(String(link?.name));
+      } else if (organization?.subscriptionPlan === "Free") {
+        return link?.name !== "Engagements";
+      } else {
+        return links;
+      }
+    });
+  }, [user, isIdPresent]);
+  // key={pathname}
   return (
-    <nav className="bg-white w-full sticky top-0 px-4 pt-4 h-max border-b-[1px]">
-      <ul className="flex justify-between text-gray-700">
-        {links.map(({ name, href }) => {
-          return (
-            <li
-              className={`pb-1 text-sm ${
-                currentLink === href
-                  ? "text-basePrimary border-b-2 border-basePrimary font-medium"
-                  : ""
-              }`}
+    <>
+      <nav
+        className={cn(
+          "w-fit border-b-0 left-0 sm:left-[60px] bg-white lg:border-b-0 lg:w-[180px] lg:pb-10 border-r-0 lg:border-r z-[10] fixed  h-fit lg:h-[calc(100%-68px)] top-[60px] sm:top-[68px] overflow-y-auto top-nav-scroll",
+          isShowNav &&
+            "w-[180px] border-b-0 h-[calc(100%-68px)] pb-10 border-r",
+          left && "left-[60px]"
+        )}
+      >
+        <div
+          className={cn(
+            "bg-white w-full  lg:px-4 lg:pt-5   h-full ",
+            isShowNav && "px-4 pt-5 "
+          )}
+        >
+          <div
+            className={cn(
+              "w-full flex items-start justify-start",
+              isShowNav && "items-end justify-end"
+            )}
+          >
+            <button
+              className={cn(
+                " px-4 pt-[0.6rem] pb-[0.5rem]   lg:hidden",
+                isShowNav && " pt-0 pb-0",
+                isScrolling && "hidden"
+              )}
+              onClick={() => setShowNav((prev) => !prev)}
             >
-              <Link href={"/" + href}>{name}</Link>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+              {isShowNav ? (
+                <ArrowExportRtl size={22} />
+              ) : (
+                <ArrowExportLtr size={22} />
+              )}
+            </button>
+          </div>
+          <ul
+            className={cn(
+              "hidden lg:flex flex-col pb-20 mt-4 lg:mt-0 items-start gap-y-6 justify-start text-gray-700",
+              isShowNav && "flex"
+            )}
+          >
+            {reformedLink.map(({ name, href }, index) => {
+              //  console.log(href.split("/")[1].split("?"))
+              const path = href.includes("?")
+                ? href.split("/")[1].split("?")[0]
+                : href.split("/")[1];
+              return (
+                <li
+                  key={index}
+                  className={`w-full p-2 text-sm ${
+                    pathname.split("/")[3].includes(path)
+                      ? "bg-basePrimary/10  rounded-lg font-medium"
+                      : ""
+                  }`}
+                >
+                  <Link
+                    onClick={() => setShowNav((prev) => !prev)}
+                    href={`/event/${href}`}
+                  >
+                    {name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </nav>
+      <AccessVerification id={eventId} />
+    </>
   );
 };
 
-export default Topbar;
+export { Topbar };

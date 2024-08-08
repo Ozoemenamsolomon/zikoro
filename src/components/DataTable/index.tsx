@@ -59,14 +59,14 @@ export function DataTable<TData extends { id?: number }>({
 
   return (
     <div>
-      <div className="rounded-md border max-w-full">
-        <Table className="max-w-full">
+      <div className="rounded-md border min-w-max">
+        <Table className="min-w-max">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 style={rowStyle}
                 key={headerGroup.id}
-                className="max-w-full gap-2 bg-gray-100"
+                className="max-w-full gap-2 bg-basePrimary/20 px-2"
               >
                 {headerGroup.headers.map((header) => {
                   return (
@@ -86,12 +86,12 @@ export function DataTable<TData extends { id?: number }>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className="max-w-full">
+          <TableBody className="px-2">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   style={rowStyle}
-                  className="max-w-full grid grid-cols-[auto_1.5fr_repeat(8,_minmax(0,_1fr))]  gap-2"
+                  className="max-w-full gap-2 px-2"
                   key={row.id}
                   // data-state={row?.getIsSelected() && "selected"}
                 >

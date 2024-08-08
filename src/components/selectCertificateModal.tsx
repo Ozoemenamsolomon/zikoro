@@ -4,6 +4,8 @@ import { Checkbox } from "./ui/checkbox";
 // import { DialogClose } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { useRecallAttendeeCertificates } from "@/hooks/services/certificate";
+import { DialogClose } from "./ui/dialog";
+import useEventStore from "@/store/globalEventStore";
 
 const SelectCertificateModal = ({
   certificates,
@@ -20,8 +22,10 @@ const SelectCertificateModal = ({
     TAttendeeCertificate[]
   >([]);
 
+  const event = useEventStore((state) => state.event);
+
   const { recallAttendeeCertificates, error } = useRecallAttendeeCertificates({
-    eventId: 1234567890,
+    eventId: event?.eventAlias,
     attendeeId,
   });
 
@@ -68,7 +72,7 @@ const SelectCertificateModal = ({
           </div>
         ))}
       </div>
-      {/* <DialogClose asChild>
+      <DialogClose asChild>
         <Button
           disabled={selectedCertificates.length === 0}
           className="bg-basePrimary w-full"
@@ -76,7 +80,7 @@ const SelectCertificateModal = ({
         >
           Save
         </Button>
-      </DialogClose> */}
+      </DialogClose>
     </div>
   );
 };

@@ -1,5 +1,7 @@
 // import { DialogClose } from "../ui/dialog";
-import React from "react";
+"use client";
+
+import React, { useRef } from "react";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
@@ -9,18 +11,35 @@ import { AffiliateSchema } from "@/schemas/marketing";
 import { TAffiliate } from "@/types/marketing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-export default function CreateAffiliateForm() {
-  const defaultValues: Partial<TAffiliate> = {
-    organizationId: 4,
-    organizationName: "CNT",
-    userEmail: "kachiozo@gmail.com",
-    userId: 2,
+import { DialogClose } from "../ui/dialog";
+import useEventStore from "@/store/globalEventStore";
+import { TUser } from "@/types";
+import { getCookie } from "@/hooks";
+import { generateAlphanumericHash } from "@/utils/helpers";
+import useUserStore from "@/store/globalUserStore";
+import useOrganizationStore from "@/store/globalOrganizationStore";
+
+export default function CreateAffiliateForm({
+  affiliate,
+  getAffiliates,
+}: {
+  affiliate?: TAffiliate;
+  getAffiliates: () => Promise<void>;
+}) {
+  const currentEvent = useEventStore((state) => state.event);
+  const { user, setUser } = useUserStore();
+  const { organization } = useOrganizationStore();
+
+  const defaultValues: Partial<TAffiliate> = affiliate || {
+    userEmail: user?.userEmail,
+    userId: user?.id,
     accountDetails: {
       bankCountry: "Nigeria",
       currency: "NGN",
       accountNumber: "",
       accountName: "",
       bankName: "",
+      bankCode: "",
     },
     affliateStatus: true,
   };
@@ -32,11 +51,32 @@ export default function CreateAffiliateForm() {
     defaultValues,
   });
 
-  async function onSubmit(payload: TAffiliate) {
-    console.log(payload);
+  const {
+    formState: { dirtyFields, errors },
+  } = form;
 
-    await createAffiliate({ payload });
+  const clsBtnRef = useRef<HTMLButtonElement>(null);
+
+  async function onSubmit(data: TAffiliate) {
+    if (!clsBtnRef.current) return;
+
+    clsBtnRef.current.click();
+
+    const payload = data;
+
+    if (affiliate) {
+      const affliateCode = generateAlphanumericHash(7);
+      payload.affliateCode = affliateCode;
+    }
+
+    await createAffiliate({
+      payload: { ...payload, organizationId: organization?.id ?? 0 },
+    });
+
+    await getAffiliates();
   }
+
+  console.log(errors);
 
   return (
     <Form {...form}>
@@ -182,15 +222,18 @@ export default function CreateAffiliateForm() {
             </InputOffsetLabel>
           )}
         />
-        {/* <DialogClose asChild>
-          <Button
-            disabled={isLoading}
-            type="submit"
-            className="bg-basePrimary w-full"
-          >
-            {isLoading ? "Please wait..." : "Create"}
-          </Button>
-        </DialogClose> */}
+        <Button
+          disabled={isLoading}
+          type="submit"
+          className="bg-basePrimary w-full"
+        >
+          {isLoading ? "Please wait..." : "Create"}
+        </Button>
+        <DialogClose asChild>
+          <button className="hidden" ref={clsBtnRef}>
+            close
+          </button>
+        </DialogClose>
       </form>
     </Form>
   );

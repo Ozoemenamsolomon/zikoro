@@ -6,9 +6,13 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      const { data, error, status } = await supabase
-        .from("sentEmails")
-        .select("*");
+      const { searchParams } = new URL(req.url);
+      const userId = searchParams.get("userId");
+      const query = supabase.from("sentEmails").select("*");
+
+      if (userId) query.eq("userId", userId);
+
+      const { data, error, status } = await query;
 
       if (error) throw error;
 
@@ -40,30 +44,66 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      const { emailCategory, subject, sendersName, emailBody, emailRecipient } =
-        params;
+      const {
+        emailCategory,
+        subject,
+        sendersName,
+        emailBody,
+        emailRecipient,
+        replyTo,
+      } = params;
 
-      let nodemailer = require("nodemailer");
-      const transporter = nodemailer.createTransport({
-        host: "smtp.zoho.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.NEXT_PUBLIC_EMAIL,
-          pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
-        },
+      // let nodemailer = require("nodemailer");
+      // const transporter = nodemailer.createTransport({
+      //   host: "smtp.zoho.com",
+      //   port: 465,
+      //   secure: true,
+      //   auth: {
+      //     user: process.env.NEXT_PUBLIC_EMAIL,
+      //     pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
+      //   },
+      // });
+      var { SendMailClient } = require("zeptomail");
+      let client = new SendMailClient({
+        url: process.env.NEXT_PUBLIC_ZEPTO_URL,
+        token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
       });
 
-      const mailData = {
-        from: `${sendersName} <${process.env.NEXT_PUBLIC_EMAIL}>`,
-        to: emailRecipient,
-        subject: `${emailCategory} email`,
-        html: `<div>${emailBody}</div>`,
-      };
+      emailRecipient.forEach(async (email: string) => {
+        try {
+          const resp = await client.sendMail({
+            from: {
+              address: process.env.NEXT_PUBLIC_EMAIL,
+              name: sendersName,
+            },
+            to: [
+              {
+                email_address: {
+                  address: email,
+                  name: "affiliate",
+                },
+              },
+            ],
+            subject,
+            htmlbody: `<div>${emailBody}</div>`,
+          });
 
-      await transporter.sendMail(mailData, function (err: any, info: any) {
-        if (err) throw err;
-        else console.log(info);
+          // const mailData = {
+          //   from: `${sendersName} <${process.env.NEXT_PUBLIC_EMAIL}>`,
+          //   to: email,
+          //   subject: `${emailCategory} email`,
+          //   html: `<div>${emailBody}</div>`,
+          //   replyTo,
+          // };
+
+          // await transporter.sendMail(mailData, function (err: any, info: any) {
+          //
+          //   if (err) throw err;
+          //   else
+          // });
+        } catch (error) {
+          console.error(`Error sending email to ${email}:`, error);
+        }
       });
 
       const { error } = await supabase.from("sentEmails").insert(params);

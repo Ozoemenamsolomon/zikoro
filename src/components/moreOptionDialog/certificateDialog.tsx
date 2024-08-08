@@ -18,7 +18,10 @@ import {
 } from "@/hooks/services/certificate";
 import { TCertificate } from "@/types/certificates";
 // import { DialogClose } from "../ui/dialog";
-import { MoreOptionsProps } from "@/app/(mainApp)/people/_reusable/FirstSection";
+import { DialogClose } from "../ui/dialog";
+import { useParams } from "next/navigation";
+import { isPast } from "date-fns";
+import { MoreOptionsProps } from "@/app/(mainApp)/(dashboard)/event/[eventId]/(home)/people/_reusable/FirstSection";
 
 const CertificateDialog: React.FC<MoreOptionsProps> = ({
   attendees,
@@ -33,26 +36,28 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
   const [selectedCertificate, setSelectedCertificate] =
     useState<TCertificate>();
 
+  const { eventId } = useParams();
+
   const {
     attendeesCertificates,
     isLoading: attendeesCertificateisLoading,
     getAttendeesCertificates,
-  } = useGetAttendeesCertificates({ eventId: 1234567890 });
+  } = useGetAttendeesCertificates({ eventId });
 
   const {
     eventCertificates,
     isLoading: eventCertificateisLoading,
     getEventCertificates,
-  } = useGetEventCertificates({ eventId: 1234567890 });
+  } = useGetEventCertificates({ eventId });
 
   const { updateAttendeeCertificates } = useUpdateAttendeeCertificates({
-    eventId: 1234567890,
+    eventId,
   });
 
-  console.log(attendeesCertificates, "attendees certificate");
+  
 
   useEffect(() => {
-    console.log(selectedCertificate);
+    
     if (!selectedCertificate || attendeesCertificateisLoading) return;
 
     const attendeesId = attendeesCertificates
@@ -96,7 +101,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
   };
 
   const onSubmit = async () => {
-    console.log(selectedAttendees, selectedCertificate);
+    
     if (!selectedCertificate) return;
 
     if (selectedAttendees.some(({ id }) => !id)) return;
@@ -110,7 +115,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         action,
         attendeeInfo: editedSelectedAttendees,
         certificateInfo: {
-          eventId: 1234567890,
+          eventAlias: eventId,
           CertificateGroupId: selectedCertificate.id,
           CertificateName: selectedCertificate.certificateName,
         },
@@ -169,14 +174,18 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
           </SelectTrigger>
           <SelectContent>
             {eventCertificates &&
-              eventCertificates.map(
-                ({ id, certificateName }) =>
-                  id && (
-                    <SelectItem value={id?.toString()}>
-                      {certificateName}
-                    </SelectItem>
-                  )
-              )}
+              eventCertificates
+                .filter(({ certificateSettings: { publishOn } }) =>
+                  isPast(publishOn)
+                )
+                .map(
+                  ({ id, certificateName }) =>
+                    id && (
+                      <SelectItem value={id?.toString()}>
+                        {certificateName}
+                      </SelectItem>
+                    )
+                )}
           </SelectContent>
         </Select>
       </div>
@@ -187,7 +196,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         selectedAttendees={selectedAttendees}
         toggleValue={toggleValue}
       />
-      {/* <DialogClose asChild>
+      <DialogClose asChild>
         <Button
           disabled={
             selectedAttendees.length === 0 || !action || !selectedCertificate
@@ -197,7 +206,7 @@ const CertificateDialog: React.FC<MoreOptionsProps> = ({
         >
           Save
         </Button>
-      </DialogClose> */}
+      </DialogClose>
     </div>
   );
 };

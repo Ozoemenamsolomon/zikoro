@@ -29,20 +29,20 @@ const First = ({
     reader.onload = (e) => {
       if (e.target) {
         const data = e.target.result;
-        console.log(data);
+        
         const dt = XLSX.read(data, { type: "binary" });
         const first_worksheet = dt.Sheets[dt.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json(first_worksheet, {
           header: 1,
         }) as any[][];
-        console.log(jsonData);
+        
 
-        if (jsonData[0].length > 5) {
+        if (jsonData[0].length >= 4) {
           setExcelResult(jsonData);
           setStep(1);
         } else {
           toast({
-            description: "There should be at least five columns",
+            description: "There should be at least four columns: first name, last name, email, phone number",
             variant: "destructive",
           });
         }
@@ -86,7 +86,11 @@ const First = ({
             onChange={handleFileChange}
           />
         </div>
-        <button className="text-blue-300 text-xs flex gap-2 items-center">
+        <a
+          href={"/templates/attendees_templates.xlsx"}
+          download={"attendees_template.xlsx"}
+          className="text-blue-300 hover:text-blue-500 text-xs flex gap-2 items-center"
+        >
           <span>Download a sample template</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +104,7 @@ const First = ({
               fill="#2685CA"
             />
           </svg>
-        </button>
+        </a>
       </div>
       <Button
         onClick={readFile}

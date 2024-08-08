@@ -1,0 +1,98 @@
+import * as z from "zod";
+
+export const attendeeValidationSchema = z.array(
+  z.object({
+    email: z.string().email({ message: "Email must be a valid email" }),
+    firstName: z.string().min(3, { message: "First Name is required" }),
+    ticketType: z.string(),
+    lastName: z.string().min(3, { message: "Last Name is required" }),
+    attendeeAlias: z.string(),
+    phoneNumber: z
+      .string()
+      .refine((value) => value && /^\d{11,}$/.test(value.replace(/\D/g, "")), {
+        message: "Phone number must be at least 11 digits long",
+      })
+      .refine((value) => value && /^\+\d{1,3}/.test(value), {
+        message: "Phone number must include start with a country code",
+      }),
+    
+  })
+);
+
+export const eventBookingValidationSchema = z.object({
+  attendeeApplication: attendeeValidationSchema,
+  aboutUs: z.enum(["instagram", "facebook", "x", "linkedIn", "others"]),
+  others: z
+    .string()
+    .refine((value) => value !== undefined && value.trim() !== "", {
+      message: "Please provide a value for 'Others.'",
+    })
+    .optional(),
+});
+
+export const eventFeedBackSchema = z.object({
+  comment: z.string().min(3, { message: "Comment is required" }),
+  ratings: z.enum(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]),
+});
+
+export const newEventSchema = z.object({
+  startDateTime: z.string().min(1, {message: "Start Date is required"}),
+  endDateTime: z.string().min(1, {message: "End Date is required"}),
+  eventTitle: z.string().min(3, { message: "Title is required" }),
+  eventAddress: z.string().min(3, { message: "Address is required" }),
+  locationType: z.string().min(1, {message: "LocationType is required"}),
+  expectedParticipants: z.string().min(1, {message: "Expected Participant is required"}),
+  eventCity: z.string().min(1, {message: " City is required"}),
+  eventAlias: z.any(),
+  eventCountry: z.string().min(2, { message: "Country is required" }),
+  organisationId: z.string().min(2, { message: "Organization is required" }),
+  eventPoster: z.any()
+});
+
+const eventPricing = z.array(
+  z.object({
+    ticketQuantity: z
+      .string()
+      .min(1, { message: "Ticket Quantity is required" }),
+    attendeeType: z.string().min(1, { message: "Attendee Type is required" }),
+    description: z.any(),
+    price: z.string().min(1, { message: "Price is required" }),
+    validity: z.string().min(1, { message: "Validity is required" }),
+  })
+);
+
+export const updateEventSchema = z.object({
+  startDateTime: z.any(),
+  endDateTime: z.any(),
+  eventTitle: z.string().min(3, { message: "Title is required" }),
+  eventAddress: z.string().min(3, { message: "Address is required" }),
+  locationType: z.string().min(1, { message: "Location is required" }),
+  expectedParticipants: z.string(),
+  eventCity: z.string(),
+  eventCountry: z.string(),
+  eventVisibility: z.any(),
+  industry: z.any(),
+  eventCategory: z.any(),
+  eventPoster:z.any(),
+  pricingCurrency: z.any(),
+  description: z.any(),
+  pricing: eventPricing,
+  eventTimeZone: z.any(),
+});
+
+export const rewardSchema = z.object({
+  rewardTitle: z.string().min(3, { message: "Title is required" }),
+  image: z.any(),
+  quantity: z.string().min(1, { message: "Quantity is required" }),
+  point: z.string().min(1, { message: "Point is required" }),
+});
+
+/**
+   .refine(
+        (value) =>
+          value && /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/.test(value),
+        {
+          message: "Invalid email address",
+        }
+      )
+ */

@@ -35,6 +35,7 @@ export interface TSentEmail {
 
 export interface TAffiliate extends z.TypeOf<typeof AffiliateSchema> {
   affliateCode: string;
+  organizationId: number;
 }
 
 export interface TAffiliateLink {
@@ -50,7 +51,7 @@ export interface TAffiliateLink {
   Goal?: string;
   affiliateLink?: string;
   eventId?: number;
-  affliateEmail?: string;
+  affiliateEmail?: string;
   affiliate?: TAffiliate;
   eventTransactions?: TEventTransaction[];
   linkCode?: string;

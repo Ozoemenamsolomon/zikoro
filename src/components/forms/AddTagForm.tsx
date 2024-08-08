@@ -1,6 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getCookie } from "@/hooks";
 import { useUpdateTags } from "@/hooks/services/tags";
+import useUserStore from "@/store/globalUserStore";
+import { TUser } from "@/types";
 import { TTag, TTags } from "@/types/tags";
 import COLORTAG from "@/utils/colorTag";
 import { useState } from "react";
@@ -12,21 +15,30 @@ export default function AddTagForm({
   currentTags: TTags | null;
   getTags: () => void;
 }) {
-  console.log(currentTags, "tag");
+  
   const [label, setLabel] = useState<string>("");
   const [color, setColor] = useState<string>("");
 
+  const { user, setUser } = useUserStore();
+
   const { updateTags, isLoading, error } = useUpdateTags({
-    userId: 10,
+    userId: user ? user.id : 0,
   });
 
   async function onSubmit() {
+    if (!user) return;
     const payload: TTags = currentTags
       ? {
           ...currentTags,
-          tags: [...currentTags.tags, { label, color }],
+          tags: [...(currentTags.tags ?? []), { label, color }],
         }
-      : { id: 10, userEmail: "ubahyusuf484@gmail.com", tags: [{ label, color }] };
+      : {
+          userId: user.id,
+          userEmail: user?.userEmail,
+          tags: [{ label, color }],
+        };
+
+    
 
     await updateTags({ payload });
     await getTags();

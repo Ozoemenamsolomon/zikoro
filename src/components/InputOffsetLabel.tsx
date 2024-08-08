@@ -20,8 +20,8 @@ export default function InputOffsetLabel({
   prepend?: React.ReactNode;
 }) {
   return (
-    <FormItem className="relative">
-      <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
+    <FormItem className="relative w-full">
+      <FormLabel className="absolute top-0 z-[5] -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
         {label}
         {isRequired && <sup className="text-red-700">*</sup>}
       </FormLabel>
@@ -35,7 +35,7 @@ export default function InputOffsetLabel({
           {prepend}
         </div>
       )}
-      <FormControl>
+      <FormControl className="!mt-0">
         <div
           className={`${append ? "[&>*]:pl-8" : ""} ${
             prepend ? "[&>*]:pr-8" : ""

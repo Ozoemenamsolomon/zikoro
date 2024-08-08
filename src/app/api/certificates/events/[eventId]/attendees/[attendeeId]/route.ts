@@ -46,7 +46,7 @@ export async function GET(
         .from("attendeeCertificates")
         .select("*")
         .eq("attendeeId", attendeeId)
-        .eq("eventId", eventId);
+        .eq("eventAlias", eventId);
 
       if (error) throw error;
 
@@ -82,13 +82,13 @@ export async function POST(
       const { eventId, attendeeId } = params;
       const body = await req.json();
       const { certificateIds } = body;
-      console.log(certificateIds, "certificateIds");
+      
 
       const { error } = await supabase
         .from("attendeeCertificates")
         .delete()
         .eq("attendeeId", attendeeId)
-        .eq("eventId", eventId)
+        .eq("eventAlias", eventId)
         .in("CertificateGroupId", certificateIds);
 
       if (error) throw error;

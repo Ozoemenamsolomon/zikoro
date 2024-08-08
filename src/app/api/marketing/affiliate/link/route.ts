@@ -12,8 +12,6 @@ export async function POST(req: NextRequest) {
 
       const { affiliateName, organizationName, eventPoster, payload } = params;
 
-      console.log(params);
-
       const linkCode = generateAlphanumericHash(7);
 
       const {
@@ -84,9 +82,11 @@ export async function POST(req: NextRequest) {
               <p>Hi ${affiliateName},</p>
               <p>This is your affiliate link to promote <b>${eventName}</b>. It is valid until: <b>${convertDateFormat(
           validity
-        )}</b>. You get <b>${commissionType === "fixed" ? "NGN" : ""
-          }${commissionValue} ${commissionType === "percentage" ? "%" : ""
-          }</b> commission when your referrals complete the following event goal: <b>${Goal}</b>.</p>
+        )}</b>. You get <b>${
+          commissionType === "fixed" ? "NGN" : ""
+        }${commissionValue} ${
+          commissionType === "percentage" ? "%" : ""
+        }</b> commission when your referrals complete the following event goal: <b>${Goal}</b>.</p>
               <p>Here's your link <a href="${affiliateLink}" class="">${affiliateLink}</a></p>
               <p><i>Best regards</i></p>
             </div>
@@ -99,22 +99,31 @@ export async function POST(req: NextRequest) {
         `,
       };
 
-      console.log(mailData);
+      
 
-      await transporter.sendMail(mailData, function (err: any, info: any) {
-        if (err) {
-          console.log(err);
-          throw err;
-        } else console.log(info);
-      });
+      await transporter.sendMail(
+        mailData,
+        async function (err: any, info: any) {
+          if (err) {
+            
+            throw err;
+          }
 
-      const { error } = await supabase
-        .from("affiliateLinks")
-        .insert({ ...payload, linkCode });
+          
+          const { error } = await supabase
+            .from("affiliateLinks")
+            .insert({ ...payload, linkCode });
 
-      if (error) throw error;
+          
+
+          if (error) throw error;
+
+          
+        }
+      );
+
       return NextResponse.json(
-        { msg: "payout requested successfully" },
+        { msg: "certificate saved successfully" },
         {
           status: 201,
         }
@@ -144,9 +153,15 @@ export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
+      const { searchParams } = new URL(req.url);
+      const userId = searchParams.get("userId");
+
       const { data, error, status } = await supabase
         .from("affiliateLinks")
-        .select("*, eventTransactions!inner(*)");
+        .select("*, affiliate!inner(*)")
+        .eq("userId", userId);
+
+       
 
       if (error) throw error;
 

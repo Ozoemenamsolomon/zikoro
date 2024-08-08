@@ -48,7 +48,7 @@ export async function POST(
   if (req.method === "POST") {
     try {
       const { affiliateId } = params;
-      console.log(params);
+      
       const payload = await req.json();
 
       const { error } = await supabase

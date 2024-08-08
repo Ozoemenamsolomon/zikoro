@@ -1,11 +1,13 @@
 import { TAttendee } from "@/types/attendee";
 import { SerializedNodes } from "@craftjs/core";
-import { TEvent } from "./events";
+import { Event } from "./events";
+import { TOrganization } from "./organization";
 
 export type TAttendeeCertificate = {
   id?: number;
   created_at: string;
   eventId: number;
+  eventAlias: string;
   attendeeEmail: string;
   certificateId: string;
   CertificateGroupId: number;
@@ -13,6 +15,12 @@ export type TAttendeeCertificate = {
   CertificateName: string;
   attendeeId: number;
 };
+
+export type TIssuedCertificate = TAttendeeCertificate & {
+  certificate: TCertificate;
+};
+
+type ValuePiece = Date | null;
 
 export interface TCertificateSettings {
   size: string;
@@ -22,11 +30,13 @@ export interface TCertificateSettings {
     trackAttendees: boolean;
     sessionAttendees: boolean;
     quizParticipants: boolean;
+    exceptions?: number[];
   };
   criteria: number;
   canExpire: boolean;
   expiryDate: Date;
-  skills: string[];
+  skills: { color: string; value: string }[];
+  publishOn: string;
 }
 
 export interface TCertificateDetails {
@@ -40,13 +50,16 @@ export interface TCertificate {
   eventId: number;
   certificateName: string;
   certficateDetails: TCertificateDetails;
-  certificateSettings?: TCertificateSettings;
+  certificateSettings: TCertificateSettings;
   cerificateUrl?: string;
-  event?: TEvent;
+  event?: Event;
+  lastEdited: Date;
 }
 
 export type TFullCertificate = TAttendeeCertificate & {
-  certificate: TCertificate;
+  originalCertificate: TCertificate & {
+    event: Event & { organization: TOrganization };
+  };
   attendee: TAttendee;
 };
 
@@ -55,6 +68,8 @@ export interface CertificateTemplate {
   created_at: Date;
   templateName: string;
   templateUrl: string;
+  certificateTemplate: string;
   category: string;
   figmaName: string;
+  colour: string;
 }

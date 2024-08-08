@@ -1,0 +1,556 @@
+"use client";
+import Attendee from "@/components/Attendee";
+import Filter from "@/components/Filter";
+import { Input } from "@/components/ui/input";
+import { useFilter } from "@/hooks/common/useFilter";
+import { ILead, TLeadsInterest } from "@/types/leads";
+import { calculateAndSetMaxHeight, extractUniqueTypes } from "@/utils/helpers";
+import { useEffect, useRef, useState } from "react";
+import { TFilter } from "@/types/filter";
+import {
+  eachDayOfInterval,
+  format,
+  isSameDay,
+  setDefaultOptions,
+} from "date-fns";
+import useUserStore from "@/store/globalUserStore";
+import useEventStore from "@/store/globalEventStore";
+import { useGetAttendees } from "@/hooks";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { TAttendee } from "@/types/attendee";
+import { TAttendeeTags } from "@/types/tags";
+import { TFavouriteContact } from "@/types/favourites";
+import useSearch from "@/hooks/common/useSearch";
+import { Button } from "@/components/ui/button";
+import { useGetData, useMutateData } from "@/hooks/services/request";
+import { TExPartner, TUser } from "@/types";
+
+function ViewAttendeesSection({
+  attendees,
+  user,
+  partnerId,
+  getLeads,
+  leads,
+}: {
+  user: TUser;
+  attendees: TAttendee[];
+  selectedAttendees: TAttendee[];
+  toggleValue: (value: TAttendee | TAttendee[]) => void;
+  attendeesTags?: TAttendeeTags[];
+  favourites?: TFavouriteContact;
+  partnerId: string;
+  getLeads: () => Promise<void>;
+  leads: ILead[];
+}) {
+  const { mutateData, isLoading } = useMutateData<ILead>("/leads");
+
+  const [selectedAttendee, setSelectedAttendee] = useState<TAttendee | null>(
+    null
+  );
+
+  const clsBtnRef = useRef<HTMLButtonElement>(null);
+
+  const {
+    searchTerm,
+    searchedData: searchedAttendees,
+    setSearchTerm,
+  } = useSearch({
+    data: attendees,
+    accessorKey: ["attendeeAlias"],
+  });
+
+  return (
+    <>
+      <div className="space-y-4">
+        <div className="relative">
+          <svg
+            className="absolute left-2 top-[25%]"
+            xmlns="http://www.w3.org/2000/svg"
+            width={18}
+            height={18}
+            viewBox="0 0 18 18"
+            fill="none"
+          >
+            <path
+              d="M16.5 16.5L11.5 11.5M1.5 7.33333C1.5 8.09938 1.65088 8.85792 1.94404 9.56565C2.23719 10.2734 2.66687 10.9164 3.20854 11.4581C3.75022 11.9998 4.39328 12.4295 5.10101 12.7226C5.80875 13.0158 6.56729 13.1667 7.33333 13.1667C8.09938 13.1667 8.85792 13.0158 9.56565 12.7226C10.2734 12.4295 10.9164 11.9998 11.4581 11.4581C11.9998 10.9164 12.4295 10.2734 12.7226 9.56565C13.0158 8.85792 13.1667 8.09938 13.1667 7.33333C13.1667 6.56729 13.0158 5.80875 12.7226 5.10101C12.4295 4.39328 11.9998 3.75022 11.4581 3.20854C10.9164 2.66687 10.2734 2.23719 9.56565 1.94404C8.85792 1.65088 8.09938 1.5 7.33333 1.5C6.56729 1.5 5.80875 1.65088 5.10101 1.94404C4.39328 2.23719 3.75022 2.66687 3.20854 3.20854C2.66687 3.75022 2.23719 4.39328 1.94404 5.10101C1.65088 5.80875 1.5 6.56729 1.5 7.33333Z"
+              stroke="#717171"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <Input
+            type="email"
+            placeholder="Search attendees by id"
+            onInput={(event) => setSearchTerm(event.currentTarget.value)}
+            value={searchTerm}
+            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8"
+          />
+          <svg
+            className="absolute right-2 top-[25%]"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M21 3.75V7.5C21 7.69891 20.921 7.88968 20.7803 8.03033C20.6397 8.17098 20.4489 8.25 20.25 8.25C20.0511 8.25 19.8603 8.17098 19.7197 8.03033C19.579 7.88968 19.5 7.69891 19.5 7.5V4.5H16.5C16.3011 4.5 16.1103 4.42098 15.9697 4.28033C15.829 4.13968 15.75 3.94891 15.75 3.75C15.75 3.55109 15.829 3.36032 15.9697 3.21967C16.1103 3.07902 16.3011 3 16.5 3H20.25C20.4489 3 20.6397 3.07902 20.7803 3.21967C20.921 3.36032 21 3.55109 21 3.75ZM7.5 19.5H4.5V16.5C4.5 16.3011 4.42098 16.1103 4.28033 15.9697C4.13968 15.829 3.94891 15.75 3.75 15.75C3.55109 15.75 3.36032 15.829 3.21967 15.9697C3.07902 16.1103 3 16.3011 3 16.5V20.25C3 20.4489 3.07902 20.6397 3.21967 20.7803C3.36032 20.921 3.55109 21 3.75 21H7.5C7.69891 21 7.88968 20.921 8.03033 20.7803C8.17098 20.6397 8.25 20.4489 8.25 20.25C8.25 20.0511 8.17098 19.8603 8.03033 19.7197C7.88968 19.579 7.69891 19.5 7.5 19.5ZM20.25 15.75C20.0511 15.75 19.8603 15.829 19.7197 15.9697C19.579 16.1103 19.5 16.3011 19.5 16.5V19.5H16.5C16.3011 19.5 16.1103 19.579 15.9697 19.7197C15.829 19.8603 15.75 20.0511 15.75 20.25C15.75 20.4489 15.829 20.6397 15.9697 20.7803C16.1103 20.921 16.3011 21 16.5 21H20.25C20.4489 21 20.6397 20.921 20.7803 20.7803C20.921 20.6397 21 20.4489 21 20.25V16.5C21 16.3011 20.921 16.1103 20.7803 15.9697C20.6397 15.829 20.4489 15.75 20.25 15.75ZM3.75 8.25C3.94891 8.25 4.13968 8.17098 4.28033 8.03033C4.42098 7.88968 4.5 7.69891 4.5 7.5V4.5H7.5C7.69891 4.5 7.88968 4.42098 8.03033 4.28033C8.17098 4.13968 8.25 3.94891 8.25 3.75C8.25 3.55109 8.17098 3.36032 8.03033 3.21967C7.88968 3.07902 7.69891 3 7.5 3H3.75C3.55109 3 3.36032 3.07902 3.21967 3.21967C3.07902 3.36032 3 3.55109 3 3.75V7.5C3 7.69891 3.07902 7.88968 3.21967 8.03033C3.36032 8.17098 3.55109 8.25 3.75 8.25ZM15.75 17.25H8.25C7.85218 17.25 7.47064 17.092 7.18934 16.8107C6.90804 16.5294 6.75 16.1478 6.75 15.75V8.25C6.75 7.85218 6.90804 7.47064 7.18934 7.18934C7.47064 6.90804 7.85218 6.75 8.25 6.75H15.75C16.1478 6.75 16.5294 6.90804 16.8107 7.18934C17.092 7.47064 17.25 7.85218 17.25 8.25V15.75C17.25 16.1478 17.092 16.5294 16.8107 16.8107C16.5294 17.092 16.1478 17.25 15.75 17.25ZM8.25 15.75H15.75V8.25H8.25V15.75Z"
+              fill="#717171"
+            />
+          </svg>
+        </div>
+      </div>
+      <div className="space-y-4">
+        <div className="space-y-4 max-h-32 overflow-auto">
+          {searchedAttendees.every(
+            ({ attendeeAlias }) =>
+              attendeeAlias === searchTerm &&
+              !leads.some(
+                ({ attendeeAlias: leadAlias }) => attendeeAlias === leadAlias
+              )
+          ) &&
+            searchedAttendees.map((attendee) => (
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  className="data-[state=checked]:bg-basePrimary"
+                  id={attendee.attendeeAlias}
+                  onCheckedChange={() =>
+                    selectedAttendee === attendee
+                      ? setSelectedAttendee(null)
+                      : setSelectedAttendee(attendee)
+                  }
+                  checked={selectedAttendee === attendee}
+                />
+                <label
+                  htmlFor={attendee.attendeeAlias}
+                  className="capitalize text-gray-500 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {attendee.firstName + " " + attendee.lastName}
+                </label>
+              </div>
+            ))}
+        </div>
+      </div>
+      <Button
+        className="text-white bg-basePrimary h-10 text-sm rounded-3xl"
+        onClick={async () => {
+          selectedAttendee &&
+            (await mutateData({
+              payload: {
+                createdAt: new Date(),
+                firstName: selectedAttendee.firstName,
+                lastName: selectedAttendee.lastName,
+                attendeeEmail: selectedAttendee.userEmail,
+                jobTitle: selectedAttendee.jobTitle,
+                organization: selectedAttendee.organization,
+                city: selectedAttendee.city,
+                country: selectedAttendee.country,
+                phoneNumber: selectedAttendee.phoneNumber,
+                whatsappNumber: selectedAttendee.whatsappNumber,
+                profilePicture: selectedAttendee.profilePicture,
+                bio: selectedAttendee.bio,
+                x: selectedAttendee.x,
+                linkedin: selectedAttendee.linkedin,
+                instagram: selectedAttendee.instagram,
+                facebook: selectedAttendee.facebook,
+                ticketType: selectedAttendee.ticketType,
+                attendeeType: selectedAttendee.attendeeType,
+                attendeeAlias: selectedAttendee.attendeeAlias,
+                attendeeId: selectedAttendee.id,
+                websiteUrl: selectedAttendee.websiteUrl,
+                eventAlias: selectedAttendee.eventAlias,
+                firstContactChannel: "booth staff",
+                boothStaffEmail: user.userEmail,
+                boothStaffId: user.id,
+                stampCard: true,
+                eventPartnerAlias: partnerId,
+                leadType: "unknown",
+              },
+            }));
+          await getLeads();
+          clsBtnRef.current && clsBtnRef.current.click();
+        }}
+        disabled={!selectedAttendee}
+      >
+        Add Lead
+      </Button>
+      <DialogClose asChild>
+        <button className="hidden" ref={clsBtnRef}>
+          {" "}
+          close
+        </button>
+      </DialogClose>
+    </>
+  );
+}
+
+type TSortorder = "asc" | "desc" | "none";
+
+const leadFilter: TFilter<ILead>[] = [
+  {
+    label: "lead type",
+    accessor: "leadType",
+    icon: (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M14.5 7C14.6326 7 14.7598 6.94732 14.8536 6.85355C14.9473 6.75979 15 6.63261 15 6.5V4C15 3.73478 14.8946 3.48043 14.7071 3.29289C14.5196 3.10536 14.2652 3 14 3H2C1.73478 3 1.48043 3.10536 1.29289 3.29289C1.10536 3.48043 1 3.73478 1 4V6.5C1 6.63261 1.05268 6.75979 1.14645 6.85355C1.24021 6.94732 1.36739 7 1.5 7C1.76522 7 2.01957 7.10536 2.20711 7.29289C2.39464 7.48043 2.5 7.73478 2.5 8C2.5 8.26522 2.39464 8.51957 2.20711 8.70711C2.01957 8.89464 1.76522 9 1.5 9C1.36739 9 1.24021 9.05268 1.14645 9.14645C1.05268 9.24021 1 9.36739 1 9.5V12C1 12.2652 1.10536 12.5196 1.29289 12.7071C1.48043 12.8946 1.73478 13 2 13H14C14.2652 13 14.5196 12.8946 14.7071 12.7071C14.8946 12.5196 15 12.2652 15 12V9.5C15 9.36739 14.9473 9.24021 14.8536 9.14645C14.7598 9.05268 14.6326 9 14.5 9C14.2348 9 13.9804 8.89464 13.7929 8.70711C13.6054 8.51957 13.5 8.26522 13.5 8C13.5 7.73478 13.6054 7.48043 13.7929 7.29289C13.9804 7.10536 14.2348 7 14.5 7ZM14 9.935V12H10.5V10.5H9.5V12H2V9.935C2.428 9.82314 2.80683 9.57253 3.07721 9.2224C3.34759 8.87227 3.49426 8.44238 3.49426 8C3.49426 7.55762 3.34759 7.12773 3.07721 6.7776C2.80683 6.42747 2.428 6.17686 2 6.065V4H9.5V5.5H10.5V4H14V6.065C13.572 6.17686 13.1932 6.42747 12.9228 6.7776C12.6524 7.12773 12.5057 7.55762 12.5057 8C12.5057 8.44238 12.6524 8.87227 12.9228 9.2224C13.1932 9.57253 13.572 9.82314 14 9.935Z"
+          fill="#CFCFCF"
+        />
+        <path d="M9.5 6.5H10.5V9.5H9.5V6.5Z" fill="#CFCFCF" />
+      </svg>
+    ),
+    optionsFromData: true,
+    type: "multiple",
+  },
+  {
+    label: "lead channel",
+    accessor: "firstContactChannel",
+    icon: (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M14.5 7C14.6326 7 14.7598 6.94732 14.8536 6.85355C14.9473 6.75979 15 6.63261 15 6.5V4C15 3.73478 14.8946 3.48043 14.7071 3.29289C14.5196 3.10536 14.2652 3 14 3H2C1.73478 3 1.48043 3.10536 1.29289 3.29289C1.10536 3.48043 1 3.73478 1 4V6.5C1 6.63261 1.05268 6.75979 1.14645 6.85355C1.24021 6.94732 1.36739 7 1.5 7C1.76522 7 2.01957 7.10536 2.20711 7.29289C2.39464 7.48043 2.5 7.73478 2.5 8C2.5 8.26522 2.39464 8.51957 2.20711 8.70711C2.01957 8.89464 1.76522 9 1.5 9C1.36739 9 1.24021 9.05268 1.14645 9.14645C1.05268 9.24021 1 9.36739 1 9.5V12C1 12.2652 1.10536 12.5196 1.29289 12.7071C1.48043 12.8946 1.73478 13 2 13H14C14.2652 13 14.5196 12.8946 14.7071 12.7071C14.8946 12.5196 15 12.2652 15 12V9.5C15 9.36739 14.9473 9.24021 14.8536 9.14645C14.7598 9.05268 14.6326 9 14.5 9C14.2348 9 13.9804 8.89464 13.7929 8.70711C13.6054 8.51957 13.5 8.26522 13.5 8C13.5 7.73478 13.6054 7.48043 13.7929 7.29289C13.9804 7.10536 14.2348 7 14.5 7ZM14 9.935V12H10.5V10.5H9.5V12H2V9.935C2.428 9.82314 2.80683 9.57253 3.07721 9.2224C3.34759 8.87227 3.49426 8.44238 3.49426 8C3.49426 7.55762 3.34759 7.12773 3.07721 6.7776C2.80683 6.42747 2.428 6.17686 2 6.065V4H9.5V5.5H10.5V4H14V6.065C13.572 6.17686 13.1932 6.42747 12.9228 6.7776C12.6524 7.12773 12.5057 7.55762 12.5057 8C12.5057 8.44238 12.6524 8.87227 12.9228 9.2224C13.1932 9.57253 13.572 9.82314 14 9.935Z"
+          fill="#CFCFCF"
+        />
+        <path d="M9.5 6.5H10.5V9.5H9.5V6.5Z" fill="#CFCFCF" />
+      </svg>
+    ),
+    optionsFromData: true,
+    type: "multiple",
+  },
+  {
+    label: "Interest",
+    accessor: "interests",
+    icon: (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M14.5 7C14.6326 7 14.7598 6.94732 14.8536 6.85355C14.9473 6.75979 15 6.63261 15 6.5V4C15 3.73478 14.8946 3.48043 14.7071 3.29289C14.5196 3.10536 14.2652 3 14 3H2C1.73478 3 1.48043 3.10536 1.29289 3.29289C1.10536 3.48043 1 3.73478 1 4V6.5C1 6.63261 1.05268 6.75979 1.14645 6.85355C1.24021 6.94732 1.36739 7 1.5 7C1.76522 7 2.01957 7.10536 2.20711 7.29289C2.39464 7.48043 2.5 7.73478 2.5 8C2.5 8.26522 2.39464 8.51957 2.20711 8.70711C2.01957 8.89464 1.76522 9 1.5 9C1.36739 9 1.24021 9.05268 1.14645 9.14645C1.05268 9.24021 1 9.36739 1 9.5V12C1 12.2652 1.10536 12.5196 1.29289 12.7071C1.48043 12.8946 1.73478 13 2 13H14C14.2652 13 14.5196 12.8946 14.7071 12.7071C14.8946 12.5196 15 12.2652 15 12V9.5C15 9.36739 14.9473 9.24021 14.8536 9.14645C14.7598 9.05268 14.6326 9 14.5 9C14.2348 9 13.9804 8.89464 13.7929 8.70711C13.6054 8.51957 13.5 8.26522 13.5 8C13.5 7.73478 13.6054 7.48043 13.7929 7.29289C13.9804 7.10536 14.2348 7 14.5 7ZM14 9.935V12H10.5V10.5H9.5V12H2V9.935C2.428 9.82314 2.80683 9.57253 3.07721 9.2224C3.34759 8.87227 3.49426 8.44238 3.49426 8C3.49426 7.55762 3.34759 7.12773 3.07721 6.7776C2.80683 6.42747 2.428 6.17686 2 6.065V4H9.5V5.5H10.5V4H14V6.065C13.572 6.17686 13.1932 6.42747 12.9228 6.7776C12.6524 7.12773 12.5057 7.55762 12.5057 8C12.5057 8.44238 12.6524 8.87227 12.9228 9.2224C13.1932 9.57253 13.572 9.82314 14 9.935Z"
+          fill="#CFCFCF"
+        />
+        <path d="M9.5 6.5H10.5V9.5H9.5V6.5Z" fill="#CFCFCF" />
+      </svg>
+    ),
+    optionsFromData: true,
+    type: "multiple",
+    // onFilter: (lead: ILead, interest: string[]) => {
+
+    // }
+  },
+];
+
+export default function FirstColumn({
+  leads,
+  isLoading,
+  getLeads,
+  onSelectLead,
+  selectedLead,
+  partnerId,
+  partner,
+}: {
+  leads: ILead[];
+  isLoading: boolean;
+  getLeads: () => Promise<void>;
+  onSelectLead: (lead: ILead) => void;
+  selectedLead: ILead;
+  partnerId: string;
+  partner: TExPartner;
+}) {
+  const { event } = useEventStore();
+  const {
+    data: leadsInterests,
+    isLoading: interestsIsLoading,
+    getData: getLeadsInterests,
+  } = useGetData<TLeadsInterest[]>(
+    `/leads/interests?eventPartnerAlias=${partnerId}`
+  );
+
+  const {
+    attendees,
+    getAttendees,
+    isLoading: attendeesIsLoading,
+  } = useGetAttendees({
+    eventId: event?.eventAlias,
+  });
+  const { user } = useUserStore();
+  const divRef = useRef<HTMLDivElement>(null);
+
+  const {
+    filteredData: mappedLeads,
+    filters,
+    selectedFilters,
+    applyFilter,
+    setOptions,
+  } = useFilter<ILead>({
+    data: leads ?? [],
+    dataFilters: leadFilter,
+  });
+  const [showFilter, setShowFilter] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<TSortorder>("none");
+
+  useEffect(() => {
+    calculateAndSetMaxHeight(divRef);
+  }, [mappedLeads]);
+
+  useEffect(() => {
+    if (isLoading || !event) return;
+
+    filters
+      .filter((filter) => filter.optionsFromData)
+      .forEach(({ accessor }) => {
+        setOptions(accessor, extractUniqueTypes<ILead>(leads, accessor));
+      });
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (!leadsInterests) return;
+    setOptions(
+      "interests",
+      leadsInterests?.map(({ interestType }) => ({
+        label: interestType,
+        value: interestType,
+      }))
+    );
+  }, [interestsIsLoading]);
+
+  const toggleSort = () => {
+    let newOrder: TSortorder;
+
+    switch (sortOrder) {
+      case "none":
+        newOrder = "desc";
+        break;
+      case "desc":
+        newOrder = "asc";
+        break;
+      case "asc":
+        newOrder = "desc";
+        break;
+      default:
+        newOrder = "none";
+        break;
+    }
+
+    setSortOrder(newOrder);
+  };
+
+  const toggleShowFilter = () =>
+    setShowFilter((prevShowFilter) => !prevShowFilter);
+
+  return (
+    <>
+      <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 px-2">
+        <h2 className="font-semibold leading-normal text-greyBlack ">Leads</h2>
+        <Dialog>
+          <DialogTrigger asChild>
+            <button
+              disabled={attendeesIsLoading}
+              onClick={() => {
+                onSelectLead(null);
+              }}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.54 13V16C10.54 16.2833 10.636 16.521 10.828 16.713C11.02 16.905 11.2574 17.0007 11.54 17C11.8234 17 12.061 16.904 12.253 16.712C12.445 16.52 12.5407 16.2827 12.54 16V13H15.54C15.8234 13 16.061 12.904 16.253 12.712C16.445 12.52 16.5407 12.2827 16.54 12C16.54 11.7167 16.444 11.479 16.252 11.287C16.06 11.095 15.8227 10.9993 15.54 11H12.54V8C12.54 7.71667 12.444 7.479 12.252 7.287C12.06 7.095 11.8227 6.99933 11.54 7C11.2567 7 11.019 7.096 10.827 7.288C10.635 7.48 10.5394 7.71733 10.54 8V11H7.54004C7.25671 11 7.01904 11.096 6.82704 11.288C6.63504 11.48 6.53937 11.7173 6.54004 12C6.54004 12.2833 6.63604 12.521 6.82804 12.713C7.02004 12.905 7.25737 13.0007 7.54004 13H10.54ZM11.54 22C10.1567 22 8.85671 21.7373 7.64004 21.212C6.42337 20.6867 5.36504 19.9743 4.46504 19.075C3.56504 18.175 2.85271 17.1167 2.32804 15.9C1.80337 14.6833 1.54071 13.3833 1.54004 12C1.54004 10.6167 1.80271 9.31667 2.32804 8.1C2.85337 6.88333 3.56571 5.825 4.46504 4.925C5.36504 4.025 6.42337 3.31267 7.64004 2.788C8.85671 2.26333 10.1567 2.00067 11.54 2C12.9234 2 14.2234 2.26267 15.44 2.788C16.6567 3.31333 17.715 4.02567 18.615 4.925C19.515 5.825 20.2277 6.88333 20.753 8.1C21.2784 9.31667 21.5407 10.6167 21.54 12C21.54 13.3833 21.2774 14.6833 20.752 15.9C20.2267 17.1167 19.5144 18.175 18.615 19.075C17.715 19.975 16.6567 20.6877 15.44 21.213C14.2234 21.7383 12.9234 22.0007 11.54 22ZM11.54 20C13.7734 20 15.665 19.225 17.215 17.675C18.765 16.125 19.54 14.2333 19.54 12C19.54 9.76667 18.765 7.875 17.215 6.325C15.665 4.775 13.7734 4 11.54 4C9.30671 4 7.41504 4.775 5.86504 6.325C4.31504 7.875 3.54004 9.76667 3.54004 12C3.54004 14.2333 4.31504 16.125 5.86504 17.675C7.41504 19.225 9.30671 20 11.54 20Z"
+                  fill="#15161B"
+                />
+              </svg>
+            </button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                <span className="capitalize">Select Attendees</span>
+              </DialogTitle>
+            </DialogHeader>
+            <ViewAttendeesSection
+              user={user}
+              attendees={attendees}
+              partnerId={partnerId}
+              getLeads={getLeads}
+              leads={leads}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
+      <div className="flex justify-between my-2 px-2 items-center gap-1">
+        <div className="relative w-fit flex-1">
+          <svg
+            className="absolute left-2 top-[25%]"
+            xmlns="http://www.w3.org/2000/svg"
+            width={18}
+            height={18}
+            viewBox="0 0 18 18"
+            fill="none"
+          >
+            <path
+              d="M16.5 16.5L11.5 11.5M1.5 7.33333C1.5 8.09938 1.65088 8.85792 1.94404 9.56565C2.23719 10.2734 2.66687 10.9164 3.20854 11.4581C3.75022 11.9998 4.39328 12.4295 5.10101 12.7226C5.80875 13.0158 6.56729 13.1667 7.33333 13.1667C8.09938 13.1667 8.85792 13.0158 9.56565 12.7226C10.2734 12.4295 10.9164 11.9998 11.4581 11.4581C11.9998 10.9164 12.4295 10.2734 12.7226 9.56565C13.0158 8.85792 13.1667 8.09938 13.1667 7.33333C13.1667 6.56729 13.0158 5.80875 12.7226 5.10101C12.4295 4.39328 11.9998 3.75022 11.4581 3.20854C10.9164 2.66687 10.2734 2.23719 9.56565 1.94404C8.85792 1.65088 8.09938 1.5 7.33333 1.5C6.56729 1.5 5.80875 1.65088 5.10101 1.94404C4.39328 2.23719 3.75022 2.66687 3.20854 3.20854C2.66687 3.75022 2.23719 4.39328 1.94404 5.10101C1.65088 5.80875 1.5 6.56729 1.5 7.33333Z"
+              stroke="#717171"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <Input
+            type="text"
+            placeholder="Search leads"
+            onInput={(event) => setSearchTerm(event.currentTarget.value)}
+            className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8 w-full"
+            value={searchTerm}
+          />
+          <div className="absolute top-1/2 right-0 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center">
+            {searchTerm === "" ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M21 3.75V7.5C21 7.69891 20.921 7.88968 20.7803 8.03033C20.6397 8.17098 20.4489 8.25 20.25 8.25C20.0511 8.25 19.8603 8.17098 19.7197 8.03033C19.579 7.88968 19.5 7.69891 19.5 7.5V4.5H16.5C16.3011 4.5 16.1103 4.42098 15.9697 4.28033C15.829 4.13968 15.75 3.94891 15.75 3.75C15.75 3.55109 15.829 3.36032 15.9697 3.21967C16.1103 3.07902 16.3011 3 16.5 3H20.25C20.4489 3 20.6397 3.07902 20.7803 3.21967C20.921 3.36032 21 3.55109 21 3.75ZM7.5 19.5H4.5V16.5C4.5 16.3011 4.42098 16.1103 4.28033 15.9697C4.13968 15.829 3.94891 15.75 3.75 15.75C3.55109 15.75 3.36032 15.829 3.21967 15.9697C3.07902 16.1103 3 16.3011 3 16.5V20.25C3 20.4489 3.07902 20.6397 3.21967 20.7803C3.36032 20.921 3.55109 21 3.75 21H7.5C7.69891 21 7.88968 20.921 8.03033 20.7803C8.17098 20.6397 8.25 20.4489 8.25 20.25C8.25 20.0511 8.17098 19.8603 8.03033 19.7197C7.88968 19.579 7.69891 19.5 7.5 19.5ZM20.25 15.75C20.0511 15.75 19.8603 15.829 19.7197 15.9697C19.579 16.1103 19.5 16.3011 19.5 16.5V19.5H16.5C16.3011 19.5 16.1103 19.579 15.9697 19.7197C15.829 19.8603 15.75 20.0511 15.75 20.25C15.75 20.4489 15.829 20.6397 15.9697 20.7803C16.1103 20.921 16.3011 21 16.5 21H20.25C20.4489 21 20.6397 20.921 20.7803 20.7803C20.921 20.6397 21 20.4489 21 20.25V16.5C21 16.3011 20.921 16.1103 20.7803 15.9697C20.6397 15.829 20.4489 15.75 20.25 15.75ZM3.75 8.25C3.94891 8.25 4.13968 8.17098 4.28033 8.03033C4.42098 7.88968 4.5 7.69891 4.5 7.5V4.5H7.5C7.69891 4.5 7.88968 4.42098 8.03033 4.28033C8.17098 4.13968 8.25 3.94891 8.25 3.75C8.25 3.55109 8.17098 3.36032 8.03033 3.21967C7.88968 3.07902 7.69891 3 7.5 3H3.75C3.55109 3 3.36032 3.07902 3.21967 3.21967C3.07902 3.36032 3 3.55109 3 3.75V7.5C3 7.69891 3.07902 7.88968 3.21967 8.03033C3.36032 8.17098 3.55109 8.25 3.75 8.25ZM15.75 17.25H8.25C7.85218 17.25 7.47064 17.092 7.18934 16.8107C6.90804 16.5294 6.75 16.1478 6.75 15.75V8.25C6.75 7.85218 6.90804 7.47064 7.18934 7.18934C7.47064 6.90804 7.85218 6.75 8.25 6.75H15.75C16.1478 6.75 16.5294 6.90804 16.8107 7.18934C17.092 7.47064 17.25 7.85218 17.25 8.25V15.75C17.25 16.1478 17.092 16.5294 16.8107 16.8107C16.5294 17.092 16.1478 17.25 15.75 17.25ZM8.25 15.75H15.75V8.25H8.25V15.75Z"
+                  fill="#717171"
+                />
+              </svg>
+            ) : (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="text-lg md:text-xl font-extrabold text-gray-300 w-[24px] h-[24px] flex items-center justify-center"
+              >
+                x
+              </button>
+            )}
+          </div>
+        </div>
+        {user && String(event?.createdBy) === String(user.id) && (
+          <button className="flex flex-col gap-1" onClick={toggleShowFilter}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M1.5 6.75H22.5M5.25 12H18.75M9.75 17.25H14.25"
+                stroke="#001FCC"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span className=" text-tiny font-medium text-ash leading-[145%] ">
+              {showFilter ? "Hide" : "Show"}
+            </span>
+          </button>
+        )}
+      </div>
+      <Filter
+        className={`transition-all duration-150 my-4 space-y-4 ${
+          showFilter ? "h-fit" : "h-0 overflow-hidden"
+        }`}
+        filters={filters}
+        applyFilter={applyFilter}
+        selectedFilters={selectedFilters}
+      />
+      <div className="flex justify-between px-2 mt-4 mb-2">
+        <div className="flex items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 16 17"
+            fill="none"
+          >
+            <path
+              d="M7.03751 10.4017C7.73388 10.007 8.28003 9.39289 8.59075 8.65521C8.90147 7.91752 8.95929 7.09774 8.75519 6.32375C8.55109 5.54975 8.09655 4.86508 7.46248 4.37653C6.82841 3.88799 6.05046 3.62305 5.25001 3.62305C4.44956 3.62305 3.67161 3.88799 3.03754 4.37653C2.40347 4.86508 1.94893 5.54975 1.74483 6.32375C1.54073 7.09774 1.59855 7.91752 1.90927 8.65521C2.21999 9.39289 2.76614 10.007 3.46251 10.4017C2.17187 10.8132 1.06348 11.6587 0.325634 12.7948C0.271265 12.8781 0.252211 12.9796 0.272664 13.0769C0.293117 13.1743 0.351402 13.2595 0.434697 13.3139C0.517991 13.3682 0.619473 13.3873 0.716816 13.3668C0.814159 13.3464 0.89939 13.2881 0.953759 13.2048C1.41914 12.4893 2.05587 11.9013 2.80613 11.4943C3.5564 11.0873 4.39645 10.8741 5.25001 10.8741C6.10357 10.8741 6.94362 11.0873 7.69389 11.4943C8.44415 11.9013 9.08088 12.4893 9.54626 13.2048C9.60417 13.279 9.68788 13.3288 9.78076 13.3441C9.87363 13.3595 9.96889 13.3393 10.0476 13.2877C10.1263 13.236 10.1827 13.1567 10.2056 13.0654C10.2285 12.9741 10.2163 12.8775 10.1713 12.7948C9.4342 11.6593 8.327 10.8138 7.03751 10.4017ZM2.37501 7.24982C2.37501 6.68119 2.54363 6.12534 2.85953 5.65255C3.17544 5.17976 3.62446 4.81126 4.14979 4.59366C4.67513 4.37606 5.2532 4.31913 5.81089 4.43006C6.36859 4.54099 6.88087 4.81481 7.28294 5.21688C7.68502 5.61896 7.95883 6.13124 8.06977 6.68893C8.1807 7.24663 8.12376 7.82469 7.90616 8.35003C7.68856 8.87537 7.32007 9.32438 6.84727 9.64029C6.37448 9.9562 5.81863 10.1248 5.25001 10.1248C4.48782 10.1238 3.75713 9.8206 3.21817 9.28165C2.67922 8.7427 2.376 8.01201 2.37501 7.24982ZM15.5625 13.3123C15.4793 13.3666 15.3779 13.3857 15.2806 13.3653C15.1834 13.3449 15.0982 13.2867 15.0438 13.2036C14.5792 12.488 13.943 11.9 13.193 11.4932C12.443 11.0865 11.6032 10.8739 10.75 10.8748C10.6506 10.8748 10.5552 10.8353 10.4848 10.765C10.4145 10.6947 10.375 10.5993 10.375 10.4998C10.375 10.4004 10.4145 10.305 10.4848 10.2347C10.5552 10.1643 10.6506 10.1248 10.75 10.1248C11.1734 10.1244 11.5914 10.0305 11.9743 9.84976C12.3571 9.66905 12.6954 9.40601 12.9648 9.07944C13.2342 8.75287 13.4282 8.37083 13.5329 7.96061C13.6375 7.55038 13.6503 7.12211 13.5703 6.70637C13.4903 6.29064 13.3194 5.89771 13.0699 5.55566C12.8204 5.21361 12.4985 4.93088 12.1271 4.72766C11.7557 4.52445 11.344 4.40577 10.9214 4.38011C10.4988 4.35444 10.0758 4.42242 9.68251 4.57919C9.63671 4.59794 9.58765 4.60745 9.53816 4.60715C9.48866 4.60685 9.43972 4.59676 9.39415 4.57745C9.34858 4.55815 9.30728 4.53002 9.27263 4.49467C9.23798 4.45933 9.21067 4.41748 9.19228 4.37153C9.17388 4.32559 9.16476 4.27645 9.16545 4.22697C9.16613 4.17748 9.17661 4.12862 9.19627 4.0832C9.21593 4.03778 9.24438 3.9967 9.27999 3.96233C9.31561 3.92796 9.35767 3.90098 9.40376 3.88294C10.2568 3.54286 11.2071 3.5392 12.0627 3.87269C12.9183 4.20618 13.6154 4.85198 14.0133 5.67962C14.4112 6.50725 14.4801 7.45505 14.2062 8.33155C13.9322 9.20804 13.3359 9.94791 12.5375 10.4017C13.8282 10.8132 14.9365 11.6587 15.6744 12.7948C15.728 12.8783 15.7463 12.9797 15.7254 13.0767C15.7044 13.1737 15.6458 13.2584 15.5625 13.3123Z"
+              fill="#717171"
+            />
+          </svg>
+          <p className="text-xs text-gray-500">
+            {mappedLeads.length ?? 0} leads listed in your view
+          </p>
+        </div>
+        <div className=" flex items-center ">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="17"
+            viewBox="0 0 16 17"
+            fill="none"
+          >
+            <path
+              d="M8.98002 5.52021C9.07377 5.61384 9.20085 5.66644 9.33335 5.66644C9.46585 5.66644 9.59294 5.61384 9.68669 5.52021L10.1667 5.04021V11.8335C10.1667 11.9662 10.2194 12.0933 10.3131 12.1871C10.4069 12.2809 10.5341 12.3335 10.6667 12.3335C10.7993 12.3335 10.9265 12.2809 11.0202 12.1871C11.114 12.0933 11.1667 11.9662 11.1667 11.8335V5.04021L11.6467 5.52021C11.6925 5.56934 11.7477 5.60874 11.809 5.63607C11.8703 5.66339 11.9365 5.67809 12.0037 5.67927C12.0708 5.68046 12.1375 5.66811 12.1998 5.64296C12.262 5.61781 12.3186 5.58038 12.366 5.5329C12.4135 5.48542 12.451 5.42887 12.4761 5.36661C12.5012 5.30435 12.5136 5.23766 12.5124 5.17053C12.5112 5.10339 12.4965 5.03719 12.4692 4.97585C12.4419 4.91452 12.4025 4.85932 12.3534 4.81354L11.02 3.48021C10.9263 3.38658 10.7992 3.33398 10.6667 3.33398C10.5342 3.33398 10.4071 3.38658 10.3134 3.48021L8.98002 4.81354C8.88639 4.90729 8.83379 5.03438 8.83379 5.16688C8.83379 5.29938 8.88639 5.42646 8.98002 5.52021ZM5.83335 11.9602L6.31335 11.4802C6.35913 11.4311 6.41433 11.3917 6.47566 11.3644C6.53699 11.337 6.6032 11.3223 6.67034 11.3212C6.73747 11.32 6.80416 11.3323 6.86642 11.3575C6.92868 11.3826 6.98523 11.42 7.03271 11.4675C7.08019 11.515 7.11762 11.5716 7.14277 11.6338C7.16792 11.6961 7.18027 11.7628 7.17908 11.8299C7.1779 11.897 7.1632 11.9632 7.13587 12.0246C7.10855 12.0859 7.06915 12.1411 7.02002 12.1869L5.68669 13.5202C5.59294 13.6138 5.46585 13.6664 5.33335 13.6664C5.20085 13.6664 5.07377 13.6138 4.98002 13.5202L3.64669 12.1869C3.59756 12.1411 3.55816 12.0859 3.53083 12.0246C3.50351 11.9632 3.48881 11.897 3.48763 11.8299C3.48644 11.7628 3.49879 11.6961 3.52394 11.6338C3.54909 11.5716 3.58652 11.515 3.634 11.4675C3.68147 11.42 3.73803 11.3826 3.80029 11.3575C3.86255 11.3323 3.92923 11.32 3.99637 11.3212C4.0635 11.3223 4.12971 11.337 4.19105 11.3644C4.25238 11.3917 4.30758 11.4311 4.35335 11.4802L4.83335 11.9602V5.16688C4.83335 5.03427 4.88603 4.90709 4.9798 4.81332C5.07357 4.71956 5.20075 4.66688 5.33335 4.66688C5.46596 4.66688 5.59314 4.71956 5.68691 4.81332C5.78068 4.90709 5.83335 5.03427 5.83335 5.16688V11.9602Z"
+              fill="#717171"
+            />
+          </svg>
+          <button className=" text-xs" onClick={toggleSort}>
+            A - Z
+          </button>
+        </div>
+      </div>
+      <div className="overflow-auto hide-scrollbar" ref={divRef}>
+        {mappedLeads
+          .filter(
+            ({ firstName, lastName, organization, jobTitle }) =>
+              firstName?.toLowerCase().includes(searchTerm) ||
+              lastName?.toLowerCase().includes(searchTerm) ||
+              jobTitle?.toLowerCase().includes(searchTerm) ||
+              organization?.toLowerCase().includes(searchTerm)
+          )
+          .sort((a, b) =>
+            sortOrder === "asc"
+              ? a.firstName.localeCompare(b.firstName)
+              : b.firstName.localeCompare(a.firstName)
+          )
+          .map((lead) => (
+            <Attendee
+              key={lead.id}
+              attendee={lead}
+              isSelected={lead.id === selectedLead?.id}
+              selectAttendee={onSelectLead}
+              getAttendees={getLeads}
+              favourites={null}
+              favouriteIsLoading={false}
+              toggleFavourites={null}
+              event={event}
+              user={user}
+              isLead={true}
+            />
+          ))}
+      </div>
+    </>
+  );
+}

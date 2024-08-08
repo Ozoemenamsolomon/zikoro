@@ -2,14 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { generateAlphanumericHash } from "@/utils/helpers";
+import { TAffiliate } from "@/types";
 
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
-      const { data, error, status } = await supabase
-        .from("affiliate")
-        .select("*");
+      const { searchParams } = new URL(req.url);
+      const userId = searchParams.get("userId");
+      const organizationId = searchParams.get("organizationId");
+
+      console.log(organizationId);
+
+      const query = supabase.from("affiliate").select("*");
+
+      if (userId) query.eq("userId", userId);
+
+      if (organizationId) query.eq("organizationId", organizationId);
+
+      const { data, error, status } = await query;
 
       if (error) throw error;
 
@@ -39,13 +50,9 @@ export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
     try {
-      const payload = await req.json();
+      const payload = (await req.json()) as TAffiliate;
 
-      const affliateCode = generateAlphanumericHash(7);
-
-      const { error } = await supabase
-        .from("affiliate")
-        .insert({ ...payload, affliateCode });
+      const { error } = await supabase.from("affiliate").upsert(payload);
 
       if (error) throw error;
       return NextResponse.json(

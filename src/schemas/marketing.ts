@@ -1,27 +1,25 @@
 import { z } from "zod";
 
-const accountDetailsSchema = z.object({
+export const accountDetailsSchema = z.object({
   bankCountry: z.string(),
   currency: z.string(),
   accountNumber: z.string(),
-  accountName: z.string(),
+  accountName: z.string().min(1),
   bankName: z.string(),
+  bankCode: z.string().optional(),
 });
 
 export const AffiliateSchema = z.object({
   id: z.number().optional(),
-  created_at: z.date().optional(),
-  organizationId: z.number(),
-  organizationName: z.string(),
+  created_at: z.string().optional(),
   userId: z.number(),
   userEmail: z.string(),
   firstName: z.string(),
-  lastname: z.string(), // Corrected capitalization of 'lastName'
+  lastname: z.string(),
   email: z.string(),
-  phoneNumber: z
-    .string()
-    .regex(/^\d{11}$/, { message: "Phone number must be 11 digits long" }),
+  phoneNumber: z.string(),
+  // .regex(/^\d{11}$/, { message: "Phone number must be 11 digits long" }),
   accountDetails: accountDetailsSchema,
-  payoutSchedule: z.string().optional(),
+  payoutSchedule: z.string().optional().nullable(),
   affliateStatus: z.boolean(),
 });

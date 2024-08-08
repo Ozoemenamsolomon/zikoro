@@ -1,3 +1,5 @@
+"use client";
+
 import { toast } from "@/components/ui/use-toast";
 import { TAffiliate, TAffiliateLink, TSentEmail } from "@/types/marketing";
 import { UseGetResult, usePostResult } from "@/types/request";
@@ -13,6 +15,7 @@ export const useSendMarketingEmail = (): usePostResult<
 
   const sendMarketingEmail = async ({ payload }: { payload: TSentEmail }) => {
     setLoading(true);
+
     toast({
       description: "sending email...",
     });
@@ -36,11 +39,13 @@ export const useSendMarketingEmail = (): usePostResult<
   return { sendMarketingEmail, isLoading, error };
 };
 
-export const useGetAffiliates = (): UseGetResult<
-  TAffiliate[],
-  "affiliates",
-  "getAffiliates"
-> => {
+export const useGetAffiliates = ({
+  userId,
+  organizationId,
+}: {
+  userId?: number;
+  organizationId?: number;
+}): UseGetResult<TAffiliate[], "affiliates", "getAffiliates"> => {
   const [affiliates, setAffiliates] = useState<TAffiliate[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -48,9 +53,18 @@ export const useGetAffiliates = (): UseGetResult<
   const getAffiliates = async () => {
     setLoading(true);
 
+    console.log(organizationId, userId);
+
     try {
+      console.log(
+        `marketing/affiliate?${userId && `userId=${userId}&`}${
+          organizationId && `organizationId=${organizationId}`
+        }`
+      );
       const { data, status } = await getRequest<TAffiliate[]>({
-        endpoint: "marketing/affiliate",
+        endpoint: `marketing/affiliate?${userId ? `userId=${userId}&` : ""}${
+          organizationId ? `organizationId=${organizationId}` : ""
+        }`,
       });
 
       if (status !== 200) {
@@ -66,7 +80,7 @@ export const useGetAffiliates = (): UseGetResult<
 
   useEffect(() => {
     getAffiliates();
-  }, []);
+  }, [userId, organizationId]);
 
   return {
     affiliates,
@@ -76,11 +90,11 @@ export const useGetAffiliates = (): UseGetResult<
   };
 };
 
-export const useGetMarketingEmails = (): UseGetResult<
-  TSentEmail[],
-  "marketingEmails",
-  "getMarketingEmails"
-> => {
+export const useGetMarketingEmails = ({
+  userId,
+}: {
+  userId: number;
+}): UseGetResult<TSentEmail[], "marketingEmails", "getMarketingEmails"> => {
   const [marketingEmails, setMarketingEmails] = useState<TSentEmail[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -90,7 +104,7 @@ export const useGetMarketingEmails = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<TSentEmail[]>({
-        endpoint: "marketing/email",
+        endpoint: `marketing/email${userId ? "?userId=" + userId : ""}`,
       });
 
       if (status !== 200) {
@@ -151,6 +165,7 @@ export const useCreateAffiliateLink = (): usePostResult<
       });
     } catch (error) {
       setError(true);
+
       toast({
         description: "An error occurred",
         variant: "destructive",
@@ -199,11 +214,11 @@ export const useCreateAffiliate = (): usePostResult<
   return { createAffiliate, isLoading, error };
 };
 
-export const useGetAffiliateLinks = (): UseGetResult<
-  TAffiliateLink[],
-  "affiliateLinks",
-  "getAffiliateLinks"
-> => {
+export const useGetAffiliateLinks = ({
+  userId,
+}: {
+  userId: number;
+}): UseGetResult<TAffiliateLink[], "affiliateLinks", "getAffiliateLinks"> => {
   const [affiliateLinks, setAffiliateLinks] = useState<TAffiliateLink[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -213,7 +228,7 @@ export const useGetAffiliateLinks = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<TAffiliateLink[]>({
-        endpoint: "marketing/affiliate/link",
+        endpoint: `marketing/affiliate/link?userId=${userId}`,
       });
 
       if (status !== 200) {
@@ -299,7 +314,6 @@ export const useUpdateAffiliate = ({
       description: "updating affiliate...",
     });
     try {
-      console.log(affiliateId, "affiliateId");
       const { data, status } = await postRequest({
         endpoint: `marketing/affiliate/${affiliateId}`,
         payload,

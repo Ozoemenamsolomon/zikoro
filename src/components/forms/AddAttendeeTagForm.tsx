@@ -18,14 +18,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { getCookie } from "@/hooks";
+import { TUser } from "@/types";
+import { useParams } from "next/navigation";
+import useUserStore from "@/store/globalUserStore";
 
 export default function AddAttendeeTagForm({
   attendeeEmail,
   attendeeId,
+  getAttendeeTags,
 }: {
   attendeeEmail: string;
   attendeeId: number;
+  getAttendeeTags: () => Promise<void>;
 }) {
+  const { user, setUser } = useUserStore();
+  const { eventId } = useParams();
   const [selectedTags, setSelectedTags] = useState<TTag[]>([]);
   const {
     tags,
@@ -33,7 +41,7 @@ export default function AddAttendeeTagForm({
     // error,
     getTags,
   } = useGetTags({
-    userId: 10,
+    userId: user ? user.id : 0,
   });
 
   const {
@@ -48,27 +56,29 @@ export default function AddAttendeeTagForm({
     });
 
   const { updateTags, isLoading, error } = useUpdateTags({
-    userId: 10,
+    userId: user ? user.id : 0,
   });
 
   async function onSubmit() {
+    if (!user) return;
     const payload: Partial<TAttendeeTags> = attendeeTags
       ? {
           ...attendeeTags,
           attendeeTags: [...attendeeTags.attendeeTags, ...selectedTags],
         }
       : {
-          userEmail: "ubahyusuf484@gmail.com",
+          userEmail: user.userEmail,
           attendeeEmail: attendeeEmail,
-          eventId: "1234567890",
+          eventId: typeof eventId === "string" ? eventId : eventId[0],
           attendeeId,
-          userId: 10,
+          userId: user.id,
           attendeeTags: selectedTags,
         };
 
-    console.log(payload, "on the front side");
+    
     await updateAttendeeTags({ payload });
-    getTags();
+    await getTags();
+    await getAttendeeTags();
   }
 
   async function removeTag(tag: TTag) {
@@ -83,17 +93,19 @@ export default function AddAttendeeTagForm({
   }
 
   useEffect(() => {
-    console.log(attendeeTags, tags, "attendee tags");
+    
   }, [attendeeTags]);
 
   const toggleTags = (tag: TTag) => {
-    console.log(selectedTags.includes(tag));
+    
     setSelectedTags((prevTags) =>
       prevTags.includes(tag)
         ? prevTags.filter((item) => item !== tag)
         : [...prevTags, tag]
     );
   };
+
+  
 
   return (
     <div className="space-y-6">

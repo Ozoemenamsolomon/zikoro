@@ -1,13 +1,34 @@
-"use client"
-import React from 'react'
-import Image from "next/image"
+"use client";
+import React from "react";
+import { useRouter } from "next/navigation";
 
-export default function CategoryEvent() {
-    return (
-            <div className='border-[1px] border-gray-200 rounded-md '>
-                <Image className='object-cover hidden lg:block' src="/category.png" alt="" width={608} height={406} />
-                <Image className='object-cover block lg:hidden w-full' src="/category.png" alt="" width={294} height={308} />
-                <p className='text-xl font-medium text-black text-center py-4'>Sport</p>
-            </div>
-    )
+type CategoryEventProp = {
+  categoryName: string;
+  categoryCount: number;
+};
+
+export default function CategoryEvent({
+  categoryName,
+  categoryCount,
+}: CategoryEventProp) {
+  const router = useRouter();
+
+  return (
+    <div
+      className="border-[1px] border-gray-200 rounded-md cursor-pointer"
+      onClick={() =>
+        router.push(`/explore/featured-events?query=${categoryName}`)
+      }
+    >
+      <div className=" h-[180px] lg:h-[200px] w-full flex items-center justify-center bg-gray-200 opacity-80 ">
+        <p className="text-lg font-bold gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 ">
+          {categoryName}
+        </p>
+      </div>
+      <p className="text-sm font-normal text-black text-center py-4">
+        {" "}
+        {categoryCount}{" "}
+      </p>
+    </div>
+  );
 }

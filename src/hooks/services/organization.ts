@@ -1,8 +1,11 @@
+"use client";
 import { TOrganization } from "@/types/organization";
 import { toast } from "@/components/ui/use-toast";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
+import { getCookie } from "@/hooks";
 import { UseGetResult, usePostResult } from "@/types/request";
+import useUserStore from "@/store/globalUserStore";
 
 export const useGetOrganizations = (): UseGetResult<
   TOrganization[],
@@ -18,7 +21,7 @@ export const useGetOrganizations = (): UseGetResult<
 
     try {
       const { data, status } = await getRequest<TOrganization[]>({
-        endpoint: "organization",
+        endpoint: `organization`,
       });
 
       if (status !== 200) {
@@ -44,17 +47,59 @@ export const useGetOrganizations = (): UseGetResult<
   };
 };
 
-type UseGetOrganizationResult = UseGetResult<
-  TOrganization,
-  "organization",
-  "getOrganization"
->;
+export const useGetUserTeamOrganizations = ({
+  userEmail,
+}: {
+  userEmail: string;
+}): UseGetResult<
+  TOrganization[],
+  "userOrganizations",
+  "getUserOrganizations"
+> => {
+  const [userOrganizations, setUserOrganizations] = useState<TOrganization[]>(
+    []
+  );
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getUserOrganizations = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<TOrganization[]>({
+        endpoint: `organization/user/${userEmail}`,
+      });
+
+      console.log(data);
+
+      if (status !== 200) {
+        throw data;
+      }
+      setUserOrganizations(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getUserOrganizations();
+  }, []);
+
+  return {
+    userOrganizations,
+    isLoading,
+    error,
+    getUserOrganizations,
+  };
+};
 
 export const useGetOrganization = ({
   organizationId,
 }: {
   organizationId: number;
-}): UseGetOrganizationResult => {
+}): UseGetResult<TOrganization, "organization", "getOrganization"> => {
   const [organization, setOrganization] = useState<TOrganization | null>(null);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -110,7 +155,6 @@ export const useUpdateOrganization = ({
       description: "updating organization...",
     });
     try {
-      console.log(organizationId, "organizationId");
       const { data, status } = await postRequest({
         endpoint: `organization/${organizationId}`,
         payload,
@@ -120,6 +164,8 @@ export const useUpdateOrganization = ({
       toast({
         description: "Organization updated successfully",
       });
+
+      return data.data.data;
     } catch (error) {
       setError(true);
       toast({
@@ -133,3 +179,36 @@ export const useUpdateOrganization = ({
 
   return { updateOrganization, isLoading, error };
 };
+
+export function useGetUserOrganizations() {
+  // const userData = getCookie("user");
+  const { user: userData, setUser } = useUserStore();
+  const [userOrganizations, setUserOrganizatiions] = useState<TOrganization[]>(
+    [] as TOrganization[]
+  );
+
+  const {
+    organizations,
+    isLoading: orgLoading,
+    getOrganizations,
+  } = useGetOrganizations();
+  // checking if thwe user is a team member of some organizations
+  useEffect(() => {
+    if (!orgLoading && organizations) {
+      const filteredOrganizations = organizations?.filter((organization) => {
+        return organization.teamMembers?.some(
+          ({ userEmail }) => userEmail === userData?.userEmail
+        );
+      });
+
+      setUserOrganizatiions(filteredOrganizations);
+    }
+  }, [organizations]);
+
+  //return data
+  return {
+    organizations: userOrganizations,
+    getOrganizations,
+  };
+}
+

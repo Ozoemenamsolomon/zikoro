@@ -1,6 +1,14 @@
+"use client";
+
 import { toast } from "@/components/ui/use-toast";
-import { TEventTransaction } from "@/types/billing";
-import { RequestStatus } from "@/types/request";
+import {
+  IBank,
+  IBankCountry,
+  IPayOut,
+  IResolvedAccount,
+  TEventTransaction,
+} from "@/types/billing";
+import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
 
@@ -10,9 +18,19 @@ type UseGetEventTransactionsResult = {
 } & RequestStatus;
 
 export const useGetEventTransactions = ({
+  userEmail,
   userId,
+  registrationCompleted,
+  payOutStatus,
+  organizationId,
+  eventId,
 }: {
-  userId: number;
+  organizationId?: number;
+  userId?: number;
+  userEmail?: string;
+  registrationCompleted?: number;
+  payOutStatus?: number;
+  eventId?: string;
 }): UseGetEventTransactionsResult => {
   const [eventTransactions, setEventTransactions] = useState<
     TEventTransaction[]
@@ -25,7 +43,15 @@ export const useGetEventTransactions = ({
 
     try {
       const { data, status } = await getRequest<TEventTransaction[]>({
-        endpoint: `/billing/${userId}`,
+        endpoint: `/billing?${userId ? "userId=" + userId + "&" : ""}${
+          userEmail ? "userEmail=" + userEmail + "&" : ""
+        }${
+          registrationCompleted
+            ? "registrationCompleted=" + registrationCompleted + "&"
+            : ""
+        }${payOutStatus ? "payOutStatus=" + payOutStatus + "&" : ""}${
+          organizationId ? "organizationId=" + organizationId + "&" : ""
+        }${eventId ? "eventId=" + eventId + "&" : ""}`,
       });
 
       if (status !== 200) {
@@ -95,7 +121,17 @@ export const useGetAttendeeEventTransactions = ({
 };
 
 type useRequestPayOutResult = {
-  requestPayOut: ({ payload }: { payload: string[] }) => Promise<void>;
+  requestPayOut: ({
+    payload,
+  }: {
+    payload: {
+      transactionId: string[];
+      amount: number;
+      requestedFor: number;
+      userEmail: string;
+      userName: string;
+    };
+  }) => Promise<void>;
 } & RequestStatus;
 
 export const useRequestPayOut = ({
@@ -106,7 +142,17 @@ export const useRequestPayOut = ({
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const requestPayOut = async ({ payload }: { payload: string[] }) => {
+  const requestPayOut = async ({
+    payload,
+  }: {
+    payload: {
+      transactionId: string[];
+      amount: number;
+      requestedFor: number;
+      userEmail: string;
+      userName: string;
+    };
+  }) => {
     setLoading(true);
     toast({
       description: "requesting payout...",
@@ -129,4 +175,138 @@ export const useRequestPayOut = ({
   };
 
   return { requestPayOut, isLoading, error };
+};
+
+export const useGetBanks = ({
+  country,
+}: {
+  country: string;
+}): UseGetResult<IBank[], "banks", "getBanks"> => {
+  const [banks, setBanks] = useState<IBank[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getBanks = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<IBank[]>({
+        endpoint: `/billing/banks${country ? "?country=" + country : ""}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setBanks(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getBanks();
+  }, [country]);
+
+  return {
+    banks,
+    isLoading,
+    error,
+    getBanks,
+  };
+};
+
+export const useGetCountries = (): UseGetResult<
+  IBankCountry[],
+  "countries",
+  "getCountries"
+> => {
+  const [countries, setCountries] = useState<IBankCountry[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getCountries = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await getRequest<IBankCountry[]>({
+        endpoint: `/billing/banks/country`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setCountries(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCountries();
+  }, []);
+
+  return {
+    countries,
+    isLoading,
+    error,
+    getCountries,
+  };
+};
+
+export const useResolveAccountNumber = (): usePostResult<
+  {
+    accountNumber: string;
+    bankCode: string;
+  },
+  "resolveAccountNumber",
+  IResolvedAccount
+> => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const resolveAccountNumber = async ({
+    payload: { accountNumber, bankCode },
+  }: {
+    payload: {
+      accountNumber: string;
+      bankCode: string;
+    };
+  }) => {
+    try {
+      setLoading(true);
+      // toast({ description: "resolveing badge..." });
+      console.log("here");
+      const { data, status } = await getRequest<IResolvedAccount>({
+        endpoint: `/billing/banks/account/resolve?accountNumber=${accountNumber}&bankCode=${bankCode}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+
+      if (!data.data) {
+        toast({
+          description: "account number not valid",
+          variant: "destructive",
+        });
+        setError(true);
+      }
+
+      return data.data;
+    } catch (error) {
+      setError(true);
+      toast({
+        description: "something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { isLoading, error, resolveAccountNumber };
 };

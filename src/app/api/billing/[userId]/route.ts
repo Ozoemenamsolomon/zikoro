@@ -10,16 +10,28 @@ export async function GET(
   if (req.method === "GET") {
     try {
       const { userId } = params;
+      const { searchParams } = new URL(req.url);
+      const userEmail = searchParams.get("userEmail");
 
-      const { data, error, status } = await supabase
-        .from("eventTransactions")
-        .select("*, events!inner(*)")
-        .eq("events.organisationId", 5);
+      const { data, error } = await supabase
+        .from("events")
+        .select("id")
+        .eq("createdBy", userEmail);
 
       if (error) throw error;
 
+      const { data: secondData, error: secondError } = await supabase
+        .from("eventTransactions")
+        .select("*, events!inner(*)")
+        .in(
+          "eventId",
+          data.map(({ id }) => id)
+        );
+
+      if (secondError) throw secondError;
+
       return NextResponse.json(
-        { data },
+        { data: secondData },
         {
           status: 200,
         }

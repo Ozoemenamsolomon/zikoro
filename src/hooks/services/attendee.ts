@@ -1,5 +1,10 @@
+"use client";
 import { toast } from "@/components/ui/use-toast";
-import { TAttendee, TAttendeeEmailInvites } from "@/types/attendee";
+import {
+  TAttendee,
+  TAttendeeEmailInvites,
+  TAttendeeInvites,
+} from "@/types/attendee";
 import { RequestStatus } from "@/types/request";
 import { postRequest, getRequest, patchRequest } from "@/utils/api";
 import { useState, useEffect } from "react";
@@ -10,6 +15,10 @@ export const useCreateAttendee = () => {
 
   const createAttendee = async ({ payload }: { payload: TAttendee }) => {
     setLoading(true);
+
+    toast({
+      description: "Creating attendee...",
+    });
 
     try {
       const { data, status } = await postRequest({
@@ -29,11 +38,11 @@ export const useCreateAttendee = () => {
       return data;
     } catch (error) {
       setError(true);
-      console.log({ error });
-      // toast({
-      //   description: error.response.data.error,
-      //   variant: "destructive",
-      // });
+
+      toast({
+        description: error.response.data.error,
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -83,7 +92,54 @@ export const useUpdateAttendees = () => {
   return { updateAttendees, isLoading, error };
 };
 
-export const useGetAttendees = () => {
+export const useUploadAttendees = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const uploadAttendees = async ({
+    payload,
+    message,
+  }: {
+    payload: Partial<TAttendee>[];
+    message?: string;
+  }) => {
+    setLoading(true);
+    toast({
+      description: "Uploading attendees...",
+    });
+
+    try {
+      const { data, status } = await postRequest<TAttendee[]>({
+        endpoint: "/attendees/upload",
+        payload,
+      });
+
+      if (status !== 201) throw data;
+
+      toast({
+        description: "Attendee uploaded successfully",
+      });
+      return data;
+    } catch (error) {
+      setError(true);
+      toast({
+        description: "something went wrong, try again later",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { uploadAttendees, isLoading, error };
+};
+
+export const useGetAttendees = ({
+  eventId,
+  userId,
+}: {
+  eventId?: string;
+  userId?: string;
+}) => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -92,24 +148,65 @@ export const useGetAttendees = () => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAttendee[]>({
-      endpoint: "/attendees",
+      endpoint: `/attendees?${eventId ? "eventId=" + eventId : ""}${
+        userId ? "userId=" + userId : ""
+      }`,
     });
+
+    //
 
     setLoading(false);
 
     if (status !== 200) return setError(true);
 
+    //
     return setAttendees(data.data);
   };
 
   useEffect(() => {
     getAttendees();
-  }, []);
+  }, [eventId]);
 
   return { attendees, isLoading, error, getAttendees };
 };
 
-export const useGetAttendeesWithTags = () => {
+export const useGetAttendee = ({
+  attendeeId,
+  isAlias = false,
+}: {
+  attendeeId: string;
+  isAlias: boolean;
+}) => {
+  const [attendee, setAttendee] = useState<TAttendee | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendee = async () => {
+    try {
+      setLoading(true);
+      const { data, status } = await getRequest<TAttendee>({
+        endpoint: `/attendees/${attendeeId}?isAlias=${isAlias ? 1 : 0}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setAttendee(data.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendee();
+  }, [attendeeId]);
+
+  return { attendee, isLoading, error, getAttendee };
+};
+
+export const useGetAttendeesWithTags = ({ userId }: { userId: string }) => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -118,7 +215,7 @@ export const useGetAttendeesWithTags = () => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAttendee[]>({
-      endpoint: "/tags/10/attendees",
+      endpoint: `/tags/${userId}/attendees`,
     });
 
     setLoading(false);
@@ -161,7 +258,11 @@ export const useGetAttendeesWithEmailInvites = () => {
   return { attendees, isLoading, error, getAttendees };
 };
 
-export const useGetAttendeesWithFavourites = () => {
+export const useGetAttendeesWithFavourites = ({
+  userId,
+}: {
+  userId: string;
+}) => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -170,7 +271,7 @@ export const useGetAttendeesWithFavourites = () => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAttendee[]>({
-      endpoint: "/favourites/10/attendees",
+      endpoint: `/favourites/${userId}/attendees`,
     });
 
     setLoading(false);
@@ -187,7 +288,11 @@ export const useGetAttendeesWithFavourites = () => {
   return { attendees, isLoading, error, getAttendees };
 };
 
-export const useGetAttendeesWithCertificates = () => {
+export const useGetAttendeesWithCertificates = ({
+  eventId,
+}: {
+  eventId: string;
+}) => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -196,7 +301,7 @@ export const useGetAttendeesWithCertificates = () => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAttendee[]>({
-      endpoint: "/certificates/1234567890/attendees",
+      endpoint: "/certificates/${eventId}/attendees",
     });
 
     setLoading(false);
@@ -220,11 +325,22 @@ export const useInviteAttendees = () => {
   const inviteAttendees = async ({
     payload,
   }: {
-    payload: TAttendeeEmailInvites;
+    payload: {
+      message: string;
+      invitees: {
+        email: string;
+        name: string;
+        role: string;
+      }[];
+      eventAlias: string;
+    };
   }) => {
     setLoading(true);
 
     try {
+      toast({
+        description: "sending invites...",
+      });
       const { data, status } = await postRequest({
         endpoint: "/attendees/invites",
         payload,
@@ -233,7 +349,7 @@ export const useInviteAttendees = () => {
       if (status !== 201) throw data;
 
       toast({
-        description: "Invitees sent successfuly",
+        description: "Invitees sent successfully",
       });
       return data;
     } catch (error) {
@@ -254,7 +370,11 @@ type UseGetEmailInvitesResult = {
   getEmailInvites: () => Promise<void>;
 } & RequestStatus;
 
-export const useGetEmailInvites = (): UseGetEmailInvitesResult => {
+export const useGetEmailInvites = ({
+  eventId,
+}: {
+  eventId: number;
+}): UseGetEmailInvitesResult => {
   const [emailInvites, setEmailInvites] = useState<TAttendeeEmailInvites[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -264,7 +384,7 @@ export const useGetEmailInvites = (): UseGetEmailInvitesResult => {
 
     try {
       const { data, status } = await getRequest<TAttendeeEmailInvites[]>({
-        endpoint: `/attendees/invites`,
+        endpoint: `/attendees/invites?eventId=${eventId}`,
       });
 
       if (status !== 200) {
@@ -286,7 +406,7 @@ export const useGetEmailInvites = (): UseGetEmailInvitesResult => {
   return { emailInvites, isLoading, error, getEmailInvites };
 };
 
-export const useGetAttendeesWithNotes = () => {
+export const useGetAttendeesWithNotes = ({ userId }: { userId: string }) => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -295,7 +415,7 @@ export const useGetAttendeesWithNotes = () => {
     setLoading(true);
 
     const { data, status } = await getRequest<TAttendee[]>({
-      endpoint: "/notes/10/attendees",
+      endpoint: `/notes/${userId}/attendees`,
     });
 
     setLoading(false);
@@ -310,4 +430,66 @@ export const useGetAttendeesWithNotes = () => {
   }, []);
 
   return { attendees, isLoading, error, getAttendees };
+};
+
+export const useGetAllAttendees = (eventId: string) => {
+  const [attendees, setAttendees] = useState<TAttendee[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const getAttendees = async () => {
+    try {
+      setLoading(true);
+
+      const { data, status } = await getRequest<TAttendee[]>({
+        endpoint: `/attendees/all/${eventId}`,
+      });
+
+      if (status !== 200) return setError(true);
+
+      //
+      return setAttendees(data.data);
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendees();
+  }, []);
+
+  return { attendees, isLoading, error, getAttendees };
+};
+
+export const useGetEventAttendees = (eventId: string) => {
+  const [attendees, setAttendees] = useState<TAttendee[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(true);
+
+  const getAttendees = async () => {
+    try {
+      setLoading(true);
+
+      const { data, status } = await getRequest<TAttendee[]>({
+        endpoint: `/attendees/event/${eventId}`,
+      });
+
+      setLoading(false);
+
+      //
+      return setAttendees(data.data);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        description: error?.response?.data?.error,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendees();
+  }, []);
+
+  return { attendees, isLoading, getAttendees };
 };

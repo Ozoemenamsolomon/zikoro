@@ -1,0 +1,50 @@
+name: Notify on env.sample Change
+
+on:
+  push:
+    paths:
+      - "env.sample"
+    branches:
+      - integrate
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Read env.sample content
+        id: env_sample_content
+        run: |
+          {
+            echo "env_sample_content<<EOF"
+            cat env.sample
+            echo -e "\nEOF"
+          } >> "$GITHUB_ENV"
+
+      - name: Send email if .env.sample changed
+        uses: hilarion5/send-mail@v1
+        with:
+          smtp-server: smtp.zeptomail.com
+          smtp-port: 465
+          smtp-secure: true
+          from-email: support@zikoro.com
+          to-email: ${{ secrets.ENV_CHANGE_RECIPIENT_EMAIL }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: Update Production Environment Required.
+          # attachments: '[{"path":"env.sample"}]'
+          body: |
+            The env sample has just been updated, compare it with production.
+            File content:
+            ${{ env.env_sample_content}}
+
+            Regards,
+            Zikoro Team
+          html: |
+            <p>The env sample has just been updated, compare it with production.</p>
+            <p>File content:</p>
+            <pre>${{ env.env_sample_content }}</pre>
+            <p>Regards,</p>
+            <p>Zikoro Team</p>

@@ -3,6 +3,9 @@ import React from "react";
 // import { DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRequestPayOut } from "@/hooks/services/billing";
+import { DialogClose } from "./ui/dialog";
+import useOrganizationStore from "@/store/globalOrganizationStore";
+import useUserStore from "@/store/globalUserStore";
 
 interface RequestPayoutDialogProps {
   selectedRows: TEventTransaction[];
@@ -13,16 +16,21 @@ const RequestPayoutDialog = ({
   selectedRows,
   getEventTransactions,
 }: RequestPayoutDialogProps) => {
+  const { organization } = useOrganizationStore();
+
+  if (!organization) return;
+
   const totalRevenue = selectedRows.reduce(
-    (acc, { amountPaid }) => amountPaid + acc,
+    (acc, { amountPaid }) => (amountPaid ? amountPaid + acc : amountPaid),
     0
   );
   const totalProcessingFee = selectedRows.reduce(
-    (acc, { processingFee }) => processingFee + acc,
+    (acc, { processingFee }) => (processingFee ? processingFee + acc : acc),
     0
   );
   const totalAffiliateCommission = selectedRows.reduce(
-    (acc, { affliateCommission }) => affliateCommission + acc,
+    (acc, { affliateCommission }) =>
+      affliateCommission ? affliateCommission + acc : acc,
     0
   );
 
@@ -31,10 +39,19 @@ const RequestPayoutDialog = ({
     0
   );
 
-  const { requestPayOut } = useRequestPayOut({ userId: 1 });
+  const { user, setUser } = useUserStore();
+  // const user = getCookie("user");
+
+  const { requestPayOut } = useRequestPayOut({ userId: user.id });
 
   const onRequestPayOut = async () => {
-    const payload = selectedRows.map(({ id }) => id.toString());
+    const payload = {
+      transactionId: selectedRows.map(({ id }) => id.toString()),
+      amount: totalRevenue - totalProcessingFee - totalAffiliateCommission,
+      requestedFor: organization.id,
+      userName: user?.firstName,
+      userEmail: user?.userEmail,
+    };
     await requestPayOut({ payload });
     await getEventTransactions();
   };
@@ -69,7 +86,9 @@ const RequestPayoutDialog = ({
                   {row.attendees}
                 </td>
                 <td className="py-2 px-4 border-b text-gray-500 text-tiny text-center">
-                  {row.amountPaid - row.processingFee - row.affliateCommission}
+                  {row.amountPaid -
+                    (row.processingFee || 0) -
+                    (row.affliateCommission || 0)}
                 </td>
               </tr>
             ))}
@@ -131,11 +150,11 @@ const RequestPayoutDialog = ({
           issues are identified.
         </span>
       </div>
-      {/* <DialogClose asChild>
+      <DialogClose asChild>
         <Button className="bg-basePrimary w-full" onClick={onRequestPayOut}>
           Request Payout
         </Button>
-      </DialogClose> */}
+      </DialogClose>
     </div>
   );
 };

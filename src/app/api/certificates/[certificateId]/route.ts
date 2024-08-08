@@ -40,4 +40,42 @@ export async function GET(
   }
 }
 
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { certificateId: string } }
+) {
+  const { certificateId } = params;
+  const supabase = createRouteHandlerClient({ cookies });
+  if (req.method === "DELETE") {
+    try {
+      
+      const { data, error, status } = await supabase
+        .from("certificate")
+        .delete()
+        .eq("id", certificateId);
+
+      if (error) throw error;
+
+      return NextResponse.json(
+        { data },
+        {
+          status: 201,
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json(
+        {
+          error: "An error occurred while making the request.",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+  } else {
+    return NextResponse.json({ error: "Method not allowed" });
+  }
+}
+
 export const dynamic = "force-dynamic";

@@ -31,6 +31,8 @@
     --input: 214.3 31.8% 91.4%;
     --zblue: 231 100% 40%;
 
+    --zblue: 231 100% 40%;
+
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
@@ -71,9 +73,11 @@
   * {
     @apply border-border;
   }
+  html,
   body {
     @apply bg-background text-foreground;
-    /* margin: 0; */
+   
+   margin: 0; 
   }
 }
 
@@ -111,6 +115,550 @@
   color: white;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
+#search-input {
+  background: url("/images/tabler_search.svg");
+  background-repeat: no-repeat;
+  background-position: center left 10px;
+}
+
+#search-div {
+  width: fit-content;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  /* Adjust the width as needed */
+  width: 8px;
+  background-color: transparent;
+  transition: width 0.3s ease-in-out;
+  /* Added transition for smoother animation */
+}
+
+.hide-scrollbar:hover::-webkit-scrollbar {
+  width: 8px;
+  background-color: #eee;
+  /* Adjust the width as needed */
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  /* background-color: rgba(0, 0, 0, 0.2); */
+  background-color: transparent;
+}
+
+.hide-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #888;
+}
+
+.pulse {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.75;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.quill {
+  width: 100%;
+  /* border-radius: 8px; */
+  margin-bottom: 3rem;
+}
+
+.quill .ql-editor {
+  height: 100%;
+}
+
+.quill > .ql-container > .ql-editor.ql-blank::before {
+  color: #d4d4d4;
+}
+
+.ql-container.ql-snow {
+  border: 1px solid #f3f3f3 !important;
+  height: 480px;
+  border-top: none;
+  font-size: 14px;
+  border-radius: 0px 0px 8px 8px;
+}
+
+.ql-toolbar.ql-snow {
+  border-radius: 8px 8px 0px 0px;
+  border: 1px solid #f3f3f3 !important;
+}
+
+.ql-editor.ql-blank::before {
+  color: rgba(0, 0, 0, 0.6);
+  content: attr(data-placeholder);
+  font-size: 14px;
+  left: 15px;
+  pointer-events: none;
+  position: absolute;
+  right: 15px;
+}
+
+.banner .slick-dots {
+  display: none;
+}
+.banner .slick-dots li {
+  display: none;
+}
+
+.slider .slick-dots {
+  position: absolute;
+  bottom: 20px;
+}
+.slider .slick-dots li {
+  margin: 0px 7px;
+  width: 8px;
+  height: 8px;
+}
+
+.slider .slick-dots li button:before {
+  color: black;
+  border: 1px solid grey;
+  border-radius: 50%;
+  content: "";
+  width: 10px;
+  height: 10px;
+}
+.slider .slick-dots li.slick-active button::before {
+  background-color: black;
+  display: none;
+}
+
+.line-clamp {
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  /* height: 4.5rem; */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.line-clamp-one {
+  -webkit-line-clamp: 1;
+  /* height: 4.5rem; */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.innerhtml h1 {
+  font-size: 2em;
+}
+.innerhtml h2 {
+  font-size: 1.5em;
+}
+.innerhtml h3 {
+  font-size: 1.17em;
+}
+.innerhtml h4 {
+  font-size: 1em;
+}
+.innerhtml h5 {
+  font-size: 0.83em;
+}
+.innerhtml h6 {
+  font-size: 0.67em;
+}
+
+/* Unordered List */
+.innerhtml ul {
+  list-style-type: disc; /* Default filled circle */
+  padding-left: 2rem;
+}
+
+/* Ordered List */
+.innerhtml ol {
+  list-style-type: decimal; /* Default decimal numbers */
+  padding-left: 2rem;
+}
+.innerhtml ul li {
+  padding-bottom: 2rem;
+}
+
+.innerhtml ol li {
+  padding-bottom: 2rem;
+}
+
+.top-nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.top-nav-scroll:hover::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  display: block;
+}
+
+.top-nav-scroll::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  @apply bg-gray-300;
+}
+
+.top-nav-scroll::-webkit-scrollbar-track {
+  border-radius: 6px;
+  @apply bg-gray-100;
+}
+
+.partner-scroll-style::-webkit-scrollbar {
+  display: none;
+}
+
+.partner-scroll-style:hover::-webkit-scrollbar {
+  width: 10px;
+  height: 6px;
+  display: block;
+}
+
+.partner-scroll-style::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  @apply bg-gray-300;
+}
+
+.partner-scroll-style::-webkit-scrollbar-track {
+  border-radius: 6px;
+  @apply bg-gray-100;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.agenda-slider .slick-dots {
+  position: absolute;
+  bottom: -20px;
+}
+.agenda-slider .slick-dots li {
+  margin: 0px 7px;
+  width: 8px;
+  height: 8px;
+}
+
+.agenda-slider .slick-dots li button:before {
+  color: black;
+  border: 1px solid #0001fc;
+  border-radius: 50%;
+  content: "";
+  width: 10px;
+  height: 10px;
+}
+.agenda-slider .slick-dots li.slick-active button::before {
+  background-color: #0001fc;
+}
+
+.player {
+  width: 100%;
+  @apply h-48 sm:h-[25rem] lg:h-[16rem] object-cover;
+  aspect-ratio: unset;
+}
+
+/* DatePicker.css */
+.react-datepicker {
+  font-family: Arial, sans-serif;
+  border: 1px solid #7c4dff; /* Set border color to a lighter shade of indigo */
+}
+
+.react-datepicker__header {
+  background-color: #7c4dff; /* Set header background color to a lighter shade of indigo */
+}
+
+.react-datepicker__day--selected {
+  background-color: #7c4dff !important; /* Set selected day background color to a lighter shade of indigo */
+  color: white !important; /* Set selected day text color to white */
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: #7c4dff !important; /* Set keyboard selected day background color to a lighter shade of indigo */
+}
+
+.react-datepicker__day:hover {
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.04
+  ); /* Set hover background color to a light gray */
+}
+
+.react-datepicker__current-month {
+  color: #7c4dff; /* Set current month text color to a lighter shade of indigo */
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day {
+  color: #7c4dff; /* Set day name and day text color to a lighter shade of indigo */
+}
+
+.react-datepicker__navigation--previous,
+.react-datepicker__navigation--next {
+  border-color: #7c4dff; /* Set navigation button border color to a lighter shade of indigo */
+}
+
+.react-datepicker__navigation--previous:hover,
+.react-datepicker__navigation--next:hover {
+  border-color: #7c4dff; /* Set navigation button border color to a lighter shade of indigo on hover */
+}
+
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item--selected {
+  background-color: #7c4dff !important; 
+}
+
+.blog h1 {
+  font-size: 2.7rem;
+  line-height: 3.5rem;
+}
+.blog h2 {
+  font-size: 2.2rem;
+  line-height: 3rem;
+}
+
+.blog h3 {
+  font-size: 1.7rem;
+  line-height: 2.5rem;
+}
+
+.blog h4 {
+  font-size: 1.45rem;
+  line-height: 2.25rem;
+}
+
+.blog h5 {
+  font-size: 1.1rem;
+  line-height: 2rem;
+}
+
+/* blog post header side links */
+.blackLink h1 strong  {
+  color: black!important;
+  font-weight: 400;
+}
+
+@media only screen and (max-width: 767px) {
+  .blog h1 {
+    font-size: 1.7rem;
+    line-height: 3rem;
+  }
+  .blog h2 {
+    font-size: 1.55rem;
+    line-height: 2.25rem;
+  }
+  .blog h3 {
+    font-size: 1.45rem;
+    line-height: 2.25rem;
+  }
+  .blog h4 {
+    font-size: 1.2rem;
+    line-height: 2rem;
+  }
+  .blog h5 {
+    font-size: 0.95rem;
+    line-height: 1.75rem;
+  }
+
+  .h-half-screen{
+    height: 100%;
+  }
+}
+
+.bg-scoresheet {
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+ 
+}
+
+/* make the left side pointed on the choose plan section */
+.clip-triangle {
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+}
+
+.interaction-input .quill {
+  width: 100%;
+  /* border-radius: 8px; */
+}
+
+.interaction-input .quill .ql-editor {
+  height: 100%;
+}
+
+.interaction-input .quill > .ql-container > .ql-editor.ql-blank::before {
+  color: #d4d4d4;
+}
+
+.interaction-input .ql-container.ql-snow {
+  border: 1px solid #f3f3f3 !important;
+  height: 3.5rem;
+  border-top: none;
+  font-size: 14px;
+  border-radius: 0px 0px 8px 8px;
+}
+
+.interaction-input .ql-toolbar.ql-snow {
+  border-radius: 8px 8px 0px 0px;
+  border: 1px solid #f3f3f3 !important;
+}
+
+.interaction-input .ql-editor.ql-blank::before {
+  color: rgba(0, 0, 0, 0.6);
+  content: attr(data-placeholder);
+  font-size: 14px;
+  left: 15px;
+  pointer-events: none;
+  position: absolute;
+  right: 15px;
+}
+
+.character {
+  @apply border  flex items-center justify-center rounded-lg shadow-md border-gray-300 bg-transparent text-xl w-12 h-16
+}
+
+.quiz-lobby {
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.swipeDown {
+  animation-name: swipeDown;
+  -webkit-animation-name: swipeDown;
+}
+
+@keyframes swipeDown {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@-webkit-keyframes swipeDown {
+  0% {
+    -webkit-transform: translateY(-100%);
+  }
+
+  100% {
+    -webkit-transform: translateY(0px);
+  }
+}
+
+.quiz-option-animation {
+  transform: rotate(0deg);
+  transition: all;
+  animation: animate 0.5s linear;
+}
+
+@keyframes animate {
+  50% {
+    transform: rotate(5deg);
+    
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.quiz-player-animation {
+  transform: rotate(0deg);
+  transition: all;
+  animation: animatePlayer 1.5s infinite;
+}
+
+@keyframes animatePlayer {
+  50% {
+    transform: rotate(5deg);
+    
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.recent-anime {
+  transform: translateX(0px);
+  transition: all;
+  animation: animateRecent 3s linear;
+}
+
+@keyframes animateRecent {
+  50% {
+    transform: translateX(150%);
+    
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+.recent-score-opacity-transition {
+  opacity: 1;
+  animation: animateRecentTransition 0.5s linear;
+}
+
+@keyframes animateRecentTransition {
+  50% {
+    opacity: 1
+    
+  }
+  100% {
+    opacity: 0
+  }
+}
+
+.box-animation {
+  animation: fadeInAndSlide 0.6s ease-out;
+}
+@keyframes fadeInAndSlide {
+  from {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeInAndSlide {
+  from {
+    -webkit-transform: translateY(-4px);
+    -webkit-opacity: 0;
+  }
+  to {
+    -webkit-transform: translateY(0);
+    -webkit-opacity: 1;
+  }
+}
+
+.label {
+  @apply text-base font-medium pb-1
 }

@@ -1,15 +1,25 @@
-import React from "react";
+import React, { Dispatch, SetStateAction, useRef } from "react";
 import { THeaders } from "./";
 // import { DialogClose } from "../../ui/dialog";
 import { Button } from "@/components/ui/button";
 import { TAttendee } from "@/types/attendee";
-import { useUpdateAttendees } from "@/hooks/services/attendee";
+import { useUploadAttendees } from "@/hooks/services/attendee";
+import { DialogClose } from "@/components/ui/dialog";
+import { getCookie } from "@/hooks";
+import { TUser } from "@/types";
+import useEventStore from "@/store/globalEventStore";
+import useUserStore from "@/store/globalUserStore";
+import { EngagementsSettings } from "@/types/engagements";
+import { useGetData } from "@/hooks/services/request";
+import { generateAlias } from "@/utils";
+import { generateAlphanumericHash } from "@/utils/helpers";
 
 const Third = ({
   data,
   headers,
   getAttendees,
   excelHeaders,
+  setStep,
 }: {
   data: any[][];
   excelHeaders: any[];
@@ -18,38 +28,76 @@ const Third = ({
     any
   >;
   getAttendees: () => Promise<void>;
+  setStep: Dispatch<SetStateAction<number>>;
 }) => {
+  const event = useEventStore((state) => state.event);
+  const {
+    data: engagementsSettings,
+    isLoading: engagementsSettingsIsLoading,
+    getData: getEngagementsSettings,
+  } = useGetData<EngagementsSettings>(
+    `engagements/${event.eventAlias}/settings`
+  );
+
   const headerMap = new Map(
     excelHeaders.map((header, index) => [header, index])
   );
-  const { updateAttendees } = useUpdateAttendees();
+  const { uploadAttendees } = useUploadAttendees();
+
+  const { user, setUser } = useUserStore();
+
+  const clsBtnRef = useRef<HTMLButtonElement>(null);
 
   const submitAttendees = async () => {
+    const attendeeProfilePoints = parseInt(
+      engagementsSettings
+        ? engagementsSettings?.pointsAllocation["update profile"].points
+        : 0
+    );
     const payload: Partial<TAttendee>[] = data.map((row, index) => {
       const attendee: Partial<TAttendee> = {
-        userEmail: "ubahyusuf484@gmail.com",
-        eventId: "1234567890",
+        userEmail: user?.userEmail,
+        eventId: String(event?.id),
+        eventAlias: event?.eventAlias,
         registrationDate: new Date().toISOString(),
         attendeeType: ["attendee"],
+        ticketType: "in-house",
+        attendeeAlias: generateAlphanumericHash(7),
       };
 
+      const completedFields: TCompletedFields = [];
+
       Array.from(headers).forEach(([key, value]) => {
-        const rowValue = headerMap.get(value);
-        if (!rowValue) return;
+        const rowValue = headerMap.get(value) ?? "";
         attendee[key.value] = row[rowValue];
+
+        console.log(key.value, row[rowValue]);
+        completedFields?.push(key.value);
       });
 
-      return attendee;
+      attendee.attendeeProfilePoints =
+        Object.keys(attendee).length * attendeeProfilePoints;
+
+      console.log(
+        attendee.attendeeProfilePoints,
+        engagementsSettings?.pointsAllocation["update profile"],
+        Object.keys(attendee).length
+      );
+
+      ("");
+      return { ...attendee, completedFields };
     });
 
-    console.log(payload);
-    await updateAttendees({ payload });
+    await uploadAttendees({ payload });
     await getAttendees();
+    clsBtnRef.current?.click();
   };
 
   const showRow = (value: any, row: any[]) => {
+    if (!value) return;
     const rowValue = headerMap.get(value);
-    return rowValue && row[rowValue];
+
+    return row[rowValue];
   };
 
   return (
@@ -81,11 +129,23 @@ const Third = ({
           </tbody>
         </table>
       </div>
-      {/* <DialogClose asChild>
-        <Button className="bg-basePrimary w-full" onClick={submitAttendees}>
+      <div className="flex gap-4">
+        <Button onClick={() => setStep(2)} className="bg-basePrimary w-full">
+          Back
+        </Button>
+        <Button
+          className="bg-basePrimary w-full"
+          onClick={submitAttendees}
+          disabled={engagementsSettingsIsLoading}
+        >
           Import Attendees
         </Button>
-      </DialogClose> */}
+        <DialogClose asChild>
+          <button ref={clsBtnRef} className="hidden">
+            hidden
+          </button>
+        </DialogClose>
+      </div>
     </>
   );
 };

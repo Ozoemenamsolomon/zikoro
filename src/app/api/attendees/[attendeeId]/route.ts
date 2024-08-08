@@ -33,3 +33,48 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { attendeeId: string } }
+) {
+  const { attendeeId } = params;
+  const supabase = createRouteHandlerClient({ cookies });
+  const { searchParams } = new URL(req.url);
+  const isAlias = searchParams.get("isAlias");
+
+  if (req.method === "GET") {
+    try {
+      const { data, error, status } = await supabase
+        .from("attendees")
+        .select("*")
+        .eq(isAlias == 1 ? "attendeeAlias" : "id", attendeeId)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      return NextResponse.json(
+        {
+          data,
+        },
+        {
+          status: 200,
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json(
+        {
+          error: "An error occurred while making the request.",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+  } else {
+    return NextResponse.json({ error: "Method not allowed" });
+  }
+}
+
+export const dynamic = "force-dynamic";

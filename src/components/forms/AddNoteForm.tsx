@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +17,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useUpdatenote } from "@/hooks/services/notes";
+import { DialogClose } from "../ui/dialog";
+import { getCookie } from "@/hooks";
+import { TUser } from "@/types";
+import { useParams } from "next/navigation";
+import useUserStore from "@/store/globalUserStore";
 
 export default function AddNotesForm({
   attendeeEmail,
@@ -27,13 +34,15 @@ export default function AddNotesForm({
   note: TAttendeeNote;
   getnote: () => Promise<void>;
 }) {
-  console.log(attendeeEmail);
+  const { user, setUser } = useUserStore();
+  const { eventId } = useParams();
+  
   const defaultValues: Partial<TAttendeeNote> = !!note
     ? note
     : {
-        eventId: "1234567890",
-        attendeeEmail: "ubahyusuf484@gmail.com",
-        userId: 10,
+        eventId: typeof eventId === "string" ? eventId : eventId[0],
+        attendeeEmail: user?.userEmail,
+        userId: user ? user.id : 0,
       };
 
   const { updatenote, isLoading, error } = useUpdatenote({
@@ -51,7 +60,7 @@ export default function AddNotesForm({
   } = form;
 
   useEffect(() => {
-    console.log(errors);
+    
   });
 
   useEffect(() => {
@@ -93,11 +102,11 @@ export default function AddNotesForm({
             </FormItem>
           )}
         />
-        {/* <DialogClose asChild>
+        <DialogClose asChild>
           <Button type="submit" className="bg-basePrimary w-full">
             Add Notes
           </Button>
-        </DialogClose> */}
+        </DialogClose>
       </form>
     </Form>
   );

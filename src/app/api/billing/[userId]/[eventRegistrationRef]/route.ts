@@ -13,12 +13,11 @@ export async function GET(
 
       const { data, error, status } = await supabase
         .from("eventTransactions")
-        .select("*, events!inner(*)")
-        // .eq("events.organisationId", 5)
+        .select("*")
         .eq("eventRegistrationRef", eventRegistrationRef)
         .maybeSingle();
 
-      console.log(data, eventRegistrationRef);
+      
 
       if (error) throw error;
 
