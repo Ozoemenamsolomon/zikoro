@@ -26,7 +26,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
   const { attendees, isLoading } = useGetAllAttendees(id);
-  const [notRegistered, setNotRegistered] = useState(true);
+  const [notRegistered, setNotRegistered] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const {
     data,
@@ -57,8 +57,14 @@ export function AccessVerification({ id }: { id?: string | any }) {
   },[pathname])
  */
 
-  
-
+  console.log(
+    "isLoading",
+    isLoading,
+    "eventLoading",
+    eventLoading,
+    "verifyingLoading",
+    verifyingLoading
+  );
   useEffect(() => {
     if (!user) {
       router.push("/login");
@@ -98,12 +104,12 @@ export function AccessVerification({ id }: { id?: string | any }) {
       const isPresent = attendees?.some(({ email, eventAlias }) => {
         return eventAlias === id && email === user?.userEmail;
       });
-    
-   
+
+      console.log("sdfrr", isIdPresent, isOrganizer);
       if (isOrganizer || isIdPresent) {
         // user is a team member or an organizer
         setLoading(false);
-        console.log("here")
+        console.log("here");
 
         return () => clearInterval(interval);
       } else if (
@@ -147,6 +153,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
       data !== null
     );
   }, [isLoading, user, eventLoading, singleEventLoading, data]);
+//  console.log("sdf", isIdPresent, isOrganizer, loading);
   const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
   const hours = Math.floor(
     (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -161,7 +168,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
         loading && "block"
       )}
     >
-      {isLoadedAll && timeRemaining > 0 ? (
+      { timeRemaining > 0 ? (
         <div
           className={cn(
             " text-xs sm:text-sm items-center justify-center flex-col gap-y-3 m-auto absolute inset-0 h-fit w-fit flex"
@@ -189,11 +196,11 @@ export function AccessVerification({ id }: { id?: string | any }) {
             </div>
           </div>
         </div>
-      ) : isLoadedAll && notRegistered ? (
+      ) :  notRegistered ? (
         <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
           <p>User is not a registered attendee for this event</p>
         </div>
-      ) : isLoadedAll && notAuthorized ? (
+      ) :  notAuthorized ? (
         <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
           <p>You are not authorized to view this page</p>
         </div>

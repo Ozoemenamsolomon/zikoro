@@ -1203,40 +1203,42 @@ export function useAttenedeeEvents() {
 export function useCheckTeamMember({ eventId }: { eventId?: string }) {
   const [isIdPresent, setIsIdPresent] = useState(false);
   const { events, loading: eventLoading } = useGetUserHomePageEvents();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (events && !eventLoading) {
+    if (Array.isArray(events) && events?.length > 0) {
       //checked if the eventid is present in the event array
       const isEventIdPresent = events?.some(
         ({ eventAlias }) => eventAlias === eventId
       );
-
       setIsIdPresent(isEventIdPresent);
+
+      setIsLoading(false);
     }
   }, [events, eventLoading]);
 
   return {
     isIdPresent,
-    eventLoading,
+    eventLoading: isLoading,
   };
 }
 
 export function useVerifyUserAccess(eventId: string) {
-  const { attendees, isLoading } = useGetAllAttendees(eventId);
   const { attendees: eventAttendees, isLoading: loading } =
     useGetEventAttendees(eventId);
   const [attendeeId, setAttendeeId] = useState<number | undefined>();
   const [attendee, setAttendee] = useState<TAttendee | undefined>();
   const [isOrganizer, setIsOrganizer] = useState(false);
   const { user } = useUserStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && !isLoading) {
-      const atId = attendees?.find(
+    if (Array.isArray(eventAttendees) && eventAttendees?.length > 0) {
+      const atId = eventAttendees?.find(
         ({ email, eventAlias }) =>
           eventAlias === eventId && email === user?.userEmail
       )?.id;
-      const attendee = attendees?.find(
+      const attendee = eventAttendees?.find(
         ({ email, eventAlias }) =>
           eventAlias === eventId && email === user?.userEmail
       );
@@ -1249,8 +1251,9 @@ export function useVerifyUserAccess(eventId: string) {
           id === atId && attendeeType.includes("organizer")
       );
       setIsOrganizer(isPresent);
+      setIsLoading(false);
     }
-  }, [attendees, eventAttendees, loading, isLoading]);
+  }, [eventAttendees, loading]);
 
   return {
     attendeeId,
