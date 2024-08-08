@@ -413,9 +413,9 @@ export function useAttendee() {
   const params = useSearchParams();
   const [loading, setLoading] = useState(false);
   const { user, setUser } = useUserStore();
+  const [userData, setUserData] = useState<TUser | null>(null)
   const email = params.get("email");
   const isPasswordless = params.get("isPasswordless");
-console.log("we here")
   const getUser = async () => {
     setLoading(true);
     try {
@@ -425,6 +425,7 @@ console.log("we here")
         });
 
         setUser(data.data);
+        setUserData(data.data);
       }
 
       setLoading(false);
@@ -436,7 +437,7 @@ console.log("we here")
   }, [email, isPasswordless]);
 
   return {
-    user,
+    user: userData,
     loading,
   };
 }

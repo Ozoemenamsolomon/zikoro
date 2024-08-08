@@ -57,19 +57,11 @@ export function AccessVerification({ id }: { id?: string | any }) {
   },[pathname])
  */
 
-  console.log(
-    "isLoading",
-    isLoading,
-    "eventLoading",
-    eventLoading,
-    "verifyingLoading",
-    verifyingLoading
-  );
   useEffect(() => {
-    if (!user) {
-      router.push("/login");
-      return;
-    }
+    // if (!user) {
+    //   router.push("/login");
+    //   return;
+    // }
     if (
       !isLoading &&
       user !== null &&
@@ -105,7 +97,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
         return eventAlias === id && email === user?.userEmail;
       });
 
-      console.log("sdfrr", isIdPresent, isOrganizer);
+      // console.log("sdfrr", isIdPresent, isOrganizer);
       if (isOrganizer || isIdPresent) {
         // user is a team member or an organizer
         setLoading(false);
@@ -125,7 +117,10 @@ export function AccessVerification({ id }: { id?: string | any }) {
 
         return () => clearInterval(interval);
       } else {
-        if (!isPresent) setNotRegistered(true);
+        if (!isPresent) {
+          window.open(`/live-events/${id}`, "_self");
+          setNotRegistered(true);
+        }
         // router.push("/login");
         // pls remove after all the event have app access date on creation
         // if (isPresent) setLoading(false);
@@ -153,7 +148,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
       data !== null
     );
   }, [isLoading, user, eventLoading, singleEventLoading, data]);
-//  console.log("sdf", isIdPresent, isOrganizer, loading);
+  //  console.log("sdf", isIdPresent, isOrganizer, loading);
   const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
   const hours = Math.floor(
     (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -168,7 +163,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
         loading && "block"
       )}
     >
-      { timeRemaining > 0 ? (
+      {timeRemaining > 0 ? (
         <div
           className={cn(
             " text-xs sm:text-sm items-center justify-center flex-col gap-y-3 m-auto absolute inset-0 h-fit w-fit flex"
@@ -196,11 +191,11 @@ export function AccessVerification({ id }: { id?: string | any }) {
             </div>
           </div>
         </div>
-      ) :  notRegistered ? (
+      ) : notRegistered ? (
         <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
           <p>User is not a registered attendee for this event</p>
         </div>
-      ) :  notAuthorized ? (
+      ) : notAuthorized ? (
         <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
           <p>You are not authorized to view this page</p>
         </div>
