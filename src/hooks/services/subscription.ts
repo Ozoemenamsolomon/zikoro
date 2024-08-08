@@ -73,27 +73,31 @@ export function useCreateOrgSubscription(
 }
 
 
-export function useGetUserSubscription(id: number, orgId: number) {
+export function useGetWorkspaceSubscriptionPlan(userId: number | undefined, orgId: number | undefined) {
   const [data, setData] = useState<any>(null);
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
-    getUserOrganisation();
+    getWorkspaceSubscriptionPlan();
   }, []);
 
-  async function getUserOrganisation() {
+  async function getWorkspaceSubscriptionPlan() {
     try {
       setLoading(true);
       // Fetch the event by ID
       const { data, error: fetchError } = await supabase
-        .from("organization")
-        .select("*")
-        .eq("organizationOwnerId", id)
+        .from("subscription")
+        .select("subscriptionType")
+        .eq("organizationId", orgId)
+        .eq("userId", userId)
+        .order('created_at', { ascending: false }) // Assuming you have a timestamp column to get the latest entry
 
       if (fetchError) {
         toast.error(fetchError.message);
+        console.log(fetchError)
         return null;
       }
-      setData(data);
+      const subscriptionType = data?.[0]?.subscriptionType || null; // Extract the latest subscriptionType
+      setData(subscriptionType);
     } catch (error) {
       return null;
     } finally {
@@ -102,7 +106,7 @@ export function useGetUserSubscription(id: number, orgId: number) {
   }
   return {
     data,
-    refetch: getUserOrganisation,
+    refetch: getWorkspaceSubscriptionPlan,
     isLoading,
   };
 }

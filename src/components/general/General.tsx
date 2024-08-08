@@ -27,7 +27,9 @@ import {
   useDeleteWorkspace,
   useUpdateWorkspace,
 } from "@/hooks/services/workspace";
+import { useGetWorkspaceSubscriptionPlan } from "@/hooks/services/subscription";
 import { useRouter } from "next/navigation";
+import useUserStore from "@/store/globalUserStore";
 
 interface FormData {
   orgName: string;
@@ -46,6 +48,12 @@ interface FormData {
 
 export default function General() {
   const { organization, setOrganization } = useOrganizationStore();
+  const { user, setUser } = useUserStore();
+  const {
+    data: getWorkspaceSubscriptionPlanData,
+    refetch: refetchSubscriptionPlan,
+    isLoading,
+  } = useGetWorkspaceSubscriptionPlan(user?.id, organization?.id);
   const [delInput, setDelInput] = useState<string>("");
   const [logo, setLogo] = useState<any>(null);
   const [favicon, setFavicon] = useState<any>(null);
@@ -355,7 +363,7 @@ export default function General() {
       setFormData({
         orgName: organization.organizationName || "",
         orgType: organization.organizationType || "",
-        orgPlan: organization.subscriptionPlan || "",
+        orgPlan: getWorkspaceSubscriptionPlanData || "",
         orgCountry: organization.country || "",
         orgTel: organization.eventPhoneNumber || "",
         orgWhatsappNumber: organization.eventWhatsApp || "",
@@ -369,7 +377,7 @@ export default function General() {
       setLogoUrl(organization.organizationLogo);
       setFaviconUrl(organization.favicon);
     }
-  }, [organization]);
+  }, [organization, getWorkspaceSubscriptionPlanData]);
 
   //update setting function
   const updateSetting = async (e: React.FormEvent<HTMLFormElement>) => {
