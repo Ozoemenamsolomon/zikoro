@@ -14,7 +14,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAttendee();
+  const { userData, user, loading } = useAttendee();
 
   const divRef = useRef<HTMLDivElement>(null);
   const { eventId }: { eventId: string } = useParams();
@@ -44,9 +44,9 @@ export default function RootLayout({
   console.log("layout", user);
 
 
-  if (!user) {
+  if (!userData && !user) {
     return (
-      <div className="w-full h-full inset-0 backdrop-blur-2xl fixed z-[5000] hidden">
+      <div className="w-full h-full inset-0 backdrop-blur-2xl fixed z-[5000]">
         <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
           <LoaderAlt size={30} className="animate-spin text-basePrimary" />
           <p className="text-[13px] sm:text-sm">Authenticating...</p>

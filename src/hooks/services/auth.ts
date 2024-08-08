@@ -437,7 +437,8 @@ export function useAttendee() {
   }, [email, isPasswordless]);
 
   return {
-    user: userData,
+    userData,
+    user,
     loading,
   };
 }
