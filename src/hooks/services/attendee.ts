@@ -463,7 +463,7 @@ export const useGetAllAttendees = (eventId: string) => {
 
 export const useGetEventAttendees = (eventId: string) => {
   const [attendees, setAttendees] = useState<TAttendee[]>([]);
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(true);
 
   const getAttendees = async () => {
     try {

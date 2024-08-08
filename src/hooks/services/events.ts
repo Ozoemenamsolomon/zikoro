@@ -1206,7 +1206,7 @@ export function useCheckTeamMember({ eventId }: { eventId?: string }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (Array.isArray(events) && events?.length > 0) {
+    if (!eventLoading) {
       //checked if the eventid is present in the event array
       const isEventIdPresent = events?.some(
         ({ eventAlias }) => eventAlias === eventId
@@ -1233,7 +1233,7 @@ export function useVerifyUserAccess(eventId: string) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (Array.isArray(eventAttendees) && eventAttendees?.length > 0) {
+    if (!loading) {
       const atId = eventAttendees?.find(
         ({ email, eventAlias }) =>
           eventAlias === eventId && email === user?.userEmail
