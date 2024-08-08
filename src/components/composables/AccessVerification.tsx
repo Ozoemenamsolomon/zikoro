@@ -60,7 +60,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
   console.log(
     "event",
     eventLoading,
-    "attndee",
+    "attendee",
     verifyingLoading,
     "single event",
     singleEventLoading

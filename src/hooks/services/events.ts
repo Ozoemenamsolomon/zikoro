@@ -1214,6 +1214,7 @@ export function useCheckTeamMember({ eventId }: { eventId?: string }) {
       setIsIdPresent(isEventIdPresent);
 
       setIsLoading(false);
+      console.log("event", isEventIdPresent)
     }
   }, [events, eventLoading]);
 
@@ -1252,7 +1253,7 @@ export function useVerifyUserAccess(eventId: string) {
       );
       setIsOrganizer(isPresent);
       setIsLoading(false);
-      console.log("attebdee",isPresent )
+      console.log("attendee",isPresent )
     }
   }, [eventAttendees, loading]);
 
