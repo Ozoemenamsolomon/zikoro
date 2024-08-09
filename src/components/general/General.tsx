@@ -51,7 +51,7 @@ export default function General() {
   const { user, setUser } = useUserStore();
   const {
     data: getWorkspaceSubscriptionPlanData,
-    refetch: refetchSubscriptionPlan,
+    refetch: getWorkspaceSubscriptionPlan,
     isLoading,
   } = useGetWorkspaceSubscriptionPlan(user?.id, organization?.id);
   const [delInput, setDelInput] = useState<string>("");
@@ -357,28 +357,6 @@ export default function General() {
     router.push("/pricing");
   };
 
-  // Sync formData with organization data
-  useEffect(() => {
-    if (organization) {
-      setFormData({
-        orgName: organization.organizationName || "",
-        orgType: organization.organizationType || "",
-        orgPlan: getWorkspaceSubscriptionPlanData || "",
-        orgCountry: organization.country || "",
-        orgTel: organization.eventPhoneNumber || "",
-        orgWhatsappNumber: organization.eventWhatsApp || "",
-        orgEmail: organization.eventContactEmail || "",
-        orgX: organization.x || "",
-        orgLinkedin: organization.linkedIn || "",
-        orgFacebook: organization.facebook || "",
-        orgInstagram: organization.instagram || "",
-        orgId: organization.id,
-      });
-      setLogoUrl(organization.organizationLogo);
-      setFaviconUrl(organization.favicon);
-    }
-  }, [organization, getWorkspaceSubscriptionPlanData]);
-
   //update setting function
   const updateSetting = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -497,6 +475,28 @@ export default function General() {
     }
   };
 
+
+  // Sync formData with organization data
+  useEffect(() => {
+    if (organization && getWorkspaceSubscriptionPlanData !== null) {
+      setFormData({
+        orgName: organization.organizationName || "",
+        orgType: organization.organizationType ||  "",
+        orgPlan: getWorkspaceSubscriptionPlanData  || organization.subscriptionPlan || "",
+        orgCountry: organization.country || "",
+        orgTel: organization.eventPhoneNumber || "",
+        orgWhatsappNumber: organization.eventWhatsApp || "",
+        orgEmail: organization.eventContactEmail || "",
+        orgX: organization.x || "",
+        orgLinkedin: organization.linkedIn || "",
+        orgFacebook: organization.facebook || "",
+        orgInstagram: organization.instagram || "",
+        orgId: organization.id,
+      });
+      setLogoUrl(organization.organizationLogo);
+      setFaviconUrl(organization.favicon);
+    }
+  }, [organization, getWorkspaceSubscriptionPlanData]);
   return (
     <>
       {organization ? (
@@ -646,7 +646,7 @@ export default function General() {
               <div className="flex flex-col lg:flex-row mt-8 px-0  xl:px-[206px] gap-[52px] mb-8">
                 <div className="w-full lg:w-full xl:w-1/2">
                   <p className="text-base font-medium">Logo</p>
-                  <p className="text-[14px] font-normal mt-2 h-full lg:h-[79px]">
+                  <p className="text-[14px] font-normal mt-2 h-full lg:h-[82px]">
                     The logo will be used on the event website, in emails, and
                     as a thumbnail for sharing the event link.
                   </p>
@@ -710,7 +710,7 @@ export default function General() {
                 </div>
                 <div className="w-full lg:w-full xl:w-1/2">
                   <p className="text-base font-medium">Favicon</p>
-                  <p className="text-[14px] font-normal mt-2 h-full lg:h-[79px]">
+                  <p className="text-[14px] font-normal mt-2 h-full lg:h-[82px]">
                     A favicon is a visual representation of your organization's
                     webpage and appears in the browser tab when viewed.
                   </p>
