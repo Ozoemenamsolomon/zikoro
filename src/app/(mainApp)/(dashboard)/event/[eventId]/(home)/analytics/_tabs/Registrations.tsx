@@ -8,12 +8,9 @@ import { BarChart, LineChart, lineElementClasses } from "@mui/x-charts";
 import {
   eachDayOfInterval,
   eachMonthOfInterval,
-  eachQuarterOfInterval,
   eachWeekOfInterval,
-  differenceInHours,
   endOfDay,
   startOfDay,
-  differenceInDays,
   endOfWeek,
   startOfWeek,
   endOfMonth,
@@ -33,6 +30,15 @@ import peopleAdd from "@/public/icons/people_add.svg";
 import peopleSync from "@/public/icons/people_sync.svg";
 import moneyUp from "@/public/icons/money_up.svg";
 import { cn } from "@/lib";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const AnalyticsInfoCard = ({
   label,
@@ -128,10 +134,10 @@ const Registrations = () => {
         : eachDayOfInterval;
 
     return dateFn({
-      start: event?.startDateTime ?? new Date(),
+      start: event?.createdAt ?? new Date(),
       end: new Date(),
     });
-  }, [event?.startDateTime, displayLineChart]);
+  }, [event?.createdAt, displayLineChart]);
 
   const registeredByDate = eventStartDateToNow.map((date) =>
     attendees.reduce((acc, { registrationDate }) => {
@@ -143,6 +149,11 @@ const Registrations = () => {
           : isSameDay;
       return compareFn(date, registrationDate) ? acc + 1 : acc;
     }, 0)
+  );
+  console.log(attendees.map(({ registrationDate }) => registrationDate));
+  console.log(
+    registeredByDate.reduce((acc, curr) => acc + curr, 0),
+    attendees.length
   );
   const attendeeTypes = attendeeTypeOptions.map((option) => option.value);
   const attendeeCounts = attendeeTypes.map((type) =>
@@ -210,6 +221,10 @@ const Registrations = () => {
                   className="h-full bg-basePrimary rounded-2xl transition-all"
                 />
               </div>
+              <div className="text-sm text-gray-600 font-medium text-center">
+                <b>{((revenue / revenueTarget) * 100).toFixed() + "% "}</b>
+                of revenue goal reached
+              </div>
             </div>
             <div className="bg-white/70 p-2 rounded-md space-y-2 flex-1">
               <div className="flex gap-2 items-center">
@@ -232,6 +247,13 @@ const Registrations = () => {
                   }}
                   className="h-full bg-basePrimary rounded-2xl transition-all"
                 />
+              </div>
+              <div className="text-sm text-gray-600 font-medium text-center">
+                <b>
+                  {((registrations / registrationTarget) * 100).toFixed() +
+                    "% "}
+                </b>
+                of registration goal reached
               </div>
             </div>
           </div>
@@ -308,10 +330,35 @@ const Registrations = () => {
         />
       </section>
       <section className="bg-white p-4 space-y-4 rounded-md border">
-        <h2 className="text-gray-600 font-medium text-sm capitalize">
-          {displayLineChart} Registrations
-        </h2>
-        <div className="flex">
+        <div className="flex justify-between items-center">
+          <h2 className="text-gray-600 font-medium text-sm capitalize">
+            {displayLineChart} Registrations
+          </h2>
+          <Select
+            onValueChange={(timeDivision: string) =>
+              setDisplayLineChart(timeDivision)
+            }
+            defaultValue={displayLineChart}
+          >
+            <SelectTrigger className="!w-fit">
+              <SelectValue
+                placeholder={"Select division"}
+                className={cn(
+                  "placeholder:text-sm !w-fit p-4",
+                  !displayLineChart ? "text-gray-200" : "text-gray-700"
+                )}
+              />
+            </SelectTrigger>
+            <SelectContent className="max-h-[250px] hide-scrollbar overflow-auto max-w-md">
+              {timeDivisions.map((timeDivision, index) => (
+                <SelectItem key={index} value={timeDivision} className="">
+                  {timeDivision}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        {/* <div className="flex">
           {timeDivisions.map((timeDivision, index) => (
             <button
               key={index}
@@ -326,7 +373,7 @@ const Registrations = () => {
               {timeDivision}
             </button>
           ))}
-        </div>
+        </div> */}
         <LineChart
           colors={["#001FCC"]}
           sx={{
