@@ -22,6 +22,7 @@ import {
   isSameDay,
   isSameMonth,
   isSameWeek,
+  differenceInMilliseconds,
 } from "date-fns";
 import { useParams } from "next/navigation";
 import React, { ReactNode, useMemo, useState } from "react";
@@ -329,12 +330,16 @@ const Registrations = () => {
         <LineChart
           colors={["#001FCC"]}
           sx={{
-            // [`& .${lineElementClasses.root}`]: {
-            //   display: "none",
-            // },
+            [`& .MuiChartsAxis-tickLabel`]: {
+              fill: "#4b5563 !important",
+              fontSize: "10px !important",
+            },
             "& .MuiAreaElement-series-yaxis": {
               //   fill: "url('#lineGradient')",
               fill: "#001FCC10",
+            },
+            "& .MuiChartsAxis-line": {
+              stroke: "#4b5563 !important",
             },
           }}
           xAxis={[
@@ -352,25 +357,21 @@ const Registrations = () => {
                 ),
               tickMinStep:
                 displayLineChart === "daily"
-                  ? differenceInHours(
+                  ? differenceInMilliseconds(
                       endOfDay(new Date()),
                       startOfDay(new Date())
                     )
                   : displayLineChart === "weekly"
-                  ? differenceInDays(
+                  ? differenceInMilliseconds(
                       endOfWeek(new Date()),
                       startOfWeek(new Date())
                     )
                   : displayLineChart === "monthly"
-                  ? differenceInDays(
+                  ? differenceInMilliseconds(
                       endOfMonth(new Date()),
                       startOfMonth(new Date())
-                    ) + 1
-                  : null,
-              tickLabelStyle: {
-                color: "#717171",
-                fontSize: 8,
-              },
+                    )
+                  : 0,
             },
           ]}
           series={[
@@ -430,7 +431,6 @@ const Registrations = () => {
             bottomAxis={{ disableLine: true, tickSize: 10 }}
             borderRadius={20}
             height={400}
-            xAxis={[{ tickMinStep: 1 }]}
           />
         </section>
         <section className="bg-white p-4 space-y-4 border rounded-md">
