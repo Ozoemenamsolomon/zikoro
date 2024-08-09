@@ -7,6 +7,7 @@ import MainTopBar from "@/components/MainTopBar";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { eventId }: { eventId: string } = useParams();
 
+
   return (
     <div className="w-full h-full">
       <div className="w-full  lg:w-[calc(100%-180px)] h-full float-right p">

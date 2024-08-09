@@ -12,15 +12,10 @@ import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
 import useUserStore from "@/store/globalUserStore";
+import useAccessStore from "@/store/globalAcessStore";
 
 export function AccessVerification({ id }: { id?: string | any }) {
   const pathname = usePathname();
-  const {
-    isOrganizer,
-    attendeeId,
-    isLoading: verifyingLoading,
-  } = useVerifyUserAccess(id!);
-  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId: id });
   const { user } = useUserStore();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -34,6 +29,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
     refetch,
   } = useFetchSingleEvent(id);
   const [notAuthorized, setNotAuthorized] = useState(false);
+  const { userAccess } = useAccessStore();
 
   useEffect(() => {
     if (data && !singleEventLoading) {
@@ -57,28 +53,22 @@ export function AccessVerification({ id }: { id?: string | any }) {
   },[pathname])
  */
 
-  console.log(
-    "event",
-    eventLoading,
-    "attendee",
-    verifyingLoading,
-    "single event",
-    singleEventLoading
-  );
+  // console.log(
+  //   "single event loading",
+  //   !singleEventLoading,
+  //   "single event data",
+  //   data !== null,
+  //   "user",
+  //   user !== null
+  // );
 
   useEffect(() => {
     // if (!user) {
     //   router.push("/login");
     //   return;
     // }
-    if (
-      !isLoading &&
-      user !== null &&
-      !eventLoading &&
-      !singleEventLoading &&
-      data !== null &&
-      !verifyingLoading
-    ) {
+    if (!isLoading && user !== null && !singleEventLoading && data !== null) {
+      console.log("I entered the hooks .....");
       const appAccess = data?.eventAppAccess;
 
       let remainder = remainingTime;
@@ -106,11 +96,11 @@ export function AccessVerification({ id }: { id?: string | any }) {
         return eventAlias === id && email === user?.userEmail;
       });
 
-      console.log("sdfrr", isIdPresent, isOrganizer);
-      if (isOrganizer || isIdPresent) {
+    
+      if (userAccess?.isOrganizer || userAccess?.isTeamMember) {
         // user is a team member or an organizer
         setLoading(false);
-        console.log("here");
+    
 
         return () => clearInterval(interval);
       } else if (
@@ -140,25 +130,23 @@ export function AccessVerification({ id }: { id?: string | any }) {
 
       // return () => clearInterval(interval);
     }
-  }, [
-    user,
-    isLoading,
-    eventLoading,
-    singleEventLoading,
-    verifyingLoading,
-    pathname,
-  ]);
+  }, [user, isLoading, singleEventLoading, userAccess, pathname]);
 
-  const isLoadedAll = useMemo(() => {
-    return (
-      !isLoading &&
-      user !== null &&
-      !eventLoading &&
-      !singleEventLoading &&
-      data !== null
-    );
-  }, [isLoading, user, eventLoading, singleEventLoading, data]);
-  console.log("sdf", isIdPresent, isOrganizer, loading);
+  // const isLoadedAll = useMemo(() => {
+  //   return (
+  //     !isLoading &&
+  //     user !== null &&
+  //     !eventLoading &&
+  //     !singleEventLoading &&
+  //     data !== null
+  //   );
+  // }, [isLoading, user, eventLoading, singleEventLoading, data]);
+  // console.log(
+  //   "sdf==",
+  //   userAccess?.isTeamMember,
+  //   userAccess?.isOrganizer,
+  //   loading
+  // );
   const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
   const hours = Math.floor(
     (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)

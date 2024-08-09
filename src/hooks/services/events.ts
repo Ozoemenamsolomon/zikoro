@@ -27,6 +27,7 @@ import {
 } from "@/utils";
 import { useGetOrganizations } from "./organization";
 import useUserStore from "@/store/globalUserStore";
+import useAccessStore from "@/store/globalAcessStore";
 import { generateAlphanumericHash } from "@/utils/helpers";
 import { Reward } from "@/types";
 import { useGetData } from "@/hooks/services/request";
@@ -228,7 +229,6 @@ export function useGetUserHomePageEvents() {
   }
   useEffect(() => {
     if (!isLoading && !orgLoading && events && organizations) {
-     
       // checking if the user is a team member of any of the organizations
       // getting the organization id
       const filteredOrganizations = organizations?.filter((organization) => {
@@ -1205,23 +1205,47 @@ export function useCheckTeamMember({ eventId }: { eventId?: string }) {
   const [isIdPresent, setIsIdPresent] = useState(false);
   const { events, loading: eventLoading } = useGetUserHomePageEvents();
   const [isLoading, setIsLoading] = useState(true);
-  console.log("isEventLoading", eventLoading)
-  useEffect(() => {
-    if (!eventLoading) {
-      //checked if the eventid is present in the event array
+  const {userAccess, setUserAccess} = useAccessStore();
+
+  // useEffect(() => {
+  //   if (!eventLoading) {
+  //     //checked if the eventid is present in the event array
+  //     const isEventIdPresent = events?.some(
+  //       ({ eventAlias }) => eventAlias === eventId
+  //     );
+  //    // setIsIdPresent(isEventIdPresent);
+
+  //    // setIsLoading(false);
+     
+
+  //    console.log("from useeffect, present", isEventIdPresent);
+      
+  //   }
+  // }, [events, eventLoading]);
+
+  const data = useMemo(() => {
+    if (!eventLoading && events) {
       const isEventIdPresent = events?.some(
         ({ eventAlias }) => eventAlias === eventId
       );
-      setIsIdPresent(isEventIdPresent);
-
-      setIsLoading(false);
-      console.log("event", isEventIdPresent)
+      setUserAccess({
+        ...userAccess,
+        isTeamMember: isEventIdPresent
+       })
+      return {
+        isIdPresent: isEventIdPresent,
+        eventLoading: false,
+      };
+    } else {
+      return {
+        eventLoading: true,
+        isIdPresent: false,
+      };
     }
-  }, [events, eventLoading]);
+  }, [eventLoading, events]);
 
   return {
-    isIdPresent,
-    eventLoading: isLoading,
+    ...data,
   };
 }
 
@@ -1231,10 +1255,10 @@ export function useVerifyUserAccess(eventId: string) {
   const [attendeeId, setAttendeeId] = useState<number | undefined>();
   const [attendee, setAttendee] = useState<TAttendee | undefined>();
   const [isOrganizer, setIsOrganizer] = useState(false);
+  const {userAccess, setUserAccess} = useAccessStore();
   const { user } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log("isAttendeeLoading", loading)
   useEffect(() => {
     if (!loading) {
       const atId = eventAttendees?.find(
@@ -1248,14 +1272,21 @@ export function useVerifyUserAccess(eventId: string) {
 
       setAttendeeId(atId);
       setAttendee(attendee);
-    
+
       const isPresent = eventAttendees?.some(
         ({ attendeeType, id }) =>
           id === atId && attendeeType.includes("organizer")
       );
       setIsOrganizer(isPresent);
+      setUserAccess({
+        ...userAccess,
+        isOrganizer: isPresent,
+        attendeeId: atId,
+        attendee
+
+       })
       setIsLoading(false);
-      console.log("attendee",isPresent )
+     // console.log("attendee", isPresent);
     }
   }, [eventAttendees, loading]);
 
@@ -1292,7 +1323,7 @@ export function useGetUserPoint(eventId: string) {
       console.log("um", total);
       setTotalPoints(total);
     }
-    console.log("um", totalPoints);
+   // console.log("um", totalPoints);
   }, [isLoading, data, attendeeId]);
 
   return {

@@ -51,7 +51,7 @@ const MainTopBar = ({
   if (!user) return;
 
  
-  // console.log(event);
+  
 
   // const {
   //   data: attendee,
