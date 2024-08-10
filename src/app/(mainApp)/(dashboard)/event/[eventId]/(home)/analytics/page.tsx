@@ -53,13 +53,13 @@ const page = () => {
       </TabsList>
       <TabsContent
         value="registrations"
-        className="py-8 px-2 md:px-6 lg:px-12 bg-basePrimary/5 space-y-12"
+        className="pt-8 pb-20 px-2 md:px-6 lg:px-12 bg-basePrimary/5 space-y-12"
       >
         <Registrations />
       </TabsContent>
       <TabsContent
         value="partners"
-        className="py-8 px-2 md:px-6 lg:px-12 bg-basePrimary/5 space-y-12"
+        className="pt-8 pb-20 px-2 md:px-6 lg:px-12 bg-basePrimary/5 space-y-12"
       >
         <Partners />
       </TabsContent>
