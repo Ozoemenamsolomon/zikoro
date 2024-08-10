@@ -534,7 +534,7 @@ const Registrations = () => {
         <table className="border rounded-md w-full">
           <thead className="w-full">
             <tr className="flex bg-basePrimary/10 p-4 text-gray-600 font-medium">
-              <td className="flex-[30%]">Ticket Name</td>
+              <td className="flex-[30%]">Name</td>
               <td className="flex-[25%]">Price</td>
               <td className="flex-[20%]">Qty</td>
               <td className="flex-[25%]">Revenue</td>
