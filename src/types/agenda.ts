@@ -45,6 +45,7 @@ export interface TReview {
   eventAlias?:string
   points: number;
   sessionAlias: string
+  createdAt?: string;
 }
 
 export type TFeedBack = TReview & {

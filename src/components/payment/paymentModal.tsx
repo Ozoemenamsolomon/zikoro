@@ -80,6 +80,7 @@ export function PaymentModal({
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const [isRedeemed, setIsRedeemed] = useState<boolean>(false);
   const [orgName, setOrgName] = useState<string>("");
+  const [orgId, setOrgId] = useState<string>("");
   const [totalPrice, setTotalprice] = useState<number>(0);
   const [isCouponValid, setIsCouponValid] = useState<boolean>(false);
   const [closeForm, setCloseForm] = useState<boolean>(false);
@@ -119,9 +120,9 @@ export function PaymentModal({
       totalPrice.toString()
     )}&currency=${encodeURIComponent(
       chosenCurrency
-    )}&coupon=${encodeURIComponent(
-      couponText
-    )}&redirectUrl=${encodeURIComponent(window.location.href)}`;
+    )}&coupon=${encodeURIComponent(couponText)}
+    &orgId=${encodeURIComponent(orgId)}
+    &redirectUrl=${encodeURIComponent(window.location.href)}`;
     router.push(url);
   };
 
@@ -295,7 +296,9 @@ export function PaymentModal({
                       </li>
                       <div
                         className="text-zikoroBlue flex gap-x-2 text-[14px] font-normal items-center mt-4 cursor-pointer"
-                        onClick={() => setShowMoreProfessional(!showMoreProfessional)}
+                        onClick={() =>
+                          setShowMoreProfessional(!showMoreProfessional)
+                        }
                       >
                         {" "}
                         <ArrowheadUpOutline size={16} /> Show less features{" "}
@@ -304,7 +307,9 @@ export function PaymentModal({
                   ) : (
                     <div
                       className="text-zikoroBlue flex gap-x-2 text-[14px] font-normal items-center mt-4 cursor-pointer"
-                      onClick={() => setShowMoreProfessional(!showMoreProfessional)}
+                      onClick={() =>
+                        setShowMoreProfessional(!showMoreProfessional)
+                      }
                     >
                       {" "}
                       <ArrowheadDownOutline size={16} /> Show more features{" "}
@@ -343,9 +348,7 @@ export function PaymentModal({
                   ) : (
                     <div
                       className="text-zikoroBlue flex gap-x-2 text-[14px] font-normal items-center mt-4 cursor-pointer"
-                      onClick={() =>
-                        setShowMoreEnterprise(!showMoreEnterprise)
-                      }
+                      onClick={() => setShowMoreEnterprise(!showMoreEnterprise)}
                     >
                       {" "}
                       <ArrowheadDownOutline size={16} /> Show more features{" "}
@@ -437,7 +440,10 @@ export function PaymentModal({
             />
 
             {organizationData && organizationData.length > 0 && (
-              <select className="mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400">
+              <select
+                className="mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
+                onChange={(e) => setOrgId(e.target.value)}
+              >
                 {organizationData.map((org: DBOrganisationSchema) => (
                   <option key={org.id} value={org.id}>
                     {org.organizationName}

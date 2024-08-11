@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import CityEvent from "./CityEvent";
 import { RightArrow } from "@/constants/icons";
 import { useRouter } from "next/navigation";
-import LoadingSpinner from "../LoadingSpinner";
 
 export default function CitiesEventList() {
   const router = useRouter();

@@ -561,6 +561,11 @@ export const links: NavLinkType[] = [
     href: "/billing",
   },
   {
+    name: "Workspace",
+    icon: WorkspaceIcon,
+    href: "/workspace/general",
+  },
+  {
     name: "Affiliates",
     icon: MarketingIcon,
     href: "/affiliates",
@@ -570,18 +575,6 @@ export const links: NavLinkType[] = [
     icon: PublishedEventsIcon,
     href: "/live-events",
   },
-
-  {
-    name: "Workspace",
-    icon: WorkspaceIcon,
-    href: "/workspace/general",
-  },
-  {
-    name: "Analytics",
-    icon: AnalyticsIcon,
-    href: "",
-  },
-
 ];
 
 // #1F1F1F
@@ -589,6 +582,7 @@ export const links: NavLinkType[] = [
 // "#717171"
 
 /**
+ *   
     {
     name: "Notification",
     icon: NotificationOutlineIcon,

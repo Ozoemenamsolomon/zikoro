@@ -2,26 +2,24 @@
 import { Toaster } from "@/components/ui/toaster";
 import { useLayoutEffect, useRef } from "react";
 import { SideBarLayout } from "@/components/SideBarLayout";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { TUser } from "@/types";
-import { getCookie } from "@/hooks";
+import { useParams } from "next/navigation";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useEventStore from "@/store/globalEventStore";
-import useUserStore from "@/store/globalUserStore";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
+import { useAttendee } from "@/hooks";
+import { useState, useEffect } from "react";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, setUser } = useUserStore();
-  const router = useRouter();
-  const pathname = usePathname().split("/");
-
-  console.log(user);
+  const { userData, user, loading } = useAttendee();
 
   const divRef = useRef<HTMLDivElement>(null);
   const { eventId }: { eventId: string } = useParams();
+
+
 
   useLayoutEffect(() => {
     const div = divRef.current;
@@ -45,10 +43,18 @@ export default function RootLayout({
   const isEventOwner =
     user && event && String(event?.createdBy) === String(user.id);
 
-  console.log(user);
+  console.log("layout", user);
 
-  if (!user) {
-    return <div>You are not logged in, redirecting to login...</div>;
+
+  if (!userData && !user) {
+    return (
+      <div className="w-full h-full inset-0 backdrop-blur-2xl fixed z-[5000]">
+        <div className="flex items-center p-4 m-auto absolute inset-0 justify-center flex-col gap-y-1">
+          <LoaderAlt size={30} className="animate-spin text-basePrimary" />
+          <p className="text-[13px] sm:text-sm">Authenticating...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

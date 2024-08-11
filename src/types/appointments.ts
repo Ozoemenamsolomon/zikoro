@@ -145,9 +145,10 @@ export interface User {
 }
 
 export interface AppointmentUnavailability {
-  id?: number;
+  id?: bigint | number;
   created_at?: string; 
   createdBy?: number | null; 
   startDateTime?: string | null;
   endDateTime?: string | null;
+  appointmentDate?:string|Date
 }

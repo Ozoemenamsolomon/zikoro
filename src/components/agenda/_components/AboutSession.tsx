@@ -2,16 +2,16 @@
 
 import { Button } from "@/components";
 import { Eye } from "styled-icons/feather";
-import { Star } from "styled-icons/bootstrap";
+import { CloseOutline } from "styled-icons/evaicons-outline";
 import { EventLocationType } from "@/components/composables";
 import { Link2Outline } from "styled-icons/evaicons-outline";
 import { LocationPin } from "styled-icons/entypo";
 import { CollapsibleWidget, Duplicate, Edit, Deletes } from ".";
 import { FilePdf } from "styled-icons/fa-regular";
 import Image from "next/image";
-import { TAgenda, Event } from "@/types";
+import { TAgenda, Event, TReview, TFeedBack } from "@/types";
 import { Player } from "@/components/composables";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie, useGetReviews, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
@@ -19,7 +19,18 @@ import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import Link from "next/link";
 import useUserStore from "@/store/globalUserStore";
 import { FaStar, FaRegStar } from "react-icons/fa";
-import { FaRegStarHalfStroke } from "react-icons/fa6";
+import { formatDistanceToNowStrict } from 'date-fns';
+interface TCalculatedReview {
+  average: number;
+  rating: number;
+  review: TFeedBack[];
+}
+
+ function formatTimeToNow(date: Date): string {
+  return formatDistanceToNowStrict(date, {
+    addSuffix: true,
+  });
+}
 
 function Rating({ rating }: { rating: number }) {
   const ratings = [1, 2, 3, 4, 5];
@@ -40,6 +51,111 @@ function Rating({ rating }: { rating: number }) {
     </div>
   );
 }
+
+function SessionReviewsModal({
+  rating,
+  close,
+}: {
+  close: () => void;
+  rating: TCalculatedReview;
+}) {
+  const aggregateRate = useMemo(() => {
+    if (rating?.review?.length <= 3) {
+      return `${
+        rating?.review?.length === 1
+          ? `${rating?.review?.length} Review`
+          : "Reviews"
+      } `;
+    } else {
+      return `3 Reviews of ${rating?.review?.length} Total`;
+    }
+  }, [rating]);
+
+
+  return (
+    <div
+      onClick={close}
+      className="w-full  fixed inset-0 h-full z-[100]"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-[95%] max-w-xl m-auto absolute inset-0 bg-white shadow rounded-lg h-fit max-h-[85%] "
+      >
+        <div className="w-full bg-white h-full rounded-lg flex flex-col p-3 items-start justify-start gap-y-3">
+          <div className="w-full flex items-center justify-between mb-4">
+            <h2 className="font-semibold text-base sm:text-xl">
+              Customer Reviews
+            </h2>
+            <Button onClick={close}>
+              <CloseOutline size={22} />
+            </Button>
+          </div>
+
+          <div className="w-full p-3 bg-white rounded-lg shadow grid grid-cols-1 gap-y-2">
+            <div className="w-full flex items-center gap-x-2">
+              <h1 className="font-bold text-2xl sm:text-3xl">
+                {rating?.average > 0 ? `${rating?.average}.0` : "0"}
+              </h1>
+              <Rating rating={rating?.average || 0} />
+            </div>
+            <div className="text-gray-500 flex mb-2 items-center text-xs sm:text-sm">
+              <p>{`(${rating?.rating || 0} Reviews)`}</p>
+            </div>
+
+            {[5, 4, 3, 2, 1].map((val, index) => {
+              const reviewRate = rating?.review?.filter(
+                ({ rating }) => Number(rating) === val
+              )?.length;
+              return (
+                <div
+                  key={index}
+                  className="w-full items-center grid grid-cols-10"
+                >
+                  <p className="font-medium">{val}</p>
+                  <div className="col-span-9 relative w-full rounded-3xl h-3 bg-gray-200">
+                    <span
+                      style={{
+                        width: reviewRate
+                          ? `${(
+                              (reviewRate / rating?.review?.length) *
+                              100
+                            ).toFixed(0)}%`
+                          : "0%",
+                      }}
+                      className="absolute rounded-3xl inset-0 bg-basePrimary h-full"
+                    ></span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="w-full font-medium">{aggregateRate}</div>
+
+          <div className="w-full flex flex-col items-start justify-start gap-y-2">
+            {rating?.review?.map((rev, index) => (
+              <div
+                key={index}
+                className="w-full bg-white rounded-lg shadow p-3 grid grid-cols-1 gap-y-3"
+              >
+                 <Rating rating={rev?.rating || 0} />
+                 {/* <p className="text-gray-500">{rev?.createdAt ||""}</p> */}
+                <p className="text-base sm:text-xl font-medium">{`${
+                  rev?.attendees?.firstName
+                } ${rev?.attendees?.lastName?.charAt(0)}.`}</p>
+
+                <p className="w-full text-start line-clamp-3 text-xs sm:text-mobile">
+                  {rev?.comments ?? ""}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function AboutSession({
   agenda,
   event,
@@ -55,6 +171,7 @@ export function AboutSession({
   isIdPresent: boolean;
   isOrganizer: boolean;
 }) {
+  const [isReviews, setShowReviews] = useState(false);
   const { user } = useUserStore();
   const router = useRouter();
   const { rating, getRating } = useGetReviews();
@@ -92,6 +209,10 @@ export function AboutSession({
       }
     })();
   }, [agenda]);
+
+  function onReviews() {
+    setShowReviews((rev) => !rev);
+  }
 
   useEffect(() => {
     (async () => {
@@ -194,10 +315,14 @@ export function AboutSession({
                     {agenda?.sessionViews ?? "0"}
                   </p>
                 </Button>
-                <Button className="h-fit gap-x-2 w-fit px-0">
-                  <Rating rating={rating.average} />
+                <Button
+                  disabled={rating?.review?.length === 0}
+                  onClick={onReviews}
+                  className="h-fit gap-x-2 w-fit px-0"
+                >
+                  <Rating rating={rating?.average || 0} />
                   <div className="text-gray-500 flex items-center text-xs sm:text-sm">
-                    <p>{`(${rating.rating} Reviews)`}</p>
+                    <p>{`(${rating?.rating || 0} Reviews)`}</p>
                   </div>
                 </Button>
               </div>
@@ -331,6 +456,8 @@ export function AboutSession({
           </CollapsibleWidget>
         </div>
       )}
+
+      {isReviews && <SessionReviewsModal close={onReviews} rating={rating!} />}
     </>
   );
 }

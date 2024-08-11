@@ -19,6 +19,8 @@ export interface AppState {
   setSlotCounts: React.Dispatch<React.SetStateAction<{ [key: string]: number }|null>>;
   user: UserType | null; 
   setUser: React.Dispatch<React.SetStateAction<UserType|null>>;
+  selectedItem: any; 
+  setSelectedItem: React.Dispatch<React.SetStateAction<any>>;
 }
 
 export interface AppointmentContextProps extends AppState {
@@ -36,6 +38,7 @@ export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [inactiveSlots, setInactiveSlots] = useState<string[]>([]);
   const [selectedType, setselectedType] = useState<string>('single');
   const [slotCounts, setSlotCounts] = useState<{ [key: string]: number }|null>(null);
+  const [selectedItem, setSelectedItem] = useState<any>();
 
   const contextValue: AppointmentContextProps = {
     isLoading,setLoading,
@@ -45,6 +48,7 @@ export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ childre
     slotCounts, setSlotCounts,
     user, setUser,
     selectedType, setselectedType,
+    selectedItem, setSelectedItem,
   };
 
   useEffect(() => {

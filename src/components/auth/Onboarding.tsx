@@ -22,6 +22,7 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useSearchParams } from "next/navigation"
 import { generateAlphanumericHash } from "@/utils/helpers";
+
 export default function Onboarding() {
   const search = useSearchParams()
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");

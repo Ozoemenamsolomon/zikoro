@@ -7,6 +7,7 @@ import { Event, EventDetailTab } from "@/types";
 import { About, Speakers, Sponsors, EventAgendas } from "..";
 import { EventDetailMobileTab } from "./EventDetailMobileTab";
 import { useEffect, useState } from "react";
+import { Rewards } from "./Rewards";
 
 const eventWebsiteSettings = [
   { title: "Logo", status: false },
@@ -15,6 +16,7 @@ const eventWebsiteSettings = [
   { title: "Speakers", status: true },
   { title: "Partners", status: true },
   { title: "Reviews", status: true },
+  { title: "Rewards", status: true },
 ];
 
 export function EventDetailTabs({
@@ -42,6 +44,7 @@ export function EventDetailTabs({
     { id: 2, name: "Agenda" },
     { id: 3, name: "Speakers" },
     { id: 4, name: "Partners" },
+    { id: 5, name: "Rewards" },
   ];
 
   useEffect(() => {
@@ -91,6 +94,7 @@ export function EventDetailTabs({
         { status: true, title: "Agenda" },
         { status: true, title: "Speakers" },
         { status: true, title: "Partners" },
+        { title: "Rewards", status: true },
       ]
     : selectedTabs;
 
@@ -143,7 +147,7 @@ export function EventDetailTabs({
         {active === EventDetailTab.SPEAKERS_TAB && event && (
           <Speakers
             eventId={String(event.eventAlias)}
-           // changeMajorActiveState={changeActiveState}
+            // changeMajorActiveState={changeActiveState}
           />
         )}
         {active === EventDetailTab.AGENDA_TAB && event && (
@@ -151,6 +155,9 @@ export function EventDetailTabs({
         )}
         {active === EventDetailTab.EXIHIBITORS_TAB && event && (
           <Sponsors event={event} changeMajorActiveState={changeActiveState} />
+        )}
+        {active === EventDetailTab.REWARD_TAB && event && (
+          <Rewards eventId={String(event.eventAlias)} isEventHome />
         )}
       </div>
     </>

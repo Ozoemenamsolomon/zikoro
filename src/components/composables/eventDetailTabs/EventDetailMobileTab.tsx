@@ -130,7 +130,7 @@ export function EventDetailMobileTab({
         </button>
         <button
           onClick={() =>
-            router.push(`/event/${eventId}/engagements/interactions`)
+            router.push(`/event/${eventId}/market-place/stamp-card`)
           }
           className="flex flex-col gap-y-2 items-center justify-center"
         >

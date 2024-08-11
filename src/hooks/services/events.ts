@@ -27,6 +27,7 @@ import {
 } from "@/utils";
 import { useGetOrganizations } from "./organization";
 import useUserStore from "@/store/globalUserStore";
+import useAccessStore from "@/store/globalAcessStore";
 import { generateAlphanumericHash } from "@/utils/helpers";
 import { Reward } from "@/types";
 import { useGetData } from "@/hooks/services/request";
@@ -228,7 +229,6 @@ export function useGetUserHomePageEvents() {
   }
   useEffect(() => {
     if (!isLoading && !orgLoading && events && organizations) {
-      setLoading(false);
       // checking if the user is a team member of any of the organizations
       // getting the organization id
       const filteredOrganizations = organizations?.filter((organization) => {
@@ -251,6 +251,7 @@ export function useGetUserHomePageEvents() {
       setFirstSetEvents(firstSet);
 
       setUserEvents(matchingEvents);
+      setLoading(false);
     }
   }, [events, organizations]);
 
@@ -838,7 +839,6 @@ export function useUpdateTransactionDetail() {
       });
 
       if (status === 204 || status === 200) {
-  
         const { data: attendees, status } = await getRequest<TAttendee[]>({
           endpoint: `/attendees/event/${payload?.eventAlias}`,
         });
@@ -853,6 +853,7 @@ export function useUpdateTransactionDetail() {
             return {
               ...value,
               registrationCompleted: true,
+              attendeeType: payload.role ?? ["attendee"],
             };
           });
 
@@ -1150,21 +1151,36 @@ export function useFormatEventData(event?: Event | null) {
 
 export function useAttenedeeEvents() {
   const { events, isLoading } = useGetEvents();
+  const [loading, setLoading] = useState(false);
   const { user } = useUserStore();
-  const { attendees, isLoading: loading } = useGetAllAttendees();
+  const [attendees, setAttendees] = useState<TAttendee[]>([]);
   const [registeredEvents, setRegisteredEvents] = useState<Event[] | undefined>(
     []
   );
+  // events/attendee/${email}
+  const getAttendeeRecord = async () => {
+    if (user) {
+      try {
+        setLoading(true);
+        const { data, status } = await getRequest<TAttendee[]>({
+          endpoint: `/events/attendee/${user?.userEmail}`,
+        });
+        setAttendees(data.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   useEffect(() => {
+    getAttendeeRecord();
+  }, [user]);
+  useEffect(() => {
     if (!loading && !isLoading) {
-      // console.log({attendees})
-      // filter attendees based on attendees email
-      const filteredAttendees = attendees?.filter(({ email }) => {
-        return email === user?.userEmail;
-      });
       //   console.log({filteredAttendees})
-      const mappedEventId = filteredAttendees?.map((attendee) =>
+      const mappedEventId = attendees?.map((attendee) =>
         String(attendee?.eventAlias)
       );
       const filtered = events?.filter((event) => {
@@ -1188,40 +1204,68 @@ export function useAttenedeeEvents() {
 export function useCheckTeamMember({ eventId }: { eventId?: string }) {
   const [isIdPresent, setIsIdPresent] = useState(false);
   const { events, loading: eventLoading } = useGetUserHomePageEvents();
+  const [isLoading, setIsLoading] = useState(true);
+  const {userAccess, setUserAccess} = useAccessStore();
 
-  useEffect(() => {
-    if (events && !eventLoading) {
-      //checked if the eventid is present in the event array
+  // useEffect(() => {
+  //   if (!eventLoading) {
+  //     //checked if the eventid is present in the event array
+  //     const isEventIdPresent = events?.some(
+  //       ({ eventAlias }) => eventAlias === eventId
+  //     );
+  //    // setIsIdPresent(isEventIdPresent);
+
+  //    // setIsLoading(false);
+     
+
+  //    console.log("from useeffect, present", isEventIdPresent);
+      
+  //   }
+  // }, [events, eventLoading]);
+
+  const data = useMemo(() => {
+    if (!eventLoading && events) {
       const isEventIdPresent = events?.some(
         ({ eventAlias }) => eventAlias === eventId
       );
-
-      setIsIdPresent(isEventIdPresent);
+      setUserAccess({
+        ...userAccess,
+        isTeamMember: isEventIdPresent
+       })
+      return {
+        isIdPresent: isEventIdPresent,
+        eventLoading: false,
+      };
+    } else {
+      return {
+        eventLoading: true,
+        isIdPresent: false,
+      };
     }
-  }, [events, eventLoading]);
+  }, [eventLoading, events]);
 
   return {
-    isIdPresent,
-    eventLoading,
+    ...data,
   };
 }
 
 export function useVerifyUserAccess(eventId: string) {
-  const { attendees, isLoading } = useGetAllAttendees();
   const { attendees: eventAttendees, isLoading: loading } =
     useGetEventAttendees(eventId);
   const [attendeeId, setAttendeeId] = useState<number | undefined>();
   const [attendee, setAttendee] = useState<TAttendee | undefined>();
   const [isOrganizer, setIsOrganizer] = useState(false);
+  const {userAccess, setUserAccess} = useAccessStore();
   const { user } = useUserStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && !isLoading) {
-      const atId = attendees?.find(
+    if (!loading) {
+      const atId = eventAttendees?.find(
         ({ email, eventAlias }) =>
           eventAlias === eventId && email === user?.userEmail
       )?.id;
-      const attendee = attendees?.find(
+      const attendee = eventAttendees?.find(
         ({ email, eventAlias }) =>
           eventAlias === eventId && email === user?.userEmail
       );
@@ -1234,8 +1278,17 @@ export function useVerifyUserAccess(eventId: string) {
           id === atId && attendeeType.includes("organizer")
       );
       setIsOrganizer(isPresent);
+      setUserAccess({
+        ...userAccess,
+        isOrganizer: isPresent,
+        attendeeId: atId,
+        attendee
+
+       })
+      setIsLoading(false);
+     // console.log("attendee", isPresent);
     }
-  }, [attendees, eventAttendees, loading, isLoading]);
+  }, [eventAttendees, loading]);
 
   return {
     attendeeId,
@@ -1270,7 +1323,7 @@ export function useGetUserPoint(eventId: string) {
       console.log("um", total);
       setTotalPoints(total);
     }
-    console.log("um", totalPoints);
+   // console.log("um", totalPoints);
   }, [isLoading, data, attendeeId]);
 
   return {

@@ -56,16 +56,16 @@ const page = () => {
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  // const { searchTerm, searchedData, setSearchTerm } =
-  //   useSearch<TAttendeeInvites>({
-  //     data: emailInvites || [],
-  //     accessorKey: ["email", "name"],
-  //   });
-
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<TAttendeeInvites>({
       data: emailInvites ?? [],
       dataFilters: InvitesFilter,
+    });
+
+  const { searchTerm, searchedData, setSearchTerm } =
+    useSearch<TAttendeeInvites>({
+      data: filteredData ?? [],
+      accessorKey: ["email", "name"],
     });
 
   useEffect(() => {
@@ -106,7 +106,7 @@ const page = () => {
 
   const refreshableColumns = columns(getEmailInvites);
   return (
-    <section className="space-y-8 pl-4 pr-8 bg-[#f9faff] py-8 min-h-full">
+    <section className="space-y-8 px-2 md:pl-4 md:pr-8 bg-[#f9faff] py-8 min-h-full">
       <div className="space-y-8">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold text-gray-800">
@@ -133,7 +133,7 @@ const page = () => {
             </svg>
           </Button>
         </div>
-        <div className="grid grid-cols-5 gap-6 items-center">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-6 items-center">
           <StatCard title="Total Invitees" count={totalInvitees} />
           <StatCard title="Attending" count={attending} />
           <StatCard title="Not Attending" count={notAttending} />
@@ -158,14 +158,14 @@ const page = () => {
                 <path d="M10,18c1.846,0,3.543-0.635,4.897-1.688l4.396,4.396l1.414-1.414l-4.396-4.396C17.365,13.543,18,11.846,18,10 c0-4.411-3.589-8-8-8s-8,3.589-8,8S5.589,18,10,18z M10,4c3.309,0,6,2.691,6,6s-2.691,6-6,6s-6-2.691-6-6S6.691,4,10,4z" />
               </svg>
             </div>
-            {/* <Input
+            <Input
               type="text"
-              placeholder="Search by email"
+              placeholder="Search"
               value={searchTerm}
               disabled={isLoading}
               onChange={(event) => setSearchTerm(event.currentTarget.value)}
               className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 bg-gray-50 rounded-2xl pl-8 w-full"
-            /> */}
+            />
           </div>
           <Filter
             className={`space-y-4 max-w-full overflow-auto hide-scrollbar`}
@@ -178,15 +178,13 @@ const page = () => {
           <div className="space-y-2 max-w-full overflow-auto">
             <DataTable<TAttendeeInvites>
               columns={refreshableColumns}
-              data={filteredData}
+              data={searchedData}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}
               canSelectRow={(row) => row?.original?.response === "pending"}
               rowStyle={{
                 display: "grid",
-                gridTemplateColumns: `auto 1.5fr repeat(${
-                  refreshableColumns.length - 2
-                }, minmax(0, 1fr))`,
+                gridTemplateColumns: `minmax(0, 0.25fr) minmax(0, 1fr) minmax(0, 0.75fr) minmax(0, 0.75fr) minmax(0, 1fr) minmax(0, 0.5fr) minmax(0, 0.5fr)`,
               }}
             />
           </div>

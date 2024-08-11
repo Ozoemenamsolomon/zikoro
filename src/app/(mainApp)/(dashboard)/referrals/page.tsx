@@ -52,7 +52,7 @@ const page = () => {
 
   return (
     <div>
-      <h1 className="px-4 py-6 border-b text-lg font-medium">Referrals</h1>
+      <h1 className="px-4 py-6 border-b text-lg font-medium">Refer and Earn</h1>
       <div className="p-4 grid md:grid-cols-10 gap-3 md:gap-6">
         <div className="md:col-span-6 space-y-6">
           <div className="border p-2 flex items-center gap-2">
@@ -86,10 +86,10 @@ const page = () => {
               </defs>
             </svg>
             <div className="flex-1 flex flex-col gap-1 text-gray-500 font-medium text-xs">
-              <p>Earn 20% referral commission for each friend you invite</p>
+              <p>Earn 10% referral commission for each friend you invite</p>
               <p>
                 If your referral buys a subscription using your link, you'll
-                receive 20% credit on their first paid subscription.
+                receive 10% credit on their first paid subscription.
               </p>
             </div>
           </div>

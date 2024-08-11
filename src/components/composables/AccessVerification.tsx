@@ -12,24 +12,24 @@ import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
 import useUserStore from "@/store/globalUserStore";
+import useAccessStore from "@/store/globalAcessStore";
 
 export function AccessVerification({ id }: { id?: string | any }) {
   const pathname = usePathname();
-  const {
-    isOrganizer,
-    attendeeId,
-    isLoading: verifyingLoading,
-  } = useVerifyUserAccess(id!);
-  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId: id });
   const { user } = useUserStore();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
-  const { attendees, isLoading } = useGetAllAttendees();
-  const [notRegistered, setNotRegistered] = useState(true);
+  const { attendees, isLoading } = useGetAllAttendees(id);
+  const [notRegistered, setNotRegistered] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
-  const { data, loading: singleEventLoading, refetch } = useFetchSingleEvent(id);
+  const {
+    data,
+    loading: singleEventLoading,
+    refetch,
+  } = useFetchSingleEvent(id);
   const [notAuthorized, setNotAuthorized] = useState(false);
+  const { userAccess } = useAccessStore();
 
   useEffect(() => {
     if (data && !singleEventLoading) {
@@ -45,7 +45,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
     }
   }, [data, singleEventLoading]);
 
-/**
+  /**
    useEffect(() => {
     if (pathname) {
       refetch()
@@ -53,19 +53,22 @@ export function AccessVerification({ id }: { id?: string | any }) {
   },[pathname])
  */
 
+  // console.log(
+  //   "single event loading",
+  //   !singleEventLoading,
+  //   "single event data",
+  //   data !== null,
+  //   "user",
+  //   user !== null
+  // );
+
   useEffect(() => {
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-    if (
-      !isLoading &&
-      user &&
-      !eventLoading &&
-      !singleEventLoading &&
-      data &&
-      !verifyingLoading
-    ) {
+    // if (!user) {
+    //   router.push("/login");
+    //   return;
+    // }
+    if (!isLoading && user !== null && !singleEventLoading && data !== null && userAccess) {
+      console.log("I entered the hooks .....");
       const appAccess = data?.eventAppAccess;
 
       let remainder = remainingTime;
@@ -89,22 +92,21 @@ export function AccessVerification({ id }: { id?: string | any }) {
       }
 
       // checked if the user is an attendee
-      const isPresent = attendees?.some(
-        ({ email, eventAlias }) =>
-          eventAlias === id && email === user?.userEmail
-      );
+      const isPresent = attendees?.some(({ email, eventAlias }) => {
+        return eventAlias === id && email === user?.userEmail;
+      });
 
-      if (isOrganizer || isIdPresent) {
+    
+      if (userAccess?.isOrganizer || userAccess?.isTeamMember) {
         // user is a team member or an organizer
         setLoading(false);
-        
+    
 
         return () => clearInterval(interval);
       } else if (
         (appAccess === "now" && isPresent) ||
         (timeRemaining <= 0 && isPresent)
       ) {
-       
         // user is an attendee
         if (pathname.includes("content")) {
           setNotAuthorized(true);
@@ -114,29 +116,37 @@ export function AccessVerification({ id }: { id?: string | any }) {
 
         return () => clearInterval(interval);
       } else {
-        if (!isPresent) setNotRegistered(true);
+        if (!isPresent) {
+          window.open(`/live-events/${id}`, "_self");
+          console.log("here");
+          setNotRegistered(true);
+        }
         // router.push("/login");
         // pls remove after all the event have app access date on creation
         // if (isPresent) setLoading(false);
-        
+
         return () => clearInterval(interval);
       }
 
       // return () => clearInterval(interval);
     }
-  }, [
-    user,
-    isLoading,
-    eventLoading,
-    singleEventLoading,
-    verifyingLoading,
-    pathname,
-  ]);
+  }, [user, isLoading, singleEventLoading, userAccess, pathname]);
 
-  const isLoadedAll = useMemo(() => {
-    return !isLoading && user && !eventLoading && !singleEventLoading && data;
-  }, [isLoading, user, eventLoading, singleEventLoading, data]);
-
+  // const isLoadedAll = useMemo(() => {
+  //   return (
+  //     !isLoading &&
+  //     user !== null &&
+  //     !eventLoading &&
+  //     !singleEventLoading &&
+  //     data !== null
+  //   );
+  // }, [isLoading, user, eventLoading, singleEventLoading, data]);
+  // console.log(
+  //   "sdf==",
+  //   userAccess?.isTeamMember,
+  //   userAccess?.isOrganizer,
+  //   loading
+  // );
   const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
   const hours = Math.floor(
     (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -151,7 +161,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
         loading && "block"
       )}
     >
-      {isLoadedAll && timeRemaining > 0 ? (
+      {timeRemaining > 0 ? (
         <div
           className={cn(
             " text-xs sm:text-sm items-center justify-center flex-col gap-y-3 m-auto absolute inset-0 h-fit w-fit flex"

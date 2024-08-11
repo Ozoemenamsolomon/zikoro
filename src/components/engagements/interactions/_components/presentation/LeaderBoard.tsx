@@ -151,7 +151,7 @@ function OtherPlayers({
   isLeaderBoardVisible: boolean;
 }) {
   {
-    /**<ScoreCounter num={score} /> */
+
   }
   return (
     <div
@@ -178,24 +178,7 @@ function OtherPlayers({
         score={attendee?.totalScore}
         isLeaderBoardVisible={isLeaderBoardVisible}
       />
-      {/* <div
-        className={cn(
-          "flex w-fit bg-gradient-to-r from-green-600  to-gray-700 rounded-3xl  px-2 py-1 items-center gap-x-1 text-tiny invisible",
-          attendee?.recentScore > 0 && "visible"
-        )}
-      >
-        <Plus size={18} color="#ffffff" className="text-white" />
-        <p className="font-medium text-white">
-        
-           
-        </p>
-      </div>*/}
-
-      {/* <div className="flex items-center gap-x-1">
-        
-        <p>{score}</p>
-    <FeedStar size={15} className="text-amber-600" />
-      </div>*/}
+  
     </div>
   );
 }

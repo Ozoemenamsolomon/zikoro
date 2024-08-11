@@ -41,7 +41,7 @@ export function PollOption({
 
   // organizer will only see the question and how ppl answer it
   // players will be able to click the question and immeditely see how ppl answered it.
-  return (
+  return ( 
     <>
       {isOrganizer || isIdPresent ? (
         <OrganizerQuestOption

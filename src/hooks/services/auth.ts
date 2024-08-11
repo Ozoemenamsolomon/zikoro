@@ -5,10 +5,10 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import * as z from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
-import { getRequest } from "@/utils/api";
-import { TAuthUser } from "@/types";
+import { getRequest, postRequest } from "@/utils/api";
+import { TAuthUser, TUser } from "@/types";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useEventStore from "@/store/globalEventStore";
 import useUserStore from "@/store/globalUserStore";
@@ -43,25 +43,26 @@ export function useOnboarding() {
   const { setUser } = useUserStore();
   const router = useRouter();
 
+  type CreateUser = {
+    values: z.infer<typeof onboardingSchema>;
+    email: string | null;
+    createdAt: string | null;
+  };
   async function registration(
     values: z.infer<typeof onboardingSchema>,
     email: string | null,
     createdAt: string | null
   ) {
-    setLoading(true);
-
     try {
-      const { error, status, data } = await supabase.from("users").upsert([
-        {
+      setLoading(true);
+      const { data, status } = await postRequest<CreateUser>({
+        endpoint: "/auth/user",
+        payload: {
           ...values,
-          userEmail: email,
-          created_at: createdAt,
+          userEmail:email,
+          created_at:createdAt
         },
-      ]);
-
-      if (error) {
-        throw error;
-      }
+      });
 
       if (status === 201 || status === 200) {
         const user = await getUser(email);
@@ -70,8 +71,11 @@ export function useOnboarding() {
         toast.success("Profile Updated Successfully");
         router.push("/home");
       }
+
+      return data;
     } catch (error: any) {
-      toast.error(error?.message);
+      //
+      toast.error(error?.response?.data?.error);
     } finally {
       setLoading(false);
     }
@@ -101,14 +105,14 @@ export function useLogin() {
 
       if (error) {
         toast.error(error?.message);
-       // console.log(error?.message);
+        // console.log(error?.message);
         setLoading(false);
         return;
       }
 
       if (data && data?.user?.email) {
         await setLoggedInUser(data?.user?.email);
-      //  console.log(data?.user?.email);
+        //  console.log(data?.user?.email);
         toast.success("Sign In Successful");
         router.push(redirectTo ?? "home");
         setLoading(false);
@@ -278,16 +282,6 @@ export function useGetAuthUser() {
   };
 }
 
-/*
- await supabase.auth.resetPasswordForEmail('hello@example.com', {
-  redirectTo: 'http://example.com/account/update-password',
-})
-&redirect=${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback/${
-            values?.email
-          }/${new Date().toISOString()}
-
- */
-
 export function useForgotPassword() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -379,7 +373,7 @@ export function useVerifyCode() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  async function verifyCode(email: string, token: string, type:string | null) {
+  async function verifyCode(email: string, token: string, type: string | null) {
     try {
       setLoading(true);
       const { data, error } = await supabase.auth.verifyOtp({
@@ -392,18 +386,15 @@ export function useVerifyCode() {
         throw error;
       }
 
-    if (type === "reset-password") {
-      router.push(
-        `${window.location.origin}/update-password`
-      );
-    }
-    else {
-      router.push(
-        `${
-          window.location.origin
-        }/onboarding?email=${email}&createdAt=${new Date().toISOString()}`
-      );
-    }
+      if (type === "reset-password") {
+        router.push(`${window.location.origin}/update-password`);
+      } else {
+        router.push(
+          `${
+            window.location.origin
+          }/onboarding?email=${email}&createdAt=${new Date().toISOString()}`
+        );
+      }
     } catch (error: any) {
       toast.error(error?.message);
     } finally {
@@ -414,5 +405,40 @@ export function useVerifyCode() {
   return {
     loading,
     verifyCode,
+  };
+}
+
+// user that register for an event
+export function useAttendee() {
+  const params = useSearchParams();
+  const [loading, setLoading] = useState(false);
+  const { user, setUser } = useUserStore();
+  const [userData, setUserData] = useState<TUser | null>(null)
+  const email = params.get("email");
+  const isPasswordless = params.get("isPasswordless");
+  const getUser = async () => {
+    setLoading(true);
+    try {
+      if (email && isPasswordless) {
+        const { data, status } = await getRequest<TUser>({
+          endpoint: `/users/attendee/${email}`,
+        });
+
+        setUser(data.data);
+        setUserData(data.data);
+      }
+
+      setLoading(false);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getUser();
+  }, [email, isPasswordless]);
+
+  return {
+    userData,
+    user,
+    loading,
   };
 }

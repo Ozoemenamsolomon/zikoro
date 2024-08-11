@@ -25,7 +25,6 @@ import {
   useValidateUser,
 } from "@/hooks";
 import { sendMail, whatsapp } from "@/utils";
-import { TUser } from "@/types";
 import useUserStore from "@/store/globalUserStore";
 import { useGetUserOrganization } from "@/hooks/services/userOrganization";
 

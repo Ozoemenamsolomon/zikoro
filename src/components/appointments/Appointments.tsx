@@ -1,26 +1,20 @@
 "use client";
 
-import { ChevronDown, Calendar, Edit, RefreshCw, XCircle } from "lucide-react";
+import { ChevronDown, Calendar,  RefreshCw, XCircle } from "lucide-react";
 import React, { Suspense, useRef, useState } from "react";
 import { useGetBookings } from "@/hooks/services/appointments";
 import { format, parseISO } from "date-fns";
 import { AppointmentLink, Booking } from "@/types/appointments";
 import PageLoading from "./ui/Loading";
-import NoAppointments from "./NoAppointments";
 import { useEffect } from "react";
 import { cn, useClickOutside } from "@/lib";
-import { AntiClock, CalenderIcon, CancelX, EditPenIcon } from "@/constants";
+import { AntiClock, CancelX, EditPenIcon } from "@/constants";
 import { useAppointmentContext } from "./context/AppointmentContext";
 import { generateSlots, SlotsResult, TimeDetail } from "./booking/Calender";
 import Slots from "./booking/Slots";
 import { generateAppointmentTime } from "./booking/submitBooking";
-import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { P } from "styled-icons/fa-solid";
-
-interface GroupedBookings {
-  [date: string]: Booking[];
-}
+import Empty from "./calender/Empty";
 
 export function getEnabledTimeDetails(
   appointmnetLink: AppointmentLink
@@ -120,13 +114,11 @@ const reschedule = async (
     });
     if (res.ok) {
       toast.success("Successfully, email reminder sent");
-      // console.log('Successfully rescheduled appointment, email reminder sent', await res.json());
       refresh();
       setBookingFormData(null);
     } else {
       toast.error("Unsuccessfull");
       setError("Error rescheduling appointment");
-      // console.log('Error rescheduling appointment', await res.json());
     }
   } catch (error) {
     toast.error("Server error.");
@@ -137,13 +129,13 @@ const reschedule = async (
   }
 };
 
-export const Reschedule = ({ refresh }: { refresh: () => void }) => {
-  const { bookingFormData, setBookingFormData } = useAppointmentContext();
+const Reschedule = ({ refresh }: { refresh: () => void }) => {
+  const { bookingFormData, setBookingFormData, selectedItem } = useAppointmentContext();
   const [timeSlots, setTimeSlots] = useState<SlotsResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   // const [isSelected, setIsSelected] = useState<string>('');
-
+  console.log({bookingFormData})
   useEffect(() => {
     const fetchSlots = async () => {
       const getTimeSlots = await generateSlots(
@@ -156,6 +148,10 @@ export const Reschedule = ({ refresh }: { refresh: () => void }) => {
     };
     fetchSlots();
   }, [bookingFormData]);
+
+  const updatingFunc = (callback: () => void) => {
+    callback()
+  }
 
   return (
     <section
@@ -207,11 +203,12 @@ export const Reschedule = ({ refresh }: { refresh: () => void }) => {
           </div>
 
           <h6 className="font-semibold">Choose time</h6>
-          <div className="h-96 overflow-y-auto mx-auto max-w-80">
+          <div className="h-96 hide-scrollbar overflow-auto mx-auto max-w-sm">
             <Slots
               appointmnetLink={bookingFormData?.appointmentLinkId}
               timeSlots={timeSlots}
-              selectedDate={new Date(bookingFormData.appointmentDate!)}
+              selectedDate={new Date(selectedItem)}
+              updatingFunc={updatingFunc}
             />
           </div>
           <div className="w-full flex items-center gap-1">
@@ -244,7 +241,7 @@ export const Reschedule = ({ refresh }: { refresh: () => void }) => {
                   setError
                 )
               }
-              className="bg-basePrimary rounded-md text-white font-medium py-2 px-6"
+              className="bg-basePrimary rounded-md text-white font-medium py-2 px-6 w-full flex justify-center"
             >
               {isLoading ? "Submiting..." : "Reschedule Appointment"}
             </button>
@@ -313,22 +310,7 @@ export const Reschedule = ({ refresh }: { refresh: () => void }) => {
   );
 };
 
-const groupBookingsByDate = (bookings: Booking[]): GroupedBookings => {
-  return bookings.reduce((acc: GroupedBookings, booking: Booking) => {
-    const date = booking.appointmentDate;
-    if (date) {
-      const dateString =
-        typeof date === "string" ? date : date.toISOString().split("T")[0];
-      if (!acc[dateString]) {
-        acc[dateString] = [];
-      }
-      acc[dateString].push(booking);
-    }
-    return acc;
-  }, {});
-};
-
-const BookingRow = ({ booking }: { booking: Booking }) => {
+const BookingRow = ({ booking, showNote, setShowNote }: { booking: Booking, showNote:any, setShowNote: (any:any)=>void }) => {
   const {
     participantEmail,
     lastName,
@@ -345,80 +327,100 @@ const BookingRow = ({ booking }: { booking: Booking }) => {
   } = booking;
   const dateTimeString = `${appointmentDate}T${appointmentTime}`;
   const dateTime = new Date(dateTimeString);
+  const notesRef = useRef(null)
 
-  const { setBookingFormData } = useAppointmentContext();
+  const handleNotesClick = () => {
+    if (showNote === id) {
+      setShowNote(null);
+    } else {
+      setShowNote(id);
+    }
+  };
+
+  const { setBookingFormData, setSelectedItem } = useAppointmentContext();
+  useClickOutside(notesRef, ()=>setShowNote(null))
+  
   return (
-    <tr className={` bg-white border-b `}>
-      <td className="py-4 px-4 ">
-        <div className="flex items-center">
-          <div
-            className="capitalize flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center text-gray-700 font-semibold mr-2"
-            style={{
-              background:
-                "linear-gradient(269.83deg, rgba(156, 0, 254, 0.12) 0.14%, rgba(0, 31, 203, 0.12) 99.85%)",
-            }}
-          >
-            {(firstName + " " + lastName)
-              .split(" ")
-              .map((n) => n[0])
-              .join("")}
-          </div>
-          <div>
-            <p className="font-medium text-gray-800">
-              {firstName} {lastName}
-            </p>
-            <p className="text-sm text-gray-500">{participantEmail}</p>
-          </div>
+    <tr className="bg-white border-b relative">
+    <td className="py-4 px-4 ">
+      <div className="flex items-center">
+        <div
+          className="capitalize flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center text-gray-700 font-semibold mr-2"
+          style={{
+            background:
+              "linear-gradient(269.83deg, rgba(156, 0, 254, 0.12) 0.14%, rgba(0, 31, 203, 0.12) 99.85%)",
+          }}
+        >
+          {(firstName + " " + lastName)
+            .split(" ")
+            .map((n) => n[0])
+            .join("")}
         </div>
-      </td>
-      <td className="py-2 px-4">{appointmentTimeStr}</td>
-      <td className="py-2 px-4">{appointmentName}</td>
-      <td className="py-2 px-4">{appointmentType}</td>
-      <td className="py-2 px-4">{notes}</td>
-      <td
-        className={`py-2 px-4 ${
-          bookingStatus === "CANCELLED"
-            ? "text-red-700"
-            : bookingStatus === "RESCHEDULED"
-            ? "text-green-700"
-            : "text-zikoroBlue"
-        }`}
-      >
-        {bookingStatus || "ACTIVE"}
-      </td>
-
-      <td className="py-2 px-4 relative">
-        <div className="flex space-x-2">
-          <button
-            // disabled={bookingStatus==='CANCELLED'}
-            onClick={() =>
-              setBookingFormData({
-                ...booking,
-                type: "reschedule",
-                timeStr: booking?.appointmentTimeStr,
-              })
-            }
-            className="text-blue-500 hover:text-blue-700 disabled:text-slate-300"
-          >
-            <RefreshCw size={18} />
-          </button>
-          <button
-            disabled={bookingStatus === "CANCELLED"}
-            onClick={() =>
-              setBookingFormData({
-                ...booking,
-                type: "cancel",
-                timeStr: booking?.appointmentTimeStr,
-              })
-            }
-            className="text-red-500 hover:text-red-700 disabled:text-slate-300"
-          >
-            <XCircle size={18} />
-          </button>
+        <div>
+          <p className="font-medium text-gray-800">
+            {firstName} {lastName}
+          </p>
+          <p className="text-sm text-gray-500">{participantEmail}</p>
         </div>
-      </td>
-    </tr>
-  );
+      </div>
+    </td>
+    <td className="py-2 px-4">{appointmentTimeStr}</td>
+    <td className="py-2 px-4">{appointmentName}</td>
+    <td ref={notesRef} className="py-2 px-4 ">
+      <button onClick={handleNotesClick} className=" relative cursor-pointer w-full flex justify-start">
+        {notes ? <p>...</p> : null}
+        {showNote === id && (
+          <div className="absolute z-50 w-44 transform transition-all p-6 -left-10 rounded-lg shadow-md bg-white">
+            {notes}
+          </div>
+        )}
+      </button>
+    </td>
+    <td
+      className={`py-2 px-4 ${
+        bookingStatus === "CANCELLED"
+          ? "text-red-700"
+          : bookingStatus === "RESCHEDULED"
+          ? "text-green-700"
+          : "text-zikoroBlue"
+      }`}
+    >
+      {bookingStatus || "ACTIVE"}
+    </td>
+    <td className="py-2 px-4 relative">
+      <div className="flex space-x-2">
+        <button
+          onClick={() =>{
+            setBookingFormData({
+              ...booking,
+              type: "reschedule",
+              timeStr: booking?.appointmentTimeStr,
+            })
+            setSelectedItem(dateTime)
+          }}
+          className="text-blue-500 hover:text-blue-700"
+        >
+          <RefreshCw size={18} />
+        </button>
+        <button
+          disabled={bookingStatus === "CANCELLED"}
+          onClick={() =>{
+            setBookingFormData({
+              ...booking,
+              type: "cancel",
+              timeStr: booking?.appointmentTimeStr,
+            })
+            // setSelectedItem(dateTimeString)
+          }
+          }
+          className="text-red-500 hover:text-red-700 disabled:text-slate-300"
+        >
+          <XCircle size={18} />
+        </button>
+      </div>
+    </td>
+  </tr>
+);
 };
 
 const BookingTable = ({
@@ -429,17 +431,18 @@ const BookingTable = ({
   bookings: Booking[];
 }) => {
   const formattedDate = format(parseISO(date), "EEEE, d MMMM, yyyy");
+  const [showNote, setShowNote] = useState<any>(null)
   
   return (
-    <section id={format(parseISO(date), 'yyyy-MM-dd')} className="w-full bg-white rounded-lg p-6 py-8">
+    <section id={format(parseISO(date), 'yyyy-MM-dd')} className="w-full bg-white rounded-lg px-2 sm:px-6 py-8">
       <div className="flex gap-4 items-center pb-6">
         <h5 className="font-semibold">{formattedDate}</h5>
         <p>–</p>
         <p className="text-purple-600">{bookings.length} appointment(s)</p>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white">
+      <div className="text-xs sm:text-sm xl:text-base overflow-x-auto overflow-y-visible h-full hide-scrollbar w-full">
+        <table className="w-full bg-white  ">
           <thead>
             <tr className="bg-gray-50 text-gray-700">
               <th className="py-3 px-4 text-left text-sm font-medium">Name</th>
@@ -447,9 +450,9 @@ const BookingTable = ({
               <th className="py-3 px-4 text-left text-sm font-medium">
                 Appointment Name
               </th>
-              <th className="py-3 px-4 text-left text-sm font-medium">
+              {/* <th className="py-3 px-4 text-left text-sm font-medium">
                 Appointment Type
-              </th>
+              </th> */}
               <th className="py-3 px-4 text-left text-sm font-medium">Notes</th>
               <th className="py-3 px-4 text-left text-sm font-medium">
                 Status
@@ -459,7 +462,7 @@ const BookingTable = ({
           </thead>
           <tbody>
             {bookings.map((booking) => (
-              <BookingRow key={booking.id} booking={booking} />
+              <BookingRow key={booking.id} booking={booking} showNote={showNote} setShowNote={setShowNote}/>
             ))}
           </tbody>
         </table>
@@ -468,64 +471,94 @@ const BookingTable = ({
   );
 };
 
+interface GroupedBookings {
+  [date: string]: Booking[];
+}
+
 const GroupedBookingSections = ({
   groupedBookings,
 }: {
   groupedBookings: GroupedBookings;
 }) => (
-  <div className="space-y-6">
+  <div className="space-y-6 ">
     {Object.entries(groupedBookings).map(([date, bookings]) => (
       <BookingTable key={date} date={date} bookings={bookings} />
     ))}
   </div>
 );
 
+const groupBookingsByDate = (bookings: Booking[]): GroupedBookings => {
+  return Array.isArray(bookings) ? bookings?.reduce((acc: GroupedBookings, booking: Booking) => {
+    const date = booking.appointmentDate;
+    if (date) {
+      const dateString =
+        typeof date === "string" ? date : date.toISOString().split("T")[0];
+      if (!acc[dateString]) {
+        acc[dateString] = [];
+      }
+      acc[dateString].push(booking);
+    }
+    return acc;
+  }, {})
+  : {};
+};
+
 const Appointments: React.FC = () => {
-  const { bookings, error, isLoading, getPastBookings, getBookings } =
-    useGetBookings();
-  const [list, setList] = useState<Booking[]>([]);
+  const {user,selectedItem} = useAppointmentContext()
+console.log({selectedItem})
+  const { bookings, error, isLoading, getPastBookings, getBookings } = useGetBookings();
+  const [groupedBookings, setGroupBookings] = useState<GroupedBookings>();
   const [drop, setDrop] = useState(false);
   const [filter, setFilter] = useState("upcoming");
   const dropRef = useRef(null);
-  // console.log({bookings})
 
   useClickOutside(dropRef, () => setDrop(false));
-
-  useEffect(() => {
-    if (filter === "past") {
-      getPastBookings();
+  
+  const fetchBookings = () => {
+    if (filter === "upcoming") {
+      getBookings(new Date());
     } else {
-      getBookings();
-    }
-  }, [filter]);
-
-  useEffect(() => {
-    setList(bookings);
-    // setLoading(isLoading);
-  }, [bookings]);
-
-  const refresh = async () => {
-    if (filter !== "upcoming") {
       getPastBookings();
-    } else {
-      getBookings();
     }
-  }
+  };
+
   useEffect(() => {
-    if (!isLoading && !error && list.length > 0) {
+    const dateHash = window.location.hash.substring(1)?.split('?')[0];
+    if (user) {
+      if (dateHash) {
+        getBookings(dateHash);
+      } else {
+        fetchBookings();
+      }
+    }
+  }, [user,]);
+
+  const refresh =() => { 
+    fetchBookings()
+  };
+
+  const selectView = (view: string) => {
+    if(filter===view) return
+    setFilter(view);
+    fetchBookings();
+  };
+
+  useEffect(() => {
+    if (!isLoading && !error && bookings?.length > 0) {
+      setGroupBookings(groupBookingsByDate(bookings));
       const dateHash = window.location.hash.substring(1)?.split('?')[0];
       const element = document.getElementById(dateHash);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [list, isLoading, error]);
+  }, [bookings, isLoading, error]);
 
-  const groupedBookings = groupBookingsByDate(list);
-
+  console.log({bookings, groupedBookings, user})
+  
   return (
     <>
-      <Reschedule refresh={() => setFilter(new Date().toISOString())} />
+      <Reschedule refresh={refresh} />
 
       <header className="flex w-full justify-between gap-4 flex-col sm:flex-row pb-10">
         <div>
@@ -573,7 +606,7 @@ const Appointments: React.FC = () => {
                     }`}
                     onClick={() => {
                       setDrop(false);
-                      setFilter("upcoming");
+                      selectView("upcoming");
                     }}
                   >
                     Upcoming appointments
@@ -584,7 +617,7 @@ const Appointments: React.FC = () => {
                     }`}
                     onClick={() => {
                       setDrop(false);
-                      setFilter("past");
+                      selectView("past");
                     }}
                   >
                     Past appointments
@@ -601,10 +634,16 @@ const Appointments: React.FC = () => {
           <PageLoading isLoading={isLoading} />
         ) : error ? (
           <section className="py-20 text-center w-full">{error}</section>
-        ) : list.length === 0 ? (
-          <NoAppointments handleClick={() => setFilter("past")} />
+        ) : bookings?.length === 0 ? (
+          <Empty 
+            placeholder="/appointments-placeholder.PNG"
+            text={`You don't have any booked appointment. `}
+          />
+          // <NoAppointments handleClick={() => setFilter("past")} />
         ) : (
-          <GroupedBookingSections groupedBookings={groupedBookings} />
+          groupedBookings && (
+            <GroupedBookingSections groupedBookings={groupedBookings} />
+          )
         )}
       </Suspense>
     </>

@@ -44,26 +44,26 @@ const MainTopBar = ({
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const pathname = usePathname().split("/");
-
+  const { organization, setOrganization } = useOrganizationStore();
+  const { event, setEvent } = useEventStore();
   // console.log(pathname);
   const { user, setUser } = useUserStore();
   if (!user) return;
 
-  const { organization, setOrganization } = useOrganizationStore();
-  const { event, setEvent } = useEventStore();
-  // console.log(event);
+ 
+  
 
-  const {
-    data: attendee,
-    isLoading,
-    getData,
-  } = useGetData<TAttendee>(
-    `/attendees/email/${user?.userEmail}?eventId=${eventId}`
-  );
+  // const {
+  //   data: attendee,
+  //   isLoading,
+  //   getData,
+  // } = useGetData<TAttendee>(
+  //   `/attendees/email/${user?.userEmail}?eventId=${eventId}`
+  // );
 
-  useEffect(() => {
-    getData();
-  }, [eventId]);
+  // useEffect(() => {
+  //   getData();
+  // }, [eventId]);
 
   const {
     events,
@@ -145,14 +145,14 @@ const MainTopBar = ({
         <div></div>
       )}
 
-      {pathname.includes("event") && !isLoading && attendee && (
+      {/* {pathname.includes("event") && !isLoading && attendee && (
         <Link
           className="block sm:hidden"
           href={`/event/${event?.eventAlias}/people/info/${attendee.attendeeAlias}`}
         >
           <UserIcon color="#717171" />
         </Link>
-      )}
+      )} */}
 
       {!pathname.includes("event") && (
         <Selector

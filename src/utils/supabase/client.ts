@@ -7,4 +7,3 @@ export function createClient() {
   )
 }
 
-export const supabaseBrowserClient = createClient()

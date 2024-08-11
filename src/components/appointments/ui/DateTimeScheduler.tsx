@@ -3,14 +3,15 @@ import { timezones as Timezones } from '@/constants/timezones';
 import { AppointmentFormData,  } from '@/types/appointments';
 import React, { useEffect, useState } from 'react';
 import { SelectInput } from './CustomSelect';
+import { format } from 'date-fns';
 
 export const generateTimeOptions = () => {
   const times: string[] = [];
   for (let i = 0; i < 24; i++) {
     const date = new Date(0, 0, 0, i);
-    times.push(date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+    times.push(format(date, 'hh:mm a'));
     date.setMinutes(30);
-    times.push(date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+    times.push(format(date, 'hh:mm a'));
   }
   return times;
 };

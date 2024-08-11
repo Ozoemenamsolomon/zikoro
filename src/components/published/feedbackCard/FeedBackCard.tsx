@@ -19,7 +19,7 @@ export function FeedBackCard({ review }: { review: TFeedBack }) {
           <div
             key={index}
             className={cn(
-              index + 1 <= Number(review?.rating) && "text-yellow-500"
+              index + 1 <= Number(review?.rating) && "text-basePrimary"
             )}
           >
             {index + 1 <= review?.rating ? (

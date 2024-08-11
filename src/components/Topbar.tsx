@@ -10,6 +10,7 @@ import { Button } from ".";
 import { ArrowExportLtr } from "styled-icons/fluentui-system-filled/";
 import { ArrowExportRtl } from "styled-icons/fluentui-system-filled/";
 import useUserStore from "@/store/globalUserStore";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 const Topbar = ({ eventId }: { eventId?: string }) => {
   const pathname = usePathname();
@@ -18,6 +19,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
   const [isScrolling, setScrolling] = useState(false);
   const [left, setLeft] = useState(false);
   const { user } = useUserStore();
+  const { organization } = useOrganizationStore();
   const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
 
   useEffect(() => {
@@ -81,6 +83,11 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
     },
 
     {
+      name: "Analytics",
+      href: `${eventId}/analytics`,
+    },
+
+    {
       name: "Settings",
       href: `${eventId}/settings`,
     },
@@ -100,12 +107,14 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
     return links.filter((link) => {
       if (!user || !user?.userEmail || !isIdPresent) {
         return !set.has(String(link?.name));
+      } else if (organization?.subscriptionPlan === "Free") {
+        return link?.name !== "Engagements";
       } else {
         return links;
       }
     });
   }, [user, isIdPresent]);
-// key={pathname}
+  // key={pathname}
   return (
     <>
       <nav
@@ -164,15 +173,18 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
                   }`}
                 >
                   <Link
-                  onClick={() => setShowNav((prev) => !prev)}
-                  href={`/event/${href}`}>{name}</Link>
+                    onClick={() => setShowNav((prev) => !prev)}
+                    href={`/event/${href}`}
+                  >
+                    {name}
+                  </Link>
                 </li>
               );
             })}
           </ul>
         </div>
       </nav>
-      <AccessVerification  id={eventId} />
+      <AccessVerification id={eventId} />
     </>
   );
 };

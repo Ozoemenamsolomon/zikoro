@@ -6,7 +6,6 @@ import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 const includedPaths = [
   "/affiliates",
   "/billing",
-  "/event",
   "/events",
   "/home",
   "/profile",

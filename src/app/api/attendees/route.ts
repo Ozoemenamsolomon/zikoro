@@ -515,6 +515,10 @@ export async function PATCH(req: NextRequest) {
       const { error } = await supabase
         .from("attendees")
         .upsert(params, { onConflict: "id" });
+
+      if (error) {
+        return NextResponse.json({ error: error?.message }, { status: 400 });
+      }
       if (error) throw error;
       return NextResponse.json(
         { msg: "attendees updated successfully" },

@@ -12,13 +12,14 @@ export async function POST(req: NextRequest) {
       const {
         count,
         startDate,
-        
+
         endDate,
         address,
         organizerContact,
         organization,
         eventImage,
         trackingId,
+        role,
         eventEndDate,
         ...restItem
       } = params;
@@ -48,28 +49,6 @@ export async function POST(req: NextRequest) {
         "en-US",
         options
       ).format(date);
-
-      // convert date to ics format
-      const icsDateFormat = convertToICSFormat(eventDate);
-      //
-
-      // get attendees names
-      const attendeesNames = attendeesDetails.map(
-        (
-          {
-            firstName,
-            lastName,
-            email,
-          }: { firstName: string; lastName: string; email: string },
-          index: number
-        ) => {
-          return {
-            name: `${firstName} ${lastName}`,
-            email,
-          };
-        }
-      );
-
 
       const { error: firstError, status: firstStatus } = await supabase
         .from("eventTransactions")
@@ -126,10 +105,42 @@ export async function POST(req: NextRequest) {
         .update({
           response: "attending",
           responseDate: new Date().toISOString(),
+          guests: attendeesDetails?.map((v: any) => v?.attendeeAlias),
         })
         .eq("trackingId", trackingId);
 
-      // create attendee arraY
+      //create new user
+      for (const attendee of attendeesDetails) {
+        console.log("check hallo")
+        const { data: existingUser, error: errorFetchingUser } = await supabase
+          .from("users")
+          .select("*")
+          .eq("userEmail", attendee?.email)
+          .single();
+
+
+
+        if (errorFetchingUser) {
+          console.log(`error fetching user ${attendee?.email}`);
+        }
+
+        // user does not exist
+        if (!existingUser) {
+          const { error: errorCreatingUser, status: statusCreatingUser } =
+            await supabase.from("users").insert({
+              firstName: attendee?.firstName,
+              lastName: attendee?.lastName,
+              userEmail: attendee?.email,
+              phoneNumber: attendee?.phoneNumber,
+              created_at: new Date().toISOString()
+            });
+
+            console.log("creating status:",statusCreatingUser )
+            console.log("error", errorCreatingUser?.message);
+        }
+      }
+
+      // create attendee array
       const resolveAttendees = attendeesDetails.map(
         ({
           email,
@@ -279,7 +290,11 @@ export async function POST(req: NextRequest) {
               }</p>
             
               <a
-               href="www.zikoro.com/event/${eventAlias}/people/info/${
+               href="https://www.zikoro.com/event/${eventAlias}/people/info/${
+            attendee?.attendeeAlias
+          }?email=${
+            attendee?.email
+          }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
             attendee?.attendeeAlias
           }" 
               style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
@@ -373,7 +388,11 @@ export async function POST(req: NextRequest) {
             alt="qrcode" />
           </div>
             <a
-            href="www.zikoro.com/event/${eventAlias}/reception"
+            href="https://www.zikoro.com/event/${eventAlias}/reception?email=${
+            attendee?.email
+          }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+            attendee?.attendeeAlias
+          }"
             style="max-width:600px; margin:0 auto;"
             >
             <button

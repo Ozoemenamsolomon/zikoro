@@ -1,7 +1,7 @@
 "use client";
 import { AddCircle } from "styled-icons/fluentui-system-regular";
 import { Switch } from "@/components/ui/switch";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,16 +19,18 @@ import { addDiscount } from "@/app/server-actions/addDiscount";
 import { useDiscount } from "@/hooks";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
-import toast from "react-hot-toast"
+import Link from "next/link";
+import toast from "react-hot-toast";
+import { verifyingAccess } from "@/utils";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
-const supabase = createClientComponentClient()
+const supabase = createClientComponentClient();
 
 export default function Discount({ eventId }: { eventId: string }) {
   const [discountData, setDiscountData] = useState<[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-
 
   const getDiscount = async () => {
     try {
@@ -39,11 +41,10 @@ export default function Discount({ eventId }: { eventId: string }) {
         .eq("eventId", eventId);
       if (error) {
         setError(true);
-        
+
         throw error;
       }
       if (data) {
-        
         setDiscountData(data as any);
         setError(false);
         revalidatePath("/content/discount");
@@ -68,15 +69,16 @@ export default function Discount({ eventId }: { eventId: string }) {
     };
   });
 
-
-
   return (
     <>
-    
       <div className="px-4">
         <div className="flex w-full items-center sm:items-end justify-start sm:justify-end my-3">
           {Array.isArray(formattedData) && formattedData?.length > 0 && (
-            <DialogDemo getDiscount={getDiscount} eventId={eventId} />
+            <DialogDemo
+              data={formattedData}
+              getDiscount={getDiscount}
+              eventId={eventId}
+            />
           )}
         </div>
         <div className="overflow-x-auto w-full partner-scroll-style">
@@ -114,7 +116,11 @@ export default function Discount({ eventId }: { eventId: string }) {
                     <p className="text-[#717171] font-medium">
                       This page is empty. Discount will appear here.
                     </p>
-                    <DialogDemo getDiscount={getDiscount} eventId={eventId} />
+                    <DialogDemo
+                      data={formattedData}
+                      getDiscount={getDiscount}
+                      eventId={eventId}
+                    />
                   </div>
                 </div>
               </>
@@ -135,7 +141,6 @@ export default function Discount({ eventId }: { eventId: string }) {
                   getDiscount={getDiscount}
                 />
               ))}
-          
           </div>
         </div>
       </div>
@@ -170,10 +175,9 @@ const DiscountList: React.FC<{
   const { updating, updateDiscount } = useDiscount();
 
   async function submit(value: boolean) {
- 
-    if ( validUntil < new Date().toISOString().split("T")[0]) {
-      toast.error("Validity date has exceeded")
-      return 
+    if (validUntil < new Date().toISOString().split("T")[0]) {
+      toast.error("Validity date has exceeded");
+      return;
     }
 
     setValue(value);
@@ -208,9 +212,11 @@ const DiscountList: React.FC<{
 const DialogDemo = ({
   getDiscount,
   eventId,
+  data,
 }: {
   getDiscount: () => Promise<void>;
   eventId: string;
+  data: any[];
 }) => {
   const [minQty, setMinQty] = useState<number>(1);
   const [quantity, setQuantity] = useState<number>(1);
@@ -218,13 +224,27 @@ const DialogDemo = ({
   const [isAmtChecked, setIsAmtChecked] = useState<boolean>(true);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const { createDiscount, loading } = useDiscount();
+  const { organization } = useOrganizationStore();
   const [discountData, setDiscountData] = useState({
     discountCode: "",
     discountAmount: "",
     validUntil: "",
   });
 
+  const isMaxReached = useMemo(() => {
+    return data?.length >= 3 && organization?.subscriptionPlan !== "Enterprise";
+  }, [data, organization]);
   async function submit() {
+    // min. of 3 discount coupon - Free, Lite, Professional
+    // unlimited discount coupon - Enterprise
+    if (data?.length >= 3 && organization?.subscriptionPlan !== "Enterprise") {
+      verifyingAccess({
+        textContent:
+          "You have reached the limit of 3 discount coupons. Upgrade to higher plan",
+      });
+      return;
+    }
+
     const { discountAmount, ...restData } = discountData;
 
     const payload = isAmtChecked
@@ -427,12 +447,24 @@ const DialogDemo = ({
             </div>
             <button
               onClick={submit}
-              className="bg-basePrimary h-12 flex items-center justify-center gap-x-2 text-white px-[12px] py-[8px] rounded-[5px] w-full"
+              disabled={isMaxReached}
+              className={cn(
+                "bg-basePrimary h-12 flex items-center justify-center gap-x-2 text-white px-[12px] py-[8px] rounded-[5px] w-full",
+                isMaxReached && "bg-gray-400"
+              )}
               type="submit"
             >
               {loading && <LoaderAlt size={22} />}
               <p> Done</p>
             </button>
+            {isMaxReached && (
+              <p className="text-center mt-2">
+                Your have reached the limit of 3 discount coupons.{" "}
+                <Link className="text-basePrimary" href="/pricing">
+                  Upgrade
+                </Link>
+              </p>
+            )}
           </form>
         </DialogContent>
       </Dialog>

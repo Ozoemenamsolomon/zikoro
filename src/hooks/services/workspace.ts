@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import toast from "react-hot-toast";
 
@@ -58,7 +58,6 @@ export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, 
         .select()
         .maybeSingle()
 
-      console.log(data)
       if (error) {
         console.log(error.message);
         return;
@@ -185,7 +184,12 @@ export function useCreateTeamMember(workspaceId: number) {
           .single();
 
         if (error) {
-          toast.error(error.message);
+          if (status === 406) { // Status 406 means no rows found
+            setCurrentTeamMembers({ teamMembers: [] }); // Set an empty team members array
+            toast.error("No team members found.");
+          } else {
+            toast.error(error.message);
+          }
           return false;
         }
 
@@ -211,7 +215,7 @@ export function useCreateTeamMember(workspaceId: number) {
 
 
 export function useDeleteTeamMember(workspaceId: number) {
-  const [currentTeamMembers, setCurrentTeamMembers] = useState<any>({});
+  const [currentTeamMembers, setCurrentTeamMembers] = useState<any>({ teamMembers: [] });
 
   async function fetchTeamMembers() {
     try {
@@ -235,7 +239,8 @@ export function useDeleteTeamMember(workspaceId: number) {
 
   async function deleteTeamMember(memberId: string) {
     try {
-      const updatedTeamMembers = currentTeamMembers.teamMembers.filter((member: any) => member.id !== memberId);
+      const teamMembers = currentTeamMembers.teamMembers || [];
+      const updatedTeamMembers = teamMembers.filter((member: any) => member.id !== memberId);
 
       const { data, error } = await supabase
         .from("organization")
@@ -249,7 +254,7 @@ export function useDeleteTeamMember(workspaceId: number) {
       }
 
       setCurrentTeamMembers(data);
-      toast.error("Team member removed successfully");
+      toast.success("Team member removed successfully");
       return true;
     } catch (error) {
       console.error(error);
@@ -257,9 +262,12 @@ export function useDeleteTeamMember(workspaceId: number) {
     }
   }
 
+  useEffect(() => {
+    fetchTeamMembers();
+  }, [workspaceId]);
+
   return {
     currentTeamMembers,
     deleteTeamMember,
-    fetchTeamMembers,
   };
 }

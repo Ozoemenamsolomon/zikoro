@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
     if (error) {
       console.error("Error fetching appointment links:", error.message);
       return NextResponse.json({ error: error.message }, { status: 400 });
-    }
+    } 
 
     return NextResponse.json(
       { data, error:null  },

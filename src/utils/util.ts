@@ -175,3 +175,107 @@ export const createICSContent = (
     attendee.email
   }\nDURATION:PT${durationHours}H${durationMinutes}M\nEND:VEVENT\nEND:VCALENDAR`;
 };
+
+export const subscriptionPlans = [
+  {
+    plan: "Free",
+    features: [
+      { value: "unlimitedEvent", label: "Unlimited Event" },
+      { value: "attendeeCheckedIn", label: "Attendeee Check-in" },
+      { value: "3DiscountCoupon", label: "3 Discount Coupons" },
+      { value: "noEngagementfeature", label: "No Engagement Feature" },
+    ],
+  },
+  {
+    plan: "Lite",
+    features: [
+      { value: "unlimitedEvent", label: "Unlimited Event" },
+      { value: "attendeeCheckedIn", label: "Attendeee Check-in" },
+      { value: "3discountCoupon", label: "3 Discount Coupons" },
+      { value: "200attendeeandengagementfeature", label: "Engagement Feature" },
+      { value: "trackingRSVP", label: "RSVP responses & tracking" },
+      { value: "importAndExportOfData", label: "Data inport/export" },
+      {
+        Value: "3LiveQuiz3pollsAndunlimitedQA",
+        label: "3 Live quiz, 3 polls & Unlimited Q&A",
+      },
+    ],
+  },
+  {
+    plan: "Professional",
+    features: [
+      { value: "unlimitedEvent", label: "Unlimited Event" },
+      { value: "attendeeCheckedIn", label: "Attendeee Check-in" },
+      { value: "3discountCoupon", label: "3 Discount Coupons" },
+      {
+        value: "1000attendeeandengagementfeature",
+        label: "Engagement Feature",
+      },
+      { value: "trackingRSVP", label: "RSVP responses & tracking" },
+      { value: "importAndExportOfData", label: "Data inport/export" },
+      {
+        Value: "3LiveQuiz3pollsAndunlimitedQA",
+        label: "3 Live quiz, 3 polls & Unlimited Q&A",
+      },
+      { value: "unliimitedSessions", label: "Unlimited sessions/event" },
+      { value: "unlimitedAffiliates", label: "Unlimited Affiliates" },
+      { value: "5partnerVirtualBooth", label: "5 partner virtual booth" },
+    ],
+  },
+  {
+    plan: "Enterprise",
+    features: [
+      { value: "unlimitedEvent", label: "Unlimited Event" },
+      { value: "attendeeCheckedIn", label: "Attendeee Check-in" },
+      {
+        value: "unlimiteddiscountCoupon",
+        label: "Unlimited discount coupons/ event",
+      },
+      {
+        value: "1500attendeeandengagementfeature",
+        label: "15000 Attendees/ engagement features",
+      },
+      { value: "trackingRSVP", label: "RSVP responses & tracking" },
+      { value: "importAndExportOfData", label: "Data inport/export" },
+      {
+        Value: "3LiveQuiz3pollsAndunlimitedQA",
+        label: "3 Live quiz, 3 polls & Unlimited Q&A",
+      },
+      { value: "unliimitedSessions", label: "Unlimited sessions/event" },
+      { value: "unlimitedAffiliates", label: "Unlimited Affiliates" },
+      { value: "10partnerVirtualBooth", label: "10 partner virtual booth" },
+    ],
+  },
+];
+
+export function verifyingAccess({
+  textContent,
+  isNotUpgrading,
+}: {
+  textContent: string;
+  isNotUpgrading?: boolean;
+}) {
+  const subModal = document.getElementById("subscription-modal");
+  const contentDiv = document.getElementById("content");
+  const upgradeButton = document.getElementById("upgrade-button");
+
+  if (contentDiv && subModal) {
+    subModal.style.display = "block";
+    contentDiv.textContent = textContent;
+  }
+  if (isNotUpgrading && upgradeButton) {
+    upgradeButton.style.display = "none";
+  }
+
+  return;
+}
+
+export function formatNumberToShortHand(num: number): string {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(2) + "M";
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(2) + "k";
+  }
+  return num.toString();
+}

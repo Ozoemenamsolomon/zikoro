@@ -8,6 +8,7 @@ import {
   DashboardLinkendinIcon,
   DashboardInstagramIcon,
   DashboardFacebookIcon,
+  PencilIcon,
 } from "@/constants";
 import React, { useEffect, useState } from "react";
 import useOrganizationStore from "@/store/globalOrganizationStore";
@@ -26,7 +27,9 @@ import {
   useDeleteWorkspace,
   useUpdateWorkspace,
 } from "@/hooks/services/workspace";
+import { useGetWorkspaceSubscriptionPlan } from "@/hooks/services/subscription";
 import { useRouter } from "next/navigation";
+import useUserStore from "@/store/globalUserStore";
 
 interface FormData {
   orgName: string;
@@ -45,10 +48,17 @@ interface FormData {
 
 export default function General() {
   const { organization, setOrganization } = useOrganizationStore();
+  const { user, setUser } = useUserStore();
+  const {
+    data: getWorkspaceSubscriptionPlanData,
+    refetch: getWorkspaceSubscriptionPlan,
+    isLoading,
+  } = useGetWorkspaceSubscriptionPlan(user?.id, organization?.id);
   const [delInput, setDelInput] = useState<string>("");
   const [logo, setLogo] = useState<any>(null);
   const [favicon, setFavicon] = useState<any>(null);
   const [isLogoUploaded, setIsLogoUploaded] = useState<boolean>(false);
+  const [isReadOnly, setIsReadOnly] = useState<boolean>(true);
   const [isFaviconUploaded, setIsFaviconUploaded] = useState<boolean>(false);
   const [logoUrl, setLogoUrl] = useState<string>("");
   const [faviconUrl, setFaviconUrl] = useState<string>("");
@@ -342,27 +352,10 @@ export default function General() {
     }
   };
 
-  // Sync formData with organization data
-  useEffect(() => {
-    if (organization) {
-      setFormData({
-        orgName: organization.organizationName || "",
-        orgType: organization.organizationType || "",
-        orgPlan: organization.subscriptionPlan || "",
-        orgCountry: organization.country || "",
-        orgTel: organization.eventPhoneNumber || "",
-        orgWhatsappNumber: organization.eventWhatsApp || "",
-        orgEmail: organization.eventContactEmail || "",
-        orgX: organization.x || "",
-        orgLinkedin: organization.linkedIn || "",
-        orgFacebook: organization.facebook || "",
-        orgInstagram: organization.instagram || "",
-        orgId: organization.id,
-      });
-      setLogoUrl(organization.organizationLogo);
-      setFaviconUrl(organization.favicon);
-    }
-  }, [organization]);
+  //edit plan
+  const editPlan = () => {
+    router.push("/pricing");
+  };
 
   //update setting function
   const updateSetting = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -482,13 +475,35 @@ export default function General() {
     }
   };
 
+
+  // Sync formData with organization data
+  useEffect(() => {
+    if (organization && getWorkspaceSubscriptionPlanData !== null) {
+      setFormData({
+        orgName: organization.organizationName || "",
+        orgType: organization.organizationType ||  "",
+        orgPlan: getWorkspaceSubscriptionPlanData  || organization.subscriptionPlan || "",
+        orgCountry: organization.country || "",
+        orgTel: organization.eventPhoneNumber || "",
+        orgWhatsappNumber: organization.eventWhatsApp || "",
+        orgEmail: organization.eventContactEmail || "",
+        orgX: organization.x || "",
+        orgLinkedin: organization.linkedIn || "",
+        orgFacebook: organization.facebook || "",
+        orgInstagram: organization.instagram || "",
+        orgId: organization.id,
+      });
+      setLogoUrl(organization.organizationLogo);
+      setFaviconUrl(organization.favicon);
+    }
+  }, [organization, getWorkspaceSubscriptionPlanData]);
   return (
     <>
       {organization ? (
         <div className="">
           <form action="" onSubmit={(e) => updateSetting(e)}>
             <div className="mt-[60px] mb-8 ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px] ">
-              <div className="flex justify-between items-center pt-[32px]">
+              <div className="flex justify-between items-center pt-[32px] ">
                 <div className="flex items-center gap-x-3 ">
                   <GeometryIcon />
                   <p className="text-xl font-semibold">Basic Settings</p>
@@ -545,26 +560,19 @@ export default function General() {
 
                 <div className=" w-full lg:w-1/2">
                   <p className="text-[14px] text-[#1f1f1f]">Pricing Plan</p>
-                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
-                    <select
-                      name="orgPlan"
+                  <div className="w-full flex items-center gap-x-2 h-[45px] mt-2 p-1 border-[1px] border-indigo-600 rounded-xl">
+                    <input
+                      type="text"
                       value={formData.orgPlan}
+                      name="orgName"
+                      readOnly={isReadOnly}
                       onChange={(e) => handleInputChange(e)}
-                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[7px]"
-                    >
-                      <option value="free" className="">
-                        Free
-                      </option>
-                      <option value="lite" className="">
-                        Lite
-                      </option>
-                      <option value="professional" className="">
-                        Professional
-                      </option>
-                      <option value="enterprise" className="">
-                        Enterprise
-                      </option>
-                    </select>
+                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                    />
+
+                    <div className="cursor-pointer" onClick={() => editPlan()}>
+                      <PencilIcon />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -638,7 +646,7 @@ export default function General() {
               <div className="flex flex-col lg:flex-row mt-8 px-0  xl:px-[206px] gap-[52px] mb-8">
                 <div className="w-full lg:w-full xl:w-1/2">
                   <p className="text-base font-medium">Logo</p>
-                  <p className="text-[14px] font-normal mt-2 h-full lg:h-[79px]">
+                  <p className="text-[14px] font-normal mt-2 h-full lg:h-[82px]">
                     The logo will be used on the event website, in emails, and
                     as a thumbnail for sharing the event link.
                   </p>
@@ -702,7 +710,7 @@ export default function General() {
                 </div>
                 <div className="w-full lg:w-full xl:w-1/2">
                   <p className="text-base font-medium">Favicon</p>
-                  <p className="text-[14px] font-normal mt-2 h-full lg:h-[79px]">
+                  <p className="text-[14px] font-normal mt-2 h-full lg:h-[82px]">
                     A favicon is a visual representation of your organization's
                     webpage and appears in the browser tab when viewed.
                   </p>

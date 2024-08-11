@@ -12,58 +12,33 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
   }
 
+  const { searchParams } = new URL(req.url);
+  const date = searchParams.get('date');  
+  const userId = searchParams.get('userId');
+
+  if ( !userId || !date) {
+    return NextResponse.json({ error: "Missing required parameters", data: null }, { status: 400 });
+  } 
+
   try {
-    // Get the authenticated user
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+    const today = startOfDay(new Date(date!)).toISOString()
 
-    if (authError) {
-      console.error("Authentication error:", authError.message);
-      return NextResponse.json({ error: "Authentication failed" }, { status: 401 });
-    }
-
-    if (!user) {
-      console.error("No user found in session");
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
-    const {
-      data: userData,
-      error: userError,
-    } = await supabase.from('users').select('*').eq('userEmail', user.email).single();
-
-    if (userError) {
-      console.error("Error fetching user from database:", userError.message);
-      return NextResponse.json({ error: "User fetch failed" }, { status: 401 });
-    }
-
-    if (!userData) {
-      console.error("No user data found for email:", userData.userEmail);
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
-    const userId = userData.id;
-    const today = startOfDay(new Date()).toISOString()
-    // , createdBy(userEmail,organization,firstName,lastName,phoneNumber)
-    // Fetch appointment links created by the authenticated user
-    const { data, error } = await supabase
+    const {data, error}= await supabase
       .from("bookings")
-      .select(`*, appointmentLinkId(*, createdBy(userEmail,organization,firstName,lastName,phoneNumber))`)
+      .select(`*, appointmentLinkId(*, createdBy(id, userEmail,organization,firstName,lastName,phoneNumber))`)
       .eq("createdBy", userId)
       .gte('appointmentDate', today)
       .order("appointmentDate", { ascending: true });
 
+    console.log({res:{data,error},userId,date,today})
+
     if (error) {
-      console.error("Error fetching appointment links:", error.message);
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      console.error("Error fetching bookings:", error.message);
+      return NextResponse.json({data:null, error: error.message }, { status: 400 });
     }
 
-    return NextResponse.json(
-      { data },
-      { status: 200 }
-    );
+    return NextResponse.json({ data, count:data?.length, error:null }, { status: 200 });
+
   } catch (error) {
     console.error("Unhandled error:", error);
 

@@ -190,6 +190,12 @@ export function CreateOrganization({
     }
   }, [subPlanPrice, discount]);
 
+  const appliedDiscount = useMemo(() => {
+    if (discount) {
+      return ((Number(discount?.discountPercentage) || 0) / 100) * subPlanPrice;
+    } else return 0;
+  }, [subPlanPrice, discount]);
+
   async function onSubmit(values: z.infer<typeof organizationSchema>) {
     if (values.subscriptionPlan === "Free") {
       await organisation(values);
@@ -203,7 +209,7 @@ export function CreateOrganization({
       )}&plan=${encodeURIComponent(
         selectedPricing?.plan || "Free"
       )}&isMonthly=${encodeURIComponent(isMonthly)}&total=${encodeURIComponent(
-        total
+        total + appliedDiscount
       )}&currency=${encodeURIComponent(
         selectedCurrency
       )}&organizationName=${encodeURIComponent(
@@ -214,7 +220,10 @@ export function CreateOrganization({
         values.subscriptionPlan
       )}&redirectUrl=${encodeURIComponent(
         window.location.href
-      )}&isCreate=${encodeURIComponent(true)}`;
+      )}&isCreate=${encodeURIComponent(true)}&coupon=${encodeURIComponent(
+        appliedDiscount
+      )}
+      `;
 
       router.push(url);
     }
