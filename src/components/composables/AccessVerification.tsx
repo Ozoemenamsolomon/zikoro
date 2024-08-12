@@ -67,7 +67,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
     //   router.push("/login");
     //   return;
     // }
-    if (!isLoading && user !== null && !singleEventLoading && data !== null) {
+    if (!isLoading && user !== null && !singleEventLoading && data !== null && userAccess) {
       console.log("I entered the hooks .....");
       const appAccess = data?.eventAppAccess;
 
