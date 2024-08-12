@@ -67,7 +67,14 @@ export function AccessVerification({ id }: { id?: string | any }) {
     //   router.push("/login");
     //   return;
     // }
-    if (!isLoading && user !== null && !singleEventLoading && data !== null && userAccess) {
+    if (
+      !isLoading &&
+      user !== null &&
+      !singleEventLoading &&
+      data !== null &&
+      typeof userAccess?.isOrganizer === "boolean" &&
+      typeof userAccess?.isOrganizer === "boolean"
+    ) {
       console.log("I entered the hooks .....");
       const appAccess = data?.eventAppAccess;
 
@@ -96,11 +103,9 @@ export function AccessVerification({ id }: { id?: string | any }) {
         return eventAlias === id && email === user?.userEmail;
       });
 
-    
       if (userAccess?.isOrganizer || userAccess?.isTeamMember) {
         // user is a team member or an organizer
         setLoading(false);
-    
 
         return () => clearInterval(interval);
       } else if (
