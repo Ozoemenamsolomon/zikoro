@@ -19,6 +19,8 @@ export default function RootLayout({
   const divRef = useRef<HTMLDivElement>(null);
   const { eventId }: { eventId: string } = useParams();
 
+
+
   useLayoutEffect(() => {
     const div = divRef.current;
 

@@ -8,12 +8,9 @@ import { BarChart, LineChart, lineElementClasses } from "@mui/x-charts";
 import {
   eachDayOfInterval,
   eachMonthOfInterval,
-  eachQuarterOfInterval,
   eachWeekOfInterval,
-  differenceInHours,
   endOfDay,
   startOfDay,
-  differenceInDays,
   endOfWeek,
   startOfWeek,
   endOfMonth,
@@ -22,6 +19,7 @@ import {
   isSameDay,
   isSameMonth,
   isSameWeek,
+  differenceInMilliseconds,
 } from "date-fns";
 import { useParams } from "next/navigation";
 import React, { ReactNode, useMemo, useState } from "react";
@@ -32,6 +30,17 @@ import peopleAdd from "@/public/icons/people_add.svg";
 import peopleSync from "@/public/icons/people_sync.svg";
 import moneyUp from "@/public/icons/money_up.svg";
 import { cn } from "@/lib";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import useOrganizationStore from "@/store/globalOrganizationStore";
+import { useGetData } from "@/hooks/services/request";
 
 const AnalyticsInfoCard = ({
   label,
@@ -68,6 +77,7 @@ const AnalyticsInfoCard = ({
 
 const Registrations = () => {
   const { eventId } = useParams();
+  const { organization } = useOrganizationStore();
 
   const {
     attendees,
@@ -81,6 +91,9 @@ const Registrations = () => {
   } = useGetEventTransactions({
     eventId,
   });
+  const { data: recurringData, isLoading: recurringIsLoading } = useGetData(
+    `/events/${eventId}/analytics/recurring?organizationId=${organization?.id}`
+  );
   const { event } = useEventStore();
 
   const timeDivisions = ["daily", "weekly", "monthly"];
@@ -88,8 +101,7 @@ const Registrations = () => {
     "daily" | "monthly" | "weekly"
   >("daily");
 
-  console.log(attendees[0]);
-  console.log(eventTransactions);
+  console.log(recurringData);
 
   const revenueTarget =
     event?.pricing.reduce(
@@ -117,7 +129,7 @@ const Registrations = () => {
       eventTransactions.length) *
     100;
   const registrationViaReferrals = 0;
-  const revenueViaReferrals = "0%";
+  const revenueViaReferrals = "0";
   const eventStartDateToNow = useMemo(() => {
     const dateFn =
       displayLineChart === "monthly"
@@ -127,10 +139,10 @@ const Registrations = () => {
         : eachDayOfInterval;
 
     return dateFn({
-      start: event?.startDateTime ?? new Date(),
+      start: event?.createdAt ?? new Date(),
       end: new Date(),
     });
-  }, [event?.startDateTime, displayLineChart]);
+  }, [event?.createdAt, displayLineChart]);
 
   const registeredByDate = eventStartDateToNow.map((date) =>
     attendees.reduce((acc, { registrationDate }) => {
@@ -142,6 +154,11 @@ const Registrations = () => {
           : isSameDay;
       return compareFn(date, registrationDate) ? acc + 1 : acc;
     }, 0)
+  );
+  console.log(attendees.map(({ registrationDate }) => registrationDate));
+  console.log(
+    registeredByDate.reduce((acc, curr) => acc + curr, 0),
+    attendees.length
   );
   const attendeeTypes = attendeeTypeOptions.map((option) => option.value);
   const attendeeCounts = attendeeTypes.map((type) =>
@@ -209,6 +226,10 @@ const Registrations = () => {
                   className="h-full bg-basePrimary rounded-2xl transition-all"
                 />
               </div>
+              <div className="text-sm text-gray-600 font-medium text-center">
+                <b>{((revenue / revenueTarget) * 100).toFixed() + "% "}</b>
+                of revenue goal reached
+              </div>
             </div>
             <div className="bg-white/70 p-2 rounded-md space-y-2 flex-1">
               <div className="flex gap-2 items-center">
@@ -231,6 +252,13 @@ const Registrations = () => {
                   }}
                   className="h-full bg-basePrimary rounded-2xl transition-all"
                 />
+              </div>
+              <div className="text-sm text-gray-600 font-medium text-center">
+                <b>
+                  {((registrations / registrationTarget) * 100).toFixed() +
+                    "% "}
+                </b>
+                of registration goal reached
               </div>
             </div>
           </div>
@@ -303,14 +331,39 @@ const Registrations = () => {
             />
           )}
           label={"Returning Attendees"}
-          value={"12"}
+          value={recurringData?.recurringEmailCount ?? 0}
         />
       </section>
       <section className="bg-white p-4 space-y-4 rounded-md border">
-        <h2 className="text-gray-600 font-medium text-sm capitalize">
-          {displayLineChart} Registrations
-        </h2>
-        <div className="flex">
+        <div className="flex justify-between items-center">
+          <h2 className="text-gray-600 font-medium text-sm capitalize">
+            {displayLineChart} Registrations
+          </h2>
+          <Select
+            onValueChange={(timeDivision: string) =>
+              setDisplayLineChart(timeDivision)
+            }
+            defaultValue={displayLineChart}
+          >
+            <SelectTrigger className="!w-fit">
+              <SelectValue
+                placeholder={"Select division"}
+                className={cn(
+                  "placeholder:text-sm !w-fit p-4",
+                  !displayLineChart ? "text-gray-200" : "text-gray-700"
+                )}
+              />
+            </SelectTrigger>
+            <SelectContent className="max-h-[250px] hide-scrollbar overflow-auto max-w-md">
+              {timeDivisions.map((timeDivision, index) => (
+                <SelectItem key={index} value={timeDivision} className="">
+                  {timeDivision}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        {/* <div className="flex">
           {timeDivisions.map((timeDivision, index) => (
             <button
               key={index}
@@ -325,16 +378,20 @@ const Registrations = () => {
               {timeDivision}
             </button>
           ))}
-        </div>
+        </div> */}
         <LineChart
           colors={["#001FCC"]}
           sx={{
-            // [`& .${lineElementClasses.root}`]: {
-            //   display: "none",
-            // },
+            [`& .MuiChartsAxis-tickLabel`]: {
+              fill: "#4b5563 !important",
+              fontSize: "10px !important",
+            },
             "& .MuiAreaElement-series-yaxis": {
               //   fill: "url('#lineGradient')",
               fill: "#001FCC10",
+            },
+            "& .MuiChartsAxis-line": {
+              stroke: "#4b5563 !important",
             },
           }}
           xAxis={[
@@ -352,25 +409,21 @@ const Registrations = () => {
                 ),
               tickMinStep:
                 displayLineChart === "daily"
-                  ? differenceInHours(
+                  ? differenceInMilliseconds(
                       endOfDay(new Date()),
                       startOfDay(new Date())
                     )
                   : displayLineChart === "weekly"
-                  ? differenceInDays(
+                  ? differenceInMilliseconds(
                       endOfWeek(new Date()),
                       startOfWeek(new Date())
                     )
                   : displayLineChart === "monthly"
-                  ? differenceInDays(
+                  ? differenceInMilliseconds(
                       endOfMonth(new Date()),
                       startOfMonth(new Date())
-                    ) + 1
-                  : null,
-              tickLabelStyle: {
-                color: "#717171",
-                fontSize: 8,
-              },
+                    )
+                  : 0,
             },
           ]}
           series={[
@@ -405,35 +458,25 @@ const Registrations = () => {
         </LineChart>
       </section>
       <section className="grid md:grid-cols-2 gap-8">
-        <section className="bg-white p-4 space-y-4 border rounded-md">
+        <section className="bg-white p-4 space-y-4 border rounded-md h-full max-h-[250px] overflow-hidden">
           <h2 className="text-gray-600 font-medium text-sm">
-            Registrations By Attendee Type
+            Returning Attendees
           </h2>
-          <BarChart
-            yAxis={[
-              {
-                scaleType: "band",
-                data: attendeeTypes,
-                categoryGapRatio: 0.5,
-                barGapRatio: 0.5,
-              },
-            ]}
-            series={[
-              { data: attendeeCounts, stack: "total", color: "#001FCC" },
-              { data: attendeeOffsets, stack: "total", color: "#001FCC33" },
-            ]}
-            xAxis={[{ tickMinStep: 1 }]}
-            layout="horizontal"
-            grid={{ vertical: true }}
-            margin={{ left: 100, top: 5 }}
-            leftAxis={{ disableLine: true, disableTicks: true }}
-            bottomAxis={{ disableLine: true, tickSize: 10 }}
-            borderRadius={20}
-            height={400}
-            xAxis={[{ tickMinStep: 1 }]}
-          />
+          <div className="flex flex-col gap-2 max-h-full overflow-auto no-scrollbar">
+            {recurringData &&
+              recurringData?.recurringEmails
+                .sort((a, b) => b.count - a.count)
+                .map(({ email, count }) => (
+                  <div className="flex items-center gap-4">
+                    <div className="truncate text-gray-700 font-medium flex-1">
+                      {email}
+                    </div>
+                    <span className="text-gray-900 font-medium">{count}</span>
+                  </div>
+                ))}
+          </div>
         </section>
-        <section className="bg-white p-4 space-y-4 border rounded-md">
+        <section className="bg-white p-4 space-y-4 border rounded-md h-full max-h-[250px]">
           <h2 className="text-gray-600 font-medium text-sm">
             Attendees By Country
           </h2>
@@ -459,14 +502,41 @@ const Registrations = () => {
       </section>
       <section className="bg-white p-4 space-y-4 border rounded-md">
         <h2 className="text-gray-600 font-medium text-sm">
+          Registrations By Attendee Type
+        </h2>
+        <BarChart
+          yAxis={[
+            {
+              scaleType: "band",
+              data: attendeeTypes,
+              categoryGapRatio: 0.5,
+              barGapRatio: 0.5,
+            },
+          ]}
+          series={[
+            { data: attendeeCounts, stack: "total", color: "#001FCC" },
+            { data: attendeeOffsets, stack: "total", color: "#001FCC33" },
+          ]}
+          xAxis={[{ tickMinStep: 1 }]}
+          layout="horizontal"
+          grid={{ vertical: true }}
+          margin={{ left: 100, top: 5 }}
+          leftAxis={{ disableLine: true, disableTicks: true }}
+          bottomAxis={{ disableLine: true, tickSize: 10 }}
+          borderRadius={20}
+          height={400}
+        />
+      </section>
+      <section className="bg-white p-4 space-y-4 border rounded-md">
+        <h2 className="text-gray-600 font-medium text-sm">
           Sales by Ticket Type
         </h2>
         <table className="border rounded-md w-full">
           <thead className="w-full">
             <tr className="flex bg-basePrimary/10 p-4 text-gray-600 font-medium">
-              <td className="flex-[30%]">Ticket Name</td>
+              <td className="flex-[30%]">Name</td>
               <td className="flex-[25%]">Price</td>
-              <td className="flex-[20%]">No Bought</td>
+              <td className="flex-[20%]">Qty</td>
               <td className="flex-[25%]">Revenue</td>
             </tr>
           </thead>
@@ -489,19 +559,20 @@ const Registrations = () => {
         </h2>
         <div className="w-1/2 mx-auto flex flex-wrap justify-center gap-2">
           {[
-            "whatsapp",
-            "facebook",
-            "google",
-            "x",
-            "instagram",
-            "linkedin",
-            "website",
-            "others",
-          ].map((social) => (
-            <span className="rounded-3xl border p-4 capitalize text-3xl font-medium text-gray-700">
-              {social}
-            </span>
-          ))}
+            ...new Set(
+              eventTransactions.map(({ referralSource }) => referralSource)
+            ),
+          ].map(
+            (social) =>
+              social && (
+                <span
+                  key={social}
+                  className="rounded-3xl border p-4 capitalize text-3xl font-medium text-gray-700"
+                >
+                  {social}
+                </span>
+              )
+          )}
         </div>
       </section>
     </>

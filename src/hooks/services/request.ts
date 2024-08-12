@@ -9,7 +9,7 @@ type RequestStatus = {
 
 type UseGetResult<TData> = {
   data: TData | null;
-  getData: () => Promise<void>;
+  getData: () => Promise<TData | undefined>;
 } & RequestStatus;
 
 type usePostResult<TData, TReturnData = any> = {
@@ -50,7 +50,7 @@ export const useGetData = <TData>(
 
   useEffect(() => {
     fetchInitial && getData();
-  }, []);
+  }, [endpoint]);
 
   return {
     data,

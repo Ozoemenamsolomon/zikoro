@@ -1,27 +1,18 @@
 "use client";
 
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import {
-  getCookie,
-  useFetchSingleEvent,
-  useGetAllAttendees,
-  useCheckTeamMember,
-  useVerifyUserAccess,
-} from "@/hooks";
-import { useEffect, useMemo, useState } from "react";
+import { useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
 import useUserStore from "@/store/globalUserStore";
+import useAccessStore from "@/store/globalAcessStore";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 export function AccessVerification({ id }: { id?: string | any }) {
   const pathname = usePathname();
-  const {
-    isOrganizer,
-    attendeeId,
-    isLoading: verifyingLoading,
-  } = useVerifyUserAccess(id!);
-  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId: id });
   const { user } = useUserStore();
+  const { organization } = useOrganizationStore();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
@@ -34,6 +25,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
     refetch,
   } = useFetchSingleEvent(id);
   const [notAuthorized, setNotAuthorized] = useState(false);
+  const { userAccess } = useAccessStore();
 
   useEffect(() => {
     if (data && !singleEventLoading) {
@@ -57,28 +49,21 @@ export function AccessVerification({ id }: { id?: string | any }) {
   },[pathname])
  */
 
-  console.log(
-    "event",
-    eventLoading,
-    "attendee",
-    verifyingLoading,
-    "single event",
-    singleEventLoading
-  );
+  console.log("single event loading", userAccess?.isTeamMember);
 
   useEffect(() => {
-    // if (!user) {
-    //   router.push("/login");
-    //   return;
-    // }
+    if (!user) {
+      window.open(`/live-events/${id}`, "_self");
+      return;
+    }
     if (
       !isLoading &&
       user !== null &&
-      !eventLoading &&
       !singleEventLoading &&
       data !== null &&
-      !verifyingLoading
+      typeof userAccess?.isTeamMember === "boolean"
     ) {
+      console.log("I entered the hooks .....");
       const appAccess = data?.eventAppAccess;
 
       let remainder = remainingTime;
@@ -100,17 +85,17 @@ export function AccessVerification({ id }: { id?: string | any }) {
           }
         }, 1000);
       }
-
+      const isTeamMember = organization?.teamMembers?.some(
+        (v) => v?.userEmail === user?.userEmail
+      ) || userAccess?.isTeamMember;
       // checked if the user is an attendee
       const isPresent = attendees?.some(({ email, eventAlias }) => {
         return eventAlias === id && email === user?.userEmail;
       });
 
-      console.log("sdfrr", isIdPresent, isOrganizer);
-      if (isOrganizer || isIdPresent) {
+      if (isTeamMember) {
         // user is a team member or an organizer
         setLoading(false);
-        console.log("here");
 
         return () => clearInterval(interval);
       } else if (
@@ -128,8 +113,6 @@ export function AccessVerification({ id }: { id?: string | any }) {
       } else {
         if (!isPresent) {
           window.open(`/live-events/${id}`, "_self");
-          console.log("here");
-          setNotRegistered(true);
         }
         // router.push("/login");
         // pls remove after all the event have app access date on creation
@@ -140,25 +123,23 @@ export function AccessVerification({ id }: { id?: string | any }) {
 
       // return () => clearInterval(interval);
     }
-  }, [
-    user,
-    isLoading,
-    eventLoading,
-    singleEventLoading,
-    verifyingLoading,
-    pathname,
-  ]);
+  }, [user, isLoading, singleEventLoading, userAccess, pathname]);
 
-  const isLoadedAll = useMemo(() => {
-    return (
-      !isLoading &&
-      user !== null &&
-      !eventLoading &&
-      !singleEventLoading &&
-      data !== null
-    );
-  }, [isLoading, user, eventLoading, singleEventLoading, data]);
-  console.log("sdf", isIdPresent, isOrganizer, loading);
+  // const isLoadedAll = useMemo(() => {
+  //   return (
+  //     !isLoading &&
+  //     user !== null &&
+  //     !eventLoading &&
+  //     !singleEventLoading &&
+  //     data !== null
+  //   );
+  // }, [isLoading, user, eventLoading, singleEventLoading, data]);
+  // console.log(
+  //   "sdf==",
+  //   userAccess?.isTeamMember,
+  //   userAccess?.isOrganizer,
+  //   loading
+  // );
   const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
   const hours = Math.floor(
     (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
