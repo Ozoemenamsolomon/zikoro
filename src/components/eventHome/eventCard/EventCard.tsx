@@ -18,7 +18,7 @@ import { saveCookie } from "@/hooks";
 import { cn } from "@/lib";
 import { useRouter } from "next/navigation";
 import { ExternalLink } from "styled-icons/remix-fill";
-
+import useAccessStore from "@/store/globalAcessStore";
 export function EventCard({
   event,
   refetch,
@@ -27,6 +27,7 @@ export function EventCard({
   event: TOrgEvent;
 }) {
   const [isAction, setAction] = useState(false);
+  const { setUserAccess, userAccess } = useAccessStore();
   const router = useRouter();
   const {
     startDate,
@@ -51,6 +52,7 @@ export function EventCard({
       startDate: event?.startDateTime,
     });
     saveCookie("event", event);
+    setUserAccess({ ...userAccess, isTeamMember: true });
     router.push(`/event/${event?.eventAlias}/content/info`);
   }
 

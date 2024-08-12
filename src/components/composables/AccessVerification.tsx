@@ -71,9 +71,8 @@ export function AccessVerification({ id }: { id?: string | any }) {
       !isLoading &&
       user !== null &&
       !singleEventLoading &&
-      data !== null &&
-      typeof userAccess?.isOrganizer === "boolean" &&
-      typeof userAccess?.isOrganizer === "boolean"
+      data !== null 
+      
     ) {
       console.log("I entered the hooks .....");
       const appAccess = data?.eventAppAccess;
