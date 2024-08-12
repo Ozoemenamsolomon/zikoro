@@ -659,7 +659,7 @@ export default function General() {
                       <img
                         src={logo}
                         alt="logo"
-                        className="w-full h-[321px] object-cover rounded-lg"
+                        className="w-full h-[321px] object-contain rounded-lg"
                       />
 
                       {!isLogoUploaded && (

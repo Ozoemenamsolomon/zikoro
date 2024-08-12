@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
         .from("events")
         .select("*, organization!inner(*)")
         .eq("published", true)
-        .eq('explore', true)
 
       if (error) throw error;
 
