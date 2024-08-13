@@ -37,9 +37,7 @@ export async function GET(
   try {
     const { data, error } = await supabase
       .from("attendees")
-      .select(
-        "email, eventAlias, events!inner(organisationId), registrationDate"
-      )
+      .select("email, eventAlias, events!inner(organisationId)")
       .eq("events.organisationId", organizationId);
 
     if (error || !data) {
@@ -47,41 +45,20 @@ export async function GET(
     }
 
     // Group emails and ensure at least one matches the eventAlias with eventId
-    const emailCounts = data.reduce<
-      Record<
-        string,
-        { count: number; valid: boolean; registrationDate: Date | null }
-      >
-    >((acc, { email, eventAlias, registrationDate }) => {
-      // First, check if the email is already being processed
-      if (!acc[email]) {
-        // Check if at least one attendee with the same email has eventAlias matching eventId
-        const matchingAttendee = data.find(
-          (attendee) =>
-            attendee.email === email && attendee.eventAlias === eventId
-        );
-
-        if (!matchingAttendee) {
-          // If no matching attendee is found, skip this email
-          return acc;
+    const emailCounts = data.reduce<Record<string, { count: number, valid: boolean }>>(
+      (acc, { email, eventAlias }) => {
+        
+        if (!acc[email]) {
+          acc[email] = { count: 0, valid: false };
         }
-
-        // Initialize the accumulator for this email
-        acc[email] = {
-          count: 0,
-          valid: true,
-          registrationDate: new Date(matchingAttendee.registrationDate),
-        };
-      }
-
-      // Check if the current attendee's registrationDate is after the eventId's registrationDate
-      const currentRegDate = new Date(registrationDate);
-      if (currentRegDate < acc[email].registrationDate!) {
         acc[email].count++;
-      }
-
-      return acc;
-    }, {});
+        if (eventAlias === eventId) {
+          acc[email].valid = true;
+        }
+        return acc;
+      },
+      {}
+    );
 
     // Filter only emails that have more than 1 occurrence and a valid eventAlias
     const recurringEmails = Object.entries(emailCounts)
