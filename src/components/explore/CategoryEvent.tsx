@@ -11,6 +11,7 @@ export default function CategoryEvent({
   categoryName,
   categoryCount,
 }: CategoryEventProp) {
+  
   const router = useRouter();
 
   return (
