@@ -378,12 +378,12 @@ input[type="number"] {
 /* DatePicker.css */
 .react-datepicker {
   font-family: Arial, sans-serif;
-  border: 1px solid #7c4dff; /* Set border color to a lighter shade of indigo */
+  
 }
 
-.react-datepicker__header {
+/* .react-datepicker__header {
   background-color: #7c4dff; /* Set header background color to a lighter shade of indigo */
-}
+
 
 .react-datepicker__day--selected {
   background-color: #7c4dff !important; /* Set selected day background color to a lighter shade of indigo */
@@ -403,19 +403,19 @@ input[type="number"] {
   ); /* Set hover background color to a light gray */
 }
 
-.react-datepicker__current-month {
+/* .react-datepicker__current-month {
   color: #7c4dff; /* Set current month text color to a lighter shade of indigo */
-}
 
-.react-datepicker__day-name,
+
+/* .react-datepicker__day-name,
 .react-datepicker__day {
   color: #7c4dff; /* Set day name and day text color to a lighter shade of indigo */
-}
 
-.react-datepicker__navigation--previous,
+
+/* .react-datepicker__navigation--previous,
 .react-datepicker__navigation--next {
   border-color: #7c4dff; /* Set navigation button border color to a lighter shade of indigo */
-}
+
 
 .react-datepicker__navigation--previous:hover,
 .react-datepicker__navigation--next:hover {

@@ -96,7 +96,10 @@ export default function FeaturedEvents() {
 
   useEffect(() => {
     if (query) {
-      setSelectedButtons(query.split(","));
+      const selectedCategories: any = query
+        .split(",")
+        .map((q) => q.trim());
+      setSelectedButtons(selectedCategories);
     }
   }, [query]);
 
@@ -127,7 +130,7 @@ export default function FeaturedEvents() {
     //fetching event categories
     if (eventData) {
       const categories: string[] = eventData
-        .map((event) => event.eventCategory)
+        .map((event) => event.eventCategory && event.eventCategory.trim())
         .filter((category) => category !== null && category !== undefined);
       setFilterCategories(categories);
     }
@@ -234,6 +237,7 @@ export default function FeaturedEvents() {
       });
     });
 
+    console.log(eventData)
   return (
     <>
       {eventData && eventData.length > 0 && (
