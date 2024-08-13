@@ -39,6 +39,7 @@ export default function FeaturedEvent({
   expectedParticipants,
   registered,
 }: FeaturedEventProps) {
+
   const [lowestPrice, setLowestPrice] = useState<any>("Loading...");
   const [date, setDate] = useState<string | null>(null);
   const [currencySymbol, setCurrencySymbol] = useState<string | null>(null);
@@ -64,7 +65,6 @@ export default function FeaturedEvent({
     const year: number = date.getFullYear();
     const month: number = date.getMonth() + 1; // Month is zero-based, so add 1
     const day: number = date.getDate();
-
     const monthNames: string[] = [
       "Jan",
       "Feb",
@@ -100,13 +100,6 @@ export default function FeaturedEvent({
     //convert currency shortCode to currencySymbol
     setCurrencySymbol(convertCurrencyCodeToSymbol(pricingCurrency));
 
-    //check date and time
-    if (checkDateEqualToday(startDateTime)) {
-      setElapsed(true);
-    } else {
-      setElapsed(false);
-    }
-
     //check if sold out
     if (checkEventFull(expectedParticipants, registered)) {
       setSoldOut(true);
@@ -116,72 +109,68 @@ export default function FeaturedEvent({
   }, []);
 
   return (
-    <>
-      {!elapsed && (
-        <div
-          className={`cursor-pointer relative ${
-            elapsed || soldOut ? "opacity-50" : ""
-          }`}
-          onClick={goToEvent}
-        >
-          {/* header */}
-          <div className="relative ">
-            <Image
-              className="object-cover w-full lg:w-[294px] h-[150px]"
-              src={
-                eventPoster && eventPoster.includes("res.cloudinary.com")
-                  ? eventPoster
-                  : "/postImage2.png"
-              }
-              alt=""
-              width={294}
-              height={150}
-            />
-            <p className="text-sm font-medium text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end absolute left-4 top-2 py-[5px] px-[10px] rounded-lg ">
-              {locationType}
-            </p>
+    <div
+      className={`cursor-pointer relative ${
+        elapsed || soldOut ? "opacity-50" : ""
+      }`}
+      onClick={goToEvent}
+    >
+      {/* header */}
+      <div className="relative ">
+        <Image
+          className="object-cover w-full lg:w-[294px] h-[150px]"
+          src={
+            eventPoster && eventPoster.includes("res.cloudinary.com")
+              ? eventPoster
+              : "/postImage2.png"
+          }
+          alt=""
+          width={294}
+          height={150}
+        />
+        <p className="text-sm font-medium text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end absolute left-4 top-2 py-[5px] px-[10px] rounded-lg ">
+          {locationType}
+        </p>
 
-            {soldOut && (
-              <p className="text-sm font-medium text-white bg-green-500 absolute right-2 top-2 py-[5px] px-[10px] rounded-lg ">
-                Sold Out
-              </p>
-            )}
+        {soldOut && (
+          <p className="text-sm font-medium text-white bg-green-500 absolute right-2 top-2 py-[5px] px-[10px] rounded-lg ">
+            Sold Out
+          </p>
+        )}
 
-            {elapsed && (
-              <p className="text-sm font-medium text-white bg-red-500 absolute left-4 top-2 py-[5px] px-[10px] rounded-lg ">
-                Elapsed
-              </p>
-            )}
-          </div>
+        {elapsed && (
+          <p className="text-sm font-medium text-white bg-red-500 absolute left-4 top-2 py-[5px] px-[10px] rounded-lg ">
+            Elapsed
+          </p>
+        )}
+      </div>
 
-          {/* body */}
-          <div className="pl-5 pr-5 border-[1px] border-gray-200 ">
-            <p className="mt-5 font-medium text-lg truncate"> {eventTitle} </p>
+      {/* body */}
+      <div className="pl-5 pr-5 border-[1px] border-gray-200 ">
+        <p className="mt-5 font-medium text-lg truncate"> {eventTitle} </p>
 
-            <div className="mt-6 flex gap-x-[10px] items-center ">
-              <Calendar />
-              <p className="text-sm font-normal"> {date} </p>
-            </div>
-
-            <div className="mt-[10px] flex gap-x-[10px] mb-8 items-center">
-              <LocationIcon1 />
-              <p className="text-sm font-normal truncate">
-                {eventCity},<span> {eventCountry}</span>
-              </p>
-            </div>
-
-            <div className="border-t-[1px] border-gray-200 pt-8 flex justify-between pb-[15px]">
-              <p className="text-sm font-normal">starting at</p>
-              <p className="text-base font-semibold">
-                {lowestPrice != "Free" && currencySymbol}
-                {lowestPrice != "Free"
-                  ? addCommasToPrice(lowestPrice)
-                  : lowestPrice}
-              </p>
-            </div>
-          </div>
+        <div className="mt-6 flex gap-x-[10px] items-center ">
+          <Calendar />
+          <p className="text-sm font-normal"> {date} </p>
         </div>
-      )}
-    </>
+
+        <div className="mt-[10px] flex gap-x-[10px] mb-8 items-center">
+          <LocationIcon1 />
+          <p className="text-sm font-normal truncate">
+            {eventCity},<span> {eventCountry}</span>
+          </p>
+        </div>
+
+        <div className="border-t-[1px] border-gray-200 pt-8 flex justify-between pb-[15px]">
+          <p className="text-sm font-normal">starting at</p>
+          <p className="text-base font-semibold">
+            {lowestPrice != "Free" && currencySymbol}
+            {lowestPrice != "Free"
+              ? addCommasToPrice(lowestPrice)
+              : lowestPrice}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
