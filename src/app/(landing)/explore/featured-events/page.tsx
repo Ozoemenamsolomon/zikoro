@@ -116,7 +116,6 @@ export default function FeaturedEvents() {
   //button selection
   const handleButtonClick = (text: string) => {
     const isSelected = selectedButtons.includes(text);
-
     if (isSelected) {
       setSelectedButtons(selectedButtons.filter((button) => button !== text));
     } else {
@@ -130,7 +129,6 @@ export default function FeaturedEvents() {
       const categories: string[] = eventData
         .map((event) => event.eventCategory)
         .filter((category) => category !== null && category !== undefined);
-
       setFilterCategories(categories);
     }
 
