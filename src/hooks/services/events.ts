@@ -1213,7 +1213,7 @@ export function useCheckTeamMember({ eventId }: { eventId?: string }) {
 
 const isIdPresent = organization?.teamMembers?.some(
   (v) => v?.userEmail === user?.userEmail
-);
+) || false;
 
   return {
     isIdPresent,
