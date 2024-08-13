@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
         .select("*")
         .eq("published", true)
         .eq("explore", true)
+        .gte("startDateTime", new Date().toISOString()) // Filter non-expired events
 
 
       if (error) throw error;
