@@ -7,16 +7,14 @@ import "react-quill/dist/quill.snow.css";
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 
 
-export default function TextEditor({
+export function PartnerTextEditor({
   onChange,
   defaultValue,
   placeholder,
-  isBlog,
 }: {
   onChange: (value: string) => void;
   defaultValue?: string;
   placeholder?: string;
-  isBlog ?:boolean
 }) {
   const CustomUndo = () => (
     <svg viewBox="0 0 18 18">
@@ -70,36 +68,7 @@ export default function TextEditor({
     },
   };
 
-  const quillBlogModules = {
-    toolbar: {
-      container: [
-        ["bold", "italic", "underline", "strike"],
-        ["blockquote"],
-        [{ list: "ordered" }, { list: "bullet" }],
-        [{ script: "sub" }, { script: "super" }],
-        [{ indent: "-1" }, { indent: "+1" }],
-        //   [{ direction: "rtl" }],
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        [{ color: [] }, { background: [] }],
-        [
-          {
-            font: [],
-          },
-        ],
-        //  [{ align: [] }],
-        ["link", "image",], //  "video"
-        ["clean"],
-        ["undo", "redo"],
 
-        // ["imageResize", "imageTextAlternative"],
-      ],
-    },
-    history: {
-      delay: 500,
-      maxStack: 100,
-      userOnly: true,
-    },
-  };
 
   const quillFormats = [
     "header",
@@ -136,16 +105,19 @@ export default function TextEditor({
   };
 
   return (
-    <QuillEditor
+   <div className="partner-description-input w-full">
+     <QuillEditor
       value={content}
       onChange={(e) => {
         handleEditorChange(e);
       }}
-      modules={isBlog? quillBlogModules : quillModules }
+      modules={ quillModules }
       formats={quillFormats}
       theme="snow"
       placeholder={placeholder || "Enter description"}
-      className="w-full bg-white ql-container focus:ring-1 ring-black"
+      className="w-full bg-white  ql-container focus:ring-1 ring-black"
     />
+
+   </div>
   );
 }

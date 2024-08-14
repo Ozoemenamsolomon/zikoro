@@ -6,11 +6,12 @@ import { useState } from "react";
 import { PlusCircle } from "styled-icons/bootstrap";
 import { Eye } from "styled-icons/evil";
 import { Button } from "@/components";
-import {TPartner} from "@/types"
+import { TPartner } from "@/types";
 import { Delete } from "styled-icons/fluentui-system-regular";
 
 import { cn } from "@/lib";
 import Image from "next/image";
+import Link from "next/link";
 export function PartnersList({
   eventId,
   partners,
@@ -26,8 +27,9 @@ export function PartnersList({
     useFetchSingleEvent(eventId);
   const [isOpen, setOpen] = useState(false);
   const [isPartner, setPartner] = useState(false);
-  const { loading: delLoading, deletes, deleteAll } = useDeletePartner();
+  const {  deletes, deleteAll } = useDeletePartner();
   const [isAddHall, setAddHall] = useState(false);
+  const [active, setActive] = useState(1)
 
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
@@ -77,11 +79,23 @@ export function PartnersList({
     // empty the selected array
     setSelectedRows([]);
   }
-
+const tabs = [
+  {id: 1, name:"Awaiting Approval"}, {id: 2, name:"Partners"}
+]
   return (
     <>
       <div className="w-full  flex flex-col">
         <div className="flex py-3 items-center justify-between w-full">
+          <div className="flex items-center gap-x-2">
+          <div className="flex items-center border-b gap-x-2">
+          {tabs.map((tab) => (
+            <button
+            onClick={() => setActive(tab.id)}
+            className={cn("px-4 py-2", active === tab?.id && "text-basePrimary border-basePrimary")}
+            key={tab.id}
+            >{tab.name}</button>
+          ))}
+          </div>
           <div className="flex items-center gap-x-2">
             {selectedRows?.length > 0 && (
               <Button
@@ -100,6 +114,7 @@ export function PartnersList({
                 }`}</span>
               </Button>
             )}
+          </div>
           </div>
 
           {Array.isArray(partners) && partners?.length > 0 && (
@@ -136,7 +151,7 @@ export function PartnersList({
                 {!loading &&
                   Array.isArray(partners) &&
                   partners?.length > 0 && (
-                    <tr className="w-full rounded-t-lg grid grid-cols-8 text-sm font-semibold  items-center bg-gray-100 gap-3 px-3 py-4 ">
+                    <tr className="w-full rounded-t-lg bg-basePrimary/10 grid grid-cols-8 text-sm font-semibold  items-center bg-gray-100 gap-3 px-3 py-4 ">
                       <td className="text-start col-span-2 w-full">
                         <label className=" w-full flex  relative items-center gap-x-2">
                           <input
@@ -174,23 +189,22 @@ export function PartnersList({
                       <td>
                         <div className="w-full col-span-full items-center flex flex-col justify-center h-[300px]">
                           <div className="flex items-center justify-center flex-col gap-y-2">
-                            <Image
-                              src="/images/epartner.png"
-                              width={400}
-                              height={400}
-                              className="w-[100px] h-[100px]"
-                              alt="partner"
-                            />
-                            <p className="text-[#717171] font-medium">
-                              This page is empty. Partners will appear here
+                            <p className="text-basePrimary mb-1  font-medium">
+                              No partners for your event
                             </p>
                             <Button
                               onClick={onPartner}
                               className="text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
                             >
-                              <PlusCircle size={22} />
-                              <p>Partner</p>
+                              <p>Create Partner Tiers</p>
                             </Button>
+
+                            <p className="flex items-center gap-x-2">
+                              or
+                              <Link href="" className="underline ">
+                                Add Manually
+                              </Link>
+                            </p>
                           </div>
                         </div>
                       </td>
@@ -203,6 +217,7 @@ export function PartnersList({
                       refetch={refetch}
                       selectRowFn={selectRow}
                       selectedRows={selectedRows}
+                      activeTab={active}
                       event={event}
                       partners={partners}
                       className={"border-b border-x"}

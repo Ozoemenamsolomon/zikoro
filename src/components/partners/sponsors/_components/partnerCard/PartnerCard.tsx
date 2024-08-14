@@ -35,25 +35,31 @@ export function PartnerCard({
           StampCard
         </button>
       )}
-      {image ? (
-        <Image
-          src={image}
-          alt="sponsor-logo"
-          width={300}
-          height={100}
-          className="pl-4 pt-8 w-fit h-24 object-contain"
-        />
-      ) : (
-        <div className="w-36 pl-4 pt-8 lg:w-[6rem] xl:w-32 h-[70px] animate-pulse bg-gray-200"></div>
-      )}
+      <div className="flex items-center  justify-between w-full px-4">
+        {image ? (
+          <Image
+            src={image}
+            alt="sponsor-logo"
+            width={300}
+            height={100}
+            className=" max-w-[100px] max-h-[60px] object-contain"
+          />
+        ) : (
+          <div className="w-[100px] h-[60px] animate-pulse bg-gray-200"></div>
+        )}
+
+        <p className="bg-basePrimary text-white px-2 py-1 text-sm rounded-3xl">
+          Tier Name
+        </p>
+      </div>
       <div className="w-full px-4 py-8  items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
         <div className="font-semibold flex capitalize flex-wrap text-black text-xl">
           {sponsor.companyName ?? ""}
         </div>
 
-        <div className="flex flex-wrap  line-clamp text-sm w-full  items-start justify-start leading-6">
+        {/* <div className="flex flex-wrap  line-clamp text-sm w-full  items-start justify-start leading-6">
           {sponsor.description ?? ""}
-        </div>
+        </div> */}
 
         {/**  */}
         <div className="flex items-center text-sm capitalize gap-x-2">
