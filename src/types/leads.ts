@@ -65,7 +65,7 @@ export interface TLead {
   eventPartnerId: number;
   eventPartnerAlias: string;
   points: number;
-  leadType:string
+  leadType: string;
 }
 
 export interface TLeadsInterest {
@@ -77,9 +77,10 @@ export interface TLeadsInterest {
   eventPartnerAlias?: string;
   interestType: string;
   title: string;
-  partnerInterestId:string
+  partnerInterestId: string;
   note: string;
   points?: number;
+  offerAmount: number;
 }
 
 export interface TAllLeads extends TLead {
