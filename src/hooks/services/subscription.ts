@@ -40,7 +40,7 @@ export function useCreateOrgSubscription(
       // Attempt to update the subscription
       const { error } = await supabase
         .from("subscription")
-        .update({
+        .insert({
           userId: userId,
           organizationId: orgId,
           subscriptionType: plan,
@@ -53,8 +53,7 @@ export function useCreateOrgSubscription(
           discountValue: discountAmountNum,
           discountCode: couponCode,
         })
-        .eq("userId", userIdNum)
-        .eq("organizationId", orgIdNum);
+
 
       if (error) {
         toast.error(error.message);

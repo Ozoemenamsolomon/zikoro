@@ -475,14 +475,16 @@ export default function General() {
     }
   };
 
-
   // Sync formData with organization data
   useEffect(() => {
-    if (organization && getWorkspaceSubscriptionPlanData !== null) {
+    if (organization) {
       setFormData({
         orgName: organization.organizationName || "",
-        orgType: organization.organizationType ||  "",
-        orgPlan: getWorkspaceSubscriptionPlanData  || organization.subscriptionPlan || "",
+        orgType: organization.organizationType || "",
+        orgPlan:
+          getWorkspaceSubscriptionPlanData ||
+          organization.subscriptionPlan ||
+          "",
         orgCountry: organization.country || "",
         orgTel: organization.eventPhoneNumber || "",
         orgWhatsappNumber: organization.eventWhatsApp || "",
@@ -497,6 +499,7 @@ export default function General() {
       setFaviconUrl(organization.favicon);
     }
   }, [organization, getWorkspaceSubscriptionPlanData]);
+
   return (
     <>
       {organization ? (

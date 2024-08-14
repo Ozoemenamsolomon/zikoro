@@ -4,6 +4,10 @@ import peopleEye from "@/public/icons/people_eye.svg";
 import moneyUp from "@/public/icons/money_up.svg";
 import stamper from "@/public/icons/stamper.svg";
 import { pieArcLabelClasses, PieChart } from "@mui/x-charts";
+import { useParams } from "next/navigation";
+import { useFetchPartners } from "@/hooks";
+import { ILead, TPartner } from "@/types";
+import { useGetData } from "@/hooks/services/request";
 
 const dummyData = [
   { label: "Apples", value: 120, color: "#FF6384", id: "1" },
@@ -17,6 +21,15 @@ const dummyData = [
   { label: "Strawberries", value: 140, color: "#36A2EB", id: "9" },
   { label: "Watermelons", value: 130, color: "#9966FF", id: "10" },
 ];
+
+interface TPartnerDataSet {
+  id: number;
+  value: number;
+  label: string;
+  color: string;
+}
+
+const randomColors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF"];
 
 const AnalyticsInfoCard = ({
   label,
@@ -43,19 +56,54 @@ const AnalyticsInfoCard = ({
 };
 
 const Partners = () => {
+  const { eventId } = useParams();
+
+  const { data, loading, refetch } = useFetchPartners(eventId);
+  const {
+    data: leads,
+    isLoading,
+    getData: getLeads,
+  } = useGetData<ILead[]>(`/leads?eventAlias=${eventId}`, true, []);
+  console.log(data);
+
+  const getPartnersDataSet = (partners: TPartner[]): TPartnerDataSet[] =>
+    partners.map(({ partnerAlias, id, companyName }) => {
+      console.log(leads);
+      const value =
+        (leads &&
+          leads.filter(
+            ({ eventPartnerAlias }) => eventPartnerAlias === partnerAlias
+          ).length) ||
+        0;
+
+      const color =
+        randomColors[Math.floor(Math.random() * randomColors.length)];
+
+      return {
+        id: id,
+        value,
+        label: companyName,
+        color,
+      };
+    });
+
+  const partnersDataSet = getPartnersDataSet(data);
+
+  console.log(partnersDataSet);
+
   return (
     <>
       <section className="grid grid-cols-3 gap-4">
         <AnalyticsInfoCard
           label={"Total Partners"}
-          value={3}
+          value={data?.length ?? 0}
           Icon={() => (
             <img className="h-10 w-10" src={handshake.src} alt={"handshake"} />
           )}
         />
         <AnalyticsInfoCard
           label={"Average Leads"}
-          value={9}
+          value={leads.length / data.length}
           Icon={() => (
             <img className="h-10 w-10" src={peopleEye.src} alt={"people eye"} />
           )}
@@ -80,15 +128,29 @@ const Partners = () => {
             </tr>
           </thead>
           <tbody className="[&>*:not(:last-child)]:border-b w-full font-medium">
-            <tr className="flex p-4 text-gray-800">
-              <td className="flex-[40%] flex items-center gap-4">
-                <img className="h-10 w-10" src={stamper.src} alt={"stamper"} />
-                <span>Partner's name</span>
-              </td>
-              <td className="flex-[20%]">Sponsor</td>
-              <td className="flex-[10%]">3</td>
-              <td className="flex-[30%]">$50,000</td>
-            </tr>
+            {data &&
+              data?.map(({ companyName, partnerType, id, partnerAlias }) => (
+                <tr className="flex p-4 text-gray-800">
+                  <td className="flex-[40%] flex items-center gap-4">
+                    <img
+                      className="h-10 w-10"
+                      src={stamper.src}
+                      alt={"stamper"}
+                    />
+                    <span>{companyName}</span>
+                  </td>
+                  <td className="flex-[20%]">{partnerType}</td>
+                  <td className="flex-[10%]">
+                    {
+                      leads?.filter(
+                        ({ eventPartnerAlias }) =>
+                          eventPartnerAlias === partnerAlias
+                      ).length
+                    }
+                  </td>
+                  <td className="flex-[30%]">$50,000</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </section>
@@ -99,7 +161,7 @@ const Partners = () => {
             colors={["blue", "purple", "black"]}
             series={[
               {
-                data: dummyData,
+                data: partnersDataSet,
                 innerRadius: 90,
                 outerRadius: 120,
                 cx: 150,
@@ -128,7 +190,7 @@ const Partners = () => {
           />
           <div className="flex items-center justify-center">
             <div className="bg-white p-2 w-4/5 border rounded-md [&>*:not(:last-child)]:border-b">
-              {dummyData.map(({ label, value, color, id }) => (
+              {partnersDataSet.map(({ label, value, color, id }) => (
                 <div
                   key={id}
                   className="border-b py-2 px-4 flex items-center gap-2 w-full"
@@ -142,7 +204,7 @@ const Partners = () => {
                     <span className="font-medium text-gray-600">
                       {Number(
                         (value /
-                          dummyData.reduce(
+                          partnersDataSet.reduce(
                             (acc, { value }) => acc + value,
                             0
                           )) *
