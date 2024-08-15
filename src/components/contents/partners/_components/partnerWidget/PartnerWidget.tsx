@@ -5,7 +5,13 @@ import { ArrowIosDownward } from "styled-icons/evaicons-solid";
 import { Phone } from "styled-icons/feather";
 import { cn } from "@/lib";
 import { Switch } from "@/components/ui/switch";
-import { useState, useMemo, useEffect } from "react";
+import {
+  useState,
+  useMemo,
+  useEffect,
+  DetailedHTMLProps,
+  ReactNode,
+} from "react";
 import { DropDownSelect } from "@/components/contents/_components";
 import { Event, TPartner } from "@/types";
 import { CloseOutline } from "styled-icons/evaicons-outline";
@@ -18,6 +24,98 @@ import {
 } from "@/hooks";
 import { EmailIcon, WhatsappIcon } from "@/constants";
 import { AddPartners } from "@/components/partners/_components";
+import { IoCheckmarkCircle, IoCloseCircleSharp } from "react-icons/io5";
+import { Button } from "@/components";
+import { MdClose } from "react-icons/md";
+
+function ConfirmationModal({
+  titleElement,
+  descriptionElement,
+  buttonElement,
+  close,
+}: {
+  titleElement: ReactNode;
+  descriptionElement: ReactNode;
+  buttonElement: ReactNode;
+  close: () => void;
+}) {
+  return (
+    <div className="w-full h-full inset-0 fixed bg-white/20 z-[100]">
+      <div className="absolute inset-0 gap-y-4 bg-white rounded-lg m-auto h-fit max-w-xl flex flex-col items-center justify-center py-4 px-4">
+        <Button onClick={close} className="px-0 self-end w-11 h-11 bg-gray-200">
+          <MdClose size={22} />
+        </Button>
+        <div>{titleElement}</div>
+        <div>{descriptionElement}</div>
+        <div className="mt-3">{buttonElement}</div>
+      </div>
+    </div>
+  );
+}
+function ActionColumn() {
+  const [isApprove, setIsApprove] = useState(false);
+  const [isDecline, setIsDecline] = useState(false);
+
+  function onDecline() {
+    setIsDecline((p) => !p)
+  }
+  function onApprove() {
+    setIsApprove((p) => !p)
+  }
+  return (
+    <div className="flex items-center gap-x-6">
+      <Button
+        onClick={() => setIsApprove((p) => !p)}
+        className="w-fit h-fit  px-0"
+      >
+        <IoCheckmarkCircle size={22} className="text-basePrimary" />
+      </Button>
+      <Button
+        onClick={() => setIsDecline((p) => !p)}
+        className="w-fit h-fit px-0"
+      >
+        <IoCloseCircleSharp size={22} className="text-red-500" />
+      </Button>
+
+      {isApprove && (
+        <ConfirmationModal
+          buttonElement={
+            <Button className="text-white bg-basePrimary w-[130px]">
+              <p>Approve</p>
+            </Button>
+          }
+          descriptionElement={
+            <p>
+              You are about to <b>approve</b> this partner, please confirm
+            </p>
+          }
+          titleElement={
+            <p className="font-semibold text-basePrimary text-lg sm:text-xl">Approve Partner</p>
+          }
+          close={onApprove}
+        />
+      )}
+      {isDecline && (
+        <ConfirmationModal
+          buttonElement={
+            <Button className="bg-red-500 text-white w-[130px]">
+              <p>Decline</p>
+            </Button>
+          }
+          descriptionElement={
+            <p>
+              You are about to <b>decline</b> this partner, please confirm
+            </p>
+          }
+          titleElement={
+            <p className="font-semibold text-basePrimary text-lg sm:text-xl">Decline Partner</p>
+          }
+          close={onDecline}
+        />
+      )}
+    </div>
+  );
+}
 
 export function PartnerWidget({
   item,
@@ -27,6 +125,7 @@ export function PartnerWidget({
   selectRowFn,
   selectedRows,
   partners,
+  activeTab,
 }: {
   className: string;
   item: TPartner;
@@ -35,6 +134,7 @@ export function PartnerWidget({
   selectRowFn: (value: number) => void;
   selectedRows: number[];
   partners: TPartner[];
+  activeTab: number;
 }) {
   const [boothList, setBoothList] = useState<string[]>([]);
   const [status, setStatus] = useState(item?.stampIt);
@@ -310,12 +410,14 @@ export function PartnerWidget({
             e.stopPropagation();
           }}
         >
-          <Switch
+          {activeTab === 1 ? 
+          <ActionColumn/>
+          : <Switch
             className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
             disabled={loading}
             checked={status}
             onClick={() => submit(!item?.stampIt)}
-          />
+          />}
         </td>
       </tr>
       {isOpen && event && (

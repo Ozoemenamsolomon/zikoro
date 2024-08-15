@@ -29,7 +29,7 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
   return (
     <>
       {eventDetail ? (
-        <div className="w-full h-full bg-gray-50 fixed overflow-y-auto ">
+        <div className="w-full h-full bg-[#F9FAFF] fixed overflow-y-auto ">
           <SingleEvent
             trackingId={trackingId}
             role={role}
