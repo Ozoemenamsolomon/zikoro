@@ -236,9 +236,6 @@ export default function FeaturedEvents() {
       });
     });
 
-  console.log("query = ", query);
-  console.log("selectedButtons =", selectedButtons);
-  console.log("eventData =", eventData);
   return (
     <>
       {eventData && eventData.length > 0 && (
