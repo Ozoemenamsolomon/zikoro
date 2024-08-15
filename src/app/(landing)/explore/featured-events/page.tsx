@@ -96,10 +96,7 @@ export default function FeaturedEvents() {
 
   useEffect(() => {
     if (query) {
-      const selectedCategories: any = query
-        .split(",")
-        .map((q) => q.trim());
-      setSelectedButtons(selectedCategories);
+      setSelectedButtons([query]);
     }
   }, [query]);
 
@@ -130,10 +127,12 @@ export default function FeaturedEvents() {
     //fetching event categories
     if (eventData) {
       const categories: string[] = eventData
-        .map((event) => event.eventCategory && event.eventCategory.trim())
+        .map((event) => event.eventCategory && event.eventCategory)
         .filter((category) => category !== null && category !== undefined);
       setFilterCategories(categories);
     }
+
+    console.log("FilterCategories = ", filterCategories);
 
     //fetching event location type
     if (eventData) {
@@ -237,7 +236,9 @@ export default function FeaturedEvents() {
       });
     });
 
-    console.log(eventData)
+  console.log("query = ", query);
+  console.log("selectedButtons =", selectedButtons);
+  console.log("eventData =", eventData);
   return (
     <>
       {eventData && eventData.length > 0 && (
