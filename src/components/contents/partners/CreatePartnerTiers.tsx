@@ -192,7 +192,7 @@ function SingleTier({
           <CloseCircle size={20} />
         </button>}
       </div>
-      <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
         <FormField
           control={form.control}
           name={`partnerTier.${id}.partnerType` as const}
@@ -221,7 +221,7 @@ function SingleTier({
           control={form.control}
           name={`partnerTier.${id}.tierName` as const}
           render={({ field }) => (
-            <FormItem className="w-full col-span-2">
+            <FormItem className="w-full md:col-span-2">
               <FormLabel>Tier Name</FormLabel>
               <FormControl>
                 <Input

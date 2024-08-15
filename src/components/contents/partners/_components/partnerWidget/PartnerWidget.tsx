@@ -41,7 +41,7 @@ function ConfirmationModal({
 }) {
   return (
     <div className="w-full h-full inset-0 fixed bg-white/20 z-[100]">
-      <div className="absolute inset-0 gap-y-4 bg-white rounded-lg m-auto h-fit max-w-xl flex flex-col items-center justify-center py-4 px-4">
+      <div className="absolute inset-0 gap-y-4 box-animation bg-white rounded-lg m-auto h-fit max-w-xl flex flex-col items-center justify-center py-4 px-4">
         <Button onClick={close} className="px-0 self-end w-11 h-11 bg-gray-200">
           <MdClose size={22} />
         </Button>
