@@ -34,18 +34,21 @@ export function Sponsors({
   }, [event]);
   return (
     <div className="w-full">
-      <div className="w-full my-8 flex items-center justify-center">
-        <Button
-          onClick={() =>
-            router.push(
-              `/live-events/${event?.eventAlias}/partners?e=${dataString}`
-            )
-          }
-          className="bg-basePrimary  rounded-lg text-white font-medium"
-        >
-          Become a Partner
-        </Button>
-      </div>
+      {Array.isArray(event?.partnerDetails) &&
+        event?.partnerDetails?.length > 0 && (
+          <div className="w-full my-8 flex items-center justify-center">
+            <Button
+              onClick={() =>
+                router.push(
+                  `/live-events/${event?.eventAlias}/partners?e=${dataString}`
+                )
+              }
+              className="bg-basePrimary  rounded-lg text-white font-medium"
+            >
+              Become a Partner
+            </Button>
+          </div>
+        )}
       <div className="w-full bg-white py-3">
         <div className="flex flex-col gap-y-3 mb-1 p-4 w-full items-start justify-start sm:hidden">
           <Button

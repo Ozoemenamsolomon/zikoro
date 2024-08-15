@@ -15,15 +15,21 @@ import { CloseCircle } from "styled-icons/ionicons-outline";
 import { PlusCircle } from "styled-icons/bootstrap";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
 import { useFieldArray, useForm, UseFormReturn } from "react-hook-form";
+import { TOrgEvent } from "@/types";
 import { formateJSDate, parseFormattedDate } from "@/utils";
 import * as z from "zod";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useMemo, useState } from "react";
 import { DateRange } from "styled-icons/material-outlined";
 import { cn } from "@/lib";
+import { zodResolver } from "@hookform/resolvers/zod";
 import DatePicker from "react-datepicker";
 import { TwitterPicker } from "react-color";
 import { PartnerTextEditor } from "./_components/custom_ui/PartnerTextEditor";
 import { useRouter } from "next/navigation";
+import { partnerTierSchema } from "@/schemas";
+import { useUpdateEvent, useFetchSingleEvent } from "@/hooks";
+import {useEffect} from "react"
 
 const colors = [
   "#4D4D4D",
@@ -71,7 +77,7 @@ function SelectDate({
   value,
   minimumDate,
 }: {
-  form: UseFormReturn<z.infer<any>, any, any>;
+  form: UseFormReturn<z.infer<typeof partnerTierSchema>, any, any>;
   close: () => void;
   className?: string;
   name: any;
@@ -122,7 +128,7 @@ function ColorPicker({
   close,
   name,
 }: {
-  form: UseFormReturn<any, any, any>;
+  form: UseFormReturn<z.infer<typeof partnerTierSchema>, any, any>;
   close: () => void;
   name: any;
 }) {
@@ -158,22 +164,36 @@ function SingleTier({
   form,
   id,
   remove,
+  partnerType,
+  currency,
+  validity: validityDate,
+  description
 }: {
   id: number;
   remove: () => void;
-  form: UseFormReturn<z.infer<any>, any, any>;
+  partnerType:string
+  currency:string
+  validity:string
+  description: string
+  form: UseFormReturn<z.infer<typeof partnerTierSchema>, any, any>;
 }) {
   const [isOpen, setOpen] = useState(false);
   const [colorPicker, setShowPicker] = useState(false);
 
-  const validityDate = form.watch("validity");
+ // const validityDate = form.watch(`partnerTier.${id}.validity` as const);
 
   const validity = useMemo(() => {
     if (validityDate) {
-      form.setValue("startDateTime", formateJSDate(validityDate));
+      form.setValue(
+        `partnerTier.${id}.validity` as const,
+        formateJSDate(validityDate)
+      );
       return formateJSDate(validityDate);
     } else {
-      form.setValue("startDateTime", formateJSDate(new Date()));
+      form.setValue(
+        `partnerTier.${id}.validity` as const,
+        formateJSDate(new Date())
+      );
       return formateJSDate(new Date());
     }
   }, [validityDate]);
@@ -182,15 +202,19 @@ function SingleTier({
   return (
     <div className="bg-white rounded-lg p-4 flex flex-col items-start justify-start gap-y-4">
       <div className="flex items-center gap-x-2">
-        <p className="text-sm sm:text-lg font-semibold">Tier {id+ 1}</p>
-       {id !== 0 && <button onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        remove();
-       }}
-        className="text-red-600">
-          <CloseCircle size={20} />
-        </button>}
+        <p className="text-sm sm:text-lg font-semibold">Tier {id + 1}</p>
+        {id !== 0 && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              remove();
+            }}
+            className="text-red-600"
+          >
+            <CloseCircle size={20} />
+          </button>
+        )}
       </div>
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
         <FormField
@@ -206,6 +230,7 @@ function SingleTier({
                     { value: "exhibitor", label: "Exhibitor" },
                     { value: "sponsor", label: "Sponsor" },
                   ]}
+                  defaultValue={partnerType ? {value: partnerType, label: partnerType} : ""}
                   borderColor="#001fcc"
                   bgColor="#001fcc1a"
                   height="3rem"
@@ -284,11 +309,12 @@ function SingleTier({
                   options={currencies.map((v) => {
                     return { value: v, label: v };
                   })}
+                  defaultValue={currency ? {value: currency, label: currency} : ""}
                   borderColor="#001fcc"
                   bgColor="#001fcc1a"
                   height="3rem"
                   placeHolderColor="#64748b"
-                  placeHolder="Select Partner Type"
+                  placeHolder="Select Currency"
                 />
               </FormControl>
               <FormMessage />
@@ -336,7 +362,7 @@ function SingleTier({
         />
         <FormField
           control={form.control}
-          name="color"
+          name={`partnerTier.${id}.color` as const}
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>Tier Color</FormLabel>
@@ -359,7 +385,6 @@ function SingleTier({
                       <ColorPicker
                         close={() => setShowPicker((prev) => !prev)}
                         form={form}
-                       
                         name={`partnerTier.${id}.color` as const}
                       />
                     )}
@@ -381,7 +406,7 @@ function SingleTier({
           <p className="font-medium mb-2">Description</p>
 
           <PartnerTextEditor
-            defaultValue=""
+            defaultValue={description}
             onChange={(value) =>
               form.setValue(`partnerTier.${id}.description` as const, value)
             }
@@ -392,23 +417,35 @@ function SingleTier({
   );
 }
 
-export default function CreatePartnerTiers() {
-  const router = useRouter()
-  const form = useForm({
-    defaultValues: {
-      partnerTier: [
-        {
-          partnerType: "",
-          quantity: "0",
-          price: "0",
-          validity: formateJSDate(new Date()),
-          description: "",
-          currency: "",
-          color: "#001ffc",
-          tierName: "",
-        },
-      ],
-    },
+export default function CreatePartnerTiers({ eventId }: { eventId: string }) {
+  const router = useRouter();
+  const { loading, update } = useUpdateEvent();
+  const {
+    data,
+    loading: eventLoading,
+    refetch,
+  }: {
+    data: TOrgEvent | null;
+    loading: boolean;
+    refetch: () => Promise<null | undefined>;
+  } = useFetchSingleEvent(eventId);
+
+  const form = useForm<z.infer<typeof partnerTierSchema>>({
+    resolver: zodResolver(partnerTierSchema),
+    // defaultValues: {
+    //   partnerTier: [
+    //     {
+    //       partnerType: "",
+    //       quantity: "",
+    //       price: "",
+    //       validity: formateJSDate(new Date()),
+    //       description: "",
+    //       currency: "",
+    //       color: "#001ffc",
+    //       tierName: "",
+    //     },
+    //   ],
+    // },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -429,58 +466,110 @@ export default function CreatePartnerTiers() {
     });
   }
 
-  async function onSubmit(values: any) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof partnerTierSchema>) {
+     console.log({partnerDetails: values?.partnerTier});
+     await update({partnerDetails: values?.partnerTier}, eventId);
+  //   if (data) {
+  //     const partnerDetails =
+  //  data?.partnerDetails === null
+  //       ? [...values?.partnerTier]
+  //       : [...data?.partnerDetails, ...values?.partnerTier];
+  //  
+  //   };
+   
   }
 
+  useEffect(() => {
+    if (data) {
+      form.setValue(
+        "partnerTier",
+        data?.partnerDetails?.map((partner) => ({
+         ...partner,
+         
+        })) ||  [
+          {
+            partnerType: "",
+            quantity: "",
+            price: "",
+            validity: formateJSDate(new Date()),
+            description: "",
+            currency: "",
+            color: "#001ffc",
+            tierName: "",
+          },
+        ],
+      );
+    }
+
+  },[data])
+
   return (
-    <div className="w-full px-4 sm:px-6 pt-6 pb-32">
-      <Form {...form}>
-        <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full space-y-6 sm:space-y-9">
-          <div className="w-full flex items-center justify-between  ">
-            <Button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              router.back()
-            }}
-            className="px-0 w-fit h-fit">
-              <ArrowBack size={24} />
-            </Button>
+    <>
+      {eventLoading ? (
+        <div className="w-full flex items-center justify-center h-[20rem]">
+          <LoaderAlt size={30} className="animate-spin" />
+        </div>
+      ) : (
+        <div className="w-full px-4 sm:px-6 pt-6 pb-32">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="w-full space-y-6 sm:space-y-9"
+            >
+              <div className="w-full flex items-center justify-between  ">
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    router.back();
+                  }}
+                  className="px-0 w-fit h-fit"
+                >
+                  <ArrowBack size={24} />
+                </Button>
 
-            <Button
-            type="submit"
-            className="bg-basePrimary text-white font-medium">
-              Save
-            </Button>
-          </div>
+                <Button
+                  disabled={loading}
+                  type="submit"
+                  className="bg-basePrimary gap-x-2 w-[110px] text-white font-medium"
+                >
+                  {loading && <LoaderAlt size={20} className="animate-spin" />}
+                  <p> Save</p>
+                </Button>
+              </div>
 
-          <h2 className="font-semibold text-base sm:text-xl">Partner Tiers</h2>
+              <h2 className="font-semibold text-base sm:text-xl">
+                Partner Tiers
+              </h2>
 
-          {fields.map((value, id) => (
-            <SingleTier
-              remove={() => remove(id)}
-              id={id}
-              form={form}
-              key={value.id}
-            />
-          ))}
+              {fields.map((value, id) => (
+                <SingleTier
+                  remove={() => remove(id)}
+                  id={id}
+                  form={form}
+                  partnerType={value?.partnerType}
+                  currency={value?.currency}
+                  validity={value?.validity}
+                  description={value?.description}
+                  key={value.id}
+                />
+              ))}
 
-          <Button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              appendTier();
-            }}
-            className="text-sm text-basePrimary gap-x-2 h-fit w-fit"
-          >
-            <PlusCircle size={18} />
-            <p>Add Tier Category</p>
-          </Button>
-        </form>
-      </Form>
-    </div>
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  appendTier();
+                }}
+                className="text-sm text-basePrimary gap-x-2 h-fit w-fit"
+              >
+                <PlusCircle size={18} />
+                <p>Add Tier Category</p>
+              </Button>
+            </form>
+          </Form>
+        </div>
+      )}
+    </>
   );
 }

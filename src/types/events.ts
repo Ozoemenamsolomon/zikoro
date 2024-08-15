@@ -1,4 +1,6 @@
+import { partnerDetails } from "@/schemas";
 import { TOrganization } from ".";
+import * as z from "zod";
 export interface Attendees {
   firstName: string;
   lastName: string;
@@ -83,6 +85,7 @@ export interface Event {
   eventAppAccess: string;
   eventWebsiteSettings: { title: string; status: boolean }[];
   sessionTrack: { name: string; color: string }[];
+  partnerDetails: z.infer<typeof partnerDetails>
 }
 
 export interface PaymentConfigProps {

@@ -4,7 +4,12 @@ import { ArrowBack } from "styled-icons/boxicons-regular";
 import { Button } from "@/components";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { useMemo } from "react";
+import { useFetchSingleEvent } from "@/hooks";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
+import { useMemo, useState } from "react";
+import { partnerDetails } from "@/schemas";
+import { formatDate } from "@/utils";
+import { AddPartners } from "../partners/_components";
 
 type TEventData = {
   image: string;
@@ -13,39 +18,71 @@ type TEventData = {
   startDate: string;
   endDate: string;
 };
-function PartnerTierCard() {
+
+type TSIngleTier = {
+  validity: string;
+  partnerType: string;
+  tierName: string;
+  quantity: string;
+  price: string;
+  currency: string;
+  color: string;
+  description: string;
+};
+function PartnerTierCard({ tier, eventId }: {eventId:string; tier: TSIngleTier;  }) {
+  const [isOpen, setOpen] = useState(false)
+  const date = useMemo(() => {
+    return formatDate(tier?.validity);
+  }, [tier?.validity]);
+
+  function onToggle() {
+    setOpen((prev) =>!prev);
+  }
   return (
+    <>
     <div className="w-full mt-10">
       <div className="w-full bg-white rounded-lg relative pt-16 pb-6 border px-4">
-        <div className="w-[85%] font-medium absolute mx-auto bg-pink-600 text-white inset-x-0 -top-7 flex items-center justify-center h-14 rounded-lg">
-          <p className="text-white font-medium w-fit text-tiny sm:text-xs bg-basePrimary rounded-3xl px-2 py-1 absolute inset-x-0 mx-auto -top-3">
-            Sponsor
+        <div 
+        style={{backgroundColor: tier?.color || "#001ffc"}}
+        className="w-[85%] font-medium absolute mx-auto  text-white inset-x-0 -top-7 flex items-center justify-center h-14 rounded-lg">
+          <p className="text-white capitalize font-medium w-fit text-tiny sm:text-xs bg-basePrimary rounded-3xl px-2 py-1 absolute inset-x-0 mx-auto -top-3">
+            {tier?.partnerType}
           </p>
-          <p>Partner Tier Name</p>
+          <p className="capitalize">{tier?.tierName}</p>
         </div>
         <div className="w-full flex flex-col items-center gap-y-2">
-          <h2 className="font-semibold text-lg sm:text-xl mb-3">NGN 5,000</h2>
+          <h2 className="font-semibold text-lg sm:text-xl mb-3">{`${
+            tier?.currency
+          } ${Number(tier?.price ?? 0).toLocaleString()}`}</h2>
 
-          <p className="w-full line-clamp-3 text-gray-500 text-sm mb-3">
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
+          <p className="w-full line-clamp-3 text-gray-500 text-sm mb-3"
+          dangerouslySetInnerHTML={{
+            __html: tier?.description ?? "",
+          }}
+          />
+            
+          
           <button className="text-gray-500 underline">View More</button>
 
-          <Button className="w-fit bg-basePrimary px-6 text-white rounded-lg h-11">
+          <Button
+          onClick={onToggle}
+          className="w-fit bg-basePrimary px-6 text-white rounded-lg h-11">
             Select
           </Button>
           <p className="text-xs sm:text-mobile">
-            Available until <span className="font-medium">06 July, 2024</span>
+            Available until <span className="font-medium">{date}</span>
           </p>
         </div>
       </div>
     </div>
+    {isOpen && <AddPartners close={onToggle} eventId={eventId} partnerTier={tier}  />}
+    </>
   );
 }
 export default function EventPartnerTiers({ eventId }: { eventId: string }) {
   const params = useSearchParams();
   const eventDataString = params.get("e");
+  const { data, loading } = useFetchSingleEvent(eventId);
 
   const router = useRouter();
 
@@ -57,6 +94,18 @@ export default function EventPartnerTiers({ eventId }: { eventId: string }) {
       return null;
     }
   }, [eventDataString]);
+
+  const restructureData = useMemo(() => {
+    if (data) {
+      const newData = {
+        "sponsor": data?.partnerDetails?.filter((v) => v?.partnerType === "sponsor" ),
+        "exhibitor": data?.partnerDetails?.filter((v) => v?.partnerType === "exhibitor" ),
+
+      }
+
+      return newData
+    }
+  },[data])
 
   return (
     <div className="w-full bg-[#F9FAFF] h-full">
@@ -85,43 +134,57 @@ export default function EventPartnerTiers({ eventId }: { eventId: string }) {
         </div>
       </div>
       <div className="w-full bg-[#F9FAFF]">
-      <div className="mx-auto w-full  h-full p-4 max-w-[90%] my-4 sm:my-6">
-        <div className="flex items-center gap-x-2">
-          <Button
-            onClick={() => router.back()}
-            className="px-0 h-fit w-fit  bg-none  "
-          >
-            <ArrowBack className="px-0 w-fit h-fit" size={22} />
-            
-          </Button>
-          <p className="text-mobile sm:text-sm">Go To Event HomePage</p>
-        </div>
+        {loading ? (
+          <div className="w-full h-[20rem] flex items-center justify-center">
+            <LoaderAlt size={30} className="animate-spin" />
+          </div>
+        ) : (
+          <div className="mx-auto w-full  h-full p-4 max-w-[90%] my-4 sm:my-6">
+            <div className="flex items-center gap-x-2">
+              <Button
+                onClick={() => router.back()}
+                className="px-0 h-fit w-fit  bg-none  "
+              >
+                <ArrowBack className="px-0 w-fit h-fit" size={22} />
+              </Button>
+              <p className="text-mobile sm:text-sm">Go To Event HomePage</p>
+            </div>
 
-        <div className="w-fit my-6 sm:my-10 mx-auto flex flex-col items-center justify-center gap-y-2 ">
-          <h2 className="text-basePrimary font-semibold text-lg sm:text-2xl">
-            Become a Partner
-          </h2>
-          <p>
-            Select a partnership plan and partner with the organizer for this
-            event
-          </p>
-          <p className="font-semibold">{eventData?.eventTitle ?? ""}</p>
-          <p className="">
-            {eventData?.startDate ?? ""} - {eventData?.endDate ?? ""}
-          </p>
-        </div>
+            <div className="w-fit my-6 sm:my-10 mx-auto flex flex-col items-center justify-center gap-y-2 ">
+              <h2 className="text-basePrimary font-semibold text-lg sm:text-2xl">
+                Become a Partner
+              </h2>
+              <p>
+                Select a partnership plan and partner with the organizer for
+                this event
+              </p>
+              <p className="font-semibold">{eventData?.eventTitle ?? ""}</p>
+              <p className="">
+                {eventData?.startDate ?? ""} - {eventData?.endDate ?? ""}
+              </p>
+            </div>
 
-        <div className="w-full mt-4 sm:mt-8">
-          <div className="w-full">
-            <p className="font-semibold  text-zinc-700 mb-8">Sponsor Tiers</p>
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
-              {[...Array(6)].map((_) => (
-                <PartnerTierCard key={Math.random()} />
-              ))}
+            <div className="w-full mt-4 sm:mt-8">
+              {restructureData &&  Object.entries(restructureData).map(([partnerType, data]) => (
+                 <div className="w-full">
+                 <p className="font-semibold capitalize text-zinc-700 my-8">
+                   {partnerType} Tiers
+                 </p>
+                 <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+                   {Array.isArray(data) &&
+                     data?.map((tier) => (
+                       <PartnerTierCard key={Math.random()} tier={tier} eventId={eventId} />
+                     ))}
+                 </div>
+               </div>
+              ))
+              
+              
+              }
+             
             </div>
           </div>
-        </div>
-      </div>
+        )}
       </div>
     </div>
   );
