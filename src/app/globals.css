@@ -191,7 +191,7 @@
 
 .ql-container.ql-snow {
   border: 1px solid #f3f3f3 !important;
-  height: 480px;
+  height: 516px;
   border-top: none;
   font-size: 14px;
   border-radius: 0px 0px 8px 8px;
@@ -210,6 +210,14 @@
   pointer-events: none;
   position: absolute;
   right: 15px;
+}
+
+.ql-container.ql-snow {
+  border: 1px solid #f3f3f3 !important;
+  height: 480px;
+  border-top: none;
+  font-size: 14px;
+  border-radius: 0px 0px 8px 8px;
 }
 
 .banner .slick-dots {
@@ -497,6 +505,44 @@ input[type="number"] {
 /* make the left side pointed on the choose plan section */
 .clip-triangle {
   clip-path: polygon(100% 0, 0 50%, 100% 100%);
+}
+
+
+.partner-description-input .quill {
+  width: 100%;
+  /* border-radius: 8px; */
+}
+
+.partner-description-input .quill .ql-editor {
+  height: 100%;
+}
+
+.partner-description-input .quill > .ql-container > .ql-editor.ql-blank::before {
+  color: #d4d4d4;
+}
+
+.partner-description-input .ql-container.ql-snow {
+  border: 1px solid #f3f3f3 !important;
+  height: 20rem;
+  border-top: none;
+  font-size: 14px;
+  border-radius: 0px 0px 8px 8px;
+}
+
+.partner-description-input .ql-toolbar.ql-snow {
+  border-radius: 8px 8px 0px 0px;
+  border: 1px solid #f3f3f3 !important;
+  background: #001fcc1a;
+}
+
+.partner-description-input .ql-editor.ql-blank::before {
+  color: rgba(0, 0, 0, 0.6);
+  content: attr(data-placeholder);
+  font-size: 14px;
+  left: 15px;
+  pointer-events: none;
+  position: absolute;
+  right: 15px;
 }
 
 .interaction-input .quill {

@@ -53,7 +53,7 @@ export function Speakers({
         </Button>
    */
   return (
-    <>
+    <div className=" py-3 bg-white">
       {active === 1 && (
         <div className="flex  flex-col p-4  w-full items-start justify-start sm:hidden">
           <p className="font-semibold text-base">Speakers</p>
@@ -90,7 +90,7 @@ export function Speakers({
           changeActiveState={changeActiveState}
         />
       )}
-    </>
+    </div>
   );
 }
 
