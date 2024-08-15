@@ -235,7 +235,7 @@ export default function Team() {
                 Role
               </th>
               <th className="font-semibold text-base w-1/3 text-left px-2 py-4">
-                Action
+                Actions
               </th>
             </tr>
           </thead>
@@ -245,7 +245,7 @@ export default function Team() {
               filteredTeamMembers.map((member: any, index: number) => (
                 <tr
                   key={index}
-                  className="px-2 py-4 border-b-[1px] border-gray-200"
+                  className="px-2 py-4 border-b-[1px] border-gray-200 items-center"
                 >
                   <td className="w-1/3 px-2 py-4">
                     <div className="flex items-center gap-x-3">
@@ -264,7 +264,110 @@ export default function Team() {
                   <td className="text-base w-1/3 text-left px-2 py-4">
                     {member.userRole}
                   </td>
-                  <td className="text-base w-1/3 px-2 py-4 cursor-pointer">
+                  <td className="text-base w-1/3 px-2 py-4 cursor-pointer flex gap-x-4 lg:gap-x-5 xl:gap-x-6">
+                    <Dialog>
+                      <DialogTrigger className="text-sm font-bold text-[#E74C3C]">
+                        Edit
+                      </DialogTrigger>
+                      <DialogContent className="w-full max-w-full lg:max-w-[1000px] xl:max-w-[1120px] px-1 lg:px-10">
+                        <DialogHeader>
+                          <DialogDescription className="mt-8">
+                            <p className="text-2xl font-semibold text-black">
+                              Edit Team Member
+                            </p>
+
+                            <form
+                              action=""
+                              onSubmit={handleCreateTeamMember}
+                              className="my-10"
+                            >
+                              <div className="flex flex-col lg:flex-row gap-4 mt-10 ">
+                                <div className=" w-full lg:w-[450px] xl:w-[500px]">
+                                  <p className="text-[14px] text-[#1f1f1f] text-left">
+                                    First Name
+                                  </p>
+                                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
+                                    <input
+                                      type="text"
+                                      value={formData.firstName}
+                                      name="firstName"
+                                      onChange={handleInputChange}
+                                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div className=" w-full lg:w-[450px] xl:w-[500px]">
+                                  <p className="text-[14px] text-[#1f1f1f] text-left">
+                                    Last Name
+                                  </p>
+                                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
+                                    <input
+                                      type="text"
+                                      value={formData.lastName}
+                                      name="lastName"
+                                      onChange={handleInputChange}
+                                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex flex-col lg:flex-row gap-4 mt-8 ">
+                                <div className=" w-full lg:w-[450px] xl:w-[500px]">
+                                  <p className="text-[14px] text-[#1f1f1f] text-left">
+                                    Email
+                                  </p>
+                                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
+                                    <input
+                                      type="email"
+                                      value={formData.userEmail}
+                                      name="userEmail"
+                                      onChange={handleInputChange}
+                                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="w-full lg:w-[450px] xl:w-[500px]">
+                                  <p className="text-[14px] text-[#1f1f1f] text-left">
+                                    Role
+                                  </p>
+                                  <div className="w-full h-[45px] mt-2 text-[15px] text-[#1f1f1f] p-1 border-[1px] border-indigo-600 rounded-xl">
+                                    <select
+                                      name="userRole"
+                                      value={formData.userRole}
+                                      onChange={handleInputChange}
+                                      className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end text-[14px] text-[#1f1f1f] outline-none px-[10px] py-[7px]"
+                                    >
+                                      {roles.map((role) => (
+                                        <option
+                                          key={role}
+                                          value={role}
+                                          className="bg-transparent text-black"
+                                        >
+                                          {role}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                              <DialogClose
+                                asChild
+                                className="flex justify-end mt-8 mr-0 lg:mr-3 xl:mr-6"
+                              >
+                                <button
+                                  className=" py-2 px-4 text-white text-[14px] bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-lg"
+                                  type="submit"
+                                >
+                                  Update
+                                </button>
+                              </DialogClose>
+                            </form>
+                          </DialogDescription>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
+
                     <Dialog>
                       <DialogTrigger className="text-sm font-bold text-[#E74C3C]">
                         Remove
