@@ -10,8 +10,8 @@ import { TPartner } from "@/types";
 import { Delete } from "styled-icons/fluentui-system-regular";
 
 import { cn } from "@/lib";
-import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { AddPartnerManually } from "@/components/partners/_components/modals/AddPartnerManually";
 export function PartnersList({
   eventId,
   partners,
@@ -27,9 +27,10 @@ export function PartnersList({
     useFetchSingleEvent(eventId);
   const [isOpen, setOpen] = useState(false);
   const [isPartner, setPartner] = useState(false);
-  const {  deletes, deleteAll } = useDeletePartner();
+  const { deletes, deleteAll } = useDeletePartner();
   const [isAddHall, setAddHall] = useState(false);
-  const [active, setActive] = useState(1)
+  const [active, setActive] = useState(1);
+  const router = useRouter();
 
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
@@ -79,45 +80,52 @@ export function PartnersList({
     // empty the selected array
     setSelectedRows([]);
   }
-const tabs = [
-  {id: 1, name:"Awaiting Approval"}, {id: 2, name:"Partners"}
-]
+  const tabs = [
+    { id: 1, name: "Awaiting Approval" },
+    { id: 2, name: "Partners" },
+  ];
   return (
     <>
-      <div className="w-full  flex flex-col">
-        <div className="flex py-3 items-center justify-between w-full">
-          <div className="flex items-center gap-x-2">
-          <div className="flex items-center border-b gap-x-2">
-          {tabs.map((tab) => (
-            <button
-            onClick={() => setActive(tab.id)}
-            className={cn("px-4 py-2", active === tab?.id && "text-basePrimary border-basePrimary")}
-            key={tab.id}
-            >{tab.name}</button>
-          ))}
-          </div>
-          <div className="flex items-center gap-x-2">
-            {selectedRows?.length > 0 && (
-              <Button
-                onClick={deleteSelectedRows}
-                className="px-2 text-xs gap-x-2 bg-gray-50 py-2 h-fit w-fit"
-              >
-                <Delete size={18} />
-                <span>{`Delete ${
-                  selectedRows?.length === partners?.length
-                    ? "all"
-                    : `${
-                        selectedRows?.length === 1
-                          ? "a row"
-                          : `${selectedRows?.length} rows`
-                      }`
-                }`}</span>
-              </Button>
-            )}
-          </div>
-          </div>
+      <div className="w-full h-full flex flex-col">
+        {Array.isArray(partners) && partners?.length > 0 && (
+          <div className="flex py-3 items-center justify-between w-full">
+            <div className="flex items-center gap-x-2">
+              <div className="flex items-center border-b gap-x-2">
+                {tabs.map((tab) => (
+                  <button
+                    onClick={() => setActive(tab.id)}
+                    className={cn(
+                      "px-4 py-2",
+                      active === tab?.id &&
+                        "text-basePrimary border border-basePrimary"
+                    )}
+                    key={tab.id}
+                  >
+                    {tab.name}
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-x-2">
+                {selectedRows?.length > 0 && (
+                  <Button
+                    onClick={deleteSelectedRows}
+                    className="px-2 text-xs gap-x-2 bg-gray-50 py-2 h-fit w-fit"
+                  >
+                    <Delete size={18} />
+                    <span>{`Delete ${
+                      selectedRows?.length === partners?.length
+                        ? "all"
+                        : `${
+                            selectedRows?.length === 1
+                              ? "a row"
+                              : `${selectedRows?.length} rows`
+                          }`
+                    }`}</span>
+                  </Button>
+                )}
+              </div>
+            </div>
 
-          {Array.isArray(partners) && partners?.length > 0 && (
             <div className=" flex items-center group rounded-md justify-center bg-transparent   transition-all transform duration-300 ease-in-out gap-x-2 h-11 sm:h-12">
               <p>Exhibition Hall</p>
               <button onClick={onClose}>
@@ -135,8 +143,8 @@ const tabs = [
                 <p>Partner</p>
               </Button>
             </div>
-          )}
-        </div>
+          </div>
+        )}
         <div className="w-full  partner-scroll-style overflow-x-auto">
           <div
             className={cn(
@@ -189,11 +197,13 @@ const tabs = [
                       <td>
                         <div className="w-full col-span-full items-center flex flex-col justify-center h-[300px]">
                           <div className="flex items-center justify-center flex-col gap-y-2">
-                            <p className="text-basePrimary mb-1  font-medium">
+                            <p className="text-basePrimary mb-1 text-base sm:text-xl font-medium">
                               No partners for your event
                             </p>
                             <Button
-                              onClick={onPartner}
+                              onClick={() => {
+                                router.push(`/event/${eventId}/content/partners/create-tier`)
+                              }}
                               className="text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
                             >
                               <p>Create Partner Tiers</p>
@@ -201,9 +211,11 @@ const tabs = [
 
                             <p className="flex items-center gap-x-2">
                               or
-                              <Link href="" className="underline ">
+                              <button 
+                              onClick={onPartner}
+                              className="underline ">
                                 Add Manually
-                              </Link>
+                              </button>
                             </p>
                           </div>
                         </div>
@@ -241,7 +253,7 @@ const tabs = [
       )}
 
       {isPartner && (
-        <AddPartners
+        <AddPartnerManually
           refetchPartners={refetch}
           close={onPartner}
           eventId={eventId}

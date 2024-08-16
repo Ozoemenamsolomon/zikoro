@@ -15,7 +15,6 @@ export const attendeeValidationSchema = z.array(
       .refine((value) => value && /^\+\d{1,3}/.test(value), {
         message: "Phone number must include start with a country code",
       }),
-    
   })
 );
 
@@ -36,17 +35,19 @@ export const eventFeedBackSchema = z.object({
 });
 
 export const newEventSchema = z.object({
-  startDateTime: z.string().min(1, {message: "Start Date is required"}),
-  endDateTime: z.string().min(1, {message: "End Date is required"}),
+  startDateTime: z.string().min(1, { message: "Start Date is required" }),
+  endDateTime: z.string().min(1, { message: "End Date is required" }),
   eventTitle: z.string().min(3, { message: "Title is required" }),
   eventAddress: z.string().min(3, { message: "Address is required" }),
-  locationType: z.string().min(1, {message: "LocationType is required"}),
-  expectedParticipants: z.string().min(1, {message: "Expected Participant is required"}),
-  eventCity: z.string().min(1, {message: " City is required"}),
+  locationType: z.string().min(1, { message: "LocationType is required" }),
+  expectedParticipants: z
+    .string()
+    .min(1, { message: "Expected Participant is required" }),
+  eventCity: z.string().min(1, { message: " City is required" }),
   eventAlias: z.any(),
   eventCountry: z.string().min(2, { message: "Country is required" }),
   organisationId: z.string().min(2, { message: "Organization is required" }),
-  eventPoster: z.any()
+  eventPoster: z.any(),
 });
 
 const eventPricing = z.array(
@@ -73,7 +74,7 @@ export const updateEventSchema = z.object({
   eventVisibility: z.any(),
   industry: z.any(),
   eventCategory: z.any(),
-  eventPoster:z.any(),
+  eventPoster: z.any(),
   pricingCurrency: z.any(),
   description: z.any(),
   pricing: eventPricing,
@@ -96,3 +97,19 @@ export const rewardSchema = z.object({
         }
       )
  */
+export const partnerDetails = z.array(
+  z.object({
+    validity: z.string().min(1, { message: "Validity is required" }),
+    partnerType: z.string().min(1, { message: "Partner Type is required" }),
+    tierName: z.string().min(2, { message: "Tier Name is required" }),
+    quantity: z.string().min(1, { message: "Quantity is required" }),
+    price: z.string().min(1, { message: "Price is required" }),
+    currency: z.string().min(1, { message: "Currency is required" }),
+    color: z.string(),
+    description: z.string().min(3, { message: "Description is required" }),
+  })
+);
+
+export const partnerTierSchema = z.object({
+  partnerTier: partnerDetails,
+});

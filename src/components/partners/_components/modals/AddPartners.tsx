@@ -14,7 +14,12 @@ import {
 } from "@/components";
 import { useForm } from "react-hook-form";
 import { ArrowBack } from "styled-icons/boxicons-regular";
-import { COUNTRY_CODE, uploadFile, generateAlias } from "@/utils";
+import {
+  COUNTRY_CODE,
+  uploadFile,
+  generateAlias,
+  formatDate,
+} from "@/utils";
 import { AddSponsorLevel } from "@/components/contents/partners/_components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useEffect, useState, useMemo } from "react";
@@ -29,28 +34,36 @@ import {
 } from "@/hooks";
 import { BoothStaffWidget } from "../../sponsors/_components";
 import { PartnerIndustry, TAttendee, TPartner } from "@/types";
-import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { getCookie } from "@/hooks";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+
+type TSIngleTier = {
+  validity: string;
+  partnerType: string;
+  tierName: string;
+  quantity: string;
+  price: string;
+  currency: string;
+  color: string;
+  description: string;
+};
 export function AddPartners({
   close,
   eventId,
-  partner,
-  refetchPartners,
+  partnerTier,
 }: {
   eventId: string;
-  refetchPartners: () => Promise<any>;
-  partner?: TPartner;
+  partnerTier: TSIngleTier;
   close: () => void;
 }) {
   const router = useRouter();
   const [active, setActive] = useState(1);
   const currentEvent = getCookie("currentEvent");
+  const { data: eventData, refetch } = useFetchSingleEvent(eventId);
   const org = getCookie("currentOrganization");
   const { addPartners } = useAddPartners();
   const { attendees } = useGetEventAttendees(eventId);
-  const { data: eventData, refetch } = useFetchSingleEvent(eventId);
   const { update } = useUpdatePartners();
   const [loading, setLoading] = useState(false);
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
@@ -147,7 +160,27 @@ export function AddPartners({
     const video: any = await promiseVideo;
 
     const partnerAlias = generateAlias();
-    const payload: Partial<TPartner> = partner?.id
+    const payload: Partial<TPartner> = {
+      ...values,
+
+      eventAlias: eventId,
+      whatsApp: values.whatsApp,
+      phoneNumber: values.phoneNumber,
+      boothStaff: selectedAttendees,
+      companyLogo: image,
+      partnerAlias,
+      media: video,
+    };
+    const asynQuery = update;
+    await asynQuery(payload);
+    setLoading(false);
+    //  refetchPartners();
+    close();
+  }
+
+  /**
+   * addPartners;
+   partner?.id
       ? {
           ...partner,
           ...values,
@@ -160,23 +193,8 @@ export function AddPartners({
           companyLogo: image,
           media: video,
         }
-      : {
-          ...values,
-          eventId: String(eventData?.id),
-          eventAlias: eventData?.eventAlias,
-          whatsApp: values.whatsApp,
-          phoneNumber: values.phoneNumber,
-          boothStaff: selectedAttendees,
-          companyLogo: image,
-          partnerAlias,
-          media: video,
-        };
-    const asynQuery = partner?.id ? update : addPartners;
-    await asynQuery(payload);
-    setLoading(false);
-    refetchPartners();
-    close();
-  }
+      :
+   */
 
   // convert attendees list to an array of object {value, label} pairs
   const attendeeOptions = useMemo(() => {
@@ -214,27 +232,27 @@ export function AddPartners({
 
   ///
   //
-  useEffect(() => {
-    if (partner) {
-      form.reset({
-        partnerType: partner?.partnerType,
-        sponsorCategory: partner?.sponsorCategory,
-        companyName: partner?.companyName,
-        phoneNumber: partner?.phoneNumber,
-        whatsApp: partner?.whatsApp,
-        email: partner?.email,
-        companyLogo: partner?.companyLogo,
-        media: partner?.media,
-        description: partner?.description,
-        city: partner?.city,
-        country: partner?.country,
-        industry: partner?.industry,
-        website: partner?.website,
-      });
+  // useEffect(() => {
+  //   if (partner) {
+  //     form.reset({
+  //       partnerType: partner?.partnerType,
+  //       sponsorCategory: partner?.sponsorCategory,
+  //       companyName: partner?.companyName,
+  //       phoneNumber: partner?.phoneNumber,
+  //       whatsApp: partner?.whatsApp,
+  //       email: partner?.email,
+  //       companyLogo: partner?.companyLogo,
+  //       media: partner?.media,
+  //       description: partner?.description,
+  //       city: partner?.city,
+  //       country: partner?.country,
+  //       industry: partner?.industry,
+  //       website: partner?.website,
+  //     });
 
-      setSelectedAttendees(partner?.boothStaff);
-    }
-  }, [partner]);
+  //     setSelectedAttendees(partner?.boothStaff);
+  //   }
+  // }, [partner]);
 
   const countriesList = useMemo(() => {
     return COUNTRY_CODE.map((country) => ({
@@ -271,20 +289,26 @@ export function AddPartners({
       <div
         role="button"
         className={cn(
-          "w-full box-animation grid grid-cols-1 md:grid-cols-9 mt-10 gap-4"
+          "w-full box-animation max-w-6xl px-4 mx-auto grid grid-cols-1 md:grid-cols-9 mt-10 gap-4"
         )}
       >
-        <div className="w-full grid grid-cols-1 md:py-10 md:col-span-4">
+        <div className="w-full max-h-[36rem] md:sticky top-8 grid grid-cols-1 gap-20 md:py-10 md:col-span-4">
           <div className="w-full flex flex-col items-start justify-start gap-y-2">
-            <p className="font-semibold text-base sm:text-xl">Event Name</p>
-            <p>10th July 2024</p>
-            <Image
-              className="w-full rounded-lg h-[16rem]"
-              src="/images/logo.png"
-              width={800}
-              height={400}
-              alt=""
-            />
+            <p className="font-semibold text-base sm:text-xl">
+              {eventData?.eventTitle ?? ""}
+            </p>
+            <p>{formatDate(eventData?.startDateTime ?? "0")}</p>
+            {eventData?.eventPoster ? (
+              <Image
+                className="w-full rounded-lg h-[16rem]"
+                src={eventData?.eventPoster ?? ""}
+                width={800}
+                height={400}
+                alt=""
+              />
+            ) : (
+              <div className="w-full rounded-lg animate-pulse bg-gray-200 h-[16rem]"></div>
+            )}
           </div>
 
           <div className="w-full rounded-lg border  p-3">
@@ -299,20 +323,22 @@ export function AddPartners({
             </div>
             <div className="border-t flex items-center justify-between pt-2">
               <p className="font-semibold">Total</p>
-              <p className="font-semibold text-base sm:text-xl">NGN 5,000</p>
+              <p className="font-semibold text-base sm:text-xl">NGN 0</p>
             </div>
           </div>
         </div>
         <div className="w-full space-y-6 bg-white rounded-lg py-6 px-4 sm:px-8 md:col-span-5">
-          <Button
-            onClick={() => router.back()}
-            className="px-0 h-fit w-fit  bg-none  "
-          >
+          <Button onClick={close} className="px-0 h-fit w-fit  bg-none  ">
             <ArrowBack className="px-0 w-fit h-fit" size={20} />
           </Button>
           <div className="space-y-2">
-            <p className="text-gray-500 text-mobile sm:text-sm">Tier Name</p>
-            <p className="font-semibold text-base sm:text-xl">NGN 5,000</p>
+            <p className="text-gray-500 text-mobile sm:text-sm">
+              {partnerTier?.tierName ?? ""}
+            </p>
+            <p className="font-semibold text-base sm:text-xl">
+              {partnerTier?.currency}{" "}
+              {Number(partnerTier?.price).toLocaleString()}
+            </p>
           </div>
           <Form {...form}>
             <form
@@ -328,15 +354,15 @@ export function AddPartners({
                     <FormControl>
                       <ReactSelect
                         {...form.register("partnerType")}
-                        defaultValue={
-                          partner
-                            ? {
-                                value: partner?.partnerType,
-                                label: partner?.partnerType,
-                              }
-                            : ""
-                        }
-                        label="Partner Type"
+                        // defaultValue={
+                        //   partner
+                        //     ? {
+                        //         value: partner?.partnerType,
+                        //         label: partner?.partnerType,
+                        //       }
+                        //     : ""
+                        // }
+
                         options={[
                           { label: "Sponsor", value: "Sponsor" },
                           { label: "Exhibitor", value: "Exhibitor" },
@@ -364,14 +390,14 @@ export function AddPartners({
                           <ReactSelect
                             {...form.register("sponsorCategory")}
                             placeHolder="Select Sponsor Category"
-                            defaultValue={
-                              partner
-                                ? {
-                                    value: partner?.sponsorCategory,
-                                    label: partner?.sponsorCategory,
-                                  }
-                                : ""
-                            }
+                            // defaultValue={
+                            //   partner
+                            //     ? {
+                            //         value: partner?.sponsorCategory,
+                            //         label: partner?.sponsorCategory,
+                            //       }
+                            //     : ""
+                            // }
                             borderColor="#001fcc"
                             bgColor="#001fcc1a"
                             height="3rem"
@@ -401,17 +427,22 @@ export function AddPartners({
                 control={form.control}
                 name="companyName"
                 render={({ field }) => (
-                  <InputOffsetLabel label="Company Name">
-                    <Input
-                      type="text"
-                      placeholder="Enter the Company Name"
-                      {...form.register("companyName")}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                    />
-                  </InputOffsetLabel>
+                  <FormItem className="relative w-full h-fit">
+                    <FormLabel>Company Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Enter the Company Name"
+                        {...form.register("companyName")}
+                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
-              <div className="w-full grid grid-cols-2 items-center gap-4">
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-4">
                 <FormField
                   control={form.control}
                   name="phoneNumber"
@@ -583,7 +614,7 @@ export function AddPartners({
                 )}
               />
 
-              <div className="w-full grid grid-cols-2 items-center gap-4">
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-4">
                 {Array.isArray(selectedAttendees) &&
                   selectedAttendees.map(
                     ({
@@ -607,24 +638,24 @@ export function AddPartners({
                     )
                   )}
               </div>
-              <div className="w-full flex items-center gap-x-2">
+              <div className="w-full flex gap-x-2 items-end ">
                 <FormField
                   control={form.control}
                   name="industry"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem className="w-[70%]">
                       <FormLabel>Industry</FormLabel>
                       <FormControl>
                         <ReactSelect
                           {...form.register("industry")}
-                          defaultValue={
-                            partner
-                              ? {
-                                  value: partner?.industry,
-                                  label: partner?.industry,
-                                }
-                              : ""
-                          }
+                          // defaultValue={
+                          //   partner
+                          //     ? {
+                          //         value: partner?.industry,
+                          //         label: partner?.industry,
+                          //       }
+                          //     : ""
+                          // }
                           placeHolder="Select Industry"
                           borderColor="#001fcc"
                           bgColor="#001fcc1a"
@@ -643,14 +674,14 @@ export function AddPartners({
                     e.preventDefault();
                     setActive(2);
                   }}
-                  className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
+                  className="hover:bg-basePrimary w-[30%] text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
                 >
                   <PlusCircle size={22} />
                   <p>Industry</p>
                 </Button>
               </div>
 
-              <div className="w-full grid-cols-1 grid sm:grid-cols-2 items-center gap-2">
+              <div className="w-full grid-cols-1 grid  items-center gap-2">
                 <FormField
                   control={form.control}
                   name="city"
@@ -679,14 +710,14 @@ export function AddPartners({
                       <FormControl>
                         <ReactSelect
                           {...form.register("country")}
-                          defaultValue={
-                            partner
-                              ? {
-                                  value: partner?.country,
-                                  label: partner?.country,
-                                }
-                              : ""
-                          }
+                          // defaultValue={
+                          //   partner
+                          //     ? {
+                          //         value: partner?.country,
+                          //         label: partner?.country,
+                          //       }
+                          //     : ""
+                          // }
                           placeHolder="Select the Country"
                           borderColor="#001fcc"
                           bgColor="#001fcc1a"
