@@ -14,12 +14,7 @@ import {
 } from "@/components";
 import { useForm } from "react-hook-form";
 import { ArrowBack } from "styled-icons/boxicons-regular";
-import {
-  COUNTRY_CODE,
-  uploadFile,
-  generateAlias,
-  formatDate,
-} from "@/utils";
+import { COUNTRY_CODE, uploadFile, generateAlias, formatDate } from "@/utils";
 import { AddSponsorLevel } from "@/components/contents/partners/_components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useEffect, useState, useMemo } from "react";
@@ -130,6 +125,29 @@ export function AddPartners({
     }
   }, [country]);
 
+  // calculating the processing Fee
+  const processingFee = useMemo(() => {
+    return (Number(partnerTier?.price) * 5) / 100;
+  }, [partnerTier]);
+
+  const total = useMemo(() => {
+    if (eventData?.attendeePayProcessingFee) {
+
+      return Number(partnerTier?.price) + processingFee;
+    } else {
+      return Number(partnerTier?.price)
+    }
+  }, [processingFee, partnerTier, eventData]);
+
+const computedPrice = useMemo(() => {
+  if (eventData?.attendeePayProcessingFee) {
+    return Number(partnerTier?.price)
+  }
+  else {
+    return Number(partnerTier?.price) - processingFee;
+  }
+},[eventData, partnerTier, processingFee]);
+
   async function onSubmit(values: any) {
     setLoading(true);
     //
@@ -170,6 +188,11 @@ export function AddPartners({
       companyLogo: image,
       partnerAlias,
       media: video,
+      partnerStatus: false,
+      amountPaid: Number(partnerTier?.price),
+      currency: partnerTier?.currency,
+      paymentReference: "",
+      tierName: partnerTier?.tierName,
     };
     const asynQuery = update;
     await asynQuery(payload);
@@ -315,15 +338,22 @@ export function AddPartners({
             <p className="font-semibold text-base sm:text-xl">Order Summary</p>
             <div className="w-full mt-4 mb-2 flex items-center justify-between">
               <p>1x Tier Name</p>
-              <p>--</p>
+              <p>
+                {partnerTier?.currency}{" "}
+                {computedPrice.toLocaleString()}
+              </p>
             </div>
             <div className="w-full  mb-2 flex items-center justify-between">
               <p>1x Processing Fee</p>
-              <p>--</p>
+              <p> {partnerTier?.currency}{" "}
+              {processingFee.toLocaleString()}</p>
             </div>
             <div className="border-t flex items-center justify-between pt-2">
               <p className="font-semibold">Total</p>
-              <p className="font-semibold text-base sm:text-xl">NGN 0</p>
+              <p className="font-semibold text-base sm:text-xl">
+                {partnerTier?.currency}{" "}
+                {total.toLocaleString()}
+              </p>
             </div>
           </div>
         </div>
@@ -337,7 +367,7 @@ export function AddPartners({
             </p>
             <p className="font-semibold text-base sm:text-xl">
               {partnerTier?.currency}{" "}
-              {Number(partnerTier?.price).toLocaleString()}
+              {total.toLocaleString()}
             </p>
           </div>
           <Form {...form}>
@@ -345,7 +375,7 @@ export function AddPartners({
               onSubmit={form.handleSubmit(onSubmit)}
               className="flex items-start w-full flex-col gap-y-3"
             >
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="partnerType"
                 render={({ field }) => (
@@ -377,8 +407,8 @@ export function AddPartners({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
-              {form.watch("partnerType") === "Sponsor" && (
+              /> */}
+              {/* {form.watch("partnerType") === "Sponsor" && (
                 <div className="w-full flex items-center gap-x-2">
                   <FormField
                     control={form.control}
@@ -421,7 +451,7 @@ export function AddPartners({
                     <p>Category</p>
                   </Button>
                 </div>
-              )}
+              )} */}
 
               <FormField
                 control={form.control}
@@ -538,7 +568,7 @@ export function AddPartners({
                   />
                 </div>
               )}
-              <div className="w-full flex flex-col items-start justify-start gap-y-1">
+              {/* <div className="w-full flex flex-col items-start justify-start gap-y-1">
                 <FormField
                   control={form.control}
                   name="media"
@@ -562,7 +592,7 @@ export function AddPartners({
                 <p className="text-xs text-[#717171]">
                   Selected file should not be bigger than 2MB
                 </p>
-              </div>
+              </div> */}
 
               {formatVideo && (
                 <div className="w-[150px] h-[150px]">
@@ -574,7 +604,7 @@ export function AddPartners({
                   />
                 </div>
               )}
-
+{/* 
               <FormField
                 control={form.control}
                 name="description"
@@ -591,8 +621,8 @@ export function AddPartners({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
-              <FormField
+              /> */}
+              {/* <FormField
                 control={form.control}
                 name="boothStaff"
                 render={({ field }) => (
@@ -612,8 +642,8 @@ export function AddPartners({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
-
+              /> */}
+{/* 
               <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-4">
                 {Array.isArray(selectedAttendees) &&
                   selectedAttendees.map(
@@ -637,8 +667,8 @@ export function AddPartners({
                       />
                     )
                   )}
-              </div>
-              <div className="w-full flex gap-x-2 items-end ">
+              </div> */}
+              {/* <div className="w-full flex gap-x-2 items-end ">
                 <FormField
                   control={form.control}
                   name="industry"
@@ -679,7 +709,7 @@ export function AddPartners({
                   <PlusCircle size={22} />
                   <p>Industry</p>
                 </Button>
-              </div>
+              </div> */}
 
               <div className="w-full grid-cols-1 grid  items-center gap-2">
                 <FormField
@@ -731,6 +761,44 @@ export function AddPartners({
                   )}
                 />
               </div>
+              <FormField
+                control={form.control}
+                name="contactFirstName"
+                render={({ field }) => (
+                  <FormItem className="relative w-full h-fit">
+                    <FormLabel>Contact Person First Name </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Enter First Name"
+                        {...form.register("contactFirstName")}
+                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="contactLastName"
+                render={({ field }) => (
+                  <FormItem className="relative w-full h-fit">
+                    <FormLabel>Contact Person Last Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Enter Last Name"
+                        {...form.register("contactLastName")}
+                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}

@@ -168,6 +168,7 @@ export function AddPartnerManually({
           companyLogo: image,
           partnerAlias,
           media: video,
+          partnerStatus: false
         };
     const asynQuery = partner?.id ? update : addPartners;
     await asynQuery(payload);
