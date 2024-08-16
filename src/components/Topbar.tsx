@@ -139,8 +139,8 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
           >
             <button
               className={cn(
-                " px-4 pt-[0.6rem] pb-[0.5rem]   lg:hidden",
-                isShowNav && " pt-0 pb-0",
+                " px-4 pt-[0.6rem] pb-[0.5rem]   lg:hidden hover:opacity-100 opacity-10",
+                isShowNav && " pt-0 pb-0 opacity-100",
                 isScrolling && "hidden"
               )}
               onClick={() => setShowNav((prev) => !prev)}
