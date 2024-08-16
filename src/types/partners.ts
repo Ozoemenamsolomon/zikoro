@@ -44,17 +44,6 @@ export interface TPartner {
   sponsoredSession: { session: TAgenda; sessionLink: string }[];
   partnerAlias: string;
   organizerEmail: string;
-<<<<<<< Updated upstream
-  partnerStatus: string;
-  amountPaid: number;
-  currency: string;
-  paymentReference: string;
-  tierName: string;
-  contactFirstName:string;
-contactLastName: string;
-
-=======
->>>>>>> Stashed changes
 }
 
 export interface TExPartner {
@@ -84,11 +73,8 @@ export interface TExPartner {
   eventAlias: string;
   sponsoredSession: { session: TAgenda; sessionLink: string }[];
   partnerAlias: string;
-<<<<<<< Updated upstream
-=======
   tierName: string;
   amountPaid: number;
->>>>>>> Stashed changes
 }
 
 export interface PartnerJobType {
