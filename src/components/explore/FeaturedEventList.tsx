@@ -47,9 +47,9 @@ export default function FeaturedEventList({ searchQuery }: selectedEventProps) {
   const filteredEvents = eventData?.filter((event) => {
     // Filter by event title, city, or category
     return (
-      event.eventTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.eventCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.eventCategory.toLowerCase().includes(searchQuery.toLowerCase())
+      event.eventTitle?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
+      event.eventCity?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
+      event.eventCategory?.toLowerCase()?.includes(searchQuery?.toLowerCase())
     );
   });
 
@@ -78,11 +78,11 @@ export default function FeaturedEventList({ searchQuery }: selectedEventProps) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-5 lg:gap-y-0 mt-[50px] bg-white ">
-            {filteredEvents &&
+            {filteredEvents ? (
               filteredEvents?.length &&
               filteredEvents
                 .slice(0, 4)
-                .map((event, index) => (
+                .map((event) => (
                   <FeaturedEvent
                     key={event.id}
                     id={event.id}
@@ -99,7 +99,10 @@ export default function FeaturedEventList({ searchQuery }: selectedEventProps) {
                     expectedParticipants={event.expectedParticipants}
                     registered={event.registered}
                   />
-                ))}
+                ))
+            ) : (
+              <p>No events found</p>
+            )}
           </div>
 
           <div

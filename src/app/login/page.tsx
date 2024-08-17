@@ -13,6 +13,7 @@ import { EyeOff } from "styled-icons/feather";
 import { useLogin } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useSearchParams } from "next/navigation";
+import { AuthLayout } from "@/components";
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +33,7 @@ export default function Page() {
   }
 
   return (
-    <>
+    <AuthLayout>
       <h2 className="font-medium text-lg sm:text-xl mb-6">Welcome back 👋</h2>
 
       <Form {...form}>
@@ -102,6 +103,6 @@ export default function Page() {
           </div>
         </form>
       </Form>
-    </>
+    </AuthLayout>
   );
 }

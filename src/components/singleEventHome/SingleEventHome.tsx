@@ -19,6 +19,7 @@ import Image from "next/image";
 import { Reward } from "@/types";
 import { useGetData } from "@/hooks/services/request";
 import { Offers } from "../partners/_components";
+
 export function SingleEventHome({ eventId }: { eventId: string }) {
   const { data, loading } = useFetchSingleEvent(eventId);
   const [active, setActive] = useState(1);
@@ -57,8 +58,8 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     Array.isArray(partnersData) && partnersData?.length > 1 ? Slider : "div";
   return (
     <>
-      <div className="w-full grid grid-cols-1 md:grid-cols-9 items-center justify-center sm:justify-start sm:items-start ">
-        <div className="w-full col-span-full md:col-span-6 flex flex-col gap-y-4  items-start justify-start border-r">
+      <div className="w-full grid  grid-cols-1 md:grid-cols-9 items-center justify-center sm:justify-start sm:items-start ">
+        <div className="w-full bg-white col-span-full md:col-span-6 flex flex-col gap-y-4  items-start justify-start border-r">
           <div className={cn("w-full", active > 1 && "hidden sm:block")}>
             <EventSchedule event={data} loading={loading} />
           </div>

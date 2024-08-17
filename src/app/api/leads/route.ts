@@ -138,11 +138,17 @@ export async function GET(req: NextRequest) {
       const { searchParams } = new URL(req.url);
       const eventAlias = searchParams.get("eventAlias");
       const partnerId = searchParams.get("partnerId");
-      const { data, error, status } = await supabase
+
+      const query = supabase
         .from("Leads")
         .select("*")
-        .eq("eventAlias", eventAlias)
-        .eq("eventPartnerAlias", partnerId);
+        .eq("eventAlias", eventAlias);
+
+      if (partnerId) query.eq("eventPartnerAlias", partnerId);
+
+      const { data, error, status } = await query;
+
+      console.log(data);
 
       if (error) throw error;
 

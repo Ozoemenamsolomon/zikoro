@@ -201,7 +201,7 @@ export function AddQuestion({
   //console.log({defaultQuestionValue, defaultFeedBackValue})
   return (
     <div
-      onClick={close}
+     // onClick={close}
       role="button"
       className="w-full h-full fixed inset-0 z-[300] bg-black/50"
     >

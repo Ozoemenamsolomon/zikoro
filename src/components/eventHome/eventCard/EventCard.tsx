@@ -18,7 +18,7 @@ import { saveCookie } from "@/hooks";
 import { cn } from "@/lib";
 import { useRouter } from "next/navigation";
 import { ExternalLink } from "styled-icons/remix-fill";
-
+import useAccessStore from "@/store/globalAcessStore";
 export function EventCard({
   event,
   refetch,
