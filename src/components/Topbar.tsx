@@ -20,7 +20,7 @@ const Topbar = ({ eventId }: { eventId?: string }) => {
   const [left, setLeft] = useState(false);
   const { user } = useUserStore();
   const { organization } = useOrganizationStore();
-  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId });
+  const { isIdPresent } = useCheckTeamMember({ eventId });
 
   useEffect(() => {
     document.addEventListener("scroll", () => {

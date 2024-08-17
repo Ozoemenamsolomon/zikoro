@@ -44,7 +44,7 @@ export interface TPartner {
   sponsoredSession: { session: TAgenda; sessionLink: string }[];
   partnerAlias: string;
   organizerEmail: string;
-  partnerStatus: boolean;
+  partnerStatus: string;
   amountPaid: number;
   currency: string;
   paymentReference: string;

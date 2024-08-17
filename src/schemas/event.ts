@@ -88,15 +88,27 @@ export const rewardSchema = z.object({
   point: z.string().min(1, { message: "Point is required" }),
 });
 
-/**
-   .refine(
-        (value) =>
-          value && /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/.test(value),
-        {
-          message: "Invalid email address",
-        }
-      )
- */
+export const addPartnerToTierSchema = z.object({
+  companyName: z.string().min(3, { message: "Name is required" }),
+  email: z.string().email({ message: "Email must be a valid email" }),
+  companyLogo: z.any(),
+  city: z.string().min(3, { message: "City is required" }),
+  country: z.string().min(3, { message: "Country is required" }),
+  contactFirstName: z.string().min(3, { message: "First Name is required" }),
+  contactLastName: z.string().min(3, { message: "Last Name is required" }),
+  website: z.string().min(3, { message: "Url is required" }),
+  phoneNumber: z
+    .string()
+    .refine((value) => value && /^\d{9,}$/.test(value.replace(/\D/g, "")), {
+      message: "Phone number must be at least 9 digits long",
+    }),
+  whatsApp: z
+    .string()
+    .refine((value) => value && /^\d{9,}$/.test(value.replace(/\D/g, "")), {
+      message: "Whatsapp number must be at least 9 digits long",
+    }),
+});
+
 export const partnerDetails = z.array(
   z.object({
     validity: z.string().min(1, { message: "Validity is required" }),
