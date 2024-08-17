@@ -117,13 +117,13 @@ export function AddPartnerManually({
 
   async function onSubmit(values: any) {
     setLoading(true);
-  //  
+    //
     const promise = new Promise(async (resolve) => {
       if (typeof values?.companyLogo === "string") {
         resolve(values?.companyLogo);
       } else if (values?.companyLogo && values?.companyLogo?.length > 0) {
         const img = await uploadFile(values?.companyLogo[0], "image");
-        
+
         resolve(img);
       } else {
         resolve(null);
@@ -144,7 +144,7 @@ export function AddPartnerManually({
 
     const video: any = await promiseVideo;
 
-    const partnerAlias = generateAlias()
+    const partnerAlias = generateAlias();
     const payload: Partial<TPartner> = partner?.id
       ? {
           ...partner,
@@ -152,7 +152,7 @@ export function AddPartnerManually({
           organizerEmail: org?.email,
           eventId: String(eventData?.id),
           eventAlias: eventData?.eventAlias,
-          whatsApp:  values.whatsApp,
+          whatsApp: values.whatsApp,
           phoneNumber: values.phoneNumber,
           boothStaff: selectedAttendees,
           companyLogo: image,
@@ -162,13 +162,13 @@ export function AddPartnerManually({
           ...values,
           eventId: String(eventData?.id),
           eventAlias: eventData?.eventAlias,
-          whatsApp:  values.whatsApp,
-          phoneNumber:  values.phoneNumber,
+          whatsApp: values.whatsApp,
+          phoneNumber: values.phoneNumber,
           boothStaff: selectedAttendees,
           companyLogo: image,
           partnerAlias,
           media: video,
-          partnerStatus: false
+          partnerStatus: "pending",
         };
     const asynQuery = partner?.id ? update : addPartners;
     await asynQuery(payload);
@@ -212,7 +212,7 @@ export function AddPartnerManually({
   }, [eventData?.sponsorCategory]);
 
   ///
-  // 
+  //
   useEffect(() => {
     if (partner) {
       form.reset({
@@ -263,9 +263,7 @@ export function AddPartnerManually({
   }, [companyVideo]);
 
   return (
-    <div
-      className="w-full h-full fixed z-[200]    inset-0 bg-black/50"
-    >
+    <div className="w-full h-full fixed z-[200]    inset-0 bg-black/50">
       <div
         onClick={(e) => e.stopPropagation()}
         role="button"
@@ -368,7 +366,7 @@ export function AddPartnerManually({
                     <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
                       Phone number
                     </FormLabel>
-                   
+
                     <FormControl>
                       <Input
                         className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 px-4"
@@ -390,7 +388,7 @@ export function AddPartnerManually({
                     <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-[10px] px-1">
                       WhatsApp number
                     </FormLabel>
-                   
+
                     <FormControl>
                       <Input
                         className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 px-4"

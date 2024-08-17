@@ -25,6 +25,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addPartnerToTierSchema } from "@/schemas";
 import { generateAlphanumericHash } from "@/utils/helpers";
+import { EventDetail } from "@/components/published";
 
 type TSIngleTier = {
   validity: string;
@@ -47,6 +48,7 @@ export function AddPartners({
 }) {
   const { data: eventData } = useFetchSingleEvent(eventId);
   const [loading, setLoading] = useState(false);
+  const {addPartners} = useAddPartners()
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
     "+234"
   );
@@ -126,13 +128,26 @@ export function AddPartners({
       currency: partnerTier?.currency,
       tierName: partnerTier?.tierName,
       partnerType: partnerTier?.partnerType,
-      paymentReference: generateAlphanumericHash(10)
+      paymentReference: total === 0 ? "" :generateAlphanumericHash(10),
     };
+
+    if (total === 0) {
+      await addPartners(payload);
+    }else {
+      const encodedData = encodeURIComponent(JSON.stringify(payload));
+      window.open(
+        `/partner-payment?p=${encodedData}&eventName=${
+          eventData?.eventTitle
+        }&startDate=${eventData?.startDateTime}&endDate=${
+          eventData?.endDateTime
+        }&location=${`${eventData?.eventCity}, ${eventData?.eventCountry}`}`,
+        "_self"
+      );
+    }
     setLoading(false);
-    const encodedData = encodeURIComponent(JSON.stringify(payload));
+    
 
    
-    window.open(`/partner-payment?p=${encodedData}`, "_self");
     // await addPartners(payload)
     // close();
   }
