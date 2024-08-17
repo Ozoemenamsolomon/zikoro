@@ -44,6 +44,13 @@ export interface TPartner {
   sponsoredSession: { session: TAgenda; sessionLink: string }[];
   partnerAlias: string;
   organizerEmail: string;
+  tierName: string;
+  amountPaid: number;
+  partnerStatus: string;
+  currency: string;
+  paymentReference: string;
+  contactLastName:string;
+  contactFirstName: string;
 }
 
 export interface TExPartner {
@@ -73,8 +80,14 @@ export interface TExPartner {
   eventAlias: string;
   sponsoredSession: { session: TAgenda; sessionLink: string }[];
   partnerAlias: string;
+  organizerEmail: string;
   tierName: string;
   amountPaid: number;
+  partnerStatus: string;
+  currency: string;
+  paymentReference: string;
+  contactLastName:string;
+  contactFirstName: string;
 }
 
 export interface PartnerJobType {

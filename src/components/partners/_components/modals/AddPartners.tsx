@@ -25,7 +25,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addPartnerToTierSchema } from "@/schemas";
 import { generateAlphanumericHash } from "@/utils/helpers";
-import { EventDetail } from "@/components/published";
+
 
 type TSIngleTier = {
   validity: string;
@@ -117,7 +117,8 @@ export function AddPartners({
     const partnerAlias = generateAlias();
     const payload: Partial<TPartner> = {
       ...values,
-
+      eventId: eventData?.id,
+      eventName: eventData?.eventTitle,
       eventAlias: eventId,
       whatsApp: whatsappCountryCode + values.whatsApp,
       phoneNumber: phoneCountryCode + values.phoneNumber,

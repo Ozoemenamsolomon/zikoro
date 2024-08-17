@@ -19,6 +19,7 @@ import { HiOutlineMail } from "react-icons/hi";
 import { RxLink2 } from "react-icons/rx";
 import Link from "next/link";
 import copy from "copy-to-clipboard";
+import { TbLoader3 } from "react-icons/tb";
 export default function PartnerPayment() {
   const router = useRouter();
   const params = useSearchParams();
@@ -116,6 +117,14 @@ export default function PartnerPayment() {
           endDate={endDate}
           location={location}
         />
+      )}
+      {loading && (
+        <div className="w-full h-full inset-0 fixed z-[300]">
+          <div className="W-fit h-fit flex flex-col items-center justify-center inset-0 m-auto absolute box-animation">
+            <TbLoader3 size={30} className="text-basePrimary animate-spin" />
+            <p>Processing...</p>
+          </div>
+        </div>
       )}
     </div>
   );
