@@ -12,7 +12,7 @@ import { Eye } from "styled-icons/feather";
 import { EyeOff } from "styled-icons/feather";
 import { useRegistration } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-
+import { AuthLayout } from "@/components";
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
   const { loading, register } = useRegistration();
@@ -25,7 +25,7 @@ export default function Page() {
   }
 
   return (
-    <>
+    <AuthLayout>
       <h2 className="font-medium text-lg sm:text-xl mb-6 text-center w-full">Register</h2>
 
       <Form {...form}>
@@ -90,6 +90,6 @@ export default function Page() {
           </div>
         </form>
       </Form>
-    </>
+    </AuthLayout>
   );
 }
