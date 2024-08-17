@@ -56,7 +56,7 @@ export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ childre
       const user = await fetchUser();
        if (user) setUser(user)
       }
-    fetch();
+    if(!user) fetch();
   }, []);
 
   return (

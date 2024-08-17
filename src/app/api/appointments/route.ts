@@ -11,10 +11,11 @@ export async function GET(req: NextRequest) {
   if (req.method !== "GET") {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
   }
-
+  
   const { searchParams } = new URL(req.url);
   const date = searchParams.get('date');  
   const userId = searchParams.get('userId');
+  const bookingStatus = searchParams.get('bookingStatus');
 
   if ( !userId || !date) {
     return NextResponse.json({ error: "Missing required parameters", data: null }, { status: 400 });
@@ -23,14 +24,14 @@ export async function GET(req: NextRequest) {
   try {
     const today = startOfDay(new Date(date!)).toISOString()
 
-    const {data, error}= await supabase
+      const {data, error}= await supabase
       .from("bookings")
       .select(`*, appointmentLinkId(*, createdBy(id, userEmail,organization,firstName,lastName,phoneNumber))`)
       .eq("createdBy", userId)
       .gte('appointmentDate', today)
       .order("appointmentDate", { ascending: true });
 
-    console.log({res:{data,error},userId,date,today})
+      console.log({res:{data,error},userId,date,today})
 
     if (error) {
       console.error("Error fetching bookings:", error.message);
