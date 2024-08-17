@@ -26,21 +26,23 @@ import { IoCheckmarkCircle, IoCloseCircleSharp } from "react-icons/io5";
 import { Button } from "@/components";
 import { MdClose } from "react-icons/md";
 import { AddPartnerManually } from "@/components/partners/_components/modals/AddPartnerManually";
+import { Loader2Icon } from "lucide-react";
 
 function ConfirmationModal({
   titleElement,
   descriptionElement,
   buttonElement,
   close,
+ 
 }: {
   titleElement: ReactNode;
   descriptionElement: ReactNode;
   buttonElement: ReactNode;
-  close: () => void;
+close:() => void;
 }) {
   return (
-    <div className="w-full h-full inset-0 fixed bg-white/20 z-[100]">
-      <div className="absolute inset-0 gap-y-4 box-animation bg-white rounded-lg m-auto h-fit max-w-xl flex flex-col items-center justify-center py-4 px-4">
+    <div className="w-full h-full inset-0 fixed bg-black/20 z-[100]">
+      <div className="absolute inset-0 shadow gap-y-4 box-animation bg-white rounded-lg m-auto h-fit max-w-xl flex flex-col items-center justify-center py-4 px-4">
         <Button onClick={close} className="px-0 self-end w-11 rounded-full
          h-11 bg-gray-200">
           <MdClose size={22} />
@@ -52,15 +54,33 @@ function ConfirmationModal({
     </div>
   );
 }
-function ActionColumn() {
+function ActionColumn({partner, refetch}:{refetch:() => Promise<any>; partner: TPartner}) {
   const [isApprove, setIsApprove] = useState(false);
   const [isDecline, setIsDecline] = useState(false);
+  const {update} = useUpdatePartners()
+  const [loading, setLoading] = useState(false)
 
   function onDecline() {
     setIsDecline((p) => !p)
   }
   function onApprove() {
     setIsApprove((p) => !p)
+  }
+
+  async function approve() {
+    setLoading(true)
+    await update({...partner, partnerStatus: "verified"})
+    
+    setLoading(false)
+    refetch()
+    onApprove()
+  }
+  async function decline() {
+    setLoading(true)
+    await update({...partner, partnerStatus: "pending"})
+    setLoading(false)
+    refetch()
+    onDecline()
   }
   return (
     <div className="flex items-center gap-x-6">
@@ -79,9 +99,14 @@ function ActionColumn() {
 
       {isApprove && (
         <ConfirmationModal
+
+       
           buttonElement={
-            <Button className="text-white bg-basePrimary w-[130px]">
-              <p>Approve</p>
+            <Button 
+            onClick={approve}
+            className="gap-x-2 text-white bg-basePrimary w-[130px]">
+            {loading && <Loader2Icon  size={20}/>}
+            <p>Approve</p>
             </Button>
           }
           descriptionElement={
@@ -97,8 +122,12 @@ function ActionColumn() {
       )}
       {isDecline && (
         <ConfirmationModal
+
           buttonElement={
-            <Button className="bg-red-500 text-white w-[130px]">
+            <Button 
+            onClick={decline}
+            className="gap-x-2 bg-red-500 text-white w-[130px]">
+             {loading && <Loader2Icon size={20}/>}
               <p>Decline</p>
             </Button>
           }
@@ -108,7 +137,7 @@ function ActionColumn() {
             </p>
           }
           titleElement={
-            <p className="font-semibold text-basePrimary text-lg sm:text-xl">Decline Partner</p>
+            <p className="font-semibold text-red-500 text-lg sm:text-xl">Decline Partner</p>
           }
           close={onDecline}
         />
@@ -411,7 +440,7 @@ export function PartnerWidget({
           }}
         >
           {activeTab === 1 ? 
-          <ActionColumn/>
+          <ActionColumn refetch={refetch} partner={item}/>
           : <Switch
             className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
             disabled={loading}

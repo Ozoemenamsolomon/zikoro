@@ -166,7 +166,7 @@ function PaymentSuccessModal({
             Payment Successful
           </h2>
           <p className="text-center max-w-sm">
-            You have successfully made payment to be a
+            You have successfully made payment to be a {" "}
             <span className="font-medium">partner</span> for this event.
           </p>
         </div>

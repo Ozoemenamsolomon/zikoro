@@ -2,7 +2,7 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useDeletePartner, useFetchSingleEvent } from "@/hooks";
 import { PartnerWidget, ExhibitionHall, AddExhibitionHall } from "..";
 import { AddPartners } from "@/components/partners/_components";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PlusCircle } from "styled-icons/bootstrap";
 import { Eye } from "styled-icons/evil";
 import { Button } from "@/components";
@@ -84,11 +84,30 @@ export function PartnersList({
     { id: 1, name: "Awaiting Approval" },
     { id: 2, name: "Partners" },
   ];
+
+  const filteredPartners = useMemo(() => {
+    if (active === 1) {
+      return partners.filter((partner) => partner?.partnerStatus === "pending" || partner?.partnerStatus === null);
+    }
+    else {
+      return partners.filter((partner) => partner?.partnerStatus === "verified");
+    }
+  },[active, partners])
   return (
     <>
-      <div className="w-full h-full flex flex-col">
-        {Array.isArray(partners) && partners?.length > 0 && (
-          <div className="flex py-3 items-center justify-between w-full">
+    <div className="bg-[#F9FAFF]">
+      <div className="w-full h-full  flex flex-col">
+      <Button
+                onClick={onPartner}
+                className="text-gray-50 self-end my-4 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
+              >
+                <PlusCircle size={22} />
+                <p>Partner</p>
+              </Button>
+
+              <div className="w-full rounded-lg bg-white">
+              {Array.isArray(partners) && partners?.length > 0 && (
+          <div className="flex px-3 py-3 items-center justify-between w-full">
             <div className="flex items-center gap-x-2">
               <div className="flex items-center border-b gap-x-2">
                 {tabs.map((tab) => (
@@ -97,7 +116,7 @@ export function PartnersList({
                     className={cn(
                       "px-4 py-2",
                       active === tab?.id &&
-                        "text-basePrimary border border-basePrimary"
+                        "text-basePrimary border-b border-basePrimary"
                     )}
                     key={tab.id}
                   >
@@ -135,13 +154,7 @@ export function PartnersList({
                 <Eye size={40} />
               </button>
 
-              <Button
-                onClick={onPartner}
-                className="text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
-              >
-                <PlusCircle size={22} />
-                <p>Partner</p>
-              </Button>
+            
             </div>
           </div>
         )}
@@ -154,12 +167,12 @@ export function PartnersList({
                 "min-w-[1200px]"
             )}
           >
-            <table className="w-full  rounded-lg ">
+            <table className="w-full   ">
               <thead className="w-full">
                 {!loading &&
                   Array.isArray(partners) &&
                   partners?.length > 0 && (
-                    <tr className="w-full rounded-t-lg bg-basePrimary/10 grid grid-cols-8 text-sm font-semibold  items-center bg-gray-100 gap-3 px-3 py-4 ">
+                    <tr className="w-full  bg-basePrimary/10 grid grid-cols-8 text-sm font-semibold  items-center bg-gray-100 gap-3 px-3 py-4 ">
                       <td className="text-start col-span-2 w-full">
                         <label className=" w-full flex  relative items-center gap-x-2">
                           <input
@@ -223,8 +236,8 @@ export function PartnersList({
                     </tr>
                   )}
                 {!loading &&
-                  Array.isArray(partners) &&
-                  partners?.map((item, index) => (
+                  Array.isArray(filteredPartners) &&
+                  filteredPartners?.map((item, index) => (
                     <PartnerWidget
                       refetch={refetch}
                       selectRowFn={selectRow}
@@ -241,6 +254,9 @@ export function PartnersList({
             </table>
           </div>
         </div>
+              </div>
+    
+      </div>
       </div>
 
       {isOpen && (
