@@ -66,31 +66,45 @@ const Partners = () => {
     0
   );
 
+  const revenueFromPartners = data?.reduce(
+    (acc, { amountPaid }) => acc + amountPaid,
+    0
+  );
+
   const calculatePartnerRevenue = (partnerAlias: string) =>
     leadInterests
       .filter(({ eventPartnerAlias }) => partnerAlias === eventPartnerAlias)
       ?.reduce((acc, { offerAmount }) => acc + offerAmount, 0);
 
   const getPartnersDataSet = (partners: TPartner[]): TPartnerDataSet[] =>
-    partners.map(({ partnerAlias, id, companyName }) => {
-      console.log(leads);
-      const value =
-        (leads &&
+    partners
+      .sort(
+        (a, b) =>
           leads.filter(
-            ({ eventPartnerAlias }) => eventPartnerAlias === partnerAlias
-          ).length) ||
-        0;
+            ({ eventPartnerAlias }) => eventPartnerAlias === b.partnerAlias
+          ).length -
+          leads.filter(
+            ({ eventPartnerAlias }) => eventPartnerAlias === a.partnerAlias
+          ).length
+      )
+      .map(({ partnerAlias, id, companyName }, index) => {
+        console.log(leads);
+        const value =
+          (leads &&
+            leads.filter(
+              ({ eventPartnerAlias }) => eventPartnerAlias === partnerAlias
+            ).length) ||
+          0;
 
-      const color =
-        randomColors[Math.floor(Math.random() * randomColors.length)];
+        const color = randomColors[index];
 
-      return {
-        id: id,
-        value,
-        label: companyName,
-        color,
-      };
-    });
+        return {
+          id: id,
+          value,
+          label: companyName,
+          color,
+        };
+      });
 
   const partnersDataSet = getPartnersDataSet(data);
 
@@ -98,7 +112,7 @@ const Partners = () => {
 
   return (
     <>
-      <section className="grid grid-cols-3 gap-4">
+      <section className="grid md:grid-cols-3 gap-4">
         <AnalyticsInfoCard
           label={"Total Partners"}
           value={
@@ -149,9 +163,16 @@ const Partners = () => {
             <img className="h-10 w-10" src={moneyUp.src} alt={"money up"} />
           )}
         />
+        <AnalyticsInfoCard
+          label={"Revenue From Partners"}
+          value={formatNumberToShortHand(revenueFromPartners)}
+          Icon={() => (
+            <img className="h-10 w-10" src={moneyUp.src} alt={"money up"} />
+          )}
+        />
       </section>
       <section className="bg-white p-4 space-y-4 border rounded-md">
-        <h2 className="text-gray-600 font-medium text-sm">Partners</h2>
+        <h2 className="text-gray-600 font-medium text-sm">Sponsors</h2>
         <table className="border rounded-md w-full">
           <thead className="w-full">
             <tr className="flex bg-basePrimary/10 p-4 text-gray-600 font-medium">
@@ -163,7 +184,7 @@ const Partners = () => {
           </thead>
           <tbody className="[&>*:not(:last-child)]:border-b w-full font-medium">
             {data &&
-              data?.map(
+              data.map(
                 ({
                   companyName,
                   partnerType,
@@ -206,7 +227,7 @@ const Partners = () => {
       </section>
       <section className="bg-white p-4 space-y-4 border rounded-md">
         <h2 className="text-gray-600 font-medium text-sm">Partners</h2>
-        <div className="bg-basePrimary/10 p-4 m-4 border rounded-md grid grid-cols-2 gap-4">
+        <div className="bg-basePrimary/10 p-4 m-4 border rounded-md grid md:grid-cols-2 gap-4">
           <PieChart
             colors={["blue", "purple", "black"]}
             series={[

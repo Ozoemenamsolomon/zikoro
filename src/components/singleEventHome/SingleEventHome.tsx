@@ -19,6 +19,7 @@ import Image from "next/image";
 import { Reward } from "@/types";
 import { useGetData } from "@/hooks/services/request";
 import { Offers } from "../partners/_components";
+
 export function SingleEventHome({ eventId }: { eventId: string }) {
   const { data, loading } = useFetchSingleEvent(eventId);
   const [active, setActive] = useState(1);

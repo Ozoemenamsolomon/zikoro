@@ -181,9 +181,14 @@ export async function POST(req: NextRequest) {
               }</p>
             
               <a
-               href="www.zikoro.com/event/${
-                 currentEvent.eventAlias
-               }/people/info/${attendee.id}" 
+              href="https://www.zikoro.com/event/${
+                currentEvent.eventAlias
+              }/people/info/${attendee.id}?email=${
+              attendee?.email
+            }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+              attendee?.attendeeAlias
+            }"
+               
               style="display: block; color: #001fcc; font-size: 12px; text-decoration: none;"
               >
               Update Profile</a>
@@ -266,7 +271,13 @@ export async function POST(req: NextRequest) {
           </div>
           <!--end-->
             <a
-            href="www.zikoro.com/event/${currentEvent.eventAlias}/reception"
+            href="www.zikoro.com/event/${
+              currentEvent.eventAlias
+            }/reception?email=${
+              attendee?.email
+            }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
+              attendee?.attendeeAlias
+            }"
             style="max-width:600px; margin:0 auto;"
             >
             <button
