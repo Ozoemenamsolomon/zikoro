@@ -15,23 +15,17 @@ import {
 import { useForm } from "react-hook-form";
 import { ArrowBack } from "styled-icons/boxicons-regular";
 import { COUNTRY_CODE, uploadFile, generateAlias, formatDate } from "@/utils";
-import { AddSponsorLevel } from "@/components/contents/partners/_components";
+import { TPartner } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useEffect, useState, useMemo } from "react";
-import { PlusCircle } from "styled-icons/bootstrap";
 import { cn } from "@/lib";
-import { AddIndustry } from "..";
-import {
-  useAddPartners,
-  useFetchSingleEvent,
-  useGetEventAttendees,
-  useUpdatePartners,
-} from "@/hooks";
-import { BoothStaffWidget } from "../../sponsors/_components";
-import { PartnerIndustry, TAttendee, TPartner } from "@/types";
-import { getCookie } from "@/hooks";
-import { useRouter } from "next/navigation";
+import { useAddPartners, useFetchSingleEvent } from "@/hooks";
 import Image from "next/image";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addPartnerToTierSchema } from "@/schemas";
+import { generateAlphanumericHash } from "@/utils/helpers";
+
 
 type TSIngleTier = {
   validity: string;
@@ -52,67 +46,25 @@ export function AddPartners({
   partnerTier: TSIngleTier;
   close: () => void;
 }) {
-  const router = useRouter();
-  const [active, setActive] = useState(1);
-  const currentEvent = getCookie("currentEvent");
-  const { data: eventData, refetch } = useFetchSingleEvent(eventId);
-  const org = getCookie("currentOrganization");
-  const { addPartners } = useAddPartners();
-  const { attendees } = useGetEventAttendees(eventId);
-  const { update } = useUpdatePartners();
+  const { data: eventData } = useFetchSingleEvent(eventId);
   const [loading, setLoading] = useState(false);
+  const {addPartners} = useAddPartners()
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
     "+234"
   );
-  const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>([]);
+
   const [whatsappCountryCode, setWhatsAppCountryCode] = useState<
     string | undefined
   >("+234");
 
   // <z.infer<typeof partnerSchema>>
-  const form = useForm<any>({
-    // resolver: zodResolver(partnerSchema),
-    defaultValues: {
-      eventAlias: eventId,
-      eventName: currentEvent?.eventName,
-    },
+  const form = useForm<z.infer<typeof addPartnerToTierSchema>>({
+    resolver: zodResolver(addPartnerToTierSchema),
   });
 
   //
   const country = form.watch("country");
-  const selectedBoothStaff = form.watch("boothStaff");
   const companyImage = form.watch("companyLogo");
-  const companyVideo = form.watch("media");
-
-  // adding boothStaff
-  useEffect(() => {
-    if (selectedBoothStaff) {
-      // check if boothStaff has been selected
-      const isBoothStaffPresent = selectedAttendees?.some(
-        ({ email }) => email === selectedBoothStaff
-      );
-
-      // return if the staff is present
-      if (isBoothStaffPresent) return;
-
-      // get a boothstaff from the attendees array
-      const presentAttendee = attendees.filter(
-        ({ email }) => email === selectedBoothStaff
-      );
-
-      setSelectedAttendees((prev) => [...prev, ...presentAttendee]);
-    }
-  }, [selectedBoothStaff]);
-
-  // delete a  selected attendees
-  function remove(email: string) {
-    setSelectedAttendees(selectedAttendees.filter((v) => v.email !== email));
-  }
-
-  // refetch industries
-  useEffect(() => {
-    refetch();
-  }, [active]);
 
   useEffect(() => {
     if (country) {
@@ -132,23 +84,21 @@ export function AddPartners({
 
   const total = useMemo(() => {
     if (eventData?.attendeePayProcessingFee) {
-
       return Number(partnerTier?.price) + processingFee;
     } else {
-      return Number(partnerTier?.price)
+      return Number(partnerTier?.price);
     }
   }, [processingFee, partnerTier, eventData]);
 
-const computedPrice = useMemo(() => {
-  if (eventData?.attendeePayProcessingFee) {
-    return Number(partnerTier?.price)
-  }
-  else {
-    return Number(partnerTier?.price) - processingFee;
-  }
-},[eventData, partnerTier, processingFee]);
+  const computedPrice = useMemo(() => {
+    if (eventData?.attendeePayProcessingFee) {
+      return Number(partnerTier?.price);
+    } else {
+      return Number(partnerTier?.price) - processingFee;
+    }
+  }, [eventData, partnerTier, processingFee]);
 
-  async function onSubmit(values: any) {
+  async function onSubmit(values: z.infer<typeof addPartnerToTierSchema>) {
     setLoading(true);
     //
     const promise = new Promise(async (resolve) => {
@@ -164,118 +114,44 @@ const computedPrice = useMemo(() => {
     });
     const image: any = await promise;
 
-    const promiseVideo = new Promise(async (resolve) => {
-      if (typeof values?.media === "string") {
-        resolve(values?.media);
-      } else if (values?.media && values?.media?.length > 0) {
-        const vid = await uploadFile(values?.media[0], "video");
-        resolve(vid);
-      } else {
-        resolve(null);
-      }
-    });
-
-    const video: any = await promiseVideo;
-
     const partnerAlias = generateAlias();
     const payload: Partial<TPartner> = {
       ...values,
-
+      eventId: eventData?.id,
+      eventName: eventData?.eventTitle,
       eventAlias: eventId,
-      whatsApp: values.whatsApp,
-      phoneNumber: values.phoneNumber,
-      boothStaff: selectedAttendees,
+      whatsApp: whatsappCountryCode + values.whatsApp,
+      phoneNumber: phoneCountryCode + values.phoneNumber,
       companyLogo: image,
       partnerAlias,
-      media: video,
-      partnerStatus: false,
-      amountPaid: Number(partnerTier?.price),
+      partnerStatus: "pending",
+      amountPaid: total,
       currency: partnerTier?.currency,
-      paymentReference: "",
       tierName: partnerTier?.tierName,
+      partnerType: partnerTier?.partnerType,
+      paymentReference: total === 0 ? "" :generateAlphanumericHash(10),
     };
-    const asynQuery = update;
-    await asynQuery(payload);
+
+    if (total === 0) {
+      await addPartners(payload);
+    }else {
+      const encodedData = encodeURIComponent(JSON.stringify(payload));
+      window.open(
+        `/partner-payment?p=${encodedData}&eventName=${
+          eventData?.eventTitle
+        }&startDate=${eventData?.startDateTime}&endDate=${
+          eventData?.endDateTime
+        }&location=${`${eventData?.eventCity}, ${eventData?.eventCountry}`}`,
+        "_self"
+      );
+    }
     setLoading(false);
-    //  refetchPartners();
-    close();
+    
+
+   
+    // await addPartners(payload)
+    // close();
   }
-
-  /**
-   * addPartners;
-   partner?.id
-      ? {
-          ...partner,
-          ...values,
-          organizerEmail: org?.email,
-          eventId: String(eventData?.id),
-          eventAlias: eventData?.eventAlias,
-          whatsApp: values.whatsApp,
-          phoneNumber: values.phoneNumber,
-          boothStaff: selectedAttendees,
-          companyLogo: image,
-          media: video,
-        }
-      :
-   */
-
-  // convert attendees list to an array of object {value, label} pairs
-  const attendeeOptions = useMemo(() => {
-    return attendees.map(({ firstName, lastName, email }) => {
-      return {
-        label: `${firstName} ${lastName}`,
-        value: email,
-      };
-    });
-  }, [attendees]);
-
-  ///
-  const formattedIndustriesList = useMemo(() => {
-    if (!eventData?.partnerIndustry) return;
-    let partner: PartnerIndustry[] = eventData?.partnerIndustry;
-    return (
-      Array.isArray(partner) &&
-      partner?.map(({ name }) => {
-        return { label: name, value: name };
-      })
-    );
-  }, [eventData?.partnerIndustry]);
-
-  // format event list
-  const formattedSponsorCategoryList = useMemo(() => {
-    if (!eventData?.sponsorCategory) return;
-    let category: { type: string; id: string }[] = eventData?.sponsorCategory;
-    return (
-      Array.isArray(category) &&
-      category?.map(({ type }) => {
-        return { label: type, value: type };
-      })
-    );
-  }, [eventData?.sponsorCategory]);
-
-  ///
-  //
-  // useEffect(() => {
-  //   if (partner) {
-  //     form.reset({
-  //       partnerType: partner?.partnerType,
-  //       sponsorCategory: partner?.sponsorCategory,
-  //       companyName: partner?.companyName,
-  //       phoneNumber: partner?.phoneNumber,
-  //       whatsApp: partner?.whatsApp,
-  //       email: partner?.email,
-  //       companyLogo: partner?.companyLogo,
-  //       media: partner?.media,
-  //       description: partner?.description,
-  //       city: partner?.city,
-  //       country: partner?.country,
-  //       industry: partner?.industry,
-  //       website: partner?.website,
-  //     });
-
-  //     setSelectedAttendees(partner?.boothStaff);
-  //   }
-  // }, [partner]);
 
   const countriesList = useMemo(() => {
     return COUNTRY_CODE.map((country) => ({
@@ -293,16 +169,6 @@ const computedPrice = useMemo(() => {
       return null;
     }
   }, [companyImage]);
-
-  const formatVideo = useMemo(() => {
-    if (typeof companyVideo === "string") {
-      return companyVideo;
-    } else if (companyVideo && companyVideo[0]) {
-      return URL.createObjectURL(companyVideo[0]);
-    } else {
-      return null;
-    }
-  }, [companyVideo]);
 
   return (
     <div
@@ -339,20 +205,20 @@ const computedPrice = useMemo(() => {
             <div className="w-full mt-4 mb-2 flex items-center justify-between">
               <p>1x Tier Name</p>
               <p>
-                {partnerTier?.currency}{" "}
-                {computedPrice.toLocaleString()}
+                {partnerTier?.currency} {computedPrice.toLocaleString()}
               </p>
             </div>
             <div className="w-full  mb-2 flex items-center justify-between">
               <p>1x Processing Fee</p>
-              <p> {partnerTier?.currency}{" "}
-              {processingFee.toLocaleString()}</p>
+              <p>
+                {" "}
+                {partnerTier?.currency} {processingFee.toLocaleString()}
+              </p>
             </div>
             <div className="border-t flex items-center justify-between pt-2">
               <p className="font-semibold">Total</p>
               <p className="font-semibold text-base sm:text-xl">
-                {partnerTier?.currency}{" "}
-                {total.toLocaleString()}
+                {partnerTier?.currency} {total.toLocaleString()}
               </p>
             </div>
           </div>
@@ -366,8 +232,7 @@ const computedPrice = useMemo(() => {
               {partnerTier?.tierName ?? ""}
             </p>
             <p className="font-semibold text-base sm:text-xl">
-              {partnerTier?.currency}{" "}
-              {total.toLocaleString()}
+              {partnerTier?.currency} {total.toLocaleString()}
             </p>
           </div>
           <Form {...form}>
@@ -375,84 +240,6 @@ const computedPrice = useMemo(() => {
               onSubmit={form.handleSubmit(onSubmit)}
               className="flex items-start w-full flex-col gap-y-3"
             >
-              {/* <FormField
-                control={form.control}
-                name="partnerType"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Partner Type</FormLabel>
-                    <FormControl>
-                      <ReactSelect
-                        {...form.register("partnerType")}
-                        // defaultValue={
-                        //   partner
-                        //     ? {
-                        //         value: partner?.partnerType,
-                        //         label: partner?.partnerType,
-                        //       }
-                        //     : ""
-                        // }
-
-                        options={[
-                          { label: "Sponsor", value: "Sponsor" },
-                          { label: "Exhibitor", value: "Exhibitor" },
-                        ]}
-                        borderColor="#001fcc"
-                        bgColor="#001fcc1a"
-                        height="3rem"
-                        placeHolderColor="#64748b"
-                        placeHolder="Select Partner Type"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-              {/* {form.watch("partnerType") === "Sponsor" && (
-                <div className="w-full flex items-center gap-x-2">
-                  <FormField
-                    control={form.control}
-                    name="sponsorCategory"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel>Sponsor Category</FormLabel>
-                        <FormControl>
-                          <ReactSelect
-                            {...form.register("sponsorCategory")}
-                            placeHolder="Select Sponsor Category"
-                            // defaultValue={
-                            //   partner
-                            //     ? {
-                            //         value: partner?.sponsorCategory,
-                            //         label: partner?.sponsorCategory,
-                            //       }
-                            //     : ""
-                            // }
-                            borderColor="#001fcc"
-                            bgColor="#001fcc1a"
-                            height="3rem"
-                            placeHolderColor="#64748b"
-                            options={formattedSponsorCategoryList || []}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setActive(3);
-                    }}
-                    className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
-                  >
-                    <PlusCircle size={22} />
-                    <p>Category</p>
-                  </Button>
-                </div>
-              )} */}
-
               <FormField
                 control={form.control}
                 name="companyName"
@@ -472,48 +259,7 @@ const computedPrice = useMemo(() => {
                   </FormItem>
                 )}
               />
-              <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-4">
-                <FormField
-                  control={form.control}
-                  name="phoneNumber"
-                  render={({ field }) => (
-                    <FormItem className="relative h-fit">
-                      <FormLabel>Phone number</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter Phone Number"
-                          {...form.register("phoneNumber")}
-                          type="tel"
-                          {...field}
-                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
-                        />
-                      </FormControl>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="whatsApp"
-                  render={({ field }) => (
-                    <FormItem className="relative">
-                      <FormLabel>WhatsApp number</FormLabel>
-
-                      <FormControl>
-                        <Input
-                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
-                          placeholder="Enter Whatsapp Number"
-                          {...form.register("whatsApp")}
-                          type="tel"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
               <FormField
                 control={form.control}
                 name="email"
@@ -568,148 +314,6 @@ const computedPrice = useMemo(() => {
                   />
                 </div>
               )}
-              {/* <div className="w-full flex flex-col items-start justify-start gap-y-1">
-                <FormField
-                  control={form.control}
-                  name="media"
-                  render={({ field }) => (
-                    <FormItem className="w-full md:col-span-2">
-                      <FormLabel>Media</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept="video/*"
-                          placeholder="File"
-                          {...form.register("media")}
-                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <p className="text-xs text-[#717171]">
-                  Selected file should not be bigger than 2MB
-                </p>
-              </div> */}
-
-              {formatVideo && (
-                <div className="w-[150px] h-[150px]">
-                  <video
-                    src={formatVideo}
-                    muted
-                    controls
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-{/* 
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem className="w-full md:col-span-2">
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Enter the Description"
-                        {...form.register("description")}
-                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
-                      ></Textarea>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-              {/* <FormField
-                control={form.control}
-                name="boothStaff"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Booth Staff</FormLabel>
-                    <FormControl>
-                      <ReactSelect
-                        {...field}
-                        placeHolder="Select the Booth Staff"
-                        borderColor="#001fcc"
-                        bgColor="#001fcc1a"
-                        height="3rem"
-                        placeHolderColor="#64748b"
-                        options={attendeeOptions}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-{/* 
-              <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-4">
-                {Array.isArray(selectedAttendees) &&
-                  selectedAttendees.map(
-                    ({
-                      firstName,
-                      lastName,
-                      organization,
-                      email,
-                      jobTitle,
-                      profilePicture,
-                    }) => (
-                      <BoothStaffWidget
-                        key={email}
-                        email={email}
-                        remove={remove}
-                        image={profilePicture}
-                        name={`${firstName} ${lastName}`}
-                        company={organization}
-                        profession={jobTitle}
-                        isAddingBoothStaff
-                      />
-                    )
-                  )}
-              </div> */}
-              {/* <div className="w-full flex gap-x-2 items-end ">
-                <FormField
-                  control={form.control}
-                  name="industry"
-                  render={({ field }) => (
-                    <FormItem className="w-[70%]">
-                      <FormLabel>Industry</FormLabel>
-                      <FormControl>
-                        <ReactSelect
-                          {...form.register("industry")}
-                          // defaultValue={
-                          //   partner
-                          //     ? {
-                          //         value: partner?.industry,
-                          //         label: partner?.industry,
-                          //       }
-                          //     : ""
-                          // }
-                          placeHolder="Select Industry"
-                          borderColor="#001fcc"
-                          bgColor="#001fcc1a"
-                          height="3rem"
-                          placeHolderColor="#64748b"
-                          options={formattedIndustriesList || []}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setActive(2);
-                  }}
-                  className="hover:bg-basePrimary w-[30%] text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
-                >
-                  <PlusCircle size={22} />
-                  <p>Industry</p>
-                </Button>
-              </div> */}
 
               <div className="w-full grid-cols-1 grid  items-center gap-2">
                 <FormField
@@ -740,14 +344,6 @@ const computedPrice = useMemo(() => {
                       <FormControl>
                         <ReactSelect
                           {...form.register("country")}
-                          // defaultValue={
-                          //   partner
-                          //     ? {
-                          //         value: partner?.country,
-                          //         label: partner?.country,
-                          //       }
-                          //     : ""
-                          // }
                           placeHolder="Select the Country"
                           borderColor="#001fcc"
                           bgColor="#001fcc1a"
@@ -755,6 +351,68 @@ const computedPrice = useMemo(() => {
                           placeHolderColor="#64748b"
                           options={countriesList}
                         />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-4">
+                <FormField
+                  control={form.control}
+                  name="phoneNumber"
+                  render={({ field }) => (
+                    <FormItem className="w-full relative h-fit">
+                      <FormLabel>Phone number</FormLabel>
+                      <FormControl>
+                        <div className="w-full relative h-12">
+                          <input
+                            type="text"
+                            className=" text-sm absolute top-[30%]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none bg-[#001fcc]/10"
+                            value={phoneCountryCode}
+                            onChange={(e) =>
+                              setPhoneCountryCode(e.target.value)
+                            }
+                          />
+                          <Input
+                            placeholder="Enter Phone Number"
+                            {...form.register("phoneNumber")}
+                            type="tel"
+                            {...field}
+                            className="placeholder:text-sm h-12 pl-12 pr-4 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                          />
+                        </div>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="whatsApp"
+                  render={({ field }) => (
+                    <FormItem className="w-full relative">
+                      <FormLabel>WhatsApp number</FormLabel>
+
+                      <FormControl>
+                        <div className="w-full relative h-12">
+                          <input
+                            type="text"
+                            className=" text-sm absolute top-[30%]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none bg-[#001fcc]/10"
+                            value={whatsappCountryCode}
+                            onChange={(e) =>
+                              setWhatsAppCountryCode(e.target.value)
+                            }
+                          />
+                          <Input
+                            className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10 pl-12 pr-4  placeholder:text-zinc-500 text-zinc-700"
+                            placeholder="Enter Whatsapp Number"
+                            {...form.register("whatsApp")}
+                            type="tel"
+                          />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -780,7 +438,7 @@ const computedPrice = useMemo(() => {
                   </FormItem>
                 )}
               />
-               <FormField
+              <FormField
                 control={form.control}
                 name="contactLastName"
                 render={({ field }) => (
@@ -830,24 +488,6 @@ const computedPrice = useMemo(() => {
           </Form>
         </div>
       </div>
-      {active === 2 && (
-        <AddIndustry
-          // handleSelected={handleSelected}
-          eventId={eventId}
-          // selectedIndustry={selectedIndustry}
-          close={close}
-          setActive={setActive}
-        />
-      )}
-      {active === 3 && (
-        <AddSponsorLevel
-          eventId={eventId}
-          sponsorLevels={eventData?.sponsorCategory}
-          close={close}
-          setActive={setActive}
-          refetch={refetch}
-        />
-      )}
     </div>
   );
 }

@@ -174,7 +174,7 @@ export async function POST(req: NextRequest) {
           },
         ],
         subject,
-        htmlbody: htmlbody(trackingId),
+        htmlbody: htmlbody(trackingId, email),
       });
       console.log(`Email sent to ${email}:`, resp);
 
