@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PlusCircleIcon, TeamIcon, TeamRemoveIcon } from "@/constants";
 import { SearchAlt2 } from "styled-icons/boxicons-regular";
 import {
@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
@@ -38,7 +39,9 @@ export default function Team() {
   const { currentTeamMembers, createTeamMember } = useCreateTeamMember(
     organization?.id ?? 0
   );
-  const { deleteTeamMember } = useDeleteTeamMember(organization?.id ?? 0);
+  const [filteredTeamMembers, setFilteredTeamMembers] = useState([]);
+  const { deleteTeamMember, currentTeamMembers: newMembers } =
+    useDeleteTeamMember(organization?.id ?? 0);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const roles = ["owner", "editor", "collaborator"];
 
@@ -79,23 +82,31 @@ export default function Team() {
       userRole: "",
     });
     createTeamMember();
+    console.log("all Member", currentTeamMembers);
   };
 
   //delete team member
   const handleDeleteTeamMember = async (memberId: string) => {
-    await deleteTeamMember(memberId);
-    createTeamMember();
+    const success = await deleteTeamMember(memberId);
+    if (success) {
+      createTeamMember(); // This seems to create a new member after deletion, is that intended?
+      console.log("Member", newMembers);
+    }
   };
 
+  useEffect(() => {
+    const newFilterTeamMembers = currentTeamMembers?.teamMembers?.filter(
+      (member: any) =>
+        member?.userFirstName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        member?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        member?.userEmail?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredTeamMembers(newFilterTeamMembers)
+  }, [currentTeamMembers]);
   // Filter team members based on search query
-  const filteredTeamMembers = currentTeamMembers?.teamMembers?.filter(
-    (member: any) =>
-      member?.userFirstName
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      member?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member?.userEmail?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+
 
   return (
     <div className="mt-[60px] ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
@@ -126,6 +137,7 @@ export default function Team() {
           </DialogTrigger>
           <DialogContent className="w-full max-w-full lg:max-w-[1000px] xl:max-w-[1120px] px-1 lg:px-10">
             <DialogHeader>
+              <DialogTitle></DialogTitle>
               <DialogDescription className="mt-8">
                 <p className="text-2xl font-semibold text-black">
                   Invite Team Member
@@ -271,6 +283,7 @@ export default function Team() {
                       </DialogTrigger>
                       <DialogContent className="w-full max-w-full lg:max-w-[1000px] xl:max-w-[1120px] px-1 lg:px-10">
                         <DialogHeader>
+                          <DialogTitle></DialogTitle>
                           <DialogDescription className="mt-8">
                             <p className="text-2xl font-semibold text-black">
                               Edit Team Member
@@ -374,6 +387,7 @@ export default function Team() {
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
+                          <DialogTitle></DialogTitle>
                           <DialogDescription className="my-16 mx-4 lg:mx-8 flex flex-col justify-center items-center">
                             <TeamRemoveIcon />
                             <p className="mt-6 text-[#E74C3C] font-semibold text-2xl text-center">
