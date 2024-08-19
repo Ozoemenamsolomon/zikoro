@@ -12,6 +12,7 @@ import { useFetchPartners } from "@/hooks";
 import { ILead, TLeadsInterest, TPartner } from "@/types";
 import { useGetData } from "@/hooks/services/request";
 import { formatNumberToShortHand } from "@/utils";
+import { AnalyticsInfoCard } from "../page";
 
 interface TPartnerDataSet {
   id: number;
@@ -21,30 +22,6 @@ interface TPartnerDataSet {
 }
 
 const randomColors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF"];
-
-const AnalyticsInfoCard = ({
-  label,
-  Icon,
-  value,
-}: {
-  Icon: (props: any) => React.JSX.Element;
-  label: string;
-  value: string | number;
-}) => {
-  return (
-    <div className="p-4 rounded-md bg-white border flex items-center">
-      <div className="flex items-center justify-center flex-[30%]">
-        <div className="bg-basePrimary/20 p-4 rounded-full h-fit w-fit">
-          <Icon className="h-10 w-10 text-basePrimary" />
-        </div>
-      </div>
-      <div className="flex-[70%] flex flex-col gap-2">
-        <h3 className="font-medium text-gray-600 capitalize">{label}</h3>
-        <h4 className="text-4xl font-medium text-gray-800">{value}</h4>
-      </div>
-    </div>
-  );
-};
 
 const Partners = () => {
   const { eventId } = useParams();

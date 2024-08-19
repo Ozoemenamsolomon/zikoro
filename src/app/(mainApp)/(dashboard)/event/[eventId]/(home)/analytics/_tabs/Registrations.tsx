@@ -41,39 +41,8 @@ import {
 } from "@/components/ui/select";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { useGetData } from "@/hooks/services/request";
+import { AnalyticsInfoCard } from "../page";
 
-const AnalyticsInfoCard = ({
-  label,
-  Icon,
-  value,
-  mutedText,
-}: {
-  Icon: (props: any) => React.JSX.Element;
-  label: string;
-  value: string | number;
-  mutedText?: ReactNode;
-}) => {
-  return (
-    <div className="p-4 rounded-md bg-white border flex items-center">
-      <div className="flex items-center justify-center flex-[30%]">
-        <div className="bg-basePrimary/20 p-4 rounded-full h-fit w-fit">
-          <Icon className="h-10 w-10 text-basePrimary" />
-        </div>
-      </div>
-      <div className="flex-[70%] flex flex-col gap-2">
-        <h3 className="font-medium text-gray-600 capitalize">{label}</h3>
-        <div className="flex items-end gap-2">
-          <h4 className="text-4xl font-medium text-gray-800">{value}</h4>
-          {mutedText && (
-            <span className="font-medium text-gray-500 capitalize">
-              {mutedText}
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const Registrations = () => {
   const { eventId } = useParams();
