@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
         organization,
         eventImage,
         trackingId,
+        affiliateCode,
         role,
         eventEndDate,
         ...restItem
@@ -133,6 +134,7 @@ export async function POST(req: NextRequest) {
               userEmail: attendee?.email,
               phoneNumber: attendee?.phoneNumber,
               created_at: new Date().toISOString()
+              trackingId: affiliateCode
             });
 
             console.log("creating status:",statusCreatingUser )

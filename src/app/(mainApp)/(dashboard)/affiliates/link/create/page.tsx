@@ -128,9 +128,6 @@ const Create = () => {
           affiliateId: parseInt(affiliateId),
           affiliateEmail: thisAffiliate?.email || "affiliate@email.com",
           userId: user?.id,
-          affiliateLink: `${window.location.host}/live-events${
-            event !== "all" && "/" + thisEvent.eventAlias
-          }?affiliateCode=${thisAffiliate?.affliateCode}`,
         },
       },
     });

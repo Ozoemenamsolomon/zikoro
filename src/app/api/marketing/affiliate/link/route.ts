@@ -12,8 +12,6 @@ export async function POST(req: NextRequest) {
 
       const { affiliateName, organizationName, eventPoster, payload } = params;
 
-      const linkCode = generateAlphanumericHash(7);
-
       const {
         affiliateEmail,
         eventName,
@@ -21,8 +19,11 @@ export async function POST(req: NextRequest) {
         validity,
         commissionType,
         commissionValue,
-        affiliateLink,
+        eventId,
       } = payload;
+
+      const linkCode = generateAlphanumericHash(7);
+      const affiliateLink = `${window.location.host}/live-events${eventId}?affiliateCode=${linkCode}`;
 
       let nodemailer = require("nodemailer");
       const transporter = nodemailer.createTransport({
@@ -99,26 +100,18 @@ export async function POST(req: NextRequest) {
         `,
       };
 
-      
-
       await transporter.sendMail(
         mailData,
         async function (err: any, info: any) {
           if (err) {
-            
             throw err;
           }
 
-          
           const { error } = await supabase
             .from("affiliateLinks")
-            .insert({ ...payload, linkCode });
-
-          
+            .insert({ ...payload, linkCode, affiliateLink });
 
           if (error) throw error;
-
-          
         }
       );
 
@@ -160,8 +153,6 @@ export async function GET(req: NextRequest) {
         .from("affiliateLinks")
         .select("*, affiliate!inner(*)")
         .eq("userId", userId);
-
-       
 
       if (error) throw error;
 
