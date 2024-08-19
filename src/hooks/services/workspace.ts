@@ -213,7 +213,6 @@ export function useCreateTeamMember(workspaceId: number) {
   };
 }
 
-
 export function useDeleteTeamMember(workspaceId: number) {
   const [currentTeamMembers, setCurrentTeamMembers] = useState<any>({ teamMembers: [] });
 
@@ -221,7 +220,7 @@ export function useDeleteTeamMember(workspaceId: number) {
     try {
       const { data, error, status } = await supabase
         .from("organization")
-        .select()
+        .select("teamMembers")
         .eq("id", workspaceId)
         .single();
 
@@ -246,6 +245,7 @@ export function useDeleteTeamMember(workspaceId: number) {
         .from("organization")
         .update({ teamMembers: updatedTeamMembers })
         .eq("id", workspaceId)
+        .select()
         .single();
 
       if (error) {
@@ -271,3 +271,73 @@ export function useDeleteTeamMember(workspaceId: number) {
     deleteTeamMember,
   };
 }
+
+
+export function useUpdateTeamMember(workspaceId: number) {
+  const [currentTeamMembers, setCurrentTeamMembers] = useState<any>({ teamMembers: [] });
+
+  async function fetchTeamMembers() {
+    try {
+      const { data, error, status } = await supabase
+        .from("organization")
+        .select()
+        .eq("id", workspaceId)
+        .single();
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      if (status === 200 || status === 204) {
+        setCurrentTeamMembers(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function updateTeamMember(updatedMember: {
+    id: string;
+    userFirstName: string;
+    userLastName: string;
+    userEmail: string;
+    userRole: string;
+  }) {
+    try {
+      const teamMembers = currentTeamMembers.teamMembers || [];
+      const updatedTeamMembers = teamMembers.map((member: any) =>
+        member.id === updatedMember.id ? { ...member, ...updatedMember } : member
+      );
+
+      const { data, error } = await supabase
+        .from("organization")
+        .update({ teamMembers: updatedTeamMembers })
+        .eq("id", workspaceId)
+        .single();
+
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+
+      setCurrentTeamMembers(data);
+      toast.success("Team member updated successfully");
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  useEffect(() => {
+    fetchTeamMembers();
+  }, [workspaceId]);
+
+  return {
+    currentTeamMembers,
+    updateTeamMember,
+  };
+}
+
+
+
