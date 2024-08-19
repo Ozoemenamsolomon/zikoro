@@ -27,8 +27,33 @@ type TSIngleTier = {
   price: string;
   currency: string;
   color: string;
-  description: string;
+  description?: string;
 };
+
+function TierDescription({
+  close,
+  description,
+}: {
+  description: string;
+  close: () => void;
+}) {
+  return (
+    <div className="w-full p-4 bg-[#F9FAFF] fixed inset-0 z-[100] overflow-y-auto">
+      <Button className="px-0 w-fit h-fit">
+        <ArrowBack size={24} onClick={close} />
+      </Button>
+
+      <div className="max-w-3xl mx-auto box-animation bg-white w-full h-fit p-4 sm:p-6">
+        <p
+          className="w-full partner-innerhtml  mb-3"
+          dangerouslySetInnerHTML={{
+            __html: description ?? "",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
 function PartnerTierCard({
   tier,
   eventId,
@@ -37,12 +62,16 @@ function PartnerTierCard({
   tier: TSIngleTier;
 }) {
   const [isOpen, setOpen] = useState(false);
+  const [isDescription, setIsDescription] = useState(false);
   const date = useMemo(() => {
     return formatDate(tier?.validity);
   }, [tier?.validity]);
 
   function onToggle() {
     setOpen((prev) => !prev);
+  }
+  function toggleDescription() {
+    setIsDescription((prev) => !prev);
   }
   return (
     <>
@@ -55,21 +84,32 @@ function PartnerTierCard({
             <p className="text-white capitalize font-medium w-fit text-tiny sm:text-xs bg-basePrimary rounded-3xl px-2 py-1 absolute inset-x-0 mx-auto -top-3">
               {tier?.partnerType}
             </p>
-            <p className="capitalize text-ellipsis whitespace-nowrap overflow-hidden w-full text-center">{tier?.tierName}</p>
+            <p className="capitalize text-ellipsis whitespace-nowrap overflow-hidden w-full text-center">
+              {tier?.tierName}
+            </p>
           </div>
           <div className="w-full flex flex-col items-center gap-y-2">
             <h2 className="font-semibold text-lg sm:text-xl mb-3">{`${
               tier?.currency
             } ${Number(tier?.price ?? 0).toLocaleString()}`}</h2>
 
-            <p
-              className="w-full line-clamp-3 text-gray-500 text-sm mb-3"
-              dangerouslySetInnerHTML={{
-                __html: tier?.description ?? "",
-              }}
-            />
+            {tier?.description && (
+              <>
+                <p
+                  className="w-full partner-innerhtml line-clamp-3 text-gray-500 text-sm mb-3"
+                  dangerouslySetInnerHTML={{
+                    __html: tier?.description ?? "",
+                  }}
+                />
 
-            <button className="text-gray-500 underline">View More</button>
+                <button
+                  onClick={toggleDescription}
+                  className="text-gray-500 underline text-xs sm:text-mobile"
+                >
+                  View More
+                </button>
+              </>
+            )}
 
             <Button
               onClick={onToggle}
@@ -85,6 +125,12 @@ function PartnerTierCard({
       </div>
       {isOpen && (
         <AddPartners close={onToggle} eventId={eventId} partnerTier={tier} />
+      )}
+      {isDescription && tier?.description && (
+        <TierDescription
+          close={toggleDescription}
+          description={tier?.description}
+        />
       )}
     </>
   );

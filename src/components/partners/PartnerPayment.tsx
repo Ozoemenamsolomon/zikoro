@@ -210,15 +210,13 @@ function PaymentSuccessModal({
         </div>
 
         <p className="text-center text-tiny sm:text-xs">
-          Powered by <span className="text-basePrimary">Zikoro</span>
+          Powered by <Link href="https://zikoro.com" className="text-basePrimary">Zikoro</Link>
         </p>
       </div>
       {isShare && eventName && eventStartDate && eventEndDate && (
         <ShareModal
-          eventName={eventName}
-          startDate={eventStartDate}
-          endDate={eventEndDate}
           eventId={partnerData?.eventAlias!}
+          text={`I am excited to be exhibiting at the ${eventName} happening on ${startDate} to ${endDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${partnerData?.eventAlias}`}
           close={onClose}
         />
       )}
@@ -228,20 +226,15 @@ function PaymentSuccessModal({
 
 export function ShareModal({
   eventId,
+  text,
   close,
-  eventName,
-  startDate,
-  endDate
 }: {
   close: () => void;
   eventId: string;
-  eventName: string;
-  startDate: string;
-  endDate: string;
+  text:string;
 }) {
   const [isShow, showSuccess] = useState(false);
 
-  const text = `I am excited to be exhibiting at the ${eventName} happening on ${startDate} to ${endDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${eventId}`;
   function copyLink() {
     copy(text);
     showSuccess(true);

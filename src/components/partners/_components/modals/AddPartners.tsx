@@ -35,7 +35,7 @@ type TSIngleTier = {
   price: string;
   currency: string;
   color: string;
-  description: string;
+  description?: string;
 };
 export function AddPartners({
   close,

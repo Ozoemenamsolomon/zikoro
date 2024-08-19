@@ -35,7 +35,7 @@ export function PartnerCard({
           StampCard
         </button>
       )}
-      <div className="flex items-center  justify-between w-full px-4">
+      <div className="flex items-center  justify-between w-full p-4">
         {image ? (
           <Image
             src={image}
@@ -48,8 +48,10 @@ export function PartnerCard({
           <div className="w-[100px] h-[60px] animate-pulse bg-gray-200"></div>
         )}
 
-        <p className="bg-basePrimary text-white px-2 py-1 text-sm rounded-3xl">
-          Tier Name
+        <p 
+    //    style={{background: sponsor}}
+        className="bg-basePrimary text-white px-2 py-1 text-sm rounded-3xl">
+        {sponsor?.tierName}
         </p>
       </div>
       <div className="w-full px-4 py-8  items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
@@ -103,7 +105,7 @@ export function PartnerCard({
           )}
         </div>
       </div>
-      {sponsor.boothStaff.find(({ email }) => user?.userEmail === email) && (
+      {Array.isArray(sponsor.boothStaff) && sponsor.boothStaff.find(({ email }) => user?.userEmail === email) && (
         <Link
           className="text-sky-500 text-sm p-2 font-medium hover:underline"
           href={`/event/${eventId}/partner/${sponsor.partnerAlias}/leads`}

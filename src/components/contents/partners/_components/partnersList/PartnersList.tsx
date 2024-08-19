@@ -268,7 +268,7 @@ export function PartnersList({
                                       onClick={onShare}
                                       className="text-gray-50 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
                                     >
-                                      <p>Share this event</p>
+                                      <p>Share Partners Registration Page</p>
                                     </Button>
                                   </div>
                                 ) : (
@@ -352,9 +352,7 @@ export function PartnersList({
       )}
       {isShare && event && (
         <ShareModal
-          eventName={event?.eventTitle}
-          startDate={startDate}
-          endDate={endDate}
+          text={`https://zikoro.com/live-events/${eventId}/partners`}
           close={onShare}
           eventId={eventId}
         />
