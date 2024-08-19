@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       } = payload;
 
       const linkCode = generateAlphanumericHash(7);
-      const affiliateLink = `${process.env.NEXT_PUBLIC_HOME_URL}/live-events${eventId}?affiliateCode=${linkCode}`;
+      const affiliateLink = `${process.env.NEXT_PUBLIC_HOME_URL}/live-events/${eventId}?affiliateCode=${linkCode}`;
 
       let nodemailer = require("nodemailer");
       const transporter = nodemailer.createTransport({

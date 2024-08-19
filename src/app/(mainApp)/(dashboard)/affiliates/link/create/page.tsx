@@ -120,7 +120,7 @@ const page = () => {
           validity,
           commissionValue: value,
           commissionType,
-          eventId: event !== "all" ? parseInt(event) : 0,
+          eventId: event !== "all" ? thisEvent.eventAlias : "all",
           eventName: thisEvent?.eventTitle,
           Goal: goal,
           affiliateId: parseInt(affiliateId),
