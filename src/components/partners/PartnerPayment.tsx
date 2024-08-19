@@ -144,13 +144,22 @@ function PaymentSuccessModal({
   location: string | null;
 }) {
   const [isShare, setIsShare] = useState(false);
-  const date = useMemo(() => {
-    if (startDate && endDate) {
-      return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+
+  const eventStartDate = useMemo(() => {
+    if (startDate) {
+      return `${formatDate(startDate)}`;
     } else {
       return null;
     }
-  }, [startDate, endDate]);
+  }, [startDate]);
+
+  const eventEndDate = useMemo(() => {
+    if (endDate) {
+      return `${formatDate(endDate)}`;
+    } else {
+      return null;
+    }
+  }, [endDate]);
 
   function onClose() {
     setIsShare((prev) => !prev);
@@ -166,7 +175,7 @@ function PaymentSuccessModal({
             Payment Successful
           </h2>
           <p className="text-center max-w-sm">
-            You have successfully made payment to be a {" "}
+            You have successfully made payment to be a{" "}
             <span className="font-medium">partner</span> for this event.
           </p>
         </div>
@@ -175,7 +184,9 @@ function PaymentSuccessModal({
           <p className="font-semibold">{eventName ?? ""}</p>
           <div className="flex items-center gap-x-2">
             <CiCalendar size={18} />
-            <p>{date ?? ""}</p>
+            <p>
+              {eventStartDate ?? ""} - {eventEndDate ?? ""}
+            </p>
           </div>
           <p className="flex items-center gap-x-2">
             <CiLocationOn size={18} />
@@ -202,42 +213,56 @@ function PaymentSuccessModal({
           Powered by <span className="text-basePrimary">Zikoro</span>
         </p>
       </div>
-      {isShare && (
-        <ShareModal eventId={partnerData?.eventAlias!} close={onClose} />
+      {isShare && eventName && eventStartDate && eventEndDate && (
+        <ShareModal
+          eventName={eventName}
+          startDate={eventStartDate}
+          endDate={eventEndDate}
+          eventId={partnerData?.eventAlias!}
+          close={onClose}
+        />
       )}
     </div>
   );
 }
 
-function ShareModal({
+export function ShareModal({
   eventId,
   close,
+  eventName,
+  startDate,
+  endDate
 }: {
   close: () => void;
   eventId: string;
+  eventName: string;
+  startDate: string;
+  endDate: string;
 }) {
   const [isShow, showSuccess] = useState(false);
+
+  const text = `I am excited to be exhibiting at the ${eventName} happening on ${startDate} to ${endDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${eventId}`;
   function copyLink() {
-    copy(`https://www.zikoro.com/live-events/${eventId}`);
+    copy(text);
     showSuccess(true);
     setTimeout(() => showSuccess(false), 2000);
   }
   const socials = [
     {
       Icon: FaWhatsapp,
-      link: `https://api.whatsapp.com/send?text=https://www.zikoro.com/live-events/${eventId}`,
+      link: `https://api.whatsapp.com/send?text=${text} `,
     },
     {
       Icon: HiOutlineMail,
-      link: `mailto:?subject=Register%20for%20this%20event&body=https://zikoro.com/live-events/${eventId}`,
+      link: `mailto:?subject=Register%20for%20this%20event&body=${text}`,
     },
     {
       Icon: FaXTwitter,
-      link: `https://x.com/intent/tweet?url=https://zikoro.com/live-events/${eventId}`,
+      link: `https://x.com/intent/tweet?url=${text}`,
     },
     {
       Icon: SlSocialFacebook,
-      link: `https://www.facebook.com/sharer/sharer.php?u=https://zikoro.com/live-events/${eventId}`,
+      link: `https://www.facebook.com/sharer/sharer.php?u=${text}`,
     },
   ];
   return (
