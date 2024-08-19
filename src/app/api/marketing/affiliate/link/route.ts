@@ -151,7 +151,7 @@ export async function GET(req: NextRequest) {
 
       const { data, error, status } = await supabase
         .from("affiliateLinks")
-        .select("*, affiliate!inner(*)")
+        .select("*, affiliate!inner(*), eventTransactions!inner(*)")
         .eq("userId", userId);
 
       if (error) throw error;

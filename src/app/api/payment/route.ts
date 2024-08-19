@@ -51,9 +51,10 @@ export async function POST(req: NextRequest) {
         options
       ).format(date);
 
+      console.log(affiliateCode);
       const { error: firstError, status: firstStatus } = await supabase
         .from("eventTransactions")
-        .update(restItem)
+        .update({ ...restItem, affiliateCode })
         .eq("eventRegistrationRef", params.eventRegistrationRef);
 
       if (firstError) {
@@ -112,14 +113,12 @@ export async function POST(req: NextRequest) {
 
       //create new user
       for (const attendee of attendeesDetails) {
-        console.log("check hallo")
+        console.log("check hallo");
         const { data: existingUser, error: errorFetchingUser } = await supabase
           .from("users")
           .select("*")
           .eq("userEmail", attendee?.email)
           .single();
-
-
 
         if (errorFetchingUser) {
           console.log(`error fetching user ${attendee?.email}`);
@@ -133,13 +132,13 @@ export async function POST(req: NextRequest) {
               lastName: attendee?.lastName,
               userEmail: attendee?.email,
               phoneNumber: attendee?.phoneNumber,
-              created_at: new Date().toISOString()
-              trackingId: affiliateCode,
-              inviteSource: 'affiliate'
+              created_at: new Date().toISOString(),
+              affiliateCode,
+              inviteSource: "affiliate",
             });
 
-            console.log("creating status:",statusCreatingUser )
-            console.log("error", errorCreatingUser?.message);
+          console.log("creating status:", statusCreatingUser);
+          console.log("error", errorCreatingUser?.message);
         }
       }
 
