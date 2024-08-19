@@ -108,6 +108,8 @@ const Create = () => {
       ({ id }) => id?.toString() == affiliateId
     );
 
+    console.log(thisAffiliate);
+
     if (!thisEvent || !thisAffiliate) return;
 
     await createAffiliateLink({
