@@ -105,11 +105,11 @@ export const addPartnerToTierSchema = z.object({
   .refine((value) => value && /^\+\d{1,3}/.test(value), {
     message: "Phone number must include start with a country code",
   }),
-  whatsApp:z
+  whatsApp: z
   .string()
   .optional()
-  .refine((value) => value && /^\+\d{1,3}/.test(value), {
-    message: "Phone number must include start with a country code",
+  .refine((value) => !value || /^\+\d{1,3}/.test(value), {
+    message: "WhatsApp number must start with a country code",
   }),
 });
 

@@ -33,9 +33,11 @@ type TSIngleTier = {
 function TierDescription({
   close,
   description,
+  tier
 }: {
   description: string;
   close: () => void;
+  tier: TSIngleTier;
 }) {
   return (
     <div className="w-full p-4 bg-[#F9FAFF] fixed inset-0 z-[100] overflow-y-auto">
@@ -43,7 +45,18 @@ function TierDescription({
         <ArrowBack size={24} onClick={close} />
       </Button>
 
-      <div className="max-w-3xl mx-auto box-animation bg-white w-full h-fit p-4 sm:p-6">
+      <div className="max-w-3xl mx-auto relative box-animation bg-white w-full h-fit pt-8  px-4 sm:px-6 sm:pt-10 pb-4 sm:pb-6">
+      <div
+            style={{ backgroundColor: tier?.color || "#001ffc" }}
+            className="w-fit min-w-[200px] font-medium absolute mx-auto  text-white inset-x-0 -top-7 flex items-center justify-center h-14 rounded-lg"
+          >
+            <p className="text-white capitalize font-medium w-fit text-tiny sm:text-xs bg-basePrimary rounded-3xl px-2 py-1 absolute inset-x-0 mx-auto -top-3">
+              {tier?.partnerType}
+            </p>
+            <p className="capitalize text-ellipsis whitespace-nowrap overflow-hidden w-full text-center">
+              {tier?.tierName}
+            </p>
+          </div>
         <p
           className="w-full partner-innerhtml  mb-3"
           dangerouslySetInnerHTML={{
@@ -130,6 +143,7 @@ function PartnerTierCard({
         <TierDescription
           close={toggleDescription}
           description={tier?.description}
+          tier={tier}
         />
       )}
     </>
