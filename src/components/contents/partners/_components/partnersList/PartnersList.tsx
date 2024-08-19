@@ -58,6 +58,17 @@ export function PartnersList({
     setIsShare((prev) => !prev);
   }
 
+  const dataString = useMemo(() => {
+    return encodeURIComponent(
+      JSON.stringify({
+        image: event?.eventPoster,
+        eventTitle: event?.eventTitle,
+        organizerLogo: event?.organisationLogo,
+        startDate,
+        endDate,
+      })
+    );
+  }, [event]);
   // **** handle delete ****  //
 
   // select a row
@@ -352,7 +363,7 @@ export function PartnersList({
       )}
       {isShare && event && (
         <ShareModal
-          text={`https://zikoro.com/live-events/${eventId}/partners`}
+          text={`https://zikoro.com/live-events/${eventId}/partners?e=${dataString}`}
           close={onShare}
           eventId={eventId}
         />

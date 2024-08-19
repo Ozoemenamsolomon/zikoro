@@ -50,7 +50,7 @@ export function PartnerCard({
 
         <p 
     //    style={{background: sponsor}}
-        className="bg-basePrimary text-white px-2 py-1 text-sm rounded-3xl">
+        className="bg-basePrimary text-white px-4 py-1 text-sm rounded-3xl">
         {sponsor?.tierName}
         </p>
       </div>
