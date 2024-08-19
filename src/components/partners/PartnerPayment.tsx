@@ -266,8 +266,14 @@ export function ShareModal({
     },
   ];
   return (
-    <div className="w-full h-full inset-0 bg-white/40 fixed z-[400]">
-      <div className="w-[95%] max-w-xl shadow rounded-xl bg-white absolute inset-0 h-fit m-auto p-6">
+    <div
+    onClick={close}
+    className="w-full h-full inset-0 bg-white/40 fixed z-[400]">
+      <div 
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      className="w-[95%] max-w-xl shadow rounded-xl box-animation bg-white absolute inset-0 h-fit m-auto p-6">
         <div className="w-full mb-3 flex items-center justify-between">
           <p className="font-medium border-b border-basePrimary pb-1">
             Share event with your network
@@ -297,7 +303,7 @@ export function ShareModal({
           >
             <RxLink2 size={50} />
             {isShow && (
-              <p className="absolute -top-10 bg-black/50 text-white font-medium rounded-md px-3 py-2 transition-transform tranition-all duration-300 animate-fade-in-out">
+              <p className="absolute text-xs w-[100px] -top-10 bg-black/50 text-white font-medium rounded-md px-3 py-2 transition-transform tranition-all duration-300 animate-fade-in-out">
                 Link Copied
               </p>
             )}

@@ -232,7 +232,7 @@ export function PartnersList({
                               Contact
                             </td>
                             <td className="text-start">Partner Type</td>
-                            <td className="text-start">Sponsor Category</td>
+                            <td className="text-start">Partner Tier</td>
                             <td className="text-start">Exhibiton Hall</td>
                             <td className="text-start">Booth</td>
                             <td className="text-start">StampCard</td>
