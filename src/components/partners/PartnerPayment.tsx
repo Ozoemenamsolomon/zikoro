@@ -144,13 +144,22 @@ function PaymentSuccessModal({
   location: string | null;
 }) {
   const [isShare, setIsShare] = useState(false);
-  const date = useMemo(() => {
-    if (startDate && endDate) {
-      return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+
+  const eventStartDate = useMemo(() => {
+    if (startDate) {
+      return `${formatDate(startDate)}`;
     } else {
       return null;
     }
-  }, [startDate, endDate]);
+  }, [startDate]);
+
+  const eventEndDate = useMemo(() => {
+    if (endDate) {
+      return `${formatDate(endDate)}`;
+    } else {
+      return null;
+    }
+  }, [endDate]);
 
   function onClose() {
     setIsShare((prev) => !prev);
@@ -166,7 +175,7 @@ function PaymentSuccessModal({
             Payment Successful
           </h2>
           <p className="text-center max-w-sm">
-            You have successfully made payment to be a {" "}
+            You have successfully made payment to be a{" "}
             <span className="font-medium">partner</span> for this event.
           </p>
         </div>
@@ -175,7 +184,9 @@ function PaymentSuccessModal({
           <p className="font-semibold">{eventName ?? ""}</p>
           <div className="flex items-center gap-x-2">
             <CiCalendar size={18} />
-            <p>{date ?? ""}</p>
+            <p>
+              {eventStartDate ?? ""} - {eventEndDate ?? ""}
+            </p>
           </div>
           <p className="flex items-center gap-x-2">
             <CiLocationOn size={18} />
@@ -199,50 +210,68 @@ function PaymentSuccessModal({
         </div>
 
         <p className="text-center text-tiny sm:text-xs">
-          Powered by <span className="text-basePrimary">Zikoro</span>
+          Powered by{" "}
+          <Link href="https://zikoro.com" className="text-basePrimary">
+            Zikoro
+          </Link>
         </p>
       </div>
-      {isShare && (
-        <ShareModal eventId={partnerData?.eventAlias!} close={onClose} />
+      {isShare && eventName && eventStartDate && eventEndDate && (
+        <ShareModal
+          eventId={partnerData?.eventAlias!}
+          text={`I am excited to be exhibiting at the ${eventName} happening on ${eventStartDate} to ${eventEndDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${partnerData?.eventAlias}`}
+          close={onClose}
+        />
       )}
     </div>
   );
 }
 
-function ShareModal({
+export function ShareModal({
   eventId,
+  text,
   close,
 }: {
   close: () => void;
   eventId: string;
+  text: string;
 }) {
   const [isShow, showSuccess] = useState(false);
+
   function copyLink() {
-    copy(`https://www.zikoro.com/live-events/${eventId}`);
+    copy(text);
     showSuccess(true);
     setTimeout(() => showSuccess(false), 2000);
   }
   const socials = [
     {
       Icon: FaWhatsapp,
-      link: `https://api.whatsapp.com/send?text=https://www.zikoro.com/live-events/${eventId}`,
+      link: `https://api.whatsapp.com/send?text=${text} `,
     },
     {
       Icon: HiOutlineMail,
-      link: `mailto:?subject=Register%20for%20this%20event&body=https://zikoro.com/live-events/${eventId}`,
+      link: `mailto:?subject=Register%20for%20this%20event&body=${text}`,
     },
     {
       Icon: FaXTwitter,
-      link: `https://x.com/intent/tweet?url=https://zikoro.com/live-events/${eventId}`,
+      link: `https://x.com/intent/tweet?url=${text}`,
     },
     {
       Icon: SlSocialFacebook,
-      link: `https://www.facebook.com/sharer/sharer.php?u=https://zikoro.com/live-events/${eventId}`,
+      link: `https://www.facebook.com/sharer/sharer.php?u=${text}`,
     },
   ];
   return (
-    <div className="w-full h-full inset-0 bg-white/40 fixed z-[400]">
-      <div className="w-[95%] max-w-xl shadow rounded-xl bg-white absolute inset-0 h-fit m-auto p-6">
+    <div
+      onClick={close}
+      className="w-full h-full inset-0 bg-white/40 fixed z-[400]"
+    >
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        className="w-[95%] max-w-xl shadow rounded-xl box-animation bg-white absolute inset-0 h-fit m-auto p-6"
+      >
         <div className="w-full mb-3 flex items-center justify-between">
           <p className="font-medium border-b border-basePrimary pb-1">
             Share event with your network
@@ -272,7 +301,7 @@ function ShareModal({
           >
             <RxLink2 size={50} />
             {isShow && (
-              <p className="absolute -top-10 bg-black/50 text-white font-medium rounded-md px-3 py-2 transition-transform tranition-all duration-300 animate-fade-in-out">
+              <p className="absolute text-xs w-[100px] -top-10 bg-black/50 text-white font-medium rounded-md px-3 py-2 transition-transform tranition-all duration-300 animate-fade-in-out">
                 Link Copied
               </p>
             )}

@@ -265,41 +265,41 @@
   -webkit-box-orient: vertical;
 }
 
-.innerhtml h1 {
+.partner-innerhtml h1 {
   font-size: 2em;
 }
-.innerhtml h2 {
+.partner-innerhtml h2 {
   font-size: 1.5em;
 }
-.innerhtml h3 {
+.partner-innerhtml h3 {
   font-size: 1.17em;
 }
-.innerhtml h4 {
+.partner-innerhtml h4 {
   font-size: 1em;
 }
-.innerhtml h5 {
+.partner-innerhtml h5 {
   font-size: 0.83em;
 }
-.innerhtml h6 {
+.partner-innerhtml h6 {
   font-size: 0.67em;
 }
 
 /* Unordered List */
-.innerhtml ul {
+.partner-innerhtml ul {
   list-style-type: disc; /* Default filled circle */
   padding-left: 2rem;
 }
 
 /* Ordered List */
-.innerhtml ol {
+.partner-innerhtml ol {
   list-style-type: decimal; /* Default decimal numbers */
   padding-left: 2rem;
 }
-.innerhtml ul li {
+.partner-innerhtml ul li {
   padding-bottom: 2rem;
 }
 
-.innerhtml ol li {
+.partner-innerhtml ol li {
   padding-bottom: 2rem;
 }
 
@@ -381,6 +381,44 @@ input[type="number"] {
   width: 100%;
   @apply h-48 sm:h-[25rem] lg:h-[16rem] object-cover;
   aspect-ratio: unset;
+}
+
+.innerhtml h1 {
+  font-size: 2em;
+}
+.innerhtml h2 {
+  font-size: 1.5em;
+}
+.innerhtml h3 {
+  font-size: 1.17em;
+}
+.innerhtml h4 {
+  font-size: 1em;
+}
+.innerhtml h5 {
+  font-size: 0.83em;
+}
+.innerhtml h6 {
+  font-size: 0.67em;
+}
+
+/* Unordered List */
+.innerhtml ul {
+  list-style-type: disc; /* Default filled circle */
+  padding-left: 2rem;
+}
+
+/* Ordered List */
+.innerhtml ol {
+  list-style-type: decimal; /* Default decimal numbers */
+  padding-left: 2rem;
+}
+.innerhtml ul li {
+  padding-bottom: 2rem;
+}
+
+.innerhtml ol li {
+  padding-bottom: 2rem;
 }
 
 /* DatePicker.css */

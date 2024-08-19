@@ -35,7 +35,7 @@ type TSIngleTier = {
   price: string;
   currency: string;
   color: string;
-  description: string;
+  description?: string;
 };
 export function AddPartners({
   close,
@@ -120,8 +120,8 @@ export function AddPartners({
       eventId: eventData?.id,
       eventName: eventData?.eventTitle,
       eventAlias: eventId,
-      whatsApp: whatsappCountryCode + values.whatsApp,
-      phoneNumber: phoneCountryCode + values.phoneNumber,
+      whatsApp: values.whatsApp || "",
+      phoneNumber:  values.phoneNumber,
       companyLogo: image,
       partnerAlias,
       partnerStatus: "pending",
@@ -365,23 +365,16 @@ export function AddPartners({
                     <FormItem className="w-full relative h-fit">
                       <FormLabel>Phone number</FormLabel>
                       <FormControl>
-                        <div className="w-full relative h-12">
-                          <input
-                            type="text"
-                            className=" text-sm absolute top-[30%]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none bg-[#001fcc]/10"
-                            value={phoneCountryCode}
-                            onChange={(e) =>
-                              setPhoneCountryCode(e.target.value)
-                            }
-                          />
+                 
+                         
                           <Input
                             placeholder="Enter Phone Number"
                             {...form.register("phoneNumber")}
                             type="tel"
                             {...field}
-                            className="placeholder:text-sm h-12 pl-12 pr-4 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                            className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
                           />
-                        </div>
+                      
                       </FormControl>
 
                       <FormMessage />
@@ -397,22 +390,14 @@ export function AddPartners({
                       <FormLabel>WhatsApp number</FormLabel>
 
                       <FormControl>
-                        <div className="w-full relative h-12">
-                          <input
-                            type="text"
-                            className=" text-sm absolute top-[30%]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none bg-[#001fcc]/10"
-                            value={whatsappCountryCode}
-                            onChange={(e) =>
-                              setWhatsAppCountryCode(e.target.value)
-                            }
-                          />
+                      
                           <Input
-                            className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10 pl-12 pr-4  placeholder:text-zinc-500 text-zinc-700"
+                            className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
                             placeholder="Enter Whatsapp Number"
                             {...form.register("whatsApp")}
                             type="tel"
                           />
-                        </div>
+                      
                       </FormControl>
                       <FormMessage />
                     </FormItem>

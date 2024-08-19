@@ -58,7 +58,7 @@ export function EventCard({
     <div
       role="button"
       onClick={goToEvent}
-      className="border flex flex-col gap-y-6 rounded-lg p-3 sm:p-4  w-full"
+      className="border flex flex-col gap-y-6 bg-white rounded-lg p-3 sm:p-4  w-full"
     >
       <div className="w-full flex items-center justify-between">
         <p className="font-medium text-lg line-clamp-1">

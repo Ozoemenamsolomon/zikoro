@@ -5,12 +5,7 @@ import { ArrowIosDownward } from "styled-icons/evaicons-solid";
 import { Phone } from "styled-icons/feather";
 import { cn } from "@/lib";
 import { Switch } from "@/components/ui/switch";
-import {
-  useState,
-  useMemo,
-  useEffect,
-  ReactNode,
-} from "react";
+import { useState, useMemo, useEffect, ReactNode } from "react";
 import { DropDownSelect } from "@/components/contents/_components";
 import { Event, TPartner } from "@/types";
 import { CloseOutline } from "styled-icons/evaicons-outline";
@@ -33,18 +28,20 @@ function ConfirmationModal({
   descriptionElement,
   buttonElement,
   close,
- 
 }: {
   titleElement: ReactNode;
   descriptionElement: ReactNode;
   buttonElement: ReactNode;
-close:() => void;
+  close: () => void;
 }) {
   return (
     <div className="w-full h-full inset-0 fixed bg-black/20 z-[100]">
       <div className="absolute inset-0 shadow gap-y-4 box-animation bg-white rounded-lg m-auto h-fit max-w-xl flex flex-col items-center justify-center py-4 px-4">
-        <Button onClick={close} className="px-0 self-end w-11 rounded-full
-         h-11 bg-gray-200">
+        <Button
+          onClick={close}
+          className="px-0 self-end w-11 rounded-full
+         h-11 bg-gray-200"
+        >
           <MdClose size={22} />
         </Button>
         <div>{titleElement}</div>
@@ -54,33 +51,39 @@ close:() => void;
     </div>
   );
 }
-function ActionColumn({partner, refetch}:{refetch:() => Promise<any>; partner: TPartner}) {
+function ActionColumn({
+  partner,
+  refetch,
+}: {
+  refetch: () => Promise<any>;
+  partner: TPartner;
+}) {
   const [isApprove, setIsApprove] = useState(false);
   const [isDecline, setIsDecline] = useState(false);
-  const {update} = useUpdatePartners()
-  const [loading, setLoading] = useState(false)
+  const { update } = useUpdatePartners();
+  const [loading, setLoading] = useState(false);
 
   function onDecline() {
-    setIsDecline((p) => !p)
+    setIsDecline((p) => !p);
   }
   function onApprove() {
-    setIsApprove((p) => !p)
+    setIsApprove((p) => !p);
   }
 
   async function approve() {
-    setLoading(true)
-    await update({...partner, partnerStatus: "verified"})
-    
-    setLoading(false)
-    refetch()
-    onApprove()
+    setLoading(true);
+    await update({ ...partner, partnerStatus: "verified" });
+
+    setLoading(false);
+    refetch();
+    onApprove();
   }
   async function decline() {
-    setLoading(true)
-    await update({...partner, partnerStatus: "pending"})
-    setLoading(false)
-    refetch()
-    onDecline()
+    setLoading(true);
+    await update({ ...partner, partnerStatus: "pending" });
+    setLoading(false);
+    refetch();
+    onDecline();
   }
   return (
     <div className="flex items-center gap-x-6">
@@ -99,14 +102,13 @@ function ActionColumn({partner, refetch}:{refetch:() => Promise<any>; partner: T
 
       {isApprove && (
         <ConfirmationModal
-
-       
           buttonElement={
-            <Button 
-            onClick={approve}
-            className="gap-x-2 text-white bg-basePrimary w-[130px]">
-            {loading && <Loader2Icon  size={20}/>}
-            <p>Approve</p>
+            <Button
+              onClick={approve}
+              className="gap-x-2 text-white bg-basePrimary w-[130px]"
+            >
+              {loading && <Loader2Icon size={20} />}
+              <p>Approve</p>
             </Button>
           }
           descriptionElement={
@@ -115,19 +117,21 @@ function ActionColumn({partner, refetch}:{refetch:() => Promise<any>; partner: T
             </p>
           }
           titleElement={
-            <p className="font-semibold text-basePrimary text-lg sm:text-xl">Approve Partner</p>
+            <p className="font-semibold text-basePrimary text-lg sm:text-xl">
+              Approve Partner
+            </p>
           }
           close={onApprove}
         />
       )}
       {isDecline && (
         <ConfirmationModal
-
           buttonElement={
-            <Button 
-            onClick={decline}
-            className="gap-x-2 bg-red-500 text-white w-[130px]">
-             {loading && <Loader2Icon size={20}/>}
+            <Button
+              onClick={decline}
+              className="gap-x-2 bg-red-500 text-white w-[130px]"
+            >
+              {loading && <Loader2Icon size={20} />}
               <p>Decline</p>
             </Button>
           }
@@ -137,7 +141,9 @@ function ActionColumn({partner, refetch}:{refetch:() => Promise<any>; partner: T
             </p>
           }
           titleElement={
-            <p className="font-semibold text-red-500 text-lg sm:text-xl">Decline Partner</p>
+            <p className="font-semibold text-red-500 text-lg sm:text-xl">
+              Decline Partner
+            </p>
           }
           close={onDecline}
         />
@@ -372,7 +378,7 @@ export function PartnerWidget({
             e.stopPropagation();
           }}
         >
-          {item?.partnerType.toLowerCase() === "sponsor" ? (
+          {/* {item?.partnerType.toLowerCase() === "sponsor" ? (
             <DropDownSelect handleChange={handleSelectedLevel} data={levelList}>
               <button className="flex relative items-center gap-x-1">
                 <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
@@ -383,7 +389,8 @@ export function PartnerWidget({
             </DropDownSelect>
           ) : (
             <p className="w-1 h-1"></p>
-          )}
+          )} */}
+          <p>{item?.tierName ?? ""}</p>
         </td>
 
         <td
@@ -439,14 +446,16 @@ export function PartnerWidget({
             e.stopPropagation();
           }}
         >
-          {activeTab === 1 ? 
-          <ActionColumn refetch={refetch} partner={item}/>
-          : <Switch
-            className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
-            disabled={loading}
-            checked={status}
-            onClick={() => submit(!item?.stampIt)}
-          />}
+          {activeTab === 1 ? (
+            <ActionColumn refetch={refetch} partner={item} />
+          ) : (
+            <Switch
+              className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+              disabled={loading}
+              checked={status}
+              onClick={() => submit(!item?.stampIt)}
+            />
+          )}
         </td>
       </tr>
       {isOpen && event && (

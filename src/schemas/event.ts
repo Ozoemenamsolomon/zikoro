@@ -96,17 +96,21 @@ export const addPartnerToTierSchema = z.object({
   country: z.string().min(3, { message: "Country is required" }),
   contactFirstName: z.string().min(3, { message: "First Name is required" }),
   contactLastName: z.string().min(3, { message: "Last Name is required" }),
-  website: z.string().min(3, { message: "Url is required" }),
+  website: z.any(),
   phoneNumber: z
-    .string()
-    .refine((value) => value && /^\d{9,}$/.test(value.replace(/\D/g, "")), {
-      message: "Phone number must be at least 9 digits long",
-    }),
+  .string()
+  .refine((value) => value && /^\d{11,}$/.test(value.replace(/\D/g, "")), {
+    message: "Phone number must be at least 11 digits long",
+  })
+  .refine((value) => value && /^\+\d{1,3}/.test(value), {
+    message: "Phone number must include start with a country code",
+  }),
   whatsApp: z
-    .string()
-    .refine((value) => value && /^\d{9,}$/.test(value.replace(/\D/g, "")), {
-      message: "Whatsapp number must be at least 9 digits long",
-    }),
+  .string()
+  .optional()
+  .refine((value) => !value || /^\+\d{1,3}/.test(value), {
+    message: "WhatsApp number must start with a country code",
+  }),
 });
 
 export const partnerDetails = z.array(
@@ -118,7 +122,7 @@ export const partnerDetails = z.array(
     price: z.string().min(1, { message: "Price is required" }),
     currency: z.string().min(1, { message: "Currency is required" }),
     color: z.string(),
-    description: z.string().min(3, { message: "Description is required" }),
+    description: z.any(),
   })
 );
 
