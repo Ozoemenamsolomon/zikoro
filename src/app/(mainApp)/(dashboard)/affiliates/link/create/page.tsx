@@ -40,9 +40,7 @@ import {
   useCreateAffiliateLink,
   useGetAffiliates,
 } from "@/hooks/services/marketing";
-import { useGetEvents, useGetUserEvents } from "@/hooks/services/events";
-import { TUser } from "@/types";
-import { getCookie } from "@/hooks";
+import { useGetUserEvents } from "@/hooks/services/events";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useUserStore from "@/store/globalUserStore";
 import { useRouter } from "next/navigation";
@@ -59,7 +57,7 @@ const CreateAffiliateSchema = z.object({
 
 type TCreateAffiliate = z.infer<typeof CreateAffiliateSchema>;
 
-const Create = () => {
+const page = () => {
   const router = useRouter();
   const defaultValues: Partial<TCreateAffiliate> = {
     commissionType: "percentage",
@@ -544,4 +542,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default page;

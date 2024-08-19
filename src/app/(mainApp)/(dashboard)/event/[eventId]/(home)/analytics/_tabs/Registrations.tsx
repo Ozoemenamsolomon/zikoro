@@ -43,7 +43,6 @@ import useOrganizationStore from "@/store/globalOrganizationStore";
 import { useGetData } from "@/hooks/services/request";
 import { AnalyticsInfoCard } from "../page";
 
-
 const Registrations = () => {
   const { eventId } = useParams();
   const { organization } = useOrganizationStore();
@@ -97,8 +96,12 @@ const Registrations = () => {
     (eventTransactions.filter(({ discountCode }) => discountCode).length /
       eventTransactions.length) *
     100;
-  const registrationViaReferrals = 0;
-  const revenueViaReferrals = "0";
+  const registrationViaReferrals = eventTransactions
+    .filter(({ affliateCode }) => affliateCode)
+    .reduce((acc, { attendees }) => (attendees || 0) + acc, 0);
+  const revenueViaReferrals = eventTransactions
+    .filter(({ affliateCode }) => affliateCode)
+    .reduce((acc, { amountPaid }) => (amountPaid || 0) + acc, 0);
   const eventStartDateToNow = useMemo(() => {
     const dateFn =
       displayLineChart === "monthly"
