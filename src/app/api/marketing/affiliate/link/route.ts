@@ -111,6 +111,8 @@ export async function POST(req: NextRequest) {
             .from("affiliateLinks")
             .insert({ ...payload, linkCode, affiliateLink });
 
+          console.log(error);
+
           if (error) throw error;
         }
       );

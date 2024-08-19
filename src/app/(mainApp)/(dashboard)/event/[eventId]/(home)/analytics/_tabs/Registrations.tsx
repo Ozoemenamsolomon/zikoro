@@ -96,6 +96,7 @@ const Registrations = () => {
     (eventTransactions.filter(({ discountCode }) => discountCode).length /
       eventTransactions.length) *
     100;
+  console.log(eventTransactions.map(({ affliateCode }) => affliateCode));
   const registrationViaReferrals = eventTransactions
     .filter(({ affliateCode }) => affliateCode)
     .reduce((acc, { attendees }) => (attendees || 0) + acc, 0);

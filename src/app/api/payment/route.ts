@@ -52,12 +52,20 @@ export async function POST(req: NextRequest) {
       ).format(date);
 
       console.log(affiliateCode);
-      const { error: firstError, status: firstStatus } = await supabase
+      const {
+        error: firstError,
+        status: firstStatus,
+        data,
+      } = await supabase
         .from("eventTransactions")
-        .update({ ...restItem, affiliateCode })
-        .eq("eventRegistrationRef", params.eventRegistrationRef);
+        .update({ ...restItem, affiliateCode: affiliateCode })
+        .eq("eventRegistrationRef", params.eventRegistrationRef)
+        .select();
+
+      console.log(data);
 
       if (firstError) {
+        console.log(firstError);
         return NextResponse.json(
           {
             error: firstError.message,
