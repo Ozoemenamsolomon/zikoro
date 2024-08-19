@@ -210,13 +210,16 @@ function PaymentSuccessModal({
         </div>
 
         <p className="text-center text-tiny sm:text-xs">
-          Powered by <Link href="https://zikoro.com" className="text-basePrimary">Zikoro</Link>
+          Powered by{" "}
+          <Link href="https://zikoro.com" className="text-basePrimary">
+            Zikoro
+          </Link>
         </p>
       </div>
       {isShare && eventName && eventStartDate && eventEndDate && (
         <ShareModal
           eventId={partnerData?.eventAlias!}
-          text={`I am excited to be exhibiting at the ${eventName} happening on ${startDate} to ${endDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${partnerData?.eventAlias}`}
+          text={`I am excited to be exhibiting at the ${eventName} happening on ${eventStartDate} to ${eventEndDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${partnerData?.eventAlias}`}
           close={onClose}
         />
       )}
@@ -231,7 +234,7 @@ export function ShareModal({
 }: {
   close: () => void;
   eventId: string;
-  text:string;
+  text: string;
 }) {
   const [isShow, showSuccess] = useState(false);
 
@@ -260,13 +263,15 @@ export function ShareModal({
   ];
   return (
     <div
-    onClick={close}
-    className="w-full h-full inset-0 bg-white/40 fixed z-[400]">
-      <div 
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-      className="w-[95%] max-w-xl shadow rounded-xl box-animation bg-white absolute inset-0 h-fit m-auto p-6">
+      onClick={close}
+      className="w-full h-full inset-0 bg-white/40 fixed z-[400]"
+    >
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        className="w-[95%] max-w-xl shadow rounded-xl box-animation bg-white absolute inset-0 h-fit m-auto p-6"
+      >
         <div className="w-full mb-3 flex items-center justify-between">
           <p className="font-medium border-b border-basePrimary pb-1">
             Share event with your network
