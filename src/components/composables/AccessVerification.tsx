@@ -1,22 +1,18 @@
 "use client";
 
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import {
-  getCookie,
-  useFetchSingleEvent,
-  useGetAllAttendees,
-  useCheckTeamMember,
-  useVerifyUserAccess,
-} from "@/hooks";
-import { useEffect, useMemo, useState } from "react";
+import { useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
 import useUserStore from "@/store/globalUserStore";
 import useAccessStore from "@/store/globalAcessStore";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 export function AccessVerification({ id }: { id?: string | any }) {
   const pathname = usePathname();
   const { user } = useUserStore();
+  const { organization } = useOrganizationStore();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
@@ -53,21 +49,20 @@ export function AccessVerification({ id }: { id?: string | any }) {
   },[pathname])
  */
 
-  // console.log(
-  //   "single event loading",
-  //   !singleEventLoading,
-  //   "single event data",
-  //   data !== null,
-  //   "user",
-  //   user !== null
-  // );
+  console.log("single event loading", userAccess?.isTeamMember);
 
   useEffect(() => {
-    // if (!user) {
-    //   router.push("/login");
-    //   return;
-    // }
-    if (!isLoading && user !== null && !singleEventLoading && data !== null) {
+    if (!user) {
+      window.open(`/live-events/${id}`, "_self");
+      return;
+    }
+    if (
+      !isLoading &&
+      user !== null &&
+      !singleEventLoading &&
+      data !== null &&
+      typeof userAccess?.isTeamMember === "boolean"
+    ) {
       console.log("I entered the hooks .....");
       const appAccess = data?.eventAppAccess;
 
@@ -90,17 +85,17 @@ export function AccessVerification({ id }: { id?: string | any }) {
           }
         }, 1000);
       }
-
+      const isTeamMember = organization?.teamMembers?.some(
+        (v) => v?.userEmail === user?.userEmail
+      ) || userAccess?.isTeamMember;
       // checked if the user is an attendee
       const isPresent = attendees?.some(({ email, eventAlias }) => {
         return eventAlias === id && email === user?.userEmail;
       });
 
-    
-      if (userAccess?.isOrganizer || userAccess?.isTeamMember) {
+      if (isTeamMember) {
         // user is a team member or an organizer
         setLoading(false);
-    
 
         return () => clearInterval(interval);
       } else if (
@@ -118,8 +113,6 @@ export function AccessVerification({ id }: { id?: string | any }) {
       } else {
         if (!isPresent) {
           window.open(`/live-events/${id}`, "_self");
-          console.log("here");
-          setNotRegistered(true);
         }
         // router.push("/login");
         // pls remove after all the event have app access date on creation

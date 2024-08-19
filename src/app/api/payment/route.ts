@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
         organization,
         eventImage,
         trackingId,
+        affiliateCode,
         role,
         eventEndDate,
         ...restItem
@@ -133,6 +134,8 @@ export async function POST(req: NextRequest) {
               userEmail: attendee?.email,
               phoneNumber: attendee?.phoneNumber,
               created_at: new Date().toISOString()
+              trackingId: affiliateCode,
+              inviteSource: 'affiliate'
             });
 
             console.log("creating status:",statusCreatingUser )
@@ -290,7 +293,7 @@ export async function POST(req: NextRequest) {
               }</p>
             
               <a
-               href="www.zikoro.com/event/${eventAlias}/people/info/${
+               href="https://www.zikoro.com/event/${eventAlias}/people/info/${
             attendee?.attendeeAlias
           }?email=${
             attendee?.email
@@ -388,7 +391,7 @@ export async function POST(req: NextRequest) {
             alt="qrcode" />
           </div>
             <a
-            href="www.zikoro.com/event/${eventAlias}/reception?email=${
+            href="https://www.zikoro.com/event/${eventAlias}/reception?email=${
             attendee?.email
           }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
             attendee?.attendeeAlias

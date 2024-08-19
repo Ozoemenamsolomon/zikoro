@@ -62,6 +62,7 @@ export function BookEvent({
   eventTitle,
   eventLocation,
   trackingId,
+  affiliateCode,
   role,
   eventEndDate,
 }: {
@@ -80,6 +81,7 @@ export function BookEvent({
   eventLocation?: string;
   currency: string | undefined;
   trackingId?: string | null;
+  affiliateCode?: string | null;
   eventEndDate?: string;
   role: string;
 }) {
@@ -236,6 +238,7 @@ export function BookEvent({
           startDate,
           role,
           trackingId,
+          affiliateCode,
           endDate,
           organization,
           eventLocation,

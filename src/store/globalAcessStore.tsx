@@ -11,8 +11,8 @@ const useAccessStore = create<accessState>()(
   persist(
     (set) => ({
       userAccess: {
-        isOrganizer: false,
-        isTeamMember: false,
+        isOrganizer: undefined,
+        isTeamMember: undefined,
         attendeeId: undefined,
         attendee: undefined,
       },

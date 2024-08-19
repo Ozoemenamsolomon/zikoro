@@ -12,12 +12,13 @@ export default function CategoryEvent({
   categoryCount,
 }: CategoryEventProp) {
   const router = useRouter();
+  const encodedCategoryName = encodeURIComponent(categoryName);
 
   return (
     <div
       className="border-[1px] border-gray-200 rounded-md cursor-pointer"
       onClick={() =>
-        router.push(`/explore/featured-events?query=${categoryName}`)
+        router.push(`/explore/featured-events?query=${encodedCategoryName}`)
       }
     >
       <div className=" h-[180px] lg:h-[200px] w-full flex items-center justify-center bg-gray-200 opacity-80 ">

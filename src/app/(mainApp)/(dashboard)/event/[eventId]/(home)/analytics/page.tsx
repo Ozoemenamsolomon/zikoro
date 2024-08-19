@@ -5,6 +5,40 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { updateSearchParam } from "@/utils";
 import Registrations from "./_tabs/Registrations";
 import Partners from "./_tabs/Partners";
+import Attendance from "./_tabs/Attendance";
+
+export const AnalyticsInfoCard = ({
+  label,
+  Icon,
+  value,
+  mutedText,
+}: {
+  Icon: (props: any) => React.JSX.Element;
+  label: string;
+  value: string | number;
+  mutedText?: ReactNode;
+}) => {
+  return (
+    <div className="p-4 rounded-md bg-white border flex items-center">
+      <div className="flex items-center justify-center flex-[30%]">
+        <div className="bg-basePrimary/20 p-4 rounded-full h-fit w-fit">
+          <Icon className="h-10 w-10 text-basePrimary" />
+        </div>
+      </div>
+      <div className="flex-[70%] flex flex-col gap-2">
+        <h3 className="font-medium text-gray-600 capitalize">{label}</h3>
+        <div className="flex items-end gap-2">
+          <h4 className="text-4xl font-medium text-gray-800">{value}</h4>
+          {mutedText && (
+            <span className="font-medium text-gray-500 capitalize">
+              {mutedText}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const page = () => {
   const searchParams = useSearchParams();
@@ -53,13 +87,19 @@ const page = () => {
       </TabsList>
       <TabsContent
         value="registrations"
-        className="py-8 px-2 md:px-6 lg:px-12 bg-basePrimary/5 space-y-12"
+        className="pt-8 pb-20 px-2 md:px-6 lg:px-12 bg-basePrimary/5 space-y-12"
       >
         <Registrations />
       </TabsContent>
       <TabsContent
+        value="attendance"
+        className="pt-8 pb-20 px-2 md:px-6 lg:px-12 bg-basePrimary/5 space-y-12"
+      >
+        <Attendance />
+      </TabsContent>
+      <TabsContent
         value="partners"
-        className="py-8 px-2 md:px-6 lg:px-12 bg-basePrimary/5 space-y-12"
+        className="pt-8 pb-20 px-2 md:px-6 lg:px-12 bg-basePrimary/5 space-y-12"
       >
         <Partners />
       </TabsContent>

@@ -20,8 +20,8 @@ export interface TAuthUser {
 
 
 export interface TUserAccess {
-  isOrganizer:boolean;
-  isTeamMember:boolean;
+  isOrganizer?:boolean;
+  isTeamMember?:boolean;
   attendeeId?: number;
   attendee?: TAttendee
 

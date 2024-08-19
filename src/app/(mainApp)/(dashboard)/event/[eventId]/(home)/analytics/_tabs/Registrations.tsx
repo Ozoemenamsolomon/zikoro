@@ -39,42 +39,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useOrganizationStore from "@/store/globalOrganizationStore";
+import { useGetData } from "@/hooks/services/request";
+import { AnalyticsInfoCard } from "../page";
 
-const AnalyticsInfoCard = ({
-  label,
-  Icon,
-  value,
-  mutedText,
-}: {
-  Icon: (props: any) => React.JSX.Element;
-  label: string;
-  value: string | number;
-  mutedText?: ReactNode;
-}) => {
-  return (
-    <div className="p-4 rounded-md bg-white border flex items-center">
-      <div className="flex items-center justify-center flex-[30%]">
-        <div className="bg-basePrimary/20 p-4 rounded-full h-fit w-fit">
-          <Icon className="h-10 w-10 text-basePrimary" />
-        </div>
-      </div>
-      <div className="flex-[70%] flex flex-col gap-2">
-        <h3 className="font-medium text-gray-600 capitalize">{label}</h3>
-        <div className="flex items-end gap-2">
-          <h4 className="text-4xl font-medium text-gray-800">{value}</h4>
-          {mutedText && (
-            <span className="font-medium text-gray-500 capitalize">
-              {mutedText}
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const Registrations = () => {
   const { eventId } = useParams();
+  const { organization } = useOrganizationStore();
 
   const {
     attendees,
@@ -88,6 +60,9 @@ const Registrations = () => {
   } = useGetEventTransactions({
     eventId,
   });
+  const { data: recurringData, isLoading: recurringIsLoading } = useGetData(
+    `/events/${eventId}/analytics/recurring?organizationId=${organization?.id}`
+  );
   const { event } = useEventStore();
 
   const timeDivisions = ["daily", "weekly", "monthly"];
@@ -95,8 +70,7 @@ const Registrations = () => {
     "daily" | "monthly" | "weekly"
   >("daily");
 
-  console.log(attendees[0]);
-  console.log(eventTransactions);
+  console.log(recurringData);
 
   const revenueTarget =
     event?.pricing.reduce(
@@ -124,7 +98,7 @@ const Registrations = () => {
       eventTransactions.length) *
     100;
   const registrationViaReferrals = 0;
-  const revenueViaReferrals = "0%";
+  const revenueViaReferrals = "0";
   const eventStartDateToNow = useMemo(() => {
     const dateFn =
       displayLineChart === "monthly"
@@ -326,7 +300,7 @@ const Registrations = () => {
             />
           )}
           label={"Returning Attendees"}
-          value={"12"}
+          value={recurringData?.recurringEmailCount ?? 0}
         />
       </section>
       <section className="bg-white p-4 space-y-4 rounded-md border">
@@ -453,34 +427,25 @@ const Registrations = () => {
         </LineChart>
       </section>
       <section className="grid md:grid-cols-2 gap-8">
-        <section className="bg-white p-4 space-y-4 border rounded-md">
+        <section className="bg-white p-4 space-y-4 border rounded-md h-full max-h-[250px] overflow-hidden">
           <h2 className="text-gray-600 font-medium text-sm">
-            Registrations By Attendee Type
+            Returning Attendees
           </h2>
-          <BarChart
-            yAxis={[
-              {
-                scaleType: "band",
-                data: attendeeTypes,
-                categoryGapRatio: 0.5,
-                barGapRatio: 0.5,
-              },
-            ]}
-            series={[
-              { data: attendeeCounts, stack: "total", color: "#001FCC" },
-              { data: attendeeOffsets, stack: "total", color: "#001FCC33" },
-            ]}
-            xAxis={[{ tickMinStep: 1 }]}
-            layout="horizontal"
-            grid={{ vertical: true }}
-            margin={{ left: 100, top: 5 }}
-            leftAxis={{ disableLine: true, disableTicks: true }}
-            bottomAxis={{ disableLine: true, tickSize: 10 }}
-            borderRadius={20}
-            height={400}
-          />
+          <div className="flex flex-col gap-2 max-h-full overflow-auto no-scrollbar">
+            {recurringData &&
+              recurringData?.recurringEmails
+                .sort((a, b) => b.count - a.count)
+                .map(({ email, count }) => (
+                  <div className="flex items-center gap-4">
+                    <div className="truncate text-gray-700 font-medium flex-1">
+                      {email}
+                    </div>
+                    <span className="text-gray-900 font-medium">{count}</span>
+                  </div>
+                ))}
+          </div>
         </section>
-        <section className="bg-white p-4 space-y-4 border rounded-md">
+        <section className="bg-white p-4 space-y-4 border rounded-md h-full max-h-[250px]">
           <h2 className="text-gray-600 font-medium text-sm">
             Attendees By Country
           </h2>
@@ -506,14 +471,41 @@ const Registrations = () => {
       </section>
       <section className="bg-white p-4 space-y-4 border rounded-md">
         <h2 className="text-gray-600 font-medium text-sm">
+          Registrations By Attendee Type
+        </h2>
+        <BarChart
+          yAxis={[
+            {
+              scaleType: "band",
+              data: attendeeTypes,
+              categoryGapRatio: 0.5,
+              barGapRatio: 0.5,
+            },
+          ]}
+          series={[
+            { data: attendeeCounts, stack: "total", color: "#001FCC" },
+            { data: attendeeOffsets, stack: "total", color: "#001FCC33" },
+          ]}
+          xAxis={[{ tickMinStep: 1 }]}
+          layout="horizontal"
+          grid={{ vertical: true }}
+          margin={{ left: 100, top: 5 }}
+          leftAxis={{ disableLine: true, disableTicks: true }}
+          bottomAxis={{ disableLine: true, tickSize: 10 }}
+          borderRadius={20}
+          height={400}
+        />
+      </section>
+      <section className="bg-white p-4 space-y-4 border rounded-md">
+        <h2 className="text-gray-600 font-medium text-sm">
           Sales by Ticket Type
         </h2>
         <table className="border rounded-md w-full">
           <thead className="w-full">
             <tr className="flex bg-basePrimary/10 p-4 text-gray-600 font-medium">
-              <td className="flex-[30%]">Ticket Name</td>
+              <td className="flex-[30%]">Name</td>
               <td className="flex-[25%]">Price</td>
-              <td className="flex-[20%]">No Bought</td>
+              <td className="flex-[20%]">Qty</td>
               <td className="flex-[25%]">Revenue</td>
             </tr>
           </thead>
@@ -536,19 +528,20 @@ const Registrations = () => {
         </h2>
         <div className="w-1/2 mx-auto flex flex-wrap justify-center gap-2">
           {[
-            "whatsapp",
-            "facebook",
-            "google",
-            "x",
-            "instagram",
-            "linkedin",
-            "website",
-            "others",
-          ].map((social) => (
-            <span className="rounded-3xl border p-4 capitalize text-3xl font-medium text-gray-700">
-              {social}
-            </span>
-          ))}
+            ...new Set(
+              eventTransactions.map(({ referralSource }) => referralSource)
+            ),
+          ].map(
+            (social) =>
+              social && (
+                <span
+                  key={social}
+                  className="rounded-3xl border p-4 capitalize text-3xl font-medium text-gray-700"
+                >
+                  {social}
+                </span>
+              )
+          )}
         </div>
       </section>
     </>

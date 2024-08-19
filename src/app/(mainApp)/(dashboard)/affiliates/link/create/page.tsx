@@ -108,6 +108,8 @@ const Create = () => {
       ({ id }) => id?.toString() == affiliateId
     );
 
+    console.log(thisAffiliate);
+
     if (!thisEvent || !thisAffiliate) return;
 
     await createAffiliateLink({
@@ -126,9 +128,6 @@ const Create = () => {
           affiliateId: parseInt(affiliateId),
           affiliateEmail: thisAffiliate?.email || "affiliate@email.com",
           userId: user?.id,
-          affiliateLink: `${window.location.host}/live-events${
-            event !== "all" && "/" + thisEvent.eventAlias
-          }?affiliateCode=${thisAffiliate?.affliateCode}`,
         },
       },
     });

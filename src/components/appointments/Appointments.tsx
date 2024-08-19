@@ -554,7 +554,7 @@ console.log({selectedItem})
     }
   }, [bookings, isLoading, error]);
 
-  console.log({bookings, groupedBookings, user})
+  console.log({bookings, groupedBookings, user},'====')
   
   return (
     <>

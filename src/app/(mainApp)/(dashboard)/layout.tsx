@@ -59,7 +59,7 @@ export default function RootLayout({
 
   return (
     <>
-      <main className="relative w-full h-full bg-white" ref={divRef}>
+      <main className="relative w-full h-full bg-[#F9FAFF]" ref={divRef}>
         <SideBarLayout eventId={eventId} children={children} />
       </main>
       <Toaster />

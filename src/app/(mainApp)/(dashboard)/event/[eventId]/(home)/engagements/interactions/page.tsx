@@ -1,3 +1,4 @@
+"use client";
 import Interactions from "@/components/engagements/interactions/Interactions";
 
 export default function Page({
