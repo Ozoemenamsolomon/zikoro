@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
       if (userId) query.eq("events.createdBy", userId);
       if (organizationId) query.eq("events.organization.id", organizationId);
-      if (eventId) query.eq("events.eventAlias", eventId);
+      if (eventId) query.eq("eventAlias", eventId);
       if (userEmail) query.eq("events.email", userEmail);
       if (registrationCompleted)
         query.eq(

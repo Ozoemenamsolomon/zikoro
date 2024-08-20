@@ -96,12 +96,12 @@ const Registrations = () => {
     (eventTransactions.filter(({ discountCode }) => discountCode).length /
       eventTransactions.length) *
     100;
-  console.log(eventTransactions.map(({ affliateCode }) => affliateCode));
+  console.log(eventTransactions.filter(({ id }) => id === 706));
   const registrationViaReferrals = eventTransactions
-    .filter(({ affliateCode }) => affliateCode)
+    .filter(({ affiliateCode }) => affiliateCode)
     .reduce((acc, { attendees }) => (attendees || 0) + acc, 0);
   const revenueViaReferrals = eventTransactions
-    .filter(({ affliateCode }) => affliateCode)
+    .filter(({ affiliateCode }) => affiliateCode)
     .reduce((acc, { amountPaid }) => (amountPaid || 0) + acc, 0);
   const eventStartDateToNow = useMemo(() => {
     const dateFn =
@@ -293,7 +293,7 @@ const Registrations = () => {
             <img className="h-10 w-10" src={moneyUp.src} alt={"money up"} />
           )}
           label={"Revenue via referrals"}
-          value={revenueViaReferrals}
+          value={formatNumberToShortHand(revenueViaReferrals)}
         />
         <AnalyticsInfoCard
           Icon={() => (
