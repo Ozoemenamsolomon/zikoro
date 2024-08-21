@@ -47,6 +47,7 @@ export function SingleEvent({
   imageClassName,
   organizationLogo,
   trackingId,
+  affiliateCode,
   role,
 }: {
   isDetail?: boolean;
@@ -58,6 +59,7 @@ export function SingleEvent({
   imageClassName?: string;
   organizationLogo?: string;
   trackingId?: string | null;
+  affiliateCode?: string | null;
   role?: string | null;
 }) {
   const Comp = useDiv ? "div" : "button";
@@ -430,6 +432,7 @@ export function SingleEvent({
           eventTitle={event?.eventTitle}
           close={onClose}
           trackingId={trackingId}
+          affiliateCode={affiliateCode}
           role={role}
           eventLocation={`${event?.eventCity ?? ""}${!removeComma && ","} ${
             event?.eventCountry ?? ""

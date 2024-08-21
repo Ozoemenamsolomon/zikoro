@@ -41,39 +41,7 @@ import {
 } from "@/components/ui/select";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { useGetData } from "@/hooks/services/request";
-
-const AnalyticsInfoCard = ({
-  label,
-  Icon,
-  value,
-  mutedText,
-}: {
-  Icon: (props: any) => React.JSX.Element;
-  label: string;
-  value: string | number;
-  mutedText?: ReactNode;
-}) => {
-  return (
-    <div className="p-4 rounded-md bg-white border flex items-center">
-      <div className="flex items-center justify-center flex-[30%]">
-        <div className="bg-basePrimary/20 p-4 rounded-full h-fit w-fit">
-          <Icon className="h-10 w-10 text-basePrimary" />
-        </div>
-      </div>
-      <div className="flex-[70%] flex flex-col gap-2">
-        <h3 className="font-medium text-gray-600 capitalize">{label}</h3>
-        <div className="flex items-end gap-2">
-          <h4 className="text-4xl font-medium text-gray-800">{value}</h4>
-          {mutedText && (
-            <span className="font-medium text-gray-500 capitalize">
-              {mutedText}
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+import { AnalyticsInfoCard } from "../page";
 
 const Registrations = () => {
   const { eventId } = useParams();
@@ -128,8 +96,13 @@ const Registrations = () => {
     (eventTransactions.filter(({ discountCode }) => discountCode).length /
       eventTransactions.length) *
     100;
-  const registrationViaReferrals = 0;
-  const revenueViaReferrals = "0";
+  console.log(eventTransactions.filter(({ id }) => id === 706));
+  const registrationViaReferrals = eventTransactions
+    .filter(({ affiliateCode }) => affiliateCode)
+    .reduce((acc, { attendees }) => (attendees || 0) + acc, 0);
+  const revenueViaReferrals = eventTransactions
+    .filter(({ affiliateCode }) => affiliateCode)
+    .reduce((acc, { amountPaid }) => (amountPaid || 0) + acc, 0);
   const eventStartDateToNow = useMemo(() => {
     const dateFn =
       displayLineChart === "monthly"
@@ -320,7 +293,7 @@ const Registrations = () => {
             <img className="h-10 w-10" src={moneyUp.src} alt={"money up"} />
           )}
           label={"Revenue via referrals"}
-          value={revenueViaReferrals}
+          value={formatNumberToShortHand(revenueViaReferrals)}
         />
         <AnalyticsInfoCard
           Icon={() => (

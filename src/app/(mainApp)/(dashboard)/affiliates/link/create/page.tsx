@@ -40,9 +40,7 @@ import {
   useCreateAffiliateLink,
   useGetAffiliates,
 } from "@/hooks/services/marketing";
-import { useGetEvents, useGetUserEvents } from "@/hooks/services/events";
-import { TUser } from "@/types";
-import { getCookie } from "@/hooks";
+import { useGetUserEvents } from "@/hooks/services/events";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useUserStore from "@/store/globalUserStore";
 import { useRouter } from "next/navigation";
@@ -59,7 +57,7 @@ const CreateAffiliateSchema = z.object({
 
 type TCreateAffiliate = z.infer<typeof CreateAffiliateSchema>;
 
-const Create = () => {
+const page = () => {
   const router = useRouter();
   const defaultValues: Partial<TCreateAffiliate> = {
     commissionType: "percentage",
@@ -108,6 +106,8 @@ const Create = () => {
       ({ id }) => id?.toString() == affiliateId
     );
 
+    console.log(thisAffiliate);
+
     if (!thisEvent || !thisAffiliate) return;
 
     await createAffiliateLink({
@@ -120,15 +120,12 @@ const Create = () => {
           validity,
           commissionValue: value,
           commissionType,
-          eventId: event !== "all" ? parseInt(event) : 0,
+          eventId: event !== "all" ? thisEvent.eventAlias : "all",
           eventName: thisEvent?.eventTitle,
           Goal: goal,
           affiliateId: parseInt(affiliateId),
           affiliateEmail: thisAffiliate?.email || "affiliate@email.com",
           userId: user?.id,
-          affiliateLink: `${window.location.host}/live-events${
-            event !== "all" && "/" + thisEvent.eventAlias
-          }?affiliateCode=${thisAffiliate?.affliateCode}`,
         },
       },
     });
@@ -545,4 +542,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default page;

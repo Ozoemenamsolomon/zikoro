@@ -11,10 +11,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import {
-  useCreateTeamMember,
-  useDeleteTeamMember,
-} from "@/hooks/services/workspace";
+import { useTeamMembers } from "@/hooks/services/workspace";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { v4 as uuidv4 } from "uuid";
 
@@ -36,12 +33,15 @@ export default function Team() {
   });
 
   const { organization } = useOrganizationStore();
-  const { currentTeamMembers, createTeamMember } = useCreateTeamMember(
-    organization?.id ?? 0
-  );
+  const {
+    currentTeamMembers,
+    createTeamMember,
+    deleteTeamMember,
+    editingTeamMember,
+    selectTeamMemberForEditing,
+    editTeamMember,
+  } = useTeamMembers(organization?.id ?? 0);
   const [filteredTeamMembers, setFilteredTeamMembers] = useState([]);
-  const { deleteTeamMember, currentTeamMembers: newMembers } =
-    useDeleteTeamMember(organization?.id ?? 0);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const roles = ["owner", "editor", "collaborator"];
 
@@ -59,21 +59,18 @@ export default function Team() {
     }));
   };
 
+  // Create a new team member
   const handleCreateTeamMember = async (e: any) => {
     e.preventDefault();
     const newTeamMember = {
-      id: uuidv4(), // Generate a unique ID
+      id: uuidv4(),
       userFirstName: formData.firstName,
       userLastName: formData.lastName,
       userEmail: formData.userEmail,
       userRole: formData.userRole,
     };
 
-    const payload = {
-      ...currentTeamMembers,
-      teamMembers: [...currentTeamMembers?.teamMembers, newTeamMember],
-    };
-    await createTeamMember(payload);
+    await createTeamMember(newTeamMember);
     setFormData({
       id: "",
       firstName: "",
@@ -81,32 +78,61 @@ export default function Team() {
       userEmail: "",
       userRole: "",
     });
-    createTeamMember();
-    console.log("all Member", currentTeamMembers);
   };
 
-  //delete team member
+  // Delete a team member
   const handleDeleteTeamMember = async (memberId: string) => {
-    const success = await deleteTeamMember(memberId);
-    if (success) {
-      createTeamMember(); // This seems to create a new member after deletion, is that intended?
-      console.log("Member", newMembers);
+    await deleteTeamMember(memberId);
+  };
+
+  // Handle form submission for updating the team member
+  const handleUpdateTeamMember = async (e: any) => {
+    e.preventDefault();
+    if (editingTeamMember) {
+      const updatedTeamMember = {
+        id: formData.id,
+        userFirstName: formData.firstName,
+        userLastName: formData.lastName,
+        userEmail: formData.userEmail,
+        userRole: formData.userRole,
+      };
+      await editTeamMember(editingTeamMember.id, updatedTeamMember);
+      setFormData({
+        id: "",
+        firstName: "",
+        lastName: "",
+        userEmail: "",
+        userRole: "",
+      });
     }
   };
 
+  // Populate form with selected team member's data for editing
   useEffect(() => {
-    const newFilterTeamMembers = currentTeamMembers?.teamMembers?.filter(
+    if (editingTeamMember) {
+      setFormData({
+        id: editingTeamMember.id,
+        firstName: editingTeamMember.userFirstName,
+        lastName: editingTeamMember.userLastName,
+        userEmail: editingTeamMember.userEmail,
+        userRole: editingTeamMember.userRole,
+      });
+    }
+  }, [editingTeamMember]);
+
+  useEffect(() => {
+    const newFilteredTeamMembers = currentTeamMembers?.teamMembers?.filter(
       (member: any) =>
         member?.userFirstName
           ?.toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
-        member?.userLastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        member?.userLastName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
         member?.userEmail?.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    setFilteredTeamMembers(newFilterTeamMembers)
-  }, [currentTeamMembers]);
-  // Filter team members based on search query
-
+    setFilteredTeamMembers(newFilteredTeamMembers);
+  }, [currentTeamMembers, searchQuery]);
 
   return (
     <div className="mt-[60px] ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px]">
@@ -158,6 +184,7 @@ export default function Team() {
                           type="text"
                           value={formData.firstName}
                           name="firstName"
+                          required
                           onChange={handleInputChange}
                           className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
                         />
@@ -173,6 +200,7 @@ export default function Team() {
                           type="text"
                           value={formData.lastName}
                           name="lastName"
+                          required
                           onChange={handleInputChange}
                           className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
                         />
@@ -189,6 +217,7 @@ export default function Team() {
                           type="email"
                           value={formData.userEmail}
                           name="userEmail"
+                          required
                           onChange={handleInputChange}
                           className="w-full h-full rounded-xl bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end pl-3 outline-none text-[15px] text-[#1f1f1f]"
                         />
@@ -278,7 +307,10 @@ export default function Team() {
                   </td>
                   <td className="text-base w-1/3 px-2 py-4 cursor-pointer flex gap-x-4 lg:gap-x-5 xl:gap-x-6">
                     <Dialog>
-                      <DialogTrigger className="text-sm font-bold text-[#E74C3C]">
+                      <DialogTrigger
+                        className="text-sm font-bold text-[#E74C3C]"
+                        onClick={() => selectTeamMemberForEditing(member.id)}
+                      >
                         Edit
                       </DialogTrigger>
                       <DialogContent className="w-full max-w-full lg:max-w-[1000px] xl:max-w-[1120px] px-1 lg:px-10">
@@ -291,7 +323,7 @@ export default function Team() {
 
                             <form
                               action=""
-                              onSubmit={handleCreateTeamMember}
+                              onSubmit={handleUpdateTeamMember}
                               className="my-10"
                             >
                               <div className="flex flex-col lg:flex-row gap-4 mt-10 ">
@@ -383,7 +415,7 @@ export default function Team() {
 
                     <Dialog>
                       <DialogTrigger className="text-sm font-bold text-[#E74C3C]">
-                        Remove
+                        Delete
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>

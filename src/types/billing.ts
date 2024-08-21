@@ -16,7 +16,7 @@ export type TEventTransaction = {
   referralSource: string;
   discountCode: string;
   discountValue: number;
-  affliateEmail: string;
+  affiliateEmail: string;
   affliateCode: string;
   amountPaid: number;
   registrationCompleted: boolean;
