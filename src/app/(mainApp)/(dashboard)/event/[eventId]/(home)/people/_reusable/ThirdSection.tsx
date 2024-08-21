@@ -373,7 +373,7 @@ export default function ThirdSection({
             {sponsors.map((sponsor) => (
               <PartnerCard
                 key={sponsor.id}
-                eventId={event.id}
+                event={event}
                 sponsor={sponsor}
               />
             ))}

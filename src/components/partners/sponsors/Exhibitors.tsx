@@ -1,5 +1,5 @@
 import { PartnerCard } from "./_components";
-import { TExPartner } from "@/types";
+import { TExPartner, Event } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import Image from "next/image";
 import { Button } from "@/components";
@@ -8,11 +8,11 @@ import { PlusCircle } from "styled-icons/bootstrap";
 export function Exhibitors({
   exhibitors,
   loading,
-  eventId,
+  event,
 }: {
   exhibitors: TExPartner[];
   loading: boolean;
-  eventId: string;
+  event: Event;
 }) {
   return (
     <div className="w-full h-full grid md:grid-cols-2 xl:grid-cols-3 mt-6 items-center gap-6 px-4">
@@ -48,7 +48,7 @@ export function Exhibitors({
       {!loading &&
         exhibitors.length > 0 &&
         exhibitors.map((sponsor) => (
-          <PartnerCard key={sponsor.id} eventId={eventId} sponsor={sponsor} />
+          <PartnerCard key={sponsor.id} event={event} sponsor={sponsor} />
         ))}
     </div>
   );

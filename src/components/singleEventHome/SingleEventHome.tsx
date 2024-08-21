@@ -105,7 +105,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
             aboutClassName={" lg:grid-cols-1"}
           />
         </div>
-        <div className="hidden md:block md:col-span-3 w-full px-3 py-4 md:overflow-y-auto">
+        <div className="hidden md:block md:col-span-3 w-full px-4 py-4 md:overflow-y-auto">
           <h2 className="font-semibold text-base sm:text-xl mb-2">Offers</h2>
 
           <Offers

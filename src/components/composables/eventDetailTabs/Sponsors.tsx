@@ -75,7 +75,7 @@ export function Sponsors({
             data?.map((sponsor) => (
               <PartnerCard
                 key={sponsor.id}
-                eventId={event?.eventAlias}
+                event={event}
                 sponsor={sponsor}
               />
             ))}

@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { partnerTierSchema } from "@/schemas";
 import { useUpdateEvent, useFetchSingleEvent } from "@/hooks";
 import {useEffect} from "react"
+import { nanoid } from "nanoid";
 
 const colors = [
   "#4D4D4D",
@@ -463,6 +464,7 @@ export default function CreatePartnerTiers({ eventId }: { eventId: string }) {
       currency: "",
       color: "#001ffc",
       tierName: "",
+      id: nanoid()
     });
   }
 
@@ -496,6 +498,7 @@ export default function CreatePartnerTiers({ eventId }: { eventId: string }) {
             currency: "",
             color: "#001ffc",
             tierName: "",
+            id: nanoid()
           },
         ],
       );
