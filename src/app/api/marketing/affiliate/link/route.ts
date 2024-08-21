@@ -150,11 +150,16 @@ export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
       const userId = searchParams.get("userId");
+      const eventId = searchParams.get("eventId");
 
-      const { data, error, status } = await supabase
+      const query = supabase
         .from("affiliateLinks")
-        .select("*, affiliate!inner(*), eventTransactions!inner(*)")
-        .eq("userId", userId);
+        .select("*, affiliate!inner(*), eventTransactions!inner(*)");
+
+      if (eventId) query.eq("eventId", eventId);
+      if (userId) query.eq("userId", userId);
+
+      const { data, error, status } = await query;
 
       if (error) throw error;
 
