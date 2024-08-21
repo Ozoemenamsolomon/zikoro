@@ -10,7 +10,7 @@ export default function Section1() {
   return (
     <div className="mt-40 lg:mt-48 px-5 block">
       <div className="max-w-5xl mx-auto">
-        <p className=" text-3xl lg:text-5xl font-bold gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-center">
+        <p className=" text-3xl lg:text-5xl font-bold gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-center leading-none">
           All-in-one event management platform for all kinds of events
         </p>
         <p className="max-w-full lg:max-w-3xl mx-auto text-center  text-base lg:text-2xl font-normal mt-5 lg:mt-10">

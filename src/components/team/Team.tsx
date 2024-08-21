@@ -43,7 +43,7 @@ export default function Team() {
   } = useTeamMembers(organization?.id ?? 0);
   const [filteredTeamMembers, setFilteredTeamMembers] = useState([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const roles = ["owner", "editor", "collaborator"];
+  const roles = ["select a role","owner", "editor", "collaborator"];
 
   // handles input change for search
   const handleSearchChange = (e: any) => {

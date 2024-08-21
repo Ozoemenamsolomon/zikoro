@@ -5,7 +5,7 @@ export default function ContactHeader() {
   return (
     <div className=" mt-40 lg:mt-48 px-5">
       <div className="max-w-4xl mx-auto">
-        <p className=" text-3xl lg:text-5xl  font-bold gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  text-center">
+        <p className=" text-3xl lg:text-5xl  font-bold gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end  text-center leading-none">
           {" "}
           Connect with us, let's create <br className="hidden lg:block" />{" "}
           memorable and impactful events <br className="hidden lg:block" />{" "}
