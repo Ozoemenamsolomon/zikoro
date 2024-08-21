@@ -58,6 +58,7 @@ export default function PaymentPage() {
 
   async function handleSuccess(reference: any) {
     const isCreating = decodeURIComponent(isCreate!);
+    const redirect = decodeURIComponent(redirectUrl!);
     await createOrgSubscription().then(async () => {
       toast.success("Payment Successfull");
 
@@ -71,13 +72,14 @@ export default function PaymentPage() {
           subscriptionPlan,
         });
       }
-      const redirect = "/workspace/general";
+     
       router.push(redirect);
     });
   }
 
   async function submit() {
     const isCreating = decodeURIComponent(isCreate!);
+    const redirect = decodeURIComponent(redirectUrl!);
     await createOrgSubscription().then(async () => {
       if (isCreating === "true") {
         const organizationName = decodeURIComponent(orgName!);
@@ -89,7 +91,7 @@ export default function PaymentPage() {
           subscriptionPlan,
         });
       }
-      const redirect = "/workspace/general";
+      
       router.push(redirect);
     });
   }

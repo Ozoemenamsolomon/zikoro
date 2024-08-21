@@ -123,6 +123,7 @@ export const partnerDetails = z.array(
     currency: z.string().min(1, { message: "Currency is required" }),
     color: z.string(),
     description: z.any(),
+    id: z.string()
   })
 );
 

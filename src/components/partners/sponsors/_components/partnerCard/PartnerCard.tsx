@@ -2,16 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { TPartner } from "@/types";
+import { TPartner, Event } from "@/types";
 import { useMemo } from "react";
 import { Location } from "styled-icons/fluentui-system-regular";
 import useUserStore from "@/store/globalUserStore";
 
 export function PartnerCard({
   sponsor,
-  eventId,
+  event,
 }: {
-  eventId: string;
+  event: Event;
   sponsor: TPartner;
 }) {
   const image = useMemo(() => {
@@ -25,16 +25,17 @@ export function PartnerCard({
 
   const { user } = useUserStore();
 
+  const tierColor = useMemo(() => {
+    return event?.partnerDetails?.find(
+      (v) => v?.tierName === sponsor?.tierName
+    );
+  }, [event, sponsor]);
+
   return (
     <Link
-      href={`/event/${eventId}/partner/${sponsor.partnerAlias}`}
+      href={`/event/${event?.eventAlias}/partner/${sponsor.partnerAlias}`}
       className=" border  h-full border-gray-100 relative rounded-lg overflow-hidden bg-white flex flex-col gap-y-2 items-start justify-start"
     >
-      {sponsor.stampIt && (
-        <button className="absolute right-[-2px] top-0 flex items-center justify-center w-fit bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-b-md">
-          StampCard
-        </button>
-      )}
       <div className="flex items-center  justify-between w-full p-4">
         {image ? (
           <Image
@@ -48,11 +49,15 @@ export function PartnerCard({
           <div className="w-[100px] h-[60px] animate-pulse bg-gray-200"></div>
         )}
 
-        <p 
-    //    style={{background: sponsor}}
-        className="bg-basePrimary text-white px-4 py-1 text-sm rounded-3xl">
-        {sponsor?.tierName}
-        </p>
+        {sponsor?.tierName &&
+          sponsor.partnerType.toLowerCase().includes("exhibitor") && (
+            <p
+              style={{ background: tierColor?.color || "#001fcc" }}
+              className="bg-basePrimary text-white px-4 py-1 text-sm rounded-3xl"
+            >
+              {sponsor?.tierName}
+            </p>
+          )}
       </div>
       <div className="w-full px-4 py-8  items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
         <div className="font-semibold flex capitalize flex-wrap text-black text-xl">
@@ -92,7 +97,7 @@ export function PartnerCard({
           )}
         </div>
 
-        <div className="flex items-center gap-x-6">
+        <div className="flex items-center gap-x-4">
           {sponsor?.jobs && (
             <button className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
               Hiring
@@ -103,16 +108,22 @@ export function PartnerCard({
               Promo
             </button>
           )}
+          {sponsor.stampIt && (
+            <button className=" flex items-center justify-center w-fit bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
+              StampCard
+            </button>
+          )}
         </div>
       </div>
-      {Array.isArray(sponsor.boothStaff) && sponsor.boothStaff.find(({ email }) => user?.userEmail === email) && (
-        <Link
-          className="text-sky-500 text-sm p-2 font-medium hover:underline"
-          href={`/event/${eventId}/partner/${sponsor.partnerAlias}/leads`}
-        >
-          show Leads
-        </Link>
-      )}
+      {Array.isArray(sponsor.boothStaff) &&
+        sponsor.boothStaff.find(({ email }) => user?.userEmail === email) && (
+          <Link
+            className="text-sky-500 text-sm p-2 font-medium hover:underline"
+            href={`/event/${event?.eventAlias}/partner/${sponsor.partnerAlias}/leads`}
+          >
+            show Leads
+          </Link>
+        )}
     </Link>
   );
 }

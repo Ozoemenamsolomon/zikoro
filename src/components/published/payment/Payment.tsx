@@ -11,7 +11,8 @@ import {
   useUpdateTransactionDetail,
 } from "@/hooks";
 import { CheckCircleFill } from "styled-icons/bootstrap";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import { ArrowBack } from "styled-icons/material-outlined";
 
 type QueryData = {
   eventImage: string;
@@ -38,6 +39,7 @@ export function Payment({
   const [isSuccessModal, setSuccessModal] = useState(false);
   const { data } = useGetEventTransactionDetail(eventRegistrationRef);
   const query = useSearchParams();
+  const router = useRouter()
 
   const eventData: any = query.get("eventData");
   const parsedData: QueryData = JSON.parse(eventData);
@@ -155,8 +157,14 @@ export function Payment({
 
   return (
     <>
-      <div className="w-full h-full z-[200] bg-[#FAFAFA] fixed inset-0">
+      <div className="w-full h-full z-[200] bg-[#F9FAFF] fixed inset-0">
         <div className="w-[95%] m-auto box-animation sm:w-[439px] rounded-sm shadow inset-0 h-fit absolute gap-y-4 bg-white flex flex-col py-6 px-3 sm:px-4 items-start justify-start">
+         
+        <div className="absolute left-1 z-20 -top-8 ">
+          <Button onClick={() => router.back()} className="px-0 w-fit h-fit ">
+            <ArrowBack className="" size={20} />
+          </Button>
+        </div>
           <h3 className="text-base sm:text-xl font-medium mb-6">
             Order Summary
           </h3>
@@ -249,7 +257,7 @@ function PaymentSuccess({
   return (
     <div
       role="button"
-      onClick={() => toggleSuccessModal(false)}
+    //  onClick={() => toggleSuccessModal(false)}
       className="w-full h-full inset-0 fixed z-[300]"
     >
       <div
