@@ -152,7 +152,7 @@ export function Payment({
 
   return (
     <>
-      <div className="w-full h-full z-[200] bg-[#FAFAFA] fixed inset-0">
+      <div className="w-full h-full z-[200] bg-[#F9FAFF] fixed inset-0">
         <div className="w-[95%] m-auto box-animation sm:w-[439px] rounded-sm shadow inset-0 h-fit absolute gap-y-4 bg-white flex flex-col py-6 px-3 sm:px-4 items-start justify-start">
           <h3 className="text-base sm:text-xl font-medium mb-6">
             Order Summary

@@ -437,23 +437,24 @@ export function BookEvent({
       <div
         role="button"
         onClick={close}
-        className="w-full h-full inset-0 bg-black/50 z-[80] fixed"
+        className="w-full h-full inset-0 bg-[#F9FAFF] z-[80] fixed"
       >
+         <div className="absolute left-3 z-20 top-4 ">
+            <Button
+              onClick={close}
+              className="px-0 w-fit h-fit "
+            >
+             <ArrowBack className="" size={20} />
+            </Button>
+          </div>
         <div
           role="button"
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="w-[95%] sm:w-[65%] lg:w-[90%] m-auto  shadow-lg overflow-hidden xl:w-[80%] overflow-y-auto lg:overflow-hidden bg-white grid absolute inset-0  grid-cols-1 gap-2 lg:grid-cols-7 items-start h-[85%]  lg:h-[40rem] rounded-xl sm:rounded-2xl "
+          className="w-[95%] sm:w-[65%] lg:w-[90%] m-auto   overflow-hidden xl:w-[80%] overflow-y-auto lg:overflow-hidden  grid absolute inset-0  grid-cols-1 gap-2 lg:grid-cols-7 items-start h-[85%]  lg:h-[40rem] r "
         >
-          <div className="absolute right-3 z-20 top-3 ">
-            <Button
-              onClick={close}
-              className="h-10 w-10 px-1 rounded-full bg-gray-50/80 "
-            >
-              <CloseOutline size={28} />
-            </Button>
-          </div>
+         
           <div className="w-full lg:h-[40rem]  no-scrollbar lg:overflow-y-auto  flex flex-col gap-y-3 lg:col-span-3 p-4 sm:p-6 h-full px-3 bg-gray-100">
             <h2 className="text-lg sm:text-xl font-semibold">
               {`${eventTitle}`}
@@ -533,7 +534,7 @@ export function BookEvent({
           </div>
           {/*** */}
           {active === 1 && (
-            <div className="w-full lg:col-span-4 flex flex-col gap-y-4 p-4 sm:p-6">
+            <div className="w-full rounded-lg bg-white lg:col-span-4 flex flex-col gap-y-4 p-4 sm:p-6">
               <div className=" flex w-full items-end justify-between py-3 border-b">
                 <div className="flex flex-col items-start justify-start">
                   <p className="text-base sm:text-xl font-semibold">
@@ -734,7 +735,7 @@ export function BookEvent({
           )}
           {/** */}
           {active === 2 && (
-            <div className="w-full lg:col-span-4 flex-col gap-y-4 p-4 sm:p-6">
+            <div className="w-full rounded-lg lg:col-span-4 bg-white flex-col gap-y-4 p-4 sm:p-6">
               <div className="w-full flex items-center justify-between py-3 border-b">
                 <Button
                   onClick={() => setActive(1)}
