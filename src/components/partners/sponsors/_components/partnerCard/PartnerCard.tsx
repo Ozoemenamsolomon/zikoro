@@ -30,11 +30,7 @@ export function PartnerCard({
       href={`/event/${eventId}/partner/${sponsor.partnerAlias}`}
       className=" border  h-full border-gray-100 relative rounded-lg overflow-hidden bg-white flex flex-col gap-y-2 items-start justify-start"
     >
-      {sponsor.stampIt && (
-        <button className="absolute right-[-2px] top-0 flex items-center justify-center w-fit bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-b-md">
-          StampCard
-        </button>
-      )}
+    
       <div className="flex items-center  justify-between w-full p-4">
         {image ? (
           <Image
@@ -48,11 +44,11 @@ export function PartnerCard({
           <div className="w-[100px] h-[60px] animate-pulse bg-gray-200"></div>
         )}
 
-        <p 
-    //    style={{background: sponsor}}
+      {sponsor?.tierName &&  <p 
+        style={{background: "#001fcc"}}
         className="bg-basePrimary text-white px-4 py-1 text-sm rounded-3xl">
         {sponsor?.tierName}
-        </p>
+        </p>}
       </div>
       <div className="w-full px-4 py-8  items-start col-span-2 text-[#717171] justify-start flex flex-col gap-y-4">
         <div className="font-semibold flex capitalize flex-wrap text-black text-xl">
@@ -92,7 +88,7 @@ export function PartnerCard({
           )}
         </div>
 
-        <div className="flex items-center gap-x-6">
+        <div className="flex items-center gap-x-4">
           {sponsor?.jobs && (
             <button className="bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
               Hiring
@@ -103,6 +99,11 @@ export function PartnerCard({
               Promo
             </button>
           )}
+              {sponsor.stampIt && (
+        <button className=" flex items-center justify-center w-fit bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-md">
+          StampCard
+        </button>
+      )}
         </div>
       </div>
       {Array.isArray(sponsor.boothStaff) && sponsor.boothStaff.find(({ email }) => user?.userEmail === email) && (
