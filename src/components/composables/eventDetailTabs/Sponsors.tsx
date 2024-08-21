@@ -32,6 +32,12 @@ export function Sponsors({
       })
     );
   }, [event]);
+
+  const approvedPartners = useMemo(() => {
+    return (
+      data?.filter(({ partnerStatus }) => partnerStatus === "verified") || []
+    );
+  }, [data]);
   return (
     <div className="w-full">
       {Array.isArray(event?.partnerDetails) &&
@@ -71,13 +77,9 @@ export function Sponsors({
             <EmptyCard text="No available partner for this event" />
           )}
           {!loading &&
-            Array.isArray(data) &&
-            data?.map((sponsor) => (
-              <PartnerCard
-                key={sponsor.id}
-                eventId={event?.eventAlias}
-                sponsor={sponsor}
-              />
+            Array.isArray(approvedPartners) &&
+            approvedPartners?.map((sponsor) => (
+              <PartnerCard key={sponsor.id} event={event} sponsor={sponsor} />
             ))}
         </div>
       </div>

@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
         organization,
         eventImage,
         trackingId,
+        affiliateCode,
         role,
         eventEndDate,
         ...restItem
@@ -50,12 +51,21 @@ export async function POST(req: NextRequest) {
         options
       ).format(date);
 
-      const { error: firstError, status: firstStatus } = await supabase
+      console.log(affiliateCode);
+      const {
+        error: firstError,
+        status: firstStatus,
+        data,
+      } = await supabase
         .from("eventTransactions")
-        .update(restItem)
-        .eq("eventRegistrationRef", params.eventRegistrationRef);
+        .update({ ...restItem, affiliateCode: affiliateCode })
+        .eq("eventRegistrationRef", params.eventRegistrationRef)
+        .select();
+
+      console.log(data);
 
       if (firstError) {
+        console.log(firstError);
         return NextResponse.json(
           {
             error: firstError.message,
@@ -111,14 +121,12 @@ export async function POST(req: NextRequest) {
 
       //create new user
       for (const attendee of attendeesDetails) {
-        console.log("check hallo")
+        console.log("check hallo");
         const { data: existingUser, error: errorFetchingUser } = await supabase
           .from("users")
           .select("*")
           .eq("userEmail", attendee?.email)
           .single();
-
-
 
         if (errorFetchingUser) {
           console.log(`error fetching user ${attendee?.email}`);
@@ -132,11 +140,13 @@ export async function POST(req: NextRequest) {
               lastName: attendee?.lastName,
               userEmail: attendee?.email,
               phoneNumber: attendee?.phoneNumber,
-              created_at: new Date().toISOString()
+              created_at: new Date().toISOString(),
+              affiliateCode,
+              inviteSource: "affiliate",
             });
 
-            console.log("creating status:",statusCreatingUser )
-            console.log("error", errorCreatingUser?.message);
+          console.log("creating status:", statusCreatingUser);
+          console.log("error", errorCreatingUser?.message);
         }
       }
 

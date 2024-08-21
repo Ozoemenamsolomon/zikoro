@@ -218,7 +218,7 @@ const page = () => {
             <span>Referral Code</span>
             <div className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm relative">
               <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-                Share link
+                Share Code
               </span>
               <div className="flex gap-2 justify-between items-center overflow-hidden">
                 <span className="truncate text-xs md:text-base">

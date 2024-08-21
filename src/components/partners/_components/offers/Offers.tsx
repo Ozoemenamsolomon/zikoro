@@ -33,7 +33,7 @@ export function Offers({
   return (
     <div
       className={cn(
-        "w-full grid px-3 grid-cols-1 mt-4 items-center gap-3",
+        "w-full grid  grid-cols-1 mt-4 items-center gap-3",
         className
       )}
     >

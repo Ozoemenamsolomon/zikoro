@@ -798,7 +798,11 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                         alt="image"
                       />
                       <button
-                        onClick={() => form.setValue("eventPoster", null)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          form.setValue("eventPoster", null)
+                        }}
                         className="absolute top-2 right-2 bg-black rounded-full text-white w-6 h-6 flex items-center justify-center"
                       >
                         <CloseCircle size={16} />

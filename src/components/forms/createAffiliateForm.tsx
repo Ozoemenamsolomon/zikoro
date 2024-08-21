@@ -18,6 +18,7 @@ import { getCookie } from "@/hooks";
 import { generateAlphanumericHash } from "@/utils/helpers";
 import useUserStore from "@/store/globalUserStore";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import { Textarea } from "../ui/textarea";
 
 export default function CreateAffiliateForm({
   affiliate,
@@ -42,6 +43,8 @@ export default function CreateAffiliateForm({
       bankCode: "",
     },
     affliateStatus: true,
+    note: "",
+    phoneNumber: "",
   };
 
   const { createAffiliate, isLoading } = useCreateAffiliate();
@@ -66,7 +69,7 @@ export default function CreateAffiliateForm({
 
     if (affiliate) {
       const affliateCode = generateAlphanumericHash(7);
-      payload.affliateCode = affliateCode;
+      payload.affliateCode = affiliateCode;
     }
 
     await createAffiliate({
@@ -134,7 +137,7 @@ export default function CreateAffiliateForm({
               control={form.control}
               name="phoneNumber"
               render={({ field }) => (
-                <InputOffsetLabel isRequired label={"Phone Number"}>
+                <InputOffsetLabel label={"Phone Number"}>
                   <Input
                     placeholder={"Enter phone number"}
                     {...field}
@@ -151,7 +154,7 @@ export default function CreateAffiliateForm({
               control={form.control}
               name="accountDetails.bankCountry"
               render={({ field }) => (
-                <InputOffsetLabel isRequired label="Bank Country">
+                <InputOffsetLabel label="Bank Country">
                   <Input
                     placeholder="Enter bank country"
                     {...field}
@@ -166,7 +169,7 @@ export default function CreateAffiliateForm({
               control={form.control}
               name="accountDetails.currency"
               render={({ field }) => (
-                <InputOffsetLabel isRequired label={"Currency"}>
+                <InputOffsetLabel label={"Currency"}>
                   <Input
                     placeholder={"Enter currency"}
                     {...field}
@@ -183,7 +186,7 @@ export default function CreateAffiliateForm({
               control={form.control}
               name="accountDetails.accountNumber"
               render={({ field }) => (
-                <InputOffsetLabel isRequired label="Account Number">
+                <InputOffsetLabel label="Account Number">
                   <Input
                     placeholder="Enter account number"
                     {...field}
@@ -198,7 +201,7 @@ export default function CreateAffiliateForm({
               control={form.control}
               name="accountDetails.accountName"
               render={({ field }) => (
-                <InputOffsetLabel isRequired label={"Account Name"}>
+                <InputOffsetLabel label={"Account Name"}>
                   <Input
                     placeholder={"Enter account name"}
                     {...field}
@@ -213,9 +216,22 @@ export default function CreateAffiliateForm({
           control={form.control}
           name="accountDetails.bankName"
           render={({ field }) => (
-            <InputOffsetLabel isRequired label="Bank Name">
+            <InputOffsetLabel label="Bank Name">
               <Input
                 placeholder="Enter bank name"
+                {...field}
+                className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 mt-0"
+              />
+            </InputOffsetLabel>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="note"
+          render={({ field }) => (
+            <InputOffsetLabel label="Note">
+              <Textarea
+                placeholder="Enter note"
                 {...field}
                 className="placeholder:text-sm placeholder:text-gray-200 text-gray-700 mt-0"
               />
