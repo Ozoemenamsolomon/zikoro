@@ -464,9 +464,9 @@ const Registrations = () => {
         </section>
       </section>
       <section className="grid md:grid-cols-2 gap-8">
-        <section className="bg-white py-4 px-4 md:px-8 space-y-4 border rounded-md h-full max-h-[250px] overflow-hidden">
+        <section className="bg-white py-4 px-4 md:px-8 space-y-4 border rounded-md h-full overflow-hidden">
           <h2 className="text-gray-600 font-medium text-sm">Referral Link Performance</h2>
-          <div className="flex flex-col gap-2 max-h-full overflow-auto no-scrollbar">
+          <div className="flex flex-col gap-2 no-scrollbar">
             {affiliateLinks &&
               affiliateLinks
                 .filter(({ eventTransactions }) => eventTransactions)
