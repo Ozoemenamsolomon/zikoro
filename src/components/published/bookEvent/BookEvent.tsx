@@ -11,7 +11,15 @@ import { isDateGreaterThanToday } from "@/utils";
 import { PlusCircleFill } from "styled-icons/bootstrap";
 import { CircleMinus } from "styled-icons/fa-solid";
 import { useFieldArray } from "react-hook-form";
-import { Form, FormField, Input } from "@/components";
+import {
+  Form,
+  FormField,
+  Input,
+  FormMessage,
+  FormControl,
+  FormItem,
+  FormLabel,
+} from "@/components";
 import { eventBookingValidationSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
@@ -439,17 +447,14 @@ export function BookEvent({
     <>
       <div
         role="button"
-        onClick={close}
+       // onClick={close}
         className="w-full h-full inset-0 bg-[#F9FAFF] z-[80] fixed"
       >
-         <div className="absolute left-3 z-20 top-4 ">
-            <Button
-              onClick={close}
-              className="px-0 w-fit h-fit "
-            >
-             <ArrowBack className="" size={20} />
-            </Button>
-          </div>
+        <div className="absolute left-3 z-20 top-4 ">
+          <Button onClick={close} className="px-0 w-fit h-fit ">
+            <ArrowBack className="" size={20} />
+          </Button>
+        </div>
         <div
           role="button"
           onClick={(e) => {
@@ -457,8 +462,7 @@ export function BookEvent({
           }}
           className="w-[95%] sm:w-[65%] lg:w-[90%] m-auto   overflow-hidden xl:w-[80%] overflow-y-auto lg:overflow-hidden  grid absolute inset-0  grid-cols-1 gap-2 lg:grid-cols-7 items-start h-[85%]  lg:h-[40rem] r "
         >
-         
-          <div className="w-full lg:h-[40rem]  no-scrollbar lg:overflow-y-auto  flex flex-col gap-y-3 lg:col-span-3 p-4 sm:p-6 h-full px-3 bg-gray-100">
+          <div className="w-full lg:h-[40rem]  no-scrollbar lg:overflow-y-auto  flex flex-col gap-y-3 lg:col-span-3 px-4 sm:px-6 h-full py-6 sm:py-10">
             <h2 className="text-lg sm:text-xl font-semibold">
               {`${eventTitle}`}
             </h2>
@@ -812,13 +816,17 @@ export function BookEvent({
                                   `attendeeApplication.${index}.firstName` as const
                                 }
                                 render={({ field }) => (
-                                  <InputOffsetLabel label={"First Name"}>
-                                    <Input
-                                      placeholder="emeka"
-                                      {...field}
-                                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                                    />
-                                  </InputOffsetLabel>
+                                  <FormItem className="w-full">
+                                    <FormLabel>First Name</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="emeka"
+                                        {...field}
+                                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
                                 )}
                               />
                               <FormField
@@ -827,13 +835,17 @@ export function BookEvent({
                                   `attendeeApplication.${index}.lastName` as const
                                 }
                                 render={({ field }) => (
-                                  <InputOffsetLabel label={"Last Name"}>
-                                    <Input
-                                      placeholder="john"
-                                      {...field}
-                                      className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                                    />
-                                  </InputOffsetLabel>
+                                  <FormItem className="w-full">
+                                    <FormLabel>Last Name</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="john"
+                                        {...field}
+                                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
                                 )}
                               />
                               <FormField
@@ -842,14 +854,18 @@ export function BookEvent({
                                   `attendeeApplication.${index}.phoneNumber` as const
                                 }
                                 render={({ field }) => (
-                                  <InputOffsetLabel label={"Phone Number"}>
-                                    <Input
-                                      placeholder="+22323342"
-                                      type="tel"
-                                      {...field}
-                                      className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                                    />
-                                  </InputOffsetLabel>
+                                  <FormItem className="w-full">
+                                    <FormLabel>Phone Number</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="+22323342"
+                                        type="tel"
+                                        {...field}
+                                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
                                 )}
                               />
                               <FormField
@@ -858,14 +874,18 @@ export function BookEvent({
                                   `attendeeApplication.${index}.email` as const
                                 }
                                 render={({ field }) => (
-                                  <InputOffsetLabel label={"Email"}>
-                                    <Input
-                                      placeholder="emeka@gmail.com"
-                                      type="email"
-                                      {...field}
-                                      className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                                    />
-                                  </InputOffsetLabel>
+                                  <FormItem className="w-full">
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                      <Input
+                                        placeholder="emeka@gmail.com"
+                                        type="email"
+                                        {...field}
+                                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
                                 )}
                               />
                             </div>
