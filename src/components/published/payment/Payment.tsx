@@ -17,6 +17,7 @@ import { ArrowBack } from "styled-icons/material-outlined";
 import { TbLoader3 } from "react-icons/tb";
 import { CiCalendar, CiLocationOn, CiShare2 } from "react-icons/ci";
 import Link from "next/link";
+import { ShareModal } from "@/components/partners/PartnerPayment";
 
 type QueryData = {
   eventImage: string;
@@ -231,7 +232,7 @@ export function Payment({
           toggleSuccessModal={toggleSuccessModal}
           reference={data?.eventRegistrationRef}
           eventTitle={data?.event}
-          userEmail={""}
+          eventId={data?.eventAlias}
         />
       )}
     </>
@@ -241,22 +242,27 @@ export function Payment({
 function PaymentSuccess({
   reference,
   eventTitle,
-  userEmail,
   toggleSuccessModal,
   count,
   location,
   startDate,
   endDate,
+  eventId,
 }: {
   reference: string;
   eventTitle?: string;
   toggleSuccessModal: (bool: boolean) => void;
-  userEmail?: string;
   location?: string;
   startDate?: string;
   endDate?: string;
   count: number;
+  eventId: string;
 }) {
+  const [isShare, setShowIsShare] = useState(false);
+
+  function onToggleShare() {
+    setShowIsShare((p) => !p);
+  }
   return (
     <div
       role="button"
@@ -305,7 +311,7 @@ function PaymentSuccess({
             Check your mail to get further directions from event organizer
           </p>
           <button
-            // onClick={onClose}
+            onClick={onToggleShare}
             className="w-fit border-b max-w-md text-gray-500 flex border-gray-500"
           >
             <p className=" text-xs text-start sm:text-mobile">
@@ -324,16 +330,13 @@ function PaymentSuccess({
           </p>
         </div>
       </div>
+      {isShare && (
+        <ShareModal
+          eventId={eventId}
+          close={onToggleShare}
+          text={`https://zikoro.com/live-events/${eventId}`}
+        />
+      )}
     </div>
   );
 }
-
-/**
-         <Button
-          onClick={submit}
-          className="w-full gap-x-2 bg-basePrimary text-gray-50 font-medium"
-        >
-          <Lock size={22} />
-          <span>{`Pay ₦${total?.toLocaleString()}`}</span>
-        </Button>
-         */
