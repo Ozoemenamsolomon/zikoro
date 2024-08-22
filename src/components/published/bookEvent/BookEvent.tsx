@@ -106,7 +106,7 @@ export function BookEvent({
     resolver: zodResolver(eventBookingValidationSchema),
     defaultValues: {},
   });
-  const { registerAttendees, isRegistered } = useBookingEvent();
+  const { registerAttendees, isRegistered, loading: isSubmitting } = useBookingEvent();
   const {
     verifyDiscountCode,
     loading,
@@ -803,7 +803,7 @@ export function BookEvent({
                       {fields.map((attendee, index) => (
                         <div
                           key={attendee.id}
-                          className="w-full flex flex-col gap-y-3"
+                          className="w-full flex mb-3 flex-col gap-y-3"
                         >
                           <div className="w-full flex flex-col gap-y-2 items-start justify-start">
                             <h2>{`Attendee ${index + 1}: ${
@@ -939,9 +939,10 @@ export function BookEvent({
                     )}
                     <Button
                       type="submit"
-                      className="h-12 w-[130px] px-8 gap-x-2 bg-basePrimary hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium"
+                      disabled={isSubmitting}
+                      className="h-12 w-full mt-3  gap-x-2 bg-basePrimary hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium"
                     >
-                      {form.formState.isSubmitting && (
+                      {isSubmitting && (
                         <LoaderAlt
                           className="animate-spin text-white"
                           size={22}

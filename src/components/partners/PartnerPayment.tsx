@@ -165,15 +165,23 @@ function PaymentSuccessModal({
     setIsShare((prev) => !prev);
   }
   return (
-    <div className="w-full bg-[#F9FAFF]  h-full inset-0 z-[200]">
-      <div className="w-[95%] px-4 py-6 grid grid-cols-1 items-center justify-center gap-y-10 bg-white max-w-lg absolute m-auto h-fit inset-0">
+    <div className="w-full bg-[#F9FAFF] fixed  h-full inset-0 z-[200]">
+      <div className="w-[95%] px-4 pt-6 grid grid-cols-1 items-center justify-center gap-y-10 bg-white max-w-lg absolute m-auto h-fit inset-0">
         <div className="w-full flex items-center gap-y-5 flex-col">
           <div className="w-20 h-20 flex items-center justify-center bg-green-200 rounded-full">
             <BsPatchCheck className="text-green-500" size={50} />
           </div>
-          <h2 className="text-green-500 font-medium text-lg sm:text-2xl">
-            Payment Successful
-          </h2>
+          <div className="flex flex-col items-center justify-center gap-y-1">
+            <h2 className="text-green-500 font-medium text-lg sm:text-2xl">
+              Payment Successful
+            </h2>
+            <p className="text-xs sm:text-mobile">
+              Reference:{" "}
+              <span className="text-basePrimary">
+                {partnerData?.paymentReference ?? ""}
+              </span>
+            </p>
+          </div>
           <p className="text-center max-w-sm">
             You have successfully made payment to be a{" "}
             <span className="font-medium">partner</span> for this event.
