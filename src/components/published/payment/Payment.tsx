@@ -6,6 +6,7 @@ import { PaystackButton } from "react-paystack";
 import { useState } from "react";
 // import { OrganizerContact, TPayment } from "@/types";
 import { paymentConfig } from "@/hooks/common/usePayStackPayment";
+import { BsPatchCheck } from "react-icons/bs";
 import {
   useGetEventTransactionDetail,
   useUpdateTransactionDetail,
@@ -13,6 +14,10 @@ import {
 import { CheckCircleFill } from "styled-icons/bootstrap";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowBack } from "styled-icons/material-outlined";
+import { TbLoader3 } from "react-icons/tb";
+import { CiCalendar, CiLocationOn, CiShare2 } from "react-icons/ci";
+import Link from "next/link";
+import { ShareModal } from "@/components/partners/PartnerPayment";
 
 type QueryData = {
   eventImage: string;
@@ -25,9 +30,9 @@ type QueryData = {
   amountPayable: string;
   total: string;
   processingFee: string;
-  trackingId?: string | null
-  affiliateCode?: string | null
-  role?: string | null
+  trackingId?: string | null;
+  affiliateCode?: string | null;
+  role?: string | null;
   eventEndDate: string;
 };
 export function Payment({
@@ -39,7 +44,7 @@ export function Payment({
   const [isSuccessModal, setSuccessModal] = useState(false);
   const { data } = useGetEventTransactionDetail(eventRegistrationRef);
   const query = useSearchParams();
-  const router = useRouter()
+  const router = useRouter();
 
   const eventData: any = query.get("eventData");
   const parsedData: QueryData = JSON.parse(eventData);
@@ -159,12 +164,11 @@ export function Payment({
     <>
       <div className="w-full h-full z-[200] bg-[#F9FAFF] fixed inset-0">
         <div className="w-[95%] m-auto box-animation sm:w-[439px] rounded-sm shadow inset-0 h-fit absolute gap-y-4 bg-white flex flex-col py-6 px-3 sm:px-4 items-start justify-start">
-         
-        <div className="absolute left-1 z-20 -top-8 ">
-          <Button onClick={() => router.back()} className="px-0 w-fit h-fit ">
-            <ArrowBack className="" size={20} />
-          </Button>
-        </div>
+          <div className="absolute left-1 z-20 -top-8 ">
+            <Button onClick={() => router.back()} className="px-0 w-fit h-fit ">
+              <ArrowBack className="" size={20} />
+            </Button>
+          </div>
           <h3 className="text-base sm:text-xl font-medium mb-6">
             Order Summary
           </h3>
@@ -211,9 +215,9 @@ export function Payment({
         </div>
       </div>
       {loading && (
-        <div className="w-full h-full inset-0 fixed bg-white/50 z-[300]">
+        <div className="w-full h-full inset-0 fixed z-[300]">
           <div className="absolute inset-0 m-auto w-[95%] sm:w-[400px] gap-y-2 h-[300px]  rounded-lg flex flex-col items-center justify-center">
-            <div className="w-[120px] h-[120px] rounded-full border-l border-b border-gray-400 animate-spin"></div>
+            <TbLoader3 size={30} className="text-basePrimary animate-spin" />
             <p>Processing...</p>
           </div>
         </div>
@@ -228,7 +232,7 @@ export function Payment({
           toggleSuccessModal={toggleSuccessModal}
           reference={data?.eventRegistrationRef}
           eventTitle={data?.event}
-          userEmail={""}
+          eventId={data?.eventAlias}
         />
       )}
     </>
@@ -238,85 +242,101 @@ export function Payment({
 function PaymentSuccess({
   reference,
   eventTitle,
-  userEmail,
   toggleSuccessModal,
   count,
   location,
   startDate,
   endDate,
+  eventId,
 }: {
   reference: string;
   eventTitle?: string;
   toggleSuccessModal: (bool: boolean) => void;
-  userEmail?: string;
   location?: string;
   startDate?: string;
   endDate?: string;
   count: number;
+  eventId: string;
 }) {
+  const [isShare, setShowIsShare] = useState(false);
+
+  function onToggleShare() {
+    setShowIsShare((p) => !p);
+  }
   return (
     <div
       role="button"
-    //  onClick={() => toggleSuccessModal(false)}
-      className="w-full h-full inset-0 fixed z-[300]"
+      //  onClick={() => toggleSuccessModal(false)}
+      className="w-full bg-[#F9FAFF] fixed  h-full inset-0 z-[300]"
     >
       <div
         role="button"
         onClick={(e) => e.stopPropagation()}
-        className="w-[95%] sm:w-[70%] h-fit flex flex-col gap-y-14 items-start justify-start max-w-[700px]  rounded-sm absolute bg-white shadow py-6 sm:py-8 px-3 sm:px-10 m-auto inset-0"
+        className="w-[95%]  pt-6 grid grid-cols-1 items-center justify-center gap-y-10 bg-white max-w-lg absolute m-auto h-fit inset-0"
       >
-        <div className="flex items-start gap-x-6">
-          <CheckCircleFill className="text-[#00D685]" size={48} />
-          <div className="space-y-1">
-            <h1 className="text-xl sm:text-[28px]">
-              Thanks for your registration!
-            </h1>
+        <div className="w-full px-4 flex items-center gap-y-5 flex-col">
+          <div className="w-20 h-20 flex items-center justify-center bg-green-200 rounded-full">
+            <BsPatchCheck className="text-green-500" size={50} />
+          </div>
+          <div className="flex flex-col items-center justify-center gap-y-1">
+            <h2 className="text-green-500 font-medium text-lg sm:text-2xl">
+              Payment Successful
+            </h2>
+            <p className="text-xs sm:text-mobile">
+              Reference:{" "}
+              <span className="text-basePrimary">{reference ?? ""}</span>
+            </p>
+          </div>
+          <p className="text-center max-w-sm">
+            You have successfully registered for this event.
+          </p>
+        </div>
+
+        <div className="w-full px-4 flex flex-col items-center justify-center gap-y-2">
+          <p className="font-semibold">{eventTitle ?? ""}</p>
+          <div className="flex items-center gap-x-2">
+            <CiCalendar size={18} />
             <p>
-              Reference <span className="text-basePrimary">{reference}</span>
+              {startDate ?? ""} - {endDate ?? ""}
             </p>
           </div>
+          <p className="flex items-center gap-x-2">
+            <CiLocationOn size={18} />
+            <p>{location ?? ""}</p>
+          </p>
         </div>
 
-        <div>
-          <h2 className="uppercase text-base sm:text-lg">You are attending</h2>
-          <h1 className="text-lg font-bold sm:text-3xl">{eventTitle}</h1>
-        </div>
-
-        <div className="grid grid-cols-1 items-start  gap-3  w-full">
-          <div className="hidden flex-col gap-y-2 items-start justify-start">
-            <p className="font-semibold text-lg uppercase">Payment Info</p>
-            <p>{userEmail}</p>
-          </div>
-          <div className="flex flex-col gap-y-2 items-start justify-start">
-            <p className="font-semibold text-lg uppercase">
-              Number of Attendees
+        <div className="w-full px-4 flex flex-col gap-y-2 items-center justify-center">
+          <p className="font-medium text-center max-w-sm">
+            Check your mail to get further directions from event organizer
+          </p>
+          <button
+            onClick={onToggleShare}
+            className="w-fit border-b max-w-md text-gray-500 flex border-gray-500"
+          >
+            <p className=" text-xs text-start sm:text-mobile">
+              Inform your network that you are attending this event
             </p>
-            <p>{count}</p>
-          </div>
-          <div className="flex flex-col gap-y-2 items-start justify-start">
-            <p className="font-semibold text-lg uppercase">Date:</p>
-            <p>{`${startDate} - ${endDate}`}</p>
-          </div>
-          <div className="flex flex-col gap-y-2 items-start justify-start">
-            <p className="font-semibold text-lg uppercase">Location</p>
-            <p>{location}</p>
-          </div>
+            <CiShare2 size={16} />
+          </button>
         </div>
 
-        <p>
-          Attendees will receive a confirmation email with details of the event.
-        </p>
+        <div className="w-full bg-[#001ffc]/10 p-1">
+          <p className="text-center text-tiny sm:text-xs">
+            Create your own event with
+            <Link href="https://zikoro.com/create" className="text-basePrimary">
+              Zikoro
+            </Link>
+          </p>
+        </div>
       </div>
+      {isShare && (
+        <ShareModal
+          eventId={eventId}
+          close={onToggleShare}
+          text={`https://zikoro.com/live-events/${eventId}`}
+        />
+      )}
     </div>
   );
 }
-
-/**
-         <Button
-          onClick={submit}
-          className="w-full gap-x-2 bg-basePrimary text-gray-50 font-medium"
-        >
-          <Lock size={22} />
-          <span>{`Pay ₦${total?.toLocaleString()}`}</span>
-        </Button>
-         */
