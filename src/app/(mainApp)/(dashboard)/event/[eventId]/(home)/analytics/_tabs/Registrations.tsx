@@ -485,18 +485,18 @@ const Registrations = () => {
                 )
                 .map(({ eventTransactions, linkCode, affiliate }) => (
                   <div className="flex items-center gap-4">
-                    <div className="flex flex-col text-gray-700 font-medium flex-[50%]">
+                    <div className="flex flex-col text-gray-700 font-medium flex-[70%]">
                       <span className="capitalize">
                         {affiliate?.firstName + " " + affiliate?.lastname}
                       </span>
-                      <span className="text-gray-600 text-sm">
+                      <span className="text-gray-600 text-xs">
                         {affiliate?.email}
                       </span>
                     </div>
-                    <span className="text-gray-900 font-medium flex-[30%]">
+                    <span className="text-gray-900 font-medium flex-[20%]">
                       {linkCode}
                     </span>
-                    <span className="text-gray-900 font-medium flex-[20%]">
+                    <span className="text-gray-900 font-medium flex-[10%]">
                       {eventTransactions
                         ? eventTransactions.reduce(
                             (acc, { attendees }) => acc + attendees,

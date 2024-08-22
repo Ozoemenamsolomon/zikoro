@@ -146,25 +146,53 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
+
   if (req.method === "GET") {
     try {
       const { searchParams } = new URL(req.url);
       const userId = searchParams.get("userId");
       const eventId = searchParams.get("eventId");
 
-      const query = supabase
+      // Query for affiliateLinks with optional filters
+      const affiliateLinksQuery = supabase
         .from("affiliateLinks")
-        .select("*, affiliate!inner(*), eventTransactions!inner(*)");
+        .select("*, affiliate!inner(*)");
 
-      if (eventId) query.eq("eventId", eventId);
-      if (userId) query.eq("userId", userId);
+      if (eventId) affiliateLinksQuery.eq("eventId", eventId);
+      if (userId) affiliateLinksQuery.eq("userId", userId);
 
-      const { data, error, status } = await query;
+      const { data: affiliateLinksData, error: affiliateLinksError } =
+        await affiliateLinksQuery;
 
-      if (error) throw error;
+      if (affiliateLinksError) throw affiliateLinksError;
+
+      // Extract the IDs of affiliateLinks to use in the second query
+      const affiliateLinkCodes = affiliateLinksData.map(
+        (link) => link.linkCode
+      );
+
+      // Query for eventTransactions that match the affiliateLinkIds
+      const { data: eventTransactionsData, error: eventTransactionsError } =
+        await supabase
+          .from("eventTransactions")
+          .select("*")
+          .in("affiliateCode", affiliateLinkCodes);
+
+      if (eventTransactionsError) throw eventTransactionsError;
+
+      // Combine the results based on affiliateLinkId
+      const combinedData = affiliateLinksData
+        .map((link) => ({
+          ...link,
+          eventTransactions: eventTransactionsData.filter(
+            (transaction) => transaction.affiliateCode === link.linkCode
+          ),
+        }))
+        // Filter out any affiliateLinks without associated eventTransactions
+        .filter((link) => link.eventTransactions.length > 0);
 
       return NextResponse.json(
-        { data },
+        { data: combinedData },
         {
           status: 200,
         }

@@ -78,7 +78,6 @@ const page = () => {
   });
 
   const { events, isLoading: eventsIsLoading } = useGetUserEvents({
-    userId: user?.id || 0,
     organisationId: organization?.id,
   });
   //
