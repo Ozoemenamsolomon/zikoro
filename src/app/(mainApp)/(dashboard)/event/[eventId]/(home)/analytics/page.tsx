@@ -12,11 +12,13 @@ export const AnalyticsInfoCard = ({
   Icon,
   value,
   mutedText,
+  description,
 }: {
   Icon: (props: any) => React.JSX.Element;
   label: string;
   value: string | number;
   mutedText?: ReactNode;
+  description?: string;
 }) => {
   return (
     <div className="p-4 rounded-md bg-white border flex items-center">
@@ -26,7 +28,14 @@ export const AnalyticsInfoCard = ({
         </div>
       </div>
       <div className="flex-[70%] flex flex-col gap-2">
-        <h3 className="font-medium text-gray-600 capitalize">{label}</h3>
+        <div className="flex flex-col">
+          <h3 className="font-medium text-gray-600 capitalize">{label}</h3>
+          {description && (
+            <span className="text-xs text-gray-600 font-medium">
+              {description}
+            </span>
+          )}
+        </div>
         <div className="flex items-end gap-2">
           <h4 className="text-4xl font-medium text-gray-800">{value}</h4>
           {mutedText && (

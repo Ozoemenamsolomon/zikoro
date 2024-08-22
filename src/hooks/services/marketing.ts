@@ -216,8 +216,10 @@ export const useCreateAffiliate = (): usePostResult<
 
 export const useGetAffiliateLinks = ({
   userId,
+  eventId,
 }: {
-  userId: number;
+  userId?: number;
+  eventId?: string;
 }): UseGetResult<TAffiliateLink[], "affiliateLinks", "getAffiliateLinks"> => {
   const [affiliateLinks, setAffiliateLinks] = useState<TAffiliateLink[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -228,7 +230,9 @@ export const useGetAffiliateLinks = ({
 
     try {
       const { data, status } = await getRequest<TAffiliateLink[]>({
-        endpoint: `marketing/affiliate/link?userId=${userId}`,
+        endpoint: `marketing/affiliate/link?${
+          userId ? `userId=${userId}&` : ""
+        }${eventId ? `&eventId=${eventId}` : ""}`,
       });
 
       if (status !== 200) {

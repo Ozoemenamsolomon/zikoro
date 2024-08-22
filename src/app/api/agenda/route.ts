@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
             ])
             .eq("id", attendee?.id);
 
-          //   
+          //
 
           const { data: aa } = await supabase.from("attendees").select("*");
 
@@ -343,7 +343,7 @@ export async function PATCH(req: NextRequest) {
             ])
             .eq("id", attendee?.id);
 
-          //   
+          //
 
           const { data: aa } = await supabase.from("attendees").select("*");
 

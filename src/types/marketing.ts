@@ -50,7 +50,7 @@ export interface TAffiliateLink {
   validity?: Date;
   Goal?: string;
   affiliateLink?: string;
-  eventId?: string;
+  eventId?: number;
   affiliateEmail?: string;
   affiliate?: TAffiliate;
   eventTransactions?: TEventTransaction[];
