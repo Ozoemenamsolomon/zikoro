@@ -746,3 +746,19 @@ input[type="number"] {
 .label {
   @apply text-base font-medium pb-1
 }
+
+.curly-snake-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.curly-snake-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px; /* Increases the space between the underline and the text */
+  height: 30px; /* Increases the height (width) of the underline */
+  background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 20"%3E%3Cpath fill="none" stroke="%23FFFFFF" stroke-width="2" d="M0 10 Q 25 20 50 10 T 100 10 T 150 10 T 200 10" /%3E%3C/svg%3E') repeat-x;
+  background-size: 180px 50px; /* Adjusts the width of the curly pattern */
+}
