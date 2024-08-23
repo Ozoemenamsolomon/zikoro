@@ -20,6 +20,7 @@ import { RxLink2 } from "react-icons/rx";
 import Link from "next/link";
 import copy from "copy-to-clipboard";
 import { TbLoader3 } from "react-icons/tb";
+import { SlSocialLinkedin } from "react-icons/sl";
 export default function PartnerPayment() {
   const router = useRouter();
   const params = useSearchParams();
@@ -285,6 +286,10 @@ export function ShareModal({
       Icon: SlSocialFacebook,
       link: `https://www.facebook.com/sharer/sharer.php?u=${text}`,
     },
+    {
+      Icon: SlSocialLinkedin,
+      link: `https://www.linkedin.com/shareArticle?url=${text}`
+    }
   ];
   return (
     <div
