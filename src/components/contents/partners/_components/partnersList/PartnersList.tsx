@@ -281,6 +281,18 @@ export function PartnersList({
                                     >
                                       <p>Share Partners Registration Page</p>
                                     </Button>
+
+                                    <Button
+                                      onClick={() =>
+                                        router.push(
+                                          `/event/${eventId}/content/partners/create-tier`
+                                        )
+                                      }
+                                      className="  duration-300 ease-in-out transition-all   my-4   gap-x-2 h-11 sm:h-12 font-medium"
+                                    >
+                                      <FiEdit size={22} />
+                                      <p>Edit Tier</p>
+                                    </Button>
                                   </div>
                                 ) : (
                                   <div className="flex items-center justify-center flex-col gap-y-2">
@@ -366,6 +378,7 @@ export function PartnersList({
           text={`https://zikoro.com/live-events/${eventId}/partners?e=${dataString}`}
           close={onShare}
           eventId={eventId}
+          header={'Share Partner Registration Page'}
         />
       )}
     </>

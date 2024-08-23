@@ -239,10 +239,12 @@ export function ShareModal({
   eventId,
   text,
   close,
+  header
 }: {
   close: () => void;
   eventId: string;
   text: string;
+  header?:string;
 }) {
   const [isShow, showSuccess] = useState(false);
 
@@ -282,7 +284,7 @@ export function ShareModal({
       >
         <div className="w-full mb-3 flex items-center justify-between">
           <p className="font-medium border-b border-basePrimary pb-1">
-            Share event with your network
+           {header || " Share event with your network"}
           </p>
           <Button
             onClick={close}
