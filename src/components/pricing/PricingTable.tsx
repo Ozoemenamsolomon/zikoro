@@ -302,7 +302,7 @@ export default function PricingTable({
                   <li className="text-base font-normal">
                     RSVP responses & tracking
                   </li>
-                  <li className="text-base font-normal">Data inport/export</li>
+                  <li className="text-base font-normal">Data import/export</li>
                   <li className="text-base font-normal">
                     3 Live quiz, 3 polls & Unlimited Q&A
                   </li>
