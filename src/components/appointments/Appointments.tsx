@@ -15,6 +15,7 @@ import Slots from "./booking/Slots";
 import { generateAppointmentTime } from "./booking/submitBooking";
 import { toast } from "react-hot-toast";
 import Empty from "./calender/Empty";
+import useUserStore from "@/store/globalUserStore";
 
 export function getEnabledTimeDetails(
   appointmnetLink: AppointmentLink
@@ -26,7 +27,7 @@ export function getEnabledTimeDetails(
     const timeDetails: TimeDetail[] = JSON.parse(appointmnetLink.timeDetails);
     return timeDetails.filter((item) => item.enabled);
   } catch (error) {
-    console.error("Failed to parse timeDetails:", error);
+    // console.error("Failed to parse timeDetails:", error);
     return [];
   }
 }
@@ -135,7 +136,7 @@ const Reschedule = ({ refresh }: { refresh: () => void }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   // const [isSelected, setIsSelected] = useState<string>('');
-  console.log({bookingFormData})
+  // console.log({bookingFormData})
   useEffect(() => {
     const fetchSlots = async () => {
       const getTimeSlots = await generateSlots(
@@ -504,9 +505,12 @@ const groupBookingsByDate = (bookings: Booking[]): GroupedBookings => {
 };
 
 const Appointments: React.FC = () => {
-  const {user,selectedItem} = useAppointmentContext()
-console.log({selectedItem})
+  const {user} = useUserStore()
+  const {selectedItem} = useAppointmentContext()
+  // console.log({selectedItem})
+
   const { bookings, error, isLoading, getPastBookings, getBookings } = useGetBookings();
+
   const [groupedBookings, setGroupBookings] = useState<GroupedBookings>();
   const [drop, setDrop] = useState(false);
   const [filter, setFilter] = useState("upcoming");
@@ -531,7 +535,7 @@ console.log({selectedItem})
         fetchBookings();
       }
     }
-  }, [user,]);
+  }, [user]);
 
   const refresh =() => { 
     fetchBookings()
@@ -540,7 +544,11 @@ console.log({selectedItem})
   const selectView = (view: string) => {
     if(filter===view) return
     setFilter(view);
-    fetchBookings();
+    if (view === "upcoming") {
+      getBookings(new Date());
+    } else {
+      getPastBookings();
+    }
   };
 
   useEffect(() => {
@@ -554,7 +562,7 @@ console.log({selectedItem})
     }
   }, [bookings, isLoading, error]);
 
-  console.log({bookings, groupedBookings, user},'====')
+  // console.log({bookings, groupedBookings, user, isLoading},'====')
   
   return (
     <>

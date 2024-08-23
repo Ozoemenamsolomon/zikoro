@@ -4,7 +4,8 @@ import SelectDuration from './SelectDuration'
 import { UserType } from '@/types/appointments'
 import { getTypeLabel } from '@/lib/bookingsAnalytics'
 import { EarningsBarChart } from './EarningsBarChart'
-const SectionFive = ({user}:{user:UserType}) => {
+import { TUser } from '@/types'
+const SectionFive = ({user}:{user:TUser}) => {
   const {type, setType,isLoading,error,getBookings,current,previous,getYearlyBooking} = useGetBookingsAnalytics(user)
 
   return (
