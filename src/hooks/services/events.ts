@@ -93,8 +93,8 @@ export const useGetUserEvents = ({
 
     try {
       const { data, status } = await getRequest<TOrgEvent[]>({
-        endpoint: `/events${userId ? "?userId=" + userId + "&" : "&"}${
-          organisationId ? "?organisationId=" + organisationId : ""
+        endpoint: `/events?${userId ? "userId=" + userId + "&" : ""}${
+          organisationId ? "organisationId=" + organisationId : ""
         }`,
       });
 
