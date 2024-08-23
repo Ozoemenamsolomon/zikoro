@@ -21,14 +21,26 @@ import { toast } from "@/components/ui/use-toast";
 
 const supabase = createClientComponentClient();
 
+
+type TEventData = {
+  eventName:string;
+  eventStartDate: string;
+  eventEndDate: string;
+  location: string;
+  eventPoster:string;
+  address: string;
+  organizerName:string;
+  currency: string;
+}
 export function useAddPartners() {
   const [loading, setLoading] = useState(false);
 
-  async function addPartners(values: Partial<TPartner>) {
+  async function addPartners(values: Partial<TPartner>, event: TEventData) {
     setLoading(true);
 
     const payload = {
-      ...values,
+      values,
+      event,
     };
 
     try {
@@ -97,8 +109,6 @@ export function useFetchPartners(eventId: string) {
     refetch: fetchPartners,
   };
 }
-
-
 
 export function useUpdatePartners() {
   const [loading, setLoading] = useState(false);

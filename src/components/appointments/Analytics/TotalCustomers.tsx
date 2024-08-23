@@ -1,10 +1,11 @@
 import { CustomerIon, RevenueIcon } from '@/constants';
-import React from 'react';
-import { LongArrowUp, LongArrowDown } from 'styled-icons/fa-solid'; // Import both up and down arrows for increase/decrease
+import React, { useMemo, useCallback } from 'react';
+import { LongArrowUp, LongArrowDown } from 'styled-icons/fa-solid'; 
 import { SectionOneProps } from './SectionOne';
 import LoadingState from './LoadingState';
 import ErrorState from './ErrorState';
 import { Booking } from '@/types/appointments';
+import { getTypeLabel } from '@/lib/bookingsAnalytics';
 
 const TotalCustomers: React.FC<SectionOneProps> = ({
   isLoading,
@@ -13,33 +14,39 @@ const TotalCustomers: React.FC<SectionOneProps> = ({
   current,
   previous,
 }) => {
-  // Helper function to extract unique customers
-  const extractUniqueCustomers = (bookings: Booking[]) => {
+  // Memoize the extraction of unique customers
+  const extractUniqueCustomers = useCallback((bookings: Booking[]) => {
     const customersSet = new Set();
-    
+    console.log({length:bookings.length})
     bookings.forEach((booking) => {
-      // Create a unique identifier for the customer
-      const customerIdentifier = `${booking.firstName} ${booking.lastName}`;
+      const customerIdentifier = `${booking.email}`;
       customersSet.add(customerIdentifier);
     });
 
     return customersSet.size;
-  };
+  }, []);
 
-  // Combine current and previous bookings
-  const combinedBookings = [...current, ...previous];
-  
-  // Calculate total unique customers
-  const totalCustomers = extractUniqueCustomers(combinedBookings);
-  
-  // Calculate the number of new customers
-  const newCustomers = extractUniqueCustomers(current) - extractUniqueCustomers(previous);
+  // Memoize combined bookings, total customers, and new customers calculations
+  const { totalCustomers, newCustomers } = useMemo(() => {
+    const combinedBookings = [...current, ...previous];
+    const totalCustomers = extractUniqueCustomers(combinedBookings);
+    const newCustomers = extractUniqueCustomers(current) - extractUniqueCustomers(previous);
+    console.log({combinedBookingslength:combinedBookings.length})
 
-  // Determine the arrow and color based on the new customer count
-  const isIncrease = newCustomers > 0;
-  const ArrowIcon = isIncrease ? LongArrowUp : LongArrowDown;
-  const arrowColor = isIncrease ? 'text-green-500' : 'text-red-500';
-  const newCustomersText = `${isIncrease ? '+' : ''}${Math.abs(newCustomers)}`;
+    return { totalCustomers, newCustomers };
+  }, [current, previous, extractUniqueCustomers]);
+
+  // Memoize arrow icon and color
+  const { ArrowIcon, arrowColor, newCustomersText } = useMemo(() => {
+    const isIncrease = newCustomers > 0;
+    console.log({isIncrease:isIncrease})
+
+    return {
+      ArrowIcon: isIncrease ? LongArrowUp : LongArrowDown,
+      arrowColor: isIncrease ? 'text-green-500' : 'text-red-500',
+      newCustomersText: `${isIncrease ? '+' : ''}${Math.abs(newCustomers)}`,
+    };
+  }, [newCustomers]);
 
   return (
     <>
@@ -62,8 +69,7 @@ const TotalCustomers: React.FC<SectionOneProps> = ({
             </div>
             <div className="h-1 w-1 rounded-full bg-gray-600 shrink-0"></div>
             <p className="text-gray-600">
-              from last period
-              {/* {isIncrease ? 'Increase' : 'Decrease'} from last period */}
+              from last {getTypeLabel(type)}
             </p>
           </div>
         </div>

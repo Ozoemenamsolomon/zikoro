@@ -21,11 +21,11 @@ export const AppointmentTable = ({
 }) => {
   return (
     <Table className="text-center">
-      <TableCaption>
+      {/* <TableCaption>
         <button type="button" className="underline hover:text-zikoroBlue duration-300">
           see full analysis
         </button>
-      </TableCaption>
+      </TableCaption> */}
       <TableHeader>
         <TableRow>
           <TableHead className="w-full">Name</TableHead>

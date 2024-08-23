@@ -20,6 +20,7 @@ import { RxLink2 } from "react-icons/rx";
 import Link from "next/link";
 import copy from "copy-to-clipboard";
 import { TbLoader3 } from "react-icons/tb";
+import { SlSocialLinkedin } from "react-icons/sl";
 export default function PartnerPayment() {
   const router = useRouter();
   const params = useSearchParams();
@@ -29,6 +30,10 @@ export default function PartnerPayment() {
   const startDate = params.get("startDate");
   const endDate = params.get("endDate");
   const location = params.get("location");
+  const eventPoster = params.get("eventPoster");
+  const address = params.get("address");
+  const organizerName = params.get("organizerName")
+  const currency = params.get("currency");
 
   const { addPartners, loading } = useAddPartners();
 
@@ -54,7 +59,18 @@ export default function PartnerPayment() {
       ...partnerData,
     };
 
-    await addPartners(payload);
+    const eventPayload = {
+      eventName: eventName!,
+      eventStartDate: startDate!,
+      eventEndDate: endDate!,
+      location: location!,
+      eventPoster: eventPoster!,
+      address: address!,
+      organizerName:organizerName!,
+      currency: currency!
+    };
+
+    await addPartners(payload, eventPayload);
     setIsSuccess(true);
   }
 
@@ -239,10 +255,12 @@ export function ShareModal({
   eventId,
   text,
   close,
+  header
 }: {
   close: () => void;
   eventId: string;
   text: string;
+  header?:string;
 }) {
   const [isShow, showSuccess] = useState(false);
 
@@ -268,6 +286,10 @@ export function ShareModal({
       Icon: SlSocialFacebook,
       link: `https://www.facebook.com/sharer/sharer.php?u=${text}`,
     },
+    {
+      Icon: SlSocialLinkedin,
+      link: `https://www.linkedin.com/shareArticle?url=${text}`
+    }
   ];
   return (
     <div
@@ -282,7 +304,7 @@ export function ShareModal({
       >
         <div className="w-full mb-3 flex items-center justify-between">
           <p className="font-medium border-b border-basePrimary pb-1">
-            Share event with your network
+           {header || " Share event with your network"}
           </p>
           <Button
             onClick={close}

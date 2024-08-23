@@ -15,14 +15,13 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const date = searchParams.get('date');  
   const userId = searchParams.get('userId');
-  const bookingStatus = searchParams.get('bookingStatus');
 
-  if ( !userId || !date) {
+  if ( !userId) {
     return NextResponse.json({ error: "Missing required parameters", data: null }, { status: 400 });
   } 
 
   try {
-    const today = startOfDay(new Date(date!)).toISOString()
+    const today = date ?  startOfDay(new Date(date!)).toISOString() : startOfDay(new Date()).toISOString() 
 
       const {data, error}= await supabase
       .from("bookings")

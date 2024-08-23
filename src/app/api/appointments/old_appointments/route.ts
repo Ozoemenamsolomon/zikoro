@@ -5,19 +5,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
-
   if (req.method !== "GET") {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
   }
-
+  
   const { searchParams } = new URL(req.url);
-  const date = searchParams.get('date');  
-  const userId = searchParams.get('userId');
 
-  if ( !userId || !date) {
+  const userId = searchParams.get('userId');
+  
+  if ( !userId ) {
     return NextResponse.json({ error: "Missing required parameters", data: null }, { status: 400 });
   } 
-
+ 
   try {
     const today = startOfDay(new Date()).toISOString()
 
@@ -28,7 +27,7 @@ export async function GET(req: NextRequest) {
       .lt('appointmentDate', today)
       .order("appointmentDate", { ascending: true });
 
-    console.log({res:{data,error},userId,date,today})
+      console.log({res:{data,error},userId,today})
 
     if (error) {
       console.error("Error fetching bookings:", error.message);
