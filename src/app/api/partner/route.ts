@@ -146,8 +146,8 @@ export async function POST(req: NextRequest) {
                   width: 100%;
                 "
               >
-             F   <p style="font-size: 14px; color: #b4b4b4; width: 50%;">1x ${
-                  values?.tierName          } Ticket</p>
+                <p style="font-size: 14px; color: #b4b4b4; width: 50%;">1x ${
+                  values?.tierName} Ticket</p>
                 <p style="font-size: 14px;  width: 50%; text-align: end;">${
               Number(values?.amountPaid) > 0
                     ? event?.currency + Number(values?.amountPaid)?.toLocaleString()
