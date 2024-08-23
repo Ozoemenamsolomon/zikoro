@@ -9,6 +9,7 @@ import CanceledAppointments from './CanceledAppt'
 import RescheduledAppointments from './RescheduledAppt'
 import { useGetBookingsAnalytics } from '@/hooks'
 import { Booking, UserType } from '@/types/appointments'
+import { TUser } from '@/types'
 
 export interface SectionOneProps {
   isLoading: boolean;
@@ -19,7 +20,7 @@ export interface SectionOneProps {
   previous: Booking[];
 }
 
-const SectionOne = ({user}:{user:UserType}) => {
+const SectionOne = ({user}:{user:TUser}) => {
   const {type, setType,isLoading,error, current,previous,} = useGetBookingsAnalytics()
 
   return (

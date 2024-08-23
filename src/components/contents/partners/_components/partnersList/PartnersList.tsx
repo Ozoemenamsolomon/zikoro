@@ -14,6 +14,7 @@ import { Delete } from "styled-icons/fluentui-system-regular";
 import { FiEdit } from "react-icons/fi";
 import { cn } from "@/lib";
 import { useRouter } from "next/navigation";
+import { CiShare2 } from "react-icons/ci";
 import { AddPartnerManually } from "@/components/partners/_components/modals/AddPartnerManually";
 import { ShareModal } from "@/components/partners/PartnerPayment";
 export function PartnersList({
@@ -132,6 +133,12 @@ export function PartnersList({
           <div className="w-full h-full  flex flex-col">
             {Array.isArray(partners) && partners?.length > 0 && (
               <div className="flex gap-x-2 items-center self-end">
+                <Button
+                onClick={onShare}
+                className="px-0 w-fit h-fit">
+                  <CiShare2 size={22}/>
+                  <p>Share</p>
+                </Button>
                 <Button
                   onClick={() =>
                     router.push(
@@ -281,6 +288,18 @@ export function PartnersList({
                                     >
                                       <p>Share Partners Registration Page</p>
                                     </Button>
+
+                                    <Button
+                                      onClick={() =>
+                                        router.push(
+                                          `/event/${eventId}/content/partners/create-tier`
+                                        )
+                                      }
+                                      className="  duration-300 ease-in-out transition-all   my-4   gap-x-2 h-11 sm:h-12 font-medium"
+                                    >
+                                      <FiEdit size={22} />
+                                      <p>Edit Tier</p>
+                                    </Button>
                                   </div>
                                 ) : (
                                   <div className="flex items-center justify-center flex-col gap-y-2">
@@ -366,6 +385,7 @@ export function PartnersList({
           text={`https://zikoro.com/live-events/${eventId}/partners?e=${dataString}`}
           close={onShare}
           eventId={eventId}
+          header={'Share Partner Registration Page'}
         />
       )}
     </>

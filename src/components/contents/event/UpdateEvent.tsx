@@ -178,22 +178,25 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       }
     }
 
-    const promise = new Promise(async (resolve) => {
-      if (values.eventPoster && values.eventPoster[0]) {
+    const promise = await new Promise(async (resolve) => {
+      if (values.eventPoster && typeof values.eventPoster === "string") {
+        resolve(values.eventPoster);
+      } 
+     else if (values.eventPoster && values.eventPoster[0]) {
         const img = await uploadFile(values.eventPoster[0], "image");
         resolve(img);
-      } else if (values.eventPoster && values.eventPoster?.startsWith("http")) {
-        resolve(values.eventPoster);
-      } else {
+      } 
+      else {
         resolve(null);
       }
     });
 
-    const response = await promise;
+
+ 
 
     const payload: any = {
       ...values,
-      eventPoster: response,
+      eventPoster: promise as String,
       expectedParticipants: Number(values?.expectedParticipants),
     };
 

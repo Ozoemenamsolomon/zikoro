@@ -541,7 +541,7 @@ export function BookEvent({
           </div>
           {/*** */}
           {active === 1 && (
-            <div className="w-full rounded-lg bg-white lg:col-span-4 flex flex-col gap-y-4 p-4 sm:p-6">
+            <div className="w-full relative rounded-lg bg-white lg:col-span-4 flex flex-col gap-y-4 p-4 sm:p-6">
               <div className=" flex w-full items-end justify-between py-3 border-b">
                 <div className="flex flex-col items-start justify-start">
                   <p className="text-base sm:text-xl font-semibold">
@@ -558,7 +558,7 @@ export function BookEvent({
                 )}
               </div>
 
-              <div className="w-full lg:h-[510px] pb-24 space-y-5 no-scrollbar lg:overflow-y-auto">
+              <div className="w-full lg:h-[510px] pb-32 space-y-5 no-scrollbar lg:overflow-y-auto">
                 <div className="grid grid-cols-1 gap-6  items-center w-full">
                   {Array.isArray(pricingArray) &&
                     pricingArray &&
@@ -599,7 +599,7 @@ export function BookEvent({
                                 </p>
                                 {v?.description && (
                                   <div className="flex items-center gap-x-1">
-                                    <p className="text-xs text-start sm:text-sm w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
+                                    <p className="text-xs text-start sm:text-sm w-fit max-w-[100px] text-ellipsis whitespace-nowrap overflow-hidden">
                                       {v?.description}
                                     </p>
                                     <button
@@ -722,7 +722,8 @@ export function BookEvent({
                     </p>
                   </div>
                 </div>
-                <Button
+           <div className="w-full inset-x-0 md:bg-white md:p-2 md:absolute bottom-0 md:h-32">
+           <Button
                   disabled={
                     chosenAttendee?.length === 0 || pathname.includes("preview")
                   }
@@ -737,12 +738,13 @@ export function BookEvent({
                 >
                   <span>Continue</span>
                 </Button>
+           </div>
               </div>
             </div>
           )}
           {/** */}
           {active === 2 && (
-            <div className="w-full rounded-lg lg:col-span-4 bg-white flex-col gap-y-4 p-4 sm:p-6">
+            <div className="w-full rounded-lg relative lg:col-span-4 bg-white flex-col gap-y-4 p-4 sm:p-6">
               <div className="w-full flex items-center justify-between py-3 border-b">
                 <Button
                   onClick={() => setActive(1)}
@@ -753,7 +755,7 @@ export function BookEvent({
                 <p className="text-base sm:text-xl font-semibold">Checkout</p>
                 <p className="w-1 h-1"></p>
               </div>
-              <div className="w-full lg:h-[510px] pb-24 pt-4 no-scrollbar lg:overflow-y-auto">
+              <div className="w-full lg:h-[510px] pb-32 pt-4 no-scrollbar lg:overflow-y-auto">
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -937,7 +939,9 @@ export function BookEvent({
                         )}
                       />
                     )}
-                    <Button
+
+<div className="w-full inset-x-0 md:bg-white md:p-2 md:absolute bottom-0 md:h-32">
+<Button
                       type="submit"
                       disabled={isSubmitting}
                       className="h-12 w-full mt-3  gap-x-2 bg-basePrimary hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium"
@@ -950,6 +954,8 @@ export function BookEvent({
                       )}
                       <span>Continue</span>
                     </Button>
+  </div>
+                   
                   </form>
                 </Form>
               </div>
