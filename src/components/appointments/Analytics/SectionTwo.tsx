@@ -3,10 +3,10 @@ import SelectDuration from './SelectDuration'
 import { DoughnutChart } from './DoughnutChart'
 import { AppointmentTable } from './AppointmentTable'
 import { useGetBookingsAnalytics } from '@/hooks'
-import { UserType } from '@/types/appointments'
 import { generateKPIData, KPIData } from '@/lib/bookingsAnalytics'
+import { TUser } from '@/types'
 
-const SectionTwo = ({user}:{user:UserType}) => {
+const SectionTwo = ({user}:{user:TUser}) => {
     const [tableData, setTableData] = useState<KPIData[]>([])
 
     const {type, setType,isLoading,error, current,previous,} = useGetBookingsAnalytics()

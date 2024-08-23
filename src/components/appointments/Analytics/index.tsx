@@ -6,17 +6,12 @@ import SectionOne from './SectionOne'
 import SectionTwo from './SectionTwo'
 import SectionThree from './SectionThree'
 import SectionFour from './SectionFour'
-import { UserType } from '@/types/appointments'
-import { useAppointmentContext } from '../context/AppointmentContext'
 import SectionFive from './SectionFive'
+import useUserStore from '@/store/globalUserStore';
 
 const Analytics = () => {
-  const {user, setUser} = useAppointmentContext()
-  // console.log({userD:user})
-  // useEffect(() => {
-  //   setUser(user)
-  // }, [user])
-  
+  const {user, setUser} = useUserStore()
+
   return (
     <div className='py-8 space-y-8'>
         <section className="grid xl:grid-cols-2 gap-8    ">

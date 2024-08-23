@@ -4,8 +4,9 @@ import SelectDuration from './SelectDuration'
 import { BookingsChart } from './BookingsChart'
 import { UserType } from '@/types/appointments'
 import { getTypeLabel } from '@/lib/bookingsAnalytics'
+import { TUser } from '@/types'
 
-const SectionThree = ({user}:{user:UserType}) => {
+const SectionThree = ({user}:{user:TUser}) => {
   const {type, setType,isLoading,error,current,previous,} = useGetBookingsAnalytics()
 
   return (

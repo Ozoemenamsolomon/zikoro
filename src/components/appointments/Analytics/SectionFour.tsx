@@ -4,8 +4,9 @@ import { TopClients } from './TopClientsTable'
 import { useGetBookingsAnalytics } from '@/hooks'
 import { UserType } from '@/types/appointments'
 import { getTypeLabel } from '@/lib/bookingsAnalytics'
+import { TUser } from '@/types'
 
-const SectionFour = ({user}:{user:UserType}) => {
+const SectionFour = ({user}:{user:TUser}) => {
   const {type, setType,isLoading,error,getBookings,current,previous,} = useGetBookingsAnalytics()
 
   return (

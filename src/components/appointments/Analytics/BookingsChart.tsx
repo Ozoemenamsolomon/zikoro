@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/chart"
 import { SectionOneProps } from "./SectionOne"
 import { Booking } from "@/types/appointments"
+import { getTypeLabel } from "@/lib/bookingsAnalytics"
 
 interface ChartDataProp {
   period: string
@@ -175,11 +176,11 @@ export const BookingsChart: React.FC<SectionOneProps> = ({
             <div className="flex items-center gap-2 font-medium leading-none">
               {trend > 0 ? (
                 <>
-                  Trending up by {trend.toFixed(2)}% <TrendingUp className="h-4 w-4" />
-                </>
+                  Booking increased by {Math.abs(trend).toFixed(2)}% <TrendingUp className="h-4 w-4" /> compared to last {getTypeLabel(type)}
+                  </>
               ) : (
                 <>
-                  Trending down by {Math.abs(trend).toFixed(2)}% <TrendingDown className="h-4 w-4" />
+                  Booking dropped by {Math.abs(trend).toFixed(2)}% <TrendingDown className="h-4 w-4" /> compared to last {getTypeLabel(type)}
                 </>
               )}
             </div>

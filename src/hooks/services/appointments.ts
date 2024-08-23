@@ -6,6 +6,7 @@ import { getRequest } from "@/utils/api";
 import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, subWeeks, subMonths, subYears } from 'date-fns';
+import useUserStore from "@/store/globalUserStore";
 
 
 export const useGetAppointments = () => {
@@ -20,7 +21,7 @@ export const useGetAppointments = () => {
         const { data, status, } = await getRequest<AppointmentLink[]>({
           endpoint: `/appointments/schedules`,
         });
-        console.log({ data, status, } )
+        // console.log({ data, status, } )
         
         if(status!==200){
           setError('Error fetching schedules!')
@@ -42,9 +43,9 @@ export const useGetAppointments = () => {
   return { appointments, isLoading,error,getAppointments };
 };
 
-export const useGetBookings = (bookingStatus?:string) => {
-  const { user } = useAppointmentContext();
-  console.log({userF:user})
+export const useGetBookings = () => {
+  const { user } = useUserStore();
+  // console.log({userF:user})
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
@@ -52,6 +53,7 @@ export const useGetBookings = (bookingStatus?:string) => {
 
   const getBookings = async (date: Date | string) => {
     setLoading(true);
+    setError('')
     try {
       const response = await fetch(`/api/appointments?date=${date}&userId=${user?.id}`, {
         method: 'GET',
@@ -78,7 +80,7 @@ export const useGetBookings = (bookingStatus?:string) => {
       setBookings(data.data);
       return data
     } catch (error) {
-      console.error('Error fetching schedules:', error);
+      // console.error('Error fetching schedules:', error);
       setError('Error fetching schedules!');
       toast.error('Error fetching schedules!');
     } finally {
@@ -88,6 +90,7 @@ export const useGetBookings = (bookingStatus?:string) => {
 
   const getPastBookings = async () => {
     setLoading(true);
+    setError('')
     try {
       const response = await fetch(`/api/appointments/old_appointments?userId=${user?.id}`, {
         method: 'GET',
@@ -103,7 +106,7 @@ export const useGetBookings = (bookingStatus?:string) => {
       }
 
       const data = await response.json();
-      console.log('Fetched Appointments:', data);
+      // console.log('Fetched Appointments:', data);
 
       if (data?.error) {
         setError('Error fetching schedules!');
@@ -113,7 +116,7 @@ export const useGetBookings = (bookingStatus?:string) => {
 
       setBookings(data.data);
     } catch (error) {
-      console.error('Error fetching schedules:', error);
+      // console.error('Error fetching schedules:', error);
       setError('Error fetching schedules!');
       toast.error('Error fetching schedules!');
     } finally {

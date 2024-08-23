@@ -49,11 +49,11 @@ const navlinks = [
 
 const Sidebar = () => {
   const pathanme = usePathname()
-  const {user} = useAppointmentContext()
-  // const {user} = useUserStore()
+  // const {user} = useAppointmentContext()
+  const  {user} = useUserStore()
   const {logOut} = useLogOut()
   const [open, setOpen] = useState('')
-
+console.log({user})
   // useEffect(() => {
   //   if(!user){
   //     logOut()

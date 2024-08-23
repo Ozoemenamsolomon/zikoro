@@ -5,6 +5,7 @@ import { SectionOneProps } from './SectionOne';
 import { Booking } from '@/types/appointments';
 import LoadingState from './LoadingState';
 import ErrorState from './ErrorState';
+import { getTypeLabel } from '@/lib/bookingsAnalytics';
 
 const TotalRevenue: React.FC<SectionOneProps> = ({
   isLoading,
@@ -51,7 +52,7 @@ const TotalRevenue: React.FC<SectionOneProps> = ({
         </div>
         <div className="h-1 w-1 rounded-full bg-gray-600 shrink-0"></div>
         <p className="text-gray-600">
-          from last period
+          from last {getTypeLabel(type)}
         </p>
       </div>
     </div>
