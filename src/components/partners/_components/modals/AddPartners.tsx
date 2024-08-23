@@ -25,7 +25,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addPartnerToTierSchema } from "@/schemas";
 import { generateAlphanumericHash } from "@/utils/helpers";
-
+import useOrganizationStore from "@/store/globalOrganizationStore";
 
 type TSIngleTier = {
   validity: string;
@@ -47,8 +47,9 @@ export function AddPartners({
   close: () => void;
 }) {
   const { data: eventData } = useFetchSingleEvent(eventId);
+  const { organization } = useOrganizationStore();
   const [loading, setLoading] = useState(false);
-  const {addPartners} = useAddPartners()
+  const { addPartners } = useAddPartners();
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
     "+234"
   );
@@ -121,7 +122,7 @@ export function AddPartners({
       eventName: eventData?.eventTitle,
       eventAlias: eventId,
       whatsApp: values.whatsApp || "",
-      phoneNumber:  values.phoneNumber,
+      phoneNumber: values.phoneNumber,
       companyLogo: image,
       partnerAlias,
       partnerStatus: "pending",
@@ -129,26 +130,36 @@ export function AddPartners({
       currency: partnerTier?.currency,
       tierName: partnerTier?.tierName,
       partnerType: partnerTier?.partnerType,
-      paymentReference: total === 0 ? "" :generateAlphanumericHash(10),
+      paymentReference: total === 0 ? "" : generateAlphanumericHash(10),
+      organizerEmail: organization?.eventContactEmail,
+    };
+
+    const eventPayload = {
+      eventName: eventData?.eventTitle!,
+      eventStartDate: eventData?.startDateTime!,
+      eventEndDate: eventData?.endDateTime!,
+      location: `${eventData?.eventCity}, ${eventData?.eventCountry}`,
+      eventPoster: eventData?.eventPoster!,
+      address: eventData?.eventAddress!,
+      organizerName: organization?.organizationName!,
+      currency: partnerTier?.currency
     };
 
     if (total === 0) {
-      await addPartners(payload);
-    }else {
+      await addPartners(payload, eventPayload);
+    } else {
       const encodedData = encodeURIComponent(JSON.stringify(payload));
       window.open(
         `/partner-payment?p=${encodedData}&eventName=${
           eventData?.eventTitle
         }&startDate=${eventData?.startDateTime}&endDate=${
           eventData?.endDateTime
-        }&location=${`${eventData?.eventCity}, ${eventData?.eventCountry}`}`,
+        }&location=${`${eventData?.eventCity}, ${eventData?.eventCountry}&eventPoster=${eventData?.eventPoster}&address=${eventData?.eventAddress}&organizerName=${organization?.organizationName}&currency=${partnerTier?.currency}`}`,
         "_self"
       );
     }
     setLoading(false);
-    
 
-   
     // await addPartners(payload)
     // close();
   }
@@ -365,16 +376,13 @@ export function AddPartners({
                     <FormItem className="w-full relative h-fit">
                       <FormLabel>Phone number</FormLabel>
                       <FormControl>
-                 
-                         
-                          <Input
-                            placeholder="Enter Phone Number"
-                            {...form.register("phoneNumber")}
-                            type="tel"
-                            {...field}
-                            className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
-                          />
-                      
+                        <Input
+                          placeholder="Enter Phone Number"
+                          {...form.register("phoneNumber")}
+                          type="tel"
+                          {...field}
+                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                        />
                       </FormControl>
 
                       <FormMessage />
@@ -390,14 +398,12 @@ export function AddPartners({
                       <FormLabel>WhatsApp number</FormLabel>
 
                       <FormControl>
-                      
-                          <Input
-                            className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
-                            placeholder="Enter Whatsapp Number"
-                            {...form.register("whatsApp")}
-                            type="tel"
-                          />
-                      
+                        <Input
+                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                          placeholder="Enter Whatsapp Number"
+                          {...form.register("whatsApp")}
+                          type="tel"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

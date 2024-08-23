@@ -29,6 +29,10 @@ export default function PartnerPayment() {
   const startDate = params.get("startDate");
   const endDate = params.get("endDate");
   const location = params.get("location");
+  const eventPoster = params.get("eventPoster");
+  const address = params.get("address");
+  const organizerName = params.get("organizerName")
+  const currency = params.get("currency");
 
   const { addPartners, loading } = useAddPartners();
 
@@ -54,7 +58,18 @@ export default function PartnerPayment() {
       ...partnerData,
     };
 
-    await addPartners(payload);
+    const eventPayload = {
+      eventName: eventName!,
+      eventStartDate: startDate!,
+      eventEndDate: endDate!,
+      location: location!,
+      eventPoster: eventPoster!,
+      address: address!,
+      organizerName:organizerName!,
+      currency: currency!
+    };
+
+    await addPartners(payload, eventPayload);
     setIsSuccess(true);
   }
 
