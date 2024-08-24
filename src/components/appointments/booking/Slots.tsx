@@ -145,8 +145,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, u
         : 
         <>
          {isBooking ? <h5 className="text-md bg-white px-4 py-3 font-semibold">Choose Time</h5> : null}
-         <div className="overflow-auto h-full  w-full  ">
-            <div className={` flex flex-col w-full gap-2 h-full p-4 ${isBooking ? 'pb-32' : ''} `}>
+            <div className={` flex flex-col w-full overflow-auto no-scrollbar gap-2 h-full p-4 ${isBooking ? 'pb-32' : ''} `}>
               {
                 timeSlots?.slots?.map((slot,i)=>{
                   // console.log({timeSlots})
@@ -194,24 +193,43 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, u
               }
               
             </div>
-        </div>
         {
-          isBooking  ?  
+          !isBooking  ?  null 
+          :
           <div className="absolute bottom-0 bg-white py-3 z-10 px-4 w-full">
-            <button
-              onClick={()=>{
-                setIsFormUp(true) 
-              }}
-              type="submit"
-              className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading  || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
-              disabled={loading || isDisabled}
-            >
-              Proceed
-            </button> 
+            {
+              bookingFormData?.price || appointmnetLink?.amount ?
+              // process for paid appointments
+              <button
+                onClick={()=>{
+                  setIsFormUp('pay') 
+                  setBookingFormData({
+                    ...bookingFormData,
+                    price:appointmnetLink?.amount,
+                    currency:appointmnetLink?.curency,
+                  })
+                }}
+                type="submit"
+                className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading  || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
+                disabled={loading || isDisabled}
+              >
+                Process and pay
+              </button> 
+              :
+              // process for free appointments
+              <button
+                onClick={()=>{
+                  setIsFormUp('details') 
+                }}
+                type="submit"
+                className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading  || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
+                disabled={loading || isDisabled}
+              >
+                Proceed
+              </button>
+            }
           </div> 
-          : null
         }
-
         </>
       }
     </div>
@@ -227,7 +245,7 @@ export function isTimeWithinAppointments(
 ): boolean {
   const parsedTime = parse(time, 'HH:mm:ss', selectedDay);
 
-  console.log(`Parsed Time: ${parsedTime}`, {appointments});
+  // console.log(`Parsed Time: ${parsedTime}`, {appointments});
 
   return appointments?.some(appointment => {
     const startTime = new Date(appointment.startDateTime!);

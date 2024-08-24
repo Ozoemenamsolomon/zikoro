@@ -23,6 +23,7 @@ import { useAppointmentContext } from '../context/AppointmentContext'
 import DetailsForm from './DetailsForm'
 import { Category } from '../create/CategoryForm'
 import SelectOnly from '../ui/SeectInput'
+import { isArray } from 'lodash'
 
 function classNames(...classes: (string | false)[]): string {
     return classes.filter(Boolean).join(' ');
@@ -140,16 +141,9 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
     }))
     : [];
 
-  // useEffect(() => {
-  //   setBookingFormData((prev) => ({
-  //       ...prev,
-  //       appointmentType: appointmentTypeJson[0]?.name || '',
-  //     }));
-  //   }, []);
-
     useEffect(() => {
       if(!bookingFormData?.appointmentType){
-        const selectedAppointmentType = appointmentTypeJson.find((item: Category) => item.name === bookingFormData?.appointmentType) || appointmentTypeJson[0];
+        const selectedAppointmentType = Array.isArray(appointmentTypeJson) && appointmentTypeJson.find((item: Category) => item.name === bookingFormData?.appointmentType) || appointmentTypeJson[0];
         setBookingFormData((prev) => ({
           ...prev,
           appointmentType: appointmentTypeJson[0]?.name || '',
@@ -158,7 +152,7 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
         }));
         console.log('aaaaaaa', {bookingFormData})
       } else {
-        if (appointmentTypeJson.length) {
+        if (Array.isArray(appointmentTypeJson) && appointmentTypeJson.length) {
           const selectedAppointmentType = appointmentTypeJson.find((item: Category) => item.name === bookingFormData?.appointmentType) || appointmentTypeJson[0];
           setBookingFormData((prev) => ({
             ...prev,
@@ -174,7 +168,7 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
   return (
     <>
     {
-    isFormUp ?
+    isFormUp==='details' ?
         <DetailsForm appointmentLink={appointmnetLink}/>
         :
         <div className="w-full md:h-[70vh] gap-6 max-sm:space-y-6 sm:flex ">
