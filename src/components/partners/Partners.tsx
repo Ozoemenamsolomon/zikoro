@@ -283,7 +283,7 @@ export function Partners({ eventId }: { eventId: string }) {
             />
 
             <div className="flex items-center">
-              <div className="relative w-80 h-12">
+              <div className="relative w-[18rem] h-12">
                 <Search size={22} className="absolute top-3 left-2" />
                 <Input
                   type="text"
@@ -291,7 +291,7 @@ export function Partners({ eventId }: { eventId: string }) {
                   value={searchTerm}
                   disabled={loading}
                   onInput={(event) => setSearchTerm(event.currentTarget.value)}
-                  className=" placeholder:text-sm h-12 pr-4 pl-10 w-80  focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                  className="bg-[#001ffc]/10 placeholder:text-sm h-12 pr-4 pl-10 w-80 border-basePrimary placeholder:text-gray-300 text-gray-700"
                 />
               </div>
             </div>

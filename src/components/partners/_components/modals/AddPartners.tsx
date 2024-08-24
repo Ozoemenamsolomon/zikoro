@@ -125,7 +125,7 @@ export function AddPartners({
       phoneNumber: values.phoneNumber,
       companyLogo: image,
       partnerAlias,
-      partnerStatus: "pending",
+      partnerStatus: "active",
       amountPaid: total,
       currency: partnerTier?.currency,
       tierName: partnerTier?.tierName,
@@ -160,8 +160,6 @@ export function AddPartners({
     }
     setLoading(false);
 
-    // await addPartners(payload)
-    // close();
   }
 
   const countriesList = useMemo(() => {

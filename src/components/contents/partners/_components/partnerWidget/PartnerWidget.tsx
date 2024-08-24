@@ -70,55 +70,58 @@ function ActionColumn({
     setIsApprove((p) => !p);
   }
 
-  async function approve() {
+  async function activate() {
     setLoading(true);
-    await update({ ...partner, partnerStatus: "verified" });
+    await update({ ...partner, partnerStatus: "active" });
 
     setLoading(false);
     refetch();
     onApprove();
   }
-  async function decline() {
+  async function deactivate() {
     setLoading(true);
-    await update({ ...partner, partnerStatus: "pending" });
+    await update({ ...partner, partnerStatus: "inactive" });
     setLoading(false);
     refetch();
     onDecline();
   }
   return (
-    <div className="flex items-center gap-x-6">
-      <Button
-        onClick={() => setIsApprove((p) => !p)}
-        className="w-fit h-fit  px-0"
-      >
-        <IoCheckmarkCircle size={22} className="text-basePrimary" />
-      </Button>
-      <Button
-        onClick={() => setIsDecline((p) => !p)}
-        className="w-fit h-fit px-0"
-      >
-        <IoCloseCircleSharp size={22} className="text-red-500" />
-      </Button>
+    <div className="flex items-center ">
+      {partner?.partnerStatus === "inactive" ? (
+        <Button
+          onClick={() => setIsApprove((p) => !p)}
+          className="w-fit h-fit  px-0"
+        >
+          <IoCheckmarkCircle size={28} className="text-basePrimary" />
+        </Button>
+      ) : (
+        <Button
+          onClick={() => setIsDecline((p) => !p)}
+          className="w-fit h-fit px-0"
+        >
+          <IoCloseCircleSharp size={28} className="text-red-500" />
+        </Button>
+      )}
 
       {isApprove && (
         <ConfirmationModal
           buttonElement={
             <Button
-              onClick={approve}
+              onClick={activate}
               className="gap-x-2 text-white bg-basePrimary w-[130px]"
             >
               {loading && <Loader2Icon size={20} />}
-              <p>Approve</p>
+              <p>Activate</p>
             </Button>
           }
           descriptionElement={
             <p>
-              You are about to <b>approve</b> this partner, please confirm
+              You are about to <b>activate</b> this partner, please confirm
             </p>
           }
           titleElement={
             <p className="font-semibold text-basePrimary text-lg sm:text-xl">
-              Approve Partner
+              Activate Partner
             </p>
           }
           close={onApprove}
@@ -128,21 +131,21 @@ function ActionColumn({
         <ConfirmationModal
           buttonElement={
             <Button
-              onClick={decline}
+              onClick={deactivate}
               className="gap-x-2 bg-red-500 text-white w-[130px]"
             >
               {loading && <Loader2Icon size={20} />}
-              <p>Decline</p>
+              <p>Deactivate</p>
             </Button>
           }
           descriptionElement={
             <p>
-              You are about to <b>decline</b> this partner, please confirm
+              You are about to <b>deactivate</b> this partner, please confirm
             </p>
           }
           titleElement={
             <p className="font-semibold text-red-500 text-lg sm:text-xl">
-              Decline Partner
+              Deactivate Partner
             </p>
           }
           close={onDecline}
@@ -307,7 +310,7 @@ export function PartnerWidget({
         onClick={onClose}
         role="button"
         className={cn(
-          "w-full grid grid-cols-8 text-sm items-center gap-3 p-3 ",
+          "w-full grid grid-cols-9 text-sm items-center gap-3 p-3 ",
           className
         )}
       >
@@ -446,16 +449,15 @@ export function PartnerWidget({
             e.stopPropagation();
           }}
         >
-          {activeTab === 1 ? (
-            <ActionColumn refetch={refetch} partner={item} />
-          ) : (
-            <Switch
-              className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
-              disabled={loading}
-              checked={status}
-              onClick={() => submit(!item?.stampIt)}
-            />
-          )}
+          <Switch
+            className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
+            disabled={loading}
+            checked={status}
+            onClick={() => submit(!item?.stampIt)}
+          />
+        </td>
+        <td>
+          <ActionColumn refetch={refetch} partner={item} />
         </td>
       </tr>
       {isOpen && event && (

@@ -100,6 +100,15 @@ export async function POST(req: NextRequest) {
                 }</span></p>
               </div>
               </div>     
+              <div
+              style="
+               max-width: 600px;
+  
+                display: block;
+                padding-top: 1rem;
+                margin: 1rem auto;
+              "
+              >
         <p>Dear ${values?.companyName},</p>
 
 <p>We are delighted to confirm your registration to exhibit at <strong>${
@@ -121,6 +130,8 @@ export async function POST(req: NextRequest) {
         }</strong>!</p>
 
 <p>Best regards.</p>
+
+</div>
         
             <div
               style="
