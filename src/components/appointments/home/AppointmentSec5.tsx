@@ -8,7 +8,7 @@ export default function AppointmentSec5() {
         <p className="text-4xl text-white font-bold">
           Get Started with <span className="curly-snake-underline"> Zikoro Bookings</span> Today! {" "}
         </p>
-        <p className="text-white mt-[9px]">
+        <p className="text-white mt-4">
           Experience the ease and efficiency of our automated appointment
           scheduling. <span className="inline lg:block "> Sign up for a free trial to discover how Zikoro Bookings
           can transform your business! </span>

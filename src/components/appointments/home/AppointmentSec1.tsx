@@ -41,7 +41,7 @@ export default function AppointmentSec1() {
           <span className="font-medium">business owner, </span> or a{" "}
           <span className="font-medium">large enterprise, </span>
           Zikoro Bookings has the features you need to manage your appointments
-          effortlessly.. 
+          effortlessly... 
         </p>
       </div>
     </div>

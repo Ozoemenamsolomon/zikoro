@@ -25,22 +25,27 @@ export async function POST(req: NextRequest) {
       const linkCode = generateAlphanumericHash(7);
       const affiliateLink = `${process.env.NEXT_PUBLIC_HOME_URL}/live-events/${eventId}?affiliateCode=${linkCode}`;
 
-      let nodemailer = require("nodemailer");
-      const transporter = nodemailer.createTransport({
-        host: "smtp.zoho.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.NEXT_PUBLIC_EMAIL,
-          pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
-        },
+      var { SendMailClient } = require("zeptomail");
+      let client = new SendMailClient({
+        url: process.env.NEXT_PUBLIC_ZEPTO_URL,
+        token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
       });
 
-      const mailData = {
-        from: `${organizationName} <${process.env.NEXT_PUBLIC_EMAIL}>`,
-        to: affiliateEmail,
+      const resp = await client.sendMail({
+        from: {
+          address: process.env.NEXT_PUBLIC_EMAIL,
+          name: organizationName,
+        },
+        to: [
+          {
+            email_address: {
+              address: affiliateEmail,
+              name,
+            },
+          },
+        ],
         subject: "Your afiliate link is ready",
-        html: `<!DOCTYPE html>
+        htmlbody: `<!DOCTYPE html>
         <html lang="en">
         <head>
           <meta charset="UTF-8">
@@ -98,24 +103,17 @@ export async function POST(req: NextRequest) {
         </body>
         </html>
         `,
-      };
+      });
 
-      await transporter.sendMail(
-        mailData,
-        async function (err: any, info: any) {
-          if (err) {
-            throw err;
-          }
+      console.log(`Email sent to ${affiliateEmail}:`, resp);
 
-          const { error } = await supabase
-            .from("affiliateLinks")
-            .insert({ ...payload, linkCode, affiliateLink });
+      const { error } = await supabase
+        .from("affiliateLinks")
+        .insert({ ...payload, linkCode, affiliateLink });
 
-          console.log(error);
+      console.log(error);
 
-          if (error) throw error;
-        }
-      );
+      if (error) throw error;
 
       return NextResponse.json(
         { msg: "certificate saved successfully" },
