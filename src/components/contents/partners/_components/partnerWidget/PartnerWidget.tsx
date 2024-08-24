@@ -456,7 +456,11 @@ export function PartnerWidget({
             onClick={() => submit(!item?.stampIt)}
           />
         </td>
-        <td>
+        <td
+         onClick={(e) => {
+          e.stopPropagation();
+        }}
+        >
           <ActionColumn refetch={refetch} partner={item} />
         </td>
       </tr>
