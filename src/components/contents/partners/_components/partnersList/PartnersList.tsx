@@ -125,11 +125,11 @@ export function PartnersList({
     if (active === 1) {
       return partners.filter(
         (partner) =>
-          partner?.partnerStatus === "inactive" ||
+          partner?.partnerStatus === "active" ||
           partner?.partnerStatus === null
       );
     } else {
-      return partners.filter((partner) => partner?.partnerStatus === "active");
+      return partners.filter((partner) => partner?.partnerStatus === "inactive");
     }
   }, [active, partners]);
   return (
@@ -186,11 +186,11 @@ export function PartnersList({
                           className={cn(
                             "px-4 py-2",
                             active === tab?.id &&
-                              "text-basePrimary border-b border-basePrimary"
+                              "text-basePrimary font-medium border-b border-basePrimary"
                           )}
                           key={tab.id}
                         >
-                          {`${tab.name}(${tab.count})`}
+                          {`${tab.name} (${tab.count})`}
                         </button>
                       ))}
                     </div>
@@ -356,6 +356,13 @@ export function PartnersList({
                             key={`${item?.companyName}${index}`}
                           />
                         ))}
+                      {!loading &&
+                        Array.isArray(filteredPartners) &&
+                        filteredPartners?.length === 0 && (
+                          <tr className="w-full h-[300px] col-span-full flex items-center justify-center">
+                            <td className="font-medium">No Partner</td>
+                          </tr>
+                        )}
                     </tbody>
                   </table>
                 </div>
