@@ -13,7 +13,6 @@ import {
   startOfMonth,
   endOfMonth,
 } from "date-fns";
-import toast from "react-hot-toast";
 import OrganizationNavbar from "@/components/OrganizationNavbar";
 
 type DBFeaturedEvent = {
@@ -80,10 +79,6 @@ export default function Workspaces() {
   //clear filter button
   const clearFilterButton = () => {
     setSelectedButtons([]);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
   };
 
   useEffect(() => {
@@ -246,6 +241,9 @@ export default function Workspaces() {
         );
       });
     });
+
+    console.log("FilteredEventData:", eventData)
+
 
   return (
     <>
