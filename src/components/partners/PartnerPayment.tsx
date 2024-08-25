@@ -21,20 +21,26 @@ import Link from "next/link";
 import copy from "copy-to-clipboard";
 import { TbLoader3 } from "react-icons/tb";
 import { SlSocialLinkedin } from "react-icons/sl";
+
+type TEventData = {
+  eventName:string;
+  eventStartDate: string;
+  eventEndDate: string;
+  location: string;
+  eventPoster:string;
+  address: string;
+  organizerName:string;
+  currency: string;
+  organizerPhoneNumber: string;
+  organizerWhatsappNumber:string;
+
+}
 export default function PartnerPayment() {
   const router = useRouter();
   const params = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
   const data = params.get("p");
-  const eventName = params.get("eventName");
-  const startDate = params.get("startDate");
-  const endDate = params.get("endDate");
-  const location = params.get("location");
-  const eventPoster = params.get("eventPoster");
-  const address = params.get("address");
-  const organizerName = params.get("organizerName")
-  const currency = params.get("currency");
-
+  const eventData = params.get("e")
   const { addPartners, loading } = useAddPartners();
 
   const partnerData: Partial<TPartner> = useMemo(() => {
@@ -46,6 +52,16 @@ export default function PartnerPayment() {
       return null;
     }
   }, [data]);
+  const parsedEventData: TEventData | null = useMemo(() => {
+      if (eventData) {
+        const dataString = decodeURIComponent(eventData);
+        const decodedData = JSON.parse(dataString);
+        return decodedData;
+      }
+      else {
+        return null;
+      }
+  },[eventData])
 
   const config = paymentConfig({
     reference: partnerData?.paymentReference!,
@@ -55,19 +71,13 @@ export default function PartnerPayment() {
   });
 
   async function handleSuccess(reference: any) {
+    if (!parsedEventData) return;
     const payload = {
       ...partnerData,
     };
 
     const eventPayload = {
-      eventName: eventName!,
-      eventStartDate: startDate!,
-      eventEndDate: endDate!,
-      location: location!,
-      eventPoster: eventPoster!,
-      address: address!,
-      organizerName:organizerName!,
-      currency: currency!
+      ...parsedEventData
     };
 
     await addPartners(payload, eventPayload);
@@ -128,10 +138,10 @@ export default function PartnerPayment() {
       {isSuccess && (
         <PaymentSuccessModal
           partnerData={partnerData}
-          eventName={eventName}
-          startDate={startDate}
-          endDate={endDate}
-          location={location}
+          eventName={parsedEventData?.eventName!}
+          startDate={parsedEventData?.eventStartDate!}
+          endDate={parsedEventData?.eventEndDate!}
+          location={parsedEventData?.location!}
         />
       )}
       {loading && (

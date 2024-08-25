@@ -168,10 +168,11 @@ export function AddPartnerManually({
           companyLogo: image,
           partnerAlias,
           media: video,
-          partnerStatus: "pending",
+          partnerStatus: "active",
         };
-    const asynQuery = partner?.id ? update : addPartners;
-    await asynQuery(payload);
+  //  const asynQuery = partner?.id ? update : addPartners;
+   // await asynQuery(payload);
+await update(payload)
     setLoading(false);
     refetchPartners();
     close();

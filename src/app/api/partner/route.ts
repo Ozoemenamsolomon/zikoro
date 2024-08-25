@@ -100,6 +100,15 @@ export async function POST(req: NextRequest) {
                 }</span></p>
               </div>
               </div>     
+              <div
+              style="
+               max-width: 600px;
+  
+                display: block;
+                padding-top: 1rem;
+                margin: 1rem auto;
+              "
+              >
         <p>Dear ${values?.companyName},</p>
 
 <p>We are delighted to confirm your registration to exhibit at <strong>${
@@ -121,6 +130,8 @@ export async function POST(req: NextRequest) {
         }</strong>!</p>
 
 <p>Best regards.</p>
+
+</div>
         
             <div
               style="
@@ -155,6 +166,58 @@ export async function POST(req: NextRequest) {
                 }</p>
               </div>
             </div>
+
+              <div
+              style="
+                max-width: 600px;
+                margin:0 auto;
+                display: block;
+                padding-top: 1rem;
+                margin: 1rem auto;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #b4b4b4;
+              "
+            >
+              <p style="font-size: 14px; color: #b4b4b4">
+                Do you have question regarding the event? Speak with the event team.
+              </p>
+      
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  flex-direction: row;
+                  gap: 0.75rem;
+                "
+              >
+              <a style="margin-right:15px;" href="mailto:${
+                organizerEmail
+              }">
+               <img src="https://firebasestorage.googleapis.com/v0/b/preem-whatsapp-cloning-cd897.appspot.com/o/images%2Ficons8-mail-48.png?alt=media&token=4e723639-4f5a-4fcc-965d-7d6ce04e203c" style="width:30px; height:30px;" >
+              </a>
+                <a style="margin-right:15px;" target="_blank" href="tel:${
+                  event?.organizerPhoneNumber
+                }">
+                 <img src="https://firebasestorage.googleapis.com/v0/b/preem-whatsapp-cloning-cd897.appspot.com/o/images%2Ficons8-call-50.png?alt=media&token=d2ccb51a-5888-4d6a-ac8d-c893333a520f" style="width:30px; height:30px;">
+                </a>
+                <a style="margin-right:15px;" href="https://wa.me/${
+                  event?.organizerWhatsappNumber
+                }">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/preem-whatsapp-cloning-cd897.appspot.com/o/images%2Ficons8-whatsapp-50.png?alt=media&token=5c8670a2-a222-4034-bff6-d3d9d6e53350" style="width:30px; height:30px;" >
+                </a>
+               
+              </div>
+            </div>
+
+             <div style="max-width:600px; margin:0 auto; font-size: 14px; color: #b4b4b4">
+              This event is managed by ${event?.organizerName} and powered by
+              <a href="www.zikoro.com" style="color: #001fcc">Zikoro</a>. For assistance, visit our
+              <a href="www.zikoro.com/help" style="color: #001fcc">help center</a>.
+            </div>
+            <div
+            style="max-width:600px; margin:0.3rem auto; font-size: 14px; text-align:center;"
+            ><a href="#" style="color: #001fcc; text-decoration: none;">Privacy Policy </a> | <a href="#" style="text-decoration: none; color: #001fcc">Terms and Conditions</a></div>
+
         </div>`,
         attachments: [
           {

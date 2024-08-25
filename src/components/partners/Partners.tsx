@@ -283,7 +283,7 @@ export function Partners({ eventId }: { eventId: string }) {
             />
 
             <div className="flex items-center">
-              <div className="relative w-80 h-12">
+              <div className="relative w-[18rem] h-12">
                 <Search size={22} className="absolute top-3 left-2" />
                 <Input
                   type="text"

@@ -125,7 +125,7 @@ export function AddPartners({
       phoneNumber: values.phoneNumber,
       companyLogo: image,
       partnerAlias,
-      partnerStatus: "pending",
+      partnerStatus: "active",
       amountPaid: total,
       currency: partnerTier?.currency,
       tierName: partnerTier?.tierName,
@@ -142,26 +142,24 @@ export function AddPartners({
       eventPoster: eventData?.eventPoster!,
       address: eventData?.eventAddress!,
       organizerName: organization?.organizationName!,
-      currency: partnerTier?.currency
+      currency: partnerTier?.currency,
+      organizerPhoneNumber: organization?.eventPhoneNumber!,
+      organizerWhatsappNumber: organization?.eventWhatsApp!,
     };
 
     if (total === 0) {
       await addPartners(payload, eventPayload);
     } else {
       const encodedData = encodeURIComponent(JSON.stringify(payload));
+      const encodedEventPayload = encodeURIComponent(
+        JSON.stringify(eventPayload)
+      );
       window.open(
-        `/partner-payment?p=${encodedData}&eventName=${
-          eventData?.eventTitle
-        }&startDate=${eventData?.startDateTime}&endDate=${
-          eventData?.endDateTime
-        }&location=${`${eventData?.eventCity}, ${eventData?.eventCountry}&eventPoster=${eventData?.eventPoster}&address=${eventData?.eventAddress}&organizerName=${organization?.organizationName}&currency=${partnerTier?.currency}`}`,
+        `/partner-payment?p=${encodedData}&e=${encodedEventPayload}`,
         "_self"
       );
     }
     setLoading(false);
-
-    // await addPartners(payload)
-    // close();
   }
 
   const countriesList = useMemo(() => {
