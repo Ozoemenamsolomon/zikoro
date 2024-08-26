@@ -242,9 +242,6 @@ export default function Workspaces() {
       });
     });
 
-    console.log("FilteredEventData:", eventData)
-
-
   return (
     <>
       {eventData && eventData.length > 0 && (

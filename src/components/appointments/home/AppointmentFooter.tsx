@@ -4,8 +4,8 @@ import Image from "next/image";
 
 export default function AppointmentFooter() {
   return (
-    <div className="mt-[186px] bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end ">
-      <div className="py-4 lg:py-[41px] px-5 flex justify-between items-center max-w-full lg:max-w-[1235px] mx-auto ">
+    <div className="mt-[186px] bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end max-w-full xl:max-w-[97rem] mx-auto">
+      <div className="py-4 lg:py-[41px] lg:max-w-[970px] xl:max-w-[1200px] mx-auto flex justify-between items-center  ">
         {/* left */}
         <Image
           src="/appointments/logoFooter.png"
