@@ -27,7 +27,7 @@ export default function AppointmentSec1() {
         className="w-[138px] h-[px] absolute bottom-0 lg:left-4 xl:left-16"
       />
       <div className="max-w-[1019px] mx-auto">
-        <p className=" lg:text-[80px] xl:text-[90px] font-extrabold gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-center leading-none">
+        <p className=" lg:text-[90px] xl:text-[90px] font-extrabold gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end text-center leading-none">
           Effortless Bookings, <span className="">Happier Clients</span>
         </p>
         <p className="max-w-full lg:max-w-[698px] mx-auto text-center text-base font-normal mt-5 lg:mt-10">

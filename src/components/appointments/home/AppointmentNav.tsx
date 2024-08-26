@@ -4,8 +4,8 @@ import { ChevronDown } from "styled-icons/bootstrap";
 
 const AppointmentNav = () => {
   return (
-    <div className="pt-6 hidden lg:block ">
-      <div className=" bg-white flex items-center max-w-[1239px] py-6 px-[36px] rounded-[64px] justify-between mx-auto shadow ">
+    <div className="py-6 hidden lg:block ">
+      <div className=" bg-white flex items-center lg:max-w-[970px] xl:max-w-[1165px] py-3 px-[36px] rounded-[64px] justify-between mx-auto shadow ">
         {/* logo */}
         <Image src="/appointments/zikoroB.png" width={115} height={40} alt="" />
 
