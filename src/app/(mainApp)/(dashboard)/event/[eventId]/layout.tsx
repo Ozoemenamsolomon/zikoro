@@ -60,7 +60,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       !isWithinInterval(new Date(), {
         start: event.startDateTime,
         end: event.endDateTime,
-      })
+      }) ||
+      !event.selfCheckInAllowed
     )
       return;
 
@@ -139,7 +140,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <>
           {children}
 
-          <Dialog open={!isCheckedInToday}>
+          <Dialog open={!isCheckedInToday && event && event.selfCheckInAllowed}>
             <DialogContent>
               <DialogHeader>
                 <span className="text-2xl font-bold">Check In Required</span>
