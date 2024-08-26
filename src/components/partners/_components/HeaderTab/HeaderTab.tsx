@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { PlusCircle } from "styled-icons/bootstrap";
 import { AddPartners } from "..";
+import { AddPartnerManually } from "../modals/AddPartnerManually";
 
 export function HeaderTab({
   eventId,
@@ -24,7 +25,7 @@ export function HeaderTab({
   }
   return (
     <>
-      <div className="flex pr-4 py-1 items-center pl-[60px] lg:pl-[18px] justify-between w-full  border-b ">
+      <div className="flex bg-white pr-4 py-1 items-center pl-[60px] lg:pl-[18px] justify-between w-full  border-b ">
         <div className="flex items-center gap-x-3 sm:gap-x-8 text-sm">
           <Button
             onClick={() =>
@@ -59,7 +60,7 @@ export function HeaderTab({
       </div>
 
       {isOpen && (
-        <AddPartners
+        <AddPartnerManually
           refetchPartners={refetch}
           close={onClose}
           eventId={eventId}

@@ -31,6 +31,9 @@ type TEventData = {
   address: string;
   organizerName:string;
   currency: string;
+  organizerPhoneNumber: string;
+  organizerWhatsappNumber:string;
+
 }
 export function useAddPartners() {
   const [loading, setLoading] = useState(false);

@@ -5,6 +5,7 @@ import { AddPartners } from "@/components/partners/_components";
 import { EditOutline } from "@styled-icons/evaicons-outline/EditOutline";
 import { useState } from "react";
 import { TPartner } from "@/types";
+import { AddPartnerManually } from "@/components/partners/_components/modals/AddPartnerManually";
 
 export function Edit({
   partner,
@@ -26,7 +27,7 @@ export function Edit({
       </Button>
 
       {isOpen && partner && (
-        <AddPartners
+        <AddPartnerManually
           eventId={partner?.eventAlias}
           close={onClose}
           partner={partner}

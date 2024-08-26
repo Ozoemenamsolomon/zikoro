@@ -35,7 +35,7 @@ export function Sponsors({
 
   const approvedPartners = useMemo(() => {
     return (
-      data?.filter(({ partnerStatus }) => partnerStatus === "verified") || []
+      data?.filter(({ partnerStatus }) => partnerStatus === "active") || []
     );
   }, [data]);
   return (

@@ -105,21 +105,31 @@ export function PartnersList({
     setSelectedRows([]);
   }
   const tabs = [
-    { id: 1, name: "Awaiting Approval" },
-    { id: 2, name: "Partners" },
+    { id: 1, name: "Active Partners", count: 0 },
+    { id: 2, name: "Inactive Partners", count: 0 },
   ];
 
   const filteredPartners = useMemo(() => {
+    if (Array.isArray(partners)) {
+      const activePartners = partners?.filter(
+        ({ partnerStatus }) => partnerStatus === "active"
+      )?.length;
+      tabs?.map((tab) => {
+        return {
+          ...tab,
+          count:
+            tab?.id === 1 ? activePartners : partners?.length - activePartners,
+        };
+      });
+    }
     if (active === 1) {
       return partners.filter(
         (partner) =>
-          partner?.partnerStatus === "pending" ||
+          partner?.partnerStatus === "active" ||
           partner?.partnerStatus === null
       );
     } else {
-      return partners.filter(
-        (partner) => partner?.partnerStatus === "verified"
-      );
+      return partners.filter((partner) => partner?.partnerStatus === "inactive");
     }
   }, [active, partners]);
   return (
@@ -133,10 +143,8 @@ export function PartnersList({
           <div className="w-full h-full  flex flex-col">
             {Array.isArray(partners) && partners?.length > 0 && (
               <div className="flex gap-x-2 items-center self-end">
-                <Button
-                onClick={onShare}
-                className="px-0 w-fit h-fit">
-                  <CiShare2 size={22}/>
+                <Button onClick={onShare} className="px-0 w-fit h-fit">
+                  <CiShare2 size={22} />
                   <p>Share</p>
                 </Button>
                 <Button
@@ -178,11 +186,11 @@ export function PartnersList({
                           className={cn(
                             "px-4 py-2",
                             active === tab?.id &&
-                              "text-basePrimary border-b border-basePrimary"
+                              "text-basePrimary font-medium border-b border-basePrimary"
                           )}
                           key={tab.id}
                         >
-                          {tab.name}
+                          {`${tab.name} (${tab.count})`}
                         </button>
                       ))}
                     </div>
@@ -232,7 +240,7 @@ export function PartnersList({
                       {!loading &&
                         Array.isArray(partners) &&
                         partners?.length > 0 && (
-                          <tr className="w-full  bg-basePrimary/10 grid grid-cols-8 text-sm font-semibold  items-center bg-gray-100 gap-3 px-3 py-4 ">
+                          <tr className="w-full  bg-basePrimary/10 grid grid-cols-9 text-sm font-semibold  items-center bg-gray-100 gap-3 px-3 py-4 ">
                             <td className="text-start col-span-2 w-full">
                               <label className=" w-full flex  relative items-center gap-x-2">
                                 <input
@@ -254,6 +262,7 @@ export function PartnersList({
                             <td className="text-start">Exhibiton Hall</td>
                             <td className="text-start">Booth</td>
                             <td className="text-start">StampCard</td>
+                            <td className="text-start">Actions</td>
                           </tr>
                         )}
                     </thead>
@@ -347,6 +356,13 @@ export function PartnersList({
                             key={`${item?.companyName}${index}`}
                           />
                         ))}
+                      {/* {!loading &&
+                        Array.isArray(filteredPartners) &&
+                        filteredPartners?.length === 0 && (
+                          <tr className="w-full h-[300px] col-span-full flex items-center justify-center">
+                            <td className="font-medium">No Partner</td>
+                          </tr>
+                        )} */}
                     </tbody>
                   </table>
                 </div>
@@ -385,7 +401,7 @@ export function PartnersList({
           text={`https://zikoro.com/live-events/${eventId}/partners?e=${dataString}`}
           close={onShare}
           eventId={eventId}
-          header={'Share Partner Registration Page'}
+          header={"Share Partner Registration Page"}
         />
       )}
     </>

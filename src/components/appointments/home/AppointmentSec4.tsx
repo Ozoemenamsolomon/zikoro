@@ -27,7 +27,7 @@ export default function AppointmentSec4() {
 
           <div className="flex justify-end mt-[50px]">
             <Image
-              src="/appointments/section41.png"
+              src="/appointments/section41.webp"
               width={489}
               height={243}
               alt=""
@@ -50,7 +50,7 @@ export default function AppointmentSec4() {
 
           <div className="flex justify-end mt-[50px]">
             <Image
-              src="/appointments/section42.png"
+              src="/appointments/section42.webp"
               width={489}
               height={243}
               alt=""
@@ -77,7 +77,7 @@ export default function AppointmentSec4() {
 
           <div className="flex justify-end mt-[40px]">
             <Image
-              src="/appointments/section43.png"
+              src="/appointments/section43.webp"
               width={489}
               height={243}
               alt=""
@@ -101,7 +101,7 @@ export default function AppointmentSec4() {
 
           <div className="flex justify-end mt-[40px]">
             <Image
-              src="/appointments/section44.png"
+              src="/appointments/section44.webp"
               width={327}
               height={295}
               alt=""
@@ -124,7 +124,7 @@ export default function AppointmentSec4() {
 
           <div className="flex justify-end mt-[40px]">
             <Image
-              src="/appointments/section45.png"
+              src="/appointments/section45.webp"
               width={386}
               height={378}
               alt=""
