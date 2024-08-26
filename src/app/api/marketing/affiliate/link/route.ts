@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
           {
             email_address: {
               address: affiliateEmail,
-              name,
+              name: "affiliate name",
             },
           },
         ],
@@ -154,7 +154,8 @@ export async function GET(req: NextRequest) {
       // Query for affiliateLinks with optional filters
       const affiliateLinksQuery = supabase
         .from("affiliateLinks")
-        .select("*, affiliate!inner(*)");
+        .select("*, affiliate!inner(*)")
+        .eq("isUsed", true);
 
       if (eventId) affiliateLinksQuery.eq("eventId", eventId);
       if (userId) affiliateLinksQuery.eq("userId", userId);
@@ -174,20 +175,18 @@ export async function GET(req: NextRequest) {
         await supabase
           .from("eventTransactions")
           .select("*")
-          .in("affiliateCode", affiliateLinkCodes);
+          .in("affiliateCode", affiliateLinkCodes)
+          .eq("registrationCompleted", true);
 
       if (eventTransactionsError) throw eventTransactionsError;
 
       // Combine the results based on affiliateLinkId
-      const combinedData = affiliateLinksData
-        .map((link) => ({
-          ...link,
-          eventTransactions: eventTransactionsData.filter(
-            (transaction) => transaction.affiliateCode === link.linkCode
-          ),
-        }))
-        // Filter out any affiliateLinks without associated eventTransactions
-        .filter((link) => link.eventTransactions.length > 0);
+      const combinedData = affiliateLinksData.map((link) => ({
+        ...link,
+        eventTransactions: eventTransactionsData.filter(
+          (transaction) => transaction.affiliateCode === link.linkCode
+        ),
+      }));
 
       return NextResponse.json(
         { data: combinedData },

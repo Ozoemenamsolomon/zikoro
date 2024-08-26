@@ -562,6 +562,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const eventId = searchParams.get("eventId");
     const userId = searchParams.get("userId");
+    const email = searchParams.get("email");
 
     try {
       const query = supabase
@@ -569,6 +570,7 @@ export async function GET(req: NextRequest) {
         .select("*")
         .order("registrationDate", { ascending: false });
 
+      if (email) query.eq("email", email);
       if (eventId) query.eq("eventAlias", eventId);
       if (userId) query.eq("userId", userId);
 

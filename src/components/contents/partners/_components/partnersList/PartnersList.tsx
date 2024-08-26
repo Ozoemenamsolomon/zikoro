@@ -356,13 +356,13 @@ export function PartnersList({
                             key={`${item?.companyName}${index}`}
                           />
                         ))}
-                      {!loading &&
+                      {/* {!loading &&
                         Array.isArray(filteredPartners) &&
                         filteredPartners?.length === 0 && (
                           <tr className="w-full h-[300px] col-span-full flex items-center justify-center">
                             <td className="font-medium">No Partner</td>
                           </tr>
-                        )}
+                        )} */}
                     </tbody>
                   </table>
                 </div>

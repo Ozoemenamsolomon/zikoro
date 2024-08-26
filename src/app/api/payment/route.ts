@@ -119,6 +119,7 @@ export async function POST(req: NextRequest) {
         })
         .eq("trackingId", trackingId);
 
+      let linkIsUsed = false;
       //create new user
       for (const attendee of attendeesDetails) {
         console.log("check hallo");
@@ -134,6 +135,7 @@ export async function POST(req: NextRequest) {
 
         // user does not exist
         if (!existingUser) {
+          linkIsUsed = true;
           const { error: errorCreatingUser, status: statusCreatingUser } =
             await supabase.from("users").insert({
               firstName: attendee?.firstName,
@@ -141,12 +143,22 @@ export async function POST(req: NextRequest) {
               userEmail: attendee?.email,
               phoneNumber: attendee?.phoneNumber,
               created_at: new Date().toISOString(),
-              affiliateCode,
               inviteSource: "affiliate",
             });
 
           console.log("creating status:", statusCreatingUser);
           console.log("error", errorCreatingUser?.message);
+        }
+      }
+
+      if (linkIsUsed) {
+        const { error: updateLinkError } = await supabase
+          .from("affiliateLinks")
+          .update({ isUsed: linkIsUsed })
+          .eq("linkCode", affiliateCode);
+
+        if (updateLinkError) {
+          console.log(`error fetching user`);
         }
       }
 
