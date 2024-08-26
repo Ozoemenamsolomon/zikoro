@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function AppointmentSec3() {
   return (
-    <div className="mt-[120px] lg:mt-[164px] hidden lg:flex gap-x-[18px] max-w-full xl:max-w-[97rem] mx-auto">
+    <div className="mt-[90px] lg:mt-[164px] hidden lg:flex gap-x-[18px] max-w-full xl:max-w-[97rem] mx-auto">
       {/* Image1 */}
       <div className="w-full lg:w-1/3 xl:w-1/4">
         <Image
@@ -49,6 +49,8 @@ export default function AppointmentSec3() {
           className="w-full h-[504px]"
         />
       </div>
+
+      {/* slider */}
     </div>
   );
 }
