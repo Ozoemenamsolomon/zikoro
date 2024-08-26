@@ -171,6 +171,7 @@ export const useGetAttendees = ({
 };
 
 export const useGetAttendee = ({
+  userId,
   attendeeId,
   isAlias = false,
 }: {
@@ -202,6 +203,42 @@ export const useGetAttendee = ({
   useEffect(() => {
     getAttendee();
   }, [attendeeId]);
+
+  return { attendee, isLoading, error, getAttendee };
+};
+
+export const useGetAttendeeWithEmail = ({
+  email,
+  eventId,
+}: {
+  email: string;
+  eventId: string;
+}) => {
+  const [attendee, setAttendee] = useState<TAttendee | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const getAttendee = async () => {
+    try {
+      setLoading(true);
+      const { data, status } = await getRequest<TAttendee[]>({
+        endpoint: `/attendees?email=${email}&eventId=${eventId}`,
+      });
+
+      if (status !== 200) {
+        throw data;
+      }
+      setAttendee(data.data[0]);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAttendee();
+  }, [email, eventId]);
 
   return { attendee, isLoading, error, getAttendee };
 };
