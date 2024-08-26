@@ -23,17 +23,18 @@ type FormValue = {
   attendeePayProcessingFee: boolean;
   explore: boolean;
   eventAppAccess: string;
+  selfCheckInAllowed: boolean;
 };
 export function ContentSetting({
   onClose,
   eventId,
   parentClassName,
-  childClassName
+  childClassName,
 }: {
   eventId: string | any;
   onClose?: () => void;
-  parentClassName?:string;
-  childClassName?:string;
+  parentClassName?: string;
+  childClassName?: string;
 }) {
   const { update, loading } = useUpdateEvent();
   const [settings, setSettings] =
@@ -41,7 +42,7 @@ export function ContentSetting({
   const { data }: { data: Event | null; loading: boolean } =
     useFetchSingleEvent(eventId);
   const form = useForm<FormValue>({});
-  
+
   function formatDate(date: Date): string {
     return date.toISOString();
   }
@@ -80,6 +81,7 @@ export function ContentSetting({
   const processingFeeStatus = form.watch("attendeePayProcessingFee");
   const exploreStatus = form.watch("explore");
   const appAccess = form.watch("eventAppAccess");
+  const selfCheckInAllowed = form.watch("selfCheckInAllowed");
 
   function handleChange(title: string) {
     const updated = settings?.map((item) => {
@@ -128,19 +130,27 @@ export function ContentSetting({
     <div
       onClick={onClose}
       role="button"
-      className={cn("w-full h-full inset-0 z-[200] bg-white/50 fixed", parentClassName)}
+      className={cn(
+        "w-full h-full inset-0 z-[200] bg-white/50 fixed",
+        parentClassName
+      )}
     >
       <div
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className={cn("w-[95%] max-h-[85%] overflow-y-auto max-w-2xl m-auto inset-0 absolute rounded-lg bg-white py-6 px-4 sm:px-6 shadow", childClassName)}
+        className={cn(
+          "w-[95%] max-h-[85%] overflow-y-auto max-w-2xl m-auto inset-0 absolute rounded-lg bg-white py-6 px-4 sm:px-6 shadow",
+          childClassName
+        )}
       >
         <div className="w-full flex items-center mb-6 justify-between">
           <h2 className="text-base sm:text-xl">Content Settings</h2>
-         {!childClassName && <Button onClick={onClose}>
-            <CloseOutline size={22} />
-          </Button>}
+          {!childClassName && (
+            <Button onClick={onClose}>
+              <CloseOutline size={22} />
+            </Button>
+          )}
         </div>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -184,6 +194,22 @@ export function ContentSetting({
             </div>
           </div>
 
+          <div className="grid w-full grid-cols-12 gap-3 items-start">
+            <Switch
+              onClick={() =>
+                form.setValue("selfCheckInAllowed", !selfCheckInAllowed)
+              }
+              checked={selfCheckInAllowed}
+              disabled={loading}
+              className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary "
+            />
+            <div className="flex flex-col items-start w-full col-span-11 justify-start gap-y-1">
+              <h2 className="text-base sm:text-xl">Enable Self Check-in</h2>
+              <p className="text-gray-500 text-start text-xs sm:text-sm">
+                Allow attendees to check in by themselves everyday of the event.
+              </p>
+            </div>
+          </div>
           <div className="flex flex-col w-full items-start justify-start">
             <h2 className="text-base mb-2 sm:text-xl">
               When should user access your event app

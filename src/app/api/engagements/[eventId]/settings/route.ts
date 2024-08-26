@@ -21,8 +21,6 @@ export async function GET(
 
       const { data, error, status } = await query;
 
-      console.log(data, eventId);
-
       if (error) {
         return NextResponse.json(
           {

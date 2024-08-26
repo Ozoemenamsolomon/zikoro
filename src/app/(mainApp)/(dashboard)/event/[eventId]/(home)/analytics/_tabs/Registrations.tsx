@@ -465,7 +465,9 @@ const Registrations = () => {
       </section>
       <section className="grid md:grid-cols-2 gap-8">
         <section className="bg-white py-4 px-4 md:px-8 space-y-4 border rounded-md h-full overflow-hidden">
-          <h2 className="text-gray-600 font-medium text-sm">Referral Link Performance</h2>
+          <h2 className="text-gray-600 font-medium text-sm">
+            Referral Link Performance
+          </h2>
           <div className="flex flex-col gap-2 no-scrollbar">
             {affiliateLinks &&
               affiliateLinks
@@ -485,7 +487,7 @@ const Registrations = () => {
                 )
                 .map(({ eventTransactions, linkCode, affiliate }) => (
                   <div className="flex items-center gap-4">
-                    <div className="flex flex-col text-gray-700 font-medium flex-[70%]">
+                    <div className="flex flex-col text-gray-700 font-medium flex-[60%]">
                       <span className="capitalize">
                         {affiliate?.firstName + " " + affiliate?.lastname}
                       </span>
@@ -495,6 +497,16 @@ const Registrations = () => {
                     </div>
                     <span className="text-gray-900 font-medium flex-[20%]">
                       {linkCode}
+                    </span>
+                    <span className="text-gray-900 font-medium flex-[10%]">
+                      {formatNumberToShortHand(
+                        eventTransactions
+                          ? eventTransactions.reduce(
+                              (acc, { amountPaid }) => acc + amountPaid,
+                              0
+                            )
+                          : 0
+                      )}
                     </span>
                     <span className="text-gray-900 font-medium flex-[10%]">
                       {eventTransactions
