@@ -140,7 +140,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <>
           {children}
 
-          <Dialog open={!isCheckedInToday && event && event.selfCheckInAllowed}>
+          <Dialog open={!isCheckedInToday && !!event && !!event.selfCheckInAllowed}>
             <DialogContent>
               <DialogHeader>
                 <span className="text-2xl font-bold">Check In Required</span>
