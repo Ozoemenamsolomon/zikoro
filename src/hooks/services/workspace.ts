@@ -149,7 +149,7 @@ export function useUpdateSubdomain(workspaceId: number, workspaceSubdomain: stri
         return false;
       }
       if (status === 204 || status === 200) {
-        toast.success('Updated Successfully');
+        toast.success('SubDomain Updated Successfully');
       }
     } catch (error) {
       console.log(error)
@@ -160,68 +160,17 @@ export function useUpdateSubdomain(workspaceId: number, workspaceSubdomain: stri
   };
 }
 
-
-export function useCreateTeamMember(workspaceId: number) {
-  const [currentTeamMembers, setCurrentTeamMembers] = useState<any>({})
-  async function createTeamMember(payload?: any) {
-    try {
-      if (payload) {
-        const { data, error } = await supabase
-          .from('organization')
-          .update(payload)
-          .eq("id", workspaceId);
-
-        if (error) {
-          toast.error(error.message)
-        }
-        toast.success('Team Member Added Successfully');
-        setCurrentTeamMembers(data);
-      } else {
-        const { data, error, status } = await supabase
-          .from("organization")
-          .select()
-          .eq("id", workspaceId)
-          .single();
-
-        if (error) {
-          if (status === 406) { // Status 406 means no rows found
-            setCurrentTeamMembers({ teamMembers: [] }); // Set an empty team members array
-            toast.error("No team members found.");
-          } else {
-            toast.error(error.message);
-          }
-          return false;
-        }
-
-        if (status === 204 || status == 200) {
-          setCurrentTeamMembers(data);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  }
-
-  useEffect(() => {
-    createTeamMember();
-  }, [workspaceId]);
-
-  return {
-    currentTeamMembers,
-    createTeamMember,
-  };
-}
-
-
-export function useDeleteTeamMember(workspaceId: number) {
+export function useTeamMembers(workspaceId: number) {
   const [currentTeamMembers, setCurrentTeamMembers] = useState<any>({ teamMembers: [] });
+  const [editingTeamMember, setEditingTeamMember] = useState<any>(null);
 
+
+  // Fetch team members from the database
   async function fetchTeamMembers() {
     try {
       const { data, error, status } = await supabase
         .from("organization")
-        .select()
+        .select("teamMembers")
         .eq("id", workspaceId)
         .single();
 
@@ -237,6 +186,34 @@ export function useDeleteTeamMember(workspaceId: number) {
     }
   }
 
+  // Create a new team member
+  async function createTeamMember(newTeamMember: any) {
+    try {
+      const updatedTeamMembers = {
+        ...currentTeamMembers,
+        teamMembers: [...currentTeamMembers?.teamMembers, newTeamMember],
+      };
+
+      const { data, error } = await supabase
+        .from("organization")
+        .update(updatedTeamMembers)
+        .eq("id", workspaceId)
+        .select()
+        .single();
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      setCurrentTeamMembers(data);
+      toast.success("Team Member Added Successfully");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // Delete a team member
   async function deleteTeamMember(memberId: string) {
     try {
       const teamMembers = currentTeamMembers.teamMembers || [];
@@ -246,6 +223,7 @@ export function useDeleteTeamMember(workspaceId: number) {
         .from("organization")
         .update({ teamMembers: updatedTeamMembers })
         .eq("id", workspaceId)
+        .select()
         .single();
 
       if (error) {
@@ -254,7 +232,7 @@ export function useDeleteTeamMember(workspaceId: number) {
       }
 
       setCurrentTeamMembers(data);
-      toast.success("Team member removed successfully");
+      toast.error("Team member deleted successfully");
       return true;
     } catch (error) {
       console.error(error);
@@ -266,8 +244,53 @@ export function useDeleteTeamMember(workspaceId: number) {
     fetchTeamMembers();
   }, [workspaceId]);
 
+
+  async function editTeamMember(memberId: string, updatedMemberData: any) {
+    try {
+      const updatedTeamMembers = currentTeamMembers.teamMembers.map((member: any) =>
+        member.id === memberId ? { ...member, ...updatedMemberData } : member
+      );
+
+      const { data, error } = await supabase
+        .from("organization")
+        .update({ teamMembers: updatedTeamMembers })
+        .eq("id", workspaceId)
+        .select()
+        .single();
+
+      if (error) {
+        toast.error(error.message);
+        return false;
+      }
+
+      setCurrentTeamMembers(data);
+      toast.success("Team member updated successfully");
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  function selectTeamMemberForEditing(memberId: string) {
+    const memberToEdit = currentTeamMembers.teamMembers.find((member: any) => member.id === memberId);
+    setEditingTeamMember(memberToEdit);
+  }
+
+  useEffect(() => {
+    fetchTeamMembers();
+  }, [workspaceId]);
+
   return {
     currentTeamMembers,
+    createTeamMember,
     deleteTeamMember,
+    editingTeamMember,
+    selectTeamMemberForEditing,
+    editTeamMember,
   };
 }
+
+
+
+

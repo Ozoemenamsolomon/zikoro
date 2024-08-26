@@ -8,7 +8,7 @@ type RequestStatus = {
 };
 
 type UseGetResult<TData> = {
-  data: TData | null;
+  data: TData;
   getData: () => Promise<TData | undefined>;
 } & RequestStatus;
 
@@ -22,9 +22,10 @@ type usePostResult<TData, TReturnData = any> = {
 
 export const useGetData = <TData>(
   endpoint: string,
-  fetchInitial: boolean = true
+  fetchInitial: boolean = true,
+  defaultValue: any = null
 ): UseGetResult<TData> => {
-  const [data, setData] = useState<TData | null>(null);
+  const [data, setData] = useState<TData>(defaultValue);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 

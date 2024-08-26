@@ -60,7 +60,6 @@ export default function FeaturedEvents() {
   );
   const [filterCategories, setFilterCategories] = useState<string[]>([]);
   const [filterLocationType, setFilterLocationType] = useState<string[]>([]);
-  const [filterDate, setFilterDate] = useState<string[]>([]);
   const [filterCountry, setFilterCountry] = useState<string[]>([]);
   const [filterCity, setFilterCity] = useState<string[]>([]);
 
@@ -97,7 +96,7 @@ export default function FeaturedEvents() {
 
   useEffect(() => {
     if (query) {
-      setSelectedButtons(query.split(","));
+      setSelectedButtons([query]);
     }
   }, [query]);
 
@@ -117,7 +116,6 @@ export default function FeaturedEvents() {
   //button selection
   const handleButtonClick = (text: string) => {
     const isSelected = selectedButtons.includes(text);
-
     if (isSelected) {
       setSelectedButtons(selectedButtons.filter((button) => button !== text));
     } else {
@@ -128,11 +126,14 @@ export default function FeaturedEvents() {
   useEffect(() => {
     //fetching event categories
     if (eventData) {
-      const categories: string[] = eventData.map(
-        (event) => event.eventCategory
-      );
+      const categories: string[] = eventData
+        .map((event) => event.eventCategory && event.eventCategory)
+        .filter((category) => category !== null && category !== undefined);
       setFilterCategories(categories);
     }
+
+    console.log("FilterCategories = ", filterCategories);
+
     //fetching event location type
     if (eventData) {
       const filtertype: string[] = eventData.map((event) => event.locationType);
@@ -183,9 +184,9 @@ export default function FeaturedEvents() {
     ?.filter((event) => {
       const lowerSearchQuery = searchQuery.toLowerCase();
       return (
-        event.eventTitle.toLowerCase().includes(lowerSearchQuery) ||
-        event.eventCity.toLowerCase().includes(lowerSearchQuery) ||
-        event.eventCategory.toLowerCase().includes(lowerSearchQuery)
+        event?.eventTitle?.toLowerCase()?.includes(lowerSearchQuery) ||
+        event?.eventCity?.toLowerCase()?.includes(lowerSearchQuery) ||
+        event?.eventCategory?.toLowerCase()?.includes(lowerSearchQuery)
       );
     })
     .filter((event) => {
@@ -198,10 +199,10 @@ export default function FeaturedEvents() {
       }
 
       const eventProps = {
-        locationType: event.locationType.toLowerCase(),
-        eventCountry: event.eventCountry.toLowerCase(),
-        eventCity: event.eventCity.toLowerCase(),
-        eventCategory: event.eventCategory.toLowerCase(),
+        locationType: event.locationType?.toLowerCase(),
+        eventCountry: event.eventCountry?.toLowerCase(),
+        eventCity: event.eventCity?.toLowerCase(),
+        eventCategory: event.eventCategory?.toLowerCase(),
       };
 
       // Date filtering
@@ -459,25 +460,27 @@ export default function FeaturedEvents() {
                     <div className=" border-t-[1px] border-gray-200 border-l-[1px] border-r-[1px] w-full lg:w-9/12 py-[3px] ">
                       {/* top */}
                       <div className="flex">
-                        <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] ">
-                          {filterCategories
-                            .filter(
-                              (category, i, self) =>
-                                self.indexOf(category) === i
-                            )
-                            .map((category) => (
-                              <div
-                                className={`py-[18px] px-5 w-auto cursor-pointer text-sm border-[1px] rounded-lg whitespace-nowrap ${
-                                  selectedButtons.includes(category)
-                                    ? "bg-zikoroBlue text-white"
-                                    : "border-gray-200 bg-white text-black"
-                                }`}
-                                onClick={() => handleButtonClick(category)}
-                              >
-                                {category}
-                              </div>
-                            ))}
-                        </div>
+                        {filterCategories && filterCategories.length > 0 && (
+                          <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] ">
+                            {filterCategories
+                              .filter(
+                                (category, i, self) =>
+                                  self.indexOf(category) === i
+                              )
+                              .map((category) => (
+                                <div
+                                  className={`py-[18px] px-5 w-auto cursor-pointer text-sm border-[1px] rounded-lg whitespace-nowrap ${
+                                    selectedButtons.includes(category)
+                                      ? "bg-zikoroBlue text-white"
+                                      : "border-gray-200 bg-white text-black"
+                                  }`}
+                                  onClick={() => handleButtonClick(category)}
+                                >
+                                  {category}
+                                </div>
+                              ))}
+                          </div>
+                        )}
                       </div>
 
                       {/* bottom h-[1485px] */}
@@ -555,24 +558,27 @@ export default function FeaturedEvents() {
                     </div>
 
                     <div className="mt-7">
-                      <div className=" px-4 flex w-auto items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] border-y-[1px] border-gray-200 ">
-                        {filterCategories
-                          .filter(
-                            (category, i, self) => self.indexOf(category) === i
-                          )
-                          .map((category) => (
-                            <div
-                              className={`py-[18px] px-5 w-auto cursor-pointer text-sm border-[1px] rounded-lg whitespace-nowrap ${
-                                selectedButtons.includes(category)
-                                  ? "bg-zikoroBlue text-white"
-                                  : "border-gray-200 bg-white text-black"
-                              }`}
-                              onClick={() => handleButtonClick(category)}
-                            >
-                              {category}
-                            </div>
-                          ))}
-                      </div>
+                      {filterCategories && filterCategories.length > 0 && (
+                        <div className=" px-4 flex w-auto items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] border-y-[1px] border-gray-200 ">
+                          {filterCategories
+                            .filter(
+                              (category, i, self) =>
+                                self.indexOf(category) === i
+                            )
+                            .map((category) => (
+                              <div
+                                className={`py-[18px] px-5 w-auto cursor-pointer text-sm border-[1px] rounded-lg whitespace-nowrap ${
+                                  selectedButtons.includes(category)
+                                    ? "bg-zikoroBlue text-white"
+                                    : "border-gray-200 bg-white text-black"
+                                }`}
+                                onClick={() => handleButtonClick(category)}
+                              >
+                                {category}
+                              </div>
+                            ))}
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex flex-col items-center mt-16 mb-20 ">

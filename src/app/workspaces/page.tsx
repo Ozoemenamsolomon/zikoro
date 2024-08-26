@@ -13,7 +13,6 @@ import {
   startOfMonth,
   endOfMonth,
 } from "date-fns";
-import toast from "react-hot-toast";
 import OrganizationNavbar from "@/components/OrganizationNavbar";
 
 type DBFeaturedEvent = {
@@ -82,10 +81,6 @@ export default function Workspaces() {
     setSelectedButtons([]);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
-
   useEffect(() => {
     //fetch events from database
     async function fetchEventFeautured() {
@@ -137,9 +132,9 @@ export default function Workspaces() {
   useEffect(() => {
     //fetching event categories
     if (eventData) {
-      const categories: string[] = eventData.map(
-        (event) => event.eventCategory
-      );
+      const categories: string[] = eventData
+        .map((event) => event.eventCategory)
+        .filter((category) => category !== null && category !== undefined);
       setFilterCategories(categories);
     }
     //fetching event location type
@@ -193,11 +188,11 @@ export default function Workspaces() {
       const lowerSearchQuery = searchQuery?.toLowerCase();
       return (
         event.organization.organizationName
-          .toLowerCase()
-          .includes(lowerSearchQuery ?? "") ||
+          ?.toLowerCase()
+          ?.includes(lowerSearchQuery ?? "") ||
         event.organization.subDomain
           ?.toLowerCase()
-          .includes(lowerSearchQuery ?? "")
+          ?.includes(lowerSearchQuery ?? "")
       );
     })
     .filter((event) => {
@@ -210,10 +205,10 @@ export default function Workspaces() {
       }
 
       const eventProps = {
-        locationType: event.locationType.toLowerCase(),
-        eventCountry: event.eventCountry.toLowerCase(),
-        eventCity: event.eventCity.toLowerCase(),
-        eventCategory: event.eventCategory.toLowerCase(),
+        locationType: event.locationType?.toLowerCase(),
+        eventCountry: event.eventCountry?.toLowerCase(),
+        eventCity: event.eventCity?.toLowerCase(),
+        eventCategory: event.eventCategory?.toLowerCase(),
       };
 
       // Date filtering
@@ -246,6 +241,9 @@ export default function Workspaces() {
         );
       });
     });
+
+    console.log("FilteredEventData:", eventData)
+
 
   return (
     <>

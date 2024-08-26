@@ -77,7 +77,7 @@ export function OfferCard({
   }
   return (
     <>
-      <div className="w-full h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
+      <div className="w-full h-fit pb-3 flex flex-col bg-white shadow border rounded-md  gap-y-2 items-start">
         <div className="relative w-full h-40 sm:h-56 rounded-t-md overflow-hidden">
           {offer?.productImage ? (
             <Image
@@ -338,6 +338,7 @@ function ActionWidget({
         eventPartnerAlias: offer?.partnerId,
         title: offer?.serviceTitle,
         note: values?.note,
+        offerAmount: Number(offer?.productPromo)
       },
     };
     if (

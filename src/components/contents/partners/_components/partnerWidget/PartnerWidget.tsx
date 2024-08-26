@@ -5,7 +5,7 @@ import { ArrowIosDownward } from "styled-icons/evaicons-solid";
 import { Phone } from "styled-icons/feather";
 import { cn } from "@/lib";
 import { Switch } from "@/components/ui/switch";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, ReactNode } from "react";
 import { DropDownSelect } from "@/components/contents/_components";
 import { Event, TPartner } from "@/types";
 import { CloseOutline } from "styled-icons/evaicons-outline";
@@ -17,7 +17,143 @@ import {
   useUpdatePartners,
 } from "@/hooks";
 import { EmailIcon, WhatsappIcon } from "@/constants";
-import { AddPartners } from "@/components/partners/_components";
+import { IoCheckmarkCircle, IoCloseCircleSharp } from "react-icons/io5";
+import { Button } from "@/components";
+import { MdClose } from "react-icons/md";
+import { AddPartnerManually } from "@/components/partners/_components/modals/AddPartnerManually";
+import { Loader2Icon } from "lucide-react";
+
+function ConfirmationModal({
+  titleElement,
+  descriptionElement,
+  buttonElement,
+  close,
+}: {
+  titleElement: ReactNode;
+  descriptionElement: ReactNode;
+  buttonElement: ReactNode;
+  close: () => void;
+}) {
+  return (
+    <div className="w-full h-full inset-0 fixed bg-black/20 z-[100]">
+      <div className="absolute inset-0 shadow gap-y-4 box-animation bg-white rounded-lg m-auto h-fit max-w-xl flex flex-col items-center justify-center py-4 px-4">
+        <Button
+          onClick={close}
+          className="px-0 self-end w-11 rounded-full
+         h-11 bg-gray-200"
+        >
+          <MdClose size={22} />
+        </Button>
+        <div>{titleElement}</div>
+        <div>{descriptionElement}</div>
+        <div className="mt-3">{buttonElement}</div>
+      </div>
+    </div>
+  );
+}
+function ActionColumn({
+  partner,
+  refetch,
+}: {
+  refetch: () => Promise<any>;
+  partner: TPartner;
+}) {
+  const [isApprove, setIsApprove] = useState(false);
+  const [isDecline, setIsDecline] = useState(false);
+  const { update } = useUpdatePartners();
+  const [loading, setLoading] = useState(false);
+
+  function onDecline() {
+    setIsDecline((p) => !p);
+  }
+  function onApprove() {
+    setIsApprove((p) => !p);
+  }
+
+  async function activate() {
+    setLoading(true);
+    await update({ ...partner, partnerStatus: "active" });
+
+    setLoading(false);
+    refetch();
+    onApprove();
+  }
+  async function deactivate() {
+    setLoading(true);
+    await update({ ...partner, partnerStatus: "inactive" });
+    setLoading(false);
+    refetch();
+    onDecline();
+  }
+  return (
+    <div className="flex items-center ">
+      {partner?.partnerStatus === "inactive" ? (
+        <Button
+          onClick={() => setIsApprove((p) => !p)}
+          className="w-fit h-fit  px-0"
+        >
+          <IoCheckmarkCircle size={28} className="text-basePrimary" />
+        </Button>
+      ) : (
+        <Button
+          onClick={() => setIsDecline((p) => !p)}
+          className="w-fit h-fit px-0"
+        >
+          <IoCloseCircleSharp size={28} className="text-red-500" />
+        </Button>
+      )}
+
+      {isApprove && (
+        <ConfirmationModal
+          buttonElement={
+            <Button
+              onClick={activate}
+              className="gap-x-2 text-white bg-basePrimary w-[130px]"
+            >
+              {loading && <Loader2Icon size={20} />}
+              <p>Activate</p>
+            </Button>
+          }
+          descriptionElement={
+            <p>
+              You are about to <b>activate</b> this partner, please confirm
+            </p>
+          }
+          titleElement={
+            <p className="font-semibold text-basePrimary text-lg sm:text-xl">
+              Activate Partner
+            </p>
+          }
+          close={onApprove}
+        />
+      )}
+      {isDecline && (
+        <ConfirmationModal
+          buttonElement={
+            <Button
+              onClick={deactivate}
+              className="gap-x-2 bg-red-500 text-white w-[130px]"
+            >
+              {loading && <Loader2Icon size={20} />}
+              <p>Deactivate</p>
+            </Button>
+          }
+          descriptionElement={
+            <p>
+              You are about to <b>deactivate</b> this partner, please confirm
+            </p>
+          }
+          titleElement={
+            <p className="font-semibold text-red-500 text-lg sm:text-xl">
+              Deactivate Partner
+            </p>
+          }
+          close={onDecline}
+        />
+      )}
+    </div>
+  );
+}
 
 export function PartnerWidget({
   item,
@@ -27,6 +163,7 @@ export function PartnerWidget({
   selectRowFn,
   selectedRows,
   partners,
+  activeTab,
 }: {
   className: string;
   item: TPartner;
@@ -35,6 +172,7 @@ export function PartnerWidget({
   selectRowFn: (value: number) => void;
   selectedRows: number[];
   partners: TPartner[];
+  activeTab: number;
 }) {
   const [boothList, setBoothList] = useState<string[]>([]);
   const [status, setStatus] = useState(item?.stampIt);
@@ -172,7 +310,7 @@ export function PartnerWidget({
         onClick={onClose}
         role="button"
         className={cn(
-          "w-full grid grid-cols-8 text-sm items-center gap-3 p-3 ",
+          "w-full grid grid-cols-9 text-sm items-center gap-3 p-3 ",
           className
         )}
       >
@@ -243,7 +381,7 @@ export function PartnerWidget({
             e.stopPropagation();
           }}
         >
-          {item?.partnerType.toLowerCase() === "sponsor" ? (
+          {/* {item?.partnerType.toLowerCase() === "sponsor" ? (
             <DropDownSelect handleChange={handleSelectedLevel} data={levelList}>
               <button className="flex relative items-center gap-x-1">
                 <p className="w-fit text-start text-ellipsis whitespace-nowrap overflow-hidden">
@@ -254,7 +392,8 @@ export function PartnerWidget({
             </DropDownSelect>
           ) : (
             <p className="w-1 h-1"></p>
-          )}
+          )} */}
+          <p>{item?.tierName ?? ""}</p>
         </td>
 
         <td
@@ -317,9 +456,16 @@ export function PartnerWidget({
             onClick={() => submit(!item?.stampIt)}
           />
         </td>
+        <td
+         onClick={(e) => {
+          e.stopPropagation();
+        }}
+        >
+          <ActionColumn refetch={refetch} partner={item} />
+        </td>
       </tr>
       {isOpen && event && (
-        <AddPartners
+        <AddPartnerManually
           refetchPartners={refetch}
           close={onClose}
           eventId={event?.eventAlias}

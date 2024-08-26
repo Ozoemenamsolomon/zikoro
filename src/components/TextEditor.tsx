@@ -145,7 +145,7 @@ export default function TextEditor({
       formats={quillFormats}
       theme="snow"
       placeholder={placeholder || "Enter description"}
-      className="w-full bg-white ql-container focus:ring-1 ring-black h-[200px]"
+      className="w-full bg-white ql-container focus:ring-1 ring-black"
     />
   );
 }

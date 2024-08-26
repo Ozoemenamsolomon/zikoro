@@ -75,7 +75,7 @@
   }
   html,
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background w-full h-full text-foreground;
    
    margin: 0; 
   }
@@ -191,7 +191,7 @@
 
 .ql-container.ql-snow {
   border: 1px solid #f3f3f3 !important;
-  height: 480px;
+  height: 516px;
   border-top: none;
   font-size: 14px;
   border-radius: 0px 0px 8px 8px;
@@ -210,6 +210,14 @@
   pointer-events: none;
   position: absolute;
   right: 15px;
+}
+
+.ql-container.ql-snow {
+  border: 1px solid #f3f3f3 !important;
+  height: 480px;
+  border-top: none;
+  font-size: 14px;
+  border-radius: 0px 0px 8px 8px;
 }
 
 .banner .slick-dots {
@@ -257,41 +265,41 @@
   -webkit-box-orient: vertical;
 }
 
-.innerhtml h1 {
+.partner-innerhtml h1 {
   font-size: 2em;
 }
-.innerhtml h2 {
+.partner-innerhtml h2 {
   font-size: 1.5em;
 }
-.innerhtml h3 {
+.partner-innerhtml h3 {
   font-size: 1.17em;
 }
-.innerhtml h4 {
+.partner-innerhtml h4 {
   font-size: 1em;
 }
-.innerhtml h5 {
+.partner-innerhtml h5 {
   font-size: 0.83em;
 }
-.innerhtml h6 {
+.partner-innerhtml h6 {
   font-size: 0.67em;
 }
 
 /* Unordered List */
-.innerhtml ul {
+.partner-innerhtml ul {
   list-style-type: disc; /* Default filled circle */
   padding-left: 2rem;
 }
 
 /* Ordered List */
-.innerhtml ol {
+.partner-innerhtml ol {
   list-style-type: decimal; /* Default decimal numbers */
   padding-left: 2rem;
 }
-.innerhtml ul li {
+.partner-innerhtml ul li {
   padding-bottom: 2rem;
 }
 
-.innerhtml ol li {
+.partner-innerhtml ol li {
   padding-bottom: 2rem;
 }
 
@@ -375,15 +383,53 @@ input[type="number"] {
   aspect-ratio: unset;
 }
 
+.innerhtml h1 {
+  font-size: 2em;
+}
+.innerhtml h2 {
+  font-size: 1.5em;
+}
+.innerhtml h3 {
+  font-size: 1.17em;
+}
+.innerhtml h4 {
+  font-size: 1em;
+}
+.innerhtml h5 {
+  font-size: 0.83em;
+}
+.innerhtml h6 {
+  font-size: 0.67em;
+}
+
+/* Unordered List */
+.innerhtml ul {
+  list-style-type: disc; /* Default filled circle */
+  padding-left: 2rem;
+}
+
+/* Ordered List */
+.innerhtml ol {
+  list-style-type: decimal; /* Default decimal numbers */
+  padding-left: 2rem;
+}
+.innerhtml ul li {
+  padding-bottom: 2rem;
+}
+
+.innerhtml ol li {
+  padding-bottom: 2rem;
+}
+
 /* DatePicker.css */
 .react-datepicker {
   font-family: Arial, sans-serif;
-  border: 1px solid #7c4dff; /* Set border color to a lighter shade of indigo */
+  
 }
 
-.react-datepicker__header {
+/* .react-datepicker__header {
   background-color: #7c4dff; /* Set header background color to a lighter shade of indigo */
-}
+
 
 .react-datepicker__day--selected {
   background-color: #7c4dff !important; /* Set selected day background color to a lighter shade of indigo */
@@ -403,19 +449,19 @@ input[type="number"] {
   ); /* Set hover background color to a light gray */
 }
 
-.react-datepicker__current-month {
+/* .react-datepicker__current-month {
   color: #7c4dff; /* Set current month text color to a lighter shade of indigo */
-}
 
-.react-datepicker__day-name,
+
+/* .react-datepicker__day-name,
 .react-datepicker__day {
   color: #7c4dff; /* Set day name and day text color to a lighter shade of indigo */
-}
 
-.react-datepicker__navigation--previous,
+
+/* .react-datepicker__navigation--previous,
 .react-datepicker__navigation--next {
   border-color: #7c4dff; /* Set navigation button border color to a lighter shade of indigo */
-}
+
 
 .react-datepicker__navigation--previous:hover,
 .react-datepicker__navigation--next:hover {
@@ -497,6 +543,44 @@ input[type="number"] {
 /* make the left side pointed on the choose plan section */
 .clip-triangle {
   clip-path: polygon(100% 0, 0 50%, 100% 100%);
+}
+
+
+.partner-description-input .quill {
+  width: 100%;
+  /* border-radius: 8px; */
+}
+
+.partner-description-input .quill .ql-editor {
+  height: 100%;
+}
+
+.partner-description-input .quill > .ql-container > .ql-editor.ql-blank::before {
+  color: #d4d4d4;
+}
+
+.partner-description-input .ql-container.ql-snow {
+  border: 1px solid #f3f3f3 !important;
+  height: 20rem;
+  border-top: none;
+  font-size: 14px;
+  border-radius: 0px 0px 8px 8px;
+}
+
+.partner-description-input .ql-toolbar.ql-snow {
+  border-radius: 8px 8px 0px 0px;
+  border: 1px solid #f3f3f3 !important;
+  background: #001fcc1a;
+}
+
+.partner-description-input .ql-editor.ql-blank::before {
+  color: rgba(0, 0, 0, 0.6);
+  content: attr(data-placeholder);
+  font-size: 14px;
+  left: 15px;
+  pointer-events: none;
+  position: absolute;
+  right: 15px;
 }
 
 .interaction-input .quill {
@@ -661,4 +745,20 @@ input[type="number"] {
 
 .label {
   @apply text-base font-medium pb-1
+}
+
+.curly-snake-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.curly-snake-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -10px; /* Increases the space between the underline and the text */
+  height: 30px; /* Increases the height (width) of the underline */
+  background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 20"%3E%3Cpath fill="none" stroke="%23FFFFFF" stroke-width="2" d="M0 10 Q 25 20 50 10 T 100 10 T 150 10 T 200 10" /%3E%3C/svg%3E') repeat-x;
+  background-size: 180px 50px; /* Adjusts the width of the curly pattern */
 }

@@ -1,6 +1,10 @@
 "use client";
 import { attendeeTypeOptions } from "@/data/attendee";
-import { useGetAttendees, useGetEventTransactions } from "@/hooks";
+import {
+  useGetAffiliateLinks,
+  useGetAttendees,
+  useGetEventTransactions,
+} from "@/hooks";
 import TargetIcon from "@/public/icons/Target";
 import useEventStore from "@/store/globalEventStore";
 import { COUNTRY_CODE, formatNumberToShortHand } from "@/utils";
@@ -41,39 +45,7 @@ import {
 } from "@/components/ui/select";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { useGetData } from "@/hooks/services/request";
-
-const AnalyticsInfoCard = ({
-  label,
-  Icon,
-  value,
-  mutedText,
-}: {
-  Icon: (props: any) => React.JSX.Element;
-  label: string;
-  value: string | number;
-  mutedText?: ReactNode;
-}) => {
-  return (
-    <div className="p-4 rounded-md bg-white border flex items-center">
-      <div className="flex items-center justify-center flex-[30%]">
-        <div className="bg-basePrimary/20 p-4 rounded-full h-fit w-fit">
-          <Icon className="h-10 w-10 text-basePrimary" />
-        </div>
-      </div>
-      <div className="flex-[70%] flex flex-col gap-2">
-        <h3 className="font-medium text-gray-600 capitalize">{label}</h3>
-        <div className="flex items-end gap-2">
-          <h4 className="text-4xl font-medium text-gray-800">{value}</h4>
-          {mutedText && (
-            <span className="font-medium text-gray-500 capitalize">
-              {mutedText}
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+import { AnalyticsInfoCard } from "../page";
 
 const Registrations = () => {
   const { eventId } = useParams();
@@ -91,6 +63,8 @@ const Registrations = () => {
   } = useGetEventTransactions({
     eventId,
   });
+  const { affiliateLinks } = useGetAffiliateLinks({ eventId });
+
   const { data: recurringData, isLoading: recurringIsLoading } = useGetData(
     `/events/${eventId}/analytics/recurring?organizationId=${organization?.id}`
   );
@@ -128,8 +102,13 @@ const Registrations = () => {
     (eventTransactions.filter(({ discountCode }) => discountCode).length /
       eventTransactions.length) *
     100;
-  const registrationViaReferrals = 0;
-  const revenueViaReferrals = "0";
+  console.log(eventTransactions.filter(({ id }) => id === 706));
+  const registrationViaReferrals = eventTransactions
+    .filter(({ affiliateCode }) => affiliateCode)
+    .reduce((acc, { attendees }) => (attendees || 0) + acc, 0);
+  const revenueViaReferrals = eventTransactions
+    .filter(({ affiliateCode }) => affiliateCode)
+    .reduce((acc, { amountPaid }) => (amountPaid || 0) + acc, 0);
   const eventStartDateToNow = useMemo(() => {
     const dateFn =
       displayLineChart === "monthly"
@@ -320,7 +299,7 @@ const Registrations = () => {
             <img className="h-10 w-10" src={moneyUp.src} alt={"money up"} />
           )}
           label={"Revenue via referrals"}
-          value={revenueViaReferrals}
+          value={formatNumberToShortHand(revenueViaReferrals)}
         />
         <AnalyticsInfoCard
           Icon={() => (
@@ -363,22 +342,6 @@ const Registrations = () => {
             </SelectContent>
           </Select>
         </div>
-        {/* <div className="flex">
-          {timeDivisions.map((timeDivision, index) => (
-            <button
-              key={index}
-              className={cn(
-                `flex-1 p-2 text-sm text-center border border-basePrimary transition-all duration-150`,
-                displayLineChart === timeDivision
-                  ? "text-white bg-basePrimary"
-                  : "text-basePrimary bg-transparent"
-              )}
-              onClick={() => setDisplayLineChart(timeDivision)}
-            >
-              {timeDivision}
-            </button>
-          ))}
-        </div> */}
         <LineChart
           colors={["#001FCC"]}
           sx={{
@@ -458,7 +421,7 @@ const Registrations = () => {
         </LineChart>
       </section>
       <section className="grid md:grid-cols-2 gap-8">
-        <section className="bg-white p-4 space-y-4 border rounded-md h-full max-h-[250px] overflow-hidden">
+        <section className="bg-white py-4 px-4 md:px-8 space-y-4 border rounded-md h-full max-h-[250px] overflow-hidden">
           <h2 className="text-gray-600 font-medium text-sm">
             Returning Attendees
           </h2>
@@ -476,7 +439,7 @@ const Registrations = () => {
                 ))}
           </div>
         </section>
-        <section className="bg-white p-4 space-y-4 border rounded-md h-full max-h-[250px]">
+        <section className="bg-white py-4 px-4 md:px-8 space-y-4 border rounded-md h-full max-h-[250px]">
           <h2 className="text-gray-600 font-medium text-sm">
             Attendees By Country
           </h2>
@@ -500,34 +463,80 @@ const Registrations = () => {
           </div>
         </section>
       </section>
-      <section className="bg-white p-4 space-y-4 border rounded-md">
-        <h2 className="text-gray-600 font-medium text-sm">
-          Registrations By Attendee Type
-        </h2>
-        <BarChart
-          yAxis={[
-            {
-              scaleType: "band",
-              data: attendeeTypes,
-              categoryGapRatio: 0.5,
-              barGapRatio: 0.5,
-            },
-          ]}
-          series={[
-            { data: attendeeCounts, stack: "total", color: "#001FCC" },
-            { data: attendeeOffsets, stack: "total", color: "#001FCC33" },
-          ]}
-          xAxis={[{ tickMinStep: 1 }]}
-          layout="horizontal"
-          grid={{ vertical: true }}
-          margin={{ left: 100, top: 5 }}
-          leftAxis={{ disableLine: true, disableTicks: true }}
-          bottomAxis={{ disableLine: true, tickSize: 10 }}
-          borderRadius={20}
-          height={400}
-        />
+      <section className="grid md:grid-cols-2 gap-8">
+        <section className="bg-white py-4 px-4 md:px-8 space-y-4 border rounded-md h-full overflow-hidden">
+          <h2 className="text-gray-600 font-medium text-sm">Referral Link Performance</h2>
+          <div className="flex flex-col gap-2 no-scrollbar">
+            {affiliateLinks &&
+              affiliateLinks
+                .filter(({ eventTransactions }) => eventTransactions)
+                .sort(
+                  (a, b) =>
+                    (b.eventTransactions &&
+                      b.eventTransactions.reduce(
+                        (acc, { attendees }) => acc + attendees,
+                        0
+                      )) -
+                    (a.eventTransactions &&
+                      a.eventTransactions.reduce(
+                        (acc, { attendees }) => acc + attendees,
+                        0
+                      ))
+                )
+                .map(({ eventTransactions, linkCode, affiliate }) => (
+                  <div className="flex items-center gap-4">
+                    <div className="flex flex-col text-gray-700 font-medium flex-[70%]">
+                      <span className="capitalize">
+                        {affiliate?.firstName + " " + affiliate?.lastname}
+                      </span>
+                      <span className="text-gray-600 text-xs">
+                        {affiliate?.email}
+                      </span>
+                    </div>
+                    <span className="text-gray-900 font-medium flex-[20%]">
+                      {linkCode}
+                    </span>
+                    <span className="text-gray-900 font-medium flex-[10%]">
+                      {eventTransactions
+                        ? eventTransactions.reduce(
+                            (acc, { attendees }) => acc + attendees,
+                            0
+                          )
+                        : 0}
+                    </span>
+                  </div>
+                ))}
+          </div>
+        </section>
+        <section className="bg-white py-4 px-4 md:px-8 space-y-4 border rounded-md">
+          <h2 className="text-gray-600 font-medium text-sm">
+            Registrations By Attendee Type
+          </h2>
+          <BarChart
+            yAxis={[
+              {
+                scaleType: "band",
+                data: attendeeTypes,
+                categoryGapRatio: 0.5,
+                barGapRatio: 0.5,
+              },
+            ]}
+            series={[
+              { data: attendeeCounts, stack: "total", color: "#001FCC" },
+              { data: attendeeOffsets, stack: "total", color: "#001FCC33" },
+            ]}
+            xAxis={[{ tickMinStep: 1 }]}
+            layout="horizontal"
+            grid={{ vertical: true }}
+            margin={{ left: 100, top: 5 }}
+            leftAxis={{ disableLine: true, disableTicks: true }}
+            bottomAxis={{ disableLine: true, tickSize: 10 }}
+            borderRadius={20}
+            height={400}
+          />
+        </section>
       </section>
-      <section className="bg-white p-4 space-y-4 border rounded-md">
+      <section className="bg-white py-4 px-4 md:px-8 space-y-4 border rounded-md">
         <h2 className="text-gray-600 font-medium text-sm">
           Sales by Ticket Type
         </h2>
@@ -553,7 +562,7 @@ const Registrations = () => {
           </tbody>
         </table>
       </section>
-      <section className="bg-white p-4 space-y-4 border rounded-md">
+      <section className="bg-white py-4 px-4 md:px-8 space-y-4 border rounded-md">
         <h2 className="text-gray-600 font-medium text-sm">
           How Attendees Found You
         </h2>

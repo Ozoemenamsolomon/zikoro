@@ -12,6 +12,9 @@ export async function GET(req: NextRequest) {
         .select("*")
         .eq("published", true)
         .eq("explore", true)
+        .gte("startDateTime", new Date().toISOString()) // Filter non-expired events
+        .order('startDateTime', { ascending: true }) // Assuming you have a timestamp column to get the latest entry
+
 
 
       if (error) throw error;

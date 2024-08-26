@@ -75,8 +75,8 @@ export function About({
   return (
     <div
       className={cn(
-        "w-full  hidden flex-col sm:flex gap-y-6 sm:gap-y-20",
-        isEventDetailPage && "flex"
+        "w-full bg-white hidden flex-col sm:flex gap-y-6 sm:gap-y-20",
+        isEventDetailPage && "flex py-3 "
       )}
     >
       <div

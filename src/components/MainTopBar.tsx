@@ -40,10 +40,11 @@ const MainTopBar = ({
   eventId: string;
   userOrganizations: TOrganization[];
 }) => {
+  const pathname = usePathname().split("/");
   const router = useRouter();
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
-  const pathname = usePathname().split("/");
+
   const { organization, setOrganization } = useOrganizationStore();
   const { event, setEvent } = useEventStore();
   // console.log(pathname);

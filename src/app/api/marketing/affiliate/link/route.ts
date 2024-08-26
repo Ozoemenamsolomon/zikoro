@@ -12,8 +12,6 @@ export async function POST(req: NextRequest) {
 
       const { affiliateName, organizationName, eventPoster, payload } = params;
 
-      const linkCode = generateAlphanumericHash(7);
-
       const {
         affiliateEmail,
         eventName,
@@ -21,25 +19,33 @@ export async function POST(req: NextRequest) {
         validity,
         commissionType,
         commissionValue,
-        affiliateLink,
+        eventId,
       } = payload;
 
-      let nodemailer = require("nodemailer");
-      const transporter = nodemailer.createTransport({
-        host: "smtp.zoho.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.NEXT_PUBLIC_EMAIL,
-          pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
-        },
+      const linkCode = generateAlphanumericHash(7);
+      const affiliateLink = `${process.env.NEXT_PUBLIC_HOME_URL}/live-events/${eventId}?affiliateCode=${linkCode}`;
+
+      var { SendMailClient } = require("zeptomail");
+      let client = new SendMailClient({
+        url: process.env.NEXT_PUBLIC_ZEPTO_URL,
+        token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
       });
 
-      const mailData = {
-        from: `${organizationName} <${process.env.NEXT_PUBLIC_EMAIL}>`,
-        to: affiliateEmail,
+      const resp = await client.sendMail({
+        from: {
+          address: process.env.NEXT_PUBLIC_EMAIL,
+          name: organizationName,
+        },
+        to: [
+          {
+            email_address: {
+              address: affiliateEmail,
+              name,
+            },
+          },
+        ],
         subject: "Your afiliate link is ready",
-        html: `<!DOCTYPE html>
+        htmlbody: `<!DOCTYPE html>
         <html lang="en">
         <head>
           <meta charset="UTF-8">
@@ -97,30 +103,17 @@ export async function POST(req: NextRequest) {
         </body>
         </html>
         `,
-      };
+      });
 
-      
+      console.log(`Email sent to ${affiliateEmail}:`, resp);
 
-      await transporter.sendMail(
-        mailData,
-        async function (err: any, info: any) {
-          if (err) {
-            
-            throw err;
-          }
+      const { error } = await supabase
+        .from("affiliateLinks")
+        .insert({ ...payload, linkCode, affiliateLink });
 
-          
-          const { error } = await supabase
-            .from("affiliateLinks")
-            .insert({ ...payload, linkCode });
+      console.log(error);
 
-          
-
-          if (error) throw error;
-
-          
-        }
-      );
+      if (error) throw error;
 
       return NextResponse.json(
         { msg: "certificate saved successfully" },
@@ -151,22 +144,53 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
+
   if (req.method === "GET") {
     try {
       const { searchParams } = new URL(req.url);
       const userId = searchParams.get("userId");
+      const eventId = searchParams.get("eventId");
 
-      const { data, error, status } = await supabase
+      // Query for affiliateLinks with optional filters
+      const affiliateLinksQuery = supabase
         .from("affiliateLinks")
-        .select("*, affiliate!inner(*)")
-        .eq("userId", userId);
+        .select("*, affiliate!inner(*)");
 
-       
+      if (eventId) affiliateLinksQuery.eq("eventId", eventId);
+      if (userId) affiliateLinksQuery.eq("userId", userId);
 
-      if (error) throw error;
+      const { data: affiliateLinksData, error: affiliateLinksError } =
+        await affiliateLinksQuery;
+
+      if (affiliateLinksError) throw affiliateLinksError;
+
+      // Extract the IDs of affiliateLinks to use in the second query
+      const affiliateLinkCodes = affiliateLinksData.map(
+        (link) => link.linkCode
+      );
+
+      // Query for eventTransactions that match the affiliateLinkIds
+      const { data: eventTransactionsData, error: eventTransactionsError } =
+        await supabase
+          .from("eventTransactions")
+          .select("*")
+          .in("affiliateCode", affiliateLinkCodes);
+
+      if (eventTransactionsError) throw eventTransactionsError;
+
+      // Combine the results based on affiliateLinkId
+      const combinedData = affiliateLinksData
+        .map((link) => ({
+          ...link,
+          eventTransactions: eventTransactionsData.filter(
+            (transaction) => transaction.affiliateCode === link.linkCode
+          ),
+        }))
+        // Filter out any affiliateLinks without associated eventTransactions
+        .filter((link) => link.eventTransactions.length > 0);
 
       return NextResponse.json(
-        { data },
+        { data: combinedData },
         {
           status: 200,
         }

@@ -122,7 +122,7 @@ export function PaymentModal({
       chosenCurrency
     )}&coupon=${encodeURIComponent(couponText)}
     &orgId=${encodeURIComponent(orgId)}
-    &redirectUrl=${encodeURIComponent(window.location.href)}`;
+    &redirectUrl=${encodeURIComponent('/workspace/general')}`;
     router.push(url);
   };
 
@@ -249,7 +249,7 @@ export function PaymentModal({
                         <PaymentTick /> RSVP responses & tracking
                       </li>
                       <li className="flex gap-x-2 text-[14px] font-normal items-center ">
-                        <PaymentTick /> Data inport/export
+                        <PaymentTick /> Data import/export
                       </li>
                       <li className="flex gap-x-2 text-[14px] font-normal items-center ">
                         <PaymentTick /> 3 Live quiz, 3 polls & Unlimited Q&A

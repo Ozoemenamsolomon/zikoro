@@ -7,7 +7,7 @@ import { Search } from "styled-icons/evil";
 import useSearch from "@/hooks/common/useSearch";
 import { Sponsors } from "./sponsors/Sponsors";
 import { Exhibitors } from "./sponsors/Exhibitors";
-import { useFetchPartners } from "@/hooks";
+import { useFetchPartners, useFetchSingleEvent } from "@/hooks";
 import { useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { extractUniqueTypes } from "@/utils/helpers";
@@ -19,6 +19,7 @@ import { cn } from "@/lib";
 
 export function Partners({ eventId }: { eventId: string }) {
   const { data, loading, refetch } = useFetchPartners(eventId);
+  const {data: event} = useFetchSingleEvent(eventId)
   const search = useSearchParams();
   const query = search.get("p");
 
@@ -250,6 +251,16 @@ export function Partners({ eventId }: { eventId: string }) {
     );
   }, [data, searchedData]);
 
+  const singleEvent = useMemo(() => {
+      if (event !== null) {
+        const {organization, ...restData} = event
+        return restData
+      }
+      else {
+        return null
+      }
+  },[event])
+
   return (
     <div className="w-full pb-24">
       <HeaderTab eventId={eventId} refetch={refetch} />
@@ -272,7 +283,7 @@ export function Partners({ eventId }: { eventId: string }) {
             />
 
             <div className="flex items-center">
-              <div className="relative w-80 h-12">
+              <div className="relative w-[18rem] h-12">
                 <Search size={22} className="absolute top-3 left-2" />
                 <Input
                   type="text"
@@ -288,12 +299,12 @@ export function Partners({ eventId }: { eventId: string }) {
         </div>
       </div>
 
-      {query === "sponsors" && (
-        <Sponsors eventId={eventId} sponsors={sponsors} loading={loading} />
+      {query === "sponsors" && singleEvent && (
+        <Sponsors event={singleEvent} sponsors={sponsors} loading={loading} />
       )}
-      {query === "exhibitors" && (
+      {query === "exhibitors" && singleEvent && (
         <Exhibitors
-          eventId={eventId}
+        event={singleEvent}
           exhibitors={exhibitors}
           loading={loading}
         />

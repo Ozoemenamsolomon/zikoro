@@ -48,6 +48,10 @@ export const columns: ColumnDef<TAffiliateLink>[] = [
     accessorKey: "affiliateEmail",
   },
   {
+    header: "Code",
+    accessorKey: "linkCode",
+  },
+  {
     header: "Registrations",
     accessorFn: (row) =>
       row.eventTransactions

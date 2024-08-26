@@ -107,6 +107,10 @@ export function HeaderWidget({
                         }
                   }
                   options={formattedList}
+                  borderColor="#001fcc"
+                  bgColor="#001fcc1a"
+                 // height="3rem"
+                  placeHolderColor="#64748b"
                   placeHolder="Select Organization"
                 />
               )}

@@ -76,7 +76,9 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-    
+      screens:{
+        'xs': '380px'
+      },
       backgroundImage: {
         basePrimary: 'linear-gradient(to right, #001FCC 0%, #9D00FF 100%)'
       },

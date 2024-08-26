@@ -38,7 +38,7 @@ export function ContentTopNav({ eventId }: { eventId: string | string[] }) {
 
   return (
     <>
-      <div className="w-full overflow-x-auto no-scrollbar pl-[60px] lg:pl-[30px] py-2  px-4 text-base flex items-center gap-x-8 sm:justify-between text-[#3E404B] border-b border-basebody">
+      <div className="w-full overflow-x-auto no-scrollbar pl-[60px] lg:pl-[30px] py-2 bg-white  px-4 text-base flex items-center gap-x-8 sm:justify-between text-[#3E404B] border-b border-basebody">
         <div className="flex items-center font-normal justify-center gap-x-8 text-sm">
           {links.map(({ name, href }, index) => {
             const path = pathname.split("/");

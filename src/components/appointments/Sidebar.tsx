@@ -1,7 +1,6 @@
 
 import { BriefCase, CircleArrowRight, CalenderIcon } from '@/constants';
 import { getUser, useLogOut } from '@/hooks';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Bell, Calendar, Grip, HelpCircle, Link2, Menu, Plus, Settings, BriefcaseIcon, Users, BarChartBig } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -31,11 +30,11 @@ const navlinks = [
   //   label: 'Contacts',
   //   link: `/appointments/contacts`,
   // },
-  // {
-  //   icon: BarChartBig,
-  //   label: 'Analytics',
-  //   link: `/appointments/analytics`,
-  // },
+  {
+    icon: BarChartBig,
+    label: 'Analytics',
+    link: `/appointments/analytics`,
+  },
   // {
   //   icon: Bell,
   //   label: 'Notification',
@@ -50,11 +49,11 @@ const navlinks = [
 
 const Sidebar = () => {
   const pathanme = usePathname()
-  const {user} = useAppointmentContext()
-  // const {user} = useUserStore()
+  // const {user} = useAppointmentContext()
+  const  {user} = useUserStore()
   const {logOut} = useLogOut()
   const [open, setOpen] = useState('')
-
+console.log({user})
   // useEffect(() => {
   //   if(!user){
   //     logOut()

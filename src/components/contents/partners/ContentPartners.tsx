@@ -8,7 +8,7 @@ export function ContentPartners({ eventId }: { eventId: string }) {
 
   return (
 
-      <div className="w-full px-4">
+      <div className="w-full h-full bg-[#F9FAFF] px-4">
         <PartnersList
           eventId={eventId}
           partners={data}

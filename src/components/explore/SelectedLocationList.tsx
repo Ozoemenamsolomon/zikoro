@@ -42,9 +42,9 @@ export default function SelectedLocationList({
       ? event.eventCountry === selectedLocation
       : event.eventCountry === currentLocation;
     const matchesSearchQuery =
-      event.eventTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.eventCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.eventCategory.toLowerCase().includes(searchQuery.toLowerCase());
+      event.eventTitle?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
+      event.eventCity?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
+      event.eventCategory?.toLowerCase()?.includes(searchQuery?.toLowerCase());
     return matchesLocation && matchesSearchQuery;
   });
 
