@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
               userEmail: attendee?.email,
               phoneNumber: attendee?.phoneNumber,
               created_at: new Date().toISOString(),
-              affiliateCode,
+              affiliateCode: affiliateCode || null,
               inviteSource: "affiliate",
             });
 
