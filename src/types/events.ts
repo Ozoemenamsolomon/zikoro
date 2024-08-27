@@ -19,7 +19,7 @@ export enum EventDetailTab {
   AGENDA_TAB,
   SPEAKERS_TAB,
   EXIHIBITORS_TAB,
-  REWARD_TAB
+  REWARD_TAB,
 }
 
 interface PricingType {
@@ -41,6 +41,7 @@ interface TEventStatusDetail {
   user: string;
 }
 export interface Event {
+  selfCheckInAllowed: boolean;
   createdAt: string;
   createdBy: string;
   description: string;
@@ -85,7 +86,7 @@ export interface Event {
   eventAppAccess: string;
   eventWebsiteSettings: { title: string; status: boolean }[];
   sessionTrack: { name: string; color: string }[];
-  partnerDetails: z.infer<typeof partnerDetails>
+  partnerDetails: z.infer<typeof partnerDetails>;
 }
 
 export interface PaymentConfigProps {
