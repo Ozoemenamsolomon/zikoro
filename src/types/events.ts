@@ -222,3 +222,19 @@ export interface TEventTransactionDetail {
   userId: string;
   eventAlias: string;
 }
+
+export interface TEventDiscount {
+  
+created_at: string;
+discountAmount: number | null;
+discountCode: string;
+discountPercentage: number  | null;
+discountUsers: string;
+eventAlias: string;
+eventId: string;
+id: number;
+minQty: number;
+quantity: number;
+status: boolean;
+validUntil:string;
+}

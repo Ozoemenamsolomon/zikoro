@@ -19,7 +19,7 @@ import { TPartner } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useEffect, useState, useMemo } from "react";
 import { cn } from "@/lib";
-import { useAddPartners, useFetchSingleEvent } from "@/hooks";
+import { useAddPartners, useFetchSingleEvent, useRedeemPartnerDiscountCode } from "@/hooks";
 import Image from "next/image";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,14 +49,12 @@ export function AddPartners({
   const { data: eventData } = useFetchSingleEvent(eventId);
   const { organization } = useOrganizationStore();
   const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState("")
   const { addPartners } = useAddPartners();
-  const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
-    "+234"
-  );
-
-  const [whatsappCountryCode, setWhatsAppCountryCode] = useState<
-    string | undefined
-  >("+234");
+const {verifyDiscountCode, loading: discountLoading,
+  minAttendees,
+  discountAmount,
+  discountPercentage,} = useRedeemPartnerDiscountCode()
 
   // <z.infer<typeof partnerSchema>>
   const form = useForm<z.infer<typeof addPartnerToTierSchema>>({
@@ -67,29 +65,18 @@ export function AddPartners({
   const country = form.watch("country");
   const companyImage = form.watch("companyLogo");
 
-  useEffect(() => {
-    if (country) {
-      const currentCountryCode = COUNTRY_CODE.find(
-        (v) => v.name === country
-      )?.dial_code;
-
-      setWhatsAppCountryCode(currentCountryCode);
-      setPhoneCountryCode(currentCountryCode);
-    }
-  }, [country]);
+  // calculating  the discount
+  const discount = useMemo(() => {
+   
+    return discountAmount !== null
+      ? Number(discountAmount)
+      : (Number(partnerTier?.price) * Number(discountPercentage)) / 100;
+  }, [partnerTier, discountAmount, discountPercentage]);
 
   // calculating the processing Fee
   const processingFee = useMemo(() => {
-    return (Number(partnerTier?.price) * 5) / 100;
-  }, [partnerTier]);
-
-  const total = useMemo(() => {
-    if (eventData?.attendeePayProcessingFee) {
-      return Number(partnerTier?.price) + processingFee;
-    } else {
-      return Number(partnerTier?.price);
-    }
-  }, [processingFee, partnerTier, eventData]);
+    return ((Number(partnerTier?.price )- discount) * 5) / 100;
+  }, [partnerTier, discount]);
 
   const computedPrice = useMemo(() => {
     if (eventData?.attendeePayProcessingFee) {
@@ -98,6 +85,21 @@ export function AddPartners({
       return Number(partnerTier?.price) - processingFee;
     }
   }, [eventData, partnerTier, processingFee]);
+
+// calculating total
+const total = useMemo(() => {
+  if (computedPrice && processingFee && eventData?.attendeePayProcessingFee) {
+    return computedPrice - discount + processingFee;
+  } else if (
+    computedPrice &&
+    processingFee &&
+    !eventData?.attendeePayProcessingFee
+  ) {
+    return computedPrice - discount + processingFee;
+  } else {
+    return 0;
+  }
+}, [computedPrice, processingFee, discount, eventData?.attendeePayProcessingFee]);
 
   async function onSubmit(values: z.infer<typeof addPartnerToTierSchema>) {
     setLoading(true);
@@ -155,7 +157,7 @@ export function AddPartners({
         JSON.stringify(eventPayload)
       );
       window.open(
-        `/partner-payment?p=${encodedData}&e=${encodedEventPayload}`,
+        `/partner-payment?p=${encodedData}&e=${encodedEventPayload}&discountAmount=${discount}`,
         "_self"
       );
     }
@@ -179,6 +181,11 @@ export function AddPartners({
     }
   }, [companyImage]);
 
+    /// verifying and redeeming a discount code'
+    async function redeem() {
+      await verifyDiscountCode(code, String(eventData?.eventAlias));
+      // setCode("")
+    }
   return (
     <div
       role="button"
@@ -217,11 +224,17 @@ export function AddPartners({
                 {partnerTier?.currency} {computedPrice.toLocaleString()}
               </p>
             </div>
+            <div className="w-full mt-4 mb-2 flex items-center justify-between">
+              <p>1x Discount</p>
+              <p>
+                {partnerTier?.currency} {discount?.toLocaleString()}
+              </p>
+            </div>
             <div className="w-full  mb-2 flex items-center justify-between">
               <p>1x Processing Fee</p>
               <p>
                 {" "}
-                {partnerTier?.currency} {processingFee.toLocaleString()}
+                -{partnerTier?.currency} {processingFee.toLocaleString()}
               </p>
             </div>
             <div className="border-t flex items-center justify-between pt-2">
@@ -465,6 +478,36 @@ export function AddPartners({
                   </FormItem>
                 )}
               />
+
+<div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                  }}
+                  className="w-full flex flex-col gap-y-2 items-start justify-start"
+                >
+                  <div className="w-full space-y-1">
+                    <div className="w-full flex items-center ">
+                      <input
+                        type="text"
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        placeholder="Enter a valid discount code"
+                        className="bg-[#001ffc]/10 h-14 rounded-l-md px-3 outline-none placeholder:text-gray-300 border border-basePrimary w-[75%]"
+                      />
+                      <Button
+                        disabled={code === ""}
+                        onClick={redeem}
+                        className="h-12 text-white rounded-r-md rounded-l-none bg-gray-500 font-medium px-0 w-[25%]"
+                      >
+                        {loading ? "Verifying..." : "Redeem"}
+                      </Button>
+                    </div>
+                    <p className="text-tiny text-gray-500">
+                      Discount code is case sensitive
+                    </p>
+                  </div>
+                </div>
 
               <Button
                 disabled={loading}
