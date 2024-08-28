@@ -1,7 +1,7 @@
 "use client";
 
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
+import { useCheckTeamMember, useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
@@ -19,6 +19,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
   const { attendees, isLoading } = useGetAllAttendees(id);
   const [notRegistered, setNotRegistered] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
+  useCheckTeamMember({eventId: id});
   const {
     data,
     loading: singleEventLoading,

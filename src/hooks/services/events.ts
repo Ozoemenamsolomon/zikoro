@@ -223,7 +223,7 @@ export function useGetUserHomePageEvents() {
     isLoading: orgLoading,
   } = useGetOrganizations();
   const { events, getEvents, isLoading } = useGetEvents();
-  const {setOrganization} = useOrganizationStore()
+  const { setOrganization } = useOrganizationStore();
 
   async function refetch() {
     getEvents();
@@ -250,9 +250,10 @@ export function useGetUserHomePageEvents() {
         return Number(organizationIds[0]) === Number(event?.organisationId);
       });
 
-      const chosenOrganization = organizations?.find((v) => v?.id ===Number(organizationIds[0]) )
-      setOrganization(chosenOrganization || null)
-
+      const chosenOrganization = organizations?.find(
+        (v) => v?.id === Number(organizationIds[0])
+      );
+      setOrganization(chosenOrganization || null);
 
       setFirstSetEvents(firstSet);
 
@@ -1208,12 +1209,14 @@ export function useAttenedeeEvents() {
 }
 
 export function useCheckTeamMember({ eventId }: { eventId?: string }) {
-  const {organization} = useOrganizationStore()
-  const {user} = useUserStore()
+  const { organization } = useOrganizationStore();
+  const { user } = useUserStore();
+  const { setUserAccess, userAccess } = useAccessStore();
 
-const isIdPresent = organization?.teamMembers?.some(
-  (v) => v?.userEmail === user?.userEmail
-) || false;
+  const isIdPresent =
+    organization?.teamMembers?.some((v) => v?.userEmail === user?.userEmail) ||
+    false;
+  setUserAccess({ ...userAccess, isTeamMember: isIdPresent });
 
   return {
     isIdPresent,
