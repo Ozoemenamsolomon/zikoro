@@ -327,7 +327,7 @@ export function PartnerWidget({
             className="accent-basePrimary w-4 h-4"
           />
 
-          <p className="flex items-start justify-start">
+          <p className="flex items-start flex-col justify-start">
             <span className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
               {item?.companyName}
             </span>
