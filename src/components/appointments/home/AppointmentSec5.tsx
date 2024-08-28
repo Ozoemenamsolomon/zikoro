@@ -19,9 +19,9 @@ export default function AppointmentSec5() {
             transform your business! 
           </span>
         </p>
-          <button className="text-base font-semibold py-[10px] px-[64px] text-indigo-700 bg-white mt-[28px] rounded-[6px] w-full lg:w-fit ">
-            Get started for free
-          </button>
+        <button className="text-base font-semibold py-[10px] px-[64px] text-indigo-700 bg-white mt-[28px] rounded-[6px] w-full lg:w-fit ">
+          Get started for free
+        </button>
       </div>
     </div>
   );

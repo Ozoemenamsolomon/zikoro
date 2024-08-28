@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 
 
 export const metadata: Metadata = {
-  title: `Published Events`,
-  description: "Lists of Upcoming and Past Events",
+  title: `Live Event`,
+  description: "Attendee Event Registration",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

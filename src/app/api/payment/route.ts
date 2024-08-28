@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
               userEmail: attendee?.email,
               phoneNumber: attendee?.phoneNumber,
               created_at: new Date().toISOString(),
-              inviteSource: "affiliate",
+              //inviteSource: "affiliate",
             });
 
           console.log("creating status:", statusCreatingUser);
@@ -240,8 +240,7 @@ export async function POST(req: NextRequest) {
           ],
           subject: `Confirmation to attend ${event}`,
           htmlbody: `
-            <div
-          
+            <div   
           >
             <div
               style="

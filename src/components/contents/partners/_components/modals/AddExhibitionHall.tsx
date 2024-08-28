@@ -79,7 +79,7 @@ export function AddExhibitionHall({
                 <InputOffsetLabel label="Hall Capacity">
                   <Input
                     type="number"
-                    max={organization?.subscriptionPlan === "Enterprise"? "10" : "5"}
+                   // max={organization?.subscriptionPlan === "Enterprise"? "10" : "5"}
                     placeholder="Enter the Hall Capacity"
                     {...field}
                     className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"

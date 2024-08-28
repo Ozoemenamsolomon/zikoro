@@ -327,8 +327,14 @@ export function PartnerWidget({
             className="accent-basePrimary w-4 h-4"
           />
 
-          <p className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
-            {item?.companyName}
+          <p className="flex items-start flex-col justify-start">
+            <span className="w-full text-ellipsis whitespace-nowrap overflow-hidden">
+              {item?.companyName}
+            </span>
+            <span className="text-xs ">
+              <span className="font-medium">Contact:</span>{" "}
+              {item?.contactFirstName ?? ""} {item?.contactLastName ?? ""}
+            </span>
           </p>
         </label>
         <td
@@ -362,7 +368,7 @@ export function PartnerWidget({
             e.stopPropagation();
           }}
         >
-          <DropDownSelect
+          {/* <DropDownSelect
             handleChange={handleSelectedPartner}
             data={["Exhibitor", "Sponsor"]}
             className="w-full"
@@ -373,7 +379,8 @@ export function PartnerWidget({
               </p>
               <ArrowIosDownward size={20} />
             </button>
-          </DropDownSelect>
+          </DropDownSelect> */}
+          <p>{item?.partnerType ?? ""}</p>
         </td>
 
         <td
@@ -457,9 +464,9 @@ export function PartnerWidget({
           />
         </td>
         <td
-         onClick={(e) => {
-          e.stopPropagation();
-        }}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
         >
           <ActionColumn refetch={refetch} partner={item} />
         </td>
