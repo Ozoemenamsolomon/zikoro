@@ -12,10 +12,11 @@ interface SlotsType {
   timeSlots: SlotsResult | null;
   appointmnetLink: AppointmentLink | null,
   reschedule?: any
-  updatingFunc?:(callback:any)=>void
+  updatingFunc?:(callback:any)=>void,
+  hasCategory?:boolean,
 }
 
-const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, updatingFunc }) => {
+const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, hasCategory }) => {
   const {bookingFormData, setBookingFormData, slotCounts, setSlotCounts,inactiveSlots, setInactiveSlots, setIsFormUp, selectedItem} = useAppointmentContext()
 
   const [loading, setLoading] = useState(true);
@@ -139,14 +140,13 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, u
   return (
     <div className="bg-white relative overflow-hidden md:w-80 flex-1 flex-shrink-0 rounded-lg  ">
       {loading && isBooking ? 
-        <div className="h-full w-full flex justify-center items-center">
+        <div className="h-full min-h-24 w-full flex justify-center items-center">
           <p>loading...</p> 
         </div>
         : 
         <>
          {isBooking ? <h5 className="text-md bg-white px-4 py-3 font-semibold">Choose Time</h5> : null}
-         <div className="overflow-auto h-full  w-full  ">
-            <div className={` flex flex-col w-full gap-2 h-full p-4 ${isBooking ? 'pb-32' : ''} `}>
+            <div className={` flex flex-col w-full overflow-auto no-scrollbar gap-2 h-full p-4 ${isBooking ? 'pb-32' : ''} `}>
               {
                 timeSlots?.slots?.map((slot,i)=>{
                   // console.log({timeSlots})
@@ -194,24 +194,33 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, u
               }
               
             </div>
-        </div>
         {
-          isBooking  ?  
+          !isBooking  ?  null 
+          :
           <div className="absolute bottom-0 bg-white py-3 z-10 px-4 w-full">
-            <button
-              onClick={()=>{
-                setIsFormUp(true) 
-              }}
-              type="submit"
-              className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading  || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
-              disabled={loading || isDisabled}
-            >
-              Proceed
-            </button> 
+            {
+              hasCategory && !bookingFormData?.appointmentType ?
+              // process for paid appointments
+              <div
+                className={`w-full text-center py-2 px-4 bg-basePrimary text-white rounded cursor-not-allowed opacity-30 `}
+              >
+                Select meeting category
+              </div> 
+              :
+              // process for free appointments
+              <button
+                onClick={()=>{
+                  setIsFormUp('details') 
+                }}
+                type="submit"
+                className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading  || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
+                disabled={loading || isDisabled }
+              >
+                Proceed
+              </button>
+            }
           </div> 
-          : null
         }
-
         </>
       }
     </div>
@@ -227,7 +236,7 @@ export function isTimeWithinAppointments(
 ): boolean {
   const parsedTime = parse(time, 'HH:mm:ss', selectedDay);
 
-  console.log(`Parsed Time: ${parsedTime}`, {appointments});
+  // console.log(`Parsed Time: ${parsedTime}`, {appointments});
 
   return appointments?.some(appointment => {
     const startTime = new Date(appointment.startDateTime!);

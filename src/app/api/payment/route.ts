@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
               userEmail: attendee?.email,
               phoneNumber: attendee?.phoneNumber,
               created_at: new Date().toISOString(),
-              inviteSource: "affiliate",
+              //inviteSource: "affiliate",
             });
 
           console.log("creating status:", statusCreatingUser);
@@ -207,11 +207,12 @@ export async function POST(req: NextRequest) {
       //
       var { SendMailClient } = require("zeptomail");
 
+      let client = new SendMailClient({
+        url: process.env.NEXT_PUBLIC_ZEPTO_URL,
+        token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
+      });
+
       registeredAttendees.forEach(async (attendee) => {
-        let client = new SendMailClient({
-          url: process.env.NEXT_PUBLIC_ZEPTO_URL,
-          token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
-        });
         const calendarICS = createICSContent(
           eventDate,
           eventEndDate,
@@ -223,6 +224,7 @@ export async function POST(req: NextRequest) {
             email: attendee.email,
           }
         );
+
         await client.sendMail({
           from: {
             address: process.env.NEXT_PUBLIC_EMAIL,
@@ -238,8 +240,7 @@ export async function POST(req: NextRequest) {
           ],
           subject: `Confirmation to attend ${event}`,
           htmlbody: `
-            <div
-          
+            <div   
           >
             <div
               style="
@@ -534,6 +535,98 @@ export async function POST(req: NextRequest) {
               mime_type: "text/calendar",
             },
           ],
+        });
+
+        await client.sendMail({
+          from: {
+            address: process.env.NEXT_PUBLIC_EMAIL,
+            name: "Zikoro",
+          },
+          to: [
+            {
+              email_address: {
+                address: attendee.email,
+                name: attendee?.name,
+              },
+            },
+          ],
+          subject: `Subject: Thank You for Registering! Become an Affiliate for ${event}`,
+          htmlbody: `          
+          <body>
+            <p  style="
+              max-width: 600px;
+              margin:0 auto;
+              display: block;
+              padding-top: 1rem;
+              margin: 1rem auto;
+              padding-bottom: 1rem;
+              border-bottom: 1px solid #b4b4b4;
+            ">
+              Hi ${attendee?.name},<br/> <br/>
+
+              Thank you for registering for ${event}! We’re thrilled to have you join us for what promises to be an exciting and impactful event.<br/><br/>
+
+              We want to offer you an exclusive opportunity: become an affiliate for ${event}! By sharing your unique affiliate link with your network, you can earn 10% for every registration made through your link.<br/><br/>
+
+              Here’s how it works:<br/><br/>
+
+              Sign Up: Join our affiliate program by clicking <a href="${process.env.NEXT_PUBLIC_HOME_URL}/affiliate/signup/success?eventAlias=${eventAlias}&attendeeAlias=${attendee?.attendeeAlias}">here</a>.<br /><br/>
+              Share: Spread the word! Share your unique link on social media, email, or any platform of your choice.<br/><br/>
+              Earn: For every person who registers using your link, you’ll earn a 10% commission.<br/>
+              This is not just a chance to earn; it's also an opportunity to help others benefit from [Event Name] just as you will.<br/><br/>
+
+              Ready to get started? Click <a href="${process.env.NEXT_PUBLIC_HOME_URL}/affiliate/signup/success?eventAlias=${eventAlias}&attendeeAlias=${attendee?.attendeeAlias}">here</a><br/><br/>
+
+              Thank you again for registering. We can’t wait to see you at ${event} and hope you’ll take advantage of this exciting opportunity.<br/><br/>
+
+            </p>
+
+            <div
+              style="
+              max-width: 600px;
+              margin:0 auto;
+              display: block;
+              padding-top: 1rem;
+              margin: 1rem auto;
+              padding-bottom: 1rem;
+              border-bottom: 1px solid #b4b4b4;
+                "
+            >
+              <p style="font-size: 14px; color: #b4b4b4">
+                Do you have question regarding the event? Speak with the event team.
+              </p>
+          
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  flex-direction: row;
+                  gap: 0.75rem;
+                "
+              >
+                <a style="margin-right:15px;" href="mailto:${organizerContact?.email}">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/preem-whatsapp-cloning-cd897.appspot.com/o/images%2Ficons8-mail-48.png?alt=media&token=4e723639-4f5a-4fcc-965d-7d6ce04e203c" style="width:30px; height:30px;" >
+                </a>
+                <a style="margin-right:15px;" target="_blank" href="tel:${organizerContact?.phoneNumber}">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/preem-whatsapp-cloning-cd897.appspot.com/o/images%2Ficons8-call-50.png?alt=media&token=d2ccb51a-5888-4d6a-ac8d-c893333a520f" style="width:30px; height:30px;">
+                </a>
+                <a style="margin-right:15px;" href="https://wa.me/${organizerContact?.whatsappNumber}">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/preem-whatsapp-cloning-cd897.appspot.com/o/images%2Ficons8-whatsapp-50.png?alt=media&token=5c8670a2-a222-4034-bff6-d3d9d6e53350" style="width:30px; height:30px;" >
+                </a>                  
+              </div>
+            </div>
+          
+            <div style="max-width:600px; margin:0 auto; font-size: 14px; color: #b4b4b4">
+              This event is managed by ${organization} and powered by
+              <a href="www.zikoro.com" style="color: #001fcc">Zikoro</a>. For assistance, visit our
+              <a href="www.zikoro.com/help" style="color: #001fcc">help center</a>.
+            </div>
+            <div
+              style="max-width:600px; margin:0.3rem auto; font-size: 14px; text-align:center;"
+            ><a href="#" style="color: #001fcc; text-decoration: none;">Privacy Policy </a> | <a href="#" style="text-decoration: none; color: #001fcc">Terms and Conditions</a></div>
+            </div>
+          </body>
+            `,
         });
       });
 

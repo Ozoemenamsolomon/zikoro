@@ -7,8 +7,8 @@ import { fetchUser } from '../auth';
 export interface AppState {
   isLoading: boolean;
   setLoading: (loading: boolean) => void;
-  isFormUp: boolean;
-  setIsFormUp: (loading: boolean) => void;
+  isFormUp: string;
+  setIsFormUp: (formType: string) => void;
   bookingFormData: Booking|null; 
   setBookingFormData: React.Dispatch<React.SetStateAction<Booking|null>>;
   selectedType: string; 
@@ -31,7 +31,7 @@ const AppointmentContext = createContext<AppointmentContextProps | undefined>(un
 
 export const AppointmentProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [isFormUp, setIsFormUp] = useState<boolean>(false);
+  const [isFormUp, setIsFormUp] = useState<string>('');
   const [user, setUser] = useState<UserType|null>(null);
 
   const [bookingFormData, setBookingFormData] = useState<Booking|null>(null)
