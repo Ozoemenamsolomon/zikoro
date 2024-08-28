@@ -92,7 +92,7 @@ export default function Discount({ eventId }: { eventId: string }) {
           >
             {Array.isArray(formattedData) && formattedData?.length > 0 && (
               <ul className="grid grid-cols-8 rounded-t-lg place-items-center text-center font-semibold bg-[#f3f3f3] p-3 border-b-2 text-[14px]">
-                <li>Created At</li>
+                <li className="w-full text-start">Created At</li>
                 <li>Code</li>
                 <li>Min. QTy</li>
                 <li>Valid until</li>
@@ -192,7 +192,7 @@ const DiscountList: React.FC<{
 
   return (
     <ul className="grid grid-cols-8 bg-white place-items-center text-center p-3 text-[12px] border-x border-b">
-      <li className="flex flex-col justify-start items-start">
+      <li className="flex w-full flex-col justify-start items-start">
         <p  className="text-start">{createdAt}</p>
         <p className="text-xs text-start capitalize">{discountUsers === "both" ? "Attendees and Partners" : discountUsers}</p>
       </li>
