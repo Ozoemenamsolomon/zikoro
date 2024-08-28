@@ -17,9 +17,9 @@ export function AccessVerification({ id }: { id?: string | any }) {
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
   const { attendees, isLoading } = useGetAllAttendees(id);
-  const [notRegistered, setNotRegistered] = useState(false);
+  const [notRegistered] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
-  useCheckTeamMember({eventId: id});
+ const {isIdPresent} = useCheckTeamMember({eventId: id});
   const {
     data,
     loading: singleEventLoading,
@@ -61,8 +61,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
       !isLoading &&
       user !== null &&
       !singleEventLoading &&
-      data !== null &&
-      typeof userAccess?.isTeamMember === "boolean"
+      data !== null
     ) {
       console.log("I entered the hooks .....");
       const appAccess = data?.eventAppAccess;
