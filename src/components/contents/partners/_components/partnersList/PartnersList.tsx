@@ -110,7 +110,7 @@ export function PartnersList({
   ];
 
   const filteredPartners = useMemo(() => {
-    if (Array.isArray(partners)) {
+    if (Array.isArray(partners) && partners?.length > 0) {
       const activePartners = partners?.filter(
         ({ partnerStatus }) => partnerStatus === "active"
       )?.length;
