@@ -238,8 +238,7 @@ export async function POST(req: NextRequest) {
           ],
           subject: `Confirmation to attend ${event}`,
           htmlbody: `
-            <div
-          
+            <div   
           >
             <div
               style="
