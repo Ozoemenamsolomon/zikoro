@@ -223,6 +223,7 @@ const DialogDemo = ({
   const [percentage, setPercentage] = useState<number>(1);
   const [isAmtChecked, setIsAmtChecked] = useState<boolean>(true);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [discountUsers, setDiscountUsers] = useState("attendees")
   const { createDiscount, loading } = useDiscount();
   const { organization } = useOrganizationStore();
   const [discountData, setDiscountData] = useState({
@@ -255,6 +256,7 @@ const DialogDemo = ({
           discountAmount,
           eventId,
           status: true,
+          discountUsers
         }
       : {
           ...restData,
@@ -262,8 +264,8 @@ const DialogDemo = ({
           quantity,
           eventId,
           discountPercentage: percentage,
-
           status: true,
+          discountUsers 
         };
 
     await createDiscount(payload);
@@ -445,6 +447,10 @@ const DialogDemo = ({
                 </div>
               </div>
             </div>
+            <label className="flex flex-col items-start justify-start gap-y-3">
+              <span>Who will use the discount code ?</span>
+
+            </label>
             <button
               onClick={submit}
               disabled={isMaxReached}
