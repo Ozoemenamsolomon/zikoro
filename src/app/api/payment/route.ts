@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
               userEmail: attendee?.email,
               phoneNumber: attendee?.phoneNumber,
               created_at: new Date().toISOString(),
-              inviteSource: "affiliate",
+              //inviteSource: "affiliate",
             });
 
           console.log("creating status:", statusCreatingUser);
