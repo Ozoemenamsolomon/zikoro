@@ -293,8 +293,10 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       {
-        affiliate: affiliateData,
-        affiliateLink: affiliateLinkData,
+        data: {
+          affiliate: affiliateData,
+          affiliateLink: affiliateLinkData,
+        },
       },
       { status: 200 }
     );
