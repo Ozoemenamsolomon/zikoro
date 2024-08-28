@@ -25,8 +25,9 @@ export async function POST(req: NextRequest) {
         );
       }
   
-      const PAYMENT_PUBLIC_KEY = process.env.PAYMENT_PUBLIC_KEY;
-  
+      // const PAYMENT_PUBLIC_KEY = process.env.PAYMENT_PUBLIC_KEY;
+      const PAYMENT_PUBLIC_KEY = `pk_test_f06d31218f3ffe5f770e2f967fb94ee56563d81c`;
+      
       const verifyResponse = await fetch(`https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`, {
         method: 'GET',
         headers: {
