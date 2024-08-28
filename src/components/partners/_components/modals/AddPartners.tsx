@@ -227,14 +227,13 @@ const total = useMemo(() => {
             <div className="w-full mt-4 mb-2 flex items-center justify-between">
               <p>1x Discount</p>
               <p>
-                {partnerTier?.currency} {discount?.toLocaleString()}
+                - {partnerTier?.currency} {discount?.toLocaleString()}
               </p>
             </div>
             <div className="w-full  mb-2 flex items-center justify-between">
               <p>1x Processing Fee</p>
               <p>
-                {" "}
-                -{partnerTier?.currency} {processingFee.toLocaleString()}
+                {partnerTier?.currency} {processingFee.toLocaleString()}
               </p>
             </div>
             <div className="border-t flex items-center justify-between pt-2">
@@ -484,7 +483,7 @@ const total = useMemo(() => {
                     e.stopPropagation();
                     e.preventDefault();
                   }}
-                  className="w-full flex flex-col gap-y-2 items-start justify-start"
+                  className="w-full my-2 flex flex-col gap-y-2 items-start justify-start"
                 >
                   <div className="w-full space-y-1">
                     <div className="w-full flex items-center ">
@@ -493,14 +492,14 @@ const total = useMemo(() => {
                         value={code}
                         onChange={(e) => setCode(e.target.value)}
                         placeholder="Enter a valid discount code"
-                        className="bg-[#001ffc]/10 h-14 rounded-l-md px-3 outline-none placeholder:text-gray-300 border border-basePrimary w-[75%]"
+                        className="bg-[#001ffc]/10 h-12 rounded-l-md px-3 outline-none placeholder:text-gray-300 border border-basePrimary w-[75%]"
                       />
                       <Button
-                        disabled={code === ""}
+                        disabled={code === "" || discountLoading}
                         onClick={redeem}
                         className="h-12 text-white rounded-r-md rounded-l-none bg-gray-500 font-medium px-0 w-[25%]"
                       >
-                        {loading ? "Verifying..." : "Redeem"}
+                        {discountLoading ? "Verifying..." : "Redeem"}
                       </Button>
                     </div>
                     <p className="text-tiny text-gray-500">
