@@ -10,7 +10,7 @@ import ProcessPayment from './ProcessPayment'
 const Booking =  ({alias}:{alias:string}) => {
   const {appointment: appointmnetLink, isLoading, error, } = useGetBookingAppointment(alias)
   const {bookingFormData, isFormUp} = useAppointmentContext()
-//   console.log({appointmnetLink})
+//   console.log({appointmnetLink, bookingFormData})
 
     
   return (
@@ -41,7 +41,7 @@ const Booking =  ({alias}:{alias:string}) => {
         </header>
         {
             isFormUp==='pay' ?
-            <ProcessPayment/>
+            <ProcessPayment appointmentLink={appointmnetLink}/>
             :
             <section className="py-10  h-full  w-full flex  items-center justify-center gap-12">
                 

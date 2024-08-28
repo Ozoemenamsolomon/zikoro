@@ -12,10 +12,11 @@ interface SlotsType {
   timeSlots: SlotsResult | null;
   appointmnetLink: AppointmentLink | null,
   reschedule?: any
-  updatingFunc?:(callback:any)=>void
+  updatingFunc?:(callback:any)=>void,
+  hasCategory?:boolean,
 }
 
-const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, updatingFunc }) => {
+const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, hasCategory }) => {
   const {bookingFormData, setBookingFormData, slotCounts, setSlotCounts,inactiveSlots, setInactiveSlots, setIsFormUp, selectedItem} = useAppointmentContext()
 
   const [loading, setLoading] = useState(true);
@@ -139,7 +140,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, u
   return (
     <div className="bg-white relative overflow-hidden md:w-80 flex-1 flex-shrink-0 rounded-lg  ">
       {loading && isBooking ? 
-        <div className="h-full w-full flex justify-center items-center">
+        <div className="h-full min-h-24 w-full flex justify-center items-center">
           <p>loading...</p> 
         </div>
         : 
@@ -198,23 +199,13 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, u
           :
           <div className="absolute bottom-0 bg-white py-3 z-10 px-4 w-full">
             {
-              bookingFormData?.price || appointmnetLink?.amount ?
+              hasCategory && !bookingFormData?.appointmentType ?
               // process for paid appointments
-              <button
-                onClick={()=>{
-                  setIsFormUp('pay') 
-                  setBookingFormData({
-                    ...bookingFormData,
-                    price:appointmnetLink?.amount,
-                    currency:appointmnetLink?.curency,
-                  })
-                }}
-                type="submit"
-                className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading  || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
-                disabled={loading || isDisabled}
+              <div
+                className={`w-full text-center py-2 px-4 bg-basePrimary text-white rounded cursor-not-allowed opacity-30 `}
               >
-                Process and pay
-              </button> 
+                Select meeting category
+              </div> 
               :
               // process for free appointments
               <button
@@ -223,7 +214,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, u
                 }}
                 type="submit"
                 className={`w-full py-2 px-4 bg-basePrimary text-white rounded ${loading  || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
-                disabled={loading || isDisabled}
+                disabled={loading || isDisabled }
               >
                 Proceed
               </button>
