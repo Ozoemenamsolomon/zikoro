@@ -4,7 +4,7 @@ import AppointmentLoginForm from "@/components/appointments/login/AppointmentLog
 
 const AppointmentLoginPage = () => {
   return (
-    <div className="bg-[url('/appointments/bgImg.webp')] bg-cover bg-center bg-no-repeat h-screen flex items-center justify-center ">
+    <div className="items-center justify-center bg-white flex w-full h-screen lg:bg-[url('/appointments/bgImg.webp')] lg:bg-cover lg:bg-center lg:bg-no-repeat">
       <AppointmentLoginForm />
     </div>
   );

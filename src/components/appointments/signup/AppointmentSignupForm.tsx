@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 const AppointmentSignupForm = () => {
   const router = useRouter();
   return (
-    <div className="bg-white py-[37px] px-[42px] rounded-[8px] max-w-full lg:max-w-[542px] ">
+    <div className="bg-white py-0 lg:py-[37px] px-3 lg:px-[42px] rounded-[8px] max-w-full lg:max-w-[542px] ">
       <div className="flex justify-center ">
         <Image
           src="/appointments/logoFooter.png"
@@ -21,7 +21,7 @@ const AppointmentSignupForm = () => {
       <p className="text-2xl text-indigo-600 text-center mt-10 font-semibold">
         Sign In
       </p>
-      <p className="mt-4 font-normal">
+      <p className="mt-4 font-normal text-center lg:text-left">
         It’ll Only Take 2 Minutes to Get You Up and Running!
       </p>
 
@@ -73,7 +73,9 @@ const AppointmentSignupForm = () => {
           Get Started
         </button>
       </form>
-      <OrIcon />
+      <div className="max-[400px]:hidden ">
+        <OrIcon />
+      </div>
 
       <button className="py-4 px-3 flex items-center justify-center gap-x-2 text-base w-full rounded-[8px] mt-10 mb-6  border-[1px] border-gray-200">
         <GoogleBlackIcon /> Sign Up with google
