@@ -21,20 +21,18 @@ import { toast } from "@/components/ui/use-toast";
 
 const supabase = createClientComponentClient();
 
-
 type TEventData = {
-  eventName:string;
+  eventName: string;
   eventStartDate: string;
   eventEndDate: string;
   location: string;
-  eventPoster:string;
+  eventPoster: string;
   address: string;
-  organizerName:string;
+  organizerName: string;
   currency: string;
   organizerPhoneNumber: string;
-  organizerWhatsappNumber:string;
-
-}
+  organizerWhatsappNumber: string;
+};
 export function useAddPartners() {
   const [loading, setLoading] = useState(false);
 
@@ -116,11 +114,15 @@ export function useFetchPartners(eventId: string) {
 export function useUpdatePartners() {
   const [loading, setLoading] = useState(false);
 
-  async function update(payload: Partial<TPartner>) {
+  async function update(
+    payload: Partial<TPartner>,
+    deactivate?: { reason: string }
+  ) {
     try {
+      let payloadData = deactivate ? { payload } : { payload, deactivate };
       const { data, status } = await patchRequest<TPartner>({
         endpoint: "/partner",
-        payload,
+        payload: payloadData,
       });
 
       if (status !== 200) throw data;

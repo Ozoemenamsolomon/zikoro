@@ -41,6 +41,7 @@ export const useGetData = <TData>(
         throw new Error("Failed to fetch data");
       }
       setData(responseData.data);
+      console.log(responseData.data);
       return responseData.data;
     } catch (error) {
       setError(true);

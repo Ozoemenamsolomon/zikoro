@@ -44,7 +44,7 @@ export default function PollPresentation({
   const { isOrganizer, attendeeId, attendee, loading, isLoading } =
     useVerifyUserAccess(eventId); // verify user
   const { data } = useFetchSingleEvent(eventId);
-  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId }); // verify team member
+  const { isIdPresent,  } = useCheckTeamMember({ eventId }); // verify team member
   const [isLeftBox, setLeftBox] = useState(true); // state to toggle ad visibility
   const [isLobby, setisLobby] = useState(false); // state to show the attendee's or player's lobby
   const { answers, getAnswers, setAnswers } = useGetQuizAnswer(); // hook to fetch all poll answers
@@ -193,7 +193,7 @@ export default function PollPresentation({
 
   return (
     <div className="w-full">
-      {poll && !loading && !isLoading && !eventLoading ? (
+      {poll && !loading && !isLoading  ? (
         <>
           {showScoreSheet ? (
             <>

@@ -35,6 +35,7 @@ import { ImageAdd } from "styled-icons/boxicons-regular";
 import DatePicker from "react-datepicker";
 import { DateRange } from "styled-icons/material-outlined";
 import { cn } from "@/lib";
+import useOrganizationStore from "@/store/globalOrganizationStore";
 type OrganizationListType = {
   label: string;
   value: any;
@@ -45,6 +46,7 @@ export default function CreateEvent() {
   const [isStartDate, setStartDate] = useState(false);
   const [isEndDate, setEndDate] = useState(false);
   const { user: userData } = useUserStore();
+  const {setOrganization} = useOrganizationStore();
 
   const router = useRouter();
   const { organizations: organizationList, getOrganizations } =
@@ -92,6 +94,9 @@ export default function CreateEvent() {
       }
     });
     const eventImage: any = await newPromise;
+
+    const org = organizationList.find((og: any) => String(og.id )=== values.organisationId);
+    setOrganization(org!);
 
     const eventAlias = generateAlias();
     await createEvent({

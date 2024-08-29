@@ -1,5 +1,6 @@
 "use client";
 import { useGetData } from "@/hooks/services/request";
+import { TAffiliate, TAffiliateLink } from "@/types";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 import { TbLoader3 } from "react-icons/tb";
@@ -12,8 +13,13 @@ const page = () => {
 
   console.log(eventAlias, attendeeAlias);
 
-  const { data, isLoading } = useGetData(
-    `marketing/affiliate/attendee/signup?eventAlias=${eventAlias}&attendeeAlias=${attendeeAlias}`
+  const { data, isLoading } = useGetData<{
+    affiliate: TAffiliate;
+    affiliateLink: TAffiliateLink;
+  }>(
+    `marketing/affiliate/attendee/signup?eventAlias=${eventAlias}&attendeeAlias=${attendeeAlias}`,
+    true,
+    {}
   );
 
   console.log(data);
@@ -47,13 +53,17 @@ const page = () => {
               <circle cx="15.493" cy="10.493" r="1.493" />
             </svg>
           </div>
-          <p>Welcome to the [Event Name] Affiliate Program!</p>
+          <p>
+            Welcome to the {data.affiliateLink?.eventName} Affiliate Program!
+          </p>
           <p>🎉 You’ve successfully signed up as an affiliate! 🎉</p>
           <p>
             We're excited to have you on board. Your unique affiliate link is
             ready to go:
           </p>
-          <p className="text-2xl font-bold text-black">[Your Affiliate Link]</p>
+          <p className="text-2xl font-bold text-black">
+            {data.affiliateLink?.affiliateLink}
+          </p>
           <p>
             Share this link with your network to start earning rewards. The more
             you share, the more you earn!
@@ -61,11 +71,11 @@ const page = () => {
 
           <p>
             Thank you for being a part of our community and helping us make
-            [Event Name] even more successful.
+            {data.affiliateLink?.eventName} even more successful.
           </p>
         </section>
         <p className="justify-self-end text-lg text-gray-800">
-          TO create automated event invites, sign up on{" "}
+          TO create events, sign up on{" "}
           <a href="www.zikoro.com" className="underline text-basePrimary">
             www.zikoro.com
           </a>

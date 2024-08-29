@@ -18,11 +18,22 @@ import {
 } from "@/hooks";
 import { EmailIcon, WhatsappIcon } from "@/constants";
 import { IoCheckmarkCircle, IoCloseCircleSharp } from "react-icons/io5";
-import { Button } from "@/components";
+import {
+  Button,
+  Form,
+  Textarea,
+  FormField,
+  FormItem,
+  FormMessage,
+  FormControl,
+} from "@/components";
 import { MdClose } from "react-icons/md";
 import { AddPartnerManually } from "@/components/partners/_components/modals/AddPartnerManually";
 import { Loader2Icon } from "lucide-react";
-
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { partnerDeactivateSchema } from "@/schemas";
 function ConfirmationModal({
   titleElement,
   descriptionElement,
@@ -51,6 +62,67 @@ function ConfirmationModal({
     </div>
   );
 }
+
+function DeactivateModal({
+  close,
+  deactivate,
+  loading,
+}: {
+  loading: boolean;
+  deactivate: (p: { reason: string }) => Promise<any>;
+  close: () => void;
+}) {
+  const form = useForm<z.infer<typeof partnerDeactivateSchema>>({
+    resolver: zodResolver(partnerDeactivateSchema),
+  });
+
+  async function onSubmit(values: z.infer<typeof partnerDeactivateSchema>) {
+    await deactivate({ reason: values.reason });
+  }
+  return (
+    <div className="w-full h-full inset-0 fixed bg-black/20 z-[100]">
+      <div className="absolute inset-0 shadow gap-y-4 box-animation bg-white rounded-lg m-auto h-fit max-w-xl flex flex-col items-center justify-center py-4 px-4">
+        <Button
+          onClick={close}
+          className="px-0 self-end w-11 rounded-full
+       h-11 bg-gray-200"
+        >
+          <MdClose size={22} />
+        </Button>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full flex items-start justify-start flex-col gap-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="reason"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Textarea
+                      placeholder="Write your reason"
+                      {...field}
+                      readOnly
+                      className="placeholder:text-sm h-32 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
+                    ></Textarea>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button className="gap-x-2 w-full bg-red-500 text-white">
+              {loading && <Loader2Icon size={20} />}
+              <p>Deactivate</p>
+            </Button>
+          </form>
+        </Form>
+      </div>
+    </div>
+  );
+}
+
 function ActionColumn({
   partner,
   refetch,
@@ -78,9 +150,9 @@ function ActionColumn({
     refetch();
     onApprove();
   }
-  async function deactivate() {
+  async function deactivate(deactivateReason: { reason: string }) {
     setLoading(true);
-    await update({ ...partner, partnerStatus: "inactive" });
+    await update({ ...partner, partnerStatus: "inactive" }, deactivateReason);
     setLoading(false);
     refetch();
     onDecline();
@@ -128,26 +200,9 @@ function ActionColumn({
         />
       )}
       {isDecline && (
-        <ConfirmationModal
-          buttonElement={
-            <Button
-              onClick={deactivate}
-              className="gap-x-2 bg-red-500 text-white w-[130px]"
-            >
-              {loading && <Loader2Icon size={20} />}
-              <p>Deactivate</p>
-            </Button>
-          }
-          descriptionElement={
-            <p>
-              You are about to <b>deactivate</b> this partner, please confirm
-            </p>
-          }
-          titleElement={
-            <p className="font-semibold text-red-500 text-lg sm:text-xl">
-              Deactivate Partner
-            </p>
-          }
+        <DeactivateModal
+          deactivate={deactivate}
+          loading={loading}
           close={onDecline}
         />
       )}

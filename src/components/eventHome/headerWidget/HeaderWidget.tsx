@@ -67,6 +67,8 @@ export function HeaderWidget({
       const org = organizationList.find(
         (o) => String(o.id) === String(formattedList[0]?.value)
       );
+      if (!org) return;
+      setOrganization(org);
       saveCookie("currentOrganization", {
         id: org?.id,
         name: org?.organizationName,
