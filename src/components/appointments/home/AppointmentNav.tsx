@@ -13,7 +13,6 @@ const AppointmentNav = () => {
   return (
     <div className="py-6 px-3 md:px-6  ">
       <div className=" bg-white flex items-center  lg:max-w-[970px] xl:max-w-[1165px] py-3 px-3 md:px-6 lg:px-[36px] rounded-[64px] justify-between mx-auto shadow ">
-        {/* logo */}
         <Image src="/appointments/zikoroB.png" width={115} height={40} alt="" />
 
         {/* links */}
