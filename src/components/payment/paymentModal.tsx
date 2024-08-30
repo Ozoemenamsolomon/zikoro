@@ -57,6 +57,7 @@ type DBOrganisationSchema = {
   organizationOwnerId: number;
   organizationType: string;
   organizationLogo: string;
+  organizationAlias: string;
   country: string;
   eventPhoneNumber: string;
   eventWhatsApp: string;
@@ -80,6 +81,7 @@ export function PaymentModal({
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const [isRedeemed, setIsRedeemed] = useState<boolean>(false);
   const [orgName, setOrgName] = useState<string>("");
+  const [orgAlias, setOrgAlias] = useState<string>("");
   const [orgId, setOrgId] = useState<string>("");
   const [totalPrice, setTotalprice] = useState<number>(0);
   const [isCouponValid, setIsCouponValid] = useState<boolean>(false);
@@ -108,21 +110,18 @@ export function PaymentModal({
   //submit organization details
   const submitForm = (e: any) => {
     e.preventDefault();
-    const url = `/payment?name=${encodeURIComponent(
-      user?.firstName || ""
-    )}&id=${encodeURIComponent(user?.id || "")}&email=${encodeURIComponent(
-      user?.userEmail || ""
-    )}&plan=${encodeURIComponent(
-      chosenPlan || ""
-    )}&isMonthly=${encodeURIComponent(
-      isChosenMonthly || ""
-    )}&total=${encodeURIComponent(
-      totalPrice.toString()
-    )}&currency=${encodeURIComponent(
-      chosenCurrency
-    )}&coupon=${encodeURIComponent(couponText)}
-    &orgId=${encodeURIComponent(orgId)}
-    &redirectUrl=${encodeURIComponent('/workspace/general')}`;
+    const url = `/payment?name=${encodeURIComponent(user?.firstName || "")}
+      &id=${encodeURIComponent(user?.id || "")}
+      &email=${encodeURIComponent(user?.userEmail || "")}
+      &plan=${encodeURIComponent(chosenPlan || "")}
+      &isMonthly=${encodeURIComponent(isChosenMonthly || "")}
+      &total=${encodeURIComponent(totalPrice.toString())}
+      &currency=${encodeURIComponent(chosenCurrency)}
+      &coupon=${encodeURIComponent(couponText)}
+      &orgId=${encodeURIComponent(orgId)}
+      &orgAlias=${encodeURIComponent(orgAlias)}
+      &redirectUrl=${encodeURIComponent("/workspace/general")}`;
+
     router.push(url);
   };
 
@@ -156,6 +155,20 @@ export function PaymentModal({
     checkCoupon(couponText);
     toast.success("Congratulation, Coupon Redeemed Successfully");
     setIsRedeemed(true);
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOption = e.target.selectedOptions[0];
+    const orgId = selectedOption.value;
+    const organizationAlias = selectedOption.getAttribute("data-alias");
+
+    if (orgId) {
+      setOrgId(orgId);
+      console.log({ orgId });
+    } else if (organizationAlias) {
+      setOrgAlias(organizationAlias);
+      console.log({ orgAlias: organizationAlias });
+    }
   };
 
   // Handle coupon code input change
@@ -442,10 +455,17 @@ export function PaymentModal({
             {organizationData && organizationData.length > 0 && (
               <select
                 className="mt-4 px-4 py-[10px] text-base rounded-lg bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 outline-none w-full border-[1px] border-indigo-400"
-                onChange={(e) => setOrgId(e.target.value)}
+                onChange={handleSelectChange}
               >
+                <option value="" disabled selected>
+                  Select which organization
+                </option>
                 {organizationData.map((org: DBOrganisationSchema) => (
-                  <option key={org.id} value={org.id}>
+                  <option
+                    key={org.id}
+                    value={org.id}
+                    data-alias={org.organizationAlias}
+                  >
                     {org.organizationName}
                   </option>
                 ))}

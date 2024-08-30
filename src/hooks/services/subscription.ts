@@ -22,7 +22,6 @@ export function useCreateOrgSubscription(
       const isMonthlyValue = isMonthly === "true" ? "month" : "year";
       const initialTotalNum = initialTotal ? Number(initialTotal) : null;
       const discountAmountNum = discountAmount ? Number(discountAmount) : null;
-      const orgIdNum = orgId ? Number(orgId) : null;
 
       // Format the start date
       const startDate = new Date();
