@@ -12,7 +12,7 @@ export function AnswerSheet({
 }: {
   poll: TQuiz<TQuestion[]> | null;
   answers: TAnswer[];
-  close?: () => void;
+  close?: () => Promise<void>;
 }) {
 console.log(answers)
   const answerSheet = useMemo(() => {

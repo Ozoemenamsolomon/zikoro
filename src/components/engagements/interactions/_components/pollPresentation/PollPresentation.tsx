@@ -8,6 +8,7 @@ import {
   useDeleteQuizLobby,
   useFetchSingleEvent,
   useGetAnswer,
+  useUpdateQuiz,
 } from "@/hooks";
 import { useState, useEffect, useMemo } from "react";
 import { AvatarFullConfig } from "react-nice-avatar";
@@ -44,7 +45,7 @@ export default function PollPresentation({
   const { isOrganizer, attendeeId, attendee, loading, isLoading } =
     useVerifyUserAccess(eventId); // verify user
   const { data } = useFetchSingleEvent(eventId);
-  const { isIdPresent,  } = useCheckTeamMember({ eventId }); // verify team member
+  const { isIdPresent } = useCheckTeamMember({ eventId }); // verify team member
   const [isLeftBox, setLeftBox] = useState(true); // state to toggle ad visibility
   const [isLobby, setisLobby] = useState(false); // state to show the attendee's or player's lobby
   const { answers, getAnswers, setAnswers } = useGetQuizAnswer(); // hook to fetch all poll answers
@@ -56,7 +57,7 @@ export default function PollPresentation({
     useState<Required<AvatarFullConfig> | null>(null);
   // quiz result stores the state for quiz that is currently being answered by the attendee (for attendees only)
   const [pollResult, setPollResult] = useState<TQuiz<TQuestion[]> | null>(null);
-
+  const {updateQuiz, isLoading: isUpdating} = useUpdateQuiz()
   const [playerDetail, setPlayerDetail] = useState<TPlayerDetail>({
     phone: "",
     email: "",
@@ -161,7 +162,7 @@ export default function PollPresentation({
     setIsSendMailModal(false);
     setShowScoreSheet(true);
   }
-  console.log("ileft", isLeftBox);
+
   // show score sheet after live quiz
   useEffect(() => {
     (async () => {
@@ -189,11 +190,24 @@ export default function PollPresentation({
     setPollResult(quiz);
   }
 
-  console.log("ansers", answers);
+  // reset the poll
+  async function closeAnswerSheet() {
+    const payload = {
+      ...poll,
+      liveMode: {
+        isStarted: false,
+        isEnded: false,
+      },
+    }
+    await updateQuiz({payload});
+    setShowScoreSheet(false);
+    setIsNotStarted(true);
+    window.open(window.location.href, "_self");
+  }
 
   return (
     <div className="w-full">
-      {poll && !loading && !isLoading  ? (
+      {poll && !loading && !isLoading ? (
         <>
           {showScoreSheet ? (
             <>
@@ -210,11 +224,7 @@ export default function PollPresentation({
                 <AnswerSheet
                   poll={pollResult} // change it to pull
                   answers={answers}
-                  close={() => {
-                    setShowScoreSheet(false);
-                    setIsNotStarted(true);
-                    window.open(window.location.href, "_self");
-                  }}
+                  close={closeAnswerSheet}
                 />
               )}
             </>
