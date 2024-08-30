@@ -13,11 +13,11 @@ export function useCreateOrgSubscription(
   initialTotal: string | null,
   couponCode: string | null,
   discountAmount: number | null,
-  orgId: string | null
+  orgId?: string | null,
+  orgAlias?: string | null
 ) {
   async function createOrgSubscription() {
     try {
-      const userIdNum = Number(userId);
       const totalPriceNum = Number(totalPrice);
       const isMonthlyValue = isMonthly === "true" ? "month" : "year";
       const initialTotalNum = initialTotal ? Number(initialTotal) : null;
@@ -41,7 +41,6 @@ export function useCreateOrgSubscription(
         .from("subscription")
         .insert({
           userId: userId,
-          organizationId: orgId,
           subscriptionType: plan,
           amountPayed: totalPriceNum,
           startDate: formattedStartDate,
@@ -51,6 +50,9 @@ export function useCreateOrgSubscription(
           planPrice: initialTotalNum,
           discountValue: discountAmountNum,
           discountCode: couponCode,
+
+          // Conditionally insert either organizationId or organizationAlias
+          ...(orgId ? { organizationId: orgId } : { organizationAlias: orgAlias })
         })
 
 
