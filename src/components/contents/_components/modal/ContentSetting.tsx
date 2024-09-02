@@ -158,6 +158,8 @@ export function ContentSetting({
           : eventAppAccessList
           ? eventAppAccessList[0]?.date
           : "",
+        affiliateSettings: data.affiliateSettings,
+        selfCheckInAllowed: data.selfCheckInAllowed,
       });
 
       if (data?.eventWebsiteSettings === null) {
