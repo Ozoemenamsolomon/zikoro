@@ -66,8 +66,8 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ appointments, currentDate }) =>
                             }})
                         // console.log({record})
                         return (
-                            <div className="relative">
-                                <div key={idx} className={`overflow-hidden border p-2 text-center bg-slate-100 ${idx === 0 ? 'rounded-tl-xl' : idx === 6 ? 'rounded-tr-xl' : ''} `}>
+                            <div key={idx} className="relative">
+                                <div  className={`overflow-hidden border p-2 text-center bg-slate-100 ${idx === 0 ? 'rounded-tl-xl' : idx === 6 ? 'rounded-tr-xl' : ''} `}>
                                     <h3 className={`${active ? 'bg-zikoroBlue text-white':''} text font-medium py-1 rounded-md px-2 `}>
                                         {format(day, 'eee dd')}
                                     </h3>
