@@ -233,7 +233,7 @@ export function useRegistration() {
   };
 }
 
-export function useLogOut() {
+export function useLogOut(redirectPath:string='/') {
   const router = useRouter();
   const { setOrganization } = useOrganizationStore();
   const { setEvent } = useEventStore();
@@ -244,7 +244,7 @@ export function useLogOut() {
     setUser(null);
     setOrganization(null);
     setEvent(null);
-    router.push("/");
+    router.push(redirectPath);
   }
 
   return {

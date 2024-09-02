@@ -49,16 +49,9 @@ const navlinks = [
 
 const Sidebar = () => {
   const pathanme = usePathname()
-  // const {user} = useAppointmentContext()
   const  {user} = useUserStore()
-  const {logOut} = useLogOut()
+  const {logOut} = useLogOut('/bookings')
   const [open, setOpen] = useState('')
-console.log({user})
-  // useEffect(() => {
-  //   if(!user){
-  //     logOut()
-  //   }
-  // }, [user])
   
   return (
     <nav className="space-y-4 text-sm px-6 py-6 h-full w-full flex flex-col justify-between gap-">
