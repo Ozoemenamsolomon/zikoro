@@ -270,8 +270,10 @@ export async function PATCH(req: NextRequest) {
         .eq("partnerAlias", payload?.partnerAlias);
 
       var { SendMailClient } = require("zeptomail");
-
+     
       if (deactivate) {
+        
+
         let client = new SendMailClient({
           url: process.env.NEXT_PUBLIC_ZEPTO_URL,
           token: process.env.NEXT_PUBLIC_ZEPTO_TOKEN,
@@ -295,15 +297,13 @@ export async function PATCH(req: NextRequest) {
             <div>
             <div
             style="
-                    max-width: 600px;
+                   
                     margin: 0 auto;
                     display: block;
                     
                   "
             >
-                  <p style="font-weight: 500;">Dear ${
-                    payload?.contactFirstName ?? ""
-                  } ${payload?.contactLastName ?? ""},</p>
+                  <p style="font-weight: 600;">Hi there,</p>
                 <br/>
                 <br/>
                 <p style="text-algin: start;">${deactivate?.reason}</p>
