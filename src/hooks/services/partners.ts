@@ -119,7 +119,8 @@ export function useUpdatePartners() {
     deactivate?: { reason: string }
   ) {
     try {
-      let payloadData = deactivate ? { payload } : { payload, deactivate };
+    
+      let payloadData = deactivate ? { payload, deactivate } : {payload};
       const { data, status } = await patchRequest<TPartner>({
         endpoint: "/partner",
         payload: payloadData,
