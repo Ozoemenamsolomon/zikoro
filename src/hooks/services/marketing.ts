@@ -57,8 +57,8 @@ export const useGetAffiliates = ({
 
     try {
       console.log(
-        `marketing/affiliate?${userId && `userId=${userId}&`}${
-          organizationId && `organizationId=${organizationId}`
+        `marketing/affiliate?${userId ? `userId=${userId}&` : ""}${
+          organizationId ? `organizationId=${organizationId}` : ""
         }`
       );
       const { data, status } = await getRequest<TAffiliate[]>({
