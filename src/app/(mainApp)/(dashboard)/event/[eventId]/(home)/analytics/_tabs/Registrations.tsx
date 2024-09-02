@@ -478,6 +478,14 @@ const Registrations = () => {
             Referral Link Performance
           </h2>
           <div className="flex flex-col gap-2 no-scrollbar">
+            <div className="flex items-center gap-4 text-gray-800">
+              <span className="flex flex-col text-gray-700 font-medium flex-[50%]">
+                Affiliate
+              </span>
+              <span className="text-gray-900 font-medium flex-[20%]">Code</span>
+              <span className="text-gray-900 font-medium flex-[20%]">Amt</span>
+              <span className="text-gray-900 font-medium flex-[10%]">Qty</span>
+            </div>
             {affiliateLinks &&
               affiliateLinks
                 .filter(({ eventTransactions }) => eventTransactions)
@@ -495,8 +503,8 @@ const Registrations = () => {
                       ))
                 )
                 .map(({ eventTransactions, linkCode, affiliate }) => (
-                  <div className="flex items-center gap-4">
-                    <div className="flex flex-col text-gray-700 font-medium flex-[60%]">
+                  <div className="flex items-center gap-4 text-gray-600">
+                    <div className="flex flex-col font-medium flex-[50%]">
                       <span className="capitalize">
                         {affiliate?.firstName + " " + affiliate?.lastname}
                       </span>
@@ -504,10 +512,10 @@ const Registrations = () => {
                         {affiliate?.email}
                       </span>
                     </div>
-                    <span className="text-gray-900 font-medium flex-[20%]">
+                    <span className="font-medium flex-[20%]">
                       {linkCode}
                     </span>
-                    <span className="text-gray-900 font-medium flex-[10%]">
+                    <span className="font-medium flex-[20%]">
                       {formatNumberToShortHand(
                         eventTransactions
                           ? eventTransactions.reduce(
@@ -517,7 +525,7 @@ const Registrations = () => {
                           : 0
                       )}
                     </span>
-                    <span className="text-gray-900 font-medium flex-[10%]">
+                    <span className="font-medium flex-[10%]">
                       {eventTransactions
                         ? eventTransactions.reduce(
                             (acc, { attendees }) => acc + attendees,
