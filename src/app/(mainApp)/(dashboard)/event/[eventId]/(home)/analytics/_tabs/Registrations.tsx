@@ -48,7 +48,7 @@ import { useGetData } from "@/hooks/services/request";
 import { AnalyticsInfoCard } from "../page";
 
 const Registrations = () => {
-  const { eventId } = useParams();
+  const { eventId }: { eventId: string } = useParams();
   const { organization } = useOrganizationStore();
 
   const {
@@ -63,7 +63,8 @@ const Registrations = () => {
   } = useGetEventTransactions({
     eventId,
   });
-  const { affiliateLinks } = useGetAffiliateLinks({ eventId });
+  const { affiliateLinks } = useGetAffiliateLinks({ eventId, isUsed: true });
+  console.log(affiliateLinks);
 
   const { data: recurringData, isLoading: recurringIsLoading } = useGetData(
     `/events/${eventId}/analytics/recurring?organizationId=${organization?.id}`
@@ -201,12 +202,20 @@ const Registrations = () => {
               </div>
               <div className="w-full bg-basePrimary/20 rounded-2xl h-4">
                 <div
-                  style={{ width: (revenue / revenueTarget) * 100 + "%" }}
+                  style={{
+                    width:
+                      (revenueTarget > 0 ? revenue / revenueTarget : 1) * 100 +
+                      "%",
+                  }}
                   className="h-full bg-basePrimary rounded-2xl transition-all"
                 />
               </div>
               <div className="text-sm text-gray-600 font-medium text-center">
-                <b>{((revenue / revenueTarget) * 100).toFixed() + "% "}</b>
+                <b>
+                  {(
+                    (revenueTarget > 0 ? revenue / revenueTarget : 1) * 100
+                  ).toFixed() + "% "}
+                </b>
                 of revenue goal reached
               </div>
             </div>
@@ -469,6 +478,14 @@ const Registrations = () => {
             Referral Link Performance
           </h2>
           <div className="flex flex-col gap-2 no-scrollbar">
+            <div className="flex items-center gap-4 text-gray-800">
+              <span className="flex flex-col text-gray-700 font-medium flex-[50%]">
+                Affiliate
+              </span>
+              <span className="text-gray-900 font-medium flex-[20%]">Code</span>
+              <span className="text-gray-900 font-medium flex-[20%]">Amt</span>
+              <span className="text-gray-900 font-medium flex-[10%]">Qty</span>
+            </div>
             {affiliateLinks &&
               affiliateLinks
                 .filter(({ eventTransactions }) => eventTransactions)
@@ -486,8 +503,8 @@ const Registrations = () => {
                       ))
                 )
                 .map(({ eventTransactions, linkCode, affiliate }) => (
-                  <div className="flex items-center gap-4">
-                    <div className="flex flex-col text-gray-700 font-medium flex-[60%]">
+                  <div className="flex items-center gap-4 text-gray-600">
+                    <div className="flex flex-col font-medium flex-[50%]">
                       <span className="capitalize">
                         {affiliate?.firstName + " " + affiliate?.lastname}
                       </span>
@@ -495,10 +512,10 @@ const Registrations = () => {
                         {affiliate?.email}
                       </span>
                     </div>
-                    <span className="text-gray-900 font-medium flex-[20%]">
+                    <span className="font-medium flex-[20%]">
                       {linkCode}
                     </span>
-                    <span className="text-gray-900 font-medium flex-[10%]">
+                    <span className="font-medium flex-[20%]">
                       {formatNumberToShortHand(
                         eventTransactions
                           ? eventTransactions.reduce(
@@ -508,7 +525,7 @@ const Registrations = () => {
                           : 0
                       )}
                     </span>
-                    <span className="text-gray-900 font-medium flex-[10%]">
+                    <span className="font-medium flex-[10%]">
                       {eventTransactions
                         ? eventTransactions.reduce(
                             (acc, { attendees }) => acc + attendees,

@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import toast from "react-hot-toast";
 import { plansData } from "./_plansData";
+import { generateAlias } from "@/utils";
 const orgType = ["Private", "Business"];
 const pricingPlan = ["Free", "Lite", "Professional", "Enterprise"];
 
@@ -145,6 +146,10 @@ export function CreateOrganization({
   );
   const form = useForm<z.infer<typeof organizationSchema>>({
     resolver: zodResolver(organizationSchema),
+    defaultValues:{
+      organizationAlias: generateAlias()
+
+    }
   });
   const [isDiscount, setIsDiscount] = useState(false);
 
@@ -209,7 +214,7 @@ export function CreateOrganization({
       )}&plan=${encodeURIComponent(
         selectedPricing?.plan || "Free"
       )}&isMonthly=${encodeURIComponent(isMonthly)}&total=${encodeURIComponent(
-        total + appliedDiscount
+        total 
       )}&currency=${encodeURIComponent(
         selectedCurrency
       )}&organizationName=${encodeURIComponent(
@@ -220,8 +225,8 @@ export function CreateOrganization({
         values.subscriptionPlan
       )}&redirectUrl=${encodeURIComponent(
         window.location.href
-      )}&isCreate=${encodeURIComponent(true)}&coupon=${encodeURIComponent(
-        appliedDiscount
+      )}&isCreate=${encodeURIComponent(true)}&orgId=${encodeURIComponent(
+        values.organizationAlias
       )}
       `;
 

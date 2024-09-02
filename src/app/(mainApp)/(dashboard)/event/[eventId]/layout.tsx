@@ -18,7 +18,7 @@ import useEventStore from "@/store/globalEventStore";
 import useUserStore from "@/store/globalUserStore";
 import { Event, TAttendee } from "@/types";
 import { EngagementsSettings } from "@/types/engagements";
-import { isBefore, isSameDay, isToday, isWithinInterval } from "date-fns";
+import { addDays, isBefore, isSameDay, isToday, isWithinInterval, subDays } from "date-fns";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -43,6 +43,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     eventId,
     isAlias: true,
   });
+
+  console.log(
+    event?.organization.teamMembers,
+    user.userEmail,
+    isCheckedInToday
+  );
 
   const {
     data: engagementsSettings,
@@ -108,8 +114,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     console.log(attendee?.eventId);
     console.log(
       !isWithinInterval(new Date(), {
-        start: event.startDateTime,
-        end: event.endDateTime,
+        start: subDays(event.startDateTime, 1),
+        end: addDays(event.endDateTime, 1),
       }),
       !!attendee?.checkin &&
         attendee?.checkin.some(({ date }) => isSameDay(new Date(), date)),
@@ -140,7 +146,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <>
           {children}
 
-          <Dialog open={!isCheckedInToday && !!event && !!event.selfCheckInAllowed}>
+          <Dialog
+            open={
+              !isCheckedInToday &&
+              !!event &&
+              !!event.selfCheckInAllowed &&
+              !event.organization.teamMembers.some(
+                ({ userEmail }) => user && userEmail === user.userEmail
+              )
+            }
+          >
             <DialogContent>
               <DialogHeader>
                 <span className="text-2xl font-bold">Check In Required</span>

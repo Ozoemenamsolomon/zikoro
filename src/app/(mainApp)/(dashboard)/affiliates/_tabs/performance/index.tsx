@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { TFilter } from "@/types/filter";
 import {
@@ -232,12 +231,12 @@ const Performance = () => {
   return (
     <section className="p-4 space-y-4 w-full">
       <div className="w-full flex justify-end">
-      <Button
-        className="bg-basePrimary px-4 w-fit"
-        onClick={() => router.push("/affiliates/link/create")}
-      >
-        Create Link
-      </Button>
+        <Button
+          className="bg-basePrimary px-4 w-fit"
+          onClick={() => router.push("/affiliates/link/create")}
+        >
+          Create Link
+        </Button>
       </div>
       <div className="w-full overflow-x-auto no-scrollbar">
         <div className="flex md:justify-end gap-4">

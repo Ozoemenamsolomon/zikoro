@@ -92,7 +92,7 @@ export default function Discount({ eventId }: { eventId: string }) {
           >
             {Array.isArray(formattedData) && formattedData?.length > 0 && (
               <ul className="grid grid-cols-8 rounded-t-lg place-items-center text-center font-semibold bg-[#f3f3f3] p-3 border-b-2 text-[14px]">
-                <li>Created At</li>
+                <li className="w-full text-start">Created At</li>
                 <li>Code</li>
                 <li>Min. QTy</li>
                 <li>Valid until</li>
@@ -129,6 +129,8 @@ export default function Discount({ eventId }: { eventId: string }) {
               formattedData.map((discount: any) => (
                 <DiscountList
                   key={discount.id}
+          discountUsers={discount?.discountUsers}
+
                   createdAt={discount.created_at}
                   code={discount.discountCode}
                   minQty={discount.minQty}
@@ -158,6 +160,7 @@ const DiscountList: React.FC<{
   quantity?: string;
   status?: boolean;
   orgId: string;
+  discountUsers?:string;
   getDiscount: () => Promise<void>;
 }> = ({
   createdAt = "",
@@ -169,6 +172,7 @@ const DiscountList: React.FC<{
   quantity = "",
   status,
   orgId,
+  discountUsers,
   getDiscount,
 }) => {
   const [value, setValue] = useState(status);
@@ -187,8 +191,11 @@ const DiscountList: React.FC<{
   // console.log(value)
 
   return (
-    <ul className="grid grid-cols-8 place-items-center text-center p-3 text-[12px] border-x border-b">
-      <li className="flex items-center">{createdAt}</li>
+    <ul className="grid grid-cols-8 bg-white place-items-center text-center p-3 text-[12px] border-x border-b">
+      <li className="flex w-full flex-col justify-start items-start">
+        <p  className="text-start">{createdAt}</p>
+        <p className="text-xs text-start capitalize">{discountUsers === "both" ? "Attendees and Partners" : discountUsers}</p>
+      </li>
       <li>{code}</li>
       <li>{minQty}</li>
       <li>{validUntil}</li>
@@ -223,6 +230,7 @@ const DialogDemo = ({
   const [percentage, setPercentage] = useState<number>(1);
   const [isAmtChecked, setIsAmtChecked] = useState<boolean>(true);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [discountUsers, setDiscountUsers] = useState("attendees")
   const { createDiscount, loading } = useDiscount();
   const { organization } = useOrganizationStore();
   const [discountData, setDiscountData] = useState({
@@ -255,6 +263,7 @@ const DialogDemo = ({
           discountAmount,
           eventId,
           status: true,
+          discountUsers
         }
       : {
           ...restData,
@@ -262,8 +271,8 @@ const DialogDemo = ({
           quantity,
           eventId,
           discountPercentage: percentage,
-
           status: true,
+          discountUsers 
         };
 
     await createDiscount(payload);
@@ -271,6 +280,11 @@ const DialogDemo = ({
     setDialogOpen((prev) => !prev);
   }
 
+  const discountUsersList = [
+    {value:"attendees", label:"Attendees"},
+    {value:"partners", label:"Partners"},
+    {value:"both", label:"Both"},
+  ]
   return (
     <DateAndTimeAdapter>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -445,6 +459,29 @@ const DialogDemo = ({
                 </div>
               </div>
             </div>
+            <label className="flex mb-4 flex-col items-start justify-start gap-y-3">
+              <span>Who will use the discount code ?</span>
+                    <div className="w-full flex items-center gap-x-4">
+                      {discountUsersList?.map((item, index) => (
+                         <div
+                         key={index}
+                         className="flex items-center gap-x-2">
+                         <Checkbox
+                           className={`w-4 h-4 data-[state=checked]:border-none data-[state=checked]:bg-basePrimary rounded-sm
+                           } `}
+                           role="button"
+                           name="discountUsers"
+                           //id="percenChecker"
+                           checked={discountUsers === item?.value}
+                           onClick={(e) => {
+                             setDiscountUsers(item?.value)
+                           }}
+                         />
+                         <span>{item?.label}</span>
+                       </div>
+                      ))}
+                    </div>
+            </label>
             <button
               onClick={submit}
               disabled={isMaxReached}

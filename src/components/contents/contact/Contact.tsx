@@ -20,12 +20,12 @@ import {
   FormMessage,
 } from "@/components";
 import { useForm } from "react-hook-form";
-import { useFetchSingleOrganization, getCookie, useUpdateEvent } from "@/hooks";
+import { useFetchSingleOrganization, getCookie, useUpdateEvent, useFetchSingleEvent } from "@/hooks";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 function Contact({ eventId }: { eventId: string }) {
-  const org = getCookie("currentOrganization");
-  const { data, refetch } = useFetchSingleOrganization(org?.id);
+  const {data: event, loading: fetching} = useFetchSingleEvent(eventId)
+  const { data, refetch } = useFetchSingleOrganization(event?.organization?.id);
   const { updateOrg, loading } = useUpdateEvent();
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
     "+234"
@@ -62,46 +62,46 @@ function Contact({ eventId }: { eventId: string }) {
     const payload = {
       ...values,
       organizationLogo: logoUrl,
-      organizationName: org?.name,
+      organizationName: event?.organization?.organizationName,
       eventPhoneNumber: phoneCountryCode + values.eventPhoneNumber,
       eventWhatsApp: whatsappCountryCode + values.eventWhatsApp,
     };
     // 
 
-    await updateOrg(payload, org?.id);
+    await updateOrg(payload, String(event?.organization?.id!));
     refetch();
   }
 
   const country = form.watch("country");
 
   useEffect(() => {
-    if (data) {
+    if (event) {
       // get the added country code
       const previousCode = COUNTRY_CODE?.find(
-        ({ name }) => name.toLowerCase() === data?.country?.toLowerCase() 
+        ({ name }) => name.toLowerCase() === event?.organization?.country?.toLowerCase() 
       )?.dial_code;
 
       // remove country code from the prev phone or whatsapp Number
       let updatedPhoneNumber = "";
       let updatedWhatsappNumber = "";
 
-      if (previousCode && data?.eventPhoneNumber?.startsWith(previousCode)) {
-        updatedPhoneNumber = data?.eventPhoneNumber.slice(previousCode?.length);
+      if (previousCode && event?.organization?.eventPhoneNumber?.startsWith(previousCode)) {
+        updatedPhoneNumber = event?.organization?.eventPhoneNumber.slice(previousCode?.length);
       }
 
-      if (previousCode && data?.eventWhatsApp?.startsWith(previousCode)) {
-        updatedWhatsappNumber = data?.eventWhatsApp.slice(previousCode?.length);
+      if (previousCode && event?.organization?.eventWhatsApp?.startsWith(previousCode)) {
+        updatedWhatsappNumber = event?.organization?.eventWhatsApp.slice(previousCode?.length);
       }
       form.reset({
-        country: data?.country,
+        country: event?.organization?.country,
         eventPhoneNumber: updatedPhoneNumber,
         eventWhatsApp: updatedWhatsappNumber,
-        eventContactEmail: data?.eventContactEmail,
-        organizationLogo: data?.organizationLogo,
-        x: data?.x,
-        linkedIn: data?.linkedIn,
-        facebook: data?.facebook,
-        instagram: data?.instagram,
+        eventContactEmail: event?.organization?.eventContactEmail,
+        organizationLogo: event?.organization?.organizationLogo,
+        x: event?.organization?.x,
+        linkedIn: event?.organization?.linkedIn,
+        facebook: event?.organization?.facebook,
+        instagram: event?.organization?.instagram,
       });
 
       // set phone and whatsapp code
@@ -110,7 +110,7 @@ function Contact({ eventId }: { eventId: string }) {
         setPhoneCountryCode(previousCode);
       }
     }
-  }, [data]);
+  }, [event]);
 
   useEffect(() => {
     if (country) {
@@ -154,7 +154,7 @@ function Contact({ eventId }: { eventId: string }) {
           {/* <button>Click</button> */}
           <div className="grid grid-cols-1 md:grid-cols-2 mb-10 gap-6 px-4">
             <div className="py-4 space-y-10">
-              {data && (
+              {event && (
                 <FormField
                   control={form.control}
                   name="country"
@@ -162,8 +162,8 @@ function Contact({ eventId }: { eventId: string }) {
                     <ReactSelect
                       {...form.register("country")}
                       defaultValue={{
-                        value: data?.country,
-                        label: data?.country,
+                        value: event?.organization?.country,
+                        label: event?.organization?.country,
                       }}
                       placeHolder="Select the Country"
                       label="Country"

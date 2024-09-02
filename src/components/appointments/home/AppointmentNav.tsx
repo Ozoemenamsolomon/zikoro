@@ -13,7 +13,6 @@ const AppointmentNav = () => {
   return (
     <div className="py-6 px-3 md:px-6  ">
       <div className=" bg-white flex items-center  lg:max-w-[970px] xl:max-w-[1165px] py-3 px-3 md:px-6 lg:px-[36px] rounded-[64px] justify-between mx-auto shadow ">
-        {/* logo */}
         <Image src="/appointments/zikoroB.png" width={115} height={40} alt="" />
 
         {/* links */}
@@ -21,15 +20,26 @@ const AppointmentNav = () => {
           <p className="text-base font-medium cursor-pointer">
             Other Products <ChevronDown size={20} />
           </p>
-          <p className="text-base font-medium cursor-pointer">Contact us</p>
+          <p
+            onClick={() => router.push("/bookings/contact")}
+            className="text-base font-medium cursor-pointer"
+          >
+            Contact us
+          </p>
         </div>
 
         {/* buttons */}
         <div className=" border-[1px] border-gray-200 rounded-[51px] hidden lg:flex gap-x-4 p-3 ">
-          <button className="text-base px-[20px] py-[10px] text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[28px]">
+          <button
+            onClick={() => router.push("/bookings/signup")}
+            className="text-base px-[20px] py-[10px] text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end rounded-[28px]"
+          >
             Sign Up
           </button>
-          <button className="text-base px-[20px] py-[10px] text-indigo-700 bg-transparent border border-indigo-800 rounded-[28px]">
+          <button
+            onClick={() => router.push("/bookings/login")}
+            className="text-base px-[20px] py-[10px] text-indigo-700 bg-transparent border border-indigo-800 rounded-[28px]"
+          >
             Login
           </button>
         </div>

@@ -255,6 +255,7 @@ export default function ContactForm() {
     "Zimbabwe",
   ];
 
+  const root = "events";
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -266,6 +267,7 @@ export default function ContactForm() {
     attendees: "",
     industry: "",
     comments: "",
+    source: root,
   });
 
   const handleChange = (e: any) => {
@@ -298,6 +300,7 @@ export default function ContactForm() {
           attendees: "",
           industry: "",
           comments: "",
+          source: "",
         });
       } else {
         throw new Error("Message Not Sent ");
@@ -306,16 +309,12 @@ export default function ContactForm() {
       toast.error(`Error submitting contact form: ${error}`);
     }
   };
+
   return (
     <div className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end mt-28">
       <div className="max-w-5xl mx-auto pt-24 pb-24 ">
         <div className="border-[1px] border-white mx-3 lg:mx-0 py-7 px-2 lg:px-8 rounded-md lg:rounded-lg ">
-          <form
-            action=""
-            method="post"
-            className="pb-24 px-7"
-            onSubmit={submitForm}
-          >
+          <form action="" className="pb-24 px-7" onSubmit={submitForm}>
             <p className=" text-xl lg:text-2xl text-center lg:text-left text-white font-bold">
               Contact Us
             </p>

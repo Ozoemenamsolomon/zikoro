@@ -28,6 +28,7 @@ export default function PaymentPage() {
   const name = params.get("name");
   const id = params.get("id") ?? "";
   const orgId = params.get("orgId") ?? "";
+  const orgAlias = params.get("orgAlias") ?? "";
   const email = params.get("email");
   const plan = params.get("plan") ?? "";
   const total = params.get("total");
@@ -53,7 +54,8 @@ export default function PaymentPage() {
     total,
     currentCoupon,
     discount,
-    orgId
+    orgId,
+    orgAlias
   );
 
   async function handleSuccess(reference: any) {
@@ -72,7 +74,7 @@ export default function PaymentPage() {
           subscriptionPlan,
         });
       }
-     
+
       router.push(redirect);
     });
   }
@@ -91,7 +93,7 @@ export default function PaymentPage() {
           subscriptionPlan,
         });
       }
-      
+
       router.push(redirect);
     });
   }
@@ -174,6 +176,8 @@ export default function PaymentPage() {
     };
 
     updateTotalPrice();
+    console.log("email", email);
+  
   }, [coupons, currentCoupon, total]);
 
   return (

@@ -164,18 +164,18 @@ export function SingleEvent({
   return (
     <>
       <Comp
-        disabled={isExpired}
+        disabled={isExpired || !event?.published}
         onClick={() => router.push(`/live-events/${event?.eventAlias}`)}
         className={cn("w-full h-fit")}
       >
         <div
           className={cn(
             "w-full flex flex-col justify-start items-start  gap-y-4 bg-white rounded-2xl  shadow h-fit ",
-            isExpired && "relative",
+            isExpired || !event?.published && "relative",
             className
           )}
         >
-          {isExpired && (
+          {isExpired || !event?.published && (
             <div className="w-full h-full inset-0 absolute z-10 bg-white/50"></div>
           )}
           <div

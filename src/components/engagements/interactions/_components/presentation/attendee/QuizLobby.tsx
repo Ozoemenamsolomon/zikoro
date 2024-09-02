@@ -102,7 +102,7 @@ export function QuizLobby({
           className="gap-x-1 self-start w-fit h-fit px-0"
         >
           <ArrowBackOutline size={20} />
-          <p className="text-sm">Exit Quiz</p>
+          <p className="text-sm">Exit</p>
         </Button>
         <h2 className="font-semibold text-base  sm:text-xl text-basePrimary">
           {quiz?.coverTitle ?? ""}

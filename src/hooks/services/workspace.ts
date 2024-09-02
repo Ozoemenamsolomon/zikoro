@@ -18,7 +18,13 @@ interface FormDataType {
   orgX: string
 }
 
-export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, orgLogoLink: string, orgFaviconLink: string) {
+export function useUpdateWorkspace(
+  formData: FormDataType,
+  orgLogoLink: string,
+  orgFaviconLink: string,
+  workspaceAlias?: string,
+  workspaceId?: number,
+) {
   async function updateWorkspace() {
     const {
       orgName,
@@ -35,55 +41,72 @@ export function useUpdateWorkspace(workspaceId: number, formData: FormDataType, 
     } = formData;
 
     try {
-      const { data, error, status } = await supabase
-        .from("organization")
-        .update(
-          {
-            organizationName: orgName,
-            organizationType: orgType,
-            subscriptionPlan: orgPlan,
-            country: orgCountry,
-            eventPhoneNumber: orgTel,
-            eventWhatsApp: orgWhatsappNumber,
-            eventContactEmail: orgEmail,
-            organizationLogo: orgLogoLink,
-            favicon: orgFaviconLink,
-            x: orgX,
-            linkedIn: orgLinkedin,
-            facebook: orgFacebook,
-            instagram: orgInstagram,
-          }
-        )
-        .eq("id", workspaceId)
-        .select()
-        .maybeSingle()
+      const query = supabase.from("organization").update({
+        organizationName: orgName,
+        organizationType: orgType,
+        subscriptionPlan: orgPlan,
+        country: orgCountry,
+        eventPhoneNumber: orgTel,
+        eventWhatsApp: orgWhatsappNumber,
+        eventContactEmail: orgEmail,
+        organizationLogo: orgLogoLink,
+        favicon: orgFaviconLink,
+        x: orgX,
+        linkedIn: orgLinkedin,
+        facebook: orgFacebook,
+        instagram: orgInstagram,
+      });
+
+      // Add the filter based on the available identifier
+      if (workspaceId) {
+        query.eq("id", workspaceId);
+      } else if (workspaceAlias) {
+        query.eq("organizationAlias", workspaceAlias);
+      } else {
+        throw new Error("No valid identifier provided for workspace update.");
+      }
+
+      const { data, error, status } = await query.select().maybeSingle();
 
       if (error) {
         console.log(error.message);
         return;
       }
+
       if (status === 204 || status === 200) {
         toast.success("Workspace Updated");
-        return data
+        return data;
       }
     } catch (error: any) {
-      toast.error(error);
+      toast.error(error.message || error);
     }
-
   }
+
   return {
     updateWorkspace,
   };
 }
 
-export function useDeleteWorkspace(workspaceId: number) {
-  async function deleteWorkspace(): Promise<Boolean> {
+
+export function useDeleteWorkspace(workspaceId?: number, organizationAlias?: string) {
+  async function deleteWorkspace(): Promise<boolean> {
     try {
-      // Delete the event by ID
-      const { data, error, status } = await supabase
-        .from("organization")
-        .delete()
-        .eq("id", workspaceId);
+      // Ensure either workspaceId or organizationAlias is provided
+      if (!workspaceId && !organizationAlias) {
+        toast.error("Either workspace ID or organization alias must be provided.");
+        return false;
+      }
+
+      // Build the delete query based on available identifier
+      let query = supabase.from("organization").delete();
+
+      if (workspaceId) {
+        query = query.eq("id", workspaceId);
+      } else if (organizationAlias) {
+        query = query.eq("organizationAlias", organizationAlias);
+      }
+
+      const { data, error, status } = await query;
 
       if (error) {
         toast.error(error.message);
@@ -97,8 +120,8 @@ export function useDeleteWorkspace(workspaceId: number) {
         toast.error("Unexpected status code: " + status);
         return false;
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.message || error);
       return false;
     }
   }
@@ -107,6 +130,7 @@ export function useDeleteWorkspace(workspaceId: number) {
     deleteWorkspace,
   };
 }
+
 
 export function useCreateDomain(workspaceId: number, workspaceSubdomain: string) {
   async function createDomain() {

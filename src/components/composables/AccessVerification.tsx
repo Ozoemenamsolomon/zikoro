@@ -1,7 +1,7 @@
 "use client";
 
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
+import { useCheckTeamMember, useFetchSingleEvent, useGetAllAttendees } from "@/hooks";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib";
@@ -17,8 +17,9 @@ export function AccessVerification({ id }: { id?: string | any }) {
   const router = useRouter();
   const [remainingTime, setRemainingTime] = useState(0);
   const { attendees, isLoading } = useGetAllAttendees(id);
-  const [notRegistered, setNotRegistered] = useState(false);
+  const [notRegistered] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
+ const {isIdPresent} = useCheckTeamMember({eventId: id});
   const {
     data,
     loading: singleEventLoading,
@@ -60,8 +61,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
       !isLoading &&
       user !== null &&
       !singleEventLoading &&
-      data !== null &&
-      typeof userAccess?.isTeamMember === "boolean"
+      data !== null
     ) {
       console.log("I entered the hooks .....");
       const appAccess = data?.eventAppAccess;

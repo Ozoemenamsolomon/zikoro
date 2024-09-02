@@ -1,9 +1,20 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import toast from "react-hot-toast";
 
 type UpdateContactRequestBody = {
-  formData: object;
+  formData: {
+    firstName: string,
+    lastName: string,
+    email: string,
+    phoneNumber: string,
+    annualEvents: string,
+    attendees: string,
+    industry: string,
+    comments: string,
+    source: string
+  }
 };
 
 export async function POST(req: NextRequest) {
@@ -17,19 +28,39 @@ export async function POST(req: NextRequest) {
     }
 
     const { formData } = body;
+    const fName = formData.firstName;
+    const lName = formData.lastName;
+    const email = formData.email;
+    const phone = formData.phoneNumber;
+    const events = formData.annualEvents;
+    const attendees = formData.attendees;
+    const industry = formData.industry;
+    const comments = formData.comments;
+    const source = formData.source
+
 
     try {
-        const { data, error } = await supabase
+      const { data, error } = await supabase
         .from('contactForm')
-        .insert([formData]);
+        .insert({
+          firstName: fName,
+          lastName: lName,
+          email: email,
+          source: source,
+          phoneNumber: phone,
+          annualEvents: events,
+          attendees: attendees,
+          industry: industry,
+          comments: comments
+        });
 
       if (error) {
         throw error;
       }
 
-      return NextResponse.json({ message: "Sent successfully." });
+      toast.success("Your message has been sent");
     } catch (error) {
-      return NextResponse.json({ error: "Internal server error." });
+      toast.error("Error submitting form, try again later");
     }
   }
 }

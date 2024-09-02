@@ -80,7 +80,7 @@ export default function Presentation({
   const [isNotStarted, setIsNotStarted] = useState(true); // state to check whether the admin or attendee has started the quiz
   const { isOrganizer, attendeeId, attendee, loading, isLoading } =
     useVerifyUserAccess(eventId); // verify user
-  const { isIdPresent, eventLoading } = useCheckTeamMember({ eventId }); // verify team member
+  const { isIdPresent } = useCheckTeamMember({ eventId }); // verify team member
   const [isRightBox, setRightBox] = useState(true); // state to toggle advert panel visibility
   const [isLeftBox, setLeftBox] = useState(true); // state to toggle leaderboard panel visibility
   const [isLobby, setisLobby] = useState(false); // state to show the attendee's or player's lobby
@@ -271,7 +271,7 @@ export default function Presentation({
 
   return (
     <div className="w-full">
-      {refinedQuizArray && !loading && !isLoading && !eventLoading ? (
+      {refinedQuizArray && !loading && !isLoading  ? (
         <>
           {showScoreSheet ? (
             <>

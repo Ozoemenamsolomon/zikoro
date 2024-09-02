@@ -7,6 +7,7 @@ export interface TOrganization {
   subscritionStartDate: string;
   subscriptionEndDate: string;
   organizationOwner: string;
+  organizationAlias: string;
   BillingAddress: string;
   TaxID: string;
   payoutAccountDetails: IPayoutAccountDetails | null;
@@ -22,7 +23,7 @@ export interface TOrganization {
   linkedIn: string;
   instagram: string;
   facebook: string;
-  subDomain:string;
+  subDomain: string;
   certificateAsset: TCertificateAsset;
   teamMembers: TOrganizationTeamMember[];
 }
