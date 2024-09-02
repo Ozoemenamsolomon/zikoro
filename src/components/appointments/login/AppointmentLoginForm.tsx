@@ -1,11 +1,30 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { CrossedEye, GoogleBlackIcon, OrIcon } from "@/constants";
 import { useRouter } from "next/navigation";
+import { useLogin } from "@/hooks";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 const AppointmentLoginForm = () => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const { loading, logIn } = useLogin();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  async function onSubmit(values: any) {
+    console.log(formData);
+    await logIn(formData, "/appointments");
+  }
 
   return (
     <div className="bg-white py-0 lg:py-[20px] px-3 lg:px-[42px] rounded-[8px] max-w-full lg:max-w-[542px] ">
@@ -27,12 +46,15 @@ const AppointmentLoginForm = () => {
         <span className="block"> Log In and Get Your Schedule Sorted! </span>
       </p>
 
-      <form action="" className="mt-5">
+      <form action="" className="mt-5" method="POST" onSubmit={onSubmit}>
         <div className="flex flex-col gap-y-3 mt-6">
           <label htmlFor="">Email Address</label>
           <input
             type="email"
             name="email"
+            required
+            value={formData.email}
+            onChange={handleChange}
             placeholder="Enter Email Address"
             className="border-[1px] border-gray-200 px-[10px] py-4 w-full text-base rounded-[6px] outline-none"
           />
@@ -41,12 +63,18 @@ const AppointmentLoginForm = () => {
           <label htmlFor="">Password</label>
           <div className="flex items-center justify-around border-[1px] border-gray-200 rounded-[6px] ">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
+              required
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Enter Password"
               className="w-[90%] px-[10px] py-4 h-full text-base  outline-none"
+              minLength={8}
             />
-            <CrossedEye />
+            <div onClick={() => setShowPassword(!showPassword)}>
+              <CrossedEye />
+            </div>
           </div>
           <p className="text-blue-500 text-right cursor-pointer">
             Forgot password?
@@ -64,7 +92,12 @@ const AppointmentLoginForm = () => {
         <OrIcon />
       </div>
 
-      <button className="py-4 px-3 flex items-center justify-center gap-x-2 text-base w-full rounded-[8px] mt-10 mb-6  border-[1px] border-gray-200">
+      <button
+        disabled={loading}
+        type="submit"
+        className="py-4 px-3 flex items-center justify-center gap-x-2 text-base w-full rounded-[8px] mt-10 mb-6  border-[1px] border-gray-200"
+      >
+        {loading && <LoaderAlt size={22} className="animate-spin" />}
         <GoogleBlackIcon /> Sign Up with google
       </button>
 

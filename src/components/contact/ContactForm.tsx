@@ -306,6 +306,8 @@ export default function ContactForm() {
       toast.error(`Error submitting contact form: ${error}`);
     }
   };
+
+  
   return (
     <div className="bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end mt-28">
       <div className="max-w-5xl mx-auto pt-24 pb-24 ">
