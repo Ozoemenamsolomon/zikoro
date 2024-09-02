@@ -1,5 +1,5 @@
 import { partnerDetails } from "@/schemas";
-import { TOrganization } from ".";
+import { TAffiliateLink, TOrganization } from ".";
 import * as z from "zod";
 export interface Attendees {
   firstName: string;
@@ -41,6 +41,7 @@ interface TEventStatusDetail {
   user: string;
 }
 export interface Event {
+  affiliateSettings: TAffiliateLink & { enabled: boolean };
   selfCheckInAllowed: boolean;
   createdAt: string;
   createdBy: string;
@@ -224,17 +225,16 @@ export interface TEventTransactionDetail {
 }
 
 export interface TEventDiscount {
-  
-created_at: string;
-discountAmount: number | null;
-discountCode: string;
-discountPercentage: number  | null;
-discountUsers: string;
-eventAlias: string;
-eventId: string;
-id: number;
-minQty: number;
-quantity: number;
-status: boolean;
-validUntil:string;
+  created_at: string;
+  discountAmount: number | null;
+  discountCode: string;
+  discountPercentage: number | null;
+  discountUsers: string;
+  eventAlias: string;
+  eventId: string;
+  id: number;
+  minQty: number;
+  quantity: number;
+  status: boolean;
+  validUntil: string;
 }

@@ -76,13 +76,12 @@ export function PaymentModal({
   isChosenMonthly,
 }: Props) {
   const { user, setUser } = useUserStore();
-  const [loading, setLoading] = useState(false);
   const [haveCoupon, setHaveCoupon] = useState<boolean>(false);
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const [isRedeemed, setIsRedeemed] = useState<boolean>(false);
   const [orgName, setOrgName] = useState<string>("");
   const [orgAlias, setOrgAlias] = useState<string>("");
-  const [orgId, setOrgId] = useState<string>("");
+  const [orgId, setOrgId] = useState<any>("");
   const [totalPrice, setTotalprice] = useState<number>(0);
   const [isCouponValid, setIsCouponValid] = useState<boolean>(false);
   const [closeForm, setCloseForm] = useState<boolean>(false);
@@ -157,17 +156,16 @@ export function PaymentModal({
     setIsRedeemed(true);
   };
 
+  //select organization function
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOption = e.target.selectedOptions[0];
     const orgId = selectedOption.value;
     const organizationAlias = selectedOption.getAttribute("data-alias");
-
     if (orgId) {
       setOrgId(orgId);
-      console.log({ orgId });
-    } else if (organizationAlias) {
+    }
+    if (organizationAlias) {
       setOrgAlias(organizationAlias);
-      console.log({ orgAlias: organizationAlias });
     }
   };
 

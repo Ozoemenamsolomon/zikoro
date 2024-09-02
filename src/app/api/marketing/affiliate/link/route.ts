@@ -148,20 +148,23 @@ export async function GET(req: NextRequest) {
   if (req.method === "GET") {
     try {
       const { searchParams } = new URL(req.url);
+      const isUsed = searchParams.get("isUsed");
       const userId = searchParams.get("userId");
       const eventId = searchParams.get("eventId");
 
       // Query for affiliateLinks with optional filters
       const affiliateLinksQuery = supabase
         .from("affiliateLinks")
-        .select("*, affiliate!inner(*)")
-        .eq("isUsed", true);
+        .select("*, affiliate!inner(*)");
 
+      if (isUsed) affiliateLinksQuery.eq("isUsed", !!isUsed);
       if (eventId) affiliateLinksQuery.eq("eventId", eventId);
       if (userId) affiliateLinksQuery.eq("userId", userId);
 
       const { data: affiliateLinksData, error: affiliateLinksError } =
         await affiliateLinksQuery;
+
+      console.log(affiliateLinksData, !!isUsed);
 
       if (affiliateLinksError) throw affiliateLinksError;
 

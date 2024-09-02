@@ -1,3 +1,4 @@
+import { Event } from "@/types";
 import { convertDateFormat } from "@/utils/date";
 import { generateAlphanumericHash } from "@/utils/helpers";
 import {
@@ -27,13 +28,6 @@ type Affiliate = {
   userId: number;
   userEmail: string;
   organisationId: number;
-};
-
-type Event = {
-  eventAlias: string;
-  eventTitle: string;
-  organisationId: number;
-  endDateTime: string;
 };
 
 type AffiliateLink = {
@@ -81,13 +75,15 @@ export async function GET(req: NextRequest) {
 
     // Search for the affiliate by attendeeAlias
     const { data: affiliate, error: affiliateError } = await supabase
-      .from<Affiliate>("affiliates")
+      .from<Affiliate>("affiliate")
       .select("*")
       .eq("attendeeAlias", attendeeAlias)
-      .single();
+      .maybeSingle();
 
     let affiliateId: number;
     let affiliateData: Affiliate | null = null;
+
+    console.log(affiliate, affiliateError);
 
     if (affiliateError || !affiliate) {
       // If the affiliate doesn't exist, create it using data from the attendees table
@@ -115,7 +111,7 @@ export async function GET(req: NextRequest) {
           lastname: attendee.lastName,
           email: attendee.email,
           phoneNumber: attendee.phoneNumber,
-          attendeeAlias: attendee.attendeeAlias,
+          attendeeAlias: attendeeAlias,
           userId: attendee.userId,
           userEmail: attendee.userEmail,
           organizationId: event.organisationId,
@@ -150,11 +146,13 @@ export async function GET(req: NextRequest) {
 
     let affiliateLinkData: AffiliateLink | null = null;
 
-    console.log(affiliateLinkError);
+    console.log(affiliateLinkError, affiliateLink);
 
     if (affiliateLinkError || !affiliateLink) {
       const linkCode = generateAlphanumericHash(7);
-      const affiliateLink = `${process.env.NEXT_PUBLIC_HOME_URL}/live-events/${eventAlias}?affiliateCode=${linkCode}`;
+      const affiliateLink = `${
+        process.env.NEXT_PUBLIC_HOME_URL ?? "https://zikoro.com"
+      }/live-events/${eventAlias}?affiliateCode=${linkCode}`;
 
       // If no affiliateLink exists, create a new one
       const { data: newAffiliateLink, error: newAffiliateLinkError } =
@@ -164,10 +162,10 @@ export async function GET(req: NextRequest) {
             affiliateId,
             userId: affiliateData.userId,
             eventName: event.eventTitle,
-            payoutSchedule: "zikoro managed",
-            commissionType: "percentage",
-            commissionValue: 10,
-            Goal: "event purchase",
+            payoutSchedule: event.affiliateSettings.payoutSchedule,
+            commissionType: event.affiliateSettings.commissionType,
+            commissionValue: event.affiliateSettings.commissionValue,
+            Goal: event.affiliateSettings.Goal,
             affiliateEmail: affiliateData.email,
             eventId: eventAlias,
             validity: event.endDateTime,
