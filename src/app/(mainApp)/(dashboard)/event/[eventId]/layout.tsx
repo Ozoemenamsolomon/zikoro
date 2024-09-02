@@ -44,6 +44,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     isAlias: true,
   });
 
+  console.log(event?.organization.teamMembers, user.userEmail);
+
   const {
     data: engagementsSettings,
     isLoading: engagementsSettingsIsLoading,
@@ -140,7 +142,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <>
           {children}
 
-          <Dialog open={!isCheckedInToday && !!event && !!event.selfCheckInAllowed}>
+          <Dialog
+            open={
+              !isCheckedInToday &&
+              !!event &&
+              !!event.selfCheckInAllowed &&
+              !event.organization.teamMembers.some(
+                ({ userEmail }) => userEmail === user.userEmail
+              )
+            }
+          >
             <DialogContent>
               <DialogHeader>
                 <span className="text-2xl font-bold">Check In Required</span>
