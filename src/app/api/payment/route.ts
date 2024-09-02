@@ -151,6 +151,7 @@ export async function POST(req: NextRequest) {
         }
       }
 
+      console.log(linkIsUsed, affiliateCode);
       if (linkIsUsed) {
         const { error: updateLinkError } = await supabase
           .from("affiliateLinks")

@@ -48,7 +48,7 @@ import { useGetData } from "@/hooks/services/request";
 import { AnalyticsInfoCard } from "../page";
 
 const Registrations = () => {
-  const { eventId } = useParams();
+  const { eventId }: { eventId: string } = useParams();
   const { organization } = useOrganizationStore();
 
   const {
@@ -63,7 +63,8 @@ const Registrations = () => {
   } = useGetEventTransactions({
     eventId,
   });
-  const { affiliateLinks } = useGetAffiliateLinks({ eventId });
+  const { affiliateLinks } = useGetAffiliateLinks({ eventId, isUsed: true });
+  console.log(affiliateLinks);
 
   const { data: recurringData, isLoading: recurringIsLoading } = useGetData(
     `/events/${eventId}/analytics/recurring?organizationId=${organization?.id}`
@@ -201,12 +202,20 @@ const Registrations = () => {
               </div>
               <div className="w-full bg-basePrimary/20 rounded-2xl h-4">
                 <div
-                  style={{ width: (revenue / revenueTarget) * 100 + "%" }}
+                  style={{
+                    width:
+                      (revenueTarget > 0 ? revenue / revenueTarget : 1) * 100 +
+                      "%",
+                  }}
                   className="h-full bg-basePrimary rounded-2xl transition-all"
                 />
               </div>
               <div className="text-sm text-gray-600 font-medium text-center">
-                <b>{((revenue / revenueTarget) * 100).toFixed() + "% "}</b>
+                <b>
+                  {(
+                    (revenueTarget > 0 ? revenue / revenueTarget : 1) * 100
+                  ).toFixed() + "% "}
+                </b>
                 of revenue goal reached
               </div>
             </div>
