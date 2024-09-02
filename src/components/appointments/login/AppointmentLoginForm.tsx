@@ -23,7 +23,6 @@ const AppointmentLoginForm = () => {
 
   async function onSubmit(e: any) {
     e.preventDefault();
-    console.log(formData);
     await logIn(formData, "/appointments");
   }
 

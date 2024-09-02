@@ -5,12 +5,14 @@ import { toast } from "react-toastify";
 
 const AppointmentContactForm = () => {
   const [mailSent, setMailSent] = useState<boolean>(false);
+  const root = "bookings";
 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    message: "",
+    comments: "",
+    source: root,
   });
 
   const handleChange = (e: any) => {
@@ -20,7 +22,6 @@ const AppointmentContactForm = () => {
 
   const submitForm = async (e: any) => {
     e.preventDefault();
-    console.log(formData)
 
     try {
       const response = await fetch("/api/contact", {
@@ -38,7 +39,8 @@ const AppointmentContactForm = () => {
           firstName: "",
           lastName: "",
           email: "",
-          message: "",
+          comments: "",
+          source: "",
         });
         setMailSent(true);
       } else {
@@ -47,7 +49,6 @@ const AppointmentContactForm = () => {
     } catch (error) {
       toast.error(`Error submitting contact form: ${error}`);
     }
-
   };
 
   return (
@@ -110,8 +111,8 @@ const AppointmentContactForm = () => {
             <label htmlFor="">Message</label>
             <textarea
               required
-              name="message"
-              value={formData.message}
+              name="comments"
+              value={formData.comments}
               onChange={handleChange}
               id=""
               cols={30}
