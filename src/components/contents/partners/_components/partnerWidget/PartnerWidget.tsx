@@ -152,7 +152,7 @@ function ActionColumn({
   }
   async function deactivate(deactivateReason: { reason: string }) {
     setLoading(true);
-    console.log("Deactivate reason", deactivateReason);
+    
     await update({ ...partner, partnerStatus: "inactive" }, deactivateReason);
     setLoading(false);
     refetch();
