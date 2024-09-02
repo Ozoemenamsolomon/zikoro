@@ -103,8 +103,8 @@ function DeactivateModal({
                     <Textarea
                       placeholder="Write your reason"
                       {...field}
-                      readOnly
-                      className="placeholder:text-sm h-32 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
+                      
+                      className="placeholder:text-sm h-48  placeholder:text-zinc-500 text-zinv-700"
                     ></Textarea>
                   </FormControl>
                   <FormMessage />
@@ -113,7 +113,7 @@ function DeactivateModal({
             />
 
             <Button className="gap-x-2 w-full bg-red-500 text-white">
-              {loading && <Loader2Icon size={20} />}
+              {loading && <Loader2Icon size={20} className="animate-spin" />}
               <p>Deactivate</p>
             </Button>
           </form>
@@ -152,6 +152,7 @@ function ActionColumn({
   }
   async function deactivate(deactivateReason: { reason: string }) {
     setLoading(true);
+    console.log("Deactivate reason", deactivateReason);
     await update({ ...partner, partnerStatus: "inactive" }, deactivateReason);
     setLoading(false);
     refetch();
@@ -182,7 +183,7 @@ function ActionColumn({
               onClick={activate}
               className="gap-x-2 text-white bg-basePrimary w-[130px]"
             >
-              {loading && <Loader2Icon size={20} />}
+              {loading && <Loader2Icon size={20} className="animate-spin"/>}
               <p>Activate</p>
             </Button>
           }

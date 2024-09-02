@@ -4,9 +4,14 @@ import { TAffiliate, TAffiliateLink } from "@/types";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 import { TbLoader3 } from "react-icons/tb";
+import { useCopyToClipboard } from "@uidotdev/usehooks";
+import { Button } from "@/components/ui/button";
+import { Copy } from "styled-icons/boxicons-regular";
 
 const page = () => {
   const { get } = useSearchParams();
+  const [copiedText, copyToClipboard] = useCopyToClipboard();
+  const hasCopiedText = Boolean(copiedText);
 
   const eventAlias = get("eventAlias");
   const attendeeAlias = get("attendeeAlias");
@@ -61,21 +66,32 @@ const page = () => {
             We're excited to have you on board. Your unique affiliate link is
             ready to go:
           </p>
-          <p className="text-2xl font-bold text-black">
-            {data.affiliateLink?.affiliateLink}
-          </p>
+          <div className="w-full flex gap-2 text-sm md:text-base bg-basePrimary/10 px-2 py-1 rounded-md">
+            <p className="flex-[70%] overflow-hidden truncate">
+              {data.affiliateLink?.affiliateLink}
+            </p>
+            <button
+              onClick={() =>
+                copyToClipboard(data.affiliateLink?.affiliateLink ?? "")
+              }
+              className="text-white"
+            >
+              <Copy className="w-5 h-5 text-black" />
+            </button>
+          </div>
+          <p className="text-xl font-bold text-black"></p>
           <p>
             Share this link with your network to start earning rewards. The more
-            you share, the more you earn!
+            people you register, the more you earn!
           </p>
 
           <p>
-            Thank you for being a part of our community and helping us make
+            Thank you for being a part of our community and helping us make{" "}
             {data.affiliateLink?.eventName} even more successful.
           </p>
         </section>
         <p className="justify-self-end text-lg text-gray-800">
-          TO create events, sign up on{" "}
+          To create events, sign up on{" "}
           <a href="www.zikoro.com" className="underline text-basePrimary">
             www.zikoro.com
           </a>
