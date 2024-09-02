@@ -22,7 +22,8 @@ const AppointmentSignupForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  async function onSubmit(values: any) {
+  async function onSubmit(e:any) {
+    e.preventDefault()
     await register(formData);
   }
 

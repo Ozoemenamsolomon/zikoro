@@ -20,6 +20,8 @@ const AppointmentContactForm = () => {
 
   const submitForm = async (e: any) => {
     e.preventDefault();
+    console.log(formData)
+
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
@@ -45,6 +47,7 @@ const AppointmentContactForm = () => {
     } catch (error) {
       toast.error(`Error submitting contact form: ${error}`);
     }
+
   };
 
   return (
@@ -66,7 +69,7 @@ const AppointmentContactForm = () => {
           </div>
         </div>
       ) : (
-        <form action="" className="mt-10" onSubmit={submitForm} method="POST">
+        <form action="" className="mt-10" onSubmit={submitForm}>
           <div className="flex flex-col gap-y-3 ">
             <label htmlFor="">First Name</label>
             <input

@@ -21,7 +21,8 @@ const AppointmentLoginForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  async function onSubmit(values: any) {
+  async function onSubmit(e: any) {
+    e.preventDefault();
     console.log(formData);
     await logIn(formData, "/appointments");
   }
@@ -46,7 +47,7 @@ const AppointmentLoginForm = () => {
         <span className="block"> Log In and Get Your Schedule Sorted! </span>
       </p>
 
-      <form action="" className="mt-5" method="POST" onSubmit={onSubmit}>
+      <form action="" className="mt-5" onSubmit={onSubmit}>
         <div className="flex flex-col gap-y-3 mt-6">
           <label htmlFor="">Email Address</label>
           <input
@@ -82,9 +83,11 @@ const AppointmentLoginForm = () => {
         </div>
 
         <button
+          disabled={loading}
           type="submit"
           className="py-4 px-3 text-base w-full rounded-[8px] font-semibold mt-10 mb-6 text-white bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end"
         >
+          {loading && <LoaderAlt size={22} className="animate-spin" />}
           Get Started
         </button>
       </form>
@@ -93,11 +96,9 @@ const AppointmentLoginForm = () => {
       </div>
 
       <button
-        disabled={loading}
         type="submit"
         className="py-4 px-3 flex items-center justify-center gap-x-2 text-base w-full rounded-[8px] mt-10 mb-6  border-[1px] border-gray-200"
       >
-        {loading && <LoaderAlt size={22} className="animate-spin" />}
         <GoogleBlackIcon /> Sign Up with google
       </button>
 

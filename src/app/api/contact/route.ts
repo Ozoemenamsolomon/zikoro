@@ -18,8 +18,9 @@ export async function POST(req: NextRequest) {
 
     const { formData } = body;
 
+
     try {
-        const { data, error } = await supabase
+      const { data, error } = await supabase
         .from('contactForm')
         .insert([formData]);
 
