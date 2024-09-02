@@ -103,8 +103,8 @@ function DeactivateModal({
                     <Textarea
                       placeholder="Write your reason"
                       {...field}
-                      readOnly
-                      className="placeholder:text-sm h-32 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
+                      
+                      className="placeholder:text-sm h-48  placeholder:text-zinc-500 text-zinv-700"
                     ></Textarea>
                   </FormControl>
                   <FormMessage />
