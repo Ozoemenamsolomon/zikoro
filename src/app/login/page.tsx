@@ -15,21 +15,16 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useSearchParams } from "next/navigation";
 import { AuthLayout } from "@/components";
 
-export default function Page() {
+export default function Page({ searchParams: { redirectedFrom } }) {
   const [showPassword, setShowPassword] = useState(false);
   const { loading, logIn } = useLogin();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
   });
 
-  const params = useSearchParams();
-  const redirectTo = params.get("redirectedFrom");
-
-  console.log(redirectTo);
-
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values, redirectTo);
-    await logIn(values, redirectTo);
+    console.log(values, redirectedFrom);
+    await logIn(values, redirectedFrom);
   }
 
   return (

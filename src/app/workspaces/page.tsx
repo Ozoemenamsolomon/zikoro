@@ -49,13 +49,10 @@ interface DateRange {
   end: Date | null;
 }
 
-export default function Workspaces() {
+export default function Workspaces({
+  searchParams: { name, showFilter, showCategories, logo: logoLink },
+}) {
   const [showMore, setShowMore] = useState(false);
-  const params = useSearchParams();
-  const name = params.get("name");
-  const showFilter = params.get("showFilter");
-  const showCategories = params.get("showCategories");
-  const logoLink = params.get("logo");
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
   const [isEventTypeUp, setEventTypeUp] = useState(false);
