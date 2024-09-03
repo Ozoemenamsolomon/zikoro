@@ -225,7 +225,7 @@ export function CreateOrganization({
         values.subscriptionPlan
       )}&redirectUrl=${encodeURIComponent(
         window.location.href
-      )}&isCreate=${encodeURIComponent(true)}&orgId=${encodeURIComponent(
+      )}&isCreate=${encodeURIComponent(true)}&orgAlias=${encodeURIComponent(
         values.organizationAlias
       )}
       `;
