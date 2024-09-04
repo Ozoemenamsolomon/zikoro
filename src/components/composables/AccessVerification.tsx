@@ -19,14 +19,14 @@ export function AccessVerification({ id }: { id?: string | any }) {
   const { attendees, isLoading } = useGetAllAttendees(id);
   const [notRegistered] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
- const {isIdPresent} = useCheckTeamMember({eventId: id});
+ const {isIdPresent, verifyTeamMember} = useCheckTeamMember({eventId: id});
   const {
     data,
     loading: singleEventLoading,
     refetch,
   } = useFetchSingleEvent(id);
   const [notAuthorized, setNotAuthorized] = useState(false);
-  const { userAccess } = useAccessStore();
+
 
   useEffect(() => {
     if (data && !singleEventLoading) {
@@ -50,7 +50,6 @@ export function AccessVerification({ id }: { id?: string | any }) {
   },[pathname])
  */
 
-  console.log("single event loading", userAccess?.isTeamMember);
 
   useEffect(() => {
     if (!user) {
@@ -62,8 +61,9 @@ export function AccessVerification({ id }: { id?: string | any }) {
       user !== null &&
       !singleEventLoading &&
       data !== null
+      && !verifyTeamMember
     ) {
-      console.log("I entered the hooks .....");
+      
       const appAccess = data?.eventAppAccess;
 
       let remainder = remainingTime;
@@ -85,15 +85,13 @@ export function AccessVerification({ id }: { id?: string | any }) {
           }
         }, 1000);
       }
-      const isTeamMember = organization?.teamMembers?.some(
-        (v) => v?.userEmail === user?.userEmail
-      ) || userAccess?.isTeamMember;
+
       // checked if the user is an attendee
       const isPresent = attendees?.some(({ email, eventAlias }) => {
         return eventAlias === id && email === user?.userEmail;
       });
 
-      if (isTeamMember) {
+      if (isIdPresent) {
         // user is a team member or an organizer
         setLoading(false);
 
@@ -123,7 +121,7 @@ export function AccessVerification({ id }: { id?: string | any }) {
 
       // return () => clearInterval(interval);
     }
-  }, [user, isLoading, singleEventLoading, userAccess, pathname]);
+  }, [user, isLoading, singleEventLoading, isIdPresent, verifyTeamMember, pathname]);
 
   // const isLoadedAll = useMemo(() => {
   //   return (

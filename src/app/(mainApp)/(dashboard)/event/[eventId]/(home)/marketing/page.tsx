@@ -37,7 +37,7 @@ const marketingTabs: TMarketingTabs[] = [
   },
 ];
 
-const page = () => {
+const page = ({ searchParams: { currentTab } }) => {
   const divRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -53,41 +53,21 @@ const page = () => {
     div.style.minHeight = `${distanceToBottom}px`;
   }, []);
 
-  function updateSearchParam(
-    searchParams: ReadonlyURLSearchParams,
-    param: string,
-    value: string
-  ): URLSearchParams {
-    const currentSearchParams = new URLSearchParams(
-      Array.from(searchParams.entries())
-    );
-    currentSearchParams.set(param, value);
-
-    return currentSearchParams;
-  }
-
-  const searchParams = useSearchParams();
   const router = useRouter();
   const pathName = usePathname() || "/";
 
-  function handleTabChange(currentTab: string) {
-    if (searchParams?.entries()) {
-      const updatedSearchParams = updateSearchParam(
-        searchParams,
-        "tab1",
-        currentTab
-      );
-      router.push(`${pathName}?${updatedSearchParams.toString()}`, {
-        shallow: true,
-      });
-    }
+  function handleTabChange(updatedTab: string) {
+    console.log(currentTab, updatedTab);
+    router.push(`${pathName}?currentTab=${updatedTab}`, {
+      shallow: true,
+    });
   }
 
   return (
     <section className="bg-white space-y-6" ref={divRef || null}>
       <Tabs
         onValueChange={(value) => handleTabChange(value)}
-        defaultValue={searchParams.get("tab1") || "email"}
+        defaultValue={currentTab || "email"}
       >
         <TabsList className="bg-transparent border-b pl-[60px] lg:pl-[30px] px-4 pt-4 w-full hidden">
           {marketingTabs.map((tab) => (

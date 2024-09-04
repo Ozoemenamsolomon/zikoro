@@ -6,30 +6,21 @@ import Affiliates from "./_tabs/affiliates";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { updateSearchParam } from "@/utils";
 
-const Affiliate = () => {
-  const searchParams = useSearchParams();
+export default function Affiliate({ searchParams: { currentTab } }) {
   const router = useRouter();
   const pathName = usePathname() || "/";
 
-  function handleTabChange(currentTab: string) {
-    console.log(currentTab);
-    if (searchParams?.entries()) {
-      const updatedSearchParams = updateSearchParam(
-        searchParams,
-        "tab",
-        currentTab
-      );
-      console.log(updatedSearchParams.toString());
-      router.push(`${pathName}?${updatedSearchParams.toString()}`, {
-        shallow: true,
-      });
-    }
+  function handleTabChange(updatedTab: string) {
+    console.log(currentTab, updatedTab);
+    router.push(`${pathName}?currentTab=${updatedTab}`, {
+      shallow: true,
+    });
   }
 
   return (
     <Tabs
       onValueChange={(value) => handleTabChange(value)}
-      defaultValue={searchParams.get("tab") || "affiliates"}
+      defaultValue={currentTab || "affiliates"}
     >
       <TabsList className="bg-transparent px-4 pb-3 pt-4 flex justify-start w-full">
         <TabsTrigger
@@ -53,6 +44,4 @@ const Affiliate = () => {
       </TabsContent>
     </Tabs>
   );
-};
-
-export default Affiliate;
+}

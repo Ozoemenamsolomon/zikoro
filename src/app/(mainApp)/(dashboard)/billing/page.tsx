@@ -11,33 +11,23 @@ import {
 } from "next/navigation";
 import { updateSearchParam } from "@/utils";
 
-export default function page() {
- 
+export default function page({ searchParams: { currentTab } }) {
 
-  const searchParams = useSearchParams();
   const router = useRouter();
   const pathName = usePathname() || "/";
 
-  function handleTabChange(currentTab: string) {
-    console.log(currentTab);
-    if (searchParams?.entries()) {
-      const updatedSearchParams = updateSearchParam(
-        searchParams,
-        "tab",
-        currentTab
-      );
-      console.log(updatedSearchParams.toString());
-      router.push(`${pathName}?${updatedSearchParams.toString()}`, {
-        shallow: true,
-      });
-    }
+  function handleTabChange(updatedTab: string) {
+    console.log(currentTab, updatedTab);
+    router.push(`${pathName}?currentTab=${updatedTab}`, {
+      shallow: true,
+    });
   }
 
   return (
     <section className="bg-white pt-[4.5rem] px-2 md:px-4 md:pb-4 pb-2  space-y-6">
       <Tabs
         onValueChange={(value) => handleTabChange(value)}
-        defaultValue={searchParams.get("tab") || "all"}
+        defaultValue={currentTab || "all"}
         className=""
       >
         <TabsList className="bg-transparent">

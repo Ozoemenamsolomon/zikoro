@@ -44,10 +44,8 @@ interface DateRange {
   end: Date | null;
 }
 
-export default function FeaturedEvents() {
+export default function FeaturedEvents({ searchParams: { query } }) {
   const [showMore, setShowMore] = useState(false);
-  const params = useSearchParams();
-  const query = params.get("query");
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
   const [isEventTypeUp, setEventTypeUp] = useState(false);

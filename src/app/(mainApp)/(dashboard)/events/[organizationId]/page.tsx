@@ -1,5 +1,4 @@
 import OrganizationHome from "@/components/eventHome/OrganizationHome";
-// import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 
 function Page({
   params: { organizationId },
@@ -10,5 +9,3 @@ function Page({
 }
 
 export default Page;
-
-//  withPageAuthRequired(Page, {returnTo: "/"})

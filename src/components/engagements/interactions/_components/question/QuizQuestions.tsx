@@ -148,7 +148,7 @@ export default function QuizQuestion({
             <input
               defaultValue={quiz?.coverTitle}
               placeholder="Quiz Title"
-              className="outline-none border-0 p-2 text-gray-500"
+              className="outline-none border-0 p-2 bg-transparent text-gray-500"
             />
             {(isIdPresent || isOrganizer) && quizId ? (
               <div className="flex items-center gap-x-2">

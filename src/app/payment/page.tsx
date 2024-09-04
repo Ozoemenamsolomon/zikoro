@@ -22,26 +22,28 @@ type DBDiscountsType = {
   discountPercentage: number | null;
 };
 
-export default function PaymentPage() {
+export default function PaymentPage({
+  searchParams: {
+    name,
+    id,
+    orgId,
+    orgAlias,
+    email,
+    plan,
+    total,
+    currentCoupon,
+    monthly,
+    currency,
+    orgName, 
+    orgType,
+    subPlan,
+    redirectUrl,
+    isCreate
+  },
+}) {
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const params = useSearchParams();
-  const name = params.get("name");
-  const id = params.get("id") ?? "";
-  const orgId = params.get("orgId") ?? "";
-  const orgAlias = params.get("orgAlias") ?? "";
-  const email = params.get("email");
-  const plan = params.get("plan") ?? "";
-  const total = params.get("total");
-  const currentCoupon = params.get("coupon");
-  const monthly = params.get("isMonthly");
-  const currency = params.get("currency") ?? "";
-  const orgName = params.get("organizationName");
-  const orgType = params.get("organizationType");
-  const subPlan = params.get("subscriptionPlan");
-  const redirectUrl = params.get("redirectUrl");
   const [coupons, setCoupons] = useState<DBDiscountsType[]>([]);
   const [discount, setDiscount] = useState<number>(0);
-  const isCreate = params.get("isCreate");
   const router = useRouter();
   const isMonthly = monthly?.toString() ?? "";
   const { organisation, loading } = useCreateOrganisation();

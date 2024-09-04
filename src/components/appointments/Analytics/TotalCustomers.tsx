@@ -17,7 +17,7 @@ const TotalCustomers: React.FC<SectionOneProps> = ({
   // Memoize the extraction of unique customers
   const extractUniqueCustomers = useCallback((bookings: Booking[]) => {
     const customersSet = new Set();
-    console.log({length:bookings.length})
+    console.log({bookingsLength:bookings.length})
     bookings.forEach((booking) => {
       const customerIdentifier = `${booking.email}`;
       customersSet.add(customerIdentifier);
@@ -27,13 +27,17 @@ const TotalCustomers: React.FC<SectionOneProps> = ({
   }, []);
 
   // Memoize combined bookings, total customers, and new customers calculations
-  const { totalCustomers, newCustomers } = useMemo(() => {
+  const { totalCustomers, newCustomers, totalCurrentCustomers } = useMemo(() => {
     const combinedBookings = [...current, ...previous];
+    // total customers combined last and current period
     const totalCustomers = extractUniqueCustomers(combinedBookings);
+    // total customers in the current period
+    const totalCurrentCustomers = extractUniqueCustomers(current);
+    // total customers difference
     const newCustomers = extractUniqueCustomers(current) - extractUniqueCustomers(previous);
     console.log({combinedBookingslength:combinedBookings.length})
 
-    return { totalCustomers, newCustomers };
+    return { totalCustomers, newCustomers, totalCurrentCustomers };
   }, [current, previous, extractUniqueCustomers]);
 
   // Memoize arrow icon and color
@@ -60,7 +64,7 @@ const TotalCustomers: React.FC<SectionOneProps> = ({
 
           <h5 className="text-lg">Total Customers</h5>
 
-          <h3 className="text-2xl font-bold">{totalCustomers}</h3>
+          <h3 className="text-2xl font-bold">{totalCurrentCustomers}</h3>
 
           <div className="flex justify-center items-center gap-3">
             <div className="flex items-center gap-2">
