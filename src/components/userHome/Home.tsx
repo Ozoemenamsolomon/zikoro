@@ -1,11 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import useUserStore from "@/store/globalUserStore";
 import { ActionCard, UserCertificates, UserEvents } from "./_components";
 
 
-export default function Home() {
-  const { user, setUser } = useUserStore();
+ function HomeComp() {
+  const { user } = useUserStore();
 
   const homeTab = [
     {
@@ -66,5 +67,13 @@ export default function Home() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense>
+      <HomeComp />
+    </Suspense>
   );
 }
