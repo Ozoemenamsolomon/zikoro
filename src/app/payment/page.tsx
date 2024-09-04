@@ -35,15 +35,15 @@ export default function PaymentPage({
     monthly,
     currency,
     orgName, 
-    orgType
-    subPlan
-    redirectUrl
+    orgType,
+    subPlan,
+    redirectUrl,
+    isCreate
   },
 }) {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [coupons, setCoupons] = useState<DBDiscountsType[]>([]);
   const [discount, setDiscount] = useState<number>(0);
-  const isCreate = params.get("isCreate");
   const router = useRouter();
   const isMonthly = monthly?.toString() ?? "";
   const { organisation, loading } = useCreateOrganisation();
