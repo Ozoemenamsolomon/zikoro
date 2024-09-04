@@ -1,7 +1,8 @@
 "use client";
+
 import { ArrowBackOutline } from "styled-icons/evaicons-outline/";
 import React, { useEffect, useState } from "react";
-import { PaymentPlus, PaymentTick } from "@/constants";
+import { PaymentTick } from "@/constants";
 import { PlusCircle, PlusCircleFill } from "styled-icons/bootstrap";
 import { MinusCircle } from "styled-icons/evaicons-solid";
 import { useRouter, usePathname } from "next/navigation";
@@ -68,14 +69,14 @@ type DBOrganisationSchema = {
   facebook: string;
 };
 
-export function PaymentModal({
+export function SubscriptionPaymentModal({
   updateModalState,
   chosenPlan,
   chosenCurrency,
   chosenPrice,
   isChosenMonthly,
 }: Props) {
-  const { user, setUser } = useUserStore();
+  const { user, } = useUserStore();
   const [haveCoupon, setHaveCoupon] = useState<boolean>(false);
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const [isRedeemed, setIsRedeemed] = useState<boolean>(false);
@@ -117,9 +118,10 @@ export function PaymentModal({
       &total=${encodeURIComponent(totalPrice.toString())}
       &currency=${encodeURIComponent(chosenCurrency)}
       &coupon=${encodeURIComponent(couponText)}
-      &orgId=${encodeURIComponent(orgId)}
-      &orgAlias=${encodeURIComponent(orgAlias)}
-      &redirectUrl=${encodeURIComponent("/workspace/general")}`;
+      &redirectUrl=${encodeURIComponent(
+        "/workspace/general"
+      )}&orgId=${encodeURIComponent(orgId)}
+      &orgAlias=${encodeURIComponent(orgAlias)}`;
 
     router.push(url);
   };

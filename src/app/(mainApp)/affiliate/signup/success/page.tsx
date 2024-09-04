@@ -8,13 +8,9 @@ import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Button } from "@/components/ui/button";
 import { Copy } from "styled-icons/boxicons-regular";
 
-const page = () => {
-  const { get } = useSearchParams();
+const page = ({ searchParams: { eventAlias, attendeeAlias } }) => {
   const [copiedText, copyToClipboard] = useCopyToClipboard();
   const hasCopiedText = Boolean(copiedText);
-
-  const eventAlias = get("eventAlias");
-  const attendeeAlias = get("attendeeAlias");
 
   console.log(eventAlias, attendeeAlias);
 

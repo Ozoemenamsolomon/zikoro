@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
 import CopyrightFooter from "@/components/CopyrightFooter";
 import { FilterIcon, ArrowDownIcon, ArrowUpIcon } from "@/constants/icons";
 import { ArrowBackCircle } from "styled-icons/ionicons-outline";
@@ -14,6 +13,7 @@ import {
   startOfMonth,
   endOfMonth,
 } from "date-fns";
+import OrganizationNavbar from "@/components/OrganizationNavbar";
 
 type DBFeaturedEvent = {
   id: string;
@@ -29,6 +29,11 @@ type DBFeaturedEvent = {
   startDateTime: string;
   expectedParticipants: number;
   registered: number;
+  organisationId: number;
+  organization: {
+    organizationName: "";
+    subDomain: "";
+  };
 };
 
 interface CategorizedButtons {
@@ -44,7 +49,23 @@ interface DateRange {
   end: Date | null;
 }
 
-export default function FeaturedEvents({ searchParams: { query } }) {
+// type searchParamsType ={
+//   name : string,
+//   showFilter: string,
+//   showCategories : string,
+//   logo: string,
+//   logoLink: string 
+// }
+
+export default function WorkspaceComponent({
+//   searchParams: { name, showFilter, showCategories, logo: logoLink },
+}) {
+  const searchParams = useSearchParams()
+  const name = searchParams.get('name')
+  const showFilter = searchParams.get('showFilter')
+  const showCategories = searchParams.get('showCategories')
+  const logo = searchParams.get('logo')
+  const logoLink = searchParams.get('logoLink')
   const [showMore, setShowMore] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
@@ -52,7 +73,7 @@ export default function FeaturedEvents({ searchParams: { query } }) {
   const [isCountryUp, setCountryUp] = useState(false);
   const [isCityUp, setCityUp] = useState(false);
   const [isFilterOpen, setFilterOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(name);
   const [eventData, setEventData] = useState<DBFeaturedEvent[] | undefined>(
     undefined
   );
@@ -71,14 +92,10 @@ export default function FeaturedEvents({ searchParams: { query } }) {
     setSelectedButtons([]);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
-
   useEffect(() => {
     //fetch events from database
     async function fetchEventFeautured() {
-      fetch("/api/explore/featured", {
+      fetch("/api/workspaces", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -89,14 +106,15 @@ export default function FeaturedEvents({ searchParams: { query } }) {
         .catch((error) => console.error("Error:", error));
     }
 
+    //call the fetch event function
     fetchEventFeautured();
   }, []);
 
   useEffect(() => {
-    if (query) {
-      setSelectedButtons([query]);
+    if (name) {
+      setSelectedButtons(name.split(","));
     }
-  }, [query]);
+  }, [name]);
 
   const getStartAndEndDates = (filterType: string): DateRange => {
     switch (filterType) {
@@ -114,6 +132,7 @@ export default function FeaturedEvents({ searchParams: { query } }) {
   //button selection
   const handleButtonClick = (text: string) => {
     const isSelected = selectedButtons.includes(text);
+
     if (isSelected) {
       setSelectedButtons(selectedButtons.filter((button) => button !== text));
     } else {
@@ -125,13 +144,10 @@ export default function FeaturedEvents({ searchParams: { query } }) {
     //fetching event categories
     if (eventData) {
       const categories: string[] = eventData
-        .map((event) => event.eventCategory && event.eventCategory)
+        .map((event) => event.eventCategory)
         .filter((category) => category !== null && category !== undefined);
       setFilterCategories(categories);
     }
-
-    console.log("FilterCategories = ", filterCategories);
-
     //fetching event location type
     if (eventData) {
       const filtertype: string[] = eventData.map((event) => event.locationType);
@@ -177,14 +193,17 @@ export default function FeaturedEvents({ searchParams: { query } }) {
     return categories;
   };
 
-  // //filter function
+  //filter function
   const filteredEvents = eventData
     ?.filter((event) => {
-      const lowerSearchQuery = searchQuery.toLowerCase();
+      const lowerSearchQuery = searchQuery?.toLowerCase();
       return (
-        event?.eventTitle?.toLowerCase()?.includes(lowerSearchQuery) ||
-        event?.eventCity?.toLowerCase()?.includes(lowerSearchQuery) ||
-        event?.eventCategory?.toLowerCase()?.includes(lowerSearchQuery)
+        event.organization.organizationName
+          ?.toLowerCase()
+          ?.includes(lowerSearchQuery ?? "") ||
+        event.organization.subDomain
+          ?.toLowerCase()
+          ?.includes(lowerSearchQuery ?? "")
       );
     })
     .filter((event) => {
@@ -241,225 +260,221 @@ export default function FeaturedEvents({ searchParams: { query } }) {
           {/* normal screen */}
           {!isFilterOpen && (
             <div>
-              <Navbar />
+              <OrganizationNavbar logoUrl={logoLink ?? ""} />
               {/* header */}
               <div>
                 {/* big screen */}
-                <div className="px-0 max-w-full lg:max-w-7xl mx-auto mt-40 lg:mt-48 hidden lg:block ">
-                  <div className="mt-24 text-center">
-                    <p className="text-[40px] gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
-                      Featured Events
-                    </p>
-                    <p className="text-[24px] font-normal">
-                      A collection of events hand-picked for you
-                    </p>
-                  </div>
-
-                  {/* mt-12       */}
-                  <div className="h-[48px] flex justify-between gap-x-3 max-w-lg mx-auto items-center mt-6">
-                    <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-[500px] h-full">
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        name="searchBox"
-                        onChange={handleChange}
-                        placeholder="search by event name, city, category"
-                        className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
-                      />
-                    </div>
-                  </div>
-
+                <div className="px-0 max-w-full lg:max-w-7xl mx-auto  lg:mt-28 hidden lg:block ">
                   {/* main section */}
-                  <div className="flex flex-col lg:flex-row justify-between mt-[50px] border-l-[1px] border-gray-200 rounded-none">
+                  <div
+                    className={`flex flex-col  lg:flex-row  justify-between mt-[50px] ${
+                      showFilter == "false" ? "border-l-0" : "border-l-[1px]"
+                    }  border-gray-200 rounded-none`}
+                  >
                     {/* left */}
-                    <div className="border-t-[1px] border-gray-200 h-full pb-12 w-full lg:w-3/12 ">
-                      <div className="flex gap-x-3 py-[43px] px-[30px] border-b-[1px] border-gray-200">
-                        <FilterIcon />
-                        <p className="text-xl font-semibold"> Filters</p>
+                    {showFilter?.toString() === "true" && (
+                      <div className="border-t-[1px] border-gray-200 h-full pb-12 w-full lg:w-3/12 ">
+                        <div className="flex py-[42px] px-[30px] border-b-[1px] border-gray-200 items-center justify-between">
+                          <div className="flex gap-x-3 items-center ">
+                            <FilterIcon />
+                            <p className="text-xl font-semibold"> Filters</p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-y-12 mt-7">
+                          {/* 1st section */}
+                          <div className="px-8 cursor-pointer">
+                            <div className="flex justify-between items-center">
+                              <p className="text-lg font-semibold">
+                                Event Type
+                              </p>
+                              {isEventTypeUp ? (
+                                <div
+                                  onClick={() => setEventTypeUp(!isEventTypeUp)}
+                                >
+                                  <ArrowUpIcon />
+                                </div>
+                              ) : (
+                                <div
+                                  onClick={() => setEventTypeUp(!isEventTypeUp)}
+                                >
+                                  <ArrowDownIcon />
+                                </div>
+                              )}
+                            </div>
+                            {isEventTypeUp && (
+                              <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                                {filterLocationType
+                                  .filter(
+                                    (locationType, index, self) =>
+                                      self.indexOf(locationType) === index
+                                  )
+                                  .map((locationType) => (
+                                    <button
+                                      onClick={() =>
+                                        handleButtonClick(locationType)
+                                      }
+                                      className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                        selectedButtons.includes(locationType)
+                                          ? "bg-zikoroBlue text-white"
+                                          : "bg-white text-black"
+                                      }`}
+                                    >
+                                      {locationType}
+                                    </button>
+                                  ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* 2nd section */}
+                          <div className="px-8 cursor-pointer">
+                            <div className="flex justify-between items-center">
+                              <p className="text-lg font-semibold">Country</p>
+                              {isCountryUp ? (
+                                <div onClick={() => setCountryUp(!isCountryUp)}>
+                                  <ArrowUpIcon />
+                                </div>
+                              ) : (
+                                <div onClick={() => setCountryUp(!isCountryUp)}>
+                                  <ArrowDownIcon />
+                                </div>
+                              )}
+                            </div>
+                            {isCountryUp && (
+                              <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                                {filterCountry
+                                  .filter(
+                                    (country, index, self) =>
+                                      self.indexOf(country) === index
+                                  )
+                                  .slice(0, 4)
+                                  .map((country) => (
+                                    <button
+                                      onClick={() => handleButtonClick(country)}
+                                      className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                        selectedButtons.includes(country)
+                                          ? "bg-zikoroBlue text-white"
+                                          : "bg-white text-black"
+                                      }`}
+                                    >
+                                      {country}
+                                    </button>
+                                  ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* 3rd section */}
+                          <div className="px-8 cursor-pointer">
+                            <div className="flex justify-between items-center">
+                              <p className="text-lg font-semibold">City</p>
+                              {isCityUp ? (
+                                <div onClick={() => setCityUp(!isCityUp)}>
+                                  <ArrowUpIcon />
+                                </div>
+                              ) : (
+                                <div onClick={() => setCityUp(!isCityUp)}>
+                                  <ArrowDownIcon />
+                                </div>
+                              )}
+                            </div>
+                            {isCityUp && (
+                              <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                                {filterCity
+                                  .filter(
+                                    (city, index, self) =>
+                                      self.indexOf(city) === index
+                                  )
+                                  .slice(0, 4)
+                                  .map((city) => (
+                                    <button
+                                      onClick={() => handleButtonClick(city)}
+                                      className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
+                                        selectedButtons.includes(city)
+                                          ? "bg-zikoroBlue text-white"
+                                          : "bg-white text-black"
+                                      }`}
+                                    >
+                                      {city}
+                                    </button>
+                                  ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* 4th section */}
+                          <div className="px-8 cursor-pointer">
+                            <div className="flex justify-between items-center">
+                              <p className="text-lg  font-semibold">
+                                Event Date
+                              </p>
+                              {isEventDateUp ? (
+                                <div
+                                  onClick={() => setEventDateUp(!isEventDateUp)}
+                                >
+                                  <ArrowUpIcon />
+                                </div>
+                              ) : (
+                                <div
+                                  onClick={() => setEventDateUp(!isEventDateUp)}
+                                >
+                                  <ArrowDownIcon />
+                                </div>
+                              )}
+                            </div>
+                            {isEventDateUp && (
+                              <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
+                                <button
+                                  onClick={() => handleButtonClick("today")}
+                                  className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                                    selectedButtons.includes("today")
+                                      ? "bg-zikoroBlue text-white"
+                                      : "bg-white text-black"
+                                  }`}
+                                >
+                                  Today
+                                </button>
+                                <button
+                                  onClick={() => handleButtonClick("this-week")}
+                                  className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                                    selectedButtons.includes("this-week")
+                                      ? "bg-zikoroBlue text-white"
+                                      : "bg-white text-black"
+                                  }`}
+                                >
+                                  This Week
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    handleButtonClick("this-month")
+                                  }
+                                  className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
+                                    selectedButtons.includes("this-month")
+                                      ? "bg-zikoroBlue text-white"
+                                      : "bg-white text-black"
+                                  }`}
+                                >
+                                  This Month
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-
-                      <div className="flex flex-col gap-y-12 mt-7">
-                        {/* 1st section */}
-                        <div className="px-8 cursor-pointer">
-                          <div className="flex justify-between items-center">
-                            <p className="text-lg font-semibold">Event Type</p>
-                            {isEventTypeUp ? (
-                              <div
-                                onClick={() => setEventTypeUp(!isEventTypeUp)}
-                              >
-                                <ArrowUpIcon />
-                              </div>
-                            ) : (
-                              <div
-                                onClick={() => setEventTypeUp(!isEventTypeUp)}
-                              >
-                                <ArrowDownIcon />
-                              </div>
-                            )}
-                          </div>
-                          {isEventTypeUp && (
-                            <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                              {filterLocationType
-                                .filter(
-                                  (locationType, index, self) =>
-                                    self.indexOf(locationType) === index
-                                )
-                                .map((locationType) => (
-                                  <button
-                                    onClick={() =>
-                                      handleButtonClick(locationType)
-                                    }
-                                    className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                      selectedButtons.includes(locationType)
-                                        ? "bg-zikoroBlue text-white"
-                                        : "bg-white text-black"
-                                    }`}
-                                  >
-                                    {locationType}
-                                  </button>
-                                ))}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* 2nd section */}
-                        <div className="px-8 cursor-pointer">
-                          <div className="flex justify-between items-center">
-                            <p className="text-lg font-semibold">Country</p>
-                            {isCountryUp ? (
-                              <div onClick={() => setCountryUp(!isCountryUp)}>
-                                <ArrowUpIcon />
-                              </div>
-                            ) : (
-                              <div onClick={() => setCountryUp(!isCountryUp)}>
-                                <ArrowDownIcon />
-                              </div>
-                            )}
-                          </div>
-                          {isCountryUp && (
-                            <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                              {filterCountry
-                                .filter(
-                                  (country, index, self) =>
-                                    self.indexOf(country) === index
-                                )
-                                .slice(0, 4)
-                                .map((country) => (
-                                  <button
-                                    onClick={() => handleButtonClick(country)}
-                                    className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                      selectedButtons.includes(country)
-                                        ? "bg-zikoroBlue text-white"
-                                        : "bg-white text-black"
-                                    }`}
-                                  >
-                                    {country}
-                                  </button>
-                                ))}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* 3rd section */}
-                        <div className="px-8 cursor-pointer">
-                          <div className="flex justify-between items-center">
-                            <p className="text-lg font-semibold">City</p>
-                            {isCityUp ? (
-                              <div onClick={() => setCityUp(!isCityUp)}>
-                                <ArrowUpIcon />
-                              </div>
-                            ) : (
-                              <div onClick={() => setCityUp(!isCityUp)}>
-                                <ArrowDownIcon />
-                              </div>
-                            )}
-                          </div>
-                          {isCityUp && (
-                            <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                              {filterCity
-                                .filter(
-                                  (city, index, self) =>
-                                    self.indexOf(city) === index
-                                )
-                                .slice(0, 4)
-                                .map((city) => (
-                                  <button
-                                    onClick={() => handleButtonClick(city)}
-                                    className={`py-3 px-2 text-[12px] border-[1px] border-gray-200  rounded-lg ${
-                                      selectedButtons.includes(city)
-                                        ? "bg-zikoroBlue text-white"
-                                        : "bg-white text-black"
-                                    }`}
-                                  >
-                                    {city}
-                                  </button>
-                                ))}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* 4th section */}
-                        <div className="px-8 cursor-pointer">
-                          <div className="flex justify-between items-center">
-                            <p className="text-lg  font-semibold">Event Date</p>
-                            {isEventDateUp ? (
-                              <div
-                                onClick={() => setEventDateUp(!isEventDateUp)}
-                              >
-                                <ArrowUpIcon />
-                              </div>
-                            ) : (
-                              <div
-                                onClick={() => setEventDateUp(!isEventDateUp)}
-                              >
-                                <ArrowDownIcon />
-                              </div>
-                            )}
-                          </div>
-                          {isEventDateUp && (
-                            <div className="grid grid-cols-2 2xl:grid-cols-3 gap-[10px] mt-8">
-                              <button
-                                onClick={() => handleButtonClick("today")}
-                                className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButtons.includes("today")
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                Today
-                              </button>
-                              <button
-                                onClick={() => handleButtonClick("this-week")}
-                                className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButtons.includes("this-week")
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                This Week
-                              </button>
-                              <button
-                                onClick={() => handleButtonClick("this-month")}
-                                className={`py-3 px-2 text-[12px] border-[1px] border-gray-200 whitespace-nowrap rounded-lg ${
-                                  selectedButtons.includes("this-month")
-                                    ? "bg-zikoroBlue text-white"
-                                    : "bg-white text-black"
-                                }`}
-                              >
-                                This Month
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                    )}
 
                     {/* Right */}
-                    <div className=" border-t-[1px] border-gray-200 border-l-[1px] border-r-[1px] w-full lg:w-9/12 py-[3px] ">
+                    <div
+                      className={` border-t-[1px] border-gray-200 border-l-[1px] border-r-[1px] w-full lg:w-9/12 py-[3px] ${
+                        showCategories == "false"
+                          ? "flex mx-auto border-t-0"
+                          : ""
+                      } `}
+                    >
                       {/* top */}
                       <div className="flex">
-                        {filterCategories && filterCategories.length > 0 && (
-                          <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] ">
+                        {showCategories?.toString() === "true" && (
+                          <div className=" px-4 flex w-[950px] items-center overflow-x-auto no-scrollbar py-[25px] gap-x-[10px]  ">
                             {filterCategories
                               .filter(
                                 (category, i, self) =>
@@ -482,34 +497,38 @@ export default function FeaturedEvents({ searchParams: { query } }) {
                       </div>
 
                       {/* bottom h-[1485px] */}
-                      <div className="py-2 px-4 h-auto flex flex-col justify-start border-t-[1px] border-gray-200  items-center overflow-y-auto no-scrollbar pt-8 pb-0 lg:pb-[50px]">
-                        <div className="grid grid-cols-3 gap-4 mt-8 min-h-screen">
+                      <div
+                        className={`py-2 px-4 min-h-screen h-auto flex flex-col justify-start ${
+                          showCategories == "false"
+                            ? "border-t-0 pt-[82px]"
+                            : "border-t-[1px] pt-8 "
+                        } border-gray-200 items-center pb-0 lg:pb-[50px]`}
+                      >
+                        <div className="grid grid-cols-3 gap-4 mt-8 ">
                           {filteredEvents &&
                             (showMore
                               ? filteredEvents
                               : filteredEvents.slice(0, 20)
-                            ).map((event, index) => {
-                              return (
-                                <FeaturedEvent
-                                  key={event.id}
-                                  id={event.id}
-                                  eventPoster={event.eventPoster}
-                                  eventTitle={event.eventTitle}
-                                  eventCity={event.eventCity}
-                                  eventAlias={event.eventAlias}
-                                  eventCountry={event.eventCountry}
-                                  eventCategory={event.eventCategory}
-                                  locationType={event.locationType}
-                                  pricing={event.pricing}
-                                  pricingCurrency={event.pricingCurrency}
-                                  startDateTime={event.startDateTime}
-                                  expectedParticipants={
-                                    event.expectedParticipants
-                                  }
-                                  registered={event.registered}
-                                />
-                              );
-                            })}
+                            ).map((event, index) => (
+                              <FeaturedEvent
+                                key={event.id}
+                                id={event.id}
+                                eventPoster={event.eventPoster}
+                                eventTitle={event.eventTitle}
+                                eventCity={event.eventCity}
+                                eventCountry={event.eventCountry}
+                                eventCategory={event.eventCategory}
+                                eventAlias={event.eventAlias}
+                                locationType={event.locationType}
+                                pricing={event.pricing}
+                                pricingCurrency={event.pricingCurrency}
+                                startDateTime={event.startDateTime}
+                                expectedParticipants={
+                                  event.expectedParticipants
+                                }
+                                registered={event.registered}
+                              />
+                            ))}
                         </div>
 
                         {eventData && eventData.length > 20 && !showMore && (
@@ -529,34 +548,9 @@ export default function FeaturedEvents({ searchParams: { query } }) {
 
                 {/* small screen */}
                 <div className="block lg:hidden px-3 mt-40 ">
-                  <div className="mt-24 ">
-                    <p className=" text-center text-[24px] gradient-text bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end font-bold">
-                      Featured Events
-                    </p>
-                    <p className="text-base text-center font-normal">
-                      A collection of events hand-picked for you
-                    </p>
-
-                    <div className="">
-                      <div className="h-[58px] pt-[15px] flex justify-between gap-x-3 items-center">
-                        <div className=" p-1 border-[1px] border-indigo-800 rounded-xl w-11/12 h-full">
-                          <input
-                            type="text"
-                            value={searchQuery}
-                            name="searchBox"
-                            onChange={handleChange}
-                            placeholder="search by event name, city, category"
-                            className="pl-4 outline-none text-base text-gray-600 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-xl w-full h-full"
-                          />
-                        </div>
-                        <div onClick={() => setFilterOpen(true)}>
-                          <FilterIcon />
-                        </div>
-                      </div>
-                    </div>
-
+                  <div className="mt-12 ">
                     <div className="mt-7">
-                      {filterCategories && filterCategories.length > 0 && (
+                      {showCategories?.toString() == "true" && (
                         <div className=" px-4 flex w-auto items-center overflow-x-auto no-scrollbar py-7 gap-x-[10px] border-y-[1px] border-gray-200 ">
                           {filterCategories
                             .filter(
@@ -579,34 +573,30 @@ export default function FeaturedEvents({ searchParams: { query } }) {
                       )}
                     </div>
 
-                    <div className="flex flex-col items-center mt-16 mb-20 ">
-                      <div className="grid grid-cols-1 gap-4 w-full min-h-screen">
+                    <div className="flex flex-col items-center mt-16 min-h-screen mb-20 ">
+                      <div className="grid grid-cols-1 gap-4 w-full ">
                         {filteredEvents &&
                           (showMore
                             ? filteredEvents
                             : filteredEvents.slice(0, 20)
-                          ).map((event, index) => {
-                            return (
-                              <FeaturedEvent
-                                key={event.id}
-                                id={event.id}
-                                eventPoster={event.eventPoster}
-                                eventTitle={event.eventTitle}
-                                eventCity={event.eventCity}
-                                eventAlias={event.eventAlias}
-                                eventCountry={event.eventCountry}
-                                eventCategory={event.eventCategory}
-                                locationType={event.locationType}
-                                pricing={event.pricing}
-                                pricingCurrency={event.pricingCurrency}
-                                startDateTime={event.startDateTime}
-                                expectedParticipants={
-                                  event.expectedParticipants
-                                }
-                                registered={event.registered}
-                              />
-                            );
-                          })}
+                          ).map((event, index) => (
+                            <FeaturedEvent
+                              key={event.id}
+                              id={event.id}
+                              eventPoster={event.eventPoster}
+                              eventTitle={event.eventTitle}
+                              eventCity={event.eventCity}
+                              eventAlias={event.eventAlias}
+                              eventCountry={event.eventCountry}
+                              eventCategory={event.eventCategory}
+                              locationType={event.locationType}
+                              pricing={event.pricing}
+                              pricingCurrency={event.pricingCurrency}
+                              startDateTime={event.startDateTime}
+                              expectedParticipants={event.expectedParticipants}
+                              registered={event.registered}
+                            />
+                          ))}
                       </div>
 
                       {eventData && eventData.length > 20 && !showMore && (
