@@ -117,9 +117,10 @@ export function PaymentModal({
       &total=${encodeURIComponent(totalPrice.toString())}
       &currency=${encodeURIComponent(chosenCurrency)}
       &coupon=${encodeURIComponent(couponText)}
-      &orgId=${encodeURIComponent(orgId)}
-      &orgAlias=${encodeURIComponent(orgAlias)}
-      &redirectUrl=${encodeURIComponent("/workspace/general")}`;
+      &redirectUrl=${encodeURIComponent(
+        "/workspace/general"
+      )}&orgId=${encodeURIComponent(orgId)}
+      &orgAlias=${encodeURIComponent(orgAlias)}`;
 
     router.push(url);
   };
