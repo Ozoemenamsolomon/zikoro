@@ -13,6 +13,7 @@ import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import Image from "next/image";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { PollOption } from "./PollOption";
+import { Minimize2 } from "styled-icons/feather";
 
 type ChosenAnswerStatus = {
   isCorrect: boolean;
@@ -44,6 +45,9 @@ type TQuestionProps = {
   goBack: () => void;
   updateQuiz: (q: TQuiz<TQuestion[]>) => void;
   updateQuizResult: (q: TQuiz<TQuestion[]>) => void;
+  toggleRightBox:() => void;
+  isRightBox:boolean;
+
 };
 
 export function PollQuestion({
@@ -62,6 +66,8 @@ export function PollQuestion({
   goBack,
   toggleLeftBox,
   answer,
+  isRightBox,
+  toggleRightBox
 }: TQuestionProps) {
   const [currentQuestion, setCurrentQuestion] = useState<TQuestion | null>(
     null
@@ -386,9 +392,19 @@ export function PollQuestion({
         !isIdPresent &&
           !isOrganizer &&
           "col-span-full rounded-xl max-w-3xl mx-auto",
-        isLeftBox && "rounded-r-xl"
+        isLeftBox && "rounded-r-xl",
+        isRightBox && "hidden"
       )}
     >
+      {isIdPresent && <Button
+                  onClick={toggleRightBox}
+                  className={cn(
+                    "absolute top-2 right-2",
+                    isRightBox && "hidden"
+                  )}
+                >
+                  <Maximize2 size={20} />
+                </Button>}
       <div className="w-full overflow-y-auto no-scrollbar px-6 pt-12 space-y-3  h-[90%] pb-52 ">
         <>
           {transiting ? (

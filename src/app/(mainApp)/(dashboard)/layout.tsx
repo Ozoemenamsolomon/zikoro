@@ -14,7 +14,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { userData, user, loading } = useAttendee();
+  const { userData, user} = useAttendee();
 
   const divRef = useRef<HTMLDivElement>(null);
   const { eventId }: { eventId: string } = useParams();
@@ -36,7 +36,6 @@ export default function RootLayout({
 
   //  <MainTopBar />
 
-  const { organization } = useOrganizationStore();
 
   const { event } = useEventStore();
 

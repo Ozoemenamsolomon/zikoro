@@ -13,9 +13,10 @@ import {
   FormMessage,
 } from "@/components";
 import { onboardingSchema } from "@/schemas";
+
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
 import { COUNTRY_CODE } from "@/utils";
 import { useOnboarding } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
@@ -23,7 +24,7 @@ import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useSearchParams } from "next/navigation"
 import { generateAlphanumericHash } from "@/utils/helpers";
 
-export default function Onboarding() {
+ function OnboardingComp() {
   const search = useSearchParams()
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
 
@@ -203,4 +204,13 @@ export default function Onboarding() {
       </Form>
     </>
   );
+}
+
+
+export default function Onboarding() {
+  return (
+    <Suspense>
+      <OnboardingComp/>
+    </Suspense>
+  )
 }

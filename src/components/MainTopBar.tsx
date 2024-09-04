@@ -19,7 +19,7 @@ import useOrganizationStore from "@/store/globalOrganizationStore";
 import { ExternalLink } from "styled-icons/feather";
 import {
   getCookie,
-  useCheckTeamMember,
+  useCheckTeam,
   useGetOrganizations,
   useGetUserEvents,
   useGetUserTeamOrganizations,
@@ -43,7 +43,7 @@ const MainTopBar = ({
   const pathname = usePathname().split("/");
   const router = useRouter();
   const { isOrganizer } = useVerifyUserAccess(eventId);
-  const { isIdPresent } = useCheckTeamMember({ eventId });
+  const { isIdPresent } = useCheckTeam({ eventId });
 
   const { organization, setOrganization } = useOrganizationStore();
   const { event, setEvent } = useEventStore();
@@ -51,20 +51,6 @@ const MainTopBar = ({
   const { user, setUser } = useUserStore();
   if (!user) return;
 
- 
-  
-
-  // const {
-  //   data: attendee,
-  //   isLoading,
-  //   getData,
-  // } = useGetData<TAttendee>(
-  //   `/attendees/email/${user?.userEmail}?eventId=${eventId}`
-  // );
-
-  // useEffect(() => {
-  //   getData();
-  // }, [eventId]);
 
   const {
     events,

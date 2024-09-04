@@ -652,23 +652,24 @@ export function useFetchSingleEvent(eventId: string) {
     try {
       setLoading(true);
       // Fetch the event by ID
-      const { data, error: fetchError } = await supabase
-        .from("events")
-        .select("*, organization!inner(*)")
-        .eq("eventAlias", eventId)
-        .maybeSingle();
-
-      if (fetchError) {
-        toast.error(fetchError.message);
-        setLoading(false);
-        return null;
+      // const { data, error: fetchError } = await supabase
+      //   .from("events")
+      //   .select("*, organization!inner(*)")
+      //   .eq("eventAlias", eventId)
+      //   .maybeSingle();
+      const { data, status } = await getRequest<TOrgEvent>({
+        endpoint: `events/${eventId}/event`,
+      });
+      if (status !== 200) {
+        return;
       }
 
-      setLoading(false);
-      setData(data);
+      setData(data.data);
     } catch (error) {
       setLoading(false);
       return null;
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -944,8 +945,7 @@ export function useRedeemDiscountCode() {
     } catch (error) {
       setLoading(false);
       return null;
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   }
@@ -1216,17 +1216,49 @@ export function useAttenedeeEvents() {
   };
 }
 
-export function useCheckTeamMember({ eventId }: { eventId?: string }) {
-  const { organization } = useOrganizationStore();
+export function useCheckTeam({ eventId }: { eventId: string }) {
   const { user } = useUserStore();
-  const { setUserAccess, userAccess } = useAccessStore();
+  const { organization } = useOrganizationStore();
 
   const isIdPresent =
     organization?.teamMembers?.some((v) => v?.userEmail === user?.userEmail) ||
     false;
-  // setUserAccess({ ...userAccess, isTeamMember: isIdPresent });
 
   return {
+    isIdPresent,
+  };
+}
+export function useCheckTeamMember({ eventId }: { eventId?: string }) {
+  const [loading, setLoading] = useState(false);
+  const { user } = useUserStore();
+  const [isIdPresent, setIsIdPresent] = useState(false);
+
+  async function fetchSingleEvent() {
+    try {
+      setLoading(true);
+      const { data, status } = await getRequest<TOrgEvent>({
+        endpoint: `events/${eventId}/event`,
+      });
+
+      const eventOrganization = data?.data?.organization;
+
+      const isMember = eventOrganization.teamMembers.some(
+        (v) => v.userEmail === user?.userEmail
+      );
+      setIsIdPresent(isMember);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchSingleEvent()
+  },[eventId, user])
+
+  return {
+    verifyTeamMember: loading,
     isIdPresent,
   };
 }
@@ -1344,7 +1376,6 @@ export function useRedeemReward() {
   };
 }
 
-
 export function useRedeemPartnerDiscountCode() {
   const [loading, setLoading] = useState(false);
   const [discountAmount, setDiscountAmount] = useState<
@@ -1402,8 +1433,7 @@ export function useRedeemPartnerDiscountCode() {
     } catch (error) {
       setLoading(false);
       return null;
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   }
