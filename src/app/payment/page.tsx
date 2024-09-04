@@ -98,10 +98,11 @@ export default function PaymentPage() {
     });
   }
 
+  
   //paystack props
   const config = paymentConfig({
     reference: "",
-    email: email ? email : "",
+    email: email ?  decodeURIComponent(email) : "",
     amount: totalPrice,
     currency: currency ? currency : "",
   });
@@ -177,7 +178,6 @@ export default function PaymentPage() {
 
     updateTotalPrice();
     console.log("email", email);
-  
   }, [coupons, currentCoupon, total]);
 
   return (
