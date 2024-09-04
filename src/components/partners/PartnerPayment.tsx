@@ -5,9 +5,9 @@ import { MdClose } from "react-icons/md";
 import { paymentConfig, useAddPartners } from "@/hooks";
 import { TPartner } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, Suspense } from "react";
 import { Lock } from "styled-icons/fa-solid";
-import { ArrowBack, Show } from "styled-icons/boxicons-regular";
+import { ArrowBack } from "styled-icons/boxicons-regular";
 import { PaystackButton } from "react-paystack";
 import { BsPatchCheck } from "react-icons/bs";
 import { CiShare2, CiCalendar, CiLocationOn } from "react-icons/ci";
@@ -34,7 +34,7 @@ type TEventData = {
   organizerPhoneNumber: string;
   organizerWhatsappNumber: string;
 };
-export default function PartnerPayment() {
+ function PartnerPaymentComp() {
   const router = useRouter();
   const params = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
@@ -350,4 +350,12 @@ export function ShareModal({
       </div>
     </div>
   );
+}
+
+export default function PartnerPayment() {
+  return (
+    <Suspense>
+      <PartnerPaymentComp/>
+    </Suspense>
+  )
 }
