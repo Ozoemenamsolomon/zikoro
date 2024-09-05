@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PricingHeader from "@/components/pricing/PricingHeader";
 import PricingTable from "@/components/pricing/PricingTable";
-import { PaymentModal } from "@/components/payment/PaymentModal";
+import { SubscriptionPaymentModal } from "@/components/payment/paymentModal";
 
 //type annotation for the data being fetched
 export default function Pricing() {
@@ -27,7 +27,7 @@ export default function Pricing() {
           setChosenMonthly={setChosenMonthly}
         />
         {paymentModalOpen && (
-          <PaymentModal
+          <SubscriptionPaymentModal
             updateModalState={() => setPaymentModalOpen(!paymentModalOpen)}
             setChosenPlan={setChosenPlan}
             setChosenPrice={setChosenPrice}
