@@ -8,12 +8,12 @@ import Empty from './Empty'
 
 const LinksPage = () => {
     
-    const {appointments,isLoading,error} = useGetAppointments()
-    console.log({appointments,error,isLoading})
+    // const {appointments,isLoading,error} = useGetAppointments()
+    // console.log({appointments,error,isLoading})
     
   return (
     <main className='w-full'>
-        <h4 className='text-xl font-semibold'>My Schedules</h4>
+        {/* <h4 className='text-xl font-semibold'>My Schedules</h4>
         {
             isLoading ? 
             <PageLoading isLoading={isLoading}/> :
@@ -32,7 +32,7 @@ const LinksPage = () => {
                     })
                 }
             </section>
-        }
+        } */}
     </main>
   )
 }
