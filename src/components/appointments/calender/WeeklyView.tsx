@@ -58,17 +58,29 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ appointments, currentDate }) =>
                     {days.map((day, idx) => {
                         const today = format(new Date(), 'eee dd')
                         const active = today === format(day, 'eee dd')
+                        const dayString = format(day, 'eee MMM dd yyyy');
+                        const record = appointments[dayString] as Record<number, Booking[]> | undefined;
+                        const appointmentLength = record && Object.entries(record).flatMap(([key, value]) => {
+                            if (Array.isArray(value)) {
+                                return `${value.length}appt.`
+                            }})
+                        // console.log({record})
                         return (
-                        <div key={idx} className={`  overflow-hidden border p-2 text-center bg-slate-100 ${idx === 0 ? 'rounded-tl-xl' : idx === 6 ? 'rounded-tr-xl' : ''}`}>
-                            <h3 className={`${active ? 'bg-zikoroBlue text-white':''} text font-medium py-1 rounded-md px-2 `}>{format(day, 'eee dd')}</h3>
-                        </div>
+                            <div key={idx} className="relative">
+                                <div  className={`overflow-hidden border p-2 text-center bg-slate-100 ${idx === 0 ? 'rounded-tl-xl' : idx === 6 ? 'rounded-tr-xl' : ''} `}>
+                                    <h3 className={`${active ? 'bg-zikoroBlue text-white':''} text font-medium py-1 rounded-md px-2 `}>
+                                        {format(day, 'eee dd')}
+                                    </h3>
+                                </div>
+                                <p className="absolute w-full -bottom-6 flex justify-center text-sm">{appointmentLength}</p>
+                            </div>
                     )})}
                 </div>
             </div>
 
 
             <div className="h-screen flex flex-nowrap gap-0 overflow-auto no-scrollbar relative">
-                {/* current time display */}
+                {/* current time display line*/}
                 <div
                     className="absolute top-0  w-full left-0 flex flex-nowrap gap-0"
                     style={{ top: `${currentTimePosition }rem` }}
@@ -99,7 +111,7 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ appointments, currentDate }) =>
                     const dayString = format(day, 'eee MMM dd yyyy');
                     const record = appointments[dayString] as Record<number, Booking[]> | undefined;
                     const newList = record && Object.entries(record).flatMap(([key, value]) => {
-                    if (Array.isArray(value)) {
+                        if (Array.isArray(value)) {
                         
                         const [startTimeString, endTimeString] = value[0]?.appointmentTimeStr?.split(' - ')!;
 
@@ -118,16 +130,16 @@ const WeeklyView: React.FC<WeeklyViewProps> = ({ appointments, currentDate }) =>
                     }
                     });
 
-                    console.log({ record, newList, appointments });
+                    // console.log({ record, newList, appointments });
                     return (
-                        <div key={dayIndex} className="grid  border-l  relative">
-                            
+                        <div key={dayIndex} className="grid border-l  relative">
                                 {hours.map((hour, index) => {
                                     return (<div key={index} className="h-24  border-b text-right pr-2">
                                     </div>)
                                 })}
 
                                 <div className="absolute w-full top-0">
+                                    {/* <p className=' '>{newList?.length}</p> */}
                                     {newList?.map((event, idx) => {
                                         const eventStart = parseISO(event.eventStart);
                                         const eventEnd = parseISO(event.eventEnd);

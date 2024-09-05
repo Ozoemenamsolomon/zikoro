@@ -42,6 +42,10 @@ export function PartnersList({
   const router = useRouter();
   const { startDate, endDate } = useFormatEventData(event);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [tabs, setTabs] =useState([
+    { id: 1, name: "Active Partners", count: 0 },
+    { id: 2, name: "Inactive Partners", count: 0 },
+  ])
 
   function onToggle() {
     setOpen((prev) => !prev);
@@ -104,23 +108,21 @@ export function PartnersList({
     // empty the selected array
     setSelectedRows([]);
   }
-  const tabs = [
-    { id: 1, name: "Active Partners", count: 0 },
-    { id: 2, name: "Inactive Partners", count: 0 },
-  ];
+
 
   const filteredPartners = useMemo(() => {
-    if (Array.isArray(partners)) {
+    if (Array.isArray(partners) && partners?.length > 0) {
       const activePartners = partners?.filter(
         ({ partnerStatus }) => partnerStatus === "active"
       )?.length;
-      tabs?.map((tab) => {
+      setTabs(tabs?.map((tab) => {
         return {
           ...tab,
           count:
             tab?.id === 1 ? activePartners : partners?.length - activePartners,
         };
-      });
+      }))
+  
     }
     if (active === 1) {
       return partners.filter(

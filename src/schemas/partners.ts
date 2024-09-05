@@ -136,3 +136,7 @@ export const offerCreationSchema = z.object({
     )
     .optional(),
 });
+
+export const partnerDeactivateSchema = z.object({
+  reason: z.string()
+})

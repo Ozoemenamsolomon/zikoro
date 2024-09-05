@@ -334,14 +334,18 @@ export default function General() {
 
   // import update workspace function
   const { updateWorkspace } = useUpdateWorkspace(
-    organization?.id ?? 0,
     formData,
     logoUrl,
-    faviconUrl
+    faviconUrl,
+    organization?.organizationAlias,
+    organization?.id
   );
 
   //import delete workspace function
-  const { deleteWorkspace } = useDeleteWorkspace(formData.orgId);
+  const { deleteWorkspace } = useDeleteWorkspace(
+    organization?.id,
+    organization?.organizationAlias
+  );
 
   //function to delete workspace
   const handleDelete = async () => {
@@ -500,6 +504,7 @@ export default function General() {
     }
   }, [organization, getWorkspaceSubscriptionPlanData]);
 
+  console.log("Organization", organization);
   return (
     <>
       {organization ? (

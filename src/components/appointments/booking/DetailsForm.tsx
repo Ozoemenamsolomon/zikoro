@@ -1,10 +1,9 @@
 import { InputCustom } from '@/components/ui/input-custom';
 import React, {  useEffect, useState } from 'react';
 import { useAppointmentContext } from '../context/AppointmentContext';
-import { AppointmentLink, Booking } from '@/types/appointments';
+import { AppointmentLink,  } from '@/types/appointments';
 import { XCircle } from 'lucide-react';
 import { submitBooking } from './submitBooking';
-import { createClient } from '@/utils/supabase/client';
 import { usePathname } from 'next/navigation';
 
 const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null}) => {
@@ -18,8 +17,8 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
     setBookingFormData({
         ...bookingFormData!,
         appointmentLinkId: appointmentLink?.id,
-        currency: appointmentLink?.curency,
-        price: appointmentLink?.amount,
+        // currency: appointmentLink?.curency,
+        // price: appointmentLink?.amount,
         bookingStatus: '',
         appointmentName: appointmentLink?.appointmentName,
         teamMembers: appointmentLink?.teamMembers,
@@ -95,13 +94,13 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
       pathname,
     });
   };
-
+// console.log({price:bookingFormData})
   return (
     <div className= {`${isFormUp ? ' visible translate-x-0':' -translate-x-full '} transform transition-all duration-300 w-full relative flex flex-col bg-white h-full px-6 py-20 rounded-lg shadow-md  justify-center items-center` } >
         <p className="pb-4 text-lg font-semibold">Enter your details</p>
         {errors?.general ? <p className="pb-4 text-red-600 max-w-lg text-wrap">{errors?.general}</p> : null}
         {success  ? <p className="pb-4 max-w-lg text-wrap text-blue-600">{success}</p> : null}
-      <form className="mx-auto space-y-4" onSubmit={handleSubmit} >
+      <div className="mx-auto space-y-4" >
         <div className="flex flex-col sm:flex-row gap-4 w-full">
             <div className="space-y-1 flex-1 w-full">
                 <div className="flex-1">
@@ -168,9 +167,28 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
             </div>
         </div>
 
-        <XCircle onClick={()=>setIsFormUp(false)} size={20} className='text-gray-500 cursor-pointer absolute top-6 right-6'/>
+        <XCircle onClick={()=>setIsFormUp('')} size={20} className='text-gray-500 cursor-pointer absolute top-6 right-6'/>
 
          <div className="w-full">
+
+           { 
+            bookingFormData?.price ?
+            // process for paid appointments
+            <button
+              onClick={()=>{
+                setIsFormUp('pay') 
+                // setBookingFormData({
+                //   ...bookingFormData,
+                //   price:appointmnetLink?.amount,
+                //   currency:appointmnetLink?.curency,
+                // })
+              }}
+              className={`w-full cursor-pointer py-2 px-4 bg-basePrimary text-white rounded ${loading  || isDisabled ? ' cursor-not-allowed opacity-30' : ''}`}
+              disabled={loading || isDisabled}
+            >
+              Process and pay
+            </button> 
+            :
             <button
               onClick={handleSubmit}
               type="submit"
@@ -179,8 +197,10 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
             >
               {loading ? 'Submitting...' : 'Book Appointment'}
             </button>
+
+            }
         </div>
-      </form>
+      </div>
     </div>
   );
 };

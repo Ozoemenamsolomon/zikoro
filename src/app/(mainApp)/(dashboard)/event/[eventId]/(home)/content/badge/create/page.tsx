@@ -9,7 +9,7 @@ import {
 } from "@craftjs/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import {
@@ -225,7 +225,7 @@ export interface TabProps {
   editSettings: (key: keyof TBadgeSettings, value: any) => void;
 }
 
-const page = () => {
+const page = ({ searchParams: { badgeId } }) => {
   const divRef = useRef<HTMLDivElement>(null);
   const badgeDivRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -234,10 +234,6 @@ const page = () => {
   const { event, isLoading: eventIsLoading } = useGetEvent({
     eventId: parseInt(Array.isArray(eventId) ? eventId[0] : eventId),
   });
-
-  const searchParams = useSearchParams();
-
-  const badgeId = searchParams.get("badgeId");
 
   const { badge, isLoading: badgeIsLoading } = useGetBadge({
     badgeId: badgeId || "0",
@@ -265,8 +261,6 @@ const page = () => {
       hashRef.current = DEFAULT_FRAME_STATE;
     }
 
-    
-
     setBadge(badge);
 
     if (badge?.badgeName) {
@@ -283,11 +277,9 @@ const page = () => {
       badge?.badgeDetails?.craftHash &&
       typeof badge?.badgeDetails?.craftHash === "string"
     ) {
-      
       hashRef.current = lz.decompress(
         lz.decodeBase64(badge?.badgeDetails?.craftHash)
       );
-      
     }
   }, [badgeIsLoading]);
 
@@ -319,12 +311,10 @@ const page = () => {
   }, []);
 
   const setValue = (key: string, value: any) => {
-    
     setDetails({ ...details, [key]: value });
   };
 
   const editSettings = (key: string, value: any) => {
-    
     setSettings({ ...settings, [key]: value });
   };
 
@@ -334,7 +324,6 @@ const page = () => {
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#badge",
     onSuccess: (data) => {
-      
       const link = document.createElement("a");
       link.download = badgeName + ".jpeg";
       link.href = data;
@@ -344,8 +333,6 @@ const page = () => {
   const [{ data: png }, convert, badgeRef] = useToPng<HTMLDivElement>({
     onSuccess: async (data) => {
       setUploading(true);
-      
-      
 
       // const img = new Image();
       // img.src = data;
@@ -354,12 +341,11 @@ const page = () => {
       const { url, error } = await uploadFile(snapshot, "image");
 
       if (error || !url) throw error;
-      
+
       // alert("File uploaded successfully", url);
 
       if (!hashRef.current) return;
 
-      
       const newBadge = await saveBadge({
         payload: editableBadge
           ? {
@@ -381,7 +367,6 @@ const page = () => {
               lastEdited: new Date(),
             },
       });
-      
 
       if (newBadge) {
         setBadge(newBadge);
@@ -394,8 +379,6 @@ const page = () => {
   // const onSave = async (query: string) => {
   //   convert()
   // };
-
-  
 
   const PreviewButton = () => {
     const { actions, query, enabled } = useEditor((state) => ({
@@ -486,7 +469,7 @@ const page = () => {
         onClick={() => {
           const json = query.serialize();
           hashRef.current = lz.encodeBase64(lz.compress(json));
-          
+
           convert();
         }}
       >

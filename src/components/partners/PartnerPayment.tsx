@@ -5,9 +5,9 @@ import { MdClose } from "react-icons/md";
 import { paymentConfig, useAddPartners } from "@/hooks";
 import { TPartner } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, Suspense } from "react";
 import { Lock } from "styled-icons/fa-solid";
-import { ArrowBack, Show } from "styled-icons/boxicons-regular";
+import { ArrowBack } from "styled-icons/boxicons-regular";
 import { PaystackButton } from "react-paystack";
 import { BsPatchCheck } from "react-icons/bs";
 import { CiShare2, CiCalendar, CiLocationOn } from "react-icons/ci";
@@ -23,24 +23,24 @@ import { TbLoader3 } from "react-icons/tb";
 import { SlSocialLinkedin } from "react-icons/sl";
 
 type TEventData = {
-  eventName:string;
+  eventName: string;
   eventStartDate: string;
   eventEndDate: string;
   location: string;
-  eventPoster:string;
+  eventPoster: string;
   address: string;
-  organizerName:string;
+  organizerName: string;
   currency: string;
   organizerPhoneNumber: string;
-  organizerWhatsappNumber:string;
-
-}
-export default function PartnerPayment() {
+  organizerWhatsappNumber: string;
+};
+ function PartnerPaymentComp() {
   const router = useRouter();
   const params = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
   const data = params.get("p");
-  const eventData = params.get("e")
+  const eventData = params.get("e");
+  const discountAmount = params.get("discountAmount");
   const { addPartners, loading } = useAddPartners();
 
   const partnerData: Partial<TPartner> = useMemo(() => {
@@ -53,15 +53,14 @@ export default function PartnerPayment() {
     }
   }, [data]);
   const parsedEventData: TEventData | null = useMemo(() => {
-      if (eventData) {
-        const dataString = decodeURIComponent(eventData);
-        const decodedData = JSON.parse(dataString);
-        return decodedData;
-      }
-      else {
-        return null;
-      }
-  },[eventData])
+    if (eventData) {
+      const dataString = decodeURIComponent(eventData);
+      const decodedData = JSON.parse(dataString);
+      return decodedData;
+    } else {
+      return null;
+    }
+  }, [eventData]);
 
   const config = paymentConfig({
     reference: partnerData?.paymentReference!,
@@ -77,7 +76,7 @@ export default function PartnerPayment() {
     };
 
     const eventPayload = {
-      ...parsedEventData
+      ...parsedEventData,
     };
 
     await addPartners(payload, eventPayload);
@@ -118,9 +117,10 @@ export default function PartnerPayment() {
               <p>1X SubTotal</p>
               <p className="font-medium">
                 {partnerData?.currency}{" "}
-                {partnerData?.amountPaid?.toLocaleString()}
+                {(partnerData?.amountPaid || 0)?.toLocaleString()}
               </p>
             </div>
+
             <div className="w-full  flex items-center justify-between">
               <p className="font-semibold">Total</p>
               <p className="font-semibold">
@@ -265,12 +265,12 @@ export function ShareModal({
   eventId,
   text,
   close,
-  header
+  header,
 }: {
   close: () => void;
   eventId: string;
   text: string;
-  header?:string;
+  header?: string;
 }) {
   const [isShow, showSuccess] = useState(false);
 
@@ -298,8 +298,8 @@ export function ShareModal({
     },
     {
       Icon: SlSocialLinkedin,
-      link: `https://www.linkedin.com/shareArticle?url=${text}`
-    }
+      link: `https://www.linkedin.com/shareArticle?url=${text}`,
+    },
   ];
   return (
     <div
@@ -314,7 +314,7 @@ export function ShareModal({
       >
         <div className="w-full mb-3 flex items-center justify-between">
           <p className="font-medium border-b border-basePrimary pb-1">
-           {header || " Share event with your network"}
+            {header || " Share event with your network"}
           </p>
           <Button
             onClick={close}
@@ -350,4 +350,12 @@ export function ShareModal({
       </div>
     </div>
   );
+}
+
+export default function PartnerPayment() {
+  return (
+    <Suspense>
+      <PartnerPaymentComp/>
+    </Suspense>
+  )
 }

@@ -23,6 +23,7 @@ import { useAppointmentContext } from '../context/AppointmentContext'
 import DetailsForm from './DetailsForm'
 import { Category } from '../create/CategoryForm'
 import SelectOnly from '../ui/SeectInput'
+import { isArray } from 'lodash'
 
 function classNames(...classes: (string | false)[]): string {
     return classes.filter(Boolean).join(' ');
@@ -49,6 +50,7 @@ slots: Slot[];
   
 const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) => {
     const [slotsLoading, setSlotsLoading] = useState(true)
+    const [hasCategory, setHasCategory] = useState(false)
     const {isFormUp} = useAppointmentContext()
     const {bookingFormData, setBookingFormData} = useAppointmentContext()
 
@@ -132,7 +134,7 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
   const normalizedSelectedDay = startOfDay(selectedDay!);
 
   const appointmentTypeJson: Category[] = JSON.parse(appointmnetLink?.category || `[]`);
-
+console.log({appointmentTypeJson})
   const appointmentTypes: { label: string, value: string }[] = appointmentTypeJson ?
     appointmentTypeJson.map((item: Category) => ({
       label: item.name || '',
@@ -140,16 +142,9 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
     }))
     : [];
 
-  // useEffect(() => {
-  //   setBookingFormData((prev) => ({
-  //       ...prev,
-  //       appointmentType: appointmentTypeJson[0]?.name || '',
-  //     }));
-  //   }, []);
-
     useEffect(() => {
       if(!bookingFormData?.appointmentType){
-        const selectedAppointmentType = appointmentTypeJson.find((item: Category) => item.name === bookingFormData?.appointmentType) || appointmentTypeJson[0];
+        const selectedAppointmentType = Array.isArray(appointmentTypeJson) && appointmentTypeJson.find((item: Category) => item.name === bookingFormData?.appointmentType) || appointmentTypeJson[0];
         setBookingFormData((prev) => ({
           ...prev,
           appointmentType: appointmentTypeJson[0]?.name || '',
@@ -158,7 +153,7 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
         }));
         console.log('aaaaaaa', {bookingFormData})
       } else {
-        if (appointmentTypeJson.length) {
+        if (Array.isArray(appointmentTypeJson) && appointmentTypeJson.length) {
           const selectedAppointmentType = appointmentTypeJson.find((item: Category) => item.name === bookingFormData?.appointmentType) || appointmentTypeJson[0];
           setBookingFormData((prev) => ({
             ...prev,
@@ -168,19 +163,21 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
         }
         console.log('bbbbbbb', {bookingFormData, appointmentTypeJson})
       }
+
+      setHasCategory(Array.isArray(appointmentTypeJson) && appointmentTypeJson.length > 0)
     // Add `appointmentTypeJson` and `bookingFormData.appointmentType` as dependencies to avoid infinite loops
   }, [ bookingFormData?.appointmentType]);
 
   return (
     <>
     {
-    isFormUp ?
+        isFormUp==='details' ?
         <DetailsForm appointmentLink={appointmnetLink}/>
         :
         <div className="w-full md:h-[70vh] gap-6 max-sm:space-y-6 sm:flex ">
             <div className=" bg-white  sm:w-3/5 p-4 rounded-lg  flex-shrink-0 ">
 
-                {appointmnetLink?.category ? 
+                {appointmnetLink?.category && Array.isArray(appointmentTypeJson) && appointmentTypeJson.length ? 
                 <div className="w-full pb-6 space-y-1">
                     <h5  className='font-semibold text-lg'>Select meeting category</h5  >
                     <SelectOnly
@@ -283,7 +280,7 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
                 slotsLoading ?
                 <div className="bg-white  md:w-80 flex-1 flex-shrink-0 p-4 rounded-lg w-full flex justify-center items-center">loading...</div>
                 :
-                <Slots appointmnetLink={appointmnetLink} selectedDate={selectedDay} timeSlots={timeSlots} />
+                <Slots hasCategory={hasCategory} appointmnetLink={appointmnetLink} selectedDate={selectedDay} timeSlots={timeSlots} />
             }
         </div>
     }

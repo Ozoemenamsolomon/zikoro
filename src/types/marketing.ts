@@ -34,8 +34,10 @@ export interface TSentEmail {
 // }
 
 export interface TAffiliate extends z.TypeOf<typeof AffiliateSchema> {
+  createdBy: string;
   affliateCode: string;
   organizationId: number;
+  attendeeAlias: string;
 }
 
 export interface TAffiliateLink {

@@ -241,9 +241,9 @@ export default function EventPartnerTiers({ eventId }: { eventId: string }) {
               {restructureData &&
                 Object.entries(restructureData).map(([partnerType, data]) => (
                   <div key={Math.random()} className="w-full">
-                    <p className="font-semibold capitalize text-zinc-700 my-8">
+                   {data?.length > 0 && <p className="font-semibold capitalize text-zinc-700 my-8">
                       {partnerType} Tiers
-                    </p>
+                    </p>}
                     <div
                       key={Math.random()}
                       className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5"
