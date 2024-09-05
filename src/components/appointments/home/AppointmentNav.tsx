@@ -17,7 +17,10 @@ const AppointmentNav = () => {
 
         {/* links */}
         <div className="gap-x-8 hidden lg:flex ">
-          <p className="text-base font-medium cursor-pointer">
+          <p
+            className="text-base font-medium cursor-pointer"
+            onClick={() => router.push("/")}
+          >
             Other Products <ChevronDown size={20} />
           </p>
           <p
@@ -54,10 +57,15 @@ const AppointmentNav = () => {
       {isOpen && (
         <div className="bg-violet-100 absolute p-[30px] mt-3 w-full max-w-[92%] lg:hidden rounded-[8px]">
           <ul className="">
-            <li className="font-medium ">
+            <li className="font-medium " onClick={() => router.push("/")}>
               Other Products <ChevronDown size={20} />{" "}
             </li>
-            <li className="mt-5 font-medium ">Contact Us </li>
+            <li
+              className="mt-5 font-medium "
+              onClick={() => router.push("/bookings/contact")}
+            >
+              Contact Us{" "}
+            </li>
           </ul>
 
           <div className=" border-[1px] border-gray-300 rounded-[51px] flex gap-x-4 p-3 mt-[72px] items-center w-fit mx-auto ">
