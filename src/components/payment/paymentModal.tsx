@@ -1,4 +1,5 @@
 "use client";
+
 import { ArrowBackOutline } from "styled-icons/evaicons-outline/";
 import React, { useEffect, useState } from "react";
 import { PaymentPlus, PaymentTick } from "@/constants";
@@ -107,24 +108,40 @@ export function PaymentModal({
   );
 
   //submit organization details
+  // const submitForm = (e: any) => {
+  //   e.preventDefault();
+  //   const url = `/payment?name=${encodeURIComponent(user?.firstName || "")}
+  // &id=${encodeURIComponent(user?.id || "")}
+  // &email=${encodeURIComponent(user?.userEmail || "")}
+  // &plan=${encodeURIComponent(chosenPlan || "")}
+  // &isMonthly=${encodeURIComponent(isChosenMonthly)}
+  // &total=${encodeURIComponent(totalPrice.toString())}
+  // &currency=${encodeURIComponent(chosenCurrency)}
+  // &coupon=${encodeURIComponent(couponText)}
+  // &redirectUrl=${encodeURIComponent("/workspace/general")}
+  // &orgId=${encodeURIComponent(orgId)}
+  // &orgAlias=${encodeURIComponent(orgAlias)}`;
+
+  //   router.push(url);
+  // };
+
+
   const submitForm = (e: any) => {
     e.preventDefault();
     const url = `/payment?name=${encodeURIComponent(user?.firstName || "")}
-      &id=${encodeURIComponent(user?.id || "")}
-      &email=${encodeURIComponent(user?.userEmail || "")}
-      &plan=${encodeURIComponent(chosenPlan || "")}
-      &isMonthly=${encodeURIComponent(isChosenMonthly || "")}
-      &total=${encodeURIComponent(totalPrice.toString())}
-      &currency=${encodeURIComponent(chosenCurrency)}
-      &coupon=${encodeURIComponent(couponText)}
-      &redirectUrl=${encodeURIComponent(
-        "/workspace/general"
-      )}&orgId=${encodeURIComponent(orgId)}
-      &orgAlias=${encodeURIComponent(orgAlias)}`;
+  &id=${encodeURIComponent(user?.id || "")}
+  &email=${encodeURIComponent(user?.userEmail || "")}
+  &plan=${encodeURIComponent(chosenPlan || "")}
+  &isMonthly=${encodeURIComponent(isChosenMonthly)}
+  &total=${encodeURIComponent(totalPrice.toString())}
+  &currency=${encodeURIComponent(chosenCurrency)}
+  &coupon=${encodeURIComponent(couponText)}
+  &redirectUrl=${encodeURIComponent("/workspace/general")}
+  &orgId=${encodeURIComponent(orgId)}
+  &orgAlias=${encodeURIComponent(orgAlias)}`;
 
     router.push(url);
   };
-
   //create organization form
   const createOrgDetails = (e: any) => {
     e.preventDefault();
@@ -209,6 +226,8 @@ export function PaymentModal({
 
     fetchAllCouponCodes();
   }, []);
+
+  console.log(user);
 
   return (
     <div className="w-full h-full fixed z-[100] inset-0 bg-black/50 overflow-y-auto ">
