@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import CopyrightFooter from "@/components/CopyrightFooter";
 import { FilterIcon, ArrowDownIcon, ArrowUpIcon } from "@/constants/icons";
 import { ArrowBackCircle } from "styled-icons/ionicons-outline";
@@ -57,7 +57,7 @@ interface DateRange {
 //   logoLink: string 
 // }
 
-export default function WorkspaceComponent({
+function WorkspaceComponent({
 //   searchParams: { name, showFilter, showCategories, logo: logoLink },
 }) {
   const searchParams = useSearchParams()
@@ -812,4 +812,12 @@ export default function WorkspaceComponent({
       )}
     </>
   );
+}
+
+export default function Workspace() {
+  return (
+    <Suspense>
+<WorkspaceComponent/>
+    </Suspense>
+  )
 }
