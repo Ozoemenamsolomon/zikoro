@@ -4,10 +4,11 @@ import { getUser, useLogOut } from '@/hooks';
 import { Bell, Calendar, Grip, HelpCircle, Link2, Menu, Plus, Settings, BriefcaseIcon, Users, BarChartBig } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAppointmentContext } from './context/AppointmentContext';
 import MenuBox from './ui/MenuBox';
 import useUserStore from '@/store/globalUserStore';
+import { useClickOutside } from '@/lib';
 
 const navlinks = [
   {
@@ -40,11 +41,11 @@ const navlinks = [
   //   label: 'Notification',
   //   link: `/appointments/notification`,
   // },
-  // {
-  //   icon: Settings,
-  //   label: 'Settings',
-  //   link: `/appointments/settings`,
-  // },
+  {
+    icon: Settings,
+    label: 'Settings',
+    link: `/appointments/settings/profile`,
+  },
 ];
 
 const Sidebar = () => {
@@ -52,7 +53,8 @@ const Sidebar = () => {
   const  {user} = useUserStore()
   const {logOut} = useLogOut('/bookings')
   const [open, setOpen] = useState('')
-  
+  const ref = useRef(null)
+  useClickOutside(ref, ()=>setOpen(''))
   return (
     <nav className="space-y-4 text-sm px-6 py-6 h-full w-full flex flex-col justify-between gap-">
       <div className="w-full space-y-2">
@@ -108,23 +110,24 @@ const Sidebar = () => {
           })}
         </div>
 
-        {/* <div className="space-y-2 py-4 border-y">
-          <button onClick={()=>setOpen(open==='moretools' ? '' : 'moretools')} className={`relative flex gap-4 items-center p-2 rounded-md  hover:bg-gradient-to-r hover:from-slate-200  hover:to-purple-200 duration-300 group`}>
-            <div className="group-hover:text-purple-800 duration-300">
-              <Grip size={18}/>
-            </div>
-            <p className="group-hover:text-blue-700 font-medium duration-300">More Tools</p>
-
+        <div  className="space-y-2 py-4 border-y">
+          <div ref={ref}  className="relative">
+            <button onClick={()=>setOpen(open==='moretools' ? '' : 'moretools')} className={`flex gap-4 items-center p-2 rounded-md group`}>
+              <div className="group-hover:text-purple-800 duration-300">
+                <Grip size={18}/>
+              </div>
+              <p className="group-hover:text-blue-700 font-medium duration-300">More Tools</p>
+            </button>
             <MenuBox open={open} setOpen={setOpen} />
-          </button>
-
-          <Link href={'/appointments/help'} className={`flex gap-4 items-center p-2 rounded-md  hover:bg-gradient-to-r hover:from-slate-200  hover:to-purple-200 duration-300 group`}>
+          </div>
+          
+          {/* <Link href={'/appointments/help'} className={`flex gap-4 items-center p-2 rounded-md  hover:bg-gradient-to-r hover:from-slate-200  hover:to-purple-200 duration-300 group`}>
             <div className="group-hover:text-purple-800 duration-300">
               <HelpCircle size={18} />
             </div>
             <p className="group-hover:text-blue-700 font-medium duration-300">User Help</p>
-          </Link>
-        </div> */}
+          </Link> */}
+        </div>
 
       </div>
 

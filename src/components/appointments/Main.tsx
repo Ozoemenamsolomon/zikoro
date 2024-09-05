@@ -20,15 +20,15 @@ const Main = ({children}:{children:React.ReactNode}) => {
     useClickOutside(ref, ()=>setDrop(false))
 
   return (
-    <>
-        <aside ref={sidebar} className={`${show ? 'z-50 w-[252px]':' w-0 -z-10'} transform transition-all duration-300 ease-in-out  border-r bg-white h-screen overflow-y-auto fixed top-0 left-0 lg:hidden `}>
+    <main className="bg-[#F9FAFF] min-h-screen">
+        <aside ref={sidebar} className={`${show ? 'z-30 w-[252px]':' w-0 -z-10'} transform transition-all duration-300 ease-in-out  border-r bg-white h-screen overflow-y-auto fixed top-0 left-0 lg:hidden hide-scrollbar`}>
             <div className="absolute top-6 right-6 flex justify-end w-full">
                 <button type="button" onClick={()=>setShow(false)}><ChevronFirst size={18} className='text-gray-600'/></button>
             </div>
             <Sidebar/>
         </aside>
 
-        <aside className={`max-lg:hidden z-50 flex-shrink-0 w-[252px] border-r bg-white h-screen overflow--auto fixed top-0 left-0 `}>
+        <aside className={`max-lg:hidden z-30 flex-shrink-0 w-[252px] border-r bg-white h-screen overflow--auto fixed top-0 left-0 `}>
             <Sidebar/>
         </aside>
 
@@ -56,7 +56,7 @@ const Main = ({children}:{children:React.ReactNode}) => {
             </div>
         </article>
         
-    </>
+    </main>
   )
 }
 

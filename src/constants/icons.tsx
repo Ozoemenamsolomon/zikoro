@@ -7156,3 +7156,16 @@ export function GoogleBlackIcon() {
     </div>
   );
 }
+
+export const BlueCircleIcon = () => <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="15" cy="15" r="13.5" fill="#001FCC" stroke="white" stroke-width="3"/>
+<g clip-path="url(#clip0_1293_7545)">
+<path d="M19.5856 10.414C18.7011 9.52998 17.2626 9.52998 16.3786 10.414L10.5331 16.26L9.8916 20.1085L13.7401 19.467L19.5856 13.6215C20.0141 13.194 20.2501 12.624 20.2501 12.018C20.2501 11.412 20.0141 10.842 19.5856 10.414ZM18.8786 12.914L18.2931 13.5L16.5001 11.707L17.0856 11.121C17.5796 10.627 18.3846 10.627 18.8786 11.121C19.1181 11.3605 19.2501 11.679 19.2501 12.0175C19.2501 12.356 19.1181 12.6745 18.8786 12.914Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_1293_7545">
+<rect width="12" height="12" fill="white" transform="translate(9 9)"/>
+</clipPath>
+</defs>
+</svg>
+

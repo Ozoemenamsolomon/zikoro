@@ -5,9 +5,7 @@ import Analytics from '@/components/appointments/Analytics'
 const AnalyticsPage = async () => {
    
   return (
-    <Main>
       <Analytics />
-    </Main>
   )
 }
 

@@ -282,7 +282,7 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
 
 console.log({errors, formData})
   return (
-    <main className="py-4 sm:p-8">
+    <main className="py-4 sm:p-8 z-50 relative bg-[#F9FAFF] ">
       <SelectType onClose={()=>setIsOpen(false)} isOpen={isOpen}/>
       <PageLoading isLoading={loading || isLoading} />
       <Link href={'/appointments/schedule'} type="button" className="max-sm:pl-4">
