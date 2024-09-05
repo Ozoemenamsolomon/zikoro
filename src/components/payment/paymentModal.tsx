@@ -69,14 +69,14 @@ type DBOrganisationSchema = {
   facebook: string;
 };
 
-export function SubscriptionPaymentModal({
+export default function SubscriptionPaymentModal({
   updateModalState,
   chosenPlan,
   chosenCurrency,
   chosenPrice,
   isChosenMonthly,
 }: Props) {
-  const { user, } = useUserStore();
+  const { user } = useUserStore();
   const [haveCoupon, setHaveCoupon] = useState<boolean>(false);
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const [isRedeemed, setIsRedeemed] = useState<boolean>(false);
@@ -108,40 +108,24 @@ export function SubscriptionPaymentModal({
   );
 
   //submit organization details
-  // const submitForm = (e: any) => {
-  //   e.preventDefault();
-  //   const url = `/payment?name=${encodeURIComponent(user?.firstName || "")}
-  // &id=${encodeURIComponent(user?.id || "")}
-  // &email=${encodeURIComponent(user?.userEmail || "")}
-  // &plan=${encodeURIComponent(chosenPlan || "")}
-  // &isMonthly=${encodeURIComponent(isChosenMonthly)}
-  // &total=${encodeURIComponent(totalPrice.toString())}
-  // &currency=${encodeURIComponent(chosenCurrency)}
-  // &coupon=${encodeURIComponent(couponText)}
-  // &redirectUrl=${encodeURIComponent("/workspace/general")}
-  // &orgId=${encodeURIComponent(orgId)}
-  // &orgAlias=${encodeURIComponent(orgAlias)}`;
-
-  //   router.push(url);
-  // };
-
-
   const submitForm = (e: any) => {
     e.preventDefault();
-    const url = `/payment?name=${encodeURIComponent(user?.firstName || "")}
+    if (user) {
+      const url = `/payment?name=${encodeURIComponent(user?.firstName || "")}
   &id=${encodeURIComponent(user?.id || "")}
-  &email=${encodeURIComponent(user?.userEmail || "")}
   &plan=${encodeURIComponent(chosenPlan || "")}
   &isMonthly=${encodeURIComponent(isChosenMonthly)}
-  &total=${encodeURIComponent(totalPrice.toString())}
+  &total=${encodeURIComponent(totalPrice)}
   &currency=${encodeURIComponent(chosenCurrency)}
   &coupon=${encodeURIComponent(couponText)}
   &redirectUrl=${encodeURIComponent("/workspace/general")}
   &orgId=${encodeURIComponent(orgId)}
   &orgAlias=${encodeURIComponent(orgAlias)}`;
 
-    router.push(url);
+      router.push(url);
+    }
   };
+
   //create organization form
   const createOrgDetails = (e: any) => {
     e.preventDefault();

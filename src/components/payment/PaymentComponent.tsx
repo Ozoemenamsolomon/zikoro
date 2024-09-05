@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 import { ArrowBack } from "styled-icons/ionicons-outline";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { paymentConfig } from "@/hooks/common/usePayStackPayment";
 import { Button } from "@/components";
 import { Lock } from "styled-icons/fa-solid";
@@ -11,6 +11,7 @@ import { PaystackButton } from "react-paystack";
 import toast from "react-hot-toast";
 import { useCreateOrganisation } from "@/hooks";
 import { useCreateOrgSubscription } from "@/hooks/services/subscription";
+import useUserStore from "@/store/globalUserStore";
 
 //type annotation for the data being fetched
 type DBDiscountsType = {
@@ -22,60 +23,25 @@ type DBDiscountsType = {
   discountPercentage: number | null;
 };
 
-// type SearchParamsType = {
-//   name: string;
-//   id: string;
-//   orgId: string;
-//   orgAlias: string;
-//   email: string;
-//   plan: string;
-//   total: string;
-//   currentCoupon: string;
-//   monthly: string;
-//   currency: string;
-//   orgName: string;
-//   orgType: string;
-//   subPlan: string;
-//   redirectUrl: string;
-//   isCreate: string;
-// };
-
-export default function PaymentComponent({
-//   searchParams: {
-//     name,
-//     id,
-//     orgId,
-//     orgAlias,
-//     email,
-//     plan,
-//     total,
-//     currentCoupon,
-//     monthly,
-//     currency,
-//     orgName,
-//     orgType,
-//     subPlan,
-//     redirectUrl,
-//     isCreate,
-//   },
-}) {
-
-    const searchParams = useSearchParams();
-
+export default function PaymentComponent() {
+  const { user } = useUserStore();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const name = searchParams.get("name");
   const id = searchParams.get("id") ?? "";
   const orgId = searchParams.get("orgId");
   const orgAlias = searchParams.get("orgAlias");
-  const email = searchParams.get("email");
+  // const email = searchParams.get("email");
   const plan = searchParams.get("plan") ?? "";
   const total = searchParams.get("total");
   const currentCoupon = searchParams.get("currentCoupon");
   const monthly = searchParams.get("monthly");
-  const currency = searchParams.get("currency") ?? "";
+  const currency = searchParams.get("currency")?.trim() ?? "";
   const orgName = searchParams.get("orgName");
   const orgType = searchParams.get("orgType");
   const subPlan = searchParams.get("subPlan");
   const redirectUrl = searchParams.get("redirectUrl");
+  const userEmail = user?.userEmail;
   const isCreate = searchParams.get("isCreate");
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [coupons, setCoupons] = useState<DBDiscountsType[]>([]);
@@ -139,7 +105,7 @@ export default function PaymentComponent({
   //paystack props
   const config = paymentConfig({
     reference: "",
-    email: email ? decodeURIComponent(email) : "",
+    email: userEmail ? decodeURIComponent(userEmail) : "",
     amount: totalPrice,
     currency: currency ? currency : "",
   });
@@ -214,8 +180,13 @@ export default function PaymentComponent({
     };
 
     updateTotalPrice();
-    console.log("email", email);
   }, [coupons, currentCoupon, total]);
+
+  useEffect(() => {
+    if (!user) {
+      router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
+    }
+  }, []);
 
   return (
     <div className="bg-[#F9FAFF] h-screen flex flex-col justify-center items-center px-3">
