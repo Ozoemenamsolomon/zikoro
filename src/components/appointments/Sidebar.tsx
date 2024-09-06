@@ -1,7 +1,7 @@
 
 import { BriefCase, CircleArrowRight, CalenderIcon } from '@/constants';
 import { getUser, useLogOut } from '@/hooks';
-import { Bell, Calendar, Grip, HelpCircle, Link2, Menu, Plus, Settings, BriefcaseIcon, Users, BarChartBig } from 'lucide-react';
+import { Bell, Calendar, Grip, HelpCircle, Link2, Menu, Plus, Settings, BriefcaseIcon, Users, BarChartBig, Store } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
@@ -35,6 +35,11 @@ const navlinks = [
     icon: BarChartBig,
     label: 'Analytics',
     link: `/appointments/analytics`,
+  },
+  {
+    icon: Store,
+    label: 'Store Front',
+    link: `/appointments/shop-front/booking`,
   },
   // {
   //   icon: Bell,

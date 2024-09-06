@@ -2,6 +2,7 @@
 import { Input } from '@/components/ui/input'
 import { BlueCircleIcon,   } from '@/constants'
 import { User } from 'lucide-react'
+import Image from 'next/image'
 import React from 'react'
 
 const ProfileSettings = () => {
@@ -24,8 +25,8 @@ const ProfileSettings = () => {
                     false ?
                     <></>
                     :
-                    <div className='h-full w-full bg-slate-200 flex justify-center rounded-full items-center text-gray-400'>
-                        <User/>
+                    <div className='h-full w-full bg-slate-200 flex justify-center rounded-full items-center text-gray-300'>
+                        <Image src={'/profile-icon.png'} alt='icon' width={200} height={200} className='h-14 w-14' />
                     </div>
                 }
                 <div className="absolute right-0 bottom-0">

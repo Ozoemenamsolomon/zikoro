@@ -6,13 +6,14 @@ export const metadata: Metadata = {
   title: `Schedule and manage appointments`,
 };
 
+
 export default function Layout({ children }: { children: React.ReactNode }) {
- 
+
   return (
     <AppointmentProvider>
       <Main>
         {children}
       </Main>
     </AppointmentProvider>
-)
+  );
 }

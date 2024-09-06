@@ -38,6 +38,7 @@ const config = {
         zikoroBlue: "hsl(var(--zblue))",
         basePrimary: "#001FCC",
         basebody: "#f3f3f3",
+        base: "#F9FAFF",
         ticketColor: "#CFCFCF",
         greyBlack: "#0A0E2E",
         earlyBirdColor: "#001FCC",

@@ -7169,3 +7169,13 @@ export const BlueCircleIcon = () => <svg width="30" height="30" viewBox="0 0 30 
 </defs>
 </svg>
 
+export const DeletIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.3996 3.59961H9.59961V5.99961H14.3996V3.59961Z" fill="#717171" stroke="#717171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5.1582 9.59961L5.5878 18.1784C5.6826 20.0972 7.263 21.5996 9.183 21.5996H14.817C16.7382 21.5996 18.3174 20.0972 18.4122 18.1784L18.8418 9.59961H5.1582Z" fill="#717171"/>
+<path d="M20.3996 6H3.59961" stroke="#717171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+export const DotsIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.75 2.25H9.75V5.25H6.75V2.25ZM14.25 2.25H17.25V5.25H14.25V2.25ZM6.75 7.75H9.75V10.75H6.75V7.75ZM14.25 7.75H17.25V10.75H14.25V7.75ZM6.75 13.25H9.75V16.25H6.75V13.25ZM14.25 13.25H17.25V16.25H14.25V13.25ZM6.75 18.75H9.75V21.75H6.75V18.75ZM14.25 18.75H17.25V21.75H14.25V18.75Z" fill="#717171"/>
+</svg>

@@ -1,8 +1,9 @@
+import LinkSetting from '@/components/appointments/Settings/LinkSetting'
 import React from 'react'
 
 const LinksSettingsPage = () => {
   return (
-    <div>LinksSettingsPage</div>
+    <LinkSetting/>
   )
 }
 

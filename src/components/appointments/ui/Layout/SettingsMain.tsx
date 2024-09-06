@@ -12,7 +12,7 @@ interface MainProp {
 const SettingsMain:React.FC<MainProp> = ({className, children}) => {
 
   return (
-    <main className={cn("w-full flex-1 h-screen flex gap-0 bg-white border rounded-lg",className)}>
+    <main className={cn("w-full flex-1 min-h-screen flex gap-0 bg-white border rounded-lg",className)}>
         <Aside 
             className='shrink-0 border-r sticky top-0 grid py-8 px-4'
         />
