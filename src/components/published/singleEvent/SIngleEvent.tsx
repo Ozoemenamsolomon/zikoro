@@ -108,7 +108,6 @@ export function SingleEvent({
 
   function toggleShareDropDown() {
     showShareDropDown((prev) => !prev);
-  }
 
   // conditonally adding comma to separate city and location
   const removeComma = useMemo(() => {
@@ -433,7 +432,7 @@ export function SingleEvent({
           close={onClose}
           trackingId={trackingId}
           affiliateCode={affiliateCode}
-          role={role}
+          role={role|| ''}
           eventLocation={`${event?.eventCity ?? ""}${!removeComma && ","} ${
             event?.eventCountry ?? ""
           }`}
@@ -533,4 +532,5 @@ function ActionModal({
       </div>
     </>
   );
+}
 }

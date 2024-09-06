@@ -146,10 +146,9 @@ export function CreateOrganization({
   );
   const form = useForm<z.infer<typeof organizationSchema>>({
     resolver: zodResolver(organizationSchema),
-    defaultValues:{
-      organizationAlias: generateAlias()
-
-    }
+    defaultValues: {
+      organizationAlias: generateAlias(),
+    },
   });
   const [isDiscount, setIsDiscount] = useState(false);
 
@@ -207,28 +206,23 @@ export function CreateOrganization({
       if (refetch) refetch();
       close();
     } else {
-      const url = `/payment?name=${encodeURIComponent(
-        values?.firstName || ""
-      )}&id=${encodeURIComponent(user?.id || "")}&email=${encodeURIComponent(
-        values?.userEmail || ""
-      )}&plan=${encodeURIComponent(
-        selectedPricing?.plan || "Free"
-      )}&isMonthly=${encodeURIComponent(isMonthly)}&total=${encodeURIComponent(
-        total 
-      )}&currency=${encodeURIComponent(
-        selectedCurrency
-      )}&organizationName=${encodeURIComponent(
-        values.organizationName
-      )}&organizationType=${encodeURIComponent(
-        values.organizationType
-      )}&subscriptionPlan=${encodeURIComponent(
-        values.subscriptionPlan
-      )}&redirectUrl=${encodeURIComponent(
-        window.location.href
-      )}&isCreate=${encodeURIComponent(true)}&orgId=${encodeURIComponent(
-        values.organizationAlias
-      )}
-      `;
+      const data = {
+        paymentReference: '',
+        email: values?.userEmail,
+        total: total,
+        currency: selectedCurrency,
+        discount: appliedDiscount,
+        discountCode: discount?.discountCode || "",
+        organizationAlias: values?.organizationAlias,
+        redirectUrl: window.location.href,
+        isMonthly: isMonthly,
+        plan: values?.subscriptionPlan,
+        organizationName: values?.organizationName,
+        organizationType: values?.organizationType,
+        subscriptionPlan: values?.subscriptionPlan,
+      }
+      const url = `/payment/create?data=${encodeURIComponent(JSON.stringify(data))}`;
+    
 
       router.push(url);
     }

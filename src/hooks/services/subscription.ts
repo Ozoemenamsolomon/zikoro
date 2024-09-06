@@ -36,7 +36,13 @@ export function useCreateOrgSubscription(
       }
       const formattedExpirationDate = expirationDate.toISOString().split("T")[0];
 
-      // Attempt to update the subscription
+      //convert orgId to int data type
+      const orgIdConvert = Number(orgId)
+
+      //convert orgAlias to string
+      const orgAliasConvert = orgAlias?.toString()
+
+      // create in the subscription table
       const { error } = await supabase
         .from("subscription")
         .insert({
@@ -50,9 +56,14 @@ export function useCreateOrgSubscription(
           planPrice: initialTotalNum,
           discountValue: discountAmountNum,
           discountCode: couponCode,
+          organizationId: orgIdConvert,
+          organizationAlias: orgAliasConvert 
 
-          // Conditionally insert either organizationId or organizationAlias
-          ...(orgId ? { organizationId: orgId } : { organizationAlias: orgAlias })
+          // Insert organizationId if orgId exists
+          // ...(orgId && { organizationId: orgIdConvert }),
+
+          // Insert organizationAlias if orgAlias exists
+          // ...(orgAlias && { organizationAlias: orgAliasConvert })
         })
 
 

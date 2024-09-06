@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PricingHeader from "@/components/pricing/PricingHeader";
 import PricingTable from "@/components/pricing/PricingTable";
-import { SubscriptionPaymentModal } from "@/components/payment/paymentModal";
+import SubscriptionPaymentModal from "@/components/payment/paymentModal";
 
 //type annotation for the data being fetched
 export default function Pricing() {
