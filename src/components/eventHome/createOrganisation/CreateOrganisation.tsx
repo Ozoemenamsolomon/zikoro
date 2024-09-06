@@ -146,10 +146,9 @@ export function CreateOrganization({
   );
   const form = useForm<z.infer<typeof organizationSchema>>({
     resolver: zodResolver(organizationSchema),
-    defaultValues:{
-      organizationAlias: generateAlias()
-
-    }
+    defaultValues: {
+      organizationAlias: generateAlias(),
+    },
   });
   const [isDiscount, setIsDiscount] = useState(false);
 
@@ -214,7 +213,7 @@ export function CreateOrganization({
       )}&plan=${encodeURIComponent(
         selectedPricing?.plan || "Free"
       )}&isMonthly=${encodeURIComponent(isMonthly)}&total=${encodeURIComponent(
-        total 
+        total
       )}&currency=${encodeURIComponent(
         selectedCurrency
       )}&organizationName=${encodeURIComponent(

@@ -22,8 +22,8 @@ const AppointmentSignupForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  async function onSubmit(e:any) {
-    e.preventDefault()
+  async function onSubmit(e: any) {
+    e.preventDefault();
     await register(formData);
   }
 
@@ -40,7 +40,7 @@ const AppointmentSignupForm = () => {
       </div>
 
       <p className="text-2xl text-indigo-600 text-center mt-10 font-semibold">
-        Sign In
+        Sign Up
       </p>
       <p className="mt-4 font-normal text-center lg:text-left">
         It’ll Only Take 2 Minutes to Get You Up and Running!
@@ -83,9 +83,10 @@ const AppointmentSignupForm = () => {
             className="border-[1px] border-gray-200 px-[10px] py-4 w-full text-base rounded-[6px] outline-none"
           />
         </div>
+
         <div className="flex flex-col gap-y-3 mt-6">
           <label htmlFor="">Password</label>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-around border-[1px] border-gray-200 rounded-[6px] ">
             <input
               type={showPassword ? "text" : "password"}
               name="password"
@@ -93,8 +94,8 @@ const AppointmentSignupForm = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter Password"
+              className="w-[90%] px-[10px] py-4 h-full text-base  outline-none"
               minLength={8}
-              className="border-[1px] border-gray-200 px-[10px] py-4 w-[90%] text-base rounded-[6px] outline-none"
             />
             <div onClick={() => setShowPassword(!showPassword)}>
               <CrossedEye />
