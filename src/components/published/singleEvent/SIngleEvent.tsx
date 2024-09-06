@@ -432,7 +432,7 @@ export function SingleEvent({
           close={onClose}
           trackingId={trackingId}
           affiliateCode={affiliateCode}
-          role={role}
+          role={role|| ''}
           eventLocation={`${event?.eventCity ?? ""}${!removeComma && ","} ${
             event?.eventCountry ?? ""
           }`}
@@ -532,4 +532,5 @@ function ActionModal({
       </div>
     </>
   );
+}
 }
