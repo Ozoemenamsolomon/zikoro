@@ -11,9 +11,7 @@ interface SearchParams {
 const CalenderPage: React.FC<{ searchParams: SearchParams }> = async ({ searchParams:{viewing,date} }) => {
 
   return (
-    <Main>
-      <Calender viewing={viewing} date={date} />
-    </Main>
+    <Calender viewing={viewing} date={date} />
   );
 };
 
