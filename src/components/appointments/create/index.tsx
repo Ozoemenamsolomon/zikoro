@@ -126,7 +126,7 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
         setFormData({ ...appointment, timeDetails: parsedTimeDetails, category: parsedCategory, isPaidAppointment: appointment.amount ? true : false });
   
         // Debugging output
-        console.log({ parsedCategory, parsedTimeDetails, formData });
+        // console.log({ parsedCategory, parsedTimeDetails, formData });
       } catch (error) {
         console.error('Error parsing appointment details:', error);
       } finally {
@@ -280,9 +280,9 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
     fetch();
   }, [pathname]);
 
-console.log({errors, formData})
+// console.log({errors, formData})
   return (
-    <main className="py-4 sm:p-8">
+    <main className="py-4 sm:p-8 z-50 relative bg-[#F9FAFF] ">
       <SelectType onClose={()=>setIsOpen(false)} isOpen={isOpen}/>
       <PageLoading isLoading={loading || isLoading} />
       <Link href={'/appointments/schedule'} type="button" className="max-sm:pl-4">
