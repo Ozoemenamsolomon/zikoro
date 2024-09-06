@@ -56,12 +56,14 @@ export function useCreateOrgSubscription(
           planPrice: initialTotalNum,
           discountValue: discountAmountNum,
           discountCode: couponCode,
+          organizationId: orgIdConvert,
+          organizationAlias: orgAliasConvert 
 
           // Insert organizationId if orgId exists
-          ...(orgId && { organizationId: orgIdConvert }),
+          // ...(orgId && { organizationId: orgIdConvert }),
 
           // Insert organizationAlias if orgAlias exists
-          ...(orgAlias && { organizationAlias: orgAliasConvert })
+          // ...(orgAlias && { organizationAlias: orgAliasConvert })
         })
 
 
