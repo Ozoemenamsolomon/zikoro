@@ -17,6 +17,8 @@ export function useCreateOrgSubscription(
   orgAlias?: string | null
 ) {
   async function createOrgSubscription() {
+    const orgIdConvert = Number(orgId)
+
     try {
       const totalPriceNum = Number(totalPrice);
       const isMonthlyValue = isMonthly === "true" ? "month" : "year";
@@ -57,7 +59,7 @@ export function useCreateOrgSubscription(
           discountValue: discountAmountNum,
           discountCode: couponCode,
           organizationId: orgIdConvert,
-          organizationAlias: orgAliasConvert 
+          organizationAlias: orgAliasConvert
 
           // Insert organizationId if orgId exists
           // ...(orgId && { organizationId: orgIdConvert }),
