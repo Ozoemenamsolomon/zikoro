@@ -108,7 +108,6 @@ export function SingleEvent({
 
   function toggleShareDropDown() {
     showShareDropDown((prev) => !prev);
-  }
 
   // conditonally adding comma to separate city and location
   const removeComma = useMemo(() => {
