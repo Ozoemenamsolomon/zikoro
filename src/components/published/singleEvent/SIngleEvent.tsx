@@ -444,20 +444,7 @@ export function SingleEvent({
   );
 }
 
-{
-  /**
-   
 
-
-
-*/
-}
-
-{
-  /**
-   
-*/
-}
 
 // https://www.linkedin.com/sharing/share-offsite/?url=
 function ActionModal({

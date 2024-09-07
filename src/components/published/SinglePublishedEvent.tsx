@@ -46,6 +46,7 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
             }
             className="w-full bg-none  shadow-none"
           />
+         
 
           <div className=" ">
             <EventDetail event={eventDetail} />
