@@ -410,7 +410,7 @@ export function AddSession({
                       placeholder="Session Title"
                       type="text"
                       {...form.register("sessionTitle")}
-                      className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      className="placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -427,7 +427,7 @@ export function AddSession({
                           type="datetime-local"
                           //defaultValue={eventStartDate}
                           {...form.register("startDateTime")}
-                          className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                          className="placeholder:text-sm h-11 inline-block  text-gray-700 accent-basePrimary"
                         />
                       </InputOffsetLabel>
                     )}
@@ -443,7 +443,7 @@ export function AddSession({
                         placeholder=""
                         type="datetime-local"
                         {...form.register("endDateTime")}
-                        className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        className="placeholder:text-sm h-11 inline-block  text-gray-700"
                       />
                     </InputOffsetLabel>
                   )}
@@ -466,19 +466,20 @@ export function AddSession({
                     <Textarea
                       placeholder="Enter the description"
                       {...form.register("description")}
-                      className="placeholder:text-sm  focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      className="placeholder:text-sm   placeholder:text-gray-400 text-gray-700"
                     ></Textarea>
                   </InputOffsetLabel>
                 )}
               />
               {activity === "Custom" && (
                 <>
-                  <div className="w-full flex items-center gap-x-2">
+                  <div className="w-full flex items-end gap-x-2">
                     <FormField
                       control={form.control}
                       name="Track"
                       render={({ field }) => (
-                        <ReactSelect
+                       <InputOffsetLabel label="Track">
+                         <ReactSelect
                           {...form.register("Track")}
                           placeHolder="Select Track"
                           defaultValue={{
@@ -488,6 +489,7 @@ export function AddSession({
                           label="Track"
                           options={formattedSessions}
                         />
+                       </InputOffsetLabel>
                       )}
                     />
                     <Button
@@ -496,7 +498,7 @@ export function AddSession({
                         e.preventDefault();
                         setActive(2);
                       }}
-                      className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
+                      className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-[3.2rem] font-medium"
                     >
                       <PlusCircle size={22} />
                       <p>Track</p>
@@ -559,7 +561,7 @@ export function AddSession({
                                   placeholder=""
                                   type="text"
                                   {...form.register("sessionVenue")}
-                                  className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                                  className="placeholder:text-sm h-11 text-gray-700 accent-basePrimary"
                                 />
                               </InputOffsetLabel>
                             )}
@@ -578,7 +580,7 @@ export function AddSession({
                                   placeholder=""
                                   type="text"
                                   {...form.register("sessionUrl")}
-                                  className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                                  className="placeholder:text-sm h-11 text-gray-700"
                                 />
                               </InputOffsetLabel>
                             )}
@@ -590,12 +592,14 @@ export function AddSession({
                     control={form.control}
                     name="sessionSpeakers"
                     render={({ field }) => (
-                      <ReactSelect
+                     <InputOffsetLabel label="Speaker">
+                       <ReactSelect
                         {...form.register("sessionSpeakers")}
                         placeHolder="Select Speaker"
                         label="Speaker"
                         options={formattedAttendees}
                       />
+                     </InputOffsetLabel>
                     )}
                   />
 
@@ -628,12 +632,14 @@ export function AddSession({
                     control={form.control}
                     name="sessionModerators"
                     render={({ field }) => (
-                      <ReactSelect
+                     <InputOffsetLabel label="Moderator">
+                       <ReactSelect
                         {...form.register("sessionModerators")}
                         placeHolder="Select Moderator"
-                        label="Moderator"
+                        
                         options={formattedAttendees}
                       />
+                     </InputOffsetLabel>
                     )}
                   />
                   <div className="w-full grid grid-cols-2 items-center gap-4">
@@ -665,12 +671,14 @@ export function AddSession({
                     control={form.control}
                     name="sessionSponsors"
                     render={({ field }) => (
-                      <ReactSelect
+                     <InputOffsetLabel label="Sponsor">
+                       <ReactSelect
                         {...form.register("sessionSponsors")}
                         placeHolder="Select Sponsor"
-                        label="Sponsor"
+                      
                         options={sponsors}
                       />
+                     </InputOffsetLabel>
                     )}
                   />
                   <p className="w-full text-xs col-span-full text-gray-500">
@@ -700,7 +708,7 @@ export function AddSession({
                           accept="application/pdf"
                           placeholder="File"
                           {...form.register("sessionFiles")}
-                          className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                          className=" placeholder:text-sm h-12  text-gray-700"
                         />
                       </InputOffsetLabel>
                     )}

@@ -289,7 +289,8 @@ await update(payload)
               control={form.control}
               name="partnerType"
               render={({ field }) => (
-                <ReactSelect
+               <InputOffsetLabel label="Partner Type">
+                 <ReactSelect
                   {...form.register("partnerType")}
                   placeHolder="Enter the Employment Type"
                   defaultValue={
@@ -306,15 +307,17 @@ await update(payload)
                     { label: "Exhibitor", value: "Exhibitor" },
                   ]}
                 />
+               </InputOffsetLabel>
               )}
             />
             {form.watch("partnerType") === "Sponsor" && (
-              <div className="w-full flex items-center gap-x-2">
+              <div className="w-full flex items-end gap-x-2">
                 <FormField
                   control={form.control}
                   name="sponsorCategory"
                   render={({ field }) => (
-                    <ReactSelect
+                   <InputOffsetLabel label="Category">
+                     <ReactSelect
                       {...form.register("sponsorCategory")}
                       placeHolder="Select Sponsor Category"
                       defaultValue={
@@ -328,6 +331,7 @@ await update(payload)
                       label="Sponsor Category"
                       options={formattedSponsorCategoryList || []}
                     />
+                   </InputOffsetLabel>
                   )}
                 />
                 <Button
@@ -336,7 +340,7 @@ await update(payload)
                     e.preventDefault();
                     setActive(3);
                   }}
-                  className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
+                  className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-[3.2rem] font-medium"
                 >
                   <PlusCircle size={22} />
                   <p>Category</p>
@@ -353,7 +357,7 @@ await update(payload)
                     type="text"
                     placeholder="Enter the Company Name"
                     {...form.register("companyName")}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-11 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -363,21 +367,14 @@ await update(payload)
                 control={form.control}
                 name="phoneNumber"
                 render={({ field }) => (
-                  <FormItem className="relative h-fit">
-                    <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                      Phone number
-                    </FormLabel>
-
-                    <FormControl>
-                      <Input
-                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 px-4"
+              <InputOffsetLabel label="Phone Number">
+                 <Input
+                        className="placeholder:text-sm h-11 text-gray-700 px-4"
                         placeholder="Enter Phone Number"
                         {...form.register("phoneNumber")}
                         type="tel"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+              </InputOffsetLabel>
                 )}
               />
 
@@ -385,21 +382,14 @@ await update(payload)
                 control={form.control}
                 name="whatsApp"
                 render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-[10px] px-1">
-                      WhatsApp number
-                    </FormLabel>
-
-                    <FormControl>
-                      <Input
-                        className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 px-4"
+                <InputOffsetLabel label="WhatsApp">
+                   <Input
+                        className="placeholder:text-sm h-11 text-gray-700 px-4"
                         placeholder="Enter Whatsapp Number"
                         {...form.register("whatsApp")}
                         type="tel"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                </InputOffsetLabel>
                 )}
               />
             </div>
@@ -412,7 +402,7 @@ await update(payload)
                     type="text"
                     placeholder="Enter the Email Address"
                     {...form.register("email")}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-11 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -429,7 +419,7 @@ await update(payload)
                   accept="image/*"
                   placeholder="File"
                   {...form.register("companyLogo")}
-                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                  className=" placeholder:text-sm h-11 text-gray-700"
                 />
               </InputOffsetLabel>
 
@@ -454,7 +444,7 @@ await update(payload)
                   accept="video/*"
                   placeholder="File"
                   {...form.register("media")}
-                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                  className=" placeholder:text-sm h-11 text-gray-700"
                 />
               </InputOffsetLabel>
 
@@ -482,7 +472,7 @@ await update(payload)
                   <Textarea
                     placeholder="Enter the Description"
                     {...form.register("description")}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm  focus:border-gray-500 placeholder:text-gray-400 text-gray-700"
                   ></Textarea>
                 </InputOffsetLabel>
               )}
@@ -491,12 +481,14 @@ await update(payload)
               control={form.control}
               name="boothStaff"
               render={({ field }) => (
-                <ReactSelect
+               <InputOffsetLabel label="Booth Staff">
+                 <ReactSelect
                   {...field}
                   placeHolder="Select the Booth Staff"
-                  label="Booth Staff"
+                 
                   options={attendeeOptions}
                 />
+               </InputOffsetLabel>
               )}
             />
 
@@ -524,12 +516,13 @@ await update(payload)
                   )
                 )}
             </div>
-            <div className="w-full flex items-center gap-x-2">
+            <div className="w-full flex items-end gap-x-2">
               <FormField
                 control={form.control}
                 name="industry"
                 render={({ field }) => (
-                  <ReactSelect
+               <InputOffsetLabel label="Industry">
+                   <ReactSelect
                     {...form.register("industry")}
                     defaultValue={
                       partner
@@ -540,9 +533,10 @@ await update(payload)
                         : ""
                     }
                     placeHolder="Select Industry"
-                    label="Industry"
+                  
                     options={formattedIndustriesList || []}
                   />
+               </InputOffsetLabel>
                 )}
               />
               <Button
@@ -551,7 +545,7 @@ await update(payload)
                   e.preventDefault();
                   setActive(2);
                 }}
-                className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
+                className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-[3.2rem] font-medium"
               >
                 <PlusCircle size={22} />
                 <p>Industry</p>
@@ -568,7 +562,7 @@ await update(payload)
                       type="text"
                       placeholder="Enter City"
                       {...form.register("city")}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      className=" placeholder:text-sm h-11 text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -578,7 +572,8 @@ await update(payload)
                 control={form.control}
                 name="country"
                 render={({ field }) => (
-                  <ReactSelect
+                 <InputOffsetLabel label="Country">
+                   <ReactSelect
                     {...form.register("country")}
                     defaultValue={
                       partner
@@ -589,9 +584,10 @@ await update(payload)
                         : ""
                     }
                     placeHolder="Select the Country"
-                    label="Country"
+                  
                     options={countriesList}
                   />
+                 </InputOffsetLabel>
                 )}
               />
             </div>
@@ -605,7 +601,7 @@ await update(payload)
                     type="text"
                     placeholder="Enter the Website"
                     {...form.register("website")}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-11 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}

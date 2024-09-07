@@ -216,7 +216,7 @@ export default function CreateEvent() {
                       </InputOffsetLabel>
                     )}
                   />
-                  <div className="w-full flex items-center gap-x-2">
+                  <div className="w-full flex items-end gap-x-2">
                     <FormField
                       control={form.control}
                       name="organisationId"
@@ -237,7 +237,7 @@ export default function CreateEvent() {
                         e.preventDefault();
                         onClose();
                       }}
-                      className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-12  font-medium"
+                      className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-[3.2rem]  font-medium"
                     >
                       <PlusCircle size={22} />
                       <p>Workspace</p>
