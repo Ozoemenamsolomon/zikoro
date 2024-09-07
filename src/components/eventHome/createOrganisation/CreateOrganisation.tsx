@@ -595,7 +595,7 @@ export function CreateOrganization({
                 </Button>
               </div>
 
-              <Button className="w-full h-11 gap-x-2 bg-basePrimary text-white font-medium">
+              <Button className="w-full h-12 gap-x-2 bg-basePrimary text-white font-medium">
                 {loading && <LoaderAlt size={20} className="animate-spin" />}
                 <p>Create</p>
               </Button>

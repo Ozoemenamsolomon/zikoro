@@ -226,6 +226,7 @@ export default function CreateEvent() {
                             {...field}
                             placeHolder="Select a Workspace"
                             options={formattedList}
+
                           />
                         </InputOffsetLabel>
                       )}
@@ -236,7 +237,7 @@ export default function CreateEvent() {
                         e.preventDefault();
                         onClose();
                       }}
-                      className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11  font-medium"
+                      className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-12  font-medium"
                     >
                       <PlusCircle size={22} />
                       <p>Workspace</p>

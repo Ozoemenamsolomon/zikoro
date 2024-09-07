@@ -1,6 +1,7 @@
 "use client";
 
 import Select from "react-select";
+import {cn} from "@/lib"
 import * as React from "react";
 import {
   UseControllerProps,
@@ -57,7 +58,7 @@ export const ReactSelect = React.forwardRef<
           {label}
         </label>
       )} */}
-     <div className="w-full h-[3rem]">
+     <div className={cn("w-full h-[2.75rem]", height)}>
      <Select
         defaultValue={defaultValue}
         placeholder={placeHolder}

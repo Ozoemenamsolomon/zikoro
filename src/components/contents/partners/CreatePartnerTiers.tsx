@@ -31,6 +31,7 @@ import { partnerTierSchema } from "@/schemas";
 import { useUpdateEvent, useFetchSingleEvent } from "@/hooks";
 import {useEffect} from "react"
 import { nanoid } from "nanoid";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 const colors = [
   "#4D4D4D",
@@ -222,10 +223,8 @@ function SingleTier({
           control={form.control}
           name={`partnerTier.${id}.partnerType` as const}
           render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Partner Type</FormLabel>
-              <FormControl>
-                <ReactSelect
+            <InputOffsetLabel label="Partner Type">
+              <ReactSelect
                   {...form.register(`partnerTier.${id}.partnerType` as const)}
                   options={[
                     { value: "exhibitor", label: "Exhibitor" },
@@ -235,66 +234,52 @@ function SingleTier({
                   borderColor="#001fcc"
                   bgColor="#001fcc1a"
                   height="3rem"
-                  placeHolderColor="#64748b"
+                 
                   placeHolder="Select Partner Type"
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+            </InputOffsetLabel>
           )}
         />
         <FormField
           control={form.control}
           name={`partnerTier.${id}.tierName` as const}
           render={({ field }) => (
-            <FormItem className="w-full md:col-span-2">
-              <FormLabel>Tier Name</FormLabel>
-              <FormControl>
-                <Input
+         <InputOffsetLabel label="Tier Name">
+            <Input
                   type="text"
                   placeholder="Tier Name"
                   {...field}
-                  className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                  className="placeholder:text-sm h-11 text-zinc-700"
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+         </InputOffsetLabel>
           )}
         />
         <FormField
           control={form.control}
           name={`partnerTier.${id}.quantity` as const}
           render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Quantity</FormLabel>
-              <FormControl>
-                <Input
+            <InputOffsetLabel label="Quantity">
+               <Input
                   type="number"
                   placeholder="0"
                   {...field}
-                  className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                  className="placeholder:text-sm h-11 text-zinc-700"
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+            </InputOffsetLabel>
           )}
         />
         <FormField
           control={form.control}
           name={`partnerTier.${id}.price` as const}
           render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Price</FormLabel>
-              <FormControl>
+            <InputOffsetLabel label="Price">
                 <Input
                   type="number"
                   placeholder="200"
                   {...field}
-                  className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                  className="placeholder:text-sm h-11 text-zinc-700"
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+            </InputOffsetLabel>
           )}
         />
 
@@ -302,10 +287,8 @@ function SingleTier({
           control={form.control}
           name={`partnerTier.${id}.currency` as const}
           render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Currency</FormLabel>
-              <FormControl>
-                <ReactSelect
+           <InputOffsetLabel label="Currency">
+             <ReactSelect
                   {...form.register(`partnerTier.${id}.currency` as const)}
                   options={currencies.map((v) => {
                     return { value: v, label: v };
@@ -314,22 +297,18 @@ function SingleTier({
                   borderColor="#001fcc"
                   bgColor="#001fcc1a"
                   height="3rem"
-                  placeHolderColor="#64748b"
+                  //placeHolderColor="#64748b"
                   placeHolder="Select Currency"
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+           </InputOffsetLabel>
           )}
         />
         <FormField
           control={form.control}
           name={`partnerTier.${id}.validity` as const}
           render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Validity Date</FormLabel>
-              <FormControl>
-                <div
+           <InputOffsetLabel label="Validity Date">
+             <div
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
@@ -344,7 +323,7 @@ function SingleTier({
                     type="text"
                     placeholder="validity"
                     {...form.register(`partnerTier.${id}.validity` as const)}
-                    className="placeholder:text-sm h-12 pl-10 pr-4 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                    className="placeholder:text-sm h-11 pl-10 pr-4 text-zinc-700"
                   />
                   {isOpen && (
                     <SelectDate
@@ -356,19 +335,15 @@ function SingleTier({
                     />
                   )}
                 </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+           </InputOffsetLabel>
           )}
         />
         <FormField
           control={form.control}
           name={`partnerTier.${id}.color` as const}
           render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Tier Color</FormLabel>
-              <FormControl>
-                <div className="w-full relative h-12">
+           <InputOffsetLabel label="Color">
+               <div className="w-full relative h-12">
                   <div
                     onClick={(e) => {
                       e.stopPropagation();
@@ -395,12 +370,10 @@ function SingleTier({
                     placeholder="#001FFC"
                     readOnly
                     {...form.register(`partnerTier.${id}.color` as const)}
-                    className="placeholder:text-sm  pl-12 pr-4 h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                    className="placeholder:text-sm  pl-12 pr-4 h-11 text-zinc-700"
                   />
                 </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+           </InputOffsetLabel>
           )}
         />
         <div className="w-full col-span-full">
