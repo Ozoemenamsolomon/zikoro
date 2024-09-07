@@ -211,7 +211,6 @@ export default function SubscriptionPaymentModal({
     fetchAllCouponCodes();
   }, []);
 
-  console.log(user);
 
   return (
     <div className="w-full h-full fixed z-[100] inset-0 bg-black/50 overflow-y-auto ">

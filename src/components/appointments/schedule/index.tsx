@@ -9,7 +9,7 @@ import Empty from './Empty'
 const LinksPage = () => {
     
     const {appointments,isLoading,error} = useGetAppointments()
-    console.log({appointments,error,isLoading})
+    // console.log({appointments,error,isLoading})
     
   return (
     <main className='w-full'>
