@@ -2,7 +2,7 @@
 
 import { Event } from "@/types";
 import { HeroLayout, } from "..";
-import { SingleEvent } from "../singleEvent/SingleEvent";
+import {SingleEvent}from "../singleEvent/SingleLiveEvent"
 import { useState, useEffect } from "react";
 import { useEventFilterHook } from "@/context/EventFilterContext";
 import { EmptyCard } from "@/components/composables";

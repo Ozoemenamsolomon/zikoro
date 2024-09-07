@@ -6,7 +6,7 @@ import { Footer } from "@/components";
 import { useFetchSingleEvent, useFetchSingleOrganization } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { usePathname, useSearchParams } from "next/navigation";
-import { SingleEvent } from "./singleEvent/SingleEvent";
+import { SingleEvent } from "./singleEvent/SingleLiveEvent";
 import { useEffect } from "react";
 
 export default function SinglePublishedEvent({ id }: { id: string }) {
@@ -46,6 +46,7 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
             }
             className="w-full bg-none  shadow-none"
           />
+          <p>wdwjqdwqjkdbqwdwqkdnwq</p>
          
 
           <div className=" ">
