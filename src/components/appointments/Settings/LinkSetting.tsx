@@ -27,11 +27,11 @@ export default function LinkSetting() {
 
 export function CardWithForm() {
   return (
-    <div className="w-full border rounded-md bg-base p-6 pr-3">
+    <div className="w-full border rounded-md bg-baseBg p-6 pr-3">
       <div className="flex gap-2 items-center ">
         <form className="w-full space-y-4">
-            <Input id="linktitle" placeholder="Link Title" className="bg-base focus-within:bg-base focus:bg-base focus:outline-none focus:ring-0" />
-            <Input id="linkurl" placeholder="Link Url" className="bg-base focus-within:bg-base focus:bg-base focus:outline-none focus:ring-0"/>
+            <Input id="linktitle" placeholder="Link Title" className="bg-baseBg focus-within:bg-baseBg focus:bg-baseBg focus:outline-none focus:ring-0" />
+            <Input id="linkurl" placeholder="Link Url" className="bg-baseBg focus-within:bg-baseBg focus:bg-baseBg focus:outline-none focus:ring-0"/>
             {/* <div className="flex flex-col space-y-1.5">
               <Label htmlFor="framework">Framework</Label>
               <Select>

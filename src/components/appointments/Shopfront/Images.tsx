@@ -8,7 +8,7 @@ const StoreFrontImages = () => {
         {
             [...Array(9)].map((_,idx)=>{
                 return (
-                <div key={idx} className="bg-base w-full sm:w-72 border  p-3 space-y-2 hover:ring-2 hover:ring-gray-300 duration-200 rounded-md">
+                <div key={idx} className="bg-baseBg w-full sm:w-72 border  p-3 space-y-2 hover:ring-2 hover:ring-gray-300 duration-200 rounded-md">
                     <div className="w-full h-72 overflow-hidden rounded-md">
                         <Image src={'/sampl.png'} alt='service-img' width={500} height={500} className='w-full h-full object-cover'/>
                     </div>
