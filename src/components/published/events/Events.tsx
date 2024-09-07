@@ -1,7 +1,8 @@
 "use client";
 
 import { Event } from "@/types";
-import { HeroLayout, SingleEvent } from "..";
+import { HeroLayout, } from "..";
+import { SingleEvent } from "../singleEvent/SingleEvent";
 import { useState, useEffect } from "react";
 import { useEventFilterHook } from "@/context/EventFilterContext";
 import { EmptyCard } from "@/components/composables";

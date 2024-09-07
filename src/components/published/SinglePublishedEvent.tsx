@@ -6,7 +6,7 @@ import { Footer } from "@/components";
 import { useFetchSingleEvent, useFetchSingleOrganization } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { usePathname, useSearchParams } from "next/navigation";
-import { SingleEvent } from "@/components/published";
+import { SingleEvent } from "./singleEvent/SingleEvent";
 import { useEffect } from "react";
 
 export default function SinglePublishedEvent({ id }: { id: string }) {
