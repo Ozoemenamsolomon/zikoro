@@ -199,7 +199,7 @@ export function BookEvent({
   const pricingArray = useMemo(() => {
     if (Array.isArray(event?.pricing)) {
       return event?.pricing?.map(
-        ({ price, validity, ticketQuantity, attendeeType, description }) => {
+        ({ price, validity, ticketQuantity, attendeeType, description, accessibility }) => {
           let discountPrice = 0;
           if (!price || Number(price) === 0) {
             discountPrice = 0;
@@ -223,6 +223,7 @@ export function BookEvent({
                   100
                 : 0,
             attendeeType,
+            accessibility,
           };
         }
       );
@@ -575,7 +576,7 @@ export function BookEvent({
                             disabled={isDateGreaterThanToday(v?.validity)}
                             className={cn(
                               "flex flex-col group relative rounded-lg mt-3 items-start justify-between  border p-4 h-[7.5rem] w-full",
-                              isDateGreaterThanToday(v?.validity)
+                              isDateGreaterThanToday(v?.validity) 
                                 ? ""
                                 : "hover:border-basePrimary border-gray-300"
                             )}
@@ -589,8 +590,8 @@ export function BookEvent({
                               >{`${v?.discountPercentage.toFixed(0)}%`}</p>
                             ) : null}
 
-                            {isDateGreaterThanToday(v?.validity) && (
-                              <div className="w-full h-full absolute inset-0 bg-white/50"></div>
+                            {isDateGreaterThanToday(v?.validity) || !v?.accessibility && (
+                              <div className="w-full h-full absolute z-20 inset-0 bg-white/50"></div>
                             )}
                             <div className="flex items-center justify-between w-full">
                               <div className="flex flex-col items-start justify-start">

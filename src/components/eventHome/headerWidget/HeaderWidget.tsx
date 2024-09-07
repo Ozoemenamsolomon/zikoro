@@ -4,7 +4,8 @@ import { useGetUserOrganizations, saveCookie, getCookie } from "@/hooks";
 import { PlusCircle } from "styled-icons/bootstrap";
 import { useState, useMemo, useEffect } from "react";
 import { OrganizationIcon } from "@/constants";
-import { Button, Form, ReactSelect } from "@/components";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
+import { Button, Form, ReactSelect, FormField } from "@/components";
 import { CreateOrganization } from "..";
 import { useParams, useRouter } from "next/navigation";
 import _ from "lodash";
@@ -98,7 +99,14 @@ export function HeaderWidget({
               //  onSubmit={form.handleSubmit(showOrganizationEvents)}
             >
               {Array.isArray(formattedList) && formattedList?.length > 0 && (
-                <ReactSelect
+               <FormField
+               control={form.control}
+               name="org"
+               render={({field}) => (
+               <InputOffsetLabel
+              label=''
+               >
+                 <ReactSelect
                   {...form.register("org")}
                   defaultValue={
                     currentQuery
@@ -115,6 +123,9 @@ export function HeaderWidget({
                   placeHolderColor="#64748b"
                   placeHolder="Select Organization"
                 />
+               </InputOffsetLabel>
+               )}
+               />
               )}
             </form>
           </Form>
