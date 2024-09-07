@@ -46,7 +46,7 @@ export default function CreateEvent() {
   const [isStartDate, setStartDate] = useState(false);
   const [isEndDate, setEndDate] = useState(false);
   const { user: userData } = useUserStore();
-  const {setOrganization} = useOrganizationStore();
+  const { setOrganization } = useOrganizationStore();
 
   const router = useRouter();
   const { organizations: organizationList, getOrganizations } =
@@ -65,8 +65,8 @@ export default function CreateEvent() {
   const endDate = form.watch("endDateTime");
 
   const minimumDate = useMemo(() => {
-      return parseFormattedDate(startDate)
-  },[startDate])
+    return parseFormattedDate(startDate);
+  }, [startDate]);
   function formatDate(date: Date): string {
     return date.toISOString();
   }
@@ -80,7 +80,6 @@ export default function CreateEvent() {
   }, [organizationList]);
 
   async function onSubmit(values: z.infer<typeof newEventSchema>) {
-   
     const today = new Date();
 
     const newPromise = new Promise(async (resolve) => {
@@ -95,7 +94,9 @@ export default function CreateEvent() {
     });
     const eventImage: any = await newPromise;
 
-    const org = organizationList.find((og: any) => String(og.id )=== values.organisationId);
+    const org = organizationList.find(
+      (og: any) => String(og.id) === values.organisationId
+    );
     setOrganization(org!);
 
     const eventAlias = generateAlias();
@@ -180,7 +181,7 @@ export default function CreateEvent() {
                     )}
                     <label
                       htmlFor="eventImageUpload"
-                      className="relative bg-white/50 flex z-20 items-center gap-x-2 w-full px-4  rounded-md outline-none border border-white h-12"
+                      className="relative bg-white/50 flex z-20 items-center gap-x-2 w-full px-4  rounded-md outline-none border border-white h-11"
                     >
                       <div className="bg-basePrimary  rounded-full text-white flex items-center justify-center h-9 w-9">
                         <div className="w-full h-full bg-white/40 absolute inset-0"></div>
@@ -210,7 +211,7 @@ export default function CreateEvent() {
                           type="text"
                           placeholder="Enter the event title"
                           {...field}
-                          className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                          className=" placeholder:text-sm h-11 text-gray-700"
                         />
                       </InputOffsetLabel>
                     )}
@@ -220,15 +221,13 @@ export default function CreateEvent() {
                       control={form.control}
                       name="organisationId"
                       render={({ field }) => (
-                        <FormItem className="w-full relative">
+                        <InputOffsetLabel label="Organization">
                           <ReactSelect
                             {...field}
                             placeHolder="Select a Workspace"
-                            label="Workspace"
                             options={formattedList}
                           />
-                          <FormMessage />
-                        </FormItem>
+                        </InputOffsetLabel>
                       )}
                     />
                     <Button
@@ -237,7 +236,7 @@ export default function CreateEvent() {
                         e.preventDefault();
                         onClose();
                       }}
-                      className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
+                      className="hover:bg-basePrimary  text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11  font-medium"
                     >
                       <PlusCircle size={22} />
                       <p>Workspace</p>
@@ -253,11 +252,11 @@ export default function CreateEvent() {
                           <div
                             onClick={(e) => {
                               e.stopPropagation();
-                              e.preventDefault()
-                              setStartDate((prev) => !prev)
+                              e.preventDefault();
+                              setStartDate((prev) => !prev);
                             }}
                             role="button"
-                            className="w-full relative h-12"
+                            className="w-full relative h-11"
                           >
                             <button className="absolute left-3 top-[0.6rem]">
                               <DateRange size={22} className="text-gray-600" />
@@ -266,7 +265,7 @@ export default function CreateEvent() {
                               placeholder=" Start Date Time"
                               type="text"
                               {...form.register("startDateTime")}
-                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                              className="placeholder:text-sm pl-10 pr-4 h-11 inline-block  text-gray-700 accent-basePrimary"
                             />
                             {isStartDate && (
                               <SelectDate
@@ -289,11 +288,11 @@ export default function CreateEvent() {
                           <div
                             onClick={(e) => {
                               e.stopPropagation();
-                              e.preventDefault()
-                              setEndDate((prev) => !prev)
+                              e.preventDefault();
+                              setEndDate((prev) => !prev);
                             }}
                             role="button"
-                            className="w-full relative h-12"
+                            className="w-full relative h-11"
                           >
                             <button className="absolute left-3 top-[0.6rem]">
                               <DateRange size={22} className="text-gray-600" />
@@ -302,7 +301,7 @@ export default function CreateEvent() {
                               placeholder="End Date Time"
                               type="text"
                               {...form.register("endDateTime")}
-                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                              className="placeholder:text-sm pl-10 pr-4 h-11 inline-block  text-gray-700 accent-basePrimary"
                             />
                             {/** */}
                             {isEndDate && (
@@ -329,28 +328,26 @@ export default function CreateEvent() {
                           type="number"
                           placeholder="Enter the number of expected participants"
                           {...field}
-                          className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                          className=" placeholder:text-sm h-11  text-gray-700"
                         />
                       </InputOffsetLabel>
                     )}
                   />
-                           <FormField
+                  <FormField
                     control={form.control}
                     name="locationType"
                     render={({ field }) => (
-                      <FormItem className="w-full relative">
+                      <InputOffsetLabel label="Location Type">
                         <ReactSelect
                           {...field}
                           placeHolder="Select the Location Type"
-                          label="Location Type"
                           options={[
                             { value: "Hybrid", label: "Hybrid" },
                             { value: "Onsite", label: "Onsite" },
                             { value: "Virtual", label: "Virtual" },
                           ]}
                         />
-                        <FormMessage />
-                      </FormItem>
+                      </InputOffsetLabel>
                     )}
                   />
                   <FormField
@@ -362,7 +359,7 @@ export default function CreateEvent() {
                           type="text"
                           placeholder="Enter Event Address"
                           {...field}
-                          className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                          className=" placeholder:text-sm h-11  text-gray-700"
                         />
                       </InputOffsetLabel>
                     )}
@@ -377,7 +374,7 @@ export default function CreateEvent() {
                             type="text"
                             placeholder="Enter City"
                             {...field}
-                            className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                            className=" placeholder:text-sm h-11  text-gray-700"
                           />
                         </InputOffsetLabel>
                       )}
@@ -387,24 +384,20 @@ export default function CreateEvent() {
                       control={form.control}
                       name="eventCountry"
                       render={({ field }) => (
-                        <FormItem className="w-full relative">
+                        <InputOffsetLabel label="Event Country">
                           <ReactSelect
                             {...field}
                             placeHolder="Select the Country"
-                            label="Event Country"
                             options={countriesList}
                           />
-                          <FormMessage />
-                        </FormItem>
+                        </InputOffsetLabel>
                       )}
                     />
                   </div>
 
-         
-
                   <Button
                     disabled={loading}
-                    className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-basePrimary h-12 rounded-md text-gray-50 font-medium"
+                    className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-basePrimary h-11 rounded-md text-gray-50 font-medium"
                   >
                     {loading && (
                       <LoaderAlt size={22} className="animate-spin" />
@@ -431,13 +424,13 @@ function SelectDate({
   close,
   name,
   value,
-  minimumDate
+  minimumDate,
 }: {
   form: UseFormReturn<z.infer<typeof newEventSchema>, any, any>;
   close: () => void;
   className?: string;
   name: any;
-  minimumDate?:Date
+  minimumDate?: Date;
   value: string;
 }) {
   const selectedDate = useMemo(() => {
@@ -447,7 +440,7 @@ function SelectDate({
     <div
       onClick={(e) => {
         e.stopPropagation();
-        e.preventDefault()
+        e.preventDefault();
       }}
       className={cn(
         "absolute left-0 sm:-left-24 md:left-[-8rem] top-[3.2rem]",
@@ -455,10 +448,10 @@ function SelectDate({
       )}
     >
       <button
-         onClick={(e) => {
+        onClick={(e) => {
           e.stopPropagation();
-          e.preventDefault()
-          close()
+          e.preventDefault();
+          close();
         }}
         className="w-full h-full inset-0 fixed z-20"
       ></button>
