@@ -470,7 +470,7 @@ function CurrencyDropDown({
         e.preventDefault();
         setOpen((prev) => !prev);
       }}
-      className="absolute left-2 top-[0.6rem] bg-transparent text-mobile flex items-center gap-x-1"
+      className="absolute left-2 top-[0.7rem] bg-transparent text-mobile flex items-center gap-x-1"
     >
       <p>{currencyCode}</p>
 

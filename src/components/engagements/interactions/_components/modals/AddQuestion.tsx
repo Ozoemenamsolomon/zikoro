@@ -270,9 +270,8 @@ export function AddQuestion({
                 control={form.control}
                 name="duration"
                 render={({ field }) => (
-                  <FormItem className="relative w-full h-fit">
-                    <FormControl>
-                      <ReactSelect
+                 <InputOffsetLabel label="Duration">
+                  <ReactSelect
                         defaultValue={
                           question
                             ? duration?.find(
@@ -283,11 +282,9 @@ export function AddQuestion({
                         placeHolder="Select duration"
                         options={duration}
                         {...form.register("duration")}
-                        label="Duration"
+                        
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                 </InputOffsetLabel>
                 )}
               />
             )}
@@ -296,9 +293,8 @@ export function AddQuestion({
                 control={form.control}
                 name="points"
                 render={({ field }) => (
-                  <FormItem className="relative w-full h-fit">
-                    <FormControl>
-                      <ReactSelect
+                 <InputOffsetLabel label="Points">
+                    <ReactSelect
                         defaultValue={
                           question
                             ? points?.find(
@@ -309,11 +305,9 @@ export function AddQuestion({
                         placeHolder="Select points"
                         options={points}
                         {...form.register("points")}
-                        label="Points"
+                      
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                 </InputOffsetLabel>
                 )}
               />
             )}

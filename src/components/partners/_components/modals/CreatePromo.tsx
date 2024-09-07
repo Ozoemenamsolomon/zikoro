@@ -170,7 +170,7 @@ export function CreatePromo({
                   accept="image/*"
                   placeholder="File"
                   {...form.register("productImage")}
-                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                  className=" placeholder:text-sm h-11  text-gray-700"
                 />
               </InputOffsetLabel>
 
@@ -191,7 +191,7 @@ export function CreatePromo({
                     type="text"
                     placeholder="Enter the Product Title"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-11 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -205,7 +205,7 @@ export function CreatePromo({
                     type="date"
                     placeholder="Enter the Job Title"
                     {...field}
-                    className="inline-flex placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className="inline-flex placeholder:text-sm h-11 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -214,48 +214,44 @@ export function CreatePromo({
               control={form.control}
               name="productPrice"
               render={({ field }) => (
-                <FormItem className="relative w-full h-fit">
-                  <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                    Actual Price
-                  </FormLabel>
-                  <CurrencyDropDown
+               <InputOffsetLabel label="Product Price">
+                <div className="w-full relative h-11">
+                <CurrencyDropDown
                     currencyCode={currencyCode}
                     setcurrencyCode={setcurrencyCode}
                   />
-                  <FormControl>
+                
                     <Input
-                      className="h-12 placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-16"
+                      className="h-11 placeholder:text-sm  text-gray-700 pl-16"
                       placeholder="Actual Price"
                       {...field}
                       type="number"
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                </div>
+                
+               </InputOffsetLabel>
               )}
             />
             <FormField
               control={form.control}
               name="productPromo"
               render={({ field }) => (
-                <FormItem className="relative w-full h-fit">
-                  <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                    Promo Price
-                  </FormLabel>
-                  <CurrencyDropDown
+                <InputOffsetLabel label="Promo Price">
+                   <div className="w-full relative h-11">
+                   <CurrencyDropDown
                     currencyCode={currencyCode}
                     setcurrencyCode={setcurrencyCode}
                   />
-                  <FormControl>
+                 
                     <Input
-                      className="h-12 placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-16"
+                      className="h-11 placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-16"
                       placeholder="Promo Price"
                       {...field}
                       type="number"
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                   </div>
+              
+                </InputOffsetLabel>
               )}
             />
 
@@ -267,7 +263,7 @@ export function CreatePromo({
                   <Textarea
                     placeholder="Enter the Description"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm  placeholder:text-gray-400 text-gray-700"
                   ></Textarea>
                 </InputOffsetLabel>
               )}
@@ -282,7 +278,7 @@ export function CreatePromo({
                     type="text"
                     placeholder="Enter the Application Link"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-11 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -322,7 +318,7 @@ export function CreatePromo({
                     <Input
                       placeholder="Enter Product Url"
                       {...field}
-                      className="placeholder:text-sm h-12 w-full focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      className="placeholder:text-sm h-11 w-full  text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -338,7 +334,7 @@ export function CreatePromo({
                       placeholder="Enter Whatsapp Number"
                       type="tel"
                       {...field}
-                      className="placeholder:text-sm h-12 w-full focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      className="placeholder:text-sm h-11 w-full  text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -354,7 +350,7 @@ export function CreatePromo({
                       placeholder="Enter Email Address"
                       type="email"
                       {...field}
-                      className="placeholder:text-sm h-12 w-full focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      className="placeholder:text-sm h-11 w-full  text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -390,7 +386,7 @@ function CurrencyDropDown({
         e.preventDefault();
         setOpen((prev) => !prev);
       }}
-      className="absolute left-2 top-[0.8rem] text-mobile flex items-center gap-x-1"
+      className="absolute left-2 top-[0.7rem] text-mobile flex items-center gap-x-1"
     >
       <p>{currencyCode}</p>
 
