@@ -192,8 +192,8 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
       error.maxBooking = 'Max Booking must be a positive number';
     }
     
-    if (data?.sessionBreak === null || data?.sessionBreak <= 0 || !/^\d+$/.test(data.sessionBreak.toString())) {
-      error.sessionBreak = 'Session Break must be a positive number';
+    if (data?.sessionBreak === null || data?.sessionBreak < 0 || !/^\d+$/.test(data.sessionBreak.toString())) {
+      error.sessionBreak = 'Session Break is required';
     }
 
     if (data.isPaidAppointment && data?.amount && data?.amount <= 0  ) {
