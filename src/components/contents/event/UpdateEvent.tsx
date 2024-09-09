@@ -146,7 +146,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
           ? data?.pricing?.map((p) => {
               return {
                 ...p,
-                accessibility: p?.accessibility ? p?.accessibility : true,
+                accessibility: p?.accessibility !== null ? p?.accessibility : true,
               };
             })
           : [
@@ -303,7 +303,9 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   function toggleAccessibility(id: number) {
     const currentValue = form.getValues(`pricing.${id}.accessibility` as const);
     console.log("currentValue", currentValue);
-    form.setValue(`pricing.${id}.accessibility` as const,  !currentValue , { shouldValidate: true });
+    form.setValue(`pricing.${id}.accessibility` as const, !currentValue, {
+      shouldValidate: true,
+    });
   }
 
   return (
@@ -737,11 +739,13 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                         <div className="flex items-center gap-x-2">
                           <p className="">Accessibility:</p>
                           <Switch
-                            checked={form.getValues(`pricing.${id}.accessibility` as const)}
+                            checked={form.getValues(
+                              `pricing.${id}.accessibility` as const
+                            )}
                             onClick={(e) => {
                               e.stopPropagation();
                               e.preventDefault();
-                              toggleAccessibility(id)
+                              toggleAccessibility(id);
                             }}
                             className="data-[state=checked]:bg-basePrimary"
                           />

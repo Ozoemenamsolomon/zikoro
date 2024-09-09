@@ -182,8 +182,8 @@ export function useCreateOrganisation() {
           teamMembers: [
             {
               userId: userData?.id,
-              firstName: userData?.firstName,
-              lastName: userData?.lastName,
+              userFirstName: userData?.firstName,
+              userLastName: userData?.lastName,
               userEmail: userData?.userEmail,
               userRole: "owner",
             },
