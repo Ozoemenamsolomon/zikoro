@@ -7156,3 +7156,26 @@ export function GoogleBlackIcon() {
     </div>
   );
 }
+
+export const BlueCircleIcon = () => <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="15" cy="15" r="13.5" fill="#001FCC" stroke="white" stroke-width="3"/>
+<g clip-path="url(#clip0_1293_7545)">
+<path d="M19.5856 10.414C18.7011 9.52998 17.2626 9.52998 16.3786 10.414L10.5331 16.26L9.8916 20.1085L13.7401 19.467L19.5856 13.6215C20.0141 13.194 20.2501 12.624 20.2501 12.018C20.2501 11.412 20.0141 10.842 19.5856 10.414ZM18.8786 12.914L18.2931 13.5L16.5001 11.707L17.0856 11.121C17.5796 10.627 18.3846 10.627 18.8786 11.121C19.1181 11.3605 19.2501 11.679 19.2501 12.0175C19.2501 12.356 19.1181 12.6745 18.8786 12.914Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip0_1293_7545">
+<rect width="12" height="12" fill="white" transform="translate(9 9)"/>
+</clipPath>
+</defs>
+</svg>
+
+export const DeletIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.3996 3.59961H9.59961V5.99961H14.3996V3.59961Z" fill="#717171" stroke="#717171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M5.1582 9.59961L5.5878 18.1784C5.6826 20.0972 7.263 21.5996 9.183 21.5996H14.817C16.7382 21.5996 18.3174 20.0972 18.4122 18.1784L18.8418 9.59961H5.1582Z" fill="#717171"/>
+<path d="M20.3996 6H3.59961" stroke="#717171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+export const DotsIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.75 2.25H9.75V5.25H6.75V2.25ZM14.25 2.25H17.25V5.25H14.25V2.25ZM6.75 7.75H9.75V10.75H6.75V7.75ZM14.25 7.75H17.25V10.75H14.25V7.75ZM6.75 13.25H9.75V16.25H6.75V13.25ZM14.25 13.25H17.25V16.25H14.25V13.25ZM6.75 18.75H9.75V21.75H6.75V18.75ZM14.25 18.75H17.25V21.75H14.25V18.75Z" fill="#717171"/>
+</svg>

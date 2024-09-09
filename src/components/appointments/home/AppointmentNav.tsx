@@ -13,11 +13,21 @@ const AppointmentNav = () => {
   return (
     <div className="py-6 px-3 md:px-6  ">
       <div className=" bg-white flex items-center  lg:max-w-[970px] xl:max-w-[1165px] py-3 px-3 md:px-6 lg:px-[36px] rounded-[64px] justify-between mx-auto shadow ">
-        <Image src="/appointments/zikoroB.png" width={115} height={40} alt="" />
+      
+        <Image
+          src="/appointments/zikoroB.png"
+          width={115}
+          height={40}
+          alt=""
+          onClick={() => router.push("/bookings")}
+        />
 
         {/* links */}
         <div className="gap-x-8 hidden lg:flex ">
-          <p className="text-base font-medium cursor-pointer">
+          <p
+            className="text-base font-medium cursor-pointer"
+            onClick={() => router.push("/")}
+          >
             Other Products <ChevronDown size={20} />
           </p>
           <p
@@ -54,10 +64,15 @@ const AppointmentNav = () => {
       {isOpen && (
         <div className="bg-violet-100 absolute p-[30px] mt-3 w-full max-w-[92%] lg:hidden rounded-[8px]">
           <ul className="">
-            <li className="font-medium ">
+            <li className="font-medium " onClick={() => router.push("/")}>
               Other Products <ChevronDown size={20} />{" "}
             </li>
-            <li className="mt-5 font-medium ">Contact Us </li>
+            <li
+              className="mt-5 font-medium "
+              onClick={() => router.push("/bookings/contact")}
+            >
+              Contact Us{" "}
+            </li>
           </ul>
 
           <div className=" border-[1px] border-gray-300 rounded-[51px] flex gap-x-4 p-3 mt-[72px] items-center w-fit mx-auto ">

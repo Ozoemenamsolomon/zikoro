@@ -567,12 +567,12 @@ export async function POST(req: NextRequest) {
   
                 Here’s how it works:<br/><br/>
   
-                Sign Up: Join our affiliate program by clicking <a href="${process.env.NEXT_PUBLIC_HOME_URL}/affiliate/signup/success?eventAlias=${eventAlias}&attendeeAlias=${attendee?.attendeeAlias}">here</a>.<br /><br/>
+                Sign Up: Join our affiliate program by clicking <a href="http://www.zikoro.com/affiliate/signup/success?eventAlias=${eventAlias}&attendeeAlias=${attendee?.attendeeAlias}">here</a>.<br /><br/>
                 Share: Spread the word! Share your unique link on social media, email, or any platform of your choice.<br/><br/>
                 Earn: For every person who registers using your link, you’ll earn a 10% commission.<br/>
                 This is not just a chance to earn; it's also an opportunity to help others benefit from [Event Name] just as you will.<br/><br/>
   
-                Ready to get started? Click <a href="${process.env.NEXT_PUBLIC_HOME_URL}/affiliate/signup/success?eventAlias=${eventAlias}&attendeeAlias=${attendee?.attendeeAlias}">here</a><br/><br/>
+                Ready to get started? Click <a href="http://www.zikoro.com/affiliate/signup/success?eventAlias=${eventAlias}&attendeeAlias=${attendee?.attendeeAlias}">here</a><br/><br/>
   
                 Thank you again for registering. We can’t wait to see you at ${event} and hope you’ll take advantage of this exciting opportunity.<br/><br/>
   

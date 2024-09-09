@@ -6,7 +6,6 @@ import {
   Input,
   Button,
   ReactSelect,
-  Textarea,
   FormControl,
   FormItem,
   FormLabel,
@@ -26,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { addPartnerToTierSchema } from "@/schemas";
 import { generateAlphanumericHash } from "@/utils/helpers";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 type TSIngleTier = {
   validity: string;
@@ -265,19 +265,14 @@ const total = useMemo(() => {
                 control={form.control}
                 name="companyName"
                 render={({ field }) => (
-                  <FormItem className="relative w-full h-fit">
-                    <FormLabel>Company Name</FormLabel>
-                    <FormControl>
-                      <Input
+                  <InputOffsetLabel label="Company Name">
+                    <Input
                         type="text"
                         placeholder="Enter the Company Name"
                         {...form.register("companyName")}
-                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                        className="placeholder:text-sm h-11 text-zinc-700"
                       />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
+                  </InputOffsetLabel>
                 )}
               />
 
@@ -285,18 +280,14 @@ const total = useMemo(() => {
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem className="w-full md:col-span-2">
-                    <FormLabel>Email Address</FormLabel>
-                    <FormControl>
-                      <Input
+                <InputOffsetLabel label="Email Address">
+                  <Input
                         type="text"
                         placeholder="Enter the Email Address"
                         {...form.register("email")}
-                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                        className="placeholder:text-sm h-11 text-zinc-700"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                </InputOffsetLabel>
                 )}
               />
 
@@ -305,19 +296,15 @@ const total = useMemo(() => {
                   control={form.control}
                   name="companyLogo"
                   render={({ field }) => (
-                    <FormItem className="w-full md:col-span-2">
-                      <FormLabel>Logo</FormLabel>
-                      <FormControl>
-                        <Input
+                    <InputOffsetLabel label="Logo">
+                       <Input
                           type="file"
                           accept="image/*"
                           placeholder="File"
                           {...form.register("companyLogo")}
-                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                          className="placeholder:text-sm h-11 text-zinc-700"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                    </InputOffsetLabel>
                   )}
                 />
 
@@ -341,18 +328,14 @@ const total = useMemo(() => {
                   control={form.control}
                   name="city"
                   render={({ field }) => (
-                    <FormItem className="w-full md:col-span-2">
-                      <FormLabel>City</FormLabel>
-                      <FormControl>
-                        <Input
+                    <InputOffsetLabel label="City">
+                      <Input
                           type="text"
                           placeholder="Enter City"
                           {...form.register("city")}
-                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                          className="placeholder:text-sm h-11  text-zinc-700"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                    </InputOffsetLabel>
                   )}
                 />
 
@@ -360,21 +343,17 @@ const total = useMemo(() => {
                   control={form.control}
                   name="country"
                   render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>Country</FormLabel>
-                      <FormControl>
-                        <ReactSelect
+                   <InputOffsetLabel label="Country">
+                     <ReactSelect
                           {...form.register("country")}
                           placeHolder="Select the Country"
                           borderColor="#001fcc"
                           bgColor="#001fcc1a"
-                          height="3rem"
-                          placeHolderColor="#64748b"
+                         
+                        
                           options={countriesList}
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                   </InputOffsetLabel>
                   )}
                 />
               </div>
@@ -383,20 +362,15 @@ const total = useMemo(() => {
                   control={form.control}
                   name="phoneNumber"
                   render={({ field }) => (
-                    <FormItem className="w-full relative h-fit">
-                      <FormLabel>Phone number</FormLabel>
-                      <FormControl>
-                        <Input
+                  <InputOffsetLabel label="Phone Number">
+                         <Input
                           placeholder="Enter Phone Number"
                           {...form.register("phoneNumber")}
                           type="tel"
                           {...field}
-                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                          className="placeholder:text-sm h-11 text-zinc-700"
                         />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
+                  </InputOffsetLabel>
                   )}
                 />
 
@@ -404,19 +378,14 @@ const total = useMemo(() => {
                   control={form.control}
                   name="whatsApp"
                   render={({ field }) => (
-                    <FormItem className="w-full relative">
-                      <FormLabel>WhatsApp number</FormLabel>
-
-                      <FormControl>
-                        <Input
-                          className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                   <InputOffsetLabel label="WhatsApp Number">
+                     <Input
+                          className="placeholder:text-sm h-11 text-zinc-700"
                           placeholder="Enter Whatsapp Number"
                           {...form.register("whatsApp")}
                           type="tel"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                   </InputOffsetLabel>
                   )}
                 />
               </div>
@@ -424,38 +393,28 @@ const total = useMemo(() => {
                 control={form.control}
                 name="contactFirstName"
                 render={({ field }) => (
-                  <FormItem className="relative w-full h-fit">
-                    <FormLabel>Contact Person First Name </FormLabel>
-                    <FormControl>
-                      <Input
+                 <InputOffsetLabel label="Contact Person First Name">
+                    <Input
                         type="text"
                         placeholder="Enter First Name"
                         {...form.register("contactFirstName")}
-                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                        className="placeholder:text-sm h-11 text-zinc-700"
                       />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
+                 </InputOffsetLabel>
                 )}
               />
               <FormField
                 control={form.control}
                 name="contactLastName"
                 render={({ field }) => (
-                  <FormItem className="relative w-full h-fit">
-                    <FormLabel>Contact Person Last Name</FormLabel>
-                    <FormControl>
-                      <Input
+                 <InputOffsetLabel label="Contact Person Last Name">
+                   <Input
                         type="text"
                         placeholder="Enter Last Name"
                         {...form.register("contactLastName")}
-                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                        className="placeholder:text-sm h-11 text-zinc-700"
                       />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
+                 </InputOffsetLabel>
                 )}
               />
 
@@ -463,18 +422,14 @@ const total = useMemo(() => {
                 control={form.control}
                 name="website"
                 render={({ field }) => (
-                  <FormItem className="w-full md:col-span-2">
-                    <FormLabel>Website URL</FormLabel>
-                    <FormControl>
-                      <Input
+                  <InputOffsetLabel label="Website URL">
+                     <Input
                         type="text"
                         placeholder="Enter the Website"
                         {...form.register("website")}
-                        className="placeholder:text-sm h-12 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinc-700"
+                        className="placeholder:text-sm h-11 text-zinc-700"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  </InputOffsetLabel>
                 )}
               />
 
@@ -487,12 +442,13 @@ const total = useMemo(() => {
                 >
                   <div className="w-full space-y-1">
                     <div className="w-full flex items-center ">
+                      
                       <input
                         type="text"
                         value={code}
                         onChange={(e) => setCode(e.target.value)}
                         placeholder="Enter a valid discount code"
-                        className="bg-[#001ffc]/10 h-12 rounded-l-md px-3 outline-none placeholder:text-gray-300 border border-basePrimary w-[75%]"
+                        className="bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end h-12 rounded-l-md px-3 outline-none  border border-basePrimary w-[75%]"
                       />
                       <Button
                         disabled={code === "" || discountLoading}

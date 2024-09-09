@@ -45,7 +45,7 @@ export default function Page({ searchParams: { redirectedFrom } }) {
                   type="email"
                   placeholder="Enter your email address"
                   {...field}
-                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                  className=" placeholder:text-sm h-12  text-gray-700"
                 />
               </InputOffsetLabel>
             )}
@@ -60,7 +60,7 @@ export default function Page({ searchParams: { redirectedFrom } }) {
                     placeholder="Enter Password"
                     type={showPassword ? "text" : "password"}
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-12  text-gray-700"
                   />
                   <button
                     onClick={(e) => {

@@ -39,12 +39,14 @@ export function PromotionalOffer({
           )}
         </div>
 
-        <Offers
+       <div className="w-full px-4">
+       <Offers
           isOrganizer={isOrganizer}
           attendee={attendee}
           data={partner?.offers}
           refetch={refetch}
         />
+       </div>
       </div>
 
       {isOpen && (

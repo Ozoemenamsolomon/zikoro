@@ -19,11 +19,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown } from "styled-icons/bootstrap";
 import { jobSchema } from "@/schemas";
-import {
-  useAddPartnerJob,
-  useUpdatePartners,
-  useUpdatePartnersOpportunities,
-} from "@/hooks";
+import { useUpdatePartnersOpportunities } from "@/hooks";
 import { CloseOutline } from "styled-icons/evaicons-outline";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import {
@@ -162,7 +158,7 @@ export function AddJob({
                     type="text"
                     placeholder="Enter the Job Title"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-11 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -173,73 +169,65 @@ export function AddJob({
                 control={form.control}
                 name="minSalary"
                 render={({ field }) => (
-                  <FormItem className="relative h-fit">
-                    <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                      Min. Salary
-                    </FormLabel>
-                    <CurrencyDropDown
-                      currencyCode={currencyCode}
-                      setcurrencyCode={setcurrencyCode}
-                    />
-                    <FormControl>
+                  <InputOffsetLabel label="Min. Salary">
+                    <div className="w-full relative h-11">
+                      <CurrencyDropDown
+                        currencyCode={currencyCode}
+                        setcurrencyCode={setcurrencyCode}
+                      />
+
                       <Input
-                        className="h-12 placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-16"
+                        className="h-11 placeholder:text-sm  text-gray-700 pl-16"
                         placeholder="min"
                         {...field}
                         type="number"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                    </div>
+                  </InputOffsetLabel>
                 )}
               />
               <FormField
                 control={form.control}
                 name="maxSalary"
                 render={({ field }) => (
-                  <FormItem className="relative h-fit">
-                    <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                      Max. Salary
-                    </FormLabel>
-                    <CurrencyDropDown
-                      currencyCode={currencyCode}
-                      setcurrencyCode={setcurrencyCode}
-                    />
-                    <FormControl>
+                  <InputOffsetLabel label="Max. Salary">
+                    <div className="w-full relative h-11">
+                      <CurrencyDropDown
+                        currencyCode={currencyCode}
+                        setcurrencyCode={setcurrencyCode}
+                      />
+
                       <Input
-                        className="h-12 placeholder:text-sm placeholder:text-gray-200 text-gray-700 pl-16"
+                        className="h-11 placeholder:text-sm  text-gray-700 pl-16"
                         placeholder="max"
                         {...field}
                         type="number"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                    </div>
+                  </InputOffsetLabel>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="salaryDuration"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <ReactSelect
-                        {...field}
-                        defaultValue={
-                          jobs
-                            ? {
-                                value: jobs?.salaryDuration,
-                                label: jobs?.salaryDuration,
-                              }
-                            : ""
-                        }
-                        placeHolder="Select Duration"
-                        label="SalaryDuration"
-                        options={duration}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <InputOffsetLabel label="Salary Duration">
+                    <ReactSelect
+                      {...field}
+                      defaultValue={
+                        jobs
+                          ? {
+                              value: jobs?.salaryDuration,
+                              label: jobs?.salaryDuration,
+                            }
+                          : ""
+                      }
+                      placeHolder="Select Duration"
+                      label="SalaryDuration"
+                      options={duration}
+                    />
+                  </InputOffsetLabel>
                 )}
               />
             </div>
@@ -247,25 +235,22 @@ export function AddJob({
               control={form.control}
               name="flexibility"
               render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <ReactSelect
-                      {...field}
-                      defaultValue={
-                        jobs
-                          ? {
-                              value: jobs?.flexibility,
-                              label: jobs?.flexibility,
-                            }
-                          : ""
-                      }
-                      placeHolder="Select the Flexibility Type"
-                      label="Flexibility"
-                      options={flexibiltiy}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label="Flexibility">
+                  <ReactSelect
+                    {...field}
+                    defaultValue={
+                      jobs
+                        ? {
+                            value: jobs?.flexibility,
+                            label: jobs?.flexibility,
+                          }
+                        : ""
+                    }
+                    placeHolder="Select the Flexibility Type"
+                    label="Flexibility"
+                    options={flexibiltiy}
+                  />
+                </InputOffsetLabel>
               )}
             />
             <FormField
@@ -276,7 +261,7 @@ export function AddJob({
                   <Textarea
                     placeholder="Enter the Description"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-12  placeholder:text-gray-400 text-gray-700"
                   ></Textarea>
                 </InputOffsetLabel>
               )}
@@ -291,7 +276,7 @@ export function AddJob({
                       type="text"
                       placeholder="Enter the City"
                       {...field}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      className=" placeholder:text-sm h-11 text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -305,7 +290,7 @@ export function AddJob({
                       type="text"
                       placeholder="Enter the Country"
                       {...field}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      className=" placeholder:text-sm h-11 text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -316,25 +301,22 @@ export function AddJob({
               control={form.control}
               name="employmentType"
               render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <ReactSelect
-                      {...field}
-                      defaultValue={
-                        jobs
-                          ? {
-                              value: jobs?.employmentType?.toLowerCase(),
-                              label: jobs?.employmentType,
-                            }
-                          : ""
-                      }
-                      placeHolder="Enter the Employment Type"
-                      label="Employment Type"
-                      options={employemntType}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label="Employment Type">
+                  <ReactSelect
+                    {...field}
+                    defaultValue={
+                      jobs
+                        ? {
+                            value: jobs?.employmentType?.toLowerCase(),
+                            label: jobs?.employmentType,
+                          }
+                        : ""
+                    }
+                    placeHolder="Enter the Employment Type"
+                    label="Employment Type"
+                    options={employemntType}
+                  />
+                </InputOffsetLabel>
               )}
             />
 
@@ -342,50 +324,44 @@ export function AddJob({
               control={form.control}
               name="experienceLevel"
               render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <ReactSelect
-                      {...field}
-                      defaultValue={
-                        jobs
-                          ? {
-                              value: jobs?.experienceLevel,
-                              label: jobs?.experienceLevel,
-                            }
-                          : ""
-                      }
-                      placeHolder="Enter the Experience Level"
-                      label="Experience Level"
-                      options={workExperience}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label="Experience Level">
+                  <ReactSelect
+                    {...field}
+                    defaultValue={
+                      jobs
+                        ? {
+                            value: jobs?.experienceLevel,
+                            label: jobs?.experienceLevel,
+                          }
+                        : ""
+                    }
+                    placeHolder="Enter the Experience Level"
+                    label="Experience Level"
+                    options={workExperience}
+                  />
+                </InputOffsetLabel>
               )}
             />
             <FormField
               control={form.control}
               name="qualification"
               render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormControl>
-                    <ReactSelect
-                      {...field}
-                      defaultValue={
-                        jobs
-                          ? {
-                              value: jobs?.qualification,
-                              label: jobs?.qualification,
-                            }
-                          : ""
-                      }
-                      placeHolder="Enter the Qualification"
-                      label="Qualification"
-                      options={qualification}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label="Qualification">
+                  <ReactSelect
+                    {...field}
+                    defaultValue={
+                      jobs
+                        ? {
+                            value: jobs?.qualification,
+                            label: jobs?.qualification,
+                          }
+                        : ""
+                    }
+                    placeHolder="Enter the Qualification"
+                    label="Qualification"
+                    options={qualification}
+                  />
+                </InputOffsetLabel>
               )}
             />
 
@@ -425,7 +401,7 @@ export function AddJob({
                       <Input
                         placeholder="Enter Product Url"
                         {...field}
-                        className="placeholder:text-sm h-12 w-full focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        className="placeholder:text-sm h-11 w-full text-gray-700"
                       />
                     </InputOffsetLabel>
                   )}
@@ -441,7 +417,7 @@ export function AddJob({
                         placeholder="Enter Whatsapp Number"
                         type="tel"
                         {...field}
-                        className="placeholder:text-sm h-12 w-full focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        className="placeholder:text-sm h-11 w-full  text-gray-700"
                       />
                     </InputOffsetLabel>
                   )}
@@ -457,7 +433,7 @@ export function AddJob({
                         placeholder="Enter Email Address"
                         type="email"
                         {...field}
-                        className="placeholder:text-sm h-12 w-full focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        className="placeholder:text-sm h-11 w-full  text-gray-700"
                       />
                     </InputOffsetLabel>
                   )}
@@ -494,7 +470,7 @@ function CurrencyDropDown({
         e.preventDefault();
         setOpen((prev) => !prev);
       }}
-      className="absolute left-2 top-[0.8rem] text-mobile flex items-center gap-x-1"
+      className="absolute left-2 top-[0.7rem] bg-transparent text-mobile flex items-center gap-x-1"
     >
       <p>{currencyCode}</p>
 

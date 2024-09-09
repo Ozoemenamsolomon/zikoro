@@ -5,7 +5,7 @@ import { Download } from "styled-icons/bootstrap";
 import { Eye } from "styled-icons/feather";
 import { Check2 } from "styled-icons/bootstrap";
 import { DateAndTimeAdapter } from "@/context/DateAndTimeAdapter";
-import { Camera } from "styled-icons/feather";
+import { ImageAdd } from "styled-icons/boxicons-regular";
 import { COUNTRY_CODE } from "@/utils";
 import TextEditor from "@/components/TextEditor";
 import { PlusCircle } from "styled-icons/bootstrap";
@@ -36,12 +36,8 @@ import {
 import { TOrgEvent } from "@/types";
 import useUserStore from "@/store/globalUserStore";
 import { timezones } from "@/constants/timezones";
-
-interface ImageFile {
-  url: string | undefined;
-  file?: File;
-  isValid: boolean;
-}
+import { Switch } from "@/components/ui/switch";
+import { CiBookmark } from "react-icons/ci";
 
 export default function UpdateEvent({ eventId }: { eventId: string }) {
   const {
@@ -54,6 +50,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     refetch: () => Promise<null | undefined>;
   } = useFetchSingleEvent(eventId);
   const [publishing, setIsPublishing] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const { user: userData } = useUserStore();
   const [isStartDate, setStartDate] = useState(false);
   const [isEndDate, setEndDate] = useState(false);
@@ -70,6 +67,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
           price: "",
           validity: "",
           description: "",
+          accessibility: true,
         },
       ],
     },
@@ -125,6 +123,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       price: "0",
       validity: formateJSDate(new Date()),
       description: "",
+      accessibility: true,
     });
   }
   useEffect(() => {
@@ -143,15 +142,26 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         locationType: data?.locationType,
         eventCountry: data?.eventCountry,
         eventPoster: data?.eventPoster,
-        pricing: data?.pricing || [
-          {
-            attendeeType: "NIL",
-            ticketQuantity: "0",
-            price: "0",
-            validity: formateJSDate(new Date()),
-            description: "",
-          },
-        ],
+        pricing: data?.pricing
+          ? data?.pricing?.map((p) => {
+              return {
+                ...p,
+                accessibility:
+                  p?.accessibility !== undefined || p?.accessibility !== null
+                    ? p?.accessibility
+                    : true,
+              };
+            })
+          : [
+              {
+                attendeeType: "NIL",
+                ticketQuantity: "0",
+                price: "0",
+                validity: formateJSDate(new Date()),
+                description: "",
+                accessibility: true,
+              },
+            ],
         eventTimeZone: data?.eventTimeZone,
       });
     }
@@ -178,21 +188,17 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       }
     }
 
+    setLoading(true);
     const promise = await new Promise(async (resolve) => {
       if (values.eventPoster && typeof values.eventPoster === "string") {
         resolve(values.eventPoster);
-      } 
-     else if (values.eventPoster && values.eventPoster[0]) {
+      } else if (values.eventPoster && values.eventPoster[0]) {
         const img = await uploadFile(values.eventPoster[0], "image");
         resolve(img);
-      } 
-      else {
+      } else {
         resolve(null);
       }
     });
-
-
- 
 
     const payload: any = {
       ...values,
@@ -204,7 +210,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
     await update(payload, eventId);
     refetch();
-
+    setLoading(false);
     //   console.log("postera", posters)
 
     //   return
@@ -297,6 +303,14 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
     window.open(window.location.href, "_self");
   }
 
+  function toggleAccessibility(id: number) {
+    const currentValue = form.getValues(`pricing.${id}.accessibility` as const);
+    console.log("currentValue", currentValue);
+    form.setValue(`pricing.${id}.accessibility` as const, !currentValue, {
+      shouldValidate: true,
+    });
+  }
+
   return (
     <DateAndTimeAdapter>
       <>
@@ -307,16 +321,19 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
               className="w-full px-4 pb-20 h-full "
               id="form"
             >
-              <div className="w-full py-4 flex items-center sm:items-end justify-start sm:justify-end">
+              <div className="w-full py-4 flex items-center  justify-between">
+                <h2 className="text-base sm:text-xl font-semibold">
+                  Event Details
+                </h2>
                 <div className="flex items-center gap-x-2">
                   <Button
-                    disabled={!publishing && updating}
+                    disabled={!publishing && isLoading}
                     className="gap-x-2"
                   >
-                    {!publishing && updating && (
+                    {!publishing && isLoading && (
                       <LoaderAlt size={20} className="animate-spin" />
                     )}
-                    <Check2 size={20} className="text-basePrimary" />
+                    <CiBookmark size={20} className="" />
                     <p>Save</p>
                   </Button>
                   <Button
@@ -363,456 +380,469 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                   </Button>
                 </div>
               </div>
-              <div className="w-full grid grid-cols-1 items-center md:items-start md:grid-cols-2 gap-6">
-                <div className="w-full h-full flex flex-col items-start justify-start p-1 gap-y-4">
-                  <FormField
-                    control={form.control}
-                    name="eventTitle"
-                    render={({ field }) => (
-                      <InputOffsetLabel label="Event title">
-                        <Input
-                          placeholder="Enter event title"
-                          type="text"
-                          defaultValue={data?.eventTitle}
-                          {...form.register("eventTitle")}
-                          className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                        />
-                      </InputOffsetLabel>
-                    )}
-                  />
-                  <div className=" gap-4 w-full grid grid-cols-1 sm:grid-cols-2 items-center relative">
-                    <FormField
-                      control={form.control}
-                      name="startDateTime"
-                      render={() => (
-                        <InputOffsetLabel label="Start date and time">
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              setStartDate((prev) => !prev);
-                            }}
-                            role="button"
-                            className="w-full relative h-12"
-                          >
-                            <button className="absolute left-3 top-[0.6rem]">
-                              <DateRange size={22} className="text-gray-600" />
-                            </button>
-                            <Input
-                              placeholder=" Start Date Time"
-                              type="text"
-                              {...form.register("startDateTime")}
-                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
-                            />
-                            {isStartDate && (
-                              <SelectDate
-                                value={startDate}
-                                className="sm:left-0 right-0"
-                                name="startDateTime"
-                                form={form}
-                                close={() => setStartDate((prev) => !prev)}
-                              />
-                            )}
-                          </div>
-                        </InputOffsetLabel>
-                      )}
-                    />
+              <div className="w-full grid grid-cols-1 items-center sm:grid-cols-2 md:grid-cols-3  gap-6">
+                <FormField
+                  control={form.control}
+                  name="eventTitle"
+                  render={({ field }) => (
+                    <InputOffsetLabel
+                      className="col-span-full"
+                      label="Event title"
+                    >
+                      <Input
+                        placeholder="Enter event title"
+                        type="text"
+                        defaultValue={data?.eventTitle}
+                        {...form.register("eventTitle")}
+                        className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
 
-                    <FormField
-                      control={form.control}
-                      name="endDateTime"
-                      render={({ field }) => (
-                        <InputOffsetLabel label="End date and time">
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              e.preventDefault();
-                              setEndDate((prev) => !prev);
-                            }}
-                            role="button"
-                            className="w-full relative h-12"
-                          >
-                            <button className="absolute left-3 top-[0.6rem]">
-                              <DateRange size={22} className="text-gray-600" />
-                            </button>
-                            <Input
-                              placeholder="End Date Time"
-                              type="text"
-                              {...form.register("endDateTime")}
-                              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
-                            />
-                            {/** */}
-                            {isEndDate && (
-                              <SelectDate
-                                value={endDate}
-                                form={form}
-                                name="endDateTime"
-                                minimumDate={minimumDate}
-                                close={() => setEndDate((prev) => !prev)}
-                              />
-                            )}
-                          </div>
-                        </InputOffsetLabel>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="eventTimeZone"
-                    render={({ field }) => (
-                      <InputOffsetLabel label={""}>
-                        <ReactSelect
-                          placeHolder="Enter event timezone"
-                          defaultValue={{
-                            label: data?.eventTimeZone,
-                            value: data?.eventTimeZone,
-                          }}
-                          {...form.register("eventTimeZone")}
-                          options={timezones}
-                          label="Event Timezone"
-                        />
-                      </InputOffsetLabel>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="eventVisibility"
-                    render={({ field }) => (
-                      <InputOffsetLabel label="">
-                        <ReactSelect
-                          label="Event visibilty"
-                          defaultValue={{
-                            value: data?.eventVisibility,
-                            label: data?.eventVisibility,
-                          }}
-                          {...form.register("eventVisibility")}
-                          options={[
-                            { value: "Public", label: "Public" },
-                            { value: "Private", label: "Private" },
-                          ]}
-                          placeHolder="Please select"
-                        />
-                      </InputOffsetLabel>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="industry"
-                    render={({ field }) => (
-                      <InputOffsetLabel label="">
-                        <ReactSelect
-                          label="Industry"
-                          defaultValue={{
-                            value: data?.industry,
-                            label: data?.industry,
-                          }}
-                          {...form.register("industry")}
-                          options={industryArray}
-                          placeHolder="Please select"
-                        />
-                      </InputOffsetLabel>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="eventCategory"
-                    render={({ field }) => (
-                      <InputOffsetLabel label="">
-                        <ReactSelect
-                          label="Event category"
-                          defaultValue={{
-                            value: data?.eventCategory,
-                            label: data?.eventCategory,
-                          }}
-                          {...form.register("eventCategory")}
-                          options={categories}
-                          placeHolder="Please select"
-                        />
-                      </InputOffsetLabel>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="expectedParticipants"
-                    render={({ field }) => (
-                      <InputOffsetLabel label="Number of Participants">
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          defaultValue={data?.expectedParticipants}
-                          {...form.register("expectedParticipants")}
-                          className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                        />
-                      </InputOffsetLabel>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="locationType"
-                    render={({ field }) => (
-                      <InputOffsetLabel label="">
-                        <ReactSelect
-                          label="Location type"
-                          defaultValue={{
-                            value: data?.locationType,
-                            label: data?.locationType,
-                          }}
-                          {...form.register("locationType")}
-                          options={locationType}
-                          placeHolder="Please select"
-                        />
-                      </InputOffsetLabel>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="eventAddress"
-                    render={({ field }) => (
-                      <InputOffsetLabel label="Event Address">
-                        <Input
-                          type="text"
-                          placeholder="Enter Event Address"
-                          defaultValue={data?.eventAddress}
-                          {...form.register("eventAddress")}
-                          className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                        />
-                      </InputOffsetLabel>
-                    )}
-                  />
-                  <div className="grid grid-cols-2   w-full items-center  gap-4">
-                    <FormField
-                      control={form.control}
-                      name="eventCity"
-                      render={({ field }) => (
-                        <InputOffsetLabel label="Event City">
-                          <Input
-                            type="text"
-                            placeholder="Enter Event City"
-                            defaultValue={data?.eventCity}
-                            {...form.register("eventCity")}
-                            className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                          />
-                        </InputOffsetLabel>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="eventCountry"
-                      render={({ field }) => (
-                        <InputOffsetLabel label="">
-                          <ReactSelect
-                            {...field}
-                            placeHolder="Select the Country"
-                            label="Event Country"
-                            defaultValue={{
-                              value: data?.eventCountry,
-                              label: data?.eventCountry,
-                            }}
-                            options={countriesList}
-                          />
-                        </InputOffsetLabel>
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className="w-full h-full flex flex-col items-start justify-start gap-y-6">
-                  {
-                    <TextEditor
-                      defaultValue={data?.description}
-                      onChange={handleChange}
-                    />
-                  }
-
-                  <FormField
-                    control={form.control}
-                    name="pricingCurrency"
-                    render={({ field }) => (
-                      <InputOffsetLabel label="">
-                        <ReactSelect
-                          label="Pricing currency"
-                          defaultValue={{
-                            value: data?.pricingCurrency,
-                            label: data?.pricingCurrency,
-                          }}
-                          {...form.register("pricingCurrency")}
-                          options={pricingCurrency}
-                          placeHolder="Please select"
-                        />
-                      </InputOffsetLabel>
-                    )}
-                  />
-                </div>
-
-                <div className="border col-span-full w-full border-[#f3f3f3] p-4 rounded-md space-y-5 pb-10">
-                  <h5>Pricing</h5>
-                  <div className="w-full grid grid-cols-1 sm:grid-cols-2 items-center gap-3 sm:gap-10">
-                    {fields.map((value, id) => (
+                <FormField
+                  control={form.control}
+                  name="startDateTime"
+                  render={() => (
+                    <InputOffsetLabel label="Start date and time">
                       <div
-                        key={value.id}
-                        className="w-full flex flex-col items-start gap-y-4 justify-start"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setStartDate((prev) => !prev);
+                        }}
+                        role="button"
+                        className="w-full relative h-12"
                       >
-                        <div className="flex text-sm items-center gap-x-2">
-                          <p>{`Price Category ${id + 1}`}</p>
-                          <button
-                            onClick={() => remove(id)}
-                            className="text-red-600"
-                          >
-                            <CloseCircle size={20} />
-                          </button>
-                        </div>
-                        <div className="w-full grid grid-cols-2 items-center gap-3">
-                          <FormField
-                            control={form.control}
-                            name={`pricing.${id}.attendeeType` as const}
-                            render={({ field }) => (
-                              <InputOffsetLabel label="Attendee Type">
-                                <Input
-                                  type="text"
-                                  placeholder="e.g Early Bird"
-                                  {...form.register(
-                                    `pricing.${id}.attendeeType` as const
-                                  )}
-                                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                                />
-                              </InputOffsetLabel>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name={`pricing.${id}.ticketQuantity` as const}
-                            render={({ field }) => (
-                              <InputOffsetLabel label="Ticket Quantity">
-                                <Input
-                                  type="number"
-                                  placeholder="Enter the ticket quantity"
-                                  {...form.register(
-                                    `pricing.${id}.ticketQuantity` as const
-                                  )}
-                                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                                />
-                              </InputOffsetLabel>
-                            )}
-                          />
-                        </div>
-                        <FormField
-                          control={form.control}
-                          name={`pricing.${id}.description` as const}
-                          render={({ field }) => (
-                            <InputOffsetLabel label="Description">
-                              <Input
-                                type="text"
-                                placeholder="Enter the Ticket Description"
-                                {...form.register(
-                                  `pricing.${id}.description` as const
-                                )}
-                                className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                              />
-                            </InputOffsetLabel>
-                          )}
+                        <button className="absolute left-3 top-[0.6rem]">
+                          <DateRange size={22} className="text-gray-600" />
+                        </button>
+                        <Input
+                          placeholder=" Start Date Time"
+                          type="text"
+                          {...form.register("startDateTime")}
+                          className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
                         />
-                        <div className="w-full grid grid-cols-2 items-center gap-3">
-                          <FormField
-                            control={form.control}
-                            name={`pricing.${id}.price` as const}
-                            render={({ field }) => (
-                              <InputOffsetLabel label="Price">
-                                <Input
-                                  type="number"
-                                  placeholder="Enter the Price"
-                                  {...form.register(
-                                    `pricing.${id}.price` as const
-                                  )}
-                                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                                />
-                              </InputOffsetLabel>
-                            )}
-                          />
-
-                          <PriceValidityDate
-                            id={id}
+                        {isStartDate && (
+                          <SelectDate
+                            value={startDate}
+                            className="sm:left-0 right-0"
+                            name="startDateTime"
                             form={form}
-                            value={value?.validity}
+                            close={() => setStartDate((prev) => !prev)}
                           />
-                        </div>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      appendPricing();
-                    }}
-                    className="text-sm text-basePrimary gap-x-2 h-fit w-fit"
-                  >
-                    <PlusCircle size={18} />
-                    <p>Price Category</p>
-                  </Button>
-                  {/** */}
+                    </InputOffsetLabel>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="endDateTime"
+                  render={({ field }) => (
+                    <InputOffsetLabel label="End date and time">
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setEndDate((prev) => !prev);
+                        }}
+                        role="button"
+                        className="w-full relative h-12"
+                      >
+                        <button className="absolute left-3 top-[0.6rem]">
+                          <DateRange size={22} className="text-gray-600" />
+                        </button>
+                        <Input
+                          placeholder="End Date Time"
+                          type="text"
+                          {...form.register("endDateTime")}
+                          className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                        />
+                        {/** */}
+                        {isEndDate && (
+                          <SelectDate
+                            value={endDate}
+                            form={form}
+                            name="endDateTime"
+                            minimumDate={minimumDate}
+                            close={() => setEndDate((prev) => !prev)}
+                          />
+                        )}
+                      </div>
+                    </InputOffsetLabel>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="eventTimeZone"
+                  render={({ field }) => (
+                    <InputOffsetLabel label={"Event Timezone"}>
+                      <ReactSelect
+                        placeHolder="Enter event timezone"
+                        defaultValue={{
+                          label: data?.eventTimeZone,
+                          value: data?.eventTimeZone,
+                        }}
+                        {...form.register("eventTimeZone")}
+                        options={timezones}
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="eventVisibility"
+                  render={({ field }) => (
+                    <InputOffsetLabel label="Event visibilty">
+                      <ReactSelect
+                        defaultValue={{
+                          value: data?.eventVisibility,
+                          label: data?.eventVisibility,
+                        }}
+                        {...form.register("eventVisibility")}
+                        options={[
+                          { value: "Public", label: "Public" },
+                          { value: "Private", label: "Private" },
+                        ]}
+                        placeHolder="Please select"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="industry"
+                  render={({ field }) => (
+                    <InputOffsetLabel label="Industry">
+                      <ReactSelect
+                        defaultValue={{
+                          value: data?.industry,
+                          label: data?.industry,
+                        }}
+                        {...form.register("industry")}
+                        options={industryArray}
+                        placeHolder="Please select"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="eventCategory"
+                  render={({ field }) => (
+                    <InputOffsetLabel label="Event category">
+                      <ReactSelect
+                        defaultValue={{
+                          value: data?.eventCategory,
+                          label: data?.eventCategory,
+                        }}
+                        {...form.register("eventCategory")}
+                        options={categories}
+                        placeHolder="Please select"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+
+                {/**"col-span-1 sm:col-span-2 " */}
+
+                <FormField
+                  control={form.control}
+                  name="eventAddress"
+                  render={({ field }) => (
+                    <InputOffsetLabel
+                      className="col-span-1 sm:col-span-2 "
+                      label="Event Address"
+                    >
+                      <Input
+                        type="text"
+                        placeholder="Enter Event Address"
+                        defaultValue={data?.eventAddress}
+                        {...form.register("eventAddress")}
+                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="expectedParticipants"
+                  render={({ field }) => (
+                    <InputOffsetLabel label="Number of Participants">
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        defaultValue={data?.expectedParticipants}
+                        {...form.register("expectedParticipants")}
+                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="eventCity"
+                  render={({ field }) => (
+                    <InputOffsetLabel label="Event City">
+                      <Input
+                        type="text"
+                        placeholder="Enter Event City"
+                        defaultValue={data?.eventCity}
+                        {...form.register("eventCity")}
+                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="eventCountry"
+                  render={({ field }) => (
+                    <InputOffsetLabel label="Event Country">
+                      <ReactSelect
+                        {...field}
+                        placeHolder="Select the Country"
+                        defaultValue={{
+                          value: data?.eventCountry,
+                          label: data?.eventCountry,
+                        }}
+                        options={countriesList}
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="locationType"
+                  render={({ field }) => (
+                    <InputOffsetLabel label="Location type">
+                      <ReactSelect
+                        defaultValue={{
+                          value: data?.locationType,
+                          label: data?.locationType,
+                        }}
+                        {...form.register("locationType")}
+                        options={locationType}
+                        placeHolder="Please select"
+                      />
+                    </InputOffsetLabel>
+                  )}
+                />
+
+                <div className="w-full col-span-full sm:col-span-2">
+                  <TextEditor
+                    defaultValue={data?.description}
+                    onChange={handleChange}
+                  />
                 </div>
-                <div className="w-full">
+
+                <div className="w-full col-span-1 sm:col-span-2 md:col-span-1">
+                  <p className="text-sm mb-1 text-gray-600 font-medium">
+                    Event Image
+                  </p>
                   <FormField
                     control={form.control}
                     name="eventPoster"
                     render={({ field }) => (
                       <label
                         htmlFor="add-poster"
-                        className="w-full border border-gray-200 relative rounded-lg flex items-center justify-start h-12"
+                        className="w-full border border-basePrimary relative rounded-md flex items-center justify-center h-[450px]"
                       >
-                        <span className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1">
-                          Event Poster
-                        </span>
-                        <div className="flex px-4 items-center gap-x-3">
-                          <Camera size={20} />
-                          <p className="text-gray-400">Add Poster</p>
-                        </div>
-                        <input
-                          type="file"
-                          id="add-poster"
-                          {...form.register("eventPoster")}
-                          className="w-full h-full absolute inset-0 z-10"
-                          accept="image/*"
-                          hidden
-                        />
+                        <p className="flex items-center relative rounded-md z-20 bg-white/50 border gap-x-2 text-xs p-2">
+                          <ImageAdd className="text-[#001ffc]" size={20} />
+                          <span> Upload Event Poster Image</span>
+                          <input
+                            type="file"
+                            id="add-poster"
+                            {...form.register("eventPoster")}
+                            className="w-full h-full absolute inset-0 z-30"
+                            accept="image/*"
+                            hidden
+                          />
+                        </p>
+
+                        {posterImage && (
+                          <Image
+                            className="w-full h-full absolute inset-0 z-10 rounded-md"
+                            src={posterImage ? posterImage : ""}
+                            width={300}
+                            height={300}
+                            alt="image"
+                          />
+                          // {/* <button
+                          //   onClick={(e) => {
+                          //     e.stopPropagation();
+                          //     e.preventDefault();
+                          //     form.setValue("eventPoster", null);
+                          //   }}
+                          //   className="absolute top-2 right-2 bg-black rounded-full text-white w-6 h-6 flex items-center justify-center"
+                          // >
+                          //   <CloseCircle size={16} />
+                          // </button> */}
+                        )}
                       </label>
                     )}
                   />
-
-                  <span className="description-text text-xs">
-                    Image size should be 1080px by 1080px
-                  </span>
                 </div>
 
-                <div className="flex gap-x-2 flex-wrap items-center">
-                  {posterImage && (
-                    <div className=" relative w-32 h-32">
-                      <Image
-                        className="w-32 h-32 rounded-md"
-                        src={posterImage ? posterImage : ""}
-                        width={300}
-                        height={300}
-                        alt="image"
-                      />
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          form.setValue("eventPoster", null)
+                <FormField
+                  control={form.control}
+                  name="pricingCurrency"
+                  render={({ field }) => (
+                    <InputOffsetLabel
+                      className="col-span-full"
+                      label="Pricing currency"
+                    >
+                      <ReactSelect
+                        defaultValue={{
+                          value: data?.pricingCurrency,
+                          label: data?.pricingCurrency,
                         }}
-                        className="absolute top-2 right-2 bg-black rounded-full text-white w-6 h-6 flex items-center justify-center"
-                      >
-                        <CloseCircle size={16} />
-                      </button>
-                    </div>
+                        {...form.register("pricingCurrency")}
+                        options={pricingCurrency}
+                        placeHolder="Please select"
+                      />
+                    </InputOffsetLabel>
                   )}
+                />
+              </div>
+
+              <div className=" mt-6 col-span-full w-full ">
+                <h3 className="font-semibold text-base sm:text-xl mb-4 sm:mb-6">
+                  Pricing
+                </h3>
+                <div className="w-full grid grid-cols-1  items-center gap-6">
+                  {fields.map((value, id) => (
+                    <div
+                      key={value.id}
+                      className="w-full bg-white border-[#f3f3f3] p-4 rounded-md  pb-10 flex flex-col items-start gap-y-4 justify-start"
+                    >
+                      <div className="w-full flex items-center justify-between">
+                        <div className="flex text-sm items-center gap-x-2">
+                          <p>{`Price Category ${id + 1}`}</p>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              remove(id);
+                            }}
+                            className="text-red-600"
+                          >
+                            <CloseCircle size={20} />
+                          </button>
+                        </div>
+                        <div className="flex items-center gap-x-2">
+                          <p className="">Accessibility:</p>
+                          <Switch
+                            checked={form.getValues(
+                              `pricing.${id}.accessibility` as const
+                            )}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              toggleAccessibility(id);
+                            }}
+                            className="data-[state=checked]:bg-basePrimary"
+                          />
+                        </div>
+                      </div>
+                      <div className="w-full grid grid-cols-2 items-center gap-3">
+                        <FormField
+                          control={form.control}
+                          name={`pricing.${id}.attendeeType` as const}
+                          render={({ field }) => (
+                            <InputOffsetLabel label="Attendee Type">
+                              <Input
+                                type="text"
+                                placeholder="e.g Early Bird"
+                                {...form.register(
+                                  `pricing.${id}.attendeeType` as const
+                                )}
+                                className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                              />
+                            </InputOffsetLabel>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`pricing.${id}.ticketQuantity` as const}
+                          render={({ field }) => (
+                            <InputOffsetLabel label="Ticket Quantity">
+                              <Input
+                                type="number"
+                                placeholder="Enter the ticket quantity"
+                                {...form.register(
+                                  `pricing.${id}.ticketQuantity` as const
+                                )}
+                                className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                              />
+                            </InputOffsetLabel>
+                          )}
+                        />
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name={`pricing.${id}.description` as const}
+                        render={({ field }) => (
+                          <InputOffsetLabel label="Description">
+                            <Input
+                              type="text"
+                              placeholder="Enter the Ticket Description"
+                              {...form.register(
+                                `pricing.${id}.description` as const
+                              )}
+                              className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                            />
+                          </InputOffsetLabel>
+                        )}
+                      />
+                      <div className="w-full grid grid-cols-2 items-center gap-3">
+                        <FormField
+                          control={form.control}
+                          name={`pricing.${id}.price` as const}
+                          render={({ field }) => (
+                            <InputOffsetLabel label="Price">
+                              <Input
+                                type="number"
+                                placeholder="Enter the Price"
+                                {...form.register(
+                                  `pricing.${id}.price` as const
+                                )}
+                                className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                              />
+                            </InputOffsetLabel>
+                          )}
+                        />
+
+                        <PriceValidityDate
+                          id={id}
+                          form={form}
+                          value={value?.validity}
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    appendPricing();
+                  }}
+                  className="text-sm text-basePrimary mt-4 sm:mt-6 gap-x-2 h-fit w-fit"
+                >
+                  <PlusCircle size={18} />
+                  <p>Price Category</p>
+                </Button>
+                {/** */}
               </div>
             </form>
           </Form>
@@ -823,12 +853,16 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
         )}
         {isShowPublishModal && (
           <PublishCard
-            asyncPublish={data?.published ? unpublishEvent :publishEvent}
+            asyncPublish={data?.published ? unpublishEvent : publishEvent}
             close={showPublishModal}
             loading={publishing}
             isPublished={data?.published}
-            message={data?.published ? `You are about to unpublish your event. Do you wish to continue?` : ` You are about to publish an event. You will be notified when the admin
-            approves it.`}
+            message={
+              data?.published
+                ? `You are about to unpublish your event. Do you wish to continue?`
+                : ` You are about to publish an event. You will be notified when the admin
+            approves it.`
+            }
           />
         )}
         {isOpen && (

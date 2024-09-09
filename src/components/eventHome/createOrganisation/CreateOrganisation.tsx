@@ -17,6 +17,7 @@ import * as z from "zod";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { organizationSchema } from "@/schemas";
+import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { Switch } from "@/components/ui/switch";
 import { useCreateOrganisation, useGetUserOrganizations } from "@/hooks";
 import { PaymentPlus, PaymentTick } from "@/constants";
@@ -146,10 +147,9 @@ export function CreateOrganization({
   );
   const form = useForm<z.infer<typeof organizationSchema>>({
     resolver: zodResolver(organizationSchema),
-    defaultValues:{
-      organizationAlias: generateAlias()
-
-    }
+    defaultValues: {
+      organizationAlias: generateAlias(),
+    },
   });
   const [isDiscount, setIsDiscount] = useState(false);
 
@@ -207,28 +207,24 @@ export function CreateOrganization({
       if (refetch) refetch();
       close();
     } else {
-      const url = `/payment?name=${encodeURIComponent(
-        values?.firstName || ""
-      )}&id=${encodeURIComponent(user?.id || "")}&email=${encodeURIComponent(
-        values?.userEmail || ""
-      )}&plan=${encodeURIComponent(
-        selectedPricing?.plan || "Free"
-      )}&isMonthly=${encodeURIComponent(isMonthly)}&total=${encodeURIComponent(
-        total 
-      )}&currency=${encodeURIComponent(
-        selectedCurrency
-      )}&organizationName=${encodeURIComponent(
-        values.organizationName
-      )}&organizationType=${encodeURIComponent(
-        values.organizationType
-      )}&subscriptionPlan=${encodeURIComponent(
-        values.subscriptionPlan
-      )}&redirectUrl=${encodeURIComponent(
-        window.location.href
-      )}&isCreate=${encodeURIComponent(true)}&orgId=${encodeURIComponent(
-        values.organizationAlias
-      )}
-      `;
+      const data = {
+        paymentReference: "",
+        email: values?.userEmail,
+        total: total,
+        currency: selectedCurrency,
+        discount: appliedDiscount,
+        discountCode: discount?.discountCode || "",
+        organizationAlias: values?.organizationAlias,
+        redirectUrl: window.location.href,
+        isMonthly: isMonthly,
+        plan: values?.subscriptionPlan,
+        organizationName: values?.organizationName,
+        organizationType: values?.organizationType,
+        subscriptionPlan: values?.subscriptionPlan,
+      };
+      const url = `/payment/create?data=${encodeURIComponent(
+        JSON.stringify(data)
+      )}`;
 
       router.push(url);
     }
@@ -409,80 +405,67 @@ export function CreateOrganization({
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Enter First Name"
-                        {...field}
-                        readOnly
-                        className="placeholder:text-sm h-11 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <InputOffsetLabel label="First Name">
+                    <Input
+                      type="text"
+                      placeholder="Enter First Name"
+                      {...field}
+                      readOnly
+                      className="h-11 placeholder:text-sm placeholder:text-zinc-500 text-zinv-700"
+                    />
+                  </InputOffsetLabel>
                 )}
               />
               <FormField
                 control={form.control}
                 name="lastName"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
-                        type="text"
-                        placeholder="Enter Last Name"
-                        {...field}
-                        readOnly
-                        className="placeholder:text-sm h-11 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <InputOffsetLabel label="Last Name">
+                  <Input
+                    type="text"
+                    placeholder="Enter Last Name"
+                    {...field}
+                    readOnly
+                    className="h-11 placeholder:text-sm placeholder:text-zinc-500 text-zinv-700"
+                  />
+                </InputOffsetLabel>
                 )}
               />
               <FormField
                 control={form.control}
                 name="userEmail"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
+                 <InputOffsetLabel label="Email Address">
+                  <Input
                         type="text"
                         placeholder="Enter Email Address"
                         {...field}
                         readOnly
-                        className="placeholder:text-sm h-11 border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
+                        className="placeholder:text-sm h-11  text-zinv-700"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  </InputOffsetLabel>
                 )}
               />
               <FormField
                 control={form.control}
                 name="organizationName"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <Input
+               <InputOffsetLabel label="Workspace Name">
+                 <Input
                         type="text"
                         placeholder="Enter Workspace Name"
                         {...field}
-                        className="placeholder:text-sm h-11  border-basePrimary bg-[#001fcc]/10  placeholder:text-zinc-500 text-zinv-700"
+                        className="placeholder:text-sm h-11  text-zinv-700"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+               </InputOffsetLabel>
                 )}
               />
               <FormField
                 control={form.control}
                 name="organizationType"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <ReactSelect
+                  <InputOffsetLabel label="Workspace Type">
+                     <ReactSelect
                         {...form.register("organizationType")}
                         options={orgType.map((value) => {
                           return { value, label: value };
@@ -493,18 +476,15 @@ export function CreateOrganization({
                         placeHolderColor="#64748b"
                         placeHolder="Select Workspace"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  </InputOffsetLabel>
                 )}
               />
               <FormField
                 control={form.control}
                 name="subscriptionPlan"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormControl>
-                      <ReactSelect
+                 <InputOffsetLabel label="Subscription Plan">
+                  <ReactSelect
                         {...form.register("subscriptionPlan")}
                         options={pricingPlan.map((value) => {
                           return { value, label: value };
@@ -515,9 +495,7 @@ export function CreateOrganization({
                         height="2.5rem"
                         placeHolderColor="#64748b"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                 </InputOffsetLabel>
                 )}
               />
             </div>
@@ -617,7 +595,7 @@ export function CreateOrganization({
                 </Button>
               </div>
 
-              <Button className="w-full h-11 gap-x-2 bg-basePrimary text-white font-medium">
+              <Button className="w-full h-12 gap-x-2 bg-basePrimary text-white font-medium">
                 {loading && <LoaderAlt size={20} className="animate-spin" />}
                 <p>Create</p>
               </Button>

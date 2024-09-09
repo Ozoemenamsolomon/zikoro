@@ -1,5 +1,4 @@
 export * from "./heroLayout/HeroLayout";
-export * from "./singleEvent/SIngleEvent";
 export * from "./events/Events";
 export * from "./bookEvent/BookEvent";
 export * from "./feedbackCard/FeedBackCard";
