@@ -146,7 +146,10 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
           ? data?.pricing?.map((p) => {
               return {
                 ...p,
-                accessibility: p?.accessibility !== null ? p?.accessibility : true,
+                accessibility:
+                  p?.accessibility !== undefined || p?.accessibility !== null
+                    ? p?.accessibility
+                    : true,
               };
             })
           : [
