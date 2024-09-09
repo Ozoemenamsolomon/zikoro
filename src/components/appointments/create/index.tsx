@@ -12,7 +12,7 @@ import Generalsettings from './Generalsettings';
 import { AppointmentFormData, DetailItem } from '@/types/appointments';
 import { usePathname, useRouter } from 'next/navigation';
 import { fetchUser } from '../auth';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import PageLoading from '../ui/Loading';
 import { useGetBookingAppointment } from '@/hooks';
 import { DaySchedule } from '../ui/DateTimeScheduler';
