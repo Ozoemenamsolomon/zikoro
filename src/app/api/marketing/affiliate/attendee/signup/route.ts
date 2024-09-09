@@ -150,9 +150,7 @@ export async function GET(req: NextRequest) {
 
     if (affiliateLinkError || !affiliateLink) {
       const linkCode = generateAlphanumericHash(7);
-      const affiliateLink = `${
-        process.env.NEXT_PUBLIC_HOME_URL ?? "https://zikoro.com"
-      }/live-events/${eventAlias}?affiliateCode=${linkCode}`;
+      const affiliateLink = `https://zikoro.com/live-events/${eventAlias}?affiliateCode=${linkCode}`;
 
       // If no affiliateLink exists, create a new one
       const { data: newAffiliateLink, error: newAffiliateLinkError } =
