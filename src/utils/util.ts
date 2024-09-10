@@ -162,7 +162,7 @@ export const createICSContent = (
     (duration % (1000 * 60 * 60)) / (1000 * 60)
   );
 
-  return `BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nPRODID:adamgibbons/ics\nMETHOD:PUBLISH\nX-PUBLISHED-TTL:PT1H\nBEGIN:VEVENT\nUID:dR3_ekmfOhjKQu4yHG7j0\nSUMMARY:this is an event\nDTSTAMP:${new Date()
+  return `BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nPRODID:adamgibbons/ics\nMETHOD:PUBLISH\nX-PUBLISHED-TTL:PT1H\nBEGIN:VEVENT\nUID:dR3_ekmfOhjKQu4yHG7j0\nSUMMARY:${description || 'this is an event'}\nDTSTAMP:${new Date()
     .toISOString()
     .replace(
       /-|:|\.\d+/g,

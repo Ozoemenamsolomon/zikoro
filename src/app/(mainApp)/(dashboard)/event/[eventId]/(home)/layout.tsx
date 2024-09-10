@@ -1,9 +1,7 @@
 "use client";
 import { Topbar } from "@/components";
 import { useParams } from "next/navigation";
-import MainTopBar from "@/components/MainTopBar";
-import useUserStore from "@/store/globalUserStore";
-import { useGetAttendeeWithEmail } from "@/hooks";
+
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { eventId }: { eventId: string } = useParams();

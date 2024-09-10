@@ -146,7 +146,10 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
           ? data?.pricing?.map((p) => {
               return {
                 ...p,
-                accessibility: p?.accessibility ? p?.accessibility : true,
+                accessibility:
+                  p?.accessibility !== undefined || p?.accessibility !== null
+                    ? p?.accessibility
+                    : true,
               };
             })
           : [
@@ -303,7 +306,9 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
   function toggleAccessibility(id: number) {
     const currentValue = form.getValues(`pricing.${id}.accessibility` as const);
     console.log("currentValue", currentValue);
-    form.setValue(`pricing.${id}.accessibility` as const,  !currentValue , { shouldValidate: true });
+    form.setValue(`pricing.${id}.accessibility` as const, !currentValue, {
+      shouldValidate: true,
+    });
   }
 
   return (
@@ -649,7 +654,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     render={({ field }) => (
                       <label
                         htmlFor="add-poster"
-                        className="w-full border border-basePrimary relative rounded-md flex items-center justify-center h-[450px]"
+                        className="w-full border border-basePrimary bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end relative rounded-md flex items-center justify-center h-[450px]"
                       >
                         <p className="flex items-center relative rounded-md z-20 bg-white/50 border gap-x-2 text-xs p-2">
                           <ImageAdd className="text-[#001ffc]" size={20} />
@@ -737,11 +742,13 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                         <div className="flex items-center gap-x-2">
                           <p className="">Accessibility:</p>
                           <Switch
-                            checked={form.getValues(`pricing.${id}.accessibility` as const)}
+                            checked={form.getValues(
+                              `pricing.${id}.accessibility` as const
+                            )}
                             onClick={(e) => {
                               e.stopPropagation();
                               e.preventDefault();
-                              toggleAccessibility(id)
+                              toggleAccessibility(id);
                             }}
                             className="data-[state=checked]:bg-basePrimary"
                           />

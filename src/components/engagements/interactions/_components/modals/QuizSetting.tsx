@@ -179,7 +179,7 @@ export function QuizSettings({
                     placeholder="Cover Title"
                     type="text"
                     {...form.register("coverTitle")}
-                    className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className="placeholder:text-sm h-11 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -192,7 +192,7 @@ export function QuizSettings({
                   <Textarea
                     placeholder="Enter the description"
                     {...form.register("description")}
-                    className="placeholder:text-sm  focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className="placeholder:text-sm   placeholder:text-gray-400 text-gray-700"
                   ></Textarea>
                 </InputOffsetLabel>
               )}
@@ -208,7 +208,7 @@ export function QuizSettings({
                       type="file"
                       accept="image/*"
                       {...form.register("coverImage")}
-                      className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      className="placeholder:text-sm h-11 text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}

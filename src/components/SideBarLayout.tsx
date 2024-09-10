@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
 import Image from "next/image";
 import { Button, MobileBottomNav, NavLinks } from ".";
 import Link from "next/link";
@@ -18,31 +18,24 @@ import {
   WhatsappIcon,
 } from "@/constants";
 import {
-  getCookie,
   useGetEvents,
-  useGetUserTeamOrganizations,
   useLogOut,
   useValidateUser,
 } from "@/hooks";
 import { sendMail, whatsapp } from "@/utils";
 import useUserStore from "@/store/globalUserStore";
 import { useGetUserOrganization } from "@/hooks/services/userOrganization";
+import { LoaderAlt } from "styled-icons/boxicons-regular";
 
-export function SideBarLayout({
-  eventId,
-  children,
-}: {
-  eventId: string;
-  children: React.ReactNode;
-}) {
+function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
   const [isNav, setNav] = useState(false);
+  const { eventId } = useParams();
   const param = useSearchParams();
 
   const [isOpen, setOpen] = useState(false);
   const query = param.get("organization");
   const { events } = useGetEvents();
-  const { user, setUser } = useUserStore();
-  const router = useRouter();
+  const { user} = useUserStore();
 
   // console.log(user);
 
@@ -84,7 +77,10 @@ export function SideBarLayout({
           isNav && "w-[calc(100%-60px)]"
         )}
       >
-        <MainTopBar eventId={eventId} userOrganizations={userOrganizations!} />
+        <MainTopBar
+          eventId={eventId as string}
+          userOrganizations={userOrganizations!}
+        />
       </div>
 
       <SideNavs
@@ -160,7 +156,7 @@ function SideNavs({
             />
             {/**nav links */}
             <NavLinks
-            close={close}
+              close={close}
               isHaveEvent={isHaveEvent}
               query={query}
               id={organizationId}
@@ -169,7 +165,6 @@ function SideNavs({
           <div className="flex items-start text-[#717171] justify-start w-full flex-col gap-4 border-t p-4 border-basebody">
             <div className="w-full flex items-center gap-x-2 ">
               <Link
-
                 href={`/create`}
                 className="text-mobile sm:text-sm text-basePrimary font-medium hover:underline "
               >
@@ -227,9 +222,7 @@ function SideNavs({
                 Give feedback
               </p>
             </button>
-            <Link 
-            onClick={close}
-            href={"/referrals"}>
+            <Link onClick={close} href={"/referrals"}>
               <div className="flex items-center gap-2">
                 <ReferralIcon />
                 <p className="font-medium group-hover:block hidden">
@@ -272,5 +265,19 @@ function SideNavs({
         </div>
       </div>
     </>
+  );
+}
+
+export function SideBarLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="w-full min-h-screen flex items-center  justify-center">
+          <LoaderAlt size={40} className="animate-spin text-basePrimary" />
+        </div>
+      }
+    >
+      <SideBarLayoutComp>{children}</SideBarLayoutComp>
+    </Suspense>
   );
 }

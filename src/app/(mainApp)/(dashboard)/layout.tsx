@@ -8,10 +8,10 @@ import { useAttendee } from "@/hooks";
 
 export default function RootLayout({
   children,
-  params : {eventId}
+  
 }: {
   children: React.ReactNode;
-  params : {eventId : string}
+ 
 }) {
   const { userData, user } = useAttendee();
   const divRef = useRef<HTMLDivElement>(null);
@@ -47,7 +47,7 @@ export default function RootLayout({
   return (
     <>
       <main className="relative w-full h-full bg-[#F9FAFF]" ref={divRef}>
-        <SideBarLayout eventId={eventId}>{children}</SideBarLayout>
+        <SideBarLayout >{children}</SideBarLayout>
       </main>
       <Toaster />
     </>
