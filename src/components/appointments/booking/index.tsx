@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Calender from './Calender'
 import {useGetBookingAppointment} from "@/hooks"
 import Image from 'next/image'
@@ -11,7 +11,13 @@ const Booking =  ({alias}:{alias:string}) => {
   const {appointment: appointmnetLink, isLoading, error, } = useGetBookingAppointment(alias)
   const {bookingFormData, isFormUp} = useAppointmentContext()
 //   console.log({appointmnetLink, bookingFormData})
+    const [delay, setDelay] = useState(true)
 
+    useEffect(() => {
+      setTimeout(() => {
+        setDelay(false)
+      }, 1000);
+    }, [])
     
   return (
     <main className='relative py-8 md:py-4 sm:px-6 xl:px-12 flex flex-col gap-2 bg-[#F9FAFF]  min-h-screen   '>
@@ -26,12 +32,12 @@ const Booking =  ({alias}:{alias:string}) => {
 
         <header className='max-md:pl-4 shrink-0'>
             {
-                isLoading ?
+                isLoading || delay ?
                 <div className='w-20 h-10 rounded-md animate-pulse bg-[#F9FAFF]'></div>
                 :
                 appointmnetLink?.logo ?
                 <div className=''>
-                    <Image src={appointmnetLink?.logo } alt='brand logo' width={35} height={20} />
+                    <Image src={appointmnetLink?.logo } alt='brand logo' width={120} height={85} className='h-10' />
                 </div>
                 :
                 <div className=''>
