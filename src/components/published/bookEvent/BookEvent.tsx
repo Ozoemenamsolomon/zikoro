@@ -707,13 +707,13 @@ export function BookEvent({
                   }}
                   className="w-full flex flex-col gap-y-2 items-start justify-start"
                 >
-                  <div className="w-full space-y-1">
+                {  <div className="w-full space-y-1">
                     <div className="w-full flex items-center ">
                       <input
                         type="text"
                         value={code}
                         onChange={(e) => setCode(e.target.value)}
-                        placeholder="Enter a valid discount code"
+                        placeholder="Enter a valid discount code (optional)"
                         className="bg-transparent h-14 rounded-l-md px-3 outline-none placeholder:text-gray-300 border border-gray-300 w-[75%]"
                       />
                       <Button
@@ -727,7 +727,7 @@ export function BookEvent({
                     <p className="text-tiny text-gray-500">
                       Discount code is case sensitive
                     </p>
-                  </div>
+                  </div>}
                 </div>
            <div className="w-full inset-x-0 md:bg-white md:p-2 md:absolute bottom-0 md:h-32">
            <Button
