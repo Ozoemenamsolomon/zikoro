@@ -117,7 +117,7 @@ function SpeakerWidget({
             }
             width={300}
             height={300}
-            className="rounded-full w-24 h-24"
+            className="rounded-full object-cover w-24 h-24"
             alt="speaker"
           />
         ) : (

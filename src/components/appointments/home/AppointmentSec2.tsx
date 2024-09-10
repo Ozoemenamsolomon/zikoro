@@ -25,7 +25,7 @@ export default function AppointmentSec2() {
           <div>
             <div className=" flex items-center justify-center mx-auto">
               <button
-                onClick={() => router.push("/home")}
+                onClick={() => router.push("/appointments")}
                 className="text-white font-semibold text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-[10px] px-[64px] rounded-lg"
               >
                 Get Started For Free!
