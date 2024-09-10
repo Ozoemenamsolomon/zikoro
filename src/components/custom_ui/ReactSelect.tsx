@@ -19,6 +19,7 @@ interface SelectProps<T extends FieldValues> extends UseControllerProps<T> {
   height?: string;
   borderColor?: string;
   placeHolderColor?: string;
+  minHeight?: string;
 }
 function ErrorText({ children }: { children?: string }) {
   return (
@@ -34,6 +35,7 @@ export const ReactSelect = React.forwardRef<
 >((props, ref) => {
   const {
     label,
+    minHeight,
     options,
     bgColor,
     height,
@@ -72,6 +74,7 @@ export const ReactSelect = React.forwardRef<
             //   borderColor: borderColor || "#6b7280",
             // },
             height: "100%",
+            minHeight: minHeight || baseStyles.minHeight,
            // backgroundColor: bgColor || "#ffffff",
             boxShadow: "0px",
             borderRadius: "6px",
