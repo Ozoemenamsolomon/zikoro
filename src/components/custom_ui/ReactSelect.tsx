@@ -115,6 +115,10 @@ export const ReactSelect = React.forwardRef<
             ...baseStyle,
             width: "0px",
           }),
+          container: (baseStyle) => ({
+            ...baseStyle,
+            height: minHeight || baseStyle.height,
+          }),
         }}
         options={options}
         onChange={(newValue) => onChange(newValue?.value)}
