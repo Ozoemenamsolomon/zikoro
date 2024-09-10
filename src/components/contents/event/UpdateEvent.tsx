@@ -322,7 +322,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
               id="form"
             >
               <div className="w-full py-4 flex items-center  justify-between">
-                <h2 className="text-base sm:text-xl font-semibold">
+                <h2 className="hidden sm:block text-base sm:text-xl font-semibold">
                   Event Details
                 </h2>
                 <div className="flex items-center gap-x-2">
