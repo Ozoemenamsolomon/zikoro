@@ -15,21 +15,16 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useSearchParams } from "next/navigation";
 import { AuthLayout } from "@/components";
 
-export default function Page() {
+export default function Page({ searchParams: { redirectedFrom } }) {
   const [showPassword, setShowPassword] = useState(false);
   const { loading, logIn } = useLogin();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
   });
 
-  const params = useSearchParams();
-  const redirectTo = params.get("redirectedFrom");
-
-  console.log(redirectTo);
-
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values, redirectTo);
-    await logIn(values, redirectTo);
+    console.log(values, redirectedFrom);
+    await logIn(values, redirectedFrom);
   }
 
   return (
@@ -50,7 +45,7 @@ export default function Page() {
                   type="email"
                   placeholder="Enter your email address"
                   {...field}
-                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                  className=" placeholder:text-sm h-12  text-gray-700"
                 />
               </InputOffsetLabel>
             )}
@@ -65,7 +60,7 @@ export default function Page() {
                     placeholder="Enter Password"
                     type={showPassword ? "text" : "password"}
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-12  text-gray-700"
                   />
                   <button
                     onClick={(e) => {

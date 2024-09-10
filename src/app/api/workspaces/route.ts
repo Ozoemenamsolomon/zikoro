@@ -11,7 +11,9 @@ export async function GET(req: NextRequest) {
         .from("events")
         .select("*, organization!inner(*)")
         .eq("published", true)
-        .eq("eventVisibility", "Public" )
+        .eq("eventVisibility", "Public")
+        .eq("eventVisibility", "Business")
+        // .in("eventVisibility", ["Public", "Business"])
         .gte("startDateTime", new Date().toISOString()) // Filter non-expired events
 
       if (error) throw error;

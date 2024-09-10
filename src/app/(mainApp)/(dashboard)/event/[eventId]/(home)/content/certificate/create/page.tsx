@@ -406,14 +406,10 @@ export interface TabProps {
   editSettings: (key: keyof TCertificateSettings, value: any) => void;
 }
 
-const page = () => {
+const page = ({ searchParams: { certificateId } }) => {
   const divRef = useRef<HTMLDivElement>(null);
   const certificateDivRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-
-  const searchParams = useSearchParams();
-
-  const certificateId = searchParams.get("certificateId");
 
   const { eventId } = useParams();
   const { certificate, isLoading: certificateIsLoading } = useGetCertificate({
@@ -423,7 +419,6 @@ const page = () => {
   const { event, isLoading: eventIsLoading } = useGetEvent({
     eventId: parseInt(Array.isArray(eventId) ? eventId[0] : eventId),
   });
-  
 
   const [editableCertificate, setCertificate] = useState<TCertificate | null>(
     null
@@ -449,8 +444,6 @@ const page = () => {
       hashRef.current = DEFAULT_FRAME_STATE;
     }
 
-    
-
     setCertificate(certificate);
 
     if (certificate?.certificateName) {
@@ -467,11 +460,9 @@ const page = () => {
       certificate?.certficateDetails?.craftHash &&
       typeof certificate?.certficateDetails?.craftHash === "string"
     ) {
-      
       hashRef.current = lz.decompress(
         lz.decodeBase64(certificate?.certficateDetails?.craftHash)
       );
-      
     }
   }, [certificateIsLoading]);
 
@@ -509,12 +500,10 @@ const page = () => {
   }, []);
 
   const setValue = (key: keyof TCertificateDetails, value: any) => {
-    
     setDetails({ ...details, [key]: value });
   };
 
   const editSettings = (key: keyof TCertificateSettings, value: any) => {
-    
     setSettings({ ...settings, [key]: value });
   };
 
@@ -530,7 +519,6 @@ const page = () => {
   const [data, download] = useToPng<HTMLDivElement>({
     selector: "#certificate",
     onSuccess: (data) => {
-      
       const link = document.createElement("a");
       link.download = certificateName + ".jpeg";
       link.href = data;
@@ -540,8 +528,6 @@ const page = () => {
   const [{ data: png }, convert, certificateRef] = useToPng<HTMLDivElement>({
     onSuccess: async (data) => {
       setUploading(true);
-      
-      
 
       // const img = new Image();
       // img.src = data;
@@ -553,12 +539,11 @@ const page = () => {
       const { url, error } = await uploadFile(snapshot, "image");
 
       if (error || !url) throw error;
-      
+
       // alert("File uploaded successfully", url);
 
       if (!hashRef.current) return;
 
-      
       const newCertificate = await saveCertificate({
         payload: editableCertificate
           ? {
@@ -578,7 +563,6 @@ const page = () => {
               cerificateUrl: url,
             },
       });
-      
 
       setUploading(false);
 
@@ -592,8 +576,6 @@ const page = () => {
   // const onSave = async (query: string) => {
   //   convert()
   // };
-
-  
 
   const PreviewButton = () => {
     const { actions, query, enabled } = useEditor((state) => ({
@@ -688,7 +670,7 @@ const page = () => {
         onClick={() => {
           const json = query.serialize();
           hashRef.current = lz.encodeBase64(lz.compress(json));
-          
+
           convert();
         }}
       >

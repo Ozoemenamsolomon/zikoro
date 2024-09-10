@@ -11,6 +11,7 @@ import { isDateGreaterThanToday } from "@/utils";
 import { PlusCircleFill } from "styled-icons/bootstrap";
 import { CircleMinus } from "styled-icons/fa-solid";
 import { useFieldArray } from "react-hook-form";
+import { RiLock2Line } from "react-icons/ri";
 import {
   Form,
   FormField,
@@ -199,7 +200,7 @@ export function BookEvent({
   const pricingArray = useMemo(() => {
     if (Array.isArray(event?.pricing)) {
       return event?.pricing?.map(
-        ({ price, validity, ticketQuantity, attendeeType, description }) => {
+        ({ price, validity, ticketQuantity, attendeeType, description, accessibility }) => {
           let discountPrice = 0;
           if (!price || Number(price) === 0) {
             discountPrice = 0;
@@ -223,6 +224,7 @@ export function BookEvent({
                   100
                 : 0,
             attendeeType,
+            accessibility,
           };
         }
       );
@@ -572,14 +574,21 @@ export function BookEvent({
                               // selectedPrice(v?.price);
                               // selectedPriceCategory(v?.attendeeType);
                             }}
-                            disabled={isDateGreaterThanToday(v?.validity)}
+                            disabled={isDateGreaterThanToday(v?.validity) || !v?.accessibility}
                             className={cn(
                               "flex flex-col group relative rounded-lg mt-3 items-start justify-between  border p-4 h-[7.5rem] w-full",
-                              isDateGreaterThanToday(v?.validity)
+                              isDateGreaterThanToday(v?.validity) 
                                 ? ""
                                 : "hover:border-basePrimary border-gray-300"
                             )}
                           >
+                             {(isDateGreaterThanToday(v?.validity) || !v?.accessibility) && (
+                              <div className="w-full h-full absolute rounded-lg z-40 flex items-center justify-center inset-0 bg-white/50">
+                                <p className="flex items-center gap-x-2 text-red-300 transform rotate-[30deg]">
+                                  <RiLock2Line size={24}/>
+                                  <span className="text-base sm:text-xl font-medium">Locked</span></p>
+                              </div>
+                            )}
                             {v?.discountPercentage &&
                             v?.discountPercentage > 0 ? (
                               <p
@@ -589,9 +598,7 @@ export function BookEvent({
                               >{`${v?.discountPercentage.toFixed(0)}%`}</p>
                             ) : null}
 
-                            {isDateGreaterThanToday(v?.validity) && (
-                              <div className="w-full h-full absolute inset-0 bg-white/50"></div>
-                            )}
+                           
                             <div className="flex items-center justify-between w-full">
                               <div className="flex flex-col items-start justify-start">
                                 <p className="font-medium text-base">

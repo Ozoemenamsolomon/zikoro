@@ -504,7 +504,6 @@ export default function General() {
     }
   }, [organization, getWorkspaceSubscriptionPlanData]);
 
-  console.log("Organization", organization);
   return (
     <>
       {organization ? (

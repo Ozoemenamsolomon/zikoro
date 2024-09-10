@@ -36,7 +36,7 @@ import {
   getCookie,
   useFormatEventData,
 } from "@/hooks";
-import { toast } from "@/components/ui/use-toast";
+
 
 export function SingleEvent({
   className,
@@ -109,7 +109,6 @@ export function SingleEvent({
   function toggleShareDropDown() {
     showShareDropDown((prev) => !prev);
   }
-
   // conditonally adding comma to separate city and location
   const removeComma = useMemo(() => {
     return event?.eventCity === null || event?.eventCountry === null;
@@ -163,9 +162,9 @@ export function SingleEvent({
 
   return (
     <>
-      <Comp
-        disabled={isExpired || !event?.published}
-        onClick={() => router.push(`/live-events/${event?.eventAlias}`)}
+      <div
+       // disabled={isExpired || !event?.published}
+        // onClick={() => router.push(`/live-events/${event?.eventAlias}`)}
         className={cn("w-full h-fit")}
       >
         <div
@@ -222,7 +221,7 @@ export function SingleEvent({
                 />
               </div>
             </div>
-            {/** */}
+       
             <div
               className={cn(
                 "w-full lg:col-span-4 flex flex-col gap-y-3 py-4 px-4 sm:px-10 sm:py-6 items-start justify-start",
@@ -416,7 +415,7 @@ export function SingleEvent({
             </div>
           </div>
         </div>
-      </Comp>
+      </div>
       {isOpen && (
         <BookEvent
           event={event}
@@ -433,7 +432,7 @@ export function SingleEvent({
           close={onClose}
           trackingId={trackingId}
           affiliateCode={affiliateCode}
-          role={role}
+          role={role|| ''}
           eventLocation={`${event?.eventCity ?? ""}${!removeComma && ","} ${
             event?.eventCountry ?? ""
           }`}
@@ -445,20 +444,7 @@ export function SingleEvent({
   );
 }
 
-{
-  /**
-   
 
-
-
-*/
-}
-
-{
-  /**
-   
-*/
-}
 
 // https://www.linkedin.com/sharing/share-offsite/?url=
 function ActionModal({

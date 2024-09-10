@@ -12,7 +12,7 @@ import Generalsettings from './Generalsettings';
 import { AppointmentFormData, DetailItem } from '@/types/appointments';
 import { usePathname, useRouter } from 'next/navigation';
 import { fetchUser } from '../auth';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import PageLoading from '../ui/Loading';
 import { useGetBookingAppointment } from '@/hooks';
 import { DaySchedule } from '../ui/DateTimeScheduler';
@@ -126,7 +126,7 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
         setFormData({ ...appointment, timeDetails: parsedTimeDetails, category: parsedCategory, isPaidAppointment: appointment.amount ? true : false });
   
         // Debugging output
-        console.log({ parsedCategory, parsedTimeDetails, formData });
+        // console.log({ parsedCategory, parsedTimeDetails, formData });
       } catch (error) {
         console.error('Error parsing appointment details:', error);
       } finally {
@@ -192,8 +192,8 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
       error.maxBooking = 'Max Booking must be a positive number';
     }
     
-    if (data?.sessionBreak === null || data?.sessionBreak <= 0 || !/^\d+$/.test(data.sessionBreak.toString())) {
-      error.sessionBreak = 'Session Break must be a positive number';
+    if (data?.sessionBreak === null || data?.sessionBreak < 0 || !/^\d+$/.test(data.sessionBreak.toString())) {
+      error.sessionBreak = 'Session Break is required';
     }
 
     if (data.isPaidAppointment && data?.amount && data?.amount <= 0  ) {
@@ -280,9 +280,9 @@ const CreateAppointments: React.FC<{ alias?: string }> = ({ alias }) => {
     fetch();
   }, [pathname]);
 
-console.log({errors, formData})
+// console.log({errors, formData})
   return (
-    <main className="py-4 sm:p-8">
+    <main className="py-4 sm:p-8 z-50 relative bg-[#F9FAFF] ">
       <SelectType onClose={()=>setIsOpen(false)} isOpen={isOpen}/>
       <PageLoading isLoading={loading || isLoading} />
       <Link href={'/appointments/schedule'} type="button" className="max-sm:pl-4">

@@ -18,7 +18,14 @@ import useEventStore from "@/store/globalEventStore";
 import useUserStore from "@/store/globalUserStore";
 import { Event, TAttendee } from "@/types";
 import { EngagementsSettings } from "@/types/engagements";
-import { addDays, isBefore, isSameDay, isToday, isWithinInterval, subDays } from "date-fns";
+import {
+  addDays,
+  isBefore,
+  isSameDay,
+  isToday,
+  isWithinInterval,
+  subDays,
+} from "date-fns";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -47,7 +54,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   console.log(
     event?.organization.teamMembers,
     user.userEmail,
-    isCheckedInToday
+    isCheckedInToday,
+    event?.organization.teamMembers.some(
+      ({ userEmail }) => user && userEmail === user.userEmail
+    )
   );
 
   const {

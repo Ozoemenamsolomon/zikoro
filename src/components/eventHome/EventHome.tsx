@@ -3,14 +3,15 @@
 import { EventCards, EventHomeLayout } from ".";
 import { EmptyCard } from "../composables";
 import { useGetUserHomePageEvents } from "@/hooks";
-
+import {Suspense} from "react"
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 export default function EventHome() {
   const { firstOrganizationEvents, loading, refetch } = useGetUserHomePageEvents();
 
   return (
-    <EventHomeLayout>
+   <Suspense>
+     <EventHomeLayout>
       {loading && (
         <div className="w-full h-[300px] flex items-center justify-center">
           <LoaderAlt size={30} className="animate-spin" />
@@ -24,5 +25,6 @@ export default function EventHome() {
         <EmptyCard text={`You have not added any event.`} />
       )}
     </EventHomeLayout>
+   </Suspense>
   );
 }

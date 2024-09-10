@@ -59,6 +59,7 @@ const eventPricing = z.array(
     description: z.any(),
     price: z.string().min(1, { message: "Price is required" }),
     validity: z.string().min(1, { message: "Validity is required" }),
+    accessibility: z.boolean(),
   })
 );
 

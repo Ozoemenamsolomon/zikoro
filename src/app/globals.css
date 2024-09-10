@@ -191,7 +191,7 @@
 
 .ql-container.ql-snow {
   border: 1px solid #f3f3f3 !important;
-  height: 516px;
+  height: 400px;
   border-top: none;
   font-size: 14px;
   border-radius: 0px 0px 8px 8px;
@@ -200,6 +200,7 @@
 .ql-toolbar.ql-snow {
   border-radius: 8px 8px 0px 0px;
   border: 1px solid #f3f3f3 !important;
+  background: linear-gradient(to right, #001FCC19 0%, #9D00FF19 100%);
 }
 
 .ql-editor.ql-blank::before {
@@ -212,13 +213,11 @@
   right: 15px;
 }
 
-.ql-container.ql-snow {
-  border: 1px solid #f3f3f3 !important;
-  height: 480px;
-  border-top: none;
-  font-size: 14px;
-  border-radius: 0px 0px 8px 8px;
+.ql-container.ql-snow .ql-editor {
+  border: 1px solid #001FCC19 !important;
 }
+
+
 
 .banner .slick-dots {
   display: none;
@@ -570,7 +569,7 @@ input[type="number"] {
 .partner-description-input .ql-toolbar.ql-snow {
   border-radius: 8px 8px 0px 0px;
   border: 1px solid #f3f3f3 !important;
-  background: #001fcc1a;
+  background: linear-gradient(to right, #001FCC19 0%, #9D00FF19 100%);
 }
 
 .partner-description-input .ql-editor.ql-blank::before {

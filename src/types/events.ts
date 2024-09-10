@@ -28,6 +28,7 @@ interface PricingType {
   description: string;
   price: string;
   validity: string;
+  accessibility: boolean;
 }
 
 export type PartnerIndustry = {

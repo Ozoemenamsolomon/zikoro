@@ -376,6 +376,8 @@ export default function Presentation({
                     chosenAvatar={chosenAvatar}
                     setChosenAvatar={setChosenAvatar}
                     audio={audio}
+                    onToggle={onToggle}
+                    isLeftBox={isLeftBox}
                   />
                 </div>
               ) : (
@@ -453,6 +455,8 @@ export function PlayersOnboarding({
   setChosenAvatar,
   audio,
   quiz,
+  onToggle,
+                    isLeftBox
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -470,6 +474,8 @@ export function PlayersOnboarding({
   >;
   audio?: HTMLAudioElement | null;
   quiz: TQuiz<TQuestion[]>;
+  onToggle:() => void;
+  isLeftBox:boolean;
 }) {
   const { updateQuiz } = useUpdateQuiz();
   const { addLiveParticipant } = useAddLiveParticipant();
@@ -883,6 +889,8 @@ export function PlayersOnboarding({
           isAttendee={isAttendee}
           isMaxLiveParticipant={isMaxLiveParticipant}
           liveQuizPlayers={liveQuizPlayers}
+          isLeftBox={isLeftBox}
+          onToggle={onToggle}
         />
       )}
       {isAvatarModal && (

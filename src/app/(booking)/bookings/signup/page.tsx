@@ -4,7 +4,7 @@ import AppointmentSignupForm from "@/components/appointments/signup/AppointmentS
 
 const AppointmentSignupPage = () => {
   return (
-    <div className="flex items-center lg:items-start  bg-white w-full h-screen lg:justify-between justify-center lg:bg-[url('/appointments/bgImg.webp')] lg:bg-cover lg:bg-center lg:bg-no-repeat lg:h-fit 2xl:h-screen py-1 px-3 lg:py-[50px] lg:px-[50px] xl:p-[91px] max-w-full xl:max-w-[97rem]  mx-auto">
+    <div className="flex items-center lg:items-start  bg-white w-full h-screen lg:justify-between justify-center lg:bg-[url('/appointments/bgImg.webp')] lg:bg-cover lg:bg-center lg:bg-no-repeat lg:h-fit 2xl:h-screen py-1 px-5 lg:py-[50px] lg:px-[50px] xl:p-[91px] max-w-full xl:max-w-[97rem] ">
       <div className="mt-[34px] hidden lg:block">
         <p className=" bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end gradient-text text-[32px] font-extrabold leading-none">
           Get started with{" "}

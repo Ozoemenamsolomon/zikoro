@@ -8,16 +8,15 @@ import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import VerificationInput from "react-verification-input";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-export default function Page() {
+
+export default function Page({
+  searchParams: { message, content, email, type },
+}) {
   const [secondsLeft, setSecondsLeft] = useState(60);
   const { loading, resendLink } = useResendLink();
-  const { loading: isVerifying, verifyCode } = useVerifyCode()
+  const { loading: isVerifying, verifyCode } = useVerifyCode();
   const search = useSearchParams();
-  const [code, setCode] = useState("")
-  const message = search.get("message");
-  const content = search.get("content");
-  const email = search.get("email");
-  const type = search.get("type");
+  const [code, setCode] = useState("");
 
   useEffect(() => {
     const countdownInterval = setInterval(() => {
@@ -34,7 +33,7 @@ export default function Page() {
   }, []);
 
   async function verify() {
-    await verifyCode(email!, code, type)
+    await verifyCode(email!, code, type);
   }
   return (
     <div className="w-full h-full inset-0 fixed">
@@ -59,7 +58,6 @@ export default function Page() {
               }}
               placeholder=" "
               length={6}
-            
               inputProps={{
                 autoComplete: "one-time-code", // for IOS
               }}
@@ -75,7 +73,7 @@ export default function Page() {
             className="bg-basePrimary gap-x-2 text-gray-50 mt-3  font-medium flex items-center justify-center w-full  h-12 2xl:h-14 rounded-lg"
           >
             {isVerifying && <LoaderAlt size={22} className="animate-spin" />}
-            <p>{type === "reset-password" ? "Verify OTP": 'Verify'}</p>
+            <p>{type === "reset-password" ? "Verify OTP" : "Verify"}</p>
           </Button>
         </div>
 
@@ -86,16 +84,19 @@ export default function Page() {
               <Button
                 disabled={loading}
                 onClick={() => resendLink(email!)}
-                className={cn("hidden text-basePrimary px-2 hover:underline w-fit font-semibold", secondsLeft <= 0 && "flex")}
+                className={cn(
+                  "hidden text-basePrimary px-2 hover:underline w-fit font-semibold",
+                  secondsLeft <= 0 && "flex"
+                )}
               >
                 Resend
               </Button>
             </div>
-
           </div>
         )}
-        <p className="font-semibold w-full text-center">{`0:${secondsLeft >= 10 ? "" : "0"
-          }${secondsLeft}`}</p>
+        <p className="font-semibold w-full text-center">{`0:${
+          secondsLeft >= 10 ? "" : "0"
+        }${secondsLeft}`}</p>
       </div>
     </div>
   );

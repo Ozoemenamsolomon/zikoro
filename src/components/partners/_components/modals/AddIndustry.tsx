@@ -116,7 +116,7 @@ export function AddIndustry({
                     type="text"
                     placeholder="Industry"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                    className=" placeholder:text-sm h-11 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}

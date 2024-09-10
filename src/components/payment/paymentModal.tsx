@@ -1,7 +1,8 @@
 "use client";
+
 import { ArrowBackOutline } from "styled-icons/evaicons-outline/";
 import React, { useEffect, useState } from "react";
-import { PaymentPlus, PaymentTick } from "@/constants";
+import { PaymentTick } from "@/constants";
 import { PlusCircle, PlusCircleFill } from "styled-icons/bootstrap";
 import { MinusCircle } from "styled-icons/evaicons-solid";
 import { useRouter, usePathname } from "next/navigation";
@@ -68,14 +69,14 @@ type DBOrganisationSchema = {
   facebook: string;
 };
 
-export function PaymentModal({
+export default function SubscriptionPaymentModal({
   updateModalState,
   chosenPlan,
   chosenCurrency,
   chosenPrice,
   isChosenMonthly,
 }: Props) {
-  const { user, setUser } = useUserStore();
+  const { user } = useUserStore();
   const [haveCoupon, setHaveCoupon] = useState<boolean>(false);
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const [isRedeemed, setIsRedeemed] = useState<boolean>(false);
@@ -109,19 +110,20 @@ export function PaymentModal({
   //submit organization details
   const submitForm = (e: any) => {
     e.preventDefault();
-    const url = `/payment?name=${encodeURIComponent(user?.firstName || "")}
-      &id=${encodeURIComponent(user?.id || "")}
-      &email=${encodeURIComponent(user?.userEmail || "")}
-      &plan=${encodeURIComponent(chosenPlan || "")}
-      &isMonthly=${encodeURIComponent(isChosenMonthly || "")}
-      &total=${encodeURIComponent(totalPrice.toString())}
-      &currency=${encodeURIComponent(chosenCurrency)}
-      &coupon=${encodeURIComponent(couponText)}
-      &orgId=${encodeURIComponent(orgId)}
-      &orgAlias=${encodeURIComponent(orgAlias)}
-      &redirectUrl=${encodeURIComponent("/workspace/general")}`;
+    if (user) {
+      const url = `/payment?name=${encodeURIComponent(user?.firstName || "")}
+  &id=${encodeURIComponent(user?.id || "")}
+  &plan=${encodeURIComponent(chosenPlan || "")}
+  &isMonthly=${encodeURIComponent(isChosenMonthly)}
+  &total=${encodeURIComponent(totalPrice)}
+  &currency=${encodeURIComponent(chosenCurrency)}
+  &coupon=${encodeURIComponent(couponText)}
+  &redirectUrl=${encodeURIComponent("/workspace/general")}
+  &orgId=${encodeURIComponent(orgId)}
+  &orgAlias=${encodeURIComponent(orgAlias)}`;
 
-    router.push(url);
+      router.push(url);
+    }
   };
 
   //create organization form
@@ -208,6 +210,7 @@ export function PaymentModal({
 
     fetchAllCouponCodes();
   }, []);
+
 
   return (
     <div className="w-full h-full fixed z-[100] inset-0 bg-black/50 overflow-y-auto ">

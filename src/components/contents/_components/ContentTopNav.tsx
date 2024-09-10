@@ -47,7 +47,7 @@ export function ContentTopNav({ eventId }: { eventId: string | string[] }) {
               <Link
                 href={`/event/${eventId}/content/${href}`}
                 key={index}
-                className={`pl-2 ${
+                className={`pl-2 text-[#3E404B] ${
                   pathname.split("/")[path.length - 1] === href &&
                   "text-basePrimary"
                 }`}

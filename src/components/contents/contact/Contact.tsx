@@ -20,11 +20,15 @@ import {
   FormMessage,
 } from "@/components";
 import { useForm } from "react-hook-form";
-import { useFetchSingleOrganization, getCookie, useUpdateEvent, useFetchSingleEvent } from "@/hooks";
+import {
+  useFetchSingleOrganization,
+  useUpdateEvent,
+  useFetchSingleEvent,
+} from "@/hooks";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
 function Contact({ eventId }: { eventId: string }) {
-  const {data: event, loading: fetching} = useFetchSingleEvent(eventId)
+  const { data: event, loading: fetching } = useFetchSingleEvent(eventId);
   const { data, refetch } = useFetchSingleOrganization(event?.organization?.id);
   const { updateOrg, loading } = useUpdateEvent();
   const [phoneCountryCode, setPhoneCountryCode] = useState<string | undefined>(
@@ -43,7 +47,7 @@ function Contact({ eventId }: { eventId: string }) {
   }, []);
 
   async function onSubmit(values: any) {
-    //  
+    //
 
     let logoUrl: any = "";
 
@@ -66,7 +70,7 @@ function Contact({ eventId }: { eventId: string }) {
       eventPhoneNumber: phoneCountryCode + values.eventPhoneNumber,
       eventWhatsApp: whatsappCountryCode + values.eventWhatsApp,
     };
-    // 
+    //
 
     await updateOrg(payload, String(event?.organization?.id!));
     refetch();
@@ -78,19 +82,30 @@ function Contact({ eventId }: { eventId: string }) {
     if (event) {
       // get the added country code
       const previousCode = COUNTRY_CODE?.find(
-        ({ name }) => name.toLowerCase() === event?.organization?.country?.toLowerCase() 
+        ({ name }) =>
+          name.toLowerCase() === event?.organization?.country?.toLowerCase()
       )?.dial_code;
 
       // remove country code from the prev phone or whatsapp Number
       let updatedPhoneNumber = "";
       let updatedWhatsappNumber = "";
 
-      if (previousCode && event?.organization?.eventPhoneNumber?.startsWith(previousCode)) {
-        updatedPhoneNumber = event?.organization?.eventPhoneNumber.slice(previousCode?.length);
+      if (
+        previousCode &&
+        event?.organization?.eventPhoneNumber?.startsWith(previousCode)
+      ) {
+        updatedPhoneNumber = event?.organization?.eventPhoneNumber.slice(
+          previousCode?.length
+        );
       }
 
-      if (previousCode && event?.organization?.eventWhatsApp?.startsWith(previousCode)) {
-        updatedWhatsappNumber = event?.organization?.eventWhatsApp.slice(previousCode?.length);
+      if (
+        previousCode &&
+        event?.organization?.eventWhatsApp?.startsWith(previousCode)
+      ) {
+        updatedWhatsappNumber = event?.organization?.eventWhatsApp.slice(
+          previousCode?.length
+        );
       }
       form.reset({
         country: event?.organization?.country,
@@ -159,16 +174,18 @@ function Contact({ eventId }: { eventId: string }) {
                   control={form.control}
                   name="country"
                   render={({ field }) => (
-                    <ReactSelect
-                      {...form.register("country")}
-                      defaultValue={{
-                        value: event?.organization?.country,
-                        label: event?.organization?.country,
-                      }}
-                      placeHolder="Select the Country"
-                      label="Country"
-                      options={countriesList}
-                    />
+                    <InputOffsetLabel label="Country">
+                      <ReactSelect
+                        {...form.register("country")}
+                        defaultValue={{
+                          value: event?.organization?.country,
+                          label: event?.organization?.country,
+                        }}
+                        placeHolder="Select the Country"
+                        label=""
+                        options={countriesList}
+                      />
+                    </InputOffsetLabel>
                   )}
                 />
               )}
@@ -178,26 +195,26 @@ function Contact({ eventId }: { eventId: string }) {
                   control={form.control}
                   name="eventPhoneNumber"
                   render={({ field }) => (
-                    <FormItem className="relative h-fit">
-                      <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                        Phone number
-                      </FormLabel>
-                      <input
-                        type="text"
-                        className="!mt-0 text-sm absolute top-[40%]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
-                        value={phoneCountryCode}
-                        onChange={(e) => setPhoneCountryCode(e.target.value)}
-                      />
-                      <FormControl>
+                    <InputOffsetLabel
+                      className="relative w-full"
+                      label="Phone Number"
+                    >
+                      <div className="relative w-full">
+                        <input
+                          type="text"
+                          className="!mt-0 text-sm absolute top-[28%] bg-transparent left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
+                          value={phoneCountryCode}
+                          onChange={(e) => setPhoneCountryCode(e.target.value)}
+                        />
+
                         <Input
-                          className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
+                          className="placeholder:text-sm h-11 pl-12"
                           placeholder="Enter phone number"
                           {...form.register("eventPhoneNumber")}
                           type="tel"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                      </div>
+                    </InputOffsetLabel>
                   )}
                 />
 
@@ -205,26 +222,28 @@ function Contact({ eventId }: { eventId: string }) {
                   control={form.control}
                   name="eventWhatsApp"
                   render={({ field }) => (
-                    <FormItem className="relative">
-                      <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-[10px] px-1">
-                        WhatsApp number
-                      </FormLabel>
-                      <input
-                        type="text"
-                        className="!mt-0 text-sm absolute top-[40%] left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
-                        value={whatsappCountryCode}
-                        onChange={(e) => setWhatsAppCountryCode(e.target.value)}
-                      />
-                      <FormControl>
+                    <InputOffsetLabel
+                      className="relative w-full"
+                      label="WhatsApp Number"
+                    >
+                      <div className="w-full relative">
+                        <input
+                          type="text"
+                          className="!mt-0 text-sm absolute bg-transparent top-[28%] left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
+                          value={whatsappCountryCode}
+                          onChange={(e) =>
+                            setWhatsAppCountryCode(e.target.value)
+                          }
+                        />
+
                         <Input
-                          className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
+                          className="placeholder:text-sm h-11  text-gray-700 pl-12"
                           placeholder="Enter whatsapp number"
                           {...form.register("eventWhatsApp")}
                           type="tel"
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                      </div>
+                    </InputOffsetLabel>
                   )}
                 />
               </div>
@@ -237,7 +256,7 @@ function Contact({ eventId }: { eventId: string }) {
                       type="text"
                       placeholder="Enter email address"
                       {...form.register("eventContactEmail")}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                      className=" placeholder:text-sm h-11  placeholder:text-gray-200 text-gray-700"
                     />
                   </InputOffsetLabel>
                 )}
@@ -248,13 +267,12 @@ function Contact({ eventId }: { eventId: string }) {
                   control={form.control}
                   name="organizationLogo"
                   render={({ field }) => (
-                    <label
+                   <InputOffsetLabel label="Organization Logo">
+                     <label
                       htmlFor="add-logo"
-                      className="w-full border border-gray-200 relative rounded-lg flex items-center justify-start h-12"
+                      className="w-full  relative rounded-lg flex items-center justify-start h-11"
                     >
-                      <span className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1">
-                        Organization Logo
-                      </span>
+                     
                       <div className="flex px-4 items-center gap-x-3">
                         <Camera size={20} />
                         <p className="text-gray-400">Add Logo</p>
@@ -268,6 +286,7 @@ function Contact({ eventId }: { eventId: string }) {
                         hidden
                       />
                     </label>
+                   </InputOffsetLabel>
                   )}
                 />
 
@@ -300,56 +319,48 @@ function Contact({ eventId }: { eventId: string }) {
                 )}
               </div>
             </div>
-            <div className="p-4 mt-[1rem] space-y-10 border rounded-md ">
+            <div className="p-4 mt-[1rem] bg-white space-y-10 border rounded-md ">
               <h6 className="text-bold">Social media profile</h6>
 
               <FormField
                 control={form.control}
                 name="x"
                 render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormLabel className="absolute -top-[0.4rem]  right-4 bg-white text-gray-600 text-[10px] px-1">
-                      Twitter
-                    </FormLabel>
-                    <img
-                      src="/twitter.svg"
-                      className="text-sm text-black absolute top-1 ml-2 right-4 p-1 "
-                    />
-                    <FormControl>
+                  <InputOffsetLabel label="Twitter">
+                    <div className="w-full relative">
+                      <img
+                        src="/twitter.svg"
+                        className="text-sm text-black absolute top-1 ml-2 right-4 p-1 "
+                      />
                       <Input
                         type="text"
                         placeholder="https://www.x.com/"
                         {...form.register("x")}
-                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        className=" placeholder:text-sm  text-gray-700"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                    </div>
+                  </InputOffsetLabel>
                 )}
               />
 
               <FormField
                 control={form.control}
-                name="linkedIn"
+                name="x"
                 render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormLabel className="absolute -top-[0.4rem]  right-4 bg-white text-gray-600 text-[10px] px-1">
-                      LinkedIn
-                    </FormLabel>
-                    <img
-                      src="/linkedin.svg"
-                      className="text-sm text-black absolute top-1 ml-2 right-4 p-1 "
-                    />
-                    <FormControl>
+                  <InputOffsetLabel label="LinkedIn">
+                    <div className="relative">
+                      <img
+                        src="/linkedin.svg"
+                        className="text-sm text-black absolute top-2 ml-2 right-4 p-1 "
+                      />
                       <Input
                         type="text"
                         placeholder="https://www.linkedin.com/"
                         {...form.register("linkedIn")}
-                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        className=" placeholder:text-sm  text-gray-700"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                    </div>
+                  </InputOffsetLabel>
                 )}
               />
 
@@ -357,24 +368,20 @@ function Contact({ eventId }: { eventId: string }) {
                 control={form.control}
                 name="facebook"
                 render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormLabel className="absolute -top-[0.4rem]  right-4 bg-white text-gray-600 text-[10px] px-1">
-                      Facebook
-                    </FormLabel>
-                    <img
-                      src="/twitter.svg"
-                      className="text-sm text-black absolute top-1 ml-2 right-4 p-1 "
-                    />
-                    <FormControl>
+                  <InputOffsetLabel label="Facebook">
+                    <div className="relative w-full">
+                      <img
+                        src="/facebook.svg"
+                        className="text-sm text-black absolute top-2 ml-2 right-4 p-1 "
+                      />
                       <Input
                         type="text"
                         placeholder="https://www.facebook.com/"
                         {...form.register("facebook")}
-                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        className=" placeholder:text-sm  text-gray-700"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                    </div>
+                  </InputOffsetLabel>
                 )}
               />
 
@@ -382,24 +389,20 @@ function Contact({ eventId }: { eventId: string }) {
                 control={form.control}
                 name="instagram"
                 render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormLabel className="absolute -top-[0.4rem]  right-4 bg-white text-gray-600 text-[10px] px-1">
-                      Instagram
-                    </FormLabel>
-                    <img
-                      src="/instagram.svg"
-                      className="text-sm text-black absolute top-1 ml-2 right-4 p-1 "
-                    />
-                    <FormControl>
+                  <InputOffsetLabel label="Instagram">
+                    <div className="w-full relative">
+                      <img
+                        src="/instagram.svg"
+                        className="text-sm text-black absolute top-2 ml-2 right-4 p-1 "
+                      />
                       <Input
                         type="text"
                         placeholder="https://www.instagram.com/"
                         {...form.register("instagram")}
-                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        className=" placeholder:text-sm  text-gray-700"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                    </div>
+                  </InputOffsetLabel>
                 )}
               />
             </div>

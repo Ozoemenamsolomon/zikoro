@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { Input } from "@/components/ui/input";
+import { format } from "date-fns";
 
 const eventWebsiteSettings = [
   { title: "Logo", status: false },

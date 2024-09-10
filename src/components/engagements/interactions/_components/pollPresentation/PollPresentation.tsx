@@ -45,6 +45,7 @@ export default function PollPresentation({
   const { isOrganizer, attendeeId, attendee, loading, isLoading } =
     useVerifyUserAccess(eventId); // verify user
   const { data } = useFetchSingleEvent(eventId);
+  const [isRightBox, setRightBox] = useState(false);
   const { isIdPresent } = useCheckTeamMember({ eventId }); // verify team member
   const [isLeftBox, setLeftBox] = useState(true); // state to toggle ad visibility
   const [isLobby, setisLobby] = useState(false); // state to show the attendee's or player's lobby
@@ -231,14 +232,14 @@ export default function PollPresentation({
           ) : (
             <>
               {isNotStarted && poll ? (
-                <div className="w-full grid grid-cols-8 bg-white items-center h-full">
+                <div className="w-full grid grid-cols-8  items-center h-full">
                   {(isIdPresent || isOrganizer) && isLobby && (
                     <Advert
                       quiz={poll}
                       eventName={data?.eventTitle ?? ""}
                       isRightBox={false}
                       isLeftBox={isLeftBox}
-                      close={onClose}
+                      close={onToggle}
                     />
                   )}
                   <PlayersOnboarding
@@ -255,28 +256,41 @@ export default function PollPresentation({
                     setisLobby={setisLobby}
                     chosenAvatar={chosenAvatar}
                     setChosenAvatar={setChosenAvatar}
+                    onToggle={onToggle}
+                    isLeftBox={isLeftBox}
                   />
                 </div>
               ) : (
-                <div className="w-full mx-auto absolute px-4 sm:px-6 bg-white inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
+                <div className="w-full mx-auto absolute px-4 sm:px-6  inset-x-0 top-10 grid md:grid-cols-11 h-[90vh] overflow-hidden items-start">
                   {(isIdPresent || isOrganizer) && poll && (
                     <Advert
                       quiz={poll}
+                      isFromPoll
                       eventName={data?.eventTitle ?? ""}
-                      isRightBox={false}
+                      isRightBox={isRightBox}
                       isLeftBox={isLeftBox}
-                      close={onClose}
+                      close={() =>{
+                        if (isRightBox) {
+                          setRightBox(false)
+                        }
+                        else {
+                        onToggle()
+
+                        }
+                      }}
                     />
                   )}
                   <PollQuestion
                     isLeftBox={isLeftBox}
+                    isRightBox={isRightBox}
+                    toggleRightBox={() => setRightBox(true)}
                     answer={answer}
                     quizAnswer={answers}
                     getAnswer={getAnswer}
                     refetchQuiz={getPoll}
                     refetchQuizAnswers={getAnswers}
                     poll={poll || refinedPollArray}
-                    toggleLeftBox={onClose}
+                    toggleLeftBox={onToggle}
                     onOpenScoreSheet={onOpenScoreSheet}
                     goBack={exitPoll}
                     updateQuiz={updatePoll}

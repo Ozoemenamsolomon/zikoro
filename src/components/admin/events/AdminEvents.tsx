@@ -15,7 +15,7 @@ import { AboutWidget, EventLocationType } from "@/components/composables";
 import { TOrgEvent } from "@/types";
 import { PublishCard } from "@/components/composables";
 import { PreviewModal } from "../../contents/_components/modal/PreviewModal";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useFormatEventData, usePublishEvent, getCookie } from "@/hooks";
 import { Download } from "styled-icons/bootstrap";
 import { Eye } from "styled-icons/feather";
@@ -25,7 +25,7 @@ import useUserStore from "@/store/globalUserStore";
 import { ExternalLink } from "styled-icons/feather";
 import Link from "next/link";
 
-export default function AdminEvents() {
+ function AdminEventsComp() {
   const { events, getEvents: refetch, isLoading: loading } = useGetEvents();
   const search = useSearchParams();
   const query = search.get("e");
@@ -266,4 +266,13 @@ function EventCard({
       )}
     </>
   );
+}
+
+
+export default function AdminEvents() {
+return (
+  <Suspense>
+    <AdminEventsComp />
+  </Suspense>
+)
 }
