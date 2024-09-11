@@ -111,7 +111,8 @@ const AppointmentSignupForm = () => {
           Get Started
         </button>
       </form>
-      <div className="max-[400px]:hidden ">
+
+      {/* <div className="max-[400px]:hidden ">
         <OrIcon />
       </div>
 
@@ -121,7 +122,7 @@ const AppointmentSignupForm = () => {
         className="py-4 px-3 flex items-center justify-center gap-x-2 text-base w-full rounded-[8px] mt-10 mb-6  border-[1px] border-gray-200"
       >
         <GoogleBlackIcon /> Sign Up with google
-      </button>
+      </button> */}
 
       <p className="mt-[14px] text-center">
         Already have an account?{" "}

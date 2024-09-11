@@ -4,6 +4,7 @@ import { cn,  } from '@/lib';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React  from 'react';
+import Link from 'next/link'
 
 interface MoreToolsProps {
   open: string; className?:string;
@@ -22,15 +23,14 @@ const MenuBox: React.FC<MoreToolsProps> = ({ open, className, setOpen }) => {
       <div
         className="h-full bg-white/20 pb-12  rounded-md w-full grid grid-cols-2 gap-3 p-4 "
       >
-        <button
+        <Link href='/events' target='_blank'
           onClick={() => {
-            push('/events')
             setOpen('')
         }}
           className="w-full"
         >
             <Image src={'/zikoro-events.png'} alt='zikoro events' height={150} width={250} className='w-full object-contain shrink-0'/>
-        </button>
+        </Link>
       </div>
     </div> 
 

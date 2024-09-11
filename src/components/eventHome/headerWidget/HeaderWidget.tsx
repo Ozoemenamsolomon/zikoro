@@ -119,7 +119,8 @@ export function HeaderWidget({
                   options={formattedList}
                   borderColor="#001fcc"
                   bgColor="#001fcc1a"
-                 height="h-[2.4rem]"
+                 height="h-[2.3rem]"
+                 minHeight="34px"
                   placeHolderColor="#64748b"
                   placeHolder="Select Organization"
                 />

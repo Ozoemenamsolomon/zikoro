@@ -149,14 +149,18 @@ export async function POST(req: NextRequest) {
         }
       }
 
+    if (affiliateCode) {
       const { error: updateLinkError } = await supabase
-        .from("affiliateLinks")
-        .update({ isUsed: true })
-        .eq("linkCode", affiliateCode);
+      .from("affiliateLinks")
+      .update({ isUsed: true })
+      .eq("linkCode", affiliateCode);
 
       if (updateLinkError) {
         console.log(`error fetching user`);
       }
+    }
+
+   
 
       // create attendee array
       const resolveAttendees = attendeesDetails.map(
