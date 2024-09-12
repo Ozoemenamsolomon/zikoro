@@ -15,7 +15,7 @@ const Verification = ({ details, setValue }: TabProps) => {
           ref={(ref) =>
             ref && connectors.create(ref, <CertificateQRCode url="this" />)
           }
-          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          className={"bg-basePrimary/20 border-basePrimary py-3 px-2 rounded text-basePrimary w-full border"}
           data-cy="toolbox-qr-code"
         >
           Drag to add QR code
@@ -33,7 +33,7 @@ const Verification = ({ details, setValue }: TabProps) => {
               />
             )
           }
-          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          className={"bg-basePrimary/20 border-basePrimary py-3 px-2 rounded text-basePrimary w-full border"}
           data-cy="toolbox-qr-code"
         >
           Drag to add Certificate Id
@@ -51,7 +51,7 @@ const Verification = ({ details, setValue }: TabProps) => {
               />
             )
           }
-          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          className={"bg-basePrimary/20 border-basePrimary py-3 px-2 rounded text-basePrimary w-full border"}
           data-cy="toolbox-qr-code"
         >
           Drag to add attendee name
@@ -64,7 +64,7 @@ const Verification = ({ details, setValue }: TabProps) => {
               <Text text={"#{first_name#}"} isBold isItalic isNotEditable />
             )
           }
-          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          className={"bg-basePrimary/20 border-basePrimary py-3 px-2 rounded text-basePrimary w-full border"}
           data-cy="toolbox-qr-code"
         >
           Drag to add attendee first name
@@ -77,7 +77,7 @@ const Verification = ({ details, setValue }: TabProps) => {
               <Text text={"#{last_name#}"} isBold isItalic isNotEditable />
             )
           }
-          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          className={"bg-basePrimary/20 border-basePrimary py-3 px-2 rounded text-basePrimary w-full border"}
           data-cy="toolbox-qr-code"
         >
           Drag to add attendee last name
@@ -90,7 +90,7 @@ const Verification = ({ details, setValue }: TabProps) => {
               <Text text={"#{profession#}"} isBold isItalic isNotEditable />
             )
           }
-          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          className={"bg-basePrimary/20 border-basePrimary py-3 px-2 rounded text-basePrimary w-full border"}
           data-cy="toolbox-qr-code"
         >
           Drag to add profession
@@ -103,7 +103,7 @@ const Verification = ({ details, setValue }: TabProps) => {
               <Text text={"#{attendee_role#}"} isBold isItalic isNotEditable />
             )
           }
-          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          className={"bg-basePrimary/20 border-basePrimary py-3 px-2 rounded text-basePrimary w-full border"}
           data-cy="toolbox-qr-code"
         >
           Drag to add attendee role
@@ -116,7 +116,7 @@ const Verification = ({ details, setValue }: TabProps) => {
               <Text text={"#{event_name#}"} isBold isItalic isNotEditable />
             )
           }
-          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          className={"bg-basePrimary/20 border-basePrimary py-3 px-2 rounded text-basePrimary w-full border"}
           data-cy="toolbox-qr-code"
         >
           Drag to add event name
@@ -134,7 +134,7 @@ const Verification = ({ details, setValue }: TabProps) => {
               />
             )
           }
-          className={"bg-gray-50 py-3 px-2 rounded text-gray-800 w-full border"}
+          className={"bg-basePrimary/20 border-basePrimary py-3 px-2 rounded text-basePrimary w-full border"}
           data-cy="toolbox-qr-code"
         >
           Drag to add organization name
