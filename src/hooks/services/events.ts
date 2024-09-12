@@ -709,7 +709,8 @@ export function useBookingEvent() {
           userEmail: userData?.userEmail,
         };
       });
-
+     
+setLoading(true)
       const { error, status } = await supabase
         .from("attendees")
         .upsert([...attendees]);
@@ -718,11 +719,13 @@ export function useBookingEvent() {
           error.message ===
           `duplicate key value violates unique constraint "attendees_email_key"`
         ) {
+          toast.error(
+            "You have already registered for this event. Kindly check your mail to continue."
+          );
           // shadcnToast({variant:"destructive",description:"User has already registered for this event")
         } else {
           toast.error(error.message);
         }
-
         setIsRegistered(true);
         return;
       }
@@ -737,6 +740,9 @@ export function useBookingEvent() {
       }
     } catch (error) {
       setLoading(false);
+    }
+    finally {
+      setLoading(false)
     }
   }
 
@@ -1254,8 +1260,8 @@ export function useCheckTeamMember({ eventId }: { eventId?: string }) {
   }
 
   useEffect(() => {
-    fetchSingleEvent()
-  },[eventId, user])
+    fetchSingleEvent();
+  }, [eventId, user]);
 
   return {
     verifyTeamMember: loading,

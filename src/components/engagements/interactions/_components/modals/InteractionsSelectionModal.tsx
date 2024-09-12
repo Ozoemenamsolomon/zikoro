@@ -30,6 +30,18 @@ export function InteractionsSelectionModal({
         "Allow participants to share their opinion by choosing from a list of options.",
     },
     {
+      image: "/iform.png",
+      header: "Form",
+      description:
+        "Seamlessly collect the participant's information you require using customized forms.",
+    },
+    {
+      image: "/iqa.png",
+      header: "Q & A",
+      description:
+        "Allow participants to ask and answer questions.",
+    },
+    {
       image: "/imultiple.png",
       header: "Multiple Choice",
       description:

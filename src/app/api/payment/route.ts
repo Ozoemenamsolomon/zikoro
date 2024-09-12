@@ -149,13 +149,15 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      const { error: updateLinkError } = await supabase
-        .from("affiliateLinks")
-        .update({ isUsed: true })
-        .eq("linkCode", affiliateCode);
+      if (affiliateCode) {
+        const { error: updateLinkError } = await supabase
+          .from("affiliateLinks")
+          .update({ isUsed: true })
+          .eq("linkCode", affiliateCode);
 
-      if (updateLinkError) {
-        console.log(`error fetching user`);
+        if (updateLinkError) {
+          console.log(`error fetching user`);
+        }
       }
 
       // create attendee array
@@ -533,7 +535,11 @@ export async function POST(req: NextRequest) {
           ],
         });
 
-        if (originalEvent.affiliateSettings.enabled) {
+        if (
+          originalEvent &&
+          originalEvent.affiliateSettings !== null &&
+          originalEvent.affiliateSettings.enabled
+        ) {
           await client.sendMail({
             from: {
               address: process.env.NEXT_PUBLIC_EMAIL,

@@ -322,7 +322,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
               id="form"
             >
               <div className="w-full py-4 flex items-center  justify-between">
-                <h2 className="text-base sm:text-xl font-semibold">
+                <h2 className="hidden sm:block text-base sm:text-xl font-semibold">
                   Event Details
                 </h2>
                 <div className="flex items-center gap-x-2">
@@ -654,7 +654,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                     render={({ field }) => (
                       <label
                         htmlFor="add-poster"
-                        className="w-full border border-basePrimary relative rounded-md flex items-center justify-center h-[450px]"
+                        className="w-full border border-basePrimary bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end relative rounded-md flex items-center justify-center h-[450px]"
                       >
                         <p className="flex items-center relative rounded-md z-20 bg-white/50 border gap-x-2 text-xs p-2">
                           <ImageAdd className="text-[#001ffc]" size={20} />
