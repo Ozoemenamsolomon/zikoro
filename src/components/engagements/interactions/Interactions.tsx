@@ -19,14 +19,16 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { verifyingAccess } from "@/utils";
+import { useRouter } from "next/navigation";
 export default function Interactions({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
   const [isOpenInteractionModal, setOpenInteractionModal] = useState(false);
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const [interactionType, setInteractionType] = useState("");
-  const { organization } = useOrganizationStore();
+ // const { organization } = useOrganizationStore();
   const { quizzes, isLoading, getQuizzes } = useGetQuizzes(eventId);
+  const router = useRouter()
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -81,6 +83,10 @@ export default function Interactions({ eventId }: { eventId: string }) {
     }
     setInteractionType("poll");
     onClose();
+  }
+
+  function goToForm() {
+    router.push(`/event/${eventId}/engagements/interactions/form/create`);
   }
 
   return (
@@ -142,6 +148,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
           close={toggleInteractionModal}
           toggleQuiz={toggleQuiz}
           togglePoll={togglePoll}
+          goToForm={goToForm}
         />
       )}
     </InteractionLayout>

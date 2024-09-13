@@ -6,11 +6,13 @@ import { CloseOutline } from "styled-icons/evaicons-outline";
 export function InteractionsSelectionModal({
   close,
   toggleQuiz,
-  togglePoll
+  togglePoll,
+  goToForm
 }: {
   close: () => void;
   toggleQuiz: () => void;
   togglePoll:() => void;
+  goToForm: () => void;
 }) {
 
 
@@ -32,6 +34,7 @@ export function InteractionsSelectionModal({
     {
       image: "/iform.png",
       header: "Form",
+      asynFn: goToForm,
       description:
         "Seamlessly collect the participant's information you require using customized forms.",
     },

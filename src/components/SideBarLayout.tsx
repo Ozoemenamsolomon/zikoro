@@ -27,6 +27,7 @@ import useUserStore from "@/store/globalUserStore";
 import { useGetUserOrganization } from "@/hooks/services/userOrganization";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 
+
 function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
   const [isNav, setNav] = useState(false);
   const { eventId } = useParams();

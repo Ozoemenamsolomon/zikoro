@@ -1,7 +1,7 @@
-export default function Page() {
-    return (
-        <div>
-            <h1>Create Form</h1>
-        </div>
-    )
+import CreateInteractionForm from "@/components/engagements/interactions/_components/interactionForm/create/CreateInteractionForm";
+
+export default function Page({params : {eventId}}: {params: {eventId: string}}) {
+    return <CreateInteractionForm
+    eventId={eventId}
+    />
 }

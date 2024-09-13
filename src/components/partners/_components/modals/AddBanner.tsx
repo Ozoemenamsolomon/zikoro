@@ -96,7 +96,7 @@ export function AddBanners({
                       accept="image/*"
                       placeholder="File"
                       {...form.register(`banners.${index}.file` as const)}
-                      className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                      className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
                     />
                   </InputOffsetLabel>
 
@@ -114,7 +114,7 @@ export function AddBanners({
                         type="text"
                         placeholder="Link"
                         {...field}
-                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
+                        className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-300 text-gray-700"
                       />
                     </InputOffsetLabel>
                   )}
@@ -127,7 +127,7 @@ export function AddBanners({
                 e.preventDefault();
                 appendBanner();
               }}
-              className="hover:bg-basePrimary text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-11 sm:h-12 font-medium"
+              className="hover:bg-basePrimary text-basePrimary  rounded-md border border-basePrimary hover:text-gray-50 gap-x-2 h-12 font-medium"
             >
               <PlusCircle size={22} />
               <p>New</p>
