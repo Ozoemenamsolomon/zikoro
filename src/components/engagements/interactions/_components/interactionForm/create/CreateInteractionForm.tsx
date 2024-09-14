@@ -1,7 +1,7 @@
 "use client";
 
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { Button } from "@/components/custom_ui/Button";
 import { Input } from "@/components/ui/input";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
@@ -11,6 +11,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { TextType } from "./_components/optionsType/organizer";
+import {cn} from "@/lib"
 import { InteractionLayout } from "@/components/engagements/_components";
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
@@ -41,14 +42,17 @@ function SelectQuestionType({
         <IoIosCloseCircleOutline size={18} />
         <p>Cancel</p>
       </Button>
-      <div className="w-full grid grid-cols-1 sm:px-6 lg:px-8 2xl:px-10 sm:grid-cols-3 lg:grid-cols-4 items-center gap-4 justify-center">
+      <div className="w-full flex flex-wrap  items-center px-4 mx-auto max-w-[70%] gap-6 py-4 sm:py-8 justify-start">
         {options?.map((item) => (
-          <button className="w-full flex border items-center gap-x-3 p-2 rounded-lg  sm:p-3">
+          <button
+          onClick={() => setSelectedOption(item?.name)}
+          className={cn("w-full max-w-[170px] min-w-[170px] flex border hover:border-basePrimary border-gray-400 items-center gap-x-3 p-2 rounded-lg  sm:p-3", selectedOption === item?.name && "border-basePrimary")}>
             <Image
               src={item.image}
               alt="question-type"
-              width={30}
-              height={30}
+              width={18}
+              height={18}
+              className="object-cover"
             />
             <p>{item.name}</p>
           </button>
@@ -64,6 +68,23 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [showSelectQuestionType, setShowSelectQuestionType] =
     useState<boolean>(false);
+
+
+    const {fields, remove, append} = useFieldArray({
+      control: form.control,
+      name: "questions",
+    })
+
+  function appendToQuestion() {
+    append({
+      question: "",
+      questionImage:"",
+      selectedType: selectedOption,
+      optionType: null
+    });
+    //setShowSelectQuestionType(false);
+    setSelectedOption("");
+  }
 
 
 
@@ -93,6 +114,8 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
       return null
     }
   }, [watchedImage]);
+
+  
 
   function handleToggleSelectQuestionType() {
     setShowSelectQuestionType((prev) => !prev);
@@ -167,7 +190,7 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
                     <FormControl>
                       <Input
                         {...field}
-                        className="bg-transparent border-none h-16 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
+                        className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
                         placeholder="Form Title"
                       />
                     </FormControl>
@@ -182,7 +205,7 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
                     <FormControl>
                       <Input
                         {...field}
-                        className="bg-transparent border-none h-12  placeholder:text-gray-500"
+                        className="bg-transparent border-none h-11  placeholder:text-gray-500"
                         placeholder="Form Description"
                       />
                     </FormControl>
@@ -190,6 +213,8 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
                 )}
               />
             </div>
+
+
 
             <div className="w-full flex items-center justify-center ">
               <Button
