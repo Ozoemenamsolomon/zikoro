@@ -7,10 +7,10 @@ import { Input } from "@/components/ui/input";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
 import { useRouter } from "next/navigation";
 import { AddCircle } from "@styled-icons/ionicons-sharp/AddCircle";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { TextType, DateType } from "./_components/optionsType/organizer";
+import { TextType, DateType , CheckBoxType} from "./_components/optionsType/organizer";
 import {cn} from "@/lib"
 import { InteractionLayout } from "@/components/engagements/_components";
 import {z} from "zod"
@@ -60,7 +60,7 @@ function SelectQuestionType({
         {options?.map((item) => (
           <button
           onClick={() => setSelectedOption(item?.name)}
-          className={cn("w-full max-w-[170px] min-w-[170px] flex border hover:border-basePrimary border-gray-400 items-center gap-x-3 p-2 rounded-lg  sm:p-3")}>
+          className={cn("w-full max-w-[170px] min-w-[170px] flex border hover:border-basePrimary border-gray-300 items-center gap-x-3 p-2 rounded-lg  sm:p-3")}>
             <Image
               src={item.image}
               alt="question-type"
@@ -191,6 +191,12 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
                   {field.selectedType === "INPUT_DATE" && (
                     <DateType form={form} index={index} remove={remove}/>
                   )}
+                  {field.selectedType === "INPUT_CHECKBOX" && (
+                    <CheckBoxType form={form} index={index} remove={remove}/>
+                  )}
+                   {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
+                    <CheckBoxType form={form} index={index} remove={remove}/>
+                  )}
                  
                 </div>
               ))}
@@ -205,7 +211,7 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
                 }}
                 className="w-fit text-basePrimary h-fit px-0 gap-x-2"
               >
-                <AddCircle className="text-basePrimary" size={20} />
+                <AddCircle className="text-basePrimary" size={24} />
                 <p className="underline">Add Question</p>
               </Button>
             </div>
