@@ -10,9 +10,14 @@ import { AddCircle } from "@styled-icons/ionicons-sharp/AddCircle";
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { TextType } from "./_components/optionsType/organizer";
+import { TextType, DateType } from "./_components/optionsType/organizer";
 import {cn} from "@/lib"
 import { InteractionLayout } from "@/components/engagements/_components";
+import {z} from "zod"
+import {zodResolver} from "@hookform/resolvers/zod"
+import {formQuestionSchema} from "@/schemas/engagement"
+import { AddCoverImage } from "./_components/formcomposables";
+import { nanoid } from "nanoid";
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
   { name: "Text", image: "/ftext.png" },
@@ -22,16 +27,25 @@ const options = [
   { name: "Likert", image: "/flikert.png" },
 ];
 
+const optionsType = [
+  { name: "Mutiple Choice", type: "INPUT_MULTIPLE_CHOICE" },
+  { name: "Text", type: "INPUT_TEXT" },
+  { name: "Date", type: "INPUT_DATE" },
+  { name: "CheckBox", type: "INPUT_CHECKBOX", },
+  { name: "Rating", type: "INPUT_RATING" },
+  { name: "Likert", type: "INPUT_LIKERT" },
+]
+
 
 
 function SelectQuestionType({
   onClose,
-  selectedOption,
+  //selectedOption,
   setSelectedOption,
 }: {
   onClose: () => void;
-  selectedOption: string;
-  setSelectedOption: React.Dispatch<React.SetStateAction<string>>;
+ // selectedOption: string;
+  setSelectedOption: (selected: string) => void;
 }) {
   return (
     <div className="w-full flex flex-col to-custom-bg-gradient-end bg-gradient-to-tr  rounded-lg border from-custom-bg-gradient-start p-3 ">
@@ -46,7 +60,7 @@ function SelectQuestionType({
         {options?.map((item) => (
           <button
           onClick={() => setSelectedOption(item?.name)}
-          className={cn("w-full max-w-[170px] min-w-[170px] flex border hover:border-basePrimary border-gray-400 items-center gap-x-3 p-2 rounded-lg  sm:p-3", selectedOption === item?.name && "border-basePrimary")}>
+          className={cn("w-full max-w-[170px] min-w-[170px] flex border hover:border-basePrimary border-gray-400 items-center gap-x-3 p-2 rounded-lg  sm:p-3")}>
             <Image
               src={item.image}
               alt="question-type"
@@ -63,9 +77,14 @@ function SelectQuestionType({
 }
 
 export default function CreateInteractionForm({eventId}: {eventId: string}) {
-  const form = useForm({});
+  const form = useForm<z.infer<typeof formQuestionSchema>>({
+    resolver: zodResolver(formQuestionSchema),
+    defaultValues: {
+      questions: []
+    }
+  });
   const router = useRouter();
-  const [selectedOption, setSelectedOption] = useState<string>("");
+ // const [selectedOption, setSelectedOption] = useState<string>("");
   const [showSelectQuestionType, setShowSelectQuestionType] =
     useState<boolean>(false);
 
@@ -75,15 +94,17 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
       name: "questions",
     })
 
-  function appendToQuestion() {
+  function appendToQuestion(selected: string) {
     append({
+      questionId: nanoid(),
       question: "",
       questionImage:"",
-      selectedType: selectedOption,
-      optionType: null
+      selectedType: optionsType.find(option => option.name === selected)?.type ||'',
+      optionFields: null,
+      isRequired: false
     });
-    //setShowSelectQuestionType(false);
-    setSelectedOption("");
+    setShowSelectQuestionType(false);
+    // setSelectedOption("");
   }
 
 
@@ -93,27 +114,8 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
     console.log(values);
   }
 
-  const optionsComponents = [
-    { name: "Mutiple Choice", SelectedComponent: <TextType form={form} /> },
-    { name: "Text", SelectedComponent: <TextType form={form} /> },
-    { name: "Date", SelectedComponent: <TextType form={form} /> },
-    { name: "CheckBox", SelectedComponent: <TextType form={form} /> },
-    { name: "Rating", SelectedComponent: <TextType form={form} /> },
-    { name: "Likert", SelectedComponent: <TextType form={form} /> },
-  ]
 
-  const watchedImage = form.watch("coverImage");
 
-  const image = useMemo(() => {
-    if (typeof watchedImage === "string") {
-      return watchedImage;
-    } else if (watchedImage && watchedImage[0] && watchedImage instanceof FileList) {
-      return URL.createObjectURL(watchedImage[0]);
-    }
-    else {
-      return null
-    }
-  }, [watchedImage]);
 
   
 
@@ -143,43 +145,9 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
             <Button className="bg-basePrimary px-6 text-white h-12 ">Save</Button>
         </div>
 
-            <label
-              htmlFor="form-image"
-              className="w-full gap-y-2 bg-gradient-to-tr h-[10rem] flex flex-col items-center justify-center relative sm:h-[15rem] border 2xl:h-[20rem] from-custom-bg-gradient-start to-custom-bg-gradient-end rounded-lg"
-            >
-              <input
-                type="file"
-                {...form.register("coverImage")}
-                accept="image/*"
-                id="form-image"
-                hidden
-                className="w-full h-full inset-0 absolute z-40"
-              />
-
-              {image ? (
-                <Image
-                  src={image}
-                  alt="cover-image"
-                  width={2000}
-                  height={600}
-                  className="w-full h-full object-cover  rounded-lg"
-                />
-              ) : (
-                <div className="w-[230px] flex flex-col items-center justify-center gap-y-3">
-                  <p className="text-gray-500">
-                    Drag and drop cover image here
-                  </p>
-                  <div className="w-full flex items-center gap-x-2">
-                    <span className="h-[1px] w-[46%] bg-gray-500"></span>
-                    <p>or</p>
-                    <span className="h-[1px] w-[46%] bg-gray-500"></span>
-                  </div>
-                  <button className="text-basePrimary underline">
-                    Click to Upload
-                  </button>
-                </div>
-              )}
-            </label>
+          <AddCoverImage
+          form={form}
+          />
 
             <div className="w-full from-custom-bg-gradient-start flex flex-col items-start justify-start gap-y-1 to-custom-bg-gradient-end bg-gradient-to-tr rounded-lg border p-3 sm:p-4">
               <FormField
@@ -214,7 +182,19 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
               />
             </div>
 
-
+            <div className="w-full flex flex-col items-start justify-start gap-y-6 sm:gap-y-8">
+              {fields.map((field, index) => (
+                <div key={field.id} className="w-full">
+                  {field.selectedType === "INPUT_TEXT" && (
+                    <TextType form={form} index={index} remove={remove}/>
+                  )}
+                  {field.selectedType === "INPUT_DATE" && (
+                    <DateType form={form} index={index} remove={remove}/>
+                  )}
+                 
+                </div>
+              ))}
+            </div>
 
             <div className="w-full flex items-center justify-center ">
               <Button
@@ -233,8 +213,8 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
             {showSelectQuestionType && (
               <SelectQuestionType
                 onClose={handleToggleSelectQuestionType}
-                selectedOption={selectedOption}
-                setSelectedOption={setSelectedOption}
+                //selectedOption={selectedOption}
+                setSelectedOption={appendToQuestion}
               />
             )}
           </form>

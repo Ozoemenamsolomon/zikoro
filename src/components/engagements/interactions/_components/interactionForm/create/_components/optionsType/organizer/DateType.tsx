@@ -10,14 +10,13 @@ import { Input } from "@/components/ui/input";
 import { UseFormReturn, UseFieldArrayRemove } from "react-hook-form";
 import { PiDotsSixBold } from "react-icons/pi";
 import { IoImage } from "react-icons/io5";
-import { useMemo,  } from "react";
+import { useMemo } from "react";
 import { SelectedImage } from "../../formcomposables/SelectedImage";
 import { z } from "zod";
 import { formQuestionSchema } from "@/schemas/engagement";
 import { cn } from "@/lib";
 import { BottomAction } from "../../formcomposables";
-//
-export function TextType({
+export function DateType({
   form,
   index,
   remove
@@ -43,8 +42,6 @@ remove: UseFieldArrayRemove
       return null;
     }
   }, [watchedImage]);
-
-  
   return (
     <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-3 bg-white">
       <PiDotsSixBold size={40} className="self-center text-gray-400" />
@@ -55,7 +52,7 @@ remove: UseFieldArrayRemove
           name={`questions.${index}.question`}
           render={({ field }) => (
             <FormItem className={cn("w-full col-span-9", image && "col-span-full")}>
-              <FormLabel>Question (Text)</FormLabel>
+              <FormLabel>Question (Date)</FormLabel>
               <FormControl>
                 <Input
                   {...form.register(`questions.${index}.question`)}
@@ -109,7 +106,8 @@ remove: UseFieldArrayRemove
         />
       </div> */}
       {/** actions */}
-    <BottomAction form={form} remove={remove} index={index}/>
+      <BottomAction form={form} remove={remove} index={index}/>
+  
     </div>
   );
 }

@@ -305,7 +305,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   function toggleAccessibility(id: number) {
     const currentValue = form.getValues(`pricing.${id}.accessibility` as const);
-    console.log("currentValue", currentValue);
+   // console.log("currentValue", currentValue);
     form.setValue(`pricing.${id}.accessibility` as const, !currentValue, {
       shouldValidate: true,
     });
