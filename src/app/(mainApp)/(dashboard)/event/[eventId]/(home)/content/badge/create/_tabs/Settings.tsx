@@ -92,8 +92,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           <Input
             className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
             onInput={(e) => editSettings("width", e.currentTarget.value)}
-            value={settings.width ?? 250}
-            min={150}
+            value={settings.width ?? 595}
+            min={595}
             type="number"
           />
         </div>
@@ -104,8 +104,8 @@ const Settings = ({ settings, editSettings }: TabProps) => {
           <Input
             className="placeholder:text-xs md:placeholder:text-sm placeholder:text-gray-200 text-gray-700"
             onInput={(e) => editSettings("height", e.currentTarget.value)}
-            value={settings.height ?? 370}
-            min={370}
+            value={settings.height ?? 842}
+            min={842}
             type="number"
           />
         </div>

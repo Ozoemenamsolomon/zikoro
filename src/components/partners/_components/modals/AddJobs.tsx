@@ -7,10 +7,6 @@ import {
   Button,
   ReactSelect,
   Textarea,
-  FormControl,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 
@@ -30,7 +26,7 @@ import {
   workExperience,
 } from "@/constants";
 import { useEffect, useState } from "react";
-import { TPartner, PartnerJobType } from "@/types";
+import { PartnerJobType } from "@/types";
 import { cn } from "@/lib";
 import { generateAlias } from "@/utils";
 
