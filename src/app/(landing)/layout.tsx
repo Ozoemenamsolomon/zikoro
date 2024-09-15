@@ -1,12 +1,4 @@
-import Navbar from "@/components/Navbar";
-import { Montserrat } from "next/font/google";
-
-const montserrat = Montserrat({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-  display: "swap",
-  fallback: ["Arial", "sans-serif"],
-});
+import { montserrat } from "@/utils/fonts";
 
 export default function RootLayout({
   children,
