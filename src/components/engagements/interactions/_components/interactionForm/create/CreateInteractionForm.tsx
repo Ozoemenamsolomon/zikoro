@@ -80,7 +80,9 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
   const form = useForm<z.infer<typeof formQuestionSchema>>({
     resolver: zodResolver(formQuestionSchema),
     defaultValues: {
-      questions: []
+      questions: [],
+      isActive: true,
+      eventAlias: eventId
     }
   });
   const router = useRouter();
@@ -110,7 +112,7 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
 
 
 
-  async function onSubmit(values: any) {
+  async function onSubmit(values: z.infer<typeof formQuestionSchema>) {
     console.log(values);
   }
 

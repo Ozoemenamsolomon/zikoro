@@ -14,7 +14,16 @@ export const formQuestionSchema = z.object({
     title: z.string().min(3, { message: "Title is required" }),
     description: z.string().min(3, { message: "Description is required" }),
     coverImage: z.any(),
-    
+    isActive:z.boolean(),
+    eventAlias: z.string(),
+
     
     
 });
+
+export const formAnswerSchema = z.object( {
+    attendeeAlias: z.string(),
+    eventAlias: z.string(),
+    formResponseAlias: z.string(),
+    formAlias: z.string(),
+})
