@@ -8,7 +8,7 @@ export function DateTypeAnswer({
   form: UseFormReturn<any, any, any>;
 }) {
   return (
-    <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-3">
+    <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
       <div className="w-full p-2 bg-gradient-to-tr  from-custom-bg-gradient-start to-custom-bg-gradient-end">
         <p className="w-full text-start leading-7 flex ">Question <IoMdStar size={12} className="text-red-700"/></p>
       </div>
@@ -21,7 +21,7 @@ export function DateTypeAnswer({
             <FormControl>
               <Input
                 {...form.register("answer")}
-                className="w-full h-12 sm:h-14 border-x-0 border-t-0 border-b px-2 placeholder:text-gray-500 placeholder-gray-500"
+                className="w-full h-12 sm:h-14 border-x-0 border-t-0 rounded-none border-b px-2 placeholder:text-gray-500 placeholder-gray-500"
                 placeholder="Enter Answer"
                 type="date"
               />

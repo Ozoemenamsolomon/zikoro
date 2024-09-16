@@ -1,4 +1,4 @@
-import * as z from "zod";
+import {z} from "zod";
 import { quizQuestionSchema } from "@/schemas";
 import { TAttendee } from ".";
 import { AvatarFullConfig } from "react-nice-avatar";

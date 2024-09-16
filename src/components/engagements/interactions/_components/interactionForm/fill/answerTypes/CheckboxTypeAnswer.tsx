@@ -7,12 +7,12 @@ export function CheckboxTypeAnswer({
   form: UseFormReturn<any, any, any>;
 }) {
   return (
-    <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-3">
+    <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
       <div className="w-full p-2 bg-gradient-to-tr  from-custom-bg-gradient-start to-custom-bg-gradient-end">
         <p className="w-full text-start leading-7">Question</p>
       </div>
 
-      <div className="w-full flex flex-col items-start justify-start gap-y-2">
+      <div className="w-full flex flex-col items-start justify-start gap-y-4">
         {["Option 1", "Optiion 3", "Option 2"].map((value) => (
           <FormField
             key={value}

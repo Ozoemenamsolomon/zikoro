@@ -22,6 +22,8 @@ import { Button } from "@/components";
 import { MdClose } from "react-icons/md";
 import { nanoid } from "nanoid";
 import { IoIosCloseCircle } from "react-icons/io";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   DndContext,
   KeyboardSensor,
@@ -60,9 +62,21 @@ function OptionItem({
   removeImage: (id: string) => void;
   setOption: (id: string, value: string) => void;
 }) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+  useSortable({ id: option?.id });
   return (
-    <div className="w-full bg-gradient-to-tr items-center rounded-lg p-4 flex justify-between from-custom-bg-gradient-start to-custom-bg-gradient-end">
-      <PiDotsSixVertical size={30} className="text-gray-400" />
+    <div
+    ref={setNodeRef}
+    {...attributes}
+    {...listeners}
+    style={{
+      transition,
+      transform: CSS.Transform.toString(transform),
+      touchAction: "none",
+    }}
+    role="button"
+     className="w-full bg-gradient-to-tr items-center rounded-lg p-4 flex justify-between from-custom-bg-gradient-start to-custom-bg-gradient-end">
+      <PiDotsSixVertical size={30} className="text-gray-400 cursor-move" />
       <div className="w-[90%] flex flex-col items-start justify-start gap-y-3">
         <div className="flex items-center gap-x-2">
           <button
