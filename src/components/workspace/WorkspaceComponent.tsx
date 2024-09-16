@@ -54,18 +54,16 @@ interface DateRange {
 //   showFilter: string,
 //   showCategories : string,
 //   logo: string,
-//   logoLink: string 
+//   logoLink: string
 // }
 
-function WorkspaceComponent({
-//   searchParams: { name, showFilter, showCategories, logo: logoLink },
-}) {
-  const searchParams = useSearchParams()
-  const name = searchParams.get('name')
-  const showFilter = searchParams.get('showFilter')
-  const showCategories = searchParams.get('showCategories')
-  const logo = searchParams.get('logo')
-  const logoLink = searchParams.get('logoLink')
+function WorkspaceComponent({}) {
+  const searchParams = useSearchParams();
+  const name = searchParams.get("name");
+  const showFilter = searchParams.get("showFilter");
+  const showCategories = searchParams.get("showCategories");
+  const logo = searchParams.get("logo");
+  const logoLink = searchParams.get("logoLink");
   const [showMore, setShowMore] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
@@ -817,7 +815,7 @@ function WorkspaceComponent({
 export default function Workspace() {
   return (
     <Suspense>
-<WorkspaceComponent/>
+      <WorkspaceComponent />
     </Suspense>
-  )
+  );
 }

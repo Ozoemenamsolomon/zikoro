@@ -1,12 +1,12 @@
 'use client'
-import React, { Suspense } from "react"
+import React from "react"
 import WorkspaceComponent from "@/components/workspace/WorkspaceComponent"
 
 
 export default function Workspaces() {
   return (
-    <Suspense>
+    <div>
         <WorkspaceComponent/>
-    </Suspense>
+    </div>
   )
 }
