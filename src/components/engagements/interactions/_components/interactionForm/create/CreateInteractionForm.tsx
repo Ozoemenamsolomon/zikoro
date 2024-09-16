@@ -10,7 +10,7 @@ import { AddCircle } from "@styled-icons/ionicons-sharp/AddCircle";
 import { useState } from "react";
 import Image from "next/image";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { TextType, DateType , CheckBoxType} from "./_components/optionsType/organizer";
+import { TextType, DateType , CheckBoxType, RatingType} from "./_components/optionsType/organizer";
 import {cn} from "@/lib"
 import { InteractionLayout } from "@/components/engagements/_components";
 import {z} from "zod"
@@ -197,6 +197,10 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
                    {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
                     <CheckBoxType form={form} index={index} remove={remove}/>
                   )}
+                    {field.selectedType === "INPUT_RATING" && (
+                    <RatingType form={form} index={index} remove={remove}/>
+                  )}
+
                  
                 </div>
               ))}

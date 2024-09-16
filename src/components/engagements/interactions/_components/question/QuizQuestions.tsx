@@ -240,6 +240,9 @@ export default function QuizQuestion({
         </>
       )}
 
+
+
+
       {openQuestionModal && (
         <AddQuestion refetch={getQuiz} close={onToggle} quiz={quiz} />
       )}

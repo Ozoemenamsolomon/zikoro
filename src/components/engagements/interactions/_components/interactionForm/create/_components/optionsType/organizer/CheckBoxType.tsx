@@ -11,7 +11,7 @@ import { UseFormReturn, UseFieldArrayRemove } from "react-hook-form";
 import { PiDotsSixBold } from "react-icons/pi";
 import { IoImage } from "react-icons/io5";
 import { BottomAction } from "../../formcomposables";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SelectedImage } from "../../formcomposables/SelectedImage";
 import { z } from "zod";
 import { formQuestionSchema } from "@/schemas/engagement";
@@ -22,10 +22,27 @@ import { Button } from "@/components";
 import { MdClose } from "react-icons/md";
 import { nanoid } from "nanoid";
 import { IoIosCloseCircle } from "react-icons/io";
+import {
+  DndContext,
+  KeyboardSensor,
+  MouseSensor,
+  PointerSensor,
+  TouchSensor,
+  closestCorners,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
 //
 
 type OptionItemsType = {
-  optionId: string;
+  id: string;
   option: string;
   optionImage: string;
 };
@@ -52,7 +69,7 @@ function OptionItem({
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              removeOption(option.optionId);
+              removeOption(option.id);
             }}
           >
             <IoIosCloseCircle size={18} className="text-red-500" />
@@ -61,7 +78,7 @@ function OptionItem({
         </div>
         <Input
           onChange={(e) => {
-            setOption(option.optionId, e.target.value);
+            setOption(option.id, e.target.value);
           }}
           value={option?.option}
           className="w-full h-12 sm:h-14 border-x-0 border-b border-gray-300 rounded-none border-t-0 px-2 placeholder:text-gray-400"
@@ -71,11 +88,11 @@ function OptionItem({
       {!option.optionImage && (
         <div className=" self-end flex items-end justify-end">
           <label
-            htmlFor={`optionImage${option.optionId}`}
+            htmlFor={`optionImage${option.id}`}
             className="rounded-full  self-end w-12 sm:w-14 flex items-center justify-center h-12 sm:h-14 bg-gradient-to-tr  from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 relative"
           >
             <input
-              id={`optionImage${option.optionId}`}
+              id={`optionImage${option.id}`}
               type="file"
               className="w-full h-full absolute inset-0 z-20"
               accept="image/*"
@@ -86,7 +103,7 @@ function OptionItem({
                   if (file) {
                     const reader = new FileReader();
                     reader.onloadend = () => {
-                      setOption(option.optionId, reader.result as string);
+                      setOption(option.id, reader.result as string);
                     };
                     reader.readAsDataURL(file);
                   }
@@ -112,7 +129,7 @@ function OptionItem({
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                removeImage(option.optionId);
+                removeImage(option.id);
               }}
               className="absolute px-0 top-[-1rem] h-10 w-10 rounded-full bg-[#001FCC19] right-[-0.4rem]"
             >
@@ -136,7 +153,7 @@ export function CheckBoxType({
 }) {
   //const [isRequired, setIsRequired] = useState(false);
   const [options, setOptions] = useState<OptionItemsType[]>([
-    { optionId: nanoid(), option: "", optionImage: "" },
+    { id: nanoid(), option: "", optionImage: "" },
   ]);
 
   const watchedImage = form.watch(`questions.${index}.questionImage`);
@@ -155,24 +172,56 @@ export function CheckBoxType({
     }
   }, [watchedImage]);
 
+  // form field
+  useEffect(() => {
+    if (options) {
+      form.setValue(`questions.${index}.optionFields`, options);
+    }
+  }, [options]);
+
   function handleChangeOption(id: string, value: string) {
     setOptions(
       options.map((option) =>
-        option.optionId === id ? { ...option, option: value } : option
+        option.id === id ? { ...option, option: value } : option
       )
     );
   }
 
   function removeOption(id: string) {
-    setOptions(options.filter((option) => option.optionId !== id));
+    setOptions(options.filter((option) => option.id !== id));
   }
 
   function removeImage(id: string) {
     setOptions(
       options.map((option) =>
-        option.optionId === id ? { ...option, optionImage: "" } : option
+        option.id === id ? { ...option, optionImage: "" } : option
       )
     );
+  }
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 0.01,
+      },
+    }),
+    useSensor(TouchSensor),
+    useSensor(MouseSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  // get position
+  const getPosition = (id: string): number | undefined =>
+    options.findIndex((item) => item?.id === id);
+  async function handleDrop(e: DragEndEvent) {
+    if (!options) return;
+    const { active, over } = e;
+
+    if (active?.id === over?.id) return;
+    const originPos = getPosition(active?.id as string)!;
+    const destPos = getPosition(over?.id as string)!;
+    const updatedOption = arrayMove(options, originPos, destPos);
+
+    setOptions(updatedOption);
   }
   return (
     <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-3 bg-white">
@@ -219,16 +268,27 @@ export function CheckBoxType({
       </div>
       {/** Options*/}
       <div className="w-full flex flex-col items-start pl-4 sm:pl-6 justify-start gap-y-3">
-        {options.map((option, index) => (
-          <OptionItem
-            key={option.optionId}
-            option={option}
-            index={index}
-            removeOption={removeOption}
-            removeImage={removeImage}
-            setOption={handleChangeOption}
-          />
-        ))}
+        <DndContext
+          collisionDetection={closestCorners}
+          sensors={sensors}
+          onDragEnd={handleDrop}
+        >
+          <SortableContext
+            items={options}
+            strategy={verticalListSortingStrategy}
+          >
+            {options.map((option, index) => (
+              <OptionItem
+                key={option.id}
+                option={option}
+                index={index}
+                removeOption={removeOption}
+                removeImage={removeImage}
+                setOption={handleChangeOption}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
 
         <Button
           onClick={(e) => {
@@ -236,7 +296,7 @@ export function CheckBoxType({
             e.preventDefault();
             setOptions([
               ...options,
-              { optionId: nanoid(), option: "", optionImage: "" },
+              { id: nanoid(), option: "", optionImage: "" },
             ]);
           }}
           className="w-fit h-fit px-0 mt-3 text-basePrimary text-sm underline"
