@@ -1,4 +1,5 @@
 export * from "./cards/InteractionCard";
+export * from "./cards/Formcard"
 export * from "./actions/Option";
 export * from "./question/ActiveQuestion";
 export * from "./modals/AddQuestion";

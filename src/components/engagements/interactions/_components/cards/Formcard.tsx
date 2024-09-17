@@ -8,31 +8,21 @@ import { ActivateQuiz, CopyQuiz, DeleteQuiz } from "..";
 import Image from "next/image";
 import { QUser, QUsers } from "@/constants";
 import { useRouter } from "next/navigation";
-import { TQuiz, TQuestion } from "@/types";
-import { cn } from "@/lib";
 
-export function InteractionCard({
-  quiz,
+import { cn } from "@/lib";
+import { TEngagementFormQuestion } from "@/types/engagements";
+
+export function FormCard({
+  form,
   refetch,
   isNotAttendee,
 }: {
   refetch: () => Promise<any>;
-  quiz: TQuiz<TQuestion[]>;
+  form: TEngagementFormQuestion;
   isNotAttendee: boolean;
 }) {
   const [isOpen, setOpen] = useState(false);
   const router = useRouter();
-
-  const points = useMemo(() => {
-    // MAP AND SOME ALL POINTS
-    if (Array.isArray(quiz?.questions) && quiz?.questions?.length > 0) {
-      const allPoints = quiz?.questions?.map(({ points }) => Number(points));
-      const sumOfPoints = allPoints.reduce((sum, point) => sum + point, 0);
-      return sumOfPoints;
-    } else {
-      return 0;
-    }
-  }, [quiz]);
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -45,10 +35,13 @@ export function InteractionCard({
       onClick={() => {
         if (isNotAttendee) {
           router.push(
-            `/event/${quiz?.eventAlias}/engagements/interactions/${quiz?.quizAlias}`
+            `/event/${form?.eventAlias}/engagements/interactions/form/create?form=${form?.formAlias}`
+            
           );
         } else {
-          router.push(`/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`);
+          router.push(
+            `/engagements/${form?.eventAlias}/engagements/form/${form?.formAlias}`
+          );
         }
       }}
       role="button"
@@ -57,27 +50,29 @@ export function InteractionCard({
       <div className="w-full relative">
         <div className="absolute flex items-center justify-between inset-x-0 w-full  top-3 px-3">
           <p className="text-xs w-fit sm:text-sm rounded-3xl bg-basePrimary text-white px-3 py-1">
-            {quiz?.interactionType === "poll" ? "Poll" : "Quiz"}
+            form
           </p>
-         {isNotAttendee && <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
-            className="px-0 p-1 bg-gray-200/50 w-fit h-fit"
-          >
-            <ThreeDotsVertical size={20} />
-            {isOpen && (
+          {isNotAttendee && (
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              className="px-0 p-1 bg-gray-200/50 w-fit h-fit"
+            >
+              <ThreeDotsVertical size={20} />
+              {/* {isOpen && (
               <ActionModal refetch={refetch} close={onClose} quiz={quiz} />
-            )}
-          </Button>}
+            )} */}
+            </Button>
+          )}
         </div>
 
-        {quiz?.coverImage ? (
+        {form?.coverImage && (form?.coverImage as string).startsWith('https://') ? (
           <Image
             className="w-full rounded-t-md h-48 2xl:h-56 object-cover"
             alt="quiz"
-            src={quiz?.coverImage}
+            src={form?.coverImage}
             width={400}
             height={400}
           />
@@ -89,26 +84,21 @@ export function InteractionCard({
       </div>
       <div className="w-full flex flex-col rounded-b-md items-start justify-start gap-y-3 border-x border-b">
         <p className="font-medium px-3 pt-3 w-full line-clamp-2">
-          {quiz?.coverTitle}
+          {form?.title}
         </p>
         <div className="text-gray-500 px-3 pb-3 text-xs ms:text-mobile flex items-center justify-between w-full">
           <p className="flex items-center gap-x-2">
             <span
               className={cn(
-                "border-r pr-2 border-gray-500",
-                !points && "border-0"
+                " pr-2 border-gray-500",
+                
               )}
-            >{`${quiz?.questions?.length || 0} ${
-              quiz?.questions?.length > 1 ? "Questions" : "Question"
+            >{`${form?.questions?.length || 0} ${
+              form?.questions?.length > 1 ? "Questions" : "Question"
             }`}</span>
-            {!points ? null : (
-              <span>{`${points} ${points > 0 ? `points` : `point`}`}</span>
-            )}
+           
           </p>
-          <p className="flex items-center gap-x-1">
-            <QUsers />
-            <span>{quiz?.quizParticipants?.length ?? 0}</span>
-          </p>
+        
         </div>
       </div>
     </div>
@@ -118,10 +108,10 @@ export function InteractionCard({
 function ActionModal({
   close,
   refetch,
-  quiz,
+  form,
 }: {
   refetch: () => Promise<any>;
-  quiz: TQuiz<TQuestion[]>;
+  form: TEngagementFormQuestion;
   close: () => void;
 }) {
   return (
@@ -135,11 +125,11 @@ function ActionModal({
           }}
           className="flex relative z-[50]  flex-col  py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
         >
-          <CopyQuiz quiz={quiz} refetch={refetch} />
+          {/* <CopyQuiz quiz={quiz} refetch={refetch} />
 
           <ActivateQuiz quiz={quiz} refetch={refetch} />
 
-          <DeleteQuiz quizAlias={quiz?.quizAlias} refetch={refetch} />
+          <DeleteQuiz quizAlias={quiz?.quizAlias} refetch={refetch} /> */}
         </div>
       </div>
     </>
