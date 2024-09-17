@@ -10,14 +10,23 @@ import { AddCircle } from "@styled-icons/ionicons-sharp/AddCircle";
 import { useState } from "react";
 import Image from "next/image";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { TextType, DateType , CheckBoxType, RatingType} from "./_components/optionsType/organizer";
-import {cn} from "@/lib"
+import {
+  TextType,
+  DateType,
+  CheckBoxType,
+  RatingType,
+} from "./_components/optionsType/organizer";
+import { cn } from "@/lib";
 import { InteractionLayout } from "@/components/engagements/_components";
-import {z} from "zod"
-import {zodResolver} from "@hookform/resolvers/zod"
-import {formQuestionSchema} from "@/schemas/engagement"
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formQuestionSchema } from "@/schemas/engagement";
 import { AddCoverImage } from "./_components/formcomposables";
 import { nanoid } from "nanoid";
+import { useMutateData, usePostRequest } from "@/hooks/services/request";
+import { TEngagementFormQuestion } from "@/types/engagements";
+import { Loader2Icon } from "lucide-react";
+import { uploadFile } from "@/utils";
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
   { name: "Text", image: "/ftext.png" },
@@ -31,12 +40,10 @@ const optionsType = [
   { name: "Mutiple Choice", type: "INPUT_MULTIPLE_CHOICE" },
   { name: "Text", type: "INPUT_TEXT" },
   { name: "Date", type: "INPUT_DATE" },
-  { name: "CheckBox", type: "INPUT_CHECKBOX", },
+  { name: "CheckBox", type: "INPUT_CHECKBOX" },
   { name: "Rating", type: "INPUT_RATING" },
   { name: "Likert", type: "INPUT_LIKERT" },
-]
-
-
+];
 
 function SelectQuestionType({
   onClose,
@@ -44,7 +51,7 @@ function SelectQuestionType({
   setSelectedOption,
 }: {
   onClose: () => void;
- // selectedOption: string;
+  // selectedOption: string;
   setSelectedOption: (selected: string) => void;
 }) {
   return (
@@ -59,8 +66,11 @@ function SelectQuestionType({
       <div className="w-full flex flex-wrap  items-center px-4 mx-auto max-w-[70%] gap-6 py-4 sm:py-8 justify-start">
         {options?.map((item) => (
           <button
-          onClick={() => setSelectedOption(item?.name)}
-          className={cn("w-full max-w-[170px] min-w-[170px] flex border hover:border-basePrimary border-gray-300 items-center gap-x-3 p-2 rounded-lg  sm:p-3")}>
+            onClick={() => setSelectedOption(item?.name)}
+            className={cn(
+              "w-full max-w-[170px] min-w-[170px] flex border hover:border-basePrimary border-gray-300 items-center gap-x-3 p-2 rounded-lg  sm:p-3"
+            )}
+          >
             <Image
               src={item.image}
               alt="question-type"
@@ -76,50 +86,105 @@ function SelectQuestionType({
   );
 }
 
-export default function CreateInteractionForm({eventId}: {eventId: string}) {
+export default function CreateInteractionForm({
+  eventId,
+}: {
+  eventId: string;
+}) {
+  const [loading, setLoading] = useState(false);
+  const { postData, isLoading } =
+    usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
   const form = useForm<z.infer<typeof formQuestionSchema>>({
     resolver: zodResolver(formQuestionSchema),
     defaultValues: {
       questions: [],
       isActive: true,
-      eventAlias: eventId
-    }
+      eventAlias: eventId,
+    },
   });
   const router = useRouter();
- // const [selectedOption, setSelectedOption] = useState<string>("");
+  // const [selectedOption, setSelectedOption] = useState<string>("");
   const [showSelectQuestionType, setShowSelectQuestionType] =
     useState<boolean>(false);
 
-
-    const {fields, remove, append} = useFieldArray({
-      control: form.control,
-      name: "questions",
-    })
+  const { fields, remove, append } = useFieldArray({
+    control: form.control,
+    name: "questions",
+  });
 
   function appendToQuestion(selected: string) {
     append({
       questionId: nanoid(),
       question: "",
-      questionImage:"",
-      selectedType: optionsType.find(option => option.name === selected)?.type ||'',
+      questionImage: "",
+      selectedType:
+        optionsType.find((option) => option.name === selected)?.type || "",
       optionFields: null,
-      isRequired: false
+      isRequired: false,
     });
     setShowSelectQuestionType(false);
     // setSelectedOption("");
   }
 
-
-
-
   async function onSubmit(values: z.infer<typeof formQuestionSchema>) {
-    console.log(values);
+    if (!values?.coverImage) return;
+    setLoading(true);
+    const image = await new Promise(async (resolve) => {
+      if (typeof values?.coverImage === "string") {
+        resolve(values?.coverImage);
+      } else {
+        const img = await uploadFile(values?.coverImage[0], "image");
+        resolve(img);
+      }
+    });
+    // Process questions
+    const processedQuestions = await Promise.all(
+      values.questions.map(async (question) => {
+        // Upload question image if present
+        const questionImage =
+          typeof question?.questionImage === "string"
+            ? question?.questionImage
+            : question?.questionImage && question?.questionImage[0]
+            ? await uploadFile(question.questionImage[0], "image")
+            : null;
+
+        // Process option fields if present
+        let processedOptionFields = question.optionFields;
+        if (question.optionFields && Array.isArray(question.optionFields)) {
+          processedOptionFields = await Promise.all(
+            question.optionFields.map(async (option: any) => {
+              if (typeof option.optionImage === "string") {
+                return { ...option };
+              } else if (option?.optionImage && option?.optionImage[0]) {
+                const optionImage = await uploadFile(
+                  option.optionImage[0],
+                  "image"
+                );
+                return { ...option, optionImage };
+              }
+
+              return option;
+            })
+          );
+        }
+
+        return {
+          ...question,
+          questionImage,
+          optionFields: processedOptionFields,
+        };
+      })
+    );
+
+    await postData({
+      payload: {
+        ...values,
+        coverImage: image as string,
+        questions: processedQuestions,
+      },
+    });
+    setLoading(false);
   }
-
-
-
-
-  
 
   function handleToggleSelectQuestionType() {
     setShowSelectQuestionType((prev) => !prev);
@@ -132,24 +197,28 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
             onSubmit={form.handleSubmit(onSubmit)}
             className="w-full flex flex-col items-start justify-start sm:gap-y-6 gap-y-8 2xl:gap-y-10"
           >
-        <div className="w-full flex items-center justify-between">
-        <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                router.back();
-              }}
-              className="h-fit w-fit px-0 gap-x-2"
-            >
-              <ArrowBack size={20} />
-              <p>Back</p>
-            </Button>
-            <Button className="bg-basePrimary px-6 text-white h-12 ">Save</Button>
-        </div>
+            <div className="w-full flex items-center justify-between">
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  router.back();
+                }}
+                className="h-fit w-fit px-0 gap-x-2"
+              >
+                <ArrowBack size={20} />
+                <p>Back</p>
+              </Button>
+              <Button
+                disabled={loading}
+                className="bg-basePrimary gap-x-2 px-6 text-white h-12 "
+              >
+                {loading && <Loader2Icon size={20} className="animate-spin" />}
+                <p>Save</p>
+              </Button>
+            </div>
 
-          <AddCoverImage
-          form={form}
-          />
+            <AddCoverImage form={form} />
 
             <div className="w-full from-custom-bg-gradient-start flex flex-col items-start justify-start gap-y-1 to-custom-bg-gradient-end bg-gradient-to-tr rounded-lg border p-3 sm:p-4">
               <FormField
@@ -188,22 +257,20 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
               {fields.map((field, index) => (
                 <div key={field.id} className="w-full">
                   {field.selectedType === "INPUT_TEXT" && (
-                    <TextType form={form} index={index} remove={remove}/>
+                    <TextType form={form} index={index} remove={remove} />
                   )}
                   {field.selectedType === "INPUT_DATE" && (
-                    <DateType form={form} index={index} remove={remove}/>
+                    <DateType form={form} index={index} remove={remove} />
                   )}
                   {field.selectedType === "INPUT_CHECKBOX" && (
-                    <CheckBoxType form={form} index={index} remove={remove}/>
+                    <CheckBoxType form={form} index={index} remove={remove} />
                   )}
-                   {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
-                    <CheckBoxType form={form} index={index} remove={remove}/>
+                  {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
+                    <CheckBoxType form={form} index={index} remove={remove} />
                   )}
-                    {field.selectedType === "INPUT_RATING" && (
-                    <RatingType form={form} index={index} remove={remove}/>
+                  {field.selectedType === "INPUT_RATING" && (
+                    <RatingType form={form} index={index} remove={remove} />
                   )}
-
-                 
                 </div>
               ))}
             </div>
@@ -221,7 +288,7 @@ export default function CreateInteractionForm({eventId}: {eventId: string}) {
                 <p className="underline">Add Question</p>
               </Button>
             </div>
-            
+
             {showSelectQuestionType && (
               <SelectQuestionType
                 onClose={handleToggleSelectQuestionType}

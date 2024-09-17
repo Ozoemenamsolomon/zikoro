@@ -109,3 +109,39 @@ export const useMutateData = <TData, TReturnData = any>(
 
   return { isLoading, error, mutateData };
 };
+
+
+
+export const usePostRequest = <T>(endpoint: string) => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const postData = async ({
+    payload,
+  }: {
+    payload: T;
+  }) => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await postRequest<T>({
+        endpoint: endpoint,
+        payload,
+      });
+
+      toast({
+        description: "Creation Attempt Successful",
+      });
+      return data;
+    } catch (error: any) {
+      //
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { postData, isLoading };
+};

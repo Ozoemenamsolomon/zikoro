@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { UseFormReturn, UseFieldArrayRemove } from "react-hook-form";
 import { PiDotsSixBold } from "react-icons/pi";
 import { IoImage } from "react-icons/io5";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SelectedImage } from "../../formcomposables/SelectedImage";
 import { z } from "zod";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
@@ -52,6 +52,12 @@ export function RatingType({
   function handleToggle() {
     setOpen((p) => !p);
   }
+
+  useEffect(() => {
+if (selectedRating) {
+  form.setValue(`questions.${index}.optionFields`, selectedRating)
+}
+  },[selectedRating])
 
   return (
     <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-3 bg-white">

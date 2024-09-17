@@ -19,12 +19,19 @@ export interface TEngagementFormQuestion {
   created_at: string;
   title: string;
   description: string;
-  coverImage: string;
+  coverImage: string | any;
   createdBy: number;
   updatedAt: string;
   isActive: boolean;
   expirationDate: string;
-  questions: JSON;
+  questions: {
+question: string;
+questionImage?: string | any;
+selectedType: string;
+isRequired: boolean;
+questionId: string;
+optionFields?: any;
+  }[];
   formAlias: string;
   eventAlias: string;
 }
