@@ -28,6 +28,7 @@ import { TEngagementFormQuestion } from "@/types/engagements";
 import { Loader2Icon } from "lucide-react";
 import { generateAlias, uploadFile } from "@/utils";
 import { CiShare2 } from "react-icons/ci";
+import { ShareModal } from "./ShareModal";
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
   { name: "Text", image: "/ftext.png" },
@@ -96,6 +97,8 @@ export default function CreateInteractionForm({
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
     const [isCreated, setIsCreated] = useState(false)
+    const [isShare, setShowShare] = useState(false)
+    const [formAlias, setFormAlias] = useState('')
   const form = useForm<z.infer<typeof formQuestionSchema>>({
     resolver: zodResolver(formQuestionSchema),
     defaultValues: {
@@ -187,11 +190,16 @@ export default function CreateInteractionForm({
       },
     });
     setLoading(false);
+    setFormAlias(values?.formAlias)
     setIsCreated(true)
   }
 
   function handleToggleSelectQuestionType() {
     setShowSelectQuestionType((prev) => !prev);
+  }
+
+  function onToggleShare() {
+    setShowShare((p) => !p)
   }
   return (
     <InteractionLayout eventId={eventId}>
@@ -308,6 +316,8 @@ export default function CreateInteractionForm({
             )}
           </form>
         </Form>
+
+        {isShare && <ShareModal close={onToggleShare} link={`${window.location.origin}/engagements/${eventId}/form/${formAlias}`}/>}
       </div>
     </InteractionLayout>
   );
