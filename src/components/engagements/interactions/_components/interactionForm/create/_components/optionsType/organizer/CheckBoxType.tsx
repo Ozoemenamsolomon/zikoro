@@ -142,14 +142,14 @@ function OptionItem({
       </div>
     
       {option.optionImage && (
-        <div className="w-full col-span-full rounded-lg p-4 xl:p-6 bg-white  ">
+        <div className="w-full col-span-full rounded-lg p-4 xl:p-6  ">
           <div className="mx-auto w-full max-w-2xl relative h-[20rem] 2xl:h-[25rem] ">
             <Image
               src={option.optionImage}
               alt="selected image"
               width={1000}
               height={600}
-              className="object-cover h-full w-full"
+              className="object-cover h-full rounded-lg w-full"
             />
             <Button
               onClick={(e) => {
