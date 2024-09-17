@@ -23,10 +23,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formQuestionSchema } from "@/schemas/engagement";
 import { AddCoverImage } from "./_components/formcomposables";
 import { nanoid } from "nanoid";
-import { useMutateData, usePostRequest } from "@/hooks/services/request";
+import {  usePostRequest } from "@/hooks/services/request";
 import { TEngagementFormQuestion } from "@/types/engagements";
 import { Loader2Icon } from "lucide-react";
-import { uploadFile } from "@/utils";
+import { generateAlias, uploadFile } from "@/utils";
+import { CiShare2 } from "react-icons/ci";
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
   { name: "Text", image: "/ftext.png" },
@@ -92,14 +93,16 @@ export default function CreateInteractionForm({
   eventId: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const { postData, isLoading } =
+  const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
+    const [isCreated, setIsCreated] = useState(false)
   const form = useForm<z.infer<typeof formQuestionSchema>>({
     resolver: zodResolver(formQuestionSchema),
     defaultValues: {
       questions: [],
       isActive: true,
       eventAlias: eventId,
+      formAlias: generateAlias()
     },
   });
   const router = useRouter();
@@ -184,6 +187,7 @@ export default function CreateInteractionForm({
       },
     });
     setLoading(false);
+    setIsCreated(true)
   }
 
   function handleToggleSelectQuestionType() {
@@ -209,13 +213,19 @@ export default function CreateInteractionForm({
                 <ArrowBack size={20} />
                 <p>Back</p>
               </Button>
-              <Button
+             <div className="w-full flex items-center gap-x-2">
+             <Button
                 disabled={loading}
                 className="bg-basePrimary gap-x-2 px-6 text-white h-12 "
               >
                 {loading && <Loader2Icon size={20} className="animate-spin" />}
                 <p>Save</p>
               </Button>
+             {isCreated && <Button>
+                  <CiShare2 size={22}/>
+                <p>Share</p>
+              </Button>}
+             </div>
             </div>
 
             <AddCoverImage form={form} />

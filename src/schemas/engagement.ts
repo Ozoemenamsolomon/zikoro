@@ -16,7 +16,7 @@ export const formQuestionSchema = z.object({
     coverImage: z.any(),
     isActive:z.boolean(),
     eventAlias: z.string(),
-
+    formAlias: z.string()
     
     
 });
