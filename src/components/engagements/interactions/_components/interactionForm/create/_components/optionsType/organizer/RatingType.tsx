@@ -24,10 +24,12 @@ export function RatingType({
   form,
   index,
   remove,
+  append
 }: {
   form: UseFormReturn<z.infer<typeof formQuestionSchema>, any, any>;
   index: number;
   remove: UseFieldArrayRemove;
+  append:(i:number) => void;
 }) {
   const [selectedRating, setSelectedRating] = useState(5);
   const [isOpen, setOpen] = useState(false);
@@ -161,7 +163,7 @@ if (selectedRating) {
       </div>
 
       {/** actions */}
-      <BottomAction form={form} remove={remove} index={index} />
+      <BottomAction form={form} remove={remove} index={index} append={append} />
     </div>
   );
 }

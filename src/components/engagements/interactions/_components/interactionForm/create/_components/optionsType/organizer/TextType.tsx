@@ -20,11 +20,13 @@ import { BottomAction } from "../../formcomposables";
 export function TextType({
   form,
   index,
-  remove
+  remove,
+  append
 }: {
   form: UseFormReturn<z.infer<typeof formQuestionSchema>, any, any>;
   index: number;
-remove: UseFieldArrayRemove
+remove: UseFieldArrayRemove;
+append: (i:number) => void;
 }) {
   //const [isRequired, setIsRequired] = useState(false);
 
@@ -109,7 +111,7 @@ remove: UseFieldArrayRemove
         />
       </div> */}
       {/** actions */}
-    <BottomAction form={form} remove={remove} index={index}/>
+    <BottomAction form={form} remove={remove} index={index} append={append}/>
     </div>
   );
 }

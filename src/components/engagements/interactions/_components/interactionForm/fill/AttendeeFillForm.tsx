@@ -3,13 +3,12 @@
 import Image from "next/image";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { InteractionLayout } from "@/components/engagements/_components";
 import {
   CheckboxTypeAnswer,
   DateTypeAnswer,
   TextTypeAnswer,
 } from "./answerTypes";
-export default function AttendeeFillForm({eventId}:{eventId:string}) {
+export default function AttendeeFillForm({eventId, formId}:{eventId:string; formId:string}) {
   const form = useForm();
 
   async function onSubmit(values: any) {

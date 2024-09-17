@@ -172,10 +172,12 @@ export function CheckBoxType({
   form,
   index,
   remove,
+  append
 }: {
   form: UseFormReturn<z.infer<typeof formQuestionSchema>, any, any>;
   index: number;
   remove: UseFieldArrayRemove;
+  append:(i:number) => void;
 }) {
   //const [isRequired, setIsRequired] = useState(false);
   const [options, setOptions] = useState<OptionItemsType[]>([
@@ -332,7 +334,7 @@ export function CheckBoxType({
       </div>
 
       {/** actions */}
-      <BottomAction form={form} remove={remove} index={index} />
+      <BottomAction form={form} remove={remove} index={index} append={append} />
     </div>
   );
 }

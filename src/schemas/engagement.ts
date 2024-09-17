@@ -12,7 +12,7 @@ export const formQuestion = z.object({
 export const formQuestionSchema = z.object({
     questions: z.array(formQuestion),
     title: z.string().min(3, { message: "Title is required" }),
-    description: z.string().min(3, { message: "Description is required" }),
+    description: z.string().optional(),
     coverImage: z.any(),
     isActive:z.boolean(),
     eventAlias: z.string(),

@@ -10,6 +10,7 @@ import { AddCircle } from "@styled-icons/ionicons-sharp/AddCircle";
 import { useState } from "react";
 import Image from "next/image";
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import toast from "react-hot-toast";
 import {
   TextType,
   DateType,
@@ -23,7 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formQuestionSchema } from "@/schemas/engagement";
 import { AddCoverImage } from "./_components/formcomposables";
 import { nanoid } from "nanoid";
-import {  usePostRequest } from "@/hooks/services/request";
+import { usePostRequest } from "@/hooks/services/request";
 import { TEngagementFormQuestion } from "@/types/engagements";
 import { Loader2Icon } from "lucide-react";
 import { generateAlias, uploadFile } from "@/utils";
@@ -96,16 +97,16 @@ export default function CreateInteractionForm({
   const [loading, setLoading] = useState(false);
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
-    const [isCreated, setIsCreated] = useState(false)
-    const [isShare, setShowShare] = useState(false)
-    const [formAlias, setFormAlias] = useState('')
+  const [isCreated, setIsCreated] = useState(false);
+  const [isShare, setShowShare] = useState(false);
+  const [formAlias, setFormAlias] = useState("");
   const form = useForm<z.infer<typeof formQuestionSchema>>({
     resolver: zodResolver(formQuestionSchema),
     defaultValues: {
       questions: [],
       isActive: true,
       eventAlias: eventId,
-      formAlias: generateAlias()
+      formAlias: generateAlias(),
     },
   });
   const router = useRouter();
@@ -132,8 +133,20 @@ export default function CreateInteractionForm({
     // setSelectedOption("");
   }
 
+  function copyQuestion(index: number) {
+    const question = form.getValues(`questions.${index}`);
+    append({
+      ...question,
+    });
+  }
+
   async function onSubmit(values: z.infer<typeof formQuestionSchema>) {
-    if (!values?.coverImage) return;
+    if (!values?.coverImage) return toast.error("Cover Image is required");
+    if (
+      !values?.questions ||
+      (Array.isArray(values?.questions) && values?.questions?.length === 0)
+    )
+      return toast.error("Add Questions");
     setLoading(true);
     const image = await new Promise(async (resolve) => {
       if (typeof values?.coverImage === "string") {
@@ -190,8 +203,8 @@ export default function CreateInteractionForm({
       },
     });
     setLoading(false);
-    setFormAlias(values?.formAlias)
-    setIsCreated(true)
+    setFormAlias(values?.formAlias);
+    setIsCreated(true);
   }
 
   function handleToggleSelectQuestionType() {
@@ -199,7 +212,7 @@ export default function CreateInteractionForm({
   }
 
   function onToggleShare() {
-    setShowShare((p) => !p)
+    setShowShare((p) => !p);
   }
   return (
     <InteractionLayout eventId={eventId}>
@@ -221,19 +234,30 @@ export default function CreateInteractionForm({
                 <ArrowBack size={20} />
                 <p>Back</p>
               </Button>
-             <div className="w-full flex items-center gap-x-2">
-             <Button
-                disabled={loading}
-                className="bg-basePrimary gap-x-2 px-6 text-white h-12 "
-              >
-                {loading && <Loader2Icon size={20} className="animate-spin" />}
-                <p>Save</p>
-              </Button>
-             {isCreated && <Button>
-                  <CiShare2 size={22}/>
-                <p>Share</p>
-              </Button>}
-             </div>
+              <div className=" flex items-center gap-x-2">
+                <Button
+                  disabled={loading}
+                  className="bg-basePrimary gap-x-2 px-6 text-white h-12 "
+                >
+                  {loading && (
+                    <Loader2Icon size={20} className="animate-spin" />
+                  )}
+                  <p>Save</p>
+                </Button>
+                {isCreated && (
+                  <Button
+                    className="gap-x-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onToggleShare();
+                    }}
+                  >
+                    <CiShare2 size={22} />
+                    <p>Share</p>
+                  </Button>
+                )}
+              </div>
             </div>
 
             <AddCoverImage form={form} />
@@ -275,19 +299,44 @@ export default function CreateInteractionForm({
               {fields.map((field, index) => (
                 <div key={field.id} className="w-full">
                   {field.selectedType === "INPUT_TEXT" && (
-                    <TextType form={form} index={index} remove={remove} />
+                    <TextType
+                      form={form}
+                      index={index}
+                      remove={remove}
+                      append={copyQuestion}
+                    />
                   )}
                   {field.selectedType === "INPUT_DATE" && (
-                    <DateType form={form} index={index} remove={remove} />
+                    <DateType
+                      form={form}
+                      index={index}
+                      remove={remove}
+                      append={copyQuestion}
+                    />
                   )}
                   {field.selectedType === "INPUT_CHECKBOX" && (
-                    <CheckBoxType form={form} index={index} remove={remove} />
+                    <CheckBoxType
+                      form={form}
+                      index={index}
+                      remove={remove}
+                      append={copyQuestion}
+                    />
                   )}
                   {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
-                    <CheckBoxType form={form} index={index} remove={remove} />
+                    <CheckBoxType
+                      form={form}
+                      index={index}
+                      remove={remove}
+                      append={copyQuestion}
+                    />
                   )}
                   {field.selectedType === "INPUT_RATING" && (
-                    <RatingType form={form} index={index} remove={remove} />
+                    <RatingType
+                      form={form}
+                      index={index}
+                      remove={remove}
+                      append={copyQuestion}
+                    />
                   )}
                 </div>
               ))}
@@ -317,7 +366,12 @@ export default function CreateInteractionForm({
           </form>
         </Form>
 
-        {isShare && <ShareModal close={onToggleShare} link={`${window.location.origin}/engagements/${eventId}/form/${formAlias}`}/>}
+        {isShare && (
+          <ShareModal
+            close={onToggleShare}
+            link={`${window.location.origin}/engagements/${eventId}/form/${formAlias}`}
+          />
+        )}
       </div>
     </InteractionLayout>
   );

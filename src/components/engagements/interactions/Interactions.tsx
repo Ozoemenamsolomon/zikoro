@@ -20,6 +20,7 @@ import Image from "next/image";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { verifyingAccess } from "@/utils";
 import { useRouter } from "next/navigation";
+import { useGetData } from "@/hooks/services/request";
 export default function Interactions({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
   const [isOpenInteractionModal, setOpenInteractionModal] = useState(false);
@@ -28,6 +29,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
   const [interactionType, setInteractionType] = useState("");
  // const { organization } = useOrganizationStore();
   const { quizzes, isLoading, getQuizzes } = useGetQuizzes(eventId);
+  const {data, isLoading: loading} = useGetData('/engagements/form')
   const router = useRouter()
 
   function onClose() {

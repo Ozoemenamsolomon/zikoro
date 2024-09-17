@@ -12,10 +12,12 @@ export function BottomAction({
   form,
   remove,
   index,
+  append
 }: {
   form: UseFormReturn<z.infer<typeof formQuestionSchema>, any, any>;
   remove: UseFieldArrayRemove;
   index: number;
+  append: (i: number) => void;
 }) {
   const isRequired = useWatch({
     control: form.control,
@@ -35,7 +37,13 @@ export function BottomAction({
       </div>
 
       <div className="flex items-center gap-x-2">
-        <Button className="px-0 h-10 w-10 flex items-center justify-center rounded-full border border-gray-700">
+        <Button 
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            append(index);
+          }}
+        className="px-0 h-10 w-10 flex items-center justify-center rounded-full border border-gray-700">
           <Copy size={20} className="text-gray-700" />
         </Button>
         <Button
