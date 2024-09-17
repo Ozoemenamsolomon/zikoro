@@ -60,7 +60,7 @@ function OptionItem({
   removeOption: (id: string) => void;
   index: number;
   removeImage: (id: string) => void;
-  setOption: (id: string, value: string) => void;
+  setOption: (id: string, value: string, type:string) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
   useSortable({ id: option?.id });
@@ -99,7 +99,7 @@ function OptionItem({
         <Input
           onChange={(e) => {
             e.stopPropagation()
-            setOption(option.id, e.target.value);
+            setOption(option.id, e.target.value, "text");
           }}
           onKeyDown={handleKeyDown} 
           value={option?.option}
@@ -126,7 +126,7 @@ function OptionItem({
                   if (file) {
                     const reader = new FileReader();
                     reader.onloadend = () => {
-                      setOption(option.id, reader.result as string);
+                      setOption(option.id, reader.result as string, "image");
                     };
                     reader.readAsDataURL(file);
                   }
@@ -202,10 +202,10 @@ export function CheckBoxType({
     }
   }, [options]);
 
-  function handleChangeOption(id: string, value: string) {
+  function handleChangeOption(id: string, value: string, type: string) {
     setOptions(
       options.map((option) =>
-        option.id === id ? { ...option, option: value } : option
+        option.id === id ? { ...option, [type === "image" ? "optionImage" : "option"]: value } : option
       )
     );
   }
