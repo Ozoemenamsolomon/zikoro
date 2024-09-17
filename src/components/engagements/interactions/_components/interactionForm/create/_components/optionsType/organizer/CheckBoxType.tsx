@@ -81,7 +81,8 @@ function OptionItem({
       touchAction: "none",
     }}
     role="button"
-     className="w-full bg-gradient-to-tr items-center rounded-lg p-4 flex justify-between from-custom-bg-gradient-start to-custom-bg-gradient-end">
+     className="w-full rounded-lg p-4  bg-gradient-to-tr  space-y-3  from-custom-bg-gradient-start to-custom-bg-gradient-end">
+      <div className="w-full items-center flex justify-between">
       <PiDotsSixVertical size={30} className="text-gray-400 cursor-move" />
       <div className="w-[90%] flex flex-col items-start justify-start gap-y-3">
         <div className="flex items-center gap-x-2">
@@ -138,8 +139,10 @@ function OptionItem({
           </label>
         </div>
       )}
+      </div>
+    
       {option.optionImage && (
-        <div className="w-full col-span-full rounded-lg p-4 xl:p-6 bg-white border-[8px] border-[#001ffc]/10 ">
+        <div className="w-full col-span-full rounded-lg p-4 xl:p-6 bg-white  ">
           <div className="mx-auto w-full max-w-2xl relative h-[20rem] 2xl:h-[25rem] ">
             <Image
               src={option.optionImage}
