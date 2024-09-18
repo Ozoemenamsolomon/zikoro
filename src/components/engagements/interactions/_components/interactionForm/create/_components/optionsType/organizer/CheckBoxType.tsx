@@ -179,10 +179,13 @@ export function CheckBoxType({
   remove: UseFieldArrayRemove;
   append:(i:number) => void;
 }) {
+  const prevSelectedOptions = form.watch(`questions.${index}.optionFields`);
   //const [isRequired, setIsRequired] = useState(false);
-  const [options, setOptions] = useState<OptionItemsType[]>([
+  const [options, setOptions] = useState<OptionItemsType[]>(prevSelectedOptions || [
     { id: nanoid(), option: "", optionImage: "" },
   ]);
+
+
 
   const watchedImage = form.watch(`questions.${index}.questionImage`);
 
@@ -199,6 +202,8 @@ export function CheckBoxType({
       return null;
     }
   }, [watchedImage]);
+
+
 
   // form field
   useEffect(() => {

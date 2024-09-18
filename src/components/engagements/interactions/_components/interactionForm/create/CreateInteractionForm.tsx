@@ -5,9 +5,9 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { Button } from "@/components/custom_ui/Button";
 import { Input } from "@/components/ui/input";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AddCircle } from "@styled-icons/ionicons-sharp/AddCircle";
-import { useState } from "react";
+import { useState, Suspense, useEffect } from "react";
 import Image from "next/image";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import toast from "react-hot-toast";
@@ -24,7 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formQuestionSchema } from "@/schemas/engagement";
 import { AddCoverImage } from "./_components/formcomposables";
 import { nanoid } from "nanoid";
-import { usePostRequest } from "@/hooks/services/request";
+import { useGetData, usePostRequest } from "@/hooks/services/request";
 import { TEngagementFormQuestion } from "@/types/engagements";
 import { Loader2Icon } from "lucide-react";
 import { generateAlias, uploadFile } from "@/utils";
@@ -89,14 +89,19 @@ function SelectQuestionType({
   );
 }
 
-export default function CreateInteractionForm({
+ function CreateInteractionFormComp({
   eventId,
 }: {
   eventId: string;
 }) {
   const [loading, setLoading] = useState(false);
+  const params = useSearchParams()
+  const prevFormId = params.get("form")
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
+    const { data } = prevFormId
+    ? useGetData<TEngagementFormQuestion>(`/engagements/form/${prevFormId}`)
+    : { data: null };
   const [isCreated, setIsCreated] = useState(false);
   const [isShare, setShowShare] = useState(false);
   const [formAlias, setFormAlias] = useState("");
@@ -194,18 +199,41 @@ export default function CreateInteractionForm({
         };
       })
     );
+  const payload =  data?.formAlias ? {
+    ...data,
+    ...values,
+    coverImage: image as string,
+    questions: processedQuestions,
+  }: {
+    ...values,
+    coverImage: image as string,
+    questions: processedQuestions,
+  }
 
     await postData({
-      payload: {
-        ...values,
-        coverImage: image as string,
-        questions: processedQuestions,
-      },
+      payload:payload,
     });
     setLoading(false);
     setFormAlias(values?.formAlias);
     setIsCreated(true);
   }
+
+
+  useEffect(() => {
+    if (data) {
+      form.reset({
+        title: data?.title,
+        coverImage: data?.coverImage,
+        description: data?.description,
+        isActive: data?.isActive,
+        formAlias: data?.formAlias,
+        eventAlias: data?.eventAlias,
+        questions: data?.questions
+
+      })
+    }
+
+  },[data])
 
   function handleToggleSelectQuestionType() {
     setShowSelectQuestionType((prev) => !prev);
@@ -270,7 +298,7 @@ export default function CreateInteractionForm({
                   <FormItem>
                     <FormControl>
                       <Input
-                        {...field}
+                        {...form.register("title")}
                         className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
                         placeholder="Form Title"
                       />
@@ -285,7 +313,8 @@ export default function CreateInteractionForm({
                   <FormItem>
                     <FormControl>
                       <Input
-                        {...field}
+                        {...form.register("description")}
+
                         className="bg-transparent border-none h-11  placeholder:text-gray-500"
                         placeholder="Form Description"
                       />
@@ -375,4 +404,13 @@ export default function CreateInteractionForm({
       </div>
     </InteractionLayout>
   );
+}
+
+
+export default function CreateInteractionForm({eventId}:{eventId:string;}) {
+  return (
+    <Suspense>
+      <CreateInteractionFormComp eventId={eventId}/>
+    </Suspense>
+  )
 }

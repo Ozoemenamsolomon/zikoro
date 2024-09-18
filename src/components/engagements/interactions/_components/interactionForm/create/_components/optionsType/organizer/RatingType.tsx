@@ -31,8 +31,11 @@ export function RatingType({
   remove: UseFieldArrayRemove;
   append:(i:number) => void;
 }) {
-  const [selectedRating, setSelectedRating] = useState(5);
+  const prevSelectedRating = form.watch(`questions.${index}.optionFields`)
+  const [selectedRating, setSelectedRating] = useState(parseInt(prevSelectedRating) || 5);
   const [isOpen, setOpen] = useState(false);
+  
+  
   //const [isRequired, setIsRequired] = useState(false);
 
   const watchedImage = form.watch(`questions.${index}.questionImage`);
@@ -54,6 +57,12 @@ export function RatingType({
   function handleToggle() {
     setOpen((p) => !p);
   }
+
+//   useEffect(() => {
+// if (prevSelectedRating && prevSelectedRating !== null) {
+//   setSelectedRating(prevSelectedRating)
+// }
+//   },[prevSelectedRating])
 
   useEffect(() => {
 if (selectedRating) {
