@@ -9,10 +9,13 @@ export function DateTypeAnswer({
   form: UseFormReturn<any, any, any>;
   index: number
 }) {
+
+  const question = form.watch(`questions.${index}.question`)
+  const isRequired = form.watch(`questions.${index}.isRequired`);
   return (
     <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
       <div className="w-full p-2 bg-gradient-to-tr  from-custom-bg-gradient-start to-custom-bg-gradient-end">
-        <p className="w-full text-start leading-7 flex ">Question <IoMdStar size={12} className="text-red-700"/></p>
+      <p className="w-full text-start leading-7 flex ">{question ?? ''} {  isRequired && <IoMdStar size={12} className="text-red-700"/>}</p>
       </div>
 
       <FormField
