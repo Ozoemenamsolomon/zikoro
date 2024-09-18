@@ -21,9 +21,17 @@ export const formQuestionSchema = z.object({
     
 });
 
+
+
 export const formAnswerSchema = z.object( {
     attendeeAlias: z.string(),
     eventAlias: z.string(),
     formResponseAlias: z.string(),
     formAlias: z.string(),
+    questions: z.array(formQuestion),
+    responses: z.array(z.object({
+        type:z.string(),
+        response: z.any(),
+        questionId: z.string()
+    }))
 })

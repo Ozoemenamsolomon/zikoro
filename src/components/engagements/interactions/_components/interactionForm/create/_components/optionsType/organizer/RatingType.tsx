@@ -58,11 +58,6 @@ export function RatingType({
     setOpen((p) => !p);
   }
 
-//   useEffect(() => {
-// if (prevSelectedRating && prevSelectedRating !== null) {
-//   setSelectedRating(prevSelectedRating)
-// }
-//   },[prevSelectedRating])
 
   useEffect(() => {
 if (selectedRating) {

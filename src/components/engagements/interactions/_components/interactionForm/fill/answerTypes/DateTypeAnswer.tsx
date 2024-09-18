@@ -4,8 +4,10 @@ import { Input } from "@/components/ui/input";
 import { IoMdStar } from "react-icons/io";
 export function DateTypeAnswer({
   form,
+  index
 }: {
   form: UseFormReturn<any, any, any>;
+  index: number
 }) {
   return (
     <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">

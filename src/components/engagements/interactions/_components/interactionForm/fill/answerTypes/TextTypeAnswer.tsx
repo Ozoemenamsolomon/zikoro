@@ -3,9 +3,12 @@ import { FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 export function TextTypeAnswer({
   form,
+  index
 }: {
   form: UseFormReturn<any, any, any>;
+  index: number
 }) {
+  
   return (
     <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
       <div className="w-full p-2 bg-gradient-to-tr  from-custom-bg-gradient-start to-custom-bg-gradient-end">

@@ -3,8 +3,10 @@ import { FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 export function CheckboxTypeAnswer({
   form,
+  index
 }: {
   form: UseFormReturn<any, any, any>;
+  index: number;
 }) {
   return (
     <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">

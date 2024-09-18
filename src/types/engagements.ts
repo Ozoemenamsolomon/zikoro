@@ -42,7 +42,7 @@ export interface TEngagementFormAnswer {
   formAlias: string;
   userId: number | null;
   submittedAt: string;
-  responses: JSON;
+  responses: any;
   formResponseAlias: string;
   eventAlias: string;
   attendeeAlias: string;
