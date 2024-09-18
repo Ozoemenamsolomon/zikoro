@@ -1,12 +1,10 @@
 "use client";
 
 import { Button } from "@/components";
-import { Switch } from "@/components/ui/switch";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { ThreeDotsVertical } from "styled-icons/bootstrap";
-import { ActivateQuiz, CopyQuiz, DeleteQuiz } from "..";
+import { ActivateForm, CopyForm, DeleteForm} from "..";
 import Image from "next/image";
-import { QUser, QUsers } from "@/constants";
 import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib";
@@ -61,9 +59,9 @@ export function FormCard({
               className="px-0 p-1 bg-gray-200/50 w-fit h-fit"
             >
               <ThreeDotsVertical size={20} />
-              {/* {isOpen && (
-              <ActionModal refetch={refetch} close={onClose} quiz={quiz} />
-            )} */}
+             {isOpen && (
+              <ActionModal refetch={refetch} close={onClose} form={form} />
+            )} 
             </Button>
           )}
         </div>
@@ -125,11 +123,11 @@ function ActionModal({
           }}
           className="flex relative z-[50]  flex-col  py-4 items-start justify-start bg-white rounded-lg w-full h-fit shadow-lg"
         >
-          {/* <CopyQuiz quiz={quiz} refetch={refetch} />
+          <CopyForm form={form} refetch={refetch} />
 
-          <ActivateQuiz quiz={quiz} refetch={refetch} />
+          <ActivateForm form={form} refetch={refetch} />
 
-          <DeleteQuiz quizAlias={quiz?.quizAlias} refetch={refetch} /> */}
+          <DeleteForm formAlias={form?.formAlias} refetch={refetch} />
         </div>
       </div>
     </>

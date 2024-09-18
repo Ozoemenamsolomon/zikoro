@@ -23,3 +23,6 @@ export * from "./modals/InteractionsSelectionModal";
 export * from "./custom_ui/InteractionInput";
 export * from "./presentation/attendee/SendMailModal";
 export * from "./presentation/attendee/AvatarModal";
+export * from "./formactions/ActivateForm";
+export * from "./formactions/CopyForm";
+export * from "./formactions/DeleteForm";
