@@ -18,7 +18,6 @@ import {
 } from "./_components";
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import useOrganizationStore from "@/store/globalOrganizationStore";
 import { verifyingAccess } from "@/utils";
 import { useRouter } from "next/navigation";
 import { useGetData } from "@/hooks/services/request";

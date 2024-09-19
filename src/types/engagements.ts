@@ -40,7 +40,7 @@ export interface TEngagementFormAnswer {
   id: number;
   created_at: string;
   formAlias: string;
-  userId: number | null;
+  userId: string | null;
   submittedAt: string;
   responses: any;
   formResponseAlias: string;
