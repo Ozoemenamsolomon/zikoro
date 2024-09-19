@@ -30,7 +30,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
   const [interactionType, setInteractionType] = useState("");
  // const { organization } = useOrganizationStore();
   const { quizzes, isLoading, getQuizzes } = useGetQuizzes(eventId);
-  const {data, isLoading: loading, getData} = useGetData<TEngagementFormQuestion[]>('/engagements/form')
+  const {data, isLoading: loading, getData} = useGetData<TEngagementFormQuestion[]>(`/engagements/${eventId}/form`)
   const router = useRouter()
 
   function onClose() {

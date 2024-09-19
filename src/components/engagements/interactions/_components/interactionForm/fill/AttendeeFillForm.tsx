@@ -14,6 +14,7 @@ import {
   DateTypeAnswer,
   TextTypeAnswer,
   RatingTypeAnswer,
+  MultiChoiceTypeAnswer,
 } from "./answerTypes";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useEffect } from "react";
@@ -62,7 +63,7 @@ export default function AttendeeFillForm({
     const { questions, ...restData } = values;
     const payload: Partial<TEngagementFormAnswer> = {
       ...restData,
-      userId: user?.userId || "",
+      //userId: user?.userId || "",
     };
     await postData({ payload });
   }
@@ -91,7 +92,7 @@ export default function AttendeeFillForm({
           alt="cover-image"
           width={2000}
           height={600}
-          className="w-full h-[10rem] sm:h-[15rem] 2xl:h-[20rem]"
+          className="w-full h-[10rem] sm:h-[15rem] object-cover 2xl:h-[20rem]"
         />
       )}
 
@@ -122,13 +123,16 @@ export default function AttendeeFillForm({
                 {field.selectedType === "INPUT_RATING" && (
                   <RatingTypeAnswer form={form} index={index} />
                 )}
+                 {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
+                  <MultiChoiceTypeAnswer form={form} index={index} />
+                )}
               </>
             ))}
 
             <Button
               type="submit"
               disabled={loading}
-              className="self-center w-[140px] bg-basePrimary text-white font-medium h-12 "
+              className="self-center w-[140px] gap-x-2 bg-basePrimary text-white font-medium h-12 "
             >
               {loading && <LoaderAlt className="animate-spin" size={20} />}
               <p>Submit</p>

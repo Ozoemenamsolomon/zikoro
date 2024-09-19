@@ -1,5 +1,4 @@
 import { UseFormReturn } from "react-hook-form";
-// import { FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { IoMdStar } from "react-icons/io";
 import { Star } from "styled-icons/fluentui-system-regular";
@@ -52,7 +51,11 @@ export function RatingTypeAnswer({
       <div className="w-full flex items-center gap-x-2 justify-center">
         {Array.from({ length: optionFields as number })?.map((v, index) => (
           <button
-            onClick={() => setRating(index + 1)}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setRating(index + 1);
+            }}
             key={index}
             className={cn(
               "text-gray-400",
@@ -67,18 +70,6 @@ export function RatingTypeAnswer({
           </button>
         ))}
       </div>
-
-      {/* <FormField
-        control={form.control}
-        
-        render={({ field }) => (
-          <FormItem className="w-full">
-            <FormControl>
-             
-            </FormControl>
-          </FormItem>
-        )}
-      /> */}
     </div>
   );
 }

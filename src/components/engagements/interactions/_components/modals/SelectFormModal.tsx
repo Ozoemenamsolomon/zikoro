@@ -65,7 +65,7 @@ export function SelectFormModal({
   selectedFormId: string;
 }) {
   const { data, isLoading } =
-    useGetData<TEngagementFormQuestion[]>(`/engagements/form`);
+    useGetData<TEngagementFormQuestion[]>(`/engagements/${eventId}/form`);
 
   return (
     <div className="w-full h-full inset-0 fixed bg-black/30 z-[200]">

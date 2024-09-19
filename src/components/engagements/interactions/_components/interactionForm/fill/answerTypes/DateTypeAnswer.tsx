@@ -47,6 +47,7 @@ export function DateTypeAnswer({
           form.setValue(`responses.${index}.type`, selectedType);
           form.setValue(`responses.${index}.questionId`, questionId);
         }}
+        required={isRequired}
         type="date"
         className="w-full h-12 sm:h-14 rounded-none border-x-0 border-t-0 border-b px-2 placeholder:text-gray-500 placeholder-gray-500"
         placeholder="Enter Answer"

@@ -1,4 +1,4 @@
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, useWatch } from "react-hook-form";
 import { FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { IoMdStar } from "react-icons/io";
@@ -24,7 +24,12 @@ export function CheckboxTypeAnswer({
   const questionImage = form.watch(`questions.${index}.questionImage`);
   const selectedType = form.watch(`questions.${index}.selectedType`);
   const questionId = form.watch(`questions.${index}.questionId`);
-  const optionFields = form.watch(`questions.${index}.optionFields`);
+  const optionFields  = form.watch(`questions.${index}.optionFields`) as OptionItemsType[];
+
+  const response = useWatch({
+    control: form.control,
+    name: `responses.${index}.response` as const,
+  })  || ''
   return (
     <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
       {question && (
@@ -50,19 +55,33 @@ export function CheckboxTypeAnswer({
       <div className="w-full flex flex-col items-start justify-start gap-y-4">
         {Array.isArray(optionFields) &&
           optionFields.map((value) => (
+            <>
             <label className="flex items-center">
               <input
                 type="radio"
                 onChange={(e) => {
-                  form.setValue(`responses.${index}.response`, e.target.value);
+                  e.target.checked ? form.setValue(`responses.${index}.response`, e.target.value): form.setValue(`responses.${index}.response`, '');
+                  
                   form.setValue(`responses.${index}.type`, selectedType);
                   form.setValue(`responses.${index}.questionId`, questionId);
                 }}
-                value={value}
+                checked={response === value?.option}
+                value={value?.option}
                 className="h-[20px] pt-3 w-[20px] mr-4 accent-basePrimary"
               />
-              <span className="capitalize">{value}</span>
+              <span className="capitalize">{value?.option}</span>
             </label>
+           {value?.optionImage && <div className="w-full max-w-3xl mx-auto mt-3">
+          
+          <Image
+            src={value?.optionImage}
+            alt=""
+            className="w-full h-[30rem] object-cover"
+            width={1000}
+            height={600}
+          />
+            </div>}
+            </>
           ))}
       </div>
     </div>
