@@ -17,13 +17,32 @@ import {
   MultiChoiceTypeAnswer,
 } from "./answerTypes";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formAnswerSchema } from "@/schemas/engagement";
 import { generateAlias } from "@/utils";
 import { useVerifyUserAccess, useCheckTeamMember } from "@/hooks";
 import useUserStore from "@/store/globalUserStore";
+
+function SubmittedModal() {
+  return (
+    <div className="w-full h-full inset-0 fixed">
+      <div className="w-[95%] max-w-xl rounded-lg bg-gradient-to-t gap-y-6 from-basePrimary to-white  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto"></div>
+      <Image
+        src="/images/facheckbox.png"
+        alt=""
+        className="w-fit h-fit"
+        width={48}
+        height={48}
+      />
+      <div className="w-fit flex flex-col items-center justify-center gap-y-2">
+        <h2 className="font-semibold text-lg sm:text-2xl">Forms Submitted</h2>
+        <p>Your answers have been submitted successfully</p>
+      </div>
+    </div>
+  );
+}
 export default function AttendeeFillForm({
   eventId,
 
@@ -35,6 +54,7 @@ export default function AttendeeFillForm({
   const { user } = useUserStore();
   const { isOrganizer, attendee } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
+  const [isSuccess, setOpenSuccess] = useState(false);
   const { data, isLoading } = useGetData<TEngagementFormQuestion>(
     `/engagements/form/${formId}`
   );
@@ -66,9 +86,10 @@ export default function AttendeeFillForm({
       //userId: user?.userId || "",
     };
     await postData({ payload });
+    setOpenSuccess(true)
   }
 
-  console.log(form.getValues());
+  // console.log(form.getValues());
 
   useEffect(() => {
     if (data) {
@@ -123,23 +144,26 @@ export default function AttendeeFillForm({
                 {field.selectedType === "INPUT_RATING" && (
                   <RatingTypeAnswer form={form} index={index} />
                 )}
-                 {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
+                {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
                   <MultiChoiceTypeAnswer form={form} index={index} />
                 )}
               </>
             ))}
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="self-center w-[150px] gap-x-2 bg-basePrimary text-white font-medium h-12 "
-            >
-              {loading && <LoaderAlt className="animate-spin" size={20} />}
-              <p>Submit</p>
-            </Button>
+            {!isOrganizer && !isIdPresent && (
+              <Button
+                type="submit"
+                disabled={loading}
+                className="self-center w-[150px] gap-x-2 bg-basePrimary text-white font-medium h-12 "
+              >
+                {loading && <LoaderAlt className="animate-spin" size={20} />}
+                <p>Submit</p>
+              </Button>
+            )}
           </form>
         </Form>
       </div>
+      {isSuccess && <SubmittedModal/>}
     </div>
   );
 }
