@@ -96,7 +96,7 @@ export default function AttendeeFillForm({
         />
       )}
 
-      <div className="w-full px-4 my-10 sm:my-20 mx-auto max-w-4xl ">
+      <div className="w-full px-4 my-10 pb-20 sm:my-20 mx-auto max-w-4xl ">
         <h2 className="text-lg mb-3 sm:text-xl lg:text-2xl">
           {data?.title ?? ""}
         </h2>
@@ -132,7 +132,7 @@ export default function AttendeeFillForm({
             <Button
               type="submit"
               disabled={loading}
-              className="self-center w-[140px] gap-x-2 bg-basePrimary text-white font-medium h-12 "
+              className="self-center w-[150px] gap-x-2 bg-basePrimary text-white font-medium h-12 "
             >
               {loading && <LoaderAlt className="animate-spin" size={20} />}
               <p>Submit</p>

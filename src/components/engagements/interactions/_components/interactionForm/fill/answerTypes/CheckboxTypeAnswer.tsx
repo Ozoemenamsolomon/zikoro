@@ -56,7 +56,7 @@ export function CheckboxTypeAnswer({
         {Array.isArray(optionFields) &&
           optionFields.map((value) => (
             <>
-            <label className="flex items-center">
+            <label  className="flex items-center">
               <input
                 type="radio"
                 onChange={(e) => {
@@ -67,6 +67,7 @@ export function CheckboxTypeAnswer({
                 }}
                 checked={response === value?.option}
                 value={value?.option}
+                required={isRequired}
                 className="h-[20px] pt-3 w-[20px] mr-4 accent-basePrimary"
               />
               <span className="capitalize">{value?.option}</span>

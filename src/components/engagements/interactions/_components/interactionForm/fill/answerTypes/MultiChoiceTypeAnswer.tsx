@@ -71,6 +71,7 @@ export function MultiChoiceTypeAnswer({
                   form.setValue(`responses.${index}.questionId`, questionId);
                 }}
                 value={value?.option}
+                required={isRequired}
                 className="h-[20px] pt-3 w-[20px] rounded-full mr-4 accent-basePrimary"
               />
               <span className="capitalize">{value?.option}</span>
