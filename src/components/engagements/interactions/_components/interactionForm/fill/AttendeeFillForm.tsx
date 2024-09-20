@@ -29,7 +29,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 function SubmittedModal() {
   return (
     <div className="w-full h-full inset-0 fixed">
-      <div className="w-[95%] max-w-xl rounded-lg bg-gradient-to-t gap-y-6 from-basePrimary to-white  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto"></div>
+      <div className="w-[95%] max-w-xl rounded-lg bg-gradient-to-t gap-y-6 from-white to-basePrimary  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto"></div>
       <Image
         src="/images/facheckbox.png"
         alt=""
@@ -93,7 +93,7 @@ function AttendeeFillFormComp({
     };
     await postData({ payload });
 
-    if (!query) {
+    if (query) {
       router.push(`${link}&redirect=form&id=${attendeeId}`)
       return;
     }
