@@ -17,13 +17,14 @@ import {
   MultiChoiceTypeAnswer,
 } from "./answerTypes";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formAnswerSchema } from "@/schemas/engagement";
 import { generateAlias } from "@/utils";
 import { useVerifyUserAccess, useCheckTeamMember } from "@/hooks";
 import useUserStore from "@/store/globalUserStore";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function SubmittedModal() {
   return (
@@ -43,7 +44,7 @@ function SubmittedModal() {
     </div>
   );
 }
-export default function AttendeeFillForm({
+function AttendeeFillFormComp({
   eventId,
 
   formId,
@@ -51,7 +52,12 @@ export default function AttendeeFillForm({
   eventId: string;
   formId: string;
 }) {
+  const params = useSearchParams();
+  const query = params.get("redirect")
+  const attendeeId = params.get("id")
+  const link = params.get("link")
   const { user } = useUserStore();
+  const router = useRouter()
   const { isOrganizer, attendee } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const [isSuccess, setOpenSuccess] = useState(false);
@@ -66,7 +72,7 @@ export default function AttendeeFillForm({
     resolver: zodResolver(formAnswerSchema),
     defaultValues: {
       eventAlias: eventId,
-      attendeeAlias: attendee?.attendeeAlias || user?.userId || "user",
+      attendeeAlias: attendeeId  || attendee?.attendeeAlias || user?.userId || "user",
       formResponseAlias: generateAlias(),
       formAlias: formId,
       questions: data?.questions,
@@ -86,7 +92,12 @@ export default function AttendeeFillForm({
       //userId: user?.userId || "",
     };
     await postData({ payload });
-    setOpenSuccess(true)
+
+    if (!query) {
+      router.push(`${link}&redirect=form&id=${attendeeId}`)
+      return;
+    }
+    setOpenSuccess(true);
   }
 
   // console.log(form.getValues());
@@ -163,7 +174,21 @@ export default function AttendeeFillForm({
           </form>
         </Form>
       </div>
-      {isSuccess && <SubmittedModal/>}
+      {isSuccess && <SubmittedModal />}
     </div>
+  );
+}
+
+export default function AttendeeFillForm({
+  eventId,
+  formId,
+}: {
+  eventId: string;
+  formId: string;
+}) {
+  return (
+    <Suspense>
+      <AttendeeFillFormComp formId={formId} eventId={eventId} />
+    </Suspense>
   );
 }
