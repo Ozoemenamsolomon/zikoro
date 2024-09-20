@@ -94,7 +94,7 @@ function AttendeeFillFormComp({
     await postData({ payload });
 
     if (query) {
-      router.push(`${link}&redirect=form&id=${attendeeId}`)
+      router.push(`${link}?&redirect=form&id=${attendeeId}`)
       return;
     }
     setOpenSuccess(true);
