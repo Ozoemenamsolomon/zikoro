@@ -268,7 +268,7 @@ export function CheckBoxType({
             <FormItem
               className={cn("w-full col-span-9", image && "col-span-full")}
             >
-              <FormLabel>Question (CheckBox)</FormLabel>
+              <FormLabel>Question {index+1} (CheckBox)</FormLabel>
               <FormControl>
                 <Input
                   {...form.register(`questions.${index}.question`)}

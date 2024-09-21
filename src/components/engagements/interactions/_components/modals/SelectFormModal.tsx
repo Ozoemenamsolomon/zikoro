@@ -98,7 +98,7 @@ export function SelectFormModal({
           </div>
         )}
         {!isLoading && Array.isArray(data) && (
-          <div className="w-full flex mt-12  p-4 flex-col items-start justify-start gap-y-3">
+          <div className="w-full grid-cols-1 sm:grid-cols-2 mt-12  p-4 grid items-start justify-start gap-y-3">
             {data?.map((question, index) => (
               <Widget
                 key={index}

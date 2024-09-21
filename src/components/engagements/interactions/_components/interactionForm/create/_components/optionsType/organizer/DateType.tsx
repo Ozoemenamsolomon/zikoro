@@ -54,7 +54,7 @@ append:(i:number) => void;
           name={`questions.${index}.question`}
           render={({ field }) => (
             <FormItem className={cn("w-full col-span-9", image && "col-span-full")}>
-              <FormLabel>Question (Date)</FormLabel>
+              <FormLabel>Question {index+1} (Date)</FormLabel>
               <FormControl>
                 <Input
                   {...form.register(`questions.${index}.question`)}
