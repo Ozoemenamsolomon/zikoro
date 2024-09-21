@@ -17,6 +17,7 @@ import Image from "next/image";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { PlusCircleIcon } from "@/constants";
+import { montserrat } from "@/utils/fonts";
 
 type BlogData = {
   title: string;
@@ -349,7 +350,9 @@ export default function BlogCreate() {
                   >
                     Publish
                   </DialogTrigger>
-                  <DialogContent className="max-w-2xl mx-auto py-[100px] font-montserrat ">
+                  <DialogContent
+                    className={`max-w-2xl mx-auto py-[100px] ${montserrat.className}`}
+                  >
                     <div className="h-[168px] w-[367px] flex mx-auto">
                       <Image
                         className="rounded-lg w-full h-full object-cover "

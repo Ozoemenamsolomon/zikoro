@@ -14,19 +14,24 @@ import {
   InteractionCard,
   InteractionsSelectionModal,
   QuizSettings,
+  FormCard
 } from "./_components";
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import useOrganizationStore from "@/store/globalOrganizationStore";
 import { verifyingAccess } from "@/utils";
+import { useRouter } from "next/navigation";
+import { useGetData } from "@/hooks/services/request";
+import { TEngagementFormQuestion } from "@/types/engagements";
 export default function Interactions({ eventId }: { eventId: string }) {
   const [isOpen, setOpen] = useState(false);
   const [isOpenInteractionModal, setOpenInteractionModal] = useState(false);
   const { isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const [interactionType, setInteractionType] = useState("");
-  const { organization } = useOrganizationStore();
+ // const { organization } = useOrganizationStore();
   const { quizzes, isLoading, getQuizzes } = useGetQuizzes(eventId);
+  const {data, isLoading: loading, getData} = useGetData<TEngagementFormQuestion[]>(`/engagements/${eventId}/form`)
+  const router = useRouter()
 
   function onClose() {
     setOpen((prev) => !prev);
@@ -48,6 +53,19 @@ export default function Interactions({ eventId }: { eventId: string }) {
       return quizzes;
     }
   }, [quizzes, isIdPresent, isOrganizer]);
+
+
+  const interactioDataLength = useMemo(() => {
+      if (data && visibleQuizzes) {
+        return [
+          ...data,
+          ...visibleQuizzes
+        ].length
+      }
+      else {
+        return 0
+      }
+  },[data, quizzes, visibleQuizzes])
 
   //console.log({ visibleQuizzes, quizzes, isIdPresent, isOrganizer });
 
@@ -83,6 +101,10 @@ export default function Interactions({ eventId }: { eventId: string }) {
     onClose();
   }
 
+  function goToForm() {
+    router.push(`/event/${eventId}/engagements/interactions/form/create`);
+  }
+
   return (
     <InteractionLayout eventId={eventId}>
       <div className="w-full">
@@ -107,9 +129,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
               <LoaderAlt size={30} className="animate-spin" />
             </div>
           )}
-          {!isLoading &&
-            Array.isArray(visibleQuizzes) &&
-            visibleQuizzes?.length === 0 && (
+          {!isLoading && !loading && interactioDataLength === 0 && (
               <div className="w-full col-span-full flex items-center justify-center h-[350px]">
                 <EmptyState
                   isNotAttendee={isIdPresent || isOrganizer}
@@ -117,7 +137,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
                 />
               </div>
             )}
-          {!isLoading &&
+          {!isLoading && !loading &&
             Array.isArray(visibleQuizzes) &&
             visibleQuizzes.map((quiz, index) => (
               <InteractionCard
@@ -125,6 +145,19 @@ export default function Interactions({ eventId }: { eventId: string }) {
                 isNotAttendee={isIdPresent || isOrganizer}
                 key={quiz.quizAlias}
                 quiz={quiz}
+                
+              />
+            ))}
+             {!isLoading && !loading &&
+            Array.isArray(data) &&
+            data.map((form, index) => (
+              <FormCard
+                refetch={getData}
+                isNotAttendee={isIdPresent || isOrganizer}
+                key={form.formAlias}
+                form={form}
+               
+                
               />
             ))}
         </div>
@@ -142,6 +175,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
           close={toggleInteractionModal}
           toggleQuiz={toggleQuiz}
           togglePoll={togglePoll}
+          goToForm={goToForm}
         />
       )}
     </InteractionLayout>

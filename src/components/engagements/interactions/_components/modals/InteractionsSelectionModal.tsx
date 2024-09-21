@@ -6,11 +6,13 @@ import { CloseOutline } from "styled-icons/evaicons-outline";
 export function InteractionsSelectionModal({
   close,
   toggleQuiz,
-  togglePoll
+  togglePoll,
+  goToForm
 }: {
   close: () => void;
   toggleQuiz: () => void;
   togglePoll:() => void;
+  goToForm: () => void;
 }) {
 
 
@@ -28,6 +30,19 @@ export function InteractionsSelectionModal({
       asynFn: togglePoll,
       description:
         "Allow participants to share their opinion by choosing from a list of options.",
+    },
+    {
+      image: "/iform.png",
+      header: "Form",
+      asynFn: goToForm,
+      description:
+        "Seamlessly collect the participant's information you require using customized forms.",
+    },
+    {
+      image: "/iqa.png",
+      header: "Q & A",
+      description:
+        "Allow participants to ask and answer questions.",
     },
     {
       image: "/imultiple.png",

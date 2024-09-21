@@ -27,7 +27,7 @@ const AppointmentLoginForm = () => {
   }
 
   return (
-    <div className="bg-white py-0 lg:py-[20px] px-3 lg:px-[42px] rounded-[8px] max-w-full lg:max-w-[542px] ">
+    <div className="bg-white py-0 lg:py-[20px] px-3 lg:px-[42px] rounded-[8px] w-full max-w-full lg:max-w-[542px] ">
       <div className="flex justify-center ">
         <Image
           src="/appointments/logoFooter.png"
@@ -76,7 +76,10 @@ const AppointmentLoginForm = () => {
               <CrossedEye />
             </div>
           </div>
-          <p className="text-blue-500 text-right cursor-pointer">
+          <p
+            className="text-blue-500 text-right cursor-pointer"
+            onClick={() => router.push("/bookings/forgot-password")}
+          >
             Forgot password?
           </p>
         </div>
@@ -90,7 +93,8 @@ const AppointmentLoginForm = () => {
           Get Started
         </button>
       </form>
-      <div className="max-[400px]:hidden ">
+
+      {/* <div className="max-[400px]:hidden ">
         <OrIcon />
       </div>
 
@@ -99,7 +103,7 @@ const AppointmentLoginForm = () => {
         className="py-4 px-3 flex items-center justify-center gap-x-2 text-base w-full rounded-[8px] mt-10 mb-6  border-[1px] border-gray-200"
       >
         <GoogleBlackIcon /> Sign Up with google
-      </button>
+      </button> */}
 
       <p className="mt-[14px] text-center">
         Don't have an account?{" "}

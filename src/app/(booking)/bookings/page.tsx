@@ -9,6 +9,7 @@ import AppointmentSec5 from "@/components/appointments/home/AppointmentSec5";
 import AppointmentFooter from "@/components/appointments/home/AppointmentFooter";
 
 
+
 const AppointmentHomePage = () => {
   return (
     <div className="bg-[#f9faff]">

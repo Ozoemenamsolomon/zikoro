@@ -203,7 +203,7 @@ export default function QuizQuestion({
                 </div>
 
                 <div
-                  style={{ maxHeight: height === 0 ? "initial" : height + 30 }}
+                  style={{ maxHeight: height === 0 ? "initial" : height + 30 , minHeight: 500}}
                   className="w-full lg:col-span-3 border-l p-2  lg:overflow-y-auto space-y-3"
                 >
                   {quiz?.questions && (
@@ -239,6 +239,9 @@ export default function QuizQuestion({
           </div>
         </>
       )}
+
+
+
 
       {openQuestionModal && (
         <AddQuestion refetch={getQuiz} close={onToggle} quiz={quiz} />

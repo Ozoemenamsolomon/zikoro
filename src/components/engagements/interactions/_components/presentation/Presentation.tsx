@@ -11,7 +11,6 @@ import {
 } from "..";
 import { useState, useEffect, useMemo } from "react";
 import { Slider } from "@mui/material";
-import Link from "next/link";
 import {
   useGetQuiz,
   useUpdateQuiz,
@@ -27,7 +26,6 @@ import {
   TQuiz,
   TQuestion,
   TAttendee,
-  TConnectedUser,
   TLiveQuizParticipant,
   TAnswer,
 } from "@/types";
@@ -35,7 +33,6 @@ import {
   useCheckTeamMember,
   useVerifyUserAccess,
   useRealtimePresence,
-  getCookie,
 } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import Image from "next/image";
@@ -48,6 +45,7 @@ import Avatar, { genConfig, AvatarFullConfig } from "react-nice-avatar";
 import { Plus } from "styled-icons/bootstrap";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import useOrganizationStore from "@/store/globalOrganizationStore";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const supabase = createClientComponentClient();
 
@@ -95,7 +93,9 @@ export default function Presentation({
 
   const [chosenAvatar, setChosenAvatar] =
     useState<Required<AvatarFullConfig> | null>(null);
-
+  const params = useSearchParams();
+  const query = params.get("redirect");
+  const aId = params.get("id");
   // quiz result stores the state for quiz that is currently being answered by the attendee (for attendees only)
   const [quizResult, setQuizResult] = useState<TQuiz<
     TRefinedQuestion[]
@@ -167,8 +167,10 @@ export default function Presentation({
 
   // generate a unique id for player
   const id = useMemo(() => {
+    //TODO if redirect, return;
+    if (query) return aId!;
     return generateAlias();
-  }, []);
+  }, [query]);
 
   // toggle leaderboard
   function onClose() {
@@ -271,7 +273,7 @@ export default function Presentation({
 
   return (
     <div className="w-full">
-      {refinedQuizArray && !loading && !isLoading  ? (
+      {refinedQuizArray && !loading && !isLoading ? (
         <>
           {showScoreSheet ? (
             <>
@@ -456,7 +458,7 @@ export function PlayersOnboarding({
   audio,
   quiz,
   onToggle,
-                    isLeftBox
+  isLeftBox,
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -474,12 +476,15 @@ export function PlayersOnboarding({
   >;
   audio?: HTMLAudioElement | null;
   quiz: TQuiz<TQuestion[]>;
-  onToggle:() => void;
-  isLeftBox:boolean;
+  onToggle: () => void;
+  isLeftBox: boolean;
 }) {
   const { updateQuiz } = useUpdateQuiz();
+  const params = useSearchParams();
+  const query = params.get("redirect");
   const { addLiveParticipant } = useAddLiveParticipant();
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const [isAvatarModal, setAvatarModal] = useState(false);
   const { organization } = useOrganizationStore();
   useRealtimePresence(quiz?.accessibility?.live);
@@ -563,6 +568,16 @@ export function PlayersOnboarding({
       supabase.removeChannel(channel);
     };
   }, [supabase, quiz]);
+
+  useEffect(() => {
+    if (quiz && isAttendee && !query) {
+      if (quiz?.formAlias) {
+        router.push(
+          `/engagements/${quiz?.eventAlias}/form/${quiz?.formAlias}?redirect=quiz&id=${id}&link=${window.location.href}`
+        );
+      }
+    }
+  }, [quiz]);
 
   function generateAvatars() {
     const avatars = Array.from({ length: 10 }).map((_, index) => {
