@@ -85,11 +85,11 @@ function AttendeeFillFormComp({
   });
 
   async function onSubmit(values: z.infer<typeof formAnswerSchema>) {
-    console.log(values);
+  //  console.log(values);
     const { questions, ...restData } = values;
     const payload: Partial<TEngagementFormAnswer> = {
       ...restData,
-      //userId: user?.userId || "",
+
     };
     await postData({ payload });
 
