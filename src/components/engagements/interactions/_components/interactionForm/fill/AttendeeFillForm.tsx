@@ -28,10 +28,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 function SubmittedModal() {
   return (
-    <div className="w-full h-full inset-0 fixed">
-      <div className="w-[95%] max-w-xl rounded-lg bg-gradient-to-t gap-y-6 from-basePrimary to-white  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto"></div>
+    <div className="w-full h-full inset-0 fixed bg-black/50">
+      <div className="w-[95%] max-w-xl rounded-lg bg-gradient-to-t gap-y-6 from-white to-basePrimary  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
       <Image
-        src="/images/facheckbox.png"
+        src="/images/facheck.png"
         alt=""
         className="w-fit h-fit"
         width={48}
@@ -40,6 +40,7 @@ function SubmittedModal() {
       <div className="w-fit flex flex-col items-center justify-center gap-y-2">
         <h2 className="font-semibold text-lg sm:text-2xl">Forms Submitted</h2>
         <p>Your answers have been submitted successfully</p>
+      </div>
       </div>
     </div>
   );
@@ -85,16 +86,16 @@ function AttendeeFillFormComp({
   });
 
   async function onSubmit(values: z.infer<typeof formAnswerSchema>) {
-    console.log(values);
+  //  console.log(values);
     const { questions, ...restData } = values;
     const payload: Partial<TEngagementFormAnswer> = {
       ...restData,
-      //userId: user?.userId || "",
+
     };
     await postData({ payload });
 
-    if (!query) {
-      router.push(`${link}&redirect=form&id=${attendeeId}`)
+    if (query) {
+      router.push(`${link}?&redirect=form&id=${attendeeId}`)
       return;
     }
     setOpenSuccess(true);
@@ -161,7 +162,7 @@ function AttendeeFillFormComp({
               </>
             ))}
 
-            {!isOrganizer && !isIdPresent && (
+            {/* {!isOrganizer && !isIdPresent && ( */}
               <Button
                 type="submit"
                 disabled={loading}
@@ -170,7 +171,7 @@ function AttendeeFillFormComp({
                 {loading && <LoaderAlt className="animate-spin" size={20} />}
                 <p>Submit</p>
               </Button>
-            )}
+            {/* )} */}
           </form>
         </Form>
       </div>
