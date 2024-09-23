@@ -263,6 +263,17 @@ function SelectQuestionType({
                 <p>Back</p>
               </Button>
               <div className=" flex items-center gap-x-2">
+              <Button
+                    className="gap-x-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onToggleShare();
+                    }}
+                  >
+                   
+                    <p>Responses</p>
+                  </Button>
                 <Button
                   disabled={loading}
                   className="bg-basePrimary gap-x-2 px-6 text-white h-12 "
