@@ -15,6 +15,7 @@ import Image from "next/image";
 import { generateInteractionAlias, uploadFile } from "@/utils";
 import { useCreateQuiz, useUpdateQuiz, useFetchSingleEvent } from "@/hooks";
 import { SelectFormModal } from "./SelectFormModal";
+import { TEngagementFormQuestion } from "@/types/engagements";
 
 //******** */
 // NB: This modal is used for creating, and updating quiz and poll
@@ -41,7 +42,8 @@ export function QuizSettings({
   }: {
     data: TOrgEvent | null;
   } = useFetchSingleEvent(eventAlias);
-  const [selectedFormId, setSelectedFormId] = useState("");
+  const [selectedForm, setSelectedForm] =
+    useState<TEngagementFormQuestion | null>(null);
   const { updateQuiz } = useUpdateQuiz();
   const [isOpen, setIsOpen] = useState(false);
   const [branding, setBranding] = useState({
@@ -97,7 +99,7 @@ export function QuizSettings({
           eventAlias,
           lastUpdated_at: new Date().toISOString(),
           coverImage: promise,
-          formAlias: accessibility?.isForm ? selectedFormId : '',
+          formAlias: accessibility?.isForm ? selectedForm?.formAlias : "",
         }
       : {
           ...values,
@@ -108,7 +110,7 @@ export function QuizSettings({
           quizAlias,
           lastUpdated_at: new Date().toISOString(),
           coverImage: promise,
-          formAlias: accessibility?.isForm ? selectedFormId : '',
+          formAlias: accessibility?.isForm ? selectedForm?.formAlias : "",
         };
     const asynQuery = quiz?.quizAlias ? updateQuiz : createQuiz;
     await asynQuery({ payload });
@@ -151,15 +153,14 @@ export function QuizSettings({
     return interactionType === "quiz";
   }, [interactionType]);
 
-  function changeSelectedForm(id: string) {
-   
-    setSelectedFormId(id);
+  function changeSelectedForm(form: TEngagementFormQuestion) {
+    setSelectedForm(form);
   }
   function toggleSelectFormModal() {
     setIsOpen((p) => !p);
   }
 
-  console.log('wdqd', selectedFormId);
+  // console.log('wdqd', selectedFormId);
   return (
     <div
       onClick={close}
@@ -505,17 +506,48 @@ export function QuizSettings({
                   Create a custom forms to collect your defined user data before
                   they can participate.
                 </p>
-               {accessibility?.isForm && <div className="flex mt-1 items-center gap-x-3">
-                  <Button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      toggleSelectFormModal()
-                    }}
-                    className="text-basePrimary px-0  h-fit w-fit underline">
-                    Select/Create a Form
-                  </Button>
-                </div>}
+                {accessibility?.isForm && (
+                  <div className="flex mt-1 items-start flex-col gap-3">
+                    {selectedForm && (
+                      <div className="w-[250px] h-[250px]">
+                        <div className="w-full border p-3 rounded-lg grid grid-cols-10 gap-x-3 bg-white border-basePrimary">
+                          {selectedForm?.coverImage &&
+                          (selectedForm?.coverImage as string).startsWith(
+                            "https"
+                          ) ? (
+                            <Image
+                              alt=""
+                              src={selectedForm?.coverImage}
+                              width={500}
+                              height={500}
+                              className="w-full col-span-3 h-[100px] rounded-lg object-cover"
+                            />
+                          ) : (
+                            <div className="col-span-3 h-[100px] rounded-lg bg-gray-200 animate-pulse"></div>
+                          )}
+                          <div className="w-full col-span-7 flex items-start justify-start flex-col gap-2">
+                            <h2 className="font-medium text-base sm:text-lg">
+                              {selectedForm?.title ?? ""}
+                            </h2>
+                            <p className="w-full text-ellipsis overflow-hidden whitespace-nowrap">
+                              {selectedForm?.description ?? ""}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        toggleSelectFormModal();
+                      }}
+                      className="text-basePrimary px-0  h-fit w-fit underline"
+                    >
+                      Select/Create a Form
+                    </Button>
+                  </div>
+                )}
               </div>
               <Switch
                 disabled={loading}
@@ -543,10 +575,10 @@ export function QuizSettings({
 
       {isOpen && (
         <SelectFormModal
-          selectedFormId={selectedFormId}
+          selectedForm={selectedForm}
           eventId={eventAlias}
           close={toggleSelectFormModal}
-          setSelectedFormId={changeSelectedForm}
+          setSelectedForm={changeSelectedForm}
         />
       )}
     </div>
