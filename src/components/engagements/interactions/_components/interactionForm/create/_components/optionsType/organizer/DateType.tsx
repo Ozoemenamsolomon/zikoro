@@ -19,11 +19,13 @@ import { BottomAction } from "../../formcomposables";
 export function DateType({
   form,
   index,
-  remove
+  remove,
+  append
 }: {
   form: UseFormReturn<z.infer<typeof formQuestionSchema>, any, any>;
   index: number;
 remove: UseFieldArrayRemove
+append:(i:number) => void;
 }) {
   //const [isRequired, setIsRequired] = useState(false);
 
@@ -43,7 +45,7 @@ remove: UseFieldArrayRemove
     }
   }, [watchedImage]);
   return (
-    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-3 bg-white">
+    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-4 sm:p-6 bg-white">
       <PiDotsSixBold size={40} className="self-center text-gray-400" />
       {/* question */}
       <div className="w-full gap-2 grid grid-cols-10">
@@ -52,7 +54,7 @@ remove: UseFieldArrayRemove
           name={`questions.${index}.question`}
           render={({ field }) => (
             <FormItem className={cn("w-full col-span-9", image && "col-span-full")}>
-              <FormLabel>Question (Date)</FormLabel>
+              <FormLabel>Question {index+1} (Date)</FormLabel>
               <FormControl>
                 <Input
                   {...form.register(`questions.${index}.question`)}
@@ -106,7 +108,7 @@ remove: UseFieldArrayRemove
         />
       </div> */}
       {/** actions */}
-      <BottomAction form={form} remove={remove} index={index}/>
+      <BottomAction form={form} remove={remove} index={index} append={append}/>
   
     </div>
   );

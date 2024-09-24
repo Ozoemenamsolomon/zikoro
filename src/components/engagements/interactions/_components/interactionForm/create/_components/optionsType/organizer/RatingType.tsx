@@ -5,14 +5,16 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UseFormReturn, UseFieldArrayRemove } from "react-hook-form";
 import { PiDotsSixBold } from "react-icons/pi";
 import { IoImage } from "react-icons/io5";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SelectedImage } from "../../formcomposables/SelectedImage";
 import { z } from "zod";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { formQuestionSchema } from "@/schemas/engagement";
 import { cn } from "@/lib";
 import { BottomAction } from "../../formcomposables";
@@ -22,13 +24,18 @@ export function RatingType({
   form,
   index,
   remove,
+  append
 }: {
   form: UseFormReturn<z.infer<typeof formQuestionSchema>, any, any>;
   index: number;
   remove: UseFieldArrayRemove;
+  append:(i:number) => void;
 }) {
-  const [selectedRating, setSelectedRating] = useState(5);
+  const prevSelectedRating = form.watch(`questions.${index}.optionFields`)
+  const [selectedRating, setSelectedRating] = useState(parseInt(prevSelectedRating) || 5);
   const [isOpen, setOpen] = useState(false);
+  
+  
   //const [isRequired, setIsRequired] = useState(false);
 
   const watchedImage = form.watch(`questions.${index}.questionImage`);
@@ -51,8 +58,15 @@ export function RatingType({
     setOpen((p) => !p);
   }
 
+
+  useEffect(() => {
+if (selectedRating) {
+  form.setValue(`questions.${index}.optionFields`, selectedRating)
+}
+  },[selectedRating])
+
   return (
-    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-3 bg-white">
+    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-4 sm:p-6 bg-white">
       <PiDotsSixBold size={40} className="self-center text-gray-400" />
       {/* question */}
       <div className="w-full gap-2 grid grid-cols-10">
@@ -63,7 +77,7 @@ export function RatingType({
             <FormItem
               className={cn("w-full col-span-9", image && "col-span-full")}
             >
-              <FormLabel>Question (Text)</FormLabel>
+              <FormLabel>Question {index+1} (Rating)</FormLabel>
               <FormControl>
                 <Input
                   {...form.register(`questions.${index}.question`)}
@@ -71,6 +85,7 @@ export function RatingType({
                   placeholder="Enter question"
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -98,24 +113,43 @@ export function RatingType({
       <div className="w-full flex items-center gap-x-3 justify-center p-3">
         <p>Choose Level:</p>
         <div className="relative">
-          <p className="border rounded-lg px-3 py-2">{selectedRating}</p>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              handleToggle();
+            }}
+            className="border flex items-center gap-x-1 rounded-lg px-3 py-2"
+          >
+            {selectedRating}
+            <MdOutlineKeyboardArrowDown size={16} className="text-gray-300"/>
+          </button>
 
           {isOpen && (
             <div className="absolute top-9">
               <div
-                onClick={() => setOpen(false)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setOpen(false);
+                }}
                 role="button"
                 className="w-full h-full inset-0 fixed z-[98]"
               ></div>
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="relative bg-white rounded-lg border w-[50px] z-[100]"
+                className="relative bg-white rounded-lg max-h-[250px]  overflow-y-auto no-scrollbar border w-[50px] z-[100]"
               >
-                {[...Array(10)].map((value, index) => (
+                {[1,2,3,4,5,6,7,8,9,10].map((value, index) => (
                   <button
                     key={index}
-                    onClick={() => setSelectedRating(value)}
-                    className="w-full flex items-center justify-center p-2 hover:bg-gray-200"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setSelectedRating(value);
+                      setOpen(false)
+                    }}
+                    className="w-full flex items-center text-zinc-700 justify-center p-2 hover:bg-gray-200"
                   >
                     {value}
                   </button>
@@ -127,13 +161,13 @@ export function RatingType({
 
         <div className="flex items-center gap-x-2">
           {[...Array(selectedRating)].map((_, index) => (
-            <HiOutlineStar size={28} key={index} />
+            <HiOutlineStar className="text-gray-300" size={28} key={index} />
           ))}
         </div>
       </div>
 
       {/** actions */}
-      <BottomAction form={form} remove={remove} index={index} />
+      <BottomAction form={form} remove={remove} index={index} append={append} />
     </div>
   );
 }

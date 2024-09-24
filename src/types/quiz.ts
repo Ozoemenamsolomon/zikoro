@@ -1,4 +1,4 @@
-import * as z from "zod";
+import {z} from "zod";
 import { quizQuestionSchema } from "@/schemas";
 import { TAttendee } from ".";
 import { AvatarFullConfig } from "react-nice-avatar";
@@ -33,6 +33,7 @@ export interface TQuiz<T> {
   liveMode: any;
   description: string;
   interactionType: string;
+  formAlias?: string;
   coverImage: string;
   branding: { poweredBy: boolean; eventName: boolean };
   questions: T;
@@ -53,6 +54,7 @@ export interface TQuiz<T> {
     isCollectEmail: boolean;
     showAnswer: boolean;
     showResult: boolean;
+    isForm:boolean;
   };
 }
 

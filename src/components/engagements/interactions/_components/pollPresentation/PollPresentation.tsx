@@ -21,6 +21,7 @@ import { PlayersOnboarding } from "../presentation/Presentation";
 import { PollQuestion } from "./_components/PollQuestion";
 import { SendMailModal } from "../presentation/attendee/SendMailModal";
 import { AnswerSheet } from "./_components/AnswerSheet";
+import { useSearchParams } from "next/navigation";
 type TPlayerDetail = {
   phone: string;
   email: string;
@@ -64,7 +65,10 @@ export default function PollPresentation({
     email: "",
     nickName: attendee?.firstName || "",
   });
-  // const player = getCookie<TConnectedUser>("player");
+ const params = useSearchParams()
+ const query = params.get("redirect");
+ const aId = params.get("id");
+
 
   const [refinedPollArray, setRefinedPollArray] = useState<TQuiz<
     TQuestion[]
@@ -121,6 +125,8 @@ export default function PollPresentation({
 
   // generate a unique id for player
   const id = useMemo(() => {
+     //TODO if redirect, return;
+     if (query) return aId!;
     return generateAlias();
   }, []);
 
@@ -150,9 +156,9 @@ export default function PollPresentation({
     setIsNotStarted(true);
   }
 
-  function onCloseScoreSheet() {
-    setShowScoreSheet(false);
-  }
+  // function onCloseScoreSheet() {
+  //   setShowScoreSheet(false);
+  // }
 
   function onOpenScoreSheet() {
     setShowScoreSheet(true);

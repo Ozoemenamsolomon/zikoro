@@ -22,6 +22,8 @@ import { Button } from "@/components";
 import { MdClose } from "react-icons/md";
 import { nanoid } from "nanoid";
 import { IoIosCloseCircle } from "react-icons/io";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   DndContext,
   KeyboardSensor,
@@ -58,11 +60,30 @@ function OptionItem({
   removeOption: (id: string) => void;
   index: number;
   removeImage: (id: string) => void;
-  setOption: (id: string, value: string) => void;
+  setOption: (id: string, value: string, type:string) => void;
 }) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+  useSortable({ id: option?.id });
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === ' ') {
+      e.stopPropagation();
+    }
+  };
   return (
-    <div className="w-full bg-gradient-to-tr items-center rounded-lg p-4 flex justify-between from-custom-bg-gradient-start to-custom-bg-gradient-end">
-      <PiDotsSixVertical size={30} className="text-gray-400" />
+    <div
+    ref={setNodeRef}
+    {...attributes}
+    {...listeners}
+    style={{
+      transition,
+      transform: CSS.Transform.toString(transform),
+      touchAction: "none",
+    }}
+    role="button"
+     className="w-full rounded-lg p-4  bg-gradient-to-tr  space-y-3  from-custom-bg-gradient-start to-custom-bg-gradient-end">
+      <div className="w-full items-center flex justify-between">
+      <PiDotsSixVertical size={30} className="text-gray-400 cursor-move" />
       <div className="w-[90%] flex flex-col items-start justify-start gap-y-3">
         <div className="flex items-center gap-x-2">
           <button
@@ -78,9 +99,12 @@ function OptionItem({
         </div>
         <Input
           onChange={(e) => {
-            setOption(option.id, e.target.value);
+            e.stopPropagation()
+            setOption(option.id, e.target.value, "text");
           }}
+          onKeyDown={handleKeyDown} 
           value={option?.option}
+          type="text"
           className="w-full h-12 sm:h-14 border-x-0 border-b border-gray-300 rounded-none border-t-0 px-2 placeholder:text-gray-400"
           placeholder="Enter Option"
         />
@@ -103,7 +127,7 @@ function OptionItem({
                   if (file) {
                     const reader = new FileReader();
                     reader.onloadend = () => {
-                      setOption(option.id, reader.result as string);
+                      setOption(option.id, reader.result as string, "image");
                     };
                     reader.readAsDataURL(file);
                   }
@@ -115,15 +139,17 @@ function OptionItem({
           </label>
         </div>
       )}
+      </div>
+    
       {option.optionImage && (
-        <div className="w-full col-span-full rounded-lg p-4 xl:p-6 bg-white border-[8px] border-[#001ffc]/10 ">
+        <div className="w-full col-span-full rounded-lg p-4 xl:p-6  ">
           <div className="mx-auto w-full max-w-2xl relative h-[20rem] 2xl:h-[25rem] ">
             <Image
               src={option.optionImage}
               alt="selected image"
               width={1000}
               height={600}
-              className="object-cover h-full w-full"
+              className="object-cover h-full rounded-lg w-full"
             />
             <Button
               onClick={(e) => {
@@ -146,15 +172,20 @@ export function CheckBoxType({
   form,
   index,
   remove,
+  append
 }: {
   form: UseFormReturn<z.infer<typeof formQuestionSchema>, any, any>;
   index: number;
   remove: UseFieldArrayRemove;
+  append:(i:number) => void;
 }) {
+  const prevSelectedOptions = form.watch(`questions.${index}.optionFields`);
   //const [isRequired, setIsRequired] = useState(false);
-  const [options, setOptions] = useState<OptionItemsType[]>([
+  const [options, setOptions] = useState<OptionItemsType[]>(prevSelectedOptions || [
     { id: nanoid(), option: "", optionImage: "" },
   ]);
+
+
 
   const watchedImage = form.watch(`questions.${index}.questionImage`);
 
@@ -172,6 +203,8 @@ export function CheckBoxType({
     }
   }, [watchedImage]);
 
+
+
   // form field
   useEffect(() => {
     if (options) {
@@ -179,10 +212,10 @@ export function CheckBoxType({
     }
   }, [options]);
 
-  function handleChangeOption(id: string, value: string) {
+  function handleChangeOption(id: string, value: string, type: string) {
     setOptions(
       options.map((option) =>
-        option.id === id ? { ...option, option: value } : option
+        option.id === id ? { ...option, [type === "image" ? "optionImage" : "option"]: value } : option
       )
     );
   }
@@ -224,7 +257,7 @@ export function CheckBoxType({
     setOptions(updatedOption);
   }
   return (
-    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-3 bg-white">
+    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-4 sm:p-6 bg-white">
       <PiDotsSixBold size={40} className="self-center text-gray-400" />
       {/* question */}
       <div className="w-full gap-2 grid grid-cols-10">
@@ -235,7 +268,7 @@ export function CheckBoxType({
             <FormItem
               className={cn("w-full col-span-9", image && "col-span-full")}
             >
-              <FormLabel>Question (CheckBox)</FormLabel>
+              <FormLabel>Question {index+1} (CheckBox)</FormLabel>
               <FormControl>
                 <Input
                   {...form.register(`questions.${index}.question`)}
@@ -266,8 +299,8 @@ export function CheckBoxType({
         )}
         {image && <SelectedImage form={form} index={index} image={image} />}
       </div>
-      {/** Options*/}
-      <div className="w-full flex flex-col items-start pl-4 sm:pl-6 justify-start gap-y-3">
+      {/** Options pl-4 sm:pl-6*/}
+      <div className="w-full flex flex-col items-start  justify-start gap-y-3">
         <DndContext
           collisionDetection={closestCorners}
           sensors={sensors}
@@ -306,7 +339,7 @@ export function CheckBoxType({
       </div>
 
       {/** actions */}
-      <BottomAction form={form} remove={remove} index={index} />
+      <BottomAction form={form} remove={remove} index={index} append={append} />
     </div>
   );
 }

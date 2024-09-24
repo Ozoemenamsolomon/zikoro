@@ -1,11 +1,13 @@
 import { UseFormReturn } from "react-hook-form";
-// import { FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { IoMdStar } from "react-icons/io";
+import { Star } from "styled-icons/fluentui-system-regular";
+import { StarFullOutline } from "styled-icons/typicons";
 import { z } from "zod";
 import Image from "next/image";
 import { formAnswerSchema } from "@/schemas/engagement";
-export function DateTypeAnswer({
+import { cn } from "@/lib";
+export function RatingTypeAnswer({
   form,
   index,
 }: {
@@ -17,7 +19,14 @@ export function DateTypeAnswer({
   const questionImage = form.watch(`questions.${index}.questionImage`);
   const selectedType = form.watch(`questions.${index}.selectedType`);
   const questionId = form.watch(`questions.${index}.questionId`);
+  const optionFields = form.watch(`questions.${index}.optionFields`);
+  const rating = form.watch(`responses.${index}.response`) || "";
 
+  function setRating(n: number) {
+    form.setValue(`responses.${index}.response`, n);
+    form.setValue(`responses.${index}.type`, selectedType);
+    form.setValue(`responses.${index}.questionId`, questionId);
+  }
   return (
     <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
       {question && (
@@ -39,30 +48,28 @@ export function DateTypeAnswer({
           />
         </div>
       )}
-      <Input
-        name={`responses.${index}.response`}
-        value={form.getValues(`responses.${index}.response`)}
-        onChange={(e) => {
-          form.setValue(`responses.${index}.response`, e.target.value);
-          form.setValue(`responses.${index}.type`, selectedType);
-          form.setValue(`responses.${index}.questionId`, questionId);
-        }}
-        required={isRequired}
-        type="date"
-        className="w-full h-12 sm:h-14 rounded-none border-x-0 border-t-0 border-b px-2 placeholder:text-gray-500 placeholder-gray-500"
-        placeholder="Enter Answer"
-      />
-      {/* <FormField
-        control={form.control}
-        
-        render={({ field }) => (
-          <FormItem className="w-full">
-            <FormControl>
-             
-            </FormControl>
-          </FormItem>
-        )}
-      /> */}
+      <div className="w-full flex items-center gap-x-2 justify-center">
+        {Array.from({ length: optionFields as number })?.map((v, index) => (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setRating(index + 1);
+            }}
+            key={index}
+            className={cn(
+              "text-gray-400",
+              index + 1 <= rating && "text-basePrimary"
+            )}
+          >
+            {index + 1 <= rating ? (
+              <StarFullOutline size={40} />
+            ) : (
+              <Star size={40} />
+            )}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

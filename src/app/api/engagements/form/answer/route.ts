@@ -2,31 +2,34 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
-  
+
+export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
-
-  if (req.method === "GET") {
+  if (req.method === "POST") {
     try {
-      const { data, error } = await supabase
-        .from("events")
-        .select("*, organization!inner(*)")
-        .eq("published", true)
-        .neq("eventVisibility", "Private") // Filter out Private events
-        .gte("startDateTime", new Date().toISOString()) // Filter non-expired events
+      const params = await req.json();
 
+      
+      const { error } = await supabase.from("formResponse").upsert(params);
+
+      if (error) {
+        return NextResponse.json(
+          { error: error?.message },
+          {
+            status: 400,
+          }
+        );
+      }
       if (error) throw error;
 
       return NextResponse.json(
-        {
-          data,
-        },
+        { msg: "Form Created Successfully" },
         {
           status: 200,
         }
       );
     } catch (error) {
-      console.error(error);
+      
       return NextResponse.json(
         {
           error: "An error occurred while making the request.",
