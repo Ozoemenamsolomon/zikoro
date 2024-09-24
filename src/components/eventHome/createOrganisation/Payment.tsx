@@ -49,8 +49,8 @@ function PaymentComponent() {
     parsedData?.total || "",
     parsedData?.discountCode || null,
     Number(parsedData?.discount || 0) || null,
+    parsedData?.organizationAlias,
     null,
-    parsedData?.organizationAlias
   );
 
   async function handleSuccess(reference: any) {
