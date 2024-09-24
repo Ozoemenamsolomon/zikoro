@@ -34,9 +34,7 @@ import { TBadge } from "@/types/badge";
 const Badges = () => {
   const router = useRouter();
 
-  const { eventId } = useParams();
-
-  
+  const { eventId }: { eventId: string } = useParams();
 
   const { badges, isLoading, getBadges } = useGetBadges({ eventId });
 
@@ -44,23 +42,20 @@ const Badges = () => {
 
   const { deleteBadge, isLoading: deletingBadge, error } = useDeleteBadge();
 
-  
-
   const makeACopy = async (badge: TBadge, eventId: number) => {
     delete badge.id;
     delete badge.created_at;
 
     const payload: TBadge = {
       ...badge,
-      eventId,
-      badgeName: badge.badgeName + " copy",
+      eventAlias: eventId,
+      badgeName: badge.title + " copy",
     };
 
     const newBadge = await saveBadge({ payload });
 
     if (newBadge) {
-      
-      router.push(`create?badgeId=${newBadge.id}`);
+      router.push(`create?badgeAlias=${newBadge.badgeAlias}`);
     }
   };
 
@@ -392,7 +387,7 @@ const Badges = () => {
         <span>Badge</span>
       </Button>
       <div className="grid-cols-4 grid gap-4">
-        {badges?.map(({ badgeUrl, badgeName, created_at, id, eventId }) => (
+        {badges?.map(({ previewUrl, badgeAlias, title, created_at, id }) => (
           <div className="relative h-full">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -431,15 +426,15 @@ const Badges = () => {
             <button
               disabled={badgeIsSaving}
               className="border border-gray-200 rounded-md relative w-full h-full"
-              onClick={() => router.push(`badge/create?badgeId=${id}`)}
+              onClick={() =>
+                router.push(`badge/create?badgeAlias=${badgeAlias}`)
+              }
             >
               <div className="w-full h-[250px] overflow-hidden">
-                <img className="object-fill" src={badgeUrl || ""} />
+                <img className="object-fill" src={previewUrl || ""} />
               </div>
               <div className="space-y-1 px-4 py-2 border-t border-gray-200 h-full">
-                <h2 className="text-gray-800 font-bold text-left">
-                  {badgeName}
-                </h2>
+                <h2 className="text-gray-800 font-bold text-left">{title}</h2>
                 <div className="flex gap-2 items-center text-sm text-gray-600 font-medium">
                   <svg
                     stroke="currentColor"
