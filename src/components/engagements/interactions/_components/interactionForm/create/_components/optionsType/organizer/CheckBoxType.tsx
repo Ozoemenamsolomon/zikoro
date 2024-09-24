@@ -257,7 +257,7 @@ export function CheckBoxType({
     setOptions(updatedOption);
   }
   return (
-    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-3 bg-white">
+    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-4 sm:p-6 bg-white">
       <PiDotsSixBold size={40} className="self-center text-gray-400" />
       {/* question */}
       <div className="w-full gap-2 grid grid-cols-10">
@@ -268,7 +268,7 @@ export function CheckBoxType({
             <FormItem
               className={cn("w-full col-span-9", image && "col-span-full")}
             >
-              <FormLabel>Question (CheckBox)</FormLabel>
+              <FormLabel>Question {index+1} (CheckBox)</FormLabel>
               <FormControl>
                 <Input
                   {...form.register(`questions.${index}.question`)}
@@ -299,8 +299,8 @@ export function CheckBoxType({
         )}
         {image && <SelectedImage form={form} index={index} image={image} />}
       </div>
-      {/** Options*/}
-      <div className="w-full flex flex-col items-start pl-4 sm:pl-6 justify-start gap-y-3">
+      {/** Options pl-4 sm:pl-6*/}
+      <div className="w-full flex flex-col items-start  justify-start gap-y-3">
         <DndContext
           collisionDetection={closestCorners}
           sensors={sensors}

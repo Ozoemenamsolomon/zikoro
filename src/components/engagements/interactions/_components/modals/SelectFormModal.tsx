@@ -11,11 +11,11 @@ import { cn } from "@/lib";
 
 function Widget({
   question,
-  setSelectedFormId,
-  selectedFormId,
+  setSelectedForm,
+  selectedForm,
 }: {
-  selectedFormId: string;
-  setSelectedFormId: (id: string) => void;
+  selectedForm: TEngagementFormQuestion | null;
+  setSelectedForm: (id: TEngagementFormQuestion) => void;
   question: TEngagementFormQuestion;
 }) {
   return (
@@ -23,11 +23,11 @@ function Widget({
     role="button"
       onClick={() => {
        
-        setSelectedFormId(question?.formAlias)
+        setSelectedForm(question)
       }}
       className={cn(
         "w-full border p-3 rounded-lg grid grid-cols-10 gap-x-3",
-        question?.formAlias === selectedFormId && "border-basePrimary"
+        question?.formAlias === selectedForm?.formAlias && "border-basePrimary"
       )}
     >
       {question?.coverImage &&
@@ -56,13 +56,13 @@ function Widget({
 export function SelectFormModal({
   close,
   eventId,
-  setSelectedFormId,
-  selectedFormId,
+  setSelectedForm,
+  selectedForm,
 }: {
   close: () => void;
   eventId: string;
-  setSelectedFormId: (id: string) => void;
-  selectedFormId: string;
+  setSelectedForm: (id: TEngagementFormQuestion) => void;
+  selectedForm: TEngagementFormQuestion | null;
 }) {
   const { data, isLoading } =
     useGetData<TEngagementFormQuestion[]>(`/engagements/${eventId}/form`);
@@ -98,13 +98,13 @@ export function SelectFormModal({
           </div>
         )}
         {!isLoading && Array.isArray(data) && (
-          <div className="w-full flex mt-12  p-4 flex-col items-start justify-start gap-y-3">
+          <div className="w-full grid-cols-1 sm:grid-cols-2 mt-12 gap-4 p-4 grid items-start justify-start gap-y-3">
             {data?.map((question, index) => (
               <Widget
                 key={index}
-                selectedFormId={selectedFormId}
+                selectedForm={selectedForm}
                 question={question}
-                setSelectedFormId={setSelectedFormId}
+                setSelectedForm={setSelectedForm}
               />
             ))}
           </div>

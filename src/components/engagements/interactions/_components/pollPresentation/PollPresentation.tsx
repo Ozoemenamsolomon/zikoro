@@ -156,9 +156,9 @@ export default function PollPresentation({
     setIsNotStarted(true);
   }
 
-  function onCloseScoreSheet() {
-    setShowScoreSheet(false);
-  }
+  // function onCloseScoreSheet() {
+  //   setShowScoreSheet(false);
+  // }
 
   function onOpenScoreSheet() {
     setShowScoreSheet(true);

@@ -45,7 +45,7 @@ append:(i:number) => void;
     }
   }, [watchedImage]);
   return (
-    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-3 bg-white">
+    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-4 sm:p-6 bg-white">
       <PiDotsSixBold size={40} className="self-center text-gray-400" />
       {/* question */}
       <div className="w-full gap-2 grid grid-cols-10">
@@ -54,7 +54,7 @@ append:(i:number) => void;
           name={`questions.${index}.question`}
           render={({ field }) => (
             <FormItem className={cn("w-full col-span-9", image && "col-span-full")}>
-              <FormLabel>Question (Date)</FormLabel>
+              <FormLabel>Question {index+1} (Date)</FormLabel>
               <FormControl>
                 <Input
                   {...form.register(`questions.${index}.question`)}
