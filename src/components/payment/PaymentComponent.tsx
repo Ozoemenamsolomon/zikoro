@@ -58,8 +58,8 @@ export default function PaymentComponent() {
     total,
     currentCoupon,
     discount,
+    orgAlias,
     orgId,
-    orgAlias
   );
 
   async function handleSuccess(reference: any) {

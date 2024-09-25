@@ -3,6 +3,7 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { convertDateFormat } from "@/utils/date";
 import { generateAlphanumericHash } from "@/utils/helpers";
+import { TEventTransaction } from "@/types";
 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -183,13 +184,41 @@ export async function GET(req: NextRequest) {
 
       if (eventTransactionsError) throw eventTransactionsError;
 
-      // Combine the results based on affiliateLinkId
-      const combinedData = affiliateLinksData.map((link) => ({
-        ...link,
-        eventTransactions: eventTransactionsData.filter(
-          (transaction) => transaction.affiliateCode === link.linkCode
-        ),
-      }));
+      const combinedData = await Promise.all(
+        affiliateLinksData.map(async (link) => {
+          const eventTransactions = await Promise.all(
+            eventTransactionsData
+              .filter(
+                (transaction) => transaction.affiliateCode === link.linkCode
+              )
+              .map(async (eventTransaction: TEventTransaction) => {
+                const attendeeEmails =
+                  eventTransaction.attendeesDetails?.map(
+                    ({ email }) => email
+                  ) || [];
+
+                console.log(attendeeEmails, "ëmails");
+
+                const { data, error } = await supabase
+                  .from("attendees")
+                  .select("*")
+                  .in("email", attendeeEmails)
+                  .eq("eventAlias", eventTransaction.eventAlias);
+
+                if (error || !data) {
+                  return { ...eventTransaction, attendeesDetails: [] };
+                }
+
+                return { ...eventTransaction, attendeesDetails: data };
+              })
+          );
+
+          return {
+            ...link,
+            eventTransactions,
+          };
+        })
+      );
 
       return NextResponse.json(
         { data: combinedData },

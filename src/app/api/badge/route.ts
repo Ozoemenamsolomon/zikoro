@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { generateAlphanumericHash } from "@/utils/helpers";
 
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -10,14 +11,12 @@ export async function GET(req: NextRequest) {
       const eventId = searchParams.get("eventId");
 
       const query = supabase
-        .from("badge")
+        .from("badgeNew")
         .select("*, event:events!inner(*, organization!inner(*))");
 
       if (eventId) query.eq("eventAlias", eventId);
 
       const { data, error, status } = await query;
-
-      
 
       if (error) throw error;
 
@@ -48,16 +47,17 @@ export async function POST(req: NextRequest) {
   if (req.method === "POST") {
     try {
       const params = await req.json();
+      const badgeAlias = generateAlphanumericHash(12);
 
-      
+      console.log(params);
 
       const { data, error } = await supabase
-        .from("badge")
-        .upsert(params)
+        .from("badgeNew")
+        .insert({ ...params, badgeAlias })
         .select()
         .maybeSingle();
 
-      
+      console.log(data, error);
 
       if (error) throw error;
 
