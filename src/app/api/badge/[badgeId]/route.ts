@@ -7,13 +7,15 @@ export async function GET(
   { params }: { params: { badgeId: string } }
 ) {
   const { badgeId } = params;
+  const { searchParams } = new URL(req.url);
+  const isAlias = searchParams.get("isAlias");
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "GET") {
     try {
       const { data, error, status } = await supabase
-        .from("badge")
+        .from("badgeNew")
         .select("*")
-        .eq("id", badgeId)
+        .eq(isAlias === "true" ? "badgeAlias" : "id", badgeId)
         .maybeSingle();
 
       if (error) throw error;
@@ -48,7 +50,6 @@ export async function DELETE(
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "DELETE") {
     try {
-      
       const { data, error, status } = await supabase
         .from("badge")
         .delete()

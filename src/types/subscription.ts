@@ -10,8 +10,10 @@ export interface ISubscription {
   startDate: string;
   expirationDate: string;
   discountCode: string;
-discountValue: number;
+  discountValue: number;
   currency: string;
   monthYear: string;
   user: TUser;
+  planPrice: number;
+  organizationAlias: string;
 }

@@ -7,8 +7,12 @@ import {
   useUpdateOrganization,
 } from "@/hooks/services/organization";
 import { calculateAndSetMaxHeight, uploadFile } from "@/utils/helpers";
-import { useEditor } from "@craftjs/core";
-import { Image as ImageElement, SvgElement } from "@/components/certificate";
+import {
+  Container,
+  Image as ImageElement,
+  SvgElement,
+  Text,
+} from "@/components/certificate";
 import {
   Dialog,
   DialogClose,
@@ -17,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Element as CraftElement, useEditor } from "@craftjs/core";
 
 const Element = ({}: TabProps) => {
   const {
@@ -205,7 +210,21 @@ const Element = ({}: TabProps) => {
         >
           <div className="h-[2px] w-full bg-black" />
         </button>
-        {" "}
+        <button
+          className="h-4 w-full flex justify-center items-center"
+          ref={(ref) =>
+            ref &&
+            connectors.create(
+              ref,
+              <CraftElement is={Container} canvas className="w-full h-full">
+                <Text text={"example text"} />
+              </CraftElement>
+            )
+          }
+          data-cy="toolbox-container"
+        >
+          <div className="h-full w-full bg-white" />
+        </button>{" "}
       </div>
       <div className="space-y-2">
         <div className="flex flex-col gap-1">
