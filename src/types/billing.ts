@@ -6,6 +6,7 @@ export type TEventTransaction = {
   created_at: string;
   expiredAt: string;
   eventRegistrationRef: string;
+  eventAlias: string;
   eventId: number;
   event: string;
   eventDate: string;

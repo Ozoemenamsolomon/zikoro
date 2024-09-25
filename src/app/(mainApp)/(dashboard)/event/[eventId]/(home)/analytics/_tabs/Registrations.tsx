@@ -64,7 +64,7 @@ const Registrations = () => {
     eventId,
   });
   const { affiliateLinks } = useGetAffiliateLinks({ eventId, isUsed: true });
-  console.log(affiliateLinks);
+  console.log(affiliateLinks, "links");
 
   const { data: recurringData, isLoading: recurringIsLoading } = useGetData(
     `/events/${eventId}/analytics/recurring?organizationId=${organization?.id}`
@@ -75,8 +75,6 @@ const Registrations = () => {
   const [displayLineChart, setDisplayLineChart] = useState<
     "daily" | "monthly" | "weekly"
   >("daily");
-
-  console.log(recurringData);
 
   const revenueTarget =
     event?.pricing.reduce(
@@ -103,7 +101,7 @@ const Registrations = () => {
     (eventTransactions.filter(({ discountCode }) => discountCode).length /
       eventTransactions.length) *
     100;
-  console.log(eventTransactions.filter(({ id }) => id === 706));
+
   const registrationViaReferrals = eventTransactions
     .filter(({ affiliateCode }) => affiliateCode)
     .reduce((acc, { attendees }) => (attendees || 0) + acc, 0);
@@ -134,11 +132,6 @@ const Registrations = () => {
           : isSameDay;
       return compareFn(date, registrationDate) ? acc + 1 : acc;
     }, 0)
-  );
-  console.log(attendees.map(({ registrationDate }) => registrationDate));
-  console.log(
-    registeredByDate.reduce((acc, curr) => acc + curr, 0),
-    attendees.length
   );
   const attendeeTypes = attendeeTypeOptions.map((option) => option.value);
   const attendeeCounts = attendeeTypes.map((type) =>
@@ -479,12 +472,13 @@ const Registrations = () => {
           </h2>
           <div className="flex flex-col gap-2 no-scrollbar">
             <div className="flex items-center gap-4 text-gray-800">
-              <span className="flex flex-col text-gray-700 font-medium flex-[50%]">
+              <span className="flex flex-col text-gray-700 font-medium flex-[40%]">
                 Affiliate
               </span>
               <span className="text-gray-900 font-medium flex-[20%]">Code</span>
               <span className="text-gray-900 font-medium flex-[20%]">Amt</span>
               <span className="text-gray-900 font-medium flex-[10%]">Qty</span>
+              <span className="text-gray-900 font-medium flex-[10%]">Vrf</span>
             </div>
             {affiliateLinks &&
               affiliateLinks
@@ -504,17 +498,15 @@ const Registrations = () => {
                 )
                 .map(({ eventTransactions, linkCode, affiliate }) => (
                   <div className="flex items-center gap-4 text-gray-600">
-                    <div className="flex flex-col font-medium flex-[50%]">
-                      <span className="capitalize">
+                    <div className="flex flex-col font-medium flex-[40%]">
+                      <span className="capitalize truncate">
                         {affiliate?.firstName + " " + affiliate?.lastname}
                       </span>
-                      <span className="text-gray-600 text-xs">
+                      <span className="text-gray-600 text-xs truncate">
                         {affiliate?.email}
                       </span>
                     </div>
-                    <span className="font-medium flex-[20%]">
-                      {linkCode}
-                    </span>
+                    <span className="font-medium flex-[20%]">{linkCode}</span>
                     <span className="font-medium flex-[20%]">
                       {formatNumberToShortHand(
                         eventTransactions
@@ -529,6 +521,18 @@ const Registrations = () => {
                       {eventTransactions
                         ? eventTransactions.reduce(
                             (acc, { attendees }) => acc + attendees,
+                            0
+                          )
+                        : 0}
+                    </span>
+                    <span className="font-medium flex-[10%]">
+                      {eventTransactions
+                        ? eventTransactions.reduce(
+                            (acc, { attendeesDetails }) =>
+                              acc +
+                              attendeesDetails.filter(
+                                ({ checkin }) => checkin && checkin.length > 0
+                              ).length,
                             0
                           )
                         : 0}
