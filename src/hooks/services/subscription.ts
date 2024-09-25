@@ -14,7 +14,7 @@ export function useCreateOrgSubscription(
   couponCode: string | null,
   discountAmount: number | null,
   orgAlias?: string | null,
-  orgId?: number | null,
+  orgId?: string | null,
 
 ) {
   async function createOrgSubscription() {
