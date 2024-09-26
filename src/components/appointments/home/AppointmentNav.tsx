@@ -7,13 +7,13 @@ import { useRouter } from "next/navigation";
 const AppointmentNav = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [isPreviewOn, setIsPreviewOn] = useState<boolean>(false);
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
   return (
-    <div className="py-6 px-3 md:px-6  ">
-      <div className=" bg-white flex items-center  lg:max-w-[970px] xl:max-w-[1165px] py-3 px-3 md:px-6 lg:px-[36px] rounded-[64px] justify-between mx-auto shadow ">
-      
+    <div className="py-6 px-3 md:px-6 relative ">
+      <div className=" bg-white flex items-center lg:max-w-[970px] xl:max-w-[1165px] py-3 px-3 md:px-6 lg:px-[36px] rounded-[64px] justify-between mx-auto shadow  ">
         <Image
           src="/appointments/zikoroB.png"
           width={115}
@@ -26,7 +26,7 @@ const AppointmentNav = () => {
         <div className="gap-x-8 hidden lg:flex ">
           <p
             className="text-base font-medium cursor-pointer"
-            onClick={() => router.push("/")}
+            onClick={() => setIsPreviewOn(!isPreviewOn)}
           >
             Other Products <ChevronDown size={20} />
           </p>
@@ -60,12 +60,37 @@ const AppointmentNav = () => {
           </button>
         </div>
       </div>
-
+      {/* preview modal */}
+      {isPreviewOn && (
+        <div className="absolute hidden lg:block left-96 ">
+          <Image
+            src="/appointments/otherPreviewB.png"
+            className="w-[577px] h-[307px]"
+            alt=""
+            height={307}
+            width={577}
+            onClick={() => router.push("/")}
+          />
+        </div>
+      )}
       {isOpen && (
         <div className="bg-violet-100 absolute p-[30px] mt-3 w-full max-w-[92%] lg:hidden rounded-[8px]">
           <ul className="">
-            <li className="font-medium " onClick={() => router.push("/")}>
+            <li
+              className="font-medium "
+              onClick={() => setIsPreviewOn(!isPreviewOn)}
+            >
               Other Products <ChevronDown size={20} />{" "}
+              {isPreviewOn && (
+                <Image
+                  src="/appointments/otherTopPrevS.png"
+                  width={273}
+                  height={278}
+                  alt=""
+                  className="mt-[19px] w-[273px] h-[278px] block lg:hidden"
+                  onClick={() => router.push("/")}
+                />
+              )}
             </li>
             <li
               className="mt-5 font-medium "

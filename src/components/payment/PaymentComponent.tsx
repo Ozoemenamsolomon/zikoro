@@ -187,8 +187,7 @@ export default function PaymentComponent() {
     }
   }, []);
 
-  console.log(discount)
-  console.log(currentCoupon)
+
 
   return (
     <div className="bg-[#F9FAFF] h-screen flex flex-col justify-center items-center px-3">
