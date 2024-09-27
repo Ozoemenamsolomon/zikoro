@@ -31,10 +31,9 @@ export default function PaymentComponent() {
   const id = searchParams.get("id") ?? "";
   const orgId = searchParams.get("orgId");
   const orgAlias = searchParams.get("orgAlias");
-  // const email = searchParams.get("email");
   const plan = searchParams.get("plan") ?? "";
   const total = searchParams.get("total");
-  const currentCoupon = searchParams.get("currentCoupon");
+  const currentCoupon = searchParams.get("coupon");
   const monthly = searchParams.get("monthly");
   const currency = searchParams.get("currency")?.trim() ?? "";
   const orgName = searchParams.get("orgName");
@@ -187,6 +186,8 @@ export default function PaymentComponent() {
       router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
     }
   }, []);
+
+
 
   return (
     <div className="bg-[#F9FAFF] h-screen flex flex-col justify-center items-center px-3">
