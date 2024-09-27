@@ -1315,6 +1315,7 @@ export function useVerifyUserAccess(eventId: string) {
     isOrganizer,
     loading,
     isLoading,
+    eventAttendees
   };
 }
 

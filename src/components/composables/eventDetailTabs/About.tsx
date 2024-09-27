@@ -75,13 +75,17 @@ export function About({
   return (
     <div
       className={cn(
-        "w-full bg-white hidden flex-col sm:flex gap-y-6 sm:gap-y-20",
+        "w-full bg-white hidden flex-col sm:flex gap-y-6 sm:gap-y-20 px-3",
         isEventDetailPage && "flex py-3 "
       )}
     >
+       <div className="w-full h-full rounded-lg border p-2">
+                    <h3 className="pb-2 w-full text-center border-b">
+                      Register for this event
+                    </h3>
       <div
         className={cn(
-          "w-full  gap-6 grid grid-cols-1  items-center",
+          "w-full  gap-6 py-3 grid grid-cols-1  items-center",
           className
         )}
       >
@@ -98,7 +102,8 @@ export function About({
         <div
           className={cn(
             "w-full flex flex-col gap-y-6",
-            isEventHome && ""
+            isEventHome && "",
+            isEventDetailPage && "hidden"
           )}
         >
           <div className="w-full h-full flex flex-col gap-y-6">
@@ -147,9 +152,10 @@ export function About({
               </ul>
             )}
           </div>
+          </div>
         </div>
       </div>
-
+{/* 
       {isEventDetailPage &&
         !pathname.includes("preview") &&
         Array.isArray(reviews) &&
@@ -182,7 +188,7 @@ export function About({
               </Comp>
             </div>
           </div>
-        )}
+        )} */}
     </div>
   );
 }
