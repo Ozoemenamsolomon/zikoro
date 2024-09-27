@@ -38,6 +38,8 @@ const Badges = () => {
 
   const { badges, isLoading, getBadges } = useGetBadges({ eventId });
 
+  console.log(badges, "badges");
+
   const { saveBadge, isLoading: badgeIsSaving } = useSaveBadge();
 
   const { deleteBadge, isLoading: deletingBadge, error } = useDeleteBadge();

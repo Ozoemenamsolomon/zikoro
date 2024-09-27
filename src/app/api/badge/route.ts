@@ -14,9 +14,11 @@ export async function GET(req: NextRequest) {
         .from("badgeNew")
         .select("*, event:events!inner(*, organization!inner(*))");
 
-      if (eventId) query.eq("eventAlias", eventId);
+      // if (eventId) query.eq("eventAlias", eventId);
 
       const { data, error, status } = await query;
+
+      console.log(data, "badges");
 
       if (error) throw error;
 
@@ -53,7 +55,7 @@ export async function POST(req: NextRequest) {
 
       const { data, error } = await supabase
         .from("badgeNew")
-        .insert({ ...params, badgeAlias })
+        .upsert({ ...params, badgeAlias })
         .select()
         .maybeSingle();
 
