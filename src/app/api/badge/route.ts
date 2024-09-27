@@ -10,20 +10,19 @@ export async function GET(req: NextRequest) {
       const { searchParams } = new URL(req.url);
       const eventId = searchParams.get("eventId");
 
-      const query = supabase
-        .from("badgeNew")
-        .select("*, event:events!inner(*, organization!inner(*))");
+      const query = supabase.from("badgeNew").select("*");
+      // .select("*, event:events!inner(*, organization!inner(*))");
 
       // if (eventId) query.eq("eventAlias", eventId);
 
       const { data, error, status } = await query;
 
-      console.log(data, "badges");
+      console.log(data, error, "badges");
 
       if (error) throw error;
 
       return NextResponse.json(
-        { data },
+        { data, statusText: "this is status text", error },
         {
           status: 200,
         }
@@ -48,14 +47,11 @@ export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
     try {
-      const params = await req.json();
       const badgeAlias = generateAlphanumericHash(12);
-
-      console.log(params);
 
       const { data, error } = await supabase
         .from("badgeNew")
-        .upsert({ ...params, badgeAlias })
+        .insert({ badgeAlias })
         .select()
         .maybeSingle();
 
