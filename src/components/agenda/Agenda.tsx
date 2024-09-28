@@ -119,7 +119,7 @@ export default function Agenda({
           </div>
         )}
         <div className="w-full no-scrollbar mt-8 overflow-x-auto">
-          <div className="min-w-max flex items-center rounded-xl  bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end gap-x-8">
+          <div className="min-w-max flex items-center rounded-xl  bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end gap-x-6">
             {Array.isArray(dateRange) &&
               dateRange?.map((val, index) => (
                 <button
@@ -131,7 +131,7 @@ export default function Agenda({
                     // refetchSession();
                   }}
                   className={cn(
-                    "p-2 text-gray-400 flex w-[130px] h-fit gap-2 flex-col items-center justify-center text-desktop sm:text-base",
+                    "p-2 text-gray-400 flex w-[190px] h-fit gap-2 flex-col items-center justify-center text-desktop sm:text-base",
                     (activeDateQuery || currentEvent?.startDate) ===
                       val?.date &&
                       "border-basePrimary border bg-white shadow rounded-xl"
