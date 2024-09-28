@@ -228,9 +228,9 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
   return (
     <>
       {eventDetail ? (
-        <div className="w-full h-full bg-[#F7F8FF]">
+        <div className="w-full h-full fixed overflow-y-auto bg-[#F7F8FF]">
           <div className="w-full px-4 sm:px-6 md:px-10 flex items-center justify-between p-3 sm:p-4 border-b border-[#EAEAEA]">
-            <Image
+            <Image 
               src="/zikoro.png"
               alt=""
               className="max-w-[150px] max-h-[50px]"
@@ -249,7 +249,7 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
               </Link>
             </div>
           </div>
-          <div className="w-full mt-6 sm:mt-10 grid grid-cols-1 items-start md:grid-cols-2 gap-6 sm:gap-10 px-4 sm:px-6 md:px-10 xl:px-14 2xl:px-20">
+          <div className="w-full mt-6 sm:mt-10 grid grid-cols-1 items-start lg:grid-cols-2 gap-6 sm:gap-10 px-4 sm:px-6 md:px-10 xl:px-14 2xl:px-20">
             <div className="w-full">
               {eventDetail?.eventPoster ? (
                 <Image
