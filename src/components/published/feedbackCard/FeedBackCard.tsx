@@ -9,7 +9,7 @@ import { cn } from "@/lib";
 
 export function FeedBackCard({ review }: { review: TFeedBack }) {
   return (
-    <div className="w-[95%] items-start justify-start sm:w-[415px] flex flex-col gap-y-3 py-12 px-6 rounded-lg shadow bg-white">
+    <div className="w-full items-start justify-start flex flex-col gap-y-3 py-12 px-6 rounded-lg shadow bg-white">
       <DoubleColumnIcon />
       <p className="leading-6 line-clamp-3 items-start justify-start w-full flex flex-col">
         {review?.comments ?? ""}

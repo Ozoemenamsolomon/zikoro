@@ -8,6 +8,7 @@ import { About, Speakers, Sponsors, EventAgendas } from "..";
 import { EventDetailMobileTab } from "./EventDetailMobileTab";
 import { useEffect, useState } from "react";
 import { Rewards } from "./Rewards";
+import { Reviews } from "./Reviews";
 
 const eventWebsiteSettings = [
   { title: "Logo", status: false },
@@ -45,6 +46,7 @@ export function EventDetailTabs({
     { id: 3, name: "Speakers" },
     { id: 4, name: "Partners" },
     { id: 5, name: "Rewards" },
+    {id:6, name:"Reviews"}
   ];
 
   useEffect(() => {
@@ -95,6 +97,7 @@ export function EventDetailTabs({
         { status: true, title: "Speakers" },
         { status: true, title: "Partners" },
         { title: "Rewards", status: true },
+        {title: "Reviews", status: true}
       ]
     : selectedTabs;
 
@@ -157,6 +160,9 @@ export function EventDetailTabs({
         )}
         {active === EventDetailTab.REWARD_TAB && event && (
           <Rewards eventId={String(event.eventAlias)} isEventHome />
+        )}
+         {active === EventDetailTab.REVIEW_TAB && event && (
+          <Reviews eventId={String(event.eventAlias)}  />
         )}
       </div>
     </>

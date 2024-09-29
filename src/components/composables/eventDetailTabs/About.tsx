@@ -5,7 +5,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { GoogleMap, Marker, InfoWindow, useLoadScript } from "@react-google-maps/api";
-import { FeedBackCard } from "../../published";
 import { cn } from "@/lib";
 import { geocodeAddress, isEventLive } from "@/utils";
 import { Event } from "@/types";
@@ -27,7 +26,7 @@ export function About({
   isEventHome?: boolean;
 }) {
   const pathname = usePathname();
-  const { reviews } = useGetEventReviews(event?.eventAlias);
+
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -71,7 +70,7 @@ export function About({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
   });
 
-  const Comp = Array.isArray(reviews) && reviews?.length > 1 ? Slider : "div";
+  
   return (
     <div
       className={cn(
@@ -81,7 +80,7 @@ export function About({
     >
        <div className="w-full h-full rounded-lg border p-2">
                     <h3 className="pb-2 w-full text-center border-b">
-                      Register for this event
+                      About this Event
                     </h3>
       <div
         className={cn(
