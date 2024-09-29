@@ -65,7 +65,7 @@ export function Custom({
      
       isReception={isReception}
     >
-      <div className="w-full md:col-span-6 lg:col-span-8 ">
+      <div className="w-full ">
         <Comp className="w-full agenda-slider h-full z-4" {...settings}>
           {sessionAgenda?.sessions?.map((session, index) => (
             <Widget
@@ -147,8 +147,8 @@ function Widget({
           }
         }}
         className={cn(
-          "flex border-0 flex-col w-full  p-3 rounded-xl items-start justify-start ",
-          session.isMyAgenda && "bg-gray-50 border rounded-lg "
+          "flex border-0 flex-col w-full  rounded-xl items-start justify-start ",
+          session.isMyAgenda && " "
         )}
       >
         <h2 className="text-base w-full mb-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
@@ -165,6 +165,7 @@ function Widget({
                   profession={attendee?.jobTitle ?? ""}
                   email={attendee?.email ?? ""}
                   key={index}
+                  className="flex-row items-center gap-x-2"
                 />
               ))}
           </div>
@@ -180,7 +181,7 @@ function Widget({
             </div>
           )}
           {session?.Track && (
-            <button className="bg-[#F44444]/10 text-xs text-[#F44444] px-2 py-2 rounded-md">
+            <button className="bg-[#F44444]/10 text-xs text-[#F44444] px-2 py-2 rounded-3xl">
               {session?.Track ?? ""}
             </button>
           )}
