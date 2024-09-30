@@ -111,9 +111,9 @@ export function EventDetailTabs({
       )}
       <div
         className={cn(
-          "sm:flex hidden px-4  w-full sm:px-6 items-center gap-x-2  sm:gap-x-6",
+          "sm:flex hidden px-4  w-full sm:px-6 items-center overflow-x-auto no-scrollbar  gap-x-2  sm:gap-x-6",
           className,
-          isEventDetailPage && "flex bg-white w-full mt-6 rounded-t-lg justify-center pt-2 border-b"
+          isEventDetailPage && "flex bg-white w-full mt-6  rounded-t-lg justify-center pt-2 border-b"
         )}
       >
         {itemTabs.map(({ title, status }, id) => (
