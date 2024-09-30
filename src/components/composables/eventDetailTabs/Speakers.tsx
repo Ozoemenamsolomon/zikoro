@@ -39,7 +39,7 @@ export function Speakers({
 
   const formattedAttendees = useMemo(() => {
     return attendees?.filter(({ attendeeType, speakingAt }) => {
-      return attendeeType?.includes("speaker");
+      return attendeeType?.includes("speaker") || (Array.isArray(speakingAt) && speakingAt?.length > 0);
     });
   }, [attendees]);
 
@@ -53,37 +53,43 @@ export function Speakers({
         </Button>
    */
   return (
-    <div className=" py-3 bg-white">
-      {active === 1 && (
-        <div className="flex  flex-col p-4  w-full items-start justify-start sm:hidden">
-          <p className="font-semibold text-base">Speakers</p>
-        </div>
-      )}
-      {active === 1 && (
-        <div className=" w-full grid grid-cols-1 sm:grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
-          {isLoading && (
-            <div className="col-span-full h-[200px] flex items-center justify-center">
-              <LoaderAlt size={30} className="animate-spin" />
-            </div>
-          )}
-          {!isLoading && formattedAttendees?.length === 0 && (
-            <div className="col-span-full h-[200px] flex items-center justify-center">
-              <p className="text-mobile sm:text-sm font-semibold">No Speaker</p>
-            </div>
-          )}
-          {!isLoading &&
-            Array.isArray(formattedAttendees) &&
-            formattedAttendees.map((attendee) => (
-              <SpeakerWidget
-                key={attendee?.id}
-                changeActiveState={changeActiveState}
-                isViewProfile
-                attendee={attendee}
-                setAttendee={setAttendee}
-              />
-            ))}
-        </div>
-      )}
+    <div className="w-full p-3 bg-white">
+      <div
+        className={cn(
+          "w-full rounded-lg border p-2 hidden",
+          active === 1 && "block"
+        )}
+      >
+        <h3 className="pb-2 w-full text-center border-b">Event Speakers</h3>
+
+       
+          <div className=" w-full grid grid-cols-1 sm:grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
+            {isLoading && (
+              <div className="col-span-full h-[200px] flex items-center justify-center">
+                <LoaderAlt size={30} className="animate-spin" />
+              </div>
+            )}
+            {!isLoading && formattedAttendees?.length === 0 && (
+              <div className="col-span-full h-[200px] flex items-center justify-center">
+                <p className="text-mobile sm:text-sm font-semibold">
+                  No Speaker
+                </p>
+              </div>
+            )}
+            {!isLoading &&
+              Array.isArray(formattedAttendees) &&
+              formattedAttendees.map((attendee) => (
+                <SpeakerWidget
+                  key={attendee?.id}
+                  changeActiveState={changeActiveState}
+                  isViewProfile
+                  attendee={attendee}
+                  setAttendee={setAttendee}
+                />
+              ))}
+          </div>
+     
+      </div>
       {active === 2 && selectedAttendee && (
         <SpeakerInfo
           attendee={selectedAttendee}
@@ -108,7 +114,14 @@ function SpeakerWidget({
   // attendee?.ticketType
   return (
     <>
-      <div className="w-full sm:w-[250px] flex flex-col gap-y-2 items-center justify-center p-4 border rounded-lg">
+      <div
+        onClick={() => {
+          changeActiveState(2);
+          if (setAttendee) setAttendee(attendee);
+        }}
+        role="button"
+        className="w-full sm:w-[250px] flex flex-col gap-y-2 items-center justify-center p-4"
+      >
         {attendee?.profilePicture ? (
           <Image
             src={
@@ -127,16 +140,14 @@ function SpeakerWidget({
               .charAt(0)}${attendee?.lastName?.split(" ")[0].charAt(0)}`}</p>
           </div>
         )}
-        <button className=" flex items-center justify-center w-fit bg-[#20A0D8] bg-opacity-10 text-xs text-[#20A0D8] px-2 py-2 rounded-b-md">
-          {"Speaker"}
-        </button>
+
         <div className="flex  items-center flex-col justify-center">
-          <h2 className="font-semibold  text-lg">{`${attendee?.firstName} ${attendee?.lastName}`}</h2>
+          <h2 className="font-medium capitalize  text-lg">{`${attendee?.firstName} ${attendee?.lastName}`}</h2>
           <p className="text-gray-500">{attendee?.jobTitle ?? ""}</p>
           <p className="text-gray-500">{attendee?.organization ?? ""}</p>
         </div>
 
-        {isViewProfile && (
+        {/* {isViewProfile && (
           <Button
             onClick={() => {
               changeActiveState(2);
@@ -146,7 +157,7 @@ function SpeakerWidget({
           >
             <span className="text-basePrimary">View Profile</span>
           </Button>
-        )}
+        )} */}
       </div>
     </>
   );

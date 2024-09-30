@@ -7,21 +7,62 @@ import {
   TFullBadge,
 } from "@/types/badge";
 import { RequestStatus, UseGetResult, usePostResult } from "@/types/request";
-import { deleteRequest, getRequest, postRequest } from "@/utils/api";
+import {
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "@/utils/api";
 import { useEffect, useState } from "react";
+
+export const useCreateBadge = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const createBadge = async () => {
+    setLoading(true);
+    toast({
+      description: "creating badge...",
+    });
+    try {
+      const { data, status } = await postRequest<TBadge>({
+        endpoint: "/badge",
+        payload: {},
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: "Badge Saved Successfully",
+      });
+      return data.data;
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { createBadge, isLoading, error };
+};
 
 export const useSaveBadge = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const saveBadge = async ({ payload }: { payload: TBadge }) => {
+  const saveBadge = async ({
+    payload,
+    badgeAlias,
+  }: {
+    payload: TBadge;
+    badgeAlias: string;
+  }) => {
     setLoading(true);
     toast({
       description: "saving badge...",
     });
     try {
-      const { data, status } = await postRequest<TBadge>({
-        endpoint: "/badge",
+      const { data, status } = await patchRequest<TBadge>({
+        endpoint: "/badge/" + badgeAlias,
         payload,
       });
 
@@ -44,7 +85,7 @@ export const useDeleteBadge = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const deleteBadge = async ({ badgeId }: { badgeId: number }) => {
+  const deleteBadge = async ({ badgeId }: { badgeId: number | string }) => {
     setLoading(true);
     toast({
       description: "deleting badge...",

@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib";
-import { LiveView } from "@/constants";
+import { IconifyAgendaClockIcon, LiveView } from "@/constants";
 import { formatTime } from "@/utils";
 import { useMemo } from "react";
 import {isEventLive} from "@/utils"
@@ -32,7 +32,7 @@ export function SessionCard({
   return (
     <div
       className={cn(
-        "w-full h-fit grid grid-cols-1 md:grid-cols-8 lg:grid-cols-10 gap-4 relative md:gap-14 items-center px-4 py-10 rounded-xl border sm:px-6 sm:py-14",
+        "w-full h-fit flex flex-col items-start gap-y-2 justify-start  gap-4 relative   p-4 py-10 rounded-xl border ",
         isReception && "md:grid-cols-1 lg:grid-cols-1 md:gap-4 sm:px-4 sm:py-10",
         className
       )}
@@ -53,11 +53,18 @@ export function SessionCard({
           <p>Live</p>
         </div>
       )}
-      <div className={cn("flex flex-col md:col-span-2 pb-3 md:pb-0 w-fit md:w-full md:pr-6 border-b-2 border-r-0 md:border-b-0 md:border-r-2 border-basePrimary items-start justify-start gap-y-1",
-       isReception && " md:col-span-full  md:pb-3 w-fit md:pr-0 md:border-b-2 md:border-r-0")}>
-        <p className="font-semibold text-lg sm:text-[1.6rem]">{startTime}</p>
-        <p className="font-normal text-sm sm:text-base">{endTime}</p>
+      <div className="flex items-center gap-x-2">
+        <IconifyAgendaClockIcon/>
+        <p className=" ">
+          {startTime} - {endTime}
+        </p>
+      
+     
       </div>
+      {/* <div className={cn("flex flex-col md:col-span-2 pb-3 md:pb-0 w-fit md:w-full md:pr-6 border-b-2 border-r-0 md:border-b-0 md:border-r-2 border-basePrimary items-start justify-start gap-y-1",
+       isReception && " md:col-span-full  md:pb-3 w-fit md:pr-0 md:border-b-2 md:border-r-0")}>
+       
+      </div> */}
       {children}
     </div>
   );

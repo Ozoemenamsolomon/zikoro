@@ -8,6 +8,7 @@ import { About, Speakers, Sponsors, EventAgendas } from "..";
 import { EventDetailMobileTab } from "./EventDetailMobileTab";
 import { useEffect, useState } from "react";
 import { Rewards } from "./Rewards";
+import { Reviews } from "./Reviews";
 
 const eventWebsiteSettings = [
   { title: "Logo", status: false },
@@ -45,6 +46,7 @@ export function EventDetailTabs({
     { id: 3, name: "Speakers" },
     { id: 4, name: "Partners" },
     { id: 5, name: "Rewards" },
+    {id:6, name:"Reviews"}
   ];
 
   useEffect(() => {
@@ -95,6 +97,7 @@ export function EventDetailTabs({
         { status: true, title: "Speakers" },
         { status: true, title: "Partners" },
         { title: "Rewards", status: true },
+        {title: "Reviews", status: true}
       ]
     : selectedTabs;
 
@@ -108,9 +111,9 @@ export function EventDetailTabs({
       )}
       <div
         className={cn(
-          "sm:flex hidden px-4  w-full sm:px-6 items-center gap-x-2 mb-4 border-b sm:mb-6 sm:gap-x-6",
+          "sm:flex hidden px-4  w-full sm:px-6 items-center overflow-x-auto no-scrollbar  gap-x-2  sm:gap-x-6",
           className,
-          isEventDetailPage && "flex bg-white justify-center pt-2 border-y"
+          isEventDetailPage && "flex bg-white w-full mt-6  rounded-t-lg justify-center pt-2 border-b"
         )}
       >
         {itemTabs.map(({ title, status }, id) => (
@@ -131,9 +134,8 @@ export function EventDetailTabs({
 
       <div
         className={cn(
-          "w-full",
-          isEventDetailPage &&
-            "mx-auto  mt-4 rounded-lg  sm:mt-6 w-full sm:w-[65%] lg:w-[90%] xl:w-[80%]"
+          "w-full"
+          
         )}
       >
         {active === EventDetailTab.ABOUT_TAB && (
@@ -158,6 +160,9 @@ export function EventDetailTabs({
         )}
         {active === EventDetailTab.REWARD_TAB && event && (
           <Rewards eventId={String(event.eventAlias)} isEventHome />
+        )}
+         {active === EventDetailTab.REVIEW_TAB && event && (
+          <Reviews eventId={String(event.eventAlias)}  />
         )}
       </div>
     </>

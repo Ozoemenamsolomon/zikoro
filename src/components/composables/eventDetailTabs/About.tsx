@@ -5,7 +5,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { GoogleMap, Marker, InfoWindow, useLoadScript } from "@react-google-maps/api";
-import { FeedBackCard } from "../../published";
 import { cn } from "@/lib";
 import { geocodeAddress, isEventLive } from "@/utils";
 import { Event } from "@/types";
@@ -27,7 +26,7 @@ export function About({
   isEventHome?: boolean;
 }) {
   const pathname = usePathname();
-  const { reviews } = useGetEventReviews(event?.eventAlias);
+
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
@@ -71,17 +70,21 @@ export function About({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
   });
 
-  const Comp = Array.isArray(reviews) && reviews?.length > 1 ? Slider : "div";
+  
   return (
     <div
       className={cn(
-        "w-full bg-white hidden flex-col sm:flex gap-y-6 sm:gap-y-20",
+        "w-full bg-white hidden flex-col sm:flex gap-y-6 sm:gap-y-20 px-3",
         isEventDetailPage && "flex py-3 "
       )}
     >
+       <div className="w-full h-full rounded-lg border p-2">
+                    <h3 className="pb-2 w-full text-center border-b">
+                      About this Event
+                    </h3>
       <div
         className={cn(
-          "w-full  gap-6 grid grid-cols-1  items-center",
+          "w-full  gap-6 py-3 grid grid-cols-1  items-center",
           className
         )}
       >
@@ -98,7 +101,8 @@ export function About({
         <div
           className={cn(
             "w-full flex flex-col gap-y-6",
-            isEventHome && ""
+            isEventHome && "",
+            isEventDetailPage && "hidden"
           )}
         >
           <div className="w-full h-full flex flex-col gap-y-6">
@@ -147,9 +151,10 @@ export function About({
               </ul>
             )}
           </div>
+          </div>
         </div>
       </div>
-
+{/* 
       {isEventDetailPage &&
         !pathname.includes("preview") &&
         Array.isArray(reviews) &&
@@ -182,7 +187,7 @@ export function About({
               </Comp>
             </div>
           </div>
-        )}
+        )} */}
     </div>
   );
 }

@@ -23,6 +23,7 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useRouter } from "next/navigation";
 import { useGetData } from "@/hooks/services/request";
 import { EngagementsSettings } from "@/types/engagements";
+import { IconifyAgendaCalendarIcon } from "@/constants";
 export default function Agenda({
   eventId,
   isReception,
@@ -118,7 +119,7 @@ export default function Agenda({
           </div>
         )}
         <div className="w-full no-scrollbar mt-8 overflow-x-auto">
-          <div className="min-w-max flex items-center border-b px-4  gap-x-8">
+          <div className="min-w-max flex items-center rounded-xl  bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end gap-x-6">
             {Array.isArray(dateRange) &&
               dateRange?.map((val, index) => (
                 <button
@@ -130,13 +131,14 @@ export default function Agenda({
                     // refetchSession();
                   }}
                   className={cn(
-                    "pb-3 text-gray-400  text-base sm:text-lg",
+                    "p-2 text-gray-400 flex w-[190px] h-fit gap-2 flex-col items-center justify-center text-desktop sm:text-base",
                     (activeDateQuery || currentEvent?.startDate) ===
                       val?.date &&
-                      "border-basePrimary border-b-2 text-basePrimary"
+                      "border-basePrimary border bg-white shadow rounded-xl"
                   )}
                 >
-                  {val?.formattedDate}
+                  <p className="font-medium">Day {index + 1}</p>
+                  <p className="flex items-center gap-x-2"> <IconifyAgendaCalendarIcon/> {val?.formattedDate}</p>
                 </button>
               ))}
           </div>
@@ -203,7 +205,7 @@ export default function Agenda({
           close={onClose}
           refetchSession={refetchSession}
           eventId={eventId}
-          event={data}
+          event={data}                                                      
         />
       )}
       {isFullScreen && (

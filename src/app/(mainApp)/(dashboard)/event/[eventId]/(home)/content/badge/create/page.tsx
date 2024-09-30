@@ -323,6 +323,7 @@ export default function Page({
         const { url: previewUrl, error } = await uploadFile(snapshot, "image");
         if (error || !previewUrl) throw error;
         const newBadge = await saveBadge({
+          badgeAlias,
           payload: {
             ...badge,
             settings,

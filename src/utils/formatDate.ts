@@ -142,7 +142,7 @@ export function generateDateRange(startDate: string, endDate: string) {
   function formatDate(date: Date): string {
     // Get the day, month, and year parts
     const day = date.getDate();
-    const month = date.toLocaleString("en-GB", { month: "long" });
+    const month = date.toLocaleString("en-GB", { month: "short" });
     const year = date.getFullYear();
 
     // Get the weekday (e.g., Fri, Sat)

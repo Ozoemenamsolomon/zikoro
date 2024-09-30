@@ -623,6 +623,13 @@ input[type="number"] {
   @apply border  flex items-center justify-center rounded-lg shadow-md border-gray-300 bg-transparent text-xl w-12 h-16;
 }
 
+
+.border-gradient {
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(to right, #001FCC 0%, #9D00FF 100%) 1;
+}
+
 .quiz-lobby {
   -webkit-animation-duration: 0.5s;
   animation-duration: 0.5s;
