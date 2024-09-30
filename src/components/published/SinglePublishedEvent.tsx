@@ -238,8 +238,13 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
               height={70}
             />
             <div className="flex items-center gap-x-2">
-              <Link className="text-xs sm:text-sm" href="">
-                Explore other events
+              <Link className="text-xs gap-x-1 flex items-center sm:text-sm" href="">
+                <p className="hidden md:block">Explore other events</p>
+                <InlineIcon
+                  icon={"material-symbols-light:arrow-insert"}
+                  fontSize={18}
+                  className="rotate-90"
+                />
               </Link>
               <Link
                 href=""

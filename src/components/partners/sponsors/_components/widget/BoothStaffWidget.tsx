@@ -37,12 +37,12 @@ export function BoothStaffWidget({
           alt="staff"
           width={120}
           height={120}
-          className="w-12 h-12 rounded-full "
+          className="w-14 h-14 rounded-full "
           src={image || "/b92cf7b1b06acc1b9a0759b6f97724c349488816.webp"}
         />
         :
-        <div className="w-12 bg-gray-100 h-12 rounded-full flex items-center justify-center">
-            <p className="text-gray-700">{`${name?.split(" ")[0].charAt(0)}${name?.split(" ")[1].charAt(0)}`}</p>
+        <div className="w-14 bg-gradient-to-tr border-basePrimary from-custom-bg-gradient-start border to-custom-bg-gradient-end h-14 rounded-full flex items-center justify-center">
+            <p className="gradient-text  bg-basePrimary text-lg uppercase">{`${name?.split(" ")[0].charAt(0)}${name?.split(" ")[1].charAt(0)}`}</p>
         </div>
       
       }

@@ -10,11 +10,11 @@ import { EventLocationType } from "@/components/composables";
 import { LocationPin } from "styled-icons/entypo";
 import Image from "next/image";
 import { cn } from "@/lib";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { TSessionAgenda, TAgenda,TMyAgenda, Event } from "@/types";
+import { TSessionAgenda, TAgenda, TMyAgenda, Event, TAttendee } from "@/types";
 import { useRouter } from "next/navigation";
 import { EngagementsSettings } from "@/types/engagements";
 export function Custom({
@@ -29,7 +29,7 @@ export function Custom({
   isFullScreen,
   isReception,
   myAgendas,
-  engagementsSettings
+  engagementsSettings,
 }: {
   className?: string;
   sessionAgenda: TSessionAgenda;
@@ -40,9 +40,9 @@ export function Custom({
   isIdPresent: boolean;
   isOrganizer: boolean;
   isFullScreen?: boolean;
-  isReception?:boolean;
+  isReception?: boolean;
   myAgendas?: TMyAgenda[];
-  engagementsSettings?: EngagementsSettings | null
+  engagementsSettings?: EngagementsSettings | null;
 }) {
   const settings = {
     dots: true,
@@ -62,7 +62,6 @@ export function Custom({
       timeStamp={sessionAgenda?.timeStamp}
       isGreaterThanOne={sessionAgenda?.sessions?.length > 1}
       className={className}
-     
       isReception={isReception}
     >
       <div className="w-full ">
@@ -98,7 +97,7 @@ function Widget({
   isOrganizer,
   isFullScreen,
   myAgendas,
-  engagementsSettings
+  engagementsSettings,
 }: {
   session: TAgenda;
   event?: Event | null;
@@ -109,9 +108,12 @@ function Widget({
   isOrganizer: boolean;
   isFullScreen?: boolean;
   myAgendas?: TMyAgenda[];
-  engagementsSettings?: EngagementsSettings | null
+  engagementsSettings?: EngagementsSettings | null;
 }) {
   const router = useRouter();
+  const [otherStaffsCount, setOtherStaffsCount] = useState(0);
+  const [staffs, setStaffs] = useState<TAttendee[]>([]);
+  const divRef = useRef<HTMLDivElement | null>(null);
 
   const isAddedAttendee = useMemo(() => {
     if (
@@ -135,9 +137,28 @@ function Widget({
     }
   }, [session]);
 
+  useEffect(() => {
+    if (divRef && divRef?.current && mergedSM) {
+      const width = divRef?.current?.offsetWidth;
+      const staffLength = mergedSM?.length * 200;
+      if (staffLength >= width) {
+        const x = (staffLength - width) /200
+        const willInclude = parseInt(
+          Math.round(x).toFixed(0)
+        );
+        console.log(staffLength, width);
+        setStaffs(mergedSM.slice(0, willInclude));
+        setOtherStaffsCount(mergedSM?.length - willInclude);
+      } else {
+        setStaffs(mergedSM);
+      }
+    }
+  }, [divRef, mergedSM]);
+
   return (
     <>
       <div
+        ref={divRef}
         role="button"
         onClick={() => {
           if (session?.description) {
@@ -155,9 +176,9 @@ function Widget({
           {session?.sessionTitle ?? ""}
         </h2>
         {isAddedAttendee && (
-          <div className="w-full flex items-center mb-2  gap-3">
-            {Array.isArray(mergedSM) &&
-              mergedSM.map((attendee, index) => (
+          <div className="w-full relative flex items-center mb-2  gap-1">
+            {Array.isArray(staffs) &&
+              staffs.map((attendee, index) => (
                 <BoothStaffWidget
                   company={""}
                   image={attendee?.profilePicture || null}
@@ -165,27 +186,31 @@ function Widget({
                   profession={attendee?.jobTitle ?? ""}
                   email={attendee?.email ?? ""}
                   key={index}
-                  className="grid grid-cols-7 w-[160px] items-center gap-x-2"
+                  className="grid grid-cols-7 w-[180px] items-center "
                 />
               ))}
+            {otherStaffsCount > 0 && (
+              <div className="flex absolute top-[10%] right-[0.3rem] from-custom-bg-gradient-start bg-gradient-to-tr to-custom-bg-gradient-end items-center text-lg justify-center h-14 w-14 rounded-full border border-basePrimary ">
+                {otherStaffsCount}+
+              </div>
+            )}
           </div>
         )}
         <div className="flex items-center gap-x-3 mb-2 ">
           {session?.sessionType && (
-               <div className="w-fit px-2 py-2 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">
-               <p className="gradient-text bg-basePrimary text-xs">
-                 {session?.sessionType ?? ""}
-               </p>
-             </div>
-         
+            <div className="w-fit px-2 py-2 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">
+              <p className="gradient-text bg-basePrimary text-xs">
+                {session?.sessionType ?? ""}
+              </p>
+            </div>
           )}
-       
+
           {session?.Track && (
-            <button className="bg-[#F44444]/10 text-xs text-[#F44444] border-[#F44444] px-2 py-2 rounded-2xl">
+            <button className="bg-[#F44444]/10 text-xs border text-[#F44444] border-[#F44444] px-2 py-2 rounded-2xl">
               {session?.Track ?? ""}
             </button>
           )}
-             {session?.sessionVenue && (
+          {session?.sessionVenue && (
             <div className="flex items-center gap-x-1">
               <LocationPin size={20} />
               <p>{session?.sessionVenue ?? ""}</p>
