@@ -32,7 +32,7 @@ export function BoothStaffWidget({
         className
       )}
     >
-      <div className="flex  gap-y-1 items-center justify-center">
+      <div className="flex col-span-2  gap-y-1 items-center justify-center">
        {image ? <Image
           alt="staff"
           width={120}
@@ -48,10 +48,10 @@ export function BoothStaffWidget({
       }
       
       </div>
-      <div className="flex text-sm flex-col items-start justify-start">
-        <p className="font-medium capitalize">{name || ""}</p>
-        <p className="text-tiny text-[#717171]">{profession || ""}</p>
-        <p className="text-tiny text-[#717171]">{company || ""}</p>
+      <div className="flex col-span-5 text-sm flex-col items-start justify-start">
+        <p className="font-medium capitalize text-ellipsis whitespace-nowrap overflow-hidden">{name || ""}</p>
+        <p className="text-tiny text-[#717171] text-ellipsis whitespace-nowrap overflow-hidden">{profession || ""}</p>
+        <p className="text-tiny text-[#717171] text-ellipsis whitespace-nowrap overflow-hidden">{company || ""}</p>
       </div>
 
       {isAddingBoothStaff && (

@@ -155,7 +155,7 @@ function Widget({
           {session?.sessionTitle ?? ""}
         </h2>
         {isAddedAttendee && (
-          <div className="w-full grid grid-cols-2 sm:grid-cols-3 mb-2  gap-3">
+          <div className="w-full flex items-center mb-2  gap-3">
             {Array.isArray(mergedSM) &&
               mergedSM.map((attendee, index) => (
                 <BoothStaffWidget
@@ -165,7 +165,7 @@ function Widget({
                   profession={attendee?.jobTitle ?? ""}
                   email={attendee?.email ?? ""}
                   key={index}
-                  className="flex-row items-center gap-x-2"
+                  className="grid grid-cols-7 w-[160px] items-center gap-x-2"
                 />
               ))}
           </div>
