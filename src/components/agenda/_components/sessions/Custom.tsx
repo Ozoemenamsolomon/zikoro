@@ -172,18 +172,24 @@ function Widget({
         )}
         <div className="flex items-center gap-x-3 mb-2 ">
           {session?.sessionType && (
-            <EventLocationType locationType={session?.sessionType ?? ""} />
+               <div className="w-fit px-2 py-2 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">
+               <p className="gradient-text bg-basePrimary text-xs">
+                 {session?.sessionType ?? ""}
+               </p>
+             </div>
+         
           )}
-          {session?.sessionVenue && (
+       
+          {session?.Track && (
+            <button className="bg-[#F44444]/10 text-xs text-[#F44444] border-[#F44444] px-2 py-2 rounded-2xl">
+              {session?.Track ?? ""}
+            </button>
+          )}
+             {session?.sessionVenue && (
             <div className="flex items-center gap-x-1">
               <LocationPin size={20} />
               <p>{session?.sessionVenue ?? ""}</p>
             </div>
-          )}
-          {session?.Track && (
-            <button className="bg-[#F44444]/10 text-xs text-[#F44444] px-2 py-2 rounded-3xl">
-              {session?.Track ?? ""}
-            </button>
           )}
           <div
             onClick={(e) => {
