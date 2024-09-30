@@ -16,6 +16,7 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { usePathname, useSearchParams } from "next/navigation";
 import { InlineIcon } from "@iconify/react";
 import { useEffect, useMemo, useState } from "react";
+import { BookEvent } from "@/components/published";
 import Image from "next/image";
 import {
   IconifyEventSocialPhoneIcon,
@@ -34,13 +35,38 @@ import {
   COUNTRIES_CURRENCY,
   geocodeAddress,
 } from "@/utils";
-import { TOrgEvent } from "@/types";
+import { TOrgEvent, OrganizerContact } from "@/types";
 import {
   GoogleMap,
   Marker,
   InfoWindow,
   useLoadScript,
 } from "@react-google-maps/api";
+
+function ShareEvent({close}:{close:() => void}) {
+  return (
+    <div
+    onClick={close}
+     className="w-full fixed inset-0 bg-black/50 h-full">
+
+      <div 
+      onClick={(e) => e.stopPropagation()}
+      className="w-[95%] max-w-xl rounded-lg bg-gradient-to-b  from-[#001fcc] to-gray-50 absolute inset-0 h-fit p-6 flex flex-col items-center justify-center gap-y-6">
+          <Button
+          onClick={close}
+          className="h-10 w-10 rounded-full px-0 bg-gray-200 ">
+            <InlineIcon icon="openmoji:close" fontSize={22}/>
+          </Button>
+        <h2 className="gradient-text bg-basePrimary text-base sm:text-xl text-center">Over 10 people already registered for this event</h2>
+
+        <p className="text-sm sm:text-base">Register for this event to see who is attending</p>
+
+        <Button className="font-medium text-white rounded-lg bg-basePrimary">Register Now</Button>
+      </div>
+
+    </div>
+  )
+}
 
 function AboutEvent({
   event,
@@ -120,6 +146,8 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
   const trackingId = params.get("trackingId");
   const affiliateCode = params.get("affiliateCode");
   const role = params.get("role");
+  const [isOpen, setOpen] = useState(false)
+  const [isGetTicket, setGetTicket] = useState(false)
   const { data: eventDetail } = useFetchSingleEvent(id);
   const { eventAttendees } = useVerifyUserAccess(id);
   const { data, refetch } = useFetchSingleOrganization(
@@ -131,9 +159,11 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
   } | null>(null);
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
 
-  const pathname = usePathname();
-  // console.log(id)
-  // useValidateUser()
+    // conditonally adding comma to separate city and location
+    const removeComma = useMemo(() => {
+      return eventDetail?.eventCity === null || eventDetail?.eventCountry === null;
+    }, [eventDetail?.eventCity, eventDetail?.eventCountry]);
+    const { startDate, endDate,} = useFormatEventData(eventDetail);
 
   useEffect(() => {
     if (eventDetail?.organization) {
@@ -219,7 +249,18 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
     };
 
     fetchCoordinates();
-  }, [event]);
+  }, [eventDetail]);
+  function onClose() {
+    setGetTicket((p) => !p)
+  }
+
+  const organizerContact: OrganizerContact = {
+    whatsappNumber: data?.eventWhatsApp,
+    phoneNumber: data?.eventPhoneNumber,
+    email: data?.eventContactEmail,
+  };
+
+
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
@@ -301,7 +342,9 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
                         attendees={eventAttendees}
                       />
                     )}
-                    <button className="flex items-center gap-x-1">
+                    <button
+                    onClick={() => setOpen((p) => !p)}
+                    className="flex items-center gap-x-1">
                       <span>Share Event</span>
 
                       <IconifyShareIcon />
@@ -386,7 +429,9 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
                         </span>
                       </div>
 
-                      <Button className="rounded-lg w-fit font-medium bg-basePrimary text-white">
+                      <Button 
+                      onClick={onClose}
+                      className="rounded-lg w-fit font-medium bg-basePrimary text-white">
                         Get Ticket
                       </Button>
                     </div>
@@ -420,6 +465,33 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
         <div className="w-full h-[300px] flex items-center justify-center">
           <LoaderAlt size={30} className="animate-spin" />
         </div>
+      )}
+
+{isOpen && <ShareEvent close={() => setOpen((prev) => !prev)}/>}
+
+{isGetTicket && (
+        <BookEvent
+          event={eventDetail}
+          eventDate={eventDetail?.startDateTime}
+          eventEndDate={eventDetail?.endDateTime}
+          endDate={endDate}
+          address={eventDetail?.eventAddress}
+          eventImage={eventDetail?.eventPoster}
+          availableSlot={availableSlot}
+          startDate={startDate}
+          currency={eventDetail?.pricingCurrency}
+          organizerContact={organizerContact}
+          eventTitle={eventDetail?.eventTitle}
+          close={onClose}
+          trackingId={trackingId}
+          affiliateCode={affiliateCode}
+          role={role|| ''}
+          eventLocation={`${eventDetail?.eventCity ?? ""}${!removeComma && ","} ${
+            eventDetail?.eventCountry ?? ""
+          }`}
+          eventId={eventDetail?.eventAlias}
+          organization={eventDetail?.organization?.organizationName}
+        />
       )}
     </>
   );

@@ -190,7 +190,7 @@ function Widget({
                 />
               ))}
             {otherStaffsCount > 0 && (
-              <div className="flex absolute top-[10%] right-[0.3rem] from-custom-bg-gradient-start bg-gradient-to-tr to-custom-bg-gradient-end items-center text-lg justify-center h-14 w-14 rounded-full border border-basePrimary ">
+              <div className="flex absolute top-[10%] right-[0.3rem] from-custom-bg-gradient-start bg-gradient-to-tr to-custom-bg-gradient-end items-center text-lg justify-center w-[3rem] h-[3rem] rounded-full border border-basePrimary ">
                 {otherStaffsCount}+
               </div>
             )}
