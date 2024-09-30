@@ -13,6 +13,7 @@ export function BoothStaffWidget({
   remove,
   email,
   isAddingBoothStaff,
+  className
 }: {
   image?: string | null;
   name: string;
@@ -21,16 +22,17 @@ export function BoothStaffWidget({
   remove?: (email: string) => void;
   company?: string | null;
   isAddingBoothStaff?: boolean;
- 
+ className?:string
 }) {
   return (
     <div
       className={cn(
         "flex  items-start justify-start group gap-x-2",
-        isAddingBoothStaff && "hover:bg-gray-50 relative rounded-md p-2"
+        isAddingBoothStaff && "hover:bg-gray-50 relative rounded-md p-2",
+        className
       )}
     >
-      <div className="flex flex-col gap-y-1 items-center justify-center">
+      <div className="flex  gap-y-1 items-center justify-center">
        {image ? <Image
           alt="staff"
           width={120}

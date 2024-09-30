@@ -205,7 +205,7 @@ export default function Agenda({
           close={onClose}
           refetchSession={refetchSession}
           eventId={eventId}
-          event={data}
+          event={data}                                                      
         />
       )}
       {isFullScreen && (
