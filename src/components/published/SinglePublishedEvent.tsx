@@ -51,13 +51,13 @@ function ShareEvent({close}:{close:() => void}) {
 
       <div 
       onClick={(e) => e.stopPropagation()}
-      className="w-[95%] max-w-xl rounded-lg bg-gradient-to-b  from-[#001fcc] to-gray-50 absolute inset-0 h-fit p-6 flex flex-col items-center justify-center gap-y-6">
+      className="w-[95%] max-w-lg rounded-lg bg-gradient-to-b m-auto  from-[#001fcc] to-gray-50 absolute inset-0 h-fit p-6 flex flex-col items-center justify-center gap-y-6">
           <Button
           onClick={close}
-          className="h-10 w-10 rounded-full px-0 bg-gray-200 ">
+          className="h-10 w-10 rounded-full absolute right-3 top-3 px-0 bg-gray-200 ">
             <InlineIcon icon="openmoji:close" fontSize={22}/>
           </Button>
-        <h2 className="gradient-text bg-basePrimary text-base sm:text-xl text-center">Over 10 people already registered for this event</h2>
+        <h2 className="gradient-text bg-basePrimary text-base sm:text-3xl font-semibold text-center">Over 10 people already registered for this event</h2>
 
         <p className="text-sm sm:text-base">Register for this event to see who is attending</p>
 
