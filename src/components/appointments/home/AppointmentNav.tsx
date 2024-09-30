@@ -83,7 +83,7 @@ const AppointmentNav = () => {
               Other Products <ChevronDown size={20} />{" "}
               {isPreviewOn && (
                 <Image
-                  src="/appointments/otherTopPrevS.png"
+                  src="/appointments/OtherTopPrevS.png"
                   width={273}
                   height={278}
                   alt=""
