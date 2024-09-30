@@ -14,6 +14,7 @@ import {
 import { useTeamMembers } from "@/hooks/services/workspace";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { v4 as uuidv4 } from "uuid";
+import { useSendTeamInviteEmail } from "@/hooks/services/teamMemberInvite";
 
 type FormDataType = {
   id: string;
@@ -32,6 +33,9 @@ export default function Team() {
     userRole: "",
   });
 
+  //extract SendTeamInviteEmail from useSendTeamInviteEmail
+  const { sendTeamInviteEmail } = useSendTeamInviteEmail();
+
   const { organization } = useOrganizationStore();
   const {
     currentTeamMembers,
@@ -43,7 +47,7 @@ export default function Team() {
   } = useTeamMembers(organization?.id ?? 0);
   const [filteredTeamMembers, setFilteredTeamMembers] = useState([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const roles = ["select a role","owner", "editor", "collaborator"];
+  const roles = ["select a role", "owner", "editor", "collaborator"];
 
   // handles input change for search
   const handleSearchChange = (e: any) => {
