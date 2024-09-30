@@ -15,10 +15,6 @@ export async function POST(req: NextRequest) {
                 emailRecipient,
             } = params;
 
-            console.log(sendersName)
-            console.log(organizationOwner)
-            console.log(subject)
-
             var { SendMailClient } = require("zeptomail");
             let client = new SendMailClient({
                 url: process.env.NEXT_PUBLIC_ZEPTO_URL,
