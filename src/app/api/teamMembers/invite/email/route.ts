@@ -2,19 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-
 export async function POST(req: NextRequest) {
     const supabase = createRouteHandlerClient({ cookies });
     if (req.method === "POST") {
         try {
             const params = await req.json();
             const {
-                organizationName,
+                sendersName,
                 organizationOwner,
                 subject,
                 emailBody,
                 emailRecipient,
             } = params;
+
+            console.log(sendersName)
+            console.log(organizationOwner)
+            console.log(subject)
 
             var { SendMailClient } = require("zeptomail");
             let client = new SendMailClient({
@@ -26,7 +29,7 @@ export async function POST(req: NextRequest) {
                 const resp = await client.sendMail({
                     from: {
                         address: process.env.NEXT_PUBLIC_EMAIL,
-                        name: organizationName,
+                        name: sendersName,
                     },
                     to: [
                         {

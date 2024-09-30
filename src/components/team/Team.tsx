@@ -33,9 +33,6 @@ export default function Team() {
     userRole: "",
   });
 
-  //extract SendTeamInviteEmail from useSendTeamInviteEmail
-  const { sendTeamInviteEmail } = useSendTeamInviteEmail();
-
   const { organization } = useOrganizationStore();
   const {
     currentTeamMembers,
@@ -63,6 +60,35 @@ export default function Team() {
     }));
   };
 
+  const payload = {
+    organizationName: organization?.organizationName || "",
+    organizationOwner: organization?.organizationOwner || "",
+    subject: `You’ve Been Invited to Join ${organization?.organizationName} on Zikoro!`,
+    emailBody: `
+    Hi ${formData.userEmail},
+
+      You've been invited to join ${organization?.organizationName} on Zikoro.
+
+      As a team member, you’ll be able to collaborate, share updates, and contribute to ongoing projects. Click the link below to join the team:
+
+      <a href="https://www.zikoro.com/login?userEmail=${formData.userEmail}">Join Team</a>
+
+      If you have any questions, feel free to reply to this email.
+
+      We look forward to having you on board!
+
+      Best,
+      The Zikoro Team
+
+    `,
+    emailRecipient: formData.userEmail,
+  };
+
+  const requestData = { payload };
+  //extract SendTeamInviteEmail from useSendTeamInviteEmail
+  const { sendTeamInviteEmail, isLoading, error } =
+    useSendTeamInviteEmail(requestData);
+
   // Create a new team member
   const handleCreateTeamMember = async (e: any) => {
     e.preventDefault();
@@ -74,6 +100,7 @@ export default function Team() {
       userRole: formData.userRole,
     };
 
+    await sendTeamInviteEmail();
     await createTeamMember(newTeamMember);
     setFormData({
       id: "",
