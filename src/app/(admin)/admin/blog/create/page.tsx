@@ -150,7 +150,9 @@ export default function BlogCreate() {
       localStorage.setItem("blogPreviewData", JSON.stringify(blogData));
 
       window.open("/post/preview", "_blank");
-    });
+    }).catch((error) => {
+      console.log(error)
+    })
   };
 
   //submit post function

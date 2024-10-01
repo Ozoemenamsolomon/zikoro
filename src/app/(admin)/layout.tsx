@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <>
       <main
-        className={`${montserrat.className} relative w-full h-full bg-[#F9FAFF]`}
+        className={`relative w-full h-full bg-[#F9FAFF]`}
       >
         <AdminSideBar />
 
