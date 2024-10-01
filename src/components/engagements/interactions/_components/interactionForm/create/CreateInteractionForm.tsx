@@ -47,7 +47,6 @@ const optionsType = [
   { name: "Rating", type: "INPUT_RATING" },
   { name: "Likert", type: "INPUT_LIKERT" },
 ];
-
 function SelectQuestionType({
   onClose,
   //selectedOption,
