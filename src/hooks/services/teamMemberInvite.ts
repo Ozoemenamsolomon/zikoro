@@ -9,16 +9,15 @@ type TInviteTeamMember = {
     organizationName: string;
     organizationOwner: string;
     subject: string;
-    replyTo?: string;
     emailBody: string;
     emailRecipient: string;
 };
 
-export const useSendTeamInviteEmail = () => {
+export const useSendTeamInviteEmail = ({ payload }: { payload: TInviteTeamMember }) => {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
-    const sendTeamInviteEmail = async ({ payload }: { payload: TInviteTeamMember }) => {
+    const sendTeamInviteEmail = async () => {
         setLoading(true);
         toast({
             description: "sending email...",

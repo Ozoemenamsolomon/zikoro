@@ -62,6 +62,7 @@ export async function PATCH(req: NextRequest) {
       console.log(data, error);
 
       if (error) throw error;
+      
 
       return NextResponse.json(
         { msg: "badge saved successfully", data },

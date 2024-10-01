@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
   if (req.method === "GET") {
     try {
       const { data, error } = await supabase
-        .from("subscription")
+        .from("sentEmails")
         .select("*")
 
       if (error) throw error;
