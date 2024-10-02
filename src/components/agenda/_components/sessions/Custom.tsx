@@ -6,7 +6,6 @@ import { SessionCard, Deletes, Duplicate, Edit, AddToMyAgenda } from "..";
 import { Button } from "@/components";
 import { CheckmarkDone } from "styled-icons/ionicons-solid";
 import { Star } from "styled-icons/bootstrap";
-import { EventLocationType } from "@/components/composables";
 import { LocationPin } from "styled-icons/entypo";
 import Image from "next/image";
 import { cn } from "@/lib";
@@ -73,6 +72,7 @@ export function Custom({
               event={event}
               attendeeId={attendeeId}
               refetchEvent={refetchEvent}
+              isReception={isReception}
               refetchSession={refetchSession}
               isIdPresent={isIdPresent}
               isOrganizer={isOrganizer}
@@ -98,6 +98,7 @@ function Widget({
   isFullScreen,
   myAgendas,
   engagementsSettings,
+  isReception
 }: {
   session: TAgenda;
   event?: Event | null;
@@ -109,6 +110,7 @@ function Widget({
   isFullScreen?: boolean;
   myAgendas?: TMyAgenda[];
   engagementsSettings?: EngagementsSettings | null;
+  isReception?:boolean;
 }) {
   const router = useRouter();
   const [otherStaffsCount, setOtherStaffsCount] = useState(0);
@@ -233,7 +235,7 @@ function Widget({
             />
           </div>
         </div>
-        {!isFullScreen && (isIdPresent || isOrganizer) && (
+        {!isFullScreen && (isIdPresent || isOrganizer) && !isReception &&  (
           <div
             onClick={(e) => {
               e.stopPropagation();
@@ -272,7 +274,7 @@ function Widget({
             </div>
           </div>
         )}
-        {Array.isArray(session?.sessionSponsors) &&
+        {!isReception && Array.isArray(session?.sessionSponsors) &&
           session?.sessionSponsors?.length > 0 && (
             <div className="w-full flex flex-col mb-2  items-start justify-start gap-y-2">
               <p>Sponsors</p>
