@@ -1,4 +1,4 @@
-import { montserrat } from "@/utils/fonts";
+
 
 export default function RootLayout({
   children,
@@ -8,7 +8,7 @@ export default function RootLayout({
   return (
     <section lang="en">
       {/* <Navbar /> */}
-      <div className={`${montserrat.className} `}> {children}</div>
+      <div className={``}> {children}</div>
     </section>
   );
 }

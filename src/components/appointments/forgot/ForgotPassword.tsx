@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useForgotPassword } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { montserrat } from "@/utils/fonts";
+
 
 const ForgotPasswordComponent = () => {
   const { loading, forgotPassword } = useForgotPassword();
@@ -39,7 +39,7 @@ const ForgotPasswordComponent = () => {
 
         <button
           type="submit"
-          className={`text-white ${montserrat.className} text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 w-full rounded-lg mt-4`}
+          className={`text-white text-base bg-gradient-to-tr from-custom-gradient-start to-custom-gradient-end py-4 w-full rounded-lg mt-4`}
         >
           {loading && <LoaderAlt size={22} className="animate-spin" />}
           Submit{" "}

@@ -42,6 +42,7 @@ export function AddTag({
     });
     refetch();
     setLoading(false);
+    
   }
 
   function handleTagClick(tag: string) {
@@ -73,7 +74,11 @@ export function AddTag({
       >
         <div className="w-full flex items-center gap-x-2">
           <Button
-            onClick={() => updateTags!(allTags.map(({ tagName }) => tagName))}
+            onClick={() => {
+              if (updateTags) {
+                updateTags(allTags.map(({ tagName }) => tagName))
+              }
+            }}
             className="px-1 h-fit w-fit"
           >
             <ArrowBackOutline size={22} />

@@ -13,6 +13,7 @@ export interface TBadge {
   badgeHash: Record<string, any>;
 }
 
+
 export interface TBadgeSettings {
   canReceive: {
     eventAttendees: boolean;
@@ -21,6 +22,7 @@ export interface TBadgeSettings {
     trackAttendees: boolean;
     exceptions: number[];
   };
+  
 }
 
 export interface TBadgeTemplate {
