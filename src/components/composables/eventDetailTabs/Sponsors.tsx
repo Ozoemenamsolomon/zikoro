@@ -57,7 +57,7 @@ export function Sponsors({
   return (
     <div className="w-full bg-white p-3">
        <div className="w-full rounded-lg border p-2">
-                    <h3 className="pb-2 w-full text-center border-b">
+                    <h3 className="pb-2 w-full text-center">
                       Event Partners
                     </h3>
     
