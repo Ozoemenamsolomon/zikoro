@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
         try {
             const params = await req.json();
             const {
-                sendersName,
+                organizationName,
                 organizationOwner,
                 subject,
                 emailBody,
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
                 const resp = await client.sendMail({
                     from: {
                         address: process.env.NEXT_PUBLIC_EMAIL,
-                        name: sendersName,
+                        name: organizationName,
                     },
                     to: [
                         {
@@ -44,7 +44,13 @@ export async function POST(req: NextRequest) {
                 console.error(`Error sending email to ${emailRecipient}:`, error);
             }
 
-            const { error } = await supabase.from("sentEmails").insert(params);
+            const { error } = await supabase.from("sentEmails").insert({
+                sendersName: organizationName,
+                subject: subject,
+                emailBody: emailBody,
+                emailRecipient: emailRecipient
+
+            });
             if (error) throw error;
 
             return NextResponse.json(
