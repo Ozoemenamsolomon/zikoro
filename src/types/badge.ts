@@ -26,6 +26,7 @@ export interface TBadgeSettings {
     sessionAttendees: boolean;
     trackAttendees: boolean;
   };
+  
 }
 
 export interface TBadgeTemplate {
