@@ -14,6 +14,7 @@ export interface TBadge {
   lastEdited: Date;
 }
 
+
 export interface TBadgeSettings {
   width: number;
   height: number;

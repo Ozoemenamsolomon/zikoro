@@ -42,6 +42,7 @@ export function AddTag({
     });
     refetch();
     setLoading(false);
+    
   }
 
   function handleTagClick(tag: string) {
