@@ -27,6 +27,11 @@ import {
   IconifyPublishedEventPeopleIcon,
   IconifyShareIcon,
   IconEventSocialEmailIcon,
+  IconifyEventWhatsapp,
+  IconifyEventXIcon,
+  IconifyEventFacebookIcon,
+  IconifyEventLinkedInIcon,
+  IconifyEventCopyLink,
 } from "@/constants";
 
 import {
@@ -35,37 +40,92 @@ import {
   COUNTRIES_CURRENCY,
   geocodeAddress,
 } from "@/utils";
-import { TOrgEvent, OrganizerContact } from "@/types";
+import { TOrgEvent, OrganizerContact, Event } from "@/types";
 import {
   GoogleMap,
   Marker,
   InfoWindow,
   useLoadScript,
 } from "@react-google-maps/api";
+import copy from "copy-to-clipboard";
 
-function ShareEvent({close}:{close:() => void}) {
+function ShareEvent({
+  close,
+  eventId,
+}: {
+  eventId: string;
+  close: () => void;
+}) {
+  const [isShow, showSuccess] = useState(false);
+
+  const url = `${window.location.origin}/live-events/${eventId}`;
+  function copyLink() {
+    copy(url);
+    showSuccess(true);
+    setTimeout(() => showSuccess(false), 2000);
+  }
+
+  const socials = [
+    {
+      SocialImageIcon: IconifyEventWhatsapp,
+      link: `https://api.whatsapp.com/send?text=${url}`,
+    },
+    // {
+    //   socialImageIcon: IconifyEvent,
+    //   link: `mailto:?subject=Register%20for%20this%20event&body=${url}`,
+    // },
+    {
+      SocialImageIcon: IconifyEventXIcon,
+      link: `https://x.com/intent/tweet?url=${url}`,
+    },
+    {
+      SocialImageIcon: IconifyEventFacebookIcon,
+      link: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+    },
+    {
+      SocialImageIcon: IconifyEventLinkedInIcon,
+      link: `https://www.linkedin.com/shareArticle?url=${url}`,
+    },
+  ];
+
   return (
-    <div
-    onClick={close}
-     className="w-full fixed inset-0 bg-black/50 h-full">
-
-      <div 
-      onClick={(e) => e.stopPropagation()}
-      className="w-[95%] max-w-lg rounded-lg bg-gradient-to-b m-auto  from-[#001fcc] to-gray-50 absolute inset-0 h-fit p-6 flex flex-col items-center justify-center gap-y-6">
-          <Button
+    <div onClick={close} className="w-full fixed inset-0 bg-black/50 h-full">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-[95%] max-w-lg rounded-lg bg-gradient-to-b m-auto  from-[#001fcc] to-gray-50 absolute inset-0 h-fit p-8 flex flex-col items-center justify-center gap-y-6"
+      >
+        <Button
           onClick={close}
-          className="h-10 w-10 rounded-full absolute right-3 top-3 px-0 bg-gray-200 ">
-            <InlineIcon icon="openmoji:close" fontSize={22}/>
-          </Button>
-        <h2 className="gradient-text bg-basePrimary text-base sm:text-3xl font-semibold text-center">Over 10 people already registered for this event</h2>
+          className="h-10 w-10 rounded-full absolute right-3 top-3 px-0 bg-gray-200 "
+        >
+          <InlineIcon icon="openmoji:close" fontSize={22} />
+        </Button>
+        <h2 className="gradient-text bg-basePrimary text-base sm:text-3xl font-semibold text-center">
+          Share this event with your network
+        </h2>
 
-        <p className="text-sm sm:text-base">Register for this event to see who is attending</p>
+        <p className="text-sm sm:text-base">
+          Let your network know that you will be attending this event
+        </p>
 
-        <Button className="font-medium text-white rounded-lg bg-basePrimary">Register Now</Button>
+        <div className="w-full flex items-center justify-center gap-x-2">
+          <button onClick={copyLink} className="relative">
+            <IconifyEventCopyLink />
+            {isShow && (
+              <p className="absolute text-xs w-[100px] -top-10 bg-black/50 text-white font-medium rounded-md px-3 py-2 transition-transform tranition-all duration-300 animate-fade-in-out">
+                Link Copied
+              </p>
+            )}
+          </button>
+          {socials.map(({ SocialImageIcon, link }, index) => (
+            <Link key={index} href={link} target="_blank">
+              <SocialImageIcon />
+            </Link>
+          ))}
+        </div>
       </div>
-
     </div>
-  )
+  );
 }
 
 function AboutEvent({
@@ -146,8 +206,8 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
   const trackingId = params.get("trackingId");
   const affiliateCode = params.get("affiliateCode");
   const role = params.get("role");
-  const [isOpen, setOpen] = useState(false)
-  const [isGetTicket, setGetTicket] = useState(false)
+  const [isOpen, setOpen] = useState(false);
+  const [isGetTicket, setGetTicket] = useState(false);
   const { data: eventDetail } = useFetchSingleEvent(id);
   const { eventAttendees } = useVerifyUserAccess(id);
   const { data, refetch } = useFetchSingleOrganization(
@@ -159,11 +219,13 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
   } | null>(null);
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
 
-    // conditonally adding comma to separate city and location
-    const removeComma = useMemo(() => {
-      return eventDetail?.eventCity === null || eventDetail?.eventCountry === null;
-    }, [eventDetail?.eventCity, eventDetail?.eventCountry]);
-    const { startDate, endDate,} = useFormatEventData(eventDetail);
+  // conditonally adding comma to separate city and location
+  const removeComma = useMemo(() => {
+    return (
+      eventDetail?.eventCity === null || eventDetail?.eventCountry === null
+    );
+  }, [eventDetail?.eventCity, eventDetail?.eventCountry]);
+  const { startDate, endDate } = useFormatEventData(eventDetail);
 
   useEffect(() => {
     if (eventDetail?.organization) {
@@ -250,8 +312,10 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
 
     fetchCoordinates();
   }, [eventDetail]);
+
+  
   function onClose() {
-    setGetTicket((p) => !p)
+    setGetTicket((p) => !p);
   }
 
   const organizerContact: OrganizerContact = {
@@ -259,8 +323,6 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
     phoneNumber: data?.eventPhoneNumber,
     email: data?.eventContactEmail,
   };
-
-
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
@@ -271,7 +333,7 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
       {eventDetail ? (
         <div className="w-full h-full fixed overflow-y-auto bg-[#F7F8FF]">
           <div className="w-full px-4 sm:px-6 md:px-10 flex items-center justify-between p-3 sm:p-4 border-b border-[#EAEAEA]">
-            <Image 
+            <Image
               src="/zikoro.png"
               alt=""
               className="max-w-[150px] max-h-[50px]"
@@ -279,7 +341,10 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
               height={70}
             />
             <div className="flex items-center gap-x-2">
-              <Link className="text-xs gap-x-1 flex items-center sm:text-sm" href="">
+              <Link
+                className="text-xs gap-x-1 flex items-center sm:text-sm"
+                href=""
+              >
                 <p className="hidden md:block">Explore other events</p>
                 <InlineIcon
                   icon={"material-symbols-light:arrow-insert"}
@@ -310,29 +375,6 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
               )}
 
               <div className="w-full flex gap-y-6 flex-col items-start justify-start mt-4 sm:mt-6">
-                <p>Event Organizer </p>
-
-                <div className="flex items-center gap-x-2">
-                  {eventDetail?.organization?.organizationLogo &&
-                  eventDetail?.organization?.organizationLogo?.startsWith(
-                    "https"
-                  ) ? (
-                    <Image
-                      src={eventDetail?.organization?.organizationLogo}
-                      className="max-h-[40px] max-w-[100px]"
-                      alt=""
-                      width={200}
-                      height={200}
-                    />
-                  ) : (
-                    <div className="w-[60px] h-[60px] bg-gray-200 rounded-full flex items-center justify-center">
-                      <p className="text-sm gradient-text bg-basePrimary font-medium">
-                        Logo
-                      </p>
-                    </div>
-                  )}
-                  <p>{eventDetail?.organization?.organizationName ?? ""}</p>
-                </div>
                 <div className="flex w-full flex-col items-start justify-start gap-y-3">
                   <p>See people attending 👀</p>
 
@@ -343,8 +385,9 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
                       />
                     )}
                     <button
-                    onClick={() => setOpen((p) => !p)}
-                    className="flex items-center gap-x-1">
+                      onClick={() => setOpen((p) => !p)}
+                      className="flex items-center gap-x-1"
+                    >
                       <span>Share Event</span>
 
                       <IconifyShareIcon />
@@ -354,8 +397,8 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
               </div>
             </div>
             <div className="w-full">
-              <div className="w-full rounded-lg grid grid-cols-1 gap-3 bg-white p-3 h-full">
-                <div className="w-full flex flex-col gap-y-2 items-start justify-start ">
+              <div className="w-full  grid grid-cols-1 gap-3  h-full">
+                <div className="w-full flex flex-col gap-y-2 items-start rounded-lg border bg-white p-3 justify-start ">
                   <div className="w-fit px-3 py-2 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">
                     <p className="gradient-text bg-basePrimary text-xs sm:text-sm">
                       {eventDetail?.locationType ?? ""}
@@ -396,51 +439,74 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
                   ) : (
                     <div>Loading...</div>
                   )}
+                </div>
 
-                  <div className="w-full h-fit sm:h-full max-h-[200px] rounded-lg border p-2">
-                    <h3 className="pb-2 w-full text-center border-b">
-                      Register for this event
-                    </h3>
-                    <div className="flex flex-col items-center py-3 justify-center gap-y-3">
-                      <div className="flex items-center gap-x-2">
-                        <IconifyPublishedEventPeopleIcon />
-                        <p>
-                          {" "}
-                          <span className="font-medium">
-                            {eventDetail?.expectedParticipants}
-                          </span>{" "}
-                          Attendees
-                        </p>
-                        <div className="bg-red-600 text-white font-medium relative h-10 text-center rounded-sm px-3 py-2 text-mobile sm:text-sm">
-                          <InlineIcon
-                            icon="bxs:left-arrow"
-                            color="#dc2626"
-                            fontSize={20}
-                            className="absolute top-2 -left-[10px]"
-                          />
-                          {availableSlot} slots left
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-x-2">
-                        Ticket price starting from{" "}
+                <div className="w-full h-fit bg-white  sm:h-full max-h-[200px] rounded-lg border p-2">
+                  <h3 className="pb-2 w-full text-center border-b">
+                    Register for this event
+                  </h3>
+                  <div className="flex flex-col items-center py-3 justify-center gap-y-3">
+                    <div className="flex items-center gap-x-2">
+                      <IconifyPublishedEventPeopleIcon />
+                      <p>
+                        {" "}
                         <span className="font-medium">
-                          {currency}
-                          {price}
-                        </span>
+                          {eventDetail?.expectedParticipants}
+                        </span>{" "}
+                        Attendees
+                      </p>
+                      <div className="bg-red-600 text-white font-medium relative h-10 text-center rounded-sm px-3 py-2 text-mobile sm:text-sm">
+                        <InlineIcon
+                          icon="bxs:left-arrow"
+                          color="#dc2626"
+                          fontSize={20}
+                          className="absolute top-2 -left-[10px]"
+                        />
+                        {availableSlot} slots left
                       </div>
-
-                      <Button 
-                      onClick={onClose}
-                      className="rounded-lg w-fit font-medium bg-basePrimary text-white">
-                        Get Ticket
-                      </Button>
                     </div>
+                    <div className="flex items-center gap-x-2">
+                      Ticket price starting from{" "}
+                      <span className="font-medium">
+                        {currency}
+                        {price}
+                      </span>
+                    </div>
+
+                    <Button
+                      onClick={onClose}
+                      className="rounded-lg w-fit font-medium bg-basePrimary text-white"
+                    >
+                      Get Ticket
+                    </Button>
                   </div>
-                  <div className="w-full h-fit  rounded-lg border p-2">
-                    <h3 className="pb-2 w-full text-center border-b">
-                      Contact Organizer
-                    </h3>
-                    <div className="flex w-full items-center py-4 justify-center gap-x-3">
+                </div>
+                <div className="w-full h-fit bg-white rounded-lg border p-2">
+                  <h3 className="pb-2 w-full text-center border-b">
+                    Contact Organizer
+                  </h3>
+                  <div className="flex w-full flex-col items-center py-4 justify-center gap-3">
+                    {eventDetail?.organization?.organizationLogo &&
+                    eventDetail?.organization?.organizationLogo?.startsWith(
+                      "https"
+                    ) ? (
+                      <Image
+                        src={eventDetail?.organization?.organizationLogo}
+                        className="max-h-[40px] max-w-[100px]"
+                        alt=""
+                        width={200}
+                        height={200}
+                      />
+                    ) : (
+                      <div className="w-[60px] h-[60px] bg-gray-200 rounded-full flex items-center justify-center">
+                        <p className="text-sm gradient-text bg-basePrimary font-medium">
+                          Logo
+                        </p>
+                      </div>
+                    )}
+                    <p>{eventDetail?.organization?.organizationName ?? ""}</p>
+
+                    <div className="w-full flex items-center justify-center gap-x-3">
                       <button onClick={whatsapp}>
                         <IconifyEventSocialWhatsappIcon />
                       </button>
@@ -455,8 +521,7 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
                 </div>
               </div>
               <div className="w-full">
-              {eventDetail &&  <EventDetail event={eventDetail}/>}
-
+                {eventDetail && <EventDetail event={eventDetail} />}
               </div>
             </div>
           </div>
@@ -467,11 +532,16 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
         </div>
       )}
 
-{isOpen && <ShareEvent close={() => setOpen((prev) => !prev)}/>}
+      {isOpen && (
+        <ShareEvent
+          eventId={eventDetail?.eventAlias ?? ""}
+          close={() => setOpen((prev) => !prev)}
+        />
+      )}
 
-{isGetTicket && (
+      {isGetTicket && (
         <BookEvent
-          event={eventDetail}
+          event={eventDetail as Event}
           eventDate={eventDetail?.startDateTime}
           eventEndDate={eventDetail?.endDateTime}
           endDate={endDate}
@@ -485,10 +555,10 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
           close={onClose}
           trackingId={trackingId}
           affiliateCode={affiliateCode}
-          role={role|| ''}
-          eventLocation={`${eventDetail?.eventCity ?? ""}${!removeComma && ","} ${
-            eventDetail?.eventCountry ?? ""
-          }`}
+          role={role || ""}
+          eventLocation={`${eventDetail?.eventCity ?? ""}${
+            !removeComma && ","
+          } ${eventDetail?.eventCountry ?? ""}`}
           eventId={eventDetail?.eventAlias}
           organization={eventDetail?.organization?.organizationName}
         />

@@ -32,8 +32,8 @@ export function SessionCard({
   return (
     <div
       className={cn(
-        "w-full h-fit flex flex-col items-start gap-y-2 justify-start  gap-4 relative   p-4 py-10 rounded-xl border ",
-        isReception && "md:grid-cols-1 lg:grid-cols-1 md:gap-4 sm:px-4 sm:py-10",
+        "w-full h-fit flex flex-col items-start gap-y-2 justify-start relative   p-4 rounded-xl border ",
+        isReception && "md:grid-cols-1 lg:grid-cols-1  p-4",
         className
       )}
     >
