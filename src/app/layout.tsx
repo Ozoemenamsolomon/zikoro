@@ -5,7 +5,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { Toaster } from "react-hot-toast";
 import { TOASTER_PROPS } from "@/lib";
 import { SubscriptionModal } from "../components/contents/_components/modal/SubscriptionModal";
-import { montserrat } from "@/utils/fonts";
 
 
 export const metadata: Metadata = {

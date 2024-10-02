@@ -1,5 +1,5 @@
 "use client";
-import { montserrat } from "@/utils/fonts";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -35,7 +35,7 @@ export default function RootLayout({
 
   return (
     <>
-      <main className={`${montserrat.className} `}>
+      <main className={``}>
         {/* Nav */}
         <nav className="w-full fixed top-0 ">
           <div className="bg-white min-w-0 lg:min-w-[900px] px-3 lg:px-10 pt-5  h-max border-b overflow-x-auto lg:overflow-x-hidden no-scrollbar ">
