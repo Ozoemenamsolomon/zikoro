@@ -37,16 +37,14 @@ type QueryData = {
 };
 export function Payment({
   eventRegistrationRef,
+  searchParams: { eventData }
 }: {
   eventRegistrationRef: string;
 }) {
   const { sendTransactionDetail, loading } = useUpdateTransactionDetail();
   const [isSuccessModal, setSuccessModal] = useState(false);
   const { data } = useGetEventTransactionDetail(eventRegistrationRef);
-  const query = useSearchParams();
   const router = useRouter();
-
-  const eventData: any = query.get("eventData");
   const parsedData: QueryData = JSON.parse(eventData);
   //
 

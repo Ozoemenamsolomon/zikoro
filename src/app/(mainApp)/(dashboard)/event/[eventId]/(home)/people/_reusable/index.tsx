@@ -57,8 +57,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   const onGetAttendees = async () => {
     await getAttendees();
   };
-
-  const searchParams = useSearchParams();
+  
   const router = useRouter();
   const pathname = usePathname() || "/";
 

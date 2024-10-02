@@ -24,8 +24,7 @@ import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useSearchParams } from "next/navigation";
 import { generateAlphanumericHash } from "@/utils/helpers";
 
-function OnboardingComp() {
-  const search = useSearchParams();
+function OnboardingComp({ searchParams: { email: query, createdAt } }) {
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
 
   const { loading, registration } = useOnboarding();
@@ -43,9 +42,6 @@ function OnboardingComp() {
       value: country.name,
     }));
   }, []);
-
-  const query = search.get("email");
-  const createdAt = search.get("createdAt");
 
   async function onSubmit(values: z.infer<typeof onboardingSchema>) {
     const payload: z.infer<typeof onboardingSchema> = {

@@ -6,13 +6,17 @@ import { TAnswer, TQuiz, TRefinedQuestion } from "@/types";
 import { ScoreBoard } from "../ScoreBoard";
 import lz from "lzutf8";
 import { useGetQuizAnswer, useGetQuiz } from "@/hooks";
-export default function ScoreBoardPage({ quizId }: { quizId: string }) {
+
+export default function ScoreBoardPage({
+  quizId,
+  searchParams: { id },
+}: {
+  quizId: string;
+}) {
   const { answers, getAnswers } = useGetQuizAnswer();
   const { quiz: actualQuiz } = useGetQuiz({ quizId });
 
-  const params = useSearchParams();
   const router = useRouter();
-  const id = useMemo(() => params.get("id"), [params]);
 
   useEffect(() => {
     (async () => {
@@ -39,20 +43,18 @@ export default function ScoreBoardPage({ quizId }: { quizId: string }) {
       router.push(`/quiz/${actualQuiz?.eventAlias}/present/${quizId}`);
   }
 
-  console.log("actual", actualQuiz, quiz, id)
+  console.log("actual", actualQuiz, quiz, id);
 
   return (
     <>
-     
-        <ScoreBoard
-          answers={answers}
-          close={goBack}
-          quiz={quiz}
-          id={id as string}
-          isAttendee={true}
-          actualQuiz={actualQuiz}
-        />
-     
+      <ScoreBoard
+        answers={answers}
+        close={goBack}
+        quiz={quiz}
+        id={id as string}
+        isAttendee={true}
+        actualQuiz={actualQuiz}
+      />
     </>
   );
 }

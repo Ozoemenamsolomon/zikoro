@@ -88,17 +88,17 @@ function SelectQuestionType({
   );
 }
 
- function CreateInteractionFormComp({
+function CreateInteractionFormComp({
   eventId,
+  searchParams: { form: prevFormId },
 }: {
   eventId: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const params = useSearchParams()
-  const prevFormId = params.get("form")
+
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
-    const { data } = prevFormId
+  const { data } = prevFormId
     ? useGetData<TEngagementFormQuestion>(`/engagements/form/${prevFormId}`)
     : { data: null };
   const [isCreated, setIsCreated] = useState(false);
@@ -198,25 +198,26 @@ function SelectQuestionType({
         };
       })
     );
-  const payload =  data?.formAlias ? {
-    ...data,
-    ...values,
-    coverImage: image as string,
-    questions: processedQuestions,
-  }: {
-    ...values,
-    coverImage: image as string,
-    questions: processedQuestions,
-  }
+    const payload = data?.formAlias
+      ? {
+          ...data,
+          ...values,
+          coverImage: image as string,
+          questions: processedQuestions,
+        }
+      : {
+          ...values,
+          coverImage: image as string,
+          questions: processedQuestions,
+        };
 
     await postData({
-      payload:payload,
+      payload: payload,
     });
     setLoading(false);
     setFormAlias(values?.formAlias);
     setIsCreated(true);
   }
-
 
   useEffect(() => {
     if (data) {
@@ -227,12 +228,10 @@ function SelectQuestionType({
         isActive: data?.isActive,
         formAlias: data?.formAlias,
         eventAlias: data?.eventAlias,
-        questions: data?.questions
-
-      })
+        questions: data?.questions,
+      });
     }
-
-  },[data])
+  }, [data]);
 
   function handleToggleSelectQuestionType() {
     setShowSelectQuestionType((prev) => !prev);
@@ -262,17 +261,16 @@ function SelectQuestionType({
                 <p>Back</p>
               </Button>
               <div className=" flex items-center gap-x-2">
-              <Button
-                    className="gap-x-2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      onToggleShare();
-                    }}
-                  >
-                   
-                    <p>Responses</p>
-                  </Button>
+                <Button
+                  className="gap-x-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onToggleShare();
+                  }}
+                >
+                  <p>Responses</p>
+                </Button>
                 <Button
                   disabled={loading}
                   className="bg-basePrimary gap-x-2 px-6 text-white h-12 "
@@ -324,7 +322,6 @@ function SelectQuestionType({
                     <FormControl>
                       <Input
                         {...form.register("description")}
-
                         className="bg-transparent border-none h-11  placeholder:text-gray-500"
                         placeholder="Form Description"
                       />
@@ -416,11 +413,14 @@ function SelectQuestionType({
   );
 }
 
-
-export default function CreateInteractionForm({eventId}:{eventId:string;}) {
+export default function CreateInteractionForm({
+  eventId,
+}: {
+  eventId: string;
+}) {
   return (
     <Suspense>
-      <CreateInteractionFormComp eventId={eventId}/>
+      <CreateInteractionFormComp eventId={eventId} />
     </Suspense>
-  )
+  );
 }

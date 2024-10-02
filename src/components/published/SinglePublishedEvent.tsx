@@ -201,11 +201,12 @@ function AboutEvent({
   );
 }
 
-export default function SinglePublishedEvent({ id }: { id: string }) {
-  const params = useSearchParams();
-  const trackingId = params.get("trackingId");
-  const affiliateCode = params.get("affiliateCode");
-  const role = params.get("role");
+export default function SinglePublishedEvent({
+  id,
+  searchParams: { trackingId, affiliateCode, role },
+}: {
+  id: string;
+}) {
   const [isOpen, setOpen] = useState(false);
   const [isGetTicket, setGetTicket] = useState(false);
   const { data: eventDetail } = useFetchSingleEvent(id);
@@ -313,7 +314,6 @@ export default function SinglePublishedEvent({ id }: { id: string }) {
     fetchCoordinates();
   }, [eventDetail]);
 
-  
   function onClose() {
     setGetTicket((p) => !p);
   }

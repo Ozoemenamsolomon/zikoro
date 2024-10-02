@@ -24,7 +24,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSection";
-import { StoreType } from "polotno/model/store";
+// import { StoreType } from "polotno/model/store";
 import { uploadFile } from "@/utils/helpers";
 
 // const Editor = dynamic(() => import("@/components/GraphicsEditor/editor"), {

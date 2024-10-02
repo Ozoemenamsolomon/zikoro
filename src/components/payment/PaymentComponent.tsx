@@ -23,25 +23,27 @@ type DBDiscountsType = {
   discountPercentage: number | null;
 };
 
-export default function PaymentComponent() {
+export default function PaymentComponent({
+  searchParams: {
+    name,
+    id = "",
+    orgId,
+    orgAlias,
+    plan = "",
+    total,
+    coupon: currentCoupon,
+    monthly,
+    currency = "",
+    orgName,
+    orgType,
+    subPlan,
+    redirectUrl,
+    isCreate,
+  },
+}) {
   const { user } = useUserStore();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const name = searchParams.get("name");
-  const id = searchParams.get("id") ?? "";
-  const orgId = searchParams.get("orgId");
-  const orgAlias = searchParams.get("orgAlias");
-  const plan = searchParams.get("plan") ?? "";
-  const total = searchParams.get("total");
-  const currentCoupon = searchParams.get("coupon");
-  const monthly = searchParams.get("monthly");
-  const currency = searchParams.get("currency")?.trim() ?? "";
-  const orgName = searchParams.get("orgName");
-  const orgType = searchParams.get("orgType");
-  const subPlan = searchParams.get("subPlan");
-  const redirectUrl = searchParams.get("redirectUrl");
   const userEmail = user?.userEmail;
-  const isCreate = searchParams.get("isCreate");
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [coupons, setCoupons] = useState<DBDiscountsType[]>([]);
   const [discount, setDiscount] = useState<number>(0);
@@ -58,7 +60,7 @@ export default function PaymentComponent() {
     currentCoupon,
     discount,
     orgAlias,
-    orgId,
+    orgId
   );
 
   async function handleSuccess(reference: any) {
@@ -186,8 +188,6 @@ export default function PaymentComponent() {
       router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
     }
   }, []);
-
-
 
   return (
     <div className="bg-[#F9FAFF] h-screen flex flex-col justify-center items-center px-3">

@@ -25,10 +25,8 @@ import useUserStore from "@/store/globalUserStore";
 import { ExternalLink } from "styled-icons/feather";
 import Link from "next/link";
 
- function AdminEventsComp() {
+function AdminEventsComp({ searchParams: { e: query } }) {
   const { events, getEvents: refetch, isLoading: loading } = useGetEvents();
-  const search = useSearchParams();
-  const query = search.get("e");
 
   const eventData = useMemo(() => {
     if (query === "review" || query === null) {
@@ -268,11 +266,10 @@ function EventCard({
   );
 }
 
-
 export default function AdminEvents() {
-return (
-  <Suspense>
-    <AdminEventsComp />
-  </Suspense>
-)
+  return (
+    <Suspense>
+      <AdminEventsComp />
+    </Suspense>
+  );
 }

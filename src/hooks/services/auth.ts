@@ -59,8 +59,8 @@ export function useOnboarding() {
         endpoint: "/auth/user",
         payload: {
           ...values,
-          userEmail:email,
-          created_at:createdAt
+          userEmail: email,
+          created_at: createdAt,
         },
       });
 
@@ -233,7 +233,7 @@ export function useRegistration() {
   };
 }
 
-export function useLogOut(redirectPath:string='/') {
+export function useLogOut(redirectPath: string = "/") {
   const router = useRouter();
   const { setOrganization } = useOrganizationStore();
   const { setEvent } = useEventStore();
@@ -409,13 +409,10 @@ export function useVerifyCode() {
 }
 
 // user that register for an event
-export function useAttendee() {
-  const params = useSearchParams();
+export function useAttendee({ searchParams: { email, isPasswordless } }) {
   const [loading, setLoading] = useState(false);
   const { user, setUser } = useUserStore();
-  const [userData, setUserData] = useState<TUser | null>(null)
-  const email = params.get("email");
-  const isPasswordless = params.get("isPasswordless");
+  const [userData, setUserData] = useState<TUser | null>(null);
   const getUser = async () => {
     setLoading(true);
     try {

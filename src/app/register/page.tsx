@@ -15,11 +15,9 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { AuthLayout } from "@/components";
 import { useSearchParams } from "next/navigation";
 
-export default function Page() {
+export default function Page({ searchParams: { userEmail: emailParam } }) {
   const [showPassword, setShowPassword] = useState(false);
   const { loading, register } = useRegistration();
-  const params = useSearchParams();
-  const emailParam = params.get("userEmail");
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),

@@ -8,34 +8,44 @@ export async function GET(req: NextRequest) {
   if (req.method !== "GET") {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
   }
-  
+
   const { searchParams } = new URL(req.url);
 
-  const userId = searchParams.get('userId');
-  
-  if ( !userId ) {
-    return NextResponse.json({ error: "Missing required parameters", data: null }, { status: 400 });
-  } 
- 
-  try {
-    const today = startOfDay(new Date()).toISOString()
+  const userId = searchParams.get("userId");
 
-    const {data,error} = await supabase
+  if (!userId) {
+    return NextResponse.json(
+      { error: "Missing required parameters", data: null },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const today = startOfDay(new Date()).toISOString();
+
+    const { data, error } = await supabase
       .from("bookings")
-      .select(`*, appointmentLinkId(*, createdBy(id, userEmail,organization,firstName,lastName,phoneNumber))`)
+      .select(
+        `*, appointmentLinkId(*, createdBy(id, userEmail,organization,firstName,lastName,phoneNumber))`
+      )
       .eq("createdBy", userId)
-      .lt('appointmentDate', today)
+      .lt("appointmentDate", today)
       .order("appointmentDate", { ascending: true });
 
-      console.log({res:{data,error},userId,today})
+    console.log({ res: { data, error }, userId, today });
 
     if (error) {
       console.error("Error fetching bookings:", error.message);
-      return NextResponse.json({data:null, error: error.message }, { status: 400 });
+      return NextResponse.json(
+        { data: null, error: error.message },
+        { status: 400 }
+      );
     }
 
-    return NextResponse.json({ data, count:data?.length, error:null }, { status: 200 });
-
+    return NextResponse.json(
+      { data, count: data?.length, error: null },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Unhandled error:", error);
 
@@ -45,5 +55,5 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-  
-  
+
+export const dynamic = "force-dynamic";

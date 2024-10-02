@@ -4,10 +4,9 @@ import Link from "next/link";
 import { cn } from "@/lib";
 import { usePathname, useSearchParams } from "next/navigation";
 
-export function EventTopNav() {
+export function EventTopNav({searchParams: { e: queryParam }}) {
   const pathname = usePathname();
-  const search = useSearchParams();
-  const queryParam = search.get("e");
+
 
   const links = [
     {

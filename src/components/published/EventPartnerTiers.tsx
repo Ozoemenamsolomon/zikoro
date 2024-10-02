@@ -33,7 +33,7 @@ type TSIngleTier = {
 function TierDescription({
   close,
   description,
-  tier
+  tier,
 }: {
   description: string;
   close: () => void;
@@ -46,17 +46,17 @@ function TierDescription({
       </Button>
 
       <div className="max-w-3xl mx-auto relative box-animation bg-white w-full h-fit pt-8  px-4 sm:px-6 sm:pt-10 pb-4 sm:pb-6">
-      <div
-            style={{ backgroundColor: tier?.color || "#001ffc" }}
-            className="w-fit min-w-[200px] font-medium absolute mx-auto  text-white inset-x-0 -top-7 flex items-center justify-center h-14 rounded-lg"
-          >
-            <p className="text-white capitalize font-medium w-fit text-tiny sm:text-xs bg-basePrimary rounded-3xl px-2 py-1 absolute inset-x-0 mx-auto -top-3">
-              {tier?.partnerType}
-            </p>
-            <p className="capitalize text-ellipsis whitespace-nowrap overflow-hidden w-full text-center">
-              {tier?.tierName}
-            </p>
-          </div>
+        <div
+          style={{ backgroundColor: tier?.color || "#001ffc" }}
+          className="w-fit min-w-[200px] font-medium absolute mx-auto  text-white inset-x-0 -top-7 flex items-center justify-center h-14 rounded-lg"
+        >
+          <p className="text-white capitalize font-medium w-fit text-tiny sm:text-xs bg-basePrimary rounded-3xl px-2 py-1 absolute inset-x-0 mx-auto -top-3">
+            {tier?.partnerType}
+          </p>
+          <p className="capitalize text-ellipsis whitespace-nowrap overflow-hidden w-full text-center">
+            {tier?.tierName}
+          </p>
+        </div>
         <p
           className="w-full partner-innerhtml  mb-3"
           dangerouslySetInnerHTML={{
@@ -149,9 +149,12 @@ function PartnerTierCard({
     </>
   );
 }
-export default function EventPartnerTiers({ eventId }: { eventId: string }) {
-  const params = useSearchParams();
-  const eventDataString = params.get("e");
+export default function EventPartnerTiers({
+  eventId,
+  searchParams: { e: eventDataString },
+}: {
+  eventId: string;
+}) {
   const { data, loading } = useFetchSingleEvent(eventId);
 
   const router = useRouter();
@@ -241,9 +244,11 @@ export default function EventPartnerTiers({ eventId }: { eventId: string }) {
               {restructureData &&
                 Object.entries(restructureData).map(([partnerType, data]) => (
                   <div key={Math.random()} className="w-full">
-                   {data?.length > 0 && <p className="font-semibold capitalize text-zinc-700 my-8">
-                      {partnerType} Tiers
-                    </p>}
+                    {data?.length > 0 && (
+                      <p className="font-semibold capitalize text-zinc-700 my-8">
+                        {partnerType} Tiers
+                      </p>
+                    )}
                     <div
                       key={Math.random()}
                       className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5"

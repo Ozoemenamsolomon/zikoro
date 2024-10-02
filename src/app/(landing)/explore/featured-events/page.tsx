@@ -5,7 +5,6 @@ import CopyrightFooter from "@/components/CopyrightFooter";
 import { FilterIcon, ArrowDownIcon, ArrowUpIcon } from "@/constants/icons";
 import { ArrowBackCircle } from "styled-icons/ionicons-outline";
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
-import { useSearchParams } from "next/navigation";
 import {
   startOfToday,
   endOfToday,

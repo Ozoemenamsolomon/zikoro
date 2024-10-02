@@ -34,13 +34,12 @@ type TEventData = {
   organizerPhoneNumber: string;
   organizerWhatsappNumber: string;
 };
- function PartnerPaymentComp() {
+function PartnerPaymentComp({
+  searchParams: { p: data, e: eventData, discountAmount },
+}) {
   const router = useRouter();
-  const params = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
-  const data = params.get("p");
-  const eventData = params.get("e");
-  const discountAmount = params.get("discountAmount");
+
   const { addPartners, loading } = useAddPartners();
 
   const partnerData: Partial<TPartner> = useMemo(() => {
@@ -355,7 +354,7 @@ export function ShareModal({
 export default function PartnerPayment() {
   return (
     <Suspense>
-      <PartnerPaymentComp/>
+      <PartnerPaymentComp />
     </Suspense>
-  )
+  );
 }

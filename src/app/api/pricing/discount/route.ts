@@ -10,12 +10,14 @@ export async function GET(req: NextRequest) {
       const { data, error } = await supabase.from("zikoroDiscount").select("*");
 
       if (error) {
-        return NextResponse.json({
-          data: error?.message
-        },
-      {
-        status: 400
-      })
+        return NextResponse.json(
+          {
+            data: error?.message,
+          },
+          {
+            status: 400,
+          }
+        );
       }
       if (error) throw error;
       return NextResponse.json(
@@ -42,5 +44,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
+//
 
-// 
+export const dynamic = "force-dynamic";

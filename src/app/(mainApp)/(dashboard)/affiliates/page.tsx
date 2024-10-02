@@ -3,7 +3,7 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Performance from "./_tabs/performance";
 import Affiliates from "./_tabs/affiliates";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { updateSearchParam } from "@/utils";
 
 export default function Affiliate({ searchParams: { currentTab } }) {

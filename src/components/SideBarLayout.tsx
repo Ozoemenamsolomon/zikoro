@@ -17,26 +17,24 @@ import {
   ReferralIcon,
   WhatsappIcon,
 } from "@/constants";
-import {
-  useGetEvents,
-  useLogOut,
-  useValidateUser,
-} from "@/hooks";
+import { useGetEvents, useLogOut, useValidateUser } from "@/hooks";
 import { sendMail, whatsapp } from "@/utils";
 import useUserStore from "@/store/globalUserStore";
 import { useGetUserOrganization } from "@/hooks/services/userOrganization";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 
-
-function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
+function SideBarLayoutComp({
+  children,
+  searchParams: { organization: query },
+}: {
+  children: React.ReactNode;
+}) {
   const [isNav, setNav] = useState(false);
   const { eventId } = useParams();
-  const param = useSearchParams();
 
   const [isOpen, setOpen] = useState(false);
-  const query = param.get("organization");
   const { events } = useGetEvents();
-  const { user} = useUserStore();
+  const { user } = useUserStore();
 
   // console.log(user);
 

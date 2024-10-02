@@ -49,14 +49,16 @@ interface DateRange {
   end: Date | null;
 }
 
-function WorkspaceComponent({}) {
-  const searchParams = useSearchParams();
-  const name = searchParams.get("name");
-  const showFilter = searchParams.get("showFilter");
-  const showCategories = searchParams.get("showCategories");
-  const logoLink = searchParams.get("logo");
-  const isOrgLogo = searchParams.get("orgLogo");
-  const isZikoroLogo = searchParams.get("zikoroLogo");
+function WorkspaceComponent({
+  searchParams: {
+    name,
+    showFilter,
+    showCategories,
+    logo: logoLink,
+    orgLogo: isOrgLogo,
+    zikoroLogo: isZikoroLogo,
+  },
+}) {
   const [showMore, setShowMore] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
@@ -251,7 +253,11 @@ function WorkspaceComponent({}) {
           {/* normal screen */}
           {!isFilterOpen && (
             <div>
-              <OrganizationNavbar logoUrl={logoLink ?? ""} isZikoroLogo={isZikoroLogo ?? ""} isOrgLogo={isOrgLogo ?? ""} />
+              <OrganizationNavbar
+                logoUrl={logoLink ?? ""}
+                isZikoroLogo={isZikoroLogo ?? ""}
+                isOrgLogo={isOrgLogo ?? ""}
+              />
               {/* header */}
               <div>
                 {/* big screen */}
