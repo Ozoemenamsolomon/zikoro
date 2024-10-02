@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { Form, FormField, Input, Button } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import {  loginSchema } from "@/schemas";
+import { loginSchema } from "@/schemas";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -13,11 +13,20 @@ import { EyeOff } from "styled-icons/feather";
 import { useRegistration } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { AuthLayout } from "@/components";
+import { useSearchParams } from "next/navigation";
+
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
   const { loading, register } = useRegistration();
+  const params = useSearchParams();
+  const emailParam = params.get("userEmail");
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: emailParam || "", // Set initial value of email field if emailParam is available
+      password: "", // Default value for password field
+    },
   });
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
@@ -26,7 +35,9 @@ export default function Page() {
 
   return (
     <AuthLayout>
-      <h2 className="font-medium text-lg sm:text-xl mb-6 text-center w-full">Register</h2>
+      <h2 className="font-medium text-lg sm:text-xl mb-6 text-center w-full">
+        Register
+      </h2>
 
       <Form {...form}>
         <form
@@ -61,7 +72,7 @@ export default function Page() {
                   />
                   <button
                     onClick={(e) => {
-                      e.stopPropagation()
+                      e.stopPropagation();
                       e.preventDefault();
                       setShowPassword((prev) => !prev);
                     }}
@@ -73,7 +84,7 @@ export default function Page() {
               </InputOffsetLabel>
             )}
           />
-         
+
           <Button
             disabled={loading}
             className="mt-4 w-full gap-x-2 hover:bg-opacity-70 bg-basePrimary h-12 rounded-md text-gray-50 font-medium"
