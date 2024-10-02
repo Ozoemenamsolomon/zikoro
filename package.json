@@ -4,7 +4,8 @@
   "private": true,
  "scripts": {
   "dev": "next dev",
-  "build": "NODE_OPTIONS='--max-old-space-size=6144' next build",
+  "clean": "rm -rf .next/cache",
+  "build": "npm run clean && NODE_OPTIONS='--max-old-space-size=8192' next build",
   "start": "next start",
   "ts": "tsc --noEmit --incremental",
   "lint": "next lint"

@@ -60,7 +60,7 @@ export function Speakers({
           active === 1 && "block"
         )}
       >
-        <h3 className="pb-2 w-full text-center border-b">Event Speakers</h3>
+        <h3 className="pb-2 w-full text-center">Event Speakers</h3>
 
        
           <div className=" w-full grid grid-cols-1 sm:grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">
@@ -135,16 +135,16 @@ function SpeakerWidget({
           />
         ) : (
           <div className="w-24 bg-gray-100 h-24 rounded-full flex items-center justify-center">
-            <p className="text-gray-700 text-3xl">{`${attendee?.firstName
+            <p className="text-gray-700 text-3xl uppercase">{`${attendee?.firstName
               ?.split(" ")[0]
               .charAt(0)}${attendee?.lastName?.split(" ")[0].charAt(0)}`}</p>
           </div>
         )}
 
-        <div className="flex  items-center flex-col justify-center">
-          <h2 className="font-medium capitalize  text-lg">{`${attendee?.firstName} ${attendee?.lastName}`}</h2>
-          <p className="text-gray-500">{attendee?.jobTitle ?? ""}</p>
-          <p className="text-gray-500">{attendee?.organization ?? ""}</p>
+        <div className="flex w-full items-center flex-col justify-center">
+          <h2 className="font-medium capitalize text-center text-ellipsis whitespace-nowrap overflow-hidden text-lg">{`${attendee?.firstName} ${attendee?.lastName}`}</h2>
+          <p className="text-gray-500 text-ellipsis whitespace-nowrap overflow-hidden">{attendee?.jobTitle ?? ""}</p>
+          <p className="text-gray-500 text-ellipsis whitespace-nowrap overflow-hidden">{attendee?.organization ?? ""}</p>
         </div>
 
         {/* {isViewProfile && (

@@ -31,7 +31,7 @@ export function Rewards({
   return (
     <div className="w-full px-3 py-3 bg-white">
        <div className="w-full h-full rounded-lg border p-2">
-                    <h3 className="pb-2 w-full text-center border-b">
+                    <h3 className="pb-2 w-full text-center">
                       Event Rewards
                     </h3>
       <div
