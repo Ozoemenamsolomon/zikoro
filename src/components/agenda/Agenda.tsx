@@ -164,7 +164,7 @@ export default function Agenda({
             </div>
           )}
 
-        <div className={cn("w-full p-2 sm:p-4 grid grid-cols-1 items-center gap-8 pb-20", isReception && "p-0 sm:p-0")}>
+        <div className={cn("w-full p-2 sm:p-4 grid grid-cols-1 items-center gap-8 pb-20", isReception && "p-0 sm:p-0 py-2 sm:py-4")}>
           {fetching && (
             <div className="w-full col-span-full h-[20rem] flex items-center justify-center">
               <LoaderAlt size={30} className="animate-spin" />
