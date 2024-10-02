@@ -65,22 +65,22 @@ export default function Team() {
     organizationOwner: organization?.organizationOwner || "",
     subject: `You’ve Been Invited to Join ${organization?.organizationName} on Zikoro!`,
     emailBody: `
-    Hi ${formData.userEmail},
+    <p>Hi ${formData.firstName},</p>
 
-      You've been invited to join ${organization?.organizationName} on Zikoro.
+    <p>You've been invited to join <strong>${organization?.organizationName}</strong> on Zikoro.</p>
 
-      As a team member, you’ll be able to collaborate, share updates, and contribute to ongoing projects. Click the link below to join the team:
+    <p>As a team member, you’ll be able to collaborate, share updates, and contribute to ongoing projects. Click the link below to join the team:</p>
 
-      <a href="https://www.zikoro.com/login?userEmail=${formData.userEmail}">Join Team</a>
+    <p>
+      <a href="https://www.zikoro.com/register?userEmail=${formData.userEmail}" style="color: #4CAF50; text-decoration: none;">Join Team</a>
+    </p>
 
-      If you have any questions, feel free to reply to this email.
+    <p>If you have any questions, feel free to reply to this email.</p>
 
-      We look forward to having you on board!
+    <p>We look forward to having you on board!</p>
 
-      Best,
-      The Zikoro Team
-
-    `,
+    <p>Best,<br>The Zikoro Team</p>
+  `,
     emailRecipient: formData.userEmail,
   };
 
