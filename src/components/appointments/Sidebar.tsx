@@ -1,11 +1,10 @@
-
+'use client'
 import { BriefCase, CircleArrowRight, CalenderIcon } from '@/constants';
 import { getUser, useLogOut } from '@/hooks';
-import { Bell, Calendar, Grip, HelpCircle, Link2, Menu, Plus, Settings, BriefcaseIcon, Users, BarChartBig, Store } from 'lucide-react';
+import { Bell, Calendar, Grip,  Link2, Menu, Plus, Settings, BriefcaseIcon, Users, BarChartBig, Store } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { useEffect, useRef, useState } from 'react';
-import { useAppointmentContext } from './context/AppointmentContext';
+import React, {  useRef, useState } from 'react';
 import MenuBox from './ui/MenuBox';
 import useUserStore from '@/store/globalUserStore';
 import { useClickOutside } from '@/lib';
@@ -26,11 +25,11 @@ const navlinks = [
     label: 'Schedules',
     link: `/appointments/schedule`,
   },
-  // {
-  //   icon: Users,
-  //   label: 'Contacts',
-  //   link: `/appointments/contacts`,
-  // },
+  {
+    icon: Users,
+    label: 'Contacts',
+    link: `/appointments/contacts`,
+  },
   {
     icon: BarChartBig,
     label: 'Analytics',

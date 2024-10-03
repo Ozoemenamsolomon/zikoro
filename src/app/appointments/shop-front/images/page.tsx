@@ -1,4 +1,4 @@
-import StoreFrontImages from '@/components/appointments/Shopfront/Images'
+import StoreFrontImages from '@/components/appointments/Shopfront/StoreFrontImages'
 import React from 'react'
 
 const ImagesPage = () => {

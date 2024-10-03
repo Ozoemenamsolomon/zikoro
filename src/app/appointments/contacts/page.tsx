@@ -1,9 +1,11 @@
+import ContactLayout from '@/components/appointments/contactPage'
+import contacts from '@/components/appointments/contactPage/constants'
 import React from 'react'
 
-const ContactPage = () => {
+const Contacts  = () => {
   return (
-      <div className='pt-8 pl-4 text-2xl font-semibold'>Your Contacts</div>
+      <ContactLayout contacts={contacts}/>
   )
 }
 
-export default ContactPage
+export default Contacts 
