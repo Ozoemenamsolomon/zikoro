@@ -12,7 +12,7 @@ import {
   useUpdateTransactionDetail,
 } from "@/hooks";
 import { CheckCircleFill } from "styled-icons/bootstrap";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ArrowBack } from "styled-icons/material-outlined";
 import { TbLoader3 } from "react-icons/tb";
 import { CiCalendar, CiLocationOn, CiShare2 } from "react-icons/ci";

@@ -5,7 +5,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import * as z from "zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { getRequest, postRequest } from "@/utils/api";
 import { TAuthUser, TUser } from "@/types";
@@ -409,7 +409,13 @@ export function useVerifyCode() {
 }
 
 // user that register for an event
-export function useAttendee({ searchParams: { email, isPasswordless } }) {
+export function useAttendee({
+  email,
+  isPasswordless,
+}: {
+  email: string;
+  isPasswordless: string;
+}) {
   const [loading, setLoading] = useState(false);
   const { user, setUser } = useUserStore();
   const [userData, setUserData] = useState<TUser | null>(null);

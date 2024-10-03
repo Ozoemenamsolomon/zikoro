@@ -8,14 +8,19 @@ import { useAttendee } from "@/hooks";
 
 export default function RootLayout({
   children,
-  
+  searchParams
 }: {
   children: React.ReactNode;
- 
+  searchParams: { email: string; isPasswordless: string };
 }) {
-  const { userData, user } = useAttendee();
+  const email = searchParams.email ?? "";
+  const isPasswordless = searchParams.isPasswordless ?? "";
+  const { userData, user } = useAttendee({
+    email,
+    isPasswordless,
+  });
   const divRef = useRef<HTMLDivElement>(null);
-  
+
   const { event } = useEventStore();
 
   useLayoutEffect(() => {
@@ -28,9 +33,9 @@ export default function RootLayout({
     };
 
     updateHeight();
-    window.addEventListener('resize', updateHeight);
+    window.addEventListener("resize", updateHeight);
 
-    return () => window.removeEventListener('resize', updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
   if (!userData && !user) {
@@ -47,7 +52,7 @@ export default function RootLayout({
   return (
     <>
       <main className="relative w-full h-full bg-[#F9FAFF]" ref={divRef}>
-        <SideBarLayout >{children}</SideBarLayout>
+        <SideBarLayout>{children}</SideBarLayout>
       </main>
       <Toaster />
     </>

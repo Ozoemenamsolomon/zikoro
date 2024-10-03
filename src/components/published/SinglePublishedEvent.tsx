@@ -13,7 +13,7 @@ import {
   useFormatEventData,
 } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { InlineIcon } from "@iconify/react";
 import { useEffect, useMemo, useState } from "react";
 import { BookEvent } from "@/components/published";

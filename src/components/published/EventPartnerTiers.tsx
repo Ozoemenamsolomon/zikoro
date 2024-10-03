@@ -2,7 +2,7 @@
 
 import { ArrowBack } from "styled-icons/boxicons-regular";
 import { Button } from "@/components";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useFetchSingleEvent } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";

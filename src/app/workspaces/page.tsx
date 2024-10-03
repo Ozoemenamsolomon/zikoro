@@ -1,5 +1,3 @@
-"use client";
-import React from "react";
 import WorkspaceComponent from "@/components/workspace/WorkspaceComponent";
 
 // Define the type for searchParams
