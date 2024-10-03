@@ -1,8 +1,8 @@
 import Main from '@/components/appointments/Main';
 import React from 'react';
 import Calender from '@/components/appointments/calender/Calender';
-// import { createClient } from '@/utils/supabase/server';
 
+export const dynamic = "force-dynamic";
 interface SearchParams {
   viewing: 'month' | 'week';
   date: Date;
