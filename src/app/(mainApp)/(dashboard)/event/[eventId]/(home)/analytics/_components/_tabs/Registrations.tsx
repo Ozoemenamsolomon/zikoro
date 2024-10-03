@@ -45,7 +45,7 @@ import {
 } from "@/components/ui/select";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { useGetData } from "@/hooks/services/request";
-import { AnalyticsInfoCard } from "../../page";
+import { AnalyticsInfoCard } from "../AnalyticsPage";
 
 const Registrations = () => {
   const { eventId }: { eventId: string } = useParams();
