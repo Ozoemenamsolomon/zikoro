@@ -7,7 +7,7 @@ import {
   ReadonlyURLSearchParams,
   usePathname,
   useRouter,
-  useSearchParams,
+
 } from "next/navigation";
 import { updateSearchParam } from "@/utils";
 

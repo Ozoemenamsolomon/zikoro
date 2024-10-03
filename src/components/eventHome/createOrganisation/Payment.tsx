@@ -25,9 +25,17 @@ type TParsedData = {
   organizationType: string;
   subscriptionPlan: string;
 };
+<<<<<<< Updated upstream
 function PaymentComponent({searchParams: { data }}) {
   const router = useRouter();
   const { user } = useUserStore();
+=======
+export default function Payment({searchParams:{data}}) {
+  const router = useRouter();
+  const { user } = useUserStore();
+  // const params = useSearchParams();
+  // const data = params.get("data");
+>>>>>>> Stashed changes
   const { postData } = usePostRequest<Partial<ISubscription>>(
     "/engagements/create"
   );
@@ -151,10 +159,10 @@ function PaymentComponent({searchParams: { data }}) {
   );
 }
 
-export default function Payment() {
-  return (
-    <Suspense>
-      <PaymentComponent />
-    </Suspense>
-  );
-}
+// export default function Payment() {
+//   return (
+//     <Suspense>
+//       <PaymentComponent />
+//     </Suspense>
+//   );
+// }
