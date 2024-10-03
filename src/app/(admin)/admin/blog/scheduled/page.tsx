@@ -100,7 +100,7 @@ export default function BlogSchedule() {
 
   useEffect(() => {
     fetchBlogPost();
-  }, [blogData]);
+  }, []);
 
   return (
     <div className=" pl-3 lg:pl-10 pr-3 lg:pr-28 pt-16 lg:pt-20 pb-7 lg:pb-10 ">
