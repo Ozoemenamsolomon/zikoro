@@ -23,12 +23,9 @@ import useUserStore from "@/store/globalUserStore";
 import { useGetUserOrganization } from "@/hooks/services/userOrganization";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 
-function SideBarLayoutComp({
-  children,
-  searchParams: { organization: query },
-}: {
-  children: React.ReactNode;
-}) {
+function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
+  const search = useSearchParams();
+  const query = search.get("organization");
   const [isNav, setNav] = useState(false);
   const { eventId } = useParams();
 

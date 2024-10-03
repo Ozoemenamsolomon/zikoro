@@ -35,7 +35,7 @@ export default function Home() {
     },
     {
       title: "Explore",
-      subTitle: "View interesting upcoming events",
+    subTitle: "View interesting upcoming events",
       image: "/images/explore.svg",
       href: "/explore",
     },
