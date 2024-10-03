@@ -1,17 +1,10 @@
+import { Suspense } from "react";
 import RootLayout from "./_components/RootLayout";
 
-export default function Layout({
-  children,
-  searchParams,
-}: {
-  children: React.ReactNode;
-  searchParams: { email: string; isPasswordless: string };
-}) {
-  const email = searchParams.email ?? "";
-  const isPasswordless = searchParams.isPasswordless ?? "";
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <RootLayout email={email} isPasswordless={isPasswordless}>
-      {children}
-    </RootLayout>
+    <Suspense fallback={<div>Loading...</div>}>
+      <RootLayout>{children}</RootLayout>
+    </Suspense>
   );
 }

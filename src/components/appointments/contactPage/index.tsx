@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React, { Suspense, useState } from "react";
-import { ContactDummy, contactNav, contactNavSub } from "./constants";
+import contacts, { ContactDummy, contactNav, contactNavSub } from "./constants";
 import { Heart, Search } from "lucide-react";
 import ContactList from "./ContactList";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -10,14 +10,10 @@ import Articleone from "./Articleone";
 import ArticleTwo from "./ArticleTwo";
 
 type ContactProps = {
-  contacts: ContactDummy[];
-  searchParams: { query: string };
+  searchQuery: string;
 };
 
-const ContactLayout: React.FC<ContactProps> = ({
-  contacts,
-  searchParams: { query: searchQuery },
-}) => {
+const ContactLayout: React.FC<ContactProps> = ({ searchQuery }) => {
   const pathname = usePathname();
   const { push } = useRouter();
 

@@ -1,11 +1,12 @@
-import ContactLayout from '@/components/appointments/contactPage'
-import contacts from '@/components/appointments/contactPage/constants'
-import React from 'react'
+import ContactLayout from "@/components/appointments/contactPage";
+import React from "react";
 
-const Contacts  = () => {
-  return (
-      <ContactLayout contacts={contacts}/>
-  )
-}
+const Contacts = ({
+  searchParams: { query: searchQuery },
+}: {
+  searchParams: { query: string };
+}) => {
+  return <ContactLayout searchQuery={searchQuery} />;
+};
 
-export default Contacts 
+export default Contacts;

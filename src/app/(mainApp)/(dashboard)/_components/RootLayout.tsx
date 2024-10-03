@@ -5,17 +5,17 @@ import { SideBarLayout } from "@/components/SideBarLayout";
 import useEventStore from "@/store/globalEventStore";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useAttendee } from "@/hooks";
+import { useSearchParams } from "next/navigation";
 
 export default function RootLayout({
   children,
-  email,
-  isPasswordless,
 }: {
   children: React.ReactNode;
-  email: string;
-  isPasswordless: string;
 }) {
-  
+  const search = useSearchParams();
+  const email = search.get("email") ?? "";
+  const isPasswordless = search.get("isPasswordless") ?? "";
+
   const { userData, user } = useAttendee({
     email,
     isPasswordless,
