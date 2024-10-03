@@ -1,4 +1,4 @@
-import AffiliatesPage from "./_components/affiliates";
+import AffiliatesPage from "./_components/AffiliatesPage";
 
 export default function Page({
   searchParams: { currentTab },
@@ -7,3 +7,4 @@ export default function Page({
 }) {
   return <AffiliatesPage currentTab={currentTab} />
 }
+\
