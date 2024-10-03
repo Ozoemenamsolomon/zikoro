@@ -25,19 +25,21 @@ import useUserStore from "@/store/globalUserStore";
 import { ExternalLink } from "styled-icons/feather";
 import Link from "next/link";
 
-function AdminEventsComp({ searchParams: { e: query } }) {
+export default function AdminEvents({searchParams:{e}}) {
   const { events, getEvents: refetch, isLoading: loading } = useGetEvents();
+ // const search = useSearchParams();
+ // const query = search.get("e");
 
   const eventData = useMemo(() => {
-    if (query === "review" || query === null) {
+    if (e === "review" || e === null) {
       return events?.filter(({ eventStatus }) => eventStatus === "review");
     } else {
-      return events?.filter(({ eventStatus }) => eventStatus === query);
+      return events?.filter(({ eventStatus }) => eventStatus === e);
     }
-  }, [events, query]);
+  }, [events, e]);
 
   return (
-    <EventLayout>
+    <EventLayout query={e}>
       {loading && (
         <div className="w-full h-[300px] flex items-center justify-center">
           <LoaderAlt size={30} className="animate-spin" />
@@ -54,7 +56,7 @@ function AdminEventsComp({ searchParams: { e: query } }) {
                 key={event?.id}
                 refetch={refetch}
                 event={event}
-                query={query}
+                query={e}
               />
             ))}
         </div>
@@ -266,10 +268,10 @@ function EventCard({
   );
 }
 
-export default function AdminEvents() {
-  return (
-    <Suspense>
-      <AdminEventsComp />
-    </Suspense>
-  );
-}
+//  function AdminEvents() {
+// return (
+//   <Suspense>
+//     <AdminEventsComp />
+//   </Suspense>
+// )
+// }
