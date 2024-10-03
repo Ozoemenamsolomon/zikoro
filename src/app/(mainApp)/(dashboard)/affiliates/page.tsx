@@ -5,6 +5,5 @@ export default function Page({
 }: {
   searchParams: { currentTab: string };
 }) {
-  return <AffiliatesPage currentTab={currentTab} />
+  return <AffiliatesPage currentTab={currentTab} />;
 }
-\
