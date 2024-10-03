@@ -6,12 +6,12 @@ import { useGetUserHomePageEvents } from "@/hooks";
 import {Suspense} from "react"
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 
-export default function EventHome() {
+export default function EventHome({searchParams}) {
   const { firstOrganizationEvents, loading, refetch } = useGetUserHomePageEvents();
 
   return (
-   <Suspense>
-     <EventHomeLayout>
+
+     <EventHomeLayout searchParams={searchParams}>
       {loading && (
         <div className="w-full h-[300px] flex items-center justify-center">
           <LoaderAlt size={30} className="animate-spin" />
@@ -25,6 +25,6 @@ export default function EventHome() {
         <EmptyCard text={`You have not added any event.`} />
       )}
     </EventHomeLayout>
-   </Suspense>
+
   );
 }

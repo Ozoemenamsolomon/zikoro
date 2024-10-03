@@ -34,33 +34,33 @@ type TEventData = {
   organizerPhoneNumber: string;
   organizerWhatsappNumber: string;
 };
- function PartnerPaymentComp() {
+ export default function PartnerPayment({searchParams:{p,e,discountAmount}}) {
   const router = useRouter();
   const params = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
-  const data = params.get("p");
-  const eventData = params.get("e");
-  const discountAmount = params.get("discountAmount");
+  // const data = params.get("p");
+  // const eventData = params.get("e");
+  // const discountAmount = params.get("discountAmount");
   const { addPartners, loading } = useAddPartners();
 
   const partnerData: Partial<TPartner> = useMemo(() => {
-    if (data) {
-      const dataString = decodeURIComponent(data);
+    if (p) {
+      const dataString = decodeURIComponent(p);
       const decodedData = JSON.parse(dataString);
       return decodedData;
     } else {
       return null;
     }
-  }, [data]);
+  }, [p]);
   const parsedEventData: TEventData | null = useMemo(() => {
-    if (eventData) {
-      const dataString = decodeURIComponent(eventData);
+    if (e) {
+      const dataString = decodeURIComponent(e);
       const decodedData = JSON.parse(dataString);
       return decodedData;
     } else {
       return null;
     }
-  }, [eventData]);
+  }, [e]);
 
   const config = paymentConfig({
     reference: partnerData?.paymentReference!,
@@ -352,10 +352,10 @@ export function ShareModal({
   );
 }
 
-export default function PartnerPayment() {
-  return (
-    <Suspense>
-      <PartnerPaymentComp/>
-    </Suspense>
-  )
-}
+// export default function PartnerPayment() {
+//   return (
+//     <Suspense>
+//       <PartnerPaymentComp/>
+//     </Suspense>
+//   )
+// }
