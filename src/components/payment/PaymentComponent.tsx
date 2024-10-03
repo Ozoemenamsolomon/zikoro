@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 import { ArrowBack } from "styled-icons/ionicons-outline";
 import { useRouter, usePathname } from "next/navigation";
@@ -13,6 +12,7 @@ import { useCreateOrganisation } from "@/hooks";
 import { useCreateOrgSubscription } from "@/hooks/services/subscription";
 import useUserStore from "@/store/globalUserStore";
 
+
 //type annotation for the data being fetched
 type DBDiscountsType = {
   id: number;
@@ -23,10 +23,28 @@ type DBDiscountsType = {
   discountPercentage: number | null;
 };
 
+// Define the type for searchParams
+type SearchParams = {
+  name: string;
+  id: string;
+  orgId: string;
+  orgAlias: string;
+  plan: string;
+  total: string;
+  coupon: string;
+  monthly: string;
+  currency: string;
+  orgName: string;
+  orgType: string;
+  subPlan: string;
+  redirectUrl: string;
+  isCreate: string;
+};
+
 export default function PaymentComponent({
   searchParams: {
     name,
-    id = "",
+    id,
     orgId,
     orgAlias,
     plan = "",
@@ -39,8 +57,8 @@ export default function PaymentComponent({
     subPlan,
     redirectUrl,
     isCreate,
-  },
-}) {
+  }
+}: {searchParams : SearchParams}) {
   const { user } = useUserStore();
   const pathname = usePathname();
   const userEmail = user?.userEmail;

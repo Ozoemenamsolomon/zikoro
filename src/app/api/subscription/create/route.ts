@@ -43,3 +43,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
+
+
+export const dynamic = "force-dynamic";
+

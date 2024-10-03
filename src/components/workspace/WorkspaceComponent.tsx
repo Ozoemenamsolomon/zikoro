@@ -4,7 +4,6 @@ import CopyrightFooter from "@/components/CopyrightFooter";
 import { FilterIcon, ArrowDownIcon, ArrowUpIcon } from "@/constants/icons";
 import { ArrowBackCircle } from "styled-icons/ionicons-outline";
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
-import { useSearchParams } from "next/navigation";
 import {
   startOfToday,
   endOfToday,
@@ -49,16 +48,30 @@ interface DateRange {
   end: Date | null;
 }
 
-function WorkspaceComponent({
+type SearchParams = {
+  name: string;
+  showFilter: string;
+  showCategories: string;
+  logo: string;
+  logoLink: string;
+  orgLogo: string;
+  isOrgLogo: string;
+  zikoroLogo: string;
+  isZikoroLogo: string;
+};
+export default function WorkspaceComponent({
   searchParams: {
     name,
     showFilter,
     showCategories,
-    logo: logoLink,
-    orgLogo: isOrgLogo,
-    zikoroLogo: isZikoroLogo,
+    logo,
+    logoLink,
+    orgLogo,
+    isOrgLogo,
+    zikoroLogo,
+    isZikoroLogo,
   },
-}) {
+}: {searchParams:SearchParams}) {
   const [showMore, setShowMore] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
@@ -811,10 +824,3 @@ function WorkspaceComponent({
   );
 }
 
-export default function Workspace() {
-  return (
-    <Suspense>
-      <WorkspaceComponent />
-    </Suspense>
-  );
-}
