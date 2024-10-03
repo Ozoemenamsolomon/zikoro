@@ -12,7 +12,7 @@ import { useFetchPartners } from "@/hooks";
 import { ILead, TLeadsInterest, TPartner } from "@/types";
 import { useGetData } from "@/hooks/services/request";
 import { formatNumberToShortHand } from "@/utils";
-import { AnalyticsInfoCard } from "../page";
+import { AnalyticsInfoCard } from "../../page";
 
 interface TPartnerDataSet {
   id: number;

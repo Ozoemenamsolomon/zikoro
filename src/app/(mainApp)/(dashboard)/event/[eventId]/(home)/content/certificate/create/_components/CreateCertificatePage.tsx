@@ -18,14 +18,6 @@ import {
   uploadFile,
 } from "@/utils/helpers";
 import { Container, SettingsPanel, Text } from "@/components/certificate";
-import Designs from "./_tabs/Designs";
-import ElementTab from "./_tabs/Element";
-import TextTab from "./_tabs/Text";
-import Verification from "./_tabs/verification";
-import Settings from "./_tabs/Settings";
-import QRCode from "react-qr-code";
-import { formatDateToHumanReadable } from "@/utils/date";
-import Background from "./_tabs/Background";
 import {
   TCertificate,
   TCertificateDetails,
@@ -51,6 +43,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { addDays, addMonths } from "date-fns";
+import QRCode from "react-qr-code";
+import Designs from "./_tabs/Designs";
+import Background from "./_tabs/Background";
+import { default as TextTab } from "./_tabs/Text";
+import { default as ElementTab } from "./_tabs/Element";
+import Verification from "./_tabs/verification";
+import Settings from "./_tabs/Settings";
 
 const tabs = [
   {

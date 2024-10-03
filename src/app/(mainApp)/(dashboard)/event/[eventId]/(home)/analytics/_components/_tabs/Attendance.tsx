@@ -2,7 +2,7 @@ import { useGetAttendees } from "@/hooks/services/attendee";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { useParams } from "next/navigation";
 import React from "react";
-import { AnalyticsInfoCard } from "../page";
+import { AnalyticsInfoCard } from "../../page";
 import peopleCheck from "@/public/icons/people_check.svg";
 import peopleCancel from "@/public/icons/people_cancel.svg";
 import peopleCommunity from "@/public/icons/people_community.svg";

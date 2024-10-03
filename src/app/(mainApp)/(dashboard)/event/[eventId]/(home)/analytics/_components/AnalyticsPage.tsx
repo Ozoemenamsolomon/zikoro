@@ -1,11 +1,10 @@
 "use client";
-import React from "react";
+import React, { ReactNode } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { updateSearchParam } from "@/utils";
+import { usePathname, useRouter } from "next/navigation";
 import Registrations from "./_tabs/Registrations";
-import Partners from "./_tabs/Partners";
 import Attendance from "./_tabs/Attendance";
+import Partners from "./_tabs/Partners";
 
 export const AnalyticsInfoCard = ({
   label,
