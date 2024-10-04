@@ -268,7 +268,6 @@ function EventCard({
   );
 }
 
-
 //  function AdminEvents() {
 // return (
 //   <Suspense>

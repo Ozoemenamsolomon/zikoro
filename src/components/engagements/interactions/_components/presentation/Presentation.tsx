@@ -70,6 +70,7 @@ type TPlayerDetail = {
 export default function Presentation({
   eventId,
   quizId,
+  searchParams: { redirect: query, id: aId },
 }: {
   eventId: string;
   quizId: string;
@@ -93,9 +94,6 @@ export default function Presentation({
 
   const [chosenAvatar, setChosenAvatar] =
     useState<Required<AvatarFullConfig> | null>(null);
-  const params = useSearchParams();
-  const query = params.get("redirect");
-  const aId = params.get("id");
   // quiz result stores the state for quiz that is currently being answered by the attendee (for attendees only)
   const [quizResult, setQuizResult] = useState<TQuiz<
     TRefinedQuestion[]
@@ -459,6 +457,7 @@ export function PlayersOnboarding({
   quiz,
   onToggle,
   isLeftBox,
+  searchParams: { redirect: query },
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -480,8 +479,6 @@ export function PlayersOnboarding({
   isLeftBox: boolean;
 }) {
   const { updateQuiz } = useUpdateQuiz();
-  const params = useSearchParams();
-  const query = params.get("redirect");
   const { addLiveParticipant } = useAddLiveParticipant();
   const [loading, setLoading] = useState(false);
   const router = useRouter();

@@ -17,7 +17,6 @@ import { TEventTransaction } from "@/types/billing";
 import { extractUniqueTypes } from "@/utils/helpers";
 import { useEffect, useState } from "react";
 import { AngleDown } from "styled-icons/fa-solid";
-import { columns } from "../columns";
 import { TFilter } from "@/types/filter";
 import { useFilter } from "@/hooks/common/useFilter";
 import {
@@ -35,6 +34,7 @@ import { DataTable } from "@/components/DataTable";
 import { getCookie } from "@/hooks";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import useUserStore from "@/store/globalUserStore";
+import { columns } from "../columns";
 
 const eventTransactionsFilter: TFilter<TEventTransaction>[] = [
   {

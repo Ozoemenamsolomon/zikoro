@@ -1,12 +1,27 @@
-'use client'
-import React from "react"
-import WorkspaceComponent from "@/components/workspace/WorkspaceComponent"
+import WorkspaceComponent from "@/components/workspace/WorkspaceComponent";
 
+// Define the type for searchParams
+type SearchParams = {
+  name: string;
+  showFilter: string;
+  showCategories: string;
+  logo: string;
+  logoLink: string;
+  orgLogo: string;
+  isOrgLogo: string;
+  zikoroLogo: string;
+  isZikoroLogo: string;
+};
 
-export default function Workspaces() {
+// Define props type for the Payment component
+type WorkspacesProps = {
+  searchParams: SearchParams;
+};
+
+export default function Workspaces({ searchParams }: WorkspacesProps) {
   return (
     <div>
-        <WorkspaceComponent/>
+      <WorkspaceComponent searchParams={searchParams} />
     </div>
-  )
+  );
 }

@@ -1,9 +1,12 @@
-import React from 'react'
+import ContactLayout from "@/components/appointments/contactPage";
+import React from "react";
 
-const ContactPage = () => {
-  return (
-      <div className='pt-8 pl-4 text-2xl font-semibold'>Your Contacts</div>
-  )
-}
+const Contacts = ({
+  searchParams: { query: searchQuery },
+}: {
+  searchParams: { query: string };
+}) => {
+  return <ContactLayout searchQuery={searchQuery} />;
+};
 
-export default ContactPage
+export default Contacts;

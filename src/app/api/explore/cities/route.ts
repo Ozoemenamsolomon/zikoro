@@ -40,3 +40,4 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
+export const dynamic = "force-dynamic";

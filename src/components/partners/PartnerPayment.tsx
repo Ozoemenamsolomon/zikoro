@@ -36,7 +36,6 @@ type TEventData = {
 };
  export default function PartnerPayment({searchParams:{p,e,discountAmount}}) {
   const router = useRouter();
-  const params = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
   // const data = params.get("p");
   // const eventData = params.get("e");

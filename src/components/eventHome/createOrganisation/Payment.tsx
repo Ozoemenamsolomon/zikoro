@@ -25,11 +25,9 @@ type TParsedData = {
   organizationType: string;
   subscriptionPlan: string;
 };
-export default function Payment({searchParams:{data}}) {
+function PaymentComponent({searchParams: { data }}) {
   const router = useRouter();
   const { user } = useUserStore();
-  // const params = useSearchParams();
-  // const data = params.get("data");
   const { postData } = usePostRequest<Partial<ISubscription>>(
     "/engagements/create"
   );

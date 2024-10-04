@@ -12,7 +12,7 @@ import {
   useUpdateTransactionDetail,
 } from "@/hooks";
 import { CheckCircleFill } from "styled-icons/bootstrap";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ArrowBack } from "styled-icons/material-outlined";
 import { TbLoader3 } from "react-icons/tb";
 import { CiCalendar, CiLocationOn, CiShare2 } from "react-icons/ci";
@@ -37,16 +37,14 @@ type QueryData = {
 };
 export function Payment({
   eventRegistrationRef,
+  searchParams: { eventData }
 }: {
   eventRegistrationRef: string;
 }) {
   const { sendTransactionDetail, loading } = useUpdateTransactionDetail();
   const [isSuccessModal, setSuccessModal] = useState(false);
   const { data } = useGetEventTransactionDetail(eventRegistrationRef);
-  const query = useSearchParams();
   const router = useRouter();
-
-  const eventData: any = query.get("eventData");
   const parsedData: QueryData = JSON.parse(eventData);
   //
 

@@ -93,3 +93,4 @@ We look forward to seeing what you create!
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
+export const dynamic = "force-dynamic";
