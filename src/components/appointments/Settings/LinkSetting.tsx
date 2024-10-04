@@ -1,13 +1,6 @@
 'use client'
 import * as React from "react"
 
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import SwitchToggler from "../ui/SwitchToggler"
 import { DeletIcon, DotsIcon } from "@/constants"
@@ -32,20 +25,7 @@ export function CardWithForm() {
         <form className="w-full space-y-4">
             <Input id="linktitle" placeholder="Link Title" className="bg-baseBg focus-within:bg-baseBg focus:bg-baseBg focus:outline-none focus:ring-0" />
             <Input id="linkurl" placeholder="Link Url" className="bg-baseBg focus-within:bg-baseBg focus:bg-baseBg focus:outline-none focus:ring-0"/>
-            {/* <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="framework">Framework</Label>
-              <Select>
-                <SelectTrigger id="framework">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="next">Next.js</SelectItem>
-                  <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                  <SelectItem value="astro">Astro</SelectItem>
-                  <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                </SelectContent>
-              </Select>
-            </div> */}
+            
         </form>
         <button className="shrink-0"><DotsIcon/></button>
       </div>
