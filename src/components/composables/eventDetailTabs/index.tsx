@@ -16,8 +16,8 @@ const eventWebsiteSettings = [
   { title: "Agenda", status: true },
   { title: "Speakers", status: true },
   { title: "Partners", status: true },
-  { title: "Reviews", status: true },
   { title: "Rewards", status: true },
+  { title: "Reviews", status: true },
 ];
 
 export function EventDetailTabs({
@@ -80,8 +80,11 @@ export function EventDetailTabs({
           .filter(
             (tab): tab is { title: string; status: boolean } => tab !== null
           );
-        if (updated)
-          setSelectedTabs([{ title: "About", status: true }, ...updated]);
+        if (updated) {
+
+
+        }
+          setSelectedTabs([{ title: "About", status: true }, ...updated,  {title: "Reviews", status: true}]);
       }
     }
   }, [event]);

@@ -203,9 +203,10 @@ function AboutEvent({
 
 export default function SinglePublishedEvent({
   id,
-  searchParams: { trackingId, affiliateCode, role },
+  searchParams
 }: {
   id: string;
+  searchParams: any
 }) {
   const [isOpen, setOpen] = useState(false);
   const [isGetTicket, setGetTicket] = useState(false);
@@ -410,32 +411,12 @@ export default function SinglePublishedEvent({
                   {eventDetail && (
                     <AboutEvent event={eventDetail} coordinates={coordinates} />
                   )}
-                  {eventDetail?.locationType?.toLowerCase() !== "remote" &&
-                  isLoaded &&
-                  coordinates !== null ? (
-                    <GoogleMap
-                      mapContainerStyle={{
-                        width: "100%",
-                        height: "150px",
-                        borderRadius: "1rem",
-                      }}
-                      center={coordinates}
-                      zoom={15}
-                    >
-                      <Marker
-                        position={coordinates}
-                        onClick={() => setInfoWindowOpen(true)}
-                      >
-                        {infoWindowOpen && (
-                          <InfoWindow
-                            position={coordinates}
-                            onCloseClick={() => setInfoWindowOpen(false)}
-                          >
-                            <div>{eventDetail?.eventAddress}</div>
-                          </InfoWindow>
-                        )}
-                      </Marker>
-                    </GoogleMap>
+                  {eventDetail?.locationType?.toLowerCase() !== "remote" ? (
+                    <iframe
+                    style={{ border: 'none' }}
+                    width="100%"
+                    height="150"
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(eventDetail?.eventAddress)}+(${encodeURIComponent(eventDetail?.eventAddress)})&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;width=100%25&amp;height=150&amp;hl=en&amp;output=embed`}></iframe>
                   ) : (
                     <div>Loading...</div>
                   )}
@@ -553,9 +534,9 @@ export default function SinglePublishedEvent({
           organizerContact={organizerContact}
           eventTitle={eventDetail?.eventTitle}
           close={onClose}
-          trackingId={trackingId}
-          affiliateCode={affiliateCode}
-          role={role || ""}
+          trackingId={searchParams?.trackingId}
+          affiliateCode={searchParams?.affiliateCode}
+          role={searchParams?.role || ""}
           eventLocation={`${eventDetail?.eventCity ?? ""}${
             !removeComma && ","
           } ${eventDetail?.eventCountry ?? ""}`}

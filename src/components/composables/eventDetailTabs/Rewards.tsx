@@ -37,7 +37,7 @@ export function Rewards({
       <div
         className={cn(
           "  w-full grid grid-cols-1 py-4 px-4 sm:grid-cols-2 md:grid-cols-3 gap-4  ",
-          isEventHome && "md:grid-cols-2"
+          isEventHome && "sm:grid-cols-1 md:grid-cols-1 xl:grid-cols-2"
         )}
       >
         {loadingRewards && (

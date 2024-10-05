@@ -1,22 +1,7 @@
-import PaymentComponent from "@/components/payment/PaymentComponent";
+import Payment from "@/components/eventHome/createOrganisation/Payment";
 
-type SearchParams = {
-  name: string;
-  id: string;
-  orgId: string;
-  orgAlias: string;
-  plan: string;
-  total: string;
-  coupon: string;
-  monthly: string;
-  currency: string;
-  orgName: string;
-  orgType: string;
-  subPlan: string;
-  redirectUrl: string;
-  isCreate: string;
-};
 
-export default function Page({ searchParams }: { searchParams: SearchParams }) {
-  return <PaymentComponent searchParams={searchParams} />;
+
+export default function Page({ searchParams }: { searchParams: any }) {
+  return <Payment searchParams={searchParams} />;
 }
