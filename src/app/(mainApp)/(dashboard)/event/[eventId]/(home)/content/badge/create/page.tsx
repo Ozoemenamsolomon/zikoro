@@ -27,9 +27,9 @@ import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSec
 import { StoreType } from "polotno/model/store";
 import { uploadFile } from "@/utils/helpers";
 
-const Editor = dynamic(() => import("@/components/GraphicsEditor/editor"), {
-  ssr: false,
-});
+// const Editor = dynamic(() => import("@/components/GraphicsEditor/editor"), {
+//   ssr: false,
+// });
 
 const DEFAULT_JSON = {
   width: 595.2755905511812,
@@ -404,11 +404,11 @@ export default function Page({
               eventId={eventId}
             />
           </section>
-          <Editor
+          {/* <Editor
             json={badgeJSON}
             onSave={onSubmit}
             isLoading={isLoading || pending}
-          />
+          /> */}
         </>
       ) : (
         <div className="h-1/2 w-full flex items-center justify-center">

@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 import { ArrowBack } from "styled-icons/ionicons-outline";
 import { useRouter, usePathname } from "next/navigation";
@@ -13,6 +12,7 @@ import { useCreateOrganisation } from "@/hooks";
 import { useCreateOrgSubscription } from "@/hooks/services/subscription";
 import useUserStore from "@/store/globalUserStore";
 
+
 //type annotation for the data being fetched
 type DBDiscountsType = {
   id: number;
@@ -23,25 +23,45 @@ type DBDiscountsType = {
   discountPercentage: number | null;
 };
 
-export default function PaymentComponent() {
+// Define the type for searchParams
+type SearchParams = {
+  name: string;
+  id: string;
+  orgId: string;
+  orgAlias: string;
+  plan: string;
+  total: string;
+  coupon: string;
+  monthly: string;
+  currency: string;
+  orgName: string;
+  orgType: string;
+  subPlan: string;
+  redirectUrl: string;
+  isCreate: string;
+};
+
+export default function PaymentComponent({
+  searchParams: {
+    name,
+    id,
+    orgId,
+    orgAlias,
+    plan = "",
+    total,
+    coupon: currentCoupon,
+    monthly,
+    currency = "",
+    orgName,
+    orgType,
+    subPlan,
+    redirectUrl,
+    isCreate,
+  }
+}: {searchParams : SearchParams}) {
   const { user } = useUserStore();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const name = searchParams.get("name");
-  const id = searchParams.get("id") ?? "";
-  const orgId = searchParams.get("orgId");
-  const orgAlias = searchParams.get("orgAlias");
-  const plan = searchParams.get("plan") ?? "";
-  const total = searchParams.get("total");
-  const currentCoupon = searchParams.get("coupon");
-  const monthly = searchParams.get("monthly");
-  const currency = searchParams.get("currency")?.trim() ?? "";
-  const orgName = searchParams.get("orgName");
-  const orgType = searchParams.get("orgType");
-  const subPlan = searchParams.get("subPlan");
-  const redirectUrl = searchParams.get("redirectUrl");
   const userEmail = user?.userEmail;
-  const isCreate = searchParams.get("isCreate");
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [coupons, setCoupons] = useState<DBDiscountsType[]>([]);
   const [discount, setDiscount] = useState<number>(0);
@@ -58,7 +78,7 @@ export default function PaymentComponent() {
     currentCoupon,
     discount,
     orgAlias,
-    orgId,
+    orgId
   );
 
   async function handleSuccess(reference: any) {
@@ -186,8 +206,6 @@ export default function PaymentComponent() {
       router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
     }
   }, []);
-
-
 
   return (
     <div className="bg-[#F9FAFF] h-screen flex flex-col justify-center items-center px-3">

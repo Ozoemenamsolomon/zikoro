@@ -24,8 +24,8 @@ import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { useSearchParams } from "next/navigation";
 import { generateAlphanumericHash } from "@/utils/helpers";
 
-function OnboardingComp() {
-  const search = useSearchParams();
+export default function Onboarding({searchParams:{email, createdAt}}) {
+  // const search = useSearchParams();
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
 
   const { loading, registration } = useOnboarding();
@@ -44,8 +44,8 @@ function OnboardingComp() {
     }));
   }, []);
 
-  const query = search.get("email");
-  const createdAt = search.get("createdAt");
+  // const query = search.get("email");
+  // const createdAt = search.get("createdAt");
 
   async function onSubmit(values: z.infer<typeof onboardingSchema>) {
     const payload: z.infer<typeof onboardingSchema> = {
@@ -53,14 +53,14 @@ function OnboardingComp() {
 
       phoneNumber: phoneCountryCode + values.phoneNumber,
     };
-    await registration(payload, query, createdAt);
+    await registration(payload, email, createdAt);
   }
 
   return (
     <>
       <div className="w-full flex flex-col gap-y-1 mb-6 items-start justify-start">
         <h2 className="font-medium w-full text-center text-base sm:text-lg ">{`Welcome ${
-          query ?? ""
+          email ?? ""
         } 👋`}</h2>
       </div>
 
@@ -199,10 +199,10 @@ function OnboardingComp() {
   );
 }
 
-export default function Onboarding() {
-  return (
-    <Suspense>
-      <OnboardingComp />
-    </Suspense>
-  );
-}
+// export default function Onboarding() {
+//   return (
+//     <Suspense>
+//       <OnboardingComp />
+//     </Suspense>
+//   );
+// }

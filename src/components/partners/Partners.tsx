@@ -17,11 +17,14 @@ import { useFilter } from "@/hooks";
 import _ from "lodash";
 import { cn } from "@/lib";
 
-export function Partners({ eventId }: { eventId: string }) {
+export function Partners({
+  eventId,
+  searchParams: { p: query },
+}: {
+  eventId: string;
+}) {
   const { data, loading, refetch } = useFetchPartners(eventId);
-  const {data: event} = useFetchSingleEvent(eventId)
-  const search = useSearchParams();
-  const query = search.get("p");
+  const { data: event } = useFetchSingleEvent(eventId);
 
   const partnersFilter: TFilter<TExPartner>[] = [
     {
@@ -169,7 +172,6 @@ export function Partners({ eventId }: { eventId: string }) {
         { label: "No", value: false },
       ],
       onFilter: (partner: TExPartner, isStamp: boolean) => {
-        
         return partner?.stampIt === isStamp;
       },
       order: 5,
@@ -210,7 +212,6 @@ export function Partners({ eventId }: { eventId: string }) {
           : false,
         industry: value?.industry,
         jobs: Array.isArray(value?.jobs) ? value?.jobs?.length > 0 : false,
-        
       };
     });
   }, [data]);
@@ -252,14 +253,13 @@ export function Partners({ eventId }: { eventId: string }) {
   }, [data, searchedData]);
 
   const singleEvent = useMemo(() => {
-      if (event !== null) {
-        const {organization, ...restData} = event
-        return restData
-      }
-      else {
-        return null
-      }
-  },[event])
+    if (event !== null) {
+      const { organization, ...restData } = event;
+      return restData;
+    } else {
+      return null;
+    }
+  }, [event]);
 
   return (
     <div className="w-full pb-24">
@@ -304,7 +304,7 @@ export function Partners({ eventId }: { eventId: string }) {
       )}
       {query === "exhibitors" && singleEvent && (
         <Exhibitors
-        event={singleEvent}
+          event={singleEvent}
           exhibitors={exhibitors}
           loading={loading}
         />

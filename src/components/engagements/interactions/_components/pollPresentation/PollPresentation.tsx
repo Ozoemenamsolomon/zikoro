@@ -33,6 +33,7 @@ const supabase = createClientComponentClient();
 export default function PollPresentation({
   eventId,
   quizId,
+  searchParams: { redirect: query, id: aId },
 }: {
   eventId: string;
   quizId: string;
@@ -59,16 +60,12 @@ export default function PollPresentation({
     useState<Required<AvatarFullConfig> | null>(null);
   // quiz result stores the state for quiz that is currently being answered by the attendee (for attendees only)
   const [pollResult, setPollResult] = useState<TQuiz<TQuestion[]> | null>(null);
-  const {updateQuiz, isLoading: isUpdating} = useUpdateQuiz()
+  const { updateQuiz, isLoading: isUpdating } = useUpdateQuiz();
   const [playerDetail, setPlayerDetail] = useState<TPlayerDetail>({
     phone: "",
     email: "",
     nickName: attendee?.firstName || "",
   });
- const params = useSearchParams()
- const query = params.get("redirect");
- const aId = params.get("id");
-
 
   const [refinedPollArray, setRefinedPollArray] = useState<TQuiz<
     TQuestion[]
@@ -125,8 +122,8 @@ export default function PollPresentation({
 
   // generate a unique id for player
   const id = useMemo(() => {
-     //TODO if redirect, return;
-     if (query) return aId!;
+    //TODO if redirect, return;
+    if (query) return aId!;
     return generateAlias();
   }, []);
 
@@ -205,8 +202,8 @@ export default function PollPresentation({
         isStarted: false,
         isEnded: false,
       },
-    }
-    await updateQuiz({payload});
+    };
+    await updateQuiz({ payload });
     setShowScoreSheet(false);
     setIsNotStarted(true);
     window.open(window.location.href, "_self");
@@ -275,13 +272,11 @@ export default function PollPresentation({
                       eventName={data?.eventTitle ?? ""}
                       isRightBox={isRightBox}
                       isLeftBox={isLeftBox}
-                      close={() =>{
+                      close={() => {
                         if (isRightBox) {
-                          setRightBox(false)
-                        }
-                        else {
-                        onToggle()
-
+                          setRightBox(false);
+                        } else {
+                          onToggle();
                         }
                       }}
                     />

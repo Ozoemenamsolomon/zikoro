@@ -27,6 +27,7 @@ import { IconifyAgendaCalendarIcon } from "@/constants";
 export default function Agenda({
   eventId,
   isReception,
+  searchParams: { a: queryParam, date: activeDateQuery },
 }: {
   eventId: string;
   isReception?: boolean;
@@ -34,8 +35,7 @@ export default function Agenda({
   const router = useRouter();
   const pathname = usePathname();
   const currentEvent = getCookie("currentEvent");
-  const search = useSearchParams();
-  const queryParam = search.get("a");
+
   const { attendeeId, isOrganizer } = useVerifyUserAccess(eventId);
   // const { attendees } = useGetAllAttendees(); //
   const [isOpen, setOpen] = useState(false);
@@ -43,7 +43,6 @@ export default function Agenda({
   // const { attendees: eventAttendees } = useGetEventAttendees(eventId); //
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const [isFullScreen, setFullScreen] = useState(false);
-  const activeDateQuery = search.get("date");
   const {
     agendas: sessionAgendas,
     isLoading: fetching,
@@ -138,7 +137,10 @@ export default function Agenda({
                   )}
                 >
                   <p className="font-medium">Day {index + 1}</p>
-                  <p className="flex items-center gap-x-2"> <IconifyAgendaCalendarIcon/> {val?.formattedDate}</p>
+                  <p className="flex items-center gap-x-2">
+                    {" "}
+                    <IconifyAgendaCalendarIcon /> {val?.formattedDate}
+                  </p>
                 </button>
               ))}
           </div>
@@ -164,7 +166,12 @@ export default function Agenda({
             </div>
           )}
 
-        <div className={cn("w-full p-2 sm:p-4 grid grid-cols-1 items-center gap-8 pb-20", isReception && "p-0 sm:p-0 py-2 sm:py-4")}>
+        <div
+          className={cn(
+            "w-full p-2 sm:p-4 grid grid-cols-1 items-center gap-8 pb-20",
+            isReception && "p-0 sm:p-0 py-2 sm:py-4"
+          )}
+        >
           {fetching && (
             <div className="w-full col-span-full h-[20rem] flex items-center justify-center">
               <LoaderAlt size={30} className="animate-spin" />
@@ -205,7 +212,7 @@ export default function Agenda({
           close={onClose}
           refetchSession={refetchSession}
           eventId={eventId}
-          event={data}                                                      
+          event={data}
         />
       )}
       {isFullScreen && (

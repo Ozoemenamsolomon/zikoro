@@ -30,35 +30,31 @@ function SubmittedModal() {
   return (
     <div className="w-full h-full inset-0 fixed bg-[#c5ceff]">
       <div className="w-[95%] max-w-xl rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
-      <Image
-        src="/images/facheck.png"
-        alt=""
-        className="w-fit h-fit"
-        width={48}
-        height={48}
-      />
-      <div className="w-fit flex flex-col items-center justify-center gap-y-2">
-        <h2 className="font-semibold text-lg sm:text-2xl">Forms Submitted</h2>
-        <p>Your answers have been submitted successfully</p>
-      </div>
+        <Image
+          src="/images/facheck.png"
+          alt=""
+          className="w-fit h-fit"
+          width={48}
+          height={48}
+        />
+        <div className="w-fit flex flex-col items-center justify-center gap-y-2">
+          <h2 className="font-semibold text-lg sm:text-2xl">Forms Submitted</h2>
+          <p>Your answers have been submitted successfully</p>
+        </div>
       </div>
     </div>
   );
 }
 function AttendeeFillFormComp({
   eventId,
-
+  searchParams: { redirect: query, id: attendeeId, link },
   formId,
 }: {
   eventId: string;
   formId: string;
 }) {
-  const params = useSearchParams();
-  const query = params.get("redirect")
-  const attendeeId = params.get("id")
-  const link = params.get("link")
   const { user } = useUserStore();
-  const router = useRouter()
+  const router = useRouter();
   const { isOrganizer, attendee } = useVerifyUserAccess(eventId);
   // const { isIdPresent } = useCheckTeamMember({ eventId });
   const [isSuccess, setOpenSuccess] = useState(false);
@@ -73,7 +69,8 @@ function AttendeeFillFormComp({
     resolver: zodResolver(formAnswerSchema),
     defaultValues: {
       eventAlias: eventId,
-      attendeeAlias: attendeeId  || attendee?.attendeeAlias || user?.userId || "user",
+      attendeeAlias:
+        attendeeId || attendee?.attendeeAlias || user?.userId || "user",
       formResponseAlias: generateAlias(),
       formAlias: formId,
       questions: data?.questions,
@@ -86,16 +83,15 @@ function AttendeeFillFormComp({
   });
 
   async function onSubmit(values: z.infer<typeof formAnswerSchema>) {
-  //  console.log(values);
+    //  console.log(values);
     const { questions, ...restData } = values;
     const payload: Partial<TEngagementFormAnswer> = {
       ...restData,
-
     };
     await postData({ payload });
 
     if (query) {
-      router.push(`${link}?&redirect=form&id=${attendeeId}`)
+      router.push(`${link}?&redirect=form&id=${attendeeId}`);
       return;
     }
     setOpenSuccess(true);
@@ -163,14 +159,14 @@ function AttendeeFillFormComp({
             ))}
 
             {/* {!isOrganizer && !isIdPresent && ( */}
-              <Button
-                type="submit"
-                disabled={loading}
-                className="self-center w-[150px] gap-x-2 bg-basePrimary text-white font-medium h-12 "
-              >
-                {loading && <LoaderAlt className="animate-spin" size={20} />}
-                <p>Submit</p>
-              </Button>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="self-center w-[150px] gap-x-2 bg-basePrimary text-white font-medium h-12 "
+            >
+              {loading && <LoaderAlt className="animate-spin" size={20} />}
+              <p>Submit</p>
+            </Button>
             {/* )} */}
           </form>
         </Form>

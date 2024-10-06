@@ -10,7 +10,7 @@ export default function EventHome() {
   const { firstOrganizationEvents, loading, refetch } = useGetUserHomePageEvents();
 
   return (
-   <Suspense>
+    <Suspense>
      <EventHomeLayout>
       {loading && (
         <div className="w-full h-[300px] flex items-center justify-center">
@@ -25,6 +25,7 @@ export default function EventHome() {
         <EmptyCard text={`You have not added any event.`} />
       )}
     </EventHomeLayout>
-   </Suspense>
+    </Suspense>
+
   );
 }

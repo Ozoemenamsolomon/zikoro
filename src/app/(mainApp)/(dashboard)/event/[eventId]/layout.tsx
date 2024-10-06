@@ -51,14 +51,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     isAlias: true,
   });
 
-  console.log(
-    event?.organization.teamMembers,
-    user.userEmail,
-    isCheckedInToday,
-    event?.organization.teamMembers.some(
-      ({ userEmail }) => user && userEmail === user.userEmail
-    )
-  );
+  // console.log(
+  //   event?.organization.teamMembers,
+  //   user.userEmail,
+  //   isCheckedInToday,
+  //   event?.organization.teamMembers.some(
+  //     ({ userEmail }) => user && userEmail === user.userEmail
+  //   )
+  // );
 
   const {
     data: engagementsSettings,

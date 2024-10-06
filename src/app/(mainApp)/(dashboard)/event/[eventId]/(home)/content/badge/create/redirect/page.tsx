@@ -1,11 +1,11 @@
-"use client"
-import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 
-const page = ({ searchParams: { badgeId } }) => {
-
-  const router = useRouter();
-  return router.push("create?badgeId=" + badgeId);
+const Page = ({
+  searchParams: { badgeId },
+}: {
+  searchParams: { badgeId: string };
+}) => {
+  return redirect("create?badgeId=" + badgeId);
 };
 
-export default page;
+export default Page;

@@ -96,3 +96,5 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
+
+export const dynamic = "force-dynamic";
