@@ -251,7 +251,11 @@ function WorkspaceComponent({}) {
           {/* normal screen */}
           {!isFilterOpen && (
             <div>
-              <OrganizationNavbar logoUrl={logoLink ?? ""} isZikoroLogo={isZikoroLogo ?? ""} isOrgLogo={isOrgLogo ?? ""} />
+              <OrganizationNavbar
+                logoUrl={logoLink ?? ""}
+                isZikoroLogo={isZikoroLogo ?? ""}
+                isOrgLogo={isOrgLogo ?? ""}
+              />
               {/* header */}
               <div>
                 {/* big screen */}

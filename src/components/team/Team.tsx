@@ -75,11 +75,6 @@ export default function Team() {
       <a href="https://www.zikoro.com/register?userEmail=${formData.userEmail}" style="color: #4CAF50; text-decoration: none;">Join Team</a>
     </p>
 
-    <p>If you have any questions, feel free to reply to this email.</p>
-
-    <p>We look forward to having you on board!</p>
-
-    <p>Best,<br>The Zikoro Team</p>
   `,
     emailRecipient: formData.userEmail,
   };
