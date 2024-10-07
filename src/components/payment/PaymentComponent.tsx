@@ -1,17 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 import { ArrowBack } from "styled-icons/ionicons-outline";
 import { useRouter, usePathname } from "next/navigation";
 import { paymentConfig } from "@/hooks/common/usePayStackPayment";
 import { Button } from "@/components";
 import { Lock } from "styled-icons/fa-solid";
 import { PaystackButton } from "react-paystack";
+import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 import toast from "react-hot-toast";
 import { useCreateOrganisation } from "@/hooks";
 import { useCreateOrgSubscription } from "@/hooks/services/subscription";
 import useUserStore from "@/store/globalUserStore";
-
 
 //type annotation for the data being fetched
 type DBDiscountsType = {
@@ -47,18 +46,20 @@ export default function PaymentComponent({
     id,
     orgId,
     orgAlias,
-    plan = "",
+    plan,
     total,
     coupon: currentCoupon,
     monthly,
-    currency = "",
+    currency,
     orgName,
     orgType,
     subPlan,
     redirectUrl,
     isCreate,
-  }
-}: {searchParams : SearchParams}) {
+  },
+}: {
+  searchParams: SearchParams;
+}) {
   const { user } = useUserStore();
   const pathname = usePathname();
   const userEmail = user?.userEmail;
@@ -121,12 +122,15 @@ export default function PaymentComponent({
     });
   }
 
+  function removeWhitespace(currency: string): string {
+    return currency.trim(); // Removes leading and trailing whitespace
+  }
   //paystack props
   const config = paymentConfig({
     reference: "",
     email: userEmail ? decodeURIComponent(userEmail) : "",
     amount: totalPrice,
-    currency: currency ? currency : "",
+    currency: currency ? removeWhitespace(currency) : "",
   });
 
   const componentProps: any = {
@@ -198,12 +202,17 @@ export default function PaymentComponent({
       setTotalPrice(calculatedTotalPrice);
     };
 
+    console.log(
+      "checking currency method",
+      convertCurrencyCodeToSymbol(currency)
+    );
+
     updateTotalPrice();
   }, [coupons, currentCoupon, total]);
 
   useEffect(() => {
     if (!user) {
-      router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
+      router.push(`/login?redirectedFrom='pricing'`);
     }
   }, []);
 
@@ -226,21 +235,23 @@ export default function PaymentComponent({
             <div className="flex justify-between text-base">
               <p className="">Subtotal</p>
               <p>
-                {convertCurrencyCodeToSymbol(currency || "")}
+                {convertCurrencyCodeToSymbol(removeWhitespace(currency) || "")}
                 {Number(total)}
               </p>
             </div>
             <div className="flex justify-between text-base">
               <p className="">Discount</p>
               <p>
-                - {convertCurrencyCodeToSymbol(currency || "")}
+                -{" "}
+                {convertCurrencyCodeToSymbol(removeWhitespace(currency) || "")}
                 {discount}
               </p>
             </div>
             <div className="flex justify-between text-base">
               <p className="">Total</p>
               <p>
-                {convertCurrencyCodeToSymbol(currency || "")} {totalPrice}
+                {convertCurrencyCodeToSymbol(removeWhitespace(currency) || "")}{" "}
+                {totalPrice}
               </p>
             </div>
           </div>
