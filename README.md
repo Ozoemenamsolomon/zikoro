@@ -8,7 +8,7 @@ First, make sure you have [node](https://nodejs.org/en/download/) installed to i
 
 ```bash
 npm install
-ssffs
+ssf
 ```
 
 then start the development server:
