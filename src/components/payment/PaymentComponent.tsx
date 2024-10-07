@@ -235,21 +235,23 @@ export default function PaymentComponent({
             <div className="flex justify-between text-base">
               <p className="">Subtotal</p>
               <p>
-                {convertCurrencyCodeToSymbol(currency || "")}
+                {convertCurrencyCodeToSymbol(removeWhitespace(currency) || "")}
                 {Number(total)}
               </p>
             </div>
             <div className="flex justify-between text-base">
               <p className="">Discount</p>
               <p>
-                - {convertCurrencyCodeToSymbol(currency || "")}
+                -{" "}
+                {convertCurrencyCodeToSymbol(removeWhitespace(currency) || "")}
                 {discount}
               </p>
             </div>
             <div className="flex justify-between text-base">
               <p className="">Total</p>
               <p>
-                {convertCurrencyCodeToSymbol(currency || "")} {totalPrice}
+                {convertCurrencyCodeToSymbol(removeWhitespace(currency) || "")}{" "}
+                {totalPrice}
               </p>
             </div>
           </div>
