@@ -307,7 +307,8 @@ function PaymentSuccess({
 
         <div className="w-full px-4 flex flex-col gap-y-2 items-center justify-center">
           <p className="font-medium text-center max-w-sm">
-            Check your mail <span className="text-red-500">including your spam</span> to get further directions from event organizer
+          Check your mailbox <span className="text-red-500">(or your spam)</span> to view it and  for further information from the event organiser
+           
           </p>
           <button
             onClick={onToggleShare}

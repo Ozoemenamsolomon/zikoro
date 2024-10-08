@@ -17,6 +17,7 @@ import { usePathname } from "next/navigation";
 import { InlineIcon } from "@iconify/react";
 import { useEffect, useMemo, useState } from "react";
 import { BookEvent } from "@/components/published";
+import Head from "next/head";
 import Image from "next/image";
 import {
   IconifyEventSocialPhoneIcon,
@@ -203,10 +204,10 @@ function AboutEvent({
 
 export default function SinglePublishedEvent({
   id,
-  searchParams
+  searchParams,
 }: {
   id: string;
-  searchParams: any
+  searchParams: any;
 }) {
   const [isOpen, setOpen] = useState(false);
   const [isGetTicket, setGetTicket] = useState(false);
@@ -219,7 +220,6 @@ export default function SinglePublishedEvent({
     lat: number;
     lng: number;
   } | null>(null);
-  const [infoWindowOpen, setInfoWindowOpen] = useState(false);
 
   // conditonally adding comma to separate city and location
   const removeComma = useMemo(() => {
@@ -328,10 +328,29 @@ export default function SinglePublishedEvent({
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
   });
-  const tyo = 'OrthoEx nigeria limited'
 
   return (
     <>
+      <Head>
+        <title>
+          {eventDetail ? `${eventDetail?.eventTitle} ` : "Loading..."}
+        </title>
+        <meta
+          name="description"
+          content={eventDetail ? `${eventDetail?.description}` : "Loading..."}
+        />
+        <meta
+          property="og:image"
+          content={
+            eventDetail && eventDetail?.eventPoster?.startsWith("https")
+              ? eventDetail?.eventPoster
+              : ""
+          }
+        />
+
+        <meta name="author" content="Zikoro" />
+      </Head>
+
       {eventDetail ? (
         <div className="w-full h-full fixed overflow-y-auto bg-[#F7F8FF]">
           <div className="w-full px-4 sm:px-6 md:px-10 flex items-center justify-between p-3 sm:p-4 border-b border-[#EAEAEA]">
@@ -363,7 +382,7 @@ export default function SinglePublishedEvent({
                 />
               </Link>
               <Link
-              target="_blank"
+                target="_blank"
                 href={`${window.location.origin}`}
                 className="bg-basePrimary text-white text-xs sm:text-sm rounded-lg w-fit px-2 py-3"
               >
@@ -387,10 +406,10 @@ export default function SinglePublishedEvent({
 
               <div className="w-full flex gap-y-6 flex-col items-start justify-start mt-4 sm:mt-6">
                 <div className="flex w-full flex-col items-start justify-start gap-y-3">
-                  <p>See people attending 👀</p>
+                  {eventAttendees?.length > 0 && <p>See people attending 👀</p>}
 
                   <div className="flex w-full items-center justify-between">
-                    {eventAttendees && (
+                    {eventAttendees?.length > 0 && (
                       <SinglePublishedEventAttendeeWidget
                         attendees={eventAttendees}
                       />
@@ -399,7 +418,9 @@ export default function SinglePublishedEvent({
                       onClick={() => setOpen((p) => !p)}
                       className="flex items-center gap-x-1"
                     >
-                      <span className="text-sm whitespace-nowrap">Share Event</span>
+                      <span className="text-sm whitespace-nowrap">
+                        Share Event
+                      </span>
 
                       <IconifyShareIcon />
                     </button>
@@ -422,14 +443,14 @@ export default function SinglePublishedEvent({
                     <AboutEvent event={eventDetail} coordinates={coordinates} />
                   )}
                   {eventDetail?.locationType?.toLowerCase() !== "remote" ? (
-                 <iframe
-                 style={{ border: 'none', borderRadius: "12px" }}
-                 width="100%"
-                 height="150"
-                 
-                 src={`https://maps.google.com/maps?q=${encodeURIComponent(eventDetail?.eventAddress)}&z=15&ie=UTF8&iwloc=B&width=100%25&height=150&hl=en&output=embed`}>
-               </iframe>
-               
+                    <iframe
+                      style={{ border: "none", borderRadius: "12px" }}
+                      width="100%"
+                      height="150"
+                      src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                        eventDetail?.eventAddress
+                      )}&z=15&ie=UTF8&iwloc=B&width=100%25&height=150&hl=en&output=embed`}
+                    ></iframe>
                   ) : (
                     <div>Loading...</div>
                   )}
@@ -467,14 +488,14 @@ export default function SinglePublishedEvent({
                       </span>
                     </div>
 
-                   <div className="w-full z-10 fixed sm:sticky bg-white bottom-0 inset-x-0 sm:p-0 p-3 sm:w-fit">
-                   <Button
-                      onClick={onClose}
-                      className="rounded-lg w-full h-12 sm:h-11 sm:w-fit font-medium bg-basePrimary text-white"
-                    >
-                      Get Ticket
-                    </Button>
-                   </div>
+                    <div className="w-full z-10 fixed sm:relative bg-white bottom-0 inset-x-0 sm:p-0 p-3 sm:w-fit">
+                      <Button
+                        onClick={onClose}
+                        className="rounded-lg w-full h-12 sm:h-11 sm:w-fit font-medium bg-basePrimary text-white"
+                      >
+                        Get Ticket
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 <div className="w-full h-fit bg-white rounded-lg border p-2">
@@ -521,20 +542,22 @@ export default function SinglePublishedEvent({
               </div>
             </div>
           </div>
-          <div className="w-full p-3 gap-x-4 bg-white mt-12 flex items-center justify-center">
-                    <Link className="text-sm" href="/create">Create Event</Link>
-                    <Link
-                       target="_blank"
-                className="text-xs gap-x-1 flex items-center sm:text-sm"
-                href={`${window.location.origin}/workspaces?name=${eventDetail?.organization?.organizationName}&orgLogo=true&zikoroLogo=false&logo=null&showCategories=true&showFilter=true`}
-              >
-                <p className="hidden md:block">Explore more events</p>
-                <InlineIcon
-                  icon={"material-symbols-light:arrow-insert"}
-                  fontSize={18}
-                  className="rotate-90"
-                />
-              </Link>
+          <div className="w-full p-3 gap-x-4 bg-white mt-12 mb-16 sm:mb-0 flex items-center justify-center">
+            <Link className="text-mobile sm:text-sm" href="/create">
+              Create Event
+            </Link>
+            <Link
+              target="_blank"
+              className="text-mobile gap-x-1 flex items-center sm:text-sm"
+              href={`${window.location.origin}/workspaces?name=${eventDetail?.organization?.organizationName}&orgLogo=true&zikoroLogo=false&logo=null&showCategories=true&showFilter=true`}
+            >
+              <p className="block">Explore more events</p>
+              <InlineIcon
+                icon={"material-symbols-light:arrow-insert"}
+                fontSize={18}
+                className="rotate-90"
+              />
+            </Link>
           </div>
         </div>
       ) : (

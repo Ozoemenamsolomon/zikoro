@@ -71,7 +71,7 @@ export function SinglePublishedEventAttendeeWidget({
       
     >
       
-        <p className="gradient-text  bg-basePrimary">{otherAttendeeCount}<span className="text-[22px]">+</span></p>
+        <p className="gradient-text  bg-basePrimary"><span className="text-[22px]">+</span>{otherAttendeeCount}</p>
       
     </div>}
       </div>
