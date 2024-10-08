@@ -212,7 +212,7 @@ export default function PaymentComponent({
 
   useEffect(() => {
     if (!user) {
-      router.push(`/login?redirectedFrom='pricing'`);
+      router.push(`/login?redirectedFrom=${encodeURIComponent(pathname)}`);
     }
   }, []);
 
