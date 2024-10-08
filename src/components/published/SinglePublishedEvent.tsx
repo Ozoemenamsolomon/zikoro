@@ -17,6 +17,7 @@ import { usePathname } from "next/navigation";
 import { InlineIcon } from "@iconify/react";
 import { useEffect, useMemo, useState } from "react";
 import { BookEvent } from "@/components/published";
+import Head from "next/head";
 import Image from "next/image";
 import {
   IconifyEventSocialPhoneIcon,
@@ -174,7 +175,7 @@ function AboutEvent({
       <div className="w-full flex items-center gap-x-3">
         <IconifyPublishedEventLocationIcon />
         <div className="flex flex-col items-start justify-start">
-          <p className="font-medium flex items-center">
+          <p className=" flex items-center">
             {event?.eventAddress ?? ""}{" "}
             {coordinates && (
               <Link
@@ -203,10 +204,10 @@ function AboutEvent({
 
 export default function SinglePublishedEvent({
   id,
-  searchParams
+  searchParams,
 }: {
   id: string;
-  searchParams: any
+  searchParams: any;
 }) {
   const [isOpen, setOpen] = useState(false);
   const [isGetTicket, setGetTicket] = useState(false);
@@ -219,7 +220,6 @@ export default function SinglePublishedEvent({
     lat: number;
     lng: number;
   } | null>(null);
-  const [infoWindowOpen, setInfoWindowOpen] = useState(false);
 
   // conditonally adding comma to separate city and location
   const removeComma = useMemo(() => {
@@ -331,22 +331,50 @@ export default function SinglePublishedEvent({
 
   return (
     <>
+      <Head>
+        <title>
+          {eventDetail ? `${eventDetail?.eventTitle} ` : "Loading..."}
+        </title>
+        <meta
+          name="description"
+          content={eventDetail ? `${eventDetail?.description}` : "Loading..."}
+        />
+        <meta
+          property="og:image"
+          content={
+            eventDetail && eventDetail?.eventPoster?.startsWith("https")
+              ? eventDetail?.eventPoster
+              : ""
+          }
+        />
+
+        <meta name="author" content="Zikoro" />
+      </Head>
+
       {eventDetail ? (
         <div className="w-full h-full fixed overflow-y-auto bg-[#F7F8FF]">
           <div className="w-full px-4 sm:px-6 md:px-10 flex items-center justify-between p-3 sm:p-4 border-b border-[#EAEAEA]">
             <Image
               src="/zikoro.png"
               alt=""
-              className="max-w-[150px] max-h-[50px]"
+              className="hidden sm:block max-w-[150px] max-h-[50px]"
               width={160}
+              height={70}
+            />
+            <Image
+              src="/zikoro-icon.png"
+              alt=""
+              className="sm:hidden block max-w-[50px] max-h-[50px]"
+              width={70}
               height={70}
             />
             <div className="flex items-center gap-x-2">
               <Link
                 className="text-xs gap-x-1 flex items-center sm:text-sm"
-                href=""
+                target="_blank"
+                href={`${window.location.origin}/workspaces?name=${eventDetail?.organization?.organizationName}&orgLogo=true&zikoroLogo=false&logo=null&showCategories=true&showFilter=true`}
               >
-                <p className="hidden md:block">Explore other events</p>
+                <p className="hidden md:block">Explore more events</p>
                 <InlineIcon
                   icon={"material-symbols-light:arrow-insert"}
                   fontSize={18}
@@ -354,15 +382,16 @@ export default function SinglePublishedEvent({
                 />
               </Link>
               <Link
-                href=""
+                target="_blank"
+                href={`${window.location.origin}`}
                 className="bg-basePrimary text-white text-xs sm:text-sm rounded-lg w-fit px-2 py-3"
               >
                 Try Zikoro
               </Link>
             </div>
           </div>
-          <div className="w-full mt-6 sm:mt-10 grid grid-cols-1 items-start lg:grid-cols-2 gap-6 sm:gap-10 px-4 sm:px-6 md:px-10 xl:px-14 2xl:px-20">
-            <div className="w-full">
+          <div className="w-full mt-6 sm:mt-10 grid grid-cols-1 items-start lg:grid-cols-3 gap-6 sm:gap-10 px-4 sm:px-6 md:px-10 lg:px-12 xl:px-24 max-w-[1440px] mx-auto 2xl:px-20">
+            <div className="w-full sticky lg:top-28">
               {eventDetail?.eventPoster ? (
                 <Image
                   src={eventDetail?.eventPoster}
@@ -377,10 +406,10 @@ export default function SinglePublishedEvent({
 
               <div className="w-full flex gap-y-6 flex-col items-start justify-start mt-4 sm:mt-6">
                 <div className="flex w-full flex-col items-start justify-start gap-y-3">
-                  <p>See people attending 👀</p>
+                  {eventAttendees?.length > 0 && <p>See people attending 👀</p>}
 
                   <div className="flex w-full items-center justify-between">
-                    {eventAttendees && (
+                    {eventAttendees?.length > 0 && (
                       <SinglePublishedEventAttendeeWidget
                         attendees={eventAttendees}
                       />
@@ -389,7 +418,9 @@ export default function SinglePublishedEvent({
                       onClick={() => setOpen((p) => !p)}
                       className="flex items-center gap-x-1"
                     >
-                      <span>Share Event</span>
+                      <span className="text-sm whitespace-nowrap">
+                        Share Event
+                      </span>
 
                       <IconifyShareIcon />
                     </button>
@@ -397,7 +428,7 @@ export default function SinglePublishedEvent({
                 </div>
               </div>
             </div>
-            <div className="w-full">
+            <div className="w-full lg:col-span-2">
               <div className="w-full  grid grid-cols-1 gap-3  h-full">
                 <div className="w-full flex flex-col gap-y-2 items-start rounded-lg border bg-white p-3 justify-start ">
                   <div className="w-fit px-3 py-2 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">
@@ -413,10 +444,13 @@ export default function SinglePublishedEvent({
                   )}
                   {eventDetail?.locationType?.toLowerCase() !== "remote" ? (
                     <iframe
-                    style={{ border: 'none' }}
-                    width="100%"
-                    height="150"
-                    src={`https://maps.google.com/maps?q=${encodeURIComponent(eventDetail?.eventAddress)}+(${encodeURIComponent(eventDetail?.eventAddress)})&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;width=100%25&amp;height=150&amp;hl=en&amp;output=embed`}></iframe>
+                      style={{ border: "none", borderRadius: "12px" }}
+                      width="100%"
+                      height="150"
+                      src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                        eventDetail?.eventAddress
+                      )}&z=15&ie=UTF8&iwloc=B&width=100%25&height=150&hl=en&output=embed`}
+                    ></iframe>
                   ) : (
                     <div>Loading...</div>
                   )}
@@ -454,17 +488,19 @@ export default function SinglePublishedEvent({
                       </span>
                     </div>
 
-                    <Button
-                      onClick={onClose}
-                      className="rounded-lg w-fit font-medium bg-basePrimary text-white"
-                    >
-                      Get Ticket
-                    </Button>
+                    <div className="w-full z-10 fixed sm:relative bg-white bottom-0 inset-x-0 sm:p-0 p-3 sm:w-fit">
+                      <Button
+                        onClick={onClose}
+                        className="rounded-lg w-full h-12 sm:h-11 sm:w-fit font-medium bg-basePrimary text-white"
+                      >
+                        Get Ticket
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 <div className="w-full h-fit bg-white rounded-lg border p-2">
                   <h3 className="pb-2 w-full text-center border-b">
-                    Contact Organizer
+                    About the Organizer
                   </h3>
                   <div className="flex w-full flex-col items-center py-4 justify-center gap-3">
                     {eventDetail?.organization?.organizationLogo &&
@@ -505,6 +541,23 @@ export default function SinglePublishedEvent({
                 {eventDetail && <EventDetail event={eventDetail} />}
               </div>
             </div>
+          </div>
+          <div className="w-full p-3 gap-x-4 bg-white mt-12 mb-16 sm:mb-0 flex items-center justify-center">
+            <Link className="text-mobile sm:text-sm" href="/create">
+              Create Event
+            </Link>
+            <Link
+              target="_blank"
+              className="text-mobile gap-x-1 flex items-center sm:text-sm"
+              href={`${window.location.origin}/workspaces?name=${eventDetail?.organization?.organizationName}&orgLogo=true&zikoroLogo=false&logo=null&showCategories=true&showFilter=true`}
+            >
+              <p className="block">Explore more events</p>
+              <InlineIcon
+                icon={"material-symbols-light:arrow-insert"}
+                fontSize={18}
+                className="rotate-90"
+              />
+            </Link>
           </div>
         </div>
       ) : (

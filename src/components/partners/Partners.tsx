@@ -18,14 +18,14 @@ import _ from "lodash";
 import { cn } from "@/lib";
 
 export function Partners({
-  eventId,
-  searchParams: { p: query },
+  eventId
 }: {
   eventId: string;
 }) {
   const { data, loading, refetch } = useFetchPartners(eventId);
   const { data: event } = useFetchSingleEvent(eventId);
-
+  const params = useSearchParams()
+  const query = params.get("p")
   const partnersFilter: TFilter<TExPartner>[] = [
     {
       label: "Location",

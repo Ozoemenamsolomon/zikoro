@@ -33,7 +33,7 @@ const supabase = createClientComponentClient();
 export default function PollPresentation({
   eventId,
   quizId,
-  searchParams: { redirect: query, id: aId },
+  
 }: {
   eventId: string;
   quizId: string;
@@ -61,6 +61,9 @@ export default function PollPresentation({
   // quiz result stores the state for quiz that is currently being answered by the attendee (for attendees only)
   const [pollResult, setPollResult] = useState<TQuiz<TQuestion[]> | null>(null);
   const { updateQuiz, isLoading: isUpdating } = useUpdateQuiz();
+  const params = useSearchParams()
+  const query = params.get("redirect")
+  const aId = params.get("id")
   const [playerDetail, setPlayerDetail] = useState<TPlayerDetail>({
     phone: "",
     email: "",

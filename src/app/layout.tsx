@@ -24,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className=" text-mobile sm:text-desktop">
-   
+      
       <body >
         {children}
         <Toaster {...TOASTER_PROPS} />

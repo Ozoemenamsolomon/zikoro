@@ -1,9 +1,9 @@
 import SinglePublishedEvent from "@/components/published/SinglePublishedEvent";
 
-export default function Page({ params: { id } }: { params: { id: string } }) {
+export default function Page({ params: { id }, searchParams }: {searchParams:any; params: { id: string } }) {
   return (
     <>
-      <SinglePublishedEvent id={id} />
+      <SinglePublishedEvent searchParams={searchParams} id={id} />
     </>
   );
 }

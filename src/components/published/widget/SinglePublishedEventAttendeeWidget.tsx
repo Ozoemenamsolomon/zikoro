@@ -4,6 +4,7 @@ import { cn } from "@/lib";
 import { TAttendee } from "@/types";
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import Link from "next/link"
 
 function ImageWidget({
   attendee,
@@ -15,7 +16,7 @@ function ImageWidget({
   return (
     <div
       className={cn(
-        "relative h-16 w-16 rounded-full group border-4 border-[#F7F8FF] flex items-center bg-gray-200 uppercase font-medium text-xl justify-center",
+        "relative h-[50px] w-[50px] rounded-full group border-4 border-[#F7F8FF] flex items-center bg-gray-200 uppercase font-medium text-lg justify-center",
         className
       )}
     >
@@ -31,8 +32,9 @@ function ImageWidget({
       ) : (
         <p className="gradient-text  bg-basePrimary">{attendee?.firstName[0]}{attendee?.lastName[0]}</p>
       )}
-      <div className="w-fit hidden absolute -bottom-14  items-center left-1 group-hover:flex border-gradient p-1 ">
-      <p className="gradient-text flex  bg-basePrimary text-sm capitalize gap-x-1"><span>{attendee?.firstName}</span> <span>{attendee?.lastName}</span></p>
+      <div className="w-fit min-w-[230px] hidden absolute -bottom-14 items-start flex-col  left-1 group-hover:flex border-gradient p-1 ">
+      <p className="gradient-text flex  bg-basePrimary text-sm capitalize gap-x-1"><span>{attendee?.firstName}</span> <span>{attendee?.lastName?.charAt(0)}.</span></p>
+      <Link className="text-sm capitalize gradient-text bg-basePrimary" href="">Register to see all participants</Link>
       </div>
     </div>
   );
@@ -45,28 +47,6 @@ export function SinglePublishedEventAttendeeWidget({
 }) {
   const [otherAttendeeCount, setOtherAttendeeCount] = useState(0);
 
-  // const attendeeNames = useMemo(() => {
-  //   if (!attendees) return null;
-  //   const names = attendees?.map(
-  //     ({ lastName, firstName }) =>
-  //       `${firstName[0]?.toUpperCase() ?? ""}${firstName?.substring(1) ?? ""} ${
-  //         lastName[0]?.toUpperCase() ?? ""
-  //       }${lastName?.substring(1) ?? ""}`
-  //   );
-
-  //   const isGreaterThanZero = names.slice(3, names?.length)?.length > 0;
-  //   if (!isGreaterThanZero) {
-  //     return `${names.slice(0, 3)}`;
-  //   } else if (names.slice(3, names?.length)?.length === 1) {
-  //     return `${names.slice(0, 3)} and ${
-  //       names.slice(3, names?.length)?.length
-  //     } Other`;
-  //   } else {
-  //     return `${names.slice(0, 3)} and ${
-  //       names.slice(3, names?.length)?.length
-  //     } Others`;
-  //   }
-  // }, [attendees]);
 
   const slicedArray = useMemo(() => {
     if (Array.isArray(attendees)) {
@@ -77,21 +57,21 @@ export function SinglePublishedEventAttendeeWidget({
     }
   }, [attendees]);
   return (
-    <div className="flex flex-col items-start justify-start gap-y-2">
-      <div className="flex items-center">
+    <div className="flex w-[250px] flex-col items-start justify-start gap-y-2">
+      <div className="flex w-full items-center">
         {slicedArray?.map((attendee, index) => (
           <ImageWidget
             key={index}
             attendee={attendee}
-            className={index === 1 ? "-left-[15%]" : index === 2 ? "-left-[30%]" : index === 3 ? "-left-[45%]" :""}
+            className={index === 0 ? "-left-[3%]": index === 1 ? "-left-[13%]" : index === 2 ? "-left-[24%]" : index === 3 ? "-left-[35%]" :""}
           />
         ))}
         {otherAttendeeCount > 0 && <div
-      className="relative -left-[60%] h-16 w-16 rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-xl justify-center"
+      className="relative -left-[45%] h-[50px] w-[50px] rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-lg justify-center"
       
     >
       
-        <p className="gradient-text  bg-basePrimary">{otherAttendeeCount}+</p>
+        <p className="gradient-text  bg-basePrimary"><span className="text-[22px]">+</span>{otherAttendeeCount}</p>
       
     </div>}
       </div>

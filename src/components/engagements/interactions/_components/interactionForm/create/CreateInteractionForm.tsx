@@ -90,12 +90,13 @@ function SelectQuestionType({
 
 function CreateInteractionFormComp({
   eventId,
-  searchParams: { form: prevFormId },
+  
 }: {
   eventId: string;
 }) {
   const [loading, setLoading] = useState(false);
-
+  const params = useSearchParams()
+  const prevFormId = params.get("form")
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
   const { data } = prevFormId

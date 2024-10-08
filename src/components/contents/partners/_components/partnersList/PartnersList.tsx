@@ -164,13 +164,13 @@ export function PartnersList({
                   <FiEdit size={22} />
                   <p>Edit Tier</p>
                 </Button>
-                <Button
+                {/* <Button
                   onClick={onPartner}
                   className="text-gray-50  my-4 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
                 >
                   <PlusCircle size={22} />
                   <p>Partner</p>
-                </Button>
+                </Button> */}
               </div>
             )}
 

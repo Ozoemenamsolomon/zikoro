@@ -10,6 +10,7 @@ import { Reward, RedeemPoint } from "@/types";
 import { Edit } from "styled-icons/material";
 import { CreateReward } from "./CreateReward";
 import { useRedeemReward } from "@/hooks";
+import {usePathname} from "next/navigation"
 export function RewardCard({
   reward,
   isOrganizer,
@@ -27,6 +28,7 @@ export function RewardCard({
   redeemedRewards: RedeemPoint[] | null;
   refetchRedeemed: () => Promise<any>;
 }) {
+  const pathname = usePathname()
   const [isAlert, setAlert] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [isEdit, setEdit] = useState(false);
@@ -76,12 +78,12 @@ export function RewardCard({
       : false;
   }, [attendeeId, redeemedRewards]);
 
-  console.log(
-    "available",
-    availableAttendeepoint,
-    attendeeId,
-    isAttendeeAlreadyRedeemed
-  );
+  // console.log(
+  //   "available",
+  //   availableAttendeepoint,
+  //   attendeeId,
+  //   isAttendeeAlreadyRedeemed
+  // );
 
   async function redeem() {
     const payload = {
@@ -147,8 +149,9 @@ export function RewardCard({
         isAttendeeAlreadyRedeemed ? null : (
           <div className="px-3 w-full mt-1 flex items-center justify-between">
             <button
+
               onClick={onSubmit}
-              disabled={loading}
+              disabled={loading || pathname.includes("/live-events")}
               className="text-basePrimary text-sm font-semibold"
             >
               Redeem Reward

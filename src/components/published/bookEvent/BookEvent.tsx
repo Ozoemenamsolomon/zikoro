@@ -560,7 +560,7 @@ export function BookEvent({
                 )}
               </div>
 
-              <div className="w-full lg:h-[510px] pb-32 space-y-5 no-scrollbar lg:overflow-y-auto">
+              <div className="w-full lg:h-[570px] pb-32 space-y-5 no-scrollbar lg:overflow-y-auto">
                 <div className="grid grid-cols-1 gap-6  items-center w-full">
                   {Array.isArray(pricingArray) &&
                     pricingArray &&
@@ -729,7 +729,8 @@ export function BookEvent({
                     </p>
                   </div>}
                 </div>
-           <div className="w-full inset-x-0 md:bg-white md:p-2 md:absolute bottom-0 md:h-32">
+           <div className="w-full inset-x-0 flex flex-col items-center justify-center md:bg-white md:p-2 md:absolute bottom-0 md:h-32">
+            <p className="text-red-500 text-sm font-medium">You must select a ticket type to continue</p>
            <Button
                   disabled={
                     chosenAttendee?.length === 0 || pathname.includes("preview")
