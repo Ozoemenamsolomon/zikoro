@@ -560,7 +560,7 @@ export function BookEvent({
                 )}
               </div>
 
-              <div className="w-full lg:h-[510px] pb-32 space-y-5 no-scrollbar lg:overflow-y-auto">
+              <div className="w-full lg:h-[570px] pb-32 space-y-5 no-scrollbar lg:overflow-y-auto">
                 <div className="grid grid-cols-1 gap-6  items-center w-full">
                   {Array.isArray(pricingArray) &&
                     pricingArray &&

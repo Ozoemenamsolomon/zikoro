@@ -60,7 +60,7 @@ export function Speakers({
           active === 1 && "block"
         )}
       >
-        <h3 className="pb-2 w-full text-center">Event Speakers</h3>
+        <h3 className="pb-2 w-full invisible text-center">Event Speakers</h3>
 
        
           <div className=" w-full grid grid-cols-1 sm:grid-cols-2 sm:flex  gap-4 items-center flex-wrap justify-center p-4 sm:p-6">

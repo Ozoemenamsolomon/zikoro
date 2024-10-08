@@ -338,8 +338,15 @@ export default function SinglePublishedEvent({
             <Image
               src="/zikoro.png"
               alt=""
-              className="max-w-[150px] max-h-[50px]"
+              className="hidden sm:block max-w-[150px] max-h-[50px]"
               width={160}
+              height={70}
+            />
+            <Image
+              src="/zikoro-icon.png"
+              alt=""
+              className="sm:hidden block max-w-[50px] max-h-[50px]"
+              width={70}
               height={70}
             />
             <div className="flex items-center gap-x-2">
@@ -356,7 +363,8 @@ export default function SinglePublishedEvent({
                 />
               </Link>
               <Link
-                href=""
+              target="_blank"
+                href={`${window.location.origin}`}
                 className="bg-basePrimary text-white text-xs sm:text-sm rounded-lg w-fit px-2 py-3"
               >
                 Try Zikoro
@@ -414,11 +422,14 @@ export default function SinglePublishedEvent({
                     <AboutEvent event={eventDetail} coordinates={coordinates} />
                   )}
                   {eventDetail?.locationType?.toLowerCase() !== "remote" ? (
-                   <iframe
-                   style={{ border: 'none' }}
-                   width="100%"
-                   height="300"
-                   src="https://maps.google.com/maps?q=Orthoex%20nigeria%20limited&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;width=100%25&amp;height=300&amp;hl=en&amp;output=embed"></iframe>
+                 <iframe
+                 style={{ border: 'none', borderRadius: "12px" }}
+                 width="100%"
+                 height="150"
+                 
+                 src={`https://maps.google.com/maps?q=${encodeURIComponent(eventDetail?.eventAddress)}&z=15&ie=UTF8&iwloc=B&width=100%25&height=150&hl=en&output=embed`}>
+               </iframe>
+               
                   ) : (
                     <div>Loading...</div>
                   )}
@@ -456,7 +467,7 @@ export default function SinglePublishedEvent({
                       </span>
                     </div>
 
-                   <div className="w-full fixed sm:sticky bg-white bottom-0 inset-x-0 sm:p-0 p-3 sm:w-fit">
+                   <div className="w-full z-10 fixed sm:sticky bg-white bottom-0 inset-x-0 sm:p-0 p-3 sm:w-fit">
                    <Button
                       onClick={onClose}
                       className="rounded-lg w-full h-12 sm:h-11 sm:w-fit font-medium bg-basePrimary text-white"

@@ -119,7 +119,7 @@ export default function Agenda({
           </div>
         )}
         <div className="w-full no-scrollbar mt-8 overflow-x-auto">
-          <div className="min-w-max flex items-center rounded-xl h-fit justify-center bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end gap-x-0">
+          <div className="w-fit flex items-center rounded-xl h-fit justify-center bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end gap-x-0">
             {Array.isArray(dateRange) &&
               dateRange?.map((val, index) => (
                 <button

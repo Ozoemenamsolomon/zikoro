@@ -307,7 +307,7 @@ function PaymentSuccess({
 
         <div className="w-full px-4 flex flex-col gap-y-2 items-center justify-center">
           <p className="font-medium text-center max-w-sm">
-            Check your mail to get further directions from event organizer
+            Check your mail <span className="text-red-500">including your spam</span> to get further directions from event organizer
           </p>
           <button
             onClick={onToggleShare}
@@ -323,7 +323,7 @@ function PaymentSuccess({
         <div className="w-full bg-[#001ffc]/10 p-1">
           <p className="text-center text-tiny sm:text-xs">
             Create your own event with
-            <Link href="https://zikoro.com/create" className="text-basePrimary">
+            <Link href="https://zikoro.com/create" className="ml-1 text-basePrimary">
               Zikoro
             </Link>
           </p>

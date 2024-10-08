@@ -6,7 +6,6 @@ import { Event } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { EmptyCard } from "@/components/composables";
 import { Button } from "@/components";
-import { ArrowBack } from "styled-icons/boxicons-regular";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { cn } from "@/lib";
@@ -57,7 +56,7 @@ export function Sponsors({
   return (
     <div className="w-full bg-white p-3">
        <div className="w-full rounded-lg border p-2">
-                    <h3 className="pb-2 w-full text-center">
+                    <h3 className="pb-2 invisible w-full text-center">
                       Event Partners
                     </h3>
     

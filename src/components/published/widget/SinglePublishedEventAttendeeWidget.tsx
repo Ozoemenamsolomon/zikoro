@@ -63,11 +63,11 @@ export function SinglePublishedEventAttendeeWidget({
           <ImageWidget
             key={index}
             attendee={attendee}
-            className={index === 0 ? "-left-[3%]": index === 1 ? "-left-[15%]" : index === 2 ? "-left-[27%]" : index === 3 ? "-left-[40%]" :""}
+            className={index === 0 ? "-left-[3%]": index === 1 ? "-left-[13%]" : index === 2 ? "-left-[24%]" : index === 3 ? "-left-[35%]" :""}
           />
         ))}
         {otherAttendeeCount > 0 && <div
-      className="relative -left-[52%] h-[50px] w-[50px] rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-lg justify-center"
+      className="relative -left-[45%] h-[50px] w-[50px] rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-lg justify-center"
       
     >
       
