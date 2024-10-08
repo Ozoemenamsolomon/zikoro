@@ -11,14 +11,13 @@ export const paymentConfig = ({
   currency
 }: PaymentConfigProps) => {
 
-  console.log('Paystack email', email)
   const configuration: HookConfig = {
     reference: reference,
     email,
     amount: amount ? amount * 100 : 0,
     currency,
     publicKey: config.payment ?? "",
-    
+
   };
   return configuration;
 };

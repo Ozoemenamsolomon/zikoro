@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUpdatePostView, useUpdatePostshare } from "@/hooks/services/post";
 import CopyrightFooter from "../CopyrightFooter";
+import { Copy } from "styled-icons/fa-regular";
+import toast from "react-hot-toast";
 
 type DBSimilarPost = {
   id: number;
@@ -62,6 +64,12 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
   const contentRef = useRef<HTMLDivElement>(null);
   const { updatePostShare } = useUpdatePostshare();
   const { updatePostView } = useUpdatePostView();
+
+  //copy Url
+  const copyUrl = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success("Copied to clipboard");
+  };
 
   // Extracting the date only
   function extractAndFormatDate(dateTimeString: any): any {
@@ -312,6 +320,10 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                       >
                         <Linkedin />
                       </div>
+
+                      <div className="cursor-pointer" onClick={() => copyUrl()}>
+                        <Copy size={20} />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -336,7 +348,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
             <div className="max-w-full lg:max-w-6xl mx-auto flex gap-x-4 ">
               <p className="font-bold">Tags:</p>
               <div className="grid grid-cols-4 gap-x-2">
-                {data.tags.map((tag:string) => (
+                {data.tags.map((tag: string) => (
                   <p className="text-b">{tag}</p>
                 ))}
               </div>
