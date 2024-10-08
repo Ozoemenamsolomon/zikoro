@@ -3,7 +3,6 @@
 import { Button } from "@/components";
 import { cn } from "@/lib";
 import { Event, EventDetailTab } from "@/types";
-
 import { About, Speakers, Sponsors, EventAgendas } from "..";
 import { EventDetailMobileTab } from "./EventDetailMobileTab";
 import { useEffect, useState } from "react";

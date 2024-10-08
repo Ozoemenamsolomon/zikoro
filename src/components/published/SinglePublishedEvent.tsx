@@ -174,7 +174,7 @@ function AboutEvent({
       <div className="w-full flex items-center gap-x-3">
         <IconifyPublishedEventLocationIcon />
         <div className="flex flex-col items-start justify-start">
-          <p className="font-medium flex items-center">
+          <p className=" flex items-center">
             {event?.eventAddress ?? ""}{" "}
             {coordinates && (
               <Link
@@ -346,7 +346,7 @@ export default function SinglePublishedEvent({
                 className="text-xs gap-x-1 flex items-center sm:text-sm"
                 href=""
               >
-                <p className="hidden md:block">Explore other events</p>
+                <p className="hidden md:block">Explore more events</p>
                 <InlineIcon
                   icon={"material-symbols-light:arrow-insert"}
                   fontSize={18}
@@ -361,8 +361,8 @@ export default function SinglePublishedEvent({
               </Link>
             </div>
           </div>
-          <div className="w-full mt-6 sm:mt-10 grid grid-cols-1 items-start lg:grid-cols-2 gap-6 sm:gap-10 px-4 sm:px-6 md:px-10 xl:px-14 2xl:px-20">
-            <div className="w-full">
+          <div className="w-full mt-6 sm:mt-10 grid grid-cols-1 items-start lg:grid-cols-3 gap-6 sm:gap-10 px-4 sm:px-6 md:px-10 lg:px-12 xl:px-24 max-w-[1440px] mx-auto 2xl:px-20">
+            <div className="w-full sticky lg:top-28">
               {eventDetail?.eventPoster ? (
                 <Image
                   src={eventDetail?.eventPoster}
@@ -376,7 +376,7 @@ export default function SinglePublishedEvent({
               )}
 
               <div className="w-full flex gap-y-6 flex-col items-start justify-start mt-4 sm:mt-6">
-                <div className="flex w-full flex-col items-start justify-start gap-y-3">
+                <div className="flex w-[80%] flex-col items-start justify-start gap-y-3">
                   <p>See people attending 👀</p>
 
                   <div className="flex w-full items-center justify-between">
@@ -389,7 +389,7 @@ export default function SinglePublishedEvent({
                       onClick={() => setOpen((p) => !p)}
                       className="flex items-center gap-x-1"
                     >
-                      <span>Share Event</span>
+                      <span className="whitespace-nowrap">Share Event</span>
 
                       <IconifyShareIcon />
                     </button>
@@ -397,7 +397,7 @@ export default function SinglePublishedEvent({
                 </div>
               </div>
             </div>
-            <div className="w-full">
+            <div className="w-full lg:col-span-2">
               <div className="w-full  grid grid-cols-1 gap-3  h-full">
                 <div className="w-full flex flex-col gap-y-2 items-start rounded-lg border bg-white p-3 justify-start ">
                   <div className="w-fit px-3 py-2 bg-gradient-to-tr border rounded-2xl border-[#001fcc] from-custom-bg-gradient-start to-custom-bg-gradient-end">

@@ -45,28 +45,6 @@ export function SinglePublishedEventAttendeeWidget({
 }) {
   const [otherAttendeeCount, setOtherAttendeeCount] = useState(0);
 
-  // const attendeeNames = useMemo(() => {
-  //   if (!attendees) return null;
-  //   const names = attendees?.map(
-  //     ({ lastName, firstName }) =>
-  //       `${firstName[0]?.toUpperCase() ?? ""}${firstName?.substring(1) ?? ""} ${
-  //         lastName[0]?.toUpperCase() ?? ""
-  //       }${lastName?.substring(1) ?? ""}`
-  //   );
-
-  //   const isGreaterThanZero = names.slice(3, names?.length)?.length > 0;
-  //   if (!isGreaterThanZero) {
-  //     return `${names.slice(0, 3)}`;
-  //   } else if (names.slice(3, names?.length)?.length === 1) {
-  //     return `${names.slice(0, 3)} and ${
-  //       names.slice(3, names?.length)?.length
-  //     } Other`;
-  //   } else {
-  //     return `${names.slice(0, 3)} and ${
-  //       names.slice(3, names?.length)?.length
-  //     } Others`;
-  //   }
-  // }, [attendees]);
 
   const slicedArray = useMemo(() => {
     if (Array.isArray(attendees)) {
@@ -77,17 +55,17 @@ export function SinglePublishedEventAttendeeWidget({
     }
   }, [attendees]);
   return (
-    <div className="flex flex-col items-start justify-start gap-y-2">
-      <div className="flex items-center">
+    <div className="flex w-full flex-col items-start justify-start gap-y-2">
+      <div className="flex w-full items-center">
         {slicedArray?.map((attendee, index) => (
           <ImageWidget
             key={index}
             attendee={attendee}
-            className={index === 1 ? "-left-[15%]" : index === 2 ? "-left-[30%]" : index === 3 ? "-left-[45%]" :""}
+            className={index === 0 ? "-left-[3%]": index === 1 ? "-left-[15%]" : index === 2 ? "-left-[27%]" : index === 3 ? "-left-[40%]" :""}
           />
         ))}
         {otherAttendeeCount > 0 && <div
-      className="relative -left-[60%] h-16 w-16 rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-xl justify-center"
+      className="relative -left-[52%] h-16 w-16 rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-xl justify-center"
       
     >
       
