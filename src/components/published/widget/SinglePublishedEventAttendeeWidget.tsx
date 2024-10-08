@@ -4,6 +4,7 @@ import { cn } from "@/lib";
 import { TAttendee } from "@/types";
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import Link from "next/link"
 
 function ImageWidget({
   attendee,
@@ -15,7 +16,7 @@ function ImageWidget({
   return (
     <div
       className={cn(
-        "relative h-16 w-16 rounded-full group border-4 border-[#F7F8FF] flex items-center bg-gray-200 uppercase font-medium text-xl justify-center",
+        "relative h-[50px] w-[50px] rounded-full group border-4 border-[#F7F8FF] flex items-center bg-gray-200 uppercase font-medium text-lg justify-center",
         className
       )}
     >
@@ -31,8 +32,9 @@ function ImageWidget({
       ) : (
         <p className="gradient-text  bg-basePrimary">{attendee?.firstName[0]}{attendee?.lastName[0]}</p>
       )}
-      <div className="w-fit hidden absolute -bottom-14  items-center left-1 group-hover:flex border-gradient p-1 ">
-      <p className="gradient-text flex  bg-basePrimary text-sm capitalize gap-x-1"><span>{attendee?.firstName}</span> <span>{attendee?.lastName}</span></p>
+      <div className="w-fit min-w-[230px] hidden absolute -bottom-14 items-start flex-col  left-1 group-hover:flex border-gradient p-1 ">
+      <p className="gradient-text flex  bg-basePrimary text-sm capitalize gap-x-1"><span>{attendee?.firstName}</span> <span>{attendee?.lastName?.charAt(0)}.</span></p>
+      <Link className="text-sm capitalize gradient-text bg-basePrimary" href="">Register to see all participants</Link>
       </div>
     </div>
   );
@@ -55,7 +57,7 @@ export function SinglePublishedEventAttendeeWidget({
     }
   }, [attendees]);
   return (
-    <div className="flex w-full flex-col items-start justify-start gap-y-2">
+    <div className="flex w-[250px] flex-col items-start justify-start gap-y-2">
       <div className="flex w-full items-center">
         {slicedArray?.map((attendee, index) => (
           <ImageWidget
@@ -65,11 +67,11 @@ export function SinglePublishedEventAttendeeWidget({
           />
         ))}
         {otherAttendeeCount > 0 && <div
-      className="relative -left-[52%] h-16 w-16 rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-xl justify-center"
+      className="relative -left-[52%] h-[50px] w-[50px] rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-lg justify-center"
       
     >
       
-        <p className="gradient-text  bg-basePrimary">{otherAttendeeCount}+</p>
+        <p className="gradient-text  bg-basePrimary">{otherAttendeeCount}<span className="text-[22px]">+</span></p>
       
     </div>}
       </div>

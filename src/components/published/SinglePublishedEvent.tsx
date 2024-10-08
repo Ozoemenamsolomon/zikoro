@@ -328,6 +328,7 @@ export default function SinglePublishedEvent({
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
   });
+  const tyo = 'OrthoEx nigeria limited'
 
   return (
     <>
@@ -376,7 +377,7 @@ export default function SinglePublishedEvent({
               )}
 
               <div className="w-full flex gap-y-6 flex-col items-start justify-start mt-4 sm:mt-6">
-                <div className="flex w-[80%] flex-col items-start justify-start gap-y-3">
+                <div className="flex w-full flex-col items-start justify-start gap-y-3">
                   <p>See people attending 👀</p>
 
                   <div className="flex w-full items-center justify-between">
@@ -389,7 +390,7 @@ export default function SinglePublishedEvent({
                       onClick={() => setOpen((p) => !p)}
                       className="flex items-center gap-x-1"
                     >
-                      <span className="whitespace-nowrap">Share Event</span>
+                      <span className="text-sm whitespace-nowrap">Share Event</span>
 
                       <IconifyShareIcon />
                     </button>
@@ -412,11 +413,11 @@ export default function SinglePublishedEvent({
                     <AboutEvent event={eventDetail} coordinates={coordinates} />
                   )}
                   {eventDetail?.locationType?.toLowerCase() !== "remote" ? (
-                    <iframe
-                    style={{ border: 'none' }}
-                    width="100%"
-                    height="150"
-                    src={`https://maps.google.com/maps?q=${encodeURIComponent(eventDetail?.eventAddress)}+(${encodeURIComponent(eventDetail?.eventAddress)})&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;width=100%25&amp;height=150&amp;hl=en&amp;output=embed`}></iframe>
+                   <iframe
+                   style={{ border: 'none' }}
+                   width="100%"
+                   height="300"
+                   src="https://maps.google.com/maps?q=Orthoex%20nigeria%20limited&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;width=100%25&amp;height=300&amp;hl=en&amp;output=embed"></iframe>
                   ) : (
                     <div>Loading...</div>
                   )}
@@ -454,17 +455,19 @@ export default function SinglePublishedEvent({
                       </span>
                     </div>
 
-                    <Button
+                   <div className="w-full fixed sm:sticky bg-white bottom-0 inset-x-0 sm:p-0 p-3 sm:w-fit">
+                   <Button
                       onClick={onClose}
-                      className="rounded-lg w-fit font-medium bg-basePrimary text-white"
+                      className="rounded-lg w-full h-12 sm:h-11 sm:w-fit font-medium bg-basePrimary text-white"
                     >
                       Get Ticket
                     </Button>
+                   </div>
                   </div>
                 </div>
                 <div className="w-full h-fit bg-white rounded-lg border p-2">
                   <h3 className="pb-2 w-full text-center border-b">
-                    Contact Organizer
+                    About the Organizer
                   </h3>
                   <div className="flex w-full flex-col items-center py-4 justify-center gap-3">
                     {eventDetail?.organization?.organizationLogo &&
@@ -505,6 +508,20 @@ export default function SinglePublishedEvent({
                 {eventDetail && <EventDetail event={eventDetail} />}
               </div>
             </div>
+          </div>
+          <div className="w-full p-3 gap-x-4 bg-white mt-12 flex items-center justify-center">
+                    <Link className="text-sm" href="/create">Create Event</Link>
+                    <Link
+                className="text-xs gap-x-1 flex items-center sm:text-sm"
+                href=""
+              >
+                <p className="hidden md:block">Explore more events</p>
+                <InlineIcon
+                  icon={"material-symbols-light:arrow-insert"}
+                  fontSize={18}
+                  className="rotate-90"
+                />
+              </Link>
           </div>
         </div>
       ) : (

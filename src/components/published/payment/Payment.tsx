@@ -40,6 +40,7 @@ export function Payment({
   searchParams: { eventData }
 }: {
   eventRegistrationRef: string;
+  searchParams: any
 }) {
   const { sendTransactionDetail, loading } = useUpdateTransactionDetail();
   const [isSuccessModal, setSuccessModal] = useState(false);

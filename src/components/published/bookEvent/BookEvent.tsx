@@ -729,7 +729,8 @@ export function BookEvent({
                     </p>
                   </div>}
                 </div>
-           <div className="w-full inset-x-0 md:bg-white md:p-2 md:absolute bottom-0 md:h-32">
+           <div className="w-full inset-x-0 flex flex-col items-center justify-center md:bg-white md:p-2 md:absolute bottom-0 md:h-32">
+            <p className="text-red-500 text-sm font-medium">You must select a ticket type to continue</p>
            <Button
                   disabled={
                     chosenAttendee?.length === 0 || pathname.includes("preview")

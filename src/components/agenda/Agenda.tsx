@@ -31,6 +31,7 @@ export default function Agenda({
 }: {
   eventId: string;
   isReception?: boolean;
+  searchParams: any
 }) {
   const router = useRouter();
   const pathname = usePathname();
