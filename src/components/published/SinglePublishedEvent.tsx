@@ -345,7 +345,8 @@ export default function SinglePublishedEvent({
             <div className="flex items-center gap-x-2">
               <Link
                 className="text-xs gap-x-1 flex items-center sm:text-sm"
-                href=""
+                target="_blank"
+                href={`${window.location.origin}/workspaces?name=${eventDetail?.organization?.organizationName}&orgLogo=true&zikoroLogo=false&logo=null&showCategories=true&showFilter=true`}
               >
                 <p className="hidden md:block">Explore more events</p>
                 <InlineIcon
@@ -512,8 +513,9 @@ export default function SinglePublishedEvent({
           <div className="w-full p-3 gap-x-4 bg-white mt-12 flex items-center justify-center">
                     <Link className="text-sm" href="/create">Create Event</Link>
                     <Link
+                       target="_blank"
                 className="text-xs gap-x-1 flex items-center sm:text-sm"
-                href=""
+                href={`${window.location.origin}/workspaces?name=${eventDetail?.organization?.organizationName}&orgLogo=true&zikoroLogo=false&logo=null&showCategories=true&showFilter=true`}
               >
                 <p className="hidden md:block">Explore more events</p>
                 <InlineIcon
