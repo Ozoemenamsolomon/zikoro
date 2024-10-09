@@ -94,7 +94,7 @@ const Badges = ({
       });
 
       if (editedBadge) {
-        router.push(`create?badgeAlias=${editedBadge.badgeAlias}`);
+        router.push(`edit/${editedBadge.badgeAlias}`);
       }
     }
   };

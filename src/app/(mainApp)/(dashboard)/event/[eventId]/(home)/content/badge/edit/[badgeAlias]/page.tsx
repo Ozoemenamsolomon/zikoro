@@ -24,12 +24,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSection";
-// import { StoreType } from "polotno/model/store";
+import { StoreType } from "polotno/model/store";
 import { uploadFile } from "@/utils/helpers";
 
-// const Editor = dynamic(() => import("@/components/GraphicsEditor/editor"), {
-//   ssr: false,
-// });
+const Editor = dynamic(() => import("@/components/GraphicsEditor/Editor"), {
+  ssr: false,
+});
 
 const DEFAULT_JSON = {
   width: 595.2755905511812,
@@ -351,9 +351,9 @@ export default function Page({
     if (badgeIsLoading) return;
 
     if (badge) {
-      setTitle(badge.title);
-      setSettings(badge.settings);
-      setJson(badge.badgeHash);
+      badge.title && setTitle(badge.title);
+      badge.settings && setSettings(badge.settings);
+      badge.badgeHash && setJson(badge.badgeHash);
     }
   }, [badge]);
 
@@ -404,11 +404,11 @@ export default function Page({
               eventId={eventId}
             />
           </section>
-          {/* <Editor
+          <Editor
             json={badgeJSON}
             onSave={onSubmit}
             isLoading={isLoading || pending}
-          /> */}
+          />
         </>
       ) : (
         <div className="h-1/2 w-full flex items-center justify-center">
@@ -443,7 +443,7 @@ const BadgeSettings = ({
   const { attendees, isLoading } = useGetAttendees({ eventId });
 
   const [selectedAttendees, setSelectedAttendees] = useState<TAttendee[]>(
-    settings.canReceive.exceptions
+    settings?.canReceive.exceptions
       ? attendees.filter(
           ({ id }) => id && settings.canReceive.exceptions?.includes(id)
         )
