@@ -4,7 +4,7 @@ import { cn } from "@/lib";
 import { TAttendee } from "@/types";
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import Link from "next/link"
+import Link from "next/link";
 
 function ImageWidget({
   attendee,
@@ -13,8 +13,15 @@ function ImageWidget({
   className?: string;
   attendee: TAttendee;
 }) {
+  const [clickMobile, setClickMobile] = useState(false)
   return (
     <div
+    onClick={() => {
+      setClickMobile(true)
+      setTimeout(() => {
+          setClickMobile(false)
+      },1000)
+    }}
       className={cn(
         "relative h-[50px] w-[50px] rounded-full group border-4 border-[#F7F8FF] flex items-center bg-gray-200 uppercase font-medium text-lg justify-center",
         className
@@ -30,11 +37,24 @@ function ImageWidget({
           height={100}
         />
       ) : (
-        <p className="gradient-text  bg-basePrimary">{attendee?.firstName[0]}{attendee?.lastName[0]}</p>
+        <p className="gradient-text  bg-basePrimary">
+          {attendee?.firstName[0]}
+          {attendee?.lastName[0]}
+        </p>
       )}
-      <div className="w-fit min-w-[230px] hidden absolute -bottom-14 items-start flex-col  left-1 group-hover:flex border-gradient p-1 ">
-      <p className="gradient-text flex  bg-basePrimary text-sm capitalize gap-x-1"><span>{attendee?.firstName}</span> <span>{attendee?.lastName?.charAt(0)}.</span></p>
-      <Link className="text-sm capitalize gradient-text bg-basePrimary" href="">Register to see all participants</Link>
+      <div
+      onClick={(e) => e.stopPropagation()}
+      className={cn("w-fit min-w-[230px] hidden absolute -bottom-14 items-start flex-col  left-1 group-hover:flex border-gradient p-1 ", clickMobile && "block")}>
+        <p className="gradient-text flex  bg-basePrimary text-sm capitalize gap-x-1">
+          <span>{attendee?.firstName}</span>{" "}
+          <span>{attendee?.lastName?.charAt(0)}.</span>
+        </p>
+        <Link
+          className="text-sm capitalize gradient-text bg-basePrimary"
+          href=""
+        >
+          Register to see all participants
+        </Link>
       </div>
     </div>
   );
@@ -46,7 +66,6 @@ export function SinglePublishedEventAttendeeWidget({
   attendees: TAttendee[];
 }) {
   const [otherAttendeeCount, setOtherAttendeeCount] = useState(0);
-
 
   const slicedArray = useMemo(() => {
     if (Array.isArray(attendees)) {
@@ -63,19 +82,28 @@ export function SinglePublishedEventAttendeeWidget({
           <ImageWidget
             key={index}
             attendee={attendee}
-            className={index === 0 ? "-left-[3%]": index === 1 ? "-left-[13%]" : index === 2 ? "-left-[24%]" : index === 3 ? "-left-[35%]" :""}
+            className={
+              index === 0
+                ? "-left-[3%]"
+                : index === 1
+                ? "-left-[13%]"
+                : index === 2
+                ? "-left-[24%]"
+                : index === 3
+                ? "-left-[35%]"
+                : ""
+            }
           />
         ))}
-        {otherAttendeeCount > 0 && <div
-      className="relative -left-[45%] h-[50px] w-[50px] rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-lg justify-center"
-      
-    >
-      
-        <p className="gradient-text  bg-basePrimary"><span className="text-[22px]">+</span>{otherAttendeeCount}</p>
-      
-    </div>}
+        {otherAttendeeCount > 0 && (
+          <div className="relative -left-[45%] h-[50px] w-[50px] rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-lg justify-center">
+            <p className="gradient-text  bg-basePrimary">
+              <span className="text-[22px]">+</span>
+              {otherAttendeeCount}
+            </p>
+          </div>
+        )}
       </div>
-     
     </div>
   );
 }

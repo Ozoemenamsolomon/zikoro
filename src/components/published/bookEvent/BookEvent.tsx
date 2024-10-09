@@ -103,6 +103,7 @@ export function BookEvent({
   const { sendTransactionDetail } = useTransactionDetail();
   const [chosenAttendee, setChosenAttendee] = useState<TChosenAttendee[]>([]);
   const [description, setDescription] = useState("");
+  const [isNotSelectedTicket, setIsNoteSelectedTicket] = useState(false)
   const form = useForm<z.infer<typeof eventBookingValidationSchema>>({
     resolver: zodResolver(eventBookingValidationSchema),
     defaultValues: {},
@@ -408,7 +409,7 @@ export function BookEvent({
     return result;
   }
 
-  //
+  
 
   function formatTicketPrice(attendees: TChosenAttendee[]): TChosenTicket[] {
     // init a Map to hold the sum of prices for each ticketType
@@ -445,6 +446,11 @@ export function BookEvent({
     return result;
   }
 
+  // useEffect(() => {
+  //   if (chosenAttendee.length === 0) {
+  //     setIsNoteSelectedTicket(true)
+  //   }
+  // },[chosenAttendee])
   return (
     <>
       <div
@@ -560,7 +566,7 @@ export function BookEvent({
                 )}
               </div>
 
-              <div className="w-full lg:h-[570px] pb-32 space-y-5 no-scrollbar lg:overflow-y-auto">
+              <div className="w-full lg:h-[480px] pb-32 space-y-5 no-scrollbar lg:overflow-y-auto">
                 <div className="grid grid-cols-1 gap-6  items-center w-full">
                   {Array.isArray(pricingArray) &&
                     pricingArray &&
@@ -680,11 +686,13 @@ export function BookEvent({
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       e.preventDefault();
+                                      
                                       addChosenAttendee(
                                         v?.attendeeType,
                                         v?.price,
                                         index
                                       );
+                                      setIsNoteSelectedTicket(false)
                                     }}
                                     className={cn(
                                       "px-0 h-fit w-fit text-basePrimary"
@@ -730,13 +738,20 @@ export function BookEvent({
                   </div>}
                 </div>
            <div className="w-full inset-x-0 flex flex-col items-center justify-center md:bg-white md:p-2 md:absolute bottom-0 md:h-32">
-            <p className="text-red-500 text-sm font-medium">You must select a ticket type to continue</p>
+           {isNotSelectedTicket && <p className="text-red-500 text-sm font-medium">You must select a ticket type to continue</p>}
            <Button
                   disabled={
-                    chosenAttendee?.length === 0 || pathname.includes("preview")
+                   pathname.includes("preview")
                   }
                   type="submit"
-                  onClick={() => setActive(2)}
+                  onClick={() => {
+                    if (chosenAttendee?.length === 0) {
+                      setIsNoteSelectedTicket(true)
+                      return 
+                    }
+                    setActive(2)
+                  
+                  }}
                   className={cn(
                     "h-14 w-full gap-x-2 bg-basePrimary hover:bg-opacity-90 transition-all duration-300 ease-in-out transform text-white font-medium",
                     (chosenAttendee?.length === 0 ||
