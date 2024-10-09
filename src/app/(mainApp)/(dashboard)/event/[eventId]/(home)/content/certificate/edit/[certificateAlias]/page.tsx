@@ -33,9 +33,9 @@ import { uploadFile } from "@/utils/helpers";
 import { addDays, addYears } from "date-fns";
 import useEventStore from "@/store/globalEventStore";
 
-const Editor = dynamic(() => import("@/components/GraphicsEditor/Editor"), {
-  ssr: false,
-});
+// const Editor = dynamic(() => import("@/components/GraphicsEditor/Editor"), {
+//   ssr: false,
+// });
 
 const DEFAULT_JSON = {
   width: 595.2755905511812,
@@ -243,11 +243,11 @@ export default function Page({
               eventId={eventId}
             />
           </section>
-          <Editor
+          {/* <Editor
             json={certificateJSON}
             onSave={onSubmit}
             isLoading={isLoading || pending}
-          />
+          /> */}
         </>
       ) : (
         <div className="h-1/2 w-full flex items-center justify-center">
