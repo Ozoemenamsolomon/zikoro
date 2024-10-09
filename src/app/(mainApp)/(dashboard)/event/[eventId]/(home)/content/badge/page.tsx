@@ -62,7 +62,7 @@ const Badges = ({
   const createBadgeFn = () =>
     startTransition(async () => {
       try {
-        const badge = await createBadge();
+        const badge = await createBadge({ payload: { eventAlias: eventId } });
 
         if (badge) {
           router.push(`badge/edit/${badge.badgeAlias}`);
