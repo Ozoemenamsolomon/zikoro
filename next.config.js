@@ -4,6 +4,13 @@ const nextConfig = {
   images: {
     domains: ["res.cloudinary.com"],
   },
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        canvas: { browser: "./empty.js" },
+      },
+    },
+  },
 };
 
 module.exports = nextConfig;
