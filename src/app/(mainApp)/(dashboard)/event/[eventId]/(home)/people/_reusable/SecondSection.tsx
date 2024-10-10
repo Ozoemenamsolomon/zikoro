@@ -704,7 +704,7 @@ export default function SecondSection({
                     maxWidth: "100%",
                     width: "100%",
                   }}
-                  value={`www.zikoro.com/event/${event.eventAlias}/${id}`}
+                  value={`www.zikoro.com/event/${event.eventAlias}/people/info/${attendeeAlias}`}
                   viewBox={`0 0 256 256`}
                 />
               </div>
