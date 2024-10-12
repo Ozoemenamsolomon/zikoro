@@ -49,6 +49,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   // const user = getCookie("user");
   const event = useEventStore((state) => state.event);
   const { eventId } = useParams();
+  const searchParams = useSearchParams();
 
   const [selectedAttendee, setSelectedAttendee] = useState<TAttendee>(null);
 
@@ -57,7 +58,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   const onGetAttendees = async () => {
     await getAttendees();
   };
-  
+
   const router = useRouter();
   const pathname = usePathname() || "/";
 

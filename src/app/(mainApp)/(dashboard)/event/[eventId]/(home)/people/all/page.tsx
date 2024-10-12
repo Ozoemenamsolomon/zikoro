@@ -1,14 +1,18 @@
 "use client";
 import { useGetAttendees } from "@/hooks/services/attendee";
-import React from "react";
+import React, { Suspense } from "react";
 import ReusablePeopleComponent from "../_reusable";
-import { useParams } from "next/navigation";
 
-export default function page() {
-  const { eventId } = useParams();
+export default function page({
+  params: { eventId },
+}: {
+  params: { eventId: string };
+}) {
   const useGetAttendeesprops = useGetAttendees({ eventId });
 
-  
-
-  return <ReusablePeopleComponent {...useGetAttendeesprops} />;
+  return (
+    <Suspense fallback={<>Loading...</>}>
+      <ReusablePeopleComponent {...useGetAttendeesprops} />
+    </Suspense>
+  );
 }

@@ -150,14 +150,14 @@ const moreOptions: TMoreOptions[] = [
     label: "Change Attendee Type",
     Component: ChangeAttendeeType,
   },
-  {
-    label: "Print Badges",
-    Component: PrintBadges,
-  },
-  {
-    label: "Certificates",
-    Component: CertificateDialog,
-  },
+  // {
+  //   label: "Print Badges",
+  //   Component: PrintBadges,
+  // },
+  // {
+  //   label: "Certificates",
+  //   Component: CertificateDialog,
+  // },
   {
     label: "Import Attendees",
     Component: ImportAttendees,

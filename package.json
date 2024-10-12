@@ -78,7 +78,7 @@
     "nanoid": "^5.0.7",
     "next": "^14.2.7",
     "next-share": "^0.27.0",
-    "polotno": "^2.13.7",
+    "polotno": "^2.14.1",
     "qrcode": "^1.5.3",
     "re-resizable": "^6.9.11",
     "react": "^18.2.0",
