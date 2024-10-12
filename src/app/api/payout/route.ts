@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
         .from("payOut")
         .select("*, user:users!inner(*), organization!inner(*)");
 
-      console.log(data);
+      // console.log(data);
 
       if (error) throw error;
 

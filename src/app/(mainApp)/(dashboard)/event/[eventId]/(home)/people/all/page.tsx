@@ -13,15 +13,8 @@ export default function page({
   const useGetAttendeesprops = useGetAttendees({ eventId });
 
   return (
-<<<<<<< Updated upstream
     <Suspense fallback={<>Loading...</>}>
       <ReusablePeopleComponent {...useGetAttendeesprops} />
     </Suspense>
-=======
-    <ReusablePeopleComponent
-      attendeeAlias={attendeeAlias}
-      {...useGetAttendeesprops}
-    />
->>>>>>> Stashed changes
   );
 }

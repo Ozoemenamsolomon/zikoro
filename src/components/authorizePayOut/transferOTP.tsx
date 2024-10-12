@@ -52,6 +52,8 @@ export default function TransferOTP({
 }) {
   const { user } = useUserStore();
 
+  console.log(user, "user");
+
   if (!user) return null;
 
   const [timer, setTimer] = useState<number>(60);
@@ -89,6 +91,7 @@ export default function TransferOTP({
   }, []);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (!user) return null;
     const { reference, status } = await finalizePayOut({
       payload: {
         transferCode,
@@ -162,7 +165,7 @@ export default function TransferOTP({
           Submit OTP
         </Button>{" "}
         <DialogClose>
-          <button className="hidden" ref={clsBtnRef}>
+          <button type="button" className="hidden" ref={clsBtnRef}>
             close
           </button>
         </DialogClose>

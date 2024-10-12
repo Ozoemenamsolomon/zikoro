@@ -173,7 +173,7 @@ export default function ThirdSection({
   if (String(event?.createdBy) === String(user.id)) {
     return (
       <>
-        <div className="mb-6 mt-2 space-y-4">
+        <div className="mb-6 mt-2 space-y-4 bg-[#F9FAFF]">
           <h4 className="text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
             Payment
           </h4>
@@ -284,7 +284,7 @@ export default function ThirdSection({
             </>
           )}
         </div>
-        <section className="mb-2 pt-2 border-t-[1px] space-y-4 bg-gray-100">
+        <section className="mb-2 pt-2 border-t-[1px] space-y-4 bg-[#F9FAFF]">
           <h4 className="font-semibold text-gray-800 bg-white p-2 m-2 rounded-xl">
             Reward Points
           </h4>
@@ -344,7 +344,7 @@ export default function ThirdSection({
   }, [sponsors]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-[#F9FAFF]">
       <h3 className="px-2 text-xl font-bold text-gray-800">Sponsors</h3>
       {loading && (
         <div className="w-full col-span-full h-[300px] flex items-center justify-center">
@@ -371,11 +371,7 @@ export default function ThirdSection({
         <div className="overflow-auto hide-scrollbar" ref={divRef}>
           <div className="grid items-center gap-4 px-2">
             {sponsors.map((sponsor) => (
-              <PartnerCard
-                key={sponsor.id}
-                event={event}
-                sponsor={sponsor}
-              />
+              <PartnerCard key={sponsor.id} event={event} sponsor={sponsor} />
             ))}
           </div>
         </div>

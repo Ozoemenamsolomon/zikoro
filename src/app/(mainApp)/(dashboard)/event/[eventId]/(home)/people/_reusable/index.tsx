@@ -158,7 +158,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
       className="relative h-fit md:border-t w-full grid md:grid-cols-10 overflow-hidden pb-12"
       ref={divRef}
     >
-      <section className="md:col-span-3 border-r-[1px] border-[#F3F3F3] md:pt-2">
+      <section className="md:col-span-3 border-r-[1px] border-[#F3F3F3] md:pt-2 bg-white">
         <FirstSection
           onOpen={onOpenAttendeeForm}
           onSelectAttendee={selectAttendee}

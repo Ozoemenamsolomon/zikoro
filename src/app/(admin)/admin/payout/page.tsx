@@ -197,7 +197,7 @@ export default function page() {
     userId: user?.id || 0,
   });
 
-  console.log(payOuts, "payouts");
+  console.log(user, "user");
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<IPayOut>({
