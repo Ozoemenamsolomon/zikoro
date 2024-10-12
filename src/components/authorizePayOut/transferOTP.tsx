@@ -27,6 +27,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
+import useUserStore from "@/store/globalUserStore";
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
@@ -49,7 +50,9 @@ export default function TransferOTP({
   requestedBy: TUser;
   amount: number;
 }) {
-  const user = getCookie("user");
+  const { user } = useUserStore();
+
+  if (!user) return null;
 
   const [timer, setTimer] = useState<number>(60);
   const [isResendDisabled, setIsResendDisabled] = useState<boolean>(true);
