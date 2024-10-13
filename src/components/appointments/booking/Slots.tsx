@@ -24,7 +24,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, h
 
   const [error, setError] = useState('')
   const pathname = usePathname()
-  const isBooking = pathname.includes('booking')
+  const isBooking = pathname.includes('booking') || pathname.includes('contacts')
 
   const fetchBookedSlots = async () => {
     setLoading(true)
@@ -137,7 +137,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, h
   const isDisabled = !bookingFormData?.appointmentDate || !bookingFormData?.appointmentTime  
 
   return (
-    <div className="bg-white relative overflow-hidden md:w-80 flex-1 flex-shrink-0 rounded-lg  ">
+    <div className="bg-white relative overflow-hidden md:w-full rounded-lg  ">
       {loading && isBooking ? 
         <div className="h-full min-h-24 w-full flex justify-center items-center">
           <p>loading...</p> 

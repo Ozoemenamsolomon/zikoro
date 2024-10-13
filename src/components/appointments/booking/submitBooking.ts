@@ -1,5 +1,6 @@
 import { format, parse } from "date-fns";
-import { AppointmentLink, Booking } from "@/types/appointments";
+import { AppointmentLink, Booking, BookingsContact } from "@/types/appointments";
+import { useBookingsContact } from "@/hooks";
 
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 type ValidateFunction = () => boolean;
@@ -17,6 +18,7 @@ interface SubmitBookingProps {
     maxBookingLimit: number;
     appointmentLink:AppointmentLink|null;
     pathname:any;
+    insertBookingsContact: (contact: BookingsContact) => void
 }
 
 export const submitBooking = async ({
@@ -32,18 +34,19 @@ export const submitBooking = async ({
     maxBookingLimit,
     appointmentLink,
     pathname,
+    insertBookingsContact,
 }: SubmitBookingProps): Promise<{ bookingSuccess?: boolean; emailSuccess?: boolean }> => {
+
     setLoading(true);
     setErrors({});
     setSuccess('')
 
     let bookingSuccess=false, emailSuccess=false
 
-    if (validate && !validate() && !pathname.includes('bookings')) {
-        console.log('NO VALIDATE')
-        setLoading(false);
-        return {bookingSuccess, emailSuccess}
-    }
+    // if (validate && !validate() && !pathname.includes('bookings')) {
+    //     setLoading(false);
+    //     return {bookingSuccess, emailSuccess}
+    // }
 
     const timeStamp = generateAppointmentTime({
         timeRange: bookingFormData?.appointmentTime!,
@@ -51,6 +54,19 @@ export const submitBooking = async ({
     });
 
     try {
+        // const sampleData: BookingsContact = {
+        //     email: 'dube.doe@example.com',
+        //     phone: '123-456-7890',
+        //     whatsapp: '+1234567890',
+
+        //     firstName: 'John',
+        //     lastName: 'Doe',
+        //     createdBy: 1001,
+        //     favorite: true,
+        //     profileImg: 'https://example.com/profile.jpg',
+        //     age: 30,
+        //   };
+        // await insertBookingsContact(sampleData)
         const response = await fetch('/api/appointments/booking', {
             method: 'POST',
             headers: {
@@ -84,9 +100,20 @@ export const submitBooking = async ({
             // console.log({email: await res.json(), appointmentLink, timeStamp})
             if(res.ok){
                 emailSuccess=true
-            console.log('==GOOD RES==')
+                console.log('==GOOD RES==')
 
                 setSuccess('Booking was successful, email reminder sent')
+                // insert contact
+                
+                let newContact:BookingsContact = {
+                    email: bookingFormData?.participantEmail,
+                    phone: bookingFormData?.phone,
+                    whatsapp: '',
+                    firstName: bookingFormData?.firstName,
+                    lastName: bookingFormData?.lastName,
+                    createdBy: appointmentLink?.createdBy?.id,
+                } 
+                await insertBookingsContact(newContact)
             } else {
             console.log('==BAD RES==')
             setSuccess(`Booking successful, some emails couldn't send`)

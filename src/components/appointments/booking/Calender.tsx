@@ -51,8 +51,7 @@ slots: Slot[];
 const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) => {
     const [slotsLoading, setSlotsLoading] = useState(true)
     const [hasCategory, setHasCategory] = useState(false)
-    const {isFormUp} = useAppointmentContext()
-    const {bookingFormData, setBookingFormData} = useAppointmentContext()
+    const {bookingFormData,isFormUp, setBookingFormData} = useAppointmentContext()
 
     let today = startOfToday();
     let [selectedDay, setSelectedDay] = useState<Date>();
@@ -134,7 +133,7 @@ const Calender: React.FC<CalendarProps> = ({ appointmnetLink, fetchingData }) =>
   const normalizedSelectedDay = startOfDay(selectedDay!);
 
   const appointmentTypeJson: Category[] = JSON.parse(appointmnetLink?.category || `[]`);
-console.log({appointmentTypeJson})
+// console.log({appointmentTypeJson})
   const appointmentTypes: { label: string, value: string }[] = appointmentTypeJson ?
     appointmentTypeJson.map((item: Category) => ({
       label: item.name || '',
@@ -174,7 +173,7 @@ console.log({appointmentTypeJson})
         isFormUp==='details' ?
         <DetailsForm appointmentLink={appointmnetLink}/>
         :
-        <div className="w-full md:max-h-[70vh] gap-6 max-sm:space-y-6 sm:flex ">
+        <div className="w-full md:max-h-[70vh] gap- max-sm:space-y-6 sm:flex ">
             <div className=" bg-white  sm:w-3/5 p-4 rounded-lg  flex-shrink-0 ">
 
                 {appointmnetLink?.category && Array.isArray(appointmentTypeJson) && appointmentTypeJson.length ? 

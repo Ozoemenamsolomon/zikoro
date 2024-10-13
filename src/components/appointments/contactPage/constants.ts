@@ -1,5 +1,6 @@
 export type ContactDummy = {
     name: string;
+    profileImg?: string;
     email: string;
     phoneNumber: string;
     whatsappNumber: string;
@@ -9,6 +10,7 @@ export type ContactDummy = {
       website?: string;
       github?: string;
     };
+    linkss?: {url:string,title:string}[];
     instagram: string;
     linkedin: string;
     favorite: boolean;
@@ -18,6 +20,7 @@ export type ContactDummy = {
   const contacts: ContactDummy[] = [
     {
       name: "John Doe",
+      profileImg: "John Doe",
       email: "john.doe@email.com",
       phoneNumber: "+12345678901",
       whatsappNumber: "+12345678901",
@@ -31,6 +34,7 @@ export type ContactDummy = {
       linkedin: "https://linkedin.com/in/johndoe",
       favorite: true,
       age: 29,
+      linkss: [ {title: '', url: ""},]
     },
     {
       name: "Jane Smith",
@@ -47,6 +51,9 @@ export type ContactDummy = {
       linkedin: "https://linkedin.com/in/janesmith",
       favorite: false,
       age: 34,
+      linkss: [ {title: 'instagram', url: "https://instagram.com/johndoe"},
+        {title: 'instagram', url: "https://instagram.com/johndoe"},
+       ]
     },
     {
       name: "Michael Johnson",
@@ -115,24 +122,25 @@ export type ContactDummy = {
   export const contactNavSub = [
     {
       label: 'Contact Info',
-      query: 'contact-info',
+      link: '/appointments/contacts',
     },
     {
       label: 'Appointment History',
-      query: 'appointment-history',
+      link: '/appointments/contacts/appointment-history',
     },
     {
       label: 'Notes',
-      query: 'notes',
+      link: '/appointments/contacts/notes',
     },
     {
       label: 'Media',
-      query: 'media',
+      link: '/appointments/contacts/media',
     },
     {
       label: 'Analytics',
-      query: 'analytics',
+      link: '/appointments/contacts/analytics',
     },
     
   ]
   
+
