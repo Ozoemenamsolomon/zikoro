@@ -7,9 +7,9 @@ export const PeopleLinks: (TLink & { hideFromAttendee?: boolean })[] = [
     href: "released_certificates",
     hideFromAttendee: true,
   },
-  { name: "favorites", href: "favorites" },
-  { name: "tags", href: "tags" },
-  { name: "notes", href: "notes" },
+  // { name: "favorites", href: "favorites" },
+  // { name: "tags", href: "tags" },
+  // { name: "notes", href: "notes" },
   { name: "invites", href: "invites", hideFromAttendee: true },
 ];
 
