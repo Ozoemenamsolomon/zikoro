@@ -37,6 +37,8 @@ const IntializePayOut = ({
     setStep(2);
 
     console.log(status, transferCode);
+
+    console.log(organization.payoutAccountDetails, "payout");
   };
   return (
     <div className="space-y-4">

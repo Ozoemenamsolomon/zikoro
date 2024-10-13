@@ -6,7 +6,7 @@ import Sent from "./sent";
 
 const Email = () => {
   return (
-    <Tabs defaultValue="create">
+    <Tabs defaultValue="create" className="bg-[#F9FAFF]">
       <TabsList className="bg-transparent px-4 border-b pb-3 pt-2 flex justify-start w-full rounded-none pl-[60px] lg:pl-[30px]">
         <TabsTrigger
           className="py-3 data-[state=active]:shadow-none px-4 data-[state=active]:bg-transparent data-[state=active]:text-basePrimary rounded-none"

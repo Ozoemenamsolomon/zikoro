@@ -31,6 +31,7 @@ interface ReusablePeopleComponentProps {
   getAttendees: () => Promise<void>;
   isLoading: boolean;
   error: boolean;
+  attendeeAlias: string;
 }
 
 const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
@@ -38,6 +39,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   getAttendees,
   isLoading,
   error,
+  attendeeAlias,
 }) => {
   const {
     isOpen: attendeeFormIsOpen,
@@ -46,6 +48,8 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   } = useDisclose();
   console.log(attendees.map(({ attendeeAlias }) => attendeeAlias));
   const { user, setUser } = useUserStore();
+
+  console.log(user, "user");
   // const user = getCookie("user");
   const event = useEventStore((state) => state.event);
   const { eventId } = useParams();
@@ -62,7 +66,6 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   const router = useRouter();
   const pathname = usePathname() || "/";
 
-  const attendeeAlias = searchParams.get("attendeeAlias");
   const [initialSelectionMade, setInitialSelectionMade] =
     useState<boolean>(false);
 
@@ -155,7 +158,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
       className="relative h-fit md:border-t w-full grid md:grid-cols-10 overflow-hidden pb-12"
       ref={divRef}
     >
-      <section className="md:col-span-3 border-r-[1px] border-[#F3F3F3] md:pt-2">
+      <section className="md:col-span-3 border-r-[1px] border-[#F3F3F3] md:pt-2 bg-white">
         <FirstSection
           onOpen={onOpenAttendeeForm}
           onSelectAttendee={selectAttendee}

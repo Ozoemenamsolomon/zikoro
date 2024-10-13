@@ -144,7 +144,7 @@ const Attendee: React.FC<AttendeeProps> = ({
   return (
     <button
       className={`w-full grid grid-cols-10 items-center gap-1.5 p-1.5 border-b border-gray-100 ${
-        isSelected ? "bg-gray-100" : ""
+        isSelected ? "bg-[#F9FAFF]" : ""
       }`}
       onClick={() =>
         window.innerWidth > 768

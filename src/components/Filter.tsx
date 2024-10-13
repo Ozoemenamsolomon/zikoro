@@ -300,7 +300,7 @@ function Filter<T>({
                 )}
               >
                 {icon}
-                <span className="text-xs font-medium text-ticketColor capitalize">
+                <span className="text-xs font-medium text-gray-700 capitalize">
                   {label}
                 </span>
               </MenubarTrigger>
