@@ -51,6 +51,7 @@ import { getCookie } from "@/hooks";
 import { TUser } from "@/types";
 import useEventStore from "@/store/globalEventStore";
 import useUserStore from "@/store/globalUserStore";
+import { ReactSelect } from "@/components";
 
 const CreateEmailSchema = z
   .object({
@@ -181,41 +182,22 @@ const Create = () => {
               control={form.control}
               name="category"
               render={({ field }) => (
-                <FormItem className="relative w-full space-y-0">
-                  <FormLabel className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-                    Category
-                    <sup className="text-red-700">*</sup>
-                  </FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder="Select campaign category"
-                            className="[&>*]:text-sm [&>*]:text-gray-200 [&>*]:capitalize w-full"
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="max-h-[250px] hide-scrollbar overflow-auto">
-                        {["announcements", "reminders", "marketing"].map(
-                          (event) => (
-                            <SelectItem
-                              key={event}
-                              value={event}
-                              className="inline-flex gap-2 capitalize"
-                            >
-                              {event}
-                            </SelectItem>
-                          )
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <InputOffsetLabel label={"Category"}>
+                  <ReactSelect
+                    placeHolder="Select Category"
+                    defaultValue={{
+                      label: field.value,
+                      value: field.value,
+                    }}
+                    {...field}
+                    options={["announcements", "reminders", "marketing"].map(
+                      (category) => ({
+                        label: category,
+                        value: category,
+                      })
+                    )}
+                  />
+                </InputOffsetLabel>
               )}
             />
           </div>
@@ -378,17 +360,14 @@ const Create = () => {
             </>
           )}
         </div>
-        <div className="w-full bg-background text-sm relative">
-          <span className="absolute top-0 -translate-y-1/2 right-4 text-gray-900 text-tiny px-1 z-10 bg-white">
-            Message
-          </span>
+        <InputOffsetLabel label="Message">
           <TextEditor
             onChange={setMessage}
             defaultValue={content}
             placeholder="Write message"
           />
-        </div>
-        <div className="flex flex-col md:flex-row gap-8 md:items-center">
+        </InputOffsetLabel>
+        {/* <div className="flex flex-col md:flex-row gap-8 md:items-center">
           <FormField
             control={form.control}
             name="isScheduled"
@@ -499,7 +478,7 @@ const Create = () => {
               )}
             />
           </div>
-        </div>
+        </div> */}
 
         <div className="flex flex-col md:flex-row gap-y-4 gap-8 md:items-center">
           <div className="flex flex-row items-center gap-4 space-y-0 flex-[20%]">
@@ -510,25 +489,24 @@ const Create = () => {
                 className="data-[state=checked]:bg-basePrimary"
               />
             </div>
-            <span className="font-medium text-gray-700 text-sm">
+            <span className="font-medium text-gray-700 text-lg">
               Send test email
             </span>
           </div>
           <div className="relative flex-[50%]">
-            <span className="absolute top-0 -translate-y-1/2 right-4 bg-white text-gray-600 text-tiny px-1">
-              Email
-            </span>
-            <Input
-              className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
-              onInput={(e) => setTestEmail(e.currentTarget.value)}
-              placeholder="Enter email"
-              disabled={!sendTest}
-            />
+            <InputOffsetLabel isRequired={sendTest} label={"email"}>
+              <Input
+                className="placeholder:text-sm placeholder:text-gray-200 text-gray-700"
+                onInput={(e) => setTestEmail(e.currentTarget.value)}
+                placeholder="Enter email"
+                disabled={!sendTest}
+              />
+            </InputOffsetLabel>
           </div>
           <Button
             disabled={isLoading || (sendTest && !testEmail)}
             type="submit"
-            className="bg-basePrimary w-full flex items-center gap-4 flex-[30%]"
+            className="text-gray-50 bg-basePrimary gap-x-2 w-fit py-4"
           >
             <span className="text-white">
               Send {sendTest ? "test" : ""} email

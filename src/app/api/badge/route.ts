@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
       const query = supabase.from("badgeNew").select("*");
       // .select("*, event:events!inner(*, organization!inner(*))");
 
-      // if (eventId) query.eq("eventAlias", eventId);
+      if (eventId) query.eq("eventAlias", eventId);
 
       const { data, error, status } = await query;
 
@@ -47,11 +47,12 @@ export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
   if (req.method === "POST") {
     try {
+      const params = await req.json();
       const badgeAlias = generateAlphanumericHash(12);
 
       const { data, error } = await supabase
         .from("badgeNew")
-        .insert({ badgeAlias })
+        .insert({ badgeAlias, ...params })
         .select()
         .maybeSingle();
 

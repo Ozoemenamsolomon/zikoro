@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AuthorizePayOutDialog from "@/components/authorizePayOut";
+import useUserStore from "@/store/globalUserStore";
 
 export const columns: ColumnDef<IPayOut>[] = [
   // {
@@ -153,6 +154,9 @@ export const columns: ColumnDef<IPayOut>[] = [
       const organization = row.original.organization;
       const payoutInfo = row.original;
       const requestedBy = row.original.user;
+      const { user, setUser } = useUserStore();
+
+      console.log(user, "user");
 
       // if (payoutInfo.payOutStatus !== "requested") return;
 

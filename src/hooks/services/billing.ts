@@ -67,7 +67,7 @@ export const useGetEventTransactions = ({
 
   useEffect(() => {
     getEventTransactions();
-  }, [userId]);
+  }, [userId, organizationId]);
 
   return { eventTransactions, isLoading, error, getEventTransactions };
 };

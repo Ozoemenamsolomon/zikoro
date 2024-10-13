@@ -1,8 +1,12 @@
 "use client";
 import { Input } from "@/components";
 import { Button } from "@/components/ui/button";
-import { useGetAttendees, useGetBadge, useSaveBadge } from "@/hooks";
-import { TAttendee, TBadge, TBadgeSettings } from "@/types";
+import {
+  useGetAttendees,
+  useGetCertificate,
+  useSaveCertificate,
+} from "@/hooks";
+import { TAttendee, TCertificateSettings } from "@/types";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -26,8 +30,10 @@ import {
 import ViewAttendeesSection from "@/components/moreOptionDialog/viewAttendeesSection";
 import { StoreType } from "polotno/model/store";
 import { uploadFile } from "@/utils/helpers";
+import { addDays, addYears } from "date-fns";
+import useEventStore from "@/store/globalEventStore";
 
-// const Editor = dynamic(() => import("@/components/GraphicsEditor/editor"), {
+// const Editor = dynamic(() => import("@/components/GraphicsEditor/Editor"), {
 //   ssr: false,
 // });
 
@@ -91,182 +97,6 @@ const DEFAULT_JSON = {
           backgroundCornerRadius: 0.5,
           backgroundPadding: 0.5,
         },
-        {
-          id: "uJose2-EI4",
-          type: "text",
-          name: "",
-          opacity: 1,
-          visible: true,
-          selectable: true,
-          removable: true,
-          alwaysOnTop: false,
-          showInExport: true,
-          x: 361.0019148742077,
-          y: 402.44488188976374,
-          width: 159,
-          height: 37,
-          rotation: 0,
-          animations: [],
-          blurEnabled: false,
-          blurRadius: 10,
-          brightnessEnabled: false,
-          brightness: 0,
-          sepiaEnabled: false,
-          grayscaleEnabled: false,
-          shadowEnabled: false,
-          shadowBlur: 5,
-          shadowOffsetX: 0,
-          shadowOffsetY: 0,
-          shadowColor: "black",
-          shadowOpacity: 1,
-          draggable: true,
-          resizable: true,
-          contentEditable: true,
-          styleEditable: true,
-          text: "Back Page",
-          placeholder: "",
-          fontSize: 30,
-          fontFamily: "Roboto",
-          fontStyle: "normal",
-          fontWeight: "normal",
-          textDecoration: "",
-          fill: "black",
-          align: "center",
-          verticalAlign: "top",
-          strokeWidth: 0,
-          stroke: "black",
-          lineHeight: 1.2,
-          letterSpacing: 0,
-          backgroundEnabled: false,
-          backgroundColor: "#7ED321",
-          backgroundOpacity: 1,
-          backgroundCornerRadius: 0.5,
-          backgroundPadding: 0.5,
-        },
-        {
-          id: "np671LPbnp",
-          type: "group",
-          name: "",
-          opacity: 1,
-          visible: true,
-          selectable: true,
-          removable: true,
-          alwaysOnTop: false,
-          showInExport: true,
-          children: [
-            {
-              id: "mvJbAt62HS",
-              type: "line",
-              name: "",
-              opacity: 1,
-              visible: true,
-              selectable: true,
-              removable: true,
-              alwaysOnTop: false,
-              showInExport: true,
-              x: 299.5079884365382,
-              y: 124.26562220267525,
-              width: 607.0622462048799,
-              height: 2.006753691367091,
-              rotation: 90,
-              animations: [],
-              blurEnabled: false,
-              blurRadius: 10,
-              brightnessEnabled: false,
-              brightness: 0,
-              sepiaEnabled: false,
-              grayscaleEnabled: false,
-              shadowEnabled: false,
-              shadowBlur: 5,
-              shadowOffsetX: 0,
-              shadowOffsetY: 0,
-              shadowColor: "black",
-              shadowOpacity: 1,
-              draggable: true,
-              resizable: true,
-              contentEditable: true,
-              styleEditable: true,
-              color: "black",
-              dash: [4, 1],
-              startHead: "",
-              endHead: "",
-            },
-            {
-              id: "z807cARlyw",
-              type: "line",
-              name: "",
-              opacity: 1,
-              visible: true,
-              selectable: true,
-              removable: true,
-              alwaysOnTop: false,
-              showInExport: true,
-              x: 4.4941828036826337e-13,
-              y: 731.3278684075549,
-              width: 597.0092231817086,
-              height: 2.006753691367091,
-              rotation: 0,
-              animations: [],
-              blurEnabled: false,
-              blurRadius: 10,
-              brightnessEnabled: false,
-              brightness: 0,
-              sepiaEnabled: false,
-              grayscaleEnabled: false,
-              shadowEnabled: false,
-              shadowBlur: 5,
-              shadowOffsetX: 0,
-              shadowOffsetY: 0,
-              shadowColor: "black",
-              shadowOpacity: 1,
-              draggable: true,
-              resizable: true,
-              contentEditable: true,
-              styleEditable: true,
-              color: "black",
-              dash: [4, 1],
-              startHead: "",
-              endHead: "",
-            },
-            {
-              id: "wywaCr2Jl9",
-              type: "line",
-              name: "",
-              opacity: 1,
-              visible: true,
-              selectable: true,
-              removable: true,
-              alwaysOnTop: false,
-              showInExport: true,
-              x: -3.2862601528904634e-14,
-              y: 123.262245356992,
-              width: 597.0092231817092,
-              height: 2.006753691367091,
-              rotation: 0,
-              animations: [],
-              blurEnabled: false,
-              blurRadius: 10,
-              brightnessEnabled: false,
-              brightness: 0,
-              sepiaEnabled: false,
-              grayscaleEnabled: false,
-              shadowEnabled: false,
-              shadowBlur: 5,
-              shadowOffsetX: 0,
-              shadowOffsetY: 0,
-              shadowColor: "black",
-              shadowOpacity: 1,
-              draggable: true,
-              resizable: true,
-              contentEditable: true,
-              styleEditable: true,
-              color: "black",
-              dash: [4, 1],
-              startHead: "",
-              endHead: "",
-            },
-          ],
-        },
       ],
       width: 595.2755905511812,
       height: 841.8897637795276,
@@ -281,19 +111,22 @@ const DEFAULT_JSON = {
 };
 
 export default function Page({
-  searchParams: { eventId, badgeAlias },
+  params: { eventId, certificateAlias },
 }: {
-  searchParams: {
+  params: {
     eventId: string;
-    badgeAlias: string;
+    certificateAlias: string;
   };
 }) {
-  const badgeDivRef = useRef<HTMLDivElement>(null);
+  console.log(eventId, certificateAlias, "eventId");
+  const { event } = useEventStore();
+  const certificateDivRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathName = usePathname() || "/";
-  const [badgeJSON, setJson] = useState<Record<string, any>>(DEFAULT_JSON);
+  const [certificateJSON, setJson] =
+    useState<Record<string, any>>(DEFAULT_JSON);
   const [title, setTitle] = useState<string>("untitled");
-  const [settings, setSettings] = useState<TBadgeSettings>({
+  const [settings, setSettings] = useState<TCertificateSettings>({
     canReceive: {
       eventAttendees: true,
       quizParticipants: true,
@@ -301,16 +134,21 @@ export default function Page({
       trackAttendees: true,
       exceptions: [],
     },
+    criteria: 100,
+    canExpire: false,
+    expiryDate: addYears(new Date(), 1),
+    skills: [],
+    publishOn: addDays(event?.endDateTime || new Date(), 1),
   });
 
-  const { badge, isLoading: badgeIsLoading } = useGetBadge({
-    badgeId: badgeAlias,
+  const { certificate, isLoading: certificateIsLoading } = useGetCertificate({
+    certificateId: certificateAlias,
     isAlias: true,
   });
 
-  console.log(badge, badgeAlias, "badge");
+  console.log(certificate, certificateAlias, "certificate");
 
-  const { saveBadge, isLoading } = useSaveBadge();
+  const { saveCertificate, isLoading } = useSaveCertificate();
 
   const [pending, startTransition] = useTransition();
 
@@ -322,24 +160,25 @@ export default function Page({
         const snapshot = new File([blob], title, { type: "image/svg" });
         const { url: previewUrl, error } = await uploadFile(snapshot, "image");
         if (error || !previewUrl) throw error;
-        const newBadge = await saveBadge({
-          badgeAlias,
+        const newCertificate = await saveCertificate({
           payload: {
-            ...badge,
+            ...certificate,
             settings,
             title,
             previewUrl,
             eventAlias: eventId,
             lastEdited: new Date(),
-            badgeHash: json,
+            certificateHash: json,
           },
         });
 
-        if (newBadge) {
-          setTitle(newBadge.title);
-          setSettings(newBadge.settings);
-          setJson(newBadge.badgeHash);
-          router.push(`${pathName}?badgeAlias=${newBadge.badgeAlias}`);
+        if (newCertificate) {
+          setTitle(newCertificate.title);
+          setSettings(newCertificate.settings);
+          setJson(newCertificate.certificateHash);
+          router.push(
+            `${pathName}?certificateAlias=${newCertificate.certificateAlias}`
+          );
         }
       } catch (error) {
         console.log(error);
@@ -348,35 +187,35 @@ export default function Page({
   };
 
   useEffect(() => {
-    if (badgeIsLoading) return;
+    if (certificateIsLoading) return;
 
-    if (badge) {
-      setTitle(badge.title);
-      setSettings(badge.settings);
-      setJson(badge.badgeHash);
+    if (certificate) {
+      setTitle(certificate.title);
+      setSettings(certificate.settings);
+      setJson(certificate.certificateHash);
     }
-  }, [badge]);
+  }, [certificate]);
 
   useLayoutEffect(() => {
-    const badgeDiv = badgeDivRef.current;
+    const certificateDiv = certificateDivRef.current;
 
-    if (!badgeDiv) return;
+    if (!certificateDiv) return;
     // Get the distance from the top of the div to the bottom of the screen
-    const distanceToBottom = window.innerHeight - badgeDiv.offsetTop;
+    const distanceToBottom = window.innerHeight - certificateDiv.offsetTop;
 
     // Set the maximum height of the div
-    badgeDiv.style.height = `${distanceToBottom}px`;
+    certificateDiv.style.height = `${distanceToBottom}px`;
   }, []);
 
   return (
-    <div ref={badgeDivRef}>
-      {!badgeIsLoading ? (
+    <div ref={certificateDivRef}>
+      {!certificateIsLoading ? (
         <>
           <section className="border-b flex justify-between px-4 py-2">
             <Button
               className="flex gap-2"
               variant={"ghost"}
-              onClick={() => router.push("../badge")}
+              onClick={() => router.push("../certificate")}
             >
               <svg
                 stroke="currentColor"
@@ -398,14 +237,14 @@ export default function Page({
               value={title}
               onInput={(e) => setTitle(e.currentTarget.value)}
             />
-            <BadgeSettings
+            <CertificateSettings
               settings={settings}
               setSettings={setSettings}
               eventId={eventId}
             />
           </section>
           {/* <Editor
-            json={badgeJSON}
+            json={certificateJSON}
             onSave={onSubmit}
             isLoading={isLoading || pending}
           /> */}
@@ -431,13 +270,13 @@ export default function Page({
   );
 }
 
-const BadgeSettings = ({
+const CertificateSettings = ({
   settings,
   setSettings,
   eventId,
 }: {
-  settings: TBadgeSettings;
-  setSettings: React.Dispatch<SetStateAction<TBadgeSettings>>;
+  settings: TCertificateSettings;
+  setSettings: React.Dispatch<SetStateAction<TCertificateSettings>>;
   eventId: string;
 }) => {
   const { attendees, isLoading } = useGetAttendees({ eventId });

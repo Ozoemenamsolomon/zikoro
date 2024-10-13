@@ -704,7 +704,7 @@ export default function SecondSection({
                     maxWidth: "100%",
                     width: "100%",
                   }}
-                  value={`www.zikoro.com/event/${event.eventAlias}/${id}`}
+                  value={`www.zikoro.com/event/${event.eventAlias}/people/info/${attendeeAlias}`}
                   viewBox={`0 0 256 256`}
                 />
               </div>
@@ -739,7 +739,7 @@ export default function SecondSection({
           )}
         </div>
       </section>
-      {user &&
+      {/* {user &&
         (String(event?.createdBy) === String(user.id) ||
           email === user.userEmail) && (
           <AttendeeCredentials
@@ -750,8 +750,8 @@ export default function SecondSection({
             attendeeCertificatesIsLoading={attendeeCertificatesIsLoading}
             getAttendeeCertificates={getAttendeeCertificates}
           />
-        )}
-      <section className="flex justify-between items-center px-2">
+        )} */}
+      {/* <section className="flex justify-between items-center px-2">
         {!badgeIsLoading &&
           !attendeeBadge &&
           user &&
@@ -919,7 +919,7 @@ export default function SecondSection({
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-      </section>
+      </section> */}
       <AttendeeAbout
         city={city}
         country={country}
