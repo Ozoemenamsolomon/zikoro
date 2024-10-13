@@ -1,46 +1,49 @@
 'use client'
 
 import React, { useState, useCallback, useMemo } from 'react'
-import { CenterModal } from '../ui/CenterModal'
+import { CenterModal,  } from '../ui/CenterModal'
 import { Pencil } from 'lucide-react'
-import { ContactDummy } from './constants'
 import CustomInput from '../ui/CustomInput'
 import { DatePicker } from '../ui/DatePicker'
 import LinksInput from '../ui/LinksInput'
 import ProfileImageUpload from './ProfileImageUpload'
+import { BookingsContact,  } from '@/types/appointments'
+import toast from 'react-hot-toast'
+import { useAppointmentContext } from '../context/AppointmentContext'
 
 // Form validation helper function
 const validateForm = (formData: any) => {
     let errors = {}
-    if (!formData.name) errors = { ...errors, name: 'Name is required' }
+    if (!formData.firstName) errors = { ...errors, firstName: 'First name is required' }
+    if (!formData.lastName) errors = { ...errors, lastName: 'Last name is required' }
     if (!formData.email) errors = { ...errors, email: 'Email is required' }
     else if (!/\S+@\S+\.\S+/.test(formData.email)) errors = { ...errors, email: 'Invalid email format' }
-    if (formData.age && (formData.age <= 0 || formData.age > 120)) errors = { ...errors, age: 'Invalid age' }
-    if (!formData.phoneNumber) errors = { ...errors, phoneNumber: 'Phone number is required' }
     return errors
 }
 
-const EditContact = ({ contact }: { contact?: ContactDummy }) => {
-    const [formData, setFormData] = useState({
-        name: contact?.name || '',
-        profileImg: contact?.profileImg || '',
-        email: contact?.email || '',
-        age: contact?.age || '',
-        phoneNumber: contact?.phoneNumber || '',
-        whatsappNumber: contact?.whatsappNumber || '',
-        created_at: contact?.created_at || new Date().toDateString(),
-        instagram: contact?.instagram || '',
-        linkedin: contact?.linkedin || '',
-        links: contact?.links || { website: '' },
-        linkss: contact?.linkss || [{title: '', url: ""},{title: '', url: ""}]
+const EditContact = ({contact, }:{contact:BookingsContact, }) => {
+    const {  setContact, setContacts } = useAppointmentContext()
+    const [formData, setFormData] = useState<BookingsContact>({
+        ...contact
+        // firstName: contact?.firstName || '',
+        // lastName: contact?.lastName || '',
+        // profileImg: contact?.profileImg || '',
+        // email: contact?.email || '',
+        // age: contact?.age,
+        // phone: contact?.phone || '',
+        // whatsapp: contact?.whatsapp || '',
+        // created_at: contact?.created_at  ,
+        // links: contact?.links,
+        // createdBy: contact?.createdBy,
+        // id: contact?.id
     })
     const [errors, setErrors] = useState<any>({})
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setFormData(prev => ({ ...prev, [name]: value }))
+        setErrors((prev:any) => ({ ...prev, [name]: '' }))
     }, [])
 
     const handleDateChange = (date: Date | undefined) => {
@@ -51,26 +54,47 @@ const EditContact = ({ contact }: { contact?: ContactDummy }) => {
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        const validationErrors = validateForm(formData)
-        setErrors(validationErrors)
-
-        if (Object.keys(validationErrors).length === 0) {
-            setIsSubmitting(true)
-            setIsLoading(true)
+        e.preventDefault();
+        
+        // Validate the form data
+        const validationErrors = validateForm(formData);
+        setErrors(validationErrors);
+    
+        // Proceed only if there are no validation errors
+        if (Object.values(validationErrors)?.length === 0) {
+            setIsSubmitting(true);
+    
             try {
-                // Simulate API call
-                await new Promise((resolve) => setTimeout(resolve, 1000))
-                console.log('Form submitted successfully', formData)
-                setIsSubmitting(false)
+                const res = await fetch('/api/appointments/contacts/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+    
+                console.log(res);
+                if (res.ok) {
+                    const { data } = await res.json();
+                    setContacts((prevContacts: BookingsContact[] | null) =>
+                            prevContacts
+                                ? prevContacts.map(contact =>
+                                    contact.id === data.id ? data : contact  
+                                )
+                                : prevContacts  
+                    );
+                    setContact(data);
+                    toast.success('Contact updated');
+                }
             } catch (error) {
-                console.error('Error submitting form:', error)
+                toast.error('Error submitting form');
+                console.error('Error submitting form:', error);
             } finally {
-                setIsLoading(false)
+                setIsSubmitting(false);
             }
         }
-    }
-
+    };
+    
     const isFormValid = useMemo(() => Object.keys(errors).length === 0, [errors])
 
     return (
@@ -92,9 +116,9 @@ const EditContact = ({ contact }: { contact?: ContactDummy }) => {
                             <button 
                                 type='submit' 
                                 className={`bg-basePrimary text-white px-3 py-1 rounded-md ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`} 
-                                disabled={isSubmitting || !isFormValid}
+                                disabled={isSubmitting}
                             >
-                                {isLoading ? 'Saving...' : 'Save'}
+                                {isSubmitting ? 'Saving...' : 'Save'}
                             </button>
                         </div>
 
@@ -108,12 +132,22 @@ const EditContact = ({ contact }: { contact?: ContactDummy }) => {
 
                             <div className="grid sm:grid-cols-2 gap-4">
                                 <CustomInput
-                                    label='Name'
+                                    label='First name'
                                     type='text'
-                                    name='name'
-                                    value={formData.name}
+                                    name='firstName'
+                                    value={formData.firstName!}
                                     placeholder='Enter Name'
-                                    error={errors?.name}
+                                    error={errors?.firstName}
+                                    className=''
+                                    onChange={handleChange}
+                                />
+                                <CustomInput
+                                    label='Last name'
+                                    type='text'
+                                    name='lastName'
+                                    value={formData.lastName!}
+                                    placeholder='Enter Name'
+                                    error={errors?.lastName}
                                     className=''
                                     onChange={handleChange}
                                 />
@@ -121,7 +155,7 @@ const EditContact = ({ contact }: { contact?: ContactDummy }) => {
                                     label='Email'
                                     type='email'
                                     name='email'
-                                    value={formData.email}
+                                    value={formData.email!}
                                     placeholder='Enter Email'
                                     error={errors?.email}
                                     className=''
@@ -131,7 +165,7 @@ const EditContact = ({ contact }: { contact?: ContactDummy }) => {
                                     label='Age'
                                     type='number'
                                     name='age'
-                                    value={formData.age}
+                                    value={formData.age!}
                                     placeholder='Enter Age'
                                     error={errors?.age}
                                     className=''
@@ -140,10 +174,10 @@ const EditContact = ({ contact }: { contact?: ContactDummy }) => {
                                 <CustomInput
                                     label='Phone Number'
                                     type='tel'
-                                    name='phoneNumber'
-                                    value={formData.phoneNumber}
+                                    name='phone'
+                                    value={formData.phone!}
                                     placeholder='Enter Phone Number'
-                                    error={errors?.phoneNumber}
+                                    error={errors?.phone}
                                     className=''
                                     onChange={handleChange}
                                 />
@@ -161,10 +195,10 @@ const EditContact = ({ contact }: { contact?: ContactDummy }) => {
                             <h6 className="font-medium ">Contact Links</h6>
 
                             <LinksInput 
-                                formlinks={formData?.linkss} 
+                                formlinks={formData?.links!} 
                                 updateFormLinks={(updatedLinks) => setFormData(prev => ({
                                     ...prev,
-                                    linkss: updatedLinks
+                                    links: updatedLinks
                                 }))}
                             />
                             

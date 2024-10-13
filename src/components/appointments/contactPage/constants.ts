@@ -122,24 +122,25 @@ export type ContactDummy = {
   export const contactNavSub = [
     {
       label: 'Contact Info',
-      query: 'contact-info',
+      link: '/appointments/contacts',
     },
     {
       label: 'Appointment History',
-      query: 'appointment-history',
+      link: '/appointments/contacts/appointment-history',
     },
     {
       label: 'Notes',
-      query: 'notes',
+      link: '/appointments/contacts/notes',
     },
     {
       label: 'Media',
-      query: 'media',
+      link: '/appointments/contacts/media',
     },
     {
       label: 'Analytics',
-      query: 'analytics',
+      link: '/appointments/contacts/analytics',
     },
     
   ]
   
+

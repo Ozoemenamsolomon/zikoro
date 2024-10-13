@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Pencil } from 'lucide-react';
+import { Loader, Pencil } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 // Cloudinary upload function
@@ -34,28 +34,36 @@ interface ProfileImageUploadProps {
 }
 
 const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({ formData, setFormData }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    setIsSubmitting(true)
     if (file && file.type.startsWith('image/')) {
       const imageUrl = await uploadImage(file);
       if (imageUrl) {
-        setFormData((prev) => ({ ...prev, profileImg: imageUrl }));
+        setFormData((prev:any) => ({ ...prev, profileImg: imageUrl }));
       }
     } else {
       toast.error("Only image files are allowed.");
     }
+    setIsSubmitting(false)
   };
 
   return (
     <div className="relative h-20 w-20 rounded-full bg-baseLight uppercase font-semibold shrink-0 flex items-center text-2xl justify-center">
-      {formData?.profileImg ? (
+      {
+        isSubmitting ? 
+         <Loader className='animate-spin' />
+        :
+      formData?.profileImg ? (
         <img
           src={formData?.profileImg || ''}
-          alt="Profile"
+          alt=""
           className="w-full h-full rounded-full object-cover"
         />
       ) : (
-        formData.name.slice(0, 2).toUpperCase()
+        `${formData?.firstName?.[0] ?? ''}${formData?.lastName?.[0] ?? ''}`.toUpperCase() || 'NA'
       )}
 
       <label htmlFor="profile-upload" className="border absolute -right-2 bottom-0 rounded-full bg-white p-2 cursor-pointer">
