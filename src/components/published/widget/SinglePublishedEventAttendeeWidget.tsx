@@ -75,6 +75,17 @@ export function SinglePublishedEventAttendeeWidget({
       return [];
     }
   }, [attendees]);
+
+  const formattedCount = useMemo(() => {
+    if (otherAttendeeCount >= 1000) {
+      return (otherAttendeeCount / 1000).toFixed(otherAttendeeCount % 1000 === 0 ? 0 : 1) + 'K';
+      
+      
+    }
+    else {
+      return otherAttendeeCount.toString();
+    }
+  },[otherAttendeeCount])
   return (
     <div className="flex w-[250px] flex-col items-start justify-start gap-y-2">
       <div className="flex w-full items-center">
@@ -99,7 +110,7 @@ export function SinglePublishedEventAttendeeWidget({
           <div className="relative -left-[45%] h-[50px] w-[50px] rounded-full border-4 border-[#F7F8FF] flex items-center bg-gray-400 uppercase font-medium text-lg justify-center">
             <p className="gradient-text  bg-basePrimary">
               <span className="text-[22px]">+</span>
-              {otherAttendeeCount}
+              {formattedCount}
             </p>
           </div>
         )}

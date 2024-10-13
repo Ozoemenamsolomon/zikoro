@@ -59,6 +59,7 @@ const {verifyDiscountCode, loading: discountLoading,
   // <z.infer<typeof partnerSchema>>
   const form = useForm<z.infer<typeof addPartnerToTierSchema>>({
     resolver: zodResolver(addPartnerToTierSchema),
+   
   });
 
   //
@@ -205,10 +206,10 @@ const total = useMemo(() => {
             <p>{formatDate(eventData?.startDateTime ?? "0")}</p>
             {eventData?.eventPoster ? (
               <Image
-                className="w-full rounded-lg h-[16rem]"
+                className="w-full rounded-lg object-cover h-[18rem]"
                 src={eventData?.eventPoster ?? ""}
                 width={800}
-                height={400}
+                height={600}
                 alt=""
               />
             ) : (
@@ -349,8 +350,6 @@ const total = useMemo(() => {
                           placeHolder="Select the Country"
                           borderColor="#001fcc"
                           bgColor="#001fcc1a"
-                         
-                        
                           options={countriesList}
                         />
                    </InputOffsetLabel>
