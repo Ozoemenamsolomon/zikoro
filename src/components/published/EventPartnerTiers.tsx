@@ -154,6 +154,7 @@ export default function EventPartnerTiers({
   searchParams: { e: eventDataString },
 }: {
   eventId: string;
+  searchParams: any
 }) {
   const { data, loading } = useFetchSingleEvent(eventId);
 

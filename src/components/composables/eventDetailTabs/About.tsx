@@ -78,7 +78,7 @@ export function About({
         isEventDetailPage && "flex py-3 "
       )}
     >
-       <div className="w-full h-full rounded-lg border p-2">
+       <div className="w-full h-full rounded-lg border px-2">
                     <h3 className="pb-2 invisible w-full text-center">
                       About this Event
                     </h3>

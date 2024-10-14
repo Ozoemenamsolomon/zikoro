@@ -22,9 +22,25 @@ export type TIssuedCertificate = TAttendeeCertificate & {
 
 type ValuePiece = Date | null;
 
+export interface TCertificateDetails {
+  verification: { showId: boolean; showQRCode: boolean; showURL: boolean };
+  background: string | null;
+  craftHash: string;
+}
+export interface TCertificate {
+  id?: number;
+  created_at?: Date;
+  eventAlias: string;
+  title: string;
+  settings: TCertificateSettings;
+  event?: Event;
+  lastEdited: Date;
+  previewUrl: string;
+  certificateHash: Record<string, any>;
+  certificateAlias?: string;
+}
+
 export interface TCertificateSettings {
-  size: string;
-  orientation: string;
   canReceive: {
     eventAttendees: boolean;
     trackAttendees: boolean;
@@ -36,24 +52,7 @@ export interface TCertificateSettings {
   canExpire: boolean;
   expiryDate: Date;
   skills: { color: string; value: string }[];
-  publishOn: string;
-}
-
-export interface TCertificateDetails {
-  verification: { showId: boolean; showQRCode: boolean; showURL: boolean };
-  background: string | null;
-  craftHash: string;
-}
-export interface TCertificate {
-  id?: number;
-  created_at?: Date;
-  eventId: number;
-  certificateName: string;
-  certficateDetails: TCertificateDetails;
-  certificateSettings: TCertificateSettings;
-  cerificateUrl?: string;
-  event?: Event;
-  lastEdited: Date;
+  publishOn: Date;
 }
 
 export type TFullCertificate = TAttendeeCertificate & {

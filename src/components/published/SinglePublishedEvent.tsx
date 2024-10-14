@@ -2,7 +2,7 @@
 
 import {
   EventDetail,
-  SinglePublishedEventAttendeeWidget,
+  EventAttendeeWidget,
 } from "@/components/published";
 import Link from "next/link";
 import { Button } from "@/components";
@@ -175,27 +175,37 @@ function AboutEvent({
       <div className="w-full flex items-center gap-x-3">
         <IconifyPublishedEventLocationIcon />
         <div className="flex flex-col items-start justify-start">
-          <p className=" flex items-center">
-            {event?.eventAddress ?? ""}{" "}
-            {coordinates && (
-              <Link
-                target="_blank"
-                href={`https://www.google.com/maps/dir//${event?.eventAddress}/@${coordinates?.lat},${coordinates?.lng},15z?hl=en-US&entry=ttu`}
-                title="View Direction"
-              >
-                <InlineIcon
-                  icon={"material-symbols-light:arrow-insert"}
-                  fontSize={18}
-                  className="rotate-90"
-                />
-              </Link>
-            )}
-          </p>
-          <p className="text-xs sm:text-mobile">
-            {`${event?.eventCity ?? ""}`}
-            {!removeComma && <span>,</span>}
-            {` ${event?.eventCountry ?? ""}`}
-          </p>
+          {event?.locationType?.toLowerCase() !== "virtual" ? (
+            <p className=" flex items-center">
+              {event?.eventAddress ?? ""}{" "}
+              {coordinates && (
+                <Link
+                  target="_blank"
+                  href={`https://www.google.com/maps/dir//${event?.eventAddress}/@${coordinates?.lat},${coordinates?.lng},15z?hl=en-US&entry=ttu`}
+                  title="View Direction"
+                >
+                  <InlineIcon
+                    icon={"material-symbols-light:arrow-insert"}
+                    fontSize={18}
+                    className="rotate-90"
+                  />
+                </Link>
+              )}
+            </p>
+          ) : (
+            <p>Virtual</p>
+          )}
+          {event?.locationType?.toLowerCase() !== "virtual" ? (
+            <p className="text-xs sm:text-mobile">
+              {`${event?.eventCity ?? ""}`}
+              {!removeComma && <span>,</span>}
+              {` ${event?.eventCountry ?? ""}`}
+            </p>
+          ) : (
+            <p className="text-xs sm:text-mobile">
+              Meeting link will be shared with registered attendees
+            </p>
+          )}
         </div>
       </div>
     </>
@@ -370,7 +380,7 @@ export default function SinglePublishedEvent({
             />
             <div className="flex items-center gap-x-2">
               <Link
-                className="text-xs gap-x-1 flex items-center sm:text-sm"
+                className="text-xs gap-x-1 hidden items-center sm:text-sm"
                 target="_blank"
                 href={`${window.location.origin}/workspaces?name=${eventDetail?.organization?.organizationName}&orgLogo=true&zikoroLogo=false&logo=null&showCategories=true&showFilter=true`}
               >
@@ -410,7 +420,7 @@ export default function SinglePublishedEvent({
 
                   <div className="flex w-full items-center justify-between">
                     {eventAttendees?.length > 0 && (
-                      <SinglePublishedEventAttendeeWidget
+                      <EventAttendeeWidget
                         attendees={eventAttendees}
                       />
                     )}
@@ -442,7 +452,7 @@ export default function SinglePublishedEvent({
                   {eventDetail && (
                     <AboutEvent event={eventDetail} coordinates={coordinates} />
                   )}
-                  {eventDetail?.locationType?.toLowerCase() !== "remote" ? (
+                  {eventDetail?.locationType?.toLowerCase() !== "virtual" ? (
                     <iframe
                       style={{ border: "none", borderRadius: "12px" }}
                       width="100%"
@@ -452,7 +462,7 @@ export default function SinglePublishedEvent({
                       )}&z=15&ie=UTF8&iwloc=B&width=100%25&height=150&hl=en&output=embed`}
                     ></iframe>
                   ) : (
-                    <div>Loading...</div>
+                    <div></div>
                   )}
                 </div>
 
@@ -514,13 +524,13 @@ export default function SinglePublishedEvent({
                         width={200}
                         height={200}
                       />
-                    ) : (
-                      <div className="w-[60px] h-[60px] bg-gray-200 rounded-full flex items-center justify-center">
-                        <p className="text-sm gradient-text bg-basePrimary font-medium">
-                          Logo
-                        </p>
-                      </div>
-                    )}
+                    ) : null
+                    // <div className="w-[60px] h-[60px] bg-gray-200 rounded-full flex items-center justify-center">
+                    //   <p className="text-sm gradient-text bg-basePrimary font-medium">
+                    //     Logo
+                    //   </p>
+                    // </div>
+                    }
                     <p>{eventDetail?.organization?.organizationName ?? ""}</p>
 
                     <div className="w-full flex items-center justify-center gap-x-3">
@@ -542,18 +552,18 @@ export default function SinglePublishedEvent({
               </div>
             </div>
           </div>
-          <div className="w-full p-3 gap-x-4 bg-white mt-12 mb-16 sm:mb-0 flex items-center justify-center">
+          <div className="w-full p-3 gap-4 bg-white mt-12 mb-20 sm:mb-0 flex items-center flex-col sm:flex-row justify-center">
             <Link className="text-mobile sm:text-sm" href="/create">
               Create Event
             </Link>
             <Link
               target="_blank"
               className="text-mobile gap-x-1 flex items-center sm:text-sm"
-              href={`${window.location.origin}/workspaces?name=${eventDetail?.organization?.organizationName}&orgLogo=true&zikoroLogo=false&logo=null&showCategories=true&showFilter=true`}
+              href={`${window.location.origin}/explore/featured-events`}
             >
-              <p className="block">Explore more events</p>
+              <p className="block">Explore more Zikoro Hosted Events</p>
               <InlineIcon
-                icon={"material-symbols-light:arrow-insert"}
+                icon="material-symbols-light:arrow-insert"
                 fontSize={18}
                 className="rotate-90"
               />

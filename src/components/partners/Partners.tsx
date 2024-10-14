@@ -18,9 +18,11 @@ import _ from "lodash";
 import { cn } from "@/lib";
 
 export function Partners({
-  eventId
+  eventId,
+ 
 }: {
   eventId: string;
+ 
 }) {
   const { data, loading, refetch } = useFetchPartners(eventId);
   const { data: event } = useFetchSingleEvent(eventId);
@@ -263,7 +265,7 @@ export function Partners({
 
   return (
     <div className="w-full pb-24">
-      <HeaderTab eventId={eventId} refetch={refetch} />
+      <HeaderTab eventId={eventId} refetch={refetch} query={query} />
 
       <div
         className={cn(

@@ -11,10 +11,11 @@ import { AddPartnerManually } from "../modals/AddPartnerManually";
 export function HeaderTab({
   eventId,
   refetch,
-  searchParams: { p: query },
+  query,
 }: {
   eventId: string;
   refetch: () => Promise<any>;
+  query: any
 }) {
   const [isOpen, setOpen] = useState(false);
 

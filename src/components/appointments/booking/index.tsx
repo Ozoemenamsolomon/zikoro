@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Calender from './Calender'
-import {useGetBookingAppointment} from "@/hooks"
+import { useGetBookingAppointment} from "@/hooks"
 import Image from 'next/image'
 import { useAppointmentContext } from '../context/AppointmentContext'
 import ProcessPayment from './ProcessPayment'

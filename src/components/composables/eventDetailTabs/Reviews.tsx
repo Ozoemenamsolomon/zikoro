@@ -7,7 +7,7 @@ export function Reviews({ eventId }: { eventId: string }) {
   const { reviews, isLoading } = useGetEventReviews(eventId);
   return (
     <div className="w-full p-3 bg-white">
-      <div className="w-full h-full rounded-lg border p-2">
+      <div className="w-full h-full rounded-lg border px-2">
         <h3 className="pb-2 w-full invisible text-center">Past Event Reviews</h3>
 
         <div className="w-full mt-3 grid grid-cols-1 gap-4">

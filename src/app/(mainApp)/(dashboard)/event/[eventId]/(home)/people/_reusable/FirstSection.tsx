@@ -150,14 +150,14 @@ const moreOptions: TMoreOptions[] = [
     label: "Change Attendee Type",
     Component: ChangeAttendeeType,
   },
-  {
-    label: "Print Badges",
-    Component: PrintBadges,
-  },
-  {
-    label: "Certificates",
-    Component: CertificateDialog,
-  },
+  // {
+  //   label: "Print Badges",
+  //   Component: PrintBadges,
+  // },
+  // {
+  //   label: "Certificates",
+  //   Component: CertificateDialog,
+  // },
   {
     label: "Import Attendees",
     Component: ImportAttendees,
@@ -361,7 +361,7 @@ export default function FirstSection({
 
   return (
     <>
-      <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2">
+      <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2 bg-white">
         <h1 className="font-semibold leading-normal text-greyBlack ">
           Attendees
         </h1>
@@ -449,7 +449,7 @@ export default function FirstSection({
           </div>
         )}
       </div>
-      <div className="flex justify-between my-2 px-2 items-center gap-1">
+      <div className="flex justify-between my-2 px-2 items-center gap-1 bg-white">
         <div className="relative w-fit flex-1">
           <svg
             className="absolute left-2 top-[25%]"
@@ -522,14 +522,14 @@ export default function FirstSection({
         )}
       </div>
       <Filter
-        className={`transition-all duration-150 my-4 space-y-4 ${
+        className={`transition-all duration-150 my-4 space-y-4 bg-white ${
           showFilter ? "h-fit" : "h-0 overflow-hidden"
         }`}
         filters={filters}
         applyFilter={applyFilter}
         selectedFilters={selectedFilters}
       />
-      <div className="flex justify-between px-2 mt-4 mb-2">
+      <div className="flex justify-between px-2 mt-4 mb-2 bg-white">
         <div className="flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"

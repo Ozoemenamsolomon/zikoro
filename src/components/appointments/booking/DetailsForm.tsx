@@ -5,10 +5,13 @@ import { AppointmentLink,  } from '@/types/appointments';
 import { XCircle } from 'lucide-react';
 import { submitBooking } from './submitBooking';
 import { usePathname } from 'next/navigation';
+import { useBookingsContact } from '@/hooks';
 
 const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null}) => {
 
   const {bookingFormData, isFormUp, setIsFormUp, setBookingFormData, slotCounts, setSlotCounts,setInactiveSlots,} = useAppointmentContext()
+  const {insertBookingsContact} = useBookingsContact()
+
   const maxBookingLimit = appointmentLink?.maxBooking!;
 
     const pathname = usePathname()
@@ -92,6 +95,7 @@ const DetailsForm = ({appointmentLink}:{appointmentLink:AppointmentLink | null})
       setSuccess,
       appointmentLink,
       pathname,
+      insertBookingsContact,
     });
   };
 // console.log({price:bookingFormData})

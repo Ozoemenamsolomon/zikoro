@@ -19,15 +19,15 @@ export const useCreateBadge = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const createBadge = async () => {
+  const createBadge = async ({ payload }: { payload: Partial<TBadge> }) => {
     setLoading(true);
     toast({
       description: "creating badge...",
     });
     try {
-      const { data, status } = await postRequest<TBadge>({
+      const { data, status } = await postRequest<Partial<TBadge>>({
         endpoint: "/badge",
-        payload: {},
+        payload,
       });
 
       if (status !== 201) throw data.data;

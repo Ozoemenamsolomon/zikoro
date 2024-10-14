@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
 
       if (!response.data.status) throw new Error(response.data.message);
 
-      console.log(response.data.data);
+      console.log(response.data.data, "paystack response");
 
       const { reference } = response.data.data;
 
@@ -79,18 +79,18 @@ export async function POST(req: NextRequest) {
             },
           },
         ],
-        subject: `Payout successful: ${reference}`,
+        subject: `Payout completed: ${reference}`,
         htmlbody: `<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333333; margin: 0; padding: 20px 0px;">
       <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
           <div style="text-align: center; padding: 10px 0;">
-              <img src=${"/zikoro.png"} alt="Company Logo" style="max-width: 150px;">
+              <img src="https://res.cloudinary.com/zikoro/image/upload/v1728730327/ZIKORO/zikoro1_ckfkln.jpg" alt="Company Logo" style="max-width: 150px;">
           </div>
           <div style="margin: 20px 0;">
-              <h1 style="margin-bottom: 20px;">Payout successful</h1>
+              <h1 style="margin-bottom: 20px;">Payout completed</h1>
               <p>Dear ${body.userName},</p>
               <p>Your requested payout of <span style="color: #001FCC; font-weight: bold;">NGN${
                 body.amount
-              }</span> was successful.</p>
+              }</span> was completed.</p>
               <p>Transaction Details:</p>
               <ul style="line-height: 1.6; margin: 20px 0; padding-left: 20px;">
                   <li><strong>Payout Amount:</strong> NGN${body.amount}</li>
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
                     date.getMonth() + 1
                   }/${date.getDate()}/${date.getFullYear()}</li>
               </ul>
-              <p>If you have any questions or concerns, please feel free to <a href="mailto:support@example.com" style="color: #001FCC; text-decoration: none;">contact our support team</a>.</p>
+              <p>If you have any questions or concerns, please feel free to <a href="mailto:support@zikoro.com" style="color: #001FCC; text-decoration: none;">contact our support team</a>.</p>
               <p>Thank you for using our services.</p>
               <p>Sincerely,<br>The Zikoro Team</p>
           </div>
