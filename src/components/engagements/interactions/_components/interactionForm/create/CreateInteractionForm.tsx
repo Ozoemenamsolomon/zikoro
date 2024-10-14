@@ -244,11 +244,11 @@ function CreateInteractionFormComp({
   }
   return (
     <InteractionLayout eventId={eventId}>
-      <div className="w-full px-4 text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
+      <div className="w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full flex flex-col items-start justify-start sm:gap-y-6 gap-y-8 2xl:gap-y-10"
+            className="w-full flex flex-col items-start justify-start  sm:gap-y-8 gap-y-8 2xl:gap-y-10"
           >
             <div className="w-full flex items-center justify-between">
               <Button
