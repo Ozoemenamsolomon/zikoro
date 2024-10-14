@@ -10,6 +10,7 @@ import { AddCircle } from "@styled-icons/ionicons-sharp/AddCircle";
 import { useState, Suspense, useEffect } from "react";
 import Image from "next/image";
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import { Settings } from "styled-icons/feather";
 import toast from "react-hot-toast";
 import {
   TextType,
@@ -272,6 +273,12 @@ function CreateInteractionFormComp({
                 >
                   <p>Responses</p>
                 </Button>
+                <button
+                 // onClick={onClose}
+                  className="flex items-center justify-center rounded-full hover:bg-gray-100 p-1"
+                >
+                  <Settings size={22} />
+                </button>
                 <Button
                   disabled={loading}
                   className="bg-basePrimary gap-x-2 px-6 text-white h-12 "

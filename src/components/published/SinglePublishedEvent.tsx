@@ -2,7 +2,7 @@
 
 import {
   EventDetail,
-  SinglePublishedEventAttendeeWidget,
+  EventAttendeeWidget,
 } from "@/components/published";
 import Link from "next/link";
 import { Button } from "@/components";
@@ -420,7 +420,7 @@ export default function SinglePublishedEvent({
 
                   <div className="flex w-full items-center justify-between">
                     {eventAttendees?.length > 0 && (
-                      <SinglePublishedEventAttendeeWidget
+                      <EventAttendeeWidget
                         attendees={eventAttendees}
                       />
                     )}

@@ -60,7 +60,7 @@ function ImageWidget({
   );
 }
 
-export function SinglePublishedEventAttendeeWidget({
+export function EventAttendeeWidget({
   attendees,
 }: {
   attendees: TAttendee[];

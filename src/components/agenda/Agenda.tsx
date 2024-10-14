@@ -27,11 +27,13 @@ import { IconifyAgendaCalendarIcon } from "@/constants";
 export default function Agenda({
   eventId,
   isReception,
+  isEventDetail,
   searchParams: { a: queryParam, date: activeDateQuery },
 }: {
   eventId: string;
   isReception?: boolean;
-  searchParams: any
+  searchParams: any;
+  isEventDetail?:boolean;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -197,6 +199,7 @@ export default function Agenda({
                   isIdPresent={isIdPresent}
                   isOrganizer={isOrganizer}
                   isReception={isReception}
+                  isEventDetail={isEventDetail}
                   refetchEvent={refetch}
                   attendeeId={attendeeId}
                   myAgendas={myAgendas}
