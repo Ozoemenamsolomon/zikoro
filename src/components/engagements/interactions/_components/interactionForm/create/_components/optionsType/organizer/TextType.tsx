@@ -61,7 +61,7 @@ append: (i:number) => void;
               <FormControl>
                 <Input
                   {...form.register(`questions.${index}.question`)}
-                  className="w-full h-12 sm:h-14 border-x-0 border-t-0 border-b px-2 placeholder:text-gray-500 bg-gradient-to-tr rounded-none from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500"
+                  className="w-full h-12 sm:h-14 border-x-0 border-t-0 bg-transparent border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
                   placeholder="Enter question"
                 />
               </FormControl>

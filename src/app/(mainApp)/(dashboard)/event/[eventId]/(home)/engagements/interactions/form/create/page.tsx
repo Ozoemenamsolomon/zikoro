@@ -1,4 +1,3 @@
-import CreateInteractionForm from "@/components/engagements/interactions/_components/interactionForm/create/CreateInteractionForm";
 import FormSettings from "@/components/engagements/interactions/_components/interactionForm/settings/FormSettings";
 
 export default function Page({params : {eventId}}: {params: {eventId: string}}) {

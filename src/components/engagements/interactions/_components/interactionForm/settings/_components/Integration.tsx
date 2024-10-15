@@ -1,15 +1,51 @@
-import { UseFormReturn } from "react-hook-form";
+"use client"
+
+import { UseFormReturn, useWatch } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
-import { useState } from "react";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { FormField } from "@/components/ui/form";
 import { ReactSelect } from "@/components/custom_ui/ReactSelect";
 import { Button } from "@/components/custom_ui/Button";
 import { cn } from "@/lib";
+import * as z from "zod";
+import { formSettingSchema } from "@/schemas/engagement";
+import { TQuestion, TQuiz } from "@/types";
+import { useMemo } from "react";
+import { TEngagementFormQuestion } from "@/types/engagements";
+
+export function FormIntegration({data, form, engagements }: {data: TEngagementFormQuestion | null, engagements: TQuiz<TQuestion[]>[]; form: UseFormReturn<z.infer<typeof formSettingSchema>, any, any> }) {
+
+    const isConnectedToEngagement = useWatch({
+      control: form.control,
+      name: 'formSettings.isConnectedToEngagement'
+    })
+    const showForm = useWatch({
+      control: form.control,
+      name: 'formSettings.showForm'
+    })
+
+    const engagementOptions  = useMemo(() => {
+      if (engagements) {
+        return engagements?.map((value) => {
+          return {
+            value: value?.quizAlias,
+            label: value?.coverTitle
+          }
+        })
+      }
+      else {
+        return []
+      }
+    },[engagements])
+
+    const initialEngagementValue = useMemo(() => {
+      if (data && engagementOptions) {
+          return engagementOptions?.find((value) => value.value === data?.formSettings?.connectedEngagementId)
+      }
+      return ''
+    },[data, engagementOptions])
 
 
-export function FormIntegration({ form }: { form: UseFormReturn<any, any, any> }) {
-    const [isBefore, setIsBefore] = useState(true);
     return (
       <>
         <div className="w-full flex items-center justify-between">
@@ -25,8 +61,11 @@ export function FormIntegration({ form }: { form: UseFormReturn<any, any, any> }
   
           <Switch
             // disabled={loading}
-            //  checked={accessibility?.isCollectPhone}
-            onClick={() => {}}
+              checked={isConnectedToEngagement}
+              onCheckedChange={(checked) => {
+                form.setValue("formSettings.isConnectedToEngagement", checked)
+              }}
+            
             className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
           />
         </div>
@@ -36,13 +75,14 @@ export function FormIntegration({ form }: { form: UseFormReturn<any, any, any> }
           </p>
           <FormField
             control={form.control}
-            name="engagementId"
+            name="formSettings.connectedEngagementId"
             render={({ field }) => (
               <InputOffsetLabel label="">
                 <ReactSelect
                   {...field}
+                  defaultValue={initialEngagementValue}
                   placeHolder="Select an Engagement"
-                  options={[{ value: "A", label: "A" }]}
+                  options={engagementOptions}
                 />
               </InputOffsetLabel>
             )}
@@ -57,11 +97,11 @@ export function FormIntegration({ form }: { form: UseFormReturn<any, any, any> }
             onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                setIsBefore(!isBefore);
+                form.setValue("formSettings.showForm", "beforeEngagement")
               }}
               className={cn(
                 "h-11 rounded-xl text-mobile sm:text-sm font-medium w-fit px-6",
-                isBefore && "bg-basePrimary text-white "
+                showForm=== "beforeEngagement" && "bg-basePrimary text-white "
               )}
             >
               Before Engagement
@@ -70,11 +110,11 @@ export function FormIntegration({ form }: { form: UseFormReturn<any, any, any> }
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                setIsBefore(!isBefore);
+                form.setValue("formSettings.showForm", "afterEngagement")
               }}
               className={cn(
                 "h-11 rounded-xl text-mobile sm:text-sm font-medium w-fit px-6",
-                !isBefore && "bg-basePrimary text-white "
+                showForm=== "afterEngagement" && "bg-basePrimary text-white "
               )}
             >
               After Engagement

@@ -1,36 +1,46 @@
 import { InlineIcon } from "@iconify/react";
 import { useState } from "react";
+import { UseFormReturn } from "react-hook-form";
 
 export function NumberSelectorWidget({
   name,
   value,
+  form,
 }: {
-  value: number;
+  value: string;
   name: string;
+  form: UseFormReturn<any, any, any>;
 }) {
-  const [newValue, setNewValue] = useState(value);
-
   return (
-    <div className="w-[100px] h-12 flex items-center justify-between rounded-md p-2 border">
+    <div className="w-[200px] h-12 flex items-center justify-between rounded-md px-4 py-2 border">
       <input
         type="number"
         readOnly
-        value={newValue}
-        className="outline-none  border-0 text-xl"
+        value={value}
+        className="outline-none h-12 bg-transparent w-[40px] border-0 text-xl"
       />
       <div className="flex flex-col items-center justify-center">
-        <button onClick={() => setNewValue(value + 1)}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            form.setValue(name, String(parseInt(value) + 1));
+          }}
+        >
           <InlineIcon icon="iconamoon:arrow-up-2-thin" fontSize={28} />
         </button>
 
         <button
-          onClick={() => {
-            if (value >= 1) {
-              setNewValue(value - 1);
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            if (parseInt(value) >= 1) {
+              form.setValue(name, String(parseInt(value) - 1));
             }
           }}
+          className="pb-2"
         >
-          <InlineIcon icon="simple-line-icons:arrow-down" fontSize={28} />
+          <InlineIcon icon="simple-line-icons:arrow-down" fontSize={14} />
         </button>
       </div>
     </div>

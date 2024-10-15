@@ -31,6 +31,7 @@ import { Loader2Icon } from "lucide-react";
 import { generateAlias, uploadFile } from "@/utils";
 import { CiShare2 } from "react-icons/ci";
 import { ShareModal } from "./ShareModal";
+
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
   { name: "Text", image: "/ftext.png" },
@@ -58,7 +59,7 @@ function SelectQuestionType({
   setSelectedOption: (selected: string) => void;
 }) {
   return (
-    <div className="w-full flex flex-col to-custom-bg-gradient-end bg-gradient-to-tr  rounded-lg border from-custom-bg-gradient-start p-3 ">
+    <div className="w-full flex flex-col  rounded-lg border p-3 ">
       <Button
         onClick={onClose}
         className="self-end gap-x-2 w-fit h-fit px-0 text-gray-600"
@@ -90,33 +91,27 @@ function SelectQuestionType({
 }
 
 function CreateInteractionFormComp({
+  formId,
   eventId,
-  
 }: {
+  formId: string;
   eventId: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const params = useSearchParams()
-  const prevFormId = params.get("form")
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
-  const { data } = prevFormId
-    ? useGetData<TEngagementFormQuestion>(`/engagements/form/${prevFormId}`)
-    : { data: null };
-  const [isCreated, setIsCreated] = useState(false);
+  const { data } = useGetData<TEngagementFormQuestion>(
+    `/engagements/form/${formId}`
+  );
   const [isShare, setShowShare] = useState(false);
-  const [formAlias, setFormAlias] = useState("");
   const form = useForm<z.infer<typeof formQuestionSchema>>({
     resolver: zodResolver(formQuestionSchema),
     defaultValues: {
       questions: [],
       isActive: true,
-      eventAlias: eventId,
-      formAlias: generateAlias(),
     },
   });
   const router = useRouter();
-  // const [selectedOption, setSelectedOption] = useState<string>("");
   const [showSelectQuestionType, setShowSelectQuestionType] =
     useState<boolean>(false);
 
@@ -147,21 +142,13 @@ function CreateInteractionFormComp({
   }
 
   async function onSubmit(values: z.infer<typeof formQuestionSchema>) {
-    if (!values?.coverImage) return toast.error("Cover Image is required");
     if (
       !values?.questions ||
       (Array.isArray(values?.questions) && values?.questions?.length === 0)
     )
       return toast.error("Add Questions");
     setLoading(true);
-    const image = await new Promise(async (resolve) => {
-      if (typeof values?.coverImage === "string") {
-        resolve(values?.coverImage);
-      } else {
-        const img = await uploadFile(values?.coverImage[0], "image");
-        resolve(img);
-      }
-    });
+
     // Process questions
     const processedQuestions = await Promise.all(
       values.questions.map(async (question) => {
@@ -204,12 +191,10 @@ function CreateInteractionFormComp({
       ? {
           ...data,
           ...values,
-          coverImage: image as string,
           questions: processedQuestions,
         }
       : {
           ...values,
-          coverImage: image as string,
           questions: processedQuestions,
         };
 
@@ -217,19 +202,14 @@ function CreateInteractionFormComp({
       payload: payload,
     });
     setLoading(false);
-    setFormAlias(values?.formAlias);
-    setIsCreated(true);
   }
 
   useEffect(() => {
     if (data) {
       form.reset({
         title: data?.title,
-        coverImage: data?.coverImage,
         description: data?.description,
         isActive: data?.isActive,
-        formAlias: data?.formAlias,
-        eventAlias: data?.eventAlias,
         questions: data?.questions,
       });
     }
@@ -274,7 +254,11 @@ function CreateInteractionFormComp({
                   <p>Responses</p>
                 </Button>
                 <button
-                 // onClick={onClose}
+                  onClick={() =>
+                    router.push(
+                      `/event/${eventId}/engagements/interactions/form/create?form=${formId}`
+                    )
+                  }
                   className="flex items-center justify-center rounded-full hover:bg-gray-100 p-1"
                 >
                   <Settings size={22} />
@@ -288,25 +272,22 @@ function CreateInteractionFormComp({
                   )}
                   <p>Save</p>
                 </Button>
-                {isCreated && (
-                  <Button
-                    className="gap-x-2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      onToggleShare();
-                    }}
-                  >
-                    <CiShare2 size={22} />
-                    <p>Share</p>
-                  </Button>
-                )}
+
+                <Button
+                  className="gap-x-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onToggleShare();
+                  }}
+                >
+                  <CiShare2 size={22} />
+                  <p>Share</p>
+                </Button>
               </div>
             </div>
 
-            <AddCoverImage form={form} />
-
-            <div className="w-full from-custom-bg-gradient-start flex flex-col items-start justify-start gap-y-1 to-custom-bg-gradient-end bg-gradient-to-tr rounded-lg border p-3 sm:p-4">
+            <div className="w-full  flex flex-col items-start justify-start gap-y-1 rounded-lg border p-3 sm:p-4">
               <FormField
                 control={form.control}
                 name="title"
@@ -317,6 +298,7 @@ function CreateInteractionFormComp({
                         {...form.register("title")}
                         className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
                         placeholder="Form Title"
+                        readOnly
                       />
                     </FormControl>
                   </FormItem>
@@ -332,6 +314,7 @@ function CreateInteractionFormComp({
                         {...form.register("description")}
                         className="bg-transparent border-none h-11  placeholder:text-gray-500"
                         placeholder="Form Description"
+                        readOnly
                       />
                     </FormControl>
                   </FormItem>
@@ -395,8 +378,8 @@ function CreateInteractionFormComp({
                 }}
                 className="w-fit text-basePrimary h-fit px-0 gap-x-2"
               >
-                <AddCircle className="text-basePrimary" size={24} />
-                <p className="underline">Add Question</p>
+                <AddCircle className="text-basePrimary" size={40} />
+               
               </Button>
             </div>
 
@@ -413,7 +396,7 @@ function CreateInteractionFormComp({
         {isShare && (
           <ShareModal
             close={onToggleShare}
-            link={`${window.location.origin}/engagements/${eventId}/form/${formAlias}`}
+            link={`${window.location.origin}/engagements/${eventId}/form/${data?.formAlias}`}
           />
         )}
       </div>
@@ -423,12 +406,14 @@ function CreateInteractionFormComp({
 
 export default function CreateInteractionForm({
   eventId,
+  formId,
 }: {
   eventId: string;
+  formId: string;
 }) {
   return (
     <Suspense>
-      <CreateInteractionFormComp eventId={eventId} />
+      <CreateInteractionFormComp eventId={eventId} formId={formId} />
     </Suspense>
   );
 }

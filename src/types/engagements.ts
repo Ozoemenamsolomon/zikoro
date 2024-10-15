@@ -34,6 +34,21 @@ optionFields?: any;
   }[];
   formAlias: string;
   eventAlias: string;
+  formSettings:{
+    isConnectedToEngagement: boolean;
+        showForm:string,
+        connectedEngagementId?:string;
+        isCollectUserEmail: boolean;
+        isCoverScreen:boolean;
+        displayType:string,
+        questionPerSlides?:string;
+        titleFontSize:string,
+        headingFontSize:string,
+        backgroundColor:string,
+        textColor:string;
+        buttonColor:string;
+        textFontSize:string;
+        isCoverImage: boolean;  }
 }
 
 export interface TEngagementFormAnswer {

@@ -105,7 +105,7 @@ function OptionItem({
           onKeyDown={handleKeyDown} 
           value={option?.option}
           type="text"
-          className="w-full h-12 sm:h-14 border-x-0 border-b border-gray-300 rounded-none border-t-0 px-2 placeholder:text-gray-400"
+          className="w-full h-12 sm:h-14 border-x-0 border-b bg-transparent border-gray-300 rounded-none border-t-0 px-2 placeholder:text-gray-400"
           placeholder="Enter Option"
         />
       </div>

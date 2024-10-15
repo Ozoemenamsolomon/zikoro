@@ -3,7 +3,7 @@
 import { Button } from "@/components";
 import { useState } from "react";
 import { ThreeDotsVertical } from "styled-icons/bootstrap";
-import { ActivateForm, CopyForm, DeleteForm} from "..";
+import { ActivateForm, CopyForm, DeleteForm } from "..";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -26,14 +26,12 @@ export function FormCard({
     setOpen((prev) => !prev);
   }
 
-
   return (
     <div
       onClick={() => {
         if (isNotAttendee) {
           router.push(
-            `/event/${form?.eventAlias}/engagements/interactions/form/create?form=${form?.formAlias}`
-            
+            `/event/${form?.eventAlias}/engagements/interactions/form/create/questions/${form?.formAlias}`
           );
         } else {
           router.push(
@@ -58,14 +56,15 @@ export function FormCard({
               className="px-0 p-1 bg-gray-200/50 w-fit h-fit"
             >
               <ThreeDotsVertical size={20} />
-             {isOpen && (
-              <ActionModal refetch={refetch} close={onClose} form={form} />
-            )} 
+              {isOpen && (
+                <ActionModal refetch={refetch} close={onClose} form={form} />
+              )}
             </Button>
           )}
         </div>
 
-        {form?.coverImage && (form?.coverImage as string).startsWith('https://') ? (
+        {form?.coverImage &&
+        (form?.coverImage as string).startsWith("https://") ? (
           <Image
             className="w-full rounded-t-md h-48 2xl:h-56 object-cover"
             alt="quiz"
@@ -85,17 +84,10 @@ export function FormCard({
         </p>
         <div className="text-gray-500 px-3 pb-3 text-xs ms:text-mobile flex items-center justify-between w-full">
           <p className="flex items-center gap-x-2">
-            <span
-              className={cn(
-                " pr-2 border-gray-500",
-                
-              )}
-            >{`${form?.questions?.length || 0} ${
-              form?.questions?.length > 1 ? "Questions" : "Question"
-            }`}</span>
-           
+            <span className={cn(" pr-2 border-gray-500")}>{`${
+              form?.questions?.length || 0
+            } ${form?.questions?.length > 1 ? "Questions" : "Question"}`}</span>
           </p>
-        
         </div>
       </div>
     </div>

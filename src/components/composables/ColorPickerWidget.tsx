@@ -3,54 +3,20 @@ import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { TwitterPicker } from "react-color";
 import { cn } from "@/lib";
+import { Input } from "../ui/input";
 
-const colors = [
-  "#4D4D4D",
-  "#999999",
-  "#FFFFFF",
-  "#F44E3B",
-  "#FE9200",
-  "#FCDC00",
-  "#DBDF00",
-  "#A4DD00",
-  "#68CCCA",
-  "#73D8FF",
-  "#AEA1FF",
-  "#FDA1FF",
-  "#333333",
-  "#808080",
-  "#cccccc",
-  "#D33115",
-  "#E27300",
-  "#FCC400",
-  "#B0BC00",
-  "#68BC00",
-  "#16A5A5",
-  "#009CE0",
-  "#7B64FF",
-  "#FA28FF",
-  "#000000",
-  "#666666",
-  "#B3B3B3",
-  "#9F0500",
-  "#C45100",
-  "#FB9E00",
-  "#808900",
-  "#194D33",
-  "#0C797D",
-  "#0062B1",
-  "#653294",
-  "#AB149E",
-];
+
 
 function ColorPicker({
   form,
   close,
   name,
+  colors
 }: {
   form: UseFormReturn<any, any, any>;
   close: () => void;
   name: any;
+  colors:string[]
 }) {
   return (
     <div
@@ -84,21 +50,41 @@ export function ColorPickerWidget({
   name,
   className,
   form,
+  currentColor,
+  colors
 }: {
   form: UseFormReturn<any, any, any>;
   name: any;
   className?: string;
+  currentColor:string;
+  colors:string[]
 }) {
   const [showPicker, setShowPicker] = useState(false);
   return (
-    <div className={cn("border h-12 rounded-xl p-2", className)}>
-      {showPicker && (
-        <ColorPicker
-          close={() => setShowPicker((prev) => !prev)}
-          form={form}
-          name={name}
-        />
-      )}
+    <div className={cn("border h-12 flex items-center rounded-md p-1", className)}>
+      <div
+        style={{
+          backgroundColor: currentColor || "#001ffc",
+        }}
+        onClick={() => setShowPicker((prev) => !prev)}
+        className="relative h-full rounded-md w-[100px]"
+      >
+        {showPicker && (
+          <ColorPicker
+            close={() => setShowPicker((prev) => !prev)}
+            form={form}
+            name={name}
+            colors={colors}
+          />
+        )}
+      </div>
+      <Input
+        type="text"
+        placeholder="#001FFC"
+        readOnly
+        {...form.register(name)}
+        className="placeholder:text-sm border-0 w-[70px]  px-1 h-full text-zinc-700"
+      />
     </div>
   );
 }

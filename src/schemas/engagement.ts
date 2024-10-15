@@ -13,13 +13,32 @@ export const formQuestionSchema = z.object({
     questions: z.array(formQuestion),
     title: z.string().min(3, { message: "Title is required" }),
     description: z.string().optional(),
-    coverImage: z.any(),
     isActive:z.boolean(),
-    eventAlias: z.string(),
-    formAlias: z.string()
     
     
 });
+
+export const formSettingSchema = z.object({
+    title: z.string().min(3, { message: "Title is required" }),
+    description: z.string().optional(),
+    coverImage: z.any(),
+    formSettings: z.object({
+        isConnectedToEngagement: z.boolean(),
+        showForm: z.string(),
+        connectedEngagementId: z.string().optional(),
+        isCollectUserEmail: z.boolean(),
+        isCoverScreen:z.boolean(),
+        displayType: z.string(),
+        questionPerSlides: z.string().optional(),
+        titleFontSize: z.string(),
+        headingFontSize: z.string(),
+        backgroundColor: z.string(),
+        textColor:z.string(),
+        buttonColor:z.string(),
+        textFontSize:z.string(),
+        isCoverImage: z.boolean()
+    })
+})
 
 
 
