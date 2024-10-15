@@ -53,25 +53,14 @@ type SearchParams = {
   showFilter: string;
   showCategories: string;
   logo: string;
-  logoLink: string;
   orgLogo: string;
-  isOrgLogo: string;
   zikoroLogo: string;
-  isZikoroLogo: string;
 };
 export default function WorkspaceComponent({
-  searchParams: {
-    name,
-    showFilter,
-    showCategories,
-    logo,
-    logoLink,
-    orgLogo,
-    isOrgLogo,
-    zikoroLogo,
-    isZikoroLogo,
-  },
-}: {searchParams:SearchParams}) {
+  searchParams: { name, showFilter, showCategories, logo, orgLogo, zikoroLogo },
+}: {
+  searchParams: SearchParams;
+}) {
   const [showMore, setShowMore] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
@@ -267,9 +256,9 @@ export default function WorkspaceComponent({
           {!isFilterOpen && (
             <div>
               <OrganizationNavbar
-                logoUrl={logoLink ?? ""}
-                isZikoroLogo={isZikoroLogo ?? ""}
-                isOrgLogo={isOrgLogo ?? ""}
+                logoUrl={logo ? logo : ""}
+                isZikoroLogo={zikoroLogo ? zikoroLogo : ""}
+                isOrgLogo={orgLogo ? orgLogo : ""}
               />
               {/* header */}
               <div>
@@ -823,4 +812,3 @@ export default function WorkspaceComponent({
     </>
   );
 }
-
