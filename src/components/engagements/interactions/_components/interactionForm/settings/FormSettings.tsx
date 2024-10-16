@@ -64,15 +64,16 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
     const image = await new Promise(async (resolve) => {
       if (typeof values?.coverImage === "string") {
         resolve(values?.coverImage);
-      } else {
+      } else if (
+        values?.coverImage[0] &&
+        values?.coverImage instanceof FileList
+      ) {
         const img = await uploadFile(values?.coverImage[0], "image");
         resolve(img);
-      }
+      } else resolve(null);
     });
 
     const alias = generateAlias();
-
-    // console.log('values',{...values, formAlias: alias, eventAlias: eventId})
     const payload: Partial<TEngagementFormQuestion> = data?.formAlias
       ? {
           ...data,
@@ -92,7 +93,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
     setLoading(false);
   }
 
-  console.log(form.getValues());
+  // console.log(form.getValues());
 
   useEffect(() => {
     if (data && data?.formSettings !== null) {
@@ -142,7 +143,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
               </Button>
               <Button className="font-medium text-white bg-basePrimary gap-x-2 rounded-lg h-11">
                 {loading && <LoaderAlt className="animate-spin" size={20} />}
-                <p>Update</p>
+                <p>Submit</p>
               </Button>
             </div>
           </div>

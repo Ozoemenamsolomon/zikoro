@@ -223,12 +223,12 @@ function OfferCardModal({
             </div>
           </div>
           <div className="flex px-3 items-center gap-x-3">
-            <p className="font-semibold">{`₦${Number(
+           {offer?.productPromo && <p className="font-semibold">{`₦${Number(
               offer?.productPromo
-            )?.toLocaleString()}`}</p>
-            <p className="font-semibold text-gray-400">{`₦${Number(
+            )?.toLocaleString()}`}</p>}
+           {offer?.productPrice && <p className="font-semibold text-gray-400">{`₦${Number(
               offer?.productPrice
-            )?.toLocaleString()}`}</p>
+            )?.toLocaleString()}`}</p>}
           </div>
           <p className="px-3 text-gray-600">{`Offer Valid Until ${formatShortDate(
             offer?.endDate
@@ -474,7 +474,7 @@ function ActionWidget({
         {!isShow ? (
           <div className="w-full flex gap-y-16 flex-col items-center justify-center h-full">
             <p className="text-center">
-              Do you want to apply for this offer?. Your details will be shared
+              Do you want to get this offer?. Your details will be shared
               with <span className="font-semibold">{offer?.companyName}</span>
             </p>
             <div className="w-full flex items-end justify-end gap-x-3">

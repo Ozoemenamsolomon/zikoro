@@ -26,7 +26,7 @@ export enum EventDetailTab {
 interface PricingType {
   ticketQuantity: string;
   attendeeType: string;
-  description: string;
+  description?: string;
   price: string;
   validity: string;
   accessibility: boolean;

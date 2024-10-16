@@ -7,7 +7,6 @@ import Image from "next/image";
 import { useFetchSingleEvent } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { useMemo, useState } from "react";
-import { partnerDetails } from "@/schemas";
 import { formatDate } from "@/utils";
 import { AddPartners } from "../partners/_components";
 

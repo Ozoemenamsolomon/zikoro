@@ -207,7 +207,7 @@ export function ContentSetting({
               <Switch
                 onClick={() =>
                   form.setValue(
-                    "attendeePayProcessingFee",
+                    "attendeePayProcessingFee" ,
                     !processingFeeStatus
                   )
                 }

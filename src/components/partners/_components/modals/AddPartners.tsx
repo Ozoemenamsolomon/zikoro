@@ -6,17 +6,13 @@ import {
   Input,
   Button,
   ReactSelect,
-  FormControl,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components";
 import { useForm } from "react-hook-form";
 import { ArrowBack } from "styled-icons/boxicons-regular";
 import { COUNTRY_CODE, uploadFile, generateAlias, formatDate } from "@/utils";
 import { TPartner } from "@/types";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { useEffect, useState, useMemo } from "react";
+import {  useState, useMemo } from "react";
 import { cn } from "@/lib";
 import { useAddPartners, useFetchSingleEvent, useRedeemPartnerDiscountCode } from "@/hooks";
 import Image from "next/image";
@@ -26,6 +22,8 @@ import { addPartnerToTierSchema } from "@/schemas";
 import { generateAlphanumericHash } from "@/utils/helpers";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
+import { PaymentSuccessModal } from "../../PartnerPayment";
+
 
 type TSIngleTier = {
   validity: string;
@@ -49,6 +47,7 @@ export function AddPartners({
   const { data: eventData } = useFetchSingleEvent(eventId);
   const { organization } = useOrganizationStore();
   const [loading, setLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false)
   const [code, setCode] = useState("")
   const { addPartners } = useAddPartners();
 const {verifyDiscountCode, loading: discountLoading,
@@ -152,6 +151,7 @@ const total = useMemo(() => {
 
     if (total === 0) {
       await addPartners(payload, eventPayload);
+      setIsSuccess(true);
     } else {
       const encodedData = encodeURIComponent(JSON.stringify(payload));
       const encodedEventPayload = encodeURIComponent(
@@ -188,6 +188,7 @@ const total = useMemo(() => {
       // setCode("")
     }
   return (
+    <>
     <div
       role="button"
       className="w-full h-full fixed z-[200]  overflow-y-auto  inset-0 bg-[#F9FAFF]"
@@ -475,5 +476,14 @@ const total = useMemo(() => {
         </div>
       </div>
     </div>
+    {isSuccess && eventData && <PaymentSuccessModal
+    startDate={eventData?.startDateTime}
+    endDate={eventData?.endDateTime}
+    location={`${eventData?.eventCity}, ${eventData?.eventCountry}`}
+    eventName={eventData?.eventTitle}
+    eventAlias={eventData?.eventAlias}
+
+    />}
+    </>
   );
 }

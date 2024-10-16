@@ -5,9 +5,9 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { Button } from "@/components/custom_ui/Button";
 import { Input } from "@/components/ui/input";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AddCircle } from "@styled-icons/ionicons-sharp/AddCircle";
-import { useState, Suspense, useEffect } from "react";
+import { useState, Suspense, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { Settings } from "styled-icons/feather";
@@ -23,12 +23,11 @@ import { InteractionLayout } from "@/components/engagements/_components";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formQuestionSchema } from "@/schemas/engagement";
-import { AddCoverImage } from "./_components/formcomposables";
 import { nanoid } from "nanoid";
 import { useGetData, usePostRequest } from "@/hooks/services/request";
-import { TEngagementFormQuestion } from "@/types/engagements";
+import { TEngagementFormAnswer, TEngagementFormQuestion } from "@/types/engagements";
 import { Loader2Icon } from "lucide-react";
-import { generateAlias, uploadFile } from "@/utils";
+import {  uploadFile } from "@/utils";
 import { CiShare2 } from "react-icons/ci";
 import { ShareModal } from "./ShareModal";
 
@@ -98,10 +97,14 @@ function CreateInteractionFormComp({
   eventId: string;
 }) {
   const [loading, setLoading] = useState(false);
+  const [active, setActive] = useState(0)
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
   const { data } = useGetData<TEngagementFormQuestion>(
     `/engagements/form/${formId}`
+  );
+  const { data: formResponses } = useGetData<TEngagementFormAnswer[]>(
+    `/engagements/form/answer/${formId}`
   );
   const [isShare, setShowShare] = useState(false);
   const form = useForm<z.infer<typeof formQuestionSchema>>({
@@ -131,7 +134,7 @@ function CreateInteractionFormComp({
       isRequired: false,
     });
     setShowSelectQuestionType(false);
-    // setSelectedOption("");
+  
   }
 
   function copyQuestion(index: number) {
@@ -204,7 +207,7 @@ function CreateInteractionFormComp({
     setLoading(false);
   }
 
-  console.log(form.getValues())
+ // console.log(form.getValues())
 
   useEffect(() => {
     if (data) {
@@ -224,6 +227,13 @@ function CreateInteractionFormComp({
   function onToggleShare() {
     setShowShare((p) => !p);
   }
+
+  const formattedResponses =  useMemo(() => {
+
+    if (Array.isArray(formResponses) && formResponses?.length > 0) {
+      
+    }
+  },[formResponses])
   return (
     <InteractionLayout eventId={eventId}>
       <div className="w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
@@ -244,17 +254,30 @@ function CreateInteractionFormComp({
                 <ArrowBack size={20} />
                 <p>Back</p>
               </Button>
-              <div className=" flex items-center gap-x-2">
-                <Button
-                  className="gap-x-2"
+              <div className="w-fit rounded-xl p-1 border">
+              <button
+                  className={cn("px-3 py-2 font-medium rounded-xl", active == 0 && "bg-basePrimary text-white")}
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    onToggleShare();
+                    setActive(0)
+                  }}
+                >
+                  <p>Questions</p>
+                </button>
+                <button
+                  className={cn("px-3 py-2 font-medium rounded-xl", active == 1 && "bg-basePrimary text-white")}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setActive(1);
                   }}
                 >
                   <p>Responses</p>
-                </Button>
+                </button>
+              </div>
+              <div className=" flex items-center gap-x-2">
+               
                 <button
                   onClick={() =>
                     router.push(

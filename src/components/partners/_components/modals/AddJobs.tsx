@@ -50,7 +50,7 @@ export function AddJob({
     resolver: zodResolver(jobSchema),
   });
 
-  console.log("partnerId", partnerId);
+  // console.log("partnerId", partnerId);
 
   async function onSubmit(values: z.infer<typeof jobSchema>) {
     setLoading(true);
@@ -95,6 +95,7 @@ export function AddJob({
           partnerId,
           currencyCode,
           companyName,
+        
         };
     await update(payload, "job");
     setLoading(false);
