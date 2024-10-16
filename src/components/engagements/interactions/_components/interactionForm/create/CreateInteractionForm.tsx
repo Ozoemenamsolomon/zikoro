@@ -204,12 +204,14 @@ function CreateInteractionFormComp({
     setLoading(false);
   }
 
+  console.log(form.getValues())
+
   useEffect(() => {
     if (data) {
       form.reset({
         title: data?.title,
         description: data?.description,
-        isActive: data?.isActive,
+        isActive: data?.isActive == null ? true :data?.isActive,
         questions: data?.questions,
       });
     }
@@ -298,7 +300,7 @@ function CreateInteractionFormComp({
                         {...form.register("title")}
                         className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
                         placeholder="Form Title"
-                        readOnly
+                       
                       />
                     </FormControl>
                   </FormItem>
@@ -314,7 +316,7 @@ function CreateInteractionFormComp({
                         {...form.register("description")}
                         className="bg-transparent border-none h-11  placeholder:text-gray-500"
                         placeholder="Form Description"
-                        readOnly
+                     
                       />
                     </FormControl>
                   </FormItem>

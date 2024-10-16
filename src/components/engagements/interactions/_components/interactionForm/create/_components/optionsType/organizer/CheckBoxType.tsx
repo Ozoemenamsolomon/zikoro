@@ -81,7 +81,7 @@ function OptionItem({
       touchAction: "none",
     }}
     role="button"
-     className="w-full rounded-lg p-4  bg-gradient-to-tr  space-y-3  from-custom-bg-gradient-start to-custom-bg-gradient-end">
+     className="w-full rounded-lg py-4  bg-gradient-to-tr  space-y-3  ">
       <div className="w-full items-center flex justify-between">
       <PiDotsSixVertical size={30} className="text-gray-400 cursor-move" />
       <div className="w-[90%] flex flex-col items-start justify-start gap-y-3">
@@ -272,7 +272,7 @@ export function CheckBoxType({
               <FormControl>
                 <Input
                   {...form.register(`questions.${index}.question`)}
-                  className="w-full h-12 sm:h-14 border-x-0 border-t-0 border-b px-2 placeholder:text-gray-500 bg-gradient-to-tr rounded-none from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500"
+                  className="w-full h-12 sm:h-14 border-x-0 border-t-0 border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
                   placeholder="Enter question"
                 />
               </FormControl>

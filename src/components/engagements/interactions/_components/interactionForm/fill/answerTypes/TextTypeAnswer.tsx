@@ -21,7 +21,7 @@ export function TextTypeAnswer({
   return (
     <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
       {question && (
-        <div className="w-full p-2 bg-gradient-to-tr  from-custom-bg-gradient-start to-custom-bg-gradient-end">
+        <div className="w-full p-2 ">
           <p className="w-full text-start leading-7 flex ">
             {question ?? ""}{" "}
             {isRequired && <IoMdStar size={12} className="text-red-700" />}

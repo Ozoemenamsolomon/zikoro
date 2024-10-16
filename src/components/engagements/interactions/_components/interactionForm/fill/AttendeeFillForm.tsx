@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/custom_ui/Button";
+import {cn} from "@/lib";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useGetData, usePostRequest } from "@/hooks/services/request";
 import {
@@ -47,7 +48,7 @@ function SubmittedModal() {
 }
 function AttendeeFillFormComp({
   eventId,
-  searchParams: { redirect: query, id: attendeeId, link },
+  
   formId,
 }: {
   eventId: string;
@@ -56,6 +57,10 @@ function AttendeeFillFormComp({
   const { user } = useUserStore();
   const router = useRouter();
   const { isOrganizer, attendee } = useVerifyUserAccess(eventId);
+  const params =useSearchParams();
+  const attendeeId = params.get("id")
+  const link   = params.get("link")
+  const query = params.get("redirect")
   // const { isIdPresent } = useCheckTeamMember({ eventId });
   const [isSuccess, setOpenSuccess] = useState(false);
   const { data, isLoading } = useGetData<TEngagementFormQuestion>(
@@ -114,7 +119,12 @@ function AttendeeFillFormComp({
   }
 
   return (
-    <div className="w-full">
+    <div
+    style={{
+      fontSize: data?.formSettings?.textFontSize+"px" || "14px",
+      backgroundColor: data?.formSettings?.backgroundColor || ""
+    }}
+    className="w-full h-full fixed inset-0 overflow-y-auto">
       {data?.coverImage && (data?.coverImage as string).startsWith("https") && (
         <Image
           src={data?.coverImage}
@@ -126,7 +136,11 @@ function AttendeeFillFormComp({
       )}
 
       <div className="w-full px-4 my-10 pb-20 sm:my-20 mx-auto max-w-4xl ">
-        <h2 className="text-lg mb-3 sm:text-xl lg:text-2xl">
+        <h2
+        style={{
+          fontSize: data?.formSettings?.titleFontSize+"px" || "30px"
+        }}
+        className="text-lg mb-3 sm:text-xl lg:text-2xl">
           {data?.title ?? ""}
         </h2>
         <p className="text-sm sm:text-base mb-8 sm:mb-12">
@@ -162,7 +176,10 @@ function AttendeeFillFormComp({
             <Button
               type="submit"
               disabled={loading}
-              className="self-center w-[150px] gap-x-2 bg-basePrimary text-white font-medium h-12 "
+              style={{
+                backgroundColor: data?.formSettings?.buttonColor || ''
+              }}
+              className={cn("self-center w-[150px] gap-x-2  text-white font-medium h-12 ", !data?.formSettings?.buttonColor && "bg-basePrimary")}
             >
               {loading && <LoaderAlt className="animate-spin" size={20} />}
               <p>Submit</p>
