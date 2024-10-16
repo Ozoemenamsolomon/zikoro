@@ -122,7 +122,8 @@ function AttendeeFillFormComp({
     <div
     style={{
       fontSize: data?.formSettings?.textFontSize+"px" || "14px",
-      backgroundColor: data?.formSettings?.backgroundColor || ""
+      backgroundColor: data?.formSettings?.backgroundColor || "",
+      color: data?.formSettings?.textColor || ""
     }}
     className="w-full h-full fixed inset-0 overflow-y-auto">
       {data?.coverImage && (data?.coverImage as string).startsWith("https") && (

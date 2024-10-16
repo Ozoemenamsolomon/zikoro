@@ -48,7 +48,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
         questionPerSlides: "1",
         titleFontSize: "36",
         headingFontSize: "24",
-        backgroundColor: "#3383cc",
+        backgroundColor: "#ffffff",
         textColor: "#000000",
         buttonColor: "#001FFC",
         textFontSize: "14",

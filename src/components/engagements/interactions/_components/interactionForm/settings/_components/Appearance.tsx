@@ -11,6 +11,7 @@ import * as z from "zod";
 import { formSettingSchema } from "@/schemas/engagement";
 
 const bgColors = [
+  "#ffffff",
   "#B3B3B3",
   "#E6E6E6",
   "#FFBFB9",
@@ -48,11 +49,9 @@ const bgColors = [
   "#E8A3E8",
 ];
 
-
 const colors = [
   "#4D4D4D",
   "#999999",
-  "#FFFFFF",
   "#F44E3B",
   "#FE9200",
   "#FCDC00",
@@ -93,18 +92,23 @@ function ColorWidget({
   title,
   name,
   currentColor,
-  colorArray
+  colorArray,
 }: {
   title: string;
   form: UseFormReturn<z.infer<typeof formSettingSchema>, any, any>;
   name: string;
   currentColor: string;
-  colorArray:string[]
+  colorArray: string[];
 }) {
   return (
     <div className="flex flex-col items-start justify-start gap-y-3">
       <p className="font-medium text-mobile sm:text-sm">{title}</p>
-      <ColorPickerWidget colors={colorArray} name={name} form={form} currentColor={currentColor} />
+      <ColorPickerWidget
+        colors={colorArray}
+        name={name}
+        form={form}
+        currentColor={currentColor}
+      />
     </div>
   );
 }
@@ -168,7 +172,7 @@ export function FormAppearance({
   const questionPerSlides = useWatch({
     control: form.control,
     name: "formSettings.questionPerSlides",
-  })
+  });
 
   return (
     <div className="w-full flex flex-col items-start justify-start gap-y-4 sm:gap-y-6">
