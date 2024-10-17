@@ -90,7 +90,12 @@ export function AddPartnerManually({
         ({ email }) => email === selectedBoothStaff
       );
 
+     if (selectedAttendees?.length > 0) {
       setSelectedAttendees((prev) => [...prev, ...presentAttendee]);
+     }
+     else {
+      setSelectedAttendees([...presentAttendee]);
+     }
     }
   }, [selectedBoothStaff]);
 
