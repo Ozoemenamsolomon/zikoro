@@ -29,7 +29,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 function SubmittedModal() {
   return (
-    <div className="w-full h-full inset-0 fixed bg-[#c5ceff]">
+    <div className="w-full h-full inset-0 fixed bg-white">
       <div className="w-[95%] max-w-xl rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
         <Image
           src="/images/facheck.png"

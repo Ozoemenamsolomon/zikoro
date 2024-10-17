@@ -102,7 +102,7 @@ export function PartnerCard({
               }`}</p>
             )}
             {sponsor?.boothNumber
-              ? `, Booth ${sponsor?.boothNumber?.toString()}`
+              ? ` Booth ${sponsor?.boothNumber?.toString()}`
               : ""}
           </div>
         )}
