@@ -6,7 +6,7 @@ const SlideToReveal = ({ action }) => {
   const [sliderPosition, setSliderPosition] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
   const [ref, { width }] = useMeasure();
-  const sliderWidth = width || 0; // Adjust this width based on your design
+  const sliderWidth = width || 300; // Adjust this width based on your design
 
   const handleDrag = (e, data) => {
     // Limit the slider position within the container
@@ -20,14 +20,13 @@ const SlideToReveal = ({ action }) => {
       // Reset slider position if not fully dragged
       setSliderPosition(0);
     }
-    setIsSliding(false);
   };
 
   return (
     <div
       id="well"
-      className="relative p-0.5 h-fit rounded-3xl bg-basePrimary/20 select-none transition-opacity"
-      style={{ width: `${sliderWidth}px`, overflow: "hidden" }}
+      className="relative p-0.5 h-fit rounded-3xl bg-basePrimary/20 select-none transition-opacity w-full"
+      style={{ overflow: "hidden" }}
       ref={ref}
     >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full">
