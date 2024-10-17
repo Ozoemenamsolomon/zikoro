@@ -35,7 +35,7 @@ export function FormCard({
           );
         } else {
           router.push(
-            `/engagements/${form?.eventAlias}/engagements/form/${form?.formAlias}`
+            `/engagements/${form?.eventAlias}/form/${form?.formAlias}`
           );
         }
       }}
