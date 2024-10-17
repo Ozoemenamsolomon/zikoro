@@ -90,7 +90,12 @@ export function AddPartnerManually({
         ({ email }) => email === selectedBoothStaff
       );
 
+     if (selectedAttendees?.length > 0) {
       setSelectedAttendees((prev) => [...prev, ...presentAttendee]);
+     }
+     else {
+      setSelectedAttendees([...presentAttendee]);
+     }
     }
   }, [selectedBoothStaff]);
 
@@ -180,12 +185,17 @@ await update(payload)
 
   // convert attendees list to an array of object {value, label} pairs
   const attendeeOptions = useMemo(() => {
-    return attendees.map(({ firstName, lastName, email }) => {
-      return {
-        label: `${firstName} ${lastName}`,
-        value: email,
-      };
-    });
+    if (Array.isArray(attendees) && attendees.length > 0) {
+     return attendees.map(({ firstName, lastName, email }) => {
+        return {
+          label: `${firstName} ${lastName}`,
+          value: email,
+        };
+      });
+    }
+    else {
+      return []
+    }
   }, [attendees]);
 
   ///
@@ -269,7 +279,7 @@ await update(payload)
         onClick={(e) => e.stopPropagation()}
         role="button"
         className={cn(
-          "w-[95%] sm:w-[500px] box-animation h-[90vh] overflow-auto flex flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4",
+          "w-[95%] max-w-xl box-animation h-[90vh] overflow-auto flex flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4",
           active === 2 && "hidden",
           active === 3 && "hidden"
         )}

@@ -21,6 +21,7 @@ export function PartnerDetails({
 }: {
   eventId: string;
   partnerId: string;
+  searchParams: any
 }) {
   const { data, refetch, loading } = useFetchSinglePartner(partnerId);
   const { attendee, isOrganizer } = useVerifyUserAccess(eventId);

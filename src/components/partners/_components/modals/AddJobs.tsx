@@ -133,7 +133,7 @@ export function AddJob({
       <div
         onClick={(e) => e.stopPropagation()}
         role="button"
-        className="w-[95%] sm:w-[500px] box-animation h-[90vh] overflow-auto flex flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4"
+        className="w-[95%] max-w-xl box-animation h-[90vh] overflow-auto flex flex-col gap-y-6 rounded-lg bg-white  m-auto absolute inset-0 py-6 px-3 sm:px-4"
       >
         <div className="w-full flex items-center justify-between">
           <h2 className="font-medium text-lg sm:text-xl">Add Job</h2>

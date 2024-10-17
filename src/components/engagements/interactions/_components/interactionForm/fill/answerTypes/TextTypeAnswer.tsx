@@ -19,7 +19,7 @@ export function TextTypeAnswer({
   const questionId = form.watch(`questions.${index}.questionId`);
 
   return (
-    <div className="w-full bg-white border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
+    <div className="w-full  border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
       {question && (
         <div className="w-full p-2 ">
           <p className="w-full text-start leading-7 flex ">

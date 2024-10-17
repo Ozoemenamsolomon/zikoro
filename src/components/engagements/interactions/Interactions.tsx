@@ -109,7 +109,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
     <InteractionLayout eventId={eventId}>
       <div className="w-full">
         <div className="flex items-end w-full justify-end p-4">
-          {Array.isArray(visibleQuizzes) && visibleQuizzes?.length > 0 && (
+          {/* {Array.isArray(visibleQuizzes) && visibleQuizzes?.length > 0 && ( */}
             <Button
               onClick={toggleInteractionModal}
               className={cn(
@@ -120,7 +120,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
               <PlusCircle size={22} />
               <p>Interactions</p>
             </Button>
-          )}
+          {/* )} */}
         </div>
 
         <div className="w-full grid pb-20 mt-3 px-4 sm:mt-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-center">
