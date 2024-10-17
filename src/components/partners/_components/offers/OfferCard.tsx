@@ -85,7 +85,7 @@ export function OfferCard({
               alt="product"
               width={600}
               height={600}
-              className="w-full rounded-t-md h-[180px] sm:h-56"
+              className="w-full rounded-t-md h-[180px] object-cover sm:h-56"
             />
           ) : (
             <div className="w-full rounded-t-md h-[180px] sm:h-56 bg-gray-200 animate-pulse"></div>
