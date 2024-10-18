@@ -246,15 +246,19 @@ export function CheckBoxType({
   const getPosition = (id: string): number | undefined =>
     options.findIndex((item) => item?.id === id);
   async function handleDrop(e: DragEndEvent) {
+     
     if (!options) return;
     const { active, over } = e;
 
     if (active?.id === over?.id) return;
     const originPos = getPosition(active?.id as string)!;
     const destPos = getPosition(over?.id as string)!;
-    const updatedOption = arrayMove(options, originPos, destPos);
+    if (active && (active.id as string).includes("child") && over && (over.id as string).includes("child")) {
+      const updatedOption = arrayMove(options, originPos, destPos);
 
-    setOptions(updatedOption);
+      setOptions(updatedOption);
+    }
+   
   }
   return (
     <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-4 sm:p-6 bg-white">
