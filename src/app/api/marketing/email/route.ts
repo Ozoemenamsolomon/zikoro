@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { generateAlphanumericHash } from "@/utils/helpers";
 
 export async function GET(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -44,6 +45,8 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
+      const emailIdentifier = generateAlphanumericHash(8);
+
       const {
         emailCategory,
         subject,
@@ -82,6 +85,9 @@ export async function POST(req: NextRequest) {
                   address: email,
                   name: "affiliate",
                 },
+                client_reference: emailIdentifier,
+                track_opens: true,
+                track_clicks: true,
               },
             ],
             subject,
@@ -106,7 +112,9 @@ export async function POST(req: NextRequest) {
         }
       });
 
-      const { error } = await supabase.from("sentEmails").insert(params);
+      const { error } = await supabase
+        .from("sentEmails")
+        .insert({ ...params, emailIdentifier });
       if (error) throw error;
 
       return NextResponse.json(

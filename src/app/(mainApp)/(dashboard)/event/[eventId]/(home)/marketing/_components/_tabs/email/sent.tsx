@@ -242,16 +242,16 @@ const Sent = () => {
             </SelectContent>
           </Select>
         </div>
-        <Link href="/create">
-        <Button
-          type="submit"
-          className={cn(
-            "text-white bg-basePrimary border border-basePrimary gap-x-2"
-          )}
-        >
-          <span>Create</span>
-          <Envelope className="h-5 w-5 text-white" />
-        </Button>
+        <Link href="email/create">
+          <Button
+            type="submit"
+            className={cn(
+              "text-white bg-basePrimary border border-basePrimary gap-x-2"
+            )}
+          >
+            <span>Create</span>
+            <Envelope className="h-5 w-5 text-white" />
+          </Button>
         </Link>
       </div>
       <div className="grid grid-cols-5 gap-4 items-center mb-8">
@@ -259,7 +259,7 @@ const Sent = () => {
         <EmailInfoCard label="Delivered Emails" value={1000} Icon={Check2} />
         <EmailInfoCard label="Open Rate" value={"70% "} Icon={EyeIcon} />
       </div>
-      <div className="space-y-4 w-full py-4 bg-basePrimary/20 rounded-md">
+      <div className="space-y-4 w-full py-4 bg-transparent  rounded-md">
         <div className="flex gap-8 justify-center">
           <div className="relative w-fit">
             <svg
