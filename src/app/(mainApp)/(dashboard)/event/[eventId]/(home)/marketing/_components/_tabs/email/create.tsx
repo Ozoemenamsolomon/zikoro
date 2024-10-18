@@ -52,6 +52,7 @@ import { TUser } from "@/types";
 import useEventStore from "@/store/globalEventStore";
 import useUserStore from "@/store/globalUserStore";
 import { ReactSelect } from "@/components";
+import Editor from "./custom_editor/Editor";
 
 const CreateEmailSchema = z
   .object({
@@ -164,6 +165,8 @@ const Create = () => {
         emailRecipient: sendTest ? [testEmail] : data.recipients.split("; "),
       },
     });
+
+    form.reset();
   };
 
   const setMessage = (content: string) => {
@@ -361,11 +364,7 @@ const Create = () => {
           )}
         </div>
         <InputOffsetLabel label="Message">
-          <TextEditor
-            onChange={setMessage}
-            defaultValue={content}
-            placeholder="Write message"
-          />
+          <Editor />
         </InputOffsetLabel>
         {/* <div className="flex flex-col md:flex-row gap-8 md:items-center">
           <FormField
