@@ -1,7 +1,7 @@
 "use client";
 
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, UseFieldArrayRemove, useForm, UseFormReturn } from "react-hook-form";
 import { Button } from "@/components/custom_ui/Button";
 import { Input } from "@/components/ui/input";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
@@ -17,6 +17,7 @@ import {
   DateType,
   CheckBoxType,
   RatingType,
+  UploadType,
 } from "./_components/optionsType/organizer";
 import { cn } from "@/lib";
 import { InteractionLayout } from "@/components/engagements/_components";
@@ -25,11 +26,33 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formQuestionSchema } from "@/schemas/engagement";
 import { nanoid } from "nanoid";
 import { useGetData, usePostRequest } from "@/hooks/services/request";
-import { TEngagementFormAnswer, TEngagementFormQuestion } from "@/types/engagements";
+import {
+  TEngagementFormAnswer,
+  TEngagementFormQuestion,
+} from "@/types/engagements";
 import { Loader2Icon } from "lucide-react";
-import {  uploadFile } from "@/utils";
+import { uploadFile } from "@/utils";
 import { CiShare2 } from "react-icons/ci";
 import { ShareModal } from "./ShareModal";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
+  DndContext,
+  KeyboardSensor,
+  MouseSensor,
+  PointerSensor,
+  TouchSensor,
+  closestCorners,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
 
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
@@ -37,6 +60,7 @@ const options = [
   { name: "Date", image: "/fdate.png" },
   { name: "CheckBox", image: "/fcheckbox.png" },
   { name: "Rating", image: "/fstarr.png" },
+  {name:"Upload", image:""},
   { name: "Likert", image: "/flikert.png" },
 ];
 
@@ -47,7 +71,90 @@ const optionsType = [
   { name: "CheckBox", type: "INPUT_CHECKBOX" },
   { name: "Rating", type: "INPUT_RATING" },
   { name: "Likert", type: "INPUT_LIKERT" },
+  {name:"Upload", type:"ATTACHMENT"}
+
 ];
+
+function Fields({
+  field,
+  index,
+  copyQuestion,
+  form,
+  remove,
+}: {
+  form: UseFormReturn<z.infer<typeof formQuestionSchema>, any, any>;
+  field: any;
+  index: number;
+  copyQuestion: (i: number) => void;
+  remove: UseFieldArrayRemove
+}) {
+  // const { attributes, listeners, setNodeRef, transform, transition } =
+  // useSortable({ id: field?.id });
+
+
+  return (
+    <div
+    // ref={setNodeRef}
+    // {...attributes}
+    // {...listeners}
+    // style={{
+    //   transition,
+    //   transform: CSS.Transform.toString(transform),
+    //   touchAction: "none",
+    // }}
+    className="w-full">
+      {field.selectedType === "INPUT_TEXT" && (
+        <TextType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      )}
+      {field.selectedType === "INPUT_DATE" && (
+        <DateType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      )}
+      {field.selectedType === "INPUT_CHECKBOX" && (
+        <CheckBoxType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      )}
+      {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
+        <CheckBoxType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      )}
+      {field.selectedType === "INPUT_RATING" && (
+        <RatingType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      )}
+      {field.selectType === "ATTACHMENT" && (
+        <UploadType
+          form={form}
+          index={index}
+          remove={remove}
+          append={copyQuestion}
+        />
+      ) }
+    </div>
+  );
+}
+
 function SelectQuestionType({
   onClose,
   //selectedOption,
@@ -97,7 +204,7 @@ function CreateInteractionFormComp({
   eventId: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const [active, setActive] = useState(0)
+  const [active, setActive] = useState(0);
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
   const { data } = useGetData<TEngagementFormQuestion>(
@@ -134,7 +241,6 @@ function CreateInteractionFormComp({
       isRequired: false,
     });
     setShowSelectQuestionType(false);
-  
   }
 
   function copyQuestion(index: number) {
@@ -207,14 +313,14 @@ function CreateInteractionFormComp({
     setLoading(false);
   }
 
- // console.log(form.getValues())
+  // console.log(form.getValues())
 
   useEffect(() => {
     if (data) {
       form.reset({
         title: data?.title,
         description: data?.description,
-        isActive: data?.isActive == null ? true :data?.isActive,
+        isActive: data?.isActive == null ? true : data?.isActive,
         questions: data?.questions,
       });
     }
@@ -228,12 +334,36 @@ function CreateInteractionFormComp({
     setShowShare((p) => !p);
   }
 
-  const formattedResponses =  useMemo(() => {
-
+  const formattedResponses = useMemo(() => {
     if (Array.isArray(formResponses) && formResponses?.length > 0) {
-      
     }
-  },[formResponses])
+  }, [formResponses]);
+
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor, {
+  //     activationConstraint: {
+  //       distance: 0.01,
+  //     },
+  //   }),
+  //   useSensor(TouchSensor),
+  //   useSensor(MouseSensor),
+  //   useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  // );
+
+  // get position
+  // const getPosition = (id: string): number | undefined =>
+  //   fields.findIndex((item) => item?.id === id);
+  // async function handleDrop(e: DragEndEvent) {
+  //   if (!fields) return;
+  //   const { active, over } = e;
+
+  //   if (active?.id === over?.id) return;
+  //   const originPos = getPosition(active?.id as string)!;
+  //   const destPos = getPosition(over?.id as string)!;
+  //   const updatedFields = arrayMove(fields, originPos, destPos);
+
+  //   form.setValue("questions", updatedFields);
+  // }
   return (
     <InteractionLayout eventId={eventId}>
       <div className="w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
@@ -255,18 +385,24 @@ function CreateInteractionFormComp({
                 <p>Back</p>
               </Button>
               <div className="w-fit rounded-xl p-1 border">
-              <button
-                  className={cn("px-3 py-2 font-medium rounded-xl", active == 0 && "bg-basePrimary text-white")}
+                <button
+                  className={cn(
+                    "px-3 py-2 font-medium rounded-xl",
+                    active == 0 && "bg-basePrimary text-white"
+                  )}
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    setActive(0)
+                    setActive(0);
                   }}
                 >
                   <p>Questions</p>
                 </button>
                 <button
-                  className={cn("px-3 py-2 font-medium rounded-xl", active == 1 && "bg-basePrimary text-white")}
+                  className={cn(
+                    "px-3 py-2 font-medium rounded-xl",
+                    active == 1 && "bg-basePrimary text-white"
+                  )}
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
@@ -277,7 +413,6 @@ function CreateInteractionFormComp({
                 </button>
               </div>
               <div className=" flex items-center gap-x-2">
-               
                 <button
                   onClick={() =>
                     router.push(
@@ -323,7 +458,6 @@ function CreateInteractionFormComp({
                         {...form.register("title")}
                         className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
                         placeholder="Form Title"
-                       
                       />
                     </FormControl>
                   </FormItem>
@@ -339,7 +473,6 @@ function CreateInteractionFormComp({
                         {...form.register("description")}
                         className="bg-transparent border-none h-11  placeholder:text-gray-500"
                         placeholder="Form Description"
-                     
                       />
                     </FormControl>
                   </FormItem>
@@ -348,50 +481,27 @@ function CreateInteractionFormComp({
             </div>
 
             <div className="w-full flex flex-col items-start justify-start gap-y-6 sm:gap-y-8">
-              {fields.map((field, index) => (
-                <div key={field.id} className="w-full">
-                  {field.selectedType === "INPUT_TEXT" && (
-                    <TextType
-                      form={form}
+              {/* <DndContext
+                collisionDetection={closestCorners}
+                sensors={sensors}
+                onDragEnd={handleDrop}
+              >
+                <SortableContext
+                  items={fields}
+                  strategy={verticalListSortingStrategy}
+                > */}
+                  {fields.map((field, index) => (
+                    <Fields
+                      key={field.id}
                       index={index}
                       remove={remove}
-                      append={copyQuestion}
-                    />
-                  )}
-                  {field.selectedType === "INPUT_DATE" && (
-                    <DateType
+                      field={field}
+                      copyQuestion={copyQuestion}
                       form={form}
-                      index={index}
-                      remove={remove}
-                      append={copyQuestion}
                     />
-                  )}
-                  {field.selectedType === "INPUT_CHECKBOX" && (
-                    <CheckBoxType
-                      form={form}
-                      index={index}
-                      remove={remove}
-                      append={copyQuestion}
-                    />
-                  )}
-                  {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
-                    <CheckBoxType
-                      form={form}
-                      index={index}
-                      remove={remove}
-                      append={copyQuestion}
-                    />
-                  )}
-                  {field.selectedType === "INPUT_RATING" && (
-                    <RatingType
-                      form={form}
-                      index={index}
-                      remove={remove}
-                      append={copyQuestion}
-                    />
-                  )}
-                </div>
-              ))}
+                  ))}
+                {/* </SortableContext>
+              </DndContext> */}
             </div>
 
             <div className="w-full flex items-center justify-center ">
@@ -404,7 +514,6 @@ function CreateInteractionFormComp({
                 className="w-fit text-basePrimary h-fit px-0 gap-x-2"
               >
                 <AddCircle className="text-basePrimary" size={40} />
-               
               </Button>
             </div>
 

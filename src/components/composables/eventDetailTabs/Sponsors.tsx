@@ -51,6 +51,20 @@ export function Sponsors({
       return newData;
     }
   }, [approvedPartners]);
+
+  const isRegistrationVisible = useMemo(() => {
+    if (event) {
+      return event?.eventWebsiteSettings?.some(
+        ({ title }) => title === "Partner Registration"
+      )
+        ? event?.eventWebsiteSettings?.find(
+            ({ title }) => title === "Partner Registration"
+          )?.status
+        : true;
+    } else {
+      return false;
+    }
+  }, [event]);
   return (
     <div className="w-full bg-white p-3">
       <div className="w-full rounded-lg border px-2">
@@ -58,7 +72,8 @@ export function Sponsors({
 
         <div className="w-full bg-white py-3">
           {Array.isArray(event?.partnerDetails) &&
-            event?.partnerDetails?.length > 0 && (
+            event?.partnerDetails?.length > 0 &&
+            isRegistrationVisible && (
               <div className="w-full my-8 flex items-center justify-center">
                 <Button
                   onClick={() =>
@@ -105,7 +120,7 @@ export function Sponsors({
                   )}
                 >
                   {data?.length > 0 && (
-                    <p className="font-semibold capitalize text-zinc-700 ">
+                    <p className="font-semibold capitalize mb-3 text-zinc-700 ">
                       {partnerType}
                     </p>
                   )}

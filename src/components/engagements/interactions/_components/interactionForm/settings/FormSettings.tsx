@@ -134,7 +134,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
                   e.stopPropagation();
                   e.preventDefault();
                 }}
-                className="flex h-11 border border-basePrimary  items-center gap-x-2"
+                className=" h-11 hidden border border-basePrimary  items-center gap-x-2"
               >
                 <InlineIcon color="#001fcc" icon="mdi:eye" fontSize={20} />
                 <p className="gradient-text bg-basePrimary font-medium">
@@ -143,7 +143,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
               </Button>
               <Button className="font-medium text-white bg-basePrimary gap-x-2 rounded-lg h-11">
                 {loading && <LoaderAlt className="animate-spin" size={20} />}
-                <p>Submit</p>
+                <p>{prevFormId ? "Update" :"Create"}</p>
               </Button>
             </div>
           </div>
