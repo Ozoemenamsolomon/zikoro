@@ -81,4 +81,5 @@ export interface TFormattedEngagementFormAnswer {
   attendeeAlias: string;
   question: string;
 questionImage?: string | any;
+optionFields: any
 }
