@@ -356,6 +356,9 @@ function CreateInteractionFormComp({
               questionImage:
                 data?.questions?.find((q) => q?.questionId === item?.questionId)
                   ?.questionImage || null,
+              optionFields:
+                data?.questions?.find((q) => q?.questionId === item?.questionId)
+                  ?.optionFields || null,
             };
           });
         }
