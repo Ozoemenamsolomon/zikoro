@@ -1,7 +1,12 @@
 "use client";
 
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
-import { useFieldArray, UseFieldArrayRemove, useForm, UseFormReturn } from "react-hook-form";
+import {
+  useFieldArray,
+  UseFieldArrayRemove,
+  useForm,
+  UseFormReturn,
+} from "react-hook-form";
 import { Button } from "@/components/custom_ui/Button";
 import { Input } from "@/components/ui/input";
 import { ArrowBack } from "@styled-icons/boxicons-regular/ArrowBack";
@@ -29,30 +34,32 @@ import { useGetData, usePostRequest } from "@/hooks/services/request";
 import {
   TEngagementFormAnswer,
   TEngagementFormQuestion,
+  TFormattedEngagementFormAnswer,
 } from "@/types/engagements";
 import { Loader2Icon } from "lucide-react";
 import { uploadFile } from "@/utils";
 import { CiShare2 } from "react-icons/ci";
 import { ShareModal } from "./ShareModal";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import {
-  DndContext,
-  KeyboardSensor,
-  MouseSensor,
-  PointerSensor,
-  TouchSensor,
-  closestCorners,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  arrayMove,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
+import FormResponses from "../formResponse/FormResponse";
+// import { useSortable } from "@dnd-kit/sortable";
+// import { CSS } from "@dnd-kit/utilities";
+// import {
+//   DndContext,
+//   KeyboardSensor,
+//   MouseSensor,
+//   PointerSensor,
+//   TouchSensor,
+//   closestCorners,
+//   useSensor,
+//   useSensors,
+//   DragEndEvent,
+// } from "@dnd-kit/core";
+// import {
+//   SortableContext,
+//   verticalListSortingStrategy,
+//   arrayMove,
+//   sortableKeyboardCoordinates,
+// } from "@dnd-kit/sortable";
 
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
@@ -60,7 +67,7 @@ const options = [
   { name: "Date", image: "/fdate.png" },
   { name: "CheckBox", image: "/fcheckbox.png" },
   { name: "Rating", image: "/fstarr.png" },
-  {name:"Upload", image:""},
+  { name: "Upload", image: "" },
   { name: "Likert", image: "/flikert.png" },
 ];
 
@@ -71,8 +78,7 @@ const optionsType = [
   { name: "CheckBox", type: "INPUT_CHECKBOX" },
   { name: "Rating", type: "INPUT_RATING" },
   { name: "Likert", type: "INPUT_LIKERT" },
-  {name:"Upload", type:"ATTACHMENT"}
-
+  { name: "Upload", type: "ATTACHMENT" },
 ];
 
 function Fields({
@@ -86,23 +92,23 @@ function Fields({
   field: any;
   index: number;
   copyQuestion: (i: number) => void;
-  remove: UseFieldArrayRemove
+  remove: UseFieldArrayRemove;
 }) {
   // const { attributes, listeners, setNodeRef, transform, transition } =
   // useSortable({ id: field?.id });
 
-
   return (
     <div
-    // ref={setNodeRef}
-    // {...attributes}
-    // {...listeners}
-    // style={{
-    //   transition,
-    //   transform: CSS.Transform.toString(transform),
-    //   touchAction: "none",
-    // }}
-    className="w-full">
+      // ref={setNodeRef}
+      // {...attributes}
+      // {...listeners}
+      // style={{
+      //   transition,
+      //   transform: CSS.Transform.toString(transform),
+      //   touchAction: "none",
+      // }}
+      className="w-full"
+    >
       {field.selectedType === "INPUT_TEXT" && (
         <TextType
           form={form}
@@ -150,7 +156,7 @@ function Fields({
           remove={remove}
           append={copyQuestion}
         />
-      ) }
+      )}
     </div>
   );
 }
@@ -313,8 +319,6 @@ function CreateInteractionFormComp({
     setLoading(false);
   }
 
-  // console.log(form.getValues())
-
   useEffect(() => {
     if (data) {
       form.reset({
@@ -335,9 +339,39 @@ function CreateInteractionFormComp({
   }
 
   const formattedResponses = useMemo(() => {
-    if (Array.isArray(formResponses) && formResponses?.length > 0) {
+    const responseGroup: { [key: string]: TFormattedEngagementFormAnswer[] } =
+      {};
+
+    if (Array.isArray(formResponses) && formResponses?.length > 0 && data) {
+      const newData: TFormattedEngagementFormAnswer[] = formResponses?.flatMap(
+        (v) => {
+          return v?.responses?.map((item) => {
+            const { responses, ...restData } = v;
+            return {
+              ...item,
+              ...restData,
+              question:
+                data?.questions?.find((q) => q.questionId === item?.questionId)
+                  ?.question || "",
+              questionImage:
+                data?.questions?.find((q) => q?.questionId === item?.questionId)
+                  ?.questionImage || null,
+            };
+          });
+        }
+      );
+
+      newData?.forEach((quest) => {
+        const key = quest?.questionId;
+        if (!responseGroup[key]) {
+          responseGroup[key] = [] as TFormattedEngagementFormAnswer[];
+        }
+        responseGroup[key].push(quest);
+      });
+
+      return responseGroup;
     }
-  }, [formResponses]);
+  }, [data, formResponses]);
 
   // const sensors = useSensors(
   //   useSensor(PointerSensor, {
@@ -366,7 +400,12 @@ function CreateInteractionFormComp({
   // }
   return (
     <InteractionLayout eventId={eventId}>
-      <div className="w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
+      <div
+        className={cn(
+          "w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10",
+          active === 0
+        )}
+      >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -490,17 +529,17 @@ function CreateInteractionFormComp({
                   items={fields}
                   strategy={verticalListSortingStrategy}
                 > */}
-                  {fields.map((field, index) => (
-                    <Fields
-                      key={field.id}
-                      index={index}
-                      remove={remove}
-                      field={field}
-                      copyQuestion={copyQuestion}
-                      form={form}
-                    />
-                  ))}
-                {/* </SortableContext>
+              {fields.map((field, index) => (
+                <Fields
+                  key={field.id}
+                  index={index}
+                  remove={remove}
+                  field={field}
+                  copyQuestion={copyQuestion}
+                  form={form}
+                />
+              ))}
+              {/* </SortableContext>
               </DndContext> */}
             </div>
 
@@ -534,6 +573,7 @@ function CreateInteractionFormComp({
           />
         )}
       </div>
+      {active === 1 && <FormResponses data={formattedResponses} />}
     </InteractionLayout>
   );
 }
