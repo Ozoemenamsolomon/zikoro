@@ -34,7 +34,7 @@ export const columns: ColumnDef<TSentEmail>[] = [
       const formattedTime = date.toLocaleTimeString("en-US", timeOptions);
 
       return (
-        <div className="flex flex-col items-center justify-between">
+        <div className="flex flex-col justify-between">
           <span>{formattedDate}</span>
           <span>{formattedTime}</span>
         </div>
