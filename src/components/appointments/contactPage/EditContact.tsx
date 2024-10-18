@@ -210,3 +210,7 @@ const EditContact = ({contact, }:{contact:BookingsContact, }) => {
 }
 
 export default EditContact
+
+// export const CenterModall = () => {
+
+// }

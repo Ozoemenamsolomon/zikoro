@@ -2,15 +2,12 @@
 import { ClockIcon, EditPenBoxIcon, MapPin, ShareIcon } from '@/constants'
 import { AppointmentLink } from '@/types/appointments'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import Share from './Share'
 import CopyLinkButton from '../ui/CopyLinkButton'
 import toast from 'react-hot-toast'
-import { url } from 'inspector'
 
 const LinksCard = ({data,}:{data:AppointmentLink|any}) => {
-    const {push} = useRouter()
     const [item, setItem] = useState<AppointmentLink>(data)
     const [laoding, setLoading] = useState(false) 
     const [isShare, setIsShare] = useState<number|null|bigint>(null)

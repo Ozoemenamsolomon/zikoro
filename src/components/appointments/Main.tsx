@@ -15,7 +15,6 @@ const nolayoutpaths = [
     '/appointments/shop-front/booking',
     '/appointments/shop-front/images',
     '/appointments/shop-front/profile',
-
   ];
 
 const Main = ({children}:{children:React.ReactNode}) => {
