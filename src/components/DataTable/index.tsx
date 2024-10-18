@@ -72,7 +72,7 @@ export function DataTable<TData extends { id?: number }>({
                   return (
                     <TableHead
                       key={header.id}
-                      className="text-gray-700 font-medium px-1 pt-2"
+                      className="text-gray-700 font-medium px-1 pt-2 text-center"
                     >
                       {header.isPlaceholder
                         ? null
@@ -98,8 +98,8 @@ export function DataTable<TData extends { id?: number }>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="py-4 px-1 text-gray-600 text-sm font-medium"
-                    >
+                      className="py-4 px-1 text-gray-600 text-sm font-medium text-center"
+                  >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

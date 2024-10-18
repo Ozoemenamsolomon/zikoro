@@ -3,18 +3,14 @@ import { TSentEmail } from "@/types/marketing";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<TSentEmail>[] = [
-  {
-    accessorKey: "emailCategory",
-    header: "Campaign Name",
-  },
+  // {
+  //   accessorKey: "emailCategory",
+  //   header: "Campaign Name",
+  // },
 
   {
     accessorKey: "subject",
-    header: "Subject",
-  },
-  {
-    accessorKey: "emailBody",
-    header: "Body",
+    header: "Email",
   },
   {
     accessorKey: "created_at",
@@ -37,12 +33,17 @@ export const columns: ColumnDef<TSentEmail>[] = [
       const formattedDate = date.toLocaleDateString("en-US", dateOptions);
       const formattedTime = date.toLocaleTimeString("en-US", timeOptions);
 
-      return `${formattedDate}, ${formattedTime}`;
+      return (
+        <div className="flex flex-col items-center justify-between">
+          <span>{formattedDate}</span>
+          <span>{formattedTime}</span>
+        </div>
+      );
     },
   },
   {
     accessorKey: "emailRecipient",
-    header: "Recipient",
+    header: "Recipients",
     cell: ({ row }) => row.original.emailRecipient.length,
   },
 ];
