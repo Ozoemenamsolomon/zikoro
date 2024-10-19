@@ -77,11 +77,7 @@ export default function FormResponses({ data }: FormResponseProps) {
                   </div>
                 )}
 
-                {/* {item?.type === "INPUT_CHECKBOX" && <CheckBoxTypeResponse />}
-
-                {item?.type === "INPUT_MULTIPLE_CHOICE" && (
-                  <CheckBoxTypeResponse />
-                )} */}
+                
 
                 {item?.type === "ATTACHMENT" && (
                   <div className="w-full flex flex-col items-start justify-start gap-y-2">
@@ -95,6 +91,20 @@ export default function FormResponses({ data }: FormResponseProps) {
             getRefinedData(value, "INPUT_RATING")?.length > 0 && (
               <RatingTypeResponse
                 responses={getRefinedData(value, "INPUT_RATING")}
+              />
+            )}
+             {Array.isArray(value) &&
+            value?.some((v) => v?.questionId === key) &&
+            getRefinedData(value, "INPUT_CHECKBOX")?.length > 0 && (
+              <CheckBoxTypeResponse
+                responses={getRefinedData(value, "INPUT_CHECKBOX")}
+              />
+            )}
+             {Array.isArray(value) &&
+            value?.some((v) => v?.questionId === key) &&
+            getRefinedData(value, "INPUT_MULTIPLE_CHOICE")?.length > 0 && (
+              <CheckBoxTypeResponse
+                responses={getRefinedData(value, "INPUT_MULTIPLE_CHOICE")}
               />
             )}
         </div>
