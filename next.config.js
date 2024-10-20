@@ -4,10 +4,6 @@ const nextConfig = {
   images: {
     domains: ["res.cloudinary.com"],
   },
-  swcMinify: true,
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
 };
 
 module.exports = nextConfig;

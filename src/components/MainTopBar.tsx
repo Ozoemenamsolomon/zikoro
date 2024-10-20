@@ -51,7 +51,6 @@ const MainTopBar = ({
   const { user, setUser } = useUserStore();
   if (!user) return;
 
-
   const {
     events,
     isLoading: eventIsLoading,

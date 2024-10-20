@@ -1,13 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 import { ArrowBack } from "styled-icons/ionicons-outline";
 import { useRouter, usePathname } from "next/navigation";
 import { paymentConfig } from "@/hooks/common/usePayStackPayment";
 import { Button } from "@/components";
 import { Lock } from "styled-icons/fa-solid";
 import { PaystackButton } from "react-paystack";
+import { convertCurrencyCodeToSymbol } from "@/utils/currencyConverterToSymbol";
 import toast from "react-hot-toast";
 import { useCreateOrganisation } from "@/hooks";
 import { useCreateOrgSubscription } from "@/hooks/services/subscription";
@@ -23,26 +22,47 @@ type DBDiscountsType = {
   discountPercentage: number | null;
 };
 
-export default function PaymentComponent() {
+// Define the type for searchParams
+type SearchParams = {
+  name: string;
+  id: string;
+  orgId: string;
+  orgAlias: string;
+  plan: string;
+  total: string;
+  coupon: string;
+  monthly: string;
+  currency: string;
+  orgName: string;
+  orgType: string;
+  subPlan: string;
+  redirectUrl: string;
+  isCreate: string;
+};
+
+export default function PaymentComponent({
+  searchParams: {
+    name,
+    id,
+    orgId,
+    orgAlias,
+    plan,
+    total,
+    coupon: currentCoupon,
+    monthly,
+    currency,
+    orgName,
+    orgType,
+    subPlan,
+    redirectUrl,
+    isCreate,
+  },
+}: {
+  searchParams: SearchParams;
+}) {
   const { user } = useUserStore();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const name = searchParams.get("name");
-  const id = searchParams.get("id") ?? "";
-  const orgId = searchParams.get("orgId");
-  const orgAlias = searchParams.get("orgAlias");
-  // const email = searchParams.get("email");
-  const plan = searchParams.get("plan") ?? "";
-  const total = searchParams.get("total");
-  const currentCoupon = searchParams.get("currentCoupon");
-  const monthly = searchParams.get("monthly");
-  const currency = searchParams.get("currency")?.trim() ?? "";
-  const orgName = searchParams.get("orgName");
-  const orgType = searchParams.get("orgType");
-  const subPlan = searchParams.get("subPlan");
-  const redirectUrl = searchParams.get("redirectUrl");
   const userEmail = user?.userEmail;
-  const isCreate = searchParams.get("isCreate");
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [coupons, setCoupons] = useState<DBDiscountsType[]>([]);
   const [discount, setDiscount] = useState<number>(0);
@@ -58,8 +78,8 @@ export default function PaymentComponent() {
     total,
     currentCoupon,
     discount,
-    orgId,
-    orgAlias
+    orgAlias,
+    orgId
   );
 
   async function handleSuccess(reference: any) {
@@ -102,12 +122,15 @@ export default function PaymentComponent() {
     });
   }
 
+  function removeWhitespace(currency: string): string {
+    return currency.trim(); // Removes leading and trailing whitespace
+  }
   //paystack props
   const config = paymentConfig({
     reference: "",
     email: userEmail ? decodeURIComponent(userEmail) : "",
     amount: totalPrice,
-    currency: currency ? currency : "",
+    currency: currency ? removeWhitespace(currency) : "",
   });
 
   const componentProps: any = {
@@ -207,21 +230,23 @@ export default function PaymentComponent() {
             <div className="flex justify-between text-base">
               <p className="">Subtotal</p>
               <p>
-                {convertCurrencyCodeToSymbol(currency || "")}
+                {convertCurrencyCodeToSymbol(removeWhitespace(currency) || "")}
                 {Number(total)}
               </p>
             </div>
             <div className="flex justify-between text-base">
               <p className="">Discount</p>
               <p>
-                - {convertCurrencyCodeToSymbol(currency || "")}
+                -{" "}
+                {convertCurrencyCodeToSymbol(removeWhitespace(currency) || "")}
                 {discount}
               </p>
             </div>
             <div className="flex justify-between text-base">
               <p className="">Total</p>
               <p>
-                {convertCurrencyCodeToSymbol(currency || "")} {totalPrice}
+                {convertCurrencyCodeToSymbol(removeWhitespace(currency) || "")}{" "}
+                {totalPrice}
               </p>
             </div>
           </div>

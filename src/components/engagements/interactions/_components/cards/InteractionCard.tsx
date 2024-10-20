@@ -75,14 +75,14 @@ export function InteractionCard({
 
         {quiz?.coverImage ? (
           <Image
-            className="w-full rounded-t-md h-48 object-cover"
+            className="w-full rounded-t-md h-48 2xl:h-56 object-cover"
             alt="quiz"
             src={quiz?.coverImage}
             width={400}
             height={400}
           />
         ) : (
-          <div className="w-full rounded-t-md h-48 animate-pulse bg-gray-200">
+          <div className="w-full rounded-t-md h-48 2xl:h-56 animate-pulse bg-gray-200">
             {" "}
           </div>
         )}

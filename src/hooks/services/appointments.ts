@@ -1,12 +1,13 @@
 "use client";
 
 import { useAppointmentContext } from "@/components/appointments/context/AppointmentContext";
-import { AppointmentLink, AppointmentUnavailability, Booking, UserType } from "@/types/appointments";
+import { AppointmentLink, AppointmentUnavailability, Booking, BookingsContact, UserType } from "@/types/appointments";
 import { getRequest } from "@/utils/api";
 import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear, subWeeks, subMonths, subYears } from 'date-fns';
 import useUserStore from "@/store/globalUserStore";
+import { createClient } from "@/utils/supabase/client";
 
 
 export const useGetAppointments = () => {
@@ -337,4 +338,24 @@ export const useGetBookingsAnalytics = () => {
   return {isLoading,error,getBookings,current,previous, type, setType, getYearlyBooking}
 }
 
+export function useBookingsContact() {
+  const insertBookingsContact = useCallback(async (contact: BookingsContact) => {
+    const supabase = createClient()
 
+    const { data, error } = await supabase
+      .from('bookingsContact')
+      .insert([contact])
+      .select('*')
+      .single();
+
+    if (error) { 
+      console.error('Error inserting data:', error);
+      return null;
+    }
+
+    console.log('Data inserted successfully:',contact, data );
+    // return data;
+  }, []);
+
+  return { insertBookingsContact };
+}

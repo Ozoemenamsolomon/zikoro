@@ -14,6 +14,7 @@ import {
 import { useTeamMembers } from "@/hooks/services/workspace";
 import useOrganizationStore from "@/store/globalOrganizationStore";
 import { v4 as uuidv4 } from "uuid";
+import { useSendTeamInviteEmail } from "@/hooks/services/teamMemberInvite";
 
 type FormDataType = {
   id: string;
@@ -43,7 +44,7 @@ export default function Team() {
   } = useTeamMembers(organization?.id ?? 0);
   const [filteredTeamMembers, setFilteredTeamMembers] = useState([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const roles = ["select a role","owner", "editor", "collaborator"];
+  const roles = ["select a role", "owner", "editor", "collaborator"];
 
   // handles input change for search
   const handleSearchChange = (e: any) => {
@@ -59,6 +60,30 @@ export default function Team() {
     }));
   };
 
+  const payload = {
+    organizationName: organization?.organizationName || "",
+    organizationOwner: organization?.organizationOwner || "",
+    subject: `You’ve Been Invited to Join ${organization?.organizationName} on Zikoro!`,
+    emailBody: `
+    <p>Hi ${formData.firstName},</p>
+
+    <p>You've been invited to join <strong>${organization?.organizationName}</strong> on Zikoro.</p>
+
+    <p>As a team member, you’ll be able to collaborate, share updates, and contribute to ongoing projects. Click the link below to join the team:</p>
+
+    <p>
+      <a href="https://www.zikoro.com/register?userEmail=${formData.userEmail}" style="color: #4CAF50; text-decoration: none;">Join Team</a>
+    </p>
+
+  `,
+    emailRecipient: formData.userEmail,
+  };
+
+  const requestData = { payload };
+  //extract SendTeamInviteEmail from useSendTeamInviteEmail
+  const { sendTeamInviteEmail, isLoading, error } =
+    useSendTeamInviteEmail(requestData);
+
   // Create a new team member
   const handleCreateTeamMember = async (e: any) => {
     e.preventDefault();
@@ -70,6 +95,7 @@ export default function Team() {
       userRole: formData.userRole,
     };
 
+    await sendTeamInviteEmail();
     await createTeamMember(newTeamMember);
     setFormData({
       id: "",

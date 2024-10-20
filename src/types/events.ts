@@ -20,12 +20,13 @@ export enum EventDetailTab {
   SPEAKERS_TAB,
   EXIHIBITORS_TAB,
   REWARD_TAB,
+  REVIEW_TAB
 }
 
 interface PricingType {
   ticketQuantity: string;
   attendeeType: string;
-  description: string;
+  description?: string;
   price: string;
   validity: string;
   accessibility: boolean;

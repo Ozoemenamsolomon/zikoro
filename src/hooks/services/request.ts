@@ -1,6 +1,7 @@
 import { toast } from "@/components/ui/use-toast";
 import { getRequest, postRequest } from "@/utils/api";
 import { useEffect, useState } from "react";
+import { deleteRequest } from "@/utils/api";
 
 type RequestStatus = {
   isLoading: boolean;
@@ -108,4 +109,71 @@ export const useMutateData = <TData, TReturnData = any>(
   };
 
   return { isLoading, error, mutateData };
+};
+
+
+
+export const usePostRequest = <T>(endpoint: string) => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const postData = async ({
+    payload,
+  }: {
+    payload: T;
+  }) => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await postRequest<T>({
+        endpoint: endpoint,
+        payload,
+      });
+
+      toast({
+        description: "Creation Attempt Successful",
+      });
+      return data;
+    } catch (error: any) {
+      //
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { postData, isLoading };
+};
+
+
+export const useDeleteRequest = <T>(endpoint: string) => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const deleteData = async () => {
+    setLoading(true);
+
+    try {
+      const { data, status } = await deleteRequest<T>({
+        endpoint:endpoint,
+      });
+
+      if (status !== 201) throw data.data;
+      toast({
+        description: " Delete successful",
+      });
+
+      return data.data;
+    } catch (error: any) {
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { deleteData, isLoading };
 };

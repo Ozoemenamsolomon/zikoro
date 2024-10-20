@@ -21,11 +21,11 @@ import { COUNTRY_CODE } from "@/utils";
 import { useOnboarding } from "@/hooks";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
-import { useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation";
 import { generateAlphanumericHash } from "@/utils/helpers";
 
- function OnboardingComp() {
-  const search = useSearchParams()
+export default function Onboarding({searchParams:{email, createdAt}}) {
+  // const search = useSearchParams();
   const [phoneCountryCode, setPhoneCountryCode] = useState<string>("+234");
 
   const { loading, registration } = useOnboarding();
@@ -33,8 +33,8 @@ import { generateAlphanumericHash } from "@/utils/helpers";
   const form = useForm<z.infer<typeof onboardingSchema>>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
-      referralCode: generateAlphanumericHash(10).toUpperCase()
-    }
+      referralCode: generateAlphanumericHash(10).toUpperCase(),
+    },
   });
 
   const countriesList = useMemo(() => {
@@ -44,25 +44,24 @@ import { generateAlphanumericHash } from "@/utils/helpers";
     }));
   }, []);
 
-  const query = search.get("email")
-  const createdAt = search.get("createdAt")
+  // const query = search.get("email");
+  // const createdAt = search.get("createdAt");
 
   async function onSubmit(values: z.infer<typeof onboardingSchema>) {
-
     const payload: z.infer<typeof onboardingSchema> = {
       ...values,
 
       phoneNumber: phoneCountryCode + values.phoneNumber,
     };
-    await registration(payload, query, createdAt);
+    await registration(payload, email, createdAt);
   }
-
 
   return (
     <>
       <div className="w-full flex flex-col gap-y-1 mb-6 items-start justify-start">
-        <h2 className="font-medium w-full text-center text-base sm:text-lg ">{`Welcome ${query ?? ""
-          } 👋`}</h2>
+        <h2 className="font-medium w-full text-center text-base sm:text-lg ">{`Welcome ${
+          email ?? ""
+        } 👋`}</h2>
       </div>
 
       <Form {...form}>
@@ -80,7 +79,7 @@ import { generateAlphanumericHash } from "@/utils/helpers";
                     type="text"
                     placeholder="Enter first name"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-400 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -94,7 +93,7 @@ import { generateAlphanumericHash } from "@/utils/helpers";
                     type="text"
                     placeholder="Enter last name"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-400 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -111,7 +110,7 @@ import { generateAlphanumericHash } from "@/utils/helpers";
                     type="text"
                     placeholder="Enter City"
                     {...field}
-                    className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-400 text-gray-700"
                   />
                 </InputOffsetLabel>
               )}
@@ -137,30 +136,24 @@ import { generateAlphanumericHash } from "@/utils/helpers";
               control={form.control}
               name="phoneNumber"
               render={({ field }) => (
-                <FormItem className="w-full relative h-fit">
-                  <FormLabel className="absolute top-0  right-4 bg-white text-gray-600 text-xs px-1">
-                    Phone number
-                  </FormLabel>
-                  <input
-                    type="text"
-                    className="!mt-0 text-sm absolute top-[40%]  left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
-                    value={phoneCountryCode}
-                    onChange={(e) => setPhoneCountryCode(e.target.value)}
-                  />
-                  <FormControl>
+                <InputOffsetLabel label="Phone Number">
+                  <div className="w-full relative h-11">
+                    <input
+                      type="text"
+                      className="!mt-0 text-sm absolute top-[30%] bg-transparent left-2 text-gray-700 z-10 font-medium h-fit w-fit max-w-[36px] outline-none"
+                      value={phoneCountryCode}
+                      onChange={(e) => setPhoneCountryCode(e.target.value)}
+                    />
                     <Input
-                      className="placeholder:text-sm h-12 placeholder:text-gray-200 text-gray-700 pl-12"
+                      className="placeholder:text-sm h-11 placeholder:text-gray-400 text-gray-700 pl-12"
                       placeholder="Enter phone number"
                       {...field}
                       type="tel"
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  </div>
+                </InputOffsetLabel>
               )}
             />
-
-
           </div>
           <FormField
             control={form.control}
@@ -171,7 +164,7 @@ import { generateAlphanumericHash } from "@/utils/helpers";
                   type="text"
                   placeholder="Referral Code (Optional)"
                   {...field}
-                  className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                  className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-400 text-gray-700"
                 />
               </InputOffsetLabel>
             )}
@@ -206,11 +199,10 @@ import { generateAlphanumericHash } from "@/utils/helpers";
   );
 }
 
-
-export default function Onboarding() {
-  return (
-    <Suspense>
-      <OnboardingComp/>
-    </Suspense>
-  )
-}
+// export default function Onboarding() {
+//   return (
+//     <Suspense>
+//       <OnboardingComp />
+//     </Suspense>
+//   );
+// }

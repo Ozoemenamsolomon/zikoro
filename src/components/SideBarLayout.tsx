@@ -17,25 +17,21 @@ import {
   ReferralIcon,
   WhatsappIcon,
 } from "@/constants";
-import {
-  useGetEvents,
-  useLogOut,
-  useValidateUser,
-} from "@/hooks";
+import { useGetEvents, useLogOut, useValidateUser } from "@/hooks";
 import { sendMail, whatsapp } from "@/utils";
 import useUserStore from "@/store/globalUserStore";
 import { useGetUserOrganization } from "@/hooks/services/userOrganization";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 
 function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
+  const search = useSearchParams();
+  const query = search.get("organization");
   const [isNav, setNav] = useState(false);
   const { eventId } = useParams();
-  const param = useSearchParams();
 
   const [isOpen, setOpen] = useState(false);
-  const query = param.get("organization");
   const { events } = useGetEvents();
-  const { user} = useUserStore();
+  const { user } = useUserStore();
 
   // console.log(user);
 
@@ -91,7 +87,7 @@ function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
         query={query}
         isHaveEvent={isHaveEvent}
       />
-      <div className="w-full sm:w-[calc(100%-60px)] float-right pt-[4.4rem]">
+      <div className="w-full bg-[#F9FAFF] sm:w-[calc(100%-60px)] float-right pt-[4.4rem] pb-[50px]">
         {/** mt-24 is affecting many parts in the event */}
         {children}
       </div>

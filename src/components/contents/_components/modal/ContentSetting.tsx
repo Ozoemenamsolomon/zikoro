@@ -48,6 +48,7 @@ const eventWebsiteSettings = [
   { title: "Partners", status: true },
   { title: "Reviews", status: true },
   { title: "Rewards", status: true },
+  {title: "Partner Registration", status: true}
 ];
 type FormValue = {
   attendeePayProcessingFee: boolean;
@@ -55,6 +56,7 @@ type FormValue = {
   eventAppAccess: string;
   selfCheckInAllowed: boolean;
   affiliateSettings: Omit<TAffiliateLink, "affiliateId"> & { enabled: boolean };
+  
 };
 export function ContentSetting({
   onClose,
@@ -81,7 +83,7 @@ export function ContentSetting({
     },
   });
 
-  const { watch, getValues } = form;
+  const { watch } = form;
 
   const { organization, setOrganization } = useOrganizationStore();
   const commissionType = watch("affiliateSettings.commissionType");
@@ -207,7 +209,7 @@ export function ContentSetting({
               <Switch
                 onClick={() =>
                   form.setValue(
-                    "attendeePayProcessingFee",
+                    "attendeePayProcessingFee" ,
                     !processingFeeStatus
                   )
                 }
@@ -278,6 +280,7 @@ export function ContentSetting({
                   <span>{title}</span>
                 </label>
               ))}
+
             </div>
 
             <div className="flex flex-col w-full items-start justify-start">

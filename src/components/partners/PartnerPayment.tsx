@@ -34,33 +34,32 @@ type TEventData = {
   organizerPhoneNumber: string;
   organizerWhatsappNumber: string;
 };
- function PartnerPaymentComp() {
+ export default function PartnerPayment({searchParams:{p,e,discountAmount}}:{searchParams: any}) {
   const router = useRouter();
-  const params = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
-  const data = params.get("p");
-  const eventData = params.get("e");
-  const discountAmount = params.get("discountAmount");
+  // const data = params.get("p");
+  // const eventData = params.get("e");
+  // const discountAmount = params.get("discountAmount");
   const { addPartners, loading } = useAddPartners();
 
   const partnerData: Partial<TPartner> = useMemo(() => {
-    if (data) {
-      const dataString = decodeURIComponent(data);
+    if (p) {
+      const dataString = decodeURIComponent(p);
       const decodedData = JSON.parse(dataString);
       return decodedData;
     } else {
       return null;
     }
-  }, [data]);
+  }, [p]);
   const parsedEventData: TEventData | null = useMemo(() => {
-    if (eventData) {
-      const dataString = decodeURIComponent(eventData);
+    if (e) {
+      const dataString = decodeURIComponent(e);
       const decodedData = JSON.parse(dataString);
       return decodedData;
     } else {
       return null;
     }
-  }, [eventData]);
+  }, [e]);
 
   const config = paymentConfig({
     reference: partnerData?.paymentReference!,
@@ -156,18 +155,20 @@ type TEventData = {
   );
 }
 
-function PaymentSuccessModal({
+export function PaymentSuccessModal({
   partnerData,
   eventName,
   startDate,
   endDate,
   location,
+  eventAlias
 }: {
-  partnerData: Partial<TPartner>;
+  partnerData?: Partial<TPartner>;
   eventName: string | null;
   startDate: string | null;
   endDate: string | null;
   location: string | null;
+  eventAlias?:string
 }) {
   const [isShare, setIsShare] = useState(false);
 
@@ -201,12 +202,12 @@ function PaymentSuccessModal({
             <h2 className="text-green-500 font-medium text-lg sm:text-2xl">
               Payment Successful
             </h2>
-            <p className="text-xs sm:text-mobile">
+            {partnerData && <p className="text-xs sm:text-mobile">
               Reference:{" "}
               <span className="text-basePrimary">
                 {partnerData?.paymentReference ?? ""}
               </span>
-            </p>
+            </p>}
           </div>
           <p className="text-center max-w-sm">
             You have successfully made payment to be a{" "}
@@ -252,8 +253,8 @@ function PaymentSuccessModal({
       </div>
       {isShare && eventName && eventStartDate && eventEndDate && (
         <ShareModal
-          eventId={partnerData?.eventAlias!}
-          text={`I am excited to be exhibiting at the ${eventName} happening on ${eventStartDate} to ${eventEndDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${partnerData?.eventAlias}`}
+          eventId={partnerData ? partnerData?.eventAlias! : eventAlias!}
+          text={`I am excited to be exhibiting at the ${eventName} happening on ${eventStartDate} to ${eventEndDate}. We would be delighted to have you visit our booth. Here is the link to register if you would like to attend.  https://www.zikoro.com/live-events/${partnerData ? partnerData?.eventAlias! : eventAlias!}`}
           close={onClose}
         />
       )}
@@ -352,10 +353,10 @@ export function ShareModal({
   );
 }
 
-export default function PartnerPayment() {
-  return (
-    <Suspense>
-      <PartnerPaymentComp/>
-    </Suspense>
-  )
-}
+// export default function PartnerPayment() {
+//   return (
+//     <Suspense>
+//       <PartnerPaymentComp/>
+//     </Suspense>
+//   )
+// }

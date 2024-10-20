@@ -9,19 +9,25 @@ import {
   useFetchSinglePartner,
   useVerifyUserAccess,
   useGetEventAttendees,
-  useCheckTeamMember
+  useCheckTeamMember,
 } from "@/hooks";
 import { useMemo } from "react";
 import useUserStore from "@/store/globalUserStore";
 
-export function PartnerDetails({ partnerId, eventId }: { eventId:string; partnerId: string }) {
+export function PartnerDetails({
+  partnerId,
+  eventId,
+  searchParams: { event: id, email: owner },
+}: {
+  eventId: string;
+  partnerId: string;
+  searchParams: any
+}) {
   const { data, refetch, loading } = useFetchSinglePartner(partnerId);
-  const {attendee, isOrganizer} = useVerifyUserAccess(eventId)
-  const {isIdPresent} = useCheckTeamMember({eventId})
-  const {user} = useUserStore()
-  const search = useSearchParams();
-  const id: any = search.get("event");
-  const owner = search.get("email");
+  const { attendee, isOrganizer } = useVerifyUserAccess(eventId);
+  const { isIdPresent } = useCheckTeamMember({ eventId });
+  const { user } = useUserStore();
+
   const { attendeeId } = useVerifyUserAccess(id);
   const { attendees: eventAttendees, isLoading } = useGetEventAttendees(id);
 
@@ -41,7 +47,7 @@ export function PartnerDetails({ partnerId, eventId }: { eventId:string; partner
       return false;
     }
   }, [eventAttendees, owner, isLoading, data, loading]);
-  
+
   return (
     <>
       {loading || isLoading ? (

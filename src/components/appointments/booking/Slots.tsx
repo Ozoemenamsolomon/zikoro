@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { AppointmentLink, AppointmentUnavailability, Booking } from '@/types/appointments';
-import {format,parse,addMinutes, isBefore, isWithinInterval} from 'date-fns';
+import {format,parse, isWithinInterval} from 'date-fns';
 import { SlotsResult } from './Calender';
 import { useAppointmentContext } from '../context/AppointmentContext';
 import { usePathname } from 'next/navigation';
@@ -12,7 +12,6 @@ interface SlotsType {
   timeSlots: SlotsResult | null;
   appointmnetLink: AppointmentLink | null,
   reschedule?: any
-  updatingFunc?:(callback:any)=>void,
   hasCategory?:boolean,
 }
 
@@ -25,7 +24,7 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, h
 
   const [error, setError] = useState('')
   const pathname = usePathname()
-  const isBooking = pathname.includes('booking')
+  const isBooking = pathname.includes('booking') || pathname.includes('contacts')
 
   const fetchBookedSlots = async () => {
     setLoading(true)
@@ -138,15 +137,15 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, h
   const isDisabled = !bookingFormData?.appointmentDate || !bookingFormData?.appointmentTime  
 
   return (
-    <div className="bg-white relative overflow-hidden md:w-80 flex-1 flex-shrink-0 rounded-lg  ">
+    <div className="bg-white relative overflow-hidden md:w-full rounded-lg  ">
       {loading && isBooking ? 
         <div className="h-full min-h-24 w-full flex justify-center items-center">
           <p>loading...</p> 
         </div>
         : 
         <>
-         {isBooking ? <h5 className="text-md bg-white px-4 py-3 font-semibold">Choose Time</h5> : null}
-            <div className={` flex flex-col w-full overflow-auto no-scrollbar gap-2 h-full p-4 ${isBooking ? 'pb-32' : ''} `}>
+          <h5 className="text- bg-white px-4 pt-3 pb-2 font-semibold">Choose Time</h5>  
+            <div className={` flex flex-col w-full overflow-auto no-scrollbar gap-2 h-full px-4  ${isBooking ? 'pb-32' : 'pb-16'} `}>
               {
                 timeSlots?.slots?.map((slot,i)=>{
                   // console.log({timeSlots})
@@ -192,7 +191,6 @@ const Slots: React.FC<SlotsType> = ({appointmnetLink, timeSlots, selectedDate, h
                   )
                   })
               }
-              
             </div>
         {
           !isBooking  ?  null 

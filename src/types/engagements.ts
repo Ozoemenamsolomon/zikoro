@@ -13,3 +13,73 @@ export type TPointsAllocation = {
     status: boolean;
   };
 };
+
+export interface TEngagementFormQuestion {
+  id: number;
+  created_at: string;
+  title: string;
+  description: string;
+  coverImage: string | any;
+  createdBy: number;
+  updatedAt: string;
+  isActive: boolean;
+  expirationDate: string;
+  questions: {
+question: string;
+questionImage?: string | any;
+selectedType: string;
+isRequired: boolean;
+questionId: string;
+optionFields?: any;
+  }[];
+  formAlias: string;
+  eventAlias: string;
+  formSettings:{
+    isConnectedToEngagement: boolean;
+        showForm:string,
+        connectedEngagementId?:string;
+        isCollectUserEmail: boolean;
+        isCoverScreen:boolean;
+        displayType:string,
+        questionPerSlides?:string;
+        titleFontSize:string,
+        headingFontSize:string,
+        backgroundColor:string,
+        textColor:string;
+        buttonColor:string;
+        textFontSize:string;
+        isCoverImage: boolean;  }
+}
+
+export interface TEngagementFormAnswer {
+  id: number;
+  created_at: string;
+  formAlias: string;
+  userId: string | null;
+  submittedAt: string;
+  responses:  {
+    type: string;
+    questionId: string;
+    response?: any;
+}[];
+  formResponseAlias: string;
+  eventAlias: string;
+  attendeeAlias: string;
+}
+
+export interface TFormattedEngagementFormAnswer {
+  id: number;
+  created_at: string;
+  formAlias: string;
+  userId: string | null;
+  submittedAt: string;
+  type: string;
+    questionId: string;
+    response?: any;
+  formResponseAlias: string;
+  eventAlias: string;
+  attendeeAlias: string;
+  question: string;
+questionImage?: string | any;
+optionFields: any
+}

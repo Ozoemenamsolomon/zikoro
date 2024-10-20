@@ -42,10 +42,10 @@ export function PartnersList({
   const router = useRouter();
   const { startDate, endDate } = useFormatEventData(event);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const [tabs, setTabs] =useState([
+  const [tabs, setTabs] = useState([
     { id: 1, name: "Active Partners", count: 0 },
     { id: 2, name: "Inactive Partners", count: 0 },
-  ])
+  ]);
 
   function onToggle() {
     setOpen((prev) => !prev);
@@ -109,29 +109,33 @@ export function PartnersList({
     setSelectedRows([]);
   }
 
-
   const filteredPartners = useMemo(() => {
     if (Array.isArray(partners) && partners?.length > 0) {
       const activePartners = partners?.filter(
-        ({ partnerStatus }) => partnerStatus === "active"
+        ({ partnerStatus }) =>
+          partnerStatus === "active" || partnerStatus === null
       )?.length;
-      setTabs(tabs?.map((tab) => {
-        return {
-          ...tab,
-          count:
-            tab?.id === 1 ? activePartners : partners?.length - activePartners,
-        };
-      }))
-  
+      setTabs(
+        tabs?.map((tab) => {
+          return {
+            ...tab,
+            count:
+              tab?.id === 1
+                ? activePartners
+                : partners?.length - activePartners,
+          };
+        })
+      );
     }
     if (active === 1) {
       return partners.filter(
         (partner) =>
-          partner?.partnerStatus === "active" ||
-          partner?.partnerStatus === null
+          partner?.partnerStatus === "active" || partner?.partnerStatus === null
       );
     } else {
-      return partners.filter((partner) => partner?.partnerStatus === "inactive");
+      return partners.filter(
+        (partner) => partner?.partnerStatus === "inactive"
+      );
     }
   }, [active, partners]);
   return (
@@ -160,13 +164,13 @@ export function PartnersList({
                   <FiEdit size={22} />
                   <p>Edit Tier</p>
                 </Button>
-                <Button
+                {/* <Button
                   onClick={onPartner}
                   className="text-gray-50  my-4 bg-basePrimary gap-x-2 h-11 sm:h-12 font-medium"
                 >
                   <PlusCircle size={22} />
                   <p>Partner</p>
-                </Button>
+                </Button> */}
               </div>
             )}
 

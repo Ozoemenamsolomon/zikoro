@@ -16,7 +16,9 @@ const ShopfrontLayout = ({children}:{children:React.ReactNode}) => {
         </header>
          <TabSwitch/>
         <div className="min-h-screen max-w-7xl mx-auto p-4 flex flex-col  justify-between gap-8">
-            <div className='pt-24 w-full h-full'>{children}</div>
+            <div className='pt-24 w-full h-full'>
+                {children}
+            </div>
             
             <footer className="flex flex-col sm:flex-row text-[12px] shrink-0 justify-between w-full gap-x-4 items-center">
                 <h6>Pawered by Zikoro - Bookings</h6>

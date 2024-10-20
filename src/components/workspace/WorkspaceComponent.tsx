@@ -4,7 +4,6 @@ import CopyrightFooter from "@/components/CopyrightFooter";
 import { FilterIcon, ArrowDownIcon, ArrowUpIcon } from "@/constants/icons";
 import { ArrowBackCircle } from "styled-icons/ionicons-outline";
 import FeaturedEvent from "@/components/explore/FeaturedEvent";
-import { useSearchParams } from "next/navigation";
 import {
   startOfToday,
   endOfToday,
@@ -49,23 +48,19 @@ interface DateRange {
   end: Date | null;
 }
 
-// type searchParamsType ={
-//   name : string,
-//   showFilter: string,
-//   showCategories : string,
-//   logo: string,
-//   logoLink: string 
-// }
-
-function WorkspaceComponent({
-//   searchParams: { name, showFilter, showCategories, logo: logoLink },
+type SearchParams = {
+  name: string;
+  showFilter: string;
+  showCategories: string;
+  logo: string;
+  orgLogo: string;
+  zikoroLogo: string;
+};
+export default function WorkspaceComponent({
+  searchParams: { name, showFilter, showCategories, logo, orgLogo, zikoroLogo },
+}: {
+  searchParams: SearchParams;
 }) {
-  const searchParams = useSearchParams()
-  const name = searchParams.get('name')
-  const showFilter = searchParams.get('showFilter')
-  const showCategories = searchParams.get('showCategories')
-  const logo = searchParams.get('logo')
-  const logoLink = searchParams.get('logoLink')
   const [showMore, setShowMore] = useState(false);
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
   const [isEventDateUp, setEventDateUp] = useState(false);
@@ -260,7 +255,11 @@ function WorkspaceComponent({
           {/* normal screen */}
           {!isFilterOpen && (
             <div>
-              <OrganizationNavbar logoUrl={logoLink ?? ""} />
+              <OrganizationNavbar
+                logoUrl={logo ? logo : ""}
+                isZikoroLogo={zikoroLogo ? zikoroLogo : ""}
+                isOrgLogo={orgLogo ? orgLogo : ""}
+              />
               {/* header */}
               <div>
                 {/* big screen */}
@@ -812,12 +811,4 @@ function WorkspaceComponent({
       )}
     </>
   );
-}
-
-export default function Workspace() {
-  return (
-    <Suspense>
-<WorkspaceComponent/>
-    </Suspense>
-  )
 }

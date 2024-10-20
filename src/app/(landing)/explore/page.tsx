@@ -15,7 +15,7 @@ export default function Explore() {
     <div className="">
       <Navbar />
       <EventHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      <EventList  searchQuery={searchQuery} />
+      {/* <EventList  searchQuery={searchQuery} /> */}
       <FeaturedEventList searchQuery={searchQuery}  />
       <CitiesEventList />
       <CategoryEventList />

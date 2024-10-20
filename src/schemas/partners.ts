@@ -17,19 +17,18 @@ export const addBannerSchema = z.object({
 
 export const jobSchema = z.object({
   jobTitle: z.string().min(3, { message: "Title is required" }),
-  maxSalary: z.string().min(3, { message: "Max. Salary is required" }),
-  minSalary: z.string().min(3, { message: "Min. Salary is required" }),
-  salaryDuration: z.string().min(3, { message: "Salary Duration is required" }),
-  flexibility: z.string().min(3, { message: "Flexibility Type is required" }),
+  maxSalary: z.string().optional(),
+  minSalary: z.string().optional(),
+  salaryDuration: z.string().optional(),
+  flexibility: z.string().optional(),
   description: z.string().min(3, { message: "Job Description is required" }),
-  city: z.string().min(3, { message: "City is required" }),
+  city: z.string().optional(),
   applicationMode: z.enum(["whatsapp", "email", "url"]),
-  country: z.string().min(3, { message: "Country is required" }),
-  employmentType: z.string().min(3, { message: "Employment Type is required" }),
+  country: z.string().optional(),
+  employmentType: z.string().optional(),
   experienceLevel: z
-    .string()
-    .min(3, { message: "Experience Level is required" }),
-  qualification: z.string().min(3, { message: "Qualification is required" }),
+    .string().optional(),
+  qualification: z.string().optional(),
   applicationLink: z
     .string()
     .refine((value) => value !== undefined && value.trim() !== "", {
@@ -107,8 +106,8 @@ export const offerCreationSchema = z.object({
   serviceTitle: z.string().min(3, { message: "Title is required" }),
   productImage: z.any(),
   endDate: z.string().min(3, { message: "Application Link is required" }),
-  productPrice: z.string().min(3, { message: "Max. Salary is required" }),
-  productPromo: z.string().min(3, { message: "Min. Salary is required" }),
+  productPrice: z.string().optional(),
+  productPromo: z.string().optional(),
   offerDetails: z.string().min(3, { message: "Offer Details is required" }),
   voucherCode: z.any(),
   redeem: z.enum(["whatsapp", "email", "url"]),

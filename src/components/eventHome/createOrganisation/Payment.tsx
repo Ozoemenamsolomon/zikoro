@@ -6,8 +6,9 @@ import { ArrowBack } from "styled-icons/boxicons-regular";
 import { PaystackButton } from "react-paystack";
 import { Lock } from "styled-icons/fa-solid";
 import { paymentConfig, useCreateOrganisation } from "@/hooks";
-import { useCreateOrgSubscription } from "@/hooks/services/subscription";
 import useUserStore from "@/store/globalUserStore";
+import { usePostRequest } from "@/hooks/services/request";
+import { ISubscription } from "@/types/subscription";
 
 type TParsedData = {
   paymentReference: string;
@@ -24,11 +25,12 @@ type TParsedData = {
   organizationType: string;
   subscriptionPlan: string;
 };
-function PaymentComponent() {
+export default function Payment({searchParams: { data }}:{searchParams: any}) {
   const router = useRouter();
   const { user } = useUserStore();
-  const params = useSearchParams();
-  const data = params.get("data");
+  const { postData } = usePostRequest<Partial<ISubscription>>(
+    "/subscription/create"
+  );
   const { organisation } = useCreateOrganisation();
 
   const parsedData: TParsedData | null = useMemo(() => {
@@ -40,22 +42,30 @@ function PaymentComponent() {
     return null;
   }, [data]);
 
-  const { createOrgSubscription } = useCreateOrgSubscription(
-    String(user?.id || ""),
-    Number(parsedData?.total || 0) - Number(parsedData?.discount || 0),
-    parsedData?.currency!,
-    parsedData?.plan!,
-    parsedData?.isMonthly!,
-    parsedData?.total || "",
-    parsedData?.discountCode || null,
-    Number(parsedData?.discount || 0) || null,
-    null,
-    parsedData?.organizationAlias
-  );
-
   async function handleSuccess(reference: any) {
+    if (!parsedData) return;
+    const today = new Date();
+    const expiryDate = new Date();
+    parsedData?.isMonthly === "true"
+      ? expiryDate.setMonth(expiryDate.getMonth() + 1)
+      : expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
+    const payload: Partial<ISubscription> = {
+      userId: user?.id,
+      subscriptionType: parsedData?.plan!,
+      amountPayed:
+        Number(parsedData?.total || 0) - Number(parsedData?.discount || 0),
+      startDate: today.toISOString().split("T")[0],
+      expirationDate: expiryDate.toISOString().split("T")[0],
+      currency: parsedData?.currency!,
+      monthYear: parsedData?.isMonthly === "true" ? "month" : "year",
+      planPrice: Number(parsedData?.total || 0),
+      discountValue: Number(parsedData?.discount || 0),
+      discountCode: parsedData?.discountCode,
+      organizationAlias: parsedData?.organizationAlias,
+    };
     try {
-      await createOrgSubscription();
+      await postData({ payload });
 
       if (parsedData) {
         await organisation({
@@ -141,10 +151,10 @@ function PaymentComponent() {
   );
 }
 
-export default function Payment() {
-  return (
-    <Suspense>
-      <PaymentComponent />
-    </Suspense>
-  );
-}
+// export default function Payment() {
+//   return (
+//     <Suspense>
+//       <PaymentComponent />
+//     </Suspense>
+//   );
+// }

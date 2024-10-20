@@ -16,7 +16,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import RequestPayoutDialog from "@/components/requestPayoutDialog";
-import { columns } from "@/app/(mainApp)/(dashboard)/billing/columns";
+import { columns } from "@/app/(mainApp)/(dashboard)/billing/_components/columns";
 
 const LinkDetails = () => {
   const { linkId } = useParams();

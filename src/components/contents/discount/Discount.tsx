@@ -302,8 +302,8 @@ const DialogDemo = ({
           </DialogHeader>
           <form action={addDiscount} id="form">
             <div className="grid my-6 relative text-[#3E404B]">
-              <label className="w-full relative my-3">
-                <span className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1">
+              <label className="w-full gap-y-2 flex flex-col items-start justify-start relative my-3">
+                <span className="text-gray-600 font-medium">
                   Discount code
                 </span>
                 <Input
@@ -317,7 +317,7 @@ const DialogDemo = ({
                     });
                   }}
                   name="discountCode"
-                  className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                  className="placeholder:text-sm h-12 border border-basePrimary bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end focus:border-gray-500 placeholder:text-gray-400 text-gray-700"
                 />
               </label>
               <div className="flex justify-between items-center mt-4">
@@ -345,8 +345,8 @@ const DialogDemo = ({
               <span className="description-text pt-2">
                 This can be used for bulk ticket purchase discount
               </span>
-              <label className="flex relative my-6">
-                <span className="span">Valid until</span>
+              <label className="flex w-full flex-col items-start justify-start gap-y-2 relative my-6">
+                <span className="span font-medium ">Valid until</span>
                 <Input
                   placeholder="Enter Date"
                   type="datetime-local"
@@ -357,7 +357,7 @@ const DialogDemo = ({
                       validUntil: e.target.value,
                     });
                   }}
-                  className="placeholder:text-sm h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                  className="inline-block w-full placeholder:text-sm h-12 border border-basePrimary focus:border-gray-500 placeholder:text-gray-400 bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end text-gray-700"
                 />
               </label>
               <div className="text-sm mb-1">
@@ -393,8 +393,8 @@ const DialogDemo = ({
                 </div>
               </div>
               {isAmtChecked ? (
-                <label className="w-full relative my-3">
-                  <span className="absolute -top-2 z-30 right-4 bg-white text-gray-600 text-xs px-1">
+                <label className="w-full flex gap-y-2 flex-col items-start justify-start relative my-3">
+                  <span className=" text-gray-600 font-medium">
                     Discount amount
                   </span>
                   <Input
@@ -408,7 +408,7 @@ const DialogDemo = ({
                       });
                     }}
                     name="discountAmount"
-                    className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                    className="placeholder:text-sm h-12 border border-basePrimary focus:border-gray-500 placeholder:text-gray-400 bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end text-gray-700"
                   />
                 </label>
               ) : (

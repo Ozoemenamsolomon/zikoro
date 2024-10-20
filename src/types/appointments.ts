@@ -152,3 +152,20 @@ export interface AppointmentUnavailability {
   endDateTime?: string | null;
   appointmentDate?:string|Date
 }
+
+export interface BookingsContact {
+  id?: number; // bigint
+  created_at?: string; // timestamp with time zone
+  email?: string | null; // text
+  phone?: string | null; // text
+  whatsapp?: string | null; // text
+  links?: {title:string, url:string}[] | null;  
+  tags?: {tag:string,}[] | null; 
+  firstName?: string | null; // text
+  lastName?: string | null; // text
+  createdBy?: number | null; // bigint
+  age?: number;
+  profileImg?: string;
+  favorite?: boolean;
+}
+

@@ -5,7 +5,7 @@ import useUserStore from "@/store/globalUserStore";
 import { ActionCard, UserCertificates, UserEvents } from "./_components";
 
 
- function HomeComp() {
+export default function Home() {
   const { user } = useUserStore();
 
   const homeTab = [
@@ -35,7 +35,7 @@ import { ActionCard, UserCertificates, UserEvents } from "./_components";
     },
     {
       title: "Explore",
-      subTitle: "View interesting upcoming events",
+    subTitle: "View interesting upcoming events",
       image: "/images/explore.svg",
       href: "/explore",
     },
@@ -70,10 +70,10 @@ import { ActionCard, UserCertificates, UserEvents } from "./_components";
   );
 }
 
-export default function Home() {
-  return (
-    <Suspense>
-      <HomeComp />
-    </Suspense>
-  );
-}
+// export default function Home() {
+//   return (
+//     <Suspense>
+//       <HomeComp />
+//     </Suspense>
+//   );
+// }

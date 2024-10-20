@@ -94,7 +94,7 @@ export function PartnerOffers({ eventId }: { eventId: string }) {
       {!loading && (
         <Offers
           data={offerData || offers}
-          className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          className="grid-cols-1 px-4 md:grid-cols-2 lg:grid-cols-3"
           attendee={attendee}
           eventId={eventId}
           refetch={refetch}

@@ -1,3 +1,5 @@
+yhhbh
+
 This is a [Next.js](https://nextjs.org/) and [Tailwindcss](https://tailwindcss.com) project and uses `npm` as its package manager. For icons check out [Styled icons](https://styled-icons.dev/).
 
 ## Getting Started
@@ -6,6 +8,7 @@ First, make sure you have [node](https://nodejs.org/en/download/) installed to i
 
 ```bash
 npm install
+ssf
 ```
 
 then start the development server:

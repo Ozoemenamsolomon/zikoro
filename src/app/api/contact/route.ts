@@ -64,3 +64,7 @@ export async function POST(req: NextRequest) {
     }
   }
 }
+
+
+export const dynamic = "force-dynamic";
+

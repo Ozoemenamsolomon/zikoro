@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Calender from './Calender'
-import {useGetBookingAppointment} from "@/hooks"
+import { useGetBookingAppointment} from "@/hooks"
 import Image from 'next/image'
 import { useAppointmentContext } from '../context/AppointmentContext'
 import ProcessPayment from './ProcessPayment'
@@ -33,11 +33,11 @@ const Booking =  ({alias}:{alias:string}) => {
         <header className='max-md:pl-4 shrink-0'>
             {
                 isLoading || delay ?
-                <div className='w-20 h-10 rounded-md animate-pulse bg-[#F9FAFF]'></div>
+                <div className='w-20 h-10 rounded-md animate-pulse bg-baseBg'></div>
                 :
                 appointmnetLink?.logo ?
-                <div className=''>
-                    <Image src={appointmnetLink?.logo } alt='brand logo' width={120} height={85} className='h-10' />
+                <div className='h-14 w-36'>
+                    <Image src={appointmnetLink?.logo } alt='brand logo' width={120} height={85} className='h-full w-full object-contain' />
                 </div>
                 :
                 <div className=''>
@@ -51,7 +51,7 @@ const Booking =  ({alias}:{alias:string}) => {
             :
             <section className="py-10  h-full  w-full flex  items-center justify-center gap-12">
                 
-                <section className="w-full max-w-7xl lg:h-[70vh] mx-auto  grid lg:flex gap-6 lg:justify-center ">
+                <section className="w-full max-w-7xl lg:max-h-[70vh] mx-auto  grid lg:flex gap-6 lg:justify-center ">
 
                     <div className="bg-white w-full lg:w-80 overflow-auto xl:w-96  flex-shrink-0 p-6 rounded-lg   title ">
                     {isLoading ?

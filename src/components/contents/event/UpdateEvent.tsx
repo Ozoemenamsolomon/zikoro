@@ -33,7 +33,7 @@ import {
   locationType,
   pricingCurrency,
 } from "../_components/utils";
-import { TOrgEvent } from "@/types";
+import { Event, TOrgEvent } from "@/types";
 import useUserStore from "@/store/globalUserStore";
 import { timezones } from "@/constants/timezones";
 import { Switch } from "@/components/ui/switch";
@@ -200,9 +200,11 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
       }
     });
 
-    const payload: any = {
+    const payload: Partial<Event> = {
       ...values,
-      eventPoster: promise as String,
+      eventPoster: promise as string,
+      explore:
+        values?.eventVisibility?.toLowerCase() === "public" ? true : false,
       expectedParticipants: Number(values?.expectedParticipants),
     };
 
@@ -305,11 +307,21 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
   function toggleAccessibility(id: number) {
     const currentValue = form.getValues(`pricing.${id}.accessibility` as const);
-    console.log("currentValue", currentValue);
+    // console.log("currentValue", currentValue);
     form.setValue(`pricing.${id}.accessibility` as const, !currentValue, {
       shouldValidate: true,
     });
   }
+
+  const location = form.watch("locationType");
+
+  useEffect(() => {
+    if (location === "Virtual") {
+      form.setValue('eventAddress', undefined)
+      form.setValue('eventCity', undefined)
+      form.setValue('eventCountry', undefined)
+    }
+  },[location, form])
 
   return (
     <DateAndTimeAdapter>
@@ -394,7 +406,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                         type="text"
                         defaultValue={data?.eventTitle}
                         {...form.register("eventTitle")}
-                        className="placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        className="placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                       />
                     </InputOffsetLabel>
                   )}
@@ -412,7 +424,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                           setStartDate((prev) => !prev);
                         }}
                         role="button"
-                        className="w-full relative h-12"
+                        className="w-full relative h-11"
                       >
                         <button className="absolute left-3 top-[0.6rem]">
                           <DateRange size={22} className="text-gray-600" />
@@ -421,7 +433,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                           placeholder=" Start Date Time"
                           type="text"
                           {...form.register("startDateTime")}
-                          className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                          className="placeholder:text-sm pl-10 pr-4 h-11 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
                         />
                         {isStartDate && (
                           <SelectDate
@@ -449,7 +461,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                           setEndDate((prev) => !prev);
                         }}
                         role="button"
-                        className="w-full relative h-12"
+                        className="w-full relative h-11"
                       >
                         <button className="absolute left-3 top-[0.6rem]">
                           <DateRange size={22} className="text-gray-600" />
@@ -458,7 +470,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                           placeholder="End Date Time"
                           type="text"
                           {...form.register("endDateTime")}
-                          className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+                          className="placeholder:text-sm pl-10 pr-4 h-11 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
                         />
                         {/** */}
                         {isEndDate && (
@@ -552,24 +564,26 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
 
                 {/**"col-span-1 sm:col-span-2 " */}
 
-                <FormField
-                  control={form.control}
-                  name="eventAddress"
-                  render={({ field }) => (
-                    <InputOffsetLabel
-                      className="col-span-1 sm:col-span-2 "
-                      label="Event Address"
-                    >
-                      <Input
-                        type="text"
-                        placeholder="Enter Event Address"
-                        defaultValue={data?.eventAddress}
-                        {...form.register("eventAddress")}
-                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                      />
-                    </InputOffsetLabel>
-                  )}
-                />
+                {location !== "Virtual" && (
+                  <FormField
+                    control={form.control}
+                    name="eventAddress"
+                    render={({ field }) => (
+                      <InputOffsetLabel
+                        className="col-span-1 sm:col-span-2 "
+                        label="Event Address"
+                      >
+                        <Input
+                          type="text"
+                          placeholder="Enter Event Address"
+                          defaultValue={data?.eventAddress}
+                          {...form.register("eventAddress")}
+                          className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        />
+                      </InputOffsetLabel>
+                    )}
+                  />
+                )}
                 <FormField
                   control={form.control}
                   name="expectedParticipants"
@@ -580,45 +594,49 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                         placeholder="0"
                         defaultValue={data?.expectedParticipants}
                         {...form.register("expectedParticipants")}
-                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                        className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                       />
                     </InputOffsetLabel>
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="eventCity"
-                  render={({ field }) => (
-                    <InputOffsetLabel label="Event City">
-                      <Input
-                        type="text"
-                        placeholder="Enter Event City"
-                        defaultValue={data?.eventCity}
-                        {...form.register("eventCity")}
-                        className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
-                      />
-                    </InputOffsetLabel>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="eventCountry"
-                  render={({ field }) => (
-                    <InputOffsetLabel label="Event Country">
-                      <ReactSelect
-                        {...field}
-                        placeHolder="Select the Country"
-                        defaultValue={{
-                          value: data?.eventCountry,
-                          label: data?.eventCountry,
-                        }}
-                        options={countriesList}
-                      />
-                    </InputOffsetLabel>
-                  )}
-                />
+                {location !== "Virtual" && (
+                  <>
+                    {" "}
+                    <FormField
+                      control={form.control}
+                      name="eventCity"
+                      render={({ field }) => (
+                        <InputOffsetLabel label="Event City">
+                          <Input
+                            type="text"
+                            placeholder="Enter Event City"
+                            defaultValue={data?.eventCity}
+                            {...form.register("eventCity")}
+                            className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                          />
+                        </InputOffsetLabel>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="eventCountry"
+                      render={({ field }) => (
+                        <InputOffsetLabel label="Event Country">
+                          <ReactSelect
+                            {...field}
+                            placeHolder="Select the Country"
+                            defaultValue={{
+                              value: data?.eventCountry,
+                              label: data?.eventCountry,
+                            }}
+                            options={countriesList}
+                          />
+                        </InputOffsetLabel>
+                      )}
+                    />
+                  </>
+                )}
                 <FormField
                   control={form.control}
                   name="locationType"
@@ -766,7 +784,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                                 {...form.register(
                                   `pricing.${id}.attendeeType` as const
                                 )}
-                                className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                                className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                               />
                             </InputOffsetLabel>
                           )}
@@ -782,7 +800,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                                 {...form.register(
                                   `pricing.${id}.ticketQuantity` as const
                                 )}
-                                className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                                className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                               />
                             </InputOffsetLabel>
                           )}
@@ -799,7 +817,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                               {...form.register(
                                 `pricing.${id}.description` as const
                               )}
-                              className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                              className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                             />
                           </InputOffsetLabel>
                         )}
@@ -816,7 +834,7 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
                                 {...form.register(
                                   `pricing.${id}.price` as const
                                 )}
-                                className=" placeholder:text-sm h-12 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
+                                className=" placeholder:text-sm h-11 focus:border-gray-500 placeholder:text-gray-200 text-gray-700"
                               />
                             </InputOffsetLabel>
                           )}
@@ -917,7 +935,7 @@ function PriceValidityDate({
               setOpen((prev) => !prev);
             }}
             role="button"
-            className="w-full relative h-12"
+            className="w-full relative h-11"
           >
             <button className="absolute left-3 top-[0.6rem]">
               <DateRange size={22} className="text-gray-600" />
@@ -926,7 +944,7 @@ function PriceValidityDate({
               placeholder="End Date "
               type="text"
               {...form.register(`pricing.${id}.validity` as const)}
-              className="placeholder:text-sm pl-10 pr-4 h-12 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
+              className="placeholder:text-sm pl-10 pr-4 h-11 inline-block focus:border-gray-500 placeholder:text-gray-200 text-gray-700 accent-basePrimary"
             />
             {/** */}
             {isOpen && (
@@ -970,7 +988,7 @@ function SelectDate({
         e.preventDefault();
       }}
       className={cn(
-        "absolute left-0 sm:left-0 md:left-0 top-[3.2rem]",
+        "absolute left-0 sm:left-0 md:left-0 top-[3.0rem]",
         className
       )}
     >

@@ -9,6 +9,8 @@ export default function LinkSharing() {
   const { organization, setOrganization } = useOrganizationStore();
   const [showCategory, setShowCategory] = useState<boolean>(true);
   const [showFilter, setShowFilter] = useState<boolean>(true);
+  const [showOrgLogo, setshowOrgLogo] = useState<boolean>(true);
+  const [showZikoroLogo, setShowZikoroLogo] = useState<boolean>(false);
 
   const confirmedSubDomainUrl = organization?.organizationName;
 
@@ -22,7 +24,17 @@ export default function LinkSharing() {
     setShowFilter(!showFilter);
   };
 
-  const webLink = `https://www.zikoro.com/workspaces?name=${confirmedSubDomainUrl}&logo=${organization?.organizationLogo}&showCategories=${showCategory}&showFilter=${showFilter}`; //add showCategory, showFeaturedEvent, showFilter as a query
+  //handles show Organization toggle
+  const handleOrgLogoSelect = () => {
+    setshowOrgLogo(!showOrgLogo);
+  };
+
+  //handles show feature toggle
+  const handleZikoroSelect = () => {
+    setShowZikoroLogo(!showZikoroLogo);
+  };
+
+  const webLink = `https://www.zikoro.com/workspaces?name=${confirmedSubDomainUrl}&orgLogo=${showOrgLogo}&zikoroLogo=${showZikoroLogo}&logo=${organization?.organizationLogo}&showCategories=${showCategory}&showFilter=${showFilter}`; //add showCategory, showFeaturedEvent, showFilter as a query
 
   const iframeCode = `<iframe
   src=${webLink}
@@ -83,6 +95,26 @@ export default function LinkSharing() {
           />
 
           <p className="text-base font-normal ">Turn off filters</p>
+        </div>
+
+        <div className="mt-6 flex gap-x-3 items-center ">
+          <Switch
+            className="data-[state=checked]:bg-zikoroBlue"
+            checked={showOrgLogo}
+            onCheckedChange={handleOrgLogoSelect}
+          />
+
+          <p className="text-base font-normal ">Show Organization Logo</p>
+        </div>
+
+        <div className="mt-6 flex gap-x-3 items-center ">
+          <Switch
+            className="data-[state=checked]:bg-zikoroBlue"
+            checked={showZikoroLogo}
+            onCheckedChange={handleZikoroSelect}
+          />
+
+          <p className="text-base font-normal ">Show Zikoro Logo</p>
         </div>
       </div>
 

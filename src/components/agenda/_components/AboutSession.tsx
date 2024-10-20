@@ -285,7 +285,7 @@ export function AboutSession({
             </button>
             {agenda?.sessionUrl && (
               <button
-                onClick={() => router.push(agenda?.sessionUrl, "_blank")}
+                onClick={() => router.push(agenda?.sessionUrl)}
                 className="flex items-center gap-x-2"
               >
                 <Link2Outline size={18} />
