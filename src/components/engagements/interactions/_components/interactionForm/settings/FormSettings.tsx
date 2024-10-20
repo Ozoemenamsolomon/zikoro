@@ -7,7 +7,7 @@ import { InlineIcon } from "@iconify/react";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useMemo } from "react";
 import { cn } from "@/lib";
 import {
   FormAppearance,
@@ -58,7 +58,9 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
   });
   const [active, setActive] = useState(0);
   const [loading, setLoading] = useState(false);
-
+  const alias = useMemo(() => {
+return generateAlias()
+  },[]);
   async function onSubmit(values: z.infer<typeof formSettingSchema>) {
     setLoading(true);
     const image = await new Promise(async (resolve) => {
@@ -73,7 +75,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
       } else resolve(null);
     });
 
-    const alias = generateAlias();
+    
     const payload: Partial<TEngagementFormQuestion> = data?.formAlias
       ? {
           ...data,
@@ -91,6 +93,7 @@ function FormSettingsComp({ eventId }: { eventId: string }) {
       payload: payload,
     });
     setLoading(false);
+    router.push(`/event/${eventId}/engagements/interactions/form/create/questions/${alias}`)
   }
 
   // console.log(form.getValues());

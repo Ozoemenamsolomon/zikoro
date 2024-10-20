@@ -405,8 +405,8 @@ function CreateInteractionFormComp({
     <InteractionLayout eventId={eventId}>
       <div
         className={cn(
-          "w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10",
-          active === 0
+          "w-full px-4 mx-auto hidden max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10",
+          active === 0 && "block"
         )}
       >
         <Form {...form}>
