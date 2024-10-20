@@ -67,7 +67,7 @@ const options = [
   { name: "Date", image: "/fdate.png" },
   { name: "CheckBox", image: "/fcheckbox.png" },
   { name: "Rating", image: "/fstarr.png" },
-  { name: "Upload", image: "" },
+  { name: "Upload", image: "/fattachment.png" },
   { name: "Likert", image: "/flikert.png" },
 ];
 
@@ -405,8 +405,8 @@ function CreateInteractionFormComp({
     <InteractionLayout eventId={eventId}>
       <div
         className={cn(
-          "w-full px-4 mx-auto hidden max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10",
-          active === 0 && "block"
+          "w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10",
+          
         )}
       >
         <Form {...form}>
@@ -488,6 +488,7 @@ function CreateInteractionFormComp({
                 </Button>
               </div>
             </div>
+           {active === 0 &&  <>
 
             <div className="w-full  flex flex-col items-start justify-start gap-y-1 rounded-lg border p-3 sm:p-4">
               <FormField
@@ -566,6 +567,7 @@ function CreateInteractionFormComp({
                 setSelectedOption={appendToQuestion}
               />
             )}
+            </>}
           </form>
         </Form>
 

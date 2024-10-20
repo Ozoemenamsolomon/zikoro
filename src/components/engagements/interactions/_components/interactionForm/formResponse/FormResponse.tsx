@@ -28,7 +28,7 @@ export default function FormResponses({ data }: FormResponseProps) {
 
   if (!data || (Array.isArray(data) && data?.length === 0)) {
     return (
-      <div className="w-[95%] max-w-xl mx-auto h-[300px] p-4 rounded-lg bg-gradient-to-b gap-y-6 from-white to-basePrimary/20 flex flex-col items-center justify-center">
+      <div className="w-[95%] max-w-xl mt-40 mx-auto h-[300px] p-4 rounded-lg bg-gradient-to-b gap-y-6 from-white to-basePrimary/20 flex flex-col items-center justify-center">
         <InlineIcon
           icon="fluent:emoji-meh-24-regular"
           color="#001fcc"
