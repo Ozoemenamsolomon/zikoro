@@ -16,6 +16,7 @@ import {
   TextTypeAnswer,
   RatingTypeAnswer,
   MultiChoiceTypeAnswer,
+  UploadTypeAnswer,
 } from "./answerTypes";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Suspense, useEffect, useState } from "react";
@@ -31,7 +32,7 @@ import { nanoid } from "nanoid";
 function SubmittedModal() {
   return (
     <div className="w-full h-full inset-0 fixed bg-white">
-      <div className="w-[95%] max-w-xl rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
+      <div className="w-[95%] max-w-xl border rounded-lg bg-gradient-to-b gap-y-6 from-white  to-basePrimary/20  h-[400px] flex flex-col items-center justify-center shadow absolute inset-0 m-auto">
         <Image
           src="/images/facheck.png"
           alt=""
@@ -194,6 +195,9 @@ function AttendeeFillFormComp({
                 )}
                 {field.selectedType === "INPUT_RATING" && (
                   <RatingTypeAnswer form={form} index={index} />
+                )}
+                 {field.selectedType === "ATTACHMENT" && (
+                  <UploadTypeAnswer form={form} index={index} />
                 )}
                 {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
                   <MultiChoiceTypeAnswer form={form} index={index} />

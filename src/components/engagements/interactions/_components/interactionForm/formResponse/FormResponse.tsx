@@ -9,6 +9,7 @@ import {
   UploadTypeResponse,
 } from "./responseTypes";
 import Image from "next/image";
+import { cn } from "@/lib";
 interface FormResponseProps {
   data:
     | {
@@ -18,13 +19,21 @@ interface FormResponseProps {
 }
 export default function FormResponses({ data }: FormResponseProps) {
   function getRefinedData(
-    dataArray: TFormattedEngagementFormAnswer[],
-    type: string
+    data: {[key: string]: TFormattedEngagementFormAnswer[]},
+    type: string,
+    key:string
   ) {
-    const filteredData = dataArray?.filter((v) => v?.type !== type);
-
-    return filteredData;
+    const newData = data[key]
+    console.log({newData}, type)
+    const filteredData = newData?.filter((v) => {
+      console.log(v?.type, type, v?.type === type)
+      return v?.type === type
+    });
+    console.log({filteredData})
+    return filteredData ||[]
   }
+
+  console.log(data);
 
   if (!data || (Array.isArray(data) && data?.length === 0)) {
     return (
@@ -49,13 +58,28 @@ export default function FormResponses({ data }: FormResponseProps) {
           key={Math.random()}
           className="w-full rounded-lg border p-4 mb-6 sm:mb-8"
         >
-          <div className="w-full flex flex-col items-start justify-start">
+          <div
+            className={cn(
+              "w-full hidden flex-col items-start mb-4 sm:mb-6 justify-start",
+              value?.length > 0 && "flex"
+            )}
+          >
             <div>
-              {value?.find((v) => v?.questionId === key)?.question ? (
+              {value?.find((v) => v?.questionId === key)?.question && (
+                <p className="font-medium text-sm sm:text-base mb-2">
+                  {value?.find((v) => v?.questionId === key)?.question}
+                </p>
+              )}
+              {value?.find((v) => v?.questionId === key)?.questionImage ? (
                 <Image
                   alt=""
+                  width={2000}
+                  height={600}
                   className="w-full rounded-lg h-[15rem]"
-                  src={value?.find((v) => v?.questionId === key)?.questionImage}
+                  src={
+                    value?.find((v) => v?.questionId === key)?.questionImage ??
+                    ""
+                  }
                 />
               ) : (
                 ""
@@ -77,36 +101,38 @@ export default function FormResponses({ data }: FormResponseProps) {
                   </div>
                 )}
 
-                
-
                 {item?.type === "ATTACHMENT" && (
                   <div className="w-full flex flex-col items-start justify-start gap-y-2">
                     <UploadTypeResponse response={item} />
                   </div>
                 )}
+
+                 {item?.type === "INPUT_RATING" &&
+            getRefinedData(data, "INPUT_RATING", key)?.length > 0 && (
+              <RatingTypeResponse
+                responses={getRefinedData(data, "INPUT_RATING", key)}
+              />
+            )}
+
+              {item?.type === "INPUT_CHECKBOX"&&
+             
+            getRefinedData(data, "INPUT_CHECKBOX", key)?.length > 0 && (
+              <CheckBoxTypeResponse
+                responses={getRefinedData(data, "INPUT_CHECKBOX", key)}
+              />
+            )}
+             {item?.type === "INPUT_MULTIPLE_CHOICE" &&
+            getRefinedData(data, "INPUT_MULTIPLE_CHOICE", key)?.length > 0 && (
+              <CheckBoxTypeResponse
+                responses={getRefinedData(data, "INPUT_MULTIPLE_CHOICE", key)}
+              />
+            )}
+                
               </div>
             ))}
-          {Array.isArray(value) &&
-            value?.some((v) => v?.questionId === key) &&
-            getRefinedData(value, "INPUT_RATING")?.length > 0 && (
-              <RatingTypeResponse
-                responses={getRefinedData(value, "INPUT_RATING")}
-              />
-            )}
-             {Array.isArray(value) &&
-            value?.some((v) => v?.questionId === key) &&
-            getRefinedData(value, "INPUT_CHECKBOX")?.length > 0 && (
-              <CheckBoxTypeResponse
-                responses={getRefinedData(value, "INPUT_CHECKBOX")}
-              />
-            )}
-             {Array.isArray(value) &&
-            value?.some((v) => v?.questionId === key) &&
-            getRefinedData(value, "INPUT_MULTIPLE_CHOICE")?.length > 0 && (
-              <CheckBoxTypeResponse
-                responses={getRefinedData(value, "INPUT_MULTIPLE_CHOICE")}
-              />
-            )}
+           
+        
+           
         </div>
       ))}
     </div>

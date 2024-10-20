@@ -7,7 +7,7 @@ export function DateTypeResponse({
 }) {
   return (
     <div className="w-full">
-      <p className="p-2 text-center">{response?.response ?? ""}</p>
+      <p className="p-3 text-center">{response?.response ?? ""}</p>
     </div>
   );
 }

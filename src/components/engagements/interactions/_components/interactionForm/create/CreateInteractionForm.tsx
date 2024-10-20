@@ -6,6 +6,7 @@ import {
   UseFieldArrayRemove,
   useForm,
   UseFormReturn,
+  FieldArrayWithId,
 } from "react-hook-form";
 import { Button } from "@/components/custom_ui/Button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import { AddCircle } from "@styled-icons/ionicons-sharp/AddCircle";
 import { useState, Suspense, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import { InlineIcon } from "@iconify/react";
 import { Settings } from "styled-icons/feather";
 import toast from "react-hot-toast";
 import {
@@ -89,7 +91,23 @@ function Fields({
   remove,
 }: {
   form: UseFormReturn<z.infer<typeof formQuestionSchema>, any, any>;
-  field: any;
+  field: FieldArrayWithId<
+    {
+      title: string;
+      questions: {
+        question: string;
+        selectedType: string;
+        isRequired: boolean;
+        questionId: string;
+        questionImage?: any;
+        optionFields?: any;
+      }[];
+      isActive: boolean;
+      description?: string | undefined;
+    },
+    "questions",
+    "id"
+  >;
   index: number;
   copyQuestion: (i: number) => void;
   remove: UseFieldArrayRemove;
@@ -149,7 +167,7 @@ function Fields({
           append={copyQuestion}
         />
       )}
-      {field.selectType === "ATTACHMENT" && (
+      {field.selectedType === "ATTACHMENT" && (
         <UploadType
           form={form}
           index={index}
@@ -405,8 +423,7 @@ function CreateInteractionFormComp({
     <InteractionLayout eventId={eventId}>
       <div
         className={cn(
-          "w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10",
-          
+          "w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10"
         )}
       >
         <Form {...form}>
@@ -466,6 +483,19 @@ function CreateInteractionFormComp({
                   <Settings size={22} />
                 </button>
                 <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    router.push(`/engagements/${eventId}/form/${formId}`);
+                  }}
+                  className=" h-11 flex border border-basePrimary  items-center gap-x-2"
+                >
+                  <InlineIcon color="#001fcc" icon="mdi:eye" fontSize={20} />
+                  <p className="gradient-text bg-basePrimary font-medium">
+                    Preview
+                  </p>
+                </Button>
+                <Button
                   disabled={loading}
                   className="bg-basePrimary gap-x-2 px-6 text-white h-12 "
                 >
@@ -488,43 +518,43 @@ function CreateInteractionFormComp({
                 </Button>
               </div>
             </div>
-           {active === 0 &&  <>
+            {active === 0 && (
+              <>
+                <div className="w-full  flex flex-col items-start justify-start gap-y-1 rounded-lg border p-3 sm:p-4">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            {...form.register("title")}
+                            className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
+                            placeholder="Form Title"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            {...form.register("description")}
+                            className="bg-transparent border-none h-11  placeholder:text-gray-500"
+                            placeholder="Form Description"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-            <div className="w-full  flex flex-col items-start justify-start gap-y-1 rounded-lg border p-3 sm:p-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        {...form.register("title")}
-                        className="bg-transparent border-none h-14 text-2xl placeholder:text-gray-500 placeholder:text-2xl"
-                        placeholder="Form Title"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        {...form.register("description")}
-                        className="bg-transparent border-none h-11  placeholder:text-gray-500"
-                        placeholder="Form Description"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="w-full flex flex-col items-start justify-start gap-y-6 sm:gap-y-8">
-              {/* <DndContext
+                <div className="w-full flex flex-col items-start justify-start gap-y-6 sm:gap-y-8">
+                  {/* <DndContext
                 collisionDetection={closestCorners}
                 sensors={sensors}
                 onDragEnd={handleDrop}
@@ -533,41 +563,42 @@ function CreateInteractionFormComp({
                   items={fields}
                   strategy={verticalListSortingStrategy}
                 > */}
-              {fields.map((field, index) => (
-                <Fields
-                  key={field.id}
-                  index={index}
-                  remove={remove}
-                  field={field}
-                  copyQuestion={copyQuestion}
-                  form={form}
-                />
-              ))}
-              {/* </SortableContext>
+                  {fields.map((field, index) => (
+                    <Fields
+                      key={field.id}
+                      index={index}
+                      remove={remove}
+                      field={field}
+                      copyQuestion={copyQuestion}
+                      form={form}
+                    />
+                  ))}
+                  {/* </SortableContext>
               </DndContext> */}
-            </div>
+                </div>
 
-            <div className="w-full flex items-center justify-center ">
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  handleToggleSelectQuestionType();
-                }}
-                className="w-fit text-basePrimary h-fit px-0 gap-x-2"
-              >
-                <AddCircle className="text-basePrimary" size={40} />
-              </Button>
-            </div>
+                <div className="w-full flex items-center justify-center ">
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      handleToggleSelectQuestionType();
+                    }}
+                    className="w-fit text-basePrimary h-fit px-0 gap-x-2"
+                  >
+                    <AddCircle className="text-basePrimary" size={40} />
+                  </Button>
+                </div>
 
-            {showSelectQuestionType && (
-              <SelectQuestionType
-                onClose={handleToggleSelectQuestionType}
-                //selectedOption={selectedOption}
-                setSelectedOption={appendToQuestion}
-              />
+                {showSelectQuestionType && (
+                  <SelectQuestionType
+                    onClose={handleToggleSelectQuestionType}
+                    //selectedOption={selectedOption}
+                    setSelectedOption={appendToQuestion}
+                  />
+                )}
+              </>
             )}
-            </>}
           </form>
         </Form>
 

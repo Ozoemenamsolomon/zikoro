@@ -1,6 +1,6 @@
 import { cn } from "@/lib";
 import { TFormattedEngagementFormAnswer } from "@/types/engagements";
-import { Dot } from "lucide-react";
+import { GoDotFill } from "react-icons/go";
 import { useMemo, useState } from "react";
 import { IoPieChartOutline } from "react-icons/io5";
 import { RiBarChartHorizontalLine } from "react-icons/ri";
@@ -26,6 +26,7 @@ export function CheckBoxTypeResponse({
 }) {
   const [active, setActive] = useState(0);
   const optionArray = responses[0]?.optionFields;
+  console.log(responses)
   const reformedArray: { name: string; value: number }[] = useMemo(() => {
     const mappedArray = optionArray.map((v: any, index: number) => {
       const selectedCount = responses.filter(
@@ -33,14 +34,14 @@ export function CheckBoxTypeResponse({
       ).length;
       return {
         name: `Option ${index + 1}`,
-        value: selectedCount,
+        value: selectedCount || 0,
       };
     });
     return mappedArray;
   }, [responses]);
 
   const sum = useMemo(() => {
-    return reformedArray.reduce((acc, curr) => acc + curr?.value, 0);
+    return reformedArray.reduce((acc, curr) => acc + curr?.value, 0) ||0;
   }, [reformedArray]);
 
   const generateRandomColor = () => {
@@ -61,7 +62,7 @@ export function CheckBoxTypeResponse({
     );
   };
   return (
-    <div className="w-[95%] max-w-xl rounded-lg border  p-4">
+    <div className="w-[95%] max-w-2xl mx-auto rounded-lg border  p-4">
       <div className="flex items-end mb-4 w-full justify-end">
         <div className="rounded-lg border p-1 items-center flex">
           <button
@@ -77,7 +78,7 @@ export function CheckBoxTypeResponse({
             onClick={() => setActive(1)}
             className={cn(
               "rounded-lg px-3 py-2 ",
-              active === 0 && "bg-basePrimary text-white "
+              active === 1 && "bg-basePrimary text-white "
             )}
           >
             <RiBarChartHorizontalLine size={24} />
@@ -87,12 +88,13 @@ export function CheckBoxTypeResponse({
 
       <div
         className={cn(
-          "w-full sm:flex-col flex-row hidden items-start justify-around",
+          "w-full flex-col sm:flex-row hidden items-start justify-between",
           active === 0 && "flex"
         )}
       >
+        <div className="w-[200px] h-[200px]">
         <ResponsiveContainer width="100%" height="100%">
-          <PieChart width={300} height={300}>
+          <PieChart width={200} height={200}>
             <Pie
               data={reformedArray}
               cx="50%"
@@ -112,26 +114,29 @@ export function CheckBoxTypeResponse({
             </Pie>
           </PieChart>
         </ResponsiveContainer>
-        <div className="w-full">
+
+        </div>
+        <div className="w-[50%]">
           <div className="w-full p-2 mb-6 grid grid-cols-3 gap-2">
             <p className="w-1 h-1"></p>
             <p>Responses</p>
             <p>%</p>
           </div>
           {reformedArray?.map((v, index, arr) => (
-            <div key={index} className="w-full grid grid-cols-2 gap-2 p-2 mb-1">
+            <div key={index} className="w-full grid grid-cols-3 gap-2 p-2 mb-1">
               <div className="w-full flex items-center gap-x-1">
-                <Dot color={COLORS[index]} />
+                <GoDotFill size={24} color={COLORS[index]} />
                 <p>{v?.name}</p>
               </div>
-              <p>{v?.value}</p>
-              <p>{((v?.value / sum) * 100).toFixed(0)}%</p>
+              <p className="text-center">{v?.value}</p>
+              <p>{(((v?.value / sum) * 100) || 0).toFixed(0)}%</p>
             </div>
           ))}
         </div>
+       
       </div>
 
-      <div className={cn("w-full", active === 1 && "block")}>
+      <div className={cn("w-full hidden", active === 1 && "block")}>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
             layout="vertical"
@@ -146,11 +151,11 @@ export function CheckBoxTypeResponse({
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" />
-            <YAxis type="category" dataKey="name" />
+            <XAxis axisLine={false} type="number" />
+            <YAxis axisLine={false} type="category" dataKey="name" />
             <Tooltip />
-            <Legend />
-            <Bar radius={10} dataKey="value" fill="#001FCC19" barSize={20}>
+            {/* <Legend /> */}
+            <Bar radius={10} dataKey="value" background={{ fill: "#001FCC19"}} barSize={20}>
               {reformedArray.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index]} />
               ))}
