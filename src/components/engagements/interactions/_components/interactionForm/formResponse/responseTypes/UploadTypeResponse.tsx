@@ -13,8 +13,8 @@ export function UploadTypeResponse({
     fileData: string;
   };
   return (
-    <div className="w-full flex items-end  justify-between max-w-lg rounded-lg p-2">
-      <div className="flex w-[80%] items-center gap-x-2">
+    <div className="w-full flex items-end mx-auto justify-between max-w-lg rounded-lg p-2">
+      <div className="flex w-[80%]  items-center gap-x-2">
         <InlineIcon icon="solar:file-bold-duotone" fontSize={24} />
         <p>{data?.name ?? ""}</p>
       </div>
@@ -26,7 +26,7 @@ export function UploadTypeResponse({
         className="flex items-center gap-x-1"
       >
         <p>Download</p>
-        <InlineIcon icon="et:download" fontSize={20} />
+        <InlineIcon icon="et:download" fontSize={18} />
       </button>
     </div>
   );
