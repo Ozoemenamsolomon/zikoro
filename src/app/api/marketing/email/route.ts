@@ -45,8 +45,6 @@ export async function POST(req: NextRequest) {
     try {
       const params = await req.json();
 
-      const emailIdentifier = generateAlphanumericHash(8);
-
       const {
         emailCategory,
         subject,
@@ -54,6 +52,7 @@ export async function POST(req: NextRequest) {
         emailBody,
         emailRecipient,
         replyTo,
+        eventAlias,
       } = params;
 
       // let nodemailer = require("nodemailer");
@@ -66,6 +65,26 @@ export async function POST(req: NextRequest) {
       //     pass: process.env.NEXT_PUBLIC_EMAIL_PASSWORD,
       //   },
       // });
+
+      const { data: currentEvent, error: eventError } = await supabase
+        .from("events")
+        .select("*, organization!inner(*)")
+        .eq("eventAlias", eventAlias)
+        .maybeSingle();
+
+      if (eventError) throw eventError;
+
+      const emailIdentifier = generateAlphanumericHash(8);
+
+      const body = emailBody.replaceAll(/#{(.*?)#}/g, (match, value) => {
+        switch (value.trim()) {
+          case "eventName":
+            return currentEvent.eventTitle;
+          case "eventAddress":
+            return currentEvent.eventAddress;
+        }
+      });
+
       var { SendMailClient } = require("zeptomail");
       let client = new SendMailClient({
         url: process.env.NEXT_PUBLIC_ZEPTO_URL,
@@ -91,7 +110,7 @@ export async function POST(req: NextRequest) {
               },
             ],
             subject,
-            htmlbody: `<div>${emailBody}</div>`,
+            htmlbody: `<div>${body}</div>`,
           });
 
           // const mailData = {

@@ -16,6 +16,7 @@ export interface TSentEmail {
   emailRecipient: string[];
   sendDateTime?: Date;
   sendTimeZone?: string;
+  eventAlias: string;
 }
 
 // interface TAffiliate {

@@ -154,7 +154,8 @@ const Create = () => {
 
     await sendMarketingEmail({
       payload: {
-        organizationId: currentEvent?.organisationId || 0,
+        eventAlias: currentEvent?.eventAlias || "",
+        organizationId: currentEvent?.organisationId || "",
         userId: user.id,
         userEmail: user.userEmail,
         emailCategory: data.category,
@@ -364,7 +365,7 @@ const Create = () => {
           )}
         </div>
         <InputOffsetLabel label="Message">
-          <Editor />
+          <Editor onChangeContent={setMessage} recipientSource={recipientSource} />
         </InputOffsetLabel>
         {/* <div className="flex flex-col md:flex-row gap-8 md:items-center">
           <FormField

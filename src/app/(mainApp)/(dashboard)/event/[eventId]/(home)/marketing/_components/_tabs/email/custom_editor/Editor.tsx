@@ -6,11 +6,29 @@ const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false, // This ensures it only loads on the client side
 });
 
-export const Editor = () => {
-  const [state, setState] = React.useState({ value: null });
-  const handleChange = (value) => {
+export const Editor = ({
+  onChangeContent,
+  recipientSource,
+}: {
+  onChangeContent: (content: string) => void;
+  recipientSource: string;
+}) => {
+  const [state, setState] = React.useState({ value: "" });
+  const handleChange = (value: string) => {
     setState({ value });
+    onChangeContent(value);
   };
+
+  const variables =
+    recipientSource === "attendees"
+      ? [
+          "attendeeFirstName",
+          "attendeeLastName",
+          "attendeeFullName",
+          "eventName",
+          "eventAddress",
+        ]
+      : ["eventName", "eventAddress"];
   return (
     <div className="text-editor">
       <EditorToolbar />
