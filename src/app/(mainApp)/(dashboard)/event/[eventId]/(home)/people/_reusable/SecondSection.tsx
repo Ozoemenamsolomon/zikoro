@@ -55,6 +55,7 @@ import { saveContact } from "@/utils";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Copy } from "styled-icons/boxicons-regular";
 import QRCode from "react-qr-code";
+import { calculateAndSetMaxHeight } from "@/utils/helpers";
 
 function AttendeeNotesSection(props) {
   return (
@@ -417,8 +418,14 @@ export default function SecondSection({
     userContactRequests
   );
 
+  const divRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    calculateAndSetMaxHeight(divRef);
+  }, [attendee]);
+
   return (
-    <div className="h-fit space-y-4">
+    <div className="h-fit space-y-4" ref={divRef}>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           {" "}
