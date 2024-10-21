@@ -8,10 +8,8 @@ const ReactQuill = dynamic(() => import("react-quill"), {
 
 export const Editor = ({
   onChangeContent,
-  recipientSource,
 }: {
   onChangeContent: (content: string) => void;
-  recipientSource: string;
 }) => {
   const [state, setState] = React.useState({ value: "" });
   const handleChange = (value: string) => {
@@ -19,16 +17,6 @@ export const Editor = ({
     onChangeContent(value);
   };
 
-  const variables =
-    recipientSource === "attendees"
-      ? [
-          "attendeeFirstName",
-          "attendeeLastName",
-          "attendeeFullName",
-          "eventName",
-          "eventAddress",
-        ]
-      : ["eventName", "eventAddress"];
   return (
     <div className="text-editor">
       <EditorToolbar />

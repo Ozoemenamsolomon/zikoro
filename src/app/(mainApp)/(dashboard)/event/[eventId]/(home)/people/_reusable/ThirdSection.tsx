@@ -170,9 +170,15 @@ export default function ThirdSection({
     getAttendeeEventTransactions();
   }, [attendee]);
 
+  const divRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    calculateAndSetMaxHeight(divRef);
+  }, [sponsors]);
+
   if (String(event?.createdBy) === String(user.id)) {
     return (
-      <>
+      <div className="overflow-auto no-scrollbar pb-48" ref={divRef}>
         <div className="mb-6 mt-2 space-y-4 bg-[#F9FAFF]">
           <h4 className="text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
             Payment
@@ -333,15 +339,9 @@ export default function ThirdSection({
         </h3>
         <div className="space-y-2">{mapped}</div>
       </section> */}
-      </>
+      </div>
     );
   }
-
-  const divRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    calculateAndSetMaxHeight(divRef);
-  }, [sponsors]);
 
   return (
     <div className="space-y-4 bg-[#F9FAFF]">
@@ -368,7 +368,7 @@ export default function ThirdSection({
         </div>
       )}
       {!loading && sponsors.length > 0 && (
-        <div className="overflow-auto hide-scrollbar" ref={divRef}>
+        <div className="overflow-auto no-scrollbar pb-48" ref={divRef}>
           <div className="grid items-center gap-4 px-2">
             {sponsors.map((sponsor) => (
               <PartnerCard key={sponsor.id} event={event} sponsor={sponsor} />

@@ -565,7 +565,7 @@ export default function FirstSection({
           </button>
         </div>
       </div>
-      <div className="overflow-auto hide-scrollbar md:pb-32" ref={divRef}>
+      <div className="overflow-auto hide-scrollbar pb-16 md:pb-32" ref={divRef}>
         <div className="min-h-max">
           {mappedAttendees
             .filter(
@@ -594,7 +594,9 @@ export default function FirstSection({
                 user={user}
               />
             ))}
-          {!isLoading && <div className="bg-gray-200 w-full h-[25px]" />}
+          {!isLoading && (
+            <div className="bg-gray-200 w-full h-[25px] hidden md:block" />
+          )}
         </div>
       </div>
     </>

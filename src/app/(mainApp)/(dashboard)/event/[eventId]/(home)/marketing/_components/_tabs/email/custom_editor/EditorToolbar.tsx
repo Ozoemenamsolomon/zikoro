@@ -114,6 +114,9 @@ export const QuillToolbar = () => {
           defaultValue="variable"
         >
           {[
+            "attendeeFirstName",
+            "attendeeLastName",
+            "attendeeFullName",
             "eventName",
             "eventAddress",
           ].map((variable) => (

@@ -425,7 +425,7 @@ export default function SecondSection({
   }, [attendee]);
 
   return (
-    <div className="h-fit space-y-4" ref={divRef}>
+    <div className="overflow-auto no-scrollbar space-y-4 pb-48" ref={divRef}>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           {" "}
@@ -936,6 +936,13 @@ export default function SecondSection({
         instagram={instagram}
         facebook={facebook}
       />
+      <AttendeeNotesSection
+        attendee={attendee}
+        note={note}
+        noteIsLoading={noteIsLoading}
+        getnote={getnote}
+        removeAttendeeTag={removeAttendeeTag}
+      />
       <AttendeeTagsSection
         attendee={attendee}
         attendeeTags={attendeeTags}
@@ -1056,13 +1063,6 @@ export default function SecondSection({
           </div>
         </section>
       )}
-      <AttendeeNotesSection
-        attendee={attendee}
-        note={note}
-        noteIsLoading={noteIsLoading}
-        getnote={getnote}
-        removeAttendeeTag={removeAttendeeTag}
-      />
       <AddAttendeeForm
         isOpen={attendeeFormIsOpen}
         onClose={onCloseAttendeeForm}

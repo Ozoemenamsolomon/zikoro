@@ -13,7 +13,12 @@ export interface TSentEmail {
   sendersName: string;
   replyTo?: string;
   emailBody: string;
-  emailRecipient: string[];
+  emailRecipient: {
+    attendeeAlias: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+  }[];
   sendDateTime?: Date;
   sendTimeZone?: string;
   eventAlias: string;
