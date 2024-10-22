@@ -179,7 +179,7 @@ export default function ThirdSection({
   if (String(event?.createdBy) === String(user.id)) {
     return (
       <div className="overflow-auto no-scrollbar pb-48" ref={divRef}>
-        <div className="mb-6 mt-2 space-y-4 bg-[#F9FAFF]">
+        <div className="mb-6 mt-2 space-y-4">
           <h4 className="text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
             Payment
           </h4>
