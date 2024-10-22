@@ -54,7 +54,9 @@ const People = ({ children }: { children: React.ReactNode }) => {
             ))}
           </ul>
         </nav>
+        <div className="md:px-12">
         {children}
+        </div>
       </section>
     </>
   );
