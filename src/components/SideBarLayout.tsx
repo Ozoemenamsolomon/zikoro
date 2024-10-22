@@ -90,7 +90,7 @@ function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
         query={query}
         isHaveEvent={isHaveEvent}
       />
-      <div className="w-full bg-[#F9FAFF] sm:w-[calc(100%-60px)] float-right pt-[4.4rem] pb-[50px] md:pb-0">
+      <div className="w-full bg-[#F9FAFF] sm:w-[calc(100%-60px)] float-right pt-[4.4rem] pb-[50px] md:pb-0 max-w-[1300px] xl:mx-auto xl:mt-12">
         {/** mt-24 is affecting many parts in the event */}
         {children}
       </div>
