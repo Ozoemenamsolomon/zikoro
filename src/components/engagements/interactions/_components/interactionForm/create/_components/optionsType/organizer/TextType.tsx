@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { UseFormReturn, UseFieldArrayRemove } from "react-hook-form";
 import { PiDotsSixBold } from "react-icons/pi";
-import { IoImage } from "react-icons/io5";
+// import { IoImage } from "react-icons/io5";
 import { useMemo,  } from "react";
 import { SelectedImage } from "../../formcomposables/SelectedImage";
 import { z } from "zod";
@@ -56,7 +56,7 @@ append: (i:number) => void;
           control={form.control}
           name={`questions.${index}.question`}
           render={({ field }) => (
-            <FormItem className={cn("w-full col-span-9", image && "col-span-full")}>
+            <FormItem className={cn("w-full col-span-full", image && "col-span-full")}>
               <FormLabel>Question {index+1} (Text)</FormLabel>
               <FormControl>
                 <Input
@@ -68,7 +68,7 @@ append: (i:number) => void;
             </FormItem>
           )}
         />
-        {!image && (
+        {/* {!image && (
          <div className="w-full flex items-end justify-end">
            <label
             htmlFor={`questions.${index}.questionImage`}
@@ -85,7 +85,7 @@ append: (i:number) => void;
             <IoImage size={24} className="text-gray-700" />
           </label>
          </div>
-        )}
+        )} */}
         {image && (
           <SelectedImage form={form} index={index} image={image} />
         )}

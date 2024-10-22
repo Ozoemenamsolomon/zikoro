@@ -181,7 +181,7 @@ export default function StampCard({ eventId }: { eventId: string }) {
         </div>
       </div>
 
-      <div className="w-full grid mt-3 px-4 sm:mt-6 grid-cols-1 sm:grid-cols-3 xl:grid-cols-4 gap-4 items-center">
+      <div className="w-full grid mt-3 px-4 sm:mt-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 min-[1300px]:grid-cols-3 min-[1305px]:grid-cols-5 gap-4 items-center">
         {loading && (
           <div className="w-full col-span-full h-[300px] flex items-center justify-center">
             <LoaderAlt size={30} className="animate-spin" />

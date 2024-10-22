@@ -43,25 +43,25 @@ import { uploadFile } from "@/utils";
 import { CiShare2 } from "react-icons/ci";
 import { ShareModal } from "./ShareModal";
 import FormResponses from "../formResponse/FormResponse";
-// import { useSortable } from "@dnd-kit/sortable";
-// import { CSS } from "@dnd-kit/utilities";
-// import {
-//   DndContext,
-//   KeyboardSensor,
-//   MouseSensor,
-//   PointerSensor,
-//   TouchSensor,
-//   closestCorners,
-//   useSensor,
-//   useSensors,
-//   DragEndEvent,
-// } from "@dnd-kit/core";
-// import {
-//   SortableContext,
-//   verticalListSortingStrategy,
-//   arrayMove,
-//   sortableKeyboardCoordinates,
-// } from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
+  DndContext,
+  KeyboardSensor,
+  MouseSensor,
+  PointerSensor,
+  TouchSensor,
+  closestCorners,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
 
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
@@ -70,8 +70,9 @@ const options = [
   { name: "CheckBox", image: "/fcheckbox.png" },
   { name: "Rating", image: "/fstarr.png" },
   { name: "Upload", image: "/fattachment.png" },
-  { name: "Likert", image: "/flikert.png" },
+  
 ];
+// { name: "Likert", image: "/flikert.png" },
 
 const optionsType = [
   { name: "Mutiple Choice", type: "INPUT_MULTIPLE_CHOICE" },
@@ -79,9 +80,11 @@ const optionsType = [
   { name: "Date", type: "INPUT_DATE" },
   { name: "CheckBox", type: "INPUT_CHECKBOX" },
   { name: "Rating", type: "INPUT_RATING" },
-  { name: "Likert", type: "INPUT_LIKERT" },
   { name: "Upload", type: "ATTACHMENT" },
 ];
+
+
+//  { name: "Likert", type: "INPUT_LIKERT" },
 
 function Fields({
   field,
@@ -112,19 +115,19 @@ function Fields({
   copyQuestion: (i: number) => void;
   remove: UseFieldArrayRemove;
 }) {
-  // const { attributes, listeners, setNodeRef, transform, transition } =
-  // useSortable({ id: field?.id });
+  const { attributes, listeners, setNodeRef, transform, transition } =
+  useSortable({ id: field?.id });
 
   return (
     <div
-      // ref={setNodeRef}
-      // {...attributes}
-      // {...listeners}
-      // style={{
-      //   transition,
-      //   transform: CSS.Transform.toString(transform),
-      //   touchAction: "none",
-      // }}
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={{
+        transition,
+        transform: CSS.Transform.toString(transform),
+        touchAction: "none",
+      }}
       className="w-full"
     >
       {field.selectedType === "INPUT_TEXT" && (
@@ -394,31 +397,31 @@ function CreateInteractionFormComp({
     }
   }, [data, formResponses]);
 
-  // const sensors = useSensors(
-  //   useSensor(PointerSensor, {
-  //     activationConstraint: {
-  //       distance: 0.01,
-  //     },
-  //   }),
-  //   useSensor(TouchSensor),
-  //   useSensor(MouseSensor),
-  //   useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  // );
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 0.01,
+      },
+    }),
+    useSensor(TouchSensor),
+    useSensor(MouseSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
-  // get position
-  // const getPosition = (id: string): number | undefined =>
-  //   fields.findIndex((item) => item?.id === id);
-  // async function handleDrop(e: DragEndEvent) {
-  //   if (!fields) return;
-  //   const { active, over } = e;
+  //get position
+  const getPosition = (id: string): number | undefined =>
+    fields.findIndex((item) => item?.id === id);
+  async function handleDrop(e: DragEndEvent) {
+    if (!fields) return;
+    const { active, over } = e;
 
-  //   if (active?.id === over?.id) return;
-  //   const originPos = getPosition(active?.id as string)!;
-  //   const destPos = getPosition(over?.id as string)!;
-  //   const updatedFields = arrayMove(fields, originPos, destPos);
+    if (active?.id === over?.id) return;
+    const originPos = getPosition(active?.id as string)!;
+    const destPos = getPosition(over?.id as string)!;
+    const updatedFields = arrayMove(fields, originPos, destPos);
 
-  //   form.setValue("questions", updatedFields);
-  // }
+    form.setValue("questions", updatedFields);
+  }
   return (
     <InteractionLayout eventId={eventId}>
       <div
@@ -554,7 +557,7 @@ function CreateInteractionFormComp({
                 </div>
 
                 <div className="w-full flex flex-col items-start justify-start gap-y-6 sm:gap-y-8">
-                  {/* <DndContext
+                  <DndContext
                 collisionDetection={closestCorners}
                 sensors={sensors}
                 onDragEnd={handleDrop}
@@ -562,7 +565,7 @@ function CreateInteractionFormComp({
                 <SortableContext
                   items={fields}
                   strategy={verticalListSortingStrategy}
-                > */}
+                >
                   {fields.map((field, index) => (
                     <Fields
                       key={field.id}
@@ -573,8 +576,8 @@ function CreateInteractionFormComp({
                       form={form}
                     />
                   ))}
-                  {/* </SortableContext>
-              </DndContext> */}
+                  </SortableContext>
+              </DndContext>
                 </div>
 
                 <div className="w-full flex items-center justify-center ">

@@ -108,14 +108,14 @@ export function RewardCard({
   }
   return (
     <>
-      <div className="w-full text-sm h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
-        <div className="relative w-full h-40 sm:h-56 rounded-t-md overflow-hidden">
+      <div className="w-full bg-white b text-sm h-fit pb-3 flex flex-col border rounded-md  gap-y-2 items-start">
+        <div className="relative w-full h-40 sm:h-56 xl:h-60 rounded-t-md overflow-hidden">
           <Image
             src={reward?.image}
             alt="product"
             width={600}
             height={600}
-            className="w-full rounded-t-md h-[180px] sm:h-56"
+            className="w-full rounded-t-md object-cover h-[180px] sm:h-56 xl:h-60"
           />
         </div>
         <div className="w-full px-3 flex items-start justify-between">

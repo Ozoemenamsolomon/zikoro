@@ -49,16 +49,9 @@ export function Engagement({
     }
   }, [attendeeId, reviews]);
   return (
-    <div className="lg:col-span-3 p-2 lg:p-4 w-full">
-      <div className="w-full h-fit bg-gray-100 rounded-xl">
-        <div className="w-full flex items-center justify-between border-b border-gray-300 p-4">
-          <h2 className="text-base sm:text-xl font-semibold  text-start">
-            Reviews
-          </h2>
-         {!isSent && <Button className="w-fit h-fit px-0" onClick={() => setRating(0)}>
-            <CloseOutline size={22} />
-          </Button>}
-        </div>
+    <div className=" p-2 lg:p-4 w-full bg-gray-100">
+      <div className="w-full h-fit bg-gray-100 rounded-b-xl">
+      
 
         {rating > 0 || isSent ? (
           <ReviewComment

@@ -55,6 +55,7 @@ function createAudioInstance() {
     const audio = new Audio("/audio/AylexCinematic.mp3");
     //  audio.src = "audio/AylexCinematic.mp3";
     audio.loop = true;
+    audio.volume=0.2;
 
     return audio;
   }
@@ -732,7 +733,7 @@ export function PlayersOnboarding({
         <form
           onSubmit={submit}
           className={cn(
-            "w-full text-sm p-4 gap-y-4 col-span-full flex flex-col items-center mx-auto max-w-2xl rounded-lg bg-white",
+            "w-full text-sm p-4 gap-y-4 col-span-full flex flex-col h-fit absolute inset-0  justify-center items-center m-auto max-w-2xl rounded-lg bg-white",
             isLobby && "hidden"
           )}
         >
@@ -854,7 +855,7 @@ export function PlayersOnboarding({
           <Image
             src={quiz?.coverImage || "/quiztime.png"}
             alt="cover-image"
-            className="w-full h-[300px] object-cover"
+            className="w-full h-[30vh] object-cover"
             width={2000}
             height={1000}
           />

@@ -54,18 +54,30 @@ export default function Interactions({ eventId }: { eventId: string }) {
     }
   }, [quizzes, isIdPresent, isOrganizer]);
 
+  const visibleForm = useMemo(() => {
+    if (!isIdPresent && !isOrganizer) {
+      const filteredQuizzes = data?.filter(
+        (form) => !form?.isActive
+      );
+
+      return filteredQuizzes;
+    } else {
+      return data;
+    }
+  },[data, isIdPresent, isOrganizer])
+
 
   const interactioDataLength = useMemo(() => {
-      if (data && visibleQuizzes) {
+      if (visibleForm && visibleQuizzes) {
         return [
-          ...data,
+          ...visibleForm,
           ...visibleQuizzes
         ].length
       }
       else {
         return 0
       }
-  },[data, quizzes, visibleQuizzes])
+  },[visibleForm, visibleQuizzes])
 
   //console.log({ visibleQuizzes, quizzes, isIdPresent, isOrganizer });
 
@@ -149,8 +161,8 @@ export default function Interactions({ eventId }: { eventId: string }) {
               />
             ))}
              {!isLoading && !loading &&
-            Array.isArray(data) &&
-            data.map((form, index) => (
+            Array.isArray(visibleForm) &&
+            visibleForm.map((form, index) => (
               <FormCard
                 refetch={getData}
                 isNotAttendee={isIdPresent || isOrganizer}
