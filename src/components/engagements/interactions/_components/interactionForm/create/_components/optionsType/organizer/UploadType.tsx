@@ -7,9 +7,9 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { UseFormReturn, UseFieldArrayRemove } from "react-hook-form";
+import { UseFormReturn, UseFieldArrayRemove, useWatch} from "react-hook-form";
 import { PiDotsSixBold } from "react-icons/pi";
-import { IoImage } from "react-icons/io5";
+// import { IoImage } from "react-icons/io5";
 import { useMemo,  } from "react";
 import { SelectedImage } from "../../formcomposables/SelectedImage";
 import { z } from "zod";
@@ -29,8 +29,15 @@ remove: UseFieldArrayRemove;
 append: (i:number) => void;
 }) {
   //const [isRequired, setIsRequired] = useState(false);
+  const prevSelected = form.watch(`questions.${index}.optionFields`)
 
   const watchedImage = form.watch(`questions.${index}.questionImage`);
+
+  const selectedOptions =
+  useWatch({
+    control: form.control,
+    name: `responses.${index}.optionFields` as const,
+  }) || [];
 
   const image = useMemo(() => {
     if (typeof watchedImage === "string") {
@@ -56,7 +63,7 @@ append: (i:number) => void;
           control={form.control}
           name={`questions.${index}.question`}
           render={({ field }) => (
-            <FormItem className={cn("w-full col-span-9", image && "col-span-full")}>
+            <FormItem className={cn("w-full col-span-full", image && "col-span-full")}>
               <FormLabel>Question {index+1} (Attachment/Upload)</FormLabel>
               <FormControl>
                 <Input
@@ -68,7 +75,7 @@ append: (i:number) => void;
             </FormItem>
           )}
         />
-        {!image && (
+        {/* {!image && (
          <div className="w-full flex items-end justify-end">
            <label
             htmlFor={`questions.${index}.questionImage`}
@@ -85,31 +92,41 @@ append: (i:number) => void;
             <IoImage size={24} className="text-gray-700" />
           </label>
          </div>
-        )}
+        )} */}
         {image && (
           <SelectedImage form={form} index={index} image={image} />
         )}
       </div>
-      {/** Answer */}
-      {/* <div className="w-full flex flex-col items-start justify-start gap-y-2">
-      <FormField
-          control={form.control}
-          name="questionAnswer"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Answer (Text)</FormLabel>
-              <FormControl>
-                <Input
-                  {...form.register("questionAnswer")}
-                  className="w-full h-12 sm:h-14 px-0 border-x-0 border-t-0 border-b placeholder:text-gray-500 bg-transparent rounded-none  placeholder-gray-500"
-                  placeholder="Enter answer"
-                  required={isRequired}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-      </div> */}
+      <div className="w-full ">
+        <p className="font-medium my-3">File Type</p>
+        <div className="flex flex-wrap items-center justify-start gap-6 w-full">
+        {["Image", "Video","Pdf", "Docx", "Excel", "PPT", "All"].map((value) => (
+          <label className="flex items-center gap-x-1">
+            <input 
+            onChange={(e) => {
+              const updatedValue = e.target.checked
+              ? [
+                  ...(selectedOptions || []),
+                  value,
+                ]
+              : selectedOptions?.filter(
+                  (v: any) =>
+                    v?.selectedOption !==
+                    value 
+                );
+                form.setValue(`responses.${index}.optionFields`, updatedValue)
+            }}
+            value={value}
+            type="checkbox" checked={selectedOptions.some((v: any) => v?.option === value)} 
+            className="h-[20px] pt-3 w-[20px] rounded-full mr-2 accent-basePrimary"
+            />
+            <span className="capitalize">{value}</span>
+          </label>
+        ))}
+        </div>
+     
+      </div>
+   
       {/** actions */}
     <BottomAction form={form} remove={remove} index={index} append={append}/>
     </div>

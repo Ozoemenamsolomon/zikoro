@@ -252,7 +252,7 @@ export function AboutSession({
       {agenda && event && (
         <div className="w-full lg:col-span-5 border-r">
           {agenda?.sessionUrl && (
-            <div className="w-full h-48 sm:h-[25rem] lg:h-[16rem]">
+            <div className="w-full h-52 bg-gray-300 sm:h-[40vh] lg:h-[50vh]">
               <Player
                 src={agenda?.sessionUrl}
                 thumbnail={event?.eventPoster}
@@ -329,16 +329,7 @@ export function AboutSession({
             )}
           </div>
 
-          <section className="w-full flex flex-col border-b pb-2">
-            <div className="w-full px-3 py-3 border-y flex items-center justify-between">
-              <p className="font-semibold text-base sm:text-xl">
-                Session Description
-              </p>
-            </div>
-            <div className="items-start text-[13px] sm:text-sm text-gray-600 px-3 py-4 justify-start flex w-full flex-wrap">
-              {agenda?.description ?? ""}
-            </div>
-          </section>
+          
           <CollapsibleWidget
             title="Speakers"
             session={agenda}

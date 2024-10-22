@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { UseFormReturn, UseFieldArrayRemove } from "react-hook-form";
 import { PiDotsSixBold } from "react-icons/pi";
-import { IoImage } from "react-icons/io5";
+// import { IoImage } from "react-icons/io5";
 import { useEffect, useMemo, useState } from "react";
 import { SelectedImage } from "../../formcomposables/SelectedImage";
 import { z } from "zod";
@@ -75,7 +75,7 @@ if (selectedRating) {
           name={`questions.${index}.question`}
           render={({ field }) => (
             <FormItem
-              className={cn("w-full col-span-9", image && "col-span-full")}
+              className={cn("w-full col-span-full", image && "col-span-full")}
             >
               <FormLabel>Question {index+1} (Rating)</FormLabel>
               <FormControl>
@@ -89,7 +89,7 @@ if (selectedRating) {
             </FormItem>
           )}
         />
-        {!image && (
+        {/* {!image && (
           <div className="w-full flex items-end justify-end">
             <label
               htmlFor={`questions.${index}.questionImage`}
@@ -106,7 +106,7 @@ if (selectedRating) {
               <IoImage size={24} className="text-gray-700" />
             </label>
           </div>
-        )}
+        )} */}
         {image && <SelectedImage form={form} index={index} image={image} />}
       </div>
 

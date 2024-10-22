@@ -24,24 +24,24 @@ import { nanoid } from "nanoid";
 import { IoIosCloseCircle } from "react-icons/io";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  DndContext,
-  KeyboardSensor,
-  MouseSensor,
-  PointerSensor,
-  TouchSensor,
-  closestCorners,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  arrayMove,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
-//
+// import {
+//   DndContext,
+//   KeyboardSensor,
+//   MouseSensor,
+//   PointerSensor,
+//   TouchSensor,
+//   closestCorners,
+//   useSensor,
+//   useSensors,
+//   DragEndEvent,
+// } from "@dnd-kit/core";
+// import {
+//   SortableContext,
+//   verticalListSortingStrategy,
+//   arrayMove,
+//   sortableKeyboardCoordinates,
+// } from "@dnd-kit/sortable";
+// //
 
 type OptionItemsType = {
   id: string;
@@ -231,35 +231,35 @@ export function CheckBoxType({
       )
     );
   }
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 0.01,
-      },
-    }),
-    useSensor(TouchSensor),
-    useSensor(MouseSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor, {
+  //     activationConstraint: {
+  //       distance: 0.01,
+  //     },
+  //   }),
+  //   useSensor(TouchSensor),
+  //   useSensor(MouseSensor),
+  //   useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  // );
 
-  // get position
-  const getPosition = (id: string): number | undefined =>
-    options.findIndex((item) => item?.id === id);
-  async function handleDrop(e: DragEndEvent) {
+  // // get position
+  // const getPosition = (id: string): number | undefined =>
+  //   options.findIndex((item) => item?.id === id);
+  // async function handleDrop(e: DragEndEvent) {
      
-    if (!options) return;
-    const { active, over } = e;
+  //   if (!options) return;
+  //   const { active, over } = e;
 
-    if (active?.id === over?.id) return;
-    const originPos = getPosition(active?.id as string)!;
-    const destPos = getPosition(over?.id as string)!;
-    if (active && (active.id as string).includes("child") && over && (over.id as string).includes("child")) {
-      const updatedOption = arrayMove(options, originPos, destPos);
+  //   if (active?.id === over?.id) return;
+  //   const originPos = getPosition(active?.id as string)!;
+  //   const destPos = getPosition(over?.id as string)!;
+  //   if (active && (active.id as string).includes("child") && over && (over.id as string).includes("child")) {
+  //     const updatedOption = arrayMove(options, originPos, destPos);
 
-      setOptions(updatedOption);
-    }
+  //     setOptions(updatedOption);
+  //   }
    
-  }
+  // }
   return (
     <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-4 sm:p-6 bg-white">
       <PiDotsSixBold size={40} className="self-center text-gray-400" />
@@ -270,7 +270,7 @@ export function CheckBoxType({
           name={`questions.${index}.question`}
           render={({ field }) => (
             <FormItem
-              className={cn("w-full col-span-9", image && "col-span-full")}
+              className={cn("w-full col-span-full", image && "col-span-full")}
             >
               <FormLabel>Question {index+1} (CheckBox)</FormLabel>
               <FormControl>
@@ -283,7 +283,7 @@ export function CheckBoxType({
             </FormItem>
           )}
         />
-        {!image && (
+        {/* {!image && (
           <div className="w-full flex items-end justify-end">
             <label
               htmlFor={`questions.${index}.questionImage`}
@@ -300,12 +300,12 @@ export function CheckBoxType({
               <IoImage size={24} className="text-gray-700" />
             </label>
           </div>
-        )}
+        )} */}
         {image && <SelectedImage form={form} index={index} image={image} />}
       </div>
       {/** Options pl-4 sm:pl-6*/}
       <div className="w-full flex flex-col items-start  justify-start gap-y-3">
-        <DndContext
+        {/* <DndContext
           collisionDetection={closestCorners}
           sensors={sensors}
           onDragEnd={handleDrop}
@@ -313,7 +313,7 @@ export function CheckBoxType({
           <SortableContext
             items={options}
             strategy={verticalListSortingStrategy}
-          >
+          > */}
             {options.map((option, index) => (
               <OptionItem
                 key={option.id}
@@ -324,8 +324,8 @@ export function CheckBoxType({
                 setOption={handleChangeOption}
               />
             ))}
-          </SortableContext>
-        </DndContext>
+          {/* </SortableContext>
+        </DndContext> */}
 
         <Button
           onClick={(e) => {

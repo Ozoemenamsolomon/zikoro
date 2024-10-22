@@ -7,6 +7,7 @@ import { UseFieldArrayRemove, UseFormReturn, useWatch } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
 import { z } from "zod";
 import { formQuestionSchema } from "@/schemas/engagement";
+import { IoImage } from "react-icons/io5";
 
 export function BottomAction({
   form,
@@ -37,6 +38,20 @@ export function BottomAction({
       </div>
 
       <div className="flex items-center gap-x-2">
+      <label
+              htmlFor={`questions.${index}.questionImage`}
+              className="rounded-full  self-end w-12 sm:w-14 flex items-center justify-center h-12 sm:h-14 bg-gradient-to-tr  from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500 relative"
+            >
+              <input
+                id={`questions.${index}.questionImage`}
+                type="file"
+                className="w-full h-full absolute inset-0 z-20"
+                accept="image/*"
+                hidden
+                {...form.register(`questions.${index}.questionImage`)}
+              />
+              <IoImage size={24} className="text-gray-700" />
+            </label>
         <Button 
           onClick={(e) => {
             e.stopPropagation();

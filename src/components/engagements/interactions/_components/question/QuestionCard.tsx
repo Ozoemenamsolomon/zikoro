@@ -65,7 +65,7 @@ export function QuestionCard({
             alt="question-image"
             width={600}
             height={400}
-            className="w-full h-[140px] sm:h-[180px] rounded-lg col-span-3"
+            className="w-full h-[140px] object-cover sm:h-[180px] rounded-lg col-span-3"
           />
         ) : (
           <div className="w-full h-[140px] sm:h-[180px] rounded-lg col-span-3 animate-pulse bg-gray-200 "></div>
