@@ -241,6 +241,8 @@ export async function POST(req: NextRequest) {
             //   if (err) throw err;
             //   else
             // });
+
+            console.log(resp, "resp");
           } catch (error) {
             console.error(`Error sending email to ${email}:`, error);
           }
