@@ -55,6 +55,7 @@ import { saveContact } from "@/utils";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { Copy } from "styled-icons/boxicons-regular";
 import QRCode from "react-qr-code";
+import { calculateAndSetMaxHeight } from "@/utils/helpers";
 
 function AttendeeNotesSection(props) {
   return (
@@ -417,8 +418,14 @@ export default function SecondSection({
     userContactRequests
   );
 
+  const divRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    calculateAndSetMaxHeight(divRef);
+  }, [attendee]);
+
   return (
-    <div className="h-fit space-y-4">
+    <div className="overflow-auto no-scrollbar space-y-4 pb-48" ref={divRef}>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           {" "}
@@ -929,6 +936,13 @@ export default function SecondSection({
         instagram={instagram}
         facebook={facebook}
       />
+      <AttendeeNotesSection
+        attendee={attendee}
+        note={note}
+        noteIsLoading={noteIsLoading}
+        getnote={getnote}
+        removeAttendeeTag={removeAttendeeTag}
+      />
       <AttendeeTagsSection
         attendee={attendee}
         attendeeTags={attendeeTags}
@@ -1049,13 +1063,6 @@ export default function SecondSection({
           </div>
         </section>
       )}
-      <AttendeeNotesSection
-        attendee={attendee}
-        note={note}
-        noteIsLoading={noteIsLoading}
-        getnote={getnote}
-        removeAttendeeTag={removeAttendeeTag}
-      />
       <AddAttendeeForm
         isOpen={attendeeFormIsOpen}
         onClose={onCloseAttendeeForm}

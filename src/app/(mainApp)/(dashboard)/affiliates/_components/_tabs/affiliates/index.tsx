@@ -32,11 +32,13 @@ const Affiliates = () => {
   const { user, setUser } = useUserStore();
   const { organization } = useOrganizationStore();
 
-  console.log(organization.id)
+  console.log(organization.id);
 
   const { getAffiliates, affiliates, isLoading } = useGetAffiliates({
     organizationId: organization?.id,
   });
+
+  console.log(affiliates, "affiliates");
 
   const { searchTerm, searchedData, setSearchTerm } = useSearch<TAffiliate>({
     data: affiliates || [],
