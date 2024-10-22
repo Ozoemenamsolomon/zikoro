@@ -49,6 +49,7 @@ const People = ({ children }: { children: React.ReactNode }) => {
                     : ""
                 }`}
               >
+                
                 <Link href={href}>{name}</Link>
               </li>
             ))}
