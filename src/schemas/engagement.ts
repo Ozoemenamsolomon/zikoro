@@ -7,6 +7,7 @@ export const formQuestion = z.object({
     optionFields: z.any(),
     isRequired: z.boolean(),
     questionId: z.string(),
+    questionDescription: z.string().optional()
 })
 
 export const formQuestionSchema = z.object({

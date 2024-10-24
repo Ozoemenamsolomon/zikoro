@@ -63,6 +63,7 @@ function AttendeeFillFormComp({
   const attendeeId = params.get("id");
   const link = params.get("link");
   const query = params.get("redirect");
+  const [currentIndexes, setCurrentIndexes] = useState(0);
   // const { isIdPresent } = useCheckTeamMember({ eventId });
   const [isSuccess, setOpenSuccess] = useState(false);
   const { data, isLoading } = useGetData<TEngagementFormQuestion>(
@@ -88,6 +89,7 @@ function AttendeeFillFormComp({
     control: form.control,
     name: "questions",
   });
+  const [currentQuestions, setCurrentQuestion] = useState(fields);
 
   async function onSubmit(values: z.infer<typeof formAnswerSchema>) {
     //  console.log(values);
@@ -118,7 +120,7 @@ function AttendeeFillFormComp({
     );
     const payload: Partial<TEngagementFormAnswer> = {
       ...restData,
-      responses
+      responses,
     };
     await postData({ payload });
 
@@ -128,6 +130,21 @@ function AttendeeFillFormComp({
     }
     setOpenSuccess(true);
   }
+
+  useEffect(() => {
+    if (data?.formSettings?.displayType === "slide") {
+      const questionPerSlide = parseInt(
+        data?.formSettings?.questionPerSlides || "1"
+      );
+      const slicedQuestion = fields.slice(
+        currentIndexes,
+        currentIndexes + questionPerSlide
+      );
+      setCurrentQuestion(slicedQuestion);
+    } else {
+      setCurrentQuestion(fields);
+    }
+  }, [data, fields, currentIndexes]);
 
   // console.log(form.getValues());
 
@@ -152,7 +169,10 @@ function AttendeeFillFormComp({
         backgroundColor: data?.formSettings?.backgroundColor || "",
         color: data?.formSettings?.textColor || "",
       }}
-      className="w-full h-full fixed inset-0 overflow-y-auto"
+      className={cn(
+        "w-full h-full fixed inset-0 overflow-y-auto",
+        isLoading && "hidden"
+      )}
     >
       {data?.coverImage && (data?.coverImage as string).startsWith("https") && (
         <Image
@@ -182,7 +202,7 @@ function AttendeeFillFormComp({
             onSubmit={form.handleSubmit(onSubmit)}
             className="w-full flex flex-col items-start justify-start gap-y-4 sm:gap-y-6 2xl:gap-y-8"
           >
-            {fields?.map((field, index) => (
+            {currentQuestions?.map((field, index) => (
               <>
                 {field.selectedType === "INPUT_TEXT" && (
                   <TextTypeAnswer form={form} index={index} />
@@ -196,7 +216,7 @@ function AttendeeFillFormComp({
                 {field.selectedType === "INPUT_RATING" && (
                   <RatingTypeAnswer form={form} index={index} />
                 )}
-                 {field.selectedType === "ATTACHMENT" && (
+                {field.selectedType === "ATTACHMENT" && (
                   <UploadTypeAnswer form={form} index={index} />
                 )}
                 {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
@@ -206,20 +226,87 @@ function AttendeeFillFormComp({
             ))}
 
             {/* {!isOrganizer && !isIdPresent && ( */}
-            <Button
-              type="submit"
-              disabled={loading}
-              style={{
-                backgroundColor: data?.formSettings?.buttonColor || "",
-              }}
-              className={cn(
-                "self-center w-[150px] gap-x-2  text-white font-medium h-12 ",
-                !data?.formSettings?.buttonColor && "bg-basePrimary"
-              )}
-            >
-              {loading && <LoaderAlt className="animate-spin" size={20} />}
-              <p>Submit</p>
-            </Button>
+            {data?.formSettings?.displayType === "slide" && (
+              <div className="w-full flex items-center justify-between">
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    const questionPerSlide = parseInt(
+                      data?.formSettings?.questionPerSlides || "1"
+                    );
+                    if (
+                      currentIndexes > parseInt(data?.formSettings?.questionPerSlides || "1") 
+                      
+                    ) {
+                      setCurrentIndexes(currentIndexes - questionPerSlide);
+                    }
+                  }}
+                  style={{
+                    color: data?.formSettings?.buttonColor || "",
+                    border: `1px solid ${
+                      data?.formSettings?.buttonColor || "#001fcc"
+                    }`,
+                  }}
+                  className="border h-12 font-medium"
+                >
+                  Previous
+                </Button>
+                { currentIndexes +
+                  parseInt(data?.formSettings?.questionPerSlides || "1") >= fields?.length
+                ? (
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    style={{
+                      backgroundColor: data?.formSettings?.buttonColor || "",
+                    }}
+                    className={cn(
+                      "self-center  gap-x-2  text-white font-medium h-12 ",
+                      !data?.formSettings?.buttonColor && "bg-basePrimary"
+                    )}
+                  >
+                    {loading && (
+                      <LoaderAlt className="animate-spin" size={20} />
+                    )}
+                    <p>Submit</p>
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      const questionPerSlide = parseInt(
+                        data?.formSettings?.questionPerSlides || "1"
+                      );
+                      setCurrentIndexes(currentIndexes + questionPerSlide);
+                    }}
+                    style={{
+                      backgroundColor: data?.formSettings?.buttonColor || "",
+                    }}
+                    className="text-white h-12 font-medium"
+                  >
+                    Next
+                  </Button>
+                )}
+              </div>
+            )}
+            {data?.formSettings?.displayType !== "slide" && (
+              <Button
+                type="submit"
+                disabled={loading}
+                style={{
+                  backgroundColor: data?.formSettings?.buttonColor || "",
+                }}
+                className={cn(
+                  "self-center w-[150px] gap-x-2  text-white font-medium h-12 ",
+                  !data?.formSettings?.buttonColor && "bg-basePrimary"
+                )}
+              >
+                {loading && <LoaderAlt className="animate-spin" size={20} />}
+                <p>Submit</p>
+              </Button>
+            )}
             {/* )} */}
           </form>
         </Form>

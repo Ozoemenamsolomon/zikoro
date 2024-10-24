@@ -26,8 +26,9 @@ export function RatingTypeResponse({
 }: {
   responses: TFormattedEngagementFormAnswer[];
 }) {
-  const mappedRating = responses?.map((item) => Number(item?.response));
-  const ratingCount = responses?.length;
+  const flattenedResponse = responses
+  const mappedRating = flattenedResponse?.map((item) => Number(item?.response));
+  const ratingCount = flattenedResponse?.length;
   const reduced = mappedRating?.reduce((a, b) => a + b, 0);
 
   const ratingAverage = reduced / ratingCount;
@@ -36,20 +37,20 @@ export function RatingTypeResponse({
       <p>Average Rating</p>
       <div className="flex items-end">
         <h2 className="font-bold text-4xl">{ratingAverage?.toFixed(1)}</h2>
-        <span className="font-semibold">/{responses[0]?.optionFields}</span>
+        <span className="font-semibold">/{flattenedResponse[0]?.optionFields}</span>
       </div>
       <Rating
         average={Math.round(ratingAverage)}
-        rating={responses[0]?.optionFields as number}
+        rating={flattenedResponse[0]?.optionFields as number}
       />
       <div className="w-full max-w-2xl mx-auto">
-        {[...Array(responses[0]?.optionFields as number).keys()]
+        {[...Array(flattenedResponse[0]?.optionFields as number).keys()]
           .reverse()
           .map((val, index) => {
-            const reviewRate = responses?.filter(
+            const reviewRate = flattenedResponse?.filter(
               ({ response }) => Number(response) === val
             )?.length;
-            const numberOfResponses = responses?.filter((v) => v?.response === val)?.length;
+            const numberOfResponses = flattenedResponse?.filter((v) => v?.response === val)?.length;
             return (
               <div
                 key={index}
@@ -60,7 +61,7 @@ export function RatingTypeResponse({
                   <span
                     style={{
                       width: reviewRate
-                        ? `${((reviewRate / responses?.length) * 100).toFixed(
+                        ? `${((reviewRate / flattenedResponse?.length) * 100).toFixed(
                             0
                           )}%`
                         : "0%",

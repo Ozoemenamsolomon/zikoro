@@ -303,6 +303,24 @@ export function CheckBoxType({
         )} */}
         {image && <SelectedImage form={form} index={index} image={image} />}
       </div>
+      <div id={`question-description${index}`} className="w-full hidden">
+      <FormField
+        control={form.control}
+        name={`questions.${index}.questionDescription`}
+        render={({ field }) => (
+          <FormItem className={cn("w-full")}>
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <Input
+                {...form.register(`questions.${index}.questionDescription`)}
+                className="w-full h-12 sm:h-14 border-x-0 border-t-0 bg-transparent border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
+                placeholder="Enter Description"
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      </div>
       {/** Options pl-4 sm:pl-6*/}
       <div className="w-full flex flex-col items-start  justify-start gap-y-3">
         {/* <DndContext

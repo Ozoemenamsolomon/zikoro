@@ -36,7 +36,7 @@ append: (i:number) => void;
   const selectedOptions =
   useWatch({
     control: form.control,
-    name: `responses.${index}.optionFields` as const,
+    name: `questions.${index}.optionFields` as const,
   }) || [];
 
   const image = useMemo(() => {
@@ -55,7 +55,7 @@ append: (i:number) => void;
 
   
   return (
-    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-4 sm:p-6 bg-white">
+    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-6 p-4 sm:p-6 bg-white">
       <PiDotsSixBold size={40} className="self-center text-gray-400" />
       {/* question */}
       <div className="w-full gap-2 grid grid-cols-10">
@@ -97,6 +97,24 @@ append: (i:number) => void;
           <SelectedImage form={form} index={index} image={image} />
         )}
       </div>
+      <div id={`question-description${index}`} className="w-full hidden">
+      <FormField
+        control={form.control}
+        name={`questions.${index}.questionDescription`}
+        render={({ field }) => (
+          <FormItem className={cn("w-full")}>
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <Input
+                {...form.register(`questions.${index}.questionDescription`)}
+                className="w-full h-12 sm:h-14 border-x-0 border-t-0 bg-transparent border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
+                placeholder="Enter Description"
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      </div>
       <div className="w-full ">
         <p className="font-medium my-3">File Type</p>
         <div className="flex flex-wrap items-center justify-start gap-6 w-full">
@@ -114,7 +132,7 @@ append: (i:number) => void;
                     v?.selectedOption !==
                     value 
                 );
-                form.setValue(`responses.${index}.optionFields`, updatedValue)
+                form.setValue(`questions.${index}.optionFields`, updatedValue)
             }}
             value={value}
             type="checkbox" checked={selectedOptions.some((v: any) => v?.option === value)} 
