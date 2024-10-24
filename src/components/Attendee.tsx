@@ -56,6 +56,7 @@ const Attendee: React.FC<AttendeeProps> = ({
     checkInPoints,
     attendeeProfilePoints,
     attendeeAlias,
+    archive,
   } = attendee;
 
   console.log(checkInPoints, firstName);
@@ -165,7 +166,12 @@ const Attendee: React.FC<AttendeeProps> = ({
       </div>
       <div className="col-span-6">
         <div className="justify-start items-start flex flex-col gap-1 min-w-full">
-          <h4 className="text-gray-900 font-semibold text-sm capitalize w-full text-left">
+          <h4
+            className={cn(
+              "text-gray-900 font-semibold text-sm capitalize w-full text-left",
+              archive && "text-red-600"
+            )}
+          >
             {firstName + " " + lastName}
           </h4>
           <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
@@ -222,7 +228,10 @@ const Attendee: React.FC<AttendeeProps> = ({
         ) : (
           <>
             <button
-              className={favouriteIsLoading ? "pulse" : ""}
+              className={cn(
+                favouriteIsLoading ? "pulse" : "",
+                archive && "hidden"
+              )}
               disabled={favouriteIsLoading}
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                 e.stopPropagation();
@@ -279,7 +288,8 @@ const Attendee: React.FC<AttendeeProps> = ({
                   isWithinInterval(new Date(), {
                     start: event.startDateTime,
                     end: event.endDateTime,
-                  })
+                  }) &&
+                  !archive
                   ? ""
                   : "hidden",
                 checkCheckin ? "text-basePrimary" : "text-gray-700"

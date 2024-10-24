@@ -21,17 +21,28 @@ import {
 
 export function CheckBoxTypeResponse({
   responses,
+  type,
 }: {
   responses: TFormattedEngagementFormAnswer[];
+  type: string;
 }) {
+  //  console.log('responses', responses)
   const [active, setActive] = useState(0);
-  const optionArray = responses[0]?.optionFields;
-  console.log(responses)
+  const flattenedResponse = responses;
+  const optionArray = flattenedResponse[0]?.optionFields;
+  console.log("responses data ", flattenedResponse);
+
   const reformedArray: { name: string; value: number }[] = useMemo(() => {
     const mappedArray = optionArray.map((v: any, index: number) => {
-      const selectedCount = responses.filter(
-        (selected) => selected.response?.optionId === v.id
-      ).length;
+      const selectedCount = flattenedResponse.filter((selected) => {
+        // console.log(selected.response, v.id,)
+        return type === "multi"
+          ? selected.response
+              ?.map(({ optionId }: { optionId: any }) => optionId)
+              .includes(v.id)
+          : selected.response?.optionId === v.id;
+      }).length;
+      // console.log(selectedCount)
       return {
         name: `Option ${index + 1}`,
         value: selectedCount || 0,
@@ -40,8 +51,10 @@ export function CheckBoxTypeResponse({
     return mappedArray;
   }, [responses]);
 
+  console.log("dddd", reformedArray);
+
   const sum = useMemo(() => {
-    return reformedArray.reduce((acc, curr) => acc + curr?.value, 0) ||0;
+    return reformedArray.reduce((acc, curr) => acc + curr?.value, 0) || 0;
   }, [reformedArray]);
 
   const generateRandomColor = () => {
@@ -93,28 +106,27 @@ export function CheckBoxTypeResponse({
         )}
       >
         <div className="w-[200px] h-[200px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart width={200} height={200}>
-            <Pie
-              data={reformedArray}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              // label={renderCustomizedLabel}
-              outerRadius={80}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {reformedArray.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
-
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart width={200} height={200}>
+              <Pie
+                data={reformedArray}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                // label={renderCustomizedLabel}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {reformedArray.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
         </div>
         <div className="w-[50%]">
           <div className="w-full p-2 mb-6 grid grid-cols-3 gap-2">
@@ -129,11 +141,10 @@ export function CheckBoxTypeResponse({
                 <p>{v?.name}</p>
               </div>
               <p className="text-center">{v?.value}</p>
-              <p>{(((v?.value / sum) * 100) || 0).toFixed(0)}%</p>
+              <p>{((v?.value / sum) * 100 || 0).toFixed(0)}%</p>
             </div>
           ))}
         </div>
-       
       </div>
 
       <div className={cn("w-full hidden", active === 1 && "block")}>
@@ -155,7 +166,12 @@ export function CheckBoxTypeResponse({
             <YAxis axisLine={false} type="category" dataKey="name" />
             <Tooltip />
             {/* <Legend /> */}
-            <Bar radius={10} dataKey="value" background={{ fill: "#001FCC19"}} barSize={20}>
+            <Bar
+              radius={10}
+              dataKey="value"
+              background={{ fill: "#001FCC19" }}
+              barSize={20}
+            >
               {reformedArray.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index]} />
               ))}

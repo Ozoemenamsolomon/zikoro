@@ -67,9 +67,9 @@ export default function CreateAffiliateForm({
 
     const payload = data;
 
-    if (affiliate) {
+    if (!affiliate) {
       const affliateCode = generateAlphanumericHash(7);
-      payload.affliateCode = affiliateCode;
+      payload.affliateCode = affliateCode;
     }
 
     await createAffiliate({

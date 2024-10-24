@@ -31,8 +31,8 @@ const People = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <section className="bg-white">
-        <nav className="flex justify-between items-center w-full overflow-x-auto no-scrollbar border-b md:border-b-0">
+      <section className="">
+        <nav className="flex justify-between items-center w-full overflow-x-auto no-scrollbar border-b md:border-b-0 bg-white">
           <ul className="px-8 pl-[60px] lg:pl-[30px] py-5 flex items-center font-normal gap-x-8 text-sm">
             {PeopleLinks.map(({ href, name, hideFromAttendee }) => (
               <li
@@ -49,12 +49,15 @@ const People = ({ children }: { children: React.ReactNode }) => {
                     : ""
                 }`}
               >
+                
                 <Link href={href}>{name}</Link>
               </li>
             ))}
           </ul>
         </nav>
+        <div className="bg-white max-w-[1300px] xl:mx-auto xl:mt-12 rounded-xl">
         {children}
+        </div>
       </section>
     </>
   );

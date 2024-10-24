@@ -60,7 +60,7 @@ export function FormGeneralSettings({
         />
       </div>
 
-      <div className="w-full flex items-start justify-between">
+      {/* <div className="w-full flex items-start justify-between">
         <div className="w-11/12 flex flex-col items-start justify-start">
           <p className="font-medium text-mobile sm:text-sm">
             Display cover image on form page
@@ -74,7 +74,7 @@ export function FormGeneralSettings({
           // onClick={() => {}}
           className="data-[state=unchecked]:bg-gray-200 data-[state=checked]:bg-basePrimary"
         />
-      </div>
+      </div> */}
     </div>
   );
 }

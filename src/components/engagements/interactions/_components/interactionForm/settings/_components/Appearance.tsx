@@ -174,6 +174,8 @@ export function FormAppearance({
     name: "formSettings.questionPerSlides",
   });
 
+  console.log(displayType)
+
   return (
     <div className="w-full flex flex-col items-start justify-start gap-y-4 sm:gap-y-6">
       <div className="w-full flex items-start gap-x-4">
@@ -226,7 +228,7 @@ export function FormAppearance({
             }}
             className={cn(
               "w-fit h-fit p-1 rounded-md border hover:border-basePrimary",
-              displayType === "slide"
+              displayType === "slide" && "border-basePrimary"
             )}
           >
             <FormSlideType />

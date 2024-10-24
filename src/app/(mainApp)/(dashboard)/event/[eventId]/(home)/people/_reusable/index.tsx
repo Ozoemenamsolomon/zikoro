@@ -172,7 +172,10 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
       <div className="hidden md:contents">
         {selectedAttendee ? (
           <>
-            <section className="md:col-span-4 space-y-4 border-r-[1px] overflow-auto no-scrollbar max-h-full">
+            <section
+              className="md:col-span-4 border-r-[1px]"
+              ref={divRef}
+            >
               <SecondSection
                 attendee={selectedAttendee}
                 getAttendees={onGetAttendees}

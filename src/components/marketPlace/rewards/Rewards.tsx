@@ -50,7 +50,7 @@ export default function Rewards({ eventId }: { eventId: string }) {
         </Button>
       </div>
 
-      <div className="w-full mt-3 sm:mt-5  grid gap-4 px-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="w-full mt-3 sm:mt-5  grid gap-4 px-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 min-[1300px]:grid-cols-3 min-[1500px]:grid-cols-5">
         {loading && (
           <div className="w-full col-span-full h-[60vh] flex items-center justify-center">
             <Loader2 size={30} className="animate-spin" />

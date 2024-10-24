@@ -17,17 +17,25 @@ export function TextTypeAnswer({
   const questionImage = form.watch(`questions.${index}.questionImage`);
   const selectedType = form.watch(`questions.${index}.selectedType`);
   const questionId = form.watch(`questions.${index}.questionId`);
+  const questionDescription = form.watch(
+    `questions.${index}.questionDescription`
+  );
 
   return (
     <div className="w-full shadow border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
-      {question && (
-        <div className="w-full p-2 ">
+      <div className="w-full space-y-1 p-2 ">
+        {question && (
           <p className="w-full text-start leading-7 flex ">
             {question ?? ""}{" "}
             {isRequired && <IoMdStar size={12} className="text-red-700" />}
           </p>
-        </div>
-      )}
+        )}
+        {questionDescription && (
+          <p className="w-full text-start text-xs sm:text-mobile leading-7 flex ">
+            {questionDescription ?? ""}
+          </p>
+        )}
+      </div>
       {questionImage && (
         <div className="w-full max-w-3xl mx-auto">
           <Image

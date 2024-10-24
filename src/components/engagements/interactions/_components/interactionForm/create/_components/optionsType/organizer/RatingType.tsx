@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { UseFormReturn, UseFieldArrayRemove } from "react-hook-form";
 import { PiDotsSixBold } from "react-icons/pi";
-import { IoImage } from "react-icons/io5";
+// import { IoImage } from "react-icons/io5";
 import { useEffect, useMemo, useState } from "react";
 import { SelectedImage } from "../../formcomposables/SelectedImage";
 import { z } from "zod";
@@ -66,7 +66,7 @@ if (selectedRating) {
   },[selectedRating])
 
   return (
-    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-8 p-4 sm:p-6 bg-white">
+    <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-6 p-4 sm:p-6 bg-white">
       <PiDotsSixBold size={40} className="self-center text-gray-400" />
       {/* question */}
       <div className="w-full gap-2 grid grid-cols-10">
@@ -75,7 +75,7 @@ if (selectedRating) {
           name={`questions.${index}.question`}
           render={({ field }) => (
             <FormItem
-              className={cn("w-full col-span-9", image && "col-span-full")}
+              className={cn("w-full col-span-full", image && "col-span-full")}
             >
               <FormLabel>Question {index+1} (Rating)</FormLabel>
               <FormControl>
@@ -89,7 +89,7 @@ if (selectedRating) {
             </FormItem>
           )}
         />
-        {!image && (
+        {/* {!image && (
           <div className="w-full flex items-end justify-end">
             <label
               htmlFor={`questions.${index}.questionImage`}
@@ -106,8 +106,26 @@ if (selectedRating) {
               <IoImage size={24} className="text-gray-700" />
             </label>
           </div>
-        )}
+        )} */}
         {image && <SelectedImage form={form} index={index} image={image} />}
+      </div>
+      <div id={`question-description${index}`} className="w-full hidden">
+      <FormField
+        control={form.control}
+        name={`questions.${index}.questionDescription`}
+        render={({ field }) => (
+          <FormItem className={cn("w-full")}>
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <Input
+                {...form.register(`questions.${index}.questionDescription`)}
+                className="w-full h-12 sm:h-14 border-x-0 border-t-0 bg-transparent border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
+                placeholder="Enter Description"
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
       </div>
 
       <div className="w-full flex items-center gap-x-3 justify-center p-3">
