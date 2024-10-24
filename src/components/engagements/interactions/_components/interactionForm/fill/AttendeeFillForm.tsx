@@ -236,8 +236,8 @@ function AttendeeFillFormComp({
                       data?.formSettings?.questionPerSlides || "1"
                     );
                     if (
-                      parseInt(data?.formSettings?.questionPerSlides || "1") >
-                      currentIndexes
+                      currentIndexes > parseInt(data?.formSettings?.questionPerSlides || "1") 
+                      
                     ) {
                       setCurrentIndexes(currentIndexes - questionPerSlide);
                     }
@@ -248,13 +248,13 @@ function AttendeeFillFormComp({
                       data?.formSettings?.buttonColor || "#001fcc"
                     }`,
                   }}
-                  className="border font-medium"
+                  className="border h-12 font-medium"
                 >
                   Previous
                 </Button>
-                {fields?.length ===
-                currentIndexes +
-                  parseInt(data?.formSettings?.questionPerSlides || "1") ? (
+                { currentIndexes +
+                  parseInt(data?.formSettings?.questionPerSlides || "1") >= fields?.length
+                ? (
                   <Button
                     type="submit"
                     disabled={loading}
@@ -262,7 +262,7 @@ function AttendeeFillFormComp({
                       backgroundColor: data?.formSettings?.buttonColor || "",
                     }}
                     className={cn(
-                      "self-center w-[150px] gap-x-2  text-white font-medium h-12 ",
+                      "self-center  gap-x-2  text-white font-medium h-12 ",
                       !data?.formSettings?.buttonColor && "bg-basePrimary"
                     )}
                   >
@@ -284,7 +284,7 @@ function AttendeeFillFormComp({
                     style={{
                       backgroundColor: data?.formSettings?.buttonColor || "",
                     }}
-                    className="text-white font-medium"
+                    className="text-white h-12 font-medium"
                   >
                     Next
                   </Button>

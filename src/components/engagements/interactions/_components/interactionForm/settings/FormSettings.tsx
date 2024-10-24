@@ -67,6 +67,7 @@ return generateAlias()
       if (typeof values?.coverImage === "string") {
         resolve(values?.coverImage);
       } else if (
+        values?.coverImage &&
         values?.coverImage[0] &&
         values?.coverImage instanceof FileList
       ) {
@@ -93,7 +94,7 @@ return generateAlias()
       payload: payload,
     });
     setLoading(false);
-    router.push(`/event/${eventId}/engagements/interactions/form/create/questions/${alias}`)
+    router.push(`/event/${eventId}/engagements/interactions/form/create/questions/${data?.formAlias|| alias}`)
   }
 
   // console.log(form.getValues());

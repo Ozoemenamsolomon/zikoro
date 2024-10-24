@@ -484,7 +484,11 @@ setFlattenedResponse(newData)
               </div>
               <div className=" flex items-center gap-x-2">
                 <button
-                  onClick={onClosePreview}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    router.push(`/event/${eventId}/engagements/interactions/form/create?form=${formId}`)
+                  }}
                   className="flex items-center justify-center rounded-full hover:bg-gray-100 p-1"
                 >
                   <Settings size={22} />
@@ -493,7 +497,8 @@ setFlattenedResponse(newData)
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    router.push(`/engagements/${eventId}/form/${formId}`);
+                    onClosePreview()
+                  
                   }}
                   className=" h-11 flex border border-basePrimary  items-center gap-x-2"
                 >
@@ -612,14 +617,14 @@ setFlattenedResponse(newData)
         {isShare && (
           <ShareModal
             close={onToggleShare}
-            link={`${window.location.origin}/engagements/${eventId}/form/${data?.formAlias}`}
+            link={`${window.location.origin}/engagements/${eventId}/form/${formId}`}
           />
         )}
       </div>
       {active === 1 && <FormResponses data={formattedResponses}  flattenedResponse={flattenedResponse}/>}
       {isOpenPreview && (
         <PreviewModal
-          url={`/event/${eventId}/engagements/interactions/form/create?form=${formId}`}
+          url={`/engagements/${eventId}/form/${formId}`}
           close={onClosePreview}
           type="Preview"
           title={data?.title}

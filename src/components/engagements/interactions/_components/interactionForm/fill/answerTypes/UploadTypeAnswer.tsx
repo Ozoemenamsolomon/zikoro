@@ -50,8 +50,13 @@ export function UploadTypeAnswer({
   );
 
   const generateAcceptString: string = useMemo(() => {
-    const acceptedTypes = optionFields.flatMap((type: string) => fileTypes[type] || []);
+   if (optionFields && typeof optionFields !== "string") {
+ const acceptedTypes =  optionFields.flatMap((type: string) => fileTypes[type] || []);
     return acceptedTypes.join(",") || "*"
+   }
+   else {
+    return "*"
+   }
   },[optionFields])
   return (
     <div className="w-full shadow border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">

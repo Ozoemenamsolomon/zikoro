@@ -228,7 +228,7 @@ export function FormAppearance({
             }}
             className={cn(
               "w-fit h-fit p-1 rounded-md border hover:border-basePrimary",
-              displayType === "slide"
+              displayType === "slide" && "border-basePrimary"
             )}
           >
             <FormSlideType />
