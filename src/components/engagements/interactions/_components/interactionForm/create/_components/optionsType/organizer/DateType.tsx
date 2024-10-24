@@ -87,26 +87,24 @@ append:(i:number) => void;
           <SelectedImage form={form} index={index} image={image} />
         )}
       </div>
-      {/** Answer */}
-      {/* <div className="w-full flex flex-col items-start justify-start gap-y-2">
+      <div id={`question-description${index}`} className="w-full hidden">
       <FormField
-          control={form.control}
-          name="questionAnswer"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Answer (Text)</FormLabel>
-              <FormControl>
-                <Input
-                  {...form.register("questionAnswer")}
-                  className="w-full h-12 sm:h-14 px-0 border-x-0 border-t-0 border-b placeholder:text-gray-500 bg-transparent rounded-none  placeholder-gray-500"
-                  placeholder="Enter answer"
-                  required={isRequired}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-      </div> */}
+        control={form.control}
+        name={`questions.${index}.questionDescription`}
+        render={({ field }) => (
+          <FormItem className={cn("w-full")}>
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <Input
+                {...form.register(`questions.${index}.questionDescription`)}
+                className="w-full h-12 sm:h-14 border-x-0 border-t-0 bg-transparent border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
+                placeholder="Enter Description"
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      </div>
       {/** actions */}
       <BottomAction form={form} remove={remove} index={index} append={append}/>
   

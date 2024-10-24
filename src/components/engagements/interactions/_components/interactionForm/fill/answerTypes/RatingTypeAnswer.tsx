@@ -21,6 +21,9 @@ export function RatingTypeAnswer({
   const questionId = form.watch(`questions.${index}.questionId`);
   const optionFields = form.watch(`questions.${index}.optionFields`);
   const rating = form.watch(`responses.${index}.response`) || "";
+  const questionDescription = form.watch(
+    `questions.${index}.questionDescription`
+  );
 
   function setRating(n: number) {
     form.setValue(`responses.${index}.response`, n);
@@ -29,14 +32,19 @@ export function RatingTypeAnswer({
   }
   return (
     <div className="w-full shadow border grid grid-cols-1 gap-4 h-fit rounded-lg p-4">
-      {question && (
-        <div className="w-full p-2 ">
+     <div className="w-full space-y-1 p-2 ">
+        {question && (
           <p className="w-full text-start leading-7 flex ">
             {question ?? ""}{" "}
             {isRequired && <IoMdStar size={12} className="text-red-700" />}
           </p>
-        </div>
-      )}
+        )}
+        {questionDescription && (
+          <p className="w-full text-start text-xs sm:text-mobile leading-7 flex ">
+            {questionDescription ?? ""}
+          </p>
+        )}
+      </div>
       {questionImage && (
         <div className="w-full max-w-3xl mx-auto">
           <Image

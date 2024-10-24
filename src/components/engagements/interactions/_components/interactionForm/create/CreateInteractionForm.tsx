@@ -104,6 +104,7 @@ function Fields({
         questionId: string;
         questionImage?: any;
         optionFields?: any;
+        questionDescription?:any;
       }[];
       isActive: boolean;
       description?: string | undefined;
@@ -262,6 +263,7 @@ function CreateInteractionFormComp({
       questionId: nanoid(),
       question: "",
       questionImage: "",
+      questionDescription:"",
       selectedType:
         optionsType.find((option) => option.name === selected)?.type || "",
       optionFields: null,
