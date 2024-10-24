@@ -40,9 +40,9 @@ import { TAttendeeTags } from "@/types/tags";
 import { TFavouriteContact } from "@/types/favourites";
 import { TFilter } from "@/types/filter";
 import { Event, TUser } from "@/types";
-import { getCookie } from "@/hooks";
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import useUserStore from "@/store/globalUserStore";
+import ArchiveAttendee from "@/components/moreOptionDialog/archiveAttendee";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -161,6 +161,10 @@ const moreOptions: TMoreOptions[] = [
   {
     label: "Import Attendees",
     Component: ImportAttendees,
+  },
+  {
+    label: "Archive Attendees",
+    Component: ArchiveAttendee,
   },
 ];
 
@@ -569,11 +573,12 @@ export default function FirstSection({
         <div className="min-h-max">
           {mappedAttendees
             .filter(
-              ({ firstName, lastName, organization, jobTitle }) =>
+              ({ firstName, lastName, organization, jobTitle, archive }) =>
                 firstName?.toLowerCase().includes(searchTerm) ||
                 lastName?.toLowerCase().includes(searchTerm) ||
                 jobTitle?.toLowerCase().includes(searchTerm) ||
-                organization?.toLowerCase().includes(searchTerm)
+                organization?.toLowerCase().includes(searchTerm) ||
+                archive
             )
             .sort((a, b) =>
               sortOrder === "asc"
