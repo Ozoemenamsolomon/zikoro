@@ -27,7 +27,7 @@ const ImportAttendees: React.FC<MoreOptionsProps> = ({
       [{ label: "First name", value: "firstName", isRequired: true }, null],
       [{ label: "Last name", value: "lastName", isRequired: true }, null],
       [{ label: "Email", value: "email", isRequired: true }, null],
-      [{ label: "Phone number", value: "phoneNumber", isRequired: true }, null],
+      [{ label: "Phone number", value: "phoneNumber", isRequired: false }, null],
       [{ label: "WhatsApp", value: "whatsappNumber", isRequired: false }, null],
       [{ label: "jobTitle", value: "jobTitle", isRequired: false }, null],
       [
