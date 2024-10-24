@@ -548,7 +548,7 @@ export default function FirstSection({
             />
           </svg>
           <p className="text-xs text-gray-500">
-            {mappedAttendees.length} attendees listed in your view
+            {mappedAttendees.filter(({archive}) => !archive).length} attendees listed in your view
           </p>
         </div>
         <div className=" flex items-center ">
@@ -572,6 +572,7 @@ export default function FirstSection({
       <div className="overflow-auto hide-scrollbar pb-16 md:pb-32" ref={divRef}>
         <div className="min-h-max">
           {mappedAttendees
+            .filter(({ archive }) => !archive)
             .filter(
               ({ firstName, lastName, organization, jobTitle, archive }) =>
                 firstName?.toLowerCase().includes(searchTerm) ||
