@@ -69,10 +69,9 @@ function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      
       <div
         className={cn(
-          "w-full sm:w-[calc(100%-60px)]  bg-white float-right right-0 z-[48] fixed flex justify-between items-center ",
+          "w-full sm:w-[calc(100%-60px)]  bg-white float-right right-0 z-[48] fixed top-0 flex justify-between items-center ",
           isNav && "w-[calc(100%-60px)]"
         )}
       >
@@ -90,7 +89,7 @@ function SideBarLayoutComp({ children }: { children: React.ReactNode }) {
         query={query}
         isHaveEvent={isHaveEvent}
       />
-      <div className="w-full bg-[#F9FAFF] sm:w-[calc(100%-60px)] float-right pt-[4.4rem] pb-[50px] md:pb-0">
+      <div className="w-full bg-[#F9FAFF] sm:w-[calc(100%-60px)] pt-[4.4rem] pb-[50px] md:pb-0 max-w-[1300px] xl:mx-auto xl:mt-12 float-right xl:float-none">
         {/** mt-24 is affecting many parts in the event */}
         {children}
       </div>
