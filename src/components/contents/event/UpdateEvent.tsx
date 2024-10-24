@@ -883,10 +883,13 @@ export default function UpdateEvent({ eventId }: { eventId: string }) {
             }
           />
         )}
-        {isOpen && (
+        {isOpen && data && (
           <PreviewModal
             close={onClose}
-            eventDetail={data}
+            type={data?.published ? "Event Registration": "Preview"}
+            title={data?.eventTitle}
+
+            
             url={
               data?.published
                 ? `/live-events/${data?.eventAlias}`

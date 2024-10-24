@@ -62,6 +62,7 @@ import {
   arrayMove,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
+import { PreviewModal } from "@/components/contents/_components";
 
 const options = [
   { name: "Mutiple Choice", image: "/fmultiplechoice.png" },
@@ -70,7 +71,6 @@ const options = [
   { name: "CheckBox", image: "/fcheckbox.png" },
   { name: "Rating", image: "/fstarr.png" },
   { name: "Upload", image: "/fattachment.png" },
-  
 ];
 // { name: "Likert", image: "/flikert.png" },
 
@@ -82,7 +82,6 @@ const optionsType = [
   { name: "Rating", type: "INPUT_RATING" },
   { name: "Upload", type: "ATTACHMENT" },
 ];
-
 
 //  { name: "Likert", type: "INPUT_LIKERT" },
 
@@ -104,7 +103,7 @@ function Fields({
         questionId: string;
         questionImage?: any;
         optionFields?: any;
-        questionDescription?:any;
+        questionDescription?: any;
       }[];
       isActive: boolean;
       description?: string | undefined;
@@ -117,7 +116,7 @@ function Fields({
   remove: UseFieldArrayRemove;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
-  useSortable({ id: field?.id });
+    useSortable({ id: field?.id });
 
   return (
     <div
@@ -233,6 +232,8 @@ function CreateInteractionFormComp({
 }) {
   const [loading, setLoading] = useState(false);
   const [active, setActive] = useState(0);
+  const [isOpenPreview, setIsOpenPreview] = useState(false);
+  const [flattenedResponse, setFlattenedResponse] = useState<TFormattedEngagementFormAnswer[]>([])
   const { postData } =
     usePostRequest<Partial<TEngagementFormQuestion>>("/engagements/form");
   const { data } = useGetData<TEngagementFormQuestion>(
@@ -263,7 +264,7 @@ function CreateInteractionFormComp({
       questionId: nanoid(),
       question: "",
       questionImage: "",
-      questionDescription:"",
+      questionDescription: "",
       selectedType:
         optionsType.find((option) => option.name === selected)?.type || "",
       optionFields: null,
@@ -361,6 +362,9 @@ function CreateInteractionFormComp({
     setShowShare((p) => !p);
   }
 
+  function onClosePreview() {
+    setIsOpenPreview((p) => !p);
+  }
   const formattedResponses = useMemo(() => {
     const responseGroup: { [key: string]: TFormattedEngagementFormAnswer[] } =
       {};
@@ -386,6 +390,8 @@ function CreateInteractionFormComp({
           });
         }
       );
+      
+setFlattenedResponse(newData)
 
       newData?.forEach((quest) => {
         const key = quest?.questionId;
@@ -478,11 +484,7 @@ function CreateInteractionFormComp({
               </div>
               <div className=" flex items-center gap-x-2">
                 <button
-                  onClick={() =>
-                    router.push(
-                      `/event/${eventId}/engagements/interactions/form/create?form=${formId}`
-                    )
-                  }
+                  onClick={onClosePreview}
                   className="flex items-center justify-center rounded-full hover:bg-gray-100 p-1"
                 >
                   <Settings size={22} />
@@ -560,26 +562,26 @@ function CreateInteractionFormComp({
 
                 <div className="w-full flex flex-col items-start justify-start gap-y-6 sm:gap-y-8">
                   <DndContext
-                collisionDetection={closestCorners}
-                sensors={sensors}
-                onDragEnd={handleDrop}
-              >
-                <SortableContext
-                  items={fields}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {fields.map((field, index) => (
-                    <Fields
-                      key={field.id}
-                      index={index}
-                      remove={remove}
-                      field={field}
-                      copyQuestion={copyQuestion}
-                      form={form}
-                    />
-                  ))}
-                  </SortableContext>
-              </DndContext>
+                    collisionDetection={closestCorners}
+                    sensors={sensors}
+                    onDragEnd={handleDrop}
+                  >
+                    <SortableContext
+                      items={fields}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      {fields.map((field, index) => (
+                        <Fields
+                          key={field.id}
+                          index={index}
+                          remove={remove}
+                          field={field}
+                          copyQuestion={copyQuestion}
+                          form={form}
+                        />
+                      ))}
+                    </SortableContext>
+                  </DndContext>
                 </div>
 
                 <div className="w-full flex items-center justify-center ">
@@ -614,7 +616,15 @@ function CreateInteractionFormComp({
           />
         )}
       </div>
-      {active === 1 && <FormResponses data={formattedResponses} />}
+      {active === 1 && <FormResponses data={formattedResponses}  flattenedResponse={flattenedResponse}/>}
+      {isOpenPreview && (
+        <PreviewModal
+          url={`/event/${eventId}/engagements/interactions/form/create?form=${formId}`}
+          close={onClosePreview}
+          type="Preview"
+          title={data?.title}
+        />
+      )}
     </InteractionLayout>
   );
 }

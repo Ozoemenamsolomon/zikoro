@@ -10,15 +10,24 @@ import {
 } from "./responseTypes";
 import Image from "next/image";
 import { cn } from "@/lib";
+import { Button } from "@/components/custom_ui/Button";
 import { useMemo } from "react";
+import { json2csv } from "json-2-csv";
+import { saveAs } from "file-saver";
 interface FormResponseProps {
   data:
     | {
         [key: string]: TFormattedEngagementFormAnswer[];
       }
     | undefined;
+  flattenedResponse: TFormattedEngagementFormAnswer[];
 }
-export default function FormResponses({ data }: FormResponseProps) {
+export default function FormResponses({
+  data,
+  flattenedResponse,
+}: FormResponseProps) {
+ 
+
   const inputMultiChoiceCheckBox = useMemo(() => {
     const checkData: { key: TFormattedEngagementFormAnswer[] }[] = [];
     if (data) {
@@ -89,8 +98,26 @@ export default function FormResponses({ data }: FormResponseProps) {
       </div>
     );
   }
+
+
+  async function downloadCsv() {
+    try {
+      const csv = json2csv(flattenedResponse);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+      saveAs(blob, "response.csv");
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-4 sm:mt-6">
+      <Button
+        onClick={downloadCsv}
+        className="w-fit float-end gap-x-2 items-center"
+      >
+        <p>Export</p>
+      </Button>
       {Object.entries(data).map(([key, value]) => (
         <div
           key={Math.random()}
