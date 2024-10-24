@@ -83,7 +83,7 @@ const CreateEmailSchema = z
     profileButtonText: z.string(),
     addCustomButton: z.boolean(),
     customButtonText: z.string(),
-    customButtonLink: z.string().url(),
+    customButtonLink: z.string().url().optional(),
   })
   .superRefine(({ isScheduled, schedule, timezone }, refinementContext) => {
     if (isScheduled && !schedule) {
@@ -137,7 +137,7 @@ const Create = () => {
     profileButtonText: "Edit Profile",
     addCustomButton: false,
     customButtonText: "Custom Button",
-    customButtonLink: "https://",
+    customButtonLink: "",
     enableCTA: false,
   };
 
