@@ -80,10 +80,10 @@ const CreateEmailSchema = z
     CTAText: z.string(),
     enableCTA: z.boolean(),
     addProfileButton: z.boolean(),
-    profileButtonText: z.string(),
+    profileButtonText: z.string().optional(),
     addCustomButton: z.boolean(),
-    customButtonText: z.string(),
-    customButtonLink: z.string().url().optional(),
+    customButtonText: z.string().optional(),
+    customButtonLink: z.string().optional(),
   })
   .superRefine(({ isScheduled, schedule, timezone }, refinementContext) => {
     if (isScheduled && !schedule) {
@@ -212,8 +212,6 @@ const Create = () => {
           : data.recipients,
       },
     });
-
-    form.reset();
   };
 
   const setMessage = (content: string) => {
@@ -358,7 +356,7 @@ const Create = () => {
                       </DialogTitle>
                     </DialogHeader>
                     <ViewAttendeesSection
-                      attendees={attendees}
+                      attendees={attendees.filter(({ archive }) => !archive)}
                       selectedAttendees={selectedAttendees}
                       toggleValue={toggleValue}
                     />

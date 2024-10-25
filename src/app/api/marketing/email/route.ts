@@ -286,12 +286,12 @@ export async function POST(req: NextRequest) {
 const editBody = (
   body: string,
   receiver: { email: string; firstName: string; lastName: string },
-  event: { eventName: string; eventAddress: string }
+  event: { eventTitle: string; eventAddress: string }
 ) =>
   body.replaceAll(/#{(.*?)#}/g, (match, value) => {
     switch (value.trim()) {
       case "eventName":
-        return event.eventName;
+        return event.eventTitle;
       case "eventAddress":
         return event.eventAddress;
       case "attendeeFirstName":

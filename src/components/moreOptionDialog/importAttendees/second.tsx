@@ -51,7 +51,7 @@ const Second = ({
     for (let [key, value] of Array.from(headers)) {
       if (key.isRequired && !value) {
         return toast({
-          description: "please ensure all equired keys are filled",
+          description: "please ensure all required keys are filled",
           variant: "destructive",
         }); // If isRequired=true and value is falsy, return false
       }

@@ -130,7 +130,7 @@ const Third = ({
         </table>
       </div>
       <div className="flex gap-4">
-        <Button onClick={() => setStep(2)} className="bg-basePrimary w-full">
+        <Button onClick={() => setStep(1)} className="bg-basePrimary w-full">
           Back
         </Button>
         <Button
