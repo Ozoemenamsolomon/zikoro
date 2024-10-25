@@ -89,6 +89,8 @@ export async function POST(req: NextRequest) {
             }
           );
 
+          console.log(attendee.email, "attendee email");
+
           const resp = await client.sendMail({
             from: {
               address: senderAddress,
@@ -400,7 +402,7 @@ export async function POST(req: NextRequest) {
               },
             ],
           });
-          console.log(`Email sent to ${email}:`, resp);
+          console.log(`Email sent to ${attendee.email}:`, resp);
         } catch (error) {
           console.error(`Error sending email to ${attendee.email}:`, error);
         }
