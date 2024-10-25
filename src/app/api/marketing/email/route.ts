@@ -9,7 +9,11 @@ export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
       const userId = searchParams.get("userId");
-      const query = supabase.from("sentEmails").select("*");
+      const eventAlias = searchParams.get("eventAlias");
+      const query = supabase
+        .from("sentEmails")
+        .select("*")
+        .eq("eventAlias", eventAlias);
 
       if (userId) query.eq("userId", userId);
 
