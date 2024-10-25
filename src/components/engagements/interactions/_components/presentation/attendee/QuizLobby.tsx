@@ -16,6 +16,7 @@ import { QLUsers } from "@/constants";
 import Avatar from "react-nice-avatar";
 import Link from "next/link";
 import { Maximize2 } from "styled-icons/feather";
+import { isAfter } from "date-fns";
 
 export function QuizLobby({
   quiz,
@@ -27,7 +28,8 @@ export function QuizLobby({
   isMaxLiveParticipant,
   onToggle,
   isLeftBox,
-  refetchLobby
+  refetchLobby,
+  id
 }: {
   close: () => void;
   goBack: () => void;
@@ -38,7 +40,8 @@ export function QuizLobby({
   isMaxLiveParticipant: boolean;
   onToggle:() => void;
   isLeftBox: boolean;
-  refetchLobby?:() => Promise<any>
+  refetchLobby?:() => Promise<any>;
+  id:string;
 }) {
   const [loading, setLoading] = useState(false);
   const { deleteQuizLobby } = useDeleteQuizLobby(quiz?.quizAlias);
@@ -73,6 +76,20 @@ export function QuizLobby({
   // for an attendee
   useEffect(() => {
     if (isAttendee && quiz?.liveMode?.isStarting) {
+      close();
+    }
+    // check if quiz has started and user is in the lobby , and has been admitted
+    if (
+      isAttendee &&
+      quiz?.liveMode?.isStarting &&
+      quiz?.quizParticipants?.some(
+        (participant) => {
+          const quizStartingTime = new Date(quiz?.liveMode?.startingAt);
+          const joinedAt = new Date(participant?.joinedAt)
+          return participant.id === id && isAfter(joinedAt, quizStartingTime)
+        }
+      )
+    ) {
       close();
     }
   }, [quiz]);

@@ -13,7 +13,8 @@ import {
   useDeleteQuizLobby,
   useDeleteSingleParticipantFromLobby,
 } from "@/hooks";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { isAfter } from "date-fns";
 
 export function JoiningAttemptTab({
   liveQuizPlayers,
@@ -21,12 +22,14 @@ export function JoiningAttemptTab({
   quiz,
   refetch,
   refetchLobby,
+  currentParticipants
 }: {
   liveQuizPlayers: TLiveQuizParticipant[];
   quiz: TQuiz<TQuestion[]>;
   close: () => void;
   refetch: () => Promise<any>;
   refetchLobby: () => Promise<any>;
+  currentParticipants: TQuizParticipant[];
 }) {
   const [loading, setLoading] = useState(false);
   const { deleteFromLobby } = useDeleteSingleParticipantFromLobby();
@@ -34,8 +37,8 @@ export function JoiningAttemptTab({
   const { updateQuiz } = useUpdateQuiz();
 
   // new user
-  // remove the user from quizlobby
-  // update quiz table
+  // remove the user from the quizlobby
+  // update the quiz table
 
   async function deny(id: string) {
     setLoading(true);
@@ -111,6 +114,8 @@ export function JoiningAttemptTab({
 
     setLoading(false);
   }
+
+
 
   return (
     <div className="fixed inset-0 w-full z-[9999] min-h-screen ">
@@ -195,13 +200,13 @@ export function JoiningAttemptTab({
             <p className="">Participants currently in the quiz</p>
 
             <p className="text-white bg-basePrimary w-10 h-10 text-2xl rounded-full items-center justify-center flex">
-              {quiz?.quizParticipants?.length}
+              {currentParticipants?.length}
             </p>
           </div>
           <div className="w-full overflow-y-auto no-scrollbar h-full">
             <div className="flex flex-col items-start justify-start gap-y-2">
-              {Array.isArray(quiz?.quizParticipants) &&
-                quiz?.quizParticipants?.map((attendee) => (
+              {Array.isArray(currentParticipants) &&
+                currentParticipants?.map((attendee) => (
                   <div
                     key={attendee.id}
                     className="bg-white rounded-lg p-2 w-full flex justify-start items-center gap-x-2"

@@ -9,6 +9,7 @@ import {
   SendMailModal,
   AvatarModal,
 } from "..";
+import { isAfter } from "date-fns";
 import { useState, useEffect, useMemo } from "react";
 import { Slider } from "@mui/material";
 import {
@@ -701,8 +702,12 @@ export function PlayersOnboarding({
   }
 
   useEffect(() => {
+    if (!quiz?.liveMode?.startingAt) return ;
+    const currentTime = new Date()
+    const quizStartingTime = new Date(quiz?.liveMode?.startingAt);
     let interval = setInterval(() => {
-      if (isLobby && quiz?.liveMode?.startingAt) {
+      
+      if (isLobby && isAfter(currentTime, quizStartingTime)) {
         refetch();
       } else {
         clearInterval(interval);
@@ -916,6 +921,7 @@ export function PlayersOnboarding({
           isLeftBox={isLeftBox}
           onToggle={onToggle}
           refetchLobby={refetchLobby}
+          id={id}
         />
       )}
       {isAvatarModal && (
