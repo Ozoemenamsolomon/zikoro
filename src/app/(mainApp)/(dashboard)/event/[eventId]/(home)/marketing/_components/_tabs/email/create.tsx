@@ -80,10 +80,10 @@ const CreateEmailSchema = z
     CTAText: z.string(),
     enableCTA: z.boolean(),
     addProfileButton: z.boolean(),
-    profileButtonText: z.string(),
+    profileButtonText: z.string().optional(),
     addCustomButton: z.boolean(),
-    customButtonText: z.string(),
-    customButtonLink: z.string().url(),
+    customButtonText: z.string().optional(),
+    customButtonLink: z.string().optional(),
   })
   .superRefine(({ isScheduled, schedule, timezone }, refinementContext) => {
     if (isScheduled && !schedule) {
@@ -213,7 +213,6 @@ const Create = () => {
       },
     });
 
-    form.reset();
   };
 
   const setMessage = (content: string) => {
