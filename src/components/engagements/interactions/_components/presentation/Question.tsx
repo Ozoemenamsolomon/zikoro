@@ -6,6 +6,7 @@ import { Button } from "@/components";
 import { Maximize2 } from "styled-icons/feather";
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib";
+import { QLUsers } from "@/constants";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { useCreateAnswer, useUpdateQuiz } from "@/hooks";
 import {
@@ -14,11 +15,13 @@ import {
   TAnswer,
   TQuestion,
   TConnectedUser,
+  TLiveQuizParticipant,
 } from "@/types";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { AvatarFullConfig } from "react-nice-avatar";
+import { JoiningAttemptTab } from "./attendee/JoiningAttemptTab";
 
 type ChosenAnswerStatus = {
   isCorrect: boolean;
@@ -50,7 +53,14 @@ type TQuestionProps = {
   onOpenScoreSheet: () => void;
   updateQuizResult: (q: TQuiz<TRefinedQuestion[]>) => void;
   goBack: () => void;
+  liveQuizPlayers: TLiveQuizParticipant[];
+  getLiveParticipant: () => Promise<any>;
+  actualQuiz: TQuiz<TQuestion[]>;
 };
+
+
+
+
 export function Qusetion({
   isRightBox,
   isLeftBox,
@@ -70,6 +80,9 @@ export function Qusetion({
   onOpenScoreSheet,
   updateQuizResult,
   goBack,
+  liveQuizPlayers,
+  getLiveParticipant,
+  actualQuiz
 }: TQuestionProps) {
   const [currentQuestion, setCurrentQuestion] =
     useState<TRefinedQuestion | null>(null);
@@ -81,6 +94,7 @@ export function Qusetion({
   const [transiting, setShowTransiting] = useState(false);
   const { updateQuiz: updatingQuiz, isLoading: isUpdating } = useUpdateQuiz();
   const [isOptionSelected, setIsOptionSelected] = useState(false);
+  const [isJoiningAttempt, setIsJoiningAttempt] = useState(false)
   const [chosenAnswerStatus, setChosenAnswerStatus] =
     useState<ChosenAnswerStatus | null>(null);
   const { createAnswer } = useCreateAnswer();
@@ -463,9 +477,13 @@ export function Qusetion({
     }
   }
 
-  console.log("trhh", isOptionSelected);
+  function toggleJoiningAttempt() {
+    setIsJoiningAttempt((p) => !p)
+  }
+ // console.log("trhh", isOptionSelected);
 
   return (
+    <>
     <div
       className={cn(
         "w-full h-[90vh]  bg-white relative    border-x border-y  col-span-7",
@@ -494,6 +512,7 @@ export function Qusetion({
               </Button>
 
               <div className=" gap-3 pb-2 w-full flex items-end justify-between">
+                <div className="flex items-center gap-x-2">
                 <Button
                   onClick={goBack}
                   className={cn(
@@ -504,6 +523,13 @@ export function Qusetion({
                   <ArrowBackOutline size={20} />
                   <p className="text-sm">Exit Quiz</p>
                 </Button>
+                <button
+                onClick={toggleJoiningAttempt}
+                className="bg-[#001fcc]/20 flex items-center w-fit  gap-x-2 rounded-3xl p-1 relative">
+                <QLUsers />
+                <p>{quiz?.quizParticipants?.length}</p>
+                </button>
+                </div>
                 <p className="text-xs sm:text-mobile text-gray-500">{`${
                   currentQuestionIndex + 1
                 }/${quiz?.questions?.length} Questions`}</p>
@@ -695,6 +721,8 @@ export function Qusetion({
         </>
       </div>
     </div>
+    {isJoiningAttempt && <JoiningAttemptTab liveQuizPlayers={liveQuizPlayers} close={toggleJoiningAttempt} quiz={actualQuiz} refetchLobby={getLiveParticipant} refetch={refetchQuiz} />}
+    </>
   );
 }
 

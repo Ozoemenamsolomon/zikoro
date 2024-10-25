@@ -26,7 +26,8 @@ export function QuizLobby({
   liveQuizPlayers,
   isMaxLiveParticipant,
   onToggle,
-  isLeftBox
+  isLeftBox,
+  refetchLobby
 }: {
   close: () => void;
   goBack: () => void;
@@ -37,6 +38,7 @@ export function QuizLobby({
   isMaxLiveParticipant: boolean;
   onToggle:() => void;
   isLeftBox: boolean;
+  refetchLobby?:() => Promise<any>
 }) {
   const [loading, setLoading] = useState(false);
   const { deleteQuizLobby } = useDeleteQuizLobby(quiz?.quizAlias);
@@ -89,10 +91,14 @@ export function QuizLobby({
     await updateQuiz({ payload });
     await deleteQuizLobby();
     refetch();
+    refetchLobby?.();
 
     setLoading(false);
     close();
   }
+
+
+
 
   return (
     <div
