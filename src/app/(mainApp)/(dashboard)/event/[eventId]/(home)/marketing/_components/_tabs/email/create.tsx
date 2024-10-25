@@ -212,7 +212,6 @@ const Create = () => {
           : data.recipients,
       },
     });
-
   };
 
   const setMessage = (content: string) => {
@@ -357,7 +356,7 @@ const Create = () => {
                       </DialogTitle>
                     </DialogHeader>
                     <ViewAttendeesSection
-                      attendees={attendees}
+                      attendees={attendees.filter(({ archive }) => !archive)}
                       selectedAttendees={selectedAttendees}
                       toggleValue={toggleValue}
                     />
