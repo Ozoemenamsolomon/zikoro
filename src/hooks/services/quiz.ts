@@ -646,3 +646,32 @@ export const useDeleteQuizLobby = (quizId: string) => {
 
   return { deleteQuizLobby, isLoading };
 };
+
+
+export const useDeleteSingleParticipantFromLobby = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const deleteFromLobby = async (id:string) => {
+    try {
+      setLoading(true);
+      const { data, status } = await deleteRequest<TLiveQuizParticipant[]>({
+        endpoint: `/quiz/participant/single/${id}`,
+      });
+
+      // toast({
+      //   description: "Participant deleted successfully",
+      // });
+      return data;
+    } catch (error: any) {
+      //
+      toast({
+        description: error?.response?.data?.error,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { deleteFromLobby, isLoading };
+};

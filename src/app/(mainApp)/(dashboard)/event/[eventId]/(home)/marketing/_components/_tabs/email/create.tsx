@@ -137,7 +137,7 @@ const Create = () => {
     profileButtonText: "Edit Profile",
     addCustomButton: false,
     customButtonText: "Custom Button",
-    customButtonLink: "https://",
+    customButtonLink: "",
     enableCTA: false,
   };
 

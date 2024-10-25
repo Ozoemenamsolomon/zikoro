@@ -9,10 +9,11 @@ import {
   useFetchSingleEvent,
   useGetAnswer,
   useUpdateQuiz,
+  useGetLiveParticipant
 } from "@/hooks";
 import { useState, useEffect, useMemo } from "react";
 import { AvatarFullConfig } from "react-nice-avatar";
-import { TQuiz, TQuestion, TAnswer } from "@/types";
+import { TQuiz, TQuestion, TAnswer,TLiveQuizParticipant  } from "@/types";
 import { generateAlias } from "@/utils";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -69,6 +70,9 @@ export default function PollPresentation({
     email: "",
     nickName: attendee?.firstName || "",
   });
+  const { liveQuizPlayers, setLiveQuizPlayers } = useGetLiveParticipant({
+    quizId: quizId,
+  });
 
   const [refinedPollArray, setRefinedPollArray] = useState<TQuiz<
     TQuestion[]
@@ -99,6 +103,34 @@ export default function PollPresentation({
     };
   }, [supabase, poll, isIdPresent, isOrganizer]);
 
+
+    // subscribe to player
+    useEffect(() => {
+      if (!poll?.accessibility?.live) return;
+      const channel = supabase
+        .channel("live-players")
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "quizLobby",
+            filter: `quizAlias=eq.${poll?.quizAlias}`,
+          },
+          (payload) => {
+            // console.log("new", payload.new);
+            setLiveQuizPlayers((prev) => [
+              ...prev,
+              payload.new as TLiveQuizParticipant,
+            ]);
+          }
+        )
+        .subscribe();
+  
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }, [supabase, poll]);
   // subscribe to answers
   useEffect(() => {
     if (!poll?.accessibility?.live) return;
@@ -264,6 +296,7 @@ export default function PollPresentation({
                     setChosenAvatar={setChosenAvatar}
                     onToggle={onToggle}
                     isLeftBox={isLeftBox}
+                    liveQuizPlayers={liveQuizPlayers}
                   />
                 </div>
               ) : (
