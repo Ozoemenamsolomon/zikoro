@@ -1,10 +1,7 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { convertToICSFormat, generateQRCode } from "../payment/route";
-import { Event, TOrganization } from "@/types";
-import { uploadFile } from "@/utils";
-import { format } from "date-fns";
+import { format, getYear, getMonth, getDay } from "date-fns";
 
 export async function POST(req: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies });
@@ -17,6 +14,42 @@ export async function POST(req: NextRequest) {
     // Validate required fields
     if (!params.email || !params.eventId) {
       throw new Error("Missing required fields: email and eventId");
+    }
+
+    const { data: oldUser, error: oldUserError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("userEmail", params.email)
+      .maybeSingle();
+
+    if (oldUserError) throw oldUserError;
+
+    console.log(params, "params");
+
+    if (!oldUser) {
+      const { data: user, error: userError } = await supabase
+        .from("users")
+        .insert({
+          firstName: params.firstName || null,
+          lastName: params.lastName || null,
+          phoneNumber: params.phoneNumber || null,
+          jobTitle: params.jobTitle || null,
+          organization: params?.organization || null,
+          city: params.city || null,
+          country: params.country || null,
+          linkedin: params.linkedin || null,
+          instagram: params.instagram || null,
+          facebook: params.facebook || null,
+          bio: params.bio || null,
+          userEmail: params.email || "ubahyusuf484@gmail.com",
+          x: params.x || null,
+          created_at: new Date().toISOString(),
+        })
+        .select("*");
+
+      console.log(user, "users", userError, "error");
+
+      if (userError) throw userError;
     }
 
     // Check for duplicate registration if no attendee ID is provided
@@ -74,6 +107,8 @@ export async function POST(req: NextRequest) {
         eventPoster,
       } = updatedEvent as any; // adjust according to actual types
 
+      console.log(updatedEvent);
+
       // Prepare email and calendar details
       var { SendMailClient } = require("zeptomail");
 
@@ -86,11 +121,12 @@ export async function POST(req: NextRequest) {
         new Date(params.registrationDate),
         "MM/dd/yyyy"
       );
+
       const icsEvent = {
         start: [
-          startDateTime.getFullYear(),
-          startDateTime.getMonth() + 1,
-          startDateTime.getDate(),
+          getYear(startDateTime),
+          getMonth(startDateTime),
+          getDay(startDateTime),
         ],
         title: eventTitle,
         location: eventAddress,
@@ -141,8 +177,7 @@ export async function POST(req: NextRequest) {
 // Generate email content based on attendee and event details
 function generateEmailContent(params, event, formattedDate) {
   return `
-    <div style="background: #000000;">
-      <div style="max-width: 600px; margin: 0 auto; padding-bottom: 1rem;">
+    <div style="max-width: 600px; margin: 0 auto; padding-bottom: 1rem;">
         <p style="font-weight: 600; text-transform: uppercase; font-size: 20px">${
           event.eventTitle
         }</p>
@@ -155,11 +190,27 @@ function generateEmailContent(params, event, formattedDate) {
     event.endDateTime,
     "PPP"
   )}</p>
-      </div>
       <a href="https://www.zikoro.com/event/${
         event.eventAlias
-      }/reception?email=${params.email}">Join Event</a>
-    </div>`;
+      }/reception?email=${params.email}"    style="
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        margin-right: 10px;
+        padding: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        background-color: rgb(0, 31, 204);
+        border-radius: 6px;
+        border: 0;
+      ">Join Event</a>
+      </div>
+    `;
 }
 
 export async function PATCH(req: NextRequest) {
