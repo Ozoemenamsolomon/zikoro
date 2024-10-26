@@ -143,6 +143,17 @@ export default function Presentation({
     };
   }, [supabase, quiz, isIdPresent, isOrganizer]);
 
+  function createBeep() {
+    if (typeof window !== "undefined") {
+      const audio = new Audio("/audio/beep.wav");
+      //  audio.src = "audio/AylexCinematic.mp3";
+      
+      audio.volume = 0.2;
+  
+      audio.play()
+    }
+   
+  }
   // subscribe to player
   useEffect(() => {
     if (!quiz?.accessibility?.live) return;
@@ -162,6 +173,7 @@ export default function Presentation({
             ...prev,
             payload.new as TLiveQuizParticipant,
           ]);
+          createBeep()
         }
       )
       .subscribe();
