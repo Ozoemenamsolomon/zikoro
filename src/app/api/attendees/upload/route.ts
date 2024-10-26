@@ -236,7 +236,7 @@ export async function POST(req: NextRequest) {
               <a
               href="https://www.zikoro.com/event/${
                 currentEvent.eventAlias
-              }/people/info/${attendee.id}?email=${
+              }/people/info/${attendee.attendeeAlias}?email=${
               attendee?.email
             }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
               attendee?.attendeeAlias
