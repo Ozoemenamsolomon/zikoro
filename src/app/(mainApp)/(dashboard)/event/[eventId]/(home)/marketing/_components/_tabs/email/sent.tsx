@@ -28,6 +28,7 @@ import { EyeIcon } from "lucide-react";
 import { Envelope } from "styled-icons/fa-regular";
 import useSearch from "@/hooks/common/useSearch";
 import Link from "next/link";
+import useEventStore from "@/store/globalEventStore";
 
 const marketingEmailsFilter: TFilter<TSentEmail>[] = [
   {
@@ -179,10 +180,14 @@ const Sent = () => {
   const [category, setCategory] = useState<string>("all");
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const { user, setUser } = useUserStore();
+  const { event } = useEventStore();
 
   if (!user) return;
   const { getMarketingEmails, marketingEmails, isLoading } =
-    useGetMarketingEmails({ userId: user.id ?? 0 });
+    useGetMarketingEmails({
+      userId: user.id ?? 0,
+      eventAlias: event?.eventAlias,
+    });
 
   const { filteredData, filters, selectedFilters, applyFilter, setOptions } =
     useFilter<TSentEmail>({

@@ -9,6 +9,7 @@ import {
   SendMailModal,
   AvatarModal,
 } from "..";
+import { isAfter } from "date-fns";
 import { useState, useEffect, useMemo } from "react";
 import { Slider } from "@mui/material";
 import {
@@ -142,6 +143,17 @@ export default function Presentation({
     };
   }, [supabase, quiz, isIdPresent, isOrganizer]);
 
+  function createBeep() {
+    if (typeof window !== "undefined") {
+      const audio = new Audio("/audio/beep.wav");
+      //  audio.src = "audio/AylexCinematic.mp3";
+      
+      audio.volume = 0.2;
+  
+      audio.play()
+    }
+   
+  }
   // subscribe to player
   useEffect(() => {
     if (!quiz?.accessibility?.live) return;
@@ -161,6 +173,7 @@ export default function Presentation({
             ...prev,
             payload.new as TLiveQuizParticipant,
           ]);
+          createBeep()
         }
       )
       .subscribe();
@@ -701,8 +714,12 @@ export function PlayersOnboarding({
   }
 
   useEffect(() => {
+    if (!quiz?.liveMode?.startingAt) return ;
+    const currentTime = new Date()
+    const quizStartingTime = new Date(quiz?.liveMode?.startingAt);
     let interval = setInterval(() => {
-      if (isLobby && quiz?.liveMode?.startingAt) {
+      
+      if (isLobby && isAfter(currentTime, quizStartingTime)) {
         refetch();
       } else {
         clearInterval(interval);
@@ -916,6 +933,7 @@ export function PlayersOnboarding({
           isLeftBox={isLeftBox}
           onToggle={onToggle}
           refetchLobby={refetchLobby}
+          id={id}
         />
       )}
       {isAvatarModal && (
