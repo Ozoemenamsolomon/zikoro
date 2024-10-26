@@ -9,7 +9,7 @@ import { cn } from "@/lib";
 import { QLUsers } from "@/constants";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { useCreateAnswer, useUpdateQuiz } from "@/hooks";
-import {InlineIcon} from "@iconify/react"
+import { InlineIcon } from "@iconify/react";
 import {
   TQuiz,
   TRefinedQuestion,
@@ -484,15 +484,14 @@ export function Qusetion({
   const currentParticipants = useMemo(() => {
     if (Array.isArray(actualQuiz?.quizParticipants)) {
       const filteredParticipants = actualQuiz?.quizParticipants?.filter((v) => {
-          const quizStartTime = new Date( actualQuiz?.liveMode?.startingAt);
-          const joinedAt = new Date(v?.joinedAt)
-          return isAfter(joinedAt, quizStartTime)
-      })
+        const quizStartTime = new Date(actualQuiz?.liveMode?.startingAt);
+        const joinedAt = new Date(v?.joinedAt);
+        return isAfter(joinedAt, quizStartTime);
+      });
 
-      return filteredParticipants
-    }
-    else return []
-  },[actualQuiz])
+      return filteredParticipants;
+    } else return [];
+  }, [actualQuiz]);
 
   return (
     <>
@@ -541,16 +540,27 @@ export function Qusetion({
                       <ArrowBackOutline size={20} />
                       <p className="text-sm">Exit Quiz</p>
                     </Button>
-                   {(isIdPresent || isOrganizer) && <button
-                      onClick={toggleJoiningAttempt}
-                      className="bg-[#001fcc]/20 flex items-center w-fit  gap-x-2 rounded-3xl p-1 relative"
-                    >
-                     <div className="bg-basePrimary p-1 rounded-full"> <QLUsers /></div>
-                      <p>{currentParticipants?.length}</p>
-                      <div className="absolute">
-                        <InlineIcon icon="mdi:dot" fontSize={20} color="#001fcc"/>
-                      </div>
-                    </button>}
+                    {(isIdPresent || isOrganizer) && (
+                      <button
+                        onClick={toggleJoiningAttempt}
+                        className="bg-[#001fcc]/20 flex items-center w-fit  gap-x-2 rounded-3xl p-1 relative"
+                      >
+                        <div className="bg-basePrimary p-1 rounded-full">
+                          <QLUsers />
+                        </div>
+                        <p>{currentParticipants?.length}</p>
+                        {Array.isArray(liveQuizPlayers) &&
+                          liveQuizPlayers?.length > 0 && (
+                            <div className="absolute right-0 top-0">
+                              <InlineIcon
+                                icon="mdi:dot"
+                                fontSize={20}
+                                color="#001fcc"
+                              />
+                            </div>
+                          )}
+                      </button>
+                    )}
                   </div>
                   <p className="text-xs sm:text-mobile text-gray-500">{`${
                     currentQuestionIndex + 1
