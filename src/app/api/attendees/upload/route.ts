@@ -22,7 +22,13 @@ export async function POST(req: NextRequest) {
 
       if (oldUsersError) throw oldUsersError;
 
-      console.log(params, "params");
+      console.log(
+        params.filter(
+          (user) =>
+            !oldUsers.find((oldUser) => oldUser.userEmail === user.userEmail)
+        ),
+        "params"
+      );
 
       const { data: users, error: userError } = await supabase
         .from("users")
@@ -31,7 +37,7 @@ export async function POST(req: NextRequest) {
             .filter(
               (user) =>
                 !oldUsers.find(
-                  (oldUser) => oldUser.userEmail === user.userEmail
+                  (oldUser) => oldUser.userEmail === user.email
                 )
             )
             .map((user) => ({
