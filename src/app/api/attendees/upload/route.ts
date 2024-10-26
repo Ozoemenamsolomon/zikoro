@@ -273,7 +273,7 @@ export async function POST(req: NextRequest) {
           </div>
           <!--end-->
             <a
-            href="www.zikoro.com/event/${
+            href="https://www.zikoro.com/event/${
               currentEvent.eventAlias
             }/reception?email=${
               attendee?.email
