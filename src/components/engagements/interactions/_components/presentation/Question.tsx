@@ -9,6 +9,7 @@ import { cn } from "@/lib";
 import { QLUsers } from "@/constants";
 import { ArrowBackOutline } from "styled-icons/evaicons-outline";
 import { useCreateAnswer, useUpdateQuiz } from "@/hooks";
+import {InlineIcon} from "@iconify/react"
 import {
   TQuiz,
   TRefinedQuestion,
@@ -528,7 +529,7 @@ export function Qusetion({
                   <Maximize2 size={20} />
                 </Button>
 
-                <div className=" gap-3 pb-2 w-full flex items-end justify-between">
+                <div className=" gap-3 pb-2 w-full flex items-center justify-between">
                   <div className="flex items-center gap-x-2">
                     <Button
                       onClick={goBack}
@@ -540,13 +541,16 @@ export function Qusetion({
                       <ArrowBackOutline size={20} />
                       <p className="text-sm">Exit Quiz</p>
                     </Button>
-                    <button
+                   {(isIdPresent || isOrganizer) && <button
                       onClick={toggleJoiningAttempt}
                       className="bg-[#001fcc]/20 flex items-center w-fit  gap-x-2 rounded-3xl p-1 relative"
                     >
-                      <QLUsers />
+                     <div className="bg-basePrimary p-1 rounded-full"> <QLUsers /></div>
                       <p>{currentParticipants?.length}</p>
-                    </button>
+                      <div className="absolute">
+                        <InlineIcon icon="mdi:dot" fontSize={20} color="#001fcc"/>
+                      </div>
+                    </button>}
                   </div>
                   <p className="text-xs sm:text-mobile text-gray-500">{`${
                     currentQuestionIndex + 1

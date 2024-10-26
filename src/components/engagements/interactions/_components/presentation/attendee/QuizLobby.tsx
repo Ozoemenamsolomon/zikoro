@@ -81,17 +81,17 @@ export function QuizLobby({
     // check if quiz has started and user is in the lobby , and has been admitted
     if (
       isAttendee &&
-      quiz?.liveMode?.isStarting &&
       quiz?.quizParticipants?.some(
         (participant) => {
-          const quizStartingTime = new Date(quiz?.liveMode?.startingAt);
-          const joinedAt = new Date(participant?.joinedAt)
-          return participant.id === id && isAfter(joinedAt, quizStartingTime)
+          
+          return participant.id === id 
         }
       )
     ) {
       close();
+      
     }
+   
   }, [quiz]);
 
   async function openQuestion() {
