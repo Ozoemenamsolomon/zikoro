@@ -16,6 +16,42 @@ export async function POST(req: NextRequest) {
       throw new Error("Missing required fields: email and eventId");
     }
 
+    const { data: oldUser, error: oldUserError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("userEmail", params.email)
+      .maybeSingle();
+
+    if (oldUserError) throw oldUserError;
+
+    console.log(params, "params");
+
+    if (!oldUser) {
+      const { data: user, error: userError } = await supabase
+        .from("users")
+        .insert({
+          firstName: params.firstName || null,
+          lastName: params.lastName || null,
+          phoneNumber: params.phoneNumber || null,
+          jobTitle: params.jobTitle || null,
+          organization: params?.organization || null,
+          city: params.city || null,
+          country: params.country || null,
+          linkedin: params.linkedin || null,
+          instagram: params.instagram || null,
+          facebook: params.facebook || null,
+          bio: params.bio || null,
+          userEmail: params.email || "ubahyusuf484@gmail.com",
+          x: params.x || null,
+          created_at: new Date().toISOString(),
+        })
+        .select("*");
+
+      console.log(user, "users", userError, "error");
+
+      if (userError) throw userError;
+    }
+
     // Check for duplicate registration if no attendee ID is provided
     if (!params.id) {
       const { data, error: checkError } = await supabase
