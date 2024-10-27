@@ -12,13 +12,12 @@ export async function GET(
   if (req.method === "GET") {
     try {
       const { searchParams } = new URL(req.url);
+      const isAlias = searchParams.get("isAlias");
 
       const { data, error, status } = await supabase
         .from("agenda")
         .select("*")
-        .eq("eventId", eventId);
-
-      
+        .eq(isAlias ? "eventAlias" : "eventId", eventId);
 
       if (error) throw error;
 
