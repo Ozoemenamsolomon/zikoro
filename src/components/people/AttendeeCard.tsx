@@ -193,9 +193,7 @@ export default function AttendeeCard(props) {
                     </p>
                   </div>
                 ) : (
-                  <SlideToReveal
-                    action={props.action}
-                  />
+                  <SlideToReveal action={props.action} />
                 )}
               </div>
             </div>
@@ -234,6 +232,7 @@ export default function AttendeeCard(props) {
                   </svg>
                   <span className="text-gray-500 text-xs md:text-sm truncate">
                     {props.isEventOwner ||
+                    props.attendeeIsUser ||
                     (props.attendeeExchangedContacts &&
                       props.attendeeExchangedContacts.status === "accepted")
                       ? props.phoneNumber
@@ -257,6 +256,7 @@ export default function AttendeeCard(props) {
                   </svg>
                   <span className="text-gray-500 text-xs md:text-sm truncate">
                     {props.isEventOwner ||
+                    props.attendeeIsUser ||
                     (props.attendeeExchangedContacts &&
                       props.attendeeExchangedContacts.status === "accepted") ? (
                       <>{props.whatsappNumber || props.phoneNumber}</>
@@ -283,6 +283,7 @@ export default function AttendeeCard(props) {
                 </svg>
                 <span className="text-gray-500 text-xs md:text-sm truncate">
                   {props.isEventOwner ||
+                  props.attendeeIsUser ||
                   (props.attendeeExchangedContacts &&
                     props.attendeeExchangedContacts.status === "accepted")
                     ? props.email

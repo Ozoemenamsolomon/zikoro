@@ -581,7 +581,7 @@ export default function FirstSection({
         ref={divRef}
       >
         <div className="min-h-max">
-          {!isEventOwner && userAttendee && (
+          {userAttendee && (
             <>
               <Attendee
                 attendee={userAttendee}

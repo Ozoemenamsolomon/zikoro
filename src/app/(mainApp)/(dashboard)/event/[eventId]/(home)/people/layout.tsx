@@ -49,14 +49,13 @@ const People = ({ children }: { children: React.ReactNode }) => {
                     : ""
                 }`}
               >
-                
                 <Link href={href}>{name}</Link>
               </li>
             ))}
           </ul>
         </nav>
-        <div className="bg-white max-w-[1300px] xl:mx-auto xl:mt-12 rounded-xl">
-        {children}
+        <div className="bg-white max-w-[1300px] xl:mx-auto rounded-xl">
+          {children}
         </div>
       </section>
     </>

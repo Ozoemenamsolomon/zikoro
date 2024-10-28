@@ -376,10 +376,10 @@ export default function ThirdSection({
   const attendeeIsUser = user.userEmail === attendee.email;
 
   return (
-    <>
+    <div ref={divRef}>
       {attendeeIsUser && <UserContacts user={user} />}
       {isEventOwner && (
-        <div className="overflow-auto no-scrollbar pb-48" ref={divRef}>
+        <div className="overflow-auto no-scrollbar pb-48">
           <div className="mb-6 mt-2 space-y-4">
             <h4 className="text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
               Payment
@@ -590,6 +590,6 @@ export default function ThirdSection({
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
