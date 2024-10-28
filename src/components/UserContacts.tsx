@@ -24,6 +24,8 @@ const UserContacts = ({ user }: { user: TUser }) => {
     getContactRequests,
   } = useGetContactRequests({ userEmail: user.userEmail });
 
+  console.log(user.userEmail, userContactRequests, "contact user");
+
   //
 
   const [action, setAction] = useState<"accept" | "reject" | null>(null);
@@ -63,7 +65,7 @@ const UserContacts = ({ user }: { user: TUser }) => {
           {userContactRequests
             ?.filter(
               ({ receiverUserEmail, status }) =>
-                receiverUserEmail !== user.userEmail && status !== "pending"
+                receiverUserEmail === user.userEmail
             )
             ?.map((request) => (
               <div className="flex items-center justify-between px-4 py-6 border-b">
@@ -87,6 +89,7 @@ const UserContacts = ({ user }: { user: TUser }) => {
                 </div>
                 <div className="flex gap-2">
                   <Button
+                  variant={"ghost"}
                     onClick={() => {
                       setOpen(true);
                       setAction("reject");

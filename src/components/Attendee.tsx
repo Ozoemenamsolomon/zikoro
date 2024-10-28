@@ -57,6 +57,7 @@ const Attendee: React.FC<AttendeeProps> = ({
     attendeeProfilePoints,
     attendeeAlias,
     archive,
+    email,
   } = attendee;
 
   console.log(checkInPoints, firstName);
@@ -142,6 +143,8 @@ const Attendee: React.FC<AttendeeProps> = ({
     await getAttendees();
   };
 
+  const attendeeIsUser = user && email === user?.userEmail;
+
   return (
     <button
       className={`w-full grid grid-cols-10 items-center gap-1.5 p-1.5 border-b border-gray-100 ${
@@ -173,6 +176,9 @@ const Attendee: React.FC<AttendeeProps> = ({
             )}
           >
             {firstName + " " + lastName}
+            <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
+              {attendeeIsUser && " (you)"}
+            </span>
           </h4>
           <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
             {`${jobTitle ? jobTitle + ", " : ""}${organization || ""}`}

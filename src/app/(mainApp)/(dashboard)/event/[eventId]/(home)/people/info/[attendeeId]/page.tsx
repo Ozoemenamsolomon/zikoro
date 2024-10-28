@@ -56,12 +56,13 @@ const page = () => {
     isLoading: eventAgendasIsLoading,
     getEventAgendas,
   } = useGetEventAgendas({
-    eventId: event.id,
+    eventId,
+    isAlias: true,
   });
 
   const { createAttendee } = useCreateAttendee();
 
-  const { data, loading, refetch } = useFetchPartners(event.eventAlias);
+  const { data, loading, refetch } = useFetchPartners(eventId);
 
   const formatPartners: TExPartner[] = useMemo(() => {
     return data?.map((value) => {
@@ -118,6 +119,9 @@ const page = () => {
               event={event}
               sponsors={sponsors}
               loading={loading}
+              userContactRequests={userContactRequests}
+              isLoading={contactRequestIsLoading}
+              getContactRequests={getContactRequests}
             />
           </section>
         </div>
