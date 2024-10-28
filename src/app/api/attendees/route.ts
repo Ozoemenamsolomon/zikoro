@@ -192,7 +192,7 @@ function generateEmailContent(params, event, formattedDate) {
   )}</p>
       <a href="https://www.zikoro.com/event/${
         event.eventAlias
-      }/reception?email=${params.email}"    style="
+      }/reception?email=${params.email}&isPasswordless=true"    style="
         width: 100%;
         max-width: 600px;
         margin: 0 auto;

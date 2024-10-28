@@ -415,7 +415,8 @@ export default function SecondSection({
     user.userEmail,
     email,
     attendeeExchangedContacts,
-    userContactRequests
+    userContactRequests,
+    "request"
   );
 
   const divRef = useRef<HTMLDivElement>(null);

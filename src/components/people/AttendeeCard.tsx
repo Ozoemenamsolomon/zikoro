@@ -2,6 +2,12 @@ import SlideToReveal from "../SlideToReveal";
 import { AvatarFallback, AvatarImage, Avatar } from "../ui/avatar";
 
 export default function AttendeeCard(props) {
+  console.log(
+    props.attendeeExchangedContacts,
+    props.isEventOwner,
+    props.attendeeIsUser,
+    "owner contact"
+  );
   return (
     <div
       ref={props.parentCardRef}
@@ -97,9 +103,10 @@ export default function AttendeeCard(props) {
                     )}
                   </div>
                 </div>
-                {(props.isEventOwner ||
-                  props.attendeeIsUser ||
-                  props.attendeeExchangedContacts) && (
+                {props.isEventOwner ||
+                props.attendeeIsUser ||
+                (props.attendeeExchangedContacts &&
+                  props.attendeeExchangedContacts.status === "accepted") ? (
                   <div className="flex justify-between gap-2 items-start">
                     {props.phoneNumber && (
                       <div className="flex-1">
@@ -171,15 +178,27 @@ export default function AttendeeCard(props) {
                       </div>
                     </button>
                   </div>
+                ) : props.attendeeExchangedContacts &&
+                  props.attendeeExchangedContacts.status === "pending" ? (
+                  <div className="flex justify-between gap-2 items-start">
+                    <p className="text-sm text-gray-500">
+                      Your request has been sent to the Attendee.
+                    </p>
+                  </div>
+                ) : props.attendeeExchangedContacts &&
+                  props.attendeeExchangedContacts.status === "rejected" ? (
+                  <div className="flex justify-between gap-2 items-start">
+                    <p className="text-sm text-gray-500">
+                      Your request was rejected by the Attendee.
+                    </p>
+                  </div>
+                ) : (
+                  <SlideToReveal
+                    action={() => {
+                      props.setOpen(true);
+                    }}
+                  />
                 )}
-                {!(props.isEventOwner || props.attendeeIsUser) &&
-                  !props.attendeeExchangedContacts && (
-                    <SlideToReveal
-                      action={() => {
-                        props.setOpen(true);
-                      }}
-                    />
-                  )}
               </div>
             </div>
           </div>
