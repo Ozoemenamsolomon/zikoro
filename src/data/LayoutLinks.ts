@@ -2,11 +2,11 @@ import { TLink } from "@/components/Sidebar";
 
 export const PeopleLinks: (TLink & { hideFromAttendee?: boolean })[] = [
   { name: "All", href: "all" },
-  {
-    name: "released certificates",
-    href: "released_certificates",
-    hideFromAttendee: true,
-  },
+  // {
+  //   name: "released certificates",
+  //   href: "released_certificates",
+  //   hideFromAttendee: true,
+  // },
   // { name: "favorites", href: "favorites" },
   // { name: "tags", href: "tags" },
   // { name: "notes", href: "notes" },

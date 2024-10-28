@@ -194,9 +194,7 @@ export default function AttendeeCard(props) {
                   </div>
                 ) : (
                   <SlideToReveal
-                    action={() => {
-                      props.setOpen(true);
-                    }}
+                    action={props.action}
                   />
                 )}
               </div>

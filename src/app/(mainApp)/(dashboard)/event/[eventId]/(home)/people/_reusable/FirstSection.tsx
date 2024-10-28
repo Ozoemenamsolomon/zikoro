@@ -363,6 +363,12 @@ export default function FirstSection({
     );
   };
 
+  const isEventOwner = user && String(event?.createdBy) === String(user.id);
+
+  const userAttendee = mappedAttendees.find(
+    ({ email }) => email === user?.userEmail
+  );
+
   return (
     <>
       <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2 bg-white">
@@ -548,7 +554,8 @@ export default function FirstSection({
             />
           </svg>
           <p className="text-xs text-gray-500">
-            {mappedAttendees.filter(({archive}) => !archive).length} attendees listed in your view
+            {mappedAttendees.filter(({ archive }) => !archive).length} attendees
+            listed in your view
           </p>
         </div>
         <div className=" flex items-center ">
@@ -569,9 +576,28 @@ export default function FirstSection({
           </button>
         </div>
       </div>
-      <div className="overflow-auto hide-scrollbar pb-16 md:pb-32" ref={divRef}>
+      <div
+        className="overflow-auto hide-scrollbar pb-16 md:pb-32 relative"
+        ref={divRef}
+      >
         <div className="min-h-max">
+          {!isEventOwner && userAttendee && (
+            <>
+              <Attendee
+                attendee={userAttendee}
+                isSelected={userAttendee.id === selectedAttendee?.id}
+                selectAttendee={onSelectAttendee}
+                getAttendees={getAttendees}
+                favourites={favourites}
+                favouriteIsLoading={favouriteIsLoading}
+                toggleFavourites={toggleFavourites}
+                event={event}
+                user={user}
+              />
+            </>
+          )}
           {mappedAttendees
+            .filter(({ email }) => email !== user?.userEmail)
             .filter(({ archive }) => !archive)
             .filter(
               ({ firstName, lastName, organization, jobTitle, archive }) =>

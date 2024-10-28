@@ -518,6 +518,10 @@ export default function SecondSection({
         attendeeIsUser={attendeeIsUser}
         attendeeExchangedContacts={attendeeExchangedContacts}
         sendWhatsAppMessage={sendWhatsAppMessage}
+        action={() => {
+          props.setOpen(true);
+          getAttendees();
+        }}
       />
       <section className="space-y-6 p-4 pt-0">
         <div className="space-y-2">
