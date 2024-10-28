@@ -119,6 +119,9 @@ const page = () => {
               event={event}
               sponsors={sponsors}
               loading={loading}
+              userContactRequests={userContactRequests}
+              isLoading={contactRequestIsLoading}
+              getContactRequests={getContactRequests}
             />
           </section>
         </div>
