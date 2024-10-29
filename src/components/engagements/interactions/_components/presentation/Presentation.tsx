@@ -88,12 +88,13 @@ export default function Presentation({
   const [isSendMailModal, setIsSendMailModal] = useState(false); // state to toggle send-mail modal after attendee finishes the quiz
   const [showScoreSheet, setShowScoreSheet] = useState(false); // state to toggle show-score sheet after attendee finishes the quiz
   const [isAudioMuted, setIsAudioMuted] = useState(false);
-  const [volume, adjustVolume] = useState(0.8);
+  const [volume, adjustVolume] = useState(0.2);
   const { data } = useFetchSingleEvent(eventId);
   const params = useSearchParams();
-  const { liveQuizPlayers, setLiveQuizPlayers, getLiveParticipant } = useGetLiveParticipant({
-    quizId: quizId,
-  });
+  const { liveQuizPlayers, setLiveQuizPlayers, getLiveParticipant } =
+    useGetLiveParticipant({
+      quizId: quizId,
+    });
   const query = params.get("redirect");
   const aId = params.get("id");
   // const {liveQuizPlayers} = useGetLiveParticipant({quizId})
@@ -147,12 +148,11 @@ export default function Presentation({
     if (typeof window !== "undefined") {
       const audio = new Audio("/audio/beep.wav");
       //  audio.src = "audio/AylexCinematic.mp3";
-      
+
       audio.volume = 0.2;
-  
-      audio.play()
+
+      audio.play();
     }
-   
   }
   // subscribe to player
   useEffect(() => {
@@ -173,7 +173,7 @@ export default function Presentation({
             ...prev,
             payload.new as TLiveQuizParticipant,
           ]);
-          createBeep()
+          createBeep();
         }
       )
       .subscribe();
@@ -328,6 +328,7 @@ export default function Presentation({
                   quiz={quizResult}
                   actualQuiz={quiz}
                   isAttendee={!isIdPresent && !isOrganizer}
+                  answers={answers}
                   attendeeEmail={attendee?.email || playerDetail?.email}
                 />
               ) : (
@@ -408,7 +409,7 @@ export default function Presentation({
                     />
                   )}
                   <PlayersOnboarding
-                  refetchLobby={getLiveParticipant}
+                    refetchLobby={getLiveParticipant}
                     attendee={attendee}
                     close={close}
                     isAttendee={!isIdPresent && !isOrganizer}
@@ -509,7 +510,7 @@ export function PlayersOnboarding({
   onToggle,
   isLeftBox,
   liveQuizPlayers,
-  refetchLobby
+  refetchLobby,
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -517,7 +518,7 @@ export function PlayersOnboarding({
   isAttendee: boolean;
   id: string;
   playerDetail: TPlayerDetail;
-  refetchLobby?:() => Promise<any>
+  refetchLobby?: () => Promise<any>;
   setPlayerDetail: React.Dispatch<React.SetStateAction<TPlayerDetail>>;
   isLobby: boolean;
   setisLobby: React.Dispatch<React.SetStateAction<boolean>>;
@@ -710,15 +711,18 @@ export function PlayersOnboarding({
     refetch();
     setisLobby(true);
     setLoading(false);
-    if (audio) audio.play();
+    if (audio) {
+      audio.volume = 0.2;
+      audio.play();
+    }
+    
   }
 
   useEffect(() => {
-    if (!quiz?.liveMode?.startingAt) return ;
-    const currentTime = new Date()
+    if (!quiz?.liveMode?.startingAt) return;
+    const currentTime = new Date();
     const quizStartingTime = new Date(quiz?.liveMode?.startingAt);
     let interval = setInterval(() => {
-      
       if (isLobby && isAfter(currentTime, quizStartingTime)) {
         refetch();
       } else {
@@ -735,20 +739,12 @@ export function PlayersOnboarding({
       quiz?.liveMode?.startingAt
     ) {
       setisLobby(true);
-      if (audio) audio.play();
+      if (audio) {
+        audio.volume = 0.2;
+        audio.play();
+      }
     }
   }, [isAttendee]);
-
-  /**
-   else if (
-      isAttendee &&
-      quiz?.accessibility?.live &&
-      quiz?.liveMode?.startingAt &&
-      currentPlayer?.id
-    ) {
-      setisLobby(true);
-    }
-   */
 
   return (
     <>
