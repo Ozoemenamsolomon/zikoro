@@ -7,8 +7,7 @@ import { EventLocationType } from "@/components/composables";
 import { Link2Outline } from "styled-icons/evaicons-outline";
 import { LocationPin } from "styled-icons/entypo";
 import { CollapsibleWidget, Duplicate, Edit, Deletes } from ".";
-import { FilePdf } from "styled-icons/fa-regular";
-import Image from "next/image";
+
 import { TAgenda, Event, TReview, TFeedBack } from "@/types";
 import { Player } from "@/components/composables";
 import { useMemo, useEffect, useState } from "react";
@@ -16,7 +15,6 @@ import { useRouter } from "next/navigation";
 import { getCookie, useGetReviews, useUpdateAgenda } from "@/hooks";
 import { isEventLive, formatTime, formatLongDate } from "@/utils";
 import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
-import Link from "next/link";
 import useUserStore from "@/store/globalUserStore";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { formatDistanceToNowStrict } from 'date-fns';
@@ -264,7 +262,7 @@ export function AboutSession({
             </div>
           )}
 
-          <h2 className="text-base px-4 w-full my-2 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
+          <h2 className="text-base px-4 w-full my-3 text-ellipsis whitespace-nowrap overflow-hidden sm:text-xl font-medium">
             {agenda?.sessionTitle ?? ""}
           </h2>
           <p className="mb-2 px-4 text-gray-500 text-[13px]">
@@ -330,7 +328,7 @@ export function AboutSession({
           </div>
 
           
-          <CollapsibleWidget
+          {/* <CollapsibleWidget
             title="Speakers"
             session={agenda}
             isNotAttendee={isIdPresent || isOrganizer}
@@ -383,8 +381,8 @@ export function AboutSession({
                   />
                 ))}
             </div>
-          </CollapsibleWidget>
-          <CollapsibleWidget
+          </CollapsibleWidget> */}
+          {/* <CollapsibleWidget
             title="Sponsors"
             session={agenda}
             event={event}
@@ -444,7 +442,7 @@ export function AboutSession({
                   </Link>
                 ))}
             </div>
-          </CollapsibleWidget>
+          </CollapsibleWidget> */}
         </div>
       )}
 

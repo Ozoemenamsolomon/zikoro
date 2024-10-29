@@ -1,14 +1,11 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { AboutPartner, PartnerBanners, PromotionalOffer } from "./_components";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-// import { TPartner } from "@/types";
+
 import {
-  getCookie,
   useFetchSinglePartner,
   useVerifyUserAccess,
-  useGetEventAttendees,
   useCheckTeamMember,
 } from "@/hooks";
 import { useMemo } from "react";
@@ -21,36 +18,37 @@ export function PartnerDetails({
 }: {
   eventId: string;
   partnerId: string;
-  searchParams: any
+  searchParams: any;
 }) {
   const { data, refetch, loading } = useFetchSinglePartner(partnerId);
   const { attendee, isOrganizer } = useVerifyUserAccess(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
   const { user } = useUserStore();
 
-  const { attendeeId } = useVerifyUserAccess(id);
-  const { attendees: eventAttendees, isLoading } = useGetEventAttendees(id);
+
+
 
   const isHaveAccess = useMemo(() => {
     if (data?.email === user?.userEmail) {
       return true;
-    } else if (Array.isArray(eventAttendees)) {
-      const filteredStaffsId = Array.isArray(data?.boothStaff)
-        ? data?.boothStaff?.map(({ id }) => id)
-        : [];
-      const filteredAttendee = eventAttendees?.filter((value) =>
-        filteredStaffsId.includes(Number(value?.id))
+    } else if (
+      data &&
+      Array.isArray(data?.boothStaff) &&
+      data?.boothStaff?.length > 0
+    ) {
+      return data?.boothStaff?.some(
+        ({ userEmail }) => userEmail === user?.userEmail
       );
-
-      return filteredAttendee?.some(({ id }) => id === Number(attendeeId));
+    } else if (owner) {
+      return owner == user?.userEmail;
     } else {
       return false;
     }
-  }, [eventAttendees, owner, isLoading, data, loading]);
+  }, [ owner,  data, loading]);
 
   return (
     <>
-      {loading || isLoading ? (
+      {loading  ? (
         <div className="w-full h-[300px] flex items-center justify-center">
           <LoaderAlt className="animate-spin" size={30} />
         </div>

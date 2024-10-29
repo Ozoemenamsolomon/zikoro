@@ -13,10 +13,7 @@ import { useGetAllAttendees } from "../../hooks/services/attendee";
 import { cn } from "@/lib";
 import { useState } from "react";
 
-const tabs = [
-  { name: "Description", id: 1 },
-  { name: "Review", id: 2 },
-];
+
 export default function SingleAgenda({
   agendaId,
   eventId,
@@ -24,7 +21,7 @@ export default function SingleAgenda({
   eventId: string;
   agendaId: string;
 }) {
-  const [active, setActive] = useState(1);
+  
   const { data, loading, refetch } = useFetchSingleEvent(eventId);
   const { attendees, isLoading: fetching } = useGetAllAttendees(eventId);
   const { isIdPresent } = useCheckTeamMember({ eventId });
@@ -49,37 +46,19 @@ export default function SingleAgenda({
             refetchSession={getAgenda}
           />
           <div className="lg:col-span-3  p-2 lg:p-4 w-full">
-            <div className="w-full flex bg-gray-100 items-center rounded-t-xl gap-x-8 border-b border-gray-300 px-4 pt-4">
-              {tabs.map((v, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActive(v?.id)}
-                  className={cn(
-                    "text-sm sm:text-base px-2 pb-4 font-medium",
-                    active === v?.id &&
-                      "font-semibold border-b  border-basePrimary"
-                  )}
-                >
-                  {v?.name}
-                </button>
-              ))}
-              {/* {!isSent && <Button className="w-fit h-fit px-0" onClick={() => setRating(0)}>
-            <CloseOutline size={22} />
-          </Button>} */}
-            </div>
-            {active === 1 && (
-              <section className="w-full flex bg-gray-100 flex-col p-2 lg:p-4 rounded-b-xl">
-                <div className="items-start text-[13px] sm:text-sm text-gray-600  justify-start flex w-full flex-wrap">
-                  {agenda?.description ?? ""}
-                </div>
-              </section>
-            )}
-            {active === 2 && (
+         
+           
+            { agenda &&(
               <Engagement
                 attendees={attendees}
                 reviews={reviews}
                 id={eventId}
                 agenda={agenda}
+                isIdPresent={isIdPresent}
+                isOrganizer={isOrganizer}
+                refetch={refetch}
+                refetchSession={getAgenda}
+                event={data}
               />
             )}
           </div>

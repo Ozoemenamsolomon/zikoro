@@ -27,7 +27,6 @@ export function CollapsibleWidget({
     setVisibility((prev) => !prev);
   };
 
-  //  onClick={toggleVisibility}
   
   return (
     <section className="flex flex-col w-full  min-h-max">
@@ -35,7 +34,7 @@ export function CollapsibleWidget({
       role="button"
       onClick={toggleVisibility}
       className="w-full flex items-center justify-between px-3 py-3 border-b ">
-        <p className="font-semibold text-base sm:text-xl">{title}</p>
+        <p className="font-medium text-base sm:text-xl">{title}</p>
       {isNotAttendee &&  <div className="flex items-center gap-x-2">
           <p>{title}</p>
           <Edit session={session} event={event} refetch={refetch} />

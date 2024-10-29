@@ -42,7 +42,7 @@ export default function Home() {
   ];
   return (
     <>
-      <div className=" px-2 sm:px-4 pb-2 w-full pt-[6.5rem] fixed top-0 bg-white   flex justify-between items-center ">
+      <div className=" px-2 sm:px-4 pb-2 w-full pt-[6.5rem]     flex justify-between items-center ">
         <h2 className="font-semibold text-base sm:text-2xl capitalize">{`Welcome ${
           user?.firstName ?? "User"
         }`}</h2>

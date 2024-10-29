@@ -49,10 +49,10 @@ export function Player({
         streamType={streamType}
         src={src}
         viewType="video"
-        crossorigin
-        playsinline
+        crossOrigin
+        playsInline
         controls
-        autoplay
+        autoPlay
         ref={mediaRef}
       >
         <MediaProvider/>

@@ -16,22 +16,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import useOrganizationStore from "@/store/globalOrganizationStore";
-import { ExternalLink } from "styled-icons/feather";
 import {
-  getCookie,
   useCheckTeam,
-  useGetOrganizations,
   useGetUserEvents,
-  useGetUserTeamOrganizations,
   useVerifyUserAccess,
 } from "@/hooks";
-import { TAttendee, TOrganization, TUser } from "@/types";
+import {  TOrganization } from "@/types";
 import useEventStore from "@/store/globalEventStore";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
-import { UserIcon } from "@/constants";
+import { usePathname, useRouter } from "next/navigation";
 import useUserStore from "@/store/globalUserStore";
-import { useGetData } from "@/hooks/services/request";
 
 const MainTopBar = ({
   eventId,
@@ -88,31 +81,32 @@ const MainTopBar = ({
       {pathname.includes("event") ? (
         <>
           {isIdPresent || isOrganizer ? (
-            <div className="flex items-center gap-x-2">
-              <Selector
-                heading={"Your Workspaces"}
-                options={(events ?? [])?.map(({ eventAlias, eventTitle }) => ({
-                  label: eventTitle,
-                  value: eventAlias,
-                }))}
-                onSelect={setCurrentEvent}
-                label="event"
-                initialValue={
-                  event && {
-                    label: event.eventTitle,
-                    value: event.eventAlias,
-                  }
-                }
-              />
-              <button
-                onClick={() => {
-                  window.open(`/live-events/${eventId}`);
-                }}
-                className="text-zinc-700 mb-1"
-              >
-                <ExternalLink size={20} />
-              </button>
-            </div>
+            // <div className="flex items-center gap-x-2">
+            //   <Selector
+            //     heading={"Your Workspaces"}
+            //     options={(events ?? [])?.map(({ eventAlias, eventTitle }) => ({
+            //       label: eventTitle,
+            //       value: eventAlias,
+            //     }))}
+            //     onSelect={setCurrentEvent}
+            //     label="event"
+            //     initialValue={
+            //       event && {
+            //         label: event.eventTitle,
+            //         value: event.eventAlias,
+            //       }
+            //     }
+            //   />
+            //   <button
+            //     onClick={() => {
+            //       window.open(`/live-events/${eventId}`);
+            //     }}
+            //     className="text-zinc-700 mb-1"
+            //   >
+            //     <ExternalLink size={20} />
+            //   </button>
+            // </div>
+            <></>
           ) : (
             <div>
               <div className="flex items-center pb-[0.31rem] pt-[0.4rem] gap-x-3">

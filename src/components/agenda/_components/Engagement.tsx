@@ -5,28 +5,50 @@ import { StarFullOutline } from "styled-icons/typicons";
 import { Form, FormField, Button, Textarea } from "@/components";
 import InputOffsetLabel from "@/components/InputOffsetLabel";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
-import { CloseOutline } from "styled-icons/evaicons-outline";
+import { CollapsibleWidget } from "./CollapsibleWidget";
+import { BoothStaffWidget } from "@/components/partners/sponsors/_components";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib";
-import { TAgenda, TAttendee, TFeedBack, TReview } from "@/types";
-import { useSendReview, useGetEventReviews } from "@/hooks";
+import { TAgenda, TAttendee, TFeedBack, TOrgEvent, TReview } from "@/types";
+import { useSendReview } from "@/hooks";
 import { Like } from "styled-icons/foundation";
 import useUserStore from "@/store/globalUserStore";
 import { useGetData } from "@/hooks/services/request";
 import { EngagementsSettings } from "@/types/engagements";
+import { FilePdf } from "styled-icons/fa-regular";
+import Image from "next/image";
+import Link from "next/link";
+
+const tabs = [
+  { name: "Description", id: 1 },
+  { name: "Review", id: 2 },
+  { name: "Description", id: 3 },
+];
+
 export function Engagement({
   agenda,
   id,
   attendees,
   reviews,
+  isIdPresent,
+  isOrganizer,
+  refetch,
+  refetchSession,
+  event,
 }: {
   id: string;
   attendees: TAttendee[];
-  agenda: TAgenda | null;
+  agenda: TAgenda;
   reviews: TFeedBack[];
+  isIdPresent: boolean;
+  isOrganizer: boolean;
+  refetch: () => Promise<any>;
+  refetchSession: () => Promise<any>;
+  event: TOrgEvent | null;
 }) {
   const [rating, setRating] = useState(0);
   const { user, setUser } = useUserStore();
+  const [active, setActive] = useState(1);
   //const { reviews } = useGetEventReviews(id);
   const [isSent, setSent] = useState(false);
   const { data: engagementsSettings } = useGetData<EngagementsSettings>(
@@ -49,10 +71,39 @@ export function Engagement({
     }
   }, [attendeeId, reviews]);
   return (
-    <div className=" p-2 lg:p-4 w-full bg-gray-100">
-      <div className="w-full h-fit bg-gray-100 rounded-b-xl">
-      
+    <div className=" w-full">
+      <div className="w-full flex bg-gray-100 items-center  gap-x-8 border-b border-gray-300 px-4 pt-4">
+        {tabs.map((v, index) => (
+          <button
+            key={index}
+            onClick={() => setActive(v?.id)}
+            className={cn(
+              "text-sm sm:text-base px-2 pb-4 font-medium",
+              active === v?.id && "font-semibold border-b  border-basePrimary"
+            )}
+          >
+            {v?.name}
+          </button>
+        ))}
+        {/* {!isSent && <Button className="w-fit h-fit px-0" onClick={() => setRating(0)}>
+            <CloseOutline size={22} />
+          </Button>} */}
+      </div>
+      {active === 1 && (
+        <section className="w-full flex bg-gray-100 flex-col p-2 lg:p-4 ">
+          <div className="items-start text-[13px] sm:text-sm text-gray-600  justify-start flex w-full flex-wrap">
+            {agenda?.description ?? ""}
+          </div>
+        </section>
+      )}
 
+      <div
+        className={cn(
+          "p-2 lg:p-4 w-full  h-fit bg-gray-100 hidden " &&
+            active === 2 &&
+            "block"
+        )}
+      >
         {rating > 0 || isSent ? (
           <ReviewComment
             rating={rating}
@@ -93,6 +144,122 @@ export function Engagement({
           </div>
         )}
       </div>
+      {/** collapsible widgets */}
+      <CollapsibleWidget
+        title="Speakers"
+        session={agenda}
+        isNotAttendee={isIdPresent || isOrganizer}
+        event={event}
+        refetch={refetch}
+      >
+        <div className="w-full px-3 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">
+          {Array.isArray(agenda?.sessionSpeakers) &&
+            agenda?.sessionSpeakers?.length === 0 && (
+              <div className="w-full col-span-full h-[200px] flex items-center justify-center">
+                <p className="font-semibold">No Speaker</p>
+              </div>
+            )}
+          {Array.isArray(agenda?.sessionSpeakers) &&
+            agenda?.sessionSpeakers.map((attendee, index) => (
+              <BoothStaffWidget
+                company={attendee?.organization ?? ""}
+                image={attendee?.profilePicture || null}
+                name={`${attendee?.firstName} ${attendee?.lastName}`}
+                profession={attendee?.jobTitle ?? ""}
+                email={attendee?.email ?? ""}
+                key={index}
+              />
+            ))}
+        </div>
+      </CollapsibleWidget>
+      <CollapsibleWidget
+        title="Moderator"
+        session={agenda}
+        isNotAttendee={isIdPresent || isOrganizer}
+        event={event}
+        refetch={refetch}
+      >
+        <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 items-center gap-4">
+          {Array.isArray(agenda?.sessionModerators) &&
+            agenda?.sessionModerators?.length === 0 && (
+              <div className="w-full col-span-full h-[200px] flex items-center justify-center">
+                <p className="font-semibold">No Moderator</p>
+              </div>
+            )}
+          {Array.isArray(agenda?.sessionModerators) &&
+            agenda?.sessionModerators.map((attendee, index) => (
+              <BoothStaffWidget
+                company={attendee?.organization ?? ""}
+                image={attendee?.profilePicture || null}
+                name={`${attendee?.firstName} ${attendee?.lastName}`}
+                profession={attendee?.jobTitle ?? ""}
+                email={attendee?.email ?? ""}
+                key={index}
+              />
+            ))}
+        </div>
+      </CollapsibleWidget>
+      <CollapsibleWidget
+        title="Sponsors"
+        session={agenda}
+        event={event}
+        isNotAttendee={isIdPresent || isOrganizer}
+        refetch={refetch}
+      >
+        <div className="w-full px-3 py-4 grid grid-cols-2 md:grid-cols-3 items-center gap-4">
+          {Array.isArray(agenda?.sessionSponsors) &&
+            agenda?.sessionSponsors?.length === 0 && (
+              <div className="w-full col-span-full h-[200px] flex items-center justify-center">
+                <p className="font-semibold">No Sponsor</p>
+              </div>
+            )}
+          {Array.isArray(agenda?.sessionSponsors) &&
+            agenda?.sessionSponsors.map((sponsor) => (
+              <Image
+                src={sponsor?.companyLogo ?? ""}
+                alt="sponsor"
+                width={200}
+                height={100}
+                className=" w-[100px] object-contain h-[40px]"
+              />
+            ))}
+        </div>
+      </CollapsibleWidget>
+      <CollapsibleWidget
+        title="File"
+        session={agenda}
+        isNotAttendee={isIdPresent || isOrganizer}
+        event={event}
+        refetch={refetch}
+      >
+        <div className="w-full px-3 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 items-center gap-4">
+          {Array.isArray(agenda?.sessionFiles) &&
+            agenda?.sessionFiles?.length === 0 && (
+              <div className="w-full col-span-full h-[200px] flex items-center justify-center">
+                <p className="font-semibold">No File</p>
+              </div>
+            )}
+          {Array.isArray(agenda?.sessionFiles) &&
+            agenda?.sessionFiles.map((item) => (
+              <Link
+                target="_blank"
+                href={item?.file}
+                key={item?.id}
+                className="w-full group border relative rounded-lg p-3 flex items-start justify-start gap-x-2"
+              >
+                <FilePdf size={25} className="text-red-500" />
+                <div className="space-y-1 w-full">
+                  <p className="text-[13px] w-full text-ellipsis whitespace-nowrap overflow-hidden sm:text-sm text-gray-500">
+                    {item?.name}
+                  </p>
+                  <p className="text-[11px] w-full sm:text-xs text-gray-400">
+                    {item?.size}
+                  </p>
+                </div>
+              </Link>
+            ))}
+        </div>
+      </CollapsibleWidget>
     </div>
   );
 }
