@@ -155,11 +155,19 @@ export function SendMailModal<T>({
           <p className="text-center">Share the quiz with friends</p>
           <div className="w-full bg-[#F9FAFF] rounded-lg p-4 sm:p-6 flex flex-row gap-x-3 items-center justify-center">
             {socials.map(({ Icon, link }, index) => (
-              <Link key={index} href={link} target="_blank" className="">
+              <Link
+                key={index}
+                href={link}
+                target="_blank"
+                className="w-[46px] h-[46px] rounded-full bg-white flex items-center justify-center"
+              >
                 <Icon size={40} />
               </Link>
             ))}
-            <button onClick={copyLink} className="">
+            <button
+              onClick={copyLink}
+              className="w-[46px] h-[46px] rounded-full bg-white flex items-center justify-center"
+            >
               <RxLink2 size={40} />
 
               {isShow && (
