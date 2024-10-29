@@ -6,6 +6,7 @@ const SlideToReveal = ({ action }) => {
   const [sliderPosition, setSliderPosition] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
   const [ref, { width }] = useMeasure();
+  console.log(width, "width");
   const sliderWidth = width || 300; // Adjust this width based on your design
 
   const handleDrag = (e, data) => {
@@ -13,7 +14,7 @@ const SlideToReveal = ({ action }) => {
     let newPosition = Math.min(Math.max(data.x, 0), sliderWidth);
     setSliderPosition(newPosition);
 
-    if (sliderPosition >= sliderWidth) {
+    if (newPosition >= sliderWidth) {
       action(); // Trigger the action passed as prop
       setSliderPosition(0);
     } else {

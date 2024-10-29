@@ -118,8 +118,10 @@ export const useGetAgendas = (
 
 export const useGetEventAgendas = ({
   eventId,
+  isAlias = false,
 }: {
   eventId: string;
+  isAlias: boolean;
 }): UseGetResult<TAgenda[], "eventAgendas", "getEventAgendas"> => {
   const [eventAgendas, setEventAgendas] = useState<TAgenda[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
@@ -130,7 +132,7 @@ export const useGetEventAgendas = ({
 
     try {
       const { data, status } = await getRequest<TAgenda[]>({
-        endpoint: `events/${eventId}/agendas`,
+        endpoint: `events/${eventId}/agendas?isAlias=${isAlias ? "1" : "0"}`,
       });
 
       if (status !== 200) {
@@ -257,8 +259,8 @@ export const useSendReview = () => {
 
 interface TCalculatedReview {
   average: number;
-  rating: number
-  review: TFeedBack[]
+  rating: number;
+  review: TFeedBack[];
 }
 export const useGetReviews = () => {
   const [rating, setRating] = useState<TCalculatedReview | null>(null);
@@ -384,5 +386,3 @@ export const useGetMyAgendas = ({ eventId }: { eventId: string }) => {
 
   return { myAgendas, isLoading, getMyAgendas };
 };
-
-

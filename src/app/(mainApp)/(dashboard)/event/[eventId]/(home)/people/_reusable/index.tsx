@@ -194,6 +194,9 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
                 event={event}
                 sponsors={sponsors}
                 loading={loading}
+                userContactRequests={userContactRequests}
+                isLoading={contactRequestIsLoading}
+                getContactRequests={getContactRequests}
               />
             </section>
           </>
