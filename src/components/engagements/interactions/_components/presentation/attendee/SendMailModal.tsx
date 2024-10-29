@@ -10,7 +10,7 @@ import {
   Input,
 } from "@/components";
 import { useForm } from "react-hook-form";
-import { CloseOutline } from "styled-icons/evaicons-outline";
+// import { CloseOutline } from "styled-icons/evaicons-outline";
 import { Navigation } from "styled-icons/feather";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,7 +42,7 @@ export function SendMailModal<T>({
   isAttendee: boolean;
   actualQuiz: TQuiz<TQuestion[]> | null;
   attendeeEmail?: string;
-  answers: TAnswer[];
+  answers?: TAnswer[];
 }) {
   const { updateQuiz, isLoading } = useSendQuizScore();
   const form = useForm<z.infer<typeof sendMailQuizSchema>>({
@@ -52,7 +52,10 @@ export function SendMailModal<T>({
     },
   });
   const [isShow, showSuccess] = useState(false);
-  const url = `${window.location.origin}/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`;
+  const url =
+    quiz?.interactionType !== "poll"
+      ? `${window.location.origin}/quiz/${quiz?.eventAlias}/present/${quiz?.quizAlias}`
+      : `${window.location.origin}/poll/${quiz?.eventAlias}/present/${quiz?.quizAlias}`;
   function copyLink() {
     copy(url);
     showSuccess(true);
@@ -90,7 +93,7 @@ export function SendMailModal<T>({
   }
 
   const attendeePoint = useMemo(() => {
-    if (Array.isArray(answers) && answers?.length > 0) {
+    if (answers && Array.isArray(answers) && answers?.length > 0) {
       return answers
         ?.filter((ans) => ans.quizParticipantId === id)
         ?.reduce((acc, curr) => acc + Number(curr?.attendeePoints), 0);
@@ -133,22 +136,26 @@ export function SendMailModal<T>({
               </span>{" "}
               🥳
             </h2>
-            <p>You have completed the quiz</p>
+            <p>{`You have completed the ${
+              quiz?.interactionType !== "poll" ? "quiz" : "poll"
+            }`}</p>
           </div>
           <h1 className="font-semibold text-2xl text-center sm:text-4xl">
             {quiz?.coverTitle}
           </h1>
-          <div className="space-y-2 flex flex-col items-center justify-center">
-            <p className="font-medium text-lg sm:text-2xl">{attendeePoint}</p>
-            <p className="flex items-center gap-x-2">
-              <InlineIcon
-                icon="solar:star-circle-bold-duotone"
-                fontSize={22}
-                color="#9D00FF"
-              />
-              Points
-            </p>
-          </div>
+          {quiz?.interactionType !== "poll" && (
+            <div className="space-y-2 flex flex-col items-center justify-center">
+              <p className="font-medium text-lg sm:text-2xl">{attendeePoint}</p>
+              <p className="flex items-center gap-x-2">
+                <InlineIcon
+                  icon="solar:star-circle-bold-duotone"
+                  fontSize={22}
+                  color="#9D00FF"
+                />
+                Points
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="w-[95%] max-w-xl bg-white mx-auto h-fit my-6 sm:my-10 rounded-lg flex flex-col gap-3 items-center justify-center  p-4">
@@ -189,7 +196,7 @@ export function SendMailModal<T>({
                 Thanks for Participating
               </h2>
               <p className="text-xs sm:text-sm ">
-                Do you wish to receive the quiz result?
+                Do you wish to receive the result?
               </p>
 
               <FormField
@@ -222,19 +229,21 @@ export function SendMailModal<T>({
           </Form>
         </div>
 
-        <div className="w-full mt-6 sm:mt-10 flex items-center justify-center gap-x-3">
-          <Button
-            className="rounded-lg border border-basePrimary ga-x-2"
-            onClick={close}
-          >
-            <InlineIcon
-              fontSize={22}
-              icon="iconoir:leaderboard-star"
-              color="#9D00FF"
-            />
-            <p className="gradient-text bg-basePrimary">LeaderBoard</p>
-          </Button>
-        </div>
+        {quiz?.interactionType !== "poll" && (
+          <div className="w-full mt-6 sm:mt-10 flex items-center justify-center gap-x-3">
+            <Button
+              className="rounded-lg border border-basePrimary ga-x-2"
+              onClick={close}
+            >
+              <InlineIcon
+                fontSize={22}
+                icon="iconoir:leaderboard-star"
+                color="#9D00FF"
+              />
+              <p className="gradient-text bg-basePrimary">LeaderBoard</p>
+            </Button>
+          </div>
+        )}
 
         <div className="w-full  mt-16 sm:mt-32 h-fit relative sm:h-[200px] px-4 bg-gradient-to-tr rounded-lg from-custom-bg-gradient-start to-custom-bg-gradient-end">
           <div className=" flex flex-col sm:flex-row items-center justify-between h-fit w-full max-w-3xl">
@@ -247,13 +256,17 @@ export function SendMailModal<T>({
             />
             <div className="flex flex-col items-start justify-start gap-y-3">
               <h3 className="font-semibold text-base sm:text-2xl text-center sm:text-start">
-                Organize your own quiz now
+                {`Organize your own ${
+                  quiz?.interactionType !== "poll" ? "quiz" : "poll"
+                } now`}
               </h3>
               <Link
                 href={`/event/${actualQuiz?.eventAlias}/engagements/interactions`}
                 className="text-white font-medium h-11 text-center px-6 rounded-lg bg-basePrimary"
               >
-                Create your own quiz!
+                {`Create your own ${
+                  quiz?.interactionType !== "poll" ? "quiz" : "poll"
+                }!`}
               </Link>
             </div>
           </div>
