@@ -75,7 +75,7 @@ const MainTopBar = ({
   return (
     <header
       className={cn(
-        "border-b w-full p-4 items-center flex justify-between ",
+        "border-b w-full px-4 py-[1.3rem] items-center flex justify-between ",
         pathname.includes("events") && "hidden"
       )}
     >

@@ -536,6 +536,7 @@ export function PlayersOnboarding({
   const { updateQuiz } = useUpdateQuiz();
   const params = useSearchParams();
   const query = params.get("redirect");
+  const respAlias = params.get("responseAlias")
   const { addLiveParticipant } = useAddLiveParticipant();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -655,6 +656,7 @@ export function PlayersOnboarding({
         attendee: attendee || undefined,
         joinedAt: new Date().toISOString(),
         participantImage: chosenAvatar,
+        formResponseAlias: respAlias
       };
 
       await addLiveParticipant({ payload });
@@ -670,6 +672,7 @@ export function PlayersOnboarding({
                 attendee: attendee || undefined,
                 joinedAt: new Date().toISOString(),
                 participantImage: chosenAvatar,
+                formResponseAlias: respAlias
               },
             ]
           : [
@@ -679,6 +682,7 @@ export function PlayersOnboarding({
                 attendee: attendee || undefined,
                 joinedAt: new Date().toISOString(),
                 participantImage: chosenAvatar,
+                formResponseAlias: respAlias
               },
             ],
       };
