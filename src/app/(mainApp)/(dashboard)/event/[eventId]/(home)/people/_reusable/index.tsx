@@ -72,27 +72,6 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
   const [initialSelectionMade, setInitialSelectionMade] =
     useState<boolean>(false);
 
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (!initialSelectionMade && attendeeAlias) {
-      console.log("here");
-      const attendeeFromUrl = attendees.find(
-        (attendee) => attendee.attendeeAlias === attendeeAlias
-      );
-      if (attendeeFromUrl) {
-        selectAttendee(attendeeFromUrl);
-        setInitialSelectionMade(true);
-        return;
-      }
-    }
-
-    const updatedAttendee = attendees.find(
-      ({ id }) => selectedAttendee && selectedAttendee.id === id
-    );
-    selectAttendee(updatedAttendee);
-  }, [attendees, isLoading, attendeeAlias]);
-
   // useEffect(() => {
   //   if (selectedAttendee) {
   //     router.replace({
@@ -155,6 +134,27 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     isLoading: contactRequestIsLoading,
     getContactRequests,
   } = useGetContactRequests({ userEmail: user.userEmail });
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!initialSelectionMade && attendeeAlias) {
+      console.log("here");
+      const attendeeFromUrl = attendees.find(
+        (attendee) => attendee.attendeeAlias === attendeeAlias
+      );
+      if (attendeeFromUrl) {
+        selectAttendee(attendeeFromUrl);
+        setInitialSelectionMade(true);
+        return;
+      }
+    }
+
+    const updatedAttendee = attendees.find(
+      ({ id }) => selectedAttendee && selectedAttendee.id === id
+    );
+    selectAttendee(updatedAttendee);
+  }, [attendees, isLoading, attendeeAlias]);
 
   return (
     <section

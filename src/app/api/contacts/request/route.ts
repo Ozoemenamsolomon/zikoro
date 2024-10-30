@@ -13,6 +13,8 @@ export async function POST(
       const payload = await req.json();
 
       // send mail to both
+      const { searchParams } = new URL(req.url);
+      const receiverAlias = searchParams.get("receiverAlias");
       const senderEmail = payload.senderUserEmail;
       const receiverEmail = payload.receiverUserEmail;
       const eventAlias = payload.eventAlias;
@@ -54,6 +56,8 @@ export async function POST(
         return NextResponse.json({ msg: "Sender not found" }, { status: 404 });
       }
 
+      console.log(sender, receiver, "sender and receiver");
+
       const { error } = await supabase
         .from("contactRequest")
         .insert({ ...payload, status: "pending" });
@@ -71,6 +75,12 @@ export async function POST(
       if (!event) {
         return NextResponse.json({ msg: "Event not found" }, { status: 404 });
       }
+
+      const link = `https://www.zikoro.com/event/${
+        event.eventAlias
+      }/people/all?email=${
+        receiver.userEmail
+      }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${receiverAlias}`;
 
       await client.sendMail({
         from: { address: process.env.NEXT_PUBLIC_EMAIL, name: "Zikoro" },
@@ -90,26 +100,14 @@ export async function POST(
       ${event.eventTitle} - Contact Request
     </p>
     <div style="width: 100%; height: 250px;">
-      <img src="${
-        event.eventPoster
-      }" alt="event-image" style="width: 100%; height: 100%; border-radius: 8px; object-fit: cover;">
+      <img src="${event.eventPoster}" alt="event-image" style="width: 100%; height: 100%; border-radius: 8px; object-fit: cover;">
     </div>
 
     <div>
       <p style="font-size: 14px; color: #b4b4b4; text-align: center; margin-bottom: 10px">
-        <b>${
-          receiver.firstName
-        }</b>, you've received a contact request for the event ${
-          event.eventTitle
-        } from <b>${sender.firstName}</b>.
+        <b>${receiver.firstName}</b>, you've received a contact request for the event ${event.eventTitle} from <b>${sender.firstName}</b>.
       </p>
-        <a href="https://www.zikoro.com/event/${
-          event.eventAlias
-        }/people/all?goToAttendee=${receiver.attendeeAlias}&email=${
-          receiver.email
-        }&createdAt=${new Date().toISOString()}&isPasswordless=${true}&alias=${
-          receiver.attendeeAlias
-        }" style="display: block; text-align: center; margin: 30px 0; padding: 5px 0; background-color: #001fcc; color: #ffffff; font-size: 16px; text-decoration: none; border-radius: 4px; width: 100%">
+        <a href="${link}" style="display: block; text-align: center; margin: 30px 0; padding: 5px 0; background-color: #001fcc; color: #ffffff; font-size: 16px; text-decoration: none; border-radius: 4px; width: 100%">
           <button style="background-color: #001fcc; color: white; padding: 0.8rem 1.2rem; border-radius: 5px; border: none; cursor: pointer;">
             View on Zikoro
           </button>
@@ -117,9 +115,7 @@ export async function POST(
     </div>
 
     <div style="max-width: 600px; margin: 1rem auto; font-size: 14px; color: #b4b4b4; text-align: center;">
-      This event is managed by ${
-        event.organisationName
-      } and powered by <a href="https://www.zikoro.com" style="color: #001fcc;">Zikoro</a>.
+      This event is managed by ${event.organisationName} and powered by <a href="https://www.zikoro.com" style="color: #001fcc;">Zikoro</a>.
     </div>
     <div style="max-width: 600px; margin: 0.5rem auto; font-size: 14px; text-align: center;">
       <a href="https://www.zikoro.com/privacy" style="color: #001fcc; text-decoration: none;">Privacy Policy</a> | 

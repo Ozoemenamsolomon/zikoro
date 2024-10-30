@@ -403,7 +403,9 @@ export default function SecondSection({
 
   const clsBtnRef = useRef<HTMLButtonElement>(null);
 
-  const { requestContact, isLoading: requestingContact } = useRequestContact();
+  const { requestContact, isLoading: requestingContact } = useRequestContact({
+    receiverAlias: attendeeAlias,
+  });
 
   const isEventOwner = user && String(event?.createdBy) === String(user.id);
   const attendeeIsUser = user.userEmail === email;
