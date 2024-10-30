@@ -656,7 +656,7 @@ export function PlayersOnboarding({
         attendee: attendee || undefined,
         joinedAt: new Date().toISOString(),
         participantImage: chosenAvatar,
-      //  formResponseAlias: respAlias
+      formResponseAlias: respAlias
       };
 
       await addLiveParticipant({ payload });
