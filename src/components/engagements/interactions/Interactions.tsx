@@ -119,7 +119,7 @@ export default function Interactions({ eventId }: { eventId: string }) {
 
   return (
     <InteractionLayout eventId={eventId}>
-      <div className="w-full">
+      <div className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
         <div className="flex items-end w-full justify-end p-4">
           {!isLoading && !loading && interactioDataLength > 0 && (
             <Button

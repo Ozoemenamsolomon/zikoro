@@ -120,7 +120,7 @@ export function SendMailModal<T>({
   ];
   return (
     <div className="w-full h-full inset-0 fixed px-4 overflow-y-auto bg-[#F9FAFF]">
-      <div className="w-full mx-auto max-w-[1400px]">
+      <div className="w-full mx-auto max-w-[1300px]">
         <Image
           className="w-full h-fit"
           src="/qhurray.png"

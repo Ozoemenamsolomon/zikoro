@@ -58,7 +58,7 @@ export function SingleEventHome({ eventId }: { eventId: string }) {
     Array.isArray(partnersData) && partnersData?.length > 1 ? Slider : "div";
   return (
     <>
-      <div className="w-full grid  grid-cols-1 md:grid-cols-9 items-center justify-center sm:justify-start sm:items-start ">
+      <div className="w-full grid  px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10 grid-cols-1 md:grid-cols-9 items-center justify-center sm:justify-start sm:items-start ">
         <div className="w-full bg-white col-span-full md:col-span-6 flex flex-col gap-y-4  items-start justify-start border-r">
           <div className={cn("w-full", active > 1 && "hidden sm:block")}>
             <EventSchedule event={data} loading={loading} />

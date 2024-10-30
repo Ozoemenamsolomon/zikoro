@@ -47,7 +47,10 @@ function SubmittedModal() {
       </div>
     </div>
   );
+
+
 }
+
 function AttendeeFillFormComp({
   eventId,
 
@@ -140,7 +143,7 @@ function AttendeeFillFormComp({
         currentIndexes,
         currentIndexes + questionPerSlide
       );
-      console.log(currentIndexes)
+      console.log(currentIndexes, currentIndexes + questionPerSlide)
       setCurrentQuestion(slicedQuestion);
     } else {
       setCurrentQuestion(fields);
@@ -148,6 +151,7 @@ function AttendeeFillFormComp({
   }, [data, fields, currentIndexes]);
 
   // console.log(form.getValues());
+  console.log("uiop", currentQuestions);
 
   useEffect(() => {
     if (data) {
@@ -203,27 +207,31 @@ function AttendeeFillFormComp({
             onSubmit={form.handleSubmit(onSubmit)}
             className="w-full flex flex-col items-start justify-start gap-y-4 sm:gap-y-6 2xl:gap-y-8"
           >
+           
             {currentQuestions?.map((field, index) => (
-              <>
+              <div className="w-full" key={`${field.id}-${JSON.stringify(field)}`}>
+              
                 {field.selectedType === "INPUT_TEXT" && (
-                  <TextTypeAnswer form={form} index={index} />
+                  <TextTypeAnswer   form={form} index={index+ currentIndexes} />
                 )}
                 {field.selectedType === "INPUT_DATE" && (
-                  <DateTypeAnswer form={form} index={index} />
+                  <DateTypeAnswer  form={form} index={index+ currentIndexes} />
                 )}
                 {field.selectedType === "INPUT_CHECKBOX" && (
-                  <CheckboxTypeAnswer form={form} index={index} />
+                  <CheckboxTypeAnswer  form={form} index={index+ currentIndexes} />
                 )}
                 {field.selectedType === "INPUT_RATING" && (
-                  <RatingTypeAnswer form={form} index={index} />
+                  <RatingTypeAnswer   form={form} index={index+ currentIndexes} />
                 )}
                 {field.selectedType === "ATTACHMENT" && (
-                  <UploadTypeAnswer form={form} index={index} />
+                  <UploadTypeAnswer  form={form} index={index+ currentIndexes} />
                 )}
                 {field.selectedType === "INPUT_MULTIPLE_CHOICE" && (
-                  <MultiChoiceTypeAnswer form={form} index={index} />
+               
+                  <MultiChoiceTypeAnswer form={form} index={index+ currentIndexes} />
+                 
                 )}
-              </>
+              </div>
             ))}
 
             {/* {!isOrganizer && !isIdPresent && ( */}
@@ -236,11 +244,12 @@ function AttendeeFillFormComp({
                     const questionPerSlide = parseInt(
                       data?.formSettings?.questionPerSlides || "1"
                     );
+                    
                     if (
-                      currentIndexes > parseInt(data?.formSettings?.questionPerSlides || "1") 
+                      currentIndexes >= parseInt(data?.formSettings?.questionPerSlides || "1") 
                       
                     ) {
-                      setCurrentIndexes(currentIndexes - questionPerSlide);
+                      setCurrentIndexes((prev) => Math.max(0, prev - questionPerSlide));
                     }
                   }}
                   style={{
@@ -280,7 +289,10 @@ function AttendeeFillFormComp({
                       const questionPerSlide = parseInt(
                         data?.formSettings?.questionPerSlides || "1"
                       );
-                      setCurrentIndexes(currentIndexes + questionPerSlide);
+                      if (currentIndexes + questionPerSlide < fields.length) {
+                        setCurrentIndexes((prev) => prev + questionPerSlide);
+                      }
+                  
                     }}
                     style={{
                       backgroundColor: data?.formSettings?.buttonColor || "",
