@@ -140,6 +140,7 @@ function AttendeeFillFormComp({
         currentIndexes,
         currentIndexes + questionPerSlide
       );
+      console.log(currentIndexes)
       setCurrentQuestion(slicedQuestion);
     } else {
       setCurrentQuestion(fields);

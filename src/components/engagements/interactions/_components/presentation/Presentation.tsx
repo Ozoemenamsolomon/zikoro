@@ -398,7 +398,7 @@ export default function Presentation({
                 </div>
               )}
               {isNotStarted && quiz ? (
-                <div className="w-full grid grid-cols-8 items-center h-full">
+                <div className="w-full grid grid-cols-8 mt-[2.4rem] items-center h-full">
                   {(isIdPresent || isOrganizer) && isLobby && (
                     <Advert
                       quiz={quiz}
@@ -690,13 +690,16 @@ export function PlayersOnboarding({
     }
 
     //  saveCookie("currentPlayer", { id });
-    setLoading(false);
-    refetch();
+    
+    await refetch();
+    await refetchLobby?.()
     if (quiz?.accessibility?.live) {
+      await refetchLobby?.()
       setisLobby(true);
     } else {
       close();
     }
+    setLoading(false);
   }
 
   function onClose() {

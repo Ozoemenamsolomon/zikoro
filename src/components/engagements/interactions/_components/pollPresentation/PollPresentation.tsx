@@ -70,7 +70,7 @@ export default function PollPresentation({
     email: "",
     nickName: attendee?.firstName || "",
   });
-  const { liveQuizPlayers, setLiveQuizPlayers } = useGetLiveParticipant({
+  const { liveQuizPlayers, setLiveQuizPlayers, getLiveParticipant } = useGetLiveParticipant({
     quizId: quizId,
   });
 
@@ -292,6 +292,7 @@ export default function PollPresentation({
                     />
                   )}
                   <PlayersOnboarding
+                    refetchLobby={getLiveParticipant}
                     attendee={attendee}
                     close={close}
                     isAttendee={!isIdPresent && !isOrganizer}

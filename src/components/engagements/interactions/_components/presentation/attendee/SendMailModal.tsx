@@ -209,7 +209,7 @@ export function SendMailModal<T>({
                         type="email"
                         placeholder="Enter your email address"
                         {...form.register("email")}
-                        className=" placeholder:text-sm h-11 sm:h-12 mt-5 mb-2 border-basePrimary bg-transparent  placeholder:text-zinc-500 text-zinv-700"
+                        className=" placeholder:text-sm h-11 sm:h-12 mt-5 mb-2 border-basePrimary bg-gradient-to-tr rounded-md from-custom-bg-gradient-start to-custom-bg-gradient-end placeholder-gray-500   text-zinc-700"
                       />
                     </FormControl>
                     <FormMessage />
@@ -232,7 +232,7 @@ export function SendMailModal<T>({
         {quiz?.interactionType !== "poll" && (
           <div className="w-full mt-6 sm:mt-10 flex items-center justify-center gap-x-3">
             <Button
-              className="rounded-lg border border-basePrimary ga-x-2"
+              className="rounded-lg border border-basePrimary gap-x-2 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end"
               onClick={close}
             >
               <InlineIcon
@@ -246,7 +246,7 @@ export function SendMailModal<T>({
         )}
 
         <div className="w-full  mt-16 sm:mt-32 h-fit relative sm:h-[200px] px-4 bg-gradient-to-tr rounded-lg from-custom-bg-gradient-start to-custom-bg-gradient-end">
-          <div className=" flex flex-col sm:flex-row items-center justify-between h-fit w-full max-w-3xl">
+          <div className=" flex flex-col sm:flex-row mx-auto items-center justify-between h-fit w-full max-w-3xl">
             <Image
               alt=""
               className="relative object-cover -top-12"
@@ -262,7 +262,7 @@ export function SendMailModal<T>({
               </h3>
               <Link
                 href={`/event/${actualQuiz?.eventAlias}/engagements/interactions`}
-                className="text-white font-medium h-11 text-center px-6 rounded-lg bg-basePrimary"
+                className="text-white font-medium flex items-center justify-center h-11 text-center px-6 rounded-lg bg-basePrimary"
               >
                 {`Create your own ${
                   quiz?.interactionType !== "poll" ? "quiz" : "poll"
