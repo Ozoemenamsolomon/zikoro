@@ -540,7 +540,7 @@ export function Qusetion({
                       <ArrowBackOutline size={20} />
                       <p className="text-sm">Exit Quiz</p>
                     </Button>
-                    {(isIdPresent || isOrganizer) && (
+                    {(isIdPresent || isOrganizer) && quiz?.accessibility?.live && (
                       <button
                         onClick={toggleJoiningAttempt}
                         className="bg-[#001fcc]/20 flex items-center w-fit  gap-x-2 rounded-3xl p-1 relative"
@@ -551,10 +551,10 @@ export function Qusetion({
                         <p>{currentParticipants?.length}</p>
                         {Array.isArray(liveQuizPlayers) &&
                           liveQuizPlayers?.length > 0 && (
-                            <div className="absolute right-0 top-0">
+                            <div className="absolute -right-1 -top-2">
                               <InlineIcon
                                 icon="mdi:dot"
-                                fontSize={20}
+                                fontSize={24}
                                 color="#001fcc"
                               />
                             </div>

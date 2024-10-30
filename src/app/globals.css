@@ -379,7 +379,7 @@ input[type="number"] {
 
 .player {
   width: 100%;
-  @apply h-48 sm:h-[25rem] lg:h-[16rem] object-cover;
+  @apply h-52 sm:h-[40vh] lg:h-[50vh] object-cover;
   aspect-ratio: unset;
 }
 

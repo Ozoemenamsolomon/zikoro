@@ -217,7 +217,7 @@ const Sent = () => {
   }, [isLoading]);
 
   return (
-    <section className="p-4">
+    <section className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
       <div className="flex justify-between mb-8">
         <div className="flex flex-col gap-2">
           <label className="font-medium">Select Category</label>

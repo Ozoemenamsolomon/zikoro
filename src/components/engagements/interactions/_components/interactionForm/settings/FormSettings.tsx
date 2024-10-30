@@ -88,6 +88,7 @@ return generateAlias()
           coverImage: image as string,
           formAlias: alias,
           eventAlias: eventId,
+          isActive: true
         };
 
     await postData({

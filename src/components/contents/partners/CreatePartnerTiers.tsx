@@ -482,7 +482,7 @@ export default function CreatePartnerTiers({ eventId }: { eventId: string }) {
           <LoaderAlt size={30} className="animate-spin" />
         </div>
       ) : (
-        <div className="w-full px-4 sm:px-6 pt-6 pb-32">
+        <div className="w-full px-4 sm:px-6 pt-6  mx-auto  max-w-[1300px] text-mobile sm:text-sm  mt-6 sm:mt-10 pb-32">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}

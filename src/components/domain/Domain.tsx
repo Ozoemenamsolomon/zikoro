@@ -47,9 +47,9 @@ export default function Domain() {
   }, [organization?.subDomain]);
 
   return (
-    <div>
+    <div className="w-full">
       {/* Custom Domain section */}
-      <div className="mt-[60px] ml-0 lg:ml-[12px] mr-0 lg:mr-[47px] pl-3 lg:pl-[24px] pr-3 lg:pr-[114px] py-8">
+      <div className="w-full pb-32">
         <div className="flex items-center gap-x-3">
           <GlobeIcon />
           <p className="text-xl font-semibold">Custom Domain</p>

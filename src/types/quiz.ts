@@ -13,6 +13,7 @@ export interface TLiveQuizParticipant {
   email?: string;
   phone?: string;
   attemptedQuiz?: TQuiz<TRefinedQuestion[]>;
+  formResponseAlias?: string | null;
 }
 export type TQuizParticipant = {
   id: string;
@@ -23,6 +24,7 @@ export type TQuizParticipant = {
   email?: string;
   phone?: string;
   attemptedQuiz?: TQuiz<any[]>;
+  formResponseAlias?: string | null;
 };
 export interface TQuiz<T> {
   id: number;

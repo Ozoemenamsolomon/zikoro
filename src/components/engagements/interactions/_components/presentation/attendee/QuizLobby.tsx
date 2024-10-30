@@ -16,7 +16,6 @@ import { QLUsers } from "@/constants";
 import Avatar from "react-nice-avatar";
 import Link from "next/link";
 import { Maximize2 } from "styled-icons/feather";
-import { isAfter } from "date-fns";
 
 export function QuizLobby({
   quiz,
