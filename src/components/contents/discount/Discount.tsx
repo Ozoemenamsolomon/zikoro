@@ -71,7 +71,7 @@ export default function Discount({ eventId }: { eventId: string }) {
 
   return (
     <>
-      <div className="px-4">
+      <div className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
         <div className="flex w-full items-center sm:items-end justify-start sm:justify-end my-3">
           {Array.isArray(formattedData) && formattedData?.length > 0 && (
             <DialogDemo

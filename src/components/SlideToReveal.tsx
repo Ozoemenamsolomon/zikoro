@@ -2,10 +2,11 @@ import { useMeasure } from "@uidotdev/usehooks";
 import React, { useState } from "react";
 import Draggable from "react-draggable";
 
-const SlideToReveal = ({ action }) => {
+const SlideToReveal = ({ action, requestingContact }) => {
   const [sliderPosition, setSliderPosition] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
   const [ref, { width }] = useMeasure();
+  console.log(width, "width");
   const sliderWidth = width || 300; // Adjust this width based on your design
 
   const handleDrag = (e, data) => {
@@ -13,7 +14,7 @@ const SlideToReveal = ({ action }) => {
     let newPosition = Math.min(Math.max(data.x, 0), sliderWidth);
     setSliderPosition(newPosition);
 
-    if (sliderPosition >= sliderWidth) {
+    if (newPosition >= sliderWidth) {
       action(); // Trigger the action passed as prop
       setSliderPosition(0);
     } else {
@@ -40,6 +41,7 @@ const SlideToReveal = ({ action }) => {
         onDrag={handleDrag}
         onStart={() => setIsSliding(true)}
         bounds={{ left: 0, right: sliderWidth }} // Set bounds for dragging
+        disabled={requestingContact}
       >
         <div
           id="slider"

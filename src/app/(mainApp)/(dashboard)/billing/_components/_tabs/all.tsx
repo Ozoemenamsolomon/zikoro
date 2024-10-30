@@ -320,28 +320,37 @@ export default function All() {
     });
 
   const totalRevenue = filteredData.reduce(
-    (acc, { amountPaid }) => (amountPaid || 0) + acc,
+    (acc, { amountPaid, registrationCompleted }) =>
+      registrationCompleted ? (amountPaid || 0) + acc : acc,
     0
   );
   const totalWallet = filteredData
     .filter(({ payOutStatus }) => payOutStatus !== "Paid")
     .reduce(
-      (acc, { amountPaid, affliateCommission, processingFee }) =>
-        (amountPaid || 0) -
-        (processingFee || 0) -
-        (affliateCommission || 0) +
+      (
         acc,
+        { amountPaid, affliateCommission, processingFee, registrationCompleted }
+      ) =>
+        registrationCompleted
+          ? (amountPaid || 0) -
+            (processingFee || 0) -
+            (affliateCommission || 0) +
+            acc
+          : acc,
       0
     );
 
   const totalAffiliateCommission = eventTransactions.reduce(
-    (acc, { affliateCommission }) => acc + (affliateCommission || 0),
+    (acc, { affliateCommission, registrationCompleted }) =>
+      registrationCompleted ? acc + (affliateCommission || 0) : acc,
     0
   );
   const totalAttendees = filteredData.reduce(
-    (acc, { attendees }) => attendees + acc,
+    (acc, { attendees, registrationCompleted }) =>
+      registrationCompleted ? attendees + acc : acc,
     0
   );
+  
   const currency =
     selectedFilters.find(({ key }) => key === "currency")?.value ?? "NGN";
 
@@ -382,7 +391,7 @@ export default function All() {
       "userEmail",
       "eventId",
       "eventAlias",
-      "events"
+      "events",
     ];
 
     const normalizedData = convertCamelToNormal<TEventTransaction>(

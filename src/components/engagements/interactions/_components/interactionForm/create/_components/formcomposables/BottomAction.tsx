@@ -120,6 +120,7 @@ function ActionsDropDown({index}:{index: number}) {
             <div 
             onClick={(e) => {
               e.stopPropagation()
+              e.preventDefault()
             }}
             className="relative bg-white w-fit rounded-lg z-[100]">
               <button

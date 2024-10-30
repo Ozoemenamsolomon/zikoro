@@ -53,6 +53,11 @@ append: (i:number) => void;
     }
   }, [watchedImage]);
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === ' ') {
+      e.stopPropagation();
+    }
+  };
   
   return (
     <div className="w-full border rounded-lg flex flex-col items-start justify-start gap-y-6 p-4 sm:p-6 bg-white">
@@ -70,6 +75,7 @@ append: (i:number) => void;
                   {...form.register(`questions.${index}.question`)}
                   className="w-full h-12 sm:h-14 border-x-0 border-t-0 bg-transparent border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
                   placeholder="Enter question"
+                  onKeyDown={handleKeyDown} 
                 />
               </FormControl>
             </FormItem>
@@ -109,6 +115,7 @@ append: (i:number) => void;
                 {...form.register(`questions.${index}.questionDescription`)}
                 className="w-full h-12 sm:h-14 border-x-0 border-t-0 bg-transparent border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
                 placeholder="Enter Description"
+                onKeyDown={handleKeyDown} 
               />
             </FormControl>
           </FormItem>

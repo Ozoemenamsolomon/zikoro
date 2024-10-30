@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useRef } from "react";
 import { THeaders } from "./";
 // import { DialogClose } from "../../ui/dialog";
 import { Button } from "@/components/ui/button";
-import { TAttendee } from "@/types/attendee";
+import { TAttendee, TCompletedFields } from "@/types/attendee";
 import { useUploadAttendees } from "@/hooks/services/attendee";
 import { DialogClose } from "@/components/ui/dialog";
 import { getCookie } from "@/hooks";
@@ -130,7 +130,7 @@ const Third = ({
         </table>
       </div>
       <div className="flex gap-4">
-        <Button onClick={() => setStep(2)} className="bg-basePrimary w-full">
+        <Button onClick={() => setStep(1)} className="bg-basePrimary w-full">
           Back
         </Button>
         <Button

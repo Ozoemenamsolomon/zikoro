@@ -101,14 +101,14 @@ export const QuillToolbar = () => {
   return (
     <div id="toolbar">
       <span className="ql-formats">
-        <select className="ql-font" defaultValue="arial">
+        {/* <select className="ql-font" defaultValue="arial">
           <option value="arial">Arial</option>
           <option value="comic-sans">Comic Sans</option>
           <option value="courier-new">Courier New</option>
           <option value="georgia">Georgia</option>
           <option value="helvetica">Helvetica</option>
           <option value="lucida">Lucida</option>
-        </select>
+        </select> */}
         <select
           className="ql-custom_variables ql-font ql-formats"
           defaultValue="variable"
@@ -129,7 +129,7 @@ export const QuillToolbar = () => {
             </option>
           ))}
         </select>
-        <select className="ql-size" defaultValue="medium">
+        {/* <select className="ql-size" defaultValue="medium">
           <option value="extra-small">Size 1</option>
           <option value="small">Size 2</option>
           <option value="medium">Size 3</option>
@@ -139,7 +139,7 @@ export const QuillToolbar = () => {
           <option value="1">Heading</option>
           <option value="2">Subheading</option>
           <option value="3">Normal</option>
-        </select>
+        </select> */}
       </span>
       <span className="ql-formats">
         <button className="ql-bold" />

@@ -40,9 +40,9 @@ import { TAttendeeTags } from "@/types/tags";
 import { TFavouriteContact } from "@/types/favourites";
 import { TFilter } from "@/types/filter";
 import { Event, TUser } from "@/types";
-import { getCookie } from "@/hooks";
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import useUserStore from "@/store/globalUserStore";
+import ArchiveAttendee from "@/components/moreOptionDialog/archiveAttendee";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -161,6 +161,10 @@ const moreOptions: TMoreOptions[] = [
   {
     label: "Import Attendees",
     Component: ImportAttendees,
+  },
+  {
+    label: "Archive Attendees",
+    Component: ArchiveAttendee,
   },
 ];
 
@@ -359,6 +363,12 @@ export default function FirstSection({
     );
   };
 
+  const isEventOwner = user && String(event?.createdBy) === String(user.id);
+
+  const userAttendee = mappedAttendees.find(
+    ({ email }) => email === user?.userEmail
+  );
+
   return (
     <>
       <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2 bg-white">
@@ -544,7 +554,8 @@ export default function FirstSection({
             />
           </svg>
           <p className="text-xs text-gray-500">
-            {mappedAttendees.length} attendees listed in your view
+            {mappedAttendees.filter(({ archive }) => !archive).length} attendees
+            listed in your view
           </p>
         </div>
         <div className=" flex items-center ">
@@ -565,15 +576,36 @@ export default function FirstSection({
           </button>
         </div>
       </div>
-      <div className="overflow-auto hide-scrollbar pb-16 md:pb-32" ref={divRef}>
+      <div
+        className="overflow-auto hide-scrollbar pb-16 md:pb-32 relative"
+        ref={divRef}
+      >
         <div className="min-h-max">
+          {userAttendee && (
+            <>
+              <Attendee
+                attendee={userAttendee}
+                isSelected={userAttendee.id === selectedAttendee?.id}
+                selectAttendee={onSelectAttendee}
+                getAttendees={getAttendees}
+                favourites={favourites}
+                favouriteIsLoading={favouriteIsLoading}
+                toggleFavourites={toggleFavourites}
+                event={event}
+                user={user}
+              />
+            </>
+          )}
           {mappedAttendees
+            .filter(({ email }) => email !== user?.userEmail)
+            .filter(({ archive }) => !archive)
             .filter(
-              ({ firstName, lastName, organization, jobTitle }) =>
+              ({ firstName, lastName, organization, jobTitle, archive }) =>
                 firstName?.toLowerCase().includes(searchTerm) ||
                 lastName?.toLowerCase().includes(searchTerm) ||
                 jobTitle?.toLowerCase().includes(searchTerm) ||
-                organization?.toLowerCase().includes(searchTerm)
+                organization?.toLowerCase().includes(searchTerm) ||
+                archive
             )
             .sort((a, b) =>
               sortOrder === "asc"

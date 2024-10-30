@@ -1286,8 +1286,8 @@ export function useVerifyUserAccess(eventId: string) {
           eventAlias === eventId && email === user?.userEmail
       )?.id;
       const attendee = eventAttendees?.find(
-        ({ email, eventAlias }) =>
-          eventAlias === eventId && email === user?.userEmail
+        ({ email, eventAlias, archive }) =>
+          eventAlias === eventId && email === user?.userEmail && !archive
       );
 
       setAttendeeId(atId);

@@ -9,7 +9,11 @@ export async function GET(req: NextRequest) {
     try {
       const { searchParams } = new URL(req.url);
       const userId = searchParams.get("userId");
-      const query = supabase.from("sentEmails").select("*");
+      const eventAlias = searchParams.get("eventAlias");
+      const query = supabase
+        .from("sentEmails")
+        .select("*")
+        .eq("eventAlias", eventAlias);
 
       if (userId) query.eq("userId", userId);
 
@@ -286,12 +290,12 @@ export async function POST(req: NextRequest) {
 const editBody = (
   body: string,
   receiver: { email: string; firstName: string; lastName: string },
-  event: { eventName: string; eventAddress: string }
+  event: { eventTitle: string; eventAddress: string }
 ) =>
   body.replaceAll(/#{(.*?)#}/g, (match, value) => {
     switch (value.trim()) {
       case "eventName":
-        return event.eventName;
+        return event.eventTitle;
       case "eventAddress":
         return event.eventAddress;
       case "attendeeFirstName":

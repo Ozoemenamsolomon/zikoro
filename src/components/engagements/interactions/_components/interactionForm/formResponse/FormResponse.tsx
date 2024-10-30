@@ -10,30 +10,77 @@ import {
 } from "./responseTypes";
 import Image from "next/image";
 import { cn } from "@/lib";
+import { Button } from "@/components/custom_ui/Button";
+import { useMemo } from "react";
+import { json2csv } from "json-2-csv";
+import { saveAs } from "file-saver";
 interface FormResponseProps {
   data:
     | {
         [key: string]: TFormattedEngagementFormAnswer[];
       }
     | undefined;
+  flattenedResponse: TFormattedEngagementFormAnswer[];
 }
-export default function FormResponses({ data }: FormResponseProps) {
-  function getRefinedData(
-    data: {[key: string]: TFormattedEngagementFormAnswer[]},
-    type: string,
-    key:string
-  ) {
-    const newData = data[key]
-    console.log({newData}, type)
-    const filteredData = newData?.filter((v) => {
-      console.log(v?.type, type, v?.type === type)
-      return v?.type === type
-    });
-    console.log({filteredData})
-    return filteredData ||[]
-  }
+export default function FormResponses({
+  data,
+  flattenedResponse,
+}: FormResponseProps) {
+ 
 
-  console.log(data);
+  const inputMultiChoiceCheckBox = useMemo(() => {
+    const checkData: { key: TFormattedEngagementFormAnswer[] }[] = [];
+    if (data) {
+      Object.entries(data).map(([key, values]) => {
+        if (
+          values?.some(
+            (v) => v?.type === "INPUT_MULTIPLE_CHOICE" && v?.questionId === key
+          )
+        ) {
+          checkData.push({ key: values });
+        }
+      });
+
+      return checkData;
+    }
+    return [];
+  }, [data]);
+
+  const inputCheckBox = useMemo(() => {
+    const checkData: { key: TFormattedEngagementFormAnswer[] }[] = [];
+    if (data) {
+      Object.entries(data).map(([key, values]) => {
+        if (
+          values?.some(
+            (v) => v?.type === "INPUT_CHECKBOX" && v?.questionId === key
+          )
+        ) {
+          checkData.push({ key: values });
+        }
+      });
+
+      return checkData;
+    }
+    return [];
+  }, [data]);
+
+  const inputRating = useMemo(() => {
+    const checkData: { key: TFormattedEngagementFormAnswer[] }[] = [];
+    if (data) {
+      Object.entries(data).map(([key, values]) => {
+        if (
+          values?.some(
+            (v) => v?.type === "INPUT_RATING" && v?.questionId === key
+          )
+        ) {
+          checkData.push({ key: values });
+        }
+      });
+
+      return checkData;
+    }
+    return [];
+  }, [data]);
 
   if (!data || (Array.isArray(data) && data?.length === 0)) {
     return (
@@ -51,12 +98,44 @@ export default function FormResponses({ data }: FormResponseProps) {
       </div>
     );
   }
+
+
+  async function downloadCsv() {
+    try {
+      const csv = json2csv(flattenedResponse);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+      saveAs(blob, "response.csv");
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="w-full px-4 mx-auto max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-4 sm:mt-6">
+     <div className="w-full mb-4 flex items-end justify-end">
+     <Button
+        onClick={downloadCsv}
+        className="w-fit  gap-x-1 items-center"
+      >
+        <p>Export</p>
+        <InlineIcon icon="lets-icons:export-duotone" fontSize={22}/>
+      </Button>
+     </div>
       {Object.entries(data).map(([key, value]) => (
         <div
           key={Math.random()}
-          className="w-full rounded-lg border p-4 mb-6 sm:mb-8"
+          className={cn(
+            "w-full rounded-lg border p-4 mb-6 sm:mb-8",
+            value[0]?.type === "INPUT_MULTIPLE_CHOICE" &&
+              value[0]?.questionId === key &&
+              "hidden",
+            value[0]?.type === "INPUT_CHECKBOX" &&
+              value[0]?.questionId === key &&
+              "hidden",
+            value[0]?.type === "INPUT_RATING" &&
+              value[0]?.questionId === key &&
+              "hidden"
+          )}
         >
           <div
             className={cn(
@@ -106,35 +185,106 @@ export default function FormResponses({ data }: FormResponseProps) {
                     <UploadTypeResponse response={item} />
                   </div>
                 )}
-
-                 {item?.type === "INPUT_RATING" &&
-            getRefinedData(data, "INPUT_RATING", key)?.length > 0 && (
-              <RatingTypeResponse
-                responses={getRefinedData(data, "INPUT_RATING", key)}
-              />
-            )}
-
-              {item?.type === "INPUT_CHECKBOX"&&
-             
-            getRefinedData(data, "INPUT_CHECKBOX", key)?.length > 0 && (
-              <CheckBoxTypeResponse
-                responses={getRefinedData(data, "INPUT_CHECKBOX", key)}
-              />
-            )}
-             {item?.type === "INPUT_MULTIPLE_CHOICE" &&
-            getRefinedData(data, "INPUT_MULTIPLE_CHOICE", key)?.length > 0 && (
-              <CheckBoxTypeResponse
-                responses={getRefinedData(data, "INPUT_MULTIPLE_CHOICE", key)}
-              />
-            )}
-                
               </div>
             ))}
-           
-        
-           
         </div>
       ))}
+
+      {inputCheckBox.length > 0 &&
+        inputCheckBox.map((v) => (
+          <div className="w-full rounded-lg border p-4 mb-6 sm:mb-8">
+            <div
+              className={cn(
+                "w-full flex flex-col items-start mb-4 sm:mb-6 justify-start"
+              )}
+            >
+              <div>
+                {v?.key[0]?.question && (
+                  <p className="font-medium text-sm sm:text-base mb-2">
+                    {v?.key[0]?.question}
+                  </p>
+                )}
+                {v?.key[0]?.questionImage ? (
+                  <Image
+                    alt=""
+                    width={2000}
+                    height={600}
+                    className="w-full rounded-lg h-[15rem]"
+                    src={v?.key[0]?.questionImage ?? ""}
+                  />
+                ) : (
+                  ""
+                )}
+              </div>
+              <p>{v?.key?.length} Responses</p>
+            </div>
+            <CheckBoxTypeResponse type="single" responses={v?.key} />
+          </div>
+        ))}
+
+      {inputMultiChoiceCheckBox.length > 0 &&
+        inputMultiChoiceCheckBox.map((v) => (
+          <div className="w-full rounded-lg border p-4 mb-6 sm:mb-8">
+            <div
+              className={cn(
+                "w-full flex flex-col items-start mb-4 sm:mb-6 justify-start"
+              )}
+            >
+              <div>
+                {v?.key[0]?.question && (
+                  <p className="font-medium text-sm sm:text-base mb-2">
+                    {v?.key[0]?.question}
+                  </p>
+                )}
+                {v?.key[0]?.questionImage ? (
+                  <Image
+                    alt=""
+                    width={2000}
+                    height={600}
+                    className="w-full rounded-lg h-[15rem]"
+                    src={v?.key[0]?.questionImage ?? ""}
+                  />
+                ) : (
+                  ""
+                )}
+              </div>
+              <p>{v?.key?.length} Responses</p>
+            </div>
+            <CheckBoxTypeResponse type="multi" responses={v?.key} />
+          </div>
+        ))}
+
+      {inputRating.length > 0 &&
+        inputRating.map((v) => (
+          <div className="w-full rounded-lg border p-4 mb-6 sm:mb-8">
+            <div
+              className={cn(
+                "w-full flex flex-col items-start mb-4 sm:mb-6 justify-start"
+              )}
+            >
+              <div>
+                {v?.key[0]?.question && (
+                  <p className="font-medium text-sm sm:text-base mb-2">
+                    {v?.key[0]?.question}
+                  </p>
+                )}
+                {v?.key[0]?.questionImage ? (
+                  <Image
+                    alt=""
+                    width={2000}
+                    height={600}
+                    className="w-full rounded-lg h-[15rem]"
+                    src={v?.key[0]?.questionImage ?? ""}
+                  />
+                ) : (
+                  ""
+                )}
+              </div>
+              <p>{v?.key?.length} Responses</p>
+            </div>
+            <RatingTypeResponse responses={v?.key} />
+          </div>
+        ))}
     </div>
   );
 }

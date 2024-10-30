@@ -9,16 +9,14 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { Users } from "styled-icons/fa-solid";
 import { Dot } from "styled-icons/bootstrap";
 import { Edit } from "styled-icons/boxicons-solid";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AboutWidget, EventLocationType } from "@/components/composables";
 import { TOrgEvent } from "@/types";
 import { DeleteEventModal } from "..";
 import { getCookie, useDuplicateEvent, useFormatEventData } from "@/hooks";
 import { saveCookie } from "@/hooks";
-import { cn } from "@/lib";
 import { useRouter } from "next/navigation";
 import { ExternalLink } from "styled-icons/remix-fill";
-import useAccessStore from "@/store/globalAcessStore";
 export function EventCard({
   event,
   refetch,
@@ -53,6 +51,16 @@ export function EventCard({
     saveCookie("event", event);
     router.push(`/event/${event?.eventAlias}/content/info`);
   }
+
+  const registeredAttendees = useMemo(() => {
+      if (event.attendees) {
+
+        return event.attendees?.filter((a) => !a?.archive).length
+      }
+      else {
+        return null
+      }
+  },[event])
 
   return (
     <div
@@ -117,10 +125,10 @@ export function EventCard({
             <p className="flex items-center ">
               <span>{`${event.expectedParticipants ?? 0} participants`}</span>
 
-              {event?.registered !== null && <Dot size={22} />}
-              {event?.registered !== null && (
+              {registeredAttendees !== null && <Dot size={22} />}
+              {registeredAttendees !== null && (
                 <span className="text-xs font-medium  text-basePrimary">{`${
-                  event?.registered.toLocaleString() ?? ""
+                  registeredAttendees.toLocaleString() ?? ""
                 } registered`}</span>
               )}
             </p>

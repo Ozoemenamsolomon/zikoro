@@ -11,12 +11,20 @@ export async function GET(req: NextRequest) {
       const userId = searchParams.get("userId");
       const organisationId = searchParams.get("organisationId");
 
-      const query = supabase.from("events").select("*, organization!inner(*)");
+      const query = supabase.from("events").select("*, organization!inner(*), attendees!inner(*)");
 
       if (userId) query.eq("createdBy", userId);
       if (organisationId) query.eq("organisationId", organisationId);
 
       const { data, error, status } = await query;
+
+      if (data) {
+        data.forEach(event => {
+          if (event.attendees && !Array.isArray(event.attendees)) {
+            event.attendees = [event.attendees]; 
+          }
+        });
+      }
 
       if (error) {
         return NextResponse.json(

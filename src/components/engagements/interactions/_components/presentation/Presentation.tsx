@@ -9,6 +9,7 @@ import {
   SendMailModal,
   AvatarModal,
 } from "..";
+import { isAfter } from "date-fns";
 import { useState, useEffect, useMemo } from "react";
 import { Slider } from "@mui/material";
 import {
@@ -55,7 +56,7 @@ function createAudioInstance() {
     const audio = new Audio("/audio/AylexCinematic.mp3");
     //  audio.src = "audio/AylexCinematic.mp3";
     audio.loop = true;
-    audio.volume=0.2;
+   
 
     return audio;
   }
@@ -71,7 +72,6 @@ type TPlayerDetail = {
 export default function Presentation({
   eventId,
   quizId,
-
 }: {
   eventId: string;
   quizId: string;
@@ -88,11 +88,15 @@ export default function Presentation({
   const [isSendMailModal, setIsSendMailModal] = useState(false); // state to toggle send-mail modal after attendee finishes the quiz
   const [showScoreSheet, setShowScoreSheet] = useState(false); // state to toggle show-score sheet after attendee finishes the quiz
   const [isAudioMuted, setIsAudioMuted] = useState(false);
-  const [volume, adjustVolume] = useState(0.8);
+  const [volume, adjustVolume] = useState(0.05);
   const { data } = useFetchSingleEvent(eventId);
-  const params  = useSearchParams()
-  const query = params.get("redirect")
-  const aId  = params.get("id")
+  const params = useSearchParams();
+  const { liveQuizPlayers, setLiveQuizPlayers, getLiveParticipant } =
+    useGetLiveParticipant({
+      quizId: quizId,
+    });
+  const query = params.get("redirect");
+  const aId = params.get("id");
   // const {liveQuizPlayers} = useGetLiveParticipant({quizId})
   const { deleteQuizLobby } = useDeleteQuizLobby(quizId);
 
@@ -140,6 +144,44 @@ export default function Presentation({
     };
   }, [supabase, quiz, isIdPresent, isOrganizer]);
 
+  function createBeep() {
+    if (typeof window !== "undefined") {
+      const audio = new Audio("/audio/beep.wav");
+      //  audio.src = "audio/AylexCinematic.mp3";
+
+      audio.volume = 0.2;
+
+      audio.play();
+    }
+  }
+  // subscribe to player
+  useEffect(() => {
+    if (!quiz?.accessibility?.live) return;
+    const channel = supabase
+      .channel("live-players")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "quizLobby",
+          filter: `quizAlias=eq.${quiz?.quizAlias}`,
+        },
+        (payload) => {
+          // console.log("new", payload.new);
+          setLiveQuizPlayers((prev) => [
+            ...prev,
+            payload.new as TLiveQuizParticipant,
+          ]);
+          createBeep();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase, quiz]);
   // memoized audio instance
   const audio = useMemo(() => createAudioInstance(), []);
 
@@ -286,6 +328,7 @@ export default function Presentation({
                   quiz={quizResult}
                   actualQuiz={quiz}
                   isAttendee={!isIdPresent && !isOrganizer}
+                  answers={answers}
                   attendeeEmail={attendee?.email || playerDetail?.email}
                 />
               ) : (
@@ -355,7 +398,7 @@ export default function Presentation({
                 </div>
               )}
               {isNotStarted && quiz ? (
-                <div className="w-full grid grid-cols-8 items-center h-full">
+                <div className="w-full grid grid-cols-8 mt-[2.4rem] items-center h-full">
                   {(isIdPresent || isOrganizer) && isLobby && (
                     <Advert
                       quiz={quiz}
@@ -366,6 +409,7 @@ export default function Presentation({
                     />
                   )}
                   <PlayersOnboarding
+                    refetchLobby={getLiveParticipant}
                     attendee={attendee}
                     close={close}
                     isAttendee={!isIdPresent && !isOrganizer}
@@ -382,6 +426,7 @@ export default function Presentation({
                     audio={audio}
                     onToggle={onToggle}
                     isLeftBox={isLeftBox}
+                    liveQuizPlayers={liveQuizPlayers}
                   />
                 </div>
               ) : (
@@ -403,6 +448,8 @@ export default function Presentation({
                     refetchQuiz={getQuiz}
                     refetchQuizAnswers={getAnswers}
                     quiz={refinedQuizArray}
+                    actualQuiz={quiz!}
+                    getLiveParticipant={getLiveParticipant}
                     isRightBox={isRightBox}
                     toggleRightBox={onToggle}
                     toggleLeftBox={onClose}
@@ -411,6 +458,7 @@ export default function Presentation({
                     updateQuiz={updateQuiz}
                     updateQuizResult={updateQuizResult}
                     quizParticipantId={id}
+                    liveQuizPlayers={liveQuizPlayers}
                     attendeeDetail={{
                       attendeeId: attendeeId ? String(attendeeId) : null,
                       attendeeName: playerDetail?.nickName,
@@ -461,7 +509,8 @@ export function PlayersOnboarding({
   quiz,
   onToggle,
   isLeftBox,
-
+  liveQuizPlayers,
+  refetchLobby,
 }: {
   close: () => void;
   attendee?: TAttendee;
@@ -469,6 +518,7 @@ export function PlayersOnboarding({
   isAttendee: boolean;
   id: string;
   playerDetail: TPlayerDetail;
+  refetchLobby?: () => Promise<any>;
   setPlayerDetail: React.Dispatch<React.SetStateAction<TPlayerDetail>>;
   isLobby: boolean;
   setisLobby: React.Dispatch<React.SetStateAction<boolean>>;
@@ -481,10 +531,12 @@ export function PlayersOnboarding({
   quiz: TQuiz<TQuestion[]>;
   onToggle: () => void;
   isLeftBox: boolean;
+  liveQuizPlayers: TLiveQuizParticipant[];
 }) {
   const { updateQuiz } = useUpdateQuiz();
-  const params = useSearchParams()
-  const query = params.get("redirect")
+  const params = useSearchParams();
+  const query = params.get("redirect");
+  const respAlias = params.get("responseAlias")
   const { addLiveParticipant } = useAddLiveParticipant();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -492,9 +544,6 @@ export function PlayersOnboarding({
   const { organization } = useOrganizationStore();
   useRealtimePresence(quiz?.accessibility?.live);
   const [isAvatar, setIsAvatar] = useState(false);
-  const { liveQuizPlayers, setLiveQuizPlayers } = useGetLiveParticipant({
-    quizId: quiz?.quizAlias,
-  });
 
   const isMaxParticipant = useMemo(() => {
     if (
@@ -543,34 +592,6 @@ export function PlayersOnboarding({
       return false;
     }
   }, [quiz?.accessibility?.live, quiz, liveQuizPlayers, organization]);
-
-  // subscribe to player
-  useEffect(() => {
-    if (!quiz?.accessibility?.live) return;
-    const channel = supabase
-      .channel("live-players")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "quizLobby",
-          filter: `quizAlias=eq.${quiz?.quizAlias}`,
-        },
-        (payload) => {
-          // console.log("new", payload.new);
-          setLiveQuizPlayers((prev) => [
-            ...prev,
-            payload.new as TLiveQuizParticipant,
-          ]);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase, quiz]);
 
   useEffect(() => {
     if (quiz && isAttendee && !query) {
@@ -635,6 +656,7 @@ export function PlayersOnboarding({
         attendee: attendee || undefined,
         joinedAt: new Date().toISOString(),
         participantImage: chosenAvatar,
+      formResponseAlias: respAlias
       };
 
       await addLiveParticipant({ payload });
@@ -650,6 +672,7 @@ export function PlayersOnboarding({
                 attendee: attendee || undefined,
                 joinedAt: new Date().toISOString(),
                 participantImage: chosenAvatar,
+                formResponseAlias: respAlias
               },
             ]
           : [
@@ -659,6 +682,7 @@ export function PlayersOnboarding({
                 attendee: attendee || undefined,
                 joinedAt: new Date().toISOString(),
                 participantImage: chosenAvatar,
+                formResponseAlias: respAlias
               },
             ],
       };
@@ -666,13 +690,16 @@ export function PlayersOnboarding({
     }
 
     //  saveCookie("currentPlayer", { id });
-    setLoading(false);
-    refetch();
+    
+    await refetch();
+    await refetchLobby?.()
     if (quiz?.accessibility?.live) {
+      await refetchLobby?.()
       setisLobby(true);
     } else {
       close();
     }
+    setLoading(false);
   }
 
   function onClose() {
@@ -691,12 +718,19 @@ export function PlayersOnboarding({
     refetch();
     setisLobby(true);
     setLoading(false);
-    if (audio) audio.play();
+    if (audio) {
+      audio.volume = 0.05;
+      audio.play();
+    }
+    
   }
 
   useEffect(() => {
+    if (!quiz?.liveMode?.startingAt) return;
+    const currentTime = new Date();
+    const quizStartingTime = new Date(quiz?.liveMode?.startingAt);
     let interval = setInterval(() => {
-      if (isLobby && quiz?.liveMode?.startingAt) {
+      if (isLobby && isAfter(currentTime, quizStartingTime)) {
         refetch();
       } else {
         clearInterval(interval);
@@ -712,20 +746,12 @@ export function PlayersOnboarding({
       quiz?.liveMode?.startingAt
     ) {
       setisLobby(true);
-      if (audio) audio.play();
+      if (audio) {
+        audio.volume = 0.05;
+        audio.play();
+      }
     }
   }, [isAttendee]);
-
-  /**
-   else if (
-      isAttendee &&
-      quiz?.accessibility?.live &&
-      quiz?.liveMode?.startingAt &&
-      currentPlayer?.id
-    ) {
-      setisLobby(true);
-    }
-   */
 
   return (
     <>
@@ -909,6 +935,8 @@ export function PlayersOnboarding({
           liveQuizPlayers={liveQuizPlayers}
           isLeftBox={isLeftBox}
           onToggle={onToggle}
+          refetchLobby={refetchLobby}
+          id={id}
         />
       )}
       {isAvatarModal && (

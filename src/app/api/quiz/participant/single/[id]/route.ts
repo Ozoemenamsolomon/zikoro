@@ -2,24 +2,36 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
+
+export async function DELETE(
   req: NextRequest,
-  { params }: { params: { eventId: number } }
+  { params }: { params: { id: string } }
 ) {
-  const { eventId } = params;
+  const { id } = params;
   const supabase = createRouteHandlerClient({ cookies });
 
-  if (req.method === "GET") {
+  if (req.method === "DELETE") {
     try {
-      const { searchParams } = new URL(req.url);
-      const isAlias = searchParams.get("isAlias");
+      
 
       const { data, error, status } = await supabase
-        .from("agenda")
-        .select("*")
-        .eq(isAlias ? "eventAlias" : "eventId", eventId);
+        .from("quizLobby")
+        .delete()
+        .eq("quizParticipantId", id);
+
+      if (error) {
+        return NextResponse.json(
+          {
+            error: error.message,
+          },
+          {
+            status: 200,
+          }
+        )
+      }
 
       if (error) throw error;
+
 
       return NextResponse.json(
         {
@@ -44,5 +56,7 @@ export async function GET(
     return NextResponse.json({ error: "Method not allowed" });
   }
 }
+
+
 
 export const dynamic = "force-dynamic";

@@ -41,7 +41,7 @@ const SuccessPage = ({
           </div>
         </div>
       )}
-      <main className="min-h-screen w-full flex flex-col bg-basePrimary/10 justify-between items-center">
+      <main className="  mx-auto  max-w-[1300px] text-mobile sm:text-sm  mt-6 sm:mt-10 min-h-screen w-full flex flex-col bg-basePrimary/10 justify-between items-center">
         <div />
         <section className="flex py-8 px-4 w-4/5 md:w-2/5 bg-white flex-col items-center justify-center gap-4 rounded-2xl text-gray-800 text-center">
           <div className="rounded-full p-4 bg-basePrimary/20 text-basePrimary">

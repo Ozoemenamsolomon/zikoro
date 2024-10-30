@@ -21,7 +21,7 @@ export function Jobs({ eventId }: { eventId: string }) {
   const { data: leads } = useGetData<TLead[]>(`leads/event/${eventId}`);
   return (
     <MarketPlaceLayout eventId={eventId}>
-      <div className="w-full grid grid-cols-1 p-2 sm:p-4 sm:grid-cols-2 lg:grid-cols-3 items-center gap-4">
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  items-center gap-4">
         {loading && (
           <div className="w-full col-span-full h-[60vh] flex items-center justify-center">
             <Loader2 size={30} className="animate-spin" />

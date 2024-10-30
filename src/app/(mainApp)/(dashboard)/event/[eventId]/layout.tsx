@@ -51,6 +51,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     isAlias: true,
   });
 
+  console.log(event, "event");
+
   // console.log(
   //   event?.organization.teamMembers,
   //   user.userEmail,
