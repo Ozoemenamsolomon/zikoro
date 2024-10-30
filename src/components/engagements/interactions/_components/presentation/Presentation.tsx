@@ -56,7 +56,7 @@ function createAudioInstance() {
     const audio = new Audio("/audio/AylexCinematic.mp3");
     //  audio.src = "audio/AylexCinematic.mp3";
     audio.loop = true;
-    audio.volume = 0.2;
+   
 
     return audio;
   }
@@ -88,7 +88,7 @@ export default function Presentation({
   const [isSendMailModal, setIsSendMailModal] = useState(false); // state to toggle send-mail modal after attendee finishes the quiz
   const [showScoreSheet, setShowScoreSheet] = useState(false); // state to toggle show-score sheet after attendee finishes the quiz
   const [isAudioMuted, setIsAudioMuted] = useState(false);
-  const [volume, adjustVolume] = useState(0.2);
+  const [volume, adjustVolume] = useState(0.05);
   const { data } = useFetchSingleEvent(eventId);
   const params = useSearchParams();
   const { liveQuizPlayers, setLiveQuizPlayers, getLiveParticipant } =
@@ -656,7 +656,7 @@ export function PlayersOnboarding({
         attendee: attendee || undefined,
         joinedAt: new Date().toISOString(),
         participantImage: chosenAvatar,
-        formResponseAlias: respAlias
+      //  formResponseAlias: respAlias
       };
 
       await addLiveParticipant({ payload });
@@ -716,7 +716,7 @@ export function PlayersOnboarding({
     setisLobby(true);
     setLoading(false);
     if (audio) {
-      audio.volume = 0.2;
+      audio.volume = 0.05;
       audio.play();
     }
     
@@ -744,7 +744,7 @@ export function PlayersOnboarding({
     ) {
       setisLobby(true);
       if (audio) {
-        audio.volume = 0.2;
+        audio.volume = 0.05;
         audio.play();
       }
     }

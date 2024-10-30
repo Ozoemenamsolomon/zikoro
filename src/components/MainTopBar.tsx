@@ -98,6 +98,15 @@ const MainTopBar = ({
                   }
                 }
               /> */}
+                   <div className="flex items-center  gap-x-3">
+                <h2 className="text-base sm:text-xl  max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden sm:w-fit  font-semibold">
+                  {event?.eventTitle ?? ""}
+                </h2>
+
+                <p className="text-basePrimary bg-basePrimary/20 px-2 flex items-center justify-center py-1 rounded-3xl text-sm">
+                  {event?.locationType ?? ""}
+                </p>
+              </div>
               <button
                 onClick={() => {
                   window.open(`/live-events/${eventId}`);
