@@ -61,6 +61,9 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const onGetAttendees = async () => {
     await getAttendees();
+    if (selectedAttendee) {
+      selectAttendee((prev) => attendees.find(({ id }) => prev.id === id));
+    }
   };
 
   const router = useRouter();
@@ -172,10 +175,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
       <div className="hidden md:contents">
         {selectedAttendee ? (
           <>
-            <section
-              className="md:col-span-4 border-r-[1px]"
-              ref={divRef}
-            >
+            <section className="md:col-span-4 border-r-[1px]" ref={divRef}>
               <SecondSection
                 attendee={selectedAttendee}
                 getAttendees={onGetAttendees}
@@ -186,6 +186,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
                 userContactRequests={userContactRequests}
                 isLoading={contactRequestIsLoading}
                 getContactRequests={getContactRequests}
+                onGetAttendees={onGetAttendees}
               />
             </section>
             <section className="flex flex-col md:col-span-3 pt-2">

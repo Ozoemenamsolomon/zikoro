@@ -125,6 +125,7 @@ export default function SecondSection({
   userContactRequests,
   contactRequestIsLoading,
   getContactRequests,
+  onGetAttendees,
 }: {
   attendee: TAttendee;
   getAttendees?: () => Promise<void>;
@@ -134,6 +135,7 @@ export default function SecondSection({
   userContactRequests: ContactRequest;
   contactRequestIsLoading: boolean;
   getContactRequests: () => Promise<void>;
+  onGetAttendees: () => Promise<void>;
 }) {
   const router = useRouter();
   const {
@@ -477,6 +479,7 @@ export default function SecondSection({
                     payload: {
                       senderUserEmail: user.userEmail,
                       receiverUserEmail: email,
+                      eventAlias: eventId,
                     },
                   });
                 }}
@@ -520,7 +523,7 @@ export default function SecondSection({
         sendWhatsAppMessage={sendWhatsAppMessage}
         action={() => {
           setOpen(true);
-          getAttendees();
+          onGetAttendees();
         }}
       />
       <section className="space-y-6 p-4 pt-0">

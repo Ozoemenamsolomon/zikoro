@@ -37,16 +37,27 @@ import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { CheckIcon } from "lucide-react";
 import { Cancel } from "styled-icons/typicons";
 
-const UserContacts = ({ user }: { user: TUser }) => {
+const UserContacts = ({
+  user,
+  engagementsSettings,
+  engagementsSettingsIsLoading,
+}: {
+  user: TUser;
+  engagementsSettingsIsLoading: boolean;
+  engagementsSettings: EngagementsSettings;
+}) => {
   const {
     userContactRequests,
     isLoading: contactRequestIsLoading,
     getContactRequests,
   } = useGetContactRequests({ userEmail: user.userEmail });
 
-  console.log(user.userEmail, userContactRequests, "contact user");
-
-  //
+  console.log(
+    user.userEmail,
+    userContactRequests,
+    engagementsSettings,
+    "contact user"
+  );
 
   const [action, setAction] = useState<"accept" | "reject" | null>(null);
   const [open, setOpen] = useState<boolean>(false);
@@ -75,12 +86,11 @@ const UserContacts = ({ user }: { user: TUser }) => {
   return (
     <div>
       <h2 className="text-lg font-medium border-b p-4">Contact Request</h2>
-      {contactRequestIsLoading && (
+      {contactRequestIsLoading && engagementsSettingsIsLoading ? (
         <div className="w-full col-span-full h-[300px] flex items-center justify-center">
           <LoaderAlt size={30} className="animate-spin" />
         </div>
-      )}
-      {!contactRequestIsLoading && (
+      ) : (
         <div className="">
           {userContactRequests
             ?.filter(
@@ -231,7 +241,7 @@ export default function ThirdSection({
   event: Event;
   sponsors: TExPartner;
   loading: boolean;
-  userContactRequests: ContactRequest;
+  userContactRequests: ContactRequest[];
   contactRequestIsLoading: boolean;
   getContactRequests: () => Promise<void>;
 }) {
@@ -376,9 +386,15 @@ export default function ThirdSection({
   const attendeeIsUser = user.userEmail === attendee.email;
 
   return (
-    <div ref={divRef}>
-      {attendeeIsUser && <UserContacts user={user} />}
-      {isEventOwner && (
+    <div className="overflow-auto no-scrollbar" ref={divRef}>
+      {attendeeIsUser && userContactRequests.length > 0 && (
+        <UserContacts
+          engagementsSettings={engagementsSettings}
+          engagementsSettingsIsLoading={engagementsSettingsIsLoading}
+          user={user}
+        />
+      )}
+      {(isEventOwner || attendeeIsUser) && (
         <div className="overflow-auto no-scrollbar pb-48">
           <div className="mb-6 mt-2 space-y-4">
             <h4 className="text-xl text-greyBlack font-medium border-b-[1px] border-gray-200 pb-2 px-2">
