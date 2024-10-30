@@ -22,7 +22,7 @@ import Link from "next/link";
 const tabs = [
   { name: "Description", id: 1 },
   { name: "Review", id: 2 },
-  { name: "Description", id: 3 },
+  { name: "Engagement", id: 3 },
 ];
 
 export function Engagement({
@@ -97,12 +97,9 @@ export function Engagement({
         </section>
       )}
 
-      <div
-        className={cn(
-          "p-2 lg:p-4 w-full  h-fit bg-gray-100 hidden " &&
-            active === 2 &&
-            "block"
-        )}
+     { active === 2 &&  <div
+        className=
+          "p-2 lg:p-4 w-full  h-fit bg-gray-100 "
       >
         {rating > 0 || isSent ? (
           <ReviewComment
@@ -143,7 +140,7 @@ export function Engagement({
             </div>
           </div>
         )}
-      </div>
+      </div>}
       {/** collapsible widgets */}
       <CollapsibleWidget
         title="Speakers"
@@ -152,7 +149,7 @@ export function Engagement({
         event={event}
         refetch={refetch}
       >
-        <div className="w-full px-3 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4">
+        <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
           {Array.isArray(agenda?.sessionSpeakers) &&
             agenda?.sessionSpeakers?.length === 0 && (
               <div className="w-full col-span-full h-[200px] flex items-center justify-center">
@@ -179,7 +176,7 @@ export function Engagement({
         event={event}
         refetch={refetch}
       >
-        <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 items-center gap-4">
+        <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
           {Array.isArray(agenda?.sessionModerators) &&
             agenda?.sessionModerators?.length === 0 && (
               <div className="w-full col-span-full h-[200px] flex items-center justify-center">
@@ -206,7 +203,7 @@ export function Engagement({
         isNotAttendee={isIdPresent || isOrganizer}
         refetch={refetch}
       >
-        <div className="w-full px-3 py-4 grid grid-cols-2 md:grid-cols-3 items-center gap-4">
+        <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
           {Array.isArray(agenda?.sessionSponsors) &&
             agenda?.sessionSponsors?.length === 0 && (
               <div className="w-full col-span-full h-[200px] flex items-center justify-center">
@@ -232,7 +229,7 @@ export function Engagement({
         event={event}
         refetch={refetch}
       >
-        <div className="w-full px-3 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 items-center gap-4">
+        <div className="w-full px-3 py-4 grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 items-center gap-4">
           {Array.isArray(agenda?.sessionFiles) &&
             agenda?.sessionFiles?.length === 0 && (
               <div className="w-full col-span-full h-[200px] flex items-center justify-center">

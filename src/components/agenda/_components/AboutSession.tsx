@@ -248,7 +248,7 @@ export function AboutSession({
   return (
     <>
       {agenda && event && (
-        <div className="w-full lg:col-span-5 border-r">
+        <div className="w-full lg:col-span-5">
           {agenda?.sessionUrl && (
             <div className="w-full h-52 bg-gray-300 sm:h-[40vh] lg:h-[50vh]">
               <Player
