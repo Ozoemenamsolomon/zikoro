@@ -482,6 +482,7 @@ export default function SecondSection({
                       eventAlias: eventId,
                     },
                   });
+                  await onGetAttendees();
                 }}
                 className="bg-basePrimary w-full"
               >
@@ -523,8 +524,8 @@ export default function SecondSection({
         sendWhatsAppMessage={sendWhatsAppMessage}
         action={() => {
           setOpen(true);
-          onGetAttendees();
         }}
+        requestingContact={requestingContact}
       />
       <section className="space-y-6 p-4 pt-0">
         <div className="space-y-2">

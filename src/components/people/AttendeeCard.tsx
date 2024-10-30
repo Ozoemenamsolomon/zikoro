@@ -193,7 +193,10 @@ export default function AttendeeCard(props) {
                     </p>
                   </div>
                 ) : (
-                  <SlideToReveal action={props.action} />
+                  <SlideToReveal
+                    action={props.action}
+                    requestingContact={props.requestingContact}
+                  />
                 )}
               </div>
             </div>

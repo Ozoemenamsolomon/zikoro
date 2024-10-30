@@ -95,13 +95,13 @@ export async function POST(
       }" alt="event-image" style="width: 100%; height: 100%; border-radius: 8px; object-fit: cover;">
     </div>
 
-    <div style="display: flex; flex-direction: column; align-items: center; padding-top: 1rem;">
-      <p style="font-size: 14px; color: #b4b4b4; text-align: center;">
+    <div>
+      <p style="font-size: 14px; color: #b4b4b4; text-align: center; margin-bottom: 10px">
         <b>${
           receiver.firstName
         }</b>, you've received a contact request for the event ${
           event.eventTitle
-        } from ${sender.firstName}.
+        } from <b>${sender.firstName}</b>.
       </p>
         <a href="https://www.zikoro.com/event/${
           event.eventAlias
