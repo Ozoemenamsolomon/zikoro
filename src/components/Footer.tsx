@@ -198,6 +198,13 @@ export default function Footer() {
         >
           Pricing{" "}
         </p>
+
+        <p
+          onClick={() => router.push("/blog/all")}
+          className="font-light cursor-pointer text-[13px] lg:text-base"
+        >
+          Blog{" "}
+        </p>
       </div>
 
       <div className="mt-16 lg:mt-20 border-t-[1px] border-indigo-500 bg-gradient-to-tr from-custom-bg-gradient-start to-custom-bg-gradient-end  px-2 lg:px-0 py-2">
