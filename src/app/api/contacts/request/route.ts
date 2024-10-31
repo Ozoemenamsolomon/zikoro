@@ -104,12 +104,19 @@ export async function POST(
     </div>
 
     <div>
+    <!-- heading -->
+    <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 10px;">
+      Hi <b>${receiver.firstName}</b>
+    </h1>
       <p style="font-size: 14px; color: #b4b4b4; text-align: center; margin-bottom: 10px">
-        <b>${receiver.firstName}</b>, you've received a contact request for the event ${event.eventTitle} from <b>${sender.firstName}</b>.
+        You've received a new contact request from Kachi, one of the attendees at the Test Event.
+      </p>
+      <p style="font-size: 14px; color: #b4b4b4; text-align: center; margin-bottom: 10px">
+        Visit your profile to view and respond to the request.
       </p>
         <a href="${link}" style="display: block; text-align: center; margin: 30px 0; padding: 5px 0; background-color: #001fcc; color: #ffffff; font-size: 16px; text-decoration: none; border-radius: 4px; width: 100%">
           <button style="background-color: #001fcc; color: white; padding: 0.8rem 1.2rem; border-radius: 5px; border: none; cursor: pointer;">
-            View on Zikoro
+            Go to my profile
           </button>
         </a>
     </div>

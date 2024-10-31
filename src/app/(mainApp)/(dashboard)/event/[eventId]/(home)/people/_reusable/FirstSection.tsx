@@ -43,6 +43,7 @@ import { Event, TUser } from "@/types";
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import useUserStore from "@/store/globalUserStore";
 import ArchiveAttendee from "@/components/moreOptionDialog/archiveAttendee";
+import { ContactRequest } from "@/types/contacts";
 
 type TSortorder = "asc" | "desc" | "none";
 
@@ -176,6 +177,7 @@ export default function FirstSection({
   onSelectAttendee,
   selectedAttendee,
   event,
+  contactRequests,
 }: {
   onOpen: () => void;
   attendees: TAttendee[];
@@ -184,6 +186,7 @@ export default function FirstSection({
   onSelectAttendee: (attendee: TAttendee) => void;
   selectedAttendee: TAttendee;
   event: Event;
+  contactRequests: ContactRequest[];
 }) {
   const { user, setUser } = useUserStore();
   const divRef = useRef<HTMLDivElement>(null);
@@ -372,9 +375,22 @@ export default function FirstSection({
   return (
     <>
       <div className="flex space-between justify-between border-b-[1px] border-[#F3F3F3] py-4 md:py-2 px-2 bg-white">
-        <h1 className="font-semibold leading-normal text-greyBlack ">
-          Attendees
-        </h1>
+        <div className="flex items-center gap-2">
+          <h1 className="font-semibold leading-normal text-greyBlack">
+            Attendees{" "}
+          </h1>
+          {contactRequests.length > 0 && (
+            <span className="bg-basePrimary/20 text-basePrimary text-sm p-1.5 flex items-center justify-center rounded-xl">
+              {contactRequests.filter(
+                (contactRequest) => contactRequest.status === "accepted"
+              ).length > 0
+                ? contactRequests.filter(
+                    (contactRequest) => contactRequest.status === "accepted"
+                  ).length + "  contacts exchanged"
+                : ""}
+            </span>
+          )}
+        </div>
         {user && String(event?.createdBy) === String(user.id) && (
           <div className="flex gap-4 items-center">
             <button
@@ -593,6 +609,7 @@ export default function FirstSection({
                 toggleFavourites={toggleFavourites}
                 event={event}
                 user={user}
+                contactRequests={contactRequests}
               />
             </>
           )}

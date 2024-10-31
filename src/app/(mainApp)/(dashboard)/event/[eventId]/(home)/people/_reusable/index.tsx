@@ -59,13 +59,6 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const selectAttendee = (attendee: TAttendee) => setSelectedAttendee(attendee);
 
-  const onGetAttendees = async () => {
-    await getAttendees();
-    if (selectedAttendee) {
-      selectAttendee((prev) => attendees.find(({ id }) => prev.id === id));
-    }
-  };
-
   const router = useRouter();
   const pathname = usePathname() || "/";
 
@@ -156,6 +149,14 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     selectAttendee(updatedAttendee);
   }, [attendees, isLoading, attendeeAlias]);
 
+  const onGetAttendees = async () => {
+    await getAttendees();
+    await getContactRequests();
+    if (selectedAttendee) {
+      selectAttendee((prev) => attendees.find(({ id }) => prev.id === id));
+    }
+  };
+
   return (
     <section
       className="relative h-fit md:border-t w-full grid md:grid-cols-10 overflow-hidden pb-12"
@@ -170,6 +171,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
           isLoading={isLoading}
           getAttendees={onGetAttendees}
           event={event}
+          contactRequests={userContactRequests}
         />
       </section>
       <div className="hidden md:contents">
