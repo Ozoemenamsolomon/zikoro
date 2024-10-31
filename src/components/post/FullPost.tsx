@@ -295,7 +295,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                   {/* Share Buttons */}
                   <div className="mt-8">
                     <p className="text-xl font-medium">Share This Article</p>
-                    <div className="flex gap-x-[14px] mt-4">
+                    <div className="flex gap-x-[14px] items-center mt-4">
                       <div
                         className="cursor-pointer"
                         onClick={handleShareOnTwitter}
