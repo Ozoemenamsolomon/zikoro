@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
         .from('blog')
         .select()
         .eq( 'status', 'publish')
-        .eq('category', 'product')
+        .eq('category', 'Product')
   
         if (error) throw error;
   

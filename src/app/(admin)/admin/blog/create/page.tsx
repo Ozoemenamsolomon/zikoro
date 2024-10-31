@@ -64,6 +64,7 @@ export default function BlogCreate() {
   });
 
   const categories = [
+    { name: "Select A Category", value: "" },
     { name: "Event tips", value: "Event" },
     { name: "Product Updates", value: "Product" },
     { name: "Guides and Tutorial", value: "Guide" },

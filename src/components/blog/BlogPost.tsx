@@ -90,20 +90,22 @@ export default function BlogPost({
       onClick={goToPost}
       className="flex flex-col md:flex-row gap-x-0 md:gap-x-8 lg:gap-x-16  cursor-pointer gap-y-6 lg:gap-y-0 px-3 lg:px-0"
     >
-      <Image
-        src={headerImageUrl ? headerImageUrl : "/postImage2.png"}
-        alt=""
-        height={240}
-        width={524}
-        className="hidden lg:block rounded-lg w-[524px] h-[240px] object-cover"
-      />
-      <Image
-        src={headerImageUrl ? headerImageUrl : "/postImage2.png"}
-        alt=""
-        height={240}
-        width={367}
-        className="block lg:hidden rounded-lg w-full object-cover h-[160px]"
-      />
+      <div className="">
+        <Image
+          src={headerImageUrl ? headerImageUrl : "/postImage2.png"}
+          alt=""
+          height={240}
+          width={524}
+          className="hidden lg:block rounded-lg w-[480px] max-w-[480px] h-[240px] object-cover"
+        />
+        <Image
+          src={headerImageUrl ? headerImageUrl : "/postImage2.png"}
+          alt=""
+          height={240}
+          width={367}
+          className="block lg:hidden rounded-lg w-full object-cover h-[160px]"
+        />
+      </div>
 
       <div className="flex flex-col justify-center ">
         <p className="text-indigo-700 capitalize font-medium text-xs lg:text-base">
