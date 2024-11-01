@@ -154,7 +154,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
           const targetElement = document.getElementById(targetId.slice(1));
           if (targetElement) {
             targetElement.scrollIntoView({ behavior: "smooth" });
-            router.push(`#${targetId.slice(1)}`, { shallow: true });
+            router.push(`#${targetId.slice(1)}`);
           }
         }
       }
@@ -295,7 +295,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
                   {/* Share Buttons */}
                   <div className="mt-8">
                     <p className="text-xl font-medium">Share This Article</p>
-                    <div className="flex gap-x-[14px] mt-4">
+                    <div className="flex gap-x-[14px] items-center mt-4">
                       <div
                         className="cursor-pointer"
                         onClick={handleShareOnTwitter}
@@ -366,7 +366,7 @@ export default function FullPost({ postId }: { postId: string }): JSX.Element {
 
               {similarPosts.length > 0 ? (
                 <div className="flex flex-col lg:flex-row mx-auto max-w-full lg:max-w-6xl gap-x-0 lg:gap-x-[60px] gap-y-7 lg:gap-y-0 pb-[80px] lg:pb-[162px] pt-12  ">
-                  {similarPosts.slice(0, 3).map((post) => (
+                  {similarPosts.slice(0, 2).map((post) => (
                     <PostArticle
                       key={post.id}
                       id={post.id}

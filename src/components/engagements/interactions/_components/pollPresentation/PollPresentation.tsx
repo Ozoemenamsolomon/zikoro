@@ -70,7 +70,7 @@ export default function PollPresentation({
     email: "",
     nickName: attendee?.firstName || "",
   });
-  const { liveQuizPlayers, setLiveQuizPlayers } = useGetLiveParticipant({
+  const { liveQuizPlayers, setLiveQuizPlayers, getLiveParticipant } = useGetLiveParticipant({
     quizId: quizId,
   });
 
@@ -103,6 +103,16 @@ export default function PollPresentation({
     };
   }, [supabase, poll, isIdPresent, isOrganizer]);
 
+  function createBeep() {
+    if (typeof window !== "undefined") {
+      const audio = new Audio("/audio/beep.wav");
+      //  audio.src = "audio/AylexCinematic.mp3";
+
+      audio.volume = 0.2;
+
+      audio.play();
+    }
+  }
 
     // subscribe to player
     useEffect(() => {
@@ -123,6 +133,7 @@ export default function PollPresentation({
               ...prev,
               payload.new as TLiveQuizParticipant,
             ]);
+            createBeep();
           }
         )
         .subscribe();
@@ -264,6 +275,7 @@ export default function PollPresentation({
                   poll={pollResult} // change it to pull
                   answers={answers}
                   close={closeAnswerSheet}
+                  isAttendee={!isOrganizer && !isIdPresent}
                 />
               )}
             </>
@@ -281,6 +293,7 @@ export default function PollPresentation({
                     />
                   )}
                   <PlayersOnboarding
+                    refetchLobby={getLiveParticipant}
                     attendee={attendee}
                     close={close}
                     isAttendee={!isIdPresent && !isOrganizer}
@@ -327,12 +340,15 @@ export default function PollPresentation({
                     refetchQuiz={getPoll}
                     refetchQuizAnswers={getAnswers}
                     poll={poll || refinedPollArray}
+                    actualPoll={poll}
+                    getLiveParticipant={getLiveParticipant}
                     toggleLeftBox={onToggle}
                     onOpenScoreSheet={onOpenScoreSheet}
                     goBack={exitPoll}
                     updateQuiz={updatePoll}
                     updateQuizResult={updatePollResult}
                     pollParticipantId={id}
+                    liveQuizPlayers={liveQuizPlayers}
                     attendeeDetail={{
                       attendeeId: attendeeId ? String(attendeeId) : null,
                       attendeeName: playerDetail?.nickName,

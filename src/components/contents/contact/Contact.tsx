@@ -154,7 +154,7 @@ function Contact({ eventId }: { eventId: string }) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full"
+          className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10"
           id="form"
         >
           <div className="w-full p-4 flex items-center sm:items-end justify-start sm:justify-end">

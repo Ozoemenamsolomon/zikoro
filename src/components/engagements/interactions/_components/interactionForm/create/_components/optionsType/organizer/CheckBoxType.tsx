@@ -22,8 +22,8 @@ import { Button } from "@/components";
 import { MdClose } from "react-icons/md";
 import { nanoid } from "nanoid";
 import { IoIosCloseCircle } from "react-icons/io";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+// import { useSortable } from "@dnd-kit/sortable";
+// import { CSS } from "@dnd-kit/utilities";
 // import {
 //   DndContext,
 //   KeyboardSensor,
@@ -62,24 +62,20 @@ function OptionItem({
   removeImage: (id: string) => void;
   setOption: (id: string, value: string, type:string) => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-  useSortable({ id: option?.id });
+  // const { attributes, listeners, setNodeRef, transform, transition } =
+  // useSortable({ id: option?.id });
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === ' ') {
-      e.stopPropagation();
-    }
-  };
+
   return (
     <div
-    ref={setNodeRef}
-    {...attributes}
-    {...listeners}
-    style={{
-      transition,
-      transform: CSS.Transform.toString(transform),
-      touchAction: "none",
-    }}
+    // ref={setNodeRef}
+    // {...attributes}
+    // {...listeners}
+    // style={{
+    //   transition,
+    //   transform: CSS.Transform.toString(transform),
+    //   touchAction: "none",
+    // }}
     role="button"
      className="w-full rounded-lg py-4  bg-gradient-to-tr  space-y-3  ">
       <div className="w-full items-center flex justify-between">
@@ -102,7 +98,7 @@ function OptionItem({
             e.stopPropagation()
             setOption(option.id, e.target.value, "text");
           }}
-          onKeyDown={handleKeyDown} 
+        //  onKeyDown={handleKeyDown} 
           value={option?.option}
           type="text"
           className="w-full h-12 sm:h-14 border-x-0 border-b bg-transparent border-gray-300 rounded-none border-t-0 px-2 placeholder:text-gray-400"
@@ -203,7 +199,11 @@ export function CheckBoxType({
     }
   }, [watchedImage]);
 
-
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === ' ') {
+      e.stopPropagation();
+    }
+  };
 
   // form field
   useEffect(() => {
@@ -278,6 +278,7 @@ export function CheckBoxType({
                   {...form.register(`questions.${index}.question`)}
                   className="w-full h-12 sm:h-14 border-x-0 border-t-0 border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
                   placeholder="Enter question"
+                  onKeyDown={handleKeyDown} 
                 />
               </FormControl>
             </FormItem>
@@ -315,6 +316,7 @@ export function CheckBoxType({
                 {...form.register(`questions.${index}.questionDescription`)}
                 className="w-full h-12 sm:h-14 border-x-0 border-t-0 bg-transparent border-b px-2 placeholder:text-gray-500 rounded-none placeholder-gray-500"
                 placeholder="Enter Description"
+                onKeyDown={handleKeyDown} 
               />
             </FormControl>
           </FormItem>

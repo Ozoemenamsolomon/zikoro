@@ -16,22 +16,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import useOrganizationStore from "@/store/globalOrganizationStore";
-import { ExternalLink } from "styled-icons/feather";
 import {
-  getCookie,
   useCheckTeam,
-  useGetOrganizations,
   useGetUserEvents,
-  useGetUserTeamOrganizations,
   useVerifyUserAccess,
 } from "@/hooks";
-import { TAttendee, TOrganization, TUser } from "@/types";
+import {  TOrganization } from "@/types";
 import useEventStore from "@/store/globalEventStore";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
-import { UserIcon } from "@/constants";
+import { usePathname, useRouter } from "next/navigation";
 import useUserStore from "@/store/globalUserStore";
-import { useGetData } from "@/hooks/services/request";
+import { ExternalLink } from "@styled-icons/feather/ExternalLink";
 
 const MainTopBar = ({
   eventId,
@@ -81,7 +75,7 @@ const MainTopBar = ({
   return (
     <header
       className={cn(
-        "border-b w-full p-4 items-center flex justify-between ",
+        "border-b w-full px-4 py-[1.3rem] items-center flex justify-between ",
         pathname.includes("events") && "hidden"
       )}
     >
@@ -89,7 +83,7 @@ const MainTopBar = ({
         <>
           {isIdPresent || isOrganizer ? (
             <div className="flex items-center gap-x-2">
-              <Selector
+              {/* <Selector
                 heading={"Your Workspaces"}
                 options={(events ?? [])?.map(({ eventAlias, eventTitle }) => ({
                   label: eventTitle,
@@ -103,7 +97,16 @@ const MainTopBar = ({
                     value: event.eventAlias,
                   }
                 }
-              />
+              /> */}
+                   <div className="flex items-center  gap-x-3">
+                <h2 className="text-base sm:text-xl  max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden sm:w-fit  font-semibold">
+                  {event?.eventTitle ?? ""}
+                </h2>
+
+                <p className="text-basePrimary bg-basePrimary/20 px-2 flex items-center justify-center py-1 rounded-3xl text-sm">
+                  {event?.locationType ?? ""}
+                </p>
+              </div>
               <button
                 onClick={() => {
                   window.open(`/live-events/${eventId}`);
@@ -113,6 +116,7 @@ const MainTopBar = ({
                 <ExternalLink size={20} />
               </button>
             </div>
+         
           ) : (
             <div>
               <div className="flex items-center pb-[0.31rem] pt-[0.4rem] gap-x-3">

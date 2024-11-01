@@ -125,6 +125,7 @@ export default function SecondSection({
   userContactRequests,
   contactRequestIsLoading,
   getContactRequests,
+  onGetAttendees,
 }: {
   attendee: TAttendee;
   getAttendees?: () => Promise<void>;
@@ -134,6 +135,7 @@ export default function SecondSection({
   userContactRequests: ContactRequest;
   contactRequestIsLoading: boolean;
   getContactRequests: () => Promise<void>;
+  onGetAttendees: () => Promise<void>;
 }) {
   const router = useRouter();
   const {
@@ -401,7 +403,9 @@ export default function SecondSection({
 
   const clsBtnRef = useRef<HTMLButtonElement>(null);
 
-  const { requestContact, isLoading: requestingContact } = useRequestContact();
+  const { requestContact, isLoading: requestingContact } = useRequestContact({
+    receiverAlias: attendeeAlias,
+  });
 
   const isEventOwner = user && String(event?.createdBy) === String(user.id);
   const attendeeIsUser = user.userEmail === email;
@@ -477,8 +481,10 @@ export default function SecondSection({
                     payload: {
                       senderUserEmail: user.userEmail,
                       receiverUserEmail: email,
+                      eventAlias: eventId,
                     },
                   });
+                  await onGetAttendees();
                 }}
                 className="bg-basePrimary w-full"
               >
@@ -520,8 +526,8 @@ export default function SecondSection({
         sendWhatsAppMessage={sendWhatsAppMessage}
         action={() => {
           setOpen(true);
-          getAttendees();
         }}
+        requestingContact={requestingContact}
       />
       <section className="space-y-6 p-4 pt-0">
         <div className="space-y-2">

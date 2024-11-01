@@ -59,36 +59,11 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
 
   const selectAttendee = (attendee: TAttendee) => setSelectedAttendee(attendee);
 
-  const onGetAttendees = async () => {
-    await getAttendees();
-  };
-
   const router = useRouter();
   const pathname = usePathname() || "/";
 
   const [initialSelectionMade, setInitialSelectionMade] =
     useState<boolean>(false);
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (!initialSelectionMade && attendeeAlias) {
-      console.log("here");
-      const attendeeFromUrl = attendees.find(
-        (attendee) => attendee.attendeeAlias === attendeeAlias
-      );
-      if (attendeeFromUrl) {
-        selectAttendee(attendeeFromUrl);
-        setInitialSelectionMade(true);
-        return;
-      }
-    }
-
-    const updatedAttendee = attendees.find(
-      ({ id }) => selectedAttendee && selectedAttendee.id === id
-    );
-    selectAttendee(updatedAttendee);
-  }, [attendees, isLoading, attendeeAlias]);
 
   // useEffect(() => {
   //   if (selectedAttendee) {
@@ -153,6 +128,35 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
     getContactRequests,
   } = useGetContactRequests({ userEmail: user.userEmail });
 
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!initialSelectionMade && attendeeAlias) {
+      console.log("here");
+      const attendeeFromUrl = attendees.find(
+        (attendee) => attendee.attendeeAlias === attendeeAlias
+      );
+      if (attendeeFromUrl) {
+        selectAttendee(attendeeFromUrl);
+        setInitialSelectionMade(true);
+        return;
+      }
+    }
+
+    const updatedAttendee = attendees.find(
+      ({ id }) => selectedAttendee && selectedAttendee.id === id
+    );
+    selectAttendee(updatedAttendee);
+  }, [attendees, isLoading, attendeeAlias]);
+
+  const onGetAttendees = async () => {
+    await getAttendees();
+    await getContactRequests();
+    if (selectedAttendee) {
+      selectAttendee((prev) => attendees.find(({ id }) => prev.id === id));
+    }
+  };
+
   return (
     <section
       className="relative h-fit md:border-t w-full grid md:grid-cols-10 overflow-hidden pb-12"
@@ -167,15 +171,13 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
           isLoading={isLoading}
           getAttendees={onGetAttendees}
           event={event}
+          contactRequests={userContactRequests}
         />
       </section>
       <div className="hidden md:contents">
         {selectedAttendee ? (
           <>
-            <section
-              className="md:col-span-4 border-r-[1px]"
-              ref={divRef}
-            >
+            <section className="md:col-span-4 border-r-[1px]" ref={divRef}>
               <SecondSection
                 attendee={selectedAttendee}
                 getAttendees={onGetAttendees}
@@ -186,6 +188,7 @@ const ReusablePeopleComponent: React.FC<ReusablePeopleComponentProps> = ({
                 userContactRequests={userContactRequests}
                 isLoading={contactRequestIsLoading}
                 getContactRequests={getContactRequests}
+                onGetAttendees={onGetAttendees}
               />
             </section>
             <section className="flex flex-col md:col-span-3 pt-2">

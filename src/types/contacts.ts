@@ -15,4 +15,5 @@ export interface ContactRequest {
   receiverUserEmail: string;
   status: "pending" | "accepted" | "rejected";
   sender: TAttendee;
+  eventAlias: string;
 }

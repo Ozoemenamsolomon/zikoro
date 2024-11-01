@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useGetData } from "@/hooks/services/request";
 import { EngagementsSettings } from "@/types/engagements";
 import { cn } from "@/lib";
+import { CheckCircle } from "lucide-react";
 
 type AttendeeProps = {
   attendee: TAttendee;
@@ -20,6 +21,7 @@ type AttendeeProps = {
   event: Event;
   user: TUser;
   isLead: boolean;
+  contactRequests: ContactRequest[] | null;
 };
 
 const Attendee: React.FC<AttendeeProps> = ({
@@ -33,6 +35,7 @@ const Attendee: React.FC<AttendeeProps> = ({
   event,
   user,
   isLead,
+  contactRequests,
 }) => {
   const router = useRouter();
 
@@ -171,14 +174,22 @@ const Attendee: React.FC<AttendeeProps> = ({
         <div className="justify-start items-start flex flex-col gap-1 min-w-full">
           <h4
             className={cn(
-              "text-gray-900 font-semibold text-sm capitalize w-full text-left",
+              "text-gray-900 font-semibold text-sm capitalize w-full text-left flex items-center gap-x-2 truncate",
               archive && "text-red-600"
             )}
           >
-            {firstName + " " + lastName}
+            <span>{firstName + " " + lastName}</span>
             <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
               {attendeeIsUser && " (you)"}
             </span>
+            {!isLead &&
+              contactRequests &&
+              contactRequests.find(
+                (request) =>
+                  (request.senderUserEmail === attendee.email ||
+                    request.receiverUserEmail === attendee.email) &&
+                  request.status === "accepted"
+              ) && <CheckCircle className="w-5 h-5 text-green-600" />}
           </h4>
           <span className="text-tiny font-medium text-gray-700 truncate w-full text-left">
             {`${jobTitle ? jobTitle + ", " : ""}${organization || ""}`}

@@ -9,10 +9,11 @@ type RequestContactPayload = Pick<
   "senderUserEmail" | "receiverUserEmail"
 >;
 
-export const useRequestContact = (): usePostResult<
-  RequestContactPayload,
-  "requestContact"
-> => {
+export const useRequestContact = ({
+  receiverAlias,
+}: {
+  receiverAlias: string;
+}): usePostResult<RequestContactPayload, "requestContact"> => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -27,7 +28,7 @@ export const useRequestContact = (): usePostResult<
     });
     try {
       const { data, status } = await postRequest<RequestContactPayload>({
-        endpoint: "/contacts/request",
+        endpoint: `/contacts/request?receiverAlias=${receiverAlias}`,
         payload,
       });
 
@@ -37,7 +38,6 @@ export const useRequestContact = (): usePostResult<
       });
       return data.data;
     } catch (error) {
-      
       setError(true);
       toast({
         description: "An error has occurred",
@@ -71,8 +71,8 @@ export const useGetContactRequests = ({
 
     try {
       const { data, status } = await getRequest<ContactRequest[]>({
-        endpoint: `/contacts/request${
-          userEmail ? `?userEmail=${userEmail}` : ""
+        endpoint: `/contacts/request?${
+          userEmail ? `&userEmail=${userEmail}` : ""
         }`,
       });
 
@@ -133,7 +133,6 @@ export const useRespondToContactRequest = (): usePostResult<
       });
       return data.data;
     } catch (error) {
-      
       setError(true);
       toast({
         description: "An error has occurred",

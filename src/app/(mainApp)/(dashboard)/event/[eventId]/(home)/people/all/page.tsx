@@ -5,16 +5,19 @@ import ReusablePeopleComponent from "../_reusable";
 
 export default function page({
   params: { eventId },
-  searchParams: { attendeeAlias },
+  searchParams: { alias },
 }: {
   params: { eventId: string };
-  searchParams: { attendeeAlias: string };
+  searchParams: { alias: string };
 }) {
   const useGetAttendeesprops = useGetAttendees({ eventId });
 
   return (
     <Suspense fallback={<>Loading...</>}>
-      <ReusablePeopleComponent {...useGetAttendeesprops} />
+      <ReusablePeopleComponent
+        attendeeAlias={alias}
+        {...useGetAttendeesprops}
+      />
     </Suspense>
   );
 }
