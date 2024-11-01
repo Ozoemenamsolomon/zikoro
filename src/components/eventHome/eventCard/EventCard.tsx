@@ -53,7 +53,7 @@ export function EventCard({
   }
 
   const registeredAttendees = useMemo(() => {
-      if (event.attendees) {
+      if (event && event.attendees) {
 
         return event.attendees?.filter((a) => !a?.archive).length
       }

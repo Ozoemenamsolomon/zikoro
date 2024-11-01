@@ -120,7 +120,7 @@ export function HeaderWidget({
                   borderColor="#001fcc"
                   bgColor="#001fcc1a"
                  height="h-[2.3rem]"
-                 minHeight="34px"
+                 minHeight="2.3rem"
                   placeHolderColor="#64748b"
                   placeHolder="Select Organization"
                 />

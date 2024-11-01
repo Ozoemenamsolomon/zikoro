@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  EventDetail,
-  EventAttendeeWidget,
-} from "@/components/published";
+import { EventDetail, EventAttendeeWidget } from "@/components/published";
 import Link from "next/link";
 import { Button } from "@/components";
 import {
@@ -420,9 +417,7 @@ export default function SinglePublishedEvent({
 
                   <div className="flex w-full items-center justify-between">
                     {eventAttendees?.length > 0 && (
-                      <EventAttendeeWidget
-                        attendees={eventAttendees}
-                      />
+                      <EventAttendeeWidget attendees={eventAttendees} />
                     )}
                     <button
                       onClick={() => setOpen((p) => !p)}
@@ -499,12 +494,18 @@ export default function SinglePublishedEvent({
                     </div>
 
                     <div className="w-full z-10 fixed sm:relative bg-white bottom-0 inset-x-0 sm:p-0 p-3 sm:w-fit">
-                      <Button
-                        onClick={onClose}
-                        className="rounded-lg w-full h-12 sm:h-11 sm:w-fit font-medium bg-basePrimary text-white"
-                      >
-                        Get Ticket
-                      </Button>
+                      {eventDetail?.published ? (
+                        <Button
+                          onClick={onClose}
+                          className="rounded-lg w-full h-12 sm:h-11 sm:w-fit font-medium bg-basePrimary text-white"
+                        >
+                          Get Ticket
+                        </Button>
+                      ) : (
+                        <p className="font-semibold text-base sm:text-xl text-red-600">
+                          Event is not yet Published
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -513,23 +514,24 @@ export default function SinglePublishedEvent({
                     About the Organizer
                   </h3>
                   <div className="flex w-full flex-col items-center py-4 justify-center gap-3">
-                    {eventDetail?.organization?.organizationLogo &&
-                    eventDetail?.organization?.organizationLogo?.startsWith(
-                      "https"
-                    ) ? (
-                      <Image
-                        src={eventDetail?.organization?.organizationLogo}
-                        className="max-h-[40px] max-w-[100px]"
-                        alt=""
-                        width={200}
-                        height={200}
-                      />
-                    ) : null
-                    // <div className="w-[60px] h-[60px] bg-gray-200 rounded-full flex items-center justify-center">
-                    //   <p className="text-sm gradient-text bg-basePrimary font-medium">
-                    //     Logo
-                    //   </p>
-                    // </div>
+                    {
+                      eventDetail?.organization?.organizationLogo &&
+                      eventDetail?.organization?.organizationLogo?.startsWith(
+                        "https"
+                      ) ? (
+                        <Image
+                          src={eventDetail?.organization?.organizationLogo}
+                          className="max-h-[40px] max-w-[100px]"
+                          alt=""
+                          width={200}
+                          height={200}
+                        />
+                      ) : null
+                      // <div className="w-[60px] h-[60px] bg-gray-200 rounded-full flex items-center justify-center">
+                      //   <p className="text-sm gradient-text bg-basePrimary font-medium">
+                      //     Logo
+                      //   </p>
+                      // </div>
                     }
                     <p>{eventDetail?.organization?.organizationName ?? ""}</p>
 

@@ -42,12 +42,12 @@ export default function Home() {
   ];
   return (
     <div className="w-full px-4 mx-auto  max-w-[1300px] text-mobile sm:text-sm sm:px-6 mt-6 sm:mt-10">
-      <div className=" px-2 sm:px-4 pb-2 w-full pt-[2.5rem]     flex justify-between items-center ">
+      <div className=" px-2 sm:px-4 pb-2 w-full      flex justify-between items-center ">
         <h2 className="font-semibold text-base sm:text-2xl capitalize">{`Welcome ${
           user?.firstName ?? "User"
         }`}</h2>
       </div>
-      <div className="w-full px-2 sm:px-4 pt-[7.5rem] ">
+      <div className="w-full px-2 sm:px-4 mt-4 sm:mt-6 ">
         <div className="w-full py-4 overflow-x-auto no-scrollbar">
           <div className="min-w-max gap-4 flex items-center">
             {homeTab.map(({ title, href, subTitle, image }) => (
