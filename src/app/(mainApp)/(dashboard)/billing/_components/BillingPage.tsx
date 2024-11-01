@@ -22,7 +22,7 @@ export default function BillingPage({ currentTab }: { currentTab: string }) {
   }
 
   return (
-    <section className="w-full mx-auto  max-w-[1300px] sm:px-6 mt-6 sm:mt-10 pt-[4.5rem] px-2 md:px-4 md:pb-4 pb-2  space-y-6">
+    <section className="w-full mx-auto  max-w-[1300px] sm:px-6 mt-6 sm:mt-10 px-2 md:px-4 md:pb-4 pb-2  space-y-6">
       <Tabs
         onValueChange={(value) => handleTabChange(value)}
         defaultValue={currentTab || "all"}
