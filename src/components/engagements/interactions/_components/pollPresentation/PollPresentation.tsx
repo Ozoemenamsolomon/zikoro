@@ -339,12 +339,15 @@ export default function PollPresentation({
                     refetchQuiz={getPoll}
                     refetchQuizAnswers={getAnswers}
                     poll={poll || refinedPollArray}
+                    actualPoll={poll}
+                    getLiveParticipant={getLiveParticipant}
                     toggleLeftBox={onToggle}
                     onOpenScoreSheet={onOpenScoreSheet}
                     goBack={exitPoll}
                     updateQuiz={updatePoll}
                     updateQuizResult={updatePollResult}
                     pollParticipantId={id}
+                    liveQuizPlayers={liveQuizPlayers}
                     attendeeDetail={{
                       attendeeId: attendeeId ? String(attendeeId) : null,
                       attendeeName: playerDetail?.nickName,

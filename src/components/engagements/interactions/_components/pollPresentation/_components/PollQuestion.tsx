@@ -1,6 +1,6 @@
 "use client";
 
-import { TQuiz, TQuestion, TAnswer } from "@/types";
+import { TQuiz, TQuestion, TAnswer, TLiveQuizParticipant } from "@/types";
 import { AvatarFullConfig } from "react-nice-avatar";
 import { cn } from "@/lib";
 import { useState, useEffect, useMemo } from "react";
@@ -14,6 +14,10 @@ import Image from "next/image";
 import { LoaderAlt } from "styled-icons/boxicons-regular";
 import { PollOption } from "./PollOption";
 import { Minimize2 } from "styled-icons/feather";
+import { isAfter } from "date-fns";
+import { QLUsers } from "@/constants";
+import { InlineIcon } from "@iconify/react";
+import { JoiningAttemptTab } from "../../presentation/attendee/JoiningAttemptTab";
 
 type ChosenAnswerStatus = {
   isCorrect: boolean;
@@ -45,9 +49,11 @@ type TQuestionProps = {
   goBack: () => void;
   updateQuiz: (q: TQuiz<TQuestion[]>) => void;
   updateQuizResult: (q: TQuiz<TQuestion[]>) => void;
-  toggleRightBox:() => void;
-  isRightBox:boolean;
-
+  toggleRightBox: () => void;
+  isRightBox: boolean;
+  liveQuizPlayers: TLiveQuizParticipant[];
+  getLiveParticipant: () => Promise<any>;
+  actualPoll: TQuiz<TQuestion[]>;
 };
 
 export function PollQuestion({
@@ -67,7 +73,10 @@ export function PollQuestion({
   toggleLeftBox,
   answer,
   isRightBox,
-  toggleRightBox
+  toggleRightBox,
+  liveQuizPlayers,
+  getLiveParticipant,
+  actualPoll,
 }: TQuestionProps) {
   const [currentQuestion, setCurrentQuestion] = useState<TQuestion | null>(
     null
@@ -81,6 +90,7 @@ export function PollQuestion({
   const { updateQuiz: updatingQuiz, isLoading: isUpdating } = useUpdateQuiz();
   const { createAnswer } = useCreateAnswer();
   const [showAnswerMetric, setShowAnswerMetric] = useState(false);
+  const [isJoiningAttempt, setIsJoiningAttempt] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -383,154 +393,207 @@ export function PollQuestion({
     }
   }
 
+  function toggleJoiningAttempt() {
+    setIsJoiningAttempt((p) => !p);
+  }
+
+  const currentParticipants = useMemo(() => {
+    if (Array.isArray(actualPoll?.quizParticipants)) {
+      const filteredParticipants = actualPoll?.quizParticipants?.filter((v) => {
+        const quizStartTime = new Date(actualPoll?.liveMode?.startingAt);
+        const joinedAt = new Date(v?.joinedAt);
+        return isAfter(joinedAt, quizStartTime);
+      });
+
+      return filteredParticipants;
+    } else return [];
+  }, [actualPoll]);
+
   return (
-    <div
-      className={cn(
-        "w-full h-[90vh]  bg-white relative    border-x border-y  col-span-7",
-        isLeftBox && (isIdPresent || isOrganizer) && "col-span-7",
-        !isLeftBox && "col-span-full rounded-xl max-w-4xl mx-auto",
-        !isIdPresent &&
-          !isOrganizer &&
-          "col-span-full rounded-xl max-w-3xl mx-auto",
-        isLeftBox && "rounded-r-xl",
-        isRightBox && "hidden"
-      )}
-    >
-      {isIdPresent && <Button
-                  onClick={toggleRightBox}
-                  className={cn(
-                    "absolute top-2 right-2",
-                    isRightBox && "hidden"
-                  )}
-                >
-                  <Maximize2 size={20} />
-                </Button>}
-      <div className="w-full overflow-y-auto no-scrollbar px-6 pt-12 space-y-3  h-[90%] pb-52 ">
-        <>
-          {transiting ? (
-            <Transition setShowTransiting={setShowTransiting} />
-          ) : (
-            <>
-              <div className=" gap-3 pb-2 w-full flex items-end justify-between">
-                <Button
-                  onClick={goBack}
-                  className={cn(
-                    "gap-x-1 self-start w-fit h-fit px-2 invisible",
-                    (isIdPresent || isOrganizer) && "visible"
-                  )}
-                >
-                  <ArrowBackOutline size={20} />
-                  <p className="text-sm">Exit Poll</p>
-                </Button>
-                <p className="text-xs sm:text-mobile text-gray-500">{`${
-                  currentQuestionIndex + 1
-                }/${poll?.questions?.length} Questions`}</p>
-              </div>
-
-              <div className="flex items-center flex-col justify-center w-full gap-3">
-                <div
-                  className="innerhtml w-full"
-                  dangerouslySetInnerHTML={{
-                    __html: currentQuestion?.question ?? "",
-                  }}
-                />
-
-                <div className="w-full flex items-center justify-between">
-                  <div
-                    className={cn(
-                      "flex flex-col items-center justify-center gap-y-2",
-                      !currentQuestion?.duration && "invisible"
-                    )}
-                  >
-                    <div className="w-[70px] h-[70px]">
-                      <CircularProgressbar
-                        styles={buildStyles({
-                          pathColor: "#991b1b",
-                          trailColor: "#ffffff",
-                          textColor: "black",
-                          textSize: "60px",
-                        })}
-                        strokeWidth={3}
-                        minValue={0}
-                        maxValue={Number(currentQuestion?.duration) / 1000}
-                        value={timing}
-                        text={`${timing === 0 ? "" : timing}`}
-                      />
-                    </div>
+    <>
+      <div
+        className={cn(
+          "w-full h-[90vh]  bg-white relative    border-x border-y  col-span-7",
+          isLeftBox && (isIdPresent || isOrganizer) && "col-span-7",
+          !isLeftBox && "col-span-full rounded-xl max-w-4xl mx-auto",
+          !isIdPresent &&
+            !isOrganizer &&
+            "col-span-full rounded-xl max-w-3xl mx-auto",
+          isLeftBox && "rounded-r-xl",
+          isRightBox && "hidden"
+        )}
+      >
+        {isIdPresent && (
+          <Button
+            onClick={toggleRightBox}
+            className={cn("absolute top-2 right-2", isRightBox && "hidden")}
+          >
+            <Maximize2 size={20} />
+          </Button>
+        )}
+        <div className="w-full overflow-y-auto no-scrollbar px-6 pt-12 space-y-3  h-[90%] pb-52 ">
+          <>
+            {transiting ? (
+              <Transition setShowTransiting={setShowTransiting} />
+            ) : (
+              <>
+                <div className=" gap-3 pb-2 w-full flex items-center justify-between">
+                  <div className="flex items-center gap-x-2">
+                    <Button
+                      onClick={goBack}
+                      className={cn(
+                        "gap-x-1 self-start w-fit h-fit px-2 invisible",
+                        (isIdPresent || isOrganizer) && "visible"
+                      )}
+                    >
+                      <ArrowBackOutline size={20} />
+                      <p className="text-sm">Exit Poll</p>
+                    </Button>
+                    {(isIdPresent || isOrganizer) &&
+                      poll?.accessibility?.live && (
+                        <button
+                          onClick={toggleJoiningAttempt}
+                          className="bg-[#001fcc]/20 flex items-center w-fit  gap-x-2 rounded-3xl p-1 relative"
+                        >
+                          <div className="bg-basePrimary p-1 rounded-full">
+                            <QLUsers />
+                          </div>
+                          <p>{currentParticipants?.length}</p>
+                          {Array.isArray(liveQuizPlayers) &&
+                            liveQuizPlayers?.length > 0 && (
+                              <div className="absolute -right-1 -top-2">
+                                <InlineIcon
+                                  icon="mdi:dot"
+                                  fontSize={24}
+                                  color="#001fcc"
+                                />
+                              </div>
+                            )}
+                        </button>
+                      )}
                   </div>
-                  {currentQuestion?.questionImage ? (
-                    <Image
-                      className="w-52 sm:w-72 rounded-md h-48 sm:h-52 object-cover"
-                      alt="quiz"
-                      src={currentQuestion?.questionImage}
-                      width={400}
-                      height={400}
-                    />
-                  ) : (
-                    <div className="w-1 h-1"></div>
-                  )}
-                  <p className="flex flex-col justify-center items-center gap-y-2">
-                    <span className="text-[40px] ">{answer?.length || 0}</span>
-                    <span>{` Answered`}</span>
-                  </p>
+                  <p className="text-xs sm:text-mobile text-gray-500">{`${
+                    currentQuestionIndex + 1
+                  }/${poll?.questions?.length} Questions`}</p>
                 </div>
-              </div>
 
-              <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {currentQuestion?.options.map((option, index, arr) => (
-                  <PollOption
-                    key={index}
-                    selectOption={selectOption}
-                    option={option}
-                    answer={answer}
-                    isDisabled={arr?.some(
-                      ({ isAnswer }) => isAnswer?.length > 0
-                    )}
-                    showAnswerMetric={showAnswerMetric}
-                    isOrganizer={isOrganizer}
-                    isIdPresent={isIdPresent}
-                    optionIndex={optionLetter[index]}
-                    poll={poll}
+                <div className="flex items-center flex-col justify-center w-full gap-3">
+                  <div
+                    className="innerhtml w-full"
+                    dangerouslySetInnerHTML={{
+                      __html: currentQuestion?.question ?? "",
+                    }}
                   />
-                ))}
-              </div>
 
-              <div className="w-full rounded-b-xl flex flex-col items-center justify-center mx-auto absolute inset-x-0 bottom-0 gap-y-3  bg-white py-2">
-                {poll?.accessibility?.live &&
-                !isIdPresent &&
-                !isOrganizer ? null : (
-                  <Button
-                    disabled={loading || isUpdating} //
-                    onClick={onNextBtnClick}
-                    className="text-gray-50  mx-auto w-[180px] my-4 bg-basePrimary gap-x-2 h-11 font-medium flex"
-                  >
-                    {isUpdating && (
-                      <LoaderAlt size={22} className="animate-spin" />
+                  <div className="w-full flex items-center justify-between">
+                    <div
+                      className={cn(
+                        "flex flex-col items-center justify-center gap-y-2",
+                        !currentQuestion?.duration && "invisible"
+                      )}
+                    >
+                      <div className="w-[70px] h-[70px]">
+                        <CircularProgressbar
+                          styles={buildStyles({
+                            pathColor: "#991b1b",
+                            trailColor: "#ffffff",
+                            textColor: "black",
+                            textSize: "60px",
+                          })}
+                          strokeWidth={3}
+                          minValue={0}
+                          maxValue={Number(currentQuestion?.duration) / 1000}
+                          value={timing}
+                          text={`${timing === 0 ? "" : timing}`}
+                        />
+                      </div>
+                    </div>
+                    {currentQuestion?.questionImage ? (
+                      <Image
+                        className="w-52 sm:w-72 rounded-md h-48 sm:h-52 object-cover"
+                        alt="quiz"
+                        src={currentQuestion?.questionImage}
+                        width={400}
+                        height={400}
+                      />
+                    ) : (
+                      <div className="w-1 h-1"></div>
                     )}
-                    <p>Next </p>
-                  </Button>
-                )}
-                {poll.branding.poweredBy && (
-                  <p className="text-center bg-white text-sm w-full  p-2 ">
-                    Powered By Zikoro
-                  </p>
-                )}
+                    <p className="flex flex-col justify-center items-center gap-y-2">
+                      <span className="text-[40px] ">
+                        {answer?.length || 0}
+                      </span>
+                      <span>{` Answered`}</span>
+                    </p>
+                  </div>
+                </div>
 
-                <Button
-                  onClick={toggleLeftBox}
-                  className={cn(
-                    "absolute bottom-1 left-1",
-                    isLeftBox && "hidden"
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {currentQuestion?.options.map((option, index, arr) => (
+                    <PollOption
+                      key={index}
+                      selectOption={selectOption}
+                      option={option}
+                      answer={answer}
+                      isDisabled={arr?.some(
+                        ({ isAnswer }) => isAnswer?.length > 0
+                      )}
+                      showAnswerMetric={showAnswerMetric}
+                      isOrganizer={isOrganizer}
+                      isIdPresent={isIdPresent}
+                      optionIndex={optionLetter[index]}
+                      poll={poll}
+                    />
+                  ))}
+                </div>
+
+                <div className="w-full rounded-b-xl flex flex-col items-center justify-center mx-auto absolute inset-x-0 bottom-0 gap-y-3  bg-white py-2">
+                  {poll?.accessibility?.live &&
+                  !isIdPresent &&
+                  !isOrganizer ? null : (
+                    <Button
+                      disabled={loading || isUpdating} //
+                      onClick={onNextBtnClick}
+                      className="text-gray-50  mx-auto w-[180px] my-4 bg-basePrimary gap-x-2 h-11 font-medium flex"
+                    >
+                      {isUpdating && (
+                        <LoaderAlt size={22} className="animate-spin" />
+                      )}
+                      <p>Next </p>
+                    </Button>
                   )}
-                >
-                  <Maximize2 size={20} />
-                </Button>
-              </div>
-            </>
-          )}
-        </>
+                  {poll.branding.poweredBy && (
+                    <p className="text-center bg-white text-sm w-full  p-2 ">
+                      Powered By Zikoro
+                    </p>
+                  )}
+
+                  <Button
+                    onClick={toggleLeftBox}
+                    className={cn(
+                      "absolute bottom-1 left-1",
+                      isLeftBox && "hidden"
+                    )}
+                  >
+                    <Maximize2 size={20} />
+                  </Button>
+                </div>
+              </>
+            )}
+          </>
+        </div>
       </div>
-    </div>
+      {isJoiningAttempt && (
+        <JoiningAttemptTab
+          liveQuizPlayers={liveQuizPlayers}
+          close={toggleJoiningAttempt}
+          quiz={actualPoll}
+          refetchLobby={getLiveParticipant}
+          refetch={refetchQuiz}
+          currentParticipants={currentParticipants}
+        />
+      )}
+    </>
   );
 }
 
