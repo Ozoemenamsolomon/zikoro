@@ -275,6 +275,7 @@ export default function PollPresentation({
                   poll={pollResult} // change it to pull
                   answers={answers}
                   close={closeAnswerSheet}
+                  isAttendee={!isOrganizer && !isIdPresent}
                 />
               )}
             </>
