@@ -188,6 +188,7 @@ const Attendee: React.FC<AttendeeProps> = ({
                 (request) =>
                   (request.senderUserEmail === attendee.email ||
                     request.receiverUserEmail === attendee.email) &&
+                  !attendeeIsUser &&
                   request.status === "accepted"
               ) && <CheckCircle className="w-5 h-5 text-green-600" />}
           </h4>
