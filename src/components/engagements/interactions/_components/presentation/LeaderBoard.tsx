@@ -14,7 +14,6 @@ import { TAnswer, TQuestion, TQuiz } from "@/types";
 import { QUser } from "@/constants";
 import Avatar from "react-nice-avatar";
 import { AvatarFullConfig } from "react-nice-avatar";
-import { ArrowUpwardOutline } from "styled-icons/evaicons-outline";
 import { FeedStar } from "styled-icons/octicons";
 import { Plus } from "styled-icons/bootstrap";
 import { Reorder } from "framer-motion";
